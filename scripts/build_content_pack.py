@@ -16,7 +16,7 @@ SOURCES = {
     "obs_tq": {"url":"https://git.door43.org/unfoldingWord/en_obs-tq.git", "ref":"v10", "license":"CC BY-SA 4.0"},
     "step": {"url":"https://github.com/STEPBible/STEPBible-Data.git", "ref":"master", "license":"CC BY 4.0"},
     "geo": {"url":"https://github.com/openbibleinfo/Bible-Geocoding-Data.git", "ref":"main", "license":"CC BY 4.0"},
-    "xrefs": {"url":"https://www.openbible.info/labs/cross-references/cross_references.txt.zip", "ref":"current", "license":"CC BY"},
+    "xrefs": {"url":"https://a.openbible.info/data/cross-references.zip", "ref":"current", "license":"CC BY"},
 }
 
 def run(args, cwd=None):
