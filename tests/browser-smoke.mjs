@@ -55,6 +55,7 @@ try {
   assert.ok((await page.locator('.verse-list').innerText()).length > 100, 'Reader should display Bible text');
   await page.locator('[data-reader-close]').first().click();
 
+  // Existing couples flow remains available inside the streamlined Together hub.
   await page.locator('[data-modern-hub="together"]').click();
   await page.getByRole('button', { name: /Grow Together/ }).click();
   await page.waitForSelector('.couples-layer:not(.hidden)');
@@ -62,7 +63,72 @@ try {
   assert.match(await page.locator('.couples-panel').innerText(), /Listen First/);
   await page.locator('[data-couples-close]').click();
 
-  console.log('BibleQuest streamlined mobile browser smoke test passed');
+  // Congregation leaderboard has real period switching and multiple ranking lanes.
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Leaderboards & Awards/ }).click();
+  await page.waitForSelector('.community-layer:not(.hidden)');
+  assert.match(await page.locator('.board-head').innerText(), /Today/);
+  assert.match(await page.locator('.board-head').innerText(), /This Week/);
+  assert.match(await page.locator('.board-head').innerText(), /All Time/);
+  assert.match(await page.locator('.lane-tabs').innerText(), /Knowledge/);
+  assert.match(await page.locator('.lane-tabs').innerText(), /Reading/);
+  assert.match(await page.locator('.lane-tabs').innerText(), /Wisdom/);
+  assert.match(await page.locator('.lane-tabs').innerText(), /Couples/);
+  await page.locator('[data-community-home]').click();
+  await page.locator('[data-community-close]').click();
+
+  // Local congregation roster never invents fake people; add a second real test participant.
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Congregation Roster/ }).click();
+  await page.waitForSelector('[data-roster-form]');
+  await page.locator('[data-roster-form] input[name="name"]').fill('Alex');
+  await page.locator('[data-roster-form] button').click();
+  assert.equal(await page.locator('.roster-list article').count(), 2, 'Roster should contain only the current profile and explicitly added participant');
+  await page.locator('[data-community-home]').click();
+  await page.locator('[data-community-close]').click();
+
+  // Group play works from one phone and uses the congregation roster.
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Play Together/ }).click();
+  await page.waitForSelector('.group-layer:not(.hidden)');
+  assert.match(await page.locator('.group-mode-grid').innerText(), /Team Bible Sprint/);
+  assert.match(await page.locator('.group-mode-grid').innerText(), /Conversation Circle/);
+  assert.match(await page.locator('.group-mode-grid').innerText(), /Pair & Share/);
+  await page.getByRole('button', { name: /Team Bible Sprint/ }).click();
+  await page.waitForSelector('[data-sprint-answer]', { timeout: 15000 });
+  assert.equal(await page.locator('.participant-bar button[data-group-person]').count(), 2, 'Team game should expose both participants');
+  await page.locator('[data-sprint-answer]').first().click();
+  await page.waitForSelector('.group-feedback');
+  await page.locator('[data-group-home]').click();
+  await page.locator('[data-group-close]').click();
+
+  // Bridge future solo/couples progress into dated community score events.
+  await page.evaluate(() => {
+    const app = JSON.parse(localStorage.getItem('biblequest_state_v4') || '{}');
+    app.answered = (app.answered || 0) + 1;
+    app.correct = (app.correct || 0) + 1;
+    app.xp = (app.xp || 0) + 10;
+    localStorage.setItem('biblequest_state_v4', JSON.stringify(app));
+
+    const couple = JSON.parse(localStorage.getItem('biblequest_couples_v1') || '{}');
+    couple.history = [...(couple.history || []), { id: 'smoke-discussion', at: new Date().toISOString() }];
+    localStorage.setItem('biblequest_couples_v1', JSON.stringify(couple));
+  });
+  await page.waitForTimeout(100);
+  const community = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest_community_v1') || '{}'));
+  assert.ok(community.events.some(e => e.category === 'knowledge' && e.source === 'Solo Bible Game'), 'Solo learning should feed the community leaderboard');
+  assert.ok(community.events.some(e => e.category === 'couples' && e.source === 'Couples Conversation'), 'Couples activity should feed its own leaderboard lane');
+
+  // Large badge catalog is discoverable without crowding Home.
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Congregation Badges/ }).click();
+  await page.waitForSelector('.badge-grid');
+  assert.ok((await page.locator('.badge-grid article').count()) >= 45, 'Congregation mode should expose a large achievement catalog');
+  assert.match(await page.locator('.badge-head').innerText(), /Knowledge|Consistency|Mastery/);
+  await page.locator('[data-community-home]').click();
+  await page.locator('[data-community-close]').click();
+
+  console.log('BibleQuest congregation + streamlined mobile browser smoke test passed');
 } finally {
   await browser.close();
 }
