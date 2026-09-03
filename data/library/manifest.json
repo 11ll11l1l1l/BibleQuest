@@ -1,0 +1,105 @@
+{
+  "generated_by": "BibleQuest content pack",
+  "sources": {
+    "bsb": {
+      "url": "https://github.com/BSB-publishing/bsb-data-output.git",
+      "ref": "main",
+      "license": "CC0 / mixed documented upstream",
+      "commit": "1f6fe37c8997a173182c78205695790d8b440b74"
+    },
+    "tq": {
+      "url": "https://git.door43.org/unfoldingWord/en_tq.git",
+      "ref": "v90",
+      "license": "CC BY-SA 4.0",
+      "commit": "bb6cea828c5ff7a3f0c82525242a32fa2a2ad3cb"
+    },
+    "tn": {
+      "url": "https://git.door43.org/unfoldingWord/en_tn.git",
+      "ref": "v90",
+      "license": "CC BY-SA 4.0",
+      "commit": "e137f93c4de4d64281e36c84d57a68e405cb20ab"
+    },
+    "tw": {
+      "url": "https://git.door43.org/unfoldingWord/en_tw.git",
+      "ref": "v90",
+      "license": "CC BY-SA 4.0",
+      "commit": "014524aebf4f997c123777e952856d24e3b246d2"
+    },
+    "obs": {
+      "url": "https://git.door43.org/unfoldingWord/en_obs.git",
+      "ref": "v9",
+      "license": "CC BY-SA 4.0",
+      "commit": "d39a1dc7a7557ac54e4a8fecc3462147fe7eec3b"
+    },
+    "obs_tq": {
+      "url": "https://git.door43.org/unfoldingWord/en_obs-tq.git",
+      "ref": "v10",
+      "license": "CC BY-SA 4.0",
+      "commit": "01b92fe8793d62cff3a2221f5174c768cbad3dc1"
+    },
+    "step": {
+      "url": "https://github.com/STEPBible/STEPBible-Data.git",
+      "ref": "master",
+      "license": "CC BY 4.0",
+      "commit": "2cc85f1c0ddba06d07613ce09be42a0e24f1a580"
+    },
+    "geo": {
+      "url": "https://github.com/openbibleinfo/Bible-Geocoding-Data.git",
+      "ref": "main",
+      "license": "CC BY 4.0",
+      "commit": "7eb18a5ee62f27b9b93bd6689ea272d76dd23b8f"
+    },
+    "xrefs": {
+      "url": "https://www.openbible.info/labs/cross-references/cross_references.txt.zip",
+      "ref": "current",
+      "license": "CC BY"
+    }
+  },
+  "files": {
+    "bsb_bible_index.jsonl": {
+      "rows": 30969,
+      "purpose": "Full BSB verse text + Strong's identifiers, normalized for BibleQuest",
+      "license": "CC0"
+    },
+    "bsb_strongs_to_verses.jsonl": {
+      "purpose": "Strong's-to-verse concordance",
+      "license": "CC0"
+    },
+    "translation_questions.jsonl": {
+      "rows": 11462,
+      "license": "CC BY-SA 4.0"
+    },
+    "translation_notes.jsonl": {
+      "rows": 85148,
+      "license": "CC BY-SA 4.0"
+    },
+    "translation_words.jsonl": {
+      "rows": 953,
+      "license": "CC BY-SA 4.0"
+    },
+    "open_bible_stories.jsonl": {
+      "rows": 53,
+      "license": "CC BY-SA 4.0"
+    },
+    "open_bible_story_questions.jsonl": {
+      "rows": 672,
+      "license": "CC BY-SA 4.0"
+    },
+    "stepbible_tipnr.txt": {
+      "purpose": "Biblical people/places/proper names, relations and references",
+      "license": "CC BY 4.0"
+    },
+    "bible_places.jsonl": {
+      "purpose": "Biblical place coordinates and identifiers",
+      "license": "CC BY 4.0"
+    },
+    "translations/web_updated_html.zip": {
+      "purpose": "Secondary English Bible translation",
+      "license": "Public Domain"
+    },
+    "translations/tagalog_ulb_html.zip": {
+      "purpose": "Tagalog Bible translation pack",
+      "license": "Preserve Door43/eBible upstream attribution and license notice"
+    }
+  }
+}
