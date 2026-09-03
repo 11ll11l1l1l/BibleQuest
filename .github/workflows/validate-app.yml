@@ -11,6 +11,8 @@ on:
       - "transformation-taglish.js"
       - "growth.js"
       - "growth-nudge.js"
+      - "learning-engine.js"
+      - "data/connections.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -21,6 +23,7 @@ on:
       - "transformation-taglish.css"
       - "growth.css"
       - "growth-nudge.css"
+      - "learning-engine.css"
       - "sw.js"
       - ".github/workflows/validate-app.yml"
   pull_request:
@@ -33,6 +36,8 @@ on:
       - "transformation-taglish.js"
       - "growth.js"
       - "growth-nudge.js"
+      - "learning-engine.js"
+      - "data/connections.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -43,6 +48,7 @@ on:
       - "transformation-taglish.css"
       - "growth.css"
       - "growth-nudge.css"
+      - "learning-engine.css"
       - "sw.js"
 
 jobs:
@@ -51,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check data/connections.js && node --check sw.js
       - name: Check required static files
         run: |
           test -s index.html
@@ -67,4 +73,7 @@ jobs:
           test -s growth.js
           test -s growth-nudge.css
           test -s growth-nudge.js
+          test -s learning-engine.css
+          test -s learning-engine.js
+          test -s data/connections.js
           test -s manifest.webmanifest
