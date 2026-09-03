@@ -30,15 +30,26 @@ jobs:
       - name: Report pack sizes
         run: |
           echo "### BibleQuest content pack" >> "$GITHUB_STEP_SUMMARY"
-          du -h data/library/* data/library/translations/* 2>/dev/null | sort -h | tee -a "$GITHUB_STEP_SUMMARY"
+          du -h data/library/* data/library/translations/* data/packs/* data/packs/*/* 2>/dev/null | sort -h | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Commit refreshed content
         run: |
-          git add data/library
+          git add data/library data/packs
           if git diff --cached --quiet; then
             echo "No resource changes detected."
-          else
-            git commit -m "Refresh open Bible resource pack"
+            exit 0
+          fi
+
+          git commit -m "Refresh open Bible resource pack"
+
+          for attempt in 1 2 3 4 5; do
+            echo "Push attempt $attempt"
             git fetch origin main
             git rebase origin/main
-            git push origin HEAD:main
-          fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+
+          echo "Unable to publish refreshed content after retries."
+          exit 1
