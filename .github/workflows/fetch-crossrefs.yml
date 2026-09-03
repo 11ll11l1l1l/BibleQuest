@@ -1,0 +1,42 @@
+name: Fetch OpenBible cross references
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fetch-crossrefs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Download cross-reference data
+        run: |
+          mkdir -p data/library /tmp/bq-xrefs
+          curl -fL --retry 3 https://a.openbible.info/data/cross-references.zip -o /tmp/bq-xrefs/cross-references.zip
+          unzip -o /tmp/bq-xrefs/cross-references.zip -d /tmp/bq-xrefs/unpacked
+          src=$(find /tmp/bq-xrefs/unpacked -type f -name '*.txt' | head -1)
+          test -n "$src"
+          cp "$src" data/library/cross_references.txt
+          wc -l data/library/cross_references.txt
+      - name: Commit cross references
+        run: |
+          git config user.name "BibleQuest Content Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/library/cross_references.txt
+          if git diff --cached --quiet; then
+            echo "Cross references already current."
+          else
+            git commit -m "Add OpenBible cross-reference dataset"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
