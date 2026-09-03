@@ -17,10 +17,15 @@ Deno.serve(async(req:Request)=>{
     if(congregationError)throw congregationError;if(!congregation)return json({error:'Congregation is not active'},404);
     const profile=await admin.from('bible_profiles').select('display_name').eq('user_id',user.id).maybeSingle();
     const memberName=displayName(user,profile.data?.display_name);
-    const {error:memberError}=await admin.from('bible_congregation_members').upsert({congregation_id:congregation.id,user_id:user.id,role:'member',display_name:memberName,active:true},{onConflict:'congregation_id,user_id'});
+    const existing=await admin.from('bible_congregation_members').select('role').eq('congregation_id',congregation.id).eq('user_id',user.id).maybeSingle();
+    if(existing.error)throw existing.error;
+    const role=existing.data?.role||'member';
+    const {error:memberError}=await admin.from('bible_congregation_members').upsert({congregation_id:congregation.id,user_id:user.id,role,display_name:memberName,active:true},{onConflict:'congregation_id,user_id'});
     if(memberError)throw memberError;
-    const {error:useError}=await admin.from('bible_congregation_invites').update({uses:Number(invite.uses)+1}).eq('id',invite.id).eq('uses',invite.uses);
-    if(useError)console.warn('Invite use counter update failed:',useError.message);
-    return json({congregation:{id:congregation.id,name:congregation.name,timezone:congregation.timezone},role:'member'});
+    if(!existing.data){
+      const {error:useError}=await admin.from('bible_congregation_invites').update({uses:Number(invite.uses)+1}).eq('id',invite.id).eq('uses',invite.uses);
+      if(useError)console.warn('Invite use counter update failed:',useError.message);
+    }
+    return json({congregation:{id:congregation.id,name:congregation.name,timezone:congregation.timezone},role});
   }catch(err){return asResponse(err)}
 });
