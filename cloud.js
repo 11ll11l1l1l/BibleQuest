@@ -152,9 +152,10 @@
   function renderCard(){
     patchCommunity();
     const root=document.querySelector('#bqCommunityLayer:not(.hidden) .community-app');if(!root)return;
-    let card=root.querySelector('[data-bq-cloud-card]');const html=cloudCardHtml();
-    if(card)card.outerHTML=html;else{const note=root.querySelector('.community-note');if(note)note.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html)}
-    bindCard(root);
+    const card=root.querySelector('[data-bq-cloud-card]');const html=cloudCardHtml();let changed=false;
+    if(card){if(card.outerHTML!==html){card.outerHTML=html;changed=true}}
+    else{const note=root.querySelector('.community-note');if(note)note.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html);changed=true}
+    if(changed)bindCard(root);
   }
   function bindCard(root){
     root.querySelector('[data-cloud-login]')?.addEventListener('submit',async e=>{e.preventDefault();try{await sendMagicLink(new FormData(e.currentTarget).get('email'))}catch(err){writeState({error:err.message,message:''})}});
