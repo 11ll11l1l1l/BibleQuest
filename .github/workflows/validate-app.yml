@@ -12,7 +12,9 @@ on:
       - "growth.js"
       - "growth-nudge.js"
       - "learning-engine.js"
+      - "data/questions.js"
       - "data/connections.js"
+      - "scripts/content-audit.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -37,7 +39,9 @@ on:
       - "growth.js"
       - "growth-nudge.js"
       - "learning-engine.js"
+      - "data/questions.js"
       - "data/connections.js"
+      - "scripts/content-audit.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -57,7 +61,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check data/connections.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
+      - name: Audit Bible game content
+        run: node scripts/content-audit.js
       - name: Check required static files
         run: |
           test -s index.html
@@ -76,4 +82,5 @@ jobs:
           test -s learning-engine.css
           test -s learning-engine.js
           test -s data/connections.js
+          test -s scripts/content-audit.js
           test -s manifest.webmanifest
