@@ -5,20 +5,24 @@ on:
     paths:
       - "app.js"
       - "reader.js"
+      - "sequence.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
       - "reader.css"
+      - "sequence.css"
       - "sw.js"
       - ".github/workflows/validate-app.yml"
   pull_request:
     paths:
       - "app.js"
       - "reader.js"
+      - "sequence.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
       - "reader.css"
+      - "sequence.css"
       - "sw.js"
 
 jobs:
@@ -27,11 +31,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check sw.js
       - name: Check required static files
         run: |
           test -s index.html
           test -s styles.css
           test -s decks.css
           test -s reader.css
+          test -s sequence.css
           test -s manifest.webmanifest
