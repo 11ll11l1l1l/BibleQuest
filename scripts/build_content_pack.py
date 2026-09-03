@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import csv, json, os, re, shutil, subprocess, sys, tempfile, urllib.request
+import csv, json, re, shutil, subprocess, sys, tempfile, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +30,7 @@ def clone(name, cfg, sparse=None):
     cmd += [cfg["url"], str(dest)]
     run(cmd)
     if sparse:
-        run(["git","-C",str(dest),"sparse-checkout","set",*sparse])
+        run(["git","-C",str(dest),"sparse-checkout","set","--skip-checks",*sparse])
     return dest
 
 def dump_jsonl(path, rows):
@@ -70,7 +70,8 @@ def markdown_articles(repo, resource, version, roots=None):
         for r in roots:
             q=repo/r
             if q.exists(): files += list(q.rglob("*.md"))
-    else: files=list(repo.rglob("*.md"))
+    else:
+        files=list(repo.rglob("*.md"))
     for p in sorted(set(files)):
         if p.name.upper() in {"README.MD","LICENSE.MD"}: continue
         text=p.read_text(encoding="utf-8",errors="replace").strip()
@@ -121,7 +122,7 @@ try:
     n=dump_jsonl(OUT/"open_bible_story_questions.jsonl",compact_questions(obsq,"Open Bible Stories Translation Questions","v10"))
     manifest["files"]["open_bible_story_questions.jsonl"]={"rows":n,"license":"CC BY-SA 4.0"}
 
-    step=clone("step",SOURCES["step"],None)
+    step=clone("step",SOURCES["step"])
     tipnr=next((p for p in step.rglob("*.txt") if "TIPNR" in p.name),None)
     if tipnr:
         shutil.copy2(tipnr,OUT/"stepbible_tipnr.txt")
@@ -137,7 +138,7 @@ try:
     if download("https://ebible.org/engwebu/engwebu_html.zip",translations/"web_updated_html.zip"):
         manifest["files"]["translations/web_updated_html.zip"]={"purpose":"Secondary English Bible translation","license":"Public Domain"}
     if download("https://ebible.org/tglulb/tglulb_html.zip",translations/"tagalog_ulb_html.zip"):
-        manifest["files"]["translations/tagalog_ulb_html.zip"]={"purpose":"Tagalog Bible translation pack","license":"Door43 open-license family; preserve source attribution"}
+        manifest["files"]["translations/tagalog_ulb_html.zip"]={"purpose":"Tagalog Bible translation pack","license":"CC BY-SA 4.0 / Door43 attribution retained"}
 
     for name,cfg in SOURCES.items():
         repo=TMP/name
@@ -147,7 +148,7 @@ try:
             manifest["sources"][name]={**cfg,"commit":commit}
 
     (OUT/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    (OUT/"ATTRIBUTION.md").write_text("""# BibleQuest external data attribution\n\n- Berean Standard Bible / BSB data: public-domain (CC0) components as marked by BSB Publishing.\n- unfoldingWord Translation Questions, Translation Notes, Translation Words, Open Bible Stories and OBS Translation Questions: CC BY-SA 4.0; source: unfoldingWord / Door43.\n- STEPBible TIPNR proper-names data: CC BY 4.0; credit STEP Bible / Tyndale House Cambridge.\n- OpenBible geocoding data: CC BY 4.0.\n- World English Bible Updated: public domain, distributed by eBible.org.\n- Tagalog ULB: Door43 World Missions Community; retain upstream license/copyright notices.\n\n`manifest.json` records pinned resource versions/commits used for each build.\n""",encoding="utf-8")
+    (OUT/"ATTRIBUTION.md").write_text("""# BibleQuest external data attribution\n\n- Berean Standard Bible / BSB data: public-domain (CC0) components as marked by BSB Publishing.\n- unfoldingWord Translation Questions, Translation Notes, Translation Words, Open Bible Stories and OBS Translation Questions: CC BY-SA 4.0; source: unfoldingWord / Door43.\n- STEPBible TIPNR proper-names data: CC BY 4.0; credit STEP Bible / Tyndale House Cambridge.\n- OpenBible geocoding data: CC BY 4.0.\n- World English Bible Updated: public domain, distributed by eBible.org.\n- Tagalog ULB: Door43 World Missions Community, CC BY-SA 4.0 unless its bundled upstream notice states otherwise; retain upstream notices.\n\n`manifest.json` records pinned resource versions/commits used for each build.\n""",encoding="utf-8")
     print(json.dumps(manifest,indent=2))
 finally:
     shutil.rmtree(TMP,ignore_errors=True)
