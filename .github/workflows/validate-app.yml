@@ -1,0 +1,32 @@
+name: Validate BibleQuest app
+
+on:
+  push:
+    paths:
+      - "app.js"
+      - "index.html"
+      - "styles.css"
+      - "decks.css"
+      - "sw.js"
+      - ".github/workflows/validate-app.yml"
+  pull_request:
+    paths:
+      - "app.js"
+      - "index.html"
+      - "styles.css"
+      - "decks.css"
+      - "sw.js"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check app.js && node --check sw.js
+      - name: Check required static files
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s decks.css
+          test -s manifest.webmanifest
