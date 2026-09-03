@@ -1,6 +1,6 @@
 (() => {
   const APP='biblequest_state_v4';
-  let scheduled=false;
+  let scheduled=false,lastSignature='';
 
   const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function state(){try{return JSON.parse(localStorage.getItem(APP)||'{}')}catch{return {}}}
@@ -41,9 +41,9 @@
     ]},
     together:{icon:'💞',title:'Together',sub:'Couples & shared growth',items:[
       ['💞','Grow Together','Christ-centered couples conversations',()=>trigger('[data-couples-open]')],
-      ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="listen"]')?.click(),120)}],
-      ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="repair"]')?.click(),120)}],
-      ['✝️','Us & God','Questions for growing with Christ together',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-category="christ"]')?.click(),120)}]
+      ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="listen"]')?.click(),160)}],
+      ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="repair"]')?.click(),160)}],
+      ['✝️','Us & God','Questions for growing with Christ together',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-category="christ"]')?.click(),160)}]
     ]}
   };
 
@@ -77,11 +77,20 @@
   function render(){
     const hero=document.querySelector('.hero');
     const stats=document.querySelector('.quick-stats');
-    if(!hero||!stats){document.body.classList.remove('bq-modern-home');document.querySelector('.modern-home')?.remove();return}
+    if(!hero||!stats){
+      document.body.classList.remove('bq-modern-home');
+      document.querySelector('.modern-home')?.remove();
+      lastSignature='';
+      return;
+    }
     document.body.classList.add('bq-modern-home');
     let host=document.querySelector('.modern-home');
+    const isNew=!host;
     if(!host){host=document.createElement('section');host.className='modern-home';stats.after(host)}
-    const s=state(),isDone=s.dailyDone===today(),review=due(),name=s.profile?.name?`, ${esc(s.profile.name)}`:'';
+    const s=state(),isDone=s.dailyDone===today(),review=due(),rawName=s.profile?.name||'',name=rawName?`, ${esc(rawName)}`:'';
+    const signature=[isDone,review,rawName,s.xp||0,s.answered||0].join('|');
+    if(!isNew&&signature===lastSignature)return;
+    lastSignature=signature;
     host.innerHTML=`
       <section class="modern-focus">
         <button class="modern-daily ${isDone?'done':''}" data-modern-daily>
