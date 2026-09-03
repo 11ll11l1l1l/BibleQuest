@@ -17,6 +17,7 @@ on:
       - "source-labels.js"
       - "extra-games.js"
       - "couples.js"
+      - "modern-home.js"
       - "data/questions.js"
       - "data/connections.js"
       - "data/packs/manifest.json"
@@ -36,6 +37,7 @@ on:
       - "ui-enhancements.css"
       - "extra-games.css"
       - "couples.css"
+      - "modern-home.css"
       - "sw.js"
       - ".github/workflows/validate-app.yml"
   pull_request:
@@ -54,6 +56,7 @@ on:
       - "source-labels.js"
       - "extra-games.js"
       - "couples.js"
+      - "modern-home.js"
       - "data/questions.js"
       - "data/connections.js"
       - "data/packs/manifest.json"
@@ -73,6 +76,7 @@ on:
       - "ui-enhancements.css"
       - "extra-games.css"
       - "couples.css"
+      - "modern-home.css"
       - "sw.js"
 
 jobs:
@@ -81,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check open-review.js && node --check ui-taglish.js && node --check source-labels.js && node --check extra-games.js && node --check couples.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check open-review.js && node --check ui-taglish.js && node --check source-labels.js && node --check extra-games.js && node --check couples.js && node --check modern-home.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
       - name: Audit Bible game content
         run: node scripts/content-audit.js
       - name: Check required static files
@@ -110,6 +114,8 @@ jobs:
           test -s extra-games.js
           test -s couples.css
           test -s couples.js
+          test -s modern-home.css
+          test -s modern-home.js
           test -s data/connections.js
           test -s data/packs/manifest.json
           test -s scripts/content-audit.js
