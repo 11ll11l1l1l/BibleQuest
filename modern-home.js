@@ -37,9 +37,14 @@
       ['🧭','Situations & Wisdom','Real-life decisions through biblical principles',()=>trigger('[data-action="situation"]')],
       ['🧬','Transformation','Personality, bias lab, and Growth Lab',()=>{closeSheet();window.BQ_TRANSFORMATION?.open?.()}],
       ['💭','Think Deeper','Faith, motives, planning and forgiveness',()=>trigger('[data-route="discuss"]')],
-      ['🗺️','Journey','See Bible learning progress',()=>trigger('[data-route="journey"]')]
+      ['🗺️','Journey','See Bible learning progress',()=>trigger('[data-route="journey"]')],
+      ['🎖️','My Achievements','Badges across learning, wisdom, reading and consistency',()=>{closeSheet();window.BQCommunity?.openBadges?.()}]
     ]},
-    together:{icon:'💞',title:'Together',sub:'Couples & shared growth',items:[
+    together:{icon:'👥',title:'Together',sub:'Groups, couples & community',items:[
+      ['🎮','Play Together','Team games, verse hunts and conversation circles',()=>{closeSheet();window.BQGroupPlay?.open?.()}],
+      ['🏆','Leaderboards & Awards','Today · this week · all time · multiple fields',()=>{closeSheet();window.BQCommunity?.openBoard?.()}],
+      ['🎖️','Congregation Badges','54 achievement paths across BibleQuest',()=>{closeSheet();window.BQCommunity?.openBadges?.()}],
+      ['👥','Congregation Roster','Add local members or teams sharing this device',()=>{closeSheet();window.BQCommunity?.openRoster?.()}],
       ['💞','Grow Together','Christ-centered couples conversations',()=>trigger('[data-couples-open]')],
       ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="listen"]')?.click(),160)}],
       ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="repair"]')?.click(),160)}],
