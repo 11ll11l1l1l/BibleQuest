@@ -1,0 +1,51 @@
+name: Browser smoke test
+
+on:
+  push:
+    paths:
+      - "app.js"
+      - "learning-engine.js"
+      - "open-review.js"
+      - "open-review.css"
+      - "data/packs/**"
+      - "index.html"
+      - "sw.js"
+      - "tests/browser-smoke.mjs"
+      - ".github/workflows/browser-smoke.yml"
+  pull_request:
+    paths:
+      - "app.js"
+      - "learning-engine.js"
+      - "open-review.js"
+      - "open-review.css"
+      - "data/packs/**"
+      - "index.html"
+      - "sw.js"
+      - "tests/browser-smoke.mjs"
+      - ".github/workflows/browser-smoke.yml"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test dependency
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-http.log 2>&1 &
+          echo $! > /tmp/biblequest-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-http.log
+          exit 1
+      - name: Exercise real browser flows
+        run: node tests/browser-smoke.mjs
