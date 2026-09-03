@@ -15,6 +15,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout BibleQuest
         uses: actions/checkout@v4
@@ -37,5 +38,7 @@ jobs:
             echo "No resource changes detected."
           else
             git commit -m "Refresh open Bible resource pack"
+            git fetch origin main
+            git rebase origin/main
             git push origin HEAD:main
           fi
