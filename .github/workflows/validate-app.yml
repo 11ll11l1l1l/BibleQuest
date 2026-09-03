@@ -12,8 +12,10 @@ on:
       - "growth.js"
       - "growth-nudge.js"
       - "learning-engine.js"
+      - "open-review.js"
       - "data/questions.js"
       - "data/connections.js"
+      - "data/packs/manifest.json"
       - "scripts/content-audit.js"
       - "index.html"
       - "styles.css"
@@ -26,6 +28,7 @@ on:
       - "growth.css"
       - "growth-nudge.css"
       - "learning-engine.css"
+      - "open-review.css"
       - "sw.js"
       - ".github/workflows/validate-app.yml"
   pull_request:
@@ -39,8 +42,10 @@ on:
       - "growth.js"
       - "growth-nudge.js"
       - "learning-engine.js"
+      - "open-review.js"
       - "data/questions.js"
       - "data/connections.js"
+      - "data/packs/manifest.json"
       - "scripts/content-audit.js"
       - "index.html"
       - "styles.css"
@@ -53,6 +58,7 @@ on:
       - "growth.css"
       - "growth-nudge.css"
       - "learning-engine.css"
+      - "open-review.css"
       - "sw.js"
 
 jobs:
@@ -61,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check open-review.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
       - name: Audit Bible game content
         run: node scripts/content-audit.js
       - name: Check required static files
@@ -81,6 +87,9 @@ jobs:
           test -s growth-nudge.js
           test -s learning-engine.css
           test -s learning-engine.js
+          test -s open-review.css
+          test -s open-review.js
           test -s data/connections.js
+          test -s data/packs/manifest.json
           test -s scripts/content-audit.js
           test -s manifest.webmanifest
