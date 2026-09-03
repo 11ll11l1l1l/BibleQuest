@@ -31,11 +31,11 @@
   function labelOpenReview(){
     const card=document.querySelector('.open-review-card');
     if(card&&!card.querySelector('.bq-source-row'))card.insertAdjacentHTML('beforeend',`<div class="bq-source-row">${badge('uW Translation Questions v90','questions')}<span>Reference answer source · Scripture reference shown when supplied</span></div>`);
-    document.querySelectorAll('.open-answer').forEach(x=>x.setAttribute('data-bq-source-content','uw-tq'));
+    document.querySelectorAll('.open-review-card h1,.open-answer,.flashcard h2,.answer-reveal').forEach(x=>x.setAttribute('data-bq-source-content','uw-tq'));
   }
 
   function labelStory(){
-    document.querySelectorAll('.story-scene-text,.story-copy,.obs-scene').forEach(x=>x.setAttribute('data-bq-source-content','obs'));
+    document.querySelectorAll('.story-scene-text,.story-copy,.obs-scene,.story-current,.story-next-choices p').forEach(x=>x.setAttribute('data-bq-source-content','obs'));
   }
 
   function apply(){injectHomeGuide();labelReader();labelSequence();labelOpenReview();labelStory();}
