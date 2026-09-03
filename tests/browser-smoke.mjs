@@ -63,18 +63,16 @@ try {
   assert.match(await page.locator('.couples-panel').innerText(), /Listen First/);
   await page.locator('[data-couples-close]').click();
 
-  // Congregation leaderboard has real period switching and multiple ranking lanes.
+  // Congregation leaderboard has real period switching and eight ranking lanes.
   await page.locator('[data-modern-hub="together"]').click();
   await page.getByRole('button', { name: /Leaderboards & Awards/ }).click();
   await page.waitForSelector('.community-layer:not(.hidden)');
   assert.match(await page.locator('.board-head').innerText(), /Today/);
   assert.match(await page.locator('.board-head').innerText(), /This Week/);
   assert.match(await page.locator('.board-head').innerText(), /All Time/);
-  assert.match(await page.locator('.lane-tabs').innerText(), /Knowledge/);
-  assert.match(await page.locator('.lane-tabs').innerText(), /Reading/);
-  assert.match(await page.locator('.lane-tabs').innerText(), /Wisdom/);
-  assert.match(await page.locator('.lane-tabs').innerText(), /Couples/);
-  await page.locator('[data-community-home]').click();
+  const lanes = await page.locator('.lane-tabs').innerText();
+  for (const label of ['Overall','Knowledge','Reading','Wisdom','Mastery','Consistency','Group','Couples']) assert.match(lanes, new RegExp(label));
+  await page.locator('[data-xboard-home]').click();
   await page.locator('[data-community-close]').click();
 
   // Local congregation roster never invents fake people; add a second real test participant.
@@ -85,6 +83,7 @@ try {
   await page.locator('[data-roster-form] button').click();
   assert.equal(await page.locator('.roster-list article').count(), 2, 'Roster should contain only the current profile and explicitly added participant');
   await page.locator('[data-community-home]').click();
+  assert.ok((await page.locator('.award-grid article').count()) >= 8, 'Community dashboard should expose multiple weekly field awards');
   await page.locator('[data-community-close]').click();
 
   // Group play works from one phone and uses the congregation roster.
@@ -108,6 +107,8 @@ try {
     app.answered = (app.answered || 0) + 1;
     app.correct = (app.correct || 0) + 1;
     app.xp = (app.xp || 0) + 10;
+    app.streak = (app.streak || 1) + 1;
+    app.mastery = { ...(app.mastery || {}), Genesis: (app.mastery?.Genesis || 0) + 5 };
     localStorage.setItem('biblequest_state_v4', JSON.stringify(app));
 
     const couple = JSON.parse(localStorage.getItem('biblequest_couples_v1') || '{}');
@@ -118,13 +119,17 @@ try {
   const community = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest_community_v1') || '{}'));
   assert.ok(community.events.some(e => e.category === 'knowledge' && e.source === 'Solo Bible Game'), 'Solo learning should feed the community leaderboard');
   assert.ok(community.events.some(e => e.category === 'couples' && e.source === 'Couples Conversation'), 'Couples activity should feed its own leaderboard lane');
+  assert.ok(community.events.some(e => e.category === 'mastery'), 'Mastery growth should feed its own leaderboard lane');
+  assert.ok(community.events.some(e => e.category === 'consistency'), 'Streak growth should feed its own leaderboard lane');
 
   // Large badge catalog is discoverable without crowding Home.
   await page.locator('[data-modern-hub="together"]').click();
   await page.getByRole('button', { name: /Congregation Badges/ }).click();
   await page.waitForSelector('.badge-grid');
   assert.ok((await page.locator('.badge-grid article').count()) >= 45, 'Congregation mode should expose a large achievement catalog');
-  assert.match(await page.locator('.badge-head').innerText(), /Knowledge|Consistency|Mastery/);
+  assert.match(await page.locator('.badge-head').innerText(), /Knowledge/);
+  assert.match(await page.locator('.badge-head').innerText(), /Consistency/);
+  assert.match(await page.locator('.badge-head').innerText(), /Mastery/);
   await page.locator('[data-community-home]').click();
   await page.locator('[data-community-close]').click();
 
