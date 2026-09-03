@@ -1,5 +1,5 @@
-const CACHE='biblequest-v5';
-const SHELL=['./','./index.html','./styles.css','./decks.css','./reader.css','./app.js','./reader.js','./manifest.webmanifest'];
+const CACHE='biblequest-v6';
+const SHELL=['./','./index.html','./styles.css','./decks.css','./reader.css','./sequence.css','./app.js','./reader.js','./sequence.js','./manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
