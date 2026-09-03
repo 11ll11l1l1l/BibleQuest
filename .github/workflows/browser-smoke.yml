@@ -3,43 +3,21 @@ name: Browser smoke test
 on:
   push:
     paths:
-      - "app.js"
-      - "learning-engine.js"
-      - "open-review.js"
-      - "open-review.css"
-      - "ui-taglish.js"
-      - "source-labels.js"
-      - "ui-enhancements.css"
-      - "extra-games.js"
-      - "extra-games.css"
-      - "couples.js"
-      - "couples.css"
-      - "modern-home.js"
-      - "modern-home.css"
-      - "data/packs/**"
+      - "*.js"
+      - "*.css"
+      - "data/**"
       - "index.html"
       - "sw.js"
-      - "tests/browser-smoke.mjs"
+      - "tests/**"
       - ".github/workflows/browser-smoke.yml"
   pull_request:
     paths:
-      - "app.js"
-      - "learning-engine.js"
-      - "open-review.js"
-      - "open-review.css"
-      - "ui-taglish.js"
-      - "source-labels.js"
-      - "ui-enhancements.css"
-      - "extra-games.js"
-      - "extra-games.css"
-      - "couples.js"
-      - "couples.css"
-      - "modern-home.js"
-      - "modern-home.css"
-      - "data/packs/**"
+      - "*.js"
+      - "*.css"
+      - "data/**"
       - "index.html"
       - "sw.js"
-      - "tests/browser-smoke.mjs"
+      - "tests/**"
       - ".github/workflows/browser-smoke.yml"
 
 jobs:
@@ -67,3 +45,5 @@ jobs:
           exit 1
       - name: Exercise real browser flows
         run: node tests/browser-smoke.mjs
+      - name: Verify cloud-ready state
+        run: node tests/cloud-smoke.mjs
