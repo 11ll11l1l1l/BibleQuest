@@ -138,6 +138,10 @@
   }
   async function switchCongregation(id){writeState({activeCongregationId:id,lastInvite:'',message:'',error:''});await loadMemberships();await syncLocal()}
 
+  function cloudSignature(){
+    const s=readState();
+    return JSON.stringify({enabled:enabled(),user:currentUserId(),email:session?.user?.email||'',active:active?{id:active.id,name:active.name,role:active.role}:null,members:members.map(m=>[m.user_id,m.display_name,m.role]),memberships:ownMemberships.map(m=>[m.congregation_id,m.role,m.display_name]),invite:s.lastInvite||'',message:s.message||'',error:s.error||''});
+  }
   function cloudCardHtml(){
     const s=readState();
     if(!enabled())return `<section class="cloud-card" data-bq-cloud-card><div class="cloud-head"><div><span>☁️</span><h3>Cloud congregation</h3></div><i class="cloud-status off">BACKEND READY</i></div><p>Multi-device accounts, congregation invites, trusted score sync, and cloud leaderboards are built into this release. Activation is waiting for a dedicated BibleQuest Supabase project.</p></section>`;
@@ -152,10 +156,15 @@
   function renderCard(){
     patchCommunity();
     const root=document.querySelector('#bqCommunityLayer:not(.hidden) .community-app');if(!root)return;
-    const card=root.querySelector('[data-bq-cloud-card]');const html=cloudCardHtml();let changed=false;
-    if(card){if(card.outerHTML!==html){card.outerHTML=html;changed=true}}
-    else{const note=root.querySelector('.community-note');if(note)note.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html);changed=true}
-    if(changed)bindCard(root);
+    const signature=cloudSignature();
+    let card=root.querySelector('[data-bq-cloud-card]');
+    if(card?.dataset.cloudSignature===signature)return;
+    const html=cloudCardHtml();
+    if(card)card.outerHTML=html;
+    else{const note=root.querySelector('.community-note');if(note)note.insertAdjacentHTML('beforebegin',html);else root.insertAdjacentHTML('beforeend',html)}
+    card=root.querySelector('[data-bq-cloud-card]');
+    if(card)card.dataset.cloudSignature=signature;
+    bindCard(root);
   }
   function bindCard(root){
     root.querySelector('[data-cloud-login]')?.addEventListener('submit',async e=>{e.preventDefault();try{await sendMagicLink(new FormData(e.currentTarget).get('email'))}catch(err){writeState({error:err.message,message:''})}});
