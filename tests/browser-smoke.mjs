@@ -72,7 +72,7 @@ try {
   assert.match(await page.locator('.board-head').innerText(), /All Time/);
   const lanes = await page.locator('.lane-tabs').innerText();
   for (const label of ['Overall','Knowledge','Reading','Wisdom','Mastery','Consistency','Group','Couples']) assert.match(lanes, new RegExp(label));
-  await page.locator('[data-xboard-home]').click();
+  await page.locator('[data-community-home]').click();
   await page.locator('[data-community-close]').click();
 
   // Local congregation roster never invents fake people; add a second real test participant.
