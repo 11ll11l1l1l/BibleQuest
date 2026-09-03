@@ -50,7 +50,7 @@
       "commit": "7eb18a5ee62f27b9b93bd6689ea272d76dd23b8f"
     },
     "xrefs": {
-      "url": "https://www.openbible.info/labs/cross-references/cross_references.txt.zip",
+      "url": "https://a.openbible.info/data/cross-references.zip",
       "ref": "current",
       "license": "CC BY"
     }
@@ -92,6 +92,10 @@
     "bible_places.jsonl": {
       "purpose": "Biblical place coordinates and identifiers",
       "license": "CC BY 4.0"
+    },
+    "cross_references.txt": {
+      "purpose": "OpenBible Bible cross-reference graph",
+      "license": "CC BY"
     },
     "translations/web_updated_html.zip": {
       "purpose": "Secondary English Bible translation",
