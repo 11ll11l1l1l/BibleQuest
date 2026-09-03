@@ -41,9 +41,9 @@
     ]},
     together:{icon:'💞',title:'Together',sub:'Couples & shared growth',items:[
       ['💞','Grow Together','Christ-centered couples conversations',()=>trigger('[data-couples-open]')],
-      ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="listen"]')?.click(),160)}],
-      ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-mode="repair"]')?.click(),160)}],
-      ['✝️','Us & God','Questions for growing with Christ together',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couple-category="christ"]')?.click(),160)}]
+      ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="listen"]')?.click(),160)}],
+      ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="repair"]')?.click(),160)}],
+      ['✝️','Us & God','Questions for growing with Christ together',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="god"]')?.click(),160)}]
     ]}
   };
 
