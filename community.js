@@ -119,7 +119,7 @@
   function unlockedBadges(){const m=metrics();return BADGES.filter(b=>b[4](m))}
 
   function awards(period='week'){
-    const lanes=[['overall','🏆','Overall Leader'],['knowledge','🧠','Knowledge Leader'],['reading','📖','Reading Leader'],['wisdom','🧭','Wisdom Builder'],['group','👥','Group Catalyst'],['couples','💞','Couples Builder']];
+    const lanes=[['overall','🏆','Overall Leader'],['knowledge','🧠','Knowledge Leader'],['reading','📖','Reading Leader'],['wisdom','🧭','Wisdom Builder'],['mastery','🗺️','Mastery Builder'],['consistency','🔥','Consistency Champion'],['group','👥','Group Catalyst'],['couples','💞','Couples Builder']];
     return lanes.map(([cat,icon,title])=>{const top=standings(period,cat)[0];return {...{cat,icon,title},name:top?.points?top.name:'—',points:top?.points||0}});
   }
 
@@ -139,7 +139,7 @@
   }
 
   function board(){
-    ensureRoster();const rows=standings(period,lane),periods=[['today','Today'],['week','This Week'],['all','All Time']],lanes=[['overall','Overall'],['knowledge','Knowledge'],['reading','Reading'],['wisdom','Wisdom'],['group','Group'],['couples','Couples']];
+    ensureRoster();const rows=standings(period,lane),periods=[['today','Today'],['week','This Week'],['all','All Time']],lanes=[['overall','Overall'],['knowledge','Knowledge'],['reading','Reading'],['wisdom','Wisdom'],['mastery','Mastery'],['consistency','Consistency'],['group','Group'],['couples','Couples']];
     show(`<header class="community-top"><button data-community-home>← Community</button><b>Leaderboards</b><span>🏆</span></header><section class="board-head"><small>LOCAL CONGREGATION BOARD</small><h1>${periods.find(x=>x[0]===period)?.[1]||'This Week'}</h1><div class="period-tabs">${periods.map(x=>`<button class="${period===x[0]?'active':''}" data-board-period="${x[0]}">${x[1]}</button>`).join('')}</div><div class="lane-tabs">${lanes.map(x=>`<button class="${lane===x[0]?'active':''}" data-board-lane="${x[0]}">${x[1]}</button>`).join('')}</div></section>
       <section class="rank-list">${rows.map((r,i)=>`<article class="${i<3?'podium':''}"><span class="rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</span><div><b>${esc(r.name)}</b><small>${lane==='overall'?'All scored activities':lanes.find(x=>x[0]===lane)?.[1]}</small></div><strong>${r.points}</strong><em>pts</em></article>`).join('')||'<div class="empty-board">No participants yet.</div>'}</section>
       <section class="award-strip">${awards(period).slice(0,3).map(a=>`<div><span>${a.icon}</span><b>${esc(a.name)}</b><small>${a.title}</small></div>`).join('')}</section>`);
