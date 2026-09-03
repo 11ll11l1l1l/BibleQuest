@@ -81,26 +81,38 @@ def markdown_articles(repo, resource, version, roots=None):
         title=m.group(1).strip() if m else p.stem.replace("-"," ").replace("_"," ").title()
         yield {"resource":resource,"version":version,"id":p.stem,"title":title,"markdown":text,"source_file":str(p.relative_to(repo))}
 
+def iter_bsb_documents(path):
+    if path.suffix == ".jsonl":
+        with path.open(encoding="utf-8") as f:
+            for line in f:
+                line=line.strip()
+                if line:
+                    yield json.loads(line)
+    else:
+        yield json.loads(path.read_text(encoding="utf-8"))
+
 def bsb_verses(repo):
     display=repo/"base"/"display"
-    for p in sorted(display.glob("*/*.json")):
+    paths=sorted(list(display.glob("*/*.json"))+list(display.glob("*/*.jsonl")))
+    for p in paths:
         book=p.parent.name
         m=re.search(r"(\d+)$",p.stem)
         if not m: continue
         chapter=int(m.group(1))
-        data=json.loads(p.read_text(encoding="utf-8"))
-        structure=data.get("structure",{}) or {}
-        for verse_s,tokens in sorted((data.get("eng") or {}).items(),key=lambda kv:int(kv[0])):
-            text=[]; strongs=[]
-            for token in tokens:
-                if not token: continue
-                text.append(str(token[0]))
-                if len(token)>1 and isinstance(token[1],str) and token[1] and token[1] not in strongs:
-                    strongs.append(token[1])
-            verse=int(verse_s)
-            row={"id":f"{book}.{chapter}.{verse}","b":book,"c":chapter,"v":verse,"t":"".join(text),"s":strongs}
-            if verse_s in structure: row["structure"]=structure[verse_s]
-            yield row
+        for data in iter_bsb_documents(p):
+            structure=data.get("structure",{}) or {}
+            for verse_s,tokens in sorted((data.get("eng") or {}).items(),key=lambda kv:int(kv[0])):
+                text=[]; strongs=[]
+                for token in tokens:
+                    if not token: continue
+                    text.append(str(token[0]))
+                    if len(token)>1 and isinstance(token[1],str) and token[1] and token[1] not in strongs:
+                        strongs.append(token[1])
+                verse=int(verse_s)
+                row={"id":f"{book}.{chapter}.{verse}","b":book,"c":chapter,"v":verse,"t":"".join(text),"s":strongs}
+                if verse_s in structure: row["structure"]=structure[verse_s]
+                elif str(verse) in structure: row["structure"]=structure[str(verse)]
+                yield row
 
 def download(url, path, required=False):
     print("download",url,flush=True)
@@ -118,6 +130,8 @@ manifest={"generated_by":"BibleQuest content pack","sources":{},"files":{}}
 try:
     bsb=clone("bsb",SOURCES["bsb"],["base/display","base/headings.jsonl","base/paragraphs.jsonl","base/concordance","base/proper-names","base/geography","VERSION.json","ATTRIBUTION.md","LICENSE-CC0.md"])
     n=dump_jsonl(OUT/"bsb_bible_index.jsonl",bsb_verses(bsb))
+    if n < 30000:
+        raise RuntimeError(f"BSB verse validation failed: expected >30000 verses, generated {n}")
     for fname in ["headings.jsonl","paragraphs.jsonl"]:
         src=bsb/"base"/fname
         if src.exists(): shutil.copy2(src,OUT/f"bsb_{fname}")
