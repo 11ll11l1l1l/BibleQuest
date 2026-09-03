@@ -3,81 +3,24 @@ name: Validate BibleQuest app
 on:
   push:
     paths:
-      - "app.js"
-      - "reader.js"
-      - "sequence.js"
-      - "storyjourney.js"
-      - "transformation.js"
-      - "transformation-taglish.js"
-      - "growth.js"
-      - "growth-nudge.js"
-      - "learning-engine.js"
-      - "open-review.js"
-      - "ui-taglish.js"
-      - "source-labels.js"
-      - "extra-games.js"
-      - "couples.js"
-      - "modern-home.js"
-      - "data/questions.js"
-      - "data/connections.js"
-      - "data/packs/manifest.json"
-      - "scripts/content-audit.js"
+      - "*.js"
+      - "*.css"
+      - "data/**"
+      - "scripts/**"
+      - "supabase/**"
       - "index.html"
-      - "styles.css"
-      - "decks.css"
-      - "reader.css"
-      - "sequence.css"
-      - "storyjourney.css"
-      - "transformation.css"
-      - "transformation-taglish.css"
-      - "growth.css"
-      - "growth-nudge.css"
-      - "learning-engine.css"
-      - "open-review.css"
-      - "ui-enhancements.css"
-      - "extra-games.css"
-      - "couples.css"
-      - "modern-home.css"
-      - "sw.js"
+      - "manifest.webmanifest"
       - ".github/workflows/validate-app.yml"
   pull_request:
     paths:
-      - "app.js"
-      - "reader.js"
-      - "sequence.js"
-      - "storyjourney.js"
-      - "transformation.js"
-      - "transformation-taglish.js"
-      - "growth.js"
-      - "growth-nudge.js"
-      - "learning-engine.js"
-      - "open-review.js"
-      - "ui-taglish.js"
-      - "source-labels.js"
-      - "extra-games.js"
-      - "couples.js"
-      - "modern-home.js"
-      - "data/questions.js"
-      - "data/connections.js"
-      - "data/packs/manifest.json"
-      - "scripts/content-audit.js"
+      - "*.js"
+      - "*.css"
+      - "data/**"
+      - "scripts/**"
+      - "supabase/**"
       - "index.html"
-      - "styles.css"
-      - "decks.css"
-      - "reader.css"
-      - "sequence.css"
-      - "storyjourney.css"
-      - "transformation.css"
-      - "transformation-taglish.css"
-      - "growth.css"
-      - "growth-nudge.css"
-      - "learning-engine.css"
-      - "open-review.css"
-      - "ui-enhancements.css"
-      - "extra-games.css"
-      - "couples.css"
-      - "modern-home.css"
-      - "sw.js"
+      - "manifest.webmanifest"
+      - ".github/workflows/validate-app.yml"
 
 jobs:
   validate:
@@ -85,38 +28,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check growth.js && node --check growth-nudge.js && node --check learning-engine.js && node --check open-review.js && node --check ui-taglish.js && node --check source-labels.js && node --check extra-games.js && node --check couples.js && node --check modern-home.js && node --check data/connections.js && node --check scripts/content-audit.js && node --check sw.js
+        run: |
+          node --check app.js
+          node --check reader.js
+          node --check sequence.js
+          node --check storyjourney.js
+          node --check transformation.js
+          node --check transformation-taglish.js
+          node --check growth.js
+          node --check growth-nudge.js
+          node --check learning-engine.js
+          node --check open-review.js
+          node --check ui-taglish.js
+          node --check source-labels.js
+          node --check extra-games.js
+          node --check couples.js
+          node --check community.js
+          node --check community-bridge.js
+          node --check cloud-config.js
+          node --check cloud.js
+          node --check group-play.js
+          node --check modern-home.js
+          node --check data/connections.js
+          node --check scripts/content-audit.js
+          node --check sw.js
       - name: Audit Bible game content
         run: node scripts/content-audit.js
+      - name: Check cloud security invariants
+        run: |
+          grep -q "enabled: false" cloud-config.js
+          ! grep -Eiq "service[_-]?role|sb_secret_" cloud-config.js
+          grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
+          grep -q "security invoker" supabase/cloud-stage.sql
+          grep -q "revoke all on public.bible_congregation_invites from anon, authenticated" supabase/cloud-stage.sql
       - name: Check required static files
         run: |
-          test -s index.html
-          test -s styles.css
-          test -s decks.css
-          test -s reader.css
-          test -s sequence.css
-          test -s storyjourney.css
-          test -s transformation.css
-          test -s transformation-taglish.css
-          test -s transformation-taglish.js
-          test -s growth.css
-          test -s growth.js
-          test -s growth-nudge.css
-          test -s growth-nudge.js
-          test -s learning-engine.css
-          test -s learning-engine.js
-          test -s open-review.css
-          test -s open-review.js
-          test -s ui-enhancements.css
-          test -s ui-taglish.js
-          test -s source-labels.js
-          test -s extra-games.css
-          test -s extra-games.js
-          test -s couples.css
-          test -s couples.js
-          test -s modern-home.css
-          test -s modern-home.js
-          test -s data/connections.js
-          test -s data/packs/manifest.json
-          test -s scripts/content-audit.js
-          test -s manifest.webmanifest
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css modern-home.css app.js reader.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js cloud.js group-play.js source-labels.js ui-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
