@@ -116,7 +116,6 @@ def download(url, path, required=False):
 
 manifest={"generated_by":"BibleQuest content pack","sources":{},"files":{}}
 try:
-    # BSB's stable published tree exposes per-chapter display JSON. Build our own compact app index from it.
     bsb=clone("bsb",SOURCES["bsb"],["base/display","base/headings.jsonl","base/paragraphs.jsonl","base/concordance","base/proper-names","base/geography","VERSION.json","ATTRIBUTION.md","LICENSE-CC0.md"])
     n=dump_jsonl(OUT/"bsb_bible_index.jsonl",bsb_verses(bsb))
     for fname in ["headings.jsonl","paragraphs.jsonl"]:
@@ -148,7 +147,7 @@ try:
     n=dump_jsonl(OUT/"open_bible_story_questions.jsonl",compact_questions(obsq,"Open Bible Stories Translation Questions","v10"))
     manifest["files"]["open_bible_story_questions.jsonl"]={"rows":n,"license":"CC BY-SA 4.0"}
 
-    step=clone("step",SOURCES["step"])
+    step=clone("step",SOURCES["step"],["Proper Nouns"])
     tipnr=next((p for p in step.rglob("*.txt") if "TIPNR" in p.name),None)
     if tipnr:
         shutil.copy2(tipnr,OUT/"stepbible_tipnr.txt")
@@ -160,7 +159,6 @@ try:
         shutil.copy2(ancient,OUT/"bible_places.jsonl")
         manifest["files"]["bible_places.jsonl"]={"purpose":"Biblical place coordinates and identifiers","license":"CC BY 4.0"}
 
-    # OpenBible's regularly updated cross-reference dataset (~340k links).
     xzip=TMP/"cross_references.zip"
     if download(SOURCES["xrefs"]["url"],xzip):
         with zipfile.ZipFile(xzip) as z:
