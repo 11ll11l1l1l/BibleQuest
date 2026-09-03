@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import csv, json, re, shutil, subprocess, sys, tempfile, urllib.request
+import csv, json, re, shutil, subprocess, sys, tempfile, urllib.request, zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +16,7 @@ SOURCES = {
     "obs_tq": {"url":"https://git.door43.org/unfoldingWord/en_obs-tq.git", "ref":"v10", "license":"CC BY-SA 4.0"},
     "step": {"url":"https://github.com/STEPBible/STEPBible-Data.git", "ref":"master", "license":"CC BY 4.0"},
     "geo": {"url":"https://github.com/openbibleinfo/Bible-Geocoding-Data.git", "ref":"main", "license":"CC BY 4.0"},
+    "xrefs": {"url":"https://www.openbible.info/labs/cross-references/cross_references.txt.zip", "ref":"current", "license":"CC BY"},
 }
 
 def run(args, cwd=None):
@@ -80,27 +81,52 @@ def markdown_articles(repo, resource, version, roots=None):
         title=m.group(1).strip() if m else p.stem.replace("-"," ").replace("_"," ").title()
         yield {"resource":resource,"version":version,"id":p.stem,"title":title,"markdown":text,"source_file":str(p.relative_to(repo))}
 
-def download(url, path):
+def bsb_verses(repo):
+    display=repo/"base"/"display"
+    for p in sorted(display.glob("*/*.json")):
+        book=p.parent.name
+        m=re.search(r"(\d+)$",p.stem)
+        if not m: continue
+        chapter=int(m.group(1))
+        data=json.loads(p.read_text(encoding="utf-8"))
+        structure=data.get("structure",{}) or {}
+        for verse_s,tokens in sorted((data.get("eng") or {}).items(),key=lambda kv:int(kv[0])):
+            text=[]; strongs=[]
+            for token in tokens:
+                if not token: continue
+                text.append(str(token[0]))
+                if len(token)>1 and isinstance(token[1],str) and token[1] and token[1] not in strongs:
+                    strongs.append(token[1])
+            verse=int(verse_s)
+            row={"id":f"{book}.{chapter}.{verse}","b":book,"c":chapter,"v":verse,"t":"".join(text),"s":strongs}
+            if verse_s in structure: row["structure"]=structure[verse_s]
+            yield row
+
+def download(url, path, required=False):
     print("download",url,flush=True)
     try:
         req=urllib.request.Request(url,headers={"User-Agent":"BibleQuest-resource-builder"})
-        with urllib.request.urlopen(req,timeout=90) as r, path.open("wb") as f:
+        with urllib.request.urlopen(req,timeout=120) as r, path.open("wb") as f:
             shutil.copyfileobj(r,f)
         return True
     except Exception as e:
-        print("optional download failed:",url,e,file=sys.stderr)
+        print(("required" if required else "optional"),"download failed:",url,e,file=sys.stderr)
+        if required: raise
         return False
 
 manifest={"generated_by":"BibleQuest content pack","sources":{},"files":{}}
 try:
-    bsb=clone("bsb",SOURCES["bsb"],["vector-db/index-pd","base/headings.jsonl","base/paragraphs.jsonl","VERSION.json","ATTRIBUTION.md","LICENSE-CC0.md"])
-    bible_src=bsb/"vector-db/index-pd/bible-index.jsonl"
-    shutil.copy2(bible_src,OUT/"bsb_bible_index.jsonl")
+    # BSB's stable published tree exposes per-chapter display JSON. Build our own compact app index from it.
+    bsb=clone("bsb",SOURCES["bsb"],["base/display","base/headings.jsonl","base/paragraphs.jsonl","base/concordance","base/proper-names","base/geography","VERSION.json","ATTRIBUTION.md","LICENSE-CC0.md"])
+    n=dump_jsonl(OUT/"bsb_bible_index.jsonl",bsb_verses(bsb))
     for fname in ["headings.jsonl","paragraphs.jsonl"]:
         src=bsb/"base"/fname
         if src.exists(): shutil.copy2(src,OUT/f"bsb_{fname}")
+    concord=bsb/"base"/"concordance"/"strongs-to-verses.jsonl"
+    if concord.exists(): shutil.copy2(concord,OUT/"bsb_strongs_to_verses.jsonl")
     manifest["sources"]["bsb"]={**SOURCES["bsb"],"commit":subprocess.check_output(["git","-C",str(bsb),"rev-parse","HEAD"],text=True).strip()}
-    manifest["files"]["bsb_bible_index.jsonl"]={"purpose":"Full BSB verse text + Strong's + public-domain cross references/topics/glosses","license":"CC0"}
+    manifest["files"]["bsb_bible_index.jsonl"]={"rows":n,"purpose":"Full BSB verse text + Strong's identifiers, normalized for BibleQuest","license":"CC0"}
+    if concord.exists(): manifest["files"]["bsb_strongs_to_verses.jsonl"]={"purpose":"Strong's-to-verse concordance","license":"CC0"}
 
     tq=clone("tq",SOURCES["tq"])
     n=dump_jsonl(OUT/"translation_questions.jsonl",compact_questions(tq,"unfoldingWord Translation Questions","v90"))
@@ -134,11 +160,20 @@ try:
         shutil.copy2(ancient,OUT/"bible_places.jsonl")
         manifest["files"]["bible_places.jsonl"]={"purpose":"Biblical place coordinates and identifiers","license":"CC BY 4.0"}
 
+    # OpenBible's regularly updated cross-reference dataset (~340k links).
+    xzip=TMP/"cross_references.zip"
+    if download(SOURCES["xrefs"]["url"],xzip):
+        with zipfile.ZipFile(xzip) as z:
+            member=next((n for n in z.namelist() if n.lower().endswith(".txt")),None)
+            if member:
+                with z.open(member) as src,(OUT/"cross_references.txt").open("wb") as dst: shutil.copyfileobj(src,dst)
+                manifest["files"]["cross_references.txt"]={"purpose":"OpenBible Bible cross-reference graph","license":"CC BY"}
+
     translations=OUT/"translations"; translations.mkdir(exist_ok=True)
     if download("https://ebible.org/engwebu/engwebu_html.zip",translations/"web_updated_html.zip"):
         manifest["files"]["translations/web_updated_html.zip"]={"purpose":"Secondary English Bible translation","license":"Public Domain"}
     if download("https://ebible.org/tglulb/tglulb_html.zip",translations/"tagalog_ulb_html.zip"):
-        manifest["files"]["translations/tagalog_ulb_html.zip"]={"purpose":"Tagalog Bible translation pack","license":"CC BY-SA 4.0 / Door43 attribution retained"}
+        manifest["files"]["translations/tagalog_ulb_html.zip"]={"purpose":"Tagalog Bible translation pack","license":"Preserve Door43/eBible upstream attribution and license notice"}
 
     for name,cfg in SOURCES.items():
         repo=TMP/name
@@ -146,9 +181,11 @@ try:
             try: commit=subprocess.check_output(["git","-C",str(repo),"rev-parse","HEAD"],text=True).strip()
             except Exception: commit=None
             manifest["sources"][name]={**cfg,"commit":commit}
+        elif name not in manifest["sources"]:
+            manifest["sources"][name]=cfg
 
     (OUT/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    (OUT/"ATTRIBUTION.md").write_text("""# BibleQuest external data attribution\n\n- Berean Standard Bible / BSB data: public-domain (CC0) components as marked by BSB Publishing.\n- unfoldingWord Translation Questions, Translation Notes, Translation Words, Open Bible Stories and OBS Translation Questions: CC BY-SA 4.0; source: unfoldingWord / Door43.\n- STEPBible TIPNR proper-names data: CC BY 4.0; credit STEP Bible / Tyndale House Cambridge.\n- OpenBible geocoding data: CC BY 4.0.\n- World English Bible Updated: public domain, distributed by eBible.org.\n- Tagalog ULB: Door43 World Missions Community, CC BY-SA 4.0 unless its bundled upstream notice states otherwise; retain upstream notices.\n\n`manifest.json` records pinned resource versions/commits used for each build.\n""",encoding="utf-8")
+    (OUT/"ATTRIBUTION.md").write_text("""# BibleQuest external data attribution\n\n- Berean Standard Bible / BSB data: public-domain (CC0) components as marked by BSB Publishing.\n- unfoldingWord Translation Questions, Translation Notes, Translation Words, Open Bible Stories and OBS Translation Questions: CC BY-SA 4.0; source: unfoldingWord / Door43.\n- STEPBible TIPNR proper-names data: CC BY 4.0; credit STEP Bible / Tyndale House Cambridge.\n- OpenBible geocoding and cross-reference data: CC BY; credit OpenBible.info.\n- World English Bible Updated: public domain, distributed by eBible.org.\n- Tagalog ULB: Door43 World Missions Community; retain the upstream copyright/license notices distributed with the pack.\n\n`manifest.json` records pinned resource versions/commits used for each build.\n""",encoding="utf-8")
     print(json.dumps(manifest,indent=2))
 finally:
     shutil.rmtree(TMP,ignore_errors=True)
