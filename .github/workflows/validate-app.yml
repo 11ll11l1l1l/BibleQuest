@@ -8,6 +8,7 @@ on:
       - "sequence.js"
       - "storyjourney.js"
       - "transformation.js"
+      - "transformation-taglish.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -15,6 +16,7 @@ on:
       - "sequence.css"
       - "storyjourney.css"
       - "transformation.css"
+      - "transformation-taglish.css"
       - "sw.js"
       - ".github/workflows/validate-app.yml"
   pull_request:
@@ -24,6 +26,7 @@ on:
       - "sequence.js"
       - "storyjourney.js"
       - "transformation.js"
+      - "transformation-taglish.js"
       - "index.html"
       - "styles.css"
       - "decks.css"
@@ -31,6 +34,7 @@ on:
       - "sequence.css"
       - "storyjourney.css"
       - "transformation.css"
+      - "transformation-taglish.css"
       - "sw.js"
 
 jobs:
@@ -39,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
-        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check sw.js
+        run: node --check app.js && node --check reader.js && node --check sequence.js && node --check storyjourney.js && node --check transformation.js && node --check transformation-taglish.js && node --check sw.js
       - name: Check required static files
         run: |
           test -s index.html
@@ -49,4 +53,6 @@ jobs:
           test -s sequence.css
           test -s storyjourney.css
           test -s transformation.css
+          test -s transformation-taglish.css
+          test -s transformation-taglish.js
           test -s manifest.webmanifest
