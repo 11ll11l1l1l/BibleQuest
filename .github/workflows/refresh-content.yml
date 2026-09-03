@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "scripts/build_content_pack.py"
+      - "scripts/build_story_packs.py"
       - ".github/workflows/refresh-content.yml"
   workflow_dispatch:
   schedule:
@@ -26,7 +27,9 @@ jobs:
           git config user.name "BibleQuest Content Bot"
           git config user.email "actions@users.noreply.github.com"
       - name: Build app-ready resource pack
-        run: python3 scripts/build_content_pack.py
+        run: |
+          python3 scripts/build_content_pack.py
+          python3 scripts/build_story_packs.py
       - name: Report pack sizes
         run: |
           echo "### BibleQuest content pack" >> "$GITHUB_STEP_SUMMARY"
