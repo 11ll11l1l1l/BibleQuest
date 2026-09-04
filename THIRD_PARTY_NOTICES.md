@@ -9,8 +9,8 @@ Key resources currently used by BibleQuest include:
 - STEPBible TBESH / TBESG lexical datasets: CC BY 4.0.
 - unfoldingWord resources and Open Bible Stories: individual open licenses apply as documented in `DATA_SOURCES.md`.
 - OpenBible.info cross-reference data: source terms apply to the imported dataset.
-- Japanese 口語訳 text: loaded from the configured external Bible API; BibleQuest does not claim ownership of that text.
-- NLT, ESV, NIV, and AMP: copyrighted translations. BibleQuest does not grant redistribution rights to them. Where configured, the app uses an official/live service or links to a licensed reader instead of bundling full copyrighted text.
+- Japanese 口語訳 text: BibleQuest requests the 1954 New Testament / 1955 Old Testament Kougo-yaku edition from GetBible. The Japan Bible Society states that copyright protection for the 1955 edition has expired, while authors' moral rights remain and later corrected wording can still be protected. BibleQuest therefore keeps the fetched Scripture wording intact and renders furigana, vocabulary notes, and other learning aids as separate annotations rather than rewriting the verse text.
+- NLT, ESV, NIV, and AMP: copyrighted translations. BibleQuest does not grant redistribution rights to them and does not bundle their full text. The current production reader routes these choices to licensed/official external readers; any future direct API integration must keep credentials private and follow the publisher's current terms.
 - Supabase JavaScript client, Kuromoji, and other third-party software libraries: their upstream software licenses apply.
 
 Do not assume that because the BibleQuest repository is public, every file or text resource inside or referenced by it is MIT-licensed. Before redistributing a dataset or translation independently, check its source-specific terms in `DATA_SOURCES.md`.
