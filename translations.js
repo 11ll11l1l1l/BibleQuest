@@ -113,6 +113,8 @@
       node.setAttribute('data-bq-version-source', '1');
       panel.appendChild(node);
     }
+    if (node.dataset.bqVersionCode === code) return;
+    node.dataset.bqVersionCode = code;
     node.innerHTML = sourceNotice(code);
   }
 
