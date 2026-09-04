@@ -3,18 +3,22 @@
   const hash=new URLSearchParams(location.hash.replace(/^#/,''));
   const query=new URLSearchParams(location.search);
   const recoveryMarker=hash.get('type')==='recovery'||query.get('type')==='recovery';
-  if(!recoveryMarker)return;
   const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   let client=null,shown=false;
+
+  function injectRequestLink(){
+    document.querySelectorAll('[data-account-login]').forEach(form=>{
+      if(form.querySelector('[data-password-reset-link]'))return;
+      const a=document.createElement('a');a.href='reset.html';a.dataset.passwordResetLink='1';a.textContent='Forgot password?';a.style.cssText='display:block;text-align:center;font-size:13px;font-weight:800;color:#45654b;text-decoration:none;padding:2px 0 4px';form.appendChild(a);
+    });
+  }
+  new MutationObserver(injectRequestLink).observe(document.documentElement,{childList:true,subtree:true});
+  injectRequestLink();
+  if(!recoveryMarker)return;
 
   function style(){if(document.getElementById('bqRecoveryStyle'))return;const s=document.createElement('style');s.id='bqRecoveryStyle';s.textContent=`.bq-recovery-layer{position:fixed;inset:0;z-index:99999;background:rgba(29,38,27,.72);display:grid;place-items:center;padding:18px}.bq-recovery-card{width:min(440px,100%);background:#fff;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.24);font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#243022}.bq-recovery-card h1{margin:5px 0 8px;font-size:1.55rem}.bq-recovery-card p{opacity:.72;line-height:1.55}.bq-recovery-card label{display:block;font-size:.78rem;font-weight:800;margin:12px 0 5px}.bq-recovery-card input{width:100%;border:1px solid #d4dbcf;border-radius:12px;padding:12px;font:inherit}.bq-recovery-card button{width:100%;margin-top:14px;border:0;border-radius:13px;padding:12px;font:inherit;font-weight:850;background:#293b2a;color:#fff}.bq-recovery-card button:disabled{opacity:.5}.bq-recovery-note{margin-top:10px;font-size:.73rem;opacity:.62}.bq-recovery-error{margin-top:10px;padding:9px;border-radius:10px;background:#f8e7e3;color:#77372d;font-size:.8rem}.bq-recovery-success{margin-top:10px;padding:10px;border-radius:10px;background:#e7f0e4;color:#294c2c;font-size:.84rem}`;document.head.appendChild(s)}
   function show(){if(shown)return;shown=true;style();const layer=document.createElement('div');layer.className='bq-recovery-layer';layer.innerHTML=`<section class="bq-recovery-card"><div>🔐 BibleQuest</div><h1>Choose a new password</h1><p>Your recovery link is verified. Enter a new password for this account.</p><form data-recovery-form><label>New password</label><input name="password" type="password" minlength="8" autocomplete="new-password" required placeholder="At least 8 characters"><label>Confirm new password</label><input name="confirm" type="password" minlength="8" autocomplete="new-password" required><button>Update password</button><div data-recovery-message></div></form><div class="bq-recovery-note">BibleQuest administrators cannot see your password.</div></section>`;document.body.appendChild(layer);const form=layer.querySelector('[data-recovery-form]');form.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(form),password=String(fd.get('password')||''),confirm=String(fd.get('confirm')||''),msg=form.querySelector('[data-recovery-message]'),button=form.querySelector('button');msg.innerHTML='';if(password.length<8){msg.innerHTML='<div class="bq-recovery-error">Use at least 8 characters.</div>';return}if(password!==confirm){msg.innerHTML='<div class="bq-recovery-error">Passwords do not match.</div>';return}button.disabled=true;button.textContent='Updating…';const {error}=await client.auth.updateUser({password});if(error){button.disabled=false;button.textContent='Update password';msg.innerHTML=`<div class="bq-recovery-error">${esc(error.message)}</div>`;return}history.replaceState({},'',location.pathname);form.innerHTML='<div class="bq-recovery-success"><b>Password updated.</b><br>You can continue using BibleQuest with your new password.</div><button type="button" data-recovery-done>Continue to BibleQuest</button>';form.querySelector('[data-recovery-done]').onclick=()=>location.replace('./')})}
   function loadSdk(){if(window.supabase?.createClient)return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4';s.onload=resolve;s.onerror=()=>reject(new Error('Could not load account service'));document.head.appendChild(s)})}
-  async function boot(){
-    for(let i=0;i<20;i++){const c=window.BQAccount?.client?.();if(c){client=c;break}await new Promise(r=>setTimeout(r,100))}
-    if(!client){await loadSdk();client=window.supabase.createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}
-    client.auth.onAuthStateChange((event)=>{if(event==='PASSWORD_RECOVERY')show()});
-    const {data}=await client.auth.getSession();if(data.session)show();
-  }
+  async function boot(){for(let i=0;i<20;i++){const c=window.BQAccount?.client?.();if(c){client=c;break}await new Promise(r=>setTimeout(r,100))}if(!client){await loadSdk();client=window.supabase.createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}})}client.auth.onAuthStateChange(event=>{if(event==='PASSWORD_RECOVERY')show()});const {data}=await client.auth.getSession();if(data.session)show()}
   boot().catch(err=>{style();const layer=document.createElement('div');layer.className='bq-recovery-layer';layer.innerHTML=`<section class="bq-recovery-card"><h1>Recovery could not start</h1><div class="bq-recovery-error">${esc(err.message||String(err))}</div><button onclick="location.replace('./')">Back to BibleQuest</button></section>`;document.body.appendChild(layer)});
 })();
