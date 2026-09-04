@@ -12,6 +12,7 @@ on:
       - "sw.js"
       - "tests/**"
       - ".github/workflows/browser-smoke.yml"
+      - ".github/workflows/validate-app.yml"
   pull_request:
     paths:
       - "*.js"
@@ -23,6 +24,7 @@ on:
       - "sw.js"
       - "tests/**"
       - ".github/workflows/browser-smoke.yml"
+      - ".github/workflows/validate-app.yml"
 
 jobs:
   smoke:
