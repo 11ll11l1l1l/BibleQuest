@@ -24,7 +24,7 @@
   function sourceNotice(code){
     if(code==='BSB')return '<b>BSB · Berean Standard Bible</b> · English Scripture text delivered from BibleQuest on-demand book packs.';
     if(code==='TGL')return '<b>TGL · banal na Bibliya / Tagalog Unlocked Literal Bible</b> · © 2018 Door43 World Missions Community · CC BY-SA 4.0 · converted to on-demand book packs without intentional wording changes.';
-    if(code==='JKO')return '<b>口語訳聖書 · 1954/1955年版</b> · Japanese public-domain text loaded chapter-by-chapter from GetBible. BibleQuest keeps the Scripture text separate from optional furigana and learning annotations.';
+    if(code==='JKO')return '<b>口語訳聖書 · 新約1954年 / 旧約1955年版</b> · GetBible の japkougo から章ごとに読み込みます。1955年版は著作権保護期間が終了していますが、著作者人格権は存続し、後年の訂正文言には別途権利があり得ます。BibleQuest は取得した聖書本文を改変せず、ふりがな・語彙メモ・英語説明を本文とは別の学習補助として表示します。';
     if(code==='NLT')return '<b>NLT · New Living Translation</b> · opens the selected passage in a licensed reader. BibleQuest does not redistribute the full copyrighted NLT text or expose a private API key in the browser.';
     if(code==='ESV')return '<b>ESV · English Standard Version</b> · opens the selected passage on the official ESV reader because BibleQuest does not redistribute the full copyrighted text.';
     if(code==='NIV')return '<b>NIV · New International Version</b> · opens a licensed reader; full in-app redistribution requires permission.';
