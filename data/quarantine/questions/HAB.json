@@ -1,0 +1,39 @@
+[
+  {
+    "id": "em72",
+    "r": "1:2",
+    "q": "What does Habakkuk ask Yahweh at the beginning of his complaint?",
+    "a": "Habakkuk asks Yahweh how long he must cry for help without being heard or saved.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "uq5z",
+    "r": "3:13",
+    "q": "Why did Yahweh go out?",
+    "a": "Yahweh went out for the salvation of his people and his anointed one.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "q5h4",
+    "r": "3:18",
+    "q": "Despite the hardships, what will Habakkuk do?",
+    "a": "Despite the hardships, Habakkuk will exult in Yahweh and rejoice in the God of his salvation.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

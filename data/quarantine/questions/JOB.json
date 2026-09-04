@@ -1,0 +1,110 @@
+[
+  {
+    "id": "mx0a",
+    "r": "2:9",
+    "q": "What did Job’s wife want him to do?",
+    "a": "Job’s wife wanted him to curse God and die.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mlsd",
+    "r": "2:10",
+    "q": "What accusation did Job make to his wife?",
+    "a": "He accused her of thinking they should receive good at the hand of God but not evil.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "y06z",
+    "r": "5:18",
+    "q": "Why is the man happy whom God corrects and chastens?",
+    "a": "He is happy because the wounds, God binds up wounds, and his hands heal.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "um7h",
+    "r": "20:21",
+    "q": "Why will the prosperity of the wicked man not be permanent?",
+    "a": "It will not be permanent because there is nothing left that he did not devour.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "sm10",
+    "r": "22:3",
+    "q": "What does Eliphaz ask Job if his righteousness can do for the Almighty?",
+    "a": "He asks if it brings any pleasure to the Almighty if Job is righteous.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "d1pt",
+    "r": "31:10",
+    "q": "What does Job say should be the judgement if he was attracted to another woman?",
+    "a": "Job says to let his wife grind grain for another man.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "slwj",
+    "r": "35:8",
+    "q": "What effect could Job’s wickedness or his righteousness have on another man?",
+    "a": "Job’s wickedness could hurt a man and his righteousness could benefit another human.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "aq6b",
+    "r": "36:3",
+    "q": "To whom does Elihu acknowledge that righteousness belongs?",
+    "a": "Elihu acknowledges that righteousness belongs to his Maker.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "o8j4",
+    "r": "36:16",
+    "q": "What does Elihu say that God would like to do for Job?",
+    "a": "God would like to draw Job out of his distress and into a place of happiness and prosperity.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  }
+]

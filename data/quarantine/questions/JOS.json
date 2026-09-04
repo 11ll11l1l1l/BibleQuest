@@ -1,0 +1,14 @@
+[
+  {
+    "id": "oaow",
+    "r": "6:3",
+    "q": "How were the men of war to circle the city of Jericho for six days?",
+    "a": "All the men of war were to circle the city, going around it one time each day for six days.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "creation"
+      ]
+    }
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ig0n",
+    "r": "4:14",
+    "q": "What did Mordecai say would happen if Esther remained silent at that time?",
+    "a": "For if you, indeed, remain silent at this time, relief and deliverance will arise for the Jews from another place, but you and the house of your father will perish.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "a23e",
+    "r": "6:13",
+    "q": "About what did Haman’s wise men and his wife warn him?",
+    "a": "If Mordecai, before whose face you have begun to fall, is from the seed of the Jews, then you will not prevail against him, but you will surely fall before his face.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "d2oe",
+    "r": "1:8",
+    "q": "For what reason does the virgin mourn?",
+    "a": "The virgin mourns for the death of her young husband.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  }
+]

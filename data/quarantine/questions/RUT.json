@@ -1,0 +1,38 @@
+[
+  {
+    "id": "hoxo",
+    "r": "2:1",
+    "q": "What was the relationship between Boaz and Naomi’s dead husband?",
+    "a": "Boaz was a relative of Naomi’s husband.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "pklk",
+    "r": "3:3",
+    "q": "What did Naomi tell Ruth to do before going down to the threshing floor?",
+    "a": "She told her to wash and anoint herself and to put on her cloak.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "tdte",
+    "r": "4:10",
+    "q": "What was the second agreement that Boaz said the elders had witnessed?",
+    "a": "They had witnessed that Boaz acquired Ruth as his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  }
+]

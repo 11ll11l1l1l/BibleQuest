@@ -1,0 +1,98 @@
+[
+  {
+    "id": "sdkv",
+    "r": "1:2",
+    "q": "What kind of wife did Yahweh tell Hosea to take for himself?",
+    "a": "Yahweh told him to marry a prostitute.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "so58",
+    "r": "2:7",
+    "q": "Why will Israel (the prostitute) return to her first husband?",
+    "a": "She will return to her first husband because she thinks it was better for her then than now.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "x82o",
+    "r": "2:16",
+    "q": "In that day, what will Israel (the prostitute) call Yahweh?",
+    "a": "She will call him “My Husband,” and no longer “My Baal.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "uxe8",
+    "r": "3:1",
+    "q": "In what way must Hosea love his wife?",
+    "a": "Hosea must love her just as Yahweh loves the people of Israel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "cr5s",
+    "r": "3:2",
+    "q": "For how much did Hosea buy back his wife?",
+    "a": "He bought her for fifteen pieces of silver and 335 liters of barley.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "q4dv",
+    "r": "3:3",
+    "q": "What does Hosea tell his wife she must not do?",
+    "a": "Hosea tells his wife that she must not be a prostitute and must not have sex with any other man.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "aq2f",
+    "r": "4:2",
+    "q": "What sins does Yahweh say the people are committing?",
+    "a": "The people are cursing, lying, murdering, stealing, and committing adultery.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ruwc",
+    "r": "6:1",
+    "q": "Although Yahweh hurt his people, what will he then do?",
+    "a": "Although he hurt them, he will heal them and bind up their wounds.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "mfav",
+    "r": "2:19",
+    "q": "What good things does Christ know about regarding the church in Thyatira?",
+    "a": "Christ knows about the works, love, faith, service, and patient endurance of the church in Thyatira and that its last works are greater than its first works.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "nx6l",
+    "r": "7:10",
+    "q": "The great multitude called out that salvation belonged to someone. To whom did it belong?",
+    "a": "Those before the throne called out that salvation belonged to God and to the Lamb.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "gbe4",
+    "r": "9:20",
+    "q": "How did the people not killed in the plagues respond?",
+    "a": "The people not killed in the plagues did not repent of their works, that is, they did not stop worshiping demons and idols.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "e4w3",
+    "r": "13:3",
+    "q": "Why was the whole earth astonished?",
+    "a": "The whole earth was astonished because the beast had a wound of death (a fatal wound) that had been healed.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "pfim",
+    "r": "13:10",
+    "q": "What qualities does John say the saints must have?",
+    "a": "John says that the saints must have endurance and faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fjpf",
+    "r": "19:2",
+    "q": "Why did God judge the great prostitute?",
+    "a": "God judged the great prostitute because she corrupted the earth with her sexual immorality and shed the blood of God’s servants.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "uihm",
+    "r": "21:9-10",
+    "q": "What is the bride, the wife of the Lamb?",
+    "a": "The bride, the wife of the Lamb, is the holy city, Jerusalem, coming down out of heaven from God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "j91v",
+    "r": "22:2",
+    "q": "For what purpose will people use the leaves of the tree of life?",
+    "a": "The leaves of the tree of life are for the healing of the nations.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

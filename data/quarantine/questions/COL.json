@@ -1,0 +1,50 @@
+[
+  {
+    "id": "xys7",
+    "r": "1:23",
+    "q": "What must the Colossians continue to do?",
+    "a": "The Colossians must continue to be settled in the faith and confident of the gospel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "cl9z",
+    "r": "2:12",
+    "q": "What happens in baptism?",
+    "a": "A person is buried with Christ in baptism.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "akjv",
+    "r": "3:18",
+    "q": "How should a wife respond to her husband?",
+    "a": "A wife should submit to her husband.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "hqz9",
+    "r": "3:19",
+    "q": "How should a husband treat his wife?",
+    "a": "A husband should love his wife and not be bitter against her.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  }
+]

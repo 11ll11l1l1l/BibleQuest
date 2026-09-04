@@ -1,0 +1,74 @@
+[
+  {
+    "id": "j1wo",
+    "r": "1:8-9",
+    "q": "How would Yahweh respond to offerings of blind, lame, and sick animals?",
+    "a": "Yahweh would not accept blind, lame, and sick offerings, nor show favor or graciousness to Israel for them, nor receive Israel for offering them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "e49l",
+    "r": "2:14-15",
+    "q": "Why did Yahweh not accept Israel’s offerings?",
+    "a": "Because Israel had dealt treacherously with the wife of his youth.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "uff6",
+    "r": "2:15-16",
+    "q": "Why did Yahweh command the Israelites to guard themselves in their spirit and not be faithless?",
+    "a": "Because Yahweh had made Israel and his wife one in order to have godly offspring, and because Yahweh hated divorce and him who covers his garment with violence.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "dfdn",
+    "r": "3:8",
+    "q": "How had Israel robbed God?",
+    "a": "They had robbed God in tithes and offerings.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "n7dm",
+    "r": "3:10-12",
+    "q": "What did Yahweh promise would happen if Israel brought the full tithe into the storehouse?",
+    "a": "Yahweh promised that he would rebuke the one who devours you, and that all the nations would call Israel blessed.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "c0n3",
+    "r": "4:2",
+    "q": "For whom would the sun of righteousness rise?",
+    "a": "The sun of righteousness would rise for those who feared Yahweh’s name.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

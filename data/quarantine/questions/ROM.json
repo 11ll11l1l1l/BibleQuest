@@ -1,0 +1,640 @@
+[
+  {
+    "id": "ojj9",
+    "r": "1:5",
+    "q": "For what purpose did Paul receive grace and apostleship from Christ?",
+    "a": "Paul received grace and apostleship for obedience of faith among all the nations.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "tl8v",
+    "r": "1:8",
+    "q": "For what does Paul thank God concerning the believers in Rome?",
+    "a": "Paul thanks God because their faith is proclaimed throughout the whole world.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "kccq",
+    "r": "1:11",
+    "q": "Why does Paul desire to see the believers in Rome?",
+    "a": "Paul desires to see them in order to give them some spiritual gift in order to strengthen them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "qpkd",
+    "r": "1:17",
+    "q": "What scripture does Paul quote concerning how the righteous will live?",
+    "a": "Paul quotes the scripture, “The righteous will live by faith.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "yca7",
+    "r": "2:13",
+    "q": "Who is justified before God?",
+    "a": "The doers of the law are justified before God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "qzgo",
+    "r": "3:9-10",
+    "q": "What is written in the Scriptures about the righteousness of all, both Jews and Greeks?",
+    "a": "It is written that there is none righteous, not one.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "vv6q",
+    "r": "3:21",
+    "q": "By what witnesses has a righteousness without the law now been made known?",
+    "a": "By the witnesses of the Law and the Prophets has a righteousness without the law now been made known.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ac1f",
+    "r": "3:22",
+    "q": "What is the righteousness without the law that has now been made known?",
+    "a": "The righteousness without the law is the righteousness of God through faith in Jesus Christ for all those who believe.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "moo6",
+    "r": "3:24",
+    "q": "How is a person justified before God?",
+    "a": "A person is justified before God freely by his grace through the redemption that is in Christ Jesus.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ioe3",
+    "r": "3:25",
+    "q": "For what purpose did God provide Christ Jesus?",
+    "a": "God provided Christ Jesus as a propitiation through faith in his blood.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "rwo3",
+    "r": "3:28",
+    "q": "What role do the works of the law have in justification?",
+    "a": "A person is justified by faith totally apart from the works of the law.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "r6hj",
+    "r": "3:30",
+    "q": "How does God justify the circumcised Jew and the uncircumcised Gentile?",
+    "a": "God justifies both by faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zdbg",
+    "r": "3:31",
+    "q": "What do we do with the law through faith?",
+    "a": "We uphold the law through faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "c4xs",
+    "r": "4:2",
+    "q": "What would have given Abraham reason to boast?",
+    "a": "Abraham would have had reason to boast if he had been justified by works.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zore",
+    "r": "4:3",
+    "q": "What do the scriptures say about how Abraham was justified?",
+    "a": "The scripture says that Abraham believed God, and it was credited to him as righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "gfjh",
+    "r": "4:5",
+    "q": "What kind of people does God justify?",
+    "a": "God justifies the people who trust in him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "tdfk",
+    "r": "4:9-10",
+    "q": "Was Abraham’s faith counted as righteousness before or after he was circumcised?",
+    "a": "Abraham’s faith was counted as righteousness before he was circumcised.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "dgvz",
+    "r": "4:13",
+    "q": "What promise was given to Abraham and his descendants through the righteousness of faith?",
+    "a": "It was promised to Abraham and his descendants that they would be heirs of the world.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "d8ey",
+    "r": "4:14",
+    "q": "What would be true if the promise to Abraham had come through the law?",
+    "a": "If the promise had come through the law, then faith would be empty and the promise not true.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "yeam",
+    "r": "4:16",
+    "q": "For what reasons is the promise given by faith?",
+    "a": "The promise is given by faith so that it is by grace, and so that it is sure.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "eded",
+    "r": "4:25",
+    "q": "What do we believe God has done for us?",
+    "a": "We believe God has raised Jesus from the dead, who was delivered up for our sins and raised for our justification.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "nkg7",
+    "r": "5:1",
+    "q": "What do believers have because they are justified by faith?",
+    "a": "Because they are justified by faith, believers have peace with God through the Lord Jesus Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "yg2m",
+    "r": "5:9",
+    "q": "Being justified by Christ’s blood, from what are believers saved?",
+    "a": "Being justified by Christ’s blood, believers are saved from the wrath of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ih3r",
+    "r": "5:15",
+    "q": "How is God’s free gift different than Adam’s sins?",
+    "a": "By Adam’s sin many died, but the grace of God and his free gift through Christ abounds to many.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "x9dz",
+    "r": "5:16",
+    "q": "What resulted from Adam’s sin, and what resulted from God’s free gift?",
+    "a": "The judgment of condemnation resulted from Adam’s sin, but justification resulted from God’s free gift.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "pg7v",
+    "r": "5:17",
+    "q": "What ruled from Adam’s sin, and what ruled through God’s gift of righteousness?",
+    "a": "Death ruled from Adam’s sin, and those who receive God’s gift rule through the life of Jesus Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ptbv",
+    "r": "5:20",
+    "q": "What abounded more than the trespass?",
+    "a": "God’s grace abounded more than the trespass.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "suqv",
+    "r": "6:1-2",
+    "q": "Should believers continue in sin so that God’s grace may abound?",
+    "a": "May it never be.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "kx8w",
+    "r": "6:5",
+    "q": "In what two ways are believers united to Christ through baptism?",
+    "a": "Believers are united to Christ in his death and resurrection.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "qnh7",
+    "r": "6:13",
+    "q": "To whom should a believer present the members of his body, and for what purpose?",
+    "a": "A believer should present the members of his body to God as tools of righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ke18",
+    "r": "6:22",
+    "q": "Slaves of God have their fruit for what purpose?",
+    "a": "Slaves of God have their fruit for sanctification.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "sanctification"
+      ]
+    }
+  },
+  {
+    "id": "dpsi",
+    "r": "6:23",
+    "q": "What is the free gift of God?",
+    "a": "The free gift of God is eternal life.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "cvc0",
+    "r": "7:2",
+    "q": "How long is a married woman bound by the law of marriage?",
+    "a": "A married woman is bound by the law of marriage until her husband dies.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "wzvb",
+    "r": "7:3",
+    "q": "What may a woman do once she is free from the law of marriage?",
+    "a": "Once she is free from the law of marriage, a woman may marry another man.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "izei",
+    "r": "8:29",
+    "q": "What is the destiny that God has predetermined for those whom he foreknew?",
+    "a": "God has predestined those whom he foreknew to be conformed to the image of his Son.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "election"
+      ]
+    }
+  },
+  {
+    "id": "udr3",
+    "r": "8:30",
+    "q": "What else did God do for those he predestined?",
+    "a": "Those he predestined, God also called, justified, and glorified.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "election"
+      ]
+    }
+  },
+  {
+    "id": "vvm5",
+    "r": "8:37",
+    "q": "How are believers more than conquerors over tribulation, persecution, or even death?",
+    "a": "Believers are more than conquerors through the one who loved them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "q2je",
+    "r": "9:32",
+    "q": "Why did Israel, although pursuing a law of righteousness, not arrive at it?",
+    "a": "Israel did not arrive at it because they pursued it by works, and not by faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "mzdi",
+    "r": "10:1",
+    "q": "What is Paul’s desire for his brothers, the Israelites?",
+    "a": "Paul’s desire is for the Israelites’ salvation.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fy6o",
+    "r": "10:3",
+    "q": "What are the Israelites seeking to establish?",
+    "a": "The Israelites are seeking to establish their own righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "e58g",
+    "r": "10:3",
+    "q": "Of what do the Israelites not know?",
+    "a": "The Israelites do not know of God’s righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "mr01",
+    "r": "10:4",
+    "q": "What has Christ done with respect to the law?",
+    "a": "Christ is the fulfillment of the law for righteousness for everyone who believes.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fsci",
+    "r": "11:5",
+    "q": "Does Paul say if there are any faithful Israelites remaining, and if so, how have they been preserved?",
+    "a": "Paul says that there is a remnant remaining that has been preserved because of the choice of grace.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fyaw",
+    "r": "11:11",
+    "q": "What good has happened because of Israel’s refusal to receive the gospel?",
+    "a": "Salvation has come to the Gentiles.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fihg",
+    "r": "11:11",
+    "q": "What effect will the salvation of the Gentiles have on the Israelites?",
+    "a": "The salvation of the Gentiles will provoke the Israelites to jealousy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zijb",
+    "r": "12:6",
+    "q": "What should each believer do with the gifts God has given him?",
+    "a": "Each believer should exercise his gifts according to the proportion of his faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zglc",
+    "r": "13:13",
+    "q": "In what activities are believers not to walk?",
+    "a": "Believers are not to walk in wild celebrations, drunkenness, sexual immorality, uncontrolled lust, strife, or jealousy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "qeis",
+    "r": "14:2",
+    "q": "What kind of food does a person with stronger faith eat, and what does a person with weaker faith eat?",
+    "a": "A person who is stronger in faith eats anything, but a person who is weaker in faith eats only vegetables.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "qml4",
+    "r": "14:17",
+    "q": "About what is the kingdom of God?",
+    "a": "The kingdom of God is about righteousness, peace, and joy in the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "de9p",
+    "r": "14:23",
+    "q": "What is the result if a person does not act from faith?",
+    "a": "Whatever actions are not taken from faith are sin.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fcej",
+    "r": "15:1-2",
+    "q": "What attitude should believers with strong faith have toward those with weak faith?",
+    "a": "Believers with strong faith should bear the weaknesses of those with weak faith, in order to build them up.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zfi6",
+    "r": "15:18-19",
+    "q": "By what means has Christ worked through Paul to bring about the obedience of the Gentiles?",
+    "a": "Christ has worked through Paul by word and action, by the power of signs and wonders, and by the power of the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "d7on",
+    "r": "16:26",
+    "q": "For what purpose is Paul preaching?",
+    "a": "Paul is preaching for the obedience of faith among all the Gentiles.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

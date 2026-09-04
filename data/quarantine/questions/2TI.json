@@ -1,0 +1,86 @@
+[
+  {
+    "id": "mokt",
+    "r": "1:10",
+    "q": "How did God reveal his plan of salvation?",
+    "a": "God’s plan of salvation was revealed through the appearing of our Savior Christ Jesus.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "q37c",
+    "r": "1:14",
+    "q": "What is Timothy to do with the good deposit God has committed to him?",
+    "a": "Timothy is to guard through the Holy Spirit the good deposit God has committed to him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "i2hn",
+    "r": "2:1",
+    "q": "What is able to strengthen Timothy?",
+    "a": "The grace that is in Christ Jesus can strengthen Timothy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "muxt",
+    "r": "2:10",
+    "q": "Why does Paul endure all these things?",
+    "a": "Paul endures all things for those chosen by God, that they may obtain the salvation that is in Christ Jesus.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "acgd",
+    "r": "3:2",
+    "q": "In the last days, what will people love instead of God?",
+    "a": "In the last days, people will love themselves and love money instead of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "enkk",
+    "r": "3:4",
+    "q": "In the last days, what other thing will people love instead of God?",
+    "a": "In the last days, people will love pleasure instead of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "gikd",
+    "r": "3:16",
+    "q": "For what is all Scripture profitable?",
+    "a": "All Scripture is profitable for teaching, reproof, correction, and training in righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

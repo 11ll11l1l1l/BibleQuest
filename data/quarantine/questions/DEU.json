@@ -1,0 +1,278 @@
+[
+  {
+    "id": "fn3w",
+    "r": "5:17-20",
+    "q": "What were they commanded not to do?",
+    "a": "They should not murder, commit adultery, steal, or give false witness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "njnz",
+    "r": "12:5-6",
+    "q": "In what place were the people of Israel to bring their burnt offerings, sacrifices, tithes, and offerings?",
+    "a": "They were to go to the place that Yahweh their God would choose.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "x9be",
+    "r": "14:23",
+    "q": "What are the Israelites instructed to eat in the place that he will choose?",
+    "a": "Israel must eat the tithe, which was a tenth of their grain, new wine, and of their oil, as well as the firstborn animals in the place that Yahweh will choose.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "oldu",
+    "r": "14:24-25",
+    "q": "What are the Israelites allowed to do if they are blessed with such a large crop that they are not able to carry the tithe to the place that Yahweh will choose?",
+    "a": "If the journey is too for them to carry all of the tithe of what Yahweh has blessed them with, they can sell a tenth of their crops and take the money to the place that Yahweh has chosen.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "om83",
+    "r": "14:28-29",
+    "q": "What are the Israelites instructed to do at the end of every three years?",
+    "a": "At the end of every three years the Israelites are to store the tithe of their produce from that year for the Levites, the foreigners, the fatherless, and the widows to have enough to eat.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "gw0p",
+    "r": "16:8",
+    "q": "What are the Israelites supposed to do on the first six days as they celebrate Passover?",
+    "a": "The Israelites are to eat unleavened bread for six days.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "creation"
+      ]
+    }
+  },
+  {
+    "id": "vgxd",
+    "r": "16:20",
+    "q": "Why must the judges pursue righteousness and judge fairly?",
+    "a": "They must pursue righteousness and judge fairly, so that they may live and occupy the land that Yahweh is giving them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "gtdd",
+    "r": "21:14",
+    "q": "How is an Israelite man to treat a captive that he had taken as a wife if he is no longer pleased with her?",
+    "a": "He must let her go rather than sell her for money.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "m9py",
+    "r": "22:17-19",
+    "q": "What must happen if a man has made a false accusation against his wife saying she was not a virgin?",
+    "a": "The elders of the city must punish the man. They must fine him 100 silvers and give it to the girl’s father. Also, she shall remain his wife, and he can never send her away.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "p1qo",
+    "r": "22:20-21",
+    "q": "What should happen if the proof of the wife’s virginity is not found?",
+    "a": "If they cannot find proof of her virginity, then she must be brought out and stoned to death because she has done a disgraceful thing.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "py2u",
+    "r": "22:30",
+    "q": "What must a man not take from his father as his own?",
+    "a": "A man must not take his father’s wife as his own.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "wnso",
+    "r": "24:3-4",
+    "q": "What does Yahweh not allow if the second husband writes her a letter of divorce and sends her out of the house or if he dies?",
+    "a": "Yahweh does not allow for the first husband who sent her away to take her again to be his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "pfe1",
+    "r": "25:5-6",
+    "q": "What safeguard did Yahweh institute so that the name of a man would not disappear from Israel?",
+    "a": "If a man dies without having a son, his brother must take the dead man’s widow as his wife so that the firstborn she bears will carry on the name of that man’s dead brother.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "q2dj",
+    "r": "25:9-10",
+    "q": "What punishment did Yahweh allow if the man’s brother did not wish to take his brother’s wife?",
+    "a": "The brother’s wife will take off his sandal in the presence of the elders, spit in his face, and tell him that this is what is done when a man refuses to preserve his brother’s family line.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "nvoe",
+    "r": "25:11-12",
+    "q": "What would cause a wife to have one of her hands cut off?",
+    "a": "If two men were fighting and the wife of one of the men grabs the private part of the other man in an attempt to rescue her husband, then her hand must be cut off.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "kdsc",
+    "r": "26:12",
+    "q": "What must they do after they have finished giving all the tithe from their harvest?",
+    "a": "They must give it to the Levites, to the foreigners, to the orphans, and to the widows so they may eat and be filled.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "giving"
+      ]
+    }
+  },
+  {
+    "id": "j86a",
+    "r": "26:18-19",
+    "q": "What has Yahweh declared to the people of Israel?",
+    "a": "Yahweh has declared that Israel is his own possession and he will set them high above all the other nations in respect to praise, reputation, and honor so they will be a people that is set apart and holy to him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "mu3c",
+    "r": "27:20",
+    "q": "Why is a man cursed if he lies with his father’s wife?",
+    "a": "A man is cursed if he sleeps with his father’s wife, because he has violated his father’s marriage rights.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "wyh2",
+    "r": "30:5",
+    "q": "To what place will Yahweh bring the scattered Israelites?",
+    "a": "Yahweh will bring them into the land that their ancestors possessed.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "ixi1",
+    "r": "32:48-49",
+    "q": "Why did Yahweh tell Moses to go up into the mountains opposite Jericho?",
+    "a": "Yahweh told Moses to go up to the mountains so that he could look at the land of Canaan which Yahweh was giving to the people of Israel as their possession.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "e8ky",
+    "r": "33:4",
+    "q": "What does Moses say about the law that he commanded to the people?",
+    "a": "Moses calls the law a possession for the descendants of Jacob.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "w8ho",
+    "r": "33:23",
+    "q": "What land did Moses say Naphtali will take?",
+    "a": "Naphtali will take possession of the land to the west and south.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "ti2l",
+    "r": "33:29",
+    "q": "How does Moses describing Israel?",
+    "a": "Moses describes Israel as a people saved by Yahweh, whose enemies will come begging to them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

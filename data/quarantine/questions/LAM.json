@@ -1,0 +1,14 @@
+[
+  {
+    "id": "tgsk",
+    "r": "5:17",
+    "q": "What do they say about their hearts and eyes?",
+    "a": "Their hearts have become sick, and their eyes have grown dim because of their tears.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

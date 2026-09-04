@@ -1,0 +1,62 @@
+[
+  {
+    "id": "cd02",
+    "r": "2:18",
+    "q": "What do we know about the Antichrist?",
+    "a": "We know that he is coming.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "u6q4",
+    "r": "2:22",
+    "q": "How will we recognize the Antichrist?",
+    "a": "The Antichrist will deny the Father and the Son.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "sgt9",
+    "r": "3:10",
+    "q": "How are the children of the devil apparent?",
+    "a": "The children of the devil are apparent because they do not do righteousness and they do not love their brother.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "raus",
+    "r": "4:3",
+    "q": "What spirit does not confess that Jesus Christ has come in the flesh?",
+    "a": "The spirit of an antichrist does not confess that Jesus Christ has come in the flesh.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "pw9a",
+    "r": "5:4",
+    "q": "What is the victory that has overcome the world?",
+    "a": "Faith is the victory that has overcome the world.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

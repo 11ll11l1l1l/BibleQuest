@@ -1,0 +1,266 @@
+[
+  {
+    "id": "ybwe",
+    "r": "1:17",
+    "q": "What came through Jesus Christ?",
+    "a": "Grace and truth came through Jesus Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ly5i",
+    "r": "1:31",
+    "q": "Why did John come baptizing with water?",
+    "a": "He came baptizing with water so that Jesus, the Lamb of God who takes away the sin of the world, could be revealed to Israel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "y48d",
+    "r": "1:32-33",
+    "q": "What was the sign that revealed Jesus as the son of God to John?",
+    "a": "The sign was that on whoever John saw the Spirit descending and remaining, that one is the one who baptizes in the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "tacq",
+    "r": "3:17",
+    "q": "Did God send his son to condemn the world?",
+    "a": "No. God sent his son so that the world should be saved through his son.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "mzyv",
+    "r": "4:14-15",
+    "q": "What does Jesus tell the woman about the water that he will give?",
+    "a": "Jesus tells the woman that those who drink the water he gives will never thirst again, and the water will become a fountain of water springing up into eternal life.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ltwl",
+    "r": "4:16",
+    "q": "Jesus then changes the subject of conversation. What does he tell the woman?",
+    "a": "Jesus tells her, “Go, call your husband, and come back here.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "sdm1",
+    "r": "4:53",
+    "q": "What was the result after the father of the sick child was told that his son was living and that the fever had left him the day before at the seventh hour, at the same hour Jesus had told him, “Your son lives.”?",
+    "a": "The result was the royal official and his whole household believed.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "vvae",
+    "r": "5:7",
+    "q": "What was the sick man’s response to Jesus’ question, “Do you want to be well?”?",
+    "a": "The sick man replied, “Sir, I do not have anyone, when the water is stirred up, to put me into the pool. When I am trying, another steps down before me.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "qkqh",
+    "r": "5:15",
+    "q": "What did the healed man do after Jesus told him to stop sinning?",
+    "a": "The man went and told the Jewish leaders that it was Jesus who had made him well.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "zjjk",
+    "r": "5:39",
+    "q": "Why did the Jewish leaders search the scriptures?",
+    "a": "They searched them because they thought that in them they had eternal life.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "o36h",
+    "r": "6:2",
+    "q": "Why was a great crowd following Jesus?",
+    "a": "They followed him because they were seeing the signs that Jesus was doing on those who were sick.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "av5v",
+    "r": "7:23",
+    "q": "What is Jesus’ argument for healing on the Sabbath?",
+    "a": "Jesus’ argument was: You will circumcise a man on the Sabbath so that the law of Moses is not broken. Then why are you angry with me because I made a man completely well on the Sabbath.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "bf2n",
+    "r": "8:2-3",
+    "q": "While Jesus was teaching the people in the temple, what did the scribes and Pharisees do?",
+    "a": "They brought in a woman caught in the act of adultery and placed her in their midst and asked Jesus what he had to say about her (to judge her).",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "zlvm",
+    "r": "8:52",
+    "q": "Why did the Jews say Jesus had a demon?",
+    "a": "They said this because Jesus said, “Truly, truly, I say to you, if anyone keeps my word, he will never see death.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "n3ey",
+    "r": "9:16",
+    "q": "What was the division that arose among the Pharisees?",
+    "a": "Some Pharisees said Jesus was not from God because he did not keep the Sabbath (he healed on the Sabbath) and some of the Pharisees said how could a man that is a sinner do such signs.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "ydga",
+    "r": "10:19-21",
+    "q": "What did the Jews say because of Jesus’ words?",
+    "a": "Many said, “He has a demon and is insane. Why do you listen to him?” Others said, “These are not the statements of one possessed with a demon. Can a demon open the eyes of the blind?”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "efao",
+    "r": "10:34-36",
+    "q": "What is Jesus’ defense against the charge of blasphemy?",
+    "a": "Jesus defends himself by saying, “Is it not written in your law, ‘I said, “You are gods’”? If he called them gods, to whom the word of God came (and the scripture cannot be broken), do you say about him whom the Father sanctified and sent into the world, “You are blaspheming,” because I said, ‘I am the Son of God’?”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "sanctification"
+      ]
+    }
+  },
+  {
+    "id": "h873",
+    "r": "12:39-40",
+    "q": "Why were the people not able to believe in Jesus?",
+    "a": "They were not able to believe because as Isaiah said, “He has blinded their eyes, and he has hardened their hearts; otherwise they would see with their eyes and would perceive with their hearts, and would turn, and I would heal them.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "thk3",
+    "r": "16:8",
+    "q": "Regarding what will the Comforter convict the world?",
+    "a": "The Comforter will convict the world regarding sin, righteousness, and judgment.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ki28",
+    "r": "17:2",
+    "q": "Why did the Father give Jesus authority over all flesh?",
+    "a": "The Father did this so that Jesus would give eternal life to all whom the Father have given him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "whcj",
+    "r": "17:3",
+    "q": "What is eternal life?",
+    "a": "Eternal life is knowing the Father, the only true God, and him whom he has sent, Jesus Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ujoo",
+    "r": "17:19",
+    "q": "Why did Jesus sanctify himself?",
+    "a": "Jesus sanctified himself so that those the Father gave him might also be sanctified in truth.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "sanctification"
+      ]
+    }
+  }
+]

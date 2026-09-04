@@ -1,0 +1,243 @@
+[
+  {
+    "id": "gpsc",
+    "r": "1:35",
+    "q": "How did the angel say this would happen since Mary was a virgin?",
+    "a": "The angel said that the Holy Spirit would come upon Mary and the power of the Most High would overshadow her.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "der1",
+    "r": "1:77",
+    "q": "What was it Zechariah prophesied that his child John would help the people to know?",
+    "a": "John would help the people know how they could be saved through the forgiveness of their sins.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "eh4j",
+    "r": "2:26",
+    "q": "What did the Holy Spirit reveal to Simeon?",
+    "a": "The Holy Spirit revealed to Simeon that he would not die before he saw the Lord’s Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "ccc7",
+    "r": "3:3",
+    "q": "What message did John preach throughout the region around the Jordan River?",
+    "a": "John preached a baptism of repentance for the forgiveness of sins.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "nu5n",
+    "r": "3:16",
+    "q": "John told the people that he baptized with water. With what did he say that someone was coming would baptize?",
+    "a": "John said someone was coming who would baptize with the Holy Spirit and with fire.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism",
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "qu43",
+    "r": "3:19",
+    "q": "Why did John rebuke Herod?",
+    "a": "John rebuked Herod because Herod had married his own brother’s wife and had done many other evil things.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "dz1m",
+    "r": "4:34",
+    "q": "In the synagogue, what did the demon speaking through the man know about Jesus?",
+    "a": "The demon said that he knew Jesus was the Holy One of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "f7m7",
+    "r": "4:36",
+    "q": "How did the people react after Jesus cast out the demon?",
+    "a": "The people were astonished and kept talking about it with one another.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "xytr",
+    "r": "4:41",
+    "q": "What did the demons say as they were cast out, and why did Jesus not let them speak?",
+    "a": "The demons said that Jesus was the Son of God, and Jesus did not let them speak because they knew he was the Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "bsmv",
+    "r": "7:7",
+    "q": "How did the centurion then want Jesus to heal the slave?",
+    "a": "The centurion then wanted Jesus to heal the slave by just saying a word.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "k4yg",
+    "r": "7:33",
+    "q": "What accusation was made against John the Baptizer because he did not eat bread or drink wine?",
+    "a": "They said, “He has a demon.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "xjeo",
+    "r": "7:38",
+    "q": "What did the woman of the city do to Jesus in the Pharisee’s house?",
+    "a": "She wet Jesus’ feet with her tears, wiped them with her hair, kissed his feet, and anointed his feet with perfumed oil.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "av16",
+    "r": "8:29",
+    "q": "What did the demons cause the man from the region of the Gerasenes to do?",
+    "a": "They made him live without clothes in the tombs, they made him break chains and shackles, and they often drove him into the wilderness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "dl2i",
+    "r": "9:39",
+    "q": "Before Jesus cast out the demon, what did it cause the man’s son to do?",
+    "a": "The demon caused him to cry out and have convulsions with foam.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "kpkl",
+    "r": "11:20",
+    "q": "By what power did Jesus answer that he drove out demons?",
+    "a": "He said he drove out demons by the finger of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "ds1v",
+    "r": "17:27",
+    "q": "What were the people doing in the days of Noah?",
+    "a": "They were eating, drinking, marrying, and giving in marriage, unaware that the day of destruction had come.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "rai4",
+    "r": "18:9",
+    "q": "What was the Pharisees’ attitude about their own righteousness and about other people?",
+    "a": "They thought they were more righteous than other people.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "nhje",
+    "r": "18:11",
+    "q": "What was the Pharisee’s attitude about his own righteousness and about other people?",
+    "a": "He thought he was not sinful like other people.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ow6c",
+    "r": "18:43",
+    "q": "How did the people respond after seeing the blind man healed?",
+    "a": "They glorified and praised God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "ffc7",
+    "r": "20:47",
+    "q": "How did Jesus say these scribes would be judged?",
+    "a": "He said that they will receive a greater condemnation.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

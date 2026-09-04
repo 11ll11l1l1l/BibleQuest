@@ -1,0 +1,62 @@
+[
+  {
+    "id": "wciu",
+    "r": "1:25",
+    "q": "For what purpose was Paul confident that he would remain with the Philippians?",
+    "a": "Paul was confident that he would remain with the Philippians for their progress and joy in the faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "dwej",
+    "r": "2:12",
+    "q": "How are the Philippians called to work out their salvation?",
+    "a": "The Philippians are to work out their salvation with fear and trembling.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "rrv1",
+    "r": "2:17",
+    "q": "For what purpose is Paul pouring out his life?",
+    "a": "Paul is pouring out his life in the sacrifice and service of the Philippian’s faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "jsnk",
+    "r": "3:6",
+    "q": "How does Paul describe his previous conduct in respect to the righteousness of the law?",
+    "a": "Paul describes his previous conduct as blameless in respect to the righteousness of the law.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "easa",
+    "r": "3:9",
+    "q": "What righteousness does Paul now have?",
+    "a": "Paul now has the righteousness from God that is through faith in Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

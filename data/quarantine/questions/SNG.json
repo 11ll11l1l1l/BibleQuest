@@ -1,0 +1,50 @@
+[
+  {
+    "id": "b4y0",
+    "r": "3:11",
+    "q": "What was King Solomon wearing on his marriage day?",
+    "a": "He wore a crown with which his mother crowned him on his marriage day.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mfbw",
+    "r": "4:10",
+    "q": "What does Solomon say the love of his wife is better than?",
+    "a": "Solomon says her love is better than wine.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "kqzc",
+    "r": "5:8",
+    "q": "How does the young woman’s beloved make her feel?",
+    "a": "The young woman’s beloved makes her feel sick with love.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "dued",
+    "r": "8:8",
+    "q": "What does the woman’s brothers say about their little sister?",
+    "a": "They said that her breasts had not yet grown and that they wondered what they would do for her when she is promised in marriage.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  }
+]

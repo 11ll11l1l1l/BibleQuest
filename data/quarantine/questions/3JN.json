@@ -1,0 +1,14 @@
+[
+  {
+    "id": "r3ao",
+    "r": "1:1",
+    "q": "By what title does the author John introduce himself in this letter?",
+    "a": "John introduces himself as the elder.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  }
+]

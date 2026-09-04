@@ -1,0 +1,14 @@
+[
+  {
+    "id": "vfdn",
+    "r": "2:9",
+    "q": "To whom did Jonah say salvation belongs?",
+    "a": "Jonah said that salvation belongs to Yahweh.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

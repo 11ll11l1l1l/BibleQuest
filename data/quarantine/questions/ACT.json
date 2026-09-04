@@ -1,0 +1,352 @@
+[
+  {
+    "id": "zs4j",
+    "r": "1:5",
+    "q": "With what would the apostles be baptized in a few days?",
+    "a": "The apostles would be baptized with the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism",
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "tlei",
+    "r": "2:42",
+    "q": "In what did the baptized people continue?",
+    "a": "They continued in the apostles’ teaching and fellowship, in the breaking of bread and in prayers.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "ir4l",
+    "r": "4:10",
+    "q": "By what power or in what name did Peter say he had healed the man in the Temple?",
+    "a": "Peter said that in the name of Jesus Christ he had healed the man in the Temple.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "m7c2",
+    "r": "4:14",
+    "q": "Why could the Jewish leaders say nothing against Peter and John?",
+    "a": "The leaders could say nothing because the man who had been healed was standing with Peter and John.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "blzo",
+    "r": "5:3-4",
+    "q": "To whom did Peter say Ananias and Sapphira had lied?",
+    "a": "Peter said that Ananias and Sapphira had not lied to men, but to the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "qhkh",
+    "r": "5:15-16",
+    "q": "What were some people doing to have the sick healed?",
+    "a": "Some were carrying the sick into the streets so Peter’s shadow might fall on them, and others brought the sick from other towns to Jerusalem.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "kxdc",
+    "r": "5:17-18",
+    "q": "How did the Sadducees react to all of the sick being healed in Jerusalem?",
+    "a": "The Sadducees were filled with jealousy and put the apostles in jail.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "pryb",
+    "r": "7:51",
+    "q": "What did Stephen accuse the people of always doing, just as their forefathers had done?",
+    "a": "Stephen accused the people of resisting the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "st35",
+    "r": "8:1",
+    "q": "What did the believers in Jerusalem do?",
+    "a": "The believers in Jerusalem became scattered throughout the regions of Judea and Samaria, thus spreading the faith to new areas.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "kb86",
+    "r": "8:18-19",
+    "q": "What offer did Simon make to the apostles?",
+    "a": "Simon offered the apostles money in exchange for the power to give the Holy Spirit by the laying on of hands.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "hebs",
+    "r": "8:38",
+    "q": "What did Philip then do to the man?",
+    "a": "Philip and the eunuch both went into the water and Philip baptized him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "ilq9",
+    "r": "10:38",
+    "q": "What message about Jesus had the people in Cornelius’ house already heard?",
+    "a": "The people had already heard that Jesus was anointed by the Holy Spirit and with power, and that he had healed all who were oppressed, for God was with him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit",
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "zxqp",
+    "r": "11:15",
+    "q": "What evidence did Peter present to demonstrate that God had accepted the Gentiles?",
+    "a": "Peter presented the fact that the Holy Spirit had come upon the Gentiles just as the Spirit had fallen upon the Jews in the beginning.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "hq89",
+    "r": "13:2",
+    "q": "What did the Holy Spirit tell them to do?",
+    "a": "The Holy Spirit told them to set apart Barnabas and Saul to do the work to which the Spirit was calling them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "anwk",
+    "r": "13:3",
+    "q": "What did the assembly do after hearing from the Holy Spirit?",
+    "a": "The assembly fasted, prayed, laid hands on Barnabas and Saul, and sent them off.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "ye2r",
+    "r": "14:3",
+    "q": "How did God give evidence about the message of his grace?",
+    "a": "God gave evidence about the message of his grace by granting signs and wonders to be done by the hands of Paul and Barnabas.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fv4k",
+    "r": "15:1",
+    "q": "What did certain men from Judea come and teach the brothers?",
+    "a": "Certain men from Judea taught that unless the brothers were circumcised, they could not be saved.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "xnwc",
+    "r": "15:11",
+    "q": "How did Peter say that both Jews and Gentiles are saved?",
+    "a": "Peter said that both Jews and Gentiles are saved through the grace of the Lord Jesus.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "lm1s",
+    "r": "16:30",
+    "q": "What question did the jailer ask Paul and Silas?",
+    "a": "The jailer asked Paul and Silas, “Sirs, what must I do to be saved?”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "s7vq",
+    "r": "16:31",
+    "q": "What answer did Paul and Silas give the jailer?",
+    "a": "Paul and Silas answered, “Believe on the Lord Jesus, and you shall be saved, you and your house.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ord6",
+    "r": "17:31",
+    "q": "For what has God set a certain day?",
+    "a": "God has set a certain day when Jesus will judge the world in righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "g6ho",
+    "r": "18:25",
+    "q": "What teaching did Apollos understand accurately, and in what teaching did he need more instruction?",
+    "a": "Apollos understood the things concerning Jesus accurately, but he knew only the baptism of John.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "rigp",
+    "r": "19:4",
+    "q": "John’s baptism was a baptism of what?",
+    "a": "John’s baptism was a baptism of repentance.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "iaq9",
+    "r": "19:5",
+    "q": "In what name did Paul then baptize the disciples from Ephesus?",
+    "a": "Paul baptized them in the name of the Lord Jesus.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "b1be",
+    "r": "19:12",
+    "q": "What special miracles did God do by the hands of Paul?",
+    "a": "When handkerchiefs and aprons were taken from Paul, they healed the sick and drove out evil spirits.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "mlnm",
+    "r": "20:23",
+    "q": "About what was the Holy Spirit witnessing to Paul in every city as he traveled toward Jerusalem?",
+    "a": "The Holy Spirit was witnessing to Paul that chains and sufferings awaited him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "qkv9",
+    "r": "20:24",
+    "q": "What ministry had Paul received from the Lord Jesus?",
+    "a": "Paul’s ministry was to bear witness to the gospel of the grace of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "htcq",
+    "r": "22:16",
+    "q": "What did Ananias tell Paul to arise and do, and why?",
+    "a": "Ananias told Paul to arise and be baptized to wash away his sins.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "vwtk",
+    "r": "27:20",
+    "q": "After many days, what hope was abandoned by the crew of the ship?",
+    "a": "After many days, the crew abandoned any hope that they should be saved.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

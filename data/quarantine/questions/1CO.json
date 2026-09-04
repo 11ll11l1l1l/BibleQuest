@@ -1,0 +1,377 @@
+[
+  {
+    "id": "jx7v",
+    "r": "1:3",
+    "q": "What does Paul desire the church at Corinth to receive from God our Father and the Lord Jesus Christ?",
+    "a": "Paul desires that they may have grace and peace from God our Father and the Lord Jesus Christ.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "i6ea",
+    "r": "1:7",
+    "q": "What did the church at Corinth not lack?",
+    "a": "They did not lack any spiritual gift.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "ingp",
+    "r": "1:14-15",
+    "q": "Why does Paul thank God that he baptized none of them except Crispus and Gaius?",
+    "a": "Paul thanks God for this because this would give them no occasion to say that they were baptized into Paul’s name.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "j8ev",
+    "r": "1:30",
+    "q": "What did Christ Jesus become for us?",
+    "a": "He became for us wisdom from God—our righteousness, holiness, and redemption.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "sanctification"
+      ]
+    }
+  },
+  {
+    "id": "ahv0",
+    "r": "2:4-5",
+    "q": "Why was Paul’s word and his proclamation done with the demonstration of the Spirit and of power rather than with persuasive words of wisdom?",
+    "a": "This was so that their faith might not be in the wisdom of humans, but in the power of God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "w1r1",
+    "r": "2:7",
+    "q": "What wisdom did Paul and those with him speak?",
+    "a": "They spoke God’s wisdom hidden in mystery–the hidden wisdom that God predestined before the ages for our glory.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "election"
+      ]
+    }
+  },
+  {
+    "id": "gk8g",
+    "r": "3:15",
+    "q": "What will happen to the person whose work is burned up?",
+    "a": "That person will suffer loss, but he himself will be saved, as though escaping through fire.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "hb3v",
+    "r": "5:1",
+    "q": "What report did Paul hear about the church at Corinth?",
+    "a": "Paul heard that there was sexual immorality there. One of them was sleeping with his father’s wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mn50",
+    "r": "6:19-20",
+    "q": "Why should believers glorify God with their bodies?",
+    "a": "They should glorify God with their bodies because their bodies are a temple of the Holy Spirit and because they were bought with a price.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "q2yj",
+    "r": "7:2",
+    "q": "Why should each man have his own wife and each woman have her own husband?",
+    "a": "Because of temptations for many immoral acts, each man should have his own wife and each wife should have her own husband.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "gmkk",
+    "r": "7:4",
+    "q": "Does a wife or husband have authority over their own body?",
+    "a": "No. A husband has authority over his wife’s body, and likewise, the wife has authority over her husband’s body.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "p0zd",
+    "r": "7:12-13",
+    "q": "Should a believing husband or wife divorce his or her unbelieving spouse?",
+    "a": "If the unbelieving husband or wife is content to live with their spouse, the believing spouse should not divorce the unbeliever.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "tluj",
+    "r": "7:27",
+    "q": "What should believers do if they are bound to a woman by a vow of marriage?",
+    "a": "They should not seek freedom from their vow to marry the woman.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "gojg",
+    "r": "7:39",
+    "q": "For how long is a woman bound to her husband?",
+    "a": "She is bound to her husband for as long as he lives.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ls4k",
+    "r": "7:39",
+    "q": "If a believing woman’s husband dies, whom may she marry?",
+    "a": "She may marry whomever she wishes, but only one who is in the Lord.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "xft6",
+    "r": "8:9",
+    "q": "Of what should we be careful that our freedom does not become?",
+    "a": "We should be careful that our freedom does not become a reason for someone who is weak in faith to stumble.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "eaaw",
+    "r": "10:1-4",
+    "q": "What common experiences did their fathers have in the time of Moses?",
+    "a": "All were under the cloud and passed through the sea. All were baptized into Moses in the cloud and in the sea, and all ate the same spiritual food and drank the same spiritual drink.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "mayf",
+    "r": "10:20-21",
+    "q": "Since Paul did not want the Corinthian believers to be participants with demons, what does he tell them they cannot do?",
+    "a": "Paul tells them they cannot drink the cup of the Lord and the cup of demons, and they cannot have fellowship at the table of the Lord and the table of demons.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "m2tj",
+    "r": "10:20",
+    "q": "To whom do the Gentile pagans offer their sacrifices?",
+    "a": "They offer these things to demons and not to God.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "nqyj",
+    "r": "10:22",
+    "q": "What do we risk if we as believers of the Lord also participate with demons?",
+    "a": "We risk provoking the Lord to jealousy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "anma",
+    "r": "10:32-33",
+    "q": "Why should we give no offense to Jews or to Greeks or to the church of God?",
+    "a": "We should give no offense to them so that they may be saved.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "u620",
+    "r": "12:1",
+    "q": "About what does Paul want the Corinthian Christians to be informed?",
+    "a": "Paul wants them to be informed about spiritual gifts.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "d393",
+    "r": "12:3",
+    "q": "How can one say, “Jesus is Lord”?",
+    "a": "One can only say “Jesus is Lord” by the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "y5e4",
+    "r": "12:9-10",
+    "q": "What are some of the gifts given by the Spirit?",
+    "a": "Some of the gifts are faith, gifts of healing, deeds of power, prophecy, ability to distinguish between spirits, various kinds of tongues and interpretation of tongues.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "holy-spirit",
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "b5s6",
+    "r": "12:13",
+    "q": "Into what were all Christians baptized?",
+    "a": "We were all baptized into one body and all were made to drink of one Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "az4d",
+    "r": "13:1",
+    "q": "What would Paul become if he spoke with tongues of men and of angels but did not have love?",
+    "a": "He would become a noisy gong or a clanging cymbal.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "tp14",
+    "r": "13:2",
+    "q": "What would Paul be if he had the gift of prophecy, understood all hidden truths and knowledge and had great faith, but did not have love?",
+    "a": "Without love, he would be nothing.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "z4gn",
+    "r": "13:8-10",
+    "q": "What are some things that will pass away or cease?",
+    "a": "Prophecies, knowledge and that which is incomplete will pass away and tongues will cease.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "x6ax",
+    "r": "14:22",
+    "q": "To whom are tongues and prophesying a sign?",
+    "a": "Tongues are a sign to unbelievers, and prophesying is a sign for believers.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "lzt8",
+    "r": "14:23",
+    "q": "What would outsiders and unbelievers likely say if they came into the church, and all were speaking in tongues?",
+    "a": "They would likely say the believers were insane.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "nos9",
+    "r": "15:2",
+    "q": "What condition had to be fulfilled if the Corinthians were to be saved by the gospel Paul preached to them?",
+    "a": "Paul told them they would be saved if they held firmly to the word he preached to them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

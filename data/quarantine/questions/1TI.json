@@ -1,0 +1,135 @@
+[
+  {
+    "id": "sl85",
+    "r": "1:2",
+    "q": "What was the relationship between Paul and Timothy?",
+    "a": "Timothy was Paul’s true son in the faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "q6g0",
+    "r": "1:14",
+    "q": "What overflowed to Paul, resulting in Paul becoming an apostle of Jesus Christ?",
+    "a": "The grace of our Lord overflowed with faith and love to Paul.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "kuft",
+    "r": "2:4",
+    "q": "What does God desire for all people?",
+    "a": "God desires all people to be saved and to come to the knowledge of the truth.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "wsul",
+    "r": "2:15",
+    "q": "In what does Paul want women to remain?",
+    "a": "Paul wants women to continue in faith and love and sanctification with self-control.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "sanctification"
+      ]
+    }
+  },
+  {
+    "id": "vh1h",
+    "r": "3:6",
+    "q": "What is the danger if the overseer is a new convert?",
+    "a": "The danger is that he will be puffed up and fall into condemnation.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ovfa",
+    "r": "4:3",
+    "q": "What lies will these people teach?",
+    "a": "They will forbid marriage and forbid eating some foods.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "lih5",
+    "r": "4:5",
+    "q": "How is anything we eat sanctified for our use?",
+    "a": "Anything we eat is sanctified by the word of God and prayer.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "sanctification"
+      ]
+    }
+  },
+  {
+    "id": "y0of",
+    "r": "4:12",
+    "q": "In what ways is Timothy to be an example to others?",
+    "a": "Timothy is to be an example in word, conduct, love, faith, and purity.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "idhz",
+    "r": "4:14",
+    "q": "How did Timothy receive the spiritual gift that he had?",
+    "a": "The gift was given to Timothy through prophecy, with the imposition of the hands of the elders.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "umc7",
+    "r": "5:19",
+    "q": "What conditions must be met before someone accuses an elder?",
+    "a": "There must be two or three witnesses when someone accuses an elder.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  },
+  {
+    "id": "g2dg",
+    "r": "6:12",
+    "q": "What fight does Paul say Timothy must fight?",
+    "a": "Paul says Timothy must fight the good fight of the faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

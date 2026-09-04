@@ -1,0 +1,182 @@
+[
+  {
+    "id": "a19c",
+    "r": "1:21-23",
+    "q": "Why did Hannah not go with her husband to the house of Yahweh for the yearly sacrifice?",
+    "a": "She did not go because she was waiting until her son was weaned.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "tume",
+    "r": "2:1",
+    "q": "Why did Hannah laugh at her enemies?",
+    "a": "Hannah laughed because she rejoiced in Yahweh’s salvation.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "jvrr",
+    "r": "2:20",
+    "q": "How would Eli bless Elkanah and his wife?",
+    "a": "Eli blessed them by asking Yahweh to give them more children from Hannah.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "rd6x",
+    "r": "4:3",
+    "q": "What did the elders of Israel decide to do so that they could be saved from the power of their enemies?",
+    "a": "The elders decided to bring the Box of the Covenant of Yahweh from Shiloh to be with them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "do66",
+    "r": "4:21-22",
+    "q": "What name did Phinehas’s wife give to the baby and why did she give him that name?",
+    "a": "She named the baby Ichabod, saying that the glory had departed from Israel because the Box of God had been taken.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ayku",
+    "r": "9:15-16",
+    "q": "What did Yahweh reveal to Samuel about Saul’s role in Israel?",
+    "a": "Yahweh told Samuel that he was to anoint Saul as ruler over Israel, and Saul would save Yahweh’s people from the hand of the Philistines.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "xbpr",
+    "r": "10:1",
+    "q": "Why did Samuel pour a flask of oil on Saul’s head and kiss him?",
+    "a": "He did this because Yahweh had anointed Saul to be a ruler over his inheritance.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "jicg",
+    "r": "11:9",
+    "q": "What message did the messengers bring back to the men of Jabesh?",
+    "a": "They told the men of Jabesh that they would have deliverance the next day by the time the sun was hot.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "x2h2",
+    "r": "14:45",
+    "q": "How was Jonathan saved from death?",
+    "a": "The people redeemed Jonathan and would not allow him to die because he had brought about a great salvation for Israel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "xeqs",
+    "r": "16:3",
+    "q": "How did Yahweh say that Samuel would know whom to anoint?",
+    "a": "Yahweh told Samuel that he would show him what to do and that Samuel should anoint the one Yahweh told him to anoint.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "rigm",
+    "r": "24:5-7",
+    "q": "Why did David not allow his men to attack Saul?",
+    "a": "David’s heart struck him, and he said he would not stretch out his hand against his master, because he was the anointed of Yahweh.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "yupn",
+    "r": "25:3",
+    "q": "What was Nabal’s wife Abigail like?",
+    "a": "She had good insight and was beautiful in appearance.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "p7f3",
+    "r": "25:18-19",
+    "q": "What did Abigail do after hearing about her husband’s response?",
+    "a": "Abigail hurriedly gathered provisions, put them on donkeys, and told her young men to go ahead of her, taking them to David, but she did not tell Nabal.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "pf98",
+    "r": "25:44",
+    "q": "What had happened to David’s wife, Michal?",
+    "a": "Saul had given her to another man as his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "k1zc",
+    "r": "30:13",
+    "q": "Why had the Egyptian slave’s Amalekite master abandoned him?",
+    "a": "His master abandoned him because he became sick three days earlier and it was difficult for him to keep traveling with the raiding band.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

@@ -1,0 +1,124 @@
+[
+  {
+    "id": "y5pp",
+    "r": "1:1",
+    "q": "What was Paul’s purpose in his service to God?",
+    "a": "His purpose was to establish the faith of God’s chosen people and to establish the knowledge of the truth.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "mzu9",
+    "r": "1:4",
+    "q": "What was the relationship between Titus and Paul?",
+    "a": "Titus was like a true son to Paul because of their common faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "r6iy",
+    "r": "1:6",
+    "q": "What must an elder’s wife and children be like?",
+    "a": "He must be the husband of one wife and have faithful children who are not accused of reckless behavior or rebellion.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office",
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "m2kk",
+    "r": "1:7",
+    "q": "What are some of the character traits that an elder must avoid in order to be blameless?",
+    "a": "He must not be arrogant or easily angered or addicted to wine or a brawler or greedy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  },
+  {
+    "id": "b1wn",
+    "r": "1:8",
+    "q": "What good qualities should an elder have?",
+    "a": "An elder should be hospitable, a friend of what is good, sensible, righteous, holy, and self-controlled.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  },
+  {
+    "id": "bb4z",
+    "r": "1:9",
+    "q": "What must an elder’s attitude be toward the message that he was taught?",
+    "a": "He must hold tightly to it, and thus, be able to encourage and rebuke others.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  },
+  {
+    "id": "l08x",
+    "r": "2:2",
+    "q": "What are some characteristics that older men in the church should have?",
+    "a": "They should be temperate, dignified, sensible, and sound in faith, in love, and in perseverance.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ccz2",
+    "r": "2:4",
+    "q": "What should the older women teach the younger women to do?",
+    "a": "They should teach them to love and obey their husbands, and to love their children.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "church-office"
+      ]
+    }
+  },
+  {
+    "id": "o3ri",
+    "r": "2:12",
+    "q": "What does the grace of God train us to reject?",
+    "a": "The grace of God trains us to reject godlessness and worldly passions.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "cerb",
+    "r": "3:5",
+    "q": "Through what means did God save us?",
+    "a": "He saved us through the washing of new birth and renewal by the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation",
+        "holy-spirit"
+      ]
+    }
+  }
+]

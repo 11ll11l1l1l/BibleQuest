@@ -1,0 +1,50 @@
+[
+  {
+    "id": "bgsa",
+    "r": "1:3",
+    "q": "For what two things in the church at Thessalonica does Paul give thanks to God?",
+    "a": "Paul give thanks to God for their growing faith and for their love toward each other.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "xhcf",
+    "r": "1:11-12",
+    "q": "What is the result of the believers’ good works of faith done in God’s power?",
+    "a": "The result of their good works is that the name of the Lord Jesus Christ is glorified.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fdlk",
+    "r": "2:10",
+    "q": "Why are some deceived by the man of lawlessness and are perishing?",
+    "a": "Some are deceived because they did not receive the love of the truth, that they might be saved.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "l2h7",
+    "r": "3:2",
+    "q": "From whom does Paul wish to be delivered?",
+    "a": "Paul wishes to be delivered from wicked and evil people who do not have faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

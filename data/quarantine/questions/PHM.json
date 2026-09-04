@@ -1,0 +1,14 @@
+[
+  {
+    "id": "w3it",
+    "r": "1:5",
+    "q": "Of what good characteristics has Paul heard about Philemon?",
+    "a": "Paul has heard about Philemon’s love, faith in the Lord, and faithfulness toward all the saints.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  }
+]

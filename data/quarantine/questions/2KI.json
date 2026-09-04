@@ -1,0 +1,146 @@
+[
+  {
+    "id": "hy5b",
+    "r": "2:21-22",
+    "q": "How was the water healed?",
+    "a": "Elisha went out to the spring of water and threw salt in it.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "iabi",
+    "r": "4:1",
+    "q": "What was going to happen to the children of the wife of one of the sons of the prophets?",
+    "a": "The creditor was going to take her two children to be his slaves.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "bsld",
+    "r": "4:10",
+    "q": "What did the important woman from Shunem and her husband make for Elisha?",
+    "a": "They made a little room on the roof for Elisha, with a bed, a table, a seat, and a lamp.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "z5kw",
+    "r": "5:1",
+    "q": "What had Yahweh given to Aram by Naaman?",
+    "a": "Yahweh had given deliverance to Aram.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "lsch",
+    "r": "5:3",
+    "q": "Whom did the little girl say would heal her master?",
+    "a": "The girl said the prophet who was in Samaria would heal her master.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "bz76",
+    "r": "5:11",
+    "q": "How did Naaman think Elisha would heal him?",
+    "a": "Naaman thought Elisha would come out to him and stand and call on the name of Yahweh his God, and wave his hand over the place and heal the leprosy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "tziw",
+    "r": "5:15",
+    "q": "After Naaman was healed, what did he know?",
+    "a": "After Naaman was healed, he knew that there was no God in all the earth except in Israel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "hg7v",
+    "r": "9:1-3",
+    "q": "Why did one of the sons of the prophets take a little bottle of oil in his hand and go to Ramoth Gilead?",
+    "a": "He took the bottle of oil and went to Ramoth Gilead to anoint Jehu.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "xa0y",
+    "r": "9:12-13",
+    "q": "What did the servants of Jehu’s master do after Jehu said he was anointed as king?",
+    "a": "After Jehu said he was anointed as king, each of the servants quickly took off his outer garment and put it under Jehu at the top of the steps. They blew the trumpet and said, “Jehu is king.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "d570",
+    "r": "9:15",
+    "q": "Why had King Joram gone back to Jezreel?",
+    "a": "King Joram had gone back to Jezreel to be healed of the wounds that the Arameans had given him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "ddub",
+    "r": "14:26-27",
+    "q": "Because Yahweh saw there was no rescuer for Israel, how did he save them?",
+    "a": "Because Yahweh saw there was no rescuer for Israel, Yahweh saved them by the hand of Jeroboam the son of Jehoash.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "vg5d",
+    "r": "20:5",
+    "q": "Why was Yahweh about to heal Hezekiah?",
+    "a": "Because Yahweh heard Hezekiah’s prayer and saw his tears, he was about to heal him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

@@ -1,0 +1,388 @@
+[
+  {
+    "id": "scs9",
+    "r": "3:6",
+    "q": "What did the people do as they were baptized by John?",
+    "a": "As they were baptized, the people confessed their sins.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "ay86",
+    "r": "3:17",
+    "q": "What did the voice from heaven say after Jesus was baptized?",
+    "a": "The voice from heaven said, “This is my beloved Son, with whom I am well pleased.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "ncer",
+    "r": "5:27-28",
+    "q": "Jesus taught that it was not only wrong to commit adultery, but also to do what?",
+    "a": "Jesus taught that it was not only wrong to commit adultery, but also to lust after a woman.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ulyk",
+    "r": "5:32",
+    "q": "For what cause did Jesus allow divorce?",
+    "a": "For the cause of sexual immorality did Jesus allow divorce.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "y1kc",
+    "r": "5:32",
+    "q": "What does a husband cause his wife to become if he divorces her wrongly and she remarries?",
+    "a": "A husband causes his wife to become an adulteress if he divorces her wrongly and she remarries.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "nwuq",
+    "r": "6:3-4",
+    "q": "How should we do our acts of righteousness in order to be rewarded by the Father?",
+    "a": "We should do our acts of righteousness in private.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "rbf5",
+    "r": "6:33",
+    "q": "What must we seek first, and all our earthly needs will then be provided?",
+    "a": "We must seek first the kingdom and the Father’s righteousness, and then all our earthly needs will be provided.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "is9n",
+    "r": "8:4",
+    "q": "Why did Jesus say the healed leper should go to the priest and offer the gift Moses commanded?",
+    "a": "Jesus told the healed leper to go to the priest for a testimony to them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "sg0e",
+    "r": "8:8",
+    "q": "Why did the centurion say that Jesus did not need to come to his house?",
+    "a": "The centurion said that he was not worthy to have Jesus in his house, and that Jesus could just say the word and heal the servant.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "lf97",
+    "r": "8:10",
+    "q": "What compliment did Jesus give the centurion?",
+    "a": "Jesus said that not even in Israel had he found anyone with so much faith as the centurion.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "reg0",
+    "r": "8:29",
+    "q": "What was the concern of the demons speaking through the men to Jesus?",
+    "a": "The demons were concerned that Jesus had come to torment them before the set time.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "w4wg",
+    "r": "9:34",
+    "q": "After Jesus healed the mute man, what accusation did the Pharisees make against him?",
+    "a": "The Pharisees accused Jesus of driving out demons by the ruler of demons.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing",
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "qja5",
+    "r": "10:1",
+    "q": "What authority did Jesus give his twelve disciples?",
+    "a": "Jesus gave his twelve disciples authority to drive out unclean spirits, and to heal all kinds of diseases.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "lthc",
+    "r": "12:10",
+    "q": "What question did the Pharisees ask Jesus in the synagogue in front of the man with the dried up hand?",
+    "a": "The Pharisees asked Jesus, “Is it lawful to heal on the Sabbath?”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "u3mb",
+    "r": "12:26",
+    "q": "How did Jesus respond to the accusation that he cast out demons by Beelzebub?",
+    "a": "Jesus said that if Satan drives out Satan, then how will Satan’s kingdom stand.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  },
+  {
+    "id": "rjef",
+    "r": "17:20",
+    "q": "Why were the disciples not able to cure the epileptic boy?",
+    "a": "Jesus said that because of their small faith they could not cure the epileptic boy.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "upfq",
+    "r": "19:3",
+    "q": "What question did the Pharisees ask Jesus to test him?",
+    "a": "The Pharisees asked Jesus, “Is it lawful for a man to divorce his wife for any cause?”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "w0b2",
+    "r": "19:7-8",
+    "q": "Why did Jesus say Moses had commanded certificates of divorce?",
+    "a": "Jesus said that Moses had commanded certificates of divorce because of the hardness of the Jews’ hearts.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mxpe",
+    "r": "20:34",
+    "q": "Why did Jesus heal the two blind men?",
+    "a": "Jesus healed the two blind men because he was moved with compassion.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "u65g",
+    "r": "21:25",
+    "q": "What question did Jesus ask the chief priests and elders in return?",
+    "a": "Jesus asked them if they thought John the Baptist’s baptism was from heaven or from men.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "efdz",
+    "r": "21:25",
+    "q": "Why did the chief priests and scribes not want to answer that John’s baptism was from heaven?",
+    "a": "They knew that Jesus would then ask them why they did not believe John.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "z8vl",
+    "r": "21:26",
+    "q": "Why did the chief priests and scribes not want to answer that John’s baptism was from men?",
+    "a": "They feared the crowd, who held John to be a prophet.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism"
+      ]
+    }
+  },
+  {
+    "id": "vjyo",
+    "r": "22:7",
+    "q": "What did the king do to those first invited to the marriage feast?",
+    "a": "The king sent his armies, killed those murderers, and burned their city.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ep2a",
+    "r": "23:23",
+    "q": "Even though they had tithed their mint, dill, and cumin, what had the scribes and Pharisees failed to do?",
+    "a": "The scribes and Pharisees had failed to do the weightier matters of the law: justice, mercy, and faith.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "ok6i",
+    "r": "24:21",
+    "q": "How great will the tribulation be in those days?",
+    "a": "In those days, the tribulation will be great, greater than any from the beginning of the world.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "eqyv",
+    "r": "24:29",
+    "q": "What will happen to the sun, moon, and stars after the tribulation of those days?",
+    "a": "The sun and moon will be darkened, and the stars will fall from the sky.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "end-times"
+      ]
+    }
+  },
+  {
+    "id": "y4r6",
+    "r": "24:31",
+    "q": "What sound will be heard as the Son of Man sends his angels to gather the elect?",
+    "a": "The great sound of a trumpet will be heard when the angels gather the elect.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "election"
+      ]
+    }
+  },
+  {
+    "id": "mys9",
+    "r": "24:37-39",
+    "q": "How will the coming of the Son of Man be like the days of Noah before the Flood?",
+    "a": "The people will be eating and drinking, marrying and giving in marriage, knowing nothing of the coming judgment that will take them away.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "k3gd",
+    "r": "25:35-36",
+    "q": "What did those on the King’s right hand do in their lives?",
+    "a": "Those on the King’s right hand gave food to the hungry, drink to the thirsty, took in strangers, clothed the naked, cared for the sick, and visited the prisoners.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "igr1",
+    "r": "25:42-43",
+    "q": "What did those on the King’s left hand not do in their lives?",
+    "a": "Those on the King’s left hand did not give food to the hungry, drink to the thirsty, take in strangers, clothe the naked, care for the sick, or visit the prisoners.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "l0vn",
+    "r": "27:19",
+    "q": "What message did Pilate’s wife send to him as he was sitting on the judgment-seat?",
+    "a": "She told Pilate to have nothing to do with that innocent man.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mgj3",
+    "r": "28:19",
+    "q": "Into what name did Jesus tell his disciples to baptize?",
+    "a": "Jesus told his disciples to baptize in the name of the Father, of the Son, and of the Holy Spirit.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "baptism",
+        "holy-spirit"
+      ]
+    }
+  }
+]

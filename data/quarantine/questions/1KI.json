@@ -1,0 +1,135 @@
+[
+  {
+    "id": "x5oc",
+    "r": "1:32-34",
+    "q": "What did King David tell Zadok, Nathan, and Benaiah to do for his son Solomon?",
+    "a": "King David told his three loyal subjects to take Solomon to Gihon on David’s own mule and to anoint him as king over Israel.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "vpf0",
+    "r": "2:16",
+    "q": "What did Adonijah request from Bathsheba?",
+    "a": "Adonijah requested that she ask Solomon for Abishag the Shunammite to be given to him as his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ewoc",
+    "r": "2:20-21",
+    "q": "Why did Bathsheba go to Solomon?",
+    "a": "Bathsheba went to Solomon to ask that Abishag would be given to Adonijah as his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "dpql",
+    "r": "7:8",
+    "q": "What did Solomon build for his wife, Pharaoh’s daughter?",
+    "a": "Solomon built a house like his own for Pharaoh’s daughter, his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "a4oy",
+    "r": "8:32",
+    "q": "What did Solomon ask Yahweh to do for the righteous person?",
+    "a": "Solomon asked that the righteous would be declared innocent and rewarded according to his righteousness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "pkvp",
+    "r": "11:19",
+    "q": "Whom did Pharaoh give as a wife to Hadad?",
+    "a": "Pharaoh gave to Hadad the sister of Queen Tahpenes as his wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "gzs5",
+    "r": "14:2",
+    "q": "What did Jeroboam ask his wife to do?",
+    "a": "Jeroboam asked his wife to disguise herself and go to the prophet Ahijah in Shiloh.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "iwpc",
+    "r": "14:3",
+    "q": "Why did Jeroboam ask his wife to go to the prophet Ahijah?",
+    "a": "Jeroboam asked his wife to go to the prophet Ahijah to find out what would happen to his sick son.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing",
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "u8td",
+    "r": "14:6",
+    "q": "What did Ahijah say to the wife of Jeroboam?",
+    "a": "When Ahijah heard her come in at the door he said to her, “I know you are Jeroboam’s wife, so do not pretend that you are someone else.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "zuvk",
+    "r": "17:17",
+    "q": "How sick was the woman’s son?",
+    "a": "The son’s sickness was so severe that there was no more breath left in him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  },
+  {
+    "id": "ul6j",
+    "r": "19:15-16",
+    "q": "What did Yahweh tell Elijah to do?",
+    "a": "Yahweh told Elijah to return to the wilderness near Damascus to anoint Hazael to be king over Aram, Jehu to be king over Israel, and Elisha to be a prophet in his place.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

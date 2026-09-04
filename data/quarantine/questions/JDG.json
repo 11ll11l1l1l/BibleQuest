@@ -1,0 +1,134 @@
+[
+  {
+    "id": "uct9",
+    "r": "1:13",
+    "q": "What did Caleb give to Othniel?",
+    "a": "Caleb gave Achsah, his daughter, to be Othniel’s wife.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "yjrx",
+    "r": "2:16",
+    "q": "What did the judges do?",
+    "a": "The judges saved the people of Israel from the power of those who were stealing their possessions.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "lf7a",
+    "r": "4:17",
+    "q": "Why did Sisera go to the tent of Jael?",
+    "a": "Sisera went to the tent of Jael because there was peace between Jabin the king of Hazor, and the house of Heber, Jael’s husband.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "ct4p",
+    "r": "7:2",
+    "q": "Why did Yahweh have the fearful soldiers return?",
+    "a": "Yahweh had the fearful soldiers return so that Israel could not boast against Yahweh saying that their own power had saved them.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "jp46",
+    "r": "13:20",
+    "q": "What wonderful thing did Yahweh do while Manoah and his wife were watching?",
+    "a": "While Manoah and his wife were watching, the angel of Yahweh went up in the flame of the altar.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "cp14",
+    "r": "14:3",
+    "q": "Why did Samson want his parents to get him the woman in Timnah as his wife?",
+    "a": "He wanted his parents to get him the woman in Timnah as his wife, for when he looked at her, she pleased him.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "st3b",
+    "r": "14:15",
+    "q": "What would happen to Samson’s wife if she did not entice her husband to get the answer to the riddle?",
+    "a": "If Samson’s wife did not entice her husband to get the answer to the riddle, the 30 companions would burn up her and her father’s house.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "mr3d",
+    "r": "14:17",
+    "q": "For how long did Samson’s wife cry in order to get the answer to the riddle?",
+    "a": "She cried for the seven days that the feast lasted.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "q2gs",
+    "r": "15:5",
+    "q": "How did Samson retaliate after finding out his wife had been given to another?",
+    "a": "Samson retaliated by catching 300 foxes, tying torches to them, and letting them go in the Philistines’ grain.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "rss9",
+    "r": "15:8",
+    "q": "Why did Samson kill a great number of Philistines?",
+    "a": "Samson killed a great number of Philistines to avenge the killing of his wife and her father.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "marriage-sexuality"
+      ]
+    }
+  },
+  {
+    "id": "zd8a",
+    "r": "18:9",
+    "q": "What did the five men from Dan want to do with the land of Laish?",
+    "a": "The five men from Dan wanted to take possession of the land so their people could live there.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  }
+]

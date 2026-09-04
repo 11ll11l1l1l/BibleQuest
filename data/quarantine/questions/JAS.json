@@ -1,0 +1,122 @@
+[
+  {
+    "id": "s4qd",
+    "r": "1:3",
+    "q": "What does the testing of our faith produce?",
+    "a": "The testing of our faith produces endurance.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "zgpo",
+    "r": "2:5",
+    "q": "What does James say about God’s choice of the poor?",
+    "a": "James says that God chose the poor to be rich in faith and to inherit the kingdom.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fpr8",
+    "r": "2:17",
+    "q": "What is faith by itself, if it has no works?",
+    "a": "Faith by itself, if it has no works, is dead.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "r57z",
+    "r": "2:18",
+    "q": "How does James say we must show our faith?",
+    "a": "James says we must show our faith by our works.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "cex0",
+    "r": "2:21",
+    "q": "How did Abraham demonstrate his faith by his works?",
+    "a": "Abraham demonstrated his faith by his works when he offered up Isaac upon the altar.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "mshq",
+    "r": "2:22",
+    "q": "How was the faith of Abraham perfected?",
+    "a": "Abraham’s faith was perfected by his works.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "fs91",
+    "r": "2:23",
+    "q": "What scripture was fulfilled with Abraham’s faith and works?",
+    "a": "The scripture was fulfilled which says, “Abraham believed God, and it was credited to him as righteousness.”",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "eoxe",
+    "r": "2:25",
+    "q": "How did Rahab demonstrate her faith by her works?",
+    "a": "Rahab demonstrated her faith by her works when she welcomed the messengers and sent them away by another road.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "av25",
+    "r": "3:9",
+    "q": "What two ways to people treat God and men with their tongues?",
+    "a": "With a single tongue, they bless God and curse men.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "holy-spirit"
+      ]
+    }
+  },
+  {
+    "id": "zww3",
+    "r": "5:16",
+    "q": "What two things does James say believers should do with each other in order to be healed?",
+    "a": "Believers should confess to one another and pray for one another.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "healing"
+      ]
+    }
+  }
+]

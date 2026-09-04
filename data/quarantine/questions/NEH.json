@@ -1,0 +1,26 @@
+[
+  {
+    "id": "gtht",
+    "r": "9:9-10",
+    "q": "How did the people say that Yahweh kept his promise to them?",
+    "a": "The people told how Yahweh brought their forefathers out of Egypt, showed signs and wonders against Pharaoh and his people, and saved their forefathers at the Red Sea.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "salvation"
+      ]
+    }
+  },
+  {
+    "id": "l6tu",
+    "r": "9:25",
+    "q": "How did the Israelites live after taking possession of the land God had promised them?",
+    "a": "The Israelites took the land. They ate and were satisfied and grew fat. They reveled in God’s great goodness.",
+    "safety": {
+      "action": "quarantine",
+      "topics": [
+        "spiritual-warfare"
+      ]
+    }
+  }
+]
