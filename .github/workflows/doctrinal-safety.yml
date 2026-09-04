@@ -12,6 +12,7 @@ on:
       - "scripts/content-audit.js"
       - "scripts/doctrinal-audit.js"
       - "scripts/verify-safety-smoke.js"
+      - "scripts/apply-doctrinal-safety.js"
       - "scripts/apply-doctrinal-safety.py"
       - "DOCTRINAL_SAFETY.md"
       - ".github/workflows/doctrinal-safety.yml"
@@ -26,6 +27,7 @@ on:
       - "scripts/content-audit.js"
       - "scripts/doctrinal-audit.js"
       - "scripts/verify-safety-smoke.js"
+      - "scripts/apply-doctrinal-safety.js"
       - "scripts/apply-doctrinal-safety.py"
       - "DOCTRINAL_SAFETY.md"
       - ".github/workflows/doctrinal-safety.yml"
@@ -40,6 +42,7 @@ jobs:
           node --check data/doctrinal-safety.js
           node --check data/doctrinal-context.js
           node --check runtime-safety.js
+          node --check scripts/apply-doctrinal-safety.js
           node --check scripts/doctrinal-audit.js
           node --check scripts/verify-safety-smoke.js
           node --check scripts/content-audit.js
