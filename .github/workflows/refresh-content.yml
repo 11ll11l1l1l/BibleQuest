@@ -2,11 +2,14 @@ name: Refresh BibleQuest content pack
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "scripts/build_content_pack.py"
       - "scripts/build_story_packs.py"
       - "scripts/build_tagalog_packs.py"
       - "scripts/build_original_language_packs.py"
+      - "scripts/apply-doctrinal-safety.js"
       - "scripts/apply-doctrinal-safety.py"
       - "scripts/doctrinal-audit.js"
       - "data/doctrinal-safety.js"
