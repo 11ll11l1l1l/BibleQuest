@@ -1,0 +1,1 @@
+BibleQuest scored play should favor direct Scripture recall and passage context. Interpretive or denominational claims must be explicitly sourced and reviewed. Secondary resources may supply study material but are not themselves doctrinal authority.
