@@ -6,6 +6,8 @@ const enhancements=fs.readFileSync(new URL('../signup-enhancements.js',import.me
 const recovery=fs.readFileSync(new URL('../reset.js',import.meta.url),'utf8');
 const tutorial=fs.readFileSync(new URL('../onboarding-tutorial.js',import.meta.url),'utf8');
 const signupFn=fs.readFileSync(new URL('../supabase/functions/bq-signup/index.ts',import.meta.url),'utf8');
+const index=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const uiTaglish=fs.readFileSync(new URL('../ui-taglish.js',import.meta.url),'utf8');
 
 assert.doesNotMatch(account,/queueMicrotask\s*\(\s*async/, 'Auth-state callback must not queue async Supabase work');
 assert.match(account,/onAuthStateChange\(\(event,next\)=>\{session=next;/, 'Auth-state callback should only synchronize local session state');
@@ -20,8 +22,14 @@ assert.match(account,/form\.dataset\.busy/, 'Register/login forms must guard dup
 assert.doesNotMatch(enhancements,/auth\.signUp\s*\(/, 'Compatibility enhancements must not create a second signup path');
 assert.doesNotMatch(recovery,/resetPasswordForEmail/, 'Password recovery must not depend on SMTP/email links');
 assert.match(recovery,/bq-password-reset/, 'Password recovery must use the recovery-code edge function');
+assert.match(recovery,/old recovery code is no longer valid/i, 'Successful recovery must tell the user that rotation invalidated the old recovery code');
 assert.match(tutorial,/Daily Journey/, 'Post-registration tutorial must explain the Daily Journey');
 assert.match(tutorial,/recovery code/i, 'Post-registration tutorial must explain and require recovery-code handling');
 assert.match(tutorial,/data-bq-english/, 'Tutorial must remain English even when the app UI is Taglish');
+assert.match(index,/<script src="onboarding-tutorial\.js"><\/script>/, 'Production index must actually load the onboarding tutorial');
+assert.match(uiTaglish,/closest\('\[data-bq-english\]/, 'Global Taglish translation must skip explicitly English account/tutorial surfaces');
+assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 'Recovery codes must never be written to browser console logs');
+assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
+assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
-console.log('Immediate signup, recovery-code, and onboarding static smoke passed');
+console.log('Immediate signup, rotating recovery-code, protected English onboarding, and recovery-code privacy static smoke passed');
