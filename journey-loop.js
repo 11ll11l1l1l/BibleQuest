@@ -104,7 +104,7 @@
 
   function completeTask(id,evidence='manual'){
     let e=readEng(),t=e.daily[localDay()]||createToday(e);if(t.done?.[id])return;
-    t.done={...(t.done||{}),[id]:{at:new Date().toISOString(),evidence}};e.daily[t.date]=t;recordMeaningful(`daily_${id}`);e=readEng();t=e.daily[localDay()];updateHistory(e,t);
+    t.done={...(t.done||{}),[id]:{at:new Date().toISOString(),evidence}};e.daily[t.date]=t;writeEng(e);recordMeaningful(`daily_${id}`);e=readEng();t=e.daily[localDay()];updateHistory(e,t);
     if(Object.keys(t.done).length===t.tasks.length&&!t.completedAt){t.completedAt=new Date().toISOString();t.revealId=String(Math.abs([...t.date].reduce((n,c)=>n+c.charCodeAt(0),0))%REVEALS.length);e.daily[t.date]=t;e.history[t.date]={...(e.history[t.date]||{}),journeyComplete:true};const season=SEASONS[e.season?.key];if(season&&e.season.lastCountDate!==t.date){e.season.progress=Math.min(season.days,(Number(e.season.progress)||0)+1);e.season.lastCountDate=t.date;if(e.season.progress>=season.days&&!e.season.completed?.includes(e.season.key))e.season.completed=[...(e.season.completed||[]),e.season.key]}
       window.BQCommunity?.awardPoints?.(activeName(),10,'consistency','Daily Journey',{date:t.date,completed:1});window.BQAccount?.track?.('daily_journey','completed',{date:t.date,season:e.season?.key||'',focus:t.focusKey||''}).catch?.(()=>{});
     }
