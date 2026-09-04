@@ -15,7 +15,7 @@ for(const item of shell){
 }
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=41,`PWA cache must preserve degraded-network hardening baseline (v41+), got v${cacheVersion||'missing'}`);
-assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep a minimal required offline core');
+assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./onboarding-tutorial.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep the app boot and protected onboarding tutorial in the required offline core');
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort the whole service-worker install');
 assert(sw.includes("e.request.mode==='navigate'"),'service worker must special-case navigations');
 assert(sw.includes("networkFirst(e.request,'./index.html')"),'navigations must be network-first with offline shell fallback');
@@ -29,7 +29,9 @@ assert(sw.includes('self.clients.claim()'),'activated worker must claim open cli
 const index=read('index.html');
 const pwaRuntime=read('pwa-runtime.js');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production page must load PWA registration runtime');
+assert(index.includes('<script src="onboarding-tutorial.js"></script>'),'production page must load the post-registration onboarding tutorial');
 assert(shell.includes('pwa-runtime.js'),'PWA registration runtime must be available offline');
+assert(shell.includes('onboarding-tutorial.js'),'protected onboarding tutorial must be available in the PWA shell');
 assert(pwaRuntime.includes("navigator.serviceWorker.register('./sw.js'"),'PWA runtime must register the production service worker');
 assert(pwaRuntime.includes("updateViaCache: 'none'"),'service-worker update checks must bypass stale HTTP script cache');
 assert(pwaRuntime.includes('registration.update()'),'loaded sessions must request a current service-worker check');
@@ -51,4 +53,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell references; cache v${cacheVersion}; PWA update/fallback behavior guarded; large raw datasets stay out of Cache Storage.`);
+console.log(`Reliability smoke passed: ${shell.length} shell references; cache v${cacheVersion}; PWA update/fallback behavior guarded; protected onboarding is wired/offline; large raw datasets stay out of Cache Storage.`);
