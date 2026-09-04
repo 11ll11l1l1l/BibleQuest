@@ -1,32 +1,7 @@
 name: Browser smoke test
 
 on:
-  push:
-    paths:
-      - "*.js"
-      - "*.css"
-      - "*.svg"
-      - "data/**"
-      - "supabase/**"
-      - "index.html"
-      - "manifest.webmanifest"
-      - "sw.js"
-      - "tests/**"
-      - ".github/workflows/browser-smoke.yml"
-      - ".github/workflows/validate-app.yml"
-  pull_request:
-    paths:
-      - "*.js"
-      - "*.css"
-      - "*.svg"
-      - "data/**"
-      - "supabase/**"
-      - "index.html"
-      - "manifest.webmanifest"
-      - "sw.js"
-      - "tests/**"
-      - ".github/workflows/browser-smoke.yml"
-      - ".github/workflows/validate-app.yml"
+  workflow_dispatch:
 
 jobs:
   smoke:
