@@ -33,13 +33,17 @@ try{
   assert.ok((await page.locator('#bqContextLab .lexeme-card').count())>0,'John 3:16 should expose Greek lexical entries');
   assert.ok((await page.locator('#bqContextLab .lexeme-usage').count())>0,'lexemes should expose in-book usage context');
   assert.ok((await page.locator('#bqContextLab .verse-context-strip button').count())>=1,'context lab should show surrounding verses');
-  const firstUsage=page.locator('#bqContextLab [data-context-ref]').first();
-  if(await firstUsage.count()){
-    const before=await page.locator('#bqContextLab .context-scripture small').innerText();
-    await firstUsage.click();
-    await page.waitForTimeout(120);
-    const after=await page.locator('#bqContextLab .context-scripture small').innerText();
-    assert.ok(after.length>0&&before.length>0,'usage navigation should retain valid Scripture context');
+  const firstDetails=page.locator('#bqContextLab .lexeme-usage').first();
+  if(await firstDetails.count()){
+    await firstDetails.locator('summary').click();
+    const firstUsage=firstDetails.locator('[data-context-ref]').first();
+    if(await firstUsage.count()){
+      const before=await page.locator('#bqContextLab .context-scripture small').innerText();
+      await firstUsage.click();
+      await page.waitForTimeout(120);
+      const after=await page.locator('#bqContextLab .context-scripture small').innerText();
+      assert.ok(after.length>0&&before.length>0,'usage navigation should retain valid Scripture context');
+    }
   }
   await page.locator('#bqContextLab [data-context-close]').click();
 
