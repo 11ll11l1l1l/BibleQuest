@@ -11,7 +11,8 @@ try{
   assert.equal(config.authMode,'email-password');
   assert.equal(config.supabaseUrl,'https://zkfmgezvzugchcwppreq.supabase.co','BibleQuest should target the shared Karimen Supabase project');
   assert.match(config.publishableKey,/^sb_publishable_/,'Frontend must use a modern Supabase publishable key');
-  assert.equal(config.redirectUrl,'https://11ll11l1l1l.github.io/BibleQuest/');
+  const expectedRedirect=await page.evaluate(()=>new URL('./',location.href).href);
+  assert.equal(config.redirectUrl,expectedRedirect,'Auth redirect must derive from the active deployment root instead of a retired host');
   const serialized=JSON.stringify(config);
   assert.doesNotMatch(serialized,/service[_-]?role/i,'Browser config must never expose a service-role key');
   assert.doesNotMatch(serialized,/sb_secret_/i,'Browser config must never expose a Supabase secret key');
