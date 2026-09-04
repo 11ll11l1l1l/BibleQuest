@@ -13,6 +13,26 @@
     document.querySelector('.admin-toast')?.remove();
     const el=document.createElement('div');el.className=`admin-toast${error?' error':''}`;el.textContent=text;document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
   }
+  function closeModal(){document.querySelector('.admin-modal-layer')?.remove()}
+  function showResetCode(user,res){
+    closeModal();
+    const expires=new Date(res.expiresAt);
+    const layer=document.createElement('div');layer.className='admin-modal-layer';
+    layer.innerHTML=`<section class="admin-modal" role="dialog" aria-modal="true" aria-label="One-time password recovery code">
+      <div class="admin-modal-kicker">ONE-TIME RECOVERY</div>
+      <h2>${esc(user.name)} password reset</h2>
+      <p>Give this code privately to the account owner. They must enter their <b>registered email address</b>, this code, and a new password.</p>
+      <div class="admin-reset-code" data-reset-code>${esc(res.resetCode)}</div>
+      <div class="admin-reset-meta">For ${esc(res.emailMasked||user.email)} · expires ${Number.isNaN(expires.getTime())?'in 15 minutes':expires.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · maximum 5 failed attempts</div>
+      <div class="admin-modal-actions"><button data-copy-code>Copy code</button><a href="${esc(res.resetUrl||'./reset.html')}" target="_blank" rel="noopener">Open reset page</a></div>
+      <div class="admin-security-note"><b>Important:</b> this code is shown only now. BibleQuest stores only its SHA-256 hash. It is not based on the user's name and it is not their new password.</div>
+      <button class="admin-modal-close" data-close-modal>Done</button>
+    </section>`;
+    document.body.appendChild(layer);
+    layer.querySelector('[data-close-modal]').onclick=closeModal;
+    layer.addEventListener('click',e=>{if(e.target===layer)closeModal()});
+    layer.querySelector('[data-copy-code]').onclick=async e=>{try{await navigator.clipboard.writeText(res.resetCode);e.currentTarget.textContent='Copied'}catch{toast('Copy failed. Select the code manually.',true)}};
+  }
   async function invoke(body){
     const current=(await client.auth.getSession()).data.session;
     if(!current?.access_token)throw new Error('Your session expired. Sign in again.');
@@ -68,7 +88,7 @@
         <div class="role-note">${esc(roleNote(u.role))}</div>
       </div>
       <div class="admin-actions">
-        <button class="admin-reset" data-reset-user="${esc(u.id)}" ${!u.email?'disabled':''}>Send password reset</button>
+        <button class="admin-reset" data-reset-user="${esc(u.id)}" ${!u.email?'disabled':''}>Generate reset code</button>
       </div>
       ${(u.memberships||[]).length?`<div class="memberships"><div class="memberships-title">Congregation permissions</div>${u.memberships.map(m=>`<div class="membership-row"><span>${esc(m.congregationName)}</span><label>Role<select data-congregation-role data-user-id="${esc(u.id)}" data-congregation-id="${esc(m.congregationId)}">${congregationOptions(m.role)}</select></label></div>`).join('')}</div>`:''}
     </article>`;
@@ -86,10 +106,10 @@
     }));
     root.querySelectorAll('[data-reset-user]').forEach(btn=>btn.addEventListener('click',async e=>{
       const target=e.currentTarget;const user=users.find(x=>x.id===target.dataset.resetUser);if(!user)return;
-      if(!confirm(`Send a secure password-reset email to ${user.email}?`))return;
-      target.disabled=true;target.textContent='Sending…';
-      try{const res=await invoke({action:'send_password_reset',targetUserId:user.id});toast(res.message||'Password reset email sent.');target.textContent='Reset email sent'}
-      catch(err){target.disabled=false;target.textContent='Send password reset';toast(err.message,true)}
+      if(!confirm(`Generate a one-time recovery code for ${user.name}? Any older unused code for this account will stop working.`))return;
+      target.disabled=true;target.textContent='Generating…';
+      try{const res=await invoke({action:'issue_reset_code',targetUserId:user.id});showResetCode(user,res);target.textContent='Generate new code';target.disabled=false}
+      catch(err){target.disabled=false;target.textContent='Generate reset code';toast(err.message,true)}
     }));
     root.querySelectorAll('[data-congregation-role]').forEach(sel=>sel.addEventListener('change',async e=>{
       const el=e.currentTarget;const old=(users.find(x=>x.id===el.dataset.userId)?.memberships||[]).find(m=>m.congregationId===el.dataset.congregationId)?.role||'member';
