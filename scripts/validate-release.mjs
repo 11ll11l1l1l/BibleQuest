@@ -16,6 +16,7 @@ console.log('BibleQuest release validation');
 const index=read('index.html');
 const localRefs=[...[...index.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),...[...index.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1])].filter(x=>!/^https?:/i.test(x)&&!x.startsWith('data:')&&!x.startsWith('#'));
 for(const ref of localRefs){const clean=ref.replace(/^\.\//,'').split(/[?#]/)[0];assert(exists(clean),`index.html references missing file: ${clean}`)}
+assert(index.indexOf('mobile-production.css')>index.indexOf('release-hardening.css'),'mobile-production.css must load after release-hardening.css');
 
 const jsFiles=walk('.',p=>p.endsWith('.js')&&!p.includes('/node_modules/'));
 for(const file of jsFiles)run(process.execPath,['--check',file]);
@@ -33,10 +34,17 @@ const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
 for(const item of shell)assert(exists(item),`service worker caches missing file: ${item}`);
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
-for(const required of ['quest-media.js','release-hardening.js','release-hardening.css'])assert(shell.includes(required),`service worker shell missing ${required}`);
+for(const required of ['quest-media.js','release-hardening.js','release-hardening.css','mobile-production.css'])assert(shell.includes(required),`service worker shell missing ${required}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=35,'service worker cache must be rotated for the production-hardening release');
+assert(cacheVersion>=37,'service worker cache must be rotated for the compact mobile production release');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
+
+const mobileCss=read('mobile-production.css');
+assert(mobileCss.includes('grid-template-columns:repeat(5,minmax(0,1fr))'),'mobile production CSS must keep all five bottom tabs in one row');
+assert(mobileCss.includes('body:has(.modern-home)>.app>.hero'),'mobile home must suppress the redundant legacy hero');
+assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remain ahead of the optional season on Home');
+assert(mobileCss.includes('@media(max-width:360px)'),'360px phones require an explicit compact layout');
+console.log('✓ Production mobile hierarchy');
 
 const cloud=read('cloud-config.js');
 assert(cloud.includes("publishableKey: 'sb_publishable_"),'cloud config must use a publishable key');
@@ -55,7 +63,7 @@ assert(contextManifest.license==='CC BY 4.0','context-pack license metadata chan
 for(const row of contextManifest.books){assert(row.code&&row.path,`invalid context manifest row: ${JSON.stringify(row)}`);assert(exists(row.path),`missing context pack: ${row.path}`);assert(Number(row.tagged_verses)>0,`context pack has no tagged verses: ${row.code}`)}
 console.log('✓ 66-book Hebrew/Greek context pack');
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_admin_auth_schema_parity.sql','supabase/migrations/20260905_production_permission_hardening.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','mobile-production.css','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_admin_auth_schema_parity.sql','supabase/migrations/20260905_production_permission_hardening.sql','supabase/migrations/20260905_browser_grant_parity.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Release hardening, recovery, admin and schema-parity assets');
 
 const adminUi=read('admin.js'),adminFn=read('supabase/functions/bq-admin/index.ts');
@@ -72,6 +80,9 @@ assert(parityMigration.includes('create table if not exists public.bible_admin_a
 const grantsMigration=read('supabase/migrations/20260905_production_permission_hardening.sql');
 assert(/revoke all privileges on table public\.bible_app_access from anon, authenticated/i.test(grantsMigration),'production permission migration must revoke broad app-access grants');
 assert(/grant select on table public\.bible_app_access to authenticated/i.test(grantsMigration),'signed-in users must retain self-read access through RLS');
+const browserGrants=read('supabase/migrations/20260905_browser_grant_parity.sql');
+assert(browserGrants.includes("left(c.relname, 6) = 'bible_'"),'browser grant parity migration must stay scoped to BibleQuest tables');
+assert(!/grant\s+(truncate|trigger|references)/i.test(browserGrants),'browser grant parity must never add administrative table privileges');
 console.log('✓ Admin/auth source-of-truth invariants');
 
 run(process.execPath,['scripts/verify-safety-smoke.js']);
@@ -92,6 +103,8 @@ assert(front.includes('BQJourneyLoop?.openSupport'),'legacy focus entry point mu
 assert(smoke.includes('/My Mission/'),'browser smoke must target the current My Mission route');
 assert(smoke.includes("'日本語'"),'browser smoke must verify Japanese translation visibility');
 assert(smoke.includes('personal focus must not block the Daily Journey'),'browser smoke must protect the unblocked first-visit path');
+assert(smoke.includes('home must not horizontally overflow'),'browser smoke must guard phone-width overflow');
+assert(smoke.includes('legacy Keep growing hero must not precede the Daily Journey'),'browser smoke must preserve the compact mobile hierarchy');
 console.log('✓ Current Daily Journey and browser-smoke expectations');
 
 console.log('\nBibleQuest release validation passed.');
