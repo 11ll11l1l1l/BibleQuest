@@ -34,8 +34,9 @@
 
   const TEXTUAL_CUES = [
     /\baccording to\b/i,
-    /\bwhat did (?:Jesus|Paul|Peter|John|Moses|David|the apostles?|the angel|God|the Lord)\b/i,
-    /\bwhat does (?:Paul|Peter|John|Jesus|the passage|the verse|the text) say\b/i,
+    /\bwhat did (?:Jesus|Paul|Peter|John|Moses|David|Abraham|the apostles?|the disciples?|the angel|God|the Lord)\b/i,
+    /\bwhat does (?:Paul|Peter|John|Jesus|Moses|David|Abraham|the passage|the verse|the text) say\b/i,
+    /\b(?:why|how|for what(?: purpose)?) (?:did|does|do|was|were) (?:Jesus|Paul|Peter|John|Moses|David|Abraham|the apostles?|the disciples?)\b/i,
     /\bwhat happened\b/i,
     /\bwho\b/i,
     /\bwhere\b/i,
