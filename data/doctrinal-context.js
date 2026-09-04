@@ -1,4 +1,5 @@
 window.BQ_DOCTRINAL_CONTEXT = {
+  default: 'Read this answer as a statement about the cited passage, not as a complete doctrine by itself. Check the surrounding verses and the wider teaching of Scripture before drawing a universal conclusion.',
   salvation: 'Read salvation passages in the flow of the whole argument. BibleQuest follows CAMACOP in teaching salvation by God\'s grace through the redemption of Jesus Christ, received by faith—not earned by works.',
   baptism: 'Baptism passages should not be turned into a standalone claim that the act of baptism earns salvation. BibleQuest follows CAMACOP in treating baptism as the believer\'s identification with Christ.',
   'holy-spirit': 'Narratives about the Holy Spirit describe real biblical events, but BibleQuest does not infer a universal requirement—such as one specific gift being necessary evidence of salvation—unless that teaching is explicitly approved.',
