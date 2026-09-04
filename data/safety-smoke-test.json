@@ -1,5 +1,7 @@
 [
   {"q":"Who built the ark?","a":"Noah","r":"Genesis 6","expect":"allow"},
   {"q":"Who is justified before God?","a":"The doers of the law are justified before God.","r":"Romans 2:13","expect":"quarantine"},
-  {"q":"What did Peter tell the multitude to do?","a":"Repent and be baptized.","r":"Acts 2:38","expect":"context"}
+  {"q":"What did Peter tell the multitude to do?","a":"Repent and be baptized.","r":"Acts 2:38","expect":"context"},
+  {"q":"For what purpose did Paul receive grace and apostleship from Christ?","a":"For obedience of faith among all the nations.","r":"Romans 1:5","expect":"context"},
+  {"q":"How is a person saved?","a":"By grace through faith.","r":"Ephesians 2:8","expect":"quarantine"}
 ]
