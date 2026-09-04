@@ -1,7 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
 
-const PRIMARY_ORIGIN='https://biblequest-7th.pages.dev';
+const PRIMARY_ORIGIN='https://mybiblequest.pages.dev';
 const LEGACY_ORIGIN='https://11ll11l1l1l.github.io';
+const CLOUDFLARE_PROJECTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'];
 const SITE_ROLES=new Set(['member','leader','pastor','admin','owner']);
 const CONGREGATION_ROLES=new Set(['member','facilitator','leader','pastor','admin']);
 
@@ -10,7 +11,7 @@ function isAllowedOrigin(value:string){
     const u=new URL(value);
     if(u.protocol!=='https:')return false;
     if(u.origin===LEGACY_ORIGIN)return true;
-    return u.hostname==='biblequest-7th.pages.dev'||u.hostname.endsWith('.biblequest-7th.pages.dev');
+    return CLOUDFLARE_PROJECTS.some(host=>u.hostname===host||u.hostname.endsWith(`.${host}`));
   }catch{return false}
 }
 function originFor(req:Request){const origin=req.headers.get('Origin')||'';return isAllowedOrigin(origin)?origin:PRIMARY_ORIGIN}
