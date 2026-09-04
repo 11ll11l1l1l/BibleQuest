@@ -18,11 +18,15 @@ try{
   assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should not compete with the Daily Journey');
   assert.match(await page.locator('.today-journey-card').innerText(),/Continue My Journey|Journey complete/);
 
-  await page.waitForSelector('#bqFrontStruggle:not(.hidden)',{timeout:5000});
-  const prompt=await page.locator('#bqFrontStruggle').innerText();
-  assert.match(prompt,/What are you struggling with today/i);
-  assert.match(prompt,/Anxiety \/ Worry/);assert.match(prompt,/Parenting/);assert.match(prompt,/Understanding Jesus/);
-  await page.locator('#bqFrontStruggle .front-struggle-skip').click();
+  // First visit must land directly on the Daily Journey. Personal focus is opt-in, not a blocking modal.
+  await page.waitForTimeout(800);
+  assert.equal(await page.locator('#bqFrontStruggle:not(.hidden)').count(),0,'personal focus must not block the Daily Journey');
+  await page.locator('.today-journey-card [data-journey-support]').click();
+  await page.waitForSelector('#bqJourneyLoop:not(.hidden)');
+  assert.match(await page.locator('#bqJourneyLoop').innerText(),/What are you carrying today\?/i);
+  assert.match(await page.locator('#bqJourneyLoop').innerText(),/Anxiety \/ Worry/);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForSelector('.today-journey-card');
 
   const manifest=await page.evaluate(()=>fetch('manifest.webmanifest').then(r=>r.json()));
   assert.equal(manifest.display,'standalone');assert.equal(manifest.start_url,'./');assert.ok(manifest.icons?.some(x=>x.src==='app-icon.svg'));
