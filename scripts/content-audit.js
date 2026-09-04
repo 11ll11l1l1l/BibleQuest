@@ -10,6 +10,8 @@ function loadScript(path) {
 
 const core = loadScript('data/questions.js');
 const links = loadScript('data/connections.js');
+const stories = loadScript('data/stories.js');
+const safety = loadScript('data/doctrinal-safety.js');
 const errors = [];
 const warnings = [];
 
@@ -92,6 +94,22 @@ const allIds = [
 ].filter(Boolean);
 if (new Set(allIds).size !== allIds.length) fail('Global content IDs are not unique across packs');
 
+if (!safety.BQ_DOCTRINAL_SAFETY || typeof safety.BQ_DOCTRINAL_SAFETY.classify !== 'function') {
+  fail('Doctrinal safety policy is missing or invalid');
+} else {
+  for (const [index, item] of (core.BQ_QUESTIONS || []).entries()) {
+    const result = safety.BQ_DOCTRINAL_SAFETY.classify({ q: item.q, a: item.why, r: item.ref });
+    if (result.action === 'quarantine') {
+      fail(`BQ_QUESTIONS[${index}] ${item.id}: doctrinally sensitive core item must be rewritten or explicitly reviewed (${result.topics.join(', ')})`);
+    }
+  }
+
+  for (const [index, item] of (stories.BQ_SITUATIONS || []).entries()) {
+    if (!Array.isArray(item.refs) || !item.refs.length) fail(`BQ_SITUATIONS[${index}]: application item needs Scripture references`);
+    if (!text(item.note)) fail(`BQ_SITUATIONS[${index}]: application item needs a contextual note`);
+  }
+}
+
 for (const message of warnings) console.warn(`WARN: ${message}`);
 if (errors.length) {
   for (const message of errors) console.error(`ERROR: ${message}`);
@@ -99,4 +117,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Content audit passed: ${core.BQ_QUESTIONS.length} core questions, ${core.BQ_DETECTIVES.length} detectives, ${core.BQ_TIMELINES.length} timelines, ${links.BQ_CONNECTIONS.length} Scripture connections.`);
+console.log(`Content audit passed: ${core.BQ_QUESTIONS.length} core questions, ${core.BQ_DETECTIVES.length} detectives, ${core.BQ_TIMELINES.length} timelines, ${links.BQ_CONNECTIONS.length} Scripture connections, doctrinal safety policy active.`);
