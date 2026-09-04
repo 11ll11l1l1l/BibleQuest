@@ -15,21 +15,24 @@ The detailed enforcement policy is in `DOCTRINAL_SAFETY.md`.
 ## Current bundled sources
 
 - **Berean Standard Bible (BSB)** — the English Bible text used by the offline/on-demand Bible Reader and verse-text games. The per-book Bible packs are treated as the canonical bundled Bible text source inside BibleQuest.
+- **Tagalog Unlocked Literal Bible / banal na Bibliya** — CC BY-SA 4.0 Tagalog Scripture packs delivered on demand. The displayed Tagalog verse text stays separate from BibleQuest interface copy, explanations, and study annotations.
 - **unfoldingWord Translation Questions v90** — CC BY-SA 4.0 structured questions, reference answers, and Scripture references used by Recall Decks and Open Smart Review. Translation Questions were designed as passage/translation-comprehension material, not as a CAMACOP catechism. Every imported per-book question is therefore screened by BibleQuest's doctrinal-safety layer before normal scored play. High-risk interpretive items are quarantined; sensitive descriptive items retain a context notice.
 - **Open Bible Stories (OBS)** — CC BY-SA 4.0 narrative retellings and scene/question resources used by Story Journey and What Happens Next. OBS is explicitly labeled as a **Bible-story retelling, not a Bible translation**.
-- **STEPBible Data** — CC BY 4.0 datasets available for future people, place, name, and original-language games.
+- **STEPBible Data** — CC BY 4.0 datasets available for people, place, name, and original-language learning surfaces.
 - **OpenBible.info cross references** — cross-reference data available for Scripture connection games.
-- **unfoldingWord Translation Notes** — contextual source material available for future source-grounded context modes. Notes are secondary aids and are not treated as denominational doctrine.
+- **unfoldingWord Translation Notes** — contextual source material available for source-grounded context modes. Notes are secondary aids and are not treated as denominational doctrine.
 
 ## Reader translation choices
 
-BibleQuest now exposes these English editions in the Bible Reader:
+BibleQuest currently exposes these Reader choices:
 
 - **BSB · Berean Standard Bible** — full in-app text from BibleQuest's on-demand per-book packs.
-- **NLT · New Living Translation** — requested live from Tyndale's official NLT API for non-commercial use. The NLT text is not bulk-bundled into the repository.
-- **ESV · English Standard Version** — selectable in the reader. BibleQuest links the selected chapter to ESV.org rather than publishing a shared ESV API key or bulk-caching ESV text. Crossway's API terms prohibit publishing the access key and limit local storage.
-- **NIV · New International Version** — selectable in the reader. Full digital-product use is subject to Biblica/Zondervan licensing, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling NIV text.
-- **AMP · Amplified Bible** — selectable in the reader. The Lockman Foundation permits limited quotation but restricts bulk electronic storage/redistribution, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling AMP text.
+- **TGL · banal na Bibliya / Tagalog ULB** — full in-app Tagalog text from on-demand per-book packs under CC BY-SA 4.0.
+- **JKO · 口語訳聖書 (1954/1955)** — requested chapter-by-chapter from GetBible's `japkougo` resource. The Japan Bible Society states that copyright protection for the 1955 edition has expired, while authors' moral rights remain and wording introduced by later corrections can still be protected. BibleQuest does not rewrite the fetched verse text: furigana, vocabulary explanations, and English learning glosses are rendered separately as learning annotations.
+- **NLT · New Living Translation** — the current production client opens the selected passage in a licensed external reader. BibleQuest does not bundle the NLT text and does not expose a private publisher API credential in the browser.
+- **ESV · English Standard Version** — selectable in the reader. BibleQuest links the selected chapter to ESV.org rather than publishing a shared ESV API key or bulk-caching ESV text.
+- **NIV · New International Version** — selectable in the reader. Full digital-product use is subject to publisher licensing, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling NIV text.
+- **AMP · Amplified Bible** — selectable in the reader. BibleQuest currently routes the selected passage to a licensed online reader rather than bulk-storing or redistributing the copyrighted text.
 
 Bible translations supply Scripture text; selecting a translation does not change BibleQuest's doctrinal authority order.
 
@@ -37,7 +40,7 @@ Bible translations supply Scripture text; selecting a translation does not chang
 
 - **World English Bible (WEB)** — public-domain fallback/alternate Bible translation if BibleQuest later adds another fully bundled translation.
 - Additional openly licensed language resources may be added only when their license and provenance can remain clear in the interface.
-- ESV/NIV/AMP may be upgraded from licensed-reader links to direct in-app delivery when BibleQuest has the appropriate private API/backend configuration or written digital-use permission. Any credential must stay off the public GitHub Pages client.
+- NLT/ESV/NIV/AMP may be upgraded from licensed-reader links to direct in-app delivery only when BibleQuest has the appropriate private backend/API configuration or written digital-use permission. Any credential must stay off the public client.
 
 ## Product source rules
 
@@ -56,6 +59,7 @@ Bible translations supply Scripture text; selecting a translation does not chang
 13. Bible translations with restrictive redistribution terms are not bundled without confirmed permission.
 14. API credentials for copyrighted translations must never be committed to the public GitHub repository.
 15. Live copyrighted Bible text must retain the publisher-required version label and copyright attribution.
+16. Japanese learning aids must never replace or silently modify the displayed 口語訳 verse wording; annotations remain visually and structurally separate from Scripture text.
 
 ## Safety-sensitive topics
 
@@ -63,8 +67,8 @@ Additional screening applies to salvation and works, baptism, Communion, Holy Sp
 
 ## Current delivery architecture
 
-Large immutable resources are not loaded at app startup. BibleQuest uses small manifests and on-demand per-book/per-story packs. The service worker caches successfully opened bundled resources on the device. This keeps the GitHub Pages app lightweight while still allowing a large source library without Supabase.
+Large immutable resources are not loaded at app startup. BibleQuest uses small manifests and on-demand per-book/per-story packs. The service worker caches successfully opened bundled resources on the device. This keeps the app lightweight while still allowing a large source library without Supabase.
 
 Imported question packs are filtered at runtime before gameplay. The filter fails closed: if the doctrinal-safety policy cannot load or validate a pack, that imported pack is blocked rather than displayed raw. Content refresh jobs also run the pack sanitizer so future generated packs physically move quarantined questions into `data/quarantine/questions/` before publication.
 
-Copyrighted live/API translations are handled separately from the bundled cache so their publisher-specific storage and redistribution rules can be respected.
+Copyrighted linked/API translations are handled separately from the bundled cache so publisher-specific storage and redistribution rules can be respected.
