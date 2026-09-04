@@ -4,9 +4,11 @@ BibleQuest is a mobile-first Bible learning PWA built around one clear Daily Jou
 
 ## Public app
 
-Primary deployment: `https://biblequest-7th.pages.dev/` (Cloudflare Pages)
+Canonical deployment: `https://mybiblequest.pages.dev/` (Cloudflare Pages)
 
-Cloudflare deployment previews use `https://<deployment>.biblequest-7th.pages.dev/` and are not the canonical public URL.
+Compatibility deployment: `https://biblequest-7th.pages.dev/` (Cloudflare Pages)
+
+Both Cloudflare projects are currently attached to this repository and deploy current `main`. Deployment previews use subdomains of the corresponding project host and are not canonical public URLs.
 
 Legacy/fallback deployment: `https://11ll11l1l1l.github.io/BibleQuest/`
 
@@ -23,6 +25,8 @@ The home screen centers on **Continue My Journey — 4 min**. A Daily Journey co
 5. Reflect — write one concise takeaway or next action.
 
 One meaningful Bible activity is enough to protect the daily streak. Completing all five movements gives the full Daily Journey progress and reveal.
+
+Personal-focus Scripture support is deliberately opt-in from the Daily Journey card; it does not block first visit with an extra chooser.
 
 ## Bible World
 
@@ -73,11 +77,11 @@ The browser contains only the Supabase project URL and publishable key. Privileg
 
 ## Deployment behavior
 
-`cloud-config.js` derives the app root from the current deployment URL. This allows the same static build to work on Cloudflare Pages, GitHub Pages, or a future custom domain without hard-coding a single frontend origin in browser code.
+`cloud-config.js` derives the app root from the current deployment URL. The trusted admin/recovery server boundary accepts the canonical `mybiblequest.pages.dev` host, the `biblequest-7th.pages.dev` compatibility host, their Cloudflare preview subdomains, and the legacy GitHub Pages path.
 
 Cloudflare-specific security headers are defined in `_headers`.
 
-When a new production/custom domain is introduced, also update the Supabase Auth redirect allow-list. Legacy signup/recovery Edge endpoints are retired and return HTTP 410.
+When a new production/custom domain is introduced, update both the Supabase Auth redirect allow-list and the trusted Edge Function origin list. Legacy signup/recovery Edge endpoints are retired and return HTTP 410.
 
 ## GitHub Actions policy
 
@@ -93,7 +97,7 @@ Run before release:
 node scripts/validate-release.mjs
 ```
 
-The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, and the manual-only GitHub Actions policy.
+The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, production auth/admin invariants, and the manual-only GitHub Actions policy.
 
 Browser smoke tests remain available as a manual workflow when a real browser regression run is needed.
 
