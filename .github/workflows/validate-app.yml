@@ -54,10 +54,15 @@ jobs:
           node --check cloud-copy.js
           node --check cloud.js
           node --check group-play.js
+          node --check live-rooms.js
+          node --check innovation-suite.js
+          node --check workspace.js
+          node --check couple-cloud.js
           node --check modern-home.js
           node --check data/connections.js
           node --check scripts/content-audit.js
           node --check sw.js
+          python3 -m py_compile scripts/build_tagalog_packs.py
       - name: Audit Bible game content
         run: node scripts/content-audit.js
       - name: Check cloud security invariants
@@ -65,7 +70,7 @@ jobs:
           grep -q "enabled: !BQ_LOCAL_HOSTS.has(location.hostname)" cloud-config.js
           grep -q "authMode: 'email-password'" cloud-config.js
           grep -q "sb_publishable_" cloud-config.js
-          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js
+          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-signup/index.ts
           grep -q "email_confirm: true" supabase/functions/bq-signup/index.ts
@@ -73,12 +78,21 @@ jobs:
           grep -q "bible_signup_limits" supabase/functions/bq-signup/index.ts
           grep -q "security invoker" supabase/cloud-stage.sql
           grep -q "revoke all on public.bible_congregation_invites from anon, authenticated" supabase/cloud-stage.sql
+          grep -q "revoke all on public.bible_couple_invites from anon,authenticated" supabase/migrations/20260904_innovation_stage.sql
+          grep -q "bible_room_poll_totals" supabase/migrations/20260904_innovation_stage.sql
+          grep -q "facilitator','leader','admin" supabase/migrations/20260904_innovation_stage.sql
           grep -q "bible_progress_snapshots" account.js
           grep -q "bible_notes" notes.js
           grep -q "bible_devices" account.js
-          grep -q "cloud-copy.js" sw.js
-          grep -q "account-taglish.js" sw.js
+          grep -q "Main translations" translations.js
+          grep -q "TGL" translations.js
+          grep -q "NLT" translations.js
+          grep -q "66" scripts/build_tagalog_packs.py
+          grep -q "live-rooms.js" sw.js
+          grep -q "innovation-suite.js" sw.js
+          grep -q "workspace.js" sw.js
+          grep -q "couple-cloud.js" sw.js
           grep -q "signup-enhancements.js" sw.js
       - name: Check required static files
         run: |
-          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/migrations/20260904_church_group_signup_limits.sql; do test -s "$f"; done
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql; do test -s "$f"; done
