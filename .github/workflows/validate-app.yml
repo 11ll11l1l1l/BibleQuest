@@ -49,6 +49,7 @@ jobs:
           node --check community-bridge.js
           node --check cloud-config.js
           node --check account.js
+          node --check signup-enhancements.js
           node --check notes.js
           node --check cloud-copy.js
           node --check cloud.js
@@ -64,8 +65,12 @@ jobs:
           grep -q "enabled: !BQ_LOCAL_HOSTS.has(location.hostname)" cloud-config.js
           grep -q "authMode: 'email-password'" cloud-config.js
           grep -q "sb_publishable_" cloud-config.js
-          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js notes.js cloud-copy.js cloud.js
+          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
+          grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-signup/index.ts
+          grep -q "email_confirm: true" supabase/functions/bq-signup/index.ts
+          grep -q "church_group" signup-enhancements.js
+          grep -q "bible_signup_limits" supabase/functions/bq-signup/index.ts
           grep -q "security invoker" supabase/cloud-stage.sql
           grep -q "revoke all on public.bible_congregation_invites from anon, authenticated" supabase/cloud-stage.sql
           grep -q "bible_progress_snapshots" account.js
@@ -73,6 +78,7 @@ jobs:
           grep -q "bible_devices" account.js
           grep -q "cloud-copy.js" sw.js
           grep -q "account-taglish.js" sw.js
+          grep -q "signup-enhancements.js" sw.js
       - name: Check required static files
         run: |
-          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js notes.js cloud-copy.js cloud.js group-play.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/migrations/20260904_church_group_signup_limits.sql; do test -s "$f"; done
