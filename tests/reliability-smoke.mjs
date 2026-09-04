@@ -13,9 +13,15 @@ for(const item of shell){
   if(item==='data/packs/context/manifest.json'||item==='data/packs/manifest.json')continue;
   assert(!forbiddenLargePrefixes.some(prefix=>item.startsWith(prefix)),`large/on-demand dataset must not be precached: ${item}`);
 }
+assert(sw.includes("const CACHE='biblequest-v41'"),'PWA cache must rotate for degraded-network hardening');
+assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep a minimal required offline core');
+assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort the whole service-worker install');
 assert(sw.includes("e.request.mode==='navigate'"),'service worker must special-case navigations');
 assert(sw.includes("networkFirst(e.request,'./index.html')"),'navigations must be network-first with offline shell fallback');
+assert(sw.includes('if(response.status>=500)return cachedFallback(request,fallback)'),'HTTP 5xx responses must fall back to cached production assets instead of breaking offline-capable sessions');
 assert(sw.includes("e.request.destination==='script'||e.request.destination==='style'"),'scripts/styles must refresh network-first');
+assert(sw.includes('staleWhileRevalidate(e)'),'cacheable non-code assets must refresh in the background instead of staying stale forever');
+assert(sw.includes("const NO_RUNTIME_CACHE=['/data/library/']"),'multi-megabyte raw library resources must stay outside service-worker Cache Storage');
 assert(sw.includes('self.skipWaiting()'),'new service worker must not wait behind stale worker');
 assert(sw.includes('self.clients.claim()'),'activated worker must claim open clients');
 
@@ -44,4 +50,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell entries; service worker is registered; large datasets remain on-demand.`);
+console.log(`Reliability smoke passed: ${shell.length} shell references; PWA update/fallback behavior guarded; large raw datasets stay out of Cache Storage.`);
