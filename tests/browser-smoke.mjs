@@ -64,8 +64,8 @@ try{
   assert.equal(await page.locator('#bqJourneyLoop .journey-task').count(),5);
   await page.locator('#bqJourneyLoop [data-journey-close]').click();
 
-  // Bible World is the new visible Scripture progression path.
-  await page.locator('[data-modern-hub="grow"]').click();
+  // Bible World is the new visible Scripture progression path. My Mission may leave Grow open.
+  if(await page.locator('#bqModernSheet:not(.hidden)').count()===0)await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/Bible World/}).click();
   await page.waitForSelector('#bqEngagementWorld:not(.hidden)');
   const world=await page.locator('#bqEngagementWorld').innerText();
