@@ -12,14 +12,37 @@ try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
+  await page.waitForTimeout(500);
 
   assert.equal(await page.locator('.modern-hub').count(),4,'Home should retain four secondary hubs');
   assert.equal(await page.locator('.modern-focus').evaluate(el=>getComputedStyle(el).display),'none','old Daily 5 block should be hidden');
   assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should not compete with the Daily Journey');
+  assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none','legacy Keep growing hero must not precede the Daily Journey on mobile');
+  assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none','legacy XP strip must not consume the first mobile viewport');
   assert.match(await page.locator('.today-journey-card').innerText(),/Continue My Journey|Journey complete/);
 
+  // Production mobile geometry: no pinch-zoom should be needed at a 360px viewport.
+  const geometry=await page.evaluate(()=>({
+    innerWidth:window.innerWidth,
+    scrollWidth:document.documentElement.scrollWidth,
+    daily:document.querySelector('.today-journey-card')?.getBoundingClientRect().toJSON(),
+    path:document.querySelector('.journey-path-card')?.getBoundingClientRect().toJSON(),
+    season:document.querySelector('.journey-season,.journey-season-empty')?.getBoundingClientRect().toJSON(),
+    explore:document.querySelector('.modern-label')?.getBoundingClientRect().toJSON(),
+    hub:document.querySelector('.modern-hub')?.getBoundingClientRect().toJSON(),
+    nav:[...document.querySelectorAll('.bottom .navbtn')].map(x=>x.getBoundingClientRect().toJSON())
+  }));
+  assert.ok(geometry.scrollWidth<=geometry.innerWidth+1,`home must not horizontally overflow: ${geometry.scrollWidth}px > ${geometry.innerWidth}px`);
+  assert.ok(geometry.daily&&geometry.daily.top<140,'Daily Journey should be the first substantial home card');
+  assert.ok(geometry.daily.height<270,'Daily Journey should remain compact on a phone');
+  if(geometry.path&&geometry.season)assert.ok(geometry.path.top<geometry.season.top,'Bible path should appear before the optional season');
+  assert.ok(geometry.explore&&geometry.explore.top<800,'Explore should begin within roughly one phone viewport after the core journey controls');
+  assert.ok(geometry.hub&&geometry.hub.height<=110,'Explore cards must stay compact on mobile');
+  assert.equal(geometry.nav.length,5,'bottom navigation should contain Home, Journey, Think, Transform and Me');
+  assert.ok(Math.max(...geometry.nav.map(x=>x.top))-Math.min(...geometry.nav.map(x=>x.top))<3,'all five navigation tabs must remain on one row');
+  assert.ok(geometry.nav.every(x=>x.width>50&&x.width<90),'five navigation tabs must fit without clipping');
+
   // First visit must land directly on the Daily Journey. Personal focus is opt-in, not a blocking modal.
-  await page.waitForTimeout(800);
   assert.equal(await page.locator('#bqFrontStruggle:not(.hidden)').count(),0,'personal focus must not block the Daily Journey');
   await page.locator('.today-journey-card [data-journey-support]').click();
   await page.waitForSelector('#bqJourneyLoop:not(.hidden)');
