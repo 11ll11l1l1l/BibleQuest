@@ -1,1 +1,0 @@
-Imported question packs must not be used directly by gameplay. They require doctrinal classification before display. If the safety policy cannot load, imported Recall Decks should fail closed rather than display raw content.
