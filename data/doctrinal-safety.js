@@ -55,7 +55,7 @@
     /^Acts\s+8:/i,
     /^Acts\s+10:/i,
     /^Acts\s+15:/i,
-    /^Acts\s+16:30(?:-31)?/i,
+    /^Acts\s+16:(?:30(?:-31)?|31)/i,
     /^Acts\s+19:/i,
     /^Acts\s+22:16/i,
     /^Hebrews\s+6:/i,
