@@ -1,0 +1,1 @@
+Run `node scripts/doctrinal-audit.js` to report imported question classifications. Run `python scripts/apply-doctrinal-safety.py` after rebuilding content packs to physically move quarantined questions into `data/quarantine/questions/`. Normal application play must also enforce the runtime classifier so a stale pack cannot expose quarantined content.
