@@ -9,7 +9,12 @@ const localDate=(offset=0)=>{const d=new Date();d.setDate(d.getDate()+offset);co
 try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
   await page.waitForSelector('.today-journey-card');
+  await page.waitForSelector('#bqFrontStruggle:not(.hidden)',{timeout:5000});
+  assert.match(await page.locator('#bqFrontStruggle').innerText(),/What are you struggling with today/i);
+  await page.locator('#bqFrontStruggle .front-struggle-skip').click();
+
   assert.equal(await page.locator('.modern-focus').evaluate(el=>getComputedStyle(el).display),'none','old competing Daily focus should be hidden');
+  assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','decorative hero should not outrank the daily mission');
   const home=await page.locator('.today-journey-card').innerText();
   assert.match(home,/Continue My Journey|Journey complete/);
   assert.match(home,/meaningful activity/i);
@@ -43,11 +48,11 @@ try{
   assert.match(await page.locator('.journey-season').innerText(),/7 Days With Jesus/);
 
   // Grace Day: simulate one missed calendar day, then record a meaningful activity.
-  await page.evaluate(({yesterday2,today})=>{
+  await page.evaluate(({yesterday2})=>{
     const g=JSON.parse(localStorage.getItem('biblequest_growth_v1')||'{}');
     const e=window.BQJourneyLoop.read();e.streak={count:5,lastMeaningful:yesterday2,graceByMonth:{}};g.engagementV2=e;localStorage.setItem('biblequest_growth_v1',JSON.stringify(g));
     window.BQJourneyLoop.recordMeaningful('smoke_grace');
-  },{yesterday2:localDate(-2),today:localDate(0)});
+  },{yesterday2:localDate(-2)});
   const grace=await page.evaluate(()=>window.BQJourneyLoop.read().streak);
   assert.ok(grace.count>=7,'one missed day should be protected by a Grace Day');
   assert.ok(Object.values(grace.graceByMonth||{}).some(v=>v===1),'Grace Day usage should be recorded');
