@@ -14,8 +14,8 @@ for(const item of shell){
   assert(!forbiddenLargePrefixes.some(prefix=>item.startsWith(prefix)),`large/on-demand dataset must not be precached: ${item}`);
 }
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=41,`PWA cache must preserve degraded-network hardening baseline (v41+), got v${cacheVersion||'missing'}`);
-assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep a minimal required offline core');
+assert(cacheVersion>=43,`PWA cache must include operational crash hardening baseline (v43+), got v${cacheVersion||'missing'}`);
+assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./operational-hardening.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep the required offline core, including operational recovery');
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort the whole service-worker install');
 assert(sw.includes("e.request.mode==='navigate'"),'service worker must special-case navigations');
 assert(sw.includes("networkFirst(e.request,'./index.html')"),'navigations must be network-first with offline shell fallback');
@@ -28,6 +28,12 @@ assert(sw.includes('self.clients.claim()'),'activated worker must claim open cli
 
 const index=read('index.html');
 const pwaRuntime=read('pwa-runtime.js');
+const operational=read('operational-hardening.js');
+assert(index.includes('<script src="operational-hardening.js"></script>'),'production page must load the operational recovery guard');
+assert(index.indexOf('operational-hardening.js')<index.indexOf('pwa-runtime.js'),'operational recovery must initialize after feature modules and before PWA registration');
+assert(shell.includes('operational-hardening.js'),'operational recovery must be available offline');
+assert(operational.includes('repairTransformationState'),'Transformation state repair must remain part of operational recovery');
+assert(operational.includes('REQUIREMENTS'),'major feature entry points must remain preflighted before launch');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production page must load PWA registration runtime');
 assert(shell.includes('pwa-runtime.js'),'PWA registration runtime must be available offline');
 assert(pwaRuntime.includes("navigator.serviceWorker.register('./sw.js'"),'PWA runtime must register the production service worker');
@@ -51,4 +57,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell references; cache v${cacheVersion}; PWA update/fallback behavior guarded; large raw datasets stay out of Cache Storage.`);
+console.log(`Reliability smoke passed: ${shell.length} shell references; cache v${cacheVersion}; operational recovery/PWA update/fallback behavior guarded; large raw datasets stay out of Cache Storage.`);
