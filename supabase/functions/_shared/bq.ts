@@ -9,9 +9,22 @@ export const corsHeaders={
 
 export const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:corsHeaders});
 
+function secretKey(){
+  const modern=Deno.env.get('SUPABASE_SECRET_KEYS');
+  if(modern){
+    try{
+      const keys=JSON.parse(modern);
+      if(keys?.default)return String(keys.default);
+      const first=Object.values(keys||{})[0];
+      if(first)return String(first);
+    }catch{/* fall through to legacy key during migration */}
+  }
+  return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
+}
+
 export function adminClient(){
   const url=Deno.env.get('SUPABASE_URL');
-  const key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const key=secretKey();
   if(!url||!key)throw new Error('Supabase function environment is incomplete');
   return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
 }
