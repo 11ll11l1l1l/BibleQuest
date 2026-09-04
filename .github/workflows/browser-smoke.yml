@@ -48,6 +48,8 @@ jobs:
           cat /tmp/biblequest-http.log
           exit 1
       - name: Exercise real browser flows
-        run: node tests/browser-smoke.mjs
+        run: |
+          node tests/browser-smoke.mjs
+          node tests/completion-smoke.mjs
       - name: Verify cloud-ready state
         run: node tests/cloud-smoke.mjs
