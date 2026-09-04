@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">BibleQuest</title>
+  <desc id="desc">An open Bible with a gold journey path on a green field.</desc>
+  <rect width="512" height="512" rx="112" fill="#315b4a"/>
+  <circle cx="402" cy="106" r="34" fill="#d6ad55"/>
+  <path d="M92 142c58-20 112-11 164 26v226c-48-35-103-45-164-24V142Z" fill="#fff8e7"/>
+  <path d="M420 142c-58-20-112-11-164 26v226c48-35 103-45 164-24V142Z" fill="#fff8e7"/>
+  <path d="M256 170v224" stroke="#d7c9a7" stroke-width="14" stroke-linecap="round"/>
+  <path d="M126 211c40-8 73-2 101 16M126 257c40-8 73-2 101 16M286 227c31-18 65-24 101-16M286 273c31-18 65-24 101-16" fill="none" stroke="#b9aa87" stroke-width="12" stroke-linecap="round"/>
+  <path d="M136 336c46 12 78 4 100-25 19-25 42-31 71-17 29 13 55 8 78-17" fill="none" stroke="#d6ad55" stroke-width="16" stroke-linecap="round" stroke-dasharray="2 28"/>
+</svg>
