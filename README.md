@@ -1,68 +1,106 @@
 # BibleQuest
 
-Learn the Bible through games, stories, situational questions, challenges, reflection, group activities, and couples growth.
+BibleQuest is a mobile-first Bible learning PWA built around one clear Daily Journey instead of a menu-first quiz experience.
 
 ## Public app
 
-GitHub Pages: `https://11ll11l1l1l.github.io/BibleQuest/`
+Primary deployment: `https://079b159e.biblequest-7th.pages.dev/` (Cloudflare Pages)
 
-## Playable now
+Legacy/fallback deployment: `https://11ll11l1l1l.github.io/BibleQuest/`
 
-- Daily 5 and Quick Play
-- Context Mode and Bible Detective
-- Story Adventure and Timeline Challenge
-- Situations & Wisdom
-- Deep/open-question reflection
-- Bible Journey and mastery progress
-- Bible Reader and recall activities
-- Couples Growth activities
-- Congregation roster and shared-device play
-- Group games and conversation activities
-- Today / This Week / All Time leaderboards across multiple learning fields
-- Badges, achievements, awards, XP, and streaks
-- Offline/PWA support
+Cloudflare Pages is the normal production host. GitHub Pages deployment is manual-only and is not part of the normal release path.
 
-## Congregation cloud stage
+## Core learning loop
 
-The source tree now includes the next-stage multi-device congregation architecture. It is intentionally disabled in `cloud-config.js` until a dedicated BibleQuest Supabase project is provisioned.
+The home screen centers on **Continue My Journey — 4 min**. A Daily Journey contains five movements:
 
-Prepared cloud capabilities include:
+1. Retrieve — answer from memory before revealing.
+2. Context — read the actual passage and surrounding context.
+3. Learn — strengthen one new or weak connection.
+4. Apply — use biblical wisdom in a real situation.
+5. Reflect — write one concise takeaway or next action.
 
-- passwordless account sign-in
-- congregation creation and invite-code joining
-- congregation member roles
-- cross-device leaderboard aggregation
-- trusted activity synchronization
-- server-derived leaderboard points
-- server-derived cloud badges
-- facilitator-controlled delegated group scoring
-- replay/deduplication protection, rate limits, and daily score caps
+One meaningful Bible activity is enough to protect the daily streak. Completing all five movements gives the full Daily Journey progress and reveal.
 
-The browser never receives a Supabase service-role key and is not the authority for competitive scores. Score claims are checked by Edge Functions before trusted events are written.
+## Bible World
 
-Backend files:
+Learning evidence is visualized as a journey through Scripture:
 
-- `supabase/schema.sql` — base BibleQuest schema and RLS
-- `supabase/cloud-stage.sql` — cloud congregation additions, invite storage, leaderboard RPC, and cloud badge catalog
-- `supabase/functions/bq-create-congregation/` — trusted congregation creation
-- `supabase/functions/bq-join/` — trusted invite joining
-- `supabase/functions/bq-invite/` — facilitator/leader invite generation
-- `supabase/functions/bq-score/` — trusted score validation and badge awarding
+Creation → Patriarchs → Exodus → Kingdom → Wisdom → Prophets → Jesus → Early Church → Letters
 
-Activation order for a dedicated BibleQuest project:
+The map reveals as mastery evidence grows. Scripture itself is never locked. World progress is a learning aid, not a measure of spiritual maturity.
 
-1. Create the dedicated Supabase project.
-2. Apply `supabase/schema.sql`.
-3. Apply `supabase/cloud-stage.sql`.
-4. Deploy the four `bq-*` Edge Functions with JWT verification enabled.
-5. Configure the GitHub Pages URL as the Auth Site URL / allowed redirect URL.
-6. Put only the project URL and publishable key in `cloud-config.js`, set `enabled: true`, and update the validation invariant.
-7. Run Supabase security/performance advisors and browser regression tests.
+Bible World also connects to guided study, adaptive recall, characters, places, short seasons, challenges, avatars, and discovery rewards.
 
-Until those activation steps are completed, BibleQuest continues to use local browser progress and the existing shared-device congregation mode without depending on an unfinished backend.
+## Bible resources and translations
 
-## Content direction
+- Berean Standard Bible (BSB) — bundled/on-demand BibleQuest packs.
+- Tagalog ULB / banal na Bibliya — bundled/on-demand with source attribution.
+- Japanese 口語訳 — live chapter loading with optional furigana and Japanese vocabulary support.
+- NLT — live in-app integration where the official source is available.
+- ESV, NIV, AMP — secondary licensed-reader links rather than bulk redistribution.
+- STEPBible Hebrew/Greek context packs — all 66 books, used as lexical/context aids.
+- Open/public Bible learning resources — see `DATA_SOURCES.md`.
 
-The production content pipeline will favor public-domain/open resources instead of hand-authoring the entire Bible database. See `DATA_SOURCES.md`.
+Copyrighted translation text is not relicensed by the BibleQuest MIT code license.
 
-`Study Together` remains a future module rather than the current product focus.
+## Doctrinal safety
+
+BibleQuest uses a Scripture-first content policy. Scored material distinguishes direct textual recall from interpretation, doctrinal claims, and application. Sensitive questions are context-framed or quarantined until reviewed.
+
+See `DOCTRINAL_SAFETY.md`.
+
+## Cloud and accounts
+
+BibleQuest currently shares the existing Supabase project used by Karimen to remain within the free-plan project limit. BibleQuest data is isolated with `bible_*` tables, policies, functions, and storage conventions.
+
+Current cloud capabilities include:
+
+- email/password accounts
+- cross-device progress snapshots
+- private notes and remembered devices
+- daily journey sync
+- congregation membership and roles
+- trusted score events and leaderboards
+- assignments and presence
+- Journey Groups and encouragements
+- couples and congregation challenge infrastructure
+- owner/admin tools and password-reset email support
+
+The browser contains only the Supabase project URL and publishable key. Privileged keys stay in server-side Edge Functions.
+
+## Deployment behavior
+
+`cloud-config.js` derives the app root from the current deployment URL. This allows the same static build to work on Cloudflare Pages, GitHub Pages, or a future custom domain without hard-coding a single frontend origin in browser code.
+
+Cloudflare-specific security headers are defined in `_headers`.
+
+When a new production/custom domain is introduced, also update the Supabase Auth redirect allow-list. Legacy signup/recovery Edge endpoints are retired and return HTTP 410.
+
+## GitHub Actions policy
+
+All workflows in `.github/workflows/` are intentionally **manual-only** (`workflow_dispatch`). Normal pushes and Cloudflare deployments must not start GitHub Actions jobs.
+
+The repository validator checks this invariant so a later workflow edit cannot silently re-enable automatic Actions usage.
+
+## Validation
+
+Run before release:
+
+```bash
+node scripts/validate-release.mjs
+```
+
+The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, and the manual-only GitHub Actions policy.
+
+Browser smoke tests remain available as a manual workflow when a real browser regression run is needed.
+
+## Licensing
+
+Original BibleQuest application code is MIT licensed. Third-party Scripture texts, datasets, libraries, and services retain their own licenses and terms.
+
+See:
+
+- `LICENSE`
+- `THIRD_PARTY_NOTICES.md`
+- `DATA_SOURCES.md`
