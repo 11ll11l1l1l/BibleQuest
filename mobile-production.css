@@ -1,0 +1,107 @@
+/* Agent 1 production mobile pass: simplify hierarchy, reduce vertical bulk, and keep touch targets usable. */
+html,body{max-width:100%;overflow-x:hidden}
+.app,.modern-home,.bq-engagement-stack{min-width:0}
+
+body.bq-frontpage-focus .topbar{padding:8px 2px 6px}
+body.bq-frontpage-focus .brand{font-size:18px}
+body.bq-frontpage-focus .top-actions{gap:5px}
+body.bq-frontpage-focus .streak,body.bq-frontpage-focus .level-chip{padding:6px 8px;font-size:10px}
+body.bq-frontpage-focus .app{padding-top:env(safe-area-inset-top);padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+body.bq-frontpage-focus .modern-home{margin-top:0}
+body.bq-frontpage-focus .bq-engagement-stack{gap:8px;margin:0}
+body.bq-frontpage-focus .today-journey-card{padding:14px;border-radius:22px;box-shadow:0 12px 34px rgba(46,58,79,.10)}
+body.bq-frontpage-focus .today-journey-card:before{font-size:34px;right:10px;top:4px}
+body.bq-frontpage-focus .today-journey-top{gap:9px}
+body.bq-frontpage-focus .today-journey-top small{font-size:8px}
+body.bq-frontpage-focus .today-journey-top h2{font-size:22px;line-height:1.08;margin:3px 0}
+body.bq-frontpage-focus .today-journey-top p{font-size:10px;line-height:1.35}
+body.bq-frontpage-focus .journey-streak{min-width:60px;padding:7px 8px;border-radius:15px}
+body.bq-frontpage-focus .journey-streak span{font-size:16px}
+body.bq-frontpage-focus .journey-streak b{font-size:17px}
+body.bq-frontpage-focus .journey-streak small{font-size:7px;margin-top:2px}
+body.bq-frontpage-focus .today-step-dots{margin:10px 0 9px;gap:4px}
+body.bq-frontpage-focus .today-step-dots i{height:5px}
+body.bq-frontpage-focus .engagement-focus-chip{margin:0 0 9px;padding:7px 8px;border-radius:12px;gap:7px}
+body.bq-frontpage-focus .engagement-focus-chip>span{font-size:17px}
+body.bq-frontpage-focus .engagement-focus-chip small{font-size:6.5px}
+body.bq-frontpage-focus .engagement-focus-chip b{font-size:9px}
+body.bq-frontpage-focus .engagement-focus-chip em{font-size:7.5px}
+body.bq-frontpage-focus .today-journey-actions{gap:6px}
+body.bq-frontpage-focus .today-journey-actions button{min-height:44px;padding:10px 12px;border-radius:14px}
+body.bq-frontpage-focus .journey-primary{font-size:11px!important}
+
+body.bq-frontpage-focus .journey-path-card{padding:10px;border-radius:18px}
+body.bq-frontpage-focus .journey-card-head{gap:8px}
+body.bq-frontpage-focus .journey-card-head small{font-size:7px}
+body.bq-frontpage-focus .journey-card-head b{font-size:11px}
+body.bq-frontpage-focus .journey-card-head button{min-height:40px;padding:7px 9px;font-size:8px}
+body.bq-frontpage-focus .journey-path-scroll{gap:2px;padding:9px 0 5px;scroll-snap-type:x proximity}
+body.bq-frontpage-focus .journey-node{flex:0 0 56px;scroll-snap-align:center}
+body.bq-frontpage-focus .journey-node>span{width:34px;height:34px;font-size:17px}
+body.bq-frontpage-focus .journey-node>i{top:16px;width:62px;height:3px}
+body.bq-frontpage-focus .journey-node b{font-size:7px;margin-top:4px;white-space:normal;line-height:1.1}
+body.bq-frontpage-focus .journey-node small{font-size:6.5px}
+body.bq-frontpage-focus .journey-path-card>p{font-size:7px;line-height:1.35;margin-top:2px}
+body.bq-frontpage-focus .journey-season,body.bq-frontpage-focus .journey-season-empty{padding:10px 11px;border-radius:17px;gap:9px}
+body.bq-frontpage-focus .journey-season>span,body.bq-frontpage-focus .journey-season-empty>span{font-size:23px}
+body.bq-frontpage-focus .journey-season b,body.bq-frontpage-focus .journey-season-empty b{font-size:11px}
+body.bq-frontpage-focus .journey-mini-row{gap:6px}
+body.bq-frontpage-focus .journey-mini-row button{min-height:42px;padding:8px;border-radius:13px;font-size:9px}
+
+body.bq-frontpage-focus .modern-label{margin:14px 2px 7px}
+body.bq-frontpage-focus .modern-label span{font-size:17px}
+body.bq-frontpage-focus .modern-label small{font-size:9px}
+body.bq-frontpage-focus .modern-hubs{gap:8px}
+body.bq-frontpage-focus .modern-hub{min-height:98px;padding:12px;border-radius:18px;box-shadow:0 7px 20px rgba(42,57,47,.05)}
+body.bq-frontpage-focus .modern-hub>span{font-size:24px}
+body.bq-frontpage-focus .modern-hub b{font-size:14px;margin-top:8px}
+body.bq-frontpage-focus .modern-hub small{font-size:9px}
+body.bq-frontpage-focus .modern-hub>i{font-size:20px}
+body.bq-frontpage-focus .modern-footer-row{margin:12px 2px 2px;padding:8px 2px;font-size:8px}
+
+.bottom{height:62px;min-height:62px;padding-bottom:env(safe-area-inset-bottom)}
+.navbtn{min-width:0;min-height:44px;padding:4px 2px;font-size:8px;line-height:1.05}
+.navbtn b{font-size:18px;margin-bottom:1px}
+.bq-transform-overlay{inset:0 0 calc(62px + env(safe-area-inset-bottom)) 0}
+
+.modern-sheet-panel{max-height:min(82dvh,690px);padding-left:12px;padding-right:12px}
+.modern-sheet-list>button{min-height:58px;padding:9px;border-radius:15px;grid-template-columns:38px minmax(0,1fr) auto;gap:9px}
+.modern-sheet-list>button>span{width:38px;height:38px;font-size:19px;border-radius:11px}
+.modern-sheet-list b{font-size:12px}
+.modern-sheet-list small{font-size:8px}
+
+@media(max-width:430px){
+  .app{padding-left:12px;padding-right:12px}
+  body.bq-frontpage-focus .topbar{position:relative;z-index:2}
+  body.bq-frontpage-focus .modern-home{padding-bottom:4px}
+  body.bq-frontpage-focus .today-journey-top h2{font-size:21px}
+  body.bq-frontpage-focus .journey-streak{min-width:56px}
+  body.bq-frontpage-focus .modern-hubs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.bq-frontpage-focus .modern-hub{min-width:0}
+  body.bq-frontpage-focus .modern-footer-row{display:grid;grid-template-columns:1fr;text-align:center;gap:3px}
+  .bottom{width:100%}
+  .navbtn{font-size:7.5px}
+  .navbtn b{font-size:17px}
+}
+
+@media(max-width:360px){
+  .app{padding-left:10px;padding-right:10px}
+  body.bq-frontpage-focus .today-journey-card{padding:12px;border-radius:19px}
+  body.bq-frontpage-focus .today-journey-top{grid-template-columns:minmax(0,1fr) 52px;gap:7px}
+  body.bq-frontpage-focus .today-journey-top h2{font-size:19px}
+  body.bq-frontpage-focus .today-journey-top p{font-size:9px}
+  body.bq-frontpage-focus .journey-streak{min-width:52px;padding:6px}
+  body.bq-frontpage-focus .journey-node{flex-basis:52px}
+  body.bq-frontpage-focus .journey-node>i{width:58px}
+  body.bq-frontpage-focus .modern-hub{min-height:92px;padding:10px}
+  body.bq-frontpage-focus .modern-hub>span{font-size:22px}
+  body.bq-frontpage-focus .modern-hub b{font-size:13px}
+  .bottom{height:58px;min-height:58px}
+  .bq-transform-overlay{inset:0 0 calc(58px + env(safe-area-inset-bottom)) 0}
+}
+
+@media(orientation:landscape) and (max-height:520px){
+  .bottom{height:54px;min-height:54px}
+  .navbtn b{display:inline;font-size:15px;margin-right:4px}
+  body.bq-frontpage-focus .app{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
