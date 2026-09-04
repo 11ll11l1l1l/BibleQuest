@@ -18,6 +18,13 @@
     form.appendChild(a);
   }
 
+  function alignPasswordFields(){
+    document.querySelectorAll('[data-account-register] input[name="password"], [data-account-password] input[name="new_password"], .bq-recovery-card input[name="password"], .bq-recovery-card input[name="confirm"]').forEach(input=>{
+      input.minLength=10;
+      if(input.name==='password'&&input.closest('[data-account-register]'))input.placeholder='At least 10 characters';
+    });
+  }
+
   function securityFeedback(form,text,error=false){
     let box=form.querySelector('.bq-security-feedback');
     if(!box){box=document.createElement('div');box.className='bq-security-feedback';form.appendChild(box)}
@@ -119,6 +126,7 @@
 
   function scan(){
     injectRecoveryLink();
+    alignPasswordFields();
     enhanceHome();
     enhanceWorld();
   }
