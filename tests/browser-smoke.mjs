@@ -4,33 +4,48 @@ import assert from 'node:assert/strict';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 
+async function closeInnovation(id) {
+  const layer = page.locator(`#${id}`);
+  if (await layer.count()) {
+    const close = layer.locator('[data-study-close],[data-mission-close],[data-world-close],[data-explorer-close],[data-workspace-close],[data-room-close],[data-challenge-close],[data-couple-cloud-close]').first();
+    if (await close.count()) await close.click();
+  }
+}
+
 try {
   await page.goto('http://127.0.0.1:4173', { waitUntil: 'networkidle' });
   await page.waitForSelector('.modern-home');
 
   assert.equal(await page.locator('.modern-hub').count(), 4, 'Home should expose exactly four primary hubs');
-  assert.match(await page.locator('.modern-home').innerText(), /Daily 5/);
-  assert.match(await page.locator('.modern-home').innerText(), /Play/);
-  assert.match(await page.locator('.modern-home').innerText(), /Read/);
-  assert.match(await page.locator('.modern-home').innerText(), /Grow/);
-  assert.match(await page.locator('.modern-home').innerText(), /Together/);
+  for (const label of ['Daily 5','Play','Read','Grow','Together']) assert.match(await page.locator('.modern-home').innerText(), new RegExp(label));
   const oldStackDisplay = await page.locator('.feature-stack').evaluate(el => getComputedStyle(el).display);
   assert.equal(oldStackDisplay, 'none', 'Legacy feature catalog should be visually hidden on modern Home');
 
   await page.locator('[data-modern-sources]').click();
   await page.waitForSelector('.modern-sheet:not(.hidden)');
-  assert.match(await page.locator('.modern-source-list').innerText(), /Berean Standard Bible/);
-  assert.match(await page.locator('.modern-source-list').innerText(), /Open Bible Stories/);
+  const sources = await page.locator('.modern-source-list').innerText();
+  assert.match(sources, /Berean Standard Bible/);
+  assert.match(sources, /Tagalog ULB/);
+  assert.match(sources, /New Living Translation/);
+  assert.match(sources, /Open Bible Stories/);
   await page.locator('.modern-sheet-head [data-modern-close]').click();
 
+  // Play hub: existing source-grounded game + new Characters & Places explorer.
   await page.locator('[data-modern-hub="play"]').click();
   await page.waitForSelector('.modern-sheet:not(.hidden)');
-  assert.match(await page.locator('.modern-sheet-list').innerText(), /Who Said It/);
+  assert.match(await page.locator('.modern-sheet-list').innerText(), /Characters & Places/);
   await page.getByRole('button', { name: /Who Said It/ }).click();
   await page.waitForSelector('[data-speaker-answer]', { timeout: 15000 });
   assert.match(await page.locator('.extra-panel').innerText(), /BSB|Berean Standard Bible/);
   assert.ok((await page.locator('.speaker-verse').innerText()).length > 12, 'Who Said It should display actual Bible text');
   await page.locator('[data-extra-close]').click();
+
+  await page.locator('[data-modern-hub="play"]').click();
+  await page.getByRole('button', { name: /Characters & Places/ }).click();
+  await page.waitForSelector('#bqExplorerLayer:not(.hidden)');
+  assert.match(await page.locator('#bqExplorerLayer').innerText(), /Who Am I/);
+  assert.match(await page.locator('#bqExplorerLayer').innerText(), /Where Is It/);
+  await page.locator('#bqExplorerLayer [data-explorer-close]').click();
 
   await page.locator('[data-modern-review]').click();
   await page.waitForSelector('.open-review-overlay.open');
@@ -46,14 +61,59 @@ try {
   const closeReview = page.locator('[data-open-review-close]').first();
   if (await closeReview.count()) await closeReview.click();
 
+  // Read hub: primary translations, Tagalog bundled reader, Guided Study, Workspace.
   await page.locator('[data-modern-hub="read"]').click();
+  const readHubText = await page.locator('.modern-sheet-list').innerText();
+  assert.match(readHubText, /Guided Study/);
+  assert.match(readHubText, /Bible Workspace/);
   await page.getByRole('button', { name: /Bible Reader/ }).click();
   await page.waitForSelector('[data-reader-book="GEN"]', { timeout: 15000 });
   await page.locator('[data-reader-book="GEN"]').first().click();
   await page.waitForSelector('.verse-list', { timeout: 15000 });
-  assert.match(await page.locator('.reader-panel').innerText(), /BSB|Berean Standard Bible/);
-  assert.ok((await page.locator('.verse-list').innerText()).length > 100, 'Reader should display Bible text');
+  await page.waitForSelector('#bqTranslationSelect');
+  const versionOptions = await page.locator('#bqTranslationSelect').innerText();
+  for (const label of ['BSB','TGL','NLT']) assert.match(versionOptions, new RegExp(label));
+  assert.ok((await page.locator('.verse-list p[data-verse]').count()) >= 20, 'BSB verses should expose verse IDs for highlights');
+  assert.ok((await page.locator('.verse-list').innerText()).length > 100, 'Reader should display BSB text');
+
+  await page.locator('#bqTranslationSelect').selectOption('TGL');
+  await page.waitForFunction(() => document.querySelector('.verse-list')?.dataset?.bqScripture === 'TGL', null, { timeout: 15000 });
+  assert.match(await page.locator('.reader-panel').innerText(), /Tagalog Unlocked Literal Bible|banal na Bibliya/);
+  assert.ok((await page.locator('.verse-list').innerText()).length > 100, 'Tagalog reader should display bundled Scripture text');
   await page.locator('[data-reader-close]').first().click();
+
+  await page.locator('[data-modern-hub="read"]').click();
+  await page.getByRole('button', { name: /Guided Study/ }).click();
+  await page.waitForSelector('#bqStudyLayer:not(.hidden)');
+  assert.match(await page.locator('#bqStudyLayer').innerText(), /Read.*Observe.*Understand.*Discuss.*Apply.*Pray/s);
+  await page.locator('#bqStudyLayer [data-study-track]').first().click();
+  await page.waitForSelector('#bqStudyLayer [data-bq-scripture="BSB"]', { timeout: 15000 });
+  assert.ok((await page.locator('#bqStudyLayer [data-bq-scripture="BSB"]').innerText()).length > 100, 'Guided Study should open actual BSB Scripture');
+  await page.locator('#bqStudyLayer [data-study-list]').click();
+  await page.locator('#bqStudyLayer [data-study-close]').click();
+
+  await page.locator('[data-modern-hub="read"]').click();
+  await page.getByRole('button', { name: /Bible Workspace/ }).click();
+  await page.waitForSelector('#bqWorkspaceLayer:not(.hidden)');
+  assert.match(await page.locator('#bqWorkspaceLayer').innerText(), /Sign in.*cloud Bible workspace/s);
+  await page.locator('#bqWorkspaceLayer [data-workspace-close]').click();
+
+  // Grow hub: adaptive Mission + visual Bible World without adding Home clutter.
+  await page.locator('[data-modern-hub="grow"]').click();
+  const growText = await page.locator('.modern-sheet-list').innerText();
+  assert.match(growText, /My Mission/);
+  assert.match(growText, /Bible World/);
+  await page.getByRole('button', { name: /My Mission/ }).click();
+  await page.waitForSelector('#bqMissionLayer:not(.hidden)');
+  assert.match(await page.locator('#bqMissionLayer').innerText(), /PERSONAL.*6 MINUTES/s);
+  await page.locator('#bqMissionLayer [data-mission-close]').click();
+
+  await page.locator('[data-modern-hub="grow"]').click();
+  await page.getByRole('button', { name: /Bible World/ }).click();
+  await page.waitForSelector('#bqWorldLayer:not(.hidden)');
+  assert.match(await page.locator('#bqWorldLayer').innerText(), /Creation & Beginnings/);
+  assert.match(await page.locator('#bqWorldLayer').innerText(), /Jesus & Gospels/);
+  await page.locator('#bqWorldLayer [data-world-close]').click();
 
   // Existing couples flow remains available inside the streamlined Together hub.
   await page.locator('[data-modern-hub="together"]').click();
@@ -62,6 +122,31 @@ try {
   assert.match(await page.locator('.couples-panel').innerText(), /Hindi contest ang marriage/);
   assert.match(await page.locator('.couples-panel').innerText(), /Listen First/);
   await page.locator('[data-couples-close]').click();
+
+  // New cloud-oriented Together features degrade safely on localhost instead of writing production data.
+  await page.locator('[data-modern-hub="together"]').click();
+  assert.match(await page.locator('.modern-sheet-list').innerText(), /Live BibleQuest Room/);
+  assert.match(await page.locator('.modern-sheet-list').innerText(), /Church Challenges/);
+  assert.match(await page.locator('.modern-sheet-list').innerText(), /Couple Journey/);
+  await page.getByRole('button', { name: /Live BibleQuest Room/ }).click();
+  await page.waitForSelector('#bqRoomLayer:not(.hidden)');
+  assert.match(await page.locator('#bqRoomLayer').innerText(), /Sign in required/);
+  await page.locator('#bqRoomLayer [data-room-close]').click();
+
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Church Challenges/ }).click();
+  await page.waitForSelector('#bqChallengeLayer:not(.hidden)');
+  const challenges = await page.locator('#bqChallengeLayer').innerText();
+  assert.match(challenges, /7-Day Gospel Challenge/);
+  assert.match(challenges, /30-Day Proverbs Challenge/);
+  assert.match(challenges, /Acts Month/);
+  await page.locator('#bqChallengeLayer [data-challenge-close]').click();
+
+  await page.locator('[data-modern-hub="together"]').click();
+  await page.getByRole('button', { name: /Couple Journey/ }).click();
+  await page.waitForSelector('#bqCoupleCloudLayer:not(.hidden)');
+  assert.match(await page.locator('#bqCoupleCloudLayer').innerText(), /Sign in to use|Link two BibleQuest accounts/);
+  await page.locator('#bqCoupleCloudLayer [data-couple-cloud-close]').click();
 
   // Congregation leaderboard has real period switching and eight ranking lanes.
   await page.locator('[data-modern-hub="together"]').click();
@@ -133,7 +218,7 @@ try {
   await page.locator('[data-community-home]').click();
   await page.locator('[data-community-close]').click();
 
-  console.log('BibleQuest congregation + streamlined mobile browser smoke test passed');
+  console.log('BibleQuest innovation + congregation + translations mobile smoke test passed');
 } finally {
   await browser.close();
 }
