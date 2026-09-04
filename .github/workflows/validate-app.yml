@@ -46,6 +46,8 @@ jobs:
           node --check community.js
           node --check community-bridge.js
           node --check cloud-config.js
+          node --check account.js
+          node --check notes.js
           node --check cloud.js
           node --check group-play.js
           node --check modern-home.js
@@ -56,11 +58,16 @@ jobs:
         run: node scripts/content-audit.js
       - name: Check cloud security invariants
         run: |
-          grep -q "enabled: false" cloud-config.js
-          ! grep -Eiq "service[_-]?role|sb_secret_" cloud-config.js
+          grep -q "enabled: !BQ_LOCAL_HOSTS.has(location.hostname)" cloud-config.js
+          grep -q "authMode: 'email-password'" cloud-config.js
+          grep -q "sb_publishable_" cloud-config.js
+          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js notes.js cloud.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
           grep -q "security invoker" supabase/cloud-stage.sql
           grep -q "revoke all on public.bible_congregation_invites from anon, authenticated" supabase/cloud-stage.sql
+          grep -q "bible_progress_snapshots" account.js
+          grep -q "bible_notes" notes.js
+          grep -q "bible_devices" account.js
       - name: Check required static files
         run: |
-          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css modern-home.css app.js reader.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js cloud.js group-play.js source-labels.js ui-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js notes.js cloud.js group-play.js source-labels.js ui-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
