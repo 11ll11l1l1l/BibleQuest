@@ -7,6 +7,9 @@ on:
       - "scripts/build_story_packs.py"
       - "scripts/build_tagalog_packs.py"
       - "scripts/build_original_language_packs.py"
+      - "scripts/apply-doctrinal-safety.py"
+      - "scripts/doctrinal-audit.js"
+      - "data/doctrinal-safety.js"
       - ".github/workflows/refresh-content.yml"
   workflow_dispatch:
   schedule:
@@ -34,13 +37,19 @@ jobs:
           python3 scripts/build_story_packs.py
           python3 scripts/build_tagalog_packs.py
           python3 scripts/build_original_language_packs.py
+      - name: Apply doctrinal safety filter
+        run: |
+          python3 scripts/apply-doctrinal-safety.py
+          node scripts/verify-safety-smoke.js
+          node scripts/doctrinal-audit.js
+          node scripts/content-audit.js
       - name: Report pack sizes
         run: |
           echo "### BibleQuest content pack" >> "$GITHUB_STEP_SUMMARY"
-          du -h data/library/* data/library/translations/* data/packs/* data/packs/*/* 2>/dev/null | sort -h | tee -a "$GITHUB_STEP_SUMMARY"
+          du -h data/library/* data/library/translations/* data/packs/* data/packs/*/* data/quarantine/questions/* 2>/dev/null | sort -h | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Commit refreshed content
         run: |
-          git add data/library data/packs
+          git add data/library data/packs data/quarantine
           if git diff --cached --quiet; then
             echo "No resource changes detected."
             exit 0
