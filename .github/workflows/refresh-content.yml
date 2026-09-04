@@ -2,6 +2,8 @@ name: Refresh BibleQuest content pack
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "scripts/build_content_pack.py"
       - "scripts/build_story_packs.py"
