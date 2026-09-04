@@ -1,7 +1,7 @@
 (() => {
   const KEY='biblequest_avatar_style_v1',UNLOCK_KEY='biblequest_avatar_unlocks_v1';let selected=localStorage.getItem(KEY)||'starter',patched=false,cloudCounts={assignments:0};
   const account=()=>window.BQAccount,client=()=>account()?.client?.(),session=()=>account()?.session?.();
-  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const STYLES=[
     {id:'starter',icon:'🌱',name:'Fresh Start',req:'Available from the beginning',test:()=>true,progress:()=> 'Ready'},
     {id:'sakura',icon:'🌸',name:'Sakura Pilgrim',req:'Reach a 7-day learning streak',test:m=>m.streak>=7,progress:m=>`${Math.min(m.streak,7)}/7 streak days`},
