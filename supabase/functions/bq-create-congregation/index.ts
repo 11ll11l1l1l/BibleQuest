@@ -6,11 +6,14 @@ Deno.serve(async(req:Request)=>{
   try{
     const admin=adminClient();const user=await requireUser(req,admin);const body=await parseJson(req);
     const name=cleanText(body?.name,100);if(name.length<2)return json({error:'Congregation name must be at least 2 characters'},400);
-    const profile=await admin.from('bible_profiles').select('display_name').eq('user_id',user.id).maybeSingle();
-    const memberName=displayName(user,profile.data?.display_name);
+    const profile=await admin.from('bible_profiles').select('display_name,preferred_name,avatar,onboarding_complete').eq('user_id',user.id).maybeSingle();
+    if(profile.error)throw profile.error;
+    if(!profile.data?.onboarding_complete)return json({error:'Complete your BibleQuest profile before creating a congregation'},409);
+    const memberName=displayName(user,profile.data?.preferred_name||profile.data?.display_name);
+    const avatar=profile.data?.avatar||{face:'smile',outfit:'traveler',background:'olive',companion:'sheep'};
     const {data:congregation,error:createError}=await admin.from('bible_congregations').insert({owner_id:user.id,name,timezone:cleanText(body?.timezone||'Asia/Tokyo',64)}).select('id,name,timezone,owner_id').single();
     if(createError)throw createError;
-    const {error:memberError}=await admin.from('bible_congregation_members').insert({congregation_id:congregation.id,user_id:user.id,role:'admin',display_name:memberName,active:true});
+    const {error:memberError}=await admin.from('bible_congregation_members').insert({congregation_id:congregation.id,user_id:user.id,role:'admin',display_name:memberName,avatar,active:true});
     if(memberError){await admin.from('bible_congregations').delete().eq('id',congregation.id);throw memberError}
     const code=inviteCode();const codeHash=await sha256(code);const expires=new Date(Date.now()+30*86400000).toISOString();
     const {error:inviteError}=await admin.from('bible_congregation_invites').insert({congregation_id:congregation.id,code_hash:codeHash,created_by:user.id,max_uses:100,expires_at:expires,active:true});
