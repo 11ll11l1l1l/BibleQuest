@@ -55,11 +55,11 @@ try{
   assert.ok((await page.locator('.verse-list').innerText()).length>100);
   await page.locator('[data-reader-close]').first().click();
 
-  // The old My Mission route is consolidated into Today's Journey.
+  // Grow hub exposes the current mission route and Bible World.
   await page.locator('[data-modern-hub="grow"]').click();
   const grow=await page.locator('.modern-sheet-list').innerText();
-  assert.match(grow,/Today’s Journey|Today's Journey/);assert.match(grow,/Bible World/);
-  await page.getByRole('button',{name:/Today.s Journey/}).click();
+  assert.match(grow,/My Mission/);assert.match(grow,/Bible World/);
+  await page.getByRole('button',{name:/My Mission/}).click();
   await page.waitForSelector('#bqJourneyLoop:not(.hidden) .journey-task');
   assert.equal(await page.locator('#bqJourneyLoop .journey-task').count(),5);
   await page.locator('#bqJourneyLoop [data-journey-close]').click();
