@@ -32,10 +32,17 @@ assert.match(recovery,/old recovery code is no longer valid/i, 'Successful recov
 assert.match(tutorial,/Daily Journey/, 'Post-registration tutorial must explain the Daily Journey');
 assert.match(tutorial,/recovery code/i, 'Post-registration tutorial must explain and require recovery-code handling');
 assert.match(tutorial,/data-bq-english/, 'Tutorial must remain English even when the app UI is Taglish');
+assert.match(tutorial,/role="dialog"/, 'Tutorial must expose dialog semantics');
+assert.match(tutorial,/aria-modal="true"/, 'Tutorial must be announced as modal');
+assert.match(tutorial,/aria-labelledby="bqtTitle"/, 'Tutorial dialog must have an accessible name');
+assert.match(tutorial,/root\.addEventListener\('keydown',handleKey\)/, 'Tutorial must contain keyboard navigation inside the modal');
+assert.match(tutorial,/e\.key==='Escape'/, 'Tutorial must support Escape after recovery-code acknowledgement');
+assert.match(tutorial,/opener&&opener\.isConnected/, 'Tutorial must restore focus to the opener when possible');
+assert.match(tutorial,/recoveryCode&&index===0&&!saved/, 'Recovery-code acknowledgement must not be bypassable with Escape');
 assert.match(index,/<script src="onboarding-tutorial\.js"><\/script>/, 'Production index must actually load the onboarding tutorial');
 assert.match(uiTaglish,/closest\('\[data-bq-english\]/, 'Global Taglish translation must skip explicitly English account/tutorial surfaces');
 assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 'Recovery codes must never be written to browser console logs');
 assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
 assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
-console.log('Immediate signup, rotating recovery-code, canonical password security, protected English onboarding, and recovery-code privacy static smoke passed');
+console.log('Immediate signup, rotating recovery-code, canonical password security, protected English onboarding, modal keyboard access, and recovery-code privacy static smoke passed');
