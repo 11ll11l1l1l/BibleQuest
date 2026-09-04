@@ -5,8 +5,10 @@ on:
     paths:
       - "*.js"
       - "*.css"
+      - "*.svg"
       - "data/**"
       - "index.html"
+      - "manifest.webmanifest"
       - "sw.js"
       - "tests/**"
       - ".github/workflows/browser-smoke.yml"
@@ -14,8 +16,10 @@ on:
     paths:
       - "*.js"
       - "*.css"
+      - "*.svg"
       - "data/**"
       - "index.html"
+      - "manifest.webmanifest"
       - "sw.js"
       - "tests/**"
       - ".github/workflows/browser-smoke.yml"
