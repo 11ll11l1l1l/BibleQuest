@@ -1,0 +1,64 @@
+(() => {
+  let lastFocus=null,wasOpen=false,queued=false;
+  const visible=el=>Boolean(el&&!el.classList.contains('hidden')&&el.getClientRects().length);
+  const focusables=el=>[...el.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(visible);
+
+  function labelPath(root=document){
+    root.querySelectorAll('.journey-path-scroll').forEach(strip=>{
+      const nodes=[...strip.querySelectorAll('.journey-node')];
+      nodes.forEach(node=>{
+        const name=node.querySelector('b')?.textContent?.trim()||'Bible Journey marker';
+        const progress=node.querySelector('small')?.textContent?.trim()||'';
+        const current=node.classList.contains('current');
+        if(current)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
+        node.setAttribute('aria-label',`${name}${progress?`, ${progress} explored`:''}${current?', current next path marker':''}`);
+      });
+      if(!strip.getAttribute('aria-label'))strip.setAttribute('aria-label','Bible Journey progression path');
+    });
+  }
+
+  function enhanceLayer(){
+    const layer=document.getElementById('bqJourneyLoop');
+    const open=visible(layer);
+    if(!layer){wasOpen=false;return}
+    layer.setAttribute('role','dialog');
+    layer.setAttribute('aria-modal','true');
+    layer.setAttribute('aria-label','Daily Journey');
+    if(open&&!wasOpen){
+      lastFocus=document.activeElement instanceof HTMLElement?document.activeElement:null;
+      requestAnimationFrame(()=>{
+        const preferred=layer.querySelector('[data-journey-close]')||focusables(layer)[0];
+        preferred?.focus?.({preventScroll:true});
+      });
+    } else if(!open&&wasOpen&&lastFocus?.isConnected){
+      lastFocus.focus?.({preventScroll:true});
+      lastFocus=null;
+    }
+    wasOpen=open;
+  }
+
+  function refresh(){
+    if(queued)return;queued=true;
+    requestAnimationFrame(()=>{queued=false;labelPath();enhanceLayer()});
+  }
+
+  document.addEventListener('keydown',e=>{
+    const layer=document.getElementById('bqJourneyLoop');
+    if(!visible(layer)||!layer.contains(e.target))return;
+    if(e.key==='Escape'){
+      const close=layer.querySelector('[data-journey-close]');
+      if(close){e.preventDefault();close.click()}
+      return;
+    }
+    if(e.key!=='Tab')return;
+    const items=focusables(layer);if(!items.length)return;
+    const first=items[0],last=items[items.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  });
+
+  new MutationObserver(refresh).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  window.addEventListener('bq-modern-home-rendered',refresh);
+  document.addEventListener('DOMContentLoaded',refresh);
+  refresh();
+})();

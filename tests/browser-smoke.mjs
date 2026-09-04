@@ -20,6 +20,8 @@ try{
   assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none','legacy Keep growing hero must not precede the Daily Journey on mobile');
   assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none','legacy XP strip must not consume the first mobile viewport');
   assert.match(await page.locator('.today-journey-card').innerText(),/Continue My Journey|Journey complete/);
+  assert.equal(await page.locator('.journey-node[aria-current="step"]').count(),1,'Bible Journey path should expose exactly one current marker to assistive technology');
+  assert.match(await page.locator('.journey-node[aria-current="step"]').getAttribute('aria-label'),/current next path marker/i);
 
   // Production mobile geometry: no pinch-zoom should be needed at a 360px viewport.
   const geometry=await page.evaluate(()=>({
@@ -44,10 +46,18 @@ try{
 
   // First visit must land directly on the Daily Journey. Personal focus is opt-in, not a blocking modal.
   assert.equal(await page.locator('#bqFrontStruggle:not(.hidden)').count(),0,'personal focus must not block the Daily Journey');
-  await page.locator('.today-journey-card [data-journey-support]').click();
+  const supportButton=page.locator('.today-journey-card [data-journey-support]');
+  await supportButton.focus();
+  await supportButton.click();
   await page.waitForSelector('#bqJourneyLoop:not(.hidden)');
   assert.match(await page.locator('#bqJourneyLoop').innerText(),/What are you carrying today\?/i);
   assert.match(await page.locator('#bqJourneyLoop').innerText(),/Anxiety \/ Worry/);
+  assert.equal(await page.locator('#bqJourneyLoop').getAttribute('role'),'dialog','Journey overlay must expose dialog semantics');
+  assert.equal(await page.locator('#bqJourneyLoop').getAttribute('aria-modal'),'true','Journey overlay must be marked modal');
+  await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-journey-close'));
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('#bqJourneyLoop.hidden');
+  await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-journey-support'));
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForSelector('.today-journey-card');
 
