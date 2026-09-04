@@ -59,6 +59,10 @@ const recoverable = held.stats.allow + held.stats.context;
 if (held.stats.total) {
   console.log(`Recoverable from current quarantine under policy v${policy.version}: ${recoverable}`);
   console.log(`Still requires quarantine: ${held.stats.quarantine}`);
+  if (held.stats.quarantine) {
+    console.log('\nRemaining hard-quarantine items:');
+    for (const x of held.examples.quarantine) console.log(`- ${x}`);
+  }
   if (recoverable) {
     console.log('\nSample recoverable items:');
     for (const x of [...held.examples.allow, ...held.examples.context].slice(0, 12)) console.log(`- ${x}`);
