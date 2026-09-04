@@ -3,7 +3,7 @@
   const STATE_KEY='biblequest_cloud_v1';
   const COMMUNITY_KEY='biblequest_community_v1';
   const APP_KEY='biblequest_state_v4';
-  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
   const parse=(v,f={})=>{try{return {...f,...JSON.parse(v||'{}')}}catch{return {...f}}};
   const enabled=()=>Boolean(CFG.enabled&&CFG.supabaseUrl&&CFG.publishableKey);
   const readState=()=>parse(localStorage.getItem(STATE_KEY),{activeCongregationId:'',syncedEventIds:[],lastInvite:'',message:'',error:''});
@@ -49,7 +49,18 @@
     if(!originalStandings&&api.standings){originalStandings=api.standings.bind(api);api.standings=(period='all',lane='overall')=>active&&remoteBoards[period]?.[lane]?remoteBoards[period][lane]:originalStandings(period,lane)}
     if(!originalAward&&api.awardPoints){originalAward=api.awardPoints.bind(api);api.awardPoints=(name,points,category='overall',source='activity',meta={})=>{originalAward(name,points,category,source,meta);if(enabled()&&session&&active)queueMicrotask(()=>syncLocal().catch(()=>{}))}}
   }
-  function refreshCommunityCopy(root){if(!root)return;const note=root.querySelector('.community-note');if(note)note.innerHTML=active?'<b>Cloud congregation active</b><p>Rankings are synced across signed-in devices. Only preferred names, avatars, trusted scores and earned badges are shared with the congregation.</p>':'<b>Congregation cloud ready</b><p>Create or join a congregation to turn on multi-device rankings. Private notes and account details stay outside congregation leaderboards.</p>';root.querySelectorAll('small').forEach(x=>{if(/local participants/i.test(x.textContent||''))x.textContent=active?`${members.length} cloud member${members.length===1?'':'s'}`:'No cloud congregation yet';if(/Based on scored activities on this device/i.test(x.textContent||''))x.textContent=active?'Trusted cloud-scored activities':'Local preview until you join a congregation'})}
+  function refreshCommunityCopy(root){
+    if(!root)return;
+    const note=root.querySelector('.community-note');
+    const noteHtml=active?'<b>Cloud congregation active</b><p>Rankings are synced across signed-in devices. Only preferred names, avatars, trusted scores and earned badges are shared with the congregation.</p>':'<b>Congregation cloud ready</b><p>Create or join a congregation to turn on multi-device rankings. Private notes and account details stay outside congregation leaderboards.</p>';
+    if(note&&note.innerHTML!==noteHtml)note.innerHTML=noteHtml;
+    root.querySelectorAll('small').forEach(x=>{
+      const current=x.textContent||'';let next='';
+      if(/local participants|cloud members?/i.test(current))next=active?`${members.length} cloud member${members.length===1?'':'s'}`:'No cloud congregation yet';
+      else if(/Based on scored activities on this device|Trusted cloud-scored activities|Local preview until you join a congregation/i.test(current))next=active?'Trusted cloud-scored activities':'Local preview until you join a congregation';
+      if(next&&current!==next)x.textContent=next;
+    });
+  }
 
   async function syncLocal(){
     if(flushing||!client||!session||!active)return {synced:0};flushing=true;
