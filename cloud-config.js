@@ -1,6 +1,6 @@
 // BibleQuest shares the lightweight Karimen Supabase project to stay within the Free-plan two-project limit.
 // All BibleQuest database objects use the bible_* namespace and remain logically isolated from Karimen tables.
-// Publishable keys are intentionally browser-safe. Never place a Supabase secret/service-role key here.
+// This browser file contains only the public project URL and publishable key. Never place privileged credentials here.
 const BQ_LOCAL_HOSTS=new Set(['localhost','127.0.0.1','::1']);
 window.BQ_CLOUD_CONFIG = Object.freeze({
   enabled: !BQ_LOCAL_HOSTS.has(location.hostname),
