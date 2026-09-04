@@ -44,7 +44,8 @@ Deno.serve(async(req:Request)=>{
       }
       const scriptureRefs=(Array.isArray(body?.scriptureRefs)?body.scriptureRefs:[]).map((x:unknown)=>text(x,80)).filter(Boolean).slice(0,20);
       const points=Math.min(25,Math.max(0,Math.round(Number(body?.points)||5)));
-      const dueAt=body?.dueAt?new Date(String(body.dueAt)).toISOString():null;
+      let dueAt:string|null=null;
+      if(body?.dueAt){const due=new Date(String(body.dueAt));if(Number.isNaN(due.getTime()))return json({error:'Invalid assignment deadline'},400);dueAt=due.toISOString()}
       const made=await admin.from('bible_assignments').insert({congregation_id:congregationId,created_by:user.id,title,instructions,assignment_type:assignmentType,scripture_refs:scriptureRefs,target_scope:targetScope,target_id:targetScope==='all'?null:targetId,due_at:dueAt,points,metadata:{created_via:'bq-assignment'},active:true}).select('*').single();
       if(made.error)throw made.error;return json({assignment:made.data});
     }
@@ -57,18 +58,23 @@ Deno.serve(async(req:Request)=>{
 
     if(action==='start'||action==='complete'){
       if(!(await assignmentVisible(admin,assignment,user.id,member.role)))return json({error:'This assignment is not assigned to you'},403);
+      const previous=await admin.from('bible_assignment_progress').select('*').eq('assignment_id',assignment.id).eq('user_id',user.id).maybeSingle();
+      if(previous.error)throw previous.error;
+      if(action==='start'&&previous.data?.status==='completed')return json({progress:previous.data,awarded:0,alreadyCompleted:true});
+
       const completed=action==='complete',submission=text(body?.submission,4000);
-      const row={assignment_id:assignment.id,user_id:user.id,status:completed?'completed':'started',submission:submission||null,completed_at:completed?new Date().toISOString():null,updated_at:new Date().toISOString()};
+      const row={assignment_id:assignment.id,user_id:user.id,status:completed?'completed':'started',submission:completed?(submission||previous.data?.submission||null):(previous.data?.submission||null),completed_at:completed?(previous.data?.completed_at||new Date().toISOString()):null,updated_at:new Date().toISOString()};
       const saved=await admin.from('bible_assignment_progress').upsert(row,{onConflict:'assignment_id,user_id'}).select('*').single();
       if(saved.error)throw saved.error;
+
       let awarded=0;
-      if(completed&&Number(assignment.points)>0){
+      if(completed&&previous.data?.status!=='completed'&&Number(assignment.points)>0){
         const category=categoryFor(assignment.assignment_type),points=Math.min(25,Math.max(0,Number(assignment.points)||0));
         const score={congregation_id:congregationId,user_id:user.id,category,points,source:'Leader Assignment',source_event_id:`assignment:${assignment.id}`,metadata:{assignment_id:assignment.id,assignment_type:assignment.assignment_type,created_by:assignment.created_by}};
-        const inserted=await admin.from('bible_score_events').upsert(score,{onConflict:'congregation_id,user_id,source_event_id',ignoreDuplicates:true});
-        if(inserted.error)throw inserted.error;awarded=points;
+        const inserted=await admin.from('bible_score_events').upsert(score,{onConflict:'congregation_id,user_id,source_event_id',ignoreDuplicates:true}).select('source_event_id');
+        if(inserted.error)throw inserted.error;if((inserted.data||[]).length)awarded=points;
       }
-      return json({progress:saved.data,awarded});
+      return json({progress:saved.data,awarded,alreadyCompleted:previous.data?.status==='completed'});
     }
 
     if(action==='feedback'){
