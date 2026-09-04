@@ -1,5 +1,5 @@
 (() => {
-  let timer=null;
+  let timer=null,renderScheduled=false;
   async function sync(){
     const loop=window.BQJourneyLoop;if(!loop)return;
     const client=window.BQAccount?.client?.()||window.BQ_SUPABASE_CLIENT;if(!client)return;
@@ -24,10 +24,13 @@
     const daily=row.querySelector('[data-daily5-play]');if(daily&&!daily.dataset.bound){daily.dataset.bound='1';daily.onclick=()=>window.BQModernHome?.openHub?.('play')}
   }
   function refreshHome(){retargetHero();compatibilityActions()}
-  window.addEventListener('bq-journey-change',()=>{schedule();setTimeout(refreshHome,0)});
-  window.addEventListener('bq-account-profile',()=>{schedule();setTimeout(refreshHome,0)});
-  window.addEventListener('bq-modern-home-rendered',()=>setTimeout(refreshHome,0));
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{refreshHome();schedule()},800));
-  setTimeout(refreshHome,1200);
+  function queueRefresh(){if(renderScheduled)return;renderScheduled=true;requestAnimationFrame(()=>{renderScheduled=false;refreshHome()})}
+  window.addEventListener('bq-journey-change',()=>{schedule();queueRefresh()});
+  window.addEventListener('bq-account-profile',()=>{schedule();queueRefresh()});
+  window.addEventListener('bq-modern-home-rendered',queueRefresh);
+  const observer=new MutationObserver(()=>{if(document.querySelector('.bq-engagement-stack')||document.querySelector('.bq-pinoy-hero'))queueRefresh()});
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',()=>{queueRefresh();schedule()});
+  setTimeout(queueRefresh,500);
   window.BQJourneyCloud={sync};
 })();
