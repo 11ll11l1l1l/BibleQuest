@@ -6,6 +6,7 @@
   const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const isObject=v=>Boolean(v&&typeof v==='object'&&!Array.isArray(v));
   const finite=v=>Number.isFinite(Number(v));
+  const has=selector=>Boolean(document.querySelector(selector));
 
   function storageAvailable(){
     try{
@@ -70,8 +71,7 @@
 
   function showRecovery(feature,error){
     style();
-    const old=document.querySelector('.bq-operational-recovery');
-    if(old)old.remove();
+    document.querySelector('.bq-operational-recovery')?.remove();
     const box=document.createElement('section');
     box.className='bq-operational-recovery';
     box.setAttribute('role','alert');
@@ -157,14 +157,29 @@
   }
 
   const REQUIREMENTS={
+    'Daily 5':()=>has('[data-action="daily"]'),
+    'Smart Review':()=>has('[data-open-review]'),
+    'Quick Play':()=>has('[data-action="quick"]'),
+    'Who Said It?':()=>has('[data-who-said]'),
+    'What Happens Next?':()=>has('[data-story-next]'),
+    'Verse Order':()=>has('[data-sequence-open]'),
+    'Bible Detective':()=>has('[data-action="detective"]'),
     'Characters & Places':()=>typeof window.BQExplorer?.open==='function',
+    'Timeline':()=>has('[data-action="timeline"]'),
+    'Context Mode':()=>has('[data-action="context"]'),
+    'Bible Reader':()=>has('[data-reader-open]'),
     'Guided Study':()=>typeof window.BQStudy?.open==='function',
     'Hebrew & Greek Context':()=>typeof window.BQContextLab?.open==='function',
     'Bible Workspace':()=>typeof window.BQWorkspace?.open==='function',
+    'Story Journey':()=>has('[data-storyjourney-open]'),
+    'Recall Decks':()=>has('[data-action="decks"]'),
+    'Review Mistakes':()=>has('[data-action="review"]'),
     'My Mission':()=>typeof window.BQMission?.open==='function',
     'Bible World':()=>typeof window.BQWorld?.open==='function',
     'Avatar Vault':()=>typeof window.BQAvatarVault?.open==='function',
+    'Situations & Wisdom':()=>has('[data-action="situation"]'),
     'Transformation':()=>typeof window.BQ_TRANSFORMATION?.open==='function',
+    'Think Deeper':()=>has('[data-route="discuss"]'),
     'My Achievements':()=>typeof window.BQCommunity?.openBadges==='function',
     'Assignments & Tasks':()=>typeof window.BQAssignments?.open==='function',
     'Community Live':()=>typeof window.BQPresence?.open==='function',
@@ -172,20 +187,34 @@
     'Play Together':()=>typeof window.BQGroupPlay?.open==='function',
     'Church Challenges':()=>typeof window.BQChallenges?.open==='function',
     'Couple Journey':()=>typeof window.BQCoupleCloud?.open==='function',
+    'Grow Together':()=>has('[data-couples-open]'),
     'Leaderboards & Awards':()=>typeof window.BQCommunity?.openBoard==='function',
     'Congregation Badges':()=>typeof window.BQCommunity?.openBadges==='function',
     'Congregation Roster':()=>typeof window.BQCommunity?.openRoster==='function'
   };
 
+  const ACTIVE_LAYERS=[
+    ['Transformation','.bq-transform-overlay'],['BibleQuest Game','#bqExtraGameLayer:not(.hidden)'],['Bible Reader','.reader-app'],
+    ['Daily Journey','#bqJourneyLoop:not(.hidden)'],['Avatar Vault','#bqAvatarVault:not(.hidden)'],['Assignments & Tasks','#bqAssignmentLayer:not(.hidden)'],
+    ['Community Live','#bqPresenceLayer:not(.hidden)'],['Hebrew & Greek Context','#bqContextLab:not(.hidden)'],['Live BibleQuest Room','#bqRoomLayer:not(.hidden)']
+  ];
+
+  function markVisibleFeature(target){
+    for(const [name,selector] of ACTIVE_LAYERS){if(target.closest(selector)){markFeature(name);clearFeatureSoon();return true}}
+    return false;
+  }
+
   function preflightClick(e){
     const target=e.target instanceof Element?e.target:null;
     if(!target)return;
+    if(markVisibleFeature(target))return;
     const transformTab=target.closest('[data-transform-tab]');
     if(transformTab){
       if(typeof window.BQ_TRANSFORMATION?.open!=='function'){
         e.preventDefault();e.stopImmediatePropagation();showRecovery('Transformation',new Error('The Transformation module did not load.'));return
       }
-      repairTransformationState();
+      const state=repairTransformationState();
+      if(!state.ok){e.preventDefault();e.stopImmediatePropagation();showRecovery('Transformation',new Error(state.reason));return}
       markFeature('Transformation');clearFeatureSoon();
       return;
     }
@@ -194,7 +223,7 @@
     const label=item.querySelector('b')?.textContent?.trim()||'';
     const check=REQUIREMENTS[label];
     if(check&&!check()){
-      e.preventDefault();e.stopImmediatePropagation();showRecovery(label,new Error('This feature module did not load completely. The rest of BibleQuest can continue.'));
+      e.preventDefault();e.stopImmediatePropagation();showRecovery(label,new Error('This feature entry point did not load completely. The rest of BibleQuest can continue.'));
     }else if(label){markFeature(label);clearFeatureSoon()}
   }
 
