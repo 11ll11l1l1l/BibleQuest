@@ -1,0 +1,7 @@
+Runtime integration target for app.js:
+
+1. Load data/doctrinal-safety.js and data/doctrinal-context.js before opening imported Recall Decks.
+2. After fetchJson(pack.path), call BQ_DOCTRINAL_SAFETY.filterDeck(items).
+3. Use only result.allowed for normal study.
+4. If an allowed item has safety.action === 'context', show its primary topic context note before/with the answer.
+5. Never silently fall back to the raw unfiltered pack when the policy is unavailable; fail closed for imported decks.
