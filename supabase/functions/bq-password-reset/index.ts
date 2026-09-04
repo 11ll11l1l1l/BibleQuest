@@ -1,5 +1,6 @@
-const PRIMARY_ORIGIN='https://biblequest-7th.pages.dev';
+const PRIMARY_ORIGIN='https://mybiblequest.pages.dev';
 const LEGACY_ORIGIN='https://11ll11l1l1l.github.io';
-function allowed(origin:string){try{const u=new URL(origin);return u.protocol==='https:'&&(u.origin===LEGACY_ORIGIN||u.hostname==='biblequest-7th.pages.dev'||u.hostname.endsWith('.biblequest-7th.pages.dev'))}catch{return false}}
+const CLOUDFLARE_PROJECTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'];
+function allowed(origin:string){try{const u=new URL(origin);return u.protocol==='https:'&&(u.origin===LEGACY_ORIGIN||CLOUDFLARE_PROJECTS.some(host=>u.hostname===host||u.hostname.endsWith(`.${host}`)))}catch{return false}}
 function headers(req:Request){const origin=req.headers.get('Origin')||'',allow=allowed(origin)?origin:PRIMARY_ORIGIN;return {'Access-Control-Allow-Origin':allow,'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json','Vary':'Origin'}}
 Deno.serve((req:Request)=>{if(req.method==='OPTIONS')return new Response('ok',{headers:headers(req)});return new Response(JSON.stringify({error:'One-time recovery codes are retired. Use the Supabase Auth password-reset email flow.'}),{status:410,headers:headers(req)})});
