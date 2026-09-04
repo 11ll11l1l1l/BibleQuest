@@ -9,9 +9,11 @@ on:
       - "data/**"
       - "scripts/**"
       - "supabase/**"
+      - "tests/**"
       - "index.html"
       - "manifest.webmanifest"
       - ".github/workflows/validate-app.yml"
+      - ".github/workflows/browser-smoke.yml"
   pull_request:
     paths:
       - "*.js"
@@ -20,9 +22,11 @@ on:
       - "data/**"
       - "scripts/**"
       - "supabase/**"
+      - "tests/**"
       - "index.html"
       - "manifest.webmanifest"
       - ".github/workflows/validate-app.yml"
+      - ".github/workflows/browser-smoke.yml"
 
 jobs:
   validate:
