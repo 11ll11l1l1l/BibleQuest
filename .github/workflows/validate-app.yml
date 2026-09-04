@@ -31,6 +31,7 @@ jobs:
         run: |
           node --check app.js
           node --check reader.js
+          node --check translations.js
           node --check sequence.js
           node --check storyjourney.js
           node --check transformation.js
@@ -40,6 +41,7 @@ jobs:
           node --check learning-engine.js
           node --check open-review.js
           node --check ui-taglish.js
+          node --check account-taglish.js
           node --check source-labels.js
           node --check extra-games.js
           node --check couples.js
@@ -70,6 +72,7 @@ jobs:
           grep -q "bible_notes" notes.js
           grep -q "bible_devices" account.js
           grep -q "cloud-copy.js" sw.js
+          grep -q "account-taglish.js" sw.js
       - name: Check required static files
         run: |
-          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js notes.js cloud-copy.js cloud.js group-play.js source-labels.js ui-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js notes.js cloud-copy.js cloud.js group-play.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js manifest.webmanifest; do test -s "$f"; done
