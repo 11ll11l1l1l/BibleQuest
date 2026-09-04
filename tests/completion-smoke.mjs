@@ -15,9 +15,20 @@ try{
     assignments:Boolean(window.BQAssignments?.open),
     assignmentPush:Boolean(window.BQAssignmentPush?.refresh),
     presence:Boolean(window.BQPresence?.open),
-    avatars:Boolean(window.BQAvatarVault?.open)
+    avatars:Boolean(window.BQAvatarVault?.open),
+    pinoyHero:Boolean(window.BQPinoyHero?.render)
   }));
-  assert.deepEqual(modules,{context:true,assignments:true,assignmentPush:true,presence:true,avatars:true},'completion-stage modules should load');
+  assert.deepEqual(modules,{context:true,assignments:true,assignmentPush:true,presence:true,avatars:true,pinoyHero:true},'completion-stage modules should load');
+
+  await page.waitForSelector('.bq-pinoy-hero .bq-pinoy-hero-art');
+  const heroText=await page.locator('.bq-pinoy-hero').innerText();
+  assert.match(heroText,/PINOY IN JAPAN · BIBLEQUEST/);
+  assert.match(heroText,/Different places\. Same Jesus\. One family\./);
+  assert.match(heroText,/Shiba-Sheep/);
+  assert.match(heroText,/My Mission/);
+  const heroBg=await page.locator('.bq-pinoy-hero-art').evaluate(el=>getComputedStyle(el).backgroundImage);
+  assert.match(heroBg,/bq-pinoy-japan-hero\.svg/,'real Pinoy-in-Japan artwork should be wired into the Home hero');
+  assert.equal(await page.locator('body.bq-modern-home > .app .hero:visible').count(),0,'legacy generic hero should be hidden on modern Home');
 
   const contextManifest=await page.evaluate(()=>fetch('data/packs/context/manifest.json').then(r=>r.json()));
   assert.equal(contextManifest.books?.length,66,'all 66 original-language context packs should be discoverable');
