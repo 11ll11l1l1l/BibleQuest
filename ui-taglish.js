@@ -34,7 +34,7 @@
     const p=node.parentElement;
     if(!p) return true;
     if(['SCRIPT','STYLE','TEXTAREA'].includes(p.tagName)) return true;
-    return !!p.closest('.verse-list,.open-answer,.source-content,[data-bq-scripture],[data-bq-source-content]');
+    return !!p.closest('[data-bq-english],.verse-list,.open-answer,.source-content,[data-bq-scripture],[data-bq-source-content]');
   };
 
   function translateText(text){
@@ -47,10 +47,12 @@
 
   function apply(root=document.body){
     if(getLang()!=='taglish' || !root) return;
+    if(root.nodeType===1&&root.closest?.('[data-bq-english]'))return;
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
     const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(n=>{ if(!shouldSkip(n)) { const next=translateText(n.nodeValue); if(next!==n.nodeValue)n.nodeValue=next; } });
     root.querySelectorAll?.('input[placeholder]').forEach(i=>{
+      if(i.closest('[data-bq-english]'))return;
       const p=i.getAttribute('placeholder');
       if(p==='Search Bible books…'||p==='Choose a Bible book…')i.setAttribute('placeholder','Hanapin ang Bible book…');
       if(p==='Search Bible books…')i.setAttribute('placeholder','Hanapin ang Bible book…');
