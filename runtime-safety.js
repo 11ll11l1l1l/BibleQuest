@@ -16,7 +16,8 @@
     const safety = clean.safety || {};
     if (safety.action !== 'context') return clean;
     const topic = safety.topics?.[0];
-    const note = topic && window.BQ_DOCTRINAL_CONTEXT?.[topic];
+    const notes = window.BQ_DOCTRINAL_CONTEXT || {};
+    const note = (topic && notes[topic]) || notes.default;
     if (!note) return clean;
     const answer = String(clean.a || '').trim();
     return {
