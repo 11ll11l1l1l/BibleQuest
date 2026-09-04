@@ -37,12 +37,14 @@ const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).fi
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 for(const required of ['quest-media.js','release-hardening.js','release-hardening.css','mobile-production.css','mobile-production.js'])assert(shell.includes(required),`service worker shell missing ${required}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=38,'service worker cache must be rotated for the mobile path-alignment release');
+assert(cacheVersion>=39,'service worker cache must be rotated for the corrected mobile hierarchy release');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
 
 const mobileCss=read('mobile-production.css'),mobileJs=read('mobile-production.js');
 assert(mobileCss.includes('grid-template-columns:repeat(5,minmax(0,1fr))'),'mobile production CSS must keep all five bottom tabs in one row');
-assert(mobileCss.includes('body:has(.modern-home)>.app>.hero'),'mobile home must suppress the redundant legacy hero');
+assert(mobileCss.includes('body.bq-frontpage-focus #app>.app>.hero'),'mobile home must target the actual #app shell when suppressing the redundant legacy hero');
+assert(mobileCss.includes('body.bq-frontpage-focus #app>.app>.quick-stats'),'mobile home must target the actual #app shell when suppressing the redundant stat strip');
+assert(!mobileCss.includes('body.bq-frontpage-focus>.app>.hero'),'the broken direct-body .app selector must not return');
 assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remain ahead of the optional season on Home');
 assert(mobileCss.includes('@media(max-width:360px)'),'360px phones require an explicit compact layout');
 assert(mobileJs.includes(".journey-node.current"),'mobile production behavior must keep the named current path marker visible');
@@ -103,6 +105,8 @@ console.log('✓ Browser secret invariants');
 const front=read('frontpage-daily.js'),smoke=read('tests/browser-smoke.mjs');
 assert(!front.includes('maybePrompt'),'front page must not restore an automatic first-visit focus modal');
 assert(front.includes('BQJourneyLoop?.openSupport'),'legacy focus entry point must route to optional Journey support');
+assert(front.includes('body.bq-frontpage-focus #app>.app>.hero'),'front-page runtime style must target the real app shell');
+assert(front.includes('body.bq-frontpage-focus #app>.app>.quick-stats'),'front-page runtime style must hide the redundant mobile stat strip');
 assert(smoke.includes('/My Mission/'),'browser smoke must target the current My Mission route');
 assert(smoke.includes("'日本語'"),'browser smoke must verify Japanese translation visibility');
 assert(smoke.includes('personal focus must not block the Daily Journey'),'browser smoke must protect the unblocked first-visit path');
