@@ -17,19 +17,6 @@ function isAllowedOrigin(value:string){
 function originFor(req:Request){const origin=req.headers.get('Origin')||'';return isAllowedOrigin(origin)?origin:PRIMARY_ORIGIN}
 function headers(req:Request){return {'Access-Control-Allow-Origin':originFor(req),'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json','Vary':'Origin'}}
 const json=(req:Request,body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:headers(req)});
-function safeAppUrl(req:Request,value:unknown){
-  try{
-    const u=new URL(String(value||''));
-    if(!isAllowedOrigin(u.origin))throw new Error('untrusted origin');
-    if(u.origin===LEGACY_ORIGIN&&!u.pathname.startsWith('/BibleQuest/'))throw new Error('untrusted path');
-    u.hash='';u.search='';
-    if(!u.pathname.endsWith('/'))u.pathname=`${u.pathname}/`;
-    return u.href;
-  }catch{
-    const origin=originFor(req);
-    return origin===LEGACY_ORIGIN?`${LEGACY_ORIGIN}/BibleQuest/`:`${origin}/`;
-  }
-}
 function secretKey(){
   const modern=Deno.env.get('SUPABASE_SECRET_KEYS');
   if(modern){try{const keys=JSON.parse(modern);if(keys?.default)return String(keys.default);const first=Object.values(keys||{})[0];if(first)return String(first)}catch{}}
@@ -118,16 +105,9 @@ Deno.serve(async(req:Request)=>{
       return json(req,{ok:true,role});
     }
 
-    if(action==='send_password_reset'){
-      const targetUserId=String(body?.targetUserId||'');
-      if(!targetUserId)return json(req,{error:'Target user required'},400);
-      const got=await admin.auth.admin.getUserById(targetUserId);if(got.error)throw got.error;
-      const email=got.data.user?.email;if(!email)return json(req,{error:'This account has no email address'},409);
-      const redirectTo=safeAppUrl(req,body?.appUrl);
-      const reset=await admin.auth.resetPasswordForEmail(email,{redirectTo});if(reset.error)throw reset.error;
-      await audit(admin,actor.id,targetUserId,'send_password_reset',{redirectTo});
-      return json(req,{ok:true,message:'Password reset email sent.'});
-    }
+    // Password recovery is deliberately not an admin action. BibleQuest uses the user's
+    // private rotating recovery code so admins never receive a credential that can take over an account.
+    if(action==='send_password_reset'||action==='issue_reset_code')return json(req,{error:'Password recovery is user-controlled with the private BibleQuest recovery code.'},410);
 
     return json(req,{error:'Unknown admin action'},400);
   }catch(err){
