@@ -17,6 +17,7 @@ const index=read('index.html');
 const localRefs=[...[...index.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),...[...index.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1])].filter(x=>!/^https?:/i.test(x)&&!x.startsWith('data:')&&!x.startsWith('#'));
 for(const ref of localRefs){const clean=ref.replace(/^\.\//,'').split(/[?#]/)[0];assert(exists(clean),`index.html references missing file: ${clean}`)}
 assert(index.indexOf('mobile-production.css')>index.indexOf('release-hardening.css'),'mobile-production.css must load after release-hardening.css');
+assert(index.indexOf('mobile-production.js')>index.indexOf('release-hardening.js'),'mobile-production.js must load after release-hardening.js');
 
 const jsFiles=walk('.',p=>p.endsWith('.js')&&!p.includes('/node_modules/'));
 for(const file of jsFiles)run(process.execPath,['--check',file]);
@@ -34,16 +35,18 @@ const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
 for(const item of shell)assert(exists(item),`service worker caches missing file: ${item}`);
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
-for(const required of ['quest-media.js','release-hardening.js','release-hardening.css','mobile-production.css'])assert(shell.includes(required),`service worker shell missing ${required}`);
+for(const required of ['quest-media.js','release-hardening.js','release-hardening.css','mobile-production.css','mobile-production.js'])assert(shell.includes(required),`service worker shell missing ${required}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=37,'service worker cache must be rotated for the compact mobile production release');
+assert(cacheVersion>=38,'service worker cache must be rotated for the mobile path-alignment release');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
 
-const mobileCss=read('mobile-production.css');
+const mobileCss=read('mobile-production.css'),mobileJs=read('mobile-production.js');
 assert(mobileCss.includes('grid-template-columns:repeat(5,minmax(0,1fr))'),'mobile production CSS must keep all five bottom tabs in one row');
 assert(mobileCss.includes('body:has(.modern-home)>.app>.hero'),'mobile home must suppress the redundant legacy hero');
 assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remain ahead of the optional season on Home');
 assert(mobileCss.includes('@media(max-width:360px)'),'360px phones require an explicit compact layout');
+assert(mobileJs.includes(".journey-node.current"),'mobile production behavior must keep the named current path marker visible');
+assert(mobileJs.includes("first?0:"),'the first path marker must align to the start instead of being clipped');
 console.log('✓ Production mobile hierarchy');
 
 const cloud=read('cloud-config.js');
@@ -63,7 +66,7 @@ assert(contextManifest.license==='CC BY 4.0','context-pack license metadata chan
 for(const row of contextManifest.books){assert(row.code&&row.path,`invalid context manifest row: ${JSON.stringify(row)}`);assert(exists(row.path),`missing context pack: ${row.path}`);assert(Number(row.tagged_verses)>0,`context pack has no tagged verses: ${row.code}`)}
 console.log('✓ 66-book Hebrew/Greek context pack');
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','mobile-production.css','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_admin_auth_schema_parity.sql','supabase/migrations/20260905_production_permission_hardening.sql','supabase/migrations/20260905_browser_grant_parity.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','mobile-production.css','mobile-production.js','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_admin_auth_schema_parity.sql','supabase/migrations/20260905_production_permission_hardening.sql','supabase/migrations/20260905_browser_grant_parity.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Release hardening, recovery, admin and schema-parity assets');
 
 const adminUi=read('admin.js'),adminFn=read('supabase/functions/bq-admin/index.ts');
@@ -93,7 +96,7 @@ console.log('✓ Doctrinal/content audits');
 run('python3',['-m','py_compile','scripts/apply-doctrinal-safety.py','scripts/build_content_pack.py','scripts/build_story_packs.py','scripts/build_tagalog_packs.py','scripts/build_original_language_packs.py']);
 console.log('✓ Python content tooling syntax');
 
-const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','reset.js','japanese-learning.js'];
+const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js'];
 for(const file of sensitiveBrowserFiles){const text=read(file);assert(!/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/i.test(text),`privileged secret marker found in browser file: ${file}`)}
 console.log('✓ Browser secret invariants');
 
