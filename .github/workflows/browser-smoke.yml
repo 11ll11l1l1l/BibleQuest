@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Smoke PWA reliability guards
+        run: node tests/reliability-smoke.mjs
       - name: Install browser test dependency
         run: npm install --no-save playwright
       - name: Install Chromium
