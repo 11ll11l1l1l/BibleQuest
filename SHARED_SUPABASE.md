@@ -12,14 +12,14 @@ Do not store immutable Bible text packs in Supabase; open/static Scripture resou
 
 ## Production web hosts
 
-Cloudflare Pages is the primary BibleQuest web platform. This repository is currently connected to two Cloudflare Pages projects and both deploy current `main`:
+Cloudflare Pages is the primary BibleQuest web platform. This repository is currently connected to two Cloudflare Pages projects:
 
 - Canonical URL: `https://mybiblequest.pages.dev/`
 - Compatibility URL: `https://biblequest-7th.pages.dev/`
 - Preview URLs may use subdomains of either project, such as `https://<deployment>.mybiblequest.pages.dev/` or `https://<deployment>.biblequest-7th.pages.dev/`.
 - The legacy GitHub Pages route may remain as a compatibility fallback but is not the canonical production URL.
 
-`cloud-config.js` derives `redirectUrl` from the page actually running BibleQuest, so browser recovery callbacks follow the current deployment root instead of a hard-coded host.
+`cloud-config.js` derives the app root from the page actually running BibleQuest instead of pinning one deployment host.
 
 ## BibleQuest cloud objects
 
@@ -32,14 +32,13 @@ Cloudflare Pages is the primary BibleQuest web platform. This repository is curr
 - Trusted rankings: `bible_score_events`, `bible_leaderboard`.
 - Awards: `bible_badge_catalog`, `bible_user_badges`.
 - Admin access/audit: `bible_app_access`, `bible_admin_audit_log`.
-- Trusted server actions include `bq-create-congregation`, `bq-join`, `bq-invite`, `bq-score`, `bq-couple`, `bq-room-poll`, `bq-assignment`, `bq-journey-group`, and `bq-admin`.
-- `bq-signup` and `bq-password-reset` are retired compatibility endpoints. Browser signup and password recovery use Supabase Auth directly.
+- Trusted server actions include `bq-create-congregation`, `bq-join`, `bq-invite`, `bq-score`, `bq-couple`, `bq-room-poll`, `bq-assignment`, `bq-journey-group`, `bq-admin`, `bq-signup`, and `bq-password-reset`.
 
 ## Security rules
 
 - All browser-facing BibleQuest tables use RLS.
 - Browser clients receive only the Supabase publishable key; service-role/secret keys remain inside trusted Edge Functions.
-- Server-only secret/audit tables such as congregation/couple invite secrets, signup limits, legacy recovery-code rows and the admin audit log have no direct `anon`/`authenticated` table privileges.
+- Server-only secret/audit tables such as congregation/couple invite secrets, signup limits, recovery-code rows and the admin audit log have no direct `anon`/`authenticated` table privileges.
 - `bible_app_access` grants signed-in users `SELECT` only; RLS restricts that read to the user's own access row. Role mutation is performed by `bq-admin`.
 - `bible_score_events`, earned cloud badges and invite hashes cannot be written directly by normal browser clients.
 - Competitive points are derived and capped by the `bq-score` Edge Function.
@@ -49,17 +48,26 @@ Cloudflare Pages is the primary BibleQuest web platform. This repository is curr
 
 ## Authentication and recovery configuration
 
-BibleQuest uses email/password authentication. Password recovery uses `supabase.auth.resetPasswordForEmail(...)`; the recovery link returns to the current BibleQuest app root and `password-recovery.js` completes the password update.
+BibleQuest currently uses **instant email/password registration with recovery codes**, not email-link activation or SMTP password-reset links.
 
-Supabase **Auth > URL Configuration** should use:
+- Browser account creation calls `bq-signup`.
+- `bq-signup` is intentionally deployed with `verify_jwt=false` because the caller does not have an account yet. It validates allowed origins, applies server-side IP rate limiting through `bible_signup_limits`, validates the submitted profile/password, creates the Auth user with `email_confirm: true`, and returns a high-entropy one-time recovery code to save offline.
+- Browser sign-in uses normal Supabase email/password Auth after account creation.
+- Password recovery calls `bq-password-reset` with the account email, saved recovery code, and new password.
+- `bq-password-reset` is intentionally deployed with `verify_jwt=false` because the reset action must work while signed out. The reset path uses IP throttling plus per-code failure lockout. Its authenticated `issue` action validates the supplied bearer session before rotating a recovery code.
+- Recovery codes are stored only as hashes in server-only `bible_password_reset_codes`; successful recovery rotates the code and invalidates the previous one.
+- Internal service/database errors are logged server-side and should not be returned verbatim to anonymous callers.
+
+Supabase **Auth > URL Configuration** should still use the production BibleQuest host for normal Auth metadata and any future supported callback flow:
 
 - Site URL: `https://mybiblequest.pages.dev/`
-- Redirect URL: `https://mybiblequest.pages.dev/**`
-- Compatibility redirect: `https://biblequest-7th.pages.dev/**`
-- Preview redirects when preview recovery is intentionally needed: `https://*.mybiblequest.pages.dev/**` and `https://*.biblequest-7th.pages.dev/**`
-- Optional legacy compatibility redirect: `https://11ll11l1l1l.github.io/BibleQuest/**`
+- Compatibility URL when allowed redirects are used: `https://biblequest-7th.pages.dev/**`
 
-Hosted Auth URL settings are external deployment configuration; they must match the production host before password-reset email testing is considered complete.
+The current recovery-code flow does not depend on hosted password-reset redirect URLs. If email-link recovery is reintroduced later, its callback allowlist must be explicitly verified before release.
+
+## Edge Function JWT posture
+
+All normal authenticated BibleQuest `bq-*` functions should keep `verify_jwt=true`. The only deliberate exceptions are `bq-signup` and `bq-password-reset`, whose function bodies implement the unauthenticated-entry controls described above. Do not disable gateway JWT verification on additional functions merely to work around client errors.
 
 ## Source-of-truth rule
 
