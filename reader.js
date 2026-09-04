@@ -34,7 +34,7 @@
     const button = document.createElement('button');
     button.className = 'quest-card reader';
     button.setAttribute('data-reader-open', '1');
-    button.innerHTML = '<div class="quest-icon">📚</div><div><span class="kicker">READ ONE BOOK AT A TIME</span><h3>Bible Reader</h3><p>Open a book and chapter without downloading the whole library.</p></div><span class="go">›</span>';
+    button.innerHTML = '<div class="quest-icon">📚</div><div><span class="kicker">READ ONE BOOK AT A TIME</span><h3>Bible Reader</h3><p>BSB, Tagalog ULB, and NLT with clear source/version labels.</p></div><span class="go">›</span>';
     if (deck) deck.after(button); else host.prepend(button);
   }
 
@@ -89,11 +89,11 @@
       <header class="reader-top"><button class="reader-back" data-reader-close>← BibleQuest</button><b>Bible Reader</b><span class="reader-chip">On demand</span></header>
       <section class="reader-panel">
         <div class="eyebrow">Choose a book</div><h1>Read without the giant download.</h1>
-        <p class="reader-intro">Only the selected Bible book is fetched. After the first load, the service worker can reuse the cached copy on this device.</p>
+        <p class="reader-intro">Pick a book, then choose BSB, Tagalog ULB, or NLT. Bundled books are fetched only when needed and can be reused from the browser cache.</p>
         ${last.code && books.some(b => b.code === last.code) ? `<button class="reader-continue" data-reader-book="${esc(last.code)}" data-reader-chapter="${Number(last.chapter) || 1}"><span>↗</span><div><small>CONTINUE READING</small><b>${esc(last.name || last.code)} ${Number(last.chapter) || 1}</b></div></button>` : ''}
         <input class="answer-input reader-search" id="readerSearch" value="${esc(filter)}" placeholder="Search Bible books…" autocomplete="off">
-        <div class="reader-book-grid">${shown.map(book => `<button class="reader-book" data-reader-book="${esc(book.code)}"><span class="reader-book-icon">📖</span><span><b>${esc(book.name)}</b><small>${Number(book.verses || 0).toLocaleString()} verses</small></span><span class="go">›</span></button>`).join('') || '<div class="empty">No matching Bible book.</div>'}</div>
-        <div class="reader-source"><b>Text source:</b> Berean Standard Bible public-domain/CC0 data distributed through the BibleQuest resource builder.</div>
+        <div class="reader-book-grid">${shown.map(book => `<button class="reader-book" data-reader-book="${esc(book.code)}"><span class="reader-book-icon">📖</span><span><b>${esc(book.name)}</b><small>${Number(book.verses || 0).toLocaleString()} verses in the BSB pack</small></span><span class="go">›</span></button>`).join('') || '<div class="empty">No matching Bible book.</div>'}</div>
+        <div class="reader-source"><b>Main versions:</b> BSB · Tagalog ULB · NLT. Each displayed passage is labeled with its actual version and source.</div>
       </section>`);
   }
 
@@ -128,13 +128,13 @@
           <label>Chapter <select id="readerChapter">${chapters.map(c => `<option value="${c}" ${c === chapter ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
           <button class="chapter-nav" data-reader-next ${idx >= chapters.length - 1 ? 'disabled' : ''}>Next →</button>
         </div>
-        <article class="verse-list">${verses.map(v => `<p><sup>${Number(v.v)}</sup>${esc(v.t)}</p>`).join('')}</article>
+        <article class="verse-list" data-bq-scripture="BSB">${verses.map(v => `<p data-verse="${Number(v.v)}"><sup>${Number(v.v)}</sup>${esc(v.t)}</p>`).join('')}</article>
         <div class="reader-study-actions">
           <button class="reader-primary" data-reader-save>🔖 Save this passage</button>
           <button class="reader-secondary" data-reader-practice="${esc(meta.code)}">🧠 Practice ${esc(meta.name)}</button>
         </div>
         <div id="readerNotice"></div>
-        <div class="reader-source"><b>Delivery:</b> one book JSON pack. <b>Storage:</b> browser runtime cache. <b>Backend:</b> none.</div>
+        <div class="reader-source"><b>Delivery:</b> on-demand Bible book pack. Signed-in notes, highlights, bookmarks, and progress can sync to the BibleQuest cloud account.</div>
       </section>`);
   }
 
@@ -153,7 +153,7 @@
     const saved = { code: current.meta.code, name: current.meta.name, chapter: current.chapter, savedAt: new Date().toISOString() };
     localStorage.setItem('biblequest_saved_passage_v1', JSON.stringify(saved));
     const notice = document.getElementById('readerNotice');
-    if (notice) notice.innerHTML = `<div class="reader-notice">✓ ${esc(current.meta.name)} ${current.chapter} saved on this device. This can become the starting passage for the future Study Builder.</div>`;
+    if (notice) notice.innerHTML = `<div class="reader-notice">✓ ${esc(current.meta.name)} ${current.chapter} saved as your current passage. Signed-in progress can be included in your cloud snapshot.</div>`;
   }
 
   function practiceBook(code) {
@@ -207,4 +207,5 @@
   observer = new MutationObserver(injectHomeButton);
   observer.observe(document.documentElement, { childList: true, subtree: true });
   injectHomeButton();
+  window.BQReader={openLibrary,openBook:async(code,chapter=1)=>{manifest=manifest||await fetchJson('data/packs/manifest.json');return openBook(code,chapter)},close:closeLayer};
 })();
