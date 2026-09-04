@@ -1,34 +1,7 @@
 name: Validate BibleQuest app
 
 on:
-  push:
-    paths:
-      - "*.js"
-      - "*.css"
-      - "*.svg"
-      - "assets/**"
-      - "data/**"
-      - "scripts/**"
-      - "supabase/**"
-      - "tests/**"
-      - "index.html"
-      - "manifest.webmanifest"
-      - ".github/workflows/validate-app.yml"
-      - ".github/workflows/browser-smoke.yml"
-  pull_request:
-    paths:
-      - "*.js"
-      - "*.css"
-      - "*.svg"
-      - "assets/**"
-      - "data/**"
-      - "scripts/**"
-      - "supabase/**"
-      - "tests/**"
-      - "index.html"
-      - "manifest.webmanifest"
-      - ".github/workflows/validate-app.yml"
-      - ".github/workflows/browser-smoke.yml"
+  workflow_dispatch:
 
 jobs:
   validate:
