@@ -24,12 +24,16 @@
     const s=document.createElement('style');
     s.id='frontDailyStyles';
     s.textContent=`
-      body.bq-frontpage-focus>.app .hero{display:none!important}
+      body.bq-frontpage-focus .app>.hero{display:none!important}
+      body.bq-frontpage-focus .app>.quick-stats{display:none!important}
       body.bq-frontpage-focus .modern-home>.bq-pinoy-hero{display:none!important}
       body.bq-frontpage-focus .modern-home>.modern-focus{display:none!important}
-      body.bq-frontpage-focus .modern-home{margin-top:8px}
+      body.bq-frontpage-focus .modern-home{margin-top:4px}
       body.bq-frontpage-focus .bq-engagement-stack{margin-top:0}
       body.bq-frontpage-focus .today-journey-card{order:-20}
+      body.bq-frontpage-focus .journey-path-card{order:-10}
+      body.bq-frontpage-focus .journey-season,
+      body.bq-frontpage-focus .journey-season-empty{order:-5}
     `;
     document.head.appendChild(s);
   }
