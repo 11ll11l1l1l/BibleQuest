@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKS = ROOT / 'data' / 'packs' / 'questions'
+MANIFEST = ROOT / 'data' / 'packs' / 'manifest.json'
 QUAR = ROOT / 'data' / 'quarantine' / 'questions'
 QUAR.mkdir(parents=True, exist_ok=True)
 
@@ -79,6 +80,7 @@ def classify(item, book_name):
     return 'allow', []
 
 stats = {'total':0,'allow':0,'context':0,'quarantine':0}
+book_counts = {}
 for path in sorted(PACKS.glob('*.json')):
     code = path.stem
     book = BOOK_NAMES.get(code, code)
@@ -93,10 +95,24 @@ for path in sorted(PACKS.glob('*.json')):
         else:
             safe.append({**item, 'safety': {'action': action, 'topics': topics}})
     path.write_text(json.dumps(safe, ensure_ascii=False, separators=(',',':')) + '\n', encoding='utf-8')
+    book_counts[code] = {'questions': len(safe), 'quarantined_questions': len(quarantine)}
     qpath = QUAR / path.name
     if quarantine:
         qpath.write_text(json.dumps(quarantine, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     elif qpath.exists():
         qpath.unlink()
+
+if MANIFEST.exists():
+    manifest = json.loads(MANIFEST.read_text(encoding='utf-8'))
+    for row in manifest.get('question_books', []):
+        counts = book_counts.get(row.get('code'))
+        if counts:
+            row.update(counts)
+    manifest['doctrinal_safety'] = {
+        'version': 1,
+        'policy': 'Scripture + CAMACOP alignment; sensitive imported questions screened before normal play',
+        **stats
+    }
+    MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, separators=(',',':')) + '\n', encoding='utf-8')
 
 print(json.dumps(stats, indent=2))
