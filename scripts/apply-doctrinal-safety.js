@@ -25,7 +25,17 @@ const bookNames = {
   '2PE':'2 Peter','1JN':'1 John','2JN':'2 John','3JN':'3 John',JUD:'Jude',REV:'Revelation'
 };
 
-const stats = { total: 0, allow: 0, context: 0, quarantine: 0 };
+// Preserve the learning value of four imported questions whose raw wording turns one verse
+// into a broad doctrinal proposition. The source answer and reference remain unchanged;
+// only the prompt is reframed so the learner is explicitly reading the cited passage.
+const CURATED_REWRITES = {
+  'GAL:h9tg': 'In Galatians 2:16, how does Paul describe justification in relation to faith in Jesus Christ?',
+  'ROM:yca7': 'In Romans 2:13, whom does Paul say are justified in the statement made in that verse?',
+  'ROM:moo6': 'In Romans 3:24, how does Paul describe the way people are justified?',
+  'ROM:rwo3': 'In Romans 3:28, what contrast does Paul make between faith and works of the law when discussing justification?'
+};
+
+const stats = { total: 0, allow: 0, context: 0, quarantine: 0, rewritten: 0 };
 const bookCounts = {};
 
 for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sort()) {
@@ -39,9 +49,21 @@ for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sor
     stats.total++;
     const item = { ...raw };
     delete item.safety;
+    const rewrite = CURATED_REWRITES[`${code}:${item.id}`];
+    if (rewrite) {
+      item.q = rewrite;
+      stats.rewritten++;
+    }
     const safety = policy.classify({ ...item, bookName: bookNames[code] || '' });
     stats[safety.action]++;
-    const tagged = { ...item, safety: { action: safety.action, topics: safety.topics || [] } };
+    const tagged = {
+      ...item,
+      safety: {
+        action: safety.action,
+        topics: safety.topics || [],
+        ...(rewrite ? { curatedRewrite: true } : {})
+      }
+    };
     if (safety.action === 'quarantine') quarantined.push(tagged);
     else safe.push(tagged);
   }

@@ -1,48 +1,50 @@
 (() => {
+  // Topic detection should identify genuinely sensitive teaching areas, not ordinary words
+  // that happen to occur in biblical narrative or poetry.
   const TOPICS = [
-    ['salvation', /\b(salvation|saved|justify|justified|justification|righteousness|works of the law|eternal life|condemnation|grace|faith)\b/i],
+    ['salvation', /\b(justif(?:y|ied|ication)|works of the law|eternal life|redemption|forgiveness of sins?|saved from (?:sin|wrath|condemnation))\b/i],
     ['baptism', /\b(bapti[sz](?:e|ed|ing|m)|water baptism)\b/i],
-    ['holy-spirit', /\b(Holy Spirit|Spirit baptism|filled with the Spirit|tongues|speaking in tongues|spiritual gifts?)\b/i],
-    ['healing', /\b(heal(?:ed|ing)?|divine healing|sick(?:ness)?|anoint(?:ed|ing)?)\b/i],
+    ['holy-spirit', /\b(Holy Spirit|Spirit baptism|bapti[sz](?:ed|m) (?:with|in) the (?:Holy )?Spirit|filled with the (?:Holy )?Spirit|speaking in tongues|spiritual gifts?)\b/i],
+    ['healing', /\b(divine healing|heal(?:ed|ing)|miraculous healing)\b/i],
     ['communion', /\b(Lord(?:'s|’s) Supper|communion|Eucharist|bread and cup|body and blood)\b/i],
-    ['sanctification', /\b(sanctif(?:y|ied|ication)|holiness|holy life)\b/i],
+    ['sanctification', /\b(sanctif(?:y|ied|ication)|holy life)\b/i],
     ['election', /\b(predestin(?:ed|ation)|elect(?:ion|ed)?|chosen before|foreknow)\b/i],
     ['security', /\b(eternal security|lose salvation|fall away|apostasy|once saved)\b/i],
-    ['end-times', /\b(rapture|tribulation|millennium|second coming|return of Christ|antichrist|mark of the beast|end times|last days)\b/i],
-    ['church-office', /\b(elder|pastor|bishop|deacon|women.*teach|women.*pastor|church authority)\b/i],
-    ['marriage-sexuality', /\b(marriage|divorce|remarry|adultery|sexual immorality|homosexual|same-sex|husband|wife)\b/i],
+    ['end-times', /\b(rapture|millennium|second coming|return of Christ|antichrist|mark of the beast|end times|last days)\b/i],
+    ['church-office', /\b(elder|pastor|bishop|deacon|women.*teach|women.*pastor|women.*elder|church authority)\b/i],
+    ['marriage-sexuality', /\b(marriage|divorce|remarry|adultery|sexual immorality|homosexual|same-sex)\b/i],
     ['creation', /\b(six days|creation days|age of the earth|young earth|old earth)\b/i],
-    ['spiritual-warfare', /\b(demon|demons|deliverance|spiritual warfare|possess(?:ed|ion))\b/i],
-    ['giving', /\b(tith(?:e|es|ing)|prosperity|seed faith|financial blessing)\b/i]
+    ['spiritual-warfare', /\b(demon|demons|demonic|spiritual warfare|possess(?:ed|ion))\b/i],
+    ['giving', /\b(tith(?:e|es|ing)|prosperity gospel|seed faith|financial blessing)\b/i]
   ];
 
+  // These are formulations that can turn one verse into a universal or disputed doctrine.
+  // They stay out of scored play until rewritten or pastor-reviewed, even when a reference exists.
   const HIGH_RISK_PATTERNS = [
     /\bwho is justified before God\b/i,
-    /\bwhat (?:must|should) (?:a person|someone|people|we) do (?:to|in order to) (?:be saved|receive eternal life|be justified|have sins forgiven)\b/i,
-    /\bhow (?:is|are) .* saved\b/i,
+    /\bhow (?:is|are) (?:a person|someone|one|people|we|believers?|Christians?) (?:saved|justified)\b/i,
+    /\bwhat (?:must|should) (?:a person|someone|people|we|believers?|Christians?) do (?:to|in order to) (?:be saved|receive eternal life|be justified|have sins forgiven)\b/i,
     /\bwhat role do .* works .* justification\b/i,
-    /\bwhat do .* receive .* eternal life\b/i,
-    /\bforgiveness of (?:their|your|our) sins\b/i,
     /\bwhat is required .* salvation\b/i,
+    /\bis bapti[sz]m (?:necessary|required|essential) (?:for|to) (?:salvation|be saved)\b/i,
+    /\bmust .* be bapti[sz]ed .* (?:saved|salvation)\b/i,
     /\bwhat evidence .* Holy Spirit\b/i,
+    /\bis speaking in tongues .* (?:evidence|required|necessary)\b/i,
     /\bmust .* speak .* tongues\b/i,
-    /\bwill God heal\b/i,
-    /\bguarantee(?:d)? healing\b/i,
+    /\bdoes God always heal\b/i,
+    /\bis (?:divine )?healing guaranteed\b/i,
+    /\b(?:enough|more) faith .* guarantee .* heal/i,
+    /\bcan (?:a )?(?:believer|Christian|person) lose (?:his|her|their)?\s*salvation\b/i,
+    /\bonce saved.*always saved\b/i,
     /\bwhen will .* rapture\b/i,
-    /\bwho can be .* pastor\b/i
-  ];
-
-  const TEXTUAL_CUES = [
-    /\baccording to\b/i,
-    /\bwhat did (?:Jesus|Paul|Peter|John|Moses|David|Abraham|the apostles?|the disciples?|the angel|God|the Lord)\b/i,
-    /\bwhat does (?:Paul|Peter|John|Jesus|Moses|David|Abraham|the passage|the verse|the text) say\b/i,
-    /\b(?:why|how|for what(?: purpose)?) (?:did|does|do|was|were) (?:Jesus|Paul|Peter|John|Moses|David|Abraham|the apostles?|the disciples?)\b/i,
-    /\bwhat happened\b/i,
-    /\bwho\b/i,
-    /\bwhere\b/i,
-    /\bwhen\b/i,
-    /\bwhich\b/i,
-    /\bhow many\b/i
+    /\b(?:pre|mid|post)[- ]?tribulation rapture\b/i,
+    /\bwho can be .* pastor\b/i,
+    /\bcan women (?:be|serve as) (?:pastors?|elders?|bishops?)\b/i,
+    /\bis (?:same-sex|homosexual) marriage .* (?:biblical|permitted|sin)\b/i,
+    /\bmust Christians? tithe\b/i,
+    /\bis tithing required\b/i,
+    /\bdoes giving .* guarantee .* (?:wealth|prosperity|blessing)\b/i,
+    /\bhow old is the earth according to (?:the Bible|Scripture)\b/i
   ];
 
   const CONTEXT_REQUIRED_REFS = [
@@ -52,7 +54,10 @@
     /^Acts\s+2:38/i,
     /^Acts\s+8:/i,
     /^Acts\s+10:/i,
+    /^Acts\s+15:/i,
+    /^Acts\s+16:(?:30(?:-31)?|31)/i,
     /^Acts\s+19:/i,
+    /^Acts\s+22:16/i,
     /^Hebrews\s+6:/i,
     /^Hebrews\s+10:/i,
     /^James\s+2:/i,
@@ -82,18 +87,15 @@
     const topics = TOPICS.filter(([, rx]) => rx.test(combined)).map(([name]) => name);
     const highRisk = HIGH_RISK_PATTERNS.some(rx => rx.test(n.q));
     const contextRef = CONTEXT_REQUIRED_REFS.some(rx => rx.test(n.r));
-    const textual = TEXTUAL_CUES.some(rx => rx.test(n.q));
 
     if (highRisk) {
-      return { action: 'quarantine', classification: 'INTERPRETIVE_OR_DOCTRINAL', topics, reason: 'Question can be read as a universal doctrine claim without sufficient context.' };
+      return { action: 'quarantine', classification: 'INTERPRETIVE_OR_DOCTRINAL', topics, reason: 'Question can be read as a universal or disputed doctrine claim without sufficient context.' };
     }
 
-    if (topics.length && !textual) {
-      return { action: 'quarantine', classification: 'INTERPRETIVE_OR_DOCTRINAL', topics, reason: 'Sensitive doctrine topic is phrased as interpretation rather than direct textual recall.' };
-    }
-
+    // A sensitive topic tied to an explicit passage remains useful learning material, but it
+    // receives context rather than being treated as a complete doctrinal statement by itself.
     if (topics.length || contextRef) {
-      return { action: 'context', classification: 'PASSAGE_CONTEXT', topics, reason: 'Keep only with explicit passage framing and a context notice.' };
+      return { action: 'context', classification: 'PASSAGE_CONTEXT', topics, reason: 'Keep with explicit passage framing and a context notice.' };
     }
 
     return { action: 'allow', classification: 'TEXTUAL_FACT', topics: [], reason: 'Direct factual or textual recall.' };
@@ -112,7 +114,7 @@
   }
 
   window.BQ_DOCTRINAL_SAFETY = {
-    version: 1,
+    version: 2,
     authority: 'Scripture first; CAMACOP statement of faith for doctrinal alignment; secondary study resources are not doctrinal authorities.',
     classify,
     filterDeck

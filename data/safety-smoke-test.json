@@ -1,7 +1,22 @@
 [
   {"q":"Who built the ark?","a":"Noah","r":"Genesis 6","expect":"allow"},
   {"q":"Who is justified before God?","a":"The doers of the law are justified before God.","r":"Romans 2:13","expect":"quarantine"},
+  {"q":"How is a person justified before God?","a":"Freely by grace through the redemption in Christ Jesus.","r":"Romans 3:24","expect":"quarantine"},
+  {"q":"What role do the works of the law have in justification?","a":"A person is justified by faith apart from works of the law.","r":"Romans 3:28","expect":"quarantine"},
+  {"q":"In Romans 2:13, whom does Paul say are justified in the statement made in that verse?","a":"The doers of the law are justified before God.","r":"Romans 2:13","expect":"context"},
+  {"q":"In Romans 3:24, how does Paul describe the way people are justified?","a":"Freely by grace through the redemption in Christ Jesus.","r":"Romans 3:24","expect":"context"},
+  {"q":"In Romans 3:28, what contrast does Paul make between faith and works of the law when discussing justification?","a":"A person is justified by faith apart from works of the law.","r":"Romans 3:28","expect":"context"},
+  {"q":"In Galatians 2:16, how does Paul describe justification in relation to faith in Jesus Christ?","a":"A person is justified before God by faith in Christ Jesus.","r":"Galatians 2:16","expect":"context"},
   {"q":"What did Peter tell the multitude to do?","a":"Repent and be baptized.","r":"Acts 2:38","expect":"context"},
-  {"q":"For what purpose did Paul receive grace and apostleship from Christ?","a":"For obedience of faith among all the nations.","r":"Romans 1:5","expect":"context"},
-  {"q":"How is a person saved?","a":"By grace through faith.","r":"Ephesians 2:8","expect":"quarantine"}
+  {"q":"What answer did Paul and Silas give the jailer?","a":"Believe on the Lord Jesus, and you shall be saved.","r":"Acts 16:31","expect":"context"},
+  {"q":"For what purpose did Paul receive grace and apostleship from Christ?","a":"For obedience of faith among all the nations.","r":"Romans 1:5","expect":"allow"},
+  {"q":"How is a person saved?","a":"By grace through faith.","r":"Ephesians 2:8","expect":"quarantine"},
+  {"q":"What do David’s enemies do with their tongues?","a":"They speak hostile words like sharp swords.","r":"Psalms 64:3","expect":"allow"},
+  {"q":"What does Yahweh anoint?","a":"Yahweh anoints David’s head with oil.","r":"Psalms 23:5","expect":"allow"},
+  {"q":"What does Yahweh love?","a":"Yahweh loves righteousness and justice.","r":"Psalms 33:5","expect":"allow"},
+  {"q":"What did the believers in Jerusalem do?","a":"They were scattered and spread the faith to new areas.","r":"Acts 8:1","expect":"context"},
+  {"q":"After many days, what hope was abandoned by the crew?","a":"They abandoned hope that they should be saved.","r":"Acts 27:20","expect":"allow"},
+  {"q":"By what power did Peter say he had healed the man?","a":"In the name of Jesus Christ.","r":"Acts 4:10","expect":"context"},
+  {"q":"Can a Christian lose salvation?","a":"This is a disputed doctrinal question.","r":"Hebrews 6:4-6","expect":"quarantine"},
+  {"q":"Must Christians tithe?","a":"This requires broader biblical and pastoral context.","r":"Malachi 3:10","expect":"quarantine"}
 ]
