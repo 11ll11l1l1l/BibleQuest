@@ -15,12 +15,15 @@ Deno.serve(async(req:Request)=>{
     if(Number(invite.uses)>=Number(invite.max_uses))return json({error:'Invite code has reached its use limit'},409);
     const {data:congregation,error:congregationError}=await admin.from('bible_congregations').select('id,name,timezone,owner_id,active').eq('id',invite.congregation_id).eq('active',true).maybeSingle();
     if(congregationError)throw congregationError;if(!congregation)return json({error:'Congregation is not active'},404);
-    const profile=await admin.from('bible_profiles').select('display_name').eq('user_id',user.id).maybeSingle();
-    const memberName=displayName(user,profile.data?.display_name);
+    const profile=await admin.from('bible_profiles').select('display_name,preferred_name,avatar,onboarding_complete').eq('user_id',user.id).maybeSingle();
+    if(profile.error)throw profile.error;
+    if(!profile.data?.onboarding_complete)return json({error:'Complete your BibleQuest profile before joining a congregation'},409);
+    const memberName=displayName(user,profile.data?.preferred_name||profile.data?.display_name);
+    const avatar=profile.data?.avatar||{face:'smile',outfit:'traveler',background:'olive',companion:'sheep'};
     const existing=await admin.from('bible_congregation_members').select('role').eq('congregation_id',congregation.id).eq('user_id',user.id).maybeSingle();
     if(existing.error)throw existing.error;
     const role=existing.data?.role||'member';
-    const {error:memberError}=await admin.from('bible_congregation_members').upsert({congregation_id:congregation.id,user_id:user.id,role,display_name:memberName,active:true},{onConflict:'congregation_id,user_id'});
+    const {error:memberError}=await admin.from('bible_congregation_members').upsert({congregation_id:congregation.id,user_id:user.id,role,display_name:memberName,avatar,active:true},{onConflict:'congregation_id,user_id'});
     if(memberError)throw memberError;
     if(!existing.data){
       const {error:useError}=await admin.from('bible_congregation_invites').update({uses:Number(invite.uses)+1}).eq('id',invite.id).eq('uses',invite.uses);
