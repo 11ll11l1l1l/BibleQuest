@@ -1,0 +1,65 @@
+name: Validate doctrinal safety
+
+on:
+  push:
+    paths:
+      - "data/doctrinal-*.js"
+      - "data/questions.js"
+      - "data/stories.js"
+      - "data/packs/questions/**"
+      - "runtime-safety.js"
+      - "index.html"
+      - "scripts/content-audit.js"
+      - "scripts/doctrinal-audit.js"
+      - "scripts/verify-safety-smoke.js"
+      - "scripts/apply-doctrinal-safety.py"
+      - "DOCTRINAL_SAFETY.md"
+      - ".github/workflows/doctrinal-safety.yml"
+  pull_request:
+    paths:
+      - "data/doctrinal-*.js"
+      - "data/questions.js"
+      - "data/stories.js"
+      - "data/packs/questions/**"
+      - "runtime-safety.js"
+      - "index.html"
+      - "scripts/content-audit.js"
+      - "scripts/doctrinal-audit.js"
+      - "scripts/verify-safety-smoke.js"
+      - "scripts/apply-doctrinal-safety.py"
+      - "DOCTRINAL_SAFETY.md"
+      - ".github/workflows/doctrinal-safety.yml"
+
+jobs:
+  doctrinal-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check safety script syntax
+        run: |
+          node --check data/doctrinal-safety.js
+          node --check data/doctrinal-context.js
+          node --check runtime-safety.js
+          node --check scripts/doctrinal-audit.js
+          node --check scripts/verify-safety-smoke.js
+          node --check scripts/content-audit.js
+          python3 -m py_compile scripts/apply-doctrinal-safety.py
+      - name: Verify known safety cases
+        run: node scripts/verify-safety-smoke.js
+      - name: Audit authored content
+        run: node scripts/content-audit.js
+      - name: Audit imported question library
+        run: node scripts/doctrinal-audit.js
+      - name: Verify fail-closed runtime order
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path('index.html').read_text(encoding='utf-8')
+          required=['data/doctrinal-safety.js','data/doctrinal-context.js','runtime-safety.js','app.js']
+          pos=[html.index(x) for x in required]
+          assert pos == sorted(pos), 'doctrinal safety scripts must load before app.js'
+          runtime=Path('runtime-safety.js').read_text(encoding='utf-8')
+          assert "return new Response('[]'" in runtime, 'runtime must fail closed'
+          assert 'filterDeck' in runtime, 'runtime must filter imported decks'
+          print('Doctrinal safety runtime order verified')
+          PY
