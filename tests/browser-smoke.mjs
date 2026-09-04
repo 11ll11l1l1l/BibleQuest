@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 
 const browser=await chromium.launch({headless:true});
-const page=await browser.newPage({viewport:{width:390,height:844}});
+const page=await browser.newPage({viewport:{width:360,height:800}});
 page.setDefaultTimeout(12000);
 page.setDefaultNavigationTimeout(20000);
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -55,9 +55,25 @@ try{
   await page.waitForSelector('[data-reader-book="GEN"]');
   await page.locator('[data-reader-book="GEN"]').first().click();
   await page.waitForSelector('.verse-list');
+  await page.waitForSelector('#bqTranslationSelect');
   const versions=await page.locator('#bqTranslationSelect').innerText();
   for(const label of ['BSB','TGL','日本語','NLT','ESV','NIV','AMP'])assert.match(versions,new RegExp(label));
   assert.ok((await page.locator('.verse-list').innerText()).length>100);
+
+  // Regression: on <=380px the version and chapter controls used to occupy the same grid row,
+  // making Tagalog appear to have disappeared. They must remain distinct, visible controls.
+  const versionBox=await page.locator('#bqTranslationSelect').boundingBox();
+  const chapterBox=await page.locator('#readerChapter').boundingBox();
+  assert.ok(versionBox&&versionBox.width>120,'Bible version selector must be visibly usable on narrow phones');
+  assert.ok(chapterBox,'chapter selector must remain visible');
+  assert.ok(versionBox.y+versionBox.height<=chapterBox.y+2,'version selector must not overlap the chapter selector');
+
+  await page.locator('#bqTranslationSelect').selectOption('TGL');
+  await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='TGL');
+  const tagalog=await page.locator('.verse-list').innerText();
+  assert.ok(tagalog.length>100,'Tagalog chapter must render actual Scripture text');
+  assert.match(tagalog,/Diyos/i,'Tagalog Genesis should contain Tagalog Scripture, not the BSB fallback');
+  assert.match(await page.locator('[data-bq-version-source]').innerText(),/Tagalog|banal na Bibliya/i);
   await page.locator('[data-reader-close]').first().click();
 
   console.log('phase: mission');
