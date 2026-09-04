@@ -6,6 +6,7 @@ on:
       - "scripts/build_content_pack.py"
       - "scripts/build_story_packs.py"
       - "scripts/build_tagalog_packs.py"
+      - "scripts/build_original_language_packs.py"
       - ".github/workflows/refresh-content.yml"
   workflow_dispatch:
   schedule:
@@ -17,7 +18,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout BibleQuest
         uses: actions/checkout@v4
@@ -32,6 +33,7 @@ jobs:
           python3 scripts/build_content_pack.py
           python3 scripts/build_story_packs.py
           python3 scripts/build_tagalog_packs.py
+          python3 scripts/build_original_language_packs.py
       - name: Report pack sizes
         run: |
           echo "### BibleQuest content pack" >> "$GITHUB_STEP_SUMMARY"
