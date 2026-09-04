@@ -36,18 +36,6 @@
     }
   },
   {
-    "id": "muxt",
-    "r": "2:10",
-    "q": "Why does Paul endure all these things?",
-    "a": "Paul endures all things for those chosen by God, that they may obtain the salvation that is in Christ Jesus.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
     "id": "acgd",
     "r": "3:2",
     "q": "In the last days, what will people love instead of God?",

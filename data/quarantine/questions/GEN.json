@@ -96,34 +96,10 @@
     }
   },
   {
-    "id": "edc4",
-    "r": "24:2-4",
-    "q": "What did Abraham make his oldest servant swear to do?",
-    "a": "Abraham made his oldest servant swear that he would get a wife for Isaac from Abraham’s relatives.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "marriage-sexuality"
-      ]
-    }
-  },
-  {
     "id": "e7qe",
     "r": "24:67",
     "q": "What did Isaac do after Abraham’s servant recounted all the things that he had done?",
     "a": "Isaac brought Rebekah into his mother Sarah’s tent and took Rebekah as his wife.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "marriage-sexuality"
-      ]
-    }
-  },
-  {
-    "id": "k74h",
-    "r": "25:1",
-    "q": "What did Abraham do after his wife Sarah died?",
-    "a": "Abraham took another wife named Keturah.",
     "safety": {
       "action": "quarantine",
       "topics": [

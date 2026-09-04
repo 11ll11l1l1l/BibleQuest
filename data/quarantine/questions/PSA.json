@@ -36,18 +36,6 @@
     }
   },
   {
-    "id": "tc3b",
-    "r": "5:8",
-    "q": "Why does David ask Yahweh to guide him in righteousness?",
-    "a": "David asks Yahweh to guide him in righteousness because of those who are watching him.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
     "id": "t2ow",
     "r": "6:2",
     "q": "What is David asking Yahweh to do because David is frail?",
@@ -140,18 +128,6 @@
       "action": "quarantine",
       "topics": [
         "healing"
-      ]
-    }
-  },
-  {
-    "id": "uozy",
-    "r": "20:5",
-    "q": "In what does David say they will rejoice?",
-    "a": "David says they will rejoice in the salvation that Yahweh gives.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
       ]
     }
   },
@@ -256,18 +232,6 @@
     "r": "35:9",
     "q": "In what will David rejoice?",
     "a": "He will rejoice in Yahweh’s salvation.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
-    "id": "poht",
-    "r": "35:24",
-    "q": "Why does David say Yahweh should defend him?",
-    "a": "He says Yahweh should defend him because of Yahweh’s righteousness.",
     "safety": {
       "action": "quarantine",
       "topics": [
@@ -448,30 +412,6 @@
     "r": "51:12",
     "q": "What does David ask God to restore to him?",
     "a": "He asks God to restore to him the joy of his salvation and to support him with a willing spirit.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
-    "id": "h7cq",
-    "r": "62:1",
-    "q": "Why does David say his soul is in silence before God?",
-    "a": "David says his soul is in silence before God because he knows that his salvation comes from God.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
-    "id": "zj85",
-    "r": "62:2",
-    "q": "What does David say God is to him?",
-    "a": "David says God alone is his salvation and his protection, like a rock he could climb onto in order to be safe.",
     "safety": {
       "action": "quarantine",
       "topics": [
@@ -872,18 +812,6 @@
       "action": "quarantine",
       "topics": [
         "salvation"
-      ]
-    }
-  },
-  {
-    "id": "l6w8",
-    "r": "141:5",
-    "q": "What does David say it will be like if a righteous man corrects him?",
-    "a": "He says it will be as if they have honored him by anointing his head with oil, which he will not refuse.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "healing"
       ]
     }
   },

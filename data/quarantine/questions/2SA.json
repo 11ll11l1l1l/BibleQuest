@@ -1,29 +1,5 @@
 [
   {
-    "id": "sig9",
-    "r": "1:14-15",
-    "q": "Why did David have the young Amalekite man killed?",
-    "a": "David had the young Amalekite man killed because the man’s own words testified that he had killed Yahweh’s anointed.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "healing"
-      ]
-    }
-  },
-  {
-    "id": "dgex",
-    "r": "1:16",
-    "q": "Why did David have the young Amalekite man killed?",
-    "a": "David had the young Amalekite man killed because the man’s own words testified that he had killed Yahweh’s anointed.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "healing"
-      ]
-    }
-  },
-  {
     "id": "abgb",
     "r": "3:13",
     "q": "What was David’s one condition for making a covenant with Abner?",

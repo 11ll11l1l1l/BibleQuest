@@ -1,41 +1,5 @@
 [
   {
-    "id": "ojj9",
-    "r": "1:5",
-    "q": "For what purpose did Paul receive grace and apostleship from Christ?",
-    "a": "Paul received grace and apostleship for obedience of faith among all the nations.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
-    "id": "tl8v",
-    "r": "1:8",
-    "q": "For what does Paul thank God concerning the believers in Rome?",
-    "a": "Paul thanks God because their faith is proclaimed throughout the whole world.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
-    "id": "kccq",
-    "r": "1:11",
-    "q": "Why does Paul desire to see the believers in Rome?",
-    "a": "Paul desires to see them in order to give them some spiritual gift in order to strengthen them.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "holy-spirit"
-      ]
-    }
-  },
-  {
     "id": "qpkd",
     "r": "1:17",
     "q": "What scripture does Paul quote concerning how the righteous will live?",

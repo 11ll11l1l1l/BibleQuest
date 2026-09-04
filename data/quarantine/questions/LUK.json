@@ -61,18 +61,6 @@
     }
   },
   {
-    "id": "qu43",
-    "r": "3:19",
-    "q": "Why did John rebuke Herod?",
-    "a": "John rebuked Herod because Herod had married his own brother’s wife and had done many other evil things.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "marriage-sexuality"
-      ]
-    }
-  },
-  {
     "id": "dz1m",
     "r": "4:34",
     "q": "In the synagogue, what did the demon speaking through the man know about Jesus?",
@@ -89,18 +77,6 @@
     "r": "4:36",
     "q": "How did the people react after Jesus cast out the demon?",
     "a": "The people were astonished and kept talking about it with one another.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "spiritual-warfare"
-      ]
-    }
-  },
-  {
-    "id": "xytr",
-    "r": "4:41",
-    "q": "What did the demons say as they were cast out, and why did Jesus not let them speak?",
-    "a": "The demons said that Jesus was the Son of God, and Jesus did not let them speak because they knew he was the Christ.",
     "safety": {
       "action": "quarantine",
       "topics": [
@@ -225,18 +201,6 @@
       "action": "quarantine",
       "topics": [
         "healing"
-      ]
-    }
-  },
-  {
-    "id": "ffc7",
-    "r": "20:47",
-    "q": "How did Jesus say these scribes would be judged?",
-    "a": "He said that they will receive a greater condemnation.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
       ]
     }
   }

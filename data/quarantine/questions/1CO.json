@@ -24,18 +24,6 @@
     }
   },
   {
-    "id": "ingp",
-    "r": "1:14-15",
-    "q": "Why does Paul thank God that he baptized none of them except Crispus and Gaius?",
-    "a": "Paul thanks God for this because this would give them no occasion to say that they were baptized into Paul’s name.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "baptism"
-      ]
-    }
-  },
-  {
     "id": "j8ev",
     "r": "1:30",
     "q": "What did Christ Jesus become for us?",
@@ -45,18 +33,6 @@
       "topics": [
         "salvation",
         "sanctification"
-      ]
-    }
-  },
-  {
-    "id": "ahv0",
-    "r": "2:4-5",
-    "q": "Why was Paul’s word and his proclamation done with the demonstration of the Spirit and of power rather than with persuasive words of wisdom?",
-    "a": "This was so that their faith might not be in the wisdom of humans, but in the power of God.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
       ]
     }
   },

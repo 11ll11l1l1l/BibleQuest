@@ -84,18 +84,6 @@
     }
   },
   {
-    "id": "is9n",
-    "r": "8:4",
-    "q": "Why did Jesus say the healed leper should go to the priest and offer the gift Moses commanded?",
-    "a": "Jesus told the healed leper to go to the priest for a testimony to them.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "healing"
-      ]
-    }
-  },
-  {
     "id": "sg0e",
     "r": "8:8",
     "q": "Why did the centurion say that Jesus did not need to come to his house?",
@@ -169,30 +157,6 @@
     }
   },
   {
-    "id": "u3mb",
-    "r": "12:26",
-    "q": "How did Jesus respond to the accusation that he cast out demons by Beelzebub?",
-    "a": "Jesus said that if Satan drives out Satan, then how will Satan’s kingdom stand.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "spiritual-warfare"
-      ]
-    }
-  },
-  {
-    "id": "rjef",
-    "r": "17:20",
-    "q": "Why were the disciples not able to cure the epileptic boy?",
-    "a": "Jesus said that because of their small faith they could not cure the epileptic boy.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "salvation"
-      ]
-    }
-  },
-  {
     "id": "upfq",
     "r": "19:3",
     "q": "What question did the Pharisees ask Jesus to test him?",
@@ -201,30 +165,6 @@
       "action": "quarantine",
       "topics": [
         "marriage-sexuality"
-      ]
-    }
-  },
-  {
-    "id": "w0b2",
-    "r": "19:7-8",
-    "q": "Why did Jesus say Moses had commanded certificates of divorce?",
-    "a": "Jesus said that Moses had commanded certificates of divorce because of the hardness of the Jews’ hearts.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "marriage-sexuality"
-      ]
-    }
-  },
-  {
-    "id": "mxpe",
-    "r": "20:34",
-    "q": "Why did Jesus heal the two blind men?",
-    "a": "Jesus healed the two blind men because he was moved with compassion.",
-    "safety": {
-      "action": "quarantine",
-      "topics": [
-        "healing"
       ]
     }
   },
