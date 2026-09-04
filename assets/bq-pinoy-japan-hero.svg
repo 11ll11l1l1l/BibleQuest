@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 619" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <clipPath id="r"><rect width="1100" height="619" rx="44" ry="44"/></clipPath>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#fff9f7" stop-opacity=".36"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#r)">
+    <image width="1100" height="619" href="data:image/jpeg;base64," + b64 + ""/>
+    <rect width="1100" height="619" fill="url(#fade)"/>
+  </g>
+</svg>
