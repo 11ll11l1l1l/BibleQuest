@@ -2,95 +2,13 @@
   const KEY='biblequest_ui_language_v1';
   const lang=()=>localStorage.getItem(KEY)||'taglish';
   const exact=new Map(Object.entries({
-    'CLOUD ACCOUNT':'CLOUD ACCOUNT',
-    'Start with your own BibleQuest identity.':'Simulan sa sarili mong BibleQuest identity.',
-    'Progress, notes, badges and congregation rankings follow your account across devices.':'Progress, notes, badges, at congregation rankings mo ay susunod sa account mo kahit magpalit ka ng device.',
-    'Create account':'Gumawa ng account',
-    'Sign in':'Mag-sign in',
-    'Your name':'Pangalan mo',
-    'What should BibleQuest call you?':'Ano ang gusto mong itawag sa’yo?',
-    'Email':'Email',
-    'Password':'Password',
-    'Create my BibleQuest account':'Gawin ang BibleQuest account ko',
-    'Sign in on this device':'Mag-sign in sa device na ito',
-    'Face':'Mukha',
-    'Outfit':'Outfit',
-    'Background':'Background',
-    'Companion':'Kasama',
-    'FINISH PROFILE':'TAPUSIN ANG PROFILE',
-    'Make this identity yours.':'Gawin mong talagang ikaw ang identity na ito.',
-    'This nickname and avatar are what people will recognize in leaderboards and group activities.':'Ito ang nickname at avatar na makikita ng iba sa leaderboards at group activities.',
-    'Call me':'Itawag sa akin',
-    'Save my profile':'I-save ang profile ko',
-    'YOUR ACCOUNT':'ACCOUNT MO',
-    'private cloud notes':'private cloud notes',
-    'remembered devices':'remembered devices',
-    'Profile & avatar':'Profile at avatar',
-    'Private to your account':'Private sa account mo',
-    'Shown to congregation':'Makikita ng congregation',
-    'Save profile':'I-save ang profile',
-    'My Bible notes':'Bible notes ko',
-    'Open private notes':'Buksan ang private notes',
-    'Remembered devices':'Mga remembered device',
-    'THIS DEVICE':'DEVICE NA ITO',
-    'Remove':'Alisin',
-    'Security':'Security',
-    'Current password':'Current password',
-    'New password':'Bagong password',
-    'Change password':'Palitan ang password',
-    'Sync now':'I-sync ngayon',
-    'Sign out':'Mag-sign out',
-    'Back to app':'Balik sa app',
-    'My Notes':'Mga Notes Ko',
-    'PRIVATE CLOUD NOTEBOOK':'PRIVATE CLOUD NOTEBOOK',
-    'Your Bible notebook':'Bible notebook mo',
-    'Questions, prayers, observations and study notes follow your account across devices.':'Questions, prayers, observations, at study notes mo ay naka-sync sa account mo kahit magpalit ka ng device.',
-    'Show all notes':'Ipakita lahat ng notes',
-    'New note':'Bagong note',
-    'Write on this chapter':'Mag-note sa chapter na ito',
-    'No notes here yet. Write the first one.':'Wala pang notes dito. Ikaw ang gumawa ng una.',
-    'Edit note':'I-edit ang note',
-    'Book':'Book',
-    'Chapter':'Chapter',
-    'Verse':'Verse',
-    'To verse (optional)':'Hanggang verse (optional)',
-    'Note type':'Type ng note',
-    'Study note':'Study note',
-    'Prayer':'Prayer',
-    'Question':'Question',
-    'Reflection':'Reflection',
-    'Sermon note':'Sermon note',
-    'Other':'Iba pa',
-    'Title':'Title',
-    'Your note':'Note mo',
-    'Tags':'Tags',
-    'Pin this note':'I-pin ang note na ito',
-    'Save to my account':'I-save sa account ko',
-    'Delete note':'I-delete ang note',
-    'Notes on this chapter':'Notes sa chapter na ito',
-    'Account & devices':'Account at devices',
-    'Cloud progress':'Cloud progress'
+    'CLOUD ACCOUNT':'CLOUD ACCOUNT','Create account':'Gumawa ng account','Sign in':'Mag-sign in','Your name':'Pangalan mo','What should BibleQuest call you?':'Ano ang gusto mong itawag sa’yo?','Email':'Email','Password':'Password','Face':'Mukha','Outfit':'Outfit','Background':'Background','Companion':'Kasama','FINISH PROFILE':'TAPUSIN ANG PROFILE','Make this identity yours.':'Gawin mong talagang ikaw ang identity na ito.','Call me':'Itawag sa akin','Save my profile':'I-save ang profile ko','YOUR ACCOUNT':'ACCOUNT MO','private cloud notes':'private cloud notes','remembered devices':'remembered devices','Profile & avatar':'Profile at avatar','Private to your account':'Private sa account mo','Shown to congregation':'Makikita ng congregation','Save profile':'I-save ang profile','My Bible notes':'Bible notes ko','Open private notes':'Buksan ang private notes','Remembered devices':'Mga remembered device','THIS DEVICE':'DEVICE NA ITO','Remove':'Alisin','Security':'Security','Current password':'Current password','New password':'Bagong password','Change password':'Palitan ang password','Sync now':'I-sync ngayon','Sign out':'Mag-sign out','Back to app':'Balik sa app','My Notes':'Mga Notes Ko','PRIVATE CLOUD NOTEBOOK':'PRIVATE CLOUD NOTEBOOK','Your Bible notebook':'Bible notebook mo','Show all notes':'Ipakita lahat ng notes','New note':'Bagong note','Write on this chapter':'Mag-note sa chapter na ito','No notes here yet. Write the first one.':'Wala pang notes dito. Ikaw ang gumawa ng una.','Edit note':'I-edit ang note','Book':'Book','Chapter':'Chapter','Verse':'Verse','To verse (optional)':'Hanggang verse (optional)','Note type':'Type ng note','Study note':'Study note','Prayer':'Prayer','Question':'Question','Reflection':'Reflection','Sermon note':'Sermon note','Other':'Iba pa','Title':'Title','Your note':'Note mo','Tags':'Tags','Pin this note':'I-pin ang note na ito','Save to my account':'I-save sa account ko','Delete note':'I-delete ang note','Notes on this chapter':'Notes sa chapter na ito','Account & devices':'Account at devices','Cloud progress':'Cloud progress'
   }));
-  const replacements=[
-    [/Your full name and private notes are not shown on leaderboards\./g,'Hindi ipinapakita sa leaderboards ang full name at private notes mo.'],
-    [/Other members see only your chosen name and avatar\./g,'Chosen name at avatar mo lang ang makikita ng ibang members.'],
-    [/BibleQuest uses a random device ID for sync; it does not fingerprint your phone\./g,'Random device ID lang ang gamit ng BibleQuest para sa sync; hindi nito fina-fingerprint ang phone mo.'],
-    [/Notes are private to your account\./g,'Private sa account mo ang notes.'],
-    [/Congregation members and leaderboards cannot read note text\./g,'Hindi mababasa ng congregation members o leaderboards ang laman ng notes mo.'],
-    [/This note is stored in your private BibleQuest account and is not used as a leaderboard answer\./g,'Naka-save ito sa private BibleQuest account mo at hindi ginagamit bilang leaderboard answer.'],
-    [/Your device keeps a fast working copy, while signed-in progress is synchronized to your BibleQuest account\./g,'May mabilis na working copy ang device mo, habang sini-sync sa BibleQuest account ang signed-in progress mo.']
-  ];
-  const placeholders=new Map([
-    ['Full name','Buong pangalan'],
-    ['Nickname / preferred name','Nickname / gusto mong tawag'],
-    ['At least 8 characters','At least 8 characters'],
-    ['Congregation name','Pangalan ng congregation'],
-    ['Invite code','Invite code'],
-    ['What stood out?','Ano ang tumatak sa’yo?'],
-    ['faith, family, prayer','faith, family, prayer']
-  ]);
+  const replacements=[[/Notes are private to your account\./g,'Private sa account mo ang notes.'],[/Congregation members and leaderboards cannot read note text\./g,'Hindi mababasa ng congregation members o leaderboards ang laman ng notes mo.'],[/This note is stored in your private BibleQuest account and is not used as a leaderboard answer\./g,'Naka-save ito sa private BibleQuest account mo at hindi ginagamit bilang leaderboard answer.'],[/Your device keeps a fast working copy, while signed-in progress is synchronized to your BibleQuest account\./g,'May mabilis na working copy ang device mo, habang sini-sync sa BibleQuest account ang signed-in progress mo.']];
+  const placeholders=new Map([['Full name','Buong pangalan'],['Nickname / preferred name','Nickname / gusto mong tawag'],['At least 8 characters','At least 8 characters'],['Congregation name','Pangalan ng congregation'],['Invite code','Invite code'],['What stood out?','Ano ang tumatak sa’yo?'],['faith, family, prayer','faith, family, prayer']]);
   function translateText(text){const t=text.trim();if(exact.has(t))return text.replace(t,exact.get(t));let out=text;for(const [re,to] of replacements)out=out.replace(re,to);return out}
-  function apply(root=document.body){if(lang()!=='taglish'||!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const n of nodes){if(n.parentElement?.closest('[data-bq-scripture],.verse-list,.source-content'))continue;const next=translateText(n.nodeValue);if(next!==n.nodeValue)n.nodeValue=next}root.querySelectorAll?.('input[placeholder],textarea[placeholder]').forEach(i=>{const p=i.getAttribute('placeholder');if(placeholders.has(p))i.setAttribute('placeholder',placeholders.get(p))})}
+  function protectedNode(node){return Boolean(node?.parentElement?.closest('[data-bq-english],[data-bq-scripture],.verse-list,.source-content'))}
+  function apply(root=document.body){if(lang()!=='taglish'||!root)return;if(root.nodeType===1&&root.closest?.('[data-bq-english]'))return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const n of nodes){if(protectedNode(n))continue;const next=translateText(n.nodeValue);if(next!==n.nodeValue)n.nodeValue=next}root.querySelectorAll?.('input[placeholder],textarea[placeholder]').forEach(i=>{if(i.closest('[data-bq-english]'))return;const p=i.getAttribute('placeholder');if(placeholders.has(p))i.setAttribute('placeholder',placeholders.get(p))})}
   const obs=new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes)if(n.nodeType===1)apply(n)});
   document.addEventListener('DOMContentLoaded',()=>{apply();obs.observe(document.documentElement,{childList:true,subtree:true})});
   setTimeout(apply,150);

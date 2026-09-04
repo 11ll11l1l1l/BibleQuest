@@ -5,7 +5,7 @@ const BQ_LOCAL_HOSTS=new Set(['localhost','127.0.0.1','::1']);
 const BQ_APP_ROOT=new URL('./',location.href).href;
 window.BQ_CLOUD_CONFIG = Object.freeze({
   enabled: !BQ_LOCAL_HOSTS.has(location.hostname),
-  authMode: 'email-password',
+  authMode: 'instant-email-password-recovery-code',
   supabaseUrl: 'https://zkfmgezvzugchcwppreq.supabase.co',
   publishableKey: 'sb_publishable_mJyieT7WZT1vAZX7XFdsrg_lRgDxcsq',
   redirectUrl: BQ_APP_ROOT
