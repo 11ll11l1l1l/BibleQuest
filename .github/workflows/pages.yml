@@ -1,12 +1,14 @@
 name: Deploy BibleQuest to GitHub Pages
 
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: ["Browser smoke test"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
   contents: read
+  checks: read
   pages: write
   id-token: write
 
@@ -16,21 +18,52 @@ concurrency:
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.event == 'push')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      RELEASE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
     steps:
-      - name: Checkout
+      - name: Confirm validation passed for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Release candidate: ${RELEASE_SHA}"
+          for i in {1..30}; do
+            result=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${RELEASE_SHA}/check-runs?per_page=100" \
+              --jq '[.check_runs[] | select(.name=="validate")] | sort_by(.started_at) | last | [.status,.conclusion] | @tsv' 2>/dev/null || true)
+            status=$(printf '%s' "$result" | cut -f1)
+            conclusion=$(printf '%s' "$result" | cut -f2)
+            if [ "$status" = "completed" ] && [ "$conclusion" = "success" ]; then
+              echo "Validation passed."
+              exit 0
+            fi
+            if [ "$status" = "completed" ] && [ -n "$conclusion" ] && [ "$conclusion" != "success" ]; then
+              echo "Validation concluded: $conclusion"
+              exit 1
+            fi
+            sleep 2
+          done
+          echo "Timed out waiting for a successful validation check."
+          exit 1
+      - name: Checkout tested commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_SHA }}
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload site
+      - name: Upload tested site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
-      - name: Deploy to GitHub Pages
+      - name: Deploy tested commit to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
