@@ -1,5 +1,5 @@
-const CACHE='biblequest-v25';
-const SHELL=['./','./index.html','./app-icon.svg','./styles.css','./decks.css','./reader.css','./sequence.css','./storyjourney.css','./transformation.css','./transformation-taglish.css','./growth.css','./growth-nudge.css','./learning-engine.css','./open-review.css','./ui-enhancements.css','./extra-games.css','./couples.css','./community.css','./group-play.css','./cloud.css','./account.css','./notes.css','./innovation.css','./modern-home.css','./app.js','./reader.js','./translations.js','./sequence.js','./storyjourney.js','./transformation.js','./transformation-taglish.js','./growth.js','./growth-nudge.js','./learning-engine.js','./open-review.js','./extra-games.js','./couples.js','./community.js','./community-bridge.js','./cloud-config.js','./account.js','./signup-enhancements.js','./notes.js','./cloud-copy.js','./cloud.js','./group-play.js','./live-rooms.js','./innovation-suite.js','./workspace.js','./couple-cloud.js','./source-labels.js','./ui-taglish.js','./account-taglish.js','./modern-home.js','./data/questions.js','./data/connections.js','./data/packs/manifest.json','./manifest.webmanifest'];
+const CACHE='biblequest-v26';
+const SHELL=['./','./index.html','./app-icon.svg','./styles.css','./decks.css','./reader.css','./sequence.css','./storyjourney.css','./transformation.css','./transformation-taglish.css','./growth.css','./growth-nudge.css','./learning-engine.css','./open-review.css','./ui-enhancements.css','./extra-games.css','./couples.css','./community.css','./group-play.css','./cloud.css','./account.css','./notes.css','./innovation.css','./modern-home.css','./completion.css','./kawaii-polish.css','./app.js','./reader.js','./translations.js','./sequence.js','./storyjourney.js','./transformation.js','./transformation-taglish.js','./growth.js','./growth-nudge.js','./learning-engine.js','./open-review.js','./extra-games.js','./couples.js','./community.js','./community-bridge.js','./cloud-config.js','./account.js','./signup-enhancements.js','./notes.js','./cloud-copy.js','./cloud.js','./group-play.js','./live-rooms.js','./innovation-suite.js','./workspace.js','./couple-cloud.js','./context-lab.js','./assignment-center.js','./presence.js','./avatar-vault.js','./source-labels.js','./ui-taglish.js','./account-taglish.js','./modern-home.js','./data/questions.js','./data/connections.js','./data/packs/manifest.json','./manifest.webmanifest'];
 
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
@@ -24,7 +24,7 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  const refreshableShell=e.request.destination==='script'||e.request.destination==='style'||url.pathname.endsWith('/manifest.webmanifest')||url.pathname.endsWith('/data/packs/manifest.json');
+  const refreshableShell=e.request.destination==='script'||e.request.destination==='style'||url.pathname.endsWith('/manifest.webmanifest')||url.pathname.endsWith('/data/packs/manifest.json')||url.pathname.endsWith('/data/packs/context/manifest.json');
   if(refreshableShell){
     e.respondWith(networkFirst(e.request));
     return;
