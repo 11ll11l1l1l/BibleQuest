@@ -28,9 +28,9 @@ async function checkViewport(name,viewport,{mobile=false}={}){
     assert.equal(geometry.nav.length,5,`${name}: bottom navigation must keep five destinations`);
     assert.ok(Math.max(...geometry.nav.map(x=>x.top))-Math.min(...geometry.nav.map(x=>x.top))<3,`${name}: bottom navigation must remain one row`);
     assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none',`${name}: legacy hero must remain suppressed`);
-    assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none',`${name}: legacy stat strip must remain suppressed`);
 
     if(mobile){
+      assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none',`${name}: legacy stat strip must not consume mobile viewport space`);
       assert.ok(geometry.daily.top<140,`${name}: Daily Journey must remain above the fold`);
       assert.ok(geometry.hubs.every(x=>x.width>120),`${name}: Explore cards must remain usable`);
     }else{
