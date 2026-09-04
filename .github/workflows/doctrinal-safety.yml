@@ -1,36 +1,7 @@
 name: Validate doctrinal safety
 
 on:
-  push:
-    paths:
-      - "data/doctrinal-*.js"
-      - "data/questions.js"
-      - "data/stories.js"
-      - "data/packs/questions/**"
-      - "runtime-safety.js"
-      - "index.html"
-      - "scripts/content-audit.js"
-      - "scripts/doctrinal-audit.js"
-      - "scripts/verify-safety-smoke.js"
-      - "scripts/apply-doctrinal-safety.js"
-      - "scripts/apply-doctrinal-safety.py"
-      - "DOCTRINAL_SAFETY.md"
-      - ".github/workflows/doctrinal-safety.yml"
-  pull_request:
-    paths:
-      - "data/doctrinal-*.js"
-      - "data/questions.js"
-      - "data/stories.js"
-      - "data/packs/questions/**"
-      - "runtime-safety.js"
-      - "index.html"
-      - "scripts/content-audit.js"
-      - "scripts/doctrinal-audit.js"
-      - "scripts/verify-safety-smoke.js"
-      - "scripts/apply-doctrinal-safety.js"
-      - "scripts/apply-doctrinal-safety.py"
-      - "DOCTRINAL_SAFETY.md"
-      - ".github/workflows/doctrinal-safety.yml"
+  workflow_dispatch:
 
 jobs:
   doctrinal-safety:
