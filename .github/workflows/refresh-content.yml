@@ -5,6 +5,7 @@ on:
     paths:
       - "scripts/build_content_pack.py"
       - "scripts/build_story_packs.py"
+      - "scripts/build_tagalog_packs.py"
       - ".github/workflows/refresh-content.yml"
   workflow_dispatch:
   schedule:
@@ -30,6 +31,7 @@ jobs:
         run: |
           python3 scripts/build_content_pack.py
           python3 scripts/build_story_packs.py
+          python3 scripts/build_tagalog_packs.py
       - name: Report pack sizes
         run: |
           echo "### BibleQuest content pack" >> "$GITHUB_STEP_SUMMARY"
