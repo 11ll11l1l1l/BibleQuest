@@ -16,7 +16,7 @@ for(const item of shell){
   assert(!forbiddenLargePrefixes.some(prefix=>item.startsWith(prefix)),`large/on-demand dataset must not be precached: ${item}`);
 }
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=43,`PWA cache must include operational crash hardening baseline (v43+), got v${cacheVersion||'missing'}`);
+assert(cacheVersion>=45,`PWA cache must include Transform crash hotfix baseline (v45+), got v${cacheVersion||'missing'}`);
 for(const item of ['index.html','styles.css','app.js','pwa-runtime.js','operational-hardening.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort the whole service-worker install');
 assert(sw.includes("e.request.mode==='navigate'"),'service worker must special-case navigations');
@@ -31,11 +31,21 @@ assert(sw.includes('self.clients.claim()'),'activated worker must claim open cli
 const index=read('index.html');
 const pwaRuntime=read('pwa-runtime.js');
 const operational=read('operational-hardening.js');
+const transformGuard=read('transformation-state-guard.js');
+assert(index.includes('<script src="transformation-state-guard.js"></script>'),'production page must load the Transform state guard');
+assert(index.indexOf('transformation-state-guard.js')<index.indexOf('transformation.js'),'Transform state must be normalized before transformation.js captures local state');
+assert(shell.includes('transformation-state-guard.js'),'Transform state guard must be available to the PWA shell');
+assert(transformGuard.includes('validPersonalityResult'),'Transform state guard must validate persisted personality result shape');
+assert(transformGuard.includes('validBiasResult'),'Transform state guard must validate persisted bias result shape');
+assert(transformGuard.includes('sanitize();'),'Transform state guard must sanitize before transformation.js loads');
 assert(index.includes('<script src="operational-hardening.js"></script>'),'production page must load the operational recovery guard');
 assert(index.indexOf('operational-hardening.js')<index.indexOf('pwa-runtime.js'),'operational recovery must initialize after feature modules and before PWA registration');
 assert(shell.includes('operational-hardening.js'),'operational recovery must be available offline');
 assert(operational.includes('repairTransformationState'),'Transformation state repair must remain part of operational recovery');
 assert(operational.includes('REQUIREMENTS'),'major feature entry points must remain preflighted before launch');
+assert(operational.includes('scheduleTransformEnhancement'),'Transform enhancement must be scheduled from the actual entry event');
+assert(!operational.includes("new MutationObserver(()=>{if(document.querySelector('.bq-transform-overlay'))enhanceTransform()"),'Transform hardening must never reintroduce the self-triggering DOM mutation observer that froze the app');
+assert(operational.includes("chip&&chip.textContent!==privateLabel"),'Transform privacy-label enhancement must be idempotent');
 assert(index.includes('<script src="onboarding-tutorial.js"></script>'),'production page must load post-registration onboarding tutorial');
 assert(shell.includes('onboarding-tutorial.js'),'protected onboarding tutorial must be available offline');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production page must load PWA registration runtime');
@@ -59,4 +69,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell references; ${core.length} core assets; cache v${cacheVersion}; operational recovery, onboarding, PWA update/fallback behavior, and large-payload boundaries guarded.`);
+console.log(`Reliability smoke passed: ${shell.length} shell references; ${core.length} core assets; cache v${cacheVersion}; Transform state/order/mutation-loop guards, operational recovery, onboarding, PWA update/fallback behavior, and large-payload boundaries guarded.`);

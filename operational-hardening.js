@@ -30,6 +30,10 @@
   }
 
   function repairTransformationState(){
+    const external=window.BQTransformStateGuard?.sanitize;
+    if(typeof external==='function'){
+      try{return external()}catch{}
+    }
     if(!storageAvailable())return {ok:false,reason:'Device storage is unavailable'};
     try{
       const raw=JSON.parse(localStorage.getItem(TRANSFORM_STORE)||'{}');
@@ -112,7 +116,8 @@
     const top=overlay.querySelector('.transform-top');
     if(!top)return true;
     const chip=top.querySelector('.local-chip');
-    if(chip)chip.textContent='🔒 private on this device';
+    const privateLabel='🔒 private on this device';
+    if(chip&&chip.textContent!==privateLabel)chip.textContent=privateLabel;
     if(!top.querySelector('[data-transform-safe-close]')){
       const close=document.createElement('button');
       close.type='button';
@@ -134,6 +139,10 @@
     return true;
   }
 
+  function scheduleTransformEnhancement(){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>enhanceTransform()));
+  }
+
   function hardenTransformation(){
     const api=window.BQ_TRANSFORMATION;
     const raw=api?.open;
@@ -144,9 +153,7 @@
       if(!state.ok){showRecovery('Transformation',new Error(`${state.reason}. This feature stores assessment progress on this device.`));clearFeatureSoon();return}
       try{
         const result=raw.apply(this,args);
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{
-          if(!enhanceTransform())showRecovery('Transformation',new Error('The Transformation screen did not attach correctly. Return Home and try again.'));
-        }));
+        scheduleTransformEnhancement();
         clearFeatureSoon();
         return result;
       }catch(err){showRecovery('Transformation',err);clearFeatureSoon();return undefined}
@@ -215,7 +222,9 @@
       }
       const state=repairTransformationState();
       if(!state.ok){e.preventDefault();e.stopImmediatePropagation();showRecovery('Transformation',new Error(state.reason));return}
-      markFeature('Transformation');clearFeatureSoon();
+      markFeature('Transformation');
+      scheduleTransformEnhancement();
+      clearFeatureSoon();
       return;
     }
     const item=target.closest('[data-modern-item]');
@@ -247,7 +256,6 @@
   window.addEventListener('unhandledrejection',e=>{
     if(activeFeature&&Date.now()<activeUntil){e.preventDefault();showRecovery(activeFeature,e.reason||new Error('A feature operation failed'))}
   });
-  new MutationObserver(()=>{if(document.querySelector('.bq-transform-overlay'))enhanceTransform()}).observe(document.documentElement,{childList:true,subtree:true});
 
   installGuards();
   setTimeout(installGuards,300);
@@ -257,6 +265,7 @@
     repairTransformationState,
     recover:showRecovery,
     health:()=>Object.fromEntries(Object.entries(REQUIREMENTS).map(([name,check])=>[name,Boolean(check())])),
-    storageAvailable
+    storageAvailable,
+    enhanceTransform
   };
 })();
