@@ -1,27 +1,36 @@
 (() => {
   const nativeFetch = window.fetch.bind(window);
-  const isQuestionPack = (input) => {
+  const BOOK_NAMES = {
+    ROM: 'Romans', ACT: 'Acts', HEB: 'Hebrews', JAS: 'James',
+    '1CO': '1 Corinthians', '1TI': '1 Timothy', '1PE': '1 Peter', REV: 'Revelation'
+  };
+
+  const questionPackCode = (input) => {
     const url = typeof input === 'string' ? input : input?.url || '';
-    return /(?:^|\/)data\/packs\/questions\/[A-Z0-9]+\.json(?:[?#].*)?$/i.test(url);
+    const match = url.match(/(?:^|\/)data\/packs\/questions\/([A-Z0-9]+)\.json(?:[?#].*)?$/i);
+    return match ? match[1].toUpperCase() : null;
   };
 
   const withContext = (item) => {
-    const safety = item.safety || {};
-    if (safety.action !== 'context') return item;
+    const { bookName: _bookName, ...clean } = item;
+    const safety = clean.safety || {};
+    if (safety.action !== 'context') return clean;
     const topic = safety.topics?.[0];
-    const note = topic && window.BQ_DOCTRINAL_CONTEXT?.[topic];
-    if (!note) return item;
-    const answer = String(item.a || '').trim();
+    const notes = window.BQ_DOCTRINAL_CONTEXT || {};
+    const note = (topic && notes[topic]) || notes.default;
+    if (!note) return clean;
+    const answer = String(clean.a || '').trim();
     return {
-      ...item,
+      ...clean,
       a: `${answer}${answer ? '\n\n' : ''}Context note: ${note}`,
       safety: { ...safety, contextApplied: true }
     };
   };
 
   window.fetch = async function bibleQuestSafeFetch(input, init) {
+    const code = questionPackCode(input);
     const response = await nativeFetch(input, init);
-    if (!isQuestionPack(input)) return response;
+    if (!code) return response;
 
     // Fail closed. A stale/raw imported pack must never bypass the safety policy.
     const policy = window.BQ_DOCTRINAL_SAFETY;
@@ -38,7 +47,9 @@
     try {
       const rows = await response.clone().json();
       if (!Array.isArray(rows)) return response;
-      const result = policy.filterDeck(rows);
+      const bookName = BOOK_NAMES[code] || '';
+      const prepared = rows.map(item => bookName ? { ...item, bookName } : item);
+      const result = policy.filterDeck(prepared);
       const safeRows = result.allowed.map(withContext);
       if (result.quarantined.length) {
         console.info(`BibleQuest safety: quarantined ${result.quarantined.length} imported question(s) from normal play.`);
