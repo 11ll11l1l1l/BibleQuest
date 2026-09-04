@@ -62,7 +62,8 @@ BibleQuest currently shares the existing Supabase project used by Karimen to rem
 
 Current cloud capabilities include:
 
-- email/password accounts
+- immediate email/password accounts with password confirmation
+- private rotating recovery codes instead of email-confirmation or SMTP password-reset links
 - cross-device progress snapshots
 - private notes and remembered devices
 - daily journey sync
@@ -71,17 +72,27 @@ Current cloud capabilities include:
 - assignments and presence
 - Journey Groups and encouragements
 - couples and congregation challenge infrastructure
-- owner/admin tools and password-reset email support
+- owner/admin tools without administrator access to user recovery credentials
+
+The email address is an unverified sign-in identifier, not proof of identity. `bq-signup` creates the account immediately and returns a private recovery code. `bq-password-reset` verifies and rotates that code for forgotten-password recovery. A signed-in user can generate a replacement recovery code from Account → Security. Administrators cannot view recovery codes or reset a user's password by email.
 
 The browser contains only the Supabase project URL and publishable key. Privileged keys stay in server-side Edge Functions.
 
+## Operational reliability
+
+`operational-hardening.js` protects major feature entry points. It validates the feature module before opening it, catches immediate feature exceptions/rejected promises, keeps the main BibleQuest shell mounted, and offers a Home recovery path instead of leaving the user on a blank or apparently crashed screen.
+
+Transformation receives additional protection because its local assessment data can outlive application releases: incompatible saved result objects are discarded safely while valid partial answers are retained. Transformation also has an explicit close control.
+
+The manual browser smoke suite includes a real Grow → Transformation launch with deliberately stale local data and a simulated missing-feature launch.
+
 ## Deployment behavior
 
-`cloud-config.js` derives the app root from the current deployment URL. The trusted admin/recovery server boundary accepts the canonical `mybiblequest.pages.dev` host, the `biblequest-7th.pages.dev` compatibility host, their Cloudflare preview subdomains, and the legacy GitHub Pages path.
+`cloud-config.js` derives the current app root from the deployment URL. Trusted Edge Functions accept the canonical `mybiblequest.pages.dev` host, the `biblequest-7th.pages.dev` compatibility host, their Cloudflare preview subdomains, and the legacy GitHub Pages path where explicitly supported.
 
 Cloudflare-specific security headers are defined in `_headers`.
 
-When a new production/custom domain is introduced, update both the Supabase Auth redirect allow-list and the trusted Edge Function origin list. Legacy signup/recovery Edge endpoints are retired and return HTTP 410.
+The current signup/recovery flow does not depend on Supabase Auth redirect emails. If a future custom domain is introduced, update the trusted Edge Function origin lists before using it.
 
 ## GitHub Actions policy
 
@@ -97,9 +108,9 @@ Run before release:
 node scripts/validate-release.mjs
 ```
 
-The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, production auth/admin invariants, and the manual-only GitHub Actions policy.
+The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, operational recovery, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, current account/admin invariants, and the manual-only GitHub Actions policy.
 
-Browser smoke tests remain available as a manual workflow when a real browser regression run is needed.
+Browser smoke tests remain available as a manual workflow when a real browser regression run is needed. They are not automatically triggered by pushes.
 
 ## Licensing
 
