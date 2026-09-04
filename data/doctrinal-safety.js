@@ -32,8 +32,6 @@
     /\bwho can be .* pastor\b/i
   ];
 
-  // Descriptive questions are normally safe when they ask what a named biblical person,
-  // passage, or event says/does, rather than turning the verse into a universal doctrinal rule.
   const TEXTUAL_CUES = [
     /\baccording to\b/i,
     /\bwhat did (?:Jesus|Paul|Peter|John|Moses|David|the apostles?|the angel|God|the Lord)\b/i,
@@ -66,10 +64,13 @@
   ];
 
   function normalize(item = {}) {
+    const rawRef = String(item.r || item.ref || item.reference || '');
+    const bookName = String(item.bookName || '').trim();
+    const fullRef = bookName && rawRef && !rawRef.toLowerCase().startsWith(bookName.toLowerCase()) ? `${bookName} ${rawRef}` : rawRef;
     return {
       q: String(item.q || item.question || ''),
       a: String(item.a || item.answer || item.why || ''),
-      r: String(item.r || item.ref || item.reference || ''),
+      r: fullRef,
       source: String(item.source || '')
     };
   }
