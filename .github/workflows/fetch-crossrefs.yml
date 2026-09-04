@@ -1,13 +1,7 @@
 name: Fetch OpenBible cross references
 
 on:
-  push:
-    paths:
-      - ".github/workflows/fetch-crossrefs.yml"
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   fetch:
