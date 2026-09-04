@@ -34,8 +34,9 @@ for(const item of shell)assert(exists(item),`service worker caches missing file:
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 for(const required of ['quest-media.js','release-hardening.js','release-hardening.css'])assert(shell.includes(required),`service worker shell missing ${required}`);
-assert(/const CACHE='biblequest-v\d+'/.test(sw),'service worker cache version must use biblequest-v<number>');
-console.log('✓ Service worker coverage');
+const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=35,'service worker cache must be rotated for the production-hardening release');
+console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
 
 const cloud=read('cloud-config.js');
 assert(cloud.includes("publishableKey: 'sb_publishable_"),'cloud config must use a publishable key');
@@ -54,16 +55,20 @@ assert(contextManifest.license==='CC BY 4.0','context-pack license metadata chan
 for(const row of contextManifest.books){assert(row.code&&row.path,`invalid context manifest row: ${JSON.stringify(row)}`);assert(exists(row.path),`missing context pack: ${row.path}`);assert(Number(row.tagged_verses)>0,`context pack has no tagged verses: ${row.code}`)}
 console.log('✓ 66-book Hebrew/Greek context pack');
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_production_permission_hardening.sql'])assert(exists(required),`required release file missing: ${required}`);
-console.log('✓ Release hardening, recovery and admin assets');
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','release-hardening.js','release-hardening.css','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','assets/avatar-adventurer.webp','assets/avatar-locked.webp','assets/world-locked.webp','assets/world-revealed.webp','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_admin_auth_schema_parity.sql','supabase/migrations/20260905_production_permission_hardening.sql'])assert(exists(required),`required release file missing: ${required}`);
+console.log('✓ Release hardening, recovery, admin and schema-parity assets');
 
 const adminUi=read('admin.js'),adminFn=read('supabase/functions/bq-admin/index.ts');
 assert(adminUi.includes("action:'send_password_reset'"),'admin UI must use email password recovery');
 assert(!adminUi.includes("action:'issue_reset_code'"),'retired reset-code action must not return to admin UI');
 assert(adminFn.includes("action==='send_password_reset'"),'admin function must support email password recovery');
 assert(!adminFn.includes("action==='issue_reset_code'"),'retired reset-code action must not return to admin function');
-assert(adminFn.includes("https://biblequest-7th.pages.dev"),'admin function must target the stable Cloudflare Pages host');
-for(const endpoint of ['supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts']){const text=read(endpoint);assert(text.includes("https://biblequest-7th.pages.dev"),`${endpoint} must use the stable Cloudflare Pages origin`);assert(!text.includes('079b159e.biblequest-7th.pages.dev'),`${endpoint} must not pin one deployment hash`)}
+for(const host of ['mybiblequest.pages.dev','biblequest-7th.pages.dev'])assert(adminFn.includes(host),`admin function must trust active Cloudflare project ${host}`);
+assert(adminFn.includes("PRIMARY_ORIGIN='https://mybiblequest.pages.dev'"),'clean mybiblequest host must remain canonical');
+for(const endpoint of ['supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts']){const text=read(endpoint);for(const host of ['mybiblequest.pages.dev','biblequest-7th.pages.dev'])assert(text.includes(host),`${endpoint} must recognize ${host}`);assert(!text.includes('079b159e.biblequest-7th.pages.dev'),`${endpoint} must not pin one deployment hash`)}
+const parityMigration=read('supabase/migrations/20260905_admin_auth_schema_parity.sql');
+assert(parityMigration.includes('create table if not exists public.bible_app_access'),'admin access live schema must be reproducible');
+assert(parityMigration.includes('create table if not exists public.bible_admin_audit_log'),'admin audit live schema must be reproducible');
 const grantsMigration=read('supabase/migrations/20260905_production_permission_hardening.sql');
 assert(/revoke all privileges on table public\.bible_app_access from anon, authenticated/i.test(grantsMigration),'production permission migration must revoke broad app-access grants');
 assert(/grant select on table public\.bible_app_access to authenticated/i.test(grantsMigration),'signed-in users must retain self-read access through RLS');
@@ -81,9 +86,12 @@ const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.j
 for(const file of sensitiveBrowserFiles){const text=read(file);assert(!/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/i.test(text),`privileged secret marker found in browser file: ${file}`)}
 console.log('✓ Browser secret invariants');
 
-const smoke=read('tests/browser-smoke.mjs');
+const front=read('frontpage-daily.js'),smoke=read('tests/browser-smoke.mjs');
+assert(!front.includes('maybePrompt'),'front page must not restore an automatic first-visit focus modal');
+assert(front.includes('BQJourneyLoop?.openSupport'),'legacy focus entry point must route to optional Journey support');
 assert(smoke.includes('/My Mission/'),'browser smoke must target the current My Mission route');
 assert(smoke.includes("'日本語'"),'browser smoke must verify Japanese translation visibility');
-console.log('✓ Current browser-smoke expectations');
+assert(smoke.includes('personal focus must not block the Daily Journey'),'browser smoke must protect the unblocked first-visit path');
+console.log('✓ Current Daily Journey and browser-smoke expectations');
 
 console.log('\nBibleQuest release validation passed.');
