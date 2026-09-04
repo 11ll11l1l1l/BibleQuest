@@ -32,6 +32,8 @@ jobs:
           exit 1
       - name: Smoke current navigation and reader
         run: timeout 180s node tests/browser-smoke.mjs
+      - name: Smoke operational feature entry points
+        run: timeout 180s node tests/operational-entry-smoke.mjs
       - name: Smoke Reader dependency failures
         run: timeout 180s node tests/reader-resilience-smoke.mjs
       - name: Smoke phone and desktop layouts
