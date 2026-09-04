@@ -99,7 +99,7 @@ jobs:
           ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-signup/index.ts
-          grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-assignment/index.ts
+          grep -q "requireUser" supabase/functions/bq-assignment/index.ts
           grep -q "email_confirm: true" supabase/functions/bq-signup/index.ts
           grep -q "church_group" signup-enhancements.js
           grep -q "bible_signup_limits" supabase/functions/bq-signup/index.ts
