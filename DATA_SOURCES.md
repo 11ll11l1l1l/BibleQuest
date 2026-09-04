@@ -17,16 +17,18 @@ The detailed enforcement policy is in `DOCTRINAL_SAFETY.md`.
 - **Berean Standard Bible (BSB)** — the English Bible text used by the offline/on-demand Bible Reader and verse-text games. The per-book Bible packs are treated as the canonical bundled Bible text source inside BibleQuest.
 - **unfoldingWord Translation Questions v90** — CC BY-SA 4.0 structured questions, reference answers, and Scripture references used by Recall Decks and Open Smart Review. Translation Questions were designed as passage/translation-comprehension material, not as a CAMACOP catechism. Every imported per-book question is therefore screened by BibleQuest's doctrinal-safety layer before normal scored play. High-risk interpretive items are quarantined; sensitive descriptive items retain a context notice.
 - **Open Bible Stories (OBS)** — CC BY-SA 4.0 narrative retellings and scene/question resources used by Story Journey and What Happens Next. OBS is explicitly labeled as a **Bible-story retelling, not a Bible translation**.
-- **STEPBible Data** — CC BY 4.0 datasets available for future people, place, name, and original-language games.
+- **STEPBible Data** — CC BY 4.0 original-language/context data is generated into on-demand context packs for all 66 books. These lexical/context annotations are study aids and are kept separate from displayed Scripture text.
 - **OpenBible.info cross references** — cross-reference data available for Scripture connection games.
 - **unfoldingWord Translation Notes** — contextual source material available for future source-grounded context modes. Notes are secondary aids and are not treated as denominational doctrine.
 
 ## Reader translation choices
 
-BibleQuest now exposes these English editions in the Bible Reader:
+BibleQuest exposes these reader choices:
 
 - **BSB · Berean Standard Bible** — full in-app text from BibleQuest's on-demand per-book packs.
-- **NLT · New Living Translation** — requested live from Tyndale's official NLT API for non-commercial use. The NLT text is not bulk-bundled into the repository.
+- **TGL · Tagalog ULB / banal na Bibliya** — in-app on-demand packs with Door43/World Missions Community source and CC BY-SA 4.0 attribution.
+- **JKO · 口語訳聖書 (1954/1955)** — Japanese public-domain text loaded chapter-by-chapter from GetBible. Furigana and Japanese vocabulary notes are optional learning annotations and are not part of the Scripture text.
+- **NLT · New Living Translation** — requested live from Tyndale's official NLT API for non-commercial use. The NLT text is not bulk-bundled into the repository. Anonymous API access is limited to 50 verses per request and 500 requests per day, so BibleQuest splits chapters longer than 50 verses into bounded passage requests and falls back to a licensed online reader if live loading fails. The in-app source notice includes Tyndale's required NLT copyright credit.
 - **ESV · English Standard Version** — selectable in the reader. BibleQuest links the selected chapter to ESV.org rather than publishing a shared ESV API key or bulk-caching ESV text. Crossway's API terms prohibit publishing the access key and limit local storage.
 - **NIV · New International Version** — selectable in the reader. Full digital-product use is subject to Biblica/Zondervan licensing, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling NIV text.
 - **AMP · Amplified Bible** — selectable in the reader. The Lockman Foundation permits limited quotation but restricts bulk electronic storage/redistribution, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling AMP text.
