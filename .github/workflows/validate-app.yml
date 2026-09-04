@@ -5,6 +5,7 @@ on:
     paths:
       - "*.js"
       - "*.css"
+      - "*.svg"
       - "data/**"
       - "scripts/**"
       - "supabase/**"
@@ -15,6 +16,7 @@ on:
     paths:
       - "*.js"
       - "*.css"
+      - "*.svg"
       - "data/**"
       - "scripts/**"
       - "supabase/**"
@@ -79,7 +81,9 @@ jobs:
           grep -q "security invoker" supabase/cloud-stage.sql
           grep -q "revoke all on public.bible_congregation_invites from anon, authenticated" supabase/cloud-stage.sql
           grep -q "revoke all on public.bible_couple_invites from anon,authenticated" supabase/migrations/20260904_innovation_stage.sql
-          grep -q "bible_room_poll_totals" supabase/migrations/20260904_innovation_stage.sql
+          grep -q "drop function if exists public.bible_room_poll_totals" supabase/migrations/20260904_release_hardening.sql
+          grep -q "bq-room-poll" live-rooms.js
+          grep -q "Active congregation membership required" supabase/functions/bq-room-poll/index.ts
           grep -q "facilitator','leader','admin" supabase/migrations/20260904_innovation_stage.sql
           grep -q "bible_progress_snapshots" account.js
           grep -q "bible_notes" notes.js
@@ -95,4 +99,4 @@ jobs:
           grep -q "signup-enhancements.js" sw.js
       - name: Check required static files
         run: |
-          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql; do test -s "$f"; done
+          for f in index.html styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/functions/bq-room-poll/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql supabase/migrations/20260904_release_hardening.sql; do test -s "$f"; done
