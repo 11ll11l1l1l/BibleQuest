@@ -2,8 +2,8 @@ import { activeMembership, adminClient, asResponse, corsHeaders, json, parseJson
 
 type Claim={sourceEventId?:string;source?:string;category?:string;claimedPoints?:number;meta?:Record<string,unknown>;targetUserId?:string};
 const facilitatorRoles=new Set(['facilitator','leader','admin']);
-const delegatedSources=new Set(['Team Bible Sprint','Detective Hot Seat','Verse Hunt','Conversation Circle','Wisdom Table','Pair & Share']);
-const dailyCaps:Record<string,number>={knowledge:1000,reading:600,wisdom:400,mastery:300,consistency:80,group:600,couples:500};
+const delegatedSources=new Set(['Team Bible Sprint','Detective Hot Seat','Verse Hunt','Conversation Circle','Wisdom Table','Pair & Share','Live Room Participation']);
+const dailyCaps:Record<string,number>={knowledge:1000,reading:600,wisdom:400,mastery:300,consistency:120,group:600,couples:500};
 const num=(v:unknown,min=0,max=100)=>Math.min(max,Math.max(min,Math.round(Number(v)||0)));
 
 function derive(claim:Claim){
@@ -25,6 +25,10 @@ function derive(claim:Claim){
     case 'Conversation Circle':category='group';points=2;break;
     case 'Wisdom Table':category='wisdom';points=2;break;
     case 'Pair & Share':category='group';points=3;break;
+    case 'Guided Study':category='reading';points=num(m.completed,1,3)*5;break;
+    case 'Bible Explorer':category='knowledge';points=num(m.completed,1,10)*2;break;
+    case 'Church Challenge':category=String(claim.category||'consistency');if(!['consistency','couples','reading','wisdom','group'].includes(category))return null;points=num(m.completed,1,5)*3;break;
+    case 'Live Room Participation':category='group';points=2;break;
     default:return null;
   }
   points=Math.min(100,Math.max(1,points));
