@@ -19,6 +19,14 @@ assert(sw.includes("e.request.destination==='script'||e.request.destination==='s
 assert(sw.includes('self.skipWaiting()'),'new service worker must not wait behind stale worker');
 assert(sw.includes('self.clients.claim()'),'activated worker must claim open clients');
 
+const index=read('index.html');
+const pwaRuntime=read('pwa-runtime.js');
+assert(index.includes('<script src="pwa-runtime.js"></script>'),'production page must load PWA registration runtime');
+assert(shell.includes('pwa-runtime.js'),'PWA registration runtime must be available offline');
+assert(pwaRuntime.includes("navigator.serviceWorker.register('./sw.js'"),'PWA runtime must register the production service worker');
+assert(pwaRuntime.includes("updateViaCache: 'none'"),'service-worker update checks must bypass stale HTTP script cache');
+assert(pwaRuntime.includes('registration.update()'),'loaded sessions must request a current service-worker check');
+
 const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN']){
   assert(headers.includes(header),`missing production security header: ${header}`);
@@ -36,4 +44,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell entries; large datasets remain on-demand.`);
+console.log(`Reliability smoke passed: ${shell.length} shell entries; service worker is registered; large datasets remain on-demand.`);
