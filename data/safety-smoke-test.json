@@ -1,0 +1,5 @@
+[
+  {"q":"Who built the ark?","a":"Noah","r":"Genesis 6","expect":"allow"},
+  {"q":"Who is justified before God?","a":"The doers of the law are justified before God.","r":"Romans 2:13","expect":"quarantine"},
+  {"q":"What did Peter tell the multitude to do?","a":"Repent and be baptized.","r":"Acts 2:38","expect":"context"}
+]
