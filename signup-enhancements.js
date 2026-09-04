@@ -1,13 +1,28 @@
 (() => {
+  // Compatibility shim for account/profile surfaces rendered by older modules.
+  // Account creation itself is owned by account.js so there is exactly one auth submit path.
   const FIELD='church_group';
   const isTaglish=()=> (localStorage.getItem('biblequest_ui_language_v1')||'taglish')==='taglish';
-  const copy=()=>isTaglish()?{label:'Church / fellowship group',hint:'Private sa account mo. Para makatulong sa group support at organization; hindi ito ipinapakita sa leaderboard.',placeholder:'Hal. JIL Tsukuba, church name, o none yet',creating:'Ginagawa ang account…',confirm:'Account created. Check your email if BibleQuest asks you to confirm it, then sign in.'}:{label:'Church / fellowship group',hint:'Private to your account. Used for group support and organization; not shown on leaderboards.',placeholder:'e.g. JIL Tsukuba, church name, or none yet',creating:'Creating account…',confirm:'Account created. Check your email if BibleQuest asks you to confirm it, then sign in.'};
-  let loadedGroup=false,groupValue='';
-  function churchField(value=''){const c=copy(),label=document.createElement('label');label.dataset.churchGroupField='1';label.innerHTML=`${c.label}<span class="account-note">${c.hint}</span><input name="${FIELD}" maxlength="120" placeholder="${c.placeholder}">`;label.querySelector('input').value=value||'';return label}
-  function inject(root=document){root.querySelectorAll?.('form[data-account-register],form[data-account-profile]').forEach(form=>{if(form.querySelector(`[name="${FIELD}"]`))return;const anchor=form.querySelector('[name="preferred_name"]')?.closest('label');const field=churchField(form.matches('[data-account-profile]')?groupValue:'');if(anchor?.nextSibling)anchor.parentNode.insertBefore(field,anchor.nextSibling);else if(anchor)anchor.after(field);else form.prepend(field)});if(window.BQAccount?.session?.()&&!loadedGroup)loadGroup()}
-  async function loadGroup(){const client=window.BQAccount?.client?.(),session=window.BQAccount?.session?.();if(!client||!session||loadedGroup)return;loadedGroup=true;const {data}=await client.from('bible_profiles').select('church_group').eq('user_id',session.user.id).maybeSingle();groupValue=String(data?.church_group||session.user.user_metadata?.church_group||'');if(groupValue&&!data?.church_group){await client.from('bible_profiles').update({church_group:groupValue,updated_at:new Date().toISOString()}).eq('user_id',session.user.id).catch?.(()=>{})}document.querySelectorAll(`form[data-account-profile] [name="${FIELD}"]`).forEach(i=>{if(!i.value)i.value=groupValue})}
-  function show(form,message,error=false){form.querySelector('[data-signup-message]')?.remove();const box=document.createElement('div');box.dataset.signupMessage='1';box.className=error?'account-error':'account-success';box.textContent=message;form.appendChild(box)}
-  async function signup(form){const client=window.BQAccount?.client?.();if(!client)throw new Error('Account service is not ready. Please try again.');const fd=new FormData(form),avatarRoot=form.querySelector('[data-avatar-builder]');let avatar={};try{avatar=JSON.parse(avatarRoot?.dataset.avatar||'{}')}catch{}const payload={full_name:String(fd.get('full_name')||'').trim(),preferred_name:String(fd.get('preferred_name')||'').trim(),church_group:String(fd.get(FIELD)||'').trim().slice(0,120),email:String(fd.get('email')||'').trim(),password:String(fd.get('password')||''),avatar};if(payload.full_name.length<2||payload.preferred_name.length<2)throw new Error('Please enter your name and preferred name.');if(payload.password.length<10)throw new Error('Use a password with at least 10 characters.');const button=form.querySelector('button[type="submit"],button.account-primary'),old=button?.textContent;if(button){button.disabled=true;button.textContent=copy().creating}try{const {data,error}=await client.auth.signUp({email:payload.email,password:payload.password,options:{data:{full_name:payload.full_name,preferred_name:payload.preferred_name,church_group:payload.church_group,avatar:payload.avatar,onboarding_complete:true}}});if(error)throw error;groupValue=payload.church_group;loadedGroup=Boolean(data.session);if(data.session){setTimeout(()=>client.from('bible_profiles').update({church_group:groupValue||null,updated_at:new Date().toISOString()}).eq('user_id',data.session.user.id).catch?.(()=>{}),500)}else{show(form,copy().confirm,false)}}finally{if(button){button.disabled=false;button.textContent=old||'Create account'}}}
-  document.addEventListener('submit',e=>{const form=e.target.closest?.('form[data-account-register]');if(form){e.preventDefault();e.stopImmediatePropagation();signup(form).catch(err=>show(form,err.message||String(err),true));return}const profileForm=e.target.closest?.('form[data-account-profile]');if(profileForm){const church=String(new FormData(profileForm).get(FIELD)||'').trim().slice(0,120);groupValue=church;loadedGroup=true;setTimeout(async()=>{const client=window.BQAccount?.client?.(),session=window.BQAccount?.session?.();if(client&&session)await client.from('bible_profiles').update({church_group:church||null,updated_at:new Date().toISOString()}).eq('user_id',session.user.id)},0)}},true);
-  const obs=new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes)if(n.nodeType===1)inject(n)});document.addEventListener('DOMContentLoaded',()=>{inject();obs.observe(document.documentElement,{childList:true,subtree:true})});setTimeout(inject,100);
+  const copy=()=>isTaglish()?{label:'Church / fellowship group',hint:'Private sa account mo. Para sa group support at organization; hindi ito ipinapakita sa leaderboard.',placeholder:'Hal. church name, fellowship group, o none yet'}:{label:'Church / fellowship group',hint:'Private to your account. Used for group support and organization; not shown on leaderboards.',placeholder:'e.g. church name, fellowship group, or none yet'};
+
+  function value(){return String(window.BQAccount?.profile?.()?.church_group||'')}
+  function churchField(current=''){
+    const c=copy(),label=document.createElement('label');
+    label.dataset.churchGroupField='1';
+    label.innerHTML=`${c.label}<span class="account-note">${c.hint}</span><input name="${FIELD}" maxlength="120" placeholder="${c.placeholder}">`;
+    label.querySelector('input').value=current||'';
+    return label;
+  }
+  function inject(root=document){
+    root.querySelectorAll?.('form[data-account-register],form[data-account-profile]').forEach(form=>{
+      if(form.querySelector(`[name="${FIELD}"]`))return;
+      const anchor=form.querySelector('[name="preferred_name"]')?.closest('label');
+      const field=churchField(form.matches('[data-account-profile]')?value():'');
+      if(anchor?.nextSibling)anchor.parentNode.insertBefore(field,anchor.nextSibling);else if(anchor)anchor.after(field);else form.prepend(field);
+    });
+  }
+
+  const obs=new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes)if(n.nodeType===1)inject(n)});
+  document.addEventListener('DOMContentLoaded',()=>{inject();obs.observe(document.documentElement,{childList:true,subtree:true})});
+  setTimeout(inject,100);
 })();

@@ -5,7 +5,17 @@
 
 html,body{max-width:100%;overflow-x:hidden}
 body{min-width:0}
+#app,.app,.modern-home,.bq-engagement-stack{min-width:0;max-width:100%}
 .app{width:100%;max-width:680px;padding-left:14px;padding-right:14px;padding-bottom:calc(var(--bq-mobile-nav) + 12px + env(safe-area-inset-bottom))}
+.modern-home,.bq-engagement-stack{width:100%}
+.bq-engagement-stack{grid-template-columns:minmax(0,1fr)!important}
+.bq-engagement-stack>*{min-width:0;max-width:100%}
+.today-journey-card,.journey-path-card,.journey-season,.journey-season-empty,.journey-mini-row,.today-journey-actions,.journey-path-scroll{min-width:0;max-width:100%}
+.today-journey-top{grid-template-columns:minmax(0,1fr) auto!important}
+.engagement-focus-chip{grid-template-columns:auto minmax(0,1fr)!important}
+.engagement-focus-chip>div{min-width:0}
+.journey-path-scroll{width:100%}
+.bq-engagement-home .journey-primary{width:100%;max-width:100%;min-width:0}
 .topbar{padding:9px 2px 6px}.brand{font-size:19px}.top-actions{gap:5px}.streak,.level-chip{padding:6px 8px;font-size:10px}
 
 /* Daily Journey is the home hero. The actual shell is #app > .app. */
