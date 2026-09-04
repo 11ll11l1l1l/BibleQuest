@@ -35,7 +35,7 @@
           <div><small>🇵🇭 PINOY IN JAPAN · BIBLEQUEST</small><h1>Kumusta, ${esc(id.name)}!</h1><p>Different places. Same Jesus. One family.</p></div>
         </div>
         <div class="bq-pinoy-actions">
-          <button data-pinoy-mission><span>🎯</span><b>My Mission</b><small>Continue your next step</small></button>
+          <button data-pinoy-mission aria-label="Continue personal mission"><span>🎯</span><b>My Mission</b><small>Continue your next step</small></button>
           <div class="bq-shiba-chip"><span>🐕</span><div><b>Shiba-Sheep</b><small>Your fluffy journey buddy</small></div></div>
         </div>
       </div>`;
