@@ -51,10 +51,11 @@ jobs:
           done
           cat /tmp/biblequest-http.log
           exit 1
-      - name: Exercise real browser flows
-        run: |
-          node tests/browser-smoke.mjs
-          node tests/completion-smoke.mjs
-          node tests/journey-loop-smoke.mjs
+      - name: Smoke current navigation and reader
+        run: timeout 180s node tests/browser-smoke.mjs
+      - name: Smoke completion-stage modules
+        run: timeout 180s node tests/completion-smoke.mjs
+      - name: Smoke Daily Journey loop
+        run: timeout 180s node tests/journey-loop-smoke.mjs
       - name: Verify cloud-ready state
-        run: node tests/cloud-smoke.mjs
+        run: timeout 180s node tests/cloud-smoke.mjs
