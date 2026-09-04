@@ -40,6 +40,7 @@ jobs:
           node --check app.js
           node --check reader.js
           node --check translations.js
+          node --check japanese-learning.js
           node --check sequence.js
           node --check storyjourney.js
           node --check transformation.js
@@ -57,6 +58,8 @@ jobs:
           node --check community-bridge.js
           node --check cloud-config.js
           node --check account.js
+          node --check password-recovery.js
+          node --check admin-link.js
           node --check personality-profile.js
           node --check signup-enhancements.js
           node --check notes.js
@@ -79,6 +82,9 @@ jobs:
           node --check journey-cloud-sync.js
           node --check engagement-v3.js
           node --check frontpage-daily.js
+          node --check runtime-safety.js
+          node --check data/doctrinal-safety.js
+          node --check data/doctrinal-context.js
           node --check data/connections.js
           node --check scripts/content-audit.js
           node --check sw.js
@@ -109,7 +115,7 @@ jobs:
           grep -q "enabled: !BQ_LOCAL_HOSTS.has(location.hostname)" cloud-config.js
           grep -q "authMode: 'email-password'" cloud-config.js
           grep -q "sb_publishable_" cloud-config.js
-          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js personality-profile.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js journey-groups.js journey-loop.js journey-cloud-sync.js engagement-v3.js frontpage-daily.js
+          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js password-recovery.js admin-link.js personality-profile.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js journey-groups.js journey-loop.js journey-cloud-sync.js engagement-v3.js frontpage-daily.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-signup/index.ts
           grep -q "requireUser" supabase/functions/bq-assignment/index.ts
@@ -152,13 +158,19 @@ jobs:
           grep -q "journey-groups.js" sw.js
           grep -q "personality-profile.js" sw.js
           grep -q "frontpage-daily.js" sw.js
-          grep -q "biblequest-v30" sw.js
+          grep -Eq "const CACHE='biblequest-v[0-9]+';" sw.js
           grep -q "data/packs/context/manifest.json" sw.js
+          grep -q "japanese-learning.js" sw.js
+          grep -q "password-recovery.js" sw.js
+          grep -q "admin-link.js" sw.js
           grep -q "assignment-push.js" index.html
           grep -q "journey-loop.js" index.html
           grep -q "journey-groups.js" index.html
           grep -q "personality-profile.js" index.html
           grep -q "frontpage-daily.js" index.html
+          grep -q "japanese-learning.js" index.html
+          grep -q "password-recovery.js" index.html
+          grep -q "admin-link.js" index.html
           grep -q "window.BQStudy" innovation-suite.js
           grep -q "window.BQMission" innovation-suite.js
           grep -q "bible_assignment_progress" avatar-vault.js
@@ -166,4 +178,4 @@ jobs:
           grep -q "app-icon.svg" index.html
       - name: Check required static files
         run: |
-          for f in index.html app-icon.svg assets/bq-pinoy-japan-hero.svg styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css completion.css kawaii-polish.css round2-polish.css pinoy-hero.css journey-loop.css journey-groups.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js personality-profile.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js source-labels.js ui-taglish.js account-taglish.js modern-home.js pinoy-hero.js journey-loop.js journey-groups.js journey-cloud-sync.js engagement-v3.js frontpage-daily.js data/connections.js data/packs/manifest.json data/packs/context/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py scripts/build_original_language_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/functions/bq-room-poll/index.ts supabase/functions/bq-assignment/index.ts supabase/functions/bq-journey-group/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql supabase/migrations/20260904_release_hardening.sql supabase/migrations/20260904_assignments_presence_unlocks.sql supabase/migrations/20260904_journey_groups_daily_loop.sql supabase/migrations/20260904_personality_profiles.sql tests/journey-loop-smoke.mjs; do test -s "$f"; done
+          for f in index.html app-icon.svg assets/bq-pinoy-japan-hero.svg styles.css decks.css reader.css japanese-learning.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css completion.css kawaii-polish.css round2-polish.css pinoy-hero.css journey-loop.css journey-groups.css app.js reader.js translations.js japanese-learning.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js password-recovery.js admin-link.js personality-profile.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js source-labels.js ui-taglish.js account-taglish.js modern-home.js pinoy-hero.js journey-loop.js journey-groups.js journey-cloud-sync.js engagement-v3.js frontpage-daily.js runtime-safety.js data/doctrinal-safety.js data/doctrinal-context.js data/connections.js data/packs/manifest.json data/packs/context/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py scripts/build_original_language_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/functions/bq-room-poll/index.ts supabase/functions/bq-assignment/index.ts supabase/functions/bq-journey-group/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql supabase/migrations/20260904_release_hardening.sql supabase/migrations/20260904_assignments_presence_unlocks.sql supabase/migrations/20260904_journey_groups_daily_loop.sql supabase/migrations/20260904_personality_profiles.sql tests/journey-loop-smoke.mjs; do test -s "$f"; done
