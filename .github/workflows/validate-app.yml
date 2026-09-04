@@ -60,22 +60,46 @@ jobs:
           node --check innovation-suite.js
           node --check workspace.js
           node --check couple-cloud.js
+          node --check context-lab.js
+          node --check assignment-center.js
+          node --check assignment-push.js
+          node --check presence.js
+          node --check avatar-vault.js
           node --check modern-home.js
           node --check data/connections.js
           node --check scripts/content-audit.js
           node --check sw.js
-          python3 -m py_compile scripts/build_tagalog_packs.py
+          python3 -m py_compile scripts/build_tagalog_packs.py scripts/build_original_language_packs.py
           node -e "const m=JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); if(!m.icons?.some(x=>x.src==='app-icon.svg')) process.exit(1); if(m.display!=='standalone'||m.start_url!=='./') process.exit(1);"
       - name: Audit Bible game content
         run: node scripts/content-audit.js
+      - name: Verify original-language packs
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          m=json.load(open('data/packs/context/manifest.json',encoding='utf-8'))
+          books=m.get('books',[])
+          assert len(books)==66, f"expected 66 context packs, got {len(books)}"
+          assert m.get('license')=='CC BY 4.0'
+          for row in books:
+              p=pathlib.Path(row['path'])
+              assert p.is_file() and p.stat().st_size>20, p
+              assert int(row.get('tagged_verses',0))>0, row['code']
+              data=json.load(open(p,encoding='utf-8'))
+              assert data.get('code')==row['code']
+              assert isinstance(data.get('verses'),dict) and data['verses']
+              assert isinstance(data.get('lexicon'),dict) and data['lexicon']
+          print(f"Verified {len(books)} Hebrew/Greek context packs")
+          PY
       - name: Check cloud security invariants
         run: |
           grep -q "enabled: !BQ_LOCAL_HOSTS.has(location.hostname)" cloud-config.js
           grep -q "authMode: 'email-password'" cloud-config.js
           grep -q "sb_publishable_" cloud-config.js
-          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js
+          ! grep -Eiq "SUPABASE_SERVICE_ROLE_KEY|sb_secret_" cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/_shared/bq.ts
           grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-signup/index.ts
+          grep -q "SUPABASE_SERVICE_ROLE_KEY" supabase/functions/bq-assignment/index.ts
           grep -q "email_confirm: true" supabase/functions/bq-signup/index.ts
           grep -q "church_group" signup-enhancements.js
           grep -q "bible_signup_limits" supabase/functions/bq-signup/index.ts
@@ -86,6 +110,11 @@ jobs:
           grep -q "bq-room-poll" live-rooms.js
           grep -q "Active congregation membership required" supabase/functions/bq-room-poll/index.ts
           grep -q "facilitator','leader','admin" supabase/migrations/20260904_innovation_stage.sql
+          grep -q "private.bible_assignment_visible" supabase/migrations/20260904_assignments_presence_unlocks.sql
+          grep -q "bible_presence" supabase/migrations/20260904_assignments_presence_unlocks.sql
+          grep -q "bible_avatar_cosmetics" supabase/migrations/20260904_assignments_presence_unlocks.sql
+          grep -q "previous.data?.status==='completed'" supabase/functions/bq-assignment/index.ts
+          grep -q "ignoreDuplicates:true" supabase/functions/bq-assignment/index.ts
           grep -q "bible_progress_snapshots" account.js
           grep -q "bible_notes" notes.js
           grep -q "bible_devices" account.js
@@ -93,13 +122,18 @@ jobs:
           grep -q "TGL" translations.js
           grep -q "NLT" translations.js
           grep -q "66" scripts/build_tagalog_packs.py
-          grep -q "live-rooms.js" sw.js
-          grep -q "innovation-suite.js" sw.js
-          grep -q "workspace.js" sw.js
-          grep -q "couple-cloud.js" sw.js
-          grep -q "signup-enhancements.js" sw.js
+          grep -q "TBESH" scripts/build_original_language_packs.py
+          grep -q "TBESG" scripts/build_original_language_packs.py
+          grep -q "assignment-push.js" sw.js
+          grep -q "round2-polish.css" sw.js
+          grep -q "data/packs/context/manifest.json" sw.js
+          grep -q "assignment-push.js" index.html
+          grep -q "round2-polish.css" index.html
+          grep -q "window.BQStudy" innovation-suite.js
+          grep -q "window.BQMission" innovation-suite.js
+          grep -q "bible_assignment_progress" avatar-vault.js
           grep -q "app-icon.svg" sw.js
           grep -q "app-icon.svg" index.html
       - name: Check required static files
         run: |
-          for f in index.html app-icon.svg styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/functions/bq-room-poll/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql supabase/migrations/20260904_release_hardening.sql; do test -s "$f"; done
+          for f in index.html app-icon.svg styles.css decks.css reader.css sequence.css storyjourney.css transformation.css transformation-taglish.css growth.css growth-nudge.css learning-engine.css open-review.css ui-enhancements.css extra-games.css couples.css community.css group-play.css cloud.css account.css notes.css innovation.css modern-home.css completion.css kawaii-polish.css round2-polish.css app.js reader.js translations.js sequence.js storyjourney.js transformation.js transformation-taglish.js growth.js growth-nudge.js learning-engine.js open-review.js extra-games.js couples.js community.js community-bridge.js cloud-config.js account.js signup-enhancements.js notes.js cloud-copy.js cloud.js group-play.js live-rooms.js innovation-suite.js workspace.js couple-cloud.js context-lab.js assignment-center.js assignment-push.js presence.js avatar-vault.js source-labels.js ui-taglish.js account-taglish.js modern-home.js data/connections.js data/packs/manifest.json data/packs/context/manifest.json scripts/content-audit.js scripts/build_tagalog_packs.py scripts/build_original_language_packs.py manifest.webmanifest supabase/functions/bq-signup/index.ts supabase/functions/bq-couple/index.ts supabase/functions/bq-room-poll/index.ts supabase/functions/bq-assignment/index.ts supabase/migrations/20260904_church_group_signup_limits.sql supabase/migrations/20260904_innovation_stage.sql supabase/migrations/20260904_release_hardening.sql supabase/migrations/20260904_assignments_presence_unlocks.sql; do test -s "$f"; done
