@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const pageErrors = [];
+page.on('pageerror', error => pageErrors.push(error.message));
 
 async function closeInnovation(id) {
   const layer = page.locator(`#${id}`);
@@ -15,6 +17,11 @@ async function closeInnovation(id) {
 try {
   await page.goto('http://127.0.0.1:4173', { waitUntil: 'networkidle' });
   await page.waitForSelector('.modern-home');
+
+  const manifest = await page.evaluate(() => fetch('manifest.webmanifest').then(r => r.json()));
+  assert.equal(manifest.display, 'standalone', 'PWA should launch standalone');
+  assert.equal(manifest.start_url, './', 'PWA start URL should stay within the GitHub Pages scope');
+  assert.ok(manifest.icons?.some(x => x.src === 'app-icon.svg'), 'PWA should expose a production app icon');
 
   assert.equal(await page.locator('.modern-hub').count(), 4, 'Home should expose exactly four primary hubs');
   for (const label of ['Daily 5','Play','Read','Grow','Together']) assert.match(await page.locator('.modern-home').innerText(), new RegExp(label));
@@ -85,7 +92,7 @@ try {
   await page.locator('[data-modern-hub="read"]').click();
   await page.getByRole('button', { name: /Guided Study/ }).click();
   await page.waitForSelector('#bqStudyLayer:not(.hidden)');
-  assert.match(await page.locator('#bqStudyLayer').innerText(), /Read.*Observe.*Understand.*Discuss.*Apply.*Pray/s);
+  assert.match(await page.locator('#bqStudyLayer').innerText(), /READ.*OBSERVE.*UNDERSTAND.*DISCUSS.*APPLY.*PRAY/s);
   await page.locator('#bqStudyLayer [data-study-track]').first().click();
   await page.waitForSelector('#bqStudyLayer [data-bq-scripture="BSB"]', { timeout: 15000 });
   assert.ok((await page.locator('#bqStudyLayer [data-bq-scripture="BSB"]').innerText()).length > 100, 'Guided Study should open actual BSB Scripture');
@@ -218,6 +225,7 @@ try {
   await page.locator('[data-community-home]').click();
   await page.locator('[data-community-close]').click();
 
+  assert.deepEqual(pageErrors, [], `Browser emitted uncaught errors: ${pageErrors.join(' | ')}`);
   console.log('BibleQuest innovation + congregation + translations mobile smoke test passed');
 } finally {
   await browser.close();
