@@ -8,6 +8,8 @@ const assert=(ok,msg)=>{if(!ok)fail(msg)};
 
 const sw=read('sw.js');
 const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
+const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
+const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
 const forbiddenLargePrefixes=['data/library/','data/packs/bible/','data/packs/tagalog/','data/packs/questions/','data/packs/context/'];
 for(const item of shell){
   if(item==='data/packs/context/manifest.json'||item==='data/packs/manifest.json')continue;
@@ -15,7 +17,7 @@ for(const item of shell){
 }
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=43,`PWA cache must include operational crash hardening baseline (v43+), got v${cacheVersion||'missing'}`);
-assert(sw.includes("const CORE=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./operational-hardening.js','./manifest.webmanifest','./app-icon.svg']"),'PWA install must keep the required offline core, including operational recovery');
+for(const item of ['index.html','styles.css','app.js','pwa-runtime.js','operational-hardening.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort the whole service-worker install');
 assert(sw.includes("e.request.mode==='navigate'"),'service worker must special-case navigations');
 assert(sw.includes("networkFirst(e.request,'./index.html')"),'navigations must be network-first with offline shell fallback');
@@ -34,6 +36,8 @@ assert(index.indexOf('operational-hardening.js')<index.indexOf('pwa-runtime.js')
 assert(shell.includes('operational-hardening.js'),'operational recovery must be available offline');
 assert(operational.includes('repairTransformationState'),'Transformation state repair must remain part of operational recovery');
 assert(operational.includes('REQUIREMENTS'),'major feature entry points must remain preflighted before launch');
+assert(index.includes('<script src="onboarding-tutorial.js"></script>'),'production page must load post-registration onboarding tutorial');
+assert(shell.includes('onboarding-tutorial.js'),'protected onboarding tutorial must be available offline');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production page must load PWA registration runtime');
 assert(shell.includes('pwa-runtime.js'),'PWA registration runtime must be available offline');
 assert(pwaRuntime.includes("navigator.serviceWorker.register('./sw.js'"),'PWA runtime must register the production service worker');
@@ -41,9 +45,7 @@ assert(pwaRuntime.includes("updateViaCache: 'none'"),'service-worker update chec
 assert(pwaRuntime.includes('registration.update()'),'loaded sessions must request a current service-worker check');
 
 const headers=read('_headers');
-for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN']){
-  assert(headers.includes(header),`missing production security header: ${header}`);
-}
+for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
 const manifest=JSON.parse(read('manifest.webmanifest'));
 assert(manifest.display==='standalone','PWA display must remain standalone');
@@ -57,4 +59,4 @@ for(const file of largeFiles){
   assert(!shell.includes(file),`${file} must remain on-demand and outside the service-worker shell`);
 }
 
-console.log(`Reliability smoke passed: ${shell.length} shell references; cache v${cacheVersion}; operational recovery/PWA update/fallback behavior guarded; large raw datasets stay out of Cache Storage.`);
+console.log(`Reliability smoke passed: ${shell.length} shell references; ${core.length} core assets; cache v${cacheVersion}; operational recovery, onboarding, PWA update/fallback behavior, and large-payload boundaries guarded.`);
