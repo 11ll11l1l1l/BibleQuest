@@ -10,7 +10,7 @@ try{
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
 
-  // The front page is now centered on one Daily Journey, not the old decorative/choice-heavy home.
+  // The front page is centered on one Daily Journey, not the old decorative/choice-heavy home.
   assert.equal(await page.locator('.modern-hub').count(),4,'Home should retain four secondary hubs');
   assert.equal(await page.locator('.modern-focus').evaluate(el=>getComputedStyle(el).display),'none','old Daily 5 block should be hidden');
   assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should not compete with the Daily Journey');
@@ -55,18 +55,18 @@ try{
   assert.ok((await page.locator('.verse-list').innerText()).length>100);
   await page.locator('[data-reader-close]').first().click();
 
-  // The old My Mission route is consolidated into Today's Journey.
+  // Grow hub exposes the current mission route and Bible World.
   await page.locator('[data-modern-hub="grow"]').click();
   const grow=await page.locator('.modern-sheet-list').innerText();
-  assert.match(grow,/Today’s Journey|Today's Journey/);assert.match(grow,/Bible World/);
-  await page.getByRole('button',{name:/Today.s Journey/}).click();
+  assert.match(grow,/My Mission/);assert.match(grow,/Bible World/);
+  await page.getByRole('button',{name:/My Mission/}).click();
   await page.waitForSelector('#bqJourneyLoop:not(.hidden) .journey-task');
   assert.equal(await page.locator('#bqJourneyLoop .journey-task').count(),5);
   await page.locator('#bqJourneyLoop [data-journey-close]').click();
 
-  // Bible World is the new visible Scripture progression path.
-  await page.locator('[data-modern-hub="grow"]').click();
-  await page.getByRole('button',{name:/Bible World/}).click();
+  // Bible World is the visible Scripture progression path. My Mission may leave Grow open.
+  if(await page.locator('#bqModernSheet:not(.hidden)').count()===0)await page.locator('[data-modern-hub="grow"]').click();
+  await page.locator('[data-modern-item="grow:1"]').click();
   await page.waitForSelector('#bqEngagementWorld:not(.hidden)');
   const world=await page.locator('#bqEngagementWorld').innerText();
   assert.match(world,/Genesis/);assert.match(world,/Exodus/);assert.match(world,/Kingdom/);assert.match(world,/Jesus/);assert.match(world,/Early Church/);
