@@ -1,247 +1,40 @@
 (() => {
-  const STORAGE_KEY = 'biblequest_translation_v1';
-  const VERSIONS = {
-    BSB: {
-      code: 'BSB',
-      name: 'Berean Standard Bible',
-      mode: 'bundled',
-      note: 'Full in-app reader · on-demand book packs'
-    },
-    NLT: {
-      code: 'NLT',
-      name: 'New Living Translation',
-      mode: 'live',
-      note: 'Live in-app text · official Tyndale API'
-    },
-    ESV: {
-      code: 'ESV',
-      name: 'English Standard Version',
-      mode: 'licensed-link',
-      note: 'Selectable · opens the official ESV reader'
-    },
-    NIV: {
-      code: 'NIV',
-      name: 'New International Version',
-      mode: 'licensed-link',
-      note: 'Selectable · opens a licensed NIV reader'
-    },
-    AMP: {
-      code: 'AMP',
-      name: 'Amplified Bible',
-      mode: 'licensed-link',
-      note: 'Selectable · opens a licensed AMP reader'
-    }
+  const STORAGE_KEY='biblequest_translation_v1';
+  const MAIN=['BSB','TGL','NLT'];
+  const VERSIONS={
+    BSB:{code:'BSB',name:'Berean Standard Bible',mode:'bundled',note:'English · inside BibleQuest · offline after first book load'},
+    TGL:{code:'TGL',name:'banal na Bibliya · Tagalog ULB',mode:'bundled',note:'Tagalog · inside BibleQuest · offline after first book load'},
+    NLT:{code:'NLT',name:'New Living Translation',mode:'live',note:'English · opens inside BibleQuest · internet required'},
+    ESV:{code:'ESV',name:'English Standard Version',mode:'licensed-link',note:'More translations · official reader'},
+    NIV:{code:'NIV',name:'New International Version',mode:'licensed-link',note:'More translations · licensed reader'},
+    AMP:{code:'AMP',name:'Amplified Bible',mode:'licensed-link',note:'More translations · licensed reader'}
   };
-
-  window.BQ_BIBLE_TRANSLATIONS = VERSIONS;
-
-  const esc = (s = '') => String(s).replace(/[&<>"']/g, m => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[m]));
-
-  function selectedVersion() {
-    const value = localStorage.getItem(STORAGE_KEY) || 'BSB';
-    return VERSIONS[value] ? value : 'BSB';
+  window.BQ_BIBLE_TRANSLATIONS=VERSIONS;
+  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const cache=new Map();let manifest=null;
+  const selected=()=>VERSIONS[localStorage.getItem(STORAGE_KEY)||'BSB']?localStorage.getItem(STORAGE_KEY)||'BSB':'BSB';
+  const save=code=>{if(VERSIONS[code])localStorage.setItem(STORAGE_KEY,code)};
+  async function json(path){if(cache.has(path))return cache.get(path);const r=await fetch(path);if(!r.ok)throw new Error(`${path} returned ${r.status}`);const d=await r.json();cache.set(path,d);return d}
+  function options(current){const render=codes=>codes.map(code=>{const v=VERSIONS[code];return `<option value="${code}" ${code===current?'selected':''}>${code} · ${esc(v.name)}</option>`}).join('');const other=Object.keys(VERSIONS).filter(x=>!MAIN.includes(x));return `<optgroup label="Main translations">${render(MAIN)}</optgroup><optgroup label="More translations">${render(other)}</optgroup>`}
+  function codeFromLayer(layer){return layer.querySelector('[data-reader-practice]')?.dataset.readerPractice||''}
+  function context(layer){const title=layer.querySelector('.reader-title-row h1')?.textContent?.trim()||'';const chapter=Number(layer.querySelector('#readerChapter')?.value||title.match(/(\d+)$/)?.[1]||0);const book=layer.querySelector('.reader-top b')?.textContent?.trim()||title.replace(/\s+\d+$/,'');return {code:codeFromLayer(layer),book,chapter}}
+  function external(code,book,chapter){const passage=`${book} ${chapter}`;if(code==='ESV')return `https://www.esv.org/${encodeURIComponent(passage).replace(/%20/g,'+')}/`;return `https://www.biblegateway.com/passage/?search=${encodeURIComponent(passage)}&version=${encodeURIComponent(code)}`}
+  function sourceNotice(code){
+    if(code==='BSB')return '<b>BSB · Berean Standard Bible</b> · English Scripture text delivered from BibleQuest on-demand book packs.';
+    if(code==='TGL')return '<b>TGL · banal na Bibliya / Tagalog Unlocked Literal Bible</b> · © 2018 Door43 World Missions Community · CC BY-SA 4.0 · converted to on-demand book packs without intentional wording changes.';
+    if(code==='NLT')return '<b>NLT · New Living Translation</b> · supplied live inside BibleQuest through Tyndale’s official API. Internet required; BibleQuest does not bundle the NLT text.';
+    if(code==='ESV')return '<b>ESV · English Standard Version</b> · opens the selected passage on the official ESV reader because BibleQuest does not redistribute the full copyrighted text.';
+    if(code==='NIV')return '<b>NIV · New International Version</b> · opens a licensed reader; full in-app redistribution requires permission.';
+    return '<b>AMP · Amplified Bible</b> · opens a licensed reader; BibleQuest does not bulk-store the copyrighted text.';
   }
-
-  function saveVersion(code) {
-    if (!VERSIONS[code]) return;
-    localStorage.setItem(STORAGE_KEY, code);
-  }
-
-  function optionsHtml(current) {
-    return Object.values(VERSIONS).map(v =>
-      `<option value="${v.code}" ${v.code === current ? 'selected' : ''}>${v.code} · ${esc(v.name)}</option>`
-    ).join('');
-  }
-
-  function externalReaderUrl(code, book, chapter) {
-    const passage = `${book} ${chapter}`;
-    if (code === 'ESV') {
-      return `https://www.esv.org/${encodeURIComponent(passage).replace(/%20/g, '+')}/`;
-    }
-    const version = code === 'AMP' ? 'AMP' : code;
-    return `https://www.biblegateway.com/passage/?search=${encodeURIComponent(passage)}&version=${encodeURIComponent(version)}`;
-  }
-
-  function passageContext(layer) {
-    const book = layer.querySelector('.reader-top b')?.textContent?.trim() || '';
-    const chapter = Number(layer.querySelector('#readerChapter')?.value || 0);
-    return { book, chapter };
-  }
-
-  function sanitizeHtml(raw) {
-    const doc = new DOMParser().parseFromString(raw, 'text/html');
-    doc.querySelectorAll('script,style,iframe,object,embed,form,input,button').forEach(el => el.remove());
-    doc.querySelectorAll('*').forEach(el => {
-      [...el.attributes].forEach(attr => {
-        const name = attr.name.toLowerCase();
-        const value = String(attr.value || '').trim().toLowerCase();
-        if (name.startsWith('on') || name === 'style' || (name === 'href' && value.startsWith('javascript:'))) {
-          el.removeAttribute(attr.name);
-        }
-      });
-      if (el.tagName === 'A') {
-        el.setAttribute('target', '_blank');
-        el.setAttribute('rel', 'noopener noreferrer');
-      }
-    });
-    return doc.body.innerHTML;
-  }
-
-  function sourceNotice(code) {
-    if (code === 'BSB') {
-      return '<b>Version:</b> BSB · Berean Standard Bible. Delivered from BibleQuest on-demand book packs.';
-    }
-    if (code === 'NLT') {
-      return '<b>Version:</b> NLT · New Living Translation. Text is requested live from Tyndale and is not bundled into BibleQuest. Scripture quotations marked (NLT) are taken from the Holy Bible, New Living Translation, copyright ©1996, 2004, 2015 by Tyndale House Foundation. Used by permission of Tyndale House Publishers. All rights reserved.';
-    }
-    if (code === 'ESV') {
-      return '<b>Version:</b> ESV · English Standard Version. BibleQuest does not publish or cache the ESV access key or bulk ESV text; the selected chapter opens on ESV.org.';
-    }
-    if (code === 'NIV') {
-      return '<b>Version:</b> NIV · New International Version. Full digital-app text requires the applicable Biblica/Zondervan permission, so BibleQuest opens the selected passage in a licensed reader.';
-    }
-    return '<b>Version:</b> AMP · Amplified Bible. BibleQuest does not bulk-store the copyrighted AMP text; the selected passage opens in a licensed reader.';
-  }
-
-  function updateSource(panel, code) {
-    let node = panel.querySelector('[data-bq-version-source]');
-    if (!node) {
-      node = document.createElement('div');
-      node.className = 'reader-source';
-      node.setAttribute('data-bq-version-source', '1');
-      panel.appendChild(node);
-    }
-    if (node.dataset.bqVersionCode === code) return;
-    node.dataset.bqVersionCode = code;
-    node.innerHTML = sourceNotice(code);
-  }
-
-  async function loadNlt(article, book, chapter) {
-    article.innerHTML = '<div class="reader-loading"><div class="reader-sheep">📖</div><p>Loading NLT from Tyndale…</p></div>';
-    try {
-      const ref = `${book}.${chapter}`;
-      const response = await fetch(`https://api.nlt.to/api/passages?ref=${encodeURIComponent(ref)}&version=NLT`);
-      if (!response.ok) throw new Error(`NLT API returned ${response.status}`);
-      const html = await response.text();
-      if (!article.isConnected || selectedVersion() !== 'NLT') return;
-      article.innerHTML = sanitizeHtml(html);
-      const mark = document.createElement('div');
-      mark.className = 'reader-source';
-      mark.innerHTML = '<b>NLT</b> · Live text supplied by the official Tyndale NLT API.';
-      article.appendChild(mark);
-    } catch (error) {
-      if (!article.isConnected || selectedVersion() !== 'NLT') return;
-      const url = externalReaderUrl('NLT', book, chapter);
-      article.innerHTML = `
-        <div class="reader-source">
-          <b>NLT could not be loaded inside the app.</b><br>
-          The reader can still open this same chapter in a licensed online Bible reader.
-        </div>
-        <p><a class="reader-primary" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open ${esc(book)} ${chapter} · NLT ↗</a></p>`;
-    }
-  }
-
-  function showLicensedLink(article, code, book, chapter) {
-    const v = VERSIONS[code];
-    const url = externalReaderUrl(code, book, chapter);
-    const detail = code === 'ESV'
-      ? 'Crossway permits API use for qualifying non-commercial projects, but the access key may not be published. BibleQuest therefore does not expose a shared key in this public GitHub Pages app.'
-      : code === 'NIV'
-        ? 'NIV full-text use in a digital product is subject to Biblica/Zondervan licensing. BibleQuest keeps the edition selectable without redistributing the copyrighted Bible text.'
-        : 'The Lockman Foundation permits limited AMP quotation, but not bulk redistribution or a standalone full-text dataset. BibleQuest therefore keeps the edition selectable without bundling it.';
-
-    article.innerHTML = `
-      <div class="reader-source">
-        <b>${esc(code)} · ${esc(v.name)}</b><br>${esc(detail)}
-      </div>
-      <p><a class="reader-primary" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Read ${esc(book)} ${chapter} · ${esc(code)} ↗</a></p>`;
-  }
-
-  function applyChapter(layer) {
-    const panel = layer.querySelector('.reader-chapter');
-    if (!panel) return false;
-    const article = panel.querySelector('.verse-list');
-    const tools = panel.querySelector('.chapter-tools');
-    if (!article || !tools) return true;
-
-    const code = selectedVersion();
-    let picker = panel.querySelector('#bqTranslationSelect');
-    if (!picker) {
-      const label = document.createElement('label');
-      label.setAttribute('data-bq-version-picker', '1');
-      label.innerHTML = `Version <select id="bqTranslationSelect">${optionsHtml(code)}</select>`;
-      tools.insertBefore(label, tools.firstChild);
-      picker = label.querySelector('select');
-      picker.onchange = () => {
-        saveVersion(picker.value);
-        article.dataset.bqAppliedVersion = '';
-        applyChapter(layer);
-      };
-    } else {
-      picker.value = code;
-    }
-
-    updateSource(panel, code);
-    if (!article.__bqBsbHtml) article.__bqBsbHtml = article.innerHTML;
-    if (article.dataset.bqAppliedVersion === code) return true;
-    article.dataset.bqAppliedVersion = code;
-
-    const { book, chapter } = passageContext(layer);
-    if (!book || !chapter) return true;
-
-    if (code === 'BSB') {
-      article.innerHTML = article.__bqBsbHtml;
-      return true;
-    }
-    if (code === 'NLT') {
-      loadNlt(article, book, chapter);
-      return true;
-    }
-    showLicensedLink(article, code, book, chapter);
-    return true;
-  }
-
-  function applyLibrary(layer) {
-    const panel = layer.querySelector('.reader-panel');
-    if (!panel || panel.classList.contains('reader-chapter')) return false;
-    const search = panel.querySelector('#readerSearch');
-    if (!search) return false;
-
-    const code = selectedVersion();
-    let picker = panel.querySelector('#bqTranslationSelectLibrary');
-    if (!picker) {
-      const wrap = document.createElement('div');
-      wrap.className = 'chapter-tools';
-      wrap.setAttribute('data-bq-library-version', '1');
-      wrap.innerHTML = `<label>Bible version <select id="bqTranslationSelectLibrary">${optionsHtml(code)}</select></label><span class="reader-chip">${esc(VERSIONS[code].note)}</span>`;
-      search.before(wrap);
-      picker = wrap.querySelector('select');
-      picker.onchange = () => {
-        saveVersion(picker.value);
-        const chip = wrap.querySelector('.reader-chip');
-        if (chip) chip.textContent = VERSIONS[picker.value].note;
-        updateSource(panel, picker.value);
-      };
-    } else {
-      picker.value = code;
-    }
-    updateSource(panel, code);
-    return true;
-  }
-
-  function enhance() {
-    const layer = document.getElementById('bqReaderLayer');
-    if (!layer || layer.classList.contains('hidden')) return;
-    if (applyChapter(layer)) return;
-    applyLibrary(layer);
-  }
-
-  const observer = new MutationObserver(enhance);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-  document.addEventListener('change', e => {
-    if (e.target?.id === 'readerChapter') setTimeout(enhance, 0);
-  });
-  enhance();
+  function updateSource(panel,code){let n=panel.querySelector('[data-bq-version-source]');if(!n){n=document.createElement('div');n.className='reader-source';n.dataset.bqVersionSource='1';panel.appendChild(n)}if(n.dataset.code===code)return;n.dataset.code=code;n.innerHTML=sourceNotice(code)}
+  function renderRows(article,rows,label){article.innerHTML=rows.map(v=>`<p data-verse="${Number(v.v)}"><sup>${Number(v.v)}</sup>${esc(v.t)}</p>`).join('');article.dataset.bqScripture=label}
+  async function loadTagalog(article,layer){const {code,chapter}=context(layer);if(!code||!chapter)throw new Error('Passage context unavailable');manifest=manifest||await json('data/packs/manifest.json');const meta=(manifest.tagalog_books||[]).find(b=>b.code===code);if(!meta)throw new Error('Tagalog pack for this book is not available yet');article.innerHTML='<div class="reader-loading"><div class="reader-sheep">🇵🇭</div><p>Loading Tagalog Bible…</p></div>';const rows=(await json(meta.path)).filter(v=>Number(v.c)===chapter);if(selected()!=='TGL'||!article.isConnected)return;renderRows(article,rows,'TGL');const chip=layer.querySelector('.reader-title-row .reader-chip');if(chip)chip.textContent=`${meta.name} · ${rows.length} verses`}
+  async function loadNlt(article,book,chapter){article.innerHTML='<div class="reader-loading"><div class="reader-sheep">📖</div><p>Loading NLT inside BibleQuest…</p></div>';try{const ref=`${book}.${chapter}`,r=await fetch(`https://api.nlt.to/api/passages?ref=${encodeURIComponent(ref)}&version=NLT`);if(!r.ok)throw new Error(`NLT API returned ${r.status}`);const raw=await r.text();if(selected()!=='NLT'||!article.isConnected)return;const doc=new DOMParser().parseFromString(raw,'text/html');doc.querySelectorAll('script,style,iframe,object,embed,form,input,button').forEach(x=>x.remove());doc.querySelectorAll('*').forEach(el=>[...el.attributes].forEach(a=>{if(a.name.toLowerCase().startsWith('on')||a.name.toLowerCase()==='style')el.removeAttribute(a.name)}));article.innerHTML=doc.body.innerHTML;article.dataset.bqScripture='NLT'}catch(e){if(selected()!=='NLT'||!article.isConnected)return;article.innerHTML=`<div class="reader-source"><b>NLT could not load inside the app.</b><br>${esc(e.message||String(e))}</div>`}}
+  function licensed(article,code,book,chapter){article.innerHTML=`<div class="reader-source"><b>${esc(code)} · ${esc(VERSIONS[code].name)}</b><p>This edition is available as a secondary option, but BibleQuest does not redistribute its full text.</p></div><p><a class="reader-primary" href="${esc(external(code,book,chapter))}" target="_blank" rel="noopener noreferrer">Open ${esc(book)} ${chapter} · ${esc(code)} ↗</a></p>`}
+  function applyChapter(layer){const panel=layer.querySelector('.reader-chapter');if(!panel)return false;const article=panel.querySelector('.verse-list'),tools=panel.querySelector('.chapter-tools');if(!article||!tools)return true;const code=selected();let picker=panel.querySelector('#bqTranslationSelect');if(!picker){const label=document.createElement('label');label.dataset.bqVersionPicker='1';label.innerHTML=`Version <select id="bqTranslationSelect">${options(code)}</select>`;tools.insertBefore(label,tools.firstChild);picker=label.querySelector('select');picker.onchange=()=>{save(picker.value);article.dataset.bqAppliedVersion='';applyChapter(layer)}}else picker.value=code;updateSource(panel,code);if(!article.__bqBsbHtml)article.__bqBsbHtml=article.innerHTML;if(article.dataset.bqAppliedVersion===code)return true;article.dataset.bqAppliedVersion=code;const ctx=context(layer);if(!ctx.book||!ctx.chapter)return true;if(code==='BSB'){article.innerHTML=article.__bqBsbHtml;article.dataset.bqScripture='BSB';return true}if(code==='TGL'){loadTagalog(article,layer).catch(e=>{if(selected()==='TGL')article.innerHTML=`<div class="reader-source"><b>Tagalog text unavailable.</b><br>${esc(e.message||String(e))}</div>`});return true}if(code==='NLT'){loadNlt(article,ctx.book,ctx.chapter);return true}licensed(article,code,ctx.book,ctx.chapter);return true}
+  function applyLibrary(layer){const panel=layer.querySelector('.reader-panel');if(!panel||panel.classList.contains('reader-chapter'))return false;const search=panel.querySelector('#readerSearch');if(!search)return false;const code=selected();let picker=panel.querySelector('#bqTranslationSelectLibrary');if(!picker){const wrap=document.createElement('div');wrap.className='chapter-tools';wrap.dataset.bqLibraryVersion='1';wrap.innerHTML=`<label>Bible version <select id="bqTranslationSelectLibrary">${options(code)}</select></label><span class="reader-chip">${esc(VERSIONS[code].note)}</span>`;search.before(wrap);picker=wrap.querySelector('select');picker.onchange=()=>{save(picker.value);wrap.querySelector('.reader-chip').textContent=VERSIONS[picker.value].note;updateSource(panel,picker.value)}}else picker.value=code;updateSource(panel,code);return true}
+  function enhance(){const layer=document.getElementById('bqReaderLayer');if(!layer||layer.classList.contains('hidden'))return;if(applyChapter(layer))return;applyLibrary(layer)}
+  new MutationObserver(enhance).observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('change',e=>{if(e.target?.id==='readerChapter')setTimeout(enhance,0)});enhance();
+  window.BQTranslations={versions:VERSIONS,main:MAIN,selected,select:code=>{save(code);enhance()}};
 })();
