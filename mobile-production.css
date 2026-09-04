@@ -8,12 +8,11 @@ body{min-width:0}
 .app{width:100%;max-width:680px;padding-left:14px;padding-right:14px;padding-bottom:calc(var(--bq-mobile-nav) + 12px + env(safe-area-inset-bottom))}
 .topbar{padding:9px 2px 6px}.brand{font-size:19px}.top-actions{gap:5px}.streak,.level-chip{padding:6px 8px;font-size:10px}
 
-/* Daily Journey is the home hero. Do not let the legacy hero/stats reclaim the first viewport. */
-body.bq-frontpage-focus>.app>.hero,
-body.bq-modern-home>.app>.hero,
-body:has(.modern-home)>.app>.hero{display:none!important}
-body.bq-frontpage-focus>.app>.quick-stats,
-body:has(.modern-home .today-journey-card)>.app>.quick-stats{display:none!important}
+/* Daily Journey is the home hero. The actual shell is #app > .app. */
+body.bq-frontpage-focus #app>.app>.hero,
+body.bq-modern-home.bq-frontpage-focus #app>.app>.hero{display:none!important}
+body.bq-frontpage-focus #app>.app>.quick-stats,
+body.bq-modern-home.bq-frontpage-focus #app>.app>.quick-stats{display:none!important}
 body.bq-frontpage-focus .modern-home{margin-top:2px!important}
 body.bq-frontpage-focus .bq-engagement-stack{margin-top:0!important}
 
@@ -28,7 +27,7 @@ body.bq-frontpage-focus .bq-engagement-stack{margin-top:0!important}
 body.bq-engagement-home .bq-engagement-stack .today-journey-card{padding:14px!important;border-width:1px!important;border-radius:22px!important;box-shadow:0 10px 28px rgba(46,58,79,.09)!important}
 .today-journey-card:before{right:10px!important;top:4px!important;font-size:34px!important}
 .today-journey-top{gap:8px!important}.today-journey-top h2,body.bq-engagement-home .today-journey-top h2{font-size:21px!important;line-height:1.06!important;margin:3px 0!important}.today-journey-top p{font-size:10px!important;line-height:1.35!important}.today-journey-top small{font-size:8px!important}
-.journey-streak{min-width:58px!important;border-radius:15px!important;padding:7px 7px!important}.journey-streak span{font-size:15px!important}.journey-streak b{font-size:17px!important}.journey-streak small{font-size:7px!important;margin-top:2px!important}
+.journey-streak{min-width:58px!important;border-radius:15px!important;padding:7px!important}.journey-streak span{font-size:15px!important}.journey-streak b{font-size:17px!important}.journey-streak small{font-size:7px!important;margin-top:2px!important}
 .today-step-dots{gap:5px!important;margin:10px 0 9px!important}.today-step-dots i{height:5px!important}
 .engagement-focus-chip{margin:0 0 9px!important;padding:8px 9px!important;border-radius:13px!important;gap:8px!important}.engagement-focus-chip>span{font-size:18px!important}.engagement-focus-chip b{font-size:10px!important}.engagement-focus-chip em{font-size:8px!important}.engagement-focus-chip small{font-size:7px!important}
 .today-journey-actions{gap:6px!important}.today-journey-actions button{min-height:44px}.bq-engagement-home .journey-primary{flex:1 0 100%!important;padding:11px 13px!important;font-size:11px!important;border-radius:14px!important;box-shadow:0 5px 15px rgba(38,58,88,.14)!important}.today-journey-actions .journey-secondary{flex:0 1 auto!important;min-height:36px!important;margin:0 auto!important;padding:7px 12px!important;border-radius:999px!important;font-size:9px!important}
@@ -67,7 +66,7 @@ body.bq-engagement-home .bq-engagement-stack .today-journey-card{padding:14px!im
 
 @media(min-width:650px){
   .app{padding-left:20px;padding-right:20px}
-  body.bq-frontpage-focus>.app>.quick-stats{display:grid!important}
+  body.bq-frontpage-focus #app>.app>.quick-stats{display:grid!important}
   .modern-hubs{grid-template-columns:repeat(4,minmax(0,1fr))!important}
   .modern-hub{min-height:118px!important}
 }
