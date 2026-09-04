@@ -4,7 +4,9 @@ BibleQuest is a mobile-first Bible learning PWA built around one clear Daily Jou
 
 ## Public app
 
-Primary deployment: `https://079b159e.biblequest-7th.pages.dev/` (Cloudflare Pages)
+Primary deployment: `https://biblequest-7th.pages.dev/` (Cloudflare Pages)
+
+Cloudflare deployment previews use `https://<deployment>.biblequest-7th.pages.dev/` and are not the canonical public URL.
 
 Legacy/fallback deployment: `https://11ll11l1l1l.github.io/BibleQuest/`
 
