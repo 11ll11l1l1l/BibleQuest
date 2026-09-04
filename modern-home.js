@@ -24,31 +24,35 @@
       ['➡️','What Happens Next?','Story sequence from Open Bible Stories',()=>trigger('[data-story-next]')],
       ['🧩','Verse Order','Ayusin ang tunay na verse sequence',()=>trigger('[data-sequence-open]')],
       ['🕵️','Bible Detective','Guess from clues',()=>trigger('[data-action="detective"]')],
+      ['🧭','Characters & Places','Who Am I, Where Is It, and Scripture connections',()=>{closeSheet();window.BQExplorer?.open?.()}],
       ['⏳','Timeline','Put Bible events in order',()=>trigger('[data-action="timeline"]')],
       ['🧠','Context Mode','Understand why, not just who',()=>trigger('[data-action="context"]')]
     ]},
-    read:{icon:'📖',title:'Read',sub:'Bible & story library',items:[
-      ['📚','Bible Reader','English BSB · one book at a time',()=>trigger('[data-reader-open]')],
+    read:{icon:'📖',title:'Read',sub:'Bible, study & notes',items:[
+      ['📚','Bible Reader','BSB · Tagalog ULB · NLT',()=>trigger('[data-reader-open]')],
+      ['📘','Guided Study','Read → Observe → Understand → Discuss → Apply → Pray',()=>{closeSheet();window.BQStudy?.open?.()}],
+      ['🗂️','Bible Workspace','Cloud highlights, bookmarks, notes, and search',()=>{closeSheet();window.BQWorkspace?.open?.()}],
       ['🏕️','Story Journey','50 illustrated foundational stories',()=>trigger('[data-storyjourney-open]')],
       ['🗃️','Recall Decks','Open questions by Bible book',()=>trigger('[data-action="decks"]')],
       ['🔁','Review Mistakes','Core questions you missed',()=>trigger('[data-action="review"]')]
     ]},
-    grow:{icon:'🌱',title:'Grow',sub:'Wisdom & self-awareness',items:[
+    grow:{icon:'🌱',title:'Grow',sub:'Mission, wisdom & journey',items:[
+      ['🎯','My Mission','A focused ~6 minute next step based on your learning',()=>{closeSheet();window.BQMission?.open?.()}],
+      ['🗺️','Bible World','Travel through the biblical story with your avatar',()=>{closeSheet();window.BQWorld?.open?.()}],
       ['🧭','Situations & Wisdom','Real-life decisions through biblical principles',()=>trigger('[data-action="situation"]')],
       ['🧬','Transformation','Personality, bias lab, and Growth Lab',()=>{closeSheet();window.BQ_TRANSFORMATION?.open?.()}],
       ['💭','Think Deeper','Faith, motives, planning and forgiveness',()=>trigger('[data-route="discuss"]')],
-      ['🗺️','Journey','See Bible learning progress',()=>trigger('[data-route="journey"]')],
       ['🎖️','My Achievements','Badges across learning, wisdom, reading and consistency',()=>{closeSheet();window.BQCommunity?.openBadges?.()}]
     ]},
-    together:{icon:'👥',title:'Together',sub:'Groups, couples & community',items:[
-      ['🎮','Play Together','Team games, verse hunts and conversation circles',()=>{closeSheet();window.BQGroupPlay?.open?.()}],
+    together:{icon:'👥',title:'Together',sub:'Live rooms, groups & couples',items:[
+      ['📡','Live BibleQuest Room','One code · many phones · live quiz, poll, hunt or discussion',()=>{closeSheet();window.BQLiveRooms?.open?.()}],
+      ['🎮','Play Together','Pass-the-phone team games and conversation circles',()=>{closeSheet();window.BQGroupPlay?.open?.()}],
+      ['🏁','Church Challenges','7-day, 30-day, Acts, family and couples challenges',()=>{closeSheet();window.BQChallenges?.open?.()}],
+      ['💞','Couple Journey','Link two accounts for a private shared growth journey',()=>{closeSheet();window.BQCoupleCloud?.open?.()}],
+      ['❤️','Grow Together','Christ-centered couples conversations and repair tools',()=>trigger('[data-couples-open]')],
       ['🏆','Leaderboards & Awards','Today · this week · all time · multiple fields',()=>{closeSheet();window.BQCommunity?.openBoard?.()}],
-      ['🎖️','Congregation Badges','54 achievement paths across BibleQuest',()=>{closeSheet();window.BQCommunity?.openBadges?.()}],
-      ['👥','Congregation Roster','Add local members or teams sharing this device',()=>{closeSheet();window.BQCommunity?.openRoster?.()}],
-      ['💞','Grow Together','Christ-centered couples conversations',()=>trigger('[data-couples-open]')],
-      ['👂','Listen First','Practice understanding before replying',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="listen"]')?.click(),160)}],
-      ['🕊️','Repair Room','A guided ordinary-conflict repair flow',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="repair"]')?.click(),160)}],
-      ['✝️','Us & God','Questions for growing with Christ together',()=>{trigger('[data-couples-open]');setTimeout(()=>document.querySelector('[data-couples-mode="god"]')?.click(),160)}]
+      ['🎖️','Congregation Badges','Achievement paths across BibleQuest',()=>{closeSheet();window.BQCommunity?.openBadges?.()}],
+      ['👥','Congregation Roster','Cloud members, roles and congregation identity',()=>{closeSheet();window.BQCommunity?.openRoster?.()}]
     ]}
   };
 
@@ -75,7 +79,7 @@
 
   function sourceSheet(){
     const el=sheet(),host=el.querySelector('#modernSheetContent');
-    host.innerHTML=`<header class="modern-sheet-head"><div><span>ℹ️</span><div><small>TRANSPARENT SOURCES</small><h2>Sources</h2><p>Alam mo kung saan galing ang content.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article><b>BSB · Berean Standard Bible</b><p>English Bible text sa Reader at verse-text games.</p></article><article><b>unfoldingWord Translation Questions v90</b><p>Open recall questions/reference answers · CC BY-SA 4.0.</p></article><article><b>Open Bible Stories</b><p>Illustrated Bible-story retelling · CC BY-SA 4.0. Hindi Bible translation.</p></article></div>`;
+    host.innerHTML=`<header class="modern-sheet-head"><div><span>ℹ️</span><div><small>TRANSPARENT SOURCES</small><h2>Bible versions & sources</h2><p>Alam mo kung saan galing ang Scripture at study content.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article><b>BSB · Berean Standard Bible</b><p>Main English Bible text. Inside BibleQuest as on-demand book packs; offline after first load.</p></article><article><b>TGL · banal na Bibliya / Tagalog ULB</b><p>Tagalog Scripture text. Door43 World Missions Community · CC BY-SA 4.0 · on-demand book packs.</p></article><article><b>NLT · New Living Translation</b><p>Main connected English option. Loads inside BibleQuest through Tyndale’s official API; internet required.</p></article><article><b>unfoldingWord Translation Questions v90</b><p>Open recall questions/reference answers · CC BY-SA 4.0.</p></article><article><b>Open Bible Stories</b><p>Illustrated Bible-story retelling · CC BY-SA 4.0. Hindi Bible translation.</p></article></div>`;
     el.classList.remove('hidden');document.body.classList.add('modern-sheet-open');
   }
 
@@ -108,7 +112,7 @@
       <section class="modern-hubs">
         ${Object.entries(hubs).map(([k,h])=>`<button class="modern-hub ${k}" data-modern-hub="${k}"><span>${h.icon}</span><div><b>${h.title}</b><small>${h.sub}</small></div><i>›</i></button>`).join('')}
       </section>
-      <section class="modern-footer-row"><button data-modern-sources>ℹ️ Sources & Bible version</button><span>Local-first · no account needed</span></section>`;
+      <section class="modern-footer-row"><button data-modern-sources>ℹ️ Sources & Bible versions</button><span>Cloud account · private notes · congregation sync</span></section>`;
     host.querySelector('[data-modern-daily]').onclick=()=>trigger('[data-action="daily"]');
     host.querySelector('[data-modern-review]').onclick=()=>trigger('[data-open-review]');
     host.querySelectorAll('[data-modern-hub]').forEach(b=>b.onclick=()=>openHub(b.dataset.modernHub));
