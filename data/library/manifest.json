@@ -41,7 +41,7 @@
       "url": "https://github.com/STEPBible/STEPBible-Data.git",
       "ref": "master",
       "license": "CC BY 4.0",
-      "commit": "2cc85f1c0ddba06d07613ce09be42a0e24f1a580"
+      "commit": "89ece29525e3c51d61850b28b4d4cf27ef9cd321"
     },
     "geo": {
       "url": "https://github.com/openbibleinfo/Bible-Geocoding-Data.git",
