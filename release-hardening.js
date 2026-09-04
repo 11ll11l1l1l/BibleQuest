@@ -10,7 +10,7 @@
 
   function injectRecoveryLink(){
     const form=document.querySelector('#bqAccountLayer:not(.hidden) [data-account-login]');
-    if(!form||form.querySelector('.bq-recovery-link'))return;
+    if(!form||form.querySelector('.bq-recovery-link,a[href*="reset.html"]'))return;
     const a=document.createElement('a');
     a.className='bq-recovery-link';
     a.href='./reset.html';
@@ -19,51 +19,11 @@
   }
 
   function alignPasswordFields(){
-    document.querySelectorAll('[data-account-register] input[name="password"], [data-account-password] input[name="new_password"], .bq-recovery-card input[name="password"], .bq-recovery-card input[name="confirm"]').forEach(input=>{
-      input.minLength=10;
-      if(input.name==='password'&&input.closest('[data-account-register]'))input.placeholder='At least 10 characters';
+    document.querySelectorAll('[data-account-register] input[name="password"], [data-account-register] input[name="confirm_password"], [data-account-password] input[name="new_password"], [data-account-password] input[name="confirm_password"], .bq-recovery-card input[name="new_password"], .bq-recovery-card input[name="confirm_password"]').forEach(input=>{
+      input.minLength=8;
+      if(input.name==='password'&&input.closest('[data-account-register]'))input.placeholder='At least 8 characters';
     });
   }
-
-  function securityFeedback(form,text,error=false){
-    let box=form.querySelector('.bq-security-feedback');
-    if(!box){box=document.createElement('div');box.className='bq-security-feedback';form.appendChild(box)}
-    box.classList.toggle('error',error);
-    box.textContent=text;
-  }
-
-  async function securePasswordChange(form){
-    const client=window.BQAccount?.client?.();
-    const session=window.BQAccount?.session?.();
-    if(!client||!session?.user?.email)throw new Error('Your session expired. Sign in again.');
-    const fd=new FormData(form);
-    const current=String(fd.get('current_password')||'');
-    const next=String(fd.get('new_password')||'');
-    if(next.length<10)throw new Error('Use a new password with at least 10 characters.');
-    if(current===next)throw new Error('Choose a new password that is different from the current password.');
-    const button=form.querySelector('button[type="submit"],button:not([type])');
-    if(button){button.disabled=true;button.dataset.oldText=button.textContent||'';button.textContent='Verifying…'}
-    try{
-      const verified=await client.auth.signInWithPassword({email:session.user.email,password:current});
-      if(verified.error)throw new Error('Current password is incorrect.');
-      if(button)button.textContent='Updating…';
-      const changed=await client.auth.updateUser({password:next});
-      if(changed.error)throw changed.error;
-      form.reset();
-      securityFeedback(form,'Password updated. Your current password was verified first.');
-      window.BQAccount?.track?.('account','password_changed',{verified_current_password:true}).catch?.(()=>{});
-    }finally{
-      if(button){button.disabled=false;button.textContent=button.dataset.oldText||'Change password'}
-    }
-  }
-
-  document.addEventListener('submit',e=>{
-    const form=e.target.closest?.('[data-account-password]');
-    if(!form)return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    securePasswordChange(form).catch(err=>securityFeedback(form,err.message||String(err),true));
-  },true);
 
   function journeyState(){
     const e=window.BQJourneyLoop?.read?.();
