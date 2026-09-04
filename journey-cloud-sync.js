@@ -19,8 +19,9 @@
     const home=document.querySelector('.modern-home'),stack=home?.querySelector('.bq-engagement-stack');if(!home||!stack)return;
     const legacyReview=document.querySelector('.modern-focus [data-modern-review]');legacyReview?.removeAttribute('data-modern-review');
     let row=stack.querySelector('.journey-familiar-tools');
-    if(!row){row=document.createElement('div');row.className='journey-familiar-tools';row.innerHTML='<small>Daily 5 stays in Play. Smart Review is still available anytime.</small><button type="button" data-modern-review>🧠 Smart Review</button>';stack.appendChild(row)}
-    const btn=row.querySelector('[data-modern-review]');if(btn&&!btn.dataset.bound){btn.dataset.bound='1';btn.onclick=()=>{const old=document.querySelector('.modern-focus .modern-review');if(old){const restore=old.getAttribute('data-modern-review');old.setAttribute('data-modern-review','');old.click();old.removeAttribute('data-modern-review');if(restore!==null)old.setAttribute('data-modern-review',restore)}else window.BQOpenReview?.open?.()}}
+    if(!row){row=document.createElement('div');row.className='journey-mini-row journey-familiar-tools';row.innerHTML='<button type="button" data-modern-review>🧠 Smart Review</button><button type="button" data-daily5-play>🎮 Daily 5 · in Play</button>';stack.appendChild(row)}
+    const review=row.querySelector('[data-modern-review]');if(review&&!review.dataset.bound){review.dataset.bound='1';review.onclick=()=>{const old=document.querySelector('.modern-focus .modern-review');if(old)old.click();else window.BQOpenReview?.open?.()}}
+    const daily=row.querySelector('[data-daily5-play]');if(daily&&!daily.dataset.bound){daily.dataset.bound='1';daily.onclick=()=>window.BQModernHome?.openHub?.('play')}
   }
   function refreshHome(){retargetHero();compatibilityActions()}
   window.addEventListener('bq-journey-change',()=>{schedule();setTimeout(refreshHome,0)});
