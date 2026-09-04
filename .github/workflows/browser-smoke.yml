@@ -34,6 +34,8 @@ jobs:
         run: timeout 180s node tests/reader-resilience-smoke.mjs
       - name: Smoke phone and desktop layouts
         run: timeout 180s node tests/layout-matrix-smoke.mjs
+      - name: Smoke installed PWA offline reload
+        run: timeout 180s node tests/pwa-offline-smoke.mjs
       - name: Smoke completion-stage modules
         run: timeout 180s node tests/completion-smoke.mjs
       - name: Smoke Daily Journey loop
