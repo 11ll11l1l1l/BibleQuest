@@ -14,6 +14,8 @@ jobs:
           node-version: 22
       - name: Smoke PWA reliability guards
         run: node tests/reliability-smoke.mjs
+      - name: Smoke auth flow invariants
+        run: node tests/auth-flow-static-smoke.mjs
       - name: Install browser test dependency
         run: npm install --no-save playwright
       - name: Install Chromium
