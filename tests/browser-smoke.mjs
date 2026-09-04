@@ -12,11 +12,25 @@ try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
+  await page.waitForTimeout(250);
 
   assert.equal(await page.locator('.modern-hub').count(),4,'Home should retain four secondary hubs');
   assert.equal(await page.locator('.modern-focus').evaluate(el=>getComputedStyle(el).display),'none','old Daily 5 block should be hidden');
   assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should not compete with the Daily Journey');
+  assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none','legacy Keep growing hero must not precede the Daily Journey');
+  assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none','legacy stats strip must not crowd the mobile home');
   assert.match(await page.locator('.today-journey-card').innerText(),/Continue My Journey|Journey complete/);
+  const hierarchy=await page.evaluate(()=>({
+    overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
+    daily:document.querySelector('.today-journey-card')?.getBoundingClientRect().top,
+    path:document.querySelector('.journey-path-card')?.getBoundingClientRect().top,
+    explore:document.querySelector('.modern-label')?.getBoundingClientRect().top,
+    bottom:document.querySelector('.bottom')?.getBoundingClientRect().height
+  }));
+  assert.ok(hierarchy.overflow<=1,`mobile home must not horizontally overflow (${hierarchy.overflow}px)`);
+  assert.ok(Number.isFinite(hierarchy.daily)&&Number.isFinite(hierarchy.path)&&hierarchy.daily<hierarchy.path,'Daily Journey must appear before Bible path');
+  assert.ok(Number.isFinite(hierarchy.explore)&&hierarchy.path<hierarchy.explore,'Bible path should appear before Explore');
+  assert.ok(hierarchy.bottom<=64,'five-tab mobile navigation should stay compact');
 
   // First visit must land directly on the Daily Journey. Personal focus is opt-in, not a blocking modal.
   await page.waitForTimeout(800);
