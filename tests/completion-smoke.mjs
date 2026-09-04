@@ -9,6 +9,9 @@ page.on('pageerror',e=>pageErrors.push(e.message));
 try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'networkidle'});
   await page.waitForSelector('.modern-home');
+  await page.waitForSelector('.today-journey-card');
+  const prompt=page.locator('#bqFrontStruggle:not(.hidden)');
+  if(await prompt.count())await page.locator('#bqFrontStruggle .front-struggle-skip').click();
 
   const modules=await page.evaluate(()=>({
     context:Boolean(window.BQContextLab?.open),
@@ -16,19 +19,19 @@ try{
     assignmentPush:Boolean(window.BQAssignmentPush?.refresh),
     presence:Boolean(window.BQPresence?.open),
     avatars:Boolean(window.BQAvatarVault?.open),
-    pinoyHero:Boolean(window.BQPinoyHero?.render)
+    pinoyHero:Boolean(window.BQPinoyHero?.render),
+    personalityProfile:Boolean(window.BQPersonalityProfile?.presentation),
+    frontDaily:Boolean(window.BQFrontDaily?.openPrompt)
   }));
-  assert.deepEqual(modules,{context:true,assignments:true,assignmentPush:true,presence:true,avatars:true,pinoyHero:true},'completion-stage modules should load');
+  assert.deepEqual(modules,{context:true,assignments:true,assignmentPush:true,presence:true,avatars:true,pinoyHero:true,personalityProfile:true,frontDaily:true},'completion-stage modules should load');
 
+  // The artwork module remains available but no longer consumes the prime front-page position.
   await page.waitForSelector('.bq-pinoy-hero .bq-pinoy-hero-art');
-  const heroText=await page.locator('.bq-pinoy-hero').innerText();
-  assert.match(heroText,/PINOY IN JAPAN · BIBLEQUEST/);
-  assert.match(heroText,/Different places\. Same Jesus\. One family\./);
-  assert.match(heroText,/Shiba-Sheep/);
-  assert.match(heroText,/My Mission/);
   const heroBg=await page.locator('.bq-pinoy-hero-art').evaluate(el=>getComputedStyle(el).backgroundImage);
-  assert.match(heroBg,/bq-pinoy-japan-hero\.svg/,'real Pinoy-in-Japan artwork should be wired into the Home hero');
+  assert.match(heroBg,/bq-pinoy-japan-hero\.svg/,'Pinoy-in-Japan artwork should remain wired into the app');
+  assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should be hidden on the mission-first Home');
   assert.equal(await page.locator('body.bq-modern-home > .app .hero:visible').count(),0,'legacy generic hero should be hidden on modern Home');
+  assert.match(await page.locator('.today-journey-card').innerText(),/Continue My Journey|Journey complete/);
 
   const contextManifest=await page.evaluate(()=>fetch('data/packs/context/manifest.json').then(r=>r.json()));
   assert.equal(contextManifest.books?.length,66,'all 66 original-language context packs should be discoverable');
