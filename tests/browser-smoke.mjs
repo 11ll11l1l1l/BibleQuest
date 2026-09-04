@@ -66,7 +66,7 @@ try{
 
   // Bible World is the new visible Scripture progression path. My Mission may leave Grow open.
   if(await page.locator('#bqModernSheet:not(.hidden)').count()===0)await page.locator('[data-modern-hub="grow"]').click();
-  await page.getByRole('button',{name:/Bible World/}).click();
+  await page.locator('#bqModernSheet [data-modern-item="grow:1"]').click();
   await page.waitForSelector('#bqEngagementWorld:not(.hidden)');
   const world=await page.locator('#bqEngagementWorld').innerText();
   assert.match(world,/Genesis/);assert.match(world,/Exodus/);assert.match(world,/Kingdom/);assert.match(world,/Jesus/);assert.match(world,/Early Church/);
