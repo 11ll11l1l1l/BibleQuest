@@ -1,0 +1,145 @@
+(() => {
+  const CFG=window.BQ_CLOUD_CONFIG||{};
+  const SDK='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4';
+  const ACCOUNT_CACHE='biblequest_account_cache_v1';
+  const DEVICE_KEY='biblequest_device_key_v1';
+  const PROGRESS_KEYS=['biblequest_state_v4','biblequest_reader_v1','biblequest_sequence_v1','biblequest_story_journey_v1','biblequest_transformation_v1','biblequest_growth_v1','biblequest_couples_v1','biblequest_learning_engine_v1','biblequest_open_review_v1','biblequest_saved_passage_v1'];
+  const faces=[['smile','🙂'],['joy','😄'],['thinker','🤓'],['calm','😌'],['cool','😎'],['adventure','🤠'],['bright','😇'],['beard','🧔'],['curly','👩‍🦱'],['wave','🧑‍🦱']];
+  const outfits=[['traveler','🎒'],['simple','👕'],['coat','🧥'],['worker','🦺'],['scarf','🧣'],['sport','🥋']];
+  const backgrounds=[['olive','Garden'],['sky','Open sky'],['sunset','Sunset'],['night','Night'],['sea','Sea'],['scroll','Scroll']];
+  const companions=[['sheep','🐑'],['dove','🕊️'],['fish','🐟'],['lion','🦁'],['camel','🐪'],['bee','🐝']];
+  const defaults={face:'smile',outfit:'traveler',background:'olive',companion:'sheep'};
+  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const enabled=()=>Boolean(CFG.enabled&&CFG.supabaseUrl&&CFG.publishableKey);
+  let client=null,session=null,profile=null,sdkPromise=null,activityBuffer=[],syncTimer=null,booted=false;
+
+  function optionValue(list,key){return list.find(x=>x[0]===key)?.[1]||list[0][1]}
+  function cleanAvatar(a={}){return {face:faces.some(x=>x[0]===a.face)?a.face:defaults.face,outfit:outfits.some(x=>x[0]===a.outfit)?a.outfit:defaults.outfit,background:backgrounds.some(x=>x[0]===a.background)?a.background:defaults.background,companion:companions.some(x=>x[0]===a.companion)?a.companion:defaults.companion}}
+  function avatarHtml(a={},size=''){a=cleanAvatar(a);return `<span class="bq-avatar bg-${a.background} ${size}"><span class="av-face">${optionValue(faces,a.face)}</span><span class="av-outfit">${optionValue(outfits,a.outfit)}</span><span class="av-companion">${optionValue(companions,a.companion)}</span></span>`}
+  window.BQAvatar={render:avatarHtml,glyph:a=>optionValue(faces,cleanAvatar(a).face),clean:cleanAvatar};
+
+  function loadSdk(){
+    if(window.BQ_SUPABASE_CLIENT)return Promise.resolve(window.BQ_SUPABASE_CLIENT);
+    if(window.supabase?.createClient){window.BQ_SUPABASE_CLIENT=window.supabase.createClient(CFG.supabaseUrl,CFG.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});return Promise.resolve(window.BQ_SUPABASE_CLIENT)}
+    if(sdkPromise)return sdkPromise;
+    sdkPromise=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=SDK;s.crossOrigin='anonymous';s.onload=()=>{if(!window.supabase?.createClient)return reject(new Error('Account service unavailable'));window.BQ_SUPABASE_CLIENT=window.supabase.createClient(CFG.supabaseUrl,CFG.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});resolve(window.BQ_SUPABASE_CLIENT)};s.onerror=()=>reject(new Error('Could not connect to the account service'));document.head.appendChild(s)});
+    return sdkPromise;
+  }
+  function deviceKey(){let v=localStorage.getItem(DEVICE_KEY);if(!v){v=crypto.randomUUID();localStorage.setItem(DEVICE_KEY,v)}return v}
+  function deviceLabel(){const ua=navigator.userAgent||'';if(/Android/i.test(ua))return 'Android phone';if(/iPhone/i.test(ua))return 'iPhone';if(/iPad/i.test(ua))return 'iPad';if(/Windows/i.test(ua))return 'Windows PC';if(/Macintosh/i.test(ua))return 'Mac';if(/Linux/i.test(ua))return 'Linux device';return 'Web browser'}
+  function platform(){const ua=navigator.userAgent||'';if(/Android/i.test(ua))return 'Android';if(/iPhone|iPad/i.test(ua))return 'iOS/iPadOS';if(/Windows/i.test(ua))return 'Windows';if(/Macintosh/i.test(ua))return 'macOS';if(/Linux/i.test(ua))return 'Linux';return 'Web'}
+  function layer(){let x=document.getElementById('bqAccountLayer');if(!x){x=document.createElement('div');x.id='bqAccountLayer';x.className='account-layer hidden';document.body.appendChild(x)}return x}
+  function show(html){const x=layer();x.innerHTML=`<main class="account-shell">${html}</main>`;x.classList.remove('hidden');document.body.classList.add('account-open');bindLayer();x.scrollTop=0}
+  function hide(){layer().classList.add('hidden');document.body.classList.remove('account-open')}
+  function cacheProfile(p){if(!p)return;localStorage.setItem(ACCOUNT_CACHE,JSON.stringify({user_id:p.user_id,preferred_name:p.preferred_name||p.display_name||'',avatar:cleanAvatar(p.avatar),onboarding_complete:Boolean(p.onboarding_complete)}))}
+  function cached(){try{return JSON.parse(localStorage.getItem(ACCOUNT_CACHE)||'null')}catch{return null}}
+
+  function authScreen(tab='register',message='',error=''){
+    const register=tab==='register';
+    show(`<div class="account-brand"><b>Bible<span>Quest</span></b><span class="account-chip">CLOUD ACCOUNT</span></div><section class="account-card"><div class="account-hero"><div class="sheep">🐑</div><h1>Start with your own BibleQuest identity.</h1><p>Progress, notes, badges and congregation rankings follow your account across devices.</p></div><div class="account-tabs"><button data-auth-tab="register" class="${register?'active':''}">Create account</button><button data-auth-tab="login" class="${!register?'active':''}">Sign in</button></div>${register?registerForm():loginForm()}${message?`<div class="account-success">${esc(message)}</div>`:''}${error?`<div class="account-error">${esc(error)}</div>`:''}<p class="account-note">Your full name and private notes are not shown on leaderboards. Other members see only your chosen name and avatar. BibleQuest uses a random device ID for sync; it does not fingerprint your phone.</p></section>`);
+  }
+  function registerForm(){const a=defaults;return `<form class="account-form" data-account-register><label>Your name<input name="full_name" maxlength="120" autocomplete="name" placeholder="Full name" required></label><label>What should BibleQuest call you?<input name="preferred_name" maxlength="40" placeholder="Nickname / preferred name" required></label>${avatarBuilder(a)}<label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" minlength="8" autocomplete="new-password" required placeholder="At least 8 characters"></label><button class="account-primary">Create my BibleQuest account</button></form>`}
+  function loginForm(){return `<form class="account-form" data-account-login><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="account-primary">Sign in on this device</button></form>`}
+  function avatarBuilder(a){a=cleanAvatar(a);return `<div class="avatar-builder" data-avatar-builder data-avatar='${esc(JSON.stringify(a))}'><div class="avatar-preview-wrap" data-avatar-preview>${avatarHtml(a,'large')}</div>${avatarSection('Face','face',faces,a.face)}${avatarSection('Outfit','outfit',outfits,a.outfit)}${avatarSection('Background','background',backgrounds,a.background,true)}${avatarSection('Companion','companion',companions,a.companion)}</div>`}
+  function avatarSection(title,key,items,selected,isBg=false){return `<div class="avatar-section"><b>${title}</b><div class="avatar-options ${isBg?'bg':''}">${items.map(([k,v])=>`<button type="button" data-avatar-key="${key}" data-avatar-value="${k}" class="${k===selected?'selected':''}">${esc(v)}</button>`).join('')}</div></div>`}
+  function readBuilder(form){const root=form.querySelector('[data-avatar-builder]');try{return cleanAvatar(JSON.parse(root?.dataset.avatar||'{}'))}catch{return {...defaults}}}
+  function setBuilder(root,key,value){let a={...defaults};try{a=cleanAvatar(JSON.parse(root.dataset.avatar||'{}'))}catch{}a[key]=value;a=cleanAvatar(a);root.dataset.avatar=JSON.stringify(a);root.querySelector('[data-avatar-preview]').innerHTML=avatarHtml(a,'large');root.querySelectorAll(`[data-avatar-key="${key}"]`).forEach(b=>b.classList.toggle('selected',b.dataset.avatarValue===value))}
+
+  async function signUp(form){
+    const fd=new FormData(form),full_name=String(fd.get('full_name')||'').trim(),preferred_name=String(fd.get('preferred_name')||'').trim(),email=String(fd.get('email')||'').trim(),password=String(fd.get('password')||''),avatar=readBuilder(form);
+    if(full_name.length<2||preferred_name.length<2)throw new Error('Please enter your name and the name you want people to call you.');if(password.length<8)throw new Error('Use a password with at least 8 characters.');
+    const {data,error}=await client.auth.signUp({email,password,options:{data:{full_name,preferred_name,avatar,onboarding_complete:true}}});if(error)throw error;
+    if(data.session){session=data.session;await ensureProfile(true);await afterSignIn();return}
+    authScreen('login','Account created. Check your email to confirm it, then return here and sign in.','');
+  }
+  async function signIn(form){const fd=new FormData(form),email=String(fd.get('email')||'').trim(),password=String(fd.get('password')||'');const {data,error}=await client.auth.signInWithPassword({email,password});if(error)throw error;session=data.session;await ensureProfile(true);await afterSignIn()}
+
+  async function ensureProfile(useMetadata=false){
+    if(!session?.user)return null;
+    const {data,error}=await client.from('bible_profiles').select('user_id,display_name,full_name,preferred_name,avatar,onboarding_complete,xp,streak,last_active_at').eq('user_id',session.user.id).maybeSingle();if(error)throw error;
+    const md=session.user.user_metadata||{};
+    if(!data){
+      const preferred=String(md.preferred_name||md.full_name||session.user.email?.split('@')[0]||'BibleQuest learner').trim().slice(0,40);
+      const row={user_id:session.user.id,display_name:preferred,full_name:String(md.full_name||'').trim().slice(0,120),preferred_name:preferred,avatar:cleanAvatar(md.avatar),onboarding_complete:Boolean(md.onboarding_complete||useMetadata),last_active_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+      const created=await client.from('bible_profiles').upsert(row,{onConflict:'user_id'}).select('user_id,display_name,full_name,preferred_name,avatar,onboarding_complete,xp,streak,last_active_at').single();if(created.error)throw created.error;profile=created.data;
+    }else{profile=data;await client.from('bible_profiles').update({last_active_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('user_id',session.user.id)}
+    cacheProfile(profile);syncLocalName();return profile;
+  }
+  function syncLocalName(){if(!profile)return;try{const key='biblequest_state_v4',s=JSON.parse(localStorage.getItem(key)||'{}');s.profile={...(s.profile||{}),name:profile.preferred_name||profile.display_name||'',avatar:cleanAvatar(profile.avatar)};localStorage.setItem(key,JSON.stringify(s))}catch{}}
+  async function saveProfile(form){
+    const fd=new FormData(form),full_name=String(fd.get('full_name')||'').trim().slice(0,120),preferred_name=String(fd.get('preferred_name')||'').trim().slice(0,40),avatar=readBuilder(form);if(preferred_name.length<2)throw new Error('Preferred name must be at least 2 characters.');
+    const patch={full_name,preferred_name,display_name:preferred_name,avatar,onboarding_complete:true,last_active_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+    const res=await client.from('bible_profiles').update(patch).eq('user_id',session.user.id).select('user_id,display_name,full_name,preferred_name,avatar,onboarding_complete,xp,streak,last_active_at').single();if(res.error)throw res.error;profile=res.data;
+    await client.from('bible_congregation_members').update({display_name:preferred_name,avatar}).eq('user_id',session.user.id);
+    cacheProfile(profile);syncLocalName();injectIdentity();accountCenter('Profile updated.');
+  }
+
+  async function registerDevice(){
+    const key=deviceKey();const existing=await client.from('bible_devices').select('id,device_key,label,last_seen_at').eq('user_id',session.user.id).eq('device_key',key).maybeSingle();if(existing.error)throw existing.error;
+    const row={user_id:session.user.id,device_key:key,label:deviceLabel(),platform:platform(),app_version:'web-2026.09',trusted:true,last_seen_at:new Date().toISOString()};
+    const up=await client.from('bible_devices').upsert(row,{onConflict:'user_id,device_key'});if(up.error)throw up.error;return !existing.data;
+  }
+  function collectProgress(){const out={};for(const key of PROGRESS_KEYS){const raw=localStorage.getItem(key);if(!raw)continue;try{out[key]=JSON.parse(raw)}catch{}}return out}
+  async function restoreOrSync(isNewDevice){
+    const remote=await client.from('bible_progress_snapshots').select('state,updated_at').eq('user_id',session.user.id).maybeSingle();if(remote.error)throw remote.error;
+    const cloud=remote.data?.state||null;
+    if(isNewDevice&&cloud&&Object.keys(cloud).length){
+      const flag=`bq_cloud_restored_${session.user.id}`;
+      if(!sessionStorage.getItem(flag)){for(const [k,v] of Object.entries(cloud)){if(PROGRESS_KEYS.includes(k))localStorage.setItem(k,JSON.stringify(v))}sessionStorage.setItem(flag,'1');return true}
+    }
+    await pushProgress();return false;
+  }
+  async function pushProgress(){if(!client||!session)return;const state=collectProgress();const res=await client.from('bible_progress_snapshots').upsert({user_id:session.user.id,state,schema_version:1,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(res.error)throw res.error}
+  function scheduleProgress(){clearTimeout(syncTimer);syncTimer=setTimeout(()=>pushProgress().catch(()=>{}),1800)}
+
+  async function track(feature,event_type,metadata={}){if(!session||!client)return;activityBuffer.push({user_id:session.user.id,device_key:deviceKey(),feature:String(feature).slice(0,80),event_type:String(event_type).slice(0,80),metadata});if(activityBuffer.length>=12)flushActivity()}
+  async function flushActivity(){if(!activityBuffer.length||!client||!session)return;const rows=activityBuffer.splice(0,50);const r=await client.from('bible_activity_events').insert(rows);if(r.error)activityBuffer.unshift(...rows.slice(-50))}
+
+  async function afterSignIn(){
+    await ensureProfile(true);if(!profile?.onboarding_complete){showProfileSetup();return}
+    const isNew=await registerDevice();const restored=await restoreOrSync(isNew);await track('account','signed_in',{platform:platform(),new_device:isNew});if(restored){location.reload();return}hide();injectIdentity();scheduleProgress();
+  }
+  function showProfileSetup(message='',error=''){const p=profile||{},a=cleanAvatar(p.avatar||session?.user?.user_metadata?.avatar);show(`<div class="account-brand"><b>Bible<span>Quest</span></b><span class="account-chip">FINISH PROFILE</span></div><section class="account-card"><div class="account-hero"><h1>Make this identity yours.</h1><p>This nickname and avatar are what people will recognize in leaderboards and group activities.</p></div><form class="account-form" data-account-profile><label>Your name<input name="full_name" value="${esc(p.full_name||'')}" maxlength="120" required></label><label>Call me<input name="preferred_name" value="${esc(p.preferred_name||p.display_name||'')}" maxlength="40" required></label>${avatarBuilder(a)}<button class="account-primary">Save my profile</button></form>${message?`<div class="account-success">${esc(message)}</div>`:''}${error?`<div class="account-error">${esc(error)}</div>`:''}</section>`)}
+
+  async function accountCenter(message='',error=''){
+    if(!session||!profile)return authScreen('login');
+    const devices=await client.from('bible_devices').select('id,device_key,label,platform,last_seen_at,trusted').eq('user_id',session.user.id).order('last_seen_at',{ascending:false});
+    const noteCount=await client.from('bible_notes').select('id',{count:'exact',head:true}).eq('user_id',session.user.id);
+    const a=cleanAvatar(profile.avatar);
+    show(`<div class="account-brand"><b>Bible<span>Quest</span></b><button class="account-secondary" data-account-close>Back to app</button></div><section class="account-card"><div class="account-profile-head">${avatarHtml(a,'large')}<div><span class="account-chip">YOUR ACCOUNT</span><h2>${esc(profile.preferred_name||profile.display_name||'BibleQuest learner')}</h2><p>${esc(session.user.email||'')}</p></div></div><div class="account-grid"><div class="account-stat"><b>${noteCount.count||0}</b><span>private cloud notes</span></div><div class="account-stat"><b>${devices.data?.length||0}</b><span>remembered devices</span></div></div><div class="account-section"><h3>Profile & avatar</h3><form class="account-form" data-account-profile><label>Your name <span class="account-note">Private to your account</span><input name="full_name" value="${esc(profile.full_name||'')}" maxlength="120" required></label><label>Call me <span class="account-note">Shown to congregation</span><input name="preferred_name" value="${esc(profile.preferred_name||profile.display_name||'')}" maxlength="40" required></label>${avatarBuilder(a)}<button class="account-primary">Save profile</button></form></div><div class="account-section"><h3>My Bible notes</h3><div class="account-actions"><button class="account-secondary" data-notes-open>Open private notes</button></div></div><div class="account-section"><h3>Remembered devices</h3>${(devices.data||[]).map(d=>`<div class="device-row"><div><b>${esc(d.label)}</b><small>${esc(d.platform||'Web')} · last used ${new Date(d.last_seen_at).toLocaleString()}</small></div>${d.device_key===deviceKey()?'<span class="account-chip">THIS DEVICE</span>':`<button class="account-secondary" data-device-remove="${d.id}">Remove</button>`}</div>`).join('')||'<p class="account-note">No devices recorded yet.</p>'}</div><div class="account-section"><h3>Security</h3><form class="account-form" data-account-password><label>Current password<input name="current_password" type="password" autocomplete="current-password" required></label><label>New password<input name="new_password" type="password" minlength="8" autocomplete="new-password" required></label><button class="account-secondary">Change password</button></form><div class="account-actions" style="margin-top:12px"><button class="account-secondary" data-account-sync>Sync now</button><button class="account-secondary" data-account-signout>Sign out</button></div></div>${message?`<div class="account-success">${esc(message)}</div>`:''}${error?`<div class="account-error">${esc(error)}</div>`:''}<p class="account-note">BibleQuest remembers this device using the authenticated Supabase session plus a random local device ID. Anyone who can unlock this device may still be able to use an active session, so sign out on shared/public devices.</p></section>`)
+  }
+
+  async function changePassword(form){const fd=new FormData(form),currentPassword=String(fd.get('current_password')||''),password=String(fd.get('new_password')||'');if(password.length<8)throw new Error('New password must be at least 8 characters.');const {error}=await client.auth.updateUser({password,currentPassword});if(error)throw error;accountCenter('Password updated.')}
+  async function removeDevice(id){const r=await client.from('bible_devices').delete().eq('id',id).eq('user_id',session.user.id);if(r.error)throw r.error;accountCenter('Device removed from your remembered-device list.')}
+  async function signOut(){await flushActivity().catch(()=>{});await pushProgress().catch(()=>{});await client.auth.signOut();session=null;profile=null;localStorage.removeItem(ACCOUNT_CACHE);authScreen('login','Signed out.','')}
+
+  function injectIdentity(){
+    const p=profile||cached();if(!p)return;
+    document.querySelectorAll('.top-actions').forEach(host=>{if(host.querySelector('[data-account-open]'))return;const b=document.createElement('button');b.type='button';b.setAttribute('data-account-open','1');b.className='account-avatar-btn';b.innerHTML=avatarHtml(p.avatar);host.appendChild(b)});
+    const panel=document.querySelector('#app .panel');if(panel&&/Your progress/i.test(panel.textContent||'')&&!panel.querySelector('.profile-cloud-card')){const d=document.createElement('button');d.type='button';d.className='profile-cloud-card';d.setAttribute('data-account-open','1');d.innerHTML=`${avatarHtml(p.avatar)}<span class="copy"><b>${esc(p.preferred_name||p.display_name||'My account')}</b><small>Cloud profile · notes · devices · security</small></span><span>›</span>`;panel.prepend(d)}
+  }
+  function bindLayer(){
+    const x=layer();x.querySelectorAll('[data-auth-tab]').forEach(b=>b.onclick=()=>authScreen(b.dataset.authTab));
+    x.querySelectorAll('[data-avatar-key]').forEach(b=>b.onclick=()=>setBuilder(b.closest('[data-avatar-builder]'),b.dataset.avatarKey,b.dataset.avatarValue));
+    x.querySelector('[data-account-register]')?.addEventListener('submit',async e=>{e.preventDefault();try{await signUp(e.currentTarget)}catch(err){authScreen('register','',err.message||String(err))}});
+    x.querySelector('[data-account-login]')?.addEventListener('submit',async e=>{e.preventDefault();try{await signIn(e.currentTarget)}catch(err){authScreen('login','',err.message||String(err))}});
+    x.querySelector('[data-account-profile]')?.addEventListener('submit',async e=>{e.preventDefault();try{await saveProfile(e.currentTarget)}catch(err){if(profile?.onboarding_complete)accountCenter('',err.message||String(err));else showProfileSetup('',err.message||String(err))}});
+    x.querySelectorAll('[data-account-close]').forEach(b=>b.onclick=hide);
+    x.querySelector('[data-account-signout]')?.addEventListener('click',()=>signOut().catch(err=>accountCenter('',err.message||String(err))));
+    x.querySelector('[data-account-sync]')?.addEventListener('click',async()=>{try{await pushProgress();await flushActivity();accountCenter('Everything on this device is synced.')}catch(err){accountCenter('',err.message||String(err))}});
+    x.querySelector('[data-account-password]')?.addEventListener('submit',async e=>{e.preventDefault();try{await changePassword(e.currentTarget)}catch(err){accountCenter('',err.message||String(err))}});
+    x.querySelectorAll('[data-device-remove]').forEach(b=>b.onclick=()=>removeDevice(b.dataset.deviceRemove).catch(err=>accountCenter('',err.message||String(err))));
+  }
+
+  document.addEventListener('click',e=>{const a=e.target.closest('[data-account-open]');if(a){e.preventDefault();accountCenter().catch(()=>{})};const t=e.target.closest('[data-action],[data-route],[data-reader-open],[data-group-open],[data-couples-open],[data-transformation-open]');if(t&&session){let feature='navigation',event='open';if(t.dataset.action){feature=t.dataset.action;event='action'}else if(t.dataset.route){feature=t.dataset.route;event='route'}else if(t.dataset.readerOpen!=null)feature='bible_reader';else if(t.dataset.groupOpen!=null)feature='group_play';else if(t.dataset.couplesOpen!=null)feature='couples';else if(t.dataset.transformationOpen!=null)feature='transformation';track(feature,event).catch(()=>{})}});
+  window.addEventListener('bq-community-change',scheduleProgress);window.addEventListener('pagehide',()=>{pushProgress().catch(()=>{});flushActivity().catch(()=>{})});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){pushProgress().catch(()=>{});flushActivity().catch(()=>{})}});
+  new MutationObserver(injectIdentity).observe(document.documentElement,{childList:true,subtree:true});
+  setInterval(()=>{if(session){pushProgress().catch(()=>{});flushActivity().catch(()=>{})}},45000);
+
+  async function boot(){
+    if(booted)return;booted=true;if(!enabled()){injectIdentity();return}
+    try{client=await loadSdk();client.auth.onAuthStateChange((_event,next)=>{session=next;queueMicrotask(async()=>{if(session){try{await ensureProfile(true);await afterSignIn()}catch(err){authScreen('login','',err.message||String(err))}}else authScreen('login')})});const {data,error}=await client.auth.getSession();if(error)throw error;session=data.session;if(!session){authScreen('register');return}await ensureProfile(true);await afterSignIn()}catch(err){const c=cached();if(c?.onboarding_complete){profile=c;injectIdentity();hide();return}authScreen('login','','Internet is required the first time you register or sign in. '+(err.message||String(err)))}
+  }
+  window.BQAccount={boot,open:()=>accountCenter(),client:()=>client,session:()=>session,profile:()=>profile||cached(),avatar:()=>cleanAvatar((profile||cached())?.avatar),deviceKey,track,pushProgress,status:()=>({enabled:enabled(),signedIn:Boolean(session),profile:profile||cached()})};
+  boot();
+})();
