@@ -112,6 +112,25 @@ try{
   await page.locator('[data-reader-close]').first().click();
   await page.waitForSelector('.today-journey-card');
 
+  // If the destination is unavailable after the standalone return, keep the action and show
+  // a visible retry surface instead of silently consuming it.
+  const returnReaderTrigger=page.locator('[data-reader-open]').first();
+  await returnReaderTrigger.evaluate(el=>{el.dataset.transformReturnSaved='1';el.removeAttribute('data-reader-open')});
+  await page.evaluate(()=>{
+    sessionStorage.setItem('bq_transform_return_action','reader');
+    window.BQTransformLauncher.resumePending();
+  });
+  await page.waitForSelector('#bqTransformReturnFailure');
+  assert.match(await page.locator('#bqTransformReturnFailure').innerText(),/Bible Reader did not open/);
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('bq_transform_return_action')),'reader','failed return must remain retryable');
+  await page.locator('[data-transform-return-saved="1"]').first().evaluate(el=>{el.setAttribute('data-reader-open','');delete el.dataset.transformReturnSaved});
+  await page.getByRole('button',{name:/Try Bible Reader again/}).click();
+  await page.waitForSelector('[data-reader-book="GEN"]');
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('bq_transform_return_action')),null,'successful retry must consume the return action');
+  assert.equal(await page.locator('#bqTransformReturnFailure').count(),0,'retry notice must clear after success');
+  await page.locator('[data-reader-close]').first().click();
+  await page.waitForSelector('.today-journey-card');
+
   // Transform -> Situations & Wisdom must use the same recoverable one-shot return mechanism.
   await openTransformFromGrow();
   await page.getByRole('button',{name:/Reflection & Action Plan/}).click();
