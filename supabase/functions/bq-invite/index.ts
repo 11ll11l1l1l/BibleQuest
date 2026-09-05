@@ -7,7 +7,7 @@ Deno.serve(async(req:Request)=>{
     const admin=adminClient();const user=await requireUser(req,admin);const body=await parseJson(req);
     const congregationId=String(body?.congregationId||'');
     const membership=await activeMembership(admin,congregationId,user.id);
-    if(!membership||!['facilitator','leader','admin'].includes(membership.role))return json({error:'Facilitator or leader permission required'},403);
+    if(!membership||!['facilitator','leader','pastor','admin'].includes(membership.role))return json({error:'Facilitator, leader, or pastor permission required'},403);
     const maxUses=Math.min(250,Math.max(1,Number(body?.maxUses)||100));
     const expiresDays=Math.min(90,Math.max(1,Number(body?.expiresDays)||30));
     const code=inviteCode();const codeHash=await sha256(code);const expires=new Date(Date.now()+expiresDays*86400000).toISOString();
