@@ -42,5 +42,8 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',takePending,{once:true});
   else takePending();
 
+  // Fail-safe compatibility API: even if the capture router ever misses, the existing
+  // Grow menu callback still opens the standalone route instead of silently no-oping.
+  window.BQ_TRANSFORMATION={open:openStandalone,mode:'standalone-route',version:2};
   window.BQTransformLauncher={url:()=>new URL(TARGET,location.href).href,open:openStandalone};
 })();
