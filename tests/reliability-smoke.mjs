@@ -13,6 +13,7 @@ const launcher=read('transform-launcher.js');
 const transform=read('transformation-v2.js');
 const css=read('transformation-v2.css');
 const mobileReadability=read('mobile-readability.css');
+const modernHome=read('modern-home.js');
 const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
 const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
 const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
@@ -33,6 +34,14 @@ assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1f
 assert(/\.navbtn\s*\{[\s\S]*?min-height:\s*54px[\s\S]*?font-size:\s*11px/.test(mobileReadability),'phone navigation must retain readable labels and a practical touch target');
 assert(/\.bq-engagement-home \.journey-primary\s*\{[\s\S]*?font-size:\s*14px[\s\S]*?min-height:\s*46px/.test(mobileReadability),'Daily Journey primary CTA must remain readable and touchable on phones');
 assert(/\.journey-node small\s*\{\s*font-size:\s*9px/.test(mobileReadability),'journey path support labels must not regress to the old 6px production size');
+
+// Hub entry points must fail visibly rather than relying on optional-chain no-ops.
+assert(modernHome.includes('function featureFailure(label,retry)'),'Home hubs need a shared recoverable feature-failure surface');
+assert(modernHome.includes('class="modern-feature-failure" role="alert"'),'feature-entry failure must be visible and announced');
+assert(modernHome.includes('function openApi(label,getApi,method=\'open\')'),'API-backed hub entries must use the guarded opener');
+assert(modernHome.includes("result.catch(()=>featureFailure(label,retry))"),'async feature rejection must degrade to the visible failure surface');
+assert(modernHome.includes('return featureFailure(label,()=>trigger(selector,label))'),'missing selector-backed entry must degrade visibly');
+assert(!/window\.BQ[A-Za-z0-9_]+\?\.open\?\.\(\)/.test(modernHome),'Home hubs must not restore silent optional-chain .open() calls');
 
 // The main BibleQuest SPA must not evaluate Transform's assessment runtime anymore.
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not directly load Transform assessment runtime');
@@ -75,4 +84,4 @@ for(const item of shell){if(item==='data/packs/context/manifest.json'||item==='d
 const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
-console.log(`Reliability smoke passed: standalone Transform isolated, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
+console.log(`Reliability smoke passed: standalone Transform isolated, hub failures visible, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
