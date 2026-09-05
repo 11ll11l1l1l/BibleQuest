@@ -1,5 +1,6 @@
 (() => {
   let timer=null,renderScheduled=false,observer=null;
+  const report=(code,error)=>window.BQRuntime?.report?.('journey-cloud',code,error);
 
   async function sync(){
     const loop=window.BQJourneyLoop;if(!loop)return;
@@ -10,9 +11,12 @@
       const done=Object.keys(t.done||{}).length;
       const r=await client.from('bible_daily_journey_status').upsert({user_id:user.id,journey_date:d,status:t.completedAt?'complete':'started',completed_steps:done,total_steps:t.tasks?.length||5,season_key:t.seasonKey||null,updated_at:new Date().toISOString()},{onConflict:'user_id,journey_date'});
       if(r.error)throw r.error;
-      await window.BQAccount?.pushProgress?.().catch?.(()=>{});
+      try{await window.BQAccount?.pushProgress?.()}catch(error){report('progress_snapshot_failed',error)}
       window.dispatchEvent(new CustomEvent('bq-journey-cloud-synced'));
-    }catch{/* local journey remains usable offline */}
+    }catch(error){
+      // Local Journey remains fully usable offline; record only a sanitized local diagnostic.
+      report('daily_status_sync_failed',error);
+    }
   }
 
   function schedule(){clearTimeout(timer);timer=setTimeout(sync,900)}
@@ -50,7 +54,7 @@
   window.addEventListener('bq-journey-change',()=>{schedule();queueRefresh()});
   window.addEventListener('bq-account-profile',()=>{schedule();queueRefresh()});
   window.addEventListener('bq-modern-home-rendered',queueRefresh);
-  document.addEventListener('DOMContentLoaded',()=>{startObserver();queueRefresh();schedule()});
+  document.addEventListener('DOMContentLoaded',()=>{startObserver();queueRefresh();schedule()},{once:true});
   setTimeout(()=>{startObserver();queueRefresh()},500);
   window.BQJourneyCloud={sync};
 })();

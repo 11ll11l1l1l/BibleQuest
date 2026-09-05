@@ -3,9 +3,9 @@
   const cache = new Map();
   let manifest = null;
   let current = null;
-  let observer = null;
 
   const esc = (s = '') => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+  const report=(code,error,meta={})=>window.BQRuntime?.report?.('reader',code,error,meta);
 
   function loadState() {
     try { return JSON.parse(localStorage.getItem(READER_STATE) || '{}'); }
@@ -34,7 +34,7 @@
     const button = document.createElement('button');
     button.className = 'quest-card reader';
     button.setAttribute('data-reader-open', '1');
-    button.innerHTML = '<div class="quest-icon">📚</div><div><span class="kicker">READ ONE BOOK AT A TIME</span><h3>Bible Reader</h3><p>BSB, Tagalog ULB, and NLT with clear source/version labels.</p></div><span class="go">›</span>';
+    button.innerHTML = '<div class="quest-icon">📚</div><div><span class="kicker">READ ONE BOOK AT A TIME</span><h3>Bible Reader</h3><p>BSB, Tagalog ULB, Japanese 口語訳, plus licensed external readers with clear source labels.</p></div><span class="go">›</span>';
     if (deck) deck.after(button); else host.prepend(button);
   }
 
@@ -57,6 +57,7 @@
     document.body.classList.add('reader-open');
     bindLayer();
     layer.scrollTop = 0;
+    window.dispatchEvent(new CustomEvent('bq-reader-rendered'));
   }
 
   function closeLayer() {
@@ -64,6 +65,7 @@
     layer.classList.add('hidden');
     document.body.classList.remove('reader-open');
     current = null;
+    window.dispatchEvent(new CustomEvent('bq-reader-closed'));
   }
 
   function loading(title, detail = 'Loading only what this page needs…') {
@@ -76,6 +78,7 @@
       manifest = manifest || await fetchJson('data/packs/manifest.json');
       renderLibrary();
     } catch (e) {
+      report('library_open_failed',e);
       renderError('Bible text packs are still being prepared', 'The game remains usable. The reader will activate automatically when the generated per-book Bible files are published.', e.message);
     }
   }
@@ -89,11 +92,11 @@
       <header class="reader-top"><button class="reader-back" data-reader-close>← BibleQuest</button><b>Bible Reader</b><span class="reader-chip">On demand</span></header>
       <section class="reader-panel">
         <div class="eyebrow">Choose a book</div><h1>Read without the giant download.</h1>
-        <p class="reader-intro">Pick a book, then choose BSB, Tagalog ULB, or NLT. Bundled books are fetched only when needed and can be reused from the browser cache.</p>
+        <p class="reader-intro">Pick a book, then choose BSB, Tagalog ULB, Japanese 口語訳, or a licensed external translation. Bundled books are fetched only when needed and can be reused from the browser cache.</p>
         ${last.code && books.some(b => b.code === last.code) ? `<button class="reader-continue" data-reader-book="${esc(last.code)}" data-reader-chapter="${Number(last.chapter) || 1}"><span>↗</span><div><small>CONTINUE READING</small><b>${esc(last.name || last.code)} ${Number(last.chapter) || 1}</b></div></button>` : ''}
         <input class="answer-input reader-search" id="readerSearch" value="${esc(filter)}" placeholder="Search Bible books…" autocomplete="off">
         <div class="reader-book-grid">${shown.map(book => `<button class="reader-book" data-reader-book="${esc(book.code)}"><span class="reader-book-icon">📖</span><span><b>${esc(book.name)}</b><small>${Number(book.verses || 0).toLocaleString()} verses in the BSB pack</small></span><span class="go">›</span></button>`).join('') || '<div class="empty">No matching Bible book.</div>'}</div>
-        <div class="reader-source"><b>Main versions:</b> BSB · Tagalog ULB · NLT. Each displayed passage is labeled with its actual version and source.</div>
+        <div class="reader-source"><b>Main versions:</b> BSB · Tagalog ULB · 日本語口語訳 · NLT licensed reader. Each displayed passage is labeled with its actual version and source.</div>
       </section>`);
   }
 
@@ -110,6 +113,7 @@
       saveState({ code, name: meta.name, chapter });
       renderChapter();
     } catch (e) {
+      report('book_open_failed',e,{book:meta.code});
       renderError(`Could not open ${meta.name}`, 'Try once while connected. After a successful first load, this book can be served from the browser cache.', e.message, true);
     }
   }
@@ -204,8 +208,8 @@
     if (button) { e.preventDefault(); openLibrary(); }
   });
 
-  observer = new MutationObserver(injectHomeButton);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  const appRoot=document.getElementById('app');
+  if(appRoot)new MutationObserver(injectHomeButton).observe(appRoot,{childList:true,subtree:true});
   injectHomeButton();
   window.BQReader={openLibrary,openBook:async(code,chapter=1)=>{manifest=manifest||await fetchJson('data/packs/manifest.json');return openBook(code,chapter)},close:closeLayer};
 })();
