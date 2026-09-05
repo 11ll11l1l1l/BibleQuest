@@ -7,6 +7,7 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="app-icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="owner-delete-control.css">
 <title>BibleQuest Admin & Ministry</title>
 </head>
 <body>
@@ -16,7 +17,7 @@
     <div><b>BibleQuest Admin & Ministry</b><small>Site access, congregation setup, pastors, leaders and facilitators</small></div>
     <span class="admin-badge" id="adminRole">Checking…</span>
   </header>
-  <div style="width:min(1180px,calc(100% - 28px));margin:12px auto 0"><a href="content-review.html" class="admin-back">🛡 Content Review · quarantined questions & member reports</a></div>
+  <div style="width:min(1180px,calc(100% - 28px));margin:12px auto 0;display:flex;gap:8px;flex-wrap:wrap"><a href="admin-operations.html" class="admin-ops-link">🟢 Ministry Operations · online, tasks, messages & polls</a><a href="content-review.html" class="admin-ops-link">🛡 Content Review · quarantine & reports</a></div>
   <section id="adminApp" class="admin-loading">
     <div class="admin-loader">🐑</div>
     <h1>Checking admin access…</h1>
@@ -27,5 +28,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 <script src="admin.js"></script>
 <script src="admin-hardening.js"></script>
+<script src="owner-delete-control.js"></script>
 </body>
 </html>
