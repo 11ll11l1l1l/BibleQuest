@@ -19,9 +19,10 @@ const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
 const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 
-assert(cacheVersion>=52,`PWA cache must include standalone Transform + mobile readability baseline (v52+), got v${cacheVersion||'missing'}`);
-for(const item of ['index.html','transform.html','styles.css','mobile-readability.css','app.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
-assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort service-worker install');
+assert(cacheVersion>=65,`PWA cache must include guest access + bounded optional install behavior (v65+), got v${cacheVersion||'missing'}`);
+for(const item of ['index.html','transform.html','styles.css','mobile-readability.css','app.js','guest-access-hardening.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
+assert(sw.includes('const OPTIONAL_CACHE_TIMEOUT_MS=12000'),'optional shell caching needs a finite timeout');
+assert(sw.includes('Promise.allSettled(optional.map(item=>cacheOptional(cache,item)))'),'optional shell precache failures must not abort service-worker install');
 assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)')&&sw.includes("fallback=isTransformNavigation?'./transform.html'"),'Transform navigation must have its own offline document fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'service worker must activate and claim promptly');
 
@@ -49,7 +50,7 @@ assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'
 assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load the isolated Transform launcher');
 assert(launcher.includes("const TARGET='./transform.html'"),'Transform launcher must target the standalone document');
 assert(launcher.includes("location.assign(new URL(TARGET,location.href).href)"),'Transform entry must navigate instead of mounting inside the main SPA');
-assert(launcher.includes("window.BQ_TRANSFORMATION={open:openStandalone,mode:'standalone-route',version:2}"),'Grow callback must retain a fail-safe Transform API instead of silently no-oping');
+assert(launcher.includes("mode:'standalone-route',version:5"),'Grow callback must expose the current standalone Transform v5 launcher');
 assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone document must load Transform v2');
 assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone document must load Transform styles');
 assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone document must explicitly initialize Transform');
@@ -77,6 +78,7 @@ assert(css.includes('@media(max-width:360px)'),'Transform must explicitly suppor
 
 const pwaRuntime=read('pwa-runtime.js');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production must load PWA runtime');
+assert(pwaRuntime.includes(`bq_sw_controller_reload_v${cacheVersion}`),'PWA controller reload flag must match service-worker cache version');
 assert(pwaRuntime.includes("updateViaCache: 'none'"),'service-worker update checks must bypass stale script cache');
 assert(pwaRuntime.includes('registration.update()'),'loaded sessions must request a current service-worker check');
 
@@ -86,4 +88,4 @@ for(const item of shell){if(item==='data/packs/context/manifest.json'||item==='d
 const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
-console.log(`Reliability smoke passed: standalone Transform isolated, hub failures visible, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
+console.log(`Reliability smoke passed: guest shell cached, optional install bounded, standalone Transform isolated, hub failures visible, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
