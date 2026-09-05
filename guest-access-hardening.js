@@ -13,11 +13,11 @@
     document.body.classList.remove('account-open');
   }
 
-  function dismissForcedRegistration(){
+  function dismissUnintentionalAuth(){
     const layer=accountLayer();
     if(!layer||layer.classList.contains('hidden')||signedIn()||intentionalAuth)return;
-    const register=layer.querySelector('[data-account-register]');
-    if(!register)return;
+    const authForm=layer.querySelector('[data-account-register],[data-account-login]');
+    if(!authForm)return;
     hideAccount();
     try{window.dispatchEvent(new CustomEvent('bq-guest-ready'))}catch{}
   }
@@ -62,13 +62,16 @@
 
   function refreshGuestState(){
     ensureGuestExit();
-    dismissForcedRegistration();
+    dismissUnintentionalAuth();
     injectGuestAccountAccess();
   }
 
-  document.addEventListener('pointerdown',e=>{
-    if(e.target.closest?.('[data-account-open],[data-auth-tab],[data-account-register],[data-account-login]'))intentionalAuth=true;
-  },true);
+  function markIntentional(target){
+    if(target?.closest?.('[data-account-signout]')){intentionalAuth=false;return}
+    if(target?.closest?.('[data-account-open],[data-auth-tab],[data-account-register],[data-account-login]'))intentionalAuth=true;
+  }
+
+  document.addEventListener('pointerdown',e=>markIntentional(e.target),true);
   document.addEventListener('click',e=>{
     const guest=e.target.closest?.('[data-bq-continue-guest]');
     if(guest){
@@ -78,7 +81,8 @@
       try{window.dispatchEvent(new CustomEvent('bq-guest-ready'))}catch{}
       return;
     }
-    if(e.target.closest?.('[data-account-open],[data-auth-tab],[data-account-register],[data-account-login]'))intentionalAuth=true;
+    markIntentional(e.target);
+    if(e.target.closest?.('[data-account-signout]'))setTimeout(refreshGuestState,0);
   },true);
 
   const observer=new MutationObserver(refreshGuestState);
