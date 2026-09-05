@@ -8,104 +8,40 @@ const CONGREGATION_ROLES=new Set(['member','facilitator','leader','pastor','admi
 const GROUP_ROLES=new Set(['member','leader']);
 const GROUP_CODE_ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-function isAllowedOrigin(value:string){
-  try{
-    const u=new URL(value);
-    if(u.protocol!=='https:')return false;
-    if(u.origin===LEGACY_ORIGIN)return true;
-    return CLOUDFLARE_PROJECTS.some(host=>u.hostname===host||u.hostname.endsWith(`.${host}`));
-  }catch{return false}
-}
+function isAllowedOrigin(value:string){try{const u=new URL(value);if(u.protocol!=='https:')return false;if(u.origin===LEGACY_ORIGIN)return true;return CLOUDFLARE_PROJECTS.some(host=>u.hostname===host||u.hostname.endsWith(`.${host}`))}catch{return false}}
 function originFor(req:Request){const origin=req.headers.get('Origin')||'';return isAllowedOrigin(origin)?origin:PRIMARY_ORIGIN}
 function headers(req:Request){return {'Access-Control-Allow-Origin':originFor(req),'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json','Vary':'Origin'}}
 const json=(req:Request,body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:headers(req)});
 function cleanText(value:unknown,max:number){return String(value??'').trim().replace(/\s+/g,' ').slice(0,max)}
-function secretKey(){
-  const modern=Deno.env.get('SUPABASE_SECRET_KEYS');
-  if(modern){try{const keys=JSON.parse(modern);if(keys?.default)return String(keys.default);const first=Object.values(keys||{})[0];if(first)return String(first)}catch{}}
-  return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||'';
-}
-function adminClient(){
-  const url=Deno.env.get('SUPABASE_URL')||'',key=secretKey();
-  if(!url||!key)throw new Error('Supabase function environment is incomplete');
-  return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-}
-async function requireUser(req:Request,admin:ReturnType<typeof adminClient>){
-  const jwt=(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').trim();
-  if(!jwt)throw new Response(JSON.stringify({error:'Authentication required'}),{status:401,headers:headers(req)});
-  const {data,error}=await admin.auth.getUser(jwt);
-  if(error||!data.user)throw new Response(JSON.stringify({error:'Invalid or expired session'}),{status:401,headers:headers(req)});
-  return data.user;
-}
-async function requireAdmin(req:Request,admin:ReturnType<typeof adminClient>,userId:string){
-  const {data,error}=await admin.from('bible_app_access').select('role,active').eq('user_id',userId).maybeSingle();
-  if(error)throw error;
-  if(!data?.active||!['owner','admin'].includes(data.role))throw new Response(JSON.stringify({error:'BibleQuest admin access required'}),{status:403,headers:headers(req)});
-  return data as {role:'owner'|'admin',active:boolean};
-}
-async function audit(admin:ReturnType<typeof adminClient>,actorId:string,targetUserId:string|null,action:string,detail:Record<string,unknown>={}){
-  const {error}=await admin.from('bible_admin_audit_log').insert({actor_id:actorId,target_user_id:targetUserId,action,detail});
-  if(error)console.error('Audit insert failed',error);
-}
+function secretKey(){const modern=Deno.env.get('SUPABASE_SECRET_KEYS');if(modern){try{const keys=JSON.parse(modern);if(keys?.default)return String(keys.default);const first=Object.values(keys||{})[0];if(first)return String(first)}catch{}}return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||''}
+function adminClient(){const url=Deno.env.get('SUPABASE_URL')||'',key=secretKey();if(!url||!key)throw new Error('Supabase function environment is incomplete');return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}})}
+async function requireUser(req:Request,admin:ReturnType<typeof adminClient>){const jwt=(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').trim();if(!jwt)throw new Response(JSON.stringify({error:'Authentication required'}),{status:401,headers:headers(req)});const {data,error}=await admin.auth.getUser(jwt);if(error||!data.user)throw new Response(JSON.stringify({error:'Invalid or expired session'}),{status:401,headers:headers(req)});return data.user}
+async function requireAdmin(req:Request,admin:ReturnType<typeof adminClient>,userId:string){const {data,error}=await admin.from('bible_app_access').select('role,active').eq('user_id',userId).maybeSingle();if(error)throw error;if(!data?.active||!['owner','admin'].includes(data.role))throw new Response(JSON.stringify({error:'BibleQuest admin access required'}),{status:403,headers:headers(req)});return data as {role:'owner'|'admin',active:boolean}}
+async function audit(admin:ReturnType<typeof adminClient>,actorId:string,targetUserId:string|null,action:string,detail:Record<string,unknown>={}){const {error}=await admin.from('bible_admin_audit_log').insert({actor_id:actorId,target_user_id:targetUserId,action,detail});if(error)console.error('Audit insert failed',error)}
 async function parse(req:Request){try{return await req.json()}catch{return {}}}
 function groupCode(){const bytes=new Uint8Array(8);crypto.getRandomValues(bytes);return [...bytes].map(x=>GROUP_CODE_ALPHABET[x%GROUP_CODE_ALPHABET.length]).join('')}
 async function sha256(value:string){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-async function groupIdsForCongregations(admin:ReturnType<typeof adminClient>,congregationIds:string[]){
-  if(!congregationIds.length)return [] as string[];
-  const res=await admin.from('bible_groups').select('id').in('congregation_id',congregationIds);
-  if(res.error)throw res.error;
-  return (res.data||[]).map((g:any)=>String(g.id));
-}
-async function deactivateGroupsOutside(admin:ReturnType<typeof adminClient>,targetUserId:string,congregationIds:string[]){
-  const groupIds=await groupIdsForCongregations(admin,congregationIds);
-  if(!groupIds.length)return;
-  const changed=await admin.from('bible_group_members').update({active:false}).eq('user_id',targetUserId).in('group_id',groupIds);
-  if(changed.error)throw changed.error;
-}
-async function syncProfileCongregation(admin:ReturnType<typeof adminClient>,targetUserId:string,name:string|null){
-  const profile=await admin.from('bible_profiles').update({church_group:name}).eq('user_id',targetUserId);
-  if(profile.error)throw profile.error;
-  const got=await admin.auth.admin.getUserById(targetUserId);
-  if(got.error)throw got.error;
-  const metadata={...(got.data.user?.user_metadata||{}),church_group:name||''};
-  const authUpdate=await admin.auth.admin.updateUserById(targetUserId,{user_metadata:metadata});
-  if(authUpdate.error)throw authUpdate.error;
-}
+async function groupIdsForCongregations(admin:ReturnType<typeof adminClient>,congregationIds:string[]){if(!congregationIds.length)return [] as string[];const res=await admin.from('bible_groups').select('id').in('congregation_id',congregationIds);if(res.error)throw res.error;return (res.data||[]).map((g:any)=>String(g.id))}
+async function deactivateGroupsOutside(admin:ReturnType<typeof adminClient>,targetUserId:string,congregationIds:string[]){const groupIds=await groupIdsForCongregations(admin,congregationIds);if(!groupIds.length)return;const changed=await admin.from('bible_group_members').update({active:false}).eq('user_id',targetUserId).in('group_id',groupIds);if(changed.error)throw changed.error}
+async function ownedGroups(admin:ReturnType<typeof adminClient>,targetUserId:string,congregationIds:string[]){if(!congregationIds.length)return [] as any[];const res=await admin.from('bible_groups').select('id,name,congregation_id').eq('owner_id',targetUserId).eq('active',true).in('congregation_id',congregationIds);if(res.error)throw res.error;return res.data||[]}
+async function syncProfileCongregation(admin:ReturnType<typeof adminClient>,targetUserId:string,name:string|null){const profile=await admin.from('bible_profiles').update({church_group:name}).eq('user_id',targetUserId);if(profile.error)throw profile.error;const got=await admin.auth.admin.getUserById(targetUserId);if(got.error)throw got.error;const metadata={...(got.data.user?.user_metadata||{}),church_group:name||''};const authUpdate=await admin.auth.admin.updateUserById(targetUserId,{user_metadata:metadata});if(authUpdate.error)throw authUpdate.error}
 
 Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response('ok',{headers:headers(req)});
   if(req.method!=='POST')return json(req,{error:'Method not allowed'},405);
   try{
-    const admin=adminClient();
-    const actor=await requireUser(req,admin);
-    const access=await requireAdmin(req,admin,actor.id);
-    const body=await parse(req);
-    const action=String(body?.action||'status');
-
+    const admin=adminClient(),actor=await requireUser(req,admin),access=await requireAdmin(req,admin,actor.id),body=await parse(req),action=String(body?.action||'status');
     if(action==='status')return json(req,{ok:true,role:access.role,userId:actor.id});
 
     if(action==='list_users'){
-      const page=Math.max(1,Math.min(1000,Number(body?.page)||1));
-      const perPage=Math.max(1,Math.min(200,Number(body?.perPage)||100));
-      const listed=await admin.auth.admin.listUsers({page,perPage});
-      if(listed.error)throw listed.error;
-      const users=listed.data.users||[],ids=users.map(u=>u.id);
-      const [congregationRes,groupRes]=await Promise.all([
-        admin.from('bible_congregations').select('id,name,owner_id,active').eq('active',true).order('name'),
-        admin.from('bible_groups').select('id,name,congregation_id,owner_id,max_members,active').eq('kind','small_group').eq('active',true).order('name')
-      ]);
-      if(congregationRes.error)throw congregationRes.error;if(groupRes.error)throw groupRes.error;
-      const groups=groupRes.data||[],groupIds=groups.map((g:any)=>g.id);
+      const page=Math.max(1,Math.min(1000,Number(body?.page)||1)),perPage=Math.max(1,Math.min(200,Number(body?.perPage)||100));
+      const listed=await admin.auth.admin.listUsers({page,perPage});if(listed.error)throw listed.error;const users=listed.data.users||[],ids=users.map(u=>u.id);
+      const [congregationRes,groupRes]=await Promise.all([admin.from('bible_congregations').select('id,name,owner_id,active').eq('active',true).order('name'),admin.from('bible_groups').select('id,name,congregation_id,owner_id,max_members,active').eq('kind','small_group').eq('active',true).order('name')]);
+      if(congregationRes.error)throw congregationRes.error;if(groupRes.error)throw groupRes.error;const groups=groupRes.data||[],groupIds=groups.map((g:any)=>g.id);
       let profiles:any[]=[],accessRows:any[]=[],memberships:any[]=[],groupMemberships:any[]=[];
       if(ids.length){
-        const requests=[
-          admin.from('bible_profiles').select('user_id,preferred_name,display_name,last_active_at').in('user_id',ids),
-          admin.from('bible_app_access').select('user_id,role,active').in('user_id',ids),
-          admin.from('bible_congregation_members').select('user_id,congregation_id,role,active,bible_congregations(name)').in('user_id',ids)
-        ];
-        const [p,a,m]=await Promise.all(requests);
-        if(p.error)throw p.error;if(a.error)throw a.error;if(m.error)throw m.error;
-        profiles=p.data||[];accessRows=a.data||[];memberships=m.data||[];
+        const [p,a,m]=await Promise.all([admin.from('bible_profiles').select('user_id,preferred_name,display_name,last_active_at').in('user_id',ids),admin.from('bible_app_access').select('user_id,role,active').in('user_id',ids),admin.from('bible_congregation_members').select('user_id,congregation_id,role,active,bible_congregations(name)').in('user_id',ids)]);
+        if(p.error)throw p.error;if(a.error)throw a.error;if(m.error)throw m.error;profiles=p.data||[];accessRows=a.data||[];memberships=m.data||[];
         if(groupIds.length){const gm=await admin.from('bible_group_members').select('user_id,group_id,role,active').in('group_id',groupIds);if(gm.error)throw gm.error;groupMemberships=gm.data||[]}
       }
       const profileMap=new Map(profiles.map(x=>[x.user_id,x])),accessMap=new Map(accessRows.map(x=>[x.user_id,x])),membershipMap=new Map<string,any[]>(),groupMembershipMap=new Map<string,any[]>(),groupCountMap=new Map<string,number>();
@@ -116,109 +52,58 @@ Deno.serve(async(req:Request)=>{
     }
 
     if(action==='set_role'){
-      const targetUserId=String(body?.targetUserId||''),role=String(body?.role||'member');
-      if(!targetUserId||!SITE_ROLES.has(role))return json(req,{error:'Platform role must be member, admin, or owner. Pastor/Leader roles belong to a congregation.'},400);
-      const existing=await admin.from('bible_app_access').select('role,active').eq('user_id',targetUserId).maybeSingle();if(existing.error)throw existing.error;
-      const currentRole=existing.data?.role||'member';
-      if(access.role!=='owner'&&(role==='admin'||role==='owner'||currentRole==='admin'||currentRole==='owner'))return json(req,{error:'Only the owner can change admin or owner access'},403);
-      if(targetUserId===actor.id&&access.role==='owner'&&role!=='owner')return json(req,{error:'The active owner cannot remove their own owner access'},409);
-      const up=await admin.from('bible_app_access').upsert({user_id:targetUserId,role,active:true,granted_by:actor.id,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(up.error)throw up.error;
-      const got=await admin.auth.admin.getUserById(targetUserId);if(got.error)throw got.error;
-      const authUpdate=await admin.auth.admin.updateUserById(targetUserId,{app_metadata:{...(got.data.user?.app_metadata||{}),biblequest_role:role}});if(authUpdate.error)throw authUpdate.error;
-      await audit(admin,actor.id,targetUserId,'set_role',{from:currentRole,to:role});
-      return json(req,{ok:true,role});
+      const targetUserId=String(body?.targetUserId||''),role=String(body?.role||'member');if(!targetUserId||!SITE_ROLES.has(role))return json(req,{error:'Platform role must be member, admin, or owner. Pastor/Leader roles belong to a congregation.'},400);
+      const existing=await admin.from('bible_app_access').select('role,active').eq('user_id',targetUserId).maybeSingle();if(existing.error)throw existing.error;const currentRole=existing.data?.role||'member';
+      if(access.role!=='owner'&&(role==='admin'||role==='owner'||currentRole==='admin'||currentRole==='owner'))return json(req,{error:'Only the owner can change admin or owner access'},403);if(targetUserId===actor.id&&access.role==='owner'&&role!=='owner')return json(req,{error:'The active owner cannot remove their own owner access'},409);
+      const up=await admin.from('bible_app_access').upsert({user_id:targetUserId,role,active:true,granted_by:actor.id,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(up.error)throw up.error;const got=await admin.auth.admin.getUserById(targetUserId);if(got.error)throw got.error;const authUpdate=await admin.auth.admin.updateUserById(targetUserId,{app_metadata:{...(got.data.user?.app_metadata||{}),biblequest_role:role}});if(authUpdate.error)throw authUpdate.error;await audit(admin,actor.id,targetUserId,'set_role',{from:currentRole,to:role});return json(req,{ok:true,role});
     }
 
     if(action==='set_congregation'){
-      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||''),replace=body?.replace!==false;
-      if(!targetUserId||!congregationId)return json(req,{error:'Valid user and congregation required'},400);
-      const congregation=await admin.from('bible_congregations').select('id,name,owner_id,active').eq('id',congregationId).eq('active',true).maybeSingle();
-      if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found or inactive'},404);
-      const owned=await admin.from('bible_congregations').select('id,name').eq('owner_id',targetUserId).eq('active',true);if(owned.error)throw owned.error;
-      const protectedOwned=(owned.data||[]).filter((c:any)=>c.id!==congregationId);
-      if(replace&&protectedOwned.length)return json(req,{error:`This user owns ${protectedOwned.map((c:any)=>c.name).join(', ')}. Transfer congregation ownership before moving them.`},409);
-      const existingAll=await admin.from('bible_congregation_members').select('congregation_id,role,active').eq('user_id',targetUserId);if(existingAll.error)throw existingAll.error;
-      const selected=(existingAll.data||[]).find((m:any)=>m.congregation_id===congregationId);
-      const profile=await admin.from('bible_profiles').select('preferred_name,display_name,avatar').eq('user_id',targetUserId).maybeSingle();if(profile.error)throw profile.error;
-      const displayName=profile.data?.preferred_name||profile.data?.display_name||null,avatar=profile.data?.avatar||undefined;
-      const row:any={congregation_id:congregationId,user_id:targetUserId,role:selected?.role||'member',display_name:displayName,active:true};if(avatar)row.avatar=avatar;
-      const up=await admin.from('bible_congregation_members').upsert(row,{onConflict:'congregation_id,user_id'});if(up.error)throw up.error;
-      const oldIds=(existingAll.data||[]).filter((m:any)=>m.active!==false&&m.congregation_id!==congregationId).map((m:any)=>String(m.congregation_id));
+      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||''),replace=body?.replace!==false;if(!targetUserId||!congregationId)return json(req,{error:'Valid user and congregation required'},400);
+      const congregation=await admin.from('bible_congregations').select('id,name,owner_id,active').eq('id',congregationId).eq('active',true).maybeSingle();if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found or inactive'},404);
+      const existingAll=await admin.from('bible_congregation_members').select('congregation_id,role,active').eq('user_id',targetUserId);if(existingAll.error)throw existingAll.error;const selected=(existingAll.data||[]).find((m:any)=>m.congregation_id===congregationId),oldActive=(existingAll.data||[]).filter((m:any)=>m.active!==false&&m.congregation_id!==congregationId),oldIds=oldActive.map((m:any)=>String(m.congregation_id));
+      if(access.role!=='owner'&&selected?.role==='admin'&&selected?.active===false)return json(req,{error:'Only the owner can reactivate a congregation admin'},403);
       if(replace&&oldIds.length){
-        const blocking=(existingAll.data||[]).filter((m:any)=>oldIds.includes(String(m.congregation_id))&&m.role==='admin');
-        if(access.role!=='owner'&&blocking.length)return json(req,{error:'Only the owner can move a congregation admin out of a congregation'},403);
-        const off=await admin.from('bible_congregation_members').update({active:false}).eq('user_id',targetUserId).in('congregation_id',oldIds);if(off.error)throw off.error;
-        await deactivateGroupsOutside(admin,targetUserId,oldIds);
+        const owned=await admin.from('bible_congregations').select('id,name').eq('owner_id',targetUserId).eq('active',true).in('id',oldIds);if(owned.error)throw owned.error;if((owned.data||[]).length)return json(req,{error:`This user owns ${(owned.data||[]).map((c:any)=>c.name).join(', ')}. Transfer congregation ownership before moving them.`},409);
+        if(access.role!=='owner'&&oldActive.some((m:any)=>m.role==='admin'))return json(req,{error:'Only the owner can move a congregation admin out of a congregation'},403);
+        const ownedOldGroups=await ownedGroups(admin,targetUserId,oldIds);if(ownedOldGroups.length)return json(req,{error:`This user owns small group(s): ${ownedOldGroups.map((g:any)=>g.name).join(', ')}. Transfer group ownership before moving them.`},409);
       }
-      await syncProfileCongregation(admin,targetUserId,congregation.data.name);
-      await audit(admin,actor.id,targetUserId,'set_congregation',{to:congregationId,name:congregation.data.name,replace,removed:replace?oldIds:[]});
-      return json(req,{ok:true,congregation:{id:congregation.data.id,name:congregation.data.name},role:selected?.role||'member'});
+      const profile=await admin.from('bible_profiles').select('preferred_name,display_name,avatar').eq('user_id',targetUserId).maybeSingle();if(profile.error)throw profile.error;const row:any={congregation_id:congregationId,user_id:targetUserId,role:selected?.role||'member',display_name:profile.data?.preferred_name||profile.data?.display_name||null,active:true};if(profile.data?.avatar)row.avatar=profile.data.avatar;
+      const up=await admin.from('bible_congregation_members').upsert(row,{onConflict:'congregation_id,user_id'});if(up.error)throw up.error;
+      if(replace&&oldIds.length){const off=await admin.from('bible_congregation_members').update({active:false}).eq('user_id',targetUserId).in('congregation_id',oldIds);if(off.error)throw off.error;await deactivateGroupsOutside(admin,targetUserId,oldIds)}
+      await syncProfileCongregation(admin,targetUserId,congregation.data.name);await audit(admin,actor.id,targetUserId,'set_congregation',{to:congregationId,name:congregation.data.name,replace,removed:replace?oldIds:[]});return json(req,{ok:true,congregation:{id:congregation.data.id,name:congregation.data.name},role:selected?.role||'member'});
     }
 
     if(action==='remove_congregation'){
-      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||'');
-      if(!targetUserId||!congregationId)return json(req,{error:'Valid user and congregation required'},400);
-      const congregation=await admin.from('bible_congregations').select('id,name,owner_id').eq('id',congregationId).maybeSingle();if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found'},404);
-      if(congregation.data.owner_id===targetUserId)return json(req,{error:'Transfer congregation ownership before removing its owner.'},409);
-      const member=await admin.from('bible_congregation_members').select('role,active').eq('user_id',targetUserId).eq('congregation_id',congregationId).maybeSingle();if(member.error)throw member.error;if(!member.data)return json(req,{error:'User is not a member of that congregation'},404);
-      if(access.role!=='owner'&&member.data.role==='admin')return json(req,{error:'Only the owner can remove a congregation admin'},403);
-      const off=await admin.from('bible_congregation_members').update({active:false}).eq('user_id',targetUserId).eq('congregation_id',congregationId);if(off.error)throw off.error;
-      await deactivateGroupsOutside(admin,targetUserId,[congregationId]);
-      const remaining=await admin.from('bible_congregation_members').select('congregation_id,bible_congregations(name)').eq('user_id',targetUserId).eq('active',true).limit(1);if(remaining.error)throw remaining.error;
-      const nextName=(remaining.data?.[0] as any)?.bible_congregations?.name||null;await syncProfileCongregation(admin,targetUserId,nextName);
-      await audit(admin,actor.id,targetUserId,'remove_congregation',{congregationId,name:congregation.data.name});
-      return json(req,{ok:true});
+      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||'');if(!targetUserId||!congregationId)return json(req,{error:'Valid user and congregation required'},400);
+      const congregation=await admin.from('bible_congregations').select('id,name,owner_id').eq('id',congregationId).maybeSingle();if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found'},404);if(congregation.data.owner_id===targetUserId)return json(req,{error:'Transfer congregation ownership before removing its owner.'},409);
+      const member=await admin.from('bible_congregation_members').select('role,active').eq('user_id',targetUserId).eq('congregation_id',congregationId).maybeSingle();if(member.error)throw member.error;if(!member.data)return json(req,{error:'User is not a member of that congregation'},404);if(access.role!=='owner'&&member.data.role==='admin')return json(req,{error:'Only the owner can remove a congregation admin'},403);
+      const groupsOwned=await ownedGroups(admin,targetUserId,[congregationId]);if(groupsOwned.length)return json(req,{error:`Transfer ownership of ${groupsOwned.map((g:any)=>g.name).join(', ')} before removing this member.`},409);
+      const off=await admin.from('bible_congregation_members').update({active:false}).eq('user_id',targetUserId).eq('congregation_id',congregationId);if(off.error)throw off.error;await deactivateGroupsOutside(admin,targetUserId,[congregationId]);const remaining=await admin.from('bible_congregation_members').select('congregation_id,bible_congregations(name)').eq('user_id',targetUserId).eq('active',true).limit(1);if(remaining.error)throw remaining.error;const nextName=(remaining.data?.[0] as any)?.bible_congregations?.name||null;await syncProfileCongregation(admin,targetUserId,nextName);await audit(admin,actor.id,targetUserId,'remove_congregation',{congregationId,name:congregation.data.name});return json(req,{ok:true});
     }
 
     if(action==='set_congregation_role'){
-      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||''),role=String(body?.role||'member');
-      if(!targetUserId||!congregationId||!CONGREGATION_ROLES.has(role))return json(req,{error:'Valid user, congregation and ministry role required'},400);
-      if(access.role!=='owner'&&role==='admin')return json(req,{error:'Only the owner can grant congregation admin access'},403);
-      const member=await admin.from('bible_congregation_members').select('role').eq('user_id',targetUserId).eq('congregation_id',congregationId).maybeSingle();
-      if(member.error)throw member.error;if(!member.data)return json(req,{error:'User is not a member of that congregation'},404);
-      if(access.role!=='owner'&&member.data.role==='admin')return json(req,{error:'Only the owner can change a congregation admin'},403);
-      const changed=await admin.from('bible_congregation_members').update({role,active:true}).eq('user_id',targetUserId).eq('congregation_id',congregationId);if(changed.error)throw changed.error;
-      await audit(admin,actor.id,targetUserId,'set_congregation_role',{congregationId,from:member.data.role,to:role});
-      return json(req,{ok:true,role});
+      const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||''),role=String(body?.role||'member');if(!targetUserId||!congregationId||!CONGREGATION_ROLES.has(role))return json(req,{error:'Valid user, congregation and ministry role required'},400);if(access.role!=='owner'&&role==='admin')return json(req,{error:'Only the owner can grant congregation admin access'},403);
+      const member=await admin.from('bible_congregation_members').select('role').eq('user_id',targetUserId).eq('congregation_id',congregationId).maybeSingle();if(member.error)throw member.error;if(!member.data)return json(req,{error:'User is not a member of that congregation'},404);if(access.role!=='owner'&&member.data.role==='admin')return json(req,{error:'Only the owner can change a congregation admin'},403);const changed=await admin.from('bible_congregation_members').update({role,active:true}).eq('user_id',targetUserId).eq('congregation_id',congregationId);if(changed.error)throw changed.error;await audit(admin,actor.id,targetUserId,'set_congregation_role',{congregationId,from:member.data.role,to:role});return json(req,{ok:true,role});
     }
 
     if(action==='create_small_group'){
-      const congregationId=String(body?.congregationId||''),name=cleanText(body?.name,60),description=cleanText(body?.description,240),scheduleText=cleanText(body?.scheduleText,100),maxMembers=Math.max(2,Math.min(6,Number(body?.maxMembers)||6));
-      if(!congregationId||name.length<2)return json(req,{error:'Congregation and group name are required'},400);
-      const congregation=await admin.from('bible_congregations').select('id,name').eq('id',congregationId).eq('active',true).maybeSingle();if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found or inactive'},404);
-      const raw=groupCode(),hash=await sha256(raw);
-      const created=await admin.from('bible_groups').insert({owner_id:actor.id,congregation_id:congregationId,kind:'small_group',name,description,schedule_text:scheduleText,max_members:maxMembers,invite_code_hash:hash,active:true,updated_at:new Date().toISOString()}).select('id,name,congregation_id,max_members').single();if(created.error)throw created.error;
-      const actorMembership=await admin.from('bible_congregation_members').select('active').eq('user_id',actor.id).eq('congregation_id',congregationId).maybeSingle();if(actorMembership.error)throw actorMembership.error;
-      if(actorMembership.data?.active){const leader=await admin.from('bible_group_members').upsert({group_id:created.data.id,user_id:actor.id,role:'leader',active:true},{onConflict:'group_id,user_id'});if(leader.error)throw leader.error}
-      await audit(admin,actor.id,null,'create_small_group',{groupId:created.data.id,congregationId,name,maxMembers});
-      return json(req,{ok:true,group:created.data,inviteCode:raw});
+      const congregationId=String(body?.congregationId||''),name=cleanText(body?.name,60),description=cleanText(body?.description,240),scheduleText=cleanText(body?.scheduleText,100),maxMembers=Math.max(2,Math.min(6,Number(body?.maxMembers)||6));if(!congregationId||name.length<2)return json(req,{error:'Congregation and group name are required'},400);
+      const congregation=await admin.from('bible_congregations').select('id,name').eq('id',congregationId).eq('active',true).maybeSingle();if(congregation.error)throw congregation.error;if(!congregation.data)return json(req,{error:'Congregation not found or inactive'},404);const raw=groupCode(),hash=await sha256(raw);const created=await admin.from('bible_groups').insert({owner_id:actor.id,congregation_id:congregationId,kind:'small_group',name,description,schedule_text:scheduleText,max_members:maxMembers,invite_code_hash:hash,active:true,updated_at:new Date().toISOString()}).select('id,name,congregation_id,max_members').single();if(created.error)throw created.error;const actorMembership=await admin.from('bible_congregation_members').select('active').eq('user_id',actor.id).eq('congregation_id',congregationId).maybeSingle();if(actorMembership.error)throw actorMembership.error;if(actorMembership.data?.active){const leader=await admin.from('bible_group_members').upsert({group_id:created.data.id,user_id:actor.id,role:'leader',active:true},{onConflict:'group_id,user_id'});if(leader.error)throw leader.error}await audit(admin,actor.id,null,'create_small_group',{groupId:created.data.id,congregationId,name,maxMembers});return json(req,{ok:true,group:created.data,inviteCode:raw});
     }
 
     if(action==='set_group_membership'){
-      const targetUserId=String(body?.targetUserId||''),groupId=String(body?.groupId||''),active=body?.active!==false,role=String(body?.role||'member');
-      if(!targetUserId||!groupId||!GROUP_ROLES.has(role))return json(req,{error:'Valid user, group and group role required'},400);
-      const group=await admin.from('bible_groups').select('id,name,owner_id,congregation_id,max_members,active,kind').eq('id',groupId).maybeSingle();if(group.error)throw group.error;if(!group.data||group.data.kind!=='small_group')return json(req,{error:'Small group not found'},404);
-      if(active&&!group.data.active)return json(req,{error:'Small group is inactive'},409);
-      if(!active&&group.data.owner_id===targetUserId)return json(req,{error:'Transfer group ownership before removing its owner.'},409);
-      if(active){
-        const congregationMember=await admin.from('bible_congregation_members').select('active').eq('user_id',targetUserId).eq('congregation_id',group.data.congregation_id).maybeSingle();if(congregationMember.error)throw congregationMember.error;if(!congregationMember.data?.active)return json(req,{error:'Assign the user to the group congregation first'},409);
-        const existing=await admin.from('bible_group_members').select('active,role').eq('group_id',groupId).eq('user_id',targetUserId).maybeSingle();if(existing.error)throw existing.error;
-        if(!existing.data?.active){const count=await admin.from('bible_group_members').select('user_id',{count:'exact',head:true}).eq('group_id',groupId).eq('active',true);if(count.error)throw count.error;if((count.count||0)>=Number(group.data.max_members))return json(req,{error:`${group.data.name} is full (${group.data.max_members} members).`},409)}
-        const up=await admin.from('bible_group_members').upsert({group_id:groupId,user_id:targetUserId,role,active:true,joined_at:new Date().toISOString()},{onConflict:'group_id,user_id'});if(up.error)throw up.error;
-        await audit(admin,actor.id,targetUserId,'set_group_membership',{groupId,groupName:group.data.name,active:true,role});
-        return json(req,{ok:true,active:true,role});
-      }
-      const off=await admin.from('bible_group_members').update({active:false}).eq('group_id',groupId).eq('user_id',targetUserId);if(off.error)throw off.error;
-      await audit(admin,actor.id,targetUserId,'set_group_membership',{groupId,groupName:group.data.name,active:false});
-      return json(req,{ok:true,active:false});
+      const targetUserId=String(body?.targetUserId||''),groupId=String(body?.groupId||''),active=body?.active!==false,role=String(body?.role||'member');if(!targetUserId||!groupId||!GROUP_ROLES.has(role))return json(req,{error:'Valid user, group and group role required'},400);
+      const group=await admin.from('bible_groups').select('id,name,owner_id,congregation_id,max_members,active,kind').eq('id',groupId).maybeSingle();if(group.error)throw group.error;if(!group.data||group.data.kind!=='small_group')return json(req,{error:'Small group not found'},404);if(active&&!group.data.active)return json(req,{error:'Small group is inactive'},409);if(!active&&group.data.owner_id===targetUserId)return json(req,{error:'Transfer group ownership before removing its owner.'},409);
+      if(active){const congregationMember=await admin.from('bible_congregation_members').select('active').eq('user_id',targetUserId).eq('congregation_id',group.data.congregation_id).maybeSingle();if(congregationMember.error)throw congregationMember.error;if(!congregationMember.data?.active)return json(req,{error:'Assign the user to the group congregation first'},409);const existing=await admin.from('bible_group_members').select('active,role').eq('group_id',groupId).eq('user_id',targetUserId).maybeSingle();if(existing.error)throw existing.error;if(!existing.data?.active){const count=await admin.from('bible_group_members').select('user_id',{count:'exact',head:true}).eq('group_id',groupId).eq('active',true);if(count.error)throw count.error;if((count.count||0)>=Number(group.data.max_members))return json(req,{error:`${group.data.name} is full (${group.data.max_members} members).`},409)}const up=await admin.from('bible_group_members').upsert({group_id:groupId,user_id:targetUserId,role,active:true,joined_at:new Date().toISOString()},{onConflict:'group_id,user_id'});if(up.error)throw up.error;await audit(admin,actor.id,targetUserId,'set_group_membership',{groupId,groupName:group.data.name,active:true,role});return json(req,{ok:true,active:true,role})}
+      const off=await admin.from('bible_group_members').update({active:false}).eq('group_id',groupId).eq('user_id',targetUserId);if(off.error)throw off.error;await audit(admin,actor.id,targetUserId,'set_group_membership',{groupId,groupName:group.data.name,active:false});return json(req,{ok:true,active:false});
+    }
+
+    if(action==='set_group_owner'){
+      const targetUserId=String(body?.targetUserId||''),groupId=String(body?.groupId||'');if(!targetUserId||!groupId)return json(req,{error:'Valid user and group required'},400);const group=await admin.from('bible_groups').select('id,name,owner_id,congregation_id,active,kind').eq('id',groupId).maybeSingle();if(group.error)throw group.error;if(!group.data||group.data.kind!=='small_group'||!group.data.active)return json(req,{error:'Active small group not found'},404);const congregationMember=await admin.from('bible_congregation_members').select('active').eq('user_id',targetUserId).eq('congregation_id',group.data.congregation_id).maybeSingle();if(congregationMember.error)throw congregationMember.error;if(!congregationMember.data?.active)return json(req,{error:'The new group owner must belong to the group congregation'},409);const gm=await admin.from('bible_group_members').upsert({group_id:groupId,user_id:targetUserId,role:'leader',active:true,joined_at:new Date().toISOString()},{onConflict:'group_id,user_id'});if(gm.error)throw gm.error;const changed=await admin.from('bible_groups').update({owner_id:targetUserId,updated_at:new Date().toISOString()}).eq('id',groupId);if(changed.error)throw changed.error;await audit(admin,actor.id,targetUserId,'set_group_owner',{groupId,groupName:group.data.name,from:group.data.owner_id,to:targetUserId});return json(req,{ok:true});
     }
 
     if(action==='send_password_reset'||action==='issue_reset_code')return json(req,{error:'Password recovery is user-controlled with the private BibleQuest recovery code.'},410);
-
     return json(req,{error:'Unknown admin action'},400);
-  }catch(err){
-    if(err instanceof Response)return err;
-    console.error(err);
-    return json(req,{error:err instanceof Error?err.message:'Unexpected admin error'},500);
-  }
+  }catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:err instanceof Error?err.message:'Unexpected admin error'},500)}
 });
