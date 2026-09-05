@@ -20,15 +20,19 @@ assert.match(hardening,/biblequest_transform_v2/);
 assert.match(hardening,/biblequest_transformation_v1/);
 assert.match(hardening,/biblequest_learning_engine_v1/);
 assert.match(hardening,/__bq_alias/);
-assert.match(hardening,/setInterval\(primeAliases,750\)/);
+assert.match(hardening,/setInterval\(primeAliases,5000\)/);
 assert.doesNotMatch(hardening,/Storage\.prototype\.setItem/);
 assert.match(hardening,/crypto\.randomUUID/);
-assert.match(hardening,/bqStartupGate/);
+assert.match(hardening,/blocking:false/);
+assert.match(hardening,/removeLegacyGate/);
+assert.doesNotMatch(hardening,/Opening BibleQuest/);
+assert.doesNotMatch(hardening,/function ensureGate/);
+assert.doesNotMatch(hardening,/function tick\(/);
 assert.match(hardening,/unhandledrejection/);
 assert.match(hardening,/cold_start_backup/);
 
-assert.match(sw,/biblequest-v61/);
+assert.match(sw,/biblequest-v62/);
 for(const file of ['./cloud-config.js','./cold-start-hardening.js','./account.js','./linked-activities.js','./team-center.js'])assert.ok(sw.includes(`'${file}'`),`service worker should include ${file}`);
 assert.match(sw,/INSTALL_REQUIRED=.*cold-start-hardening\.js/);
 
-console.log('cold-start and progress-restore static contracts present');
+console.log('fail-open cold-start and progress-restore contracts present');
