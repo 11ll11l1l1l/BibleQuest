@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en-PH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f1e9">
+<meta name="description" content="BibleQuest Transform — private personality reflection, thinking patterns, and personal development.">
+<link rel="icon" href="app-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="transformation-v2.css">
+<title>BibleQuest Transform</title>
+<style>
+html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#263128}.bq-transform-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;box-sizing:border-box}.bq-transform-boot>div{width:min(520px,100%);background:#fff;border:1px solid #e0ddd4;border-radius:22px;padding:22px;box-sizing:border-box;box-shadow:0 12px 34px rgba(47,55,48,.08)}.bq-transform-boot h1{margin:0 0 8px;font-size:28px}.bq-transform-boot p{line-height:1.55;color:#5e6962}.bq-transform-boot a{display:inline-block;margin-top:10px;padding:11px 14px;border-radius:13px;background:#355746;color:#fff;text-decoration:none;font-weight:800}
+</style>
+</head>
+<body>
+<main id="transformBoot" class="bq-transform-boot" aria-live="polite"><div><h1>Opening Transform…</h1><p>Loading your private personal-development workspace.</p><a href="./">Return to BibleQuest</a></div></main>
+<script src="transformation-v2.js"></script>
+<script>
+(function(){
+  var boot=document.getElementById('transformBoot');
+  try{
+    if(!window.BQ_TRANSFORMATION||typeof window.BQ_TRANSFORMATION.open!=='function')throw new Error('Transform module did not load.');
+    window.BQ_TRANSFORMATION.open();
+    if(document.querySelector('.bq-transform-v2'))boot.remove();
+    else throw new Error('Transform screen did not initialize.');
+  }catch(err){
+    if(boot){
+      boot.querySelector('h1').textContent='Transform could not open';
+      boot.querySelector('p').textContent=(err&&err.message?err.message:'Unexpected startup error')+' Please return to BibleQuest and try again after refreshing.';
+    }
+    console.error('BibleQuest Transform standalone startup failed',err);
+  }
+})();
+</script>
+</body>
+</html>
