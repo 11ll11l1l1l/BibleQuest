@@ -5,7 +5,7 @@
   const cid=()=>cloud().activeCongregationId||'';
   const account=()=>window.BQAccount,client=()=>account()?.client?.()||window.BQ_SUPABASE_CLIENT||null,session=()=>account()?.session?.()||null;
   const leaders=new Set(['facilitator','leader','pastor','admin']);
-  let role='',teams=[],teamMembers=[],members=[],message='',scheduled=false;
+  let role='',teams=[],teamMembers=[],members=[],message='',scheduled=false,teamLabelBusy=false;
 
   function layer(){let x=document.getElementById('bqTeamLayer');if(!x){x=document.createElement('div');x.id='bqTeamLayer';x.className='completion-layer hidden';document.body.appendChild(x)}return x}
   function close(){layer().classList.add('hidden');document.body.classList.remove('completion-open')}
@@ -58,11 +58,17 @@
     if(scope.value!=='team')return;const rows=await teamOptions();wrap.classList.remove('hidden');target.innerHTML=rows.length?rows.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join(''):'<option value="">No cloud team available</option>';
     let note=wrap.querySelector('[data-team-target-note]');if(!note){note=document.createElement('small');note.dataset.teamTargetNote='1';wrap.appendChild(note)}note.textContent=rows.length?'Manage membership in Cloud Teams.':'Create a Cloud Team before targeting one.';
   }
+  async function refreshTeamLabels(){
+    if(teamLabelBusy)return;const root=document.getElementById('bqAssignmentLayer'),c=client();if(!root||!c)return;const cards=[...root.querySelectorAll('.assignment-card')];if(!cards.length)return;
+    const ids=[...new Set(cards.map(card=>{const b=card.querySelector('[data-assignment-start],[data-assignment-complete],[data-assignment-archive]');return b?.dataset.assignmentStart||b?.dataset.assignmentComplete||b?.dataset.assignmentArchive}).filter(Boolean))];if(!ids.length)return;teamLabelBusy=true;
+    try{const a=await c.from('bible_assignments').select('id,target_scope,target_id').in('id',ids);if(a.error)return;const rows=(a.data||[]).filter(x=>x.target_scope==='team'&&x.target_id),teamIds=[...new Set(rows.map(x=>x.target_id))];if(!teamIds.length)return;const t=await c.from('bible_teams').select('id,name').in('id',teamIds);const names=new Map((t.data||[]).map(x=>[x.id,x.name])),byId=new Map((a.data||[]).map(x=>[x.id,x]));cards.forEach(card=>{const b=card.querySelector('[data-assignment-start],[data-assignment-complete],[data-assignment-archive]'),id=b?.dataset.assignmentStart||b?.dataset.assignmentComplete||b?.dataset.assignmentArchive,row=byId.get(id);if(row?.target_scope!=='team')return;const spans=card.querySelectorAll('.assignment-meta span');if(spans[1])spans[1].textContent=names.get(row.target_id)||'Cloud Team'})}finally{teamLabelBusy=false}
+  }
   function syncAssignmentTeams(){
     const root=document.getElementById('bqAssignmentLayer');if(!root||root.classList.contains('hidden'))return;const scope=root.querySelector('[data-assignment-scope]'),target=root.querySelector('[data-assignment-target]'),wrap=root.querySelector('[data-assignment-target-wrap]');if(!scope||!target||!wrap)return;
     if(!scope.dataset.cloudTeamBound){scope.dataset.cloudTeamBound='1';scope.addEventListener('change',()=>{if(scope.value==='team')populateTeamTarget(scope,target,wrap).catch(()=>{});else wrap.querySelector('[data-team-target-note]')?.remove()})}
     if(scope.value==='team')populateTeamTarget(scope,target,wrap).catch(()=>{});
     const form=root.querySelector('[data-assignment-create]');if(form&&!form.querySelector('[data-manage-cloud-teams]')){const b=document.createElement('button');b.type='button';b.className='secondary';b.dataset.manageCloudTeams='1';b.textContent='🧩 Manage Cloud Teams';b.onclick=open;form.appendChild(b)}
+    refreshTeamLabels().catch(()=>{});
   }
 
   function injectTogether(){const sheet=document.getElementById('bqModernSheet');if(!sheet||sheet.classList.contains('hidden'))return;const title=sheet.querySelector('.modern-sheet-head h2')?.textContent?.trim();if(title!=='Together')return;const list=sheet.querySelector('.modern-sheet-list');if(!list||list.querySelector('[data-cloud-teams-open]'))return;const b=document.createElement('button');b.dataset.cloudTeamsOpen='1';b.innerHTML='<span>🧩</span><div><b>Cloud Teams</b><small>Create assignment teams and manage members</small></div><i>›</i>';b.onclick=()=>{sheet.classList.add('hidden');document.body.classList.remove('modern-sheet-open');open()};list.appendChild(b)}
@@ -70,5 +76,5 @@
 
   function schedule(){if(scheduled)return;scheduled=true;queueMicrotask(()=>{scheduled=false;syncAssignmentTeams();injectTogether();injectRoster().catch(()=>{})})}
   const obs=new MutationObserver(schedule);obs.observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',schedule);setTimeout(schedule,500);
-  window.BQTeams={open,refresh:load,options:teamOptions};
+  window.BQTeams={open,refresh:load,options:teamOptions,refreshAssignmentLabels:refreshTeamLabels};
 })();
