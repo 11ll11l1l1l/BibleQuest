@@ -35,17 +35,49 @@ const CURATED_REWRITES = {
   'ROM:rwo3': 'In Romans 3:28, what contrast does Paul make between faith and works of the law when discussing justification?'
 };
 
-const stats = { total: 0, allow: 0, context: 0, quarantine: 0, rewritten: 0 };
-const bookCounts = {};
+function readItems(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  if (!Array.isArray(parsed)) throw new Error(`Expected question array in ${filePath}`);
+  return parsed;
+}
 
-for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sort()) {
+// Imported TQ rows normally have stable IDs. Keep a deterministic content identity as a
+// recovery fallback for legacy/no-ID rows: an array index is not stable when active and held
+// files are combined, so using it could duplicate a quarantined row or under-count recovery.
+function stableKey(item) {
+  if (item && item.id) return `id:${item.id}`;
+  return `row:${item?.r || ''}\u0000${item?.q || ''}\u0000${item?.a || ''}`;
+}
+
+const stats = { total: 0, allow: 0, context: 0, quarantine: 0, rewritten: 0, recovered: 0, duplicateInputs: 0 };
+const bookCounts = {};
+const packFiles = fs.existsSync(packsDir) ? fs.readdirSync(packsDir).filter(x => x.endsWith('.json')) : [];
+const heldFiles = fs.existsSync(quarantineDir) ? fs.readdirSync(quarantineDir).filter(x => x.endsWith('.json')) : [];
+const files = [...new Set([...packFiles, ...heldFiles])].sort();
+
+for (const file of files) {
   const code = path.basename(file, '.json');
   const sourcePath = path.join(packsDir, file);
-  const items = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+  const quarantinePath = path.join(quarantineDir, file);
+  const activeItems = readItems(sourcePath);
+  const heldItems = readItems(quarantinePath);
+  const heldKeys = new Set(heldItems.map(stableKey));
+  const merged = new Map();
+
+  for (const item of [...activeItems, ...heldItems]) {
+    const key = stableKey(item);
+    if (merged.has(key)) {
+      stats.duplicateInputs++;
+      continue;
+    }
+    merged.set(key, item);
+  }
+
   const safe = [];
   const quarantined = [];
 
-  for (const raw of items) {
+  for (const [key, raw] of merged) {
     stats.total++;
     const item = { ...raw };
     delete item.safety;
@@ -65,13 +97,15 @@ for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sor
       }
     };
     if (safety.action === 'quarantine') quarantined.push(tagged);
-    else safe.push(tagged);
+    else {
+      safe.push(tagged);
+      if (heldKeys.has(key)) stats.recovered++;
+    }
   }
 
-  fs.writeFileSync(sourcePath, JSON.stringify(safe) + '\n');
+  if (safe.length || fs.existsSync(sourcePath)) fs.writeFileSync(sourcePath, JSON.stringify(safe) + '\n');
   bookCounts[code] = { questions: safe.length, quarantined_questions: quarantined.length };
 
-  const quarantinePath = path.join(quarantineDir, file);
   if (quarantined.length) fs.writeFileSync(quarantinePath, JSON.stringify(quarantined, null, 2) + '\n');
   else if (fs.existsSync(quarantinePath)) fs.unlinkSync(quarantinePath);
 }
