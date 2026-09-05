@@ -45,16 +45,18 @@
     if(!isObject(e.history)){e.history={};changed=true}
     if(!isObject(e.streak)){e.streak={};changed=true}
     if(!isObject(e.streak.graceByMonth)){e.streak={...e.streak,graceByMonth:{}};changed=true}
-    e.streak.count=finite(e.streak.count,0);e.streak.lastMeaningful=safeString(e.streak.lastMeaningful);
+    const streakCount=finite(e.streak.count,0);if(streakCount!==e.streak.count){e.streak={...e.streak,count:streakCount};changed=true}
+    if(typeof e.streak.lastMeaningful!=='string'){e.streak={...e.streak,lastMeaningful:''};changed=true}
     if(!isObject(e.season)){e.season={};changed=true}
     if(!Array.isArray(e.season.completed)){e.season={...e.season,completed:[]};changed=true}
+    const seasonProgress=finite(e.season.progress,0);if(seasonProgress!==e.season.progress){e.season={...e.season,progress:seasonProgress};changed=true}
     for(const [day,row] of Object.entries(e.daily)){
       if(!isObject(row)){delete e.daily[day];changed=true;continue}
-      const next={...row};
-      if(!Array.isArray(next.tasks)){next.tasks=[];changed=true}
+      if(!Array.isArray(row.tasks)||row.tasks.length===0){delete e.daily[day];changed=true;continue}
+      const tasks=row.tasks.filter(t=>isObject(t)&&typeof t.id==='string');if(tasks.length!==row.tasks.length||tasks.length===0){if(!tasks.length)delete e.daily[day];else e.daily[day]={...row,tasks};changed=true;if(!tasks.length)continue}
+      const next={...(e.daily[day]||row)};
       if(!isObject(next.done)){next.done={};changed=true}
       if(!isObject(next.baseline)){next.baseline={};changed=true}
-      if(next.total_steps!=null&&!Number.isFinite(Number(next.total_steps))){delete next.total_steps;changed=true}
       e.daily[day]=next;
     }
     for(const [day,row] of Object.entries(e.history))if(!isObject(row)){delete e.history[day];changed=true}
