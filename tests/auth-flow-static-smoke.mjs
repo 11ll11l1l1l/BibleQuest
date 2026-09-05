@@ -40,15 +40,16 @@ assert.match(index,/<script src="onboarding-tutorial\.js"><\/script>/, 'Producti
 assert.match(index,/<script src="guest-access-hardening\.js"><\/script>/, 'Production index must load guest access hardening');
 assert.ok(index.indexOf('account.js') < index.indexOf('guest-access-hardening.js'), 'Guest access hardening must load immediately after the canonical account runtime');
 assert.match(guestAccess,/!layer\|\|layer\.classList\.contains\('hidden'\)\|\|signedIn\(\)\|\|intentionalAuth/, 'Guest access must never dismiss an intentional or signed-in account screen');
-assert.match(guestAccess,/querySelector\('\[data-account-register\]'\)/, 'Guest access may dismiss only the forced startup registration form');
+assert.match(guestAccess,/querySelector\('\[data-account-register\],\[data-account-login\]'\)/, 'Unintentional signed-out account screens must be dismissible for guest mode');
 assert.match(guestAccess,/layer\.classList\.add\('hidden'\)/, 'Unauthenticated first-run registration must be non-blocking');
 assert.match(guestAccess,/data-account-open/, 'Guests must retain an explicit path to sign in or create an account');
 assert.match(guestAccess,/data-bq-continue-guest/, 'Signed-out account screens must provide an explicit guest exit');
 assert.match(guestAccess,/Continue without an account/, 'Guest exit copy must be visible and unambiguous');
+assert.match(guestAccess,/data-account-signout/, 'Sign-out must reset account-screen intent so the user returns to guest mode');
 assert.match(guestAccess,/closeAccount:/, 'Guest access API must retain a non-destructive way to close the account surface');
 assert.match(uiTaglish,/closest\('\[data-bq-english\]/, 'Global Taglish translation must skip explicitly English account/tutorial surfaces');
 assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 'Recovery codes must never be written to browser console logs');
 assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
 assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
-console.log('Immediate signup, guest access/exit, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');
+console.log('Immediate signup, guest startup/exit/logout, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');
