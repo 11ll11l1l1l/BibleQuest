@@ -17,6 +17,17 @@
     });
   }
 
+  function labelLegacyDailyFallback(root=document){
+    if(typeof window.BQJourneyLoop?.open!=='function')return;
+    root.querySelectorAll('.quest-card.daily[data-action="daily"]').forEach(card=>{
+      const kicker=card.querySelector('.kicker'),title=card.querySelector('h3'),copy=card.querySelector('p');
+      if(kicker)kicker.textContent='CONTINUE YOUR JOURNEY';
+      if(title)title.textContent='Daily Journey';
+      if(copy)copy.textContent='Recall → context → learn → apply → reflect.';
+      card.setAttribute('aria-label','Continue My Journey. Five steps: recall, context, learn, apply, reflect.');
+    });
+  }
+
   function enhanceLayer(){
     const layer=document.getElementById('bqJourneyLoop');
     const open=visible(layer);
@@ -67,12 +78,21 @@
     showWorldRecovery();
   }
 
+  function recoverLegacyDailyEntry(e){
+    const trigger=e.target?.closest?.('.quest-card.daily[data-action="daily"]');
+    if(!trigger||typeof window.BQJourneyLoop?.open!=='function')return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    window.BQJourneyLoop.open();
+  }
+
   function refresh(){
     if(queued)return;queued=true;
-    requestAnimationFrame(()=>{queued=false;labelPath();enhanceLayer()});
+    requestAnimationFrame(()=>{queued=false;labelPath();labelLegacyDailyFallback();enhanceLayer()});
   }
 
   document.addEventListener('click',recoverWorldEntry,true);
+  document.addEventListener('click',recoverLegacyDailyEntry,true);
   document.addEventListener('keydown',e=>{
     const layer=document.getElementById('bqJourneyLoop');
     if(!visible(layer)||!layer.contains(e.target))return;
