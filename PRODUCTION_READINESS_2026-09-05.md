@@ -27,12 +27,12 @@ This is the current release-priority source of truth. Work from latest `main` on
 5. PWA controller reload flag aligned to the current cache generation.
 6. Stale Psychometrics exact-v55 regression assertion replaced with a capability minimum/current cache read.
 7. Stale cold-start exact-v62 regression assertion replaced with current guest-first v66+ contract checking.
-8. Admin access discovery changed from permanent interval + document-wide observer to bounded lifecycle-driven retries.
+8. Admin access discovery changed from permanent interval + document-wide observer to bounded lifecycle-driven retries; PR #80 is superseded by the direct `main` integration.
 9. `modern-home.js` corrected from legacy Daily 5 primary behavior to the real `BQJourneyLoop` Daily Journey, including resume/completion state and local-day handling.
 10. Modern Home Bible-source copy corrected to match current Reader behavior: NLT is licensed-link on `main`; Japanese 口語訳 is disclosed; unmerged live-NLT API claims removed.
 11. Added Home product-contract regression guard.
 12. `scripts/validate-release.mjs` expanded to five production HTML entry points, PWA v67/install contracts, auto-discovered cross-feature static tests, and explicit doctrinal policy-version alignment.
-13. Manual validation workflow remains the execution path; this audit did not trigger GitHub Actions.
+13. Manual validation workflow now delegates to the canonical expanded release validator; this audit did not trigger GitHub Actions.
 
 ## Feature audit status
 
