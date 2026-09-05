@@ -7,56 +7,89 @@
   function today(){return new Date().toISOString().slice(0,10)}
   function due(){try{return window.BQOpenReview?.countDue?.()||0}catch{return 0}}
 
-  function trigger(selector,fn){
+  function featureFailure(label,retry){
+    const el=sheet(),host=el.querySelector('#modernSheetContent');
+    host.innerHTML=`<header class="modern-sheet-head"><div><span>⚠️</span><div><small>RECOVERABLE ERROR</small><h2>${esc(label)} could not open</h2><p>BibleQuest is still running. Try again, or close this message and continue elsewhere.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article class="modern-feature-failure" role="alert"><b>Feature unavailable right now</b><p>The feature module did not respond. Your current BibleQuest screen and saved progress were not discarded.</p><div class="actions"><button class="primary" data-feature-retry>Try again</button><button class="secondary" data-modern-close>Close</button></div></article></div>`;
+    host.querySelector('[data-feature-retry]')?.addEventListener('click',()=>{
+      closeSheet();
+      setTimeout(()=>retry?.(),0);
+    });
+    el.classList.remove('hidden');
+    document.body.classList.add('modern-sheet-open');
+    return false;
+  }
+
+  function runFeature(label,action,retry){
+    closeSheet();
+    try{
+      const result=action();
+      if(result&&typeof result.then==='function')result.catch(()=>featureFailure(label,retry));
+      return true;
+    }catch(_err){
+      return featureFailure(label,retry);
+    }
+  }
+
+  function trigger(selector,label='This feature'){
     closeSheet();
     const el=document.querySelector(selector);
-    if(el){el.click();return true}
-    if(fn){fn();return true}
-    return false;
+    if(el){
+      try{el.click();return true}catch(_err){return featureFailure(label,()=>trigger(selector,label))}
+    }
+    return featureFailure(label,()=>trigger(selector,label));
+  }
+
+  function openApi(label,getApi,method='open'){
+    const retry=()=>openApi(label,getApi,method);
+    let api;
+    try{api=getApi()}catch(_err){return featureFailure(label,retry)}
+    const fn=api?.[method];
+    if(typeof fn!=='function')return featureFailure(label,retry);
+    return runFeature(label,()=>fn.call(api),retry);
   }
 
   const hubs={
     play:{icon:'🎮',title:'Play',sub:'Games & challenges',items:[
-      ['⚡','Daily 5','Balanced 2–3 minute session',()=>trigger('[data-action="daily"]')],
-      ['🧠','Smart Review','Balikan ang weak at due questions',()=>trigger('[data-open-review]')],
-      ['🎯','Quick Play','10 mixed questions',()=>trigger('[data-action="quick"]')],
-      ['🗣️','Who Said It?','Guess the speaker from a real BSB verse',()=>trigger('[data-who-said]')],
-      ['➡️','What Happens Next?','Story sequence from Open Bible Stories',()=>trigger('[data-story-next]')],
-      ['🧩','Verse Order','Ayusin ang tunay na verse sequence',()=>trigger('[data-sequence-open]')],
-      ['🕵️','Bible Detective','Guess from clues',()=>trigger('[data-action="detective"]')],
-      ['🧭','Characters & Places','Who Am I, Where Is It, and Scripture connections',()=>{closeSheet();window.BQExplorer?.open?.()}],
-      ['⏳','Timeline','Put Bible events in order',()=>trigger('[data-action="timeline"]')],
-      ['🧠','Context Mode','Understand why, not just who',()=>trigger('[data-action="context"]')]
+      ['⚡','Daily 5','Balanced 2–3 minute session',()=>trigger('[data-action="daily"]','Daily 5')],
+      ['🧠','Smart Review','Balikan ang weak at due questions',()=>trigger('[data-open-review]','Smart Review')],
+      ['🎯','Quick Play','10 mixed questions',()=>trigger('[data-action="quick"]','Quick Play')],
+      ['🗣️','Who Said It?','Guess the speaker from a real BSB verse',()=>trigger('[data-who-said]','Who Said It?')],
+      ['➡️','What Happens Next?','Story sequence from Open Bible Stories',()=>trigger('[data-story-next]','What Happens Next?')],
+      ['🧩','Verse Order','Ayusin ang tunay na verse sequence',()=>trigger('[data-sequence-open]','Verse Order')],
+      ['🕵️','Bible Detective','Guess from clues',()=>trigger('[data-action="detective"]','Bible Detective')],
+      ['🧭','Characters & Places','Who Am I, Where Is It, and Scripture connections',()=>openApi('Characters & Places',()=>window.BQExplorer)],
+      ['⏳','Timeline','Put Bible events in order',()=>trigger('[data-action="timeline"]','Timeline')],
+      ['🧠','Context Mode','Understand why, not just who',()=>trigger('[data-action="context"]','Context Mode')]
     ]},
     read:{icon:'📖',title:'Read',sub:'Bible, context & notes',items:[
-      ['📚','Bible Reader','BSB · Tagalog ULB · NLT',()=>trigger('[data-reader-open]')],
-      ['📘','Guided Study','Read → Observe → Understand → Discuss → Apply → Pray',()=>{closeSheet();window.BQStudy?.open?.()}],
-      ['אΩ','Hebrew & Greek Context','Lemma, transliteration, morphology, brief gloss, and careful context',()=>{closeSheet();window.BQContextLab?.open?.()}],
-      ['🗂️','Bible Workspace','Cloud highlights, bookmarks, notes, and search',()=>{closeSheet();window.BQWorkspace?.open?.()}],
-      ['🏕️','Story Journey','50 illustrated foundational stories',()=>trigger('[data-storyjourney-open]')],
-      ['🗃️','Recall Decks','Open questions by Bible book',()=>trigger('[data-action="decks"]')],
-      ['🔁','Review Mistakes','Core questions you missed',()=>trigger('[data-action="review"]')]
+      ['📚','Bible Reader','BSB · Tagalog ULB · NLT',()=>trigger('[data-reader-open]','Bible Reader')],
+      ['📘','Guided Study','Read → Observe → Understand → Discuss → Apply → Pray',()=>openApi('Guided Study',()=>window.BQStudy)],
+      ['אΩ','Hebrew & Greek Context','Lemma, transliteration, morphology, brief gloss, and careful context',()=>openApi('Hebrew & Greek Context',()=>window.BQContextLab)],
+      ['🗂️','Bible Workspace','Cloud highlights, bookmarks, notes, and search',()=>openApi('Bible Workspace',()=>window.BQWorkspace)],
+      ['🏕️','Story Journey','50 illustrated foundational stories',()=>trigger('[data-storyjourney-open]','Story Journey')],
+      ['🗃️','Recall Decks','Open questions by Bible book',()=>trigger('[data-action="decks"]','Recall Decks')],
+      ['🔁','Review Mistakes','Core questions you missed',()=>trigger('[data-action="review"]','Review Mistakes')]
     ]},
     grow:{icon:'🌱',title:'Grow',sub:'Mission, rewards & journey',items:[
-      ['🎯','My Mission','A focused ~6 minute next step based on your learning',()=>{closeSheet();window.BQMission?.open?.()}],
-      ['🗺️','Bible World','Travel through the biblical story with your avatar',()=>{closeSheet();window.BQWorld?.open?.()}],
-      ['🎁','Avatar Vault','Unlock special looks by completing real BibleQuest milestones',()=>{closeSheet();window.BQAvatarVault?.open?.()}],
-      ['🧭','Situations & Wisdom','Real-life decisions through biblical principles',()=>trigger('[data-action="situation"]')],
-      ['🧬','Transformation','Personality, bias lab, and Growth Lab',()=>{closeSheet();window.BQ_TRANSFORMATION?.open?.()}],
-      ['💭','Think Deeper','Faith, motives, planning and forgiveness',()=>trigger('[data-route="discuss"]')],
-      ['🎖️','My Achievements','Badges across learning, wisdom, reading and consistency',()=>{closeSheet();window.BQCommunity?.openBadges?.()}]
+      ['🎯','My Mission','A focused ~6 minute next step based on your learning',()=>openApi('My Mission',()=>window.BQMission)],
+      ['🗺️','Bible World','Travel through the biblical story with your avatar',()=>openApi('Bible World',()=>window.BQWorld)],
+      ['🎁','Avatar Vault','Unlock special looks by completing real BibleQuest milestones',()=>openApi('Avatar Vault',()=>window.BQAvatarVault)],
+      ['🧭','Situations & Wisdom','Real-life decisions through biblical principles',()=>trigger('[data-action="situation"]','Situations & Wisdom')],
+      ['🧬','Transformation','Personality, bias lab, and Growth Lab',()=>openApi('Transformation',()=>window.BQ_TRANSFORMATION)],
+      ['💭','Think Deeper','Faith, motives, planning and forgiveness',()=>trigger('[data-route="discuss"]','Think Deeper')],
+      ['🎖️','My Achievements','Badges across learning, wisdom, reading and consistency',()=>openApi('My Achievements',()=>window.BQCommunity,'openBadges')]
     ]},
     together:{icon:'👥',title:'Together',sub:'Tasks, live rooms & couples',items:[
-      ['📮','Assignments & Tasks','Pastor/leader activities, due dates, submissions, and completion',()=>{closeSheet();window.BQAssignments?.open?.()}],
-      ['🟢','Community Live','See who is online and recent public congregation activity',()=>{closeSheet();window.BQPresence?.open?.()}],
-      ['📡','Live BibleQuest Room','One code · many phones · live quiz, poll, hunt or discussion',()=>{closeSheet();window.BQLiveRooms?.open?.()}],
-      ['🎮','Play Together','Pass-the-phone team games and conversation circles',()=>{closeSheet();window.BQGroupPlay?.open?.()}],
-      ['🏁','Church Challenges','7-day, 30-day, Acts, family and couples challenges',()=>{closeSheet();window.BQChallenges?.open?.()}],
-      ['💞','Couple Journey','Link two accounts for a private shared growth journey',()=>{closeSheet();window.BQCoupleCloud?.open?.()}],
-      ['❤️','Grow Together','Christ-centered couples conversations and repair tools',()=>trigger('[data-couples-open]')],
-      ['🏆','Leaderboards & Awards','Today · this week · all time · multiple fields',()=>{closeSheet();window.BQCommunity?.openBoard?.()}],
-      ['🎖️','Congregation Badges','Achievement paths across BibleQuest',()=>{closeSheet();window.BQCommunity?.openBadges?.()}],
-      ['👥','Congregation Roster','Cloud members, roles and congregation identity',()=>{closeSheet();window.BQCommunity?.openRoster?.()}]
+      ['📮','Assignments & Tasks','Pastor/leader activities, due dates, submissions, and completion',()=>openApi('Assignments & Tasks',()=>window.BQAssignments)],
+      ['🟢','Community Live','See who is online and recent public congregation activity',()=>openApi('Community Live',()=>window.BQPresence)],
+      ['📡','Live BibleQuest Room','One code · many phones · live quiz, poll, hunt or discussion',()=>openApi('Live BibleQuest Room',()=>window.BQLiveRooms)],
+      ['🎮','Play Together','Pass-the-phone team games and conversation circles',()=>openApi('Play Together',()=>window.BQGroupPlay)],
+      ['🏁','Church Challenges','7-day, 30-day, Acts, family and couples challenges',()=>openApi('Church Challenges',()=>window.BQChallenges)],
+      ['💞','Couple Journey','Link two accounts for a private shared growth journey',()=>openApi('Couple Journey',()=>window.BQCoupleCloud)],
+      ['❤️','Grow Together','Christ-centered couples conversations and repair tools',()=>trigger('[data-couples-open]','Grow Together')],
+      ['🏆','Leaderboards & Awards','Today · this week · all time · multiple fields',()=>openApi('Leaderboards & Awards',()=>window.BQCommunity,'openBoard')],
+      ['🎖️','Congregation Badges','Achievement paths across BibleQuest',()=>openApi('Congregation Badges',()=>window.BQCommunity,'openBadges')],
+      ['👥','Congregation Roster','Cloud members, roles and congregation identity',()=>openApi('Congregation Roster',()=>window.BQCommunity,'openRoster')]
     ]}
   };
 
@@ -117,8 +150,8 @@
         ${Object.entries(hubs).map(([k,h])=>`<button class="modern-hub ${k}" data-modern-hub="${k}"><span>${h.icon}</span><div><b>${h.title}</b><small>${h.sub}</small></div><i>›</i></button>`).join('')}
       </section>
       <section class="modern-footer-row"><button data-modern-sources>ℹ️ Sources & Bible versions</button><span>Cloud account · private notes · congregation sync</span></section>`;
-    host.querySelector('[data-modern-daily]').onclick=()=>trigger('[data-action="daily"]');
-    host.querySelector('[data-modern-review]').onclick=()=>trigger('[data-open-review]');
+    host.querySelector('[data-modern-daily]').onclick=()=>trigger('[data-action="daily"]','Daily 5');
+    host.querySelector('[data-modern-review]').onclick=()=>trigger('[data-open-review]','Smart Review');
     host.querySelectorAll('[data-modern-hub]').forEach(b=>b.onclick=()=>openHub(b.dataset.modernHub));
     host.querySelector('[data-modern-sources]').onclick=sourceSheet;
     window.dispatchEvent(new CustomEvent('bq-modern-home-rendered'));
