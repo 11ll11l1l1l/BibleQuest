@@ -1,7 +1,9 @@
 (() => {
   const PREVIEW='bq_preview_mode_v1';
+  const E2E='bq_e2e_account_v1';
   let intentionalAuth=false;
-  function signedIn(){try{return Boolean(window.BQAccount?.session?.())}catch{return false}}
+  function localTestAuth(){try{return ['127.0.0.1','localhost'].includes(location.hostname)&&sessionStorage.getItem(E2E)==='1'}catch{return false}}
+  function signedIn(){try{return localTestAuth()||Boolean(window.BQAccount?.session?.())}catch{return localTestAuth()}}
   function preview(){try{return sessionStorage.getItem(PREVIEW)==='1'}catch{return false}}
   function setPreview(v){try{if(v)sessionStorage.setItem(PREVIEW,'1');else sessionStorage.removeItem(PREVIEW)}catch{}}
   function accountLayer(){return document.getElementById('bqAccountLayer')}
@@ -16,7 +18,9 @@
     const note=document.createElement('p');note.className='account-note';note.textContent='Preview is limited to the Home page, Bible Reader and Tutorial. Create an account to unlock journeys, games, progress, groups, rankings, assignments and ministry features.';wrap.appendChild(note);card.appendChild(wrap);
   }
   function startupGate(){
-    const layer=accountLayer();if(!layer||signedIn())return;
+    const layer=accountLayer();if(!layer)return;
+    if(localTestAuth()){hideAccount();return}
+    if(signedIn())return;
     ensurePreviewChoice();
     if(preview()&&!intentionalAuth){hideAccount();window.dispatchEvent(new CustomEvent('bq-preview-ready'));return}
     if(!preview())layer.classList.remove('hidden');
@@ -28,5 +32,5 @@
   document.addEventListener('click',e=>{const p=e.target.closest?.('[data-bq-preview]');if(p){e.preventDefault();intentionalAuth=false;setPreview(true);hideAccount();document.body.classList.add('bq-preview-mode');window.dispatchEvent(new CustomEvent('bq-preview-ready'));return}markIntentional(e.target);if(e.target.closest?.('[data-account-signout]'))setTimeout(refresh,0)},true);
   new MutationObserver(refresh).observe(document.documentElement,{childList:true,subtree:true});
   window.addEventListener('load',refresh,{once:true});window.addEventListener('bq-account-created',()=>{intentionalAuth=false;setPreview(false);refresh()});window.addEventListener('bq-preview-ready',injectPreviewAccountAccess);queueMicrotask(refresh);
-  window.BQGuestAccess={refresh,isGuest:()=>!signedIn(),isPreview:()=>!signedIn()&&preview(),closeAccount:()=>{intentionalAuth=false;if(preview())hideAccount();refresh()},openAccount:()=>{intentionalAuth=true;return window.BQAccount?.open?.()}};
+  window.BQGuestAccess={refresh,isGuest:()=>!signedIn(),isPreview:()=>!signedIn()&&preview(),isLocalTestAuth:localTestAuth,closeAccount:()=>{intentionalAuth=false;if(preview()||localTestAuth())hideAccount();refresh()},openAccount:()=>{intentionalAuth=true;return window.BQAccount?.open?.()}};
 })();
