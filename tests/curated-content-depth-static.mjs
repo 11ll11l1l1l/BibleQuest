@@ -8,6 +8,7 @@ const wisdomCount=(wisdom.match(/\{id:'hw\d+'/g)||[]).length;
 const bestCount=(wisdom.match(/,best:\d/g)||[]).length;
 const rationaleCount=(wisdom.match(/,rationales:\[/g)||[]).length;
 const studyCount=(study.match(/\{code:'[A-Z0-9]+',book:/g)||[]).length;
+const pwaVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(storyCount>=10,`Story Adventure pool too small: ${storyCount}`);
 assert(deepCount>=18,`Think Deeper pool too small: ${deepCount}`);
 assert(wisdomCount>=24,`hard wisdom pool too small: ${wisdomCount}`);
@@ -17,7 +18,7 @@ assert(wisdom.includes('wisdom problem')||wisdom.includes('wisdom exercises'),'h
 assert(studyCount>=24,`Guided Study pool too small: ${studyCount}`);
 assert(index.includes('<script src="hard-wisdom.js"></script>')&&index.includes('<script src="guided-study-expanded.js"></script>'),'production index must load expanded curated content');
 assert(index.indexOf('guided-study-expanded.js')>index.indexOf('innovation-suite.js'),'expanded Guided Study must override the legacy six-track implementation');
-assert(sw.includes("const CACHE='biblequest-v69'"),'PWA cache must advance to v69 for expanded content');
+assert(pwaVersion>=69,`expanded curated content requires PWA v69+, got v${pwaVersion}`);
 for(const asset of ['hard-wisdom.js','hard-wisdom.css','guided-study-expanded.js','data/stories.js','content-review-editor.js','content-review-editor.css'])assert(sw.includes(`./${asset}`),`PWA shell missing ${asset}`);
-assert(pwa.includes('bq_sw_controller_reload_v69'),'PWA reload flag must match v69');
-console.log(`✓ Curated depth: ${storyCount} stories · ${deepCount} deep prompts · ${wisdomCount} hard situations · ${studyCount} guided studies`);
+assert(pwa.includes(`bq_sw_controller_reload_v${pwaVersion}`),'PWA reload flag must match current cache version');
+console.log(`✓ Curated depth: ${storyCount} stories · ${deepCount} deep prompts · ${wisdomCount} hard situations · ${studyCount} guided studies · PWA v${pwaVersion}`);
