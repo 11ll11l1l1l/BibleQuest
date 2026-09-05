@@ -12,16 +12,27 @@ const standalone=read('transform.html');
 const launcher=read('transform-launcher.js');
 const transform=read('transformation-v2.js');
 const css=read('transformation-v2.css');
+const mobileReadability=read('mobile-readability.css');
 const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
 const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
 const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 
-assert(cacheVersion>=51,`PWA cache must include hardened standalone Transform baseline (v51+), got v${cacheVersion||'missing'}`);
-for(const item of ['index.html','transform.html','styles.css','app.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
+assert(cacheVersion>=52,`PWA cache must include standalone Transform + mobile readability baseline (v52+), got v${cacheVersion||'missing'}`);
+for(const item of ['index.html','transform.html','styles.css','mobile-readability.css','app.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort service-worker install');
 assert(sw.includes("url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'"),'Transform navigation must have its own offline document fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'service worker must activate and claim promptly');
+
+// Narrow-phone production guards. The base app currently renders exactly four
+// bottom tabs; the mobile override must not squeeze them into a five-column grid.
+assert(index.includes('<link rel="stylesheet" href="mobile-readability.css">'),'production must load the narrow-phone readability correction');
+assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.css'),'mobile readability correction must load after the production mobile sheet');
+assert(shell.includes('mobile-readability.css')&&core.includes('mobile-readability.css'),'mobile readability correction must be available in the installed PWA core');
+assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'),'phone bottom navigation must match the four production tabs');
+assert(/\.navbtn\s*\{[\s\S]*?min-height:\s*54px[\s\S]*?font-size:\s*11px/.test(mobileReadability),'phone navigation must retain readable labels and a practical touch target');
+assert(/\.bq-engagement-home \.journey-primary\s*\{[\s\S]*?font-size:\s*14px[\s\S]*?min-height:\s*46px/.test(mobileReadability),'Daily Journey primary CTA must remain readable and touchable on phones');
+assert(/\.journey-node small\s*\{\s*font-size:\s*9px/.test(mobileReadability),'journey path support labels must not regress to the old 6px production size');
 
 // The main BibleQuest SPA must not evaluate Transform's assessment runtime anymore.
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not directly load Transform assessment runtime');
@@ -64,4 +75,4 @@ for(const item of shell){if(item==='data/packs/context/manifest.json'||item==='d
 const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
-console.log(`Reliability smoke passed: hardened standalone Transform isolated from main SPA, ${shell.length} shell references, cache v${cacheVersion}.`);
+console.log(`Reliability smoke passed: standalone Transform isolated, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
