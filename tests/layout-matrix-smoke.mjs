@@ -16,7 +16,7 @@ async function checkViewport(name,viewport,{mobile=false}={}){
 
     const geometry=await page.evaluate(()=>{
       const rect=selector=>document.querySelector(selector)?.getBoundingClientRect().toJSON();
-      const px=selector,prop=>parseFloat(getComputedStyle(document.querySelector(selector))[prop])||0;
+      const px=(selector,prop)=>{const el=document.querySelector(selector);return el?(parseFloat(getComputedStyle(el)[prop])||0):0};
       const navEls=[...document.querySelectorAll('.bottom .navbtn')];
       return {
         innerWidth:window.innerWidth,
