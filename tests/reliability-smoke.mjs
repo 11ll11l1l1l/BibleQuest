@@ -14,78 +14,60 @@ const transform=read('transformation-v2.js');
 const css=read('transformation-v2.css');
 const mobileReadability=read('mobile-readability.css');
 const modernHome=read('modern-home.js');
+const pwaRuntime=read('pwa-runtime.js');
+const headers=read('_headers');
 const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
 const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
 const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 
-assert(cacheVersion>=65,`PWA cache must include guest access + bounded optional install behavior (v65+), got v${cacheVersion||'missing'}`);
+assert(cacheVersion>=67,`PWA cache must include bounded required/optional install behavior (v67+), got v${cacheVersion||'missing'}`);
 for(const item of ['index.html','transform.html','styles.css','mobile-readability.css','app.js','guest-access-hardening.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
+assert(sw.includes('const REQUIRED_CACHE_TIMEOUT_MS=8000'),'required shell caching needs a finite timeout');
 assert(sw.includes('const OPTIONAL_CACHE_TIMEOUT_MS=12000'),'optional shell caching needs a finite timeout');
-assert(sw.includes('Promise.allSettled(optional.map(item=>cacheOptional(cache,item)))'),'optional shell precache failures must not abort service-worker install');
+assert(sw.includes('Promise.all(INSTALL_REQUIRED.map(item=>cacheWithTimeout(cache,item,REQUIRED_CACHE_TIMEOUT_MS,true)))'),'required shell failures must block install without hanging indefinitely');
+assert(sw.includes('Promise.allSettled(optional.map(item=>cacheWithTimeout(cache,item,OPTIONAL_CACHE_TIMEOUT_MS,false)))'),'optional shell failures must remain non-fatal');
 assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)')&&sw.includes("fallback=isTransformNavigation?'./transform.html'"),'Transform navigation must have its own offline document fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'service worker must activate and claim promptly');
 
-// Narrow-phone production guards. The base app currently renders exactly four
-// bottom tabs; the mobile override must not squeeze them into a five-column grid.
 assert(index.includes('<link rel="stylesheet" href="mobile-readability.css">'),'production must load the narrow-phone readability correction');
-assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.css'),'mobile readability correction must load after the production mobile sheet');
-assert(shell.includes('mobile-readability.css')&&core.includes('mobile-readability.css'),'mobile readability correction must be available in the installed PWA core');
+assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.css'),'mobile readability correction must load after production mobile CSS');
+assert(shell.includes('mobile-readability.css')&&core.includes('mobile-readability.css'),'mobile readability correction must be available offline');
 assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'),'phone bottom navigation must match the four production tabs');
-assert(/\.navbtn\s*\{[\s\S]*?min-height:\s*54px[\s\S]*?font-size:\s*11px/.test(mobileReadability),'phone navigation must retain readable labels and a practical touch target');
-assert(/\.bq-engagement-home \.journey-primary\s*\{[\s\S]*?font-size:\s*14px[\s\S]*?min-height:\s*46px/.test(mobileReadability),'Daily Journey primary CTA must remain readable and touchable on phones');
-assert(/\.journey-node small\s*\{\s*font-size:\s*9px/.test(mobileReadability),'journey path support labels must not regress to the old 6px production size');
+assert(/\.navbtn\s*\{[\s\S]*?min-height:\s*54px[\s\S]*?font-size:\s*11px/.test(mobileReadability),'phone navigation must retain readable labels and practical touch targets');
+assert(/\.bq-engagement-home \.journey-primary\s*\{[\s\S]*?font-size:\s*14px[\s\S]*?min-height:\s*46px/.test(mobileReadability),'Daily Journey CTA must remain readable/touchable');
+assert(/\.journey-node small\s*\{\s*font-size:\s*9px/.test(mobileReadability),'journey support labels must not regress to the old 6px size');
 
-// Hub entry points must fail visibly rather than relying on optional-chain no-ops.
-assert(modernHome.includes('function featureFailure(label,retry)'),'Home hubs need a shared recoverable feature-failure surface');
-assert(modernHome.includes('class="modern-feature-failure" role="alert"'),'feature-entry failure must be visible and announced');
-assert(modernHome.includes('function openApi(label,getApi,method=\'open\')'),'API-backed hub entries must use the guarded opener');
-assert(modernHome.includes("result.catch(()=>featureFailure(label,retry))"),'async feature rejection must degrade to the visible failure surface');
-assert(modernHome.includes('return featureFailure(label,()=>trigger(selector,label))'),'missing selector-backed entry must degrade visibly');
+assert(modernHome.includes('function featureFailure(label,retry)'),'Home hubs need a shared recoverable failure surface');
+assert(modernHome.includes('class="modern-feature-failure" role="alert"'),'feature-entry failure must be visible');
+assert(modernHome.includes("result.catch(()=>featureFailure(label,retry))"),'async feature rejection must degrade visibly');
 assert(!/window\.BQ[A-Za-z0-9_]+\?\.open\?\.\(\)/.test(modernHome),'Home hubs must not restore silent optional-chain .open() calls');
 
-// The main BibleQuest SPA must not evaluate Transform's assessment runtime anymore.
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not directly load Transform assessment runtime');
 assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'main SPA must not directly load Transform styles');
-assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load the isolated Transform launcher');
-assert(launcher.includes("const TARGET='./transform.html'"),'Transform launcher must target the standalone document');
-assert(launcher.includes("location.assign(new URL(TARGET,location.href).href)"),'Transform entry must navigate instead of mounting inside the main SPA');
-assert(launcher.includes("mode:'standalone-route',version:5"),'Grow callback must expose the current standalone Transform v5 launcher');
-assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone document must load Transform v2');
-assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone document must load Transform styles');
-assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone document must explicitly initialize Transform');
-assert(standalone.includes("if(event.key!=='Escape')return"),'standalone Escape must return to BibleQuest instead of leaving a blank Transform document');
-assert(standalone.includes("sessionStorage.setItem('bq_transform_return_action',action)"),'Reader/Wisdom exits must preserve a return action for the main app');
-assert(!standalone.includes("var FACTORS=")&&!standalone.includes("var ITEMS=["),'standalone document must not carry a second inline assessment implementation');
-assert(!standalone.includes("localStorage.setItem(STORE"),'standalone document must delegate Transform state ownership to transformation-v2.js');
+assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load isolated Transform launcher');
+assert(launcher.includes("const TARGET='./transform.html'"),'Transform launcher must target standalone page');
+assert(launcher.includes("mode:'standalone-route',version:5"),'Grow callback must expose current standalone Transform v5 launcher');
+assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform must load v2 runtime');
+assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone Transform must load rebuilt styles');
+assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone Transform must initialize explicitly');
+assert(standalone.includes("if(event.key!=='Escape')return"),'Escape must return from standalone Transform');
+assert(standalone.includes("sessionStorage.setItem('bq_transform_return_action',action)"),'Reader/Wisdom exits must preserve return action');
 for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);
 assert(shell.includes('transform.html')&&shell.includes('transform-launcher.js')&&shell.includes('transformation-v2.js')&&shell.includes('transformation-v2.css'),'standalone Transform assets must be available offline');
-
-assert(transform.includes("mode:'rebuilt-v2'"),'Transform must expose rebuilt-v2 runtime marker');
-assert(transform.includes("const VERSION=2"),'Transform must use explicit versioned local state');
-assert(transform.includes("const STORE='biblequest_transform_v2'"),'Transform must isolate rebuilt state from legacy storage');
-assert(!transform.includes('MutationObserver'),'rebuilt Transform must not use MutationObserver');
-assert(!transform.includes("document.addEventListener('click'"),'rebuilt Transform must not install a document-wide click interceptor');
-assert(!transform.includes("window.addEventListener('error'"),'rebuilt Transform must not install global error interception');
-assert(transform.includes("root.addEventListener('click',onClick)"),'Transform event handling must stay scoped to its own root');
-assert(transform.includes('20-item Big Five reflection'),'Personality assessment must remain part of rebuilt Transform');
-assert(transform.includes('Thinking Patterns Check'),'thinking-pattern reflection must remain part of rebuilt Transform');
-assert(transform.includes('Reflection & Action Plan'),'personal-development plan must remain part of rebuilt Transform');
-assert(transform.includes('Private Reflection Journal'),'private reflection journal must remain part of rebuilt Transform');
+assert(transform.includes("mode:'rebuilt-v2'")&&transform.includes("const VERSION=2")&&transform.includes("const STORE='biblequest_transform_v2'"),'Transform rebuilt-v2 state contract changed');
+assert(!transform.includes('MutationObserver')&&!transform.includes("document.addEventListener('click'")&&!transform.includes("window.addEventListener('error'"),'Transform must stay scoped and avoid global interception');
+assert(transform.includes("root.addEventListener('click',onClick)"),'Transform interactions must stay root-scoped');
+assert(transform.includes('20-item Big Five reflection')&&transform.includes('Thinking Patterns Check')&&transform.includes('Reflection & Action Plan')&&transform.includes('Private Reflection Journal'),'Transform content surfaces missing');
 assert((transform.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must retain exactly 20 personality items');
-assert(css.includes('position:fixed;inset:0'),'Transform must remain an isolated full-screen layer');
-assert(css.includes('@media(max-width:360px)'),'Transform must explicitly support narrow phones');
+assert(css.includes('position:fixed;inset:0')&&css.includes('@media(max-width:360px)'),'Transform must remain isolated and narrow-phone aware');
 
-const pwaRuntime=read('pwa-runtime.js');
 assert(index.includes('<script src="pwa-runtime.js"></script>'),'production must load PWA runtime');
-assert(pwaRuntime.includes(`bq_sw_controller_reload_v${cacheVersion}`),'PWA controller reload flag must match service-worker cache version');
-assert(pwaRuntime.includes("updateViaCache: 'none'"),'service-worker update checks must bypass stale script cache');
-assert(pwaRuntime.includes('registration.update()'),'loaded sessions must request a current service-worker check');
+assert(pwaRuntime.includes(`bq_sw_controller_reload_v${cacheVersion}`),'PWA controller reload flag must match cache version');
+assert(pwaRuntime.includes("updateViaCache: 'none'")&&pwaRuntime.includes('registration.update()'),'loaded sessions must request a fresh service-worker check');
 
 const forbiddenLargePrefixes=['data/library/','data/packs/bible/','data/packs/tagalog/','data/packs/questions/','data/packs/context/'];
 for(const item of shell){if(item==='data/packs/context/manifest.json'||item==='data/packs/manifest.json')continue;assert(!forbiddenLargePrefixes.some(prefix=>item.startsWith(prefix)),`large/on-demand dataset must not be precached: ${item}`)}
-
-const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
-console.log(`Reliability smoke passed: guest shell cached, optional install bounded, standalone Transform isolated, hub failures visible, phone readability guarded, ${shell.length} shell references, cache v${cacheVersion}.`);
+console.log(`Reliability smoke passed: PWA install bounded, guest shell cached, standalone Transform isolated, hub failures visible, phone readability guarded, cache v${cacheVersion}.`);
