@@ -25,9 +25,6 @@ const bookNames = {
   '2PE':'2 Peter','1JN':'1 John','2JN':'2 John','3JN':'3 John',JUD:'Jude',REV:'Revelation'
 };
 
-// Preserve the learning value of four imported questions whose raw wording turns one verse
-// into a broad doctrinal proposition. The source answer and reference remain unchanged;
-// only the prompt is reframed so the learner is explicitly reading the cited passage.
 const CURATED_REWRITES = {
   'GAL:h9tg': 'In Galatians 2:16, how does Paul describe justification in relation to faith in Jesus Christ?',
   'ROM:yca7': 'In Romans 2:13, whom does Paul say are justified in the statement made in that verse?',
@@ -35,17 +32,46 @@ const CURATED_REWRITES = {
   'ROM:rwo3': 'In Romans 3:28, what contrast does Paul make between faith and works of the law when discussing justification?'
 };
 
-const stats = { total: 0, allow: 0, context: 0, quarantine: 0, rewritten: 0 };
-const bookCounts = {};
+function readItems(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  const parsed = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  if (!Array.isArray(parsed)) throw new Error(`Expected question array in ${filePath}`);
+  return parsed;
+}
 
-for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sort()) {
+function stableKey(item) {
+  if (item && item.id) return `id:${item.id}`;
+  return `row:${item?.r || ''}\u0000${item?.q || ''}\u0000${item?.a || ''}`;
+}
+
+const stats = { total: 0, allow: 0, context: 0, quarantine: 0, rewritten: 0, recovered: 0, duplicateInputs: 0 };
+const bookCounts = {};
+const packFiles = fs.existsSync(packsDir) ? fs.readdirSync(packsDir).filter(x => x.endsWith('.json')) : [];
+const heldFiles = fs.existsSync(quarantineDir) ? fs.readdirSync(quarantineDir).filter(x => x.endsWith('.json')) : [];
+const files = [...new Set([...packFiles, ...heldFiles])].sort();
+
+for (const file of files) {
   const code = path.basename(file, '.json');
   const sourcePath = path.join(packsDir, file);
-  const items = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+  const quarantinePath = path.join(quarantineDir, file);
+  const activeItems = readItems(sourcePath);
+  const heldItems = readItems(quarantinePath);
+  const heldKeys = new Set(heldItems.map(stableKey));
+  const merged = new Map();
+
+  for (const item of [...activeItems, ...heldItems]) {
+    const key = stableKey(item);
+    if (merged.has(key)) {
+      stats.duplicateInputs++;
+      continue;
+    }
+    merged.set(key, item);
+  }
+
   const safe = [];
   const quarantined = [];
 
-  for (const raw of items) {
+  for (const [key, raw] of merged) {
     stats.total++;
     const item = { ...raw };
     delete item.safety;
@@ -65,28 +91,29 @@ for (const file of fs.readdirSync(packsDir).filter(x => x.endsWith('.json')).sor
       }
     };
     if (safety.action === 'quarantine') quarantined.push(tagged);
-    else safe.push(tagged);
+    else {
+      safe.push(tagged);
+      if (heldKeys.has(key)) stats.recovered++;
+    }
   }
 
-  fs.writeFileSync(sourcePath, JSON.stringify(safe) + '\n');
+  if (safe.length || fs.existsSync(sourcePath)) fs.writeFileSync(sourcePath, JSON.stringify(safe) + '\n');
   bookCounts[code] = { questions: safe.length, quarantined_questions: quarantined.length };
 
-  const quarantinePath = path.join(quarantineDir, file);
   if (quarantined.length) fs.writeFileSync(quarantinePath, JSON.stringify(quarantined, null, 2) + '\n');
   else if (fs.existsSync(quarantinePath)) fs.unlinkSync(quarantinePath);
 }
 
-if (fs.existsSync(manifestPath)) {
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  for (const row of manifest.question_books || []) {
-    if (bookCounts[row.code]) Object.assign(row, bookCounts[row.code]);
-  }
-  manifest.doctrinal_safety = {
-    version: policy.version || 1,
-    policy: 'Scripture + CAMACOP alignment; sensitive imported questions screened before normal play',
-    ...stats
-  };
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest) + '\n');
+if (!fs.existsSync(manifestPath)) throw new Error('Imported-pack manifest is missing');
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+for (const row of manifest.question_books || []) {
+  if (bookCounts[row.code]) Object.assign(row, bookCounts[row.code]);
 }
+manifest.doctrinal_safety = {
+  version: policy.version || 1,
+  policy: 'Scripture + CAMACOP alignment; sensitive imported questions screened before normal play',
+  ...stats
+};
+fs.writeFileSync(manifestPath, JSON.stringify(manifest) + '\n');
 
 console.log(JSON.stringify(stats, null, 2));
