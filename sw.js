@@ -1,17 +1,22 @@
-const CACHE='biblequest-v66';
+const CACHE='biblequest-v67';
 const SHELL=['./','./index.html','./transform.html','./psychometrics.html','./psychometrics.css','./psychometrics-data-neo.js','./psychometrics-data-via.js','./psychometrics-suite.js','./psychometrics-christian.js','./psychometrics-insight.js','./psychometrics-polish.js','./app-icon.svg','./assets/bq-pinoy-japan-hero.svg','./assets/tutorial-trainer-sprite.webp','./styles.css','./decks.css','./reader.css','./japanese-learning.css','./sequence.css','./storyjourney.css','./growth.css','./growth-nudge.css','./learning-engine.css','./open-review.css','./ui-enhancements.css','./extra-games.css','./couples.css','./community.css','./group-play.css','./cloud.css','./account.css','./notes.css','./innovation.css','./modern-home.css','./completion.css','./kawaii-polish.css','./round2-polish.css','./pinoy-hero.css','./journey-loop.css','./journey-groups.css','./release-hardening.css','./mobile-production.css','./tutorial.css','./mobile-readability.css','./transformation-v2.js','./transformation-v2.css','./data/doctrinal-safety.js','./data/doctrinal-context.js','./runtime-safety.js','./app.js','./reader.js','./translations.js','./japanese-learning.js','./sequence.js','./storyjourney.js','./growth.js','./growth-nudge.js','./learning-engine.js','./open-review.js','./extra-games.js','./couples.js','./community.js','./community-bridge.js','./cloud-config.js','./cold-start-hardening.js','./account.js','./guest-access-hardening.js','./onboarding-tutorial.js','./tutorial-launcher.js','./password-recovery.js','./admin-link.js','./personality-profile.js','./signup-enhancements.js','./notes.js','./cloud-copy.js','./cloud.js','./group-play.js','./live-rooms.js','./innovation-suite.js','./workspace.js','./couple-cloud.js','./context-lab.js','./assignment-center.js','./assignment-push.js','./presence.js','./avatar-vault.js','./source-labels.js','./ui-taglish.js','./account-taglish.js','./modern-home.js','./transform-launcher.js','./pinoy-hero.js','./journey-groups.js','./linked-activities.js','./team-center.js','./journey-loop.js','./journey-accessibility.js','./journey-cloud-sync.js','./engagement-v3.js','./frontpage-daily.js','./quest-media.js','./release-hardening.js','./mobile-production.js','./pwa-runtime.js','./data/questions.js','./data/connections.js','./data/packs/manifest.json','./data/packs/context/manifest.json','./manifest.webmanifest'];
 const CORE=['./','./index.html','./transform.html','./psychometrics.html','./psychometrics.css','./psychometrics-data-neo.js','./psychometrics-data-via.js','./psychometrics-suite.js','./psychometrics-christian.js','./psychometrics-insight.js','./psychometrics-polish.js','./styles.css','./tutorial.css','./mobile-readability.css','./transformation-v2.js','./transformation-v2.css','./cloud-config.js','./cold-start-hardening.js','./account.js','./guest-access-hardening.js','./app.js','./transform-launcher.js','./pwa-runtime.js','./onboarding-tutorial.js','./tutorial-launcher.js','./assets/tutorial-trainer-sprite.webp','./manifest.webmanifest','./app-icon.svg'];
 const INSTALL_REQUIRED=['./','./index.html','./styles.css','./cloud-config.js','./cold-start-hardening.js','./account.js','./guest-access-hardening.js','./app.js','./pwa-runtime.js','./manifest.webmanifest','./app-icon.svg'];
 const NO_RUNTIME_CACHE=['/data/library/'];
+const REQUIRED_CACHE_TIMEOUT_MS=8000;
 const OPTIONAL_CACHE_TIMEOUT_MS=12000;
 
-async function cacheOptional(cache,item){
+async function cacheWithTimeout(cache,item,timeoutMs,required=false){
   const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),OPTIONAL_CACHE_TIMEOUT_MS);
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
     const request=new Request(item,{cache:'reload'});
     const response=await fetch(request,{signal:controller.signal});
-    if(response.ok)await cache.put(request,response);
+    if(!response.ok){
+      if(required)throw new Error(`Required BibleQuest shell asset failed: ${item} (${response.status})`);
+      return;
+    }
+    await cache.put(request,response);
   }finally{
     clearTimeout(timer);
   }
@@ -19,9 +24,9 @@ async function cacheOptional(cache,item){
 
 self.addEventListener('install',e=>e.waitUntil((async()=>{
   const cache=await caches.open(CACHE);
-  await cache.addAll(INSTALL_REQUIRED);
+  await Promise.all(INSTALL_REQUIRED.map(item=>cacheWithTimeout(cache,item,REQUIRED_CACHE_TIMEOUT_MS,true)));
   const optional=[...new Set([...CORE,...SHELL])].filter(item=>!INSTALL_REQUIRED.includes(item));
-  await Promise.allSettled(optional.map(item=>cacheOptional(cache,item)));
+  await Promise.allSettled(optional.map(item=>cacheWithTimeout(cache,item,OPTIONAL_CACHE_TIMEOUT_MS,false)));
   await self.skipWaiting();
 })()));
 
