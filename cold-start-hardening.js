@@ -13,8 +13,7 @@
     {actual:'biblequest_transform_v2',transport:'biblequest_transformation_v1'},
     {actual:LEARNING,transport:'biblequest_learning_engine_v1'}
   ];
-  const startedAt=Date.now();
-  let gate=null,timer=null,settledSince=0,lastError='',aliasTimer=null;
+  let lastError='',aliasTimer=null;
 
   const isObject=v=>Boolean(v)&&typeof v==='object'&&!Array.isArray(v);
   const finite=(v,fallback=0,min=0)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,n):fallback};
@@ -36,7 +35,8 @@
 
   function hydrateAliases(){
     for(const a of ALIASES){
-      const t=readJson(a.transport);if(!isObject(t.value)||t.value.__bq_alias!==a.actual||!('value' in t.value))continue;
+      const t=readJson(a.transport);
+      if(!isObject(t.value)||t.value.__bq_alias!==a.actual||!('value' in t.value))continue;
       try{localStorage.setItem(a.actual,JSON.stringify(t.value.value))}catch{}
     }
   }
@@ -44,11 +44,12 @@
   function mirrorAlias(actual,value){
     const a=ALIASES.find(x=>x.actual===actual);if(!a)return;
     let parsed;try{parsed=JSON.parse(String(value))}catch{return}
-    const envelope={__bq_alias:a.actual,version:1,value:parsed};
-    try{localStorage.setItem(a.transport,JSON.stringify(envelope))}catch{}
+    try{localStorage.setItem(a.transport,JSON.stringify({__bq_alias:a.actual,version:1,value:parsed}))}catch{}
   }
 
-  function primeAliases(){for(const a of ALIASES){let raw='';try{raw=localStorage.getItem(a.actual)||''}catch{}if(raw)mirrorAlias(a.actual,raw)}}
+  function primeAliases(){
+    for(const a of ALIASES){let raw='';try{raw=localStorage.getItem(a.actual)||''}catch{}if(raw)mirrorAlias(a.actual,raw)}
+  }
 
   function sanitizeApp(){
     const r=readJson(APP);if(!r.raw)return;
@@ -102,30 +103,43 @@
 
   function sanitizeSequence(){
     const r=readJson(SEQUENCE);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(SEQUENCE,r);return}
-    const s={...r.value};let changed=false;for(const key of ['played','solved','streak','best']){const n=Math.floor(finite(s[key],0));if(n!==s[key]){s[key]=n;changed=true}}if(changed)replaceState(SEQUENCE,r,s)
+    const s={...r.value};let changed=false;
+    for(const key of ['played','solved','streak','best']){const n=Math.floor(finite(s[key],0));if(n!==s[key]){s[key]=n;changed=true}}
+    if(changed)replaceState(SEQUENCE,r,s)
   }
 
   function sanitizeStory(){
     const r=readJson(STORY);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(STORY,r);return}
     const s={...r.value};let changed=false;
     if(!Array.isArray(s.completed)){s.completed=[];changed=true}else{const clean=[...new Set(s.completed.filter(x=>typeof x==='string'))];if(clean.length!==s.completed.length||clean.some((x,i)=>x!==s.completed[i]))changed=true;s.completed=clean}
-    if(s.current!=null&&!isObject(s.current)){s.current=null;changed=true}if(!isObject(s.review)){s.review={};changed=true}if(changed)replaceState(STORY,r,s)
+    if(s.current!=null&&!isObject(s.current)){s.current=null;changed=true}
+    if(!isObject(s.review)){s.review={};changed=true}
+    if(changed)replaceState(STORY,r,s)
   }
 
   function sanitizeCouples(){
     const r=readJson(COUPLES);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(COUPLES,r);return}
-    const s={...r.value};let changed=false;for(const key of ['favorites','history','commitments','checkins'])if(!Array.isArray(s[key])){s[key]=[];changed=true}
-    const n=Math.floor(finite(s.listenCount,0));if(n!==s.listenCount){s.listenCount=n;changed=true}if(changed)replaceState(COUPLES,r,s)
+    const s={...r.value};let changed=false;
+    for(const key of ['favorites','history','commitments','checkins'])if(!Array.isArray(s[key])){s[key]=[];changed=true}
+    const n=Math.floor(finite(s.listenCount,0));if(n!==s.listenCount){s.listenCount=n;changed=true}
+    if(changed)replaceState(COUPLES,r,s)
   }
 
   function sanitizeReview(){
     const r=readJson(REVIEW);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(REVIEW,r);return}
-    const s={...r.value};let changed=false;if(!isObject(s.items)){s.items={};changed=true}if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}if(changed)replaceState(REVIEW,r,s)
+    const s={...r.value};let changed=false;
+    if(!isObject(s.items)){s.items={};changed=true}
+    if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}
+    if(changed)replaceState(REVIEW,r,s)
   }
 
   function sanitizeLearning(){
     const r=readJson(LEARNING);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(LEARNING,r);return}
-    const s={...r.value};let changed=false;if(!isObject(s.questionStats)){s.questionStats={};changed=true}if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}if(!isObject(s.connectionStats)){s.connectionStats={seen:0,correct:0,last:null};changed=true}if(changed)replaceState(LEARNING,r,s)
+    const s={...r.value};let changed=false;
+    if(!isObject(s.questionStats)){s.questionStats={};changed=true}
+    if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}
+    if(!isObject(s.connectionStats)){s.connectionStats={seen:0,correct:0,last:null};changed=true}
+    if(changed)replaceState(LEARNING,r,s)
   }
 
   function sanitizeAll(){sanitizeApp();sanitizeGrowth();sanitizeReader();sanitizeSequence();sanitizeStory();sanitizeCouples();sanitizeReview();sanitizeLearning();primeAliases()}
@@ -138,42 +152,30 @@
     }catch{}
   }
 
-  function style(){
-    if(document.getElementById('bqColdStartStyle'))return;
-    const s=document.createElement('style');s.id='bqColdStartStyle';s.textContent=`#bqStartupGate{position:fixed;inset:0;z-index:2147483646;background:#f6f7f2;display:grid;place-items:center;padding:24px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#203329}#bqStartupGate .bq-start-card{width:min(92vw,420px);text-align:center}#bqStartupGate .bq-start-mark{font-size:52px;line-height:1;margin-bottom:14px}#bqStartupGate h1{font-size:24px;margin:0 0 8px}#bqStartupGate p{font-size:14px;line-height:1.5;margin:0;color:#5d6c63}#bqStartupGate .bq-start-line{height:5px;border-radius:99px;background:#dfe5df;overflow:hidden;margin:22px auto 0;max-width:260px}#bqStartupGate .bq-start-line i{display:block;height:100%;width:40%;background:#45654b;border-radius:inherit;animation:bqStartMove 1.1s ease-in-out infinite alternate}#bqStartupGate button{margin-top:18px;border:0;border-radius:12px;padding:11px 16px;font-weight:800;background:#45654b;color:#fff}#bqStartupGate[data-error="1"] .bq-start-line{display:none}@keyframes bqStartMove{to{transform:translateX(150%)}}`;
-    document.head.appendChild(s);
-  }
-
-  function ensureGate(){
-    if(gate?.isConnected)return gate;style();gate=document.createElement('div');gate.id='bqStartupGate';gate.setAttribute('role','status');gate.setAttribute('aria-live','polite');gate.innerHTML='<div class="bq-start-card"><div class="bq-start-mark">🐑</div><h1>Opening BibleQuest…</h1><p>Checking your account and saved progress safely.</p><div class="bq-start-line"><i></i></div></div>';document.body.appendChild(gate);return gate
-  }
-  function dismiss(){clearInterval(timer);timer=null;gate?.remove();gate=null}
-  function fail(){const g=ensureGate();g.dataset.error='1';g.innerHTML=`<div class="bq-start-card"><div class="bq-start-mark">⚠️</div><h1>BibleQuest could not finish starting.</h1><p>Your saved progress was not deleted. Reload to retry the safe startup.${lastError?' A startup error was captured for diagnostics.':''}</p><button type="button" data-bq-start-reload>Reload BibleQuest</button></div>`;g.querySelector('[data-bq-start-reload]').onclick=()=>location.reload()}
-
-  function accountLayerOpen(){return Boolean(document.querySelector('#bqAccountLayer:not(.hidden)'))||document.body.classList.contains('account-open')}
-  function tick(){
-    if(accountLayerOpen()){dismiss();return}
-    const cfg=window.BQ_CLOUD_CONFIG;if(cfg&&cfg.enabled===false){dismiss();return}
-    const api=window.BQAccount,status=api?.status?.();
-    if(status?.signedIn&&status.profile){
-      if(!settledSince)settledSince=Date.now();
-      const wait=window.__BQ_HAD_DEVICE_AT_START__?500:2500;
-      if(Date.now()-settledSince>=wait){dismiss();return}
-    }else settledSince=0;
-    if(Date.now()-startedAt>15000)fail()
-  }
-
   function capture(reason){
     lastError=redact(reason?.message||reason?.reason?.message||reason?.reason||reason||'startup error');
     try{sessionStorage.setItem(ERROR_KEY,JSON.stringify({at:new Date().toISOString(),message:lastError}))}catch{}
   }
 
+  function removeLegacyGate(){
+    try{document.getElementById('bqStartupGate')?.remove();document.getElementById('bqColdStartStyle')?.remove()}catch{}
+  }
+
   try{window.__BQ_HAD_DEVICE_AT_START__=Boolean(localStorage.getItem(DEVICE))}catch{window.__BQ_HAD_DEVICE_AT_START__=false}
-  hydrateAliases();sanitizeAll();installUuidFallback();
-  aliasTimer=setInterval(primeAliases,750);
-  window.addEventListener('pagehide',primeAliases,true);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')primeAliases()},true);
+  hydrateAliases();sanitizeAll();installUuidFallback();removeLegacyGate();
+  aliasTimer=setInterval(primeAliases,5000);
+  window.addEventListener('pagehide',primeAliases,true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')primeAliases()},true);
   window.addEventListener('error',e=>capture(e.error||e.message),true);
   window.addEventListener('unhandledrejection',e=>capture(e.reason),true);
-  ensureGate();timer=setInterval(tick,100);tick();
-  window.BQStartupGate={dismiss,fail,sanitize:sanitizeAll,lastError:()=>lastError,syncProgressAliases:primeAliases};
+  window.addEventListener('load',removeLegacyGate,{once:true});
+  window.BQStartupGate={
+    dismiss:removeLegacyGate,
+    fail:removeLegacyGate,
+    sanitize:sanitizeAll,
+    lastError:()=>lastError,
+    syncProgressAliases:primeAliases,
+    blocking:false
+  };
+  try{window.dispatchEvent(new CustomEvent('bq-startup-sanitized'))}catch{}
 })();
