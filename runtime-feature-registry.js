@@ -5,6 +5,7 @@
     reader:()=>window.BQReader,
     versePeek:()=>window.BQVersePeek,
     ministry:()=>window.BQMinistry,
+    media:()=>window.BQMediaLibrary,
     notifications:()=>window.BQNotifications,
     assignments:()=>window.BQAssignments,
     assignmentAdvanced:()=>window.BQAssignmentAdvanced,
