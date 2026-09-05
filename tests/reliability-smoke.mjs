@@ -40,7 +40,6 @@ assert(transform.includes('20-item Big Five reflection'),'Personality assessment
 assert(transform.includes('Thinking Patterns Check'),'Thinking-pattern reflection must remain part of rebuilt Transform');
 assert(transform.includes('Reflection & Action Plan'),'personal-development plan must remain part of rebuilt Transform');
 assert(transform.includes('Private Reflection Journal'),'private reflection journal must remain part of rebuilt Transform');
-assert(transform.match(/\['[EA CSO]\d'/g)===null,'placeholder assertion');
 assert((transform.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must retain exactly 20 personality items');
 assert(css.includes('position:fixed;inset:0'),'Transform must remain an isolated full-screen layer');
 assert(css.includes('@media(max-width:360px)'),'Transform must explicitly support narrow phones');
