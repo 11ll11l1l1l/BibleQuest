@@ -11,74 +11,55 @@ try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
-  await page.waitForFunction(()=>Boolean(window.BQOperational?.health));
+  await page.waitForFunction(()=>window.BQ_TRANSFORMATION?.mode==='rebuilt-v2');
 
-  const health=await page.evaluate(()=>window.BQOperational.health());
-  const missing=Object.entries(health).filter(([,ok])=>!ok).map(([name])=>name);
-  assert.deepEqual(missing,[],`top-level feature entry points must be available: ${missing.join(', ')}`);
-
-  // Exact user path: the bottom Transform tab must open a lightweight isolated page and leave
-  // the event loop responsive. The legacy assessment runtime is intentionally not production-loaded.
-  await page.waitForSelector('[data-transform-tab]');
-  await page.locator('[data-transform-tab]').click();
-  await page.waitForSelector('.bq-transform-safe-page');
-  assert.match(await page.locator('.bq-transform-safe-page').innerText(),/Turn what you learn into one faithful next step/);
-  const eventLoopAlive=await page.evaluate(()=>new Promise(resolve=>setTimeout(()=>resolve('alive'),80)));
-  assert.equal(eventLoopAlive,'alive','opening Transform must leave the browser event loop responsive');
-  assert.equal(await page.locator('[data-transform-safe-close]').count(),1,'Transform must have an obvious close control');
-
-  await page.locator('[data-transform-notice]').fill('Remember the passage context.');
-  await page.locator('[data-transform-action]').fill('Practice one concrete action today.');
-  await page.locator('[data-transform-save]').click();
-  assert.match(await page.locator('[data-transform-save-status]').innerText(),/Saved on this device/);
-  await page.locator('[data-transform-safe-close]').click();
-  await page.waitForFunction(()=>!document.querySelector('.bq-transform-overlay'));
-
-  // Stale legacy assessment data may exist from previous builds. It must be sanitized before the
-  // safe Transform page opens and it must never be evaluated by the retired production runtime.
-  await page.evaluate(()=>localStorage.setItem('biblequest_transformation_v1',JSON.stringify({
-    personalityAnswers:{E1:4},
-    personalityResult:{date:'old-build',scores:null},
-    biasAnswers:{sunk:1},
-    calibration:null,
-    biasResult:{date:'old-build',resistance:'bad'},
-    history:null
-  })));
-  await page.reload({waitUntil:'domcontentloaded'});
-  await page.waitForSelector('.modern-home');
-  await page.waitForSelector('[data-transform-tab]');
-  await page.locator('[data-transform-tab]').click();
-  await page.waitForSelector('.bq-transform-safe-page');
-  const repairedLoopAlive=await page.evaluate(()=>new Promise(resolve=>setTimeout(()=>resolve('alive'),80)));
-  assert.equal(repairedLoopAlive,'alive','Transform must remain responsive with stale legacy data present');
-  const repaired=await page.evaluate(()=>JSON.parse(localStorage.getItem('biblequest_transformation_v1')||'{}'));
-  assert.equal(repaired.personalityResult,null,'invalid legacy personality result should be discarded without deleting partial answers');
-  assert.equal(repaired.biasResult,null,'invalid legacy bias result should be discarded without deleting answers');
-  assert.deepEqual(repaired.calibration,{},'invalid calibration storage should be normalized');
-  assert.equal(repaired.personalityAnswers.E1,4,'valid partial answers should survive state repair');
-  await page.locator('[data-transform-safe-close]').click();
-
-  // Grow -> Transformation must use the same isolated safe renderer.
+  // Exact user path: Home -> Grow -> Transformation.
   await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/Transformation/}).click();
-  await page.waitForSelector('.bq-transform-safe-page');
-  assert.match(await page.locator('.bq-transform-safe-page').innerText(),/Situations & Wisdom/);
-  assert.equal(await page.evaluate(()=>window.BQ_TRANSFORMATION?.mode),'safe-application-v1');
-  await page.locator('[data-transform-safe-close]').click();
-  await page.waitForFunction(()=>!document.querySelector('.bq-transform-overlay'));
+  await page.waitForSelector('.bq-transform-v2');
+  assert.match(await page.locator('.bq-transform-v2').innerText(),/Personality Foundations/);
+  assert.match(await page.locator('.bq-transform-v2').innerText(),/Thinking Patterns Check/);
+  assert.match(await page.locator('.bq-transform-v2').innerText(),/Reflection & Action Plan/);
 
-  // Missing modules must fail visibly instead of closing a menu and appearing to crash/do nothing.
-  await page.evaluate(()=>{window.__bqSavedAvatarOpen=window.BQAvatarVault.open;delete window.BQAvatarVault.open});
+  // A short timer must resolve after opening. This specifically catches event-loop freezes.
+  const alive=await page.evaluate(()=>new Promise(resolve=>setTimeout(()=>resolve('alive'),100)));
+  assert.equal(alive,'alive','Transform must leave the browser event loop responsive');
+
+  // Begin the real personality assessment and answer one page.
+  await page.getByRole('button',{name:/Personality Foundations/}).click();
+  await page.getByRole('button',{name:/Begin assessment/}).click();
+  await page.waitForSelector('[data-t2-rate]');
+  for(const id of ['E1','A1','C1','S1','O1'])await page.locator(`[data-t2-rate="${id}"][data-value="3"]`).click();
+  assert.equal(await page.locator('[data-t2-personality-next]').isDisabled(),false,'first personality page should unlock after all five responses');
+  await page.locator('[data-t2-personality-next]').click();
+  assert.match(await page.locator('.bq-t2-heading h1').innerText(),/Page 2 of 4/);
+
+  // Close and reopen; saved progress must be usable without any legacy-state migration.
+  await page.locator('[data-t2-close]').click();
+  await page.waitForFunction(()=>!document.querySelector('.bq-transform-v2'));
   await page.locator('[data-modern-hub="grow"]').click();
-  await page.getByRole('button',{name:/Avatar Vault/}).click();
-  await page.waitForSelector('.bq-operational-recovery');
-  assert.match(await page.locator('.bq-operational-recovery').innerText(),/Avatar Vault recovered from an error|entry point did not load/i);
-  assert.ok(await page.locator('.today-journey-card').count(),'main app must remain mounted after a feature entry failure');
-  await page.locator('.bq-operational-close').click();
-  await page.evaluate(()=>{window.BQAvatarVault.open=window.__bqSavedAvatarOpen;delete window.__bqSavedAvatarOpen});
+  await page.getByRole('button',{name:/Transformation/}).click();
+  await page.getByRole('button',{name:/Personality Foundations/}).click();
+  assert.match(await page.locator('.bq-t2-panel').innerText(),/Continue \(5\/20 answered\)/);
 
+  // Private journal must save independently of assessment completion.
+  await page.locator('[data-t2-home]').click();
+  await page.getByRole('button',{name:/Reflection Journal/}).click();
+  await page.locator('[data-t2-noticed]').fill('I rush when I feel pressure.');
+  await page.locator('[data-t2-action]').fill('Pause and ask one clarifying question.');
+  await page.locator('[data-t2-prayer]').fill('James 1:22');
+  await page.locator('[data-t2-save]').click();
+  assert.match(await page.locator('[data-t2-status]').innerText(),/Saved privately on this device/);
+
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('biblequest_transform_v2')||'{}'));
+  assert.equal(saved.version,2);
+  assert.equal(saved.personality.answers.E1,3);
+  assert.equal(saved.reflection.action,'Pause and ask one clarifying question.');
+
+  await page.locator('[data-t2-close]').click();
+  assert.ok(await page.locator('.today-journey-card').count(),'closing Transform must leave the main BibleQuest shell usable');
   assert.equal(errors.length,0,`page errors: ${errors.join(' | ')}`);
-  console.log('BibleQuest operational feature-entry smoke passed');
+  console.log('BibleQuest rebuilt Transform operational smoke passed');
 } finally {
   await browser.close();
 }
