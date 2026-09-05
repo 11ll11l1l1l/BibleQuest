@@ -31,8 +31,8 @@ Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response('ok',{headers:headers(req)});
   if(req.method!=='POST')return json(req,{error:'Method not allowed'},405);
   if(!allowed(req.headers.get('Origin')||''))return json(req,{error:'Origin not allowed'},403);
-  const admin=adminClient();
   try{
+    const admin=adminClient();
     const body=await req.json(),action=String(body.action||'reset');
     if(action==='issue'){
       if(!(await rateLimit(req,admin,'issue')))return json(req,{error:'Too many recovery-code requests. Please wait and try again.'},429);
