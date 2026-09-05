@@ -1,10 +1,10 @@
 (() => {
   let assignments=[],progress=[],members=[],teams=[],role='',channel=null,message='',completingId='';
-  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
   const account=()=>window.BQAccount,client=()=>account()?.client?.(),session=()=>account()?.session?.();
   function cloud(){try{return JSON.parse(localStorage.getItem('biblequest_cloud_v1')||'{}')}catch{return {}}}
   const congregationId=()=>cloud().activeCongregationId||'';
-  const leader=()=>['facilitator','leader','admin'].includes(role);
+  const leader=()=>['facilitator','leader','pastor','admin'].includes(role);
   function layer(){let x=document.getElementById('bqAssignmentLayer');if(!x){x=document.createElement('div');x.id='bqAssignmentLayer';x.className='completion-layer hidden';document.body.appendChild(x)}return x}
   function show(html){const x=layer();x.innerHTML=`<main class="completion-shell assignment-shell">${html}</main>`;x.classList.remove('hidden');document.body.classList.add('completion-open');bind();x.scrollTop=0}
   function close(){if(channel&&client())client().removeChannel(channel);channel=null;completingId='';layer().classList.add('hidden');document.body.classList.remove('completion-open')}
