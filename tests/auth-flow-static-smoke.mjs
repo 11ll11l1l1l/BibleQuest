@@ -30,6 +30,9 @@ assert.doesNotMatch(recovery,/resetPasswordForEmail/, 'Password recovery must no
 assert.match(recovery,/bq-password-reset/, 'Password recovery must use the recovery-code edge function');
 assert.match(recovery,/old recovery code is no longer valid/i, 'Successful recovery must tell the user that code rotation invalidated the old recovery code');
 assert.match(tutorial,/Daily Journey/, 'Post-registration tutorial must explain the Daily Journey');
+assert.match(tutorial,/recall, context, learn, apply, and reflect/i, 'Tutorial must preserve the five-step Daily Journey explanation');
+assert.match(tutorial,/one meaningful Bible activity can protect your streak/i, 'Tutorial must explain the one-meaningful-activity streak rule');
+assert.match(tutorial,/BQJourneyLoop\?\.open\?\.\(\)/, 'Tutorial Daily Journey action must open the production Journey loop rather than legacy Daily 5');
 assert.match(tutorial,/recovery code/i, 'Post-registration tutorial must explain and require recovery-code handling');
 assert.match(tutorial,/data-bq-english/, 'Tutorial must remain English even when the app UI is Taglish');
 assert.match(index,/<script src="onboarding-tutorial\.js"><\/script>/, 'Production index must actually load the onboarding tutorial');
@@ -38,4 +41,4 @@ assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 
 assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
 assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
-console.log('Immediate signup, rotating recovery-code, canonical password security, protected English onboarding, and recovery-code privacy static smoke passed');
+console.log('Immediate signup, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');

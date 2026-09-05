@@ -24,7 +24,7 @@
   function screen(kind) {
     let actual = '';
     if (kind === 'home') actual = cloneActual('.modern-home') || cloneActual('.hero');
-    if (kind === 'daily') actual = cloneActual('.modern-focus') || cloneActual('.quest-card.daily');
+    if (kind === 'daily') actual = cloneActual('.today-journey-card') || cloneActual('.modern-focus') || cloneActual('.quest-card.daily');
     if (kind === 'games') actual = cloneActual('.mode-grid');
     if (kind === 'nav') actual = cloneActual('.bottom');
 
@@ -33,7 +33,7 @@
         ['🎮','Play','Games & challenges'],['📖','Read','Bible, context & notes'],
         ['🌱','Grow','Mission, rewards & journey'],['👥','Together','Tasks, live rooms & couples']
       ]),
-      daily: `<div class="bqt-ui-daily"><span>⚡</span><div><small>TODAY · 2–3 MIN</small><b>Daily 5</b><p>One balanced session for steady Bible learning.</p></div><i>›</i></div><div class="bqt-ui-review">🧠 <b>Smart Review</b><small>Adaptive recall</small></div>`,
+      daily: `<div class="bqt-ui-daily"><span>🧭</span><div><small>TODAY · 3–5 MIN</small><b>Continue My Journey</b><p>Recall → context → learn → apply → reflect.</p></div><i>›</i></div><div class="bqt-ui-review">🔥 <b>One meaningful activity protects your streak</b><small>Finish all five steps for stronger progress evidence.</small></div>`,
       games: cards([
         ['🎯','Quick Play','10 mixed questions'],['🧠','Smart Review','Weak & due questions'],
         ['🗣️','Who Said It?','Real BSB verse text'],['➡️','What Happens Next?','Open Bible Stories'],
@@ -85,11 +85,11 @@
     } : null,
     {
       trainer: 'welcome', side: 'left', eyebrow: 'WELCOME TO BIBLEQUEST', title: 'There is much more here than a quiz app',
-      body: `<p>I’ll show you where the strongest features live and when to use them. The four big areas are <b>Play, Read, Grow, and Together</b>.</p>${screen('home')}<p class="bqt-tip"><b>Trainer tip:</b> When you are unsure what to do, start with Daily 5. When you have a specific goal, open one of the four hubs.</p>`, action: ['home','Show Home']
+      body: `<p>I’ll show you where the strongest features live and when to use them. The four big areas are <b>Play, Read, Grow, and Together</b>.</p>${screen('home')}<p class="bqt-tip"><b>Trainer tip:</b> When you are unsure what to do, start with <b>Continue My Journey</b>. When you have a specific goal, open one of the four hubs.</p>`, action: ['home','Show Home']
     },
     {
-      trainer: 'down', side: 'right', eyebrow: 'BEST DAILY START', title: 'Daily 5 + Smart Review keep the app simple',
-      body: `<p><b>Daily 5</b> gives you a short balanced session instead of making you choose among dozens of activities. <b>Smart Review</b> uses weak and due material when you want targeted recall.</p>${screen('daily')}<ol><li>Open <b>Home</b>.</li><li>Tap <b>Daily 5</b>.</li><li>Read the explanation even when you answer correctly.</li><li>Use <b>Smart Review</b> when it shows material due for review.</li></ol>`, action: ['daily','Try Daily 5']
+      trainer: 'down', side: 'right', eyebrow: 'BEST DAILY START', title: 'Your Daily Journey keeps the app simple',
+      body: `<p><b>Continue My Journey</b> is the primary daily path: five short steps—<b>recall, context, learn, apply, and reflect</b>—instead of making you choose among dozens of activities.</p>${screen('daily')}<ol><li>Open <b>Home</b>.</li><li>Tap <b>Continue My Journey</b>.</li><li>Complete the next useful step; one meaningful Bible activity can protect your streak.</li><li>Finish all five when you can for stronger progress evidence.</li></ol><p class="bqt-tip"><b>Smart Review is secondary:</b> use it when you specifically want weak or due recall material.</p>`, action: ['daily','Open Daily Journey']
     },
     {
       trainer: 'right', side: 'left', eyebrow: 'GAME LIBRARY', title: 'Play is not one game—it is a learning toolbox',
@@ -117,7 +117,7 @@
     },
     {
       trainer: 'thumbs', side: 'left', eyebrow: 'YOU’RE READY', title: 'A simple BibleQuest routine',
-      body: `<div class="bqt-routine"><div><span>1</span><b>Most days</b><p>Daily 5 → read every explanation.</p></div><div><span>2</span><b>When something is weak</b><p>Smart Review or Recall Decks.</p></div><div><span>3</span><b>When studying</b><p>Reader → Context/Workspace → notes.</p></div><div><span>4</span><b>With people</b><p>Play Together for one phone; Live Room for many phones.</p></div><div><span>5</span><b>When you have more time</b><p>Follow Bible World/Journey and unlock the next milestone.</p></div></div><p class="bqt-final-note">Your progress is evidence of learning, not a measure of faith. Scripture is never locked behind XP.</p>`, action: ['home','Start using BibleQuest']
+      body: `<div class="bqt-routine"><div><span>1</span><b>Most days</b><p>Continue My Journey → follow the next step.</p></div><div><span>2</span><b>When something is weak</b><p>Smart Review or Recall Decks.</p></div><div><span>3</span><b>When studying</b><p>Reader → Context/Workspace → notes.</p></div><div><span>4</span><b>With people</b><p>Play Together for one phone; Live Room for many phones.</p></div><div><span>5</span><b>When you have more time</b><p>Follow Bible World/Journey and unlock the next milestone.</p></div></div><p class="bqt-final-note">Your progress is evidence of learning, not a measure of faith. Scripture is never locked behind XP.</p>`, action: ['home','Start using BibleQuest']
     }
   ].filter(Boolean);
 
@@ -143,7 +143,7 @@
   function launch(target) {
     close(false);
     if (target === 'home') return goHome(() => document.querySelector('.modern-home')?.scrollIntoView?.({behavior:'smooth',block:'start'}));
-    if (target === 'daily') return goHome(() => document.querySelector('[data-modern-daily], [data-action="daily"]')?.click());
+    if (target === 'daily') return goHome(() => window.BQJourneyLoop?.open?.() || document.querySelector('.journey-primary,[data-journey-open]')?.click());
     if (['play','read','grow','together'].includes(target)) return goHome(() => window.BQModernHome?.openHub?.(target));
     if (target === 'group') return window.BQGroupPlay?.open?.();
     if (target === 'live') return window.BQLiveRooms?.open?.();
