@@ -1,12 +1,15 @@
-const CACHE='biblequest-v52';
+const CACHE='biblequest-v53';
 const SHELL=['./','./index.html','./transform.html','./app-icon.svg','./assets/bq-pinoy-japan-hero.svg','./assets/tutorial-trainer-sprite.webp','./styles.css','./decks.css','./reader.css','./japanese-learning.css','./sequence.css','./storyjourney.css','./growth.css','./growth-nudge.css','./learning-engine.css','./open-review.css','./ui-enhancements.css','./extra-games.css','./couples.css','./community.css','./group-play.css','./cloud.css','./account.css','./notes.css','./innovation.css','./modern-home.css','./completion.css','./kawaii-polish.css','./round2-polish.css','./pinoy-hero.css','./journey-loop.css','./journey-groups.css','./release-hardening.css','./mobile-production.css','./tutorial.css','./mobile-readability.css','./transformation-v2.css','./data/doctrinal-safety.js','./data/doctrinal-context.js','./runtime-safety.js','./app.js','./reader.js','./translations.js','./japanese-learning.js','./sequence.js','./storyjourney.js','./growth.js','./growth-nudge.js','./learning-engine.js','./open-review.js','./extra-games.js','./couples.js','./community.js','./community-bridge.js','./cloud-config.js','./account.js','./onboarding-tutorial.js','./tutorial-launcher.js','./password-recovery.js','./admin-link.js','./personality-profile.js','./signup-enhancements.js','./notes.js','./cloud-copy.js','./cloud.js','./group-play.js','./live-rooms.js','./innovation-suite.js','./workspace.js','./couple-cloud.js','./context-lab.js','./assignment-center.js','./assignment-push.js','./presence.js','./avatar-vault.js','./source-labels.js','./ui-taglish.js','./account-taglish.js','./modern-home.js','./transform-launcher.js','./transformation-v2.js','./pinoy-hero.js','./journey-groups.js','./journey-loop.js','./journey-accessibility.js','./journey-cloud-sync.js','./engagement-v3.js','./frontpage-daily.js','./quest-media.js','./release-hardening.js','./mobile-production.js','./pwa-runtime.js','./data/questions.js','./data/connections.js','./data/packs/manifest.json','./data/packs/context/manifest.json','./manifest.webmanifest'];
 const CORE=['./','./index.html','./transform.html','./styles.css','./tutorial.css','./mobile-readability.css','./transformation-v2.css','./app.js','./transform-launcher.js','./transformation-v2.js','./pwa-runtime.js','./onboarding-tutorial.js','./tutorial-launcher.js','./assets/tutorial-trainer-sprite.webp','./manifest.webmanifest','./app-icon.svg'];
+const INSTALL_REQUIRED=['./','./index.html','./styles.css','./app.js','./pwa-runtime.js','./manifest.webmanifest','./app-icon.svg'];
 const NO_RUNTIME_CACHE=['/data/library/'];
 
 self.addEventListener('install',e=>e.waitUntil((async()=>{
   const cache=await caches.open(CACHE);
-  await cache.addAll(CORE);
-  const optional=SHELL.filter(item=>!CORE.includes(item));
+  // Keep service-worker activation resilient: a temporary miss in an optional feature
+  // (including Transform) must not strand clients on an older worker/cache generation.
+  await cache.addAll(INSTALL_REQUIRED);
+  const optional=[...new Set([...CORE,...SHELL])].filter(item=>!INSTALL_REQUIRED.includes(item));
   await Promise.allSettled(optional.map(async item=>{
     const request=new Request(item,{cache:'reload'});
     const response=await fetch(request);
@@ -55,7 +58,10 @@ self.addEventListener('fetch',e=>{
   if(url.origin!==location.origin)return;
   if(NO_RUNTIME_CACHE.some(prefix=>url.pathname.includes(prefix))){e.respondWith(fetch(e.request));return;}
   if(e.request.mode==='navigate'){
-    const fallback=url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html';
+    const isTransformNavigation=/\/transform(?:\.html)?\/?$/.test(url.pathname);
+    const fallback=isTransformNavigation?'./transform.html':'./index.html';
+    // Legacy release-validator reference retained while the clean /transform route is supported:
+    // url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'
     e.respondWith(networkFirst(e.request,fallback));
     return;
   }

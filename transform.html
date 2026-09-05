@@ -9,22 +9,109 @@
 <link rel="stylesheet" href="transformation-v2.css">
 <title>BibleQuest Transform</title>
 <style>
-html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#263128}.bq-transform-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;box-sizing:border-box}.bq-transform-boot>div{width:min(520px,100%);background:#fff;border:1px solid #e0ddd4;border-radius:22px;padding:22px;box-sizing:border-box;box-shadow:0 12px 34px rgba(47,55,48,.08)}.bq-transform-boot h1{margin:0 0 8px;font-size:28px}.bq-transform-boot p{line-height:1.55;color:#5e6962}.bq-transform-boot a{display:inline-block;margin-top:10px;padding:11px 14px;border-radius:13px;background:#355746;color:#fff;text-decoration:none;font-weight:800}
+html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#263128}.bq-transform-boot{min-height:100dvh;display:grid;place-items:center;padding:24px;box-sizing:border-box}.bq-transform-boot>div{width:min(520px,100%);background:#fff;border:1px solid #e0ddd4;border-radius:22px;padding:22px;box-sizing:border-box;box-shadow:0 12px 34px rgba(47,55,48,.08)}.bq-transform-boot h1{margin:0 0 8px;font-size:28px}.bq-transform-boot p{line-height:1.55;color:#5e6962}.bq-transform-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.bq-transform-boot a,.bq-transform-boot button{display:inline-block;padding:11px 14px;border:0;border-radius:13px;background:#355746;color:#fff;text-decoration:none;font:inherit;font-weight:800;cursor:pointer}.bq-transform-boot button{background:#263128}.bq-transform-boot button[hidden]{display:none}.bq-transform-detail{margin-top:10px!important;font-size:12px;color:#7b837d!important;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
-<main id="transformBoot" class="bq-transform-boot" aria-live="polite"><div><h1>Opening Transform…</h1><p>Loading your private personal-development workspace.</p><a href="./">Return to BibleQuest</a></div></main>
+<main id="transformBoot" class="bq-transform-boot" aria-live="polite"><div><h1>Opening Transform…</h1><p data-transform-message>Loading your private personal-development workspace.</p><div class="bq-transform-actions"><button type="button" data-transform-retry hidden>Retry Transform</button><a href="./">Return to BibleQuest</a></div><p class="bq-transform-detail" data-transform-detail hidden></p></div></main>
 <script src="transformation-v2.js"></script>
 <script>
 (function(){
+  'use strict';
   var boot=document.getElementById('transformBoot');
+  var message=boot&&boot.querySelector('[data-transform-message]');
+  var detail=boot&&boot.querySelector('[data-transform-detail]');
+  var retryButton=boot&&boot.querySelector('[data-transform-retry]');
+  var RETURN_KEY='bq_transform_return_action';
+  var RUNTIME='./transformation-v2.js';
+  var RECOVERY_VERSION='53';
+  var attempt=0;
+  var loading=null;
+  var diagnostics={version:RECOVERY_VERSION,page:location.pathname,online:navigator.onLine,serviceWorkerControlled:Boolean(navigator.serviceWorker&&navigator.serviceWorker.controller),attempts:[]};
+  window.BQTransformBootDiagnostics=diagnostics;
+
+  function hasRuntime(){return Boolean(window.BQ_TRANSFORMATION&&typeof window.BQ_TRANSFORMATION.open==='function'&&window.BQ_TRANSFORMATION.mode==='rebuilt-v2')}
+  function setMessage(title,text){if(!boot)return;boot.querySelector('h1').textContent=title;if(message)message.textContent=text}
+  function diagnosticText(){
+    var last=diagnostics.attempts[diagnostics.attempts.length-1];
+    return 'Recovery '+RECOVERY_VERSION+' · '+(diagnostics.online?'online':'offline')+' · '+(diagnostics.serviceWorkerControlled?'PWA cache active':'direct web')+(last&&last.result?' · '+last.result:'');
+  }
+  function showFailure(err){
+    setMessage('Transform could not open','The Transform code did not finish loading. Tap Retry Transform to fetch a fresh copy, or return to BibleQuest.');
+    if(retryButton)retryButton.hidden=false;
+    if(detail){detail.hidden=false;detail.textContent=diagnosticText()}
+    console.error('BibleQuest Transform standalone startup failed',err);
+  }
   function goHome(action){
-    try{if(action)sessionStorage.setItem('bq_transform_return_action',action)}catch(_e){}
+    try{if(action)sessionStorage.setItem(RETURN_KEY,action)}catch(_e){}
     location.assign(new URL('./',location.href).href);
   }
+  function freshRuntimeUrl(){
+    var url=new URL(RUNTIME,location.href);
+    url.searchParams.set('bq_recovery',RECOVERY_VERSION+'-'+Date.now()+'-'+attempt);
+    return url.href;
+  }
+  function loadFreshRuntime(){
+    if(hasRuntime())return Promise.resolve();
+    if(loading)return loading;
+    attempt+=1;
+    setMessage('Recovering Transform…','The first copy did not load. Fetching a fresh Transform module now.');
+    if(retryButton)retryButton.hidden=true;
+    var record={attempt:attempt,url:freshRuntimeUrl(),result:'loading'};
+    diagnostics.attempts.push(record);
+    loading=new Promise(function(resolve,reject){
+      var script=document.createElement('script');
+      var settled=false;
+      var timer=setTimeout(function(){
+        if(settled)return;
+        settled=true;
+        record.result='timeout';
+        script.remove();
+        reject(new Error('Transform recovery timed out.'));
+      },10000);
+      script.src=record.url;
+      script.async=true;
+      script.onload=function(){
+        if(settled)return;
+        settled=true;
+        clearTimeout(timer);
+        record.result=hasRuntime()?'loaded':'loaded-without-runtime';
+        hasRuntime()?resolve():reject(new Error('Transform recovery loaded but did not initialize.'));
+      };
+      script.onerror=function(){
+        if(settled)return;
+        settled=true;
+        clearTimeout(timer);
+        record.result='network-error';
+        reject(new Error('Transform recovery request failed.'));
+      };
+      document.head.appendChild(script);
+    }).finally(function(){loading=null});
+    return loading;
+  }
+  function verifyOpen(){
+    if(!hasRuntime())throw new Error('Transform module did not load.');
+    window.BQ_TRANSFORMATION.open();
+    var root=document.querySelector('.bq-transform-v2');
+    if(!root)throw new Error('Transform screen did not initialize.');
+    if(boot)boot.remove();
+  }
+  async function start(forceFresh){
+    try{
+      diagnostics.online=navigator.onLine;
+      diagnostics.serviceWorkerControlled=Boolean(navigator.serviceWorker&&navigator.serviceWorker.controller);
+      if(forceFresh&&navigator.serviceWorker){
+        try{var reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update()}catch(_e){}
+      }
+      if(forceFresh||!hasRuntime())await loadFreshRuntime();
+      verifyOpen();
+    }catch(err){showFailure(err)}
+  }
+
   document.addEventListener('click',function(event){
     var target=event.target instanceof Element?event.target:null;
     if(!target)return;
+    if(target.closest('[data-transform-retry]')){event.preventDefault();start(true);return;}
     if(target.closest('[data-t2-close]')){event.preventDefault();event.stopImmediatePropagation();goHome();return;}
     if(target.closest('[data-t2-reader]')){event.preventDefault();event.stopImmediatePropagation();goHome('reader');return;}
     if(target.closest('[data-t2-wisdom]')){event.preventDefault();event.stopImmediatePropagation();goHome('wisdom');}
@@ -35,18 +122,8 @@ html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-app
     event.stopImmediatePropagation();
     goHome();
   },true);
-  try{
-    if(!window.BQ_TRANSFORMATION||typeof window.BQ_TRANSFORMATION.open!=='function')throw new Error('Transform module did not load.');
-    window.BQ_TRANSFORMATION.open();
-    if(document.querySelector('.bq-transform-v2'))boot.remove();
-    else throw new Error('Transform screen did not initialize.');
-  }catch(err){
-    if(boot){
-      boot.querySelector('h1').textContent='Transform could not open';
-      boot.querySelector('p').textContent=(err&&err.message?err.message:'Unexpected startup error')+' Please return to BibleQuest and try again after refreshing.';
-    }
-    console.error('BibleQuest Transform standalone startup failed',err);
-  }
+
+  start(false);
 })();
 </script>
 </body>
