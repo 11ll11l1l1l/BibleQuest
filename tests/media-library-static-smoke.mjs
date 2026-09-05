@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
-const index=read('index.html'),media=read('media-library.js'),css=read('media-library.css'),report=read('content-report.js'),notify=read('notification-center.js'),registry=read('runtime-feature-registry.js'),migration=read('supabase/migrations/20260905_bible_congregation_media_library.sql'),reviewer=read('supabase/migrations/20260905_bible_media_reviewer_read.sql'),grants=read('supabase/migrations/20260905_bible_media_table_grant_hardening.sql'),ops=read('admin-operations.js'),opsFn=read('supabase/functions/bq-admin-ops/index.ts'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
+const index=read('index.html'),media=read('media-library.js'),css=read('media-library.css'),report=read('content-report.js'),notify=read('notification-center.js'),registry=read('runtime-feature-registry.js'),migration=read('supabase/migrations/20260905_bible_congregation_media_library.sql'),reviewer=read('supabase/migrations/20260905_bible_media_reviewer_read.sql'),grants=read('supabase/migrations/20260905_bible_media_table_grant_hardening.sql'),storage=read('supabase/migrations/20260905_bible_ministry_media_storage_update_hardening.sql'),ops=read('admin-operations.js'),opsFn=read('supabase/functions/bq-admin-ops/index.ts'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
 const v=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(index.includes('media-library.css')&&index.includes('media-library.js'),'production index must load Media Library assets');
 assert(index.includes('runtime-feature-registry.js'),'production index must wire central capability registry');
@@ -22,6 +22,7 @@ assert(migration.includes('revoke all on public.bible_media_library from anon'),
 assert(migration.includes('private.is_bible_congregation_member(congregation_id)'),'member media reads must be congregation scoped');
 assert(reviewer.includes('media reviewer read')&&reviewer.includes('private.bible_can_review_content(congregation_id)'),'reviewers must be able to see scheduled/archived media for management');
 assert(grants.includes('revoke all on table public.bible_media_library from anon, authenticated')&&grants.includes('grant select, insert, update'),'browser roles must not retain direct DELETE privilege on curated media');
+assert(storage.includes('announcement media leader update')&&storage.includes('with check')&&storage.match(/private\.bible_can_review_content/g)?.length>=2,'storage UPDATE must re-authorize both existing and destination congregation paths');
 assert(opsFn.includes('OPS_VERSION=5')&&opsFn.includes("'bible_media_library'")&&opsFn.includes("from('bible_media_library')"),'Owner operations v5 must include curated media health/data');
 assert(ops.includes('Handpicked videos & channels')&&ops.includes('Curated media'),'Owner operations UI must surface curated media');
 assert(css.includes('.media-player iframe')&&css.includes('@media(max-width:700px)'),'Media Library must include responsive embedded-player styling');
