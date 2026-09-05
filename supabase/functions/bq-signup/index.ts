@@ -22,8 +22,8 @@ Deno.serve(async(req:Request)=>{
   if(req.method==='OPTIONS')return new Response('ok',{headers:headers(req)});
   if(req.method!=='POST')return json(req,{error:'Method not allowed'},405);
   if(!allowed(req.headers.get('Origin')||''))return json(req,{error:'Origin not allowed'},403);
-  const admin=adminClient();
   try{
+    const admin=adminClient();
     if(!(await rateLimit(req,admin)))return json(req,{error:'Too many account creation attempts. Please wait and try again.'},429);
     const body=await req.json();
     const email=cleanText(body.email,254).toLowerCase(),password=String(body.password||''),confirm=String(body.confirm_password||''),fullName=cleanText(body.full_name,120),preferredName=cleanText(body.preferred_name,40),churchGroup=cleanText(body.church_group,120),avatar=cleanAvatar(body.avatar);
@@ -37,5 +37,5 @@ Deno.serve(async(req:Request)=>{
     const inserted=await admin.from('bible_password_reset_codes').insert({user_id:created.user.id,requested_by:created.user.id,code_hash:codeHash,email_hash:emailHash,expires_at:expires,attempts:0});
     if(inserted.error){await admin.auth.admin.deleteUser(created.user.id).catch(()=>{});throw inserted.error}
     return json(req,{ok:true,recovery_code:code,recovery_expires_at:expires});
-  }catch(err){console.error(err);return json(req,{error:err instanceof Error?err.message:'Account creation failed'},500)}
+  }catch(err){console.error(err);return json(req,{error:'Account creation failed. Please try again.'},500)}
 });
