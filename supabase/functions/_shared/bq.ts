@@ -70,5 +70,5 @@ export async function parseJson(req:Request){
 export function asResponse(err:unknown){
   if(err instanceof Response)return err;
   console.error(err);
-  return json({error:err instanceof Error?err.message:'Unexpected server error'},500);
+  return json({error:'Unexpected server error'},500);
 }
