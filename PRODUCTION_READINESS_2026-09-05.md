@@ -4,198 +4,149 @@ This is the current release-priority source of truth. Work from latest `main` on
 
 ## Current integrated baseline
 
-- **Guest access is the default first-run path.** A new visitor can enter BibleQuest without registering. Account creation/sign-in is optional and remains available from the app. A signed-out account screen includes a clear “Continue without an account” path, and signing out returns to guest use rather than trapping the user at login.
-- **Daily Journey is the primary daily experience**: Continue My Journey → recall → context → learn → apply → reflect. One meaningful Bible activity can preserve the streak; full completion gives stronger progress evidence. Scripture itself is never locked behind XP.
-- **Transform is an active standalone route**: Home → Grow → Transformation → `transform.html`. The main SPA does not execute the retired Transform runtimes. `transform.html` loads the isolated `transformation-v2.js` runtime and v2 styles. Transform v2 contains the 20-item Big Five reflection, five thinking-pattern scenarios, action plan, and private local journal. The former production quarantine is historical only.
-- **Account creation is immediate** through live `bq-signup` v8: email + password + password confirmation. No email-confirmation/SMTP dependency. Email is an unverified sign-in ID. Signed-out recovery uses the private rotating recovery code through `bq-password-reset`.
-- **ICAC is the production default congregation for new registrations.** Signup resolves the active ICAC record at runtime, creates a real `bible_congregation_members` row as `member`, and fails closed if ICAC is not configured. The browser's free-text church field is not trusted by the signup backend.
-- **Owner/Admin can repair membership mistakes.** Admin & Ministry can set/remove a user's congregation, assign congregation ministry roles, create/assign/remove small groups, set group leaders, and transfer small-group ownership. Membership moves protect congregation/group owners and are audit logged.
-- **Platform and ministry authority are separate.** Platform roles are owner/admin/member. Congregation roles are admin/pastor/leader/facilitator/member. Pastor/Leader are congregation-scoped titles and never arise merely from profile church text.
-- **Owner access is explicit.** The signed-in platform Owner gets visible OWNER / PLATFORM OWNER identity and direct Admin & Ministry access.
-- **The registration/tutorial surface is intentionally English.** The tutorial teaches Continue My Journey rather than legacy Daily 5 and can be reopened later.
-- **Reader translations are intentionally mixed by licensing model.** BSB and Tagalog are delivered in-app; Japanese 口語訳 is loaded live with Japanese-learning/furigana support; current `main` keeps NLT/ESV/NIV/AMP on truthful licensed-reader paths. The separate live-NLT PR is not merged.
-- **Mobile baseline is four persistent bottom tabs.** Transform is reached through Grow rather than as a fifth persistent tab. Narrow-phone readability guards exist but real-device acceptance remains required.
-- **PWA cache baseline is v66.** Guest access is install-required, controller-change recovery matches the cache version, and optional shell downloads abort after 12 seconds so one stalled optional asset cannot hold installation indefinitely.
-- **GitHub Actions are manual-only (`workflow_dispatch`)**. Autonomous work must never restore automatic push/pull-request/schedule triggers.
+- **Guest access is the default first-run path.** A new visitor can enter BibleQuest without registering. Account creation/sign-in is optional. Signed-out auth surfaces provide “Continue without an account,” and sign-out returns to guest use.
+- **Daily Journey is the primary daily experience everywhere that matters.** Continue My Journey → recall → context → learn → apply → reflect. Modern Home now opens `BQJourneyLoop` directly, reads real Journey completion/resume state, and uses local-calendar date logic. Legacy Daily 5 compatibility code may remain only as non-primary compatibility plumbing and must not compete visually or functionally.
+- **Transform is an active standalone route**: Home → Grow → Transformation → `transform.html`. The main SPA does not execute retired Transform runtimes. Transform v2 contains the 20-item Big Five reflection, five thinking-pattern scenarios, action plan, and private local journal.
+- **Account creation is immediate** through live `bq-signup` v8: email + password + password confirmation. No email-confirmation/SMTP dependency. Signed-out recovery uses the private rotating recovery code through `bq-password-reset`.
+- **ICAC is the production default congregation for new registrations.** Signup resolves the active ICAC record server-side and creates real congregation membership. Owner/Admin correction tools exist for congregation and group membership.
+- **Platform and ministry authority are separate.** Platform roles are owner/admin/member. Congregation roles are admin/pastor/leader/facilitator/member.
+- **Reader source truth on current `main`:** BSB and Tagalog are delivered in-app; Japanese 口語訳 loads live with Japanese-learning/furigana support; NLT/ESV/NIV/AMP open licensed/official external readers. The open live-NLT PR is not production behavior.
+- **Mobile baseline is four persistent bottom tabs.** Narrow-phone readability guards exist but real-device acceptance remains required.
+- **PWA cache baseline is v67.** Required shell fetches abort after 8 seconds and remain fatal if unavailable; optional shell fetches abort after 12 seconds and remain non-fatal. Guest access is install-required and controller-change recovery matches the cache version.
+- **Admin access discovery is bounded.** `admin-link.js` no longer uses permanent polling or a document-wide MutationObserver; unresolved client/access discovery retries for at most 20 × 500 ms and signed-out state settles immediately.
+- **Release validation now covers all production entry documents** (`index.html`, `transform.html`, `psychometrics.html`, `admin.html`, `reset.html`), verifies local asset references/duplicates, auto-discovers `*-static*.mjs` feature guards, and separately runs the broader reliability smoke.
+- **The release gate now fails explicitly on doctrinal policy mismatch.** Production pack manifest remains doctrinal policy v1 while runtime classifier is v2; this is a known release blocker, not an ignorable warning.
+- **GitHub Actions remain manual-only (`workflow_dispatch`)**. No automatic Actions were restored.
 
-## Corrections integrated by the 2026-09-05 evening audit
+## Corrections integrated by the comprehensive 2026-09-05 audit
 
-1. Added guest-access hardening so unauthenticated first-run users are not blocked by the account registration overlay.
-2. Preserved an explicit optional account entry for guests and added “Continue without an account” to signed-out auth surfaces.
-3. Corrected logout so `account.js`'s post-signout login screen is treated as an unintentional auth gate and the user returns to guest mode.
-4. Added guest startup/exit/logout regression assertions to `tests/auth-flow-static-smoke.mjs`.
-5. Rotated the service-worker/controller baseline to v66 and made guest-access hardening install-required.
-6. Added a 12-second AbortController bound to optional PWA shell caching and a dedicated `tests/pwa-install-bounds-static.mjs` guard.
-7. Updated the manual validation workflow to include the bounded-PWA regression guard.
-8. Removed the stale `transform-disabled.marker` and converted `TRANSFORM_QUARANTINE.md` to historical documentation.
-9. Removed the obsolete Transform-quarantine static smoke test.
-10. Aligned `scripts/validate-release.mjs` and `tests/reliability-smoke.mjs` with the current external standalone Transform runtime, Transform launcher v5, guest shell, and PWA baseline.
-11. Closed superseded PR #79 after integrating its bounded-install behavior directly into newer `main`.
+1. Guest-first startup, optional account access, explicit guest exit, and logout-to-guest behavior.
+2. Guest/auth regression guards and PWA install-required guest shell.
+3. Standalone Transform status/documentation cleanup; stale disabled marker/test removed.
+4. PWA optional install fetches bounded, then required install fetches bounded; final baseline v67.
+5. PWA controller reload flag aligned to the current cache generation.
+6. Stale Psychometrics exact-v55 regression assertion replaced with a capability minimum/current cache read.
+7. Stale cold-start exact-v62 regression assertion replaced with current guest-first v66+ contract checking.
+8. Admin access discovery changed from permanent interval + document-wide observer to bounded lifecycle-driven retries.
+9. `modern-home.js` corrected from legacy Daily 5 primary behavior to the real `BQJourneyLoop` Daily Journey, including resume/completion state and local-day handling.
+10. Modern Home Bible-source copy corrected to match current Reader behavior: NLT is licensed-link on `main`; Japanese 口語訳 is disclosed; unmerged live-NLT API claims removed.
+11. Added Home product-contract regression guard.
+12. `scripts/validate-release.mjs` expanded to five production HTML entry points, PWA v67/install contracts, auto-discovered cross-feature static tests, and explicit doctrinal policy-version alignment.
+13. Manual validation workflow remains the execution path; this audit did not trigger GitHub Actions.
+
+## Feature audit status
+
+### Implemented and structurally covered
+
+- Guest use, account sign-in/registration UI, recovery-code security, tutorial/onboarding.
+- Daily Journey, adaptive review, progression/Bible World, seasons/support paths, avatars/achievements.
+- Bible Reader, BSB, Tagalog, Japanese 口語訳 learning support, licensed translation links.
+- Question/play modes, story/sequence/context/decks/review surfaces.
+- Transform and separate Psychometrics Lab.
+- Congregations, ministry roles, Journey Groups, assignments, Cloud Teams, Live Rooms, Play Together, challenges, leaderboards/badges, presence.
+- Couple Journey, couple-shared state/challenges and Grow Together.
+- Notes, highlights/bookmarks/workspace, cloud profile/progress/devices.
+- Owner/Admin & Ministry controls and membership/group correction tooling.
+- PWA manifest/service worker/offline shell architecture and narrow-phone static contracts.
+
+Static/source presence is not equivalent to real-browser acceptance. The release validator now makes that distinction explicit rather than treating file existence as proof.
 
 ## P0 — release blockers
 
-### 1. Operational stability across every major entry point
+### 1. Doctrinal/content reconciliation
 
-Every Home/Play/Read/Grow/Together entry must either open correctly or show a recoverable visible error. No silent optional-chain no-ops, document-wide mutation feedback loops, permanent loaders, uncloseable overlays, or feature failure that kills the shell.
+Generated `data/packs/manifest.json` currently reports doctrinal policy v1 while `data/doctrinal-safety.js` is runtime policy v2. Current corpus: 11,462 questions with 581 quarantined under the generated manifest.
 
-Transform acceptance is the real user path: Home → Grow → Transformation → `/transform.html`. Verify close, Escape, return-to-Reader/Wisdom, saved assessment/reflection progress, browser Back behavior, reload, and offline fallback.
+Required:
+- reconcile draft PR #53 with current `main` without overwriting guest/PWA/Home/admin changes;
+- execute the full current classifier against active + quarantined question union;
+- recover safe/context-framed items and keep hard-risk material quarantined;
+- regenerate pack/quarantine/manifest outputs at policy v2;
+- run release validation, doctrinal safety, content and reference audits before merge.
 
-Draft PR #57 remains the current Wave 2 runtime/mobile consolidation. It is intentionally not merged until executable browser/PWA evidence is available and must be reconciled with newer `main` rather than overwriting guest/auth/PWA/admin/community work.
+The canonical release validator now fails until generated/runtime policy versions match.
 
-### 2. Mobile-first real-device acceptance
+### 2. Real mobile/browser acceptance
 
-Issue #6 stays open until verified at 320/360/390/412/430 CSS-px widths at 100% browser zoom.
+Issue #6 remains open until verified at 320/360/390/412/430 CSS px at 100% zoom on Android browser and installed PWA.
 
-Acceptance:
-- no horizontal page overflow;
-- no zoom-out required;
-- Daily Journey remains visually dominant;
-- Journey path scrolls rather than compressing all regions;
-- supporting text is comfortably readable;
-- primary controls are approximately 44 px or larger where practical;
-- Android browser and installed-PWA behavior are both checked.
+Verify no horizontal page overflow, Daily Journey dominance, readable support text, scrollable Journey path, practical touch targets, header stability, modal/sheet close behavior, Reader, Together, Transform and account surfaces.
 
-### 3. Guest entry + registration + ICAC membership + recovery-code E2E
+### 3. Guest → account → ICAC → recovery E2E
 
-Run a clean production cycle on a new device/browser profile:
-1. open BibleQuest with no account/session and confirm Home is usable without registration;
-2. open the optional account entry, switch between Sign in/Create account, then choose “Continue without an account” and confirm Home remains usable;
-3. create an account with email + password + password confirmation;
-4. confirm the new account is automatically assigned to the live ICAC congregation as an active `member`;
-5. receive and save the private recovery code;
-6. complete the protected English tutorial and reach Home;
-7. logout and confirm the app immediately returns to usable guest mode rather than forcing login;
-8. login again and confirm cloud profile/progress restoration;
-9. recover password using email + recovery code + new password confirmation;
-10. confirm the old recovery code is invalidated and a new recovery code is issued;
-11. verify repeated bad recovery codes lock out safely;
-12. while signed in, issue a new recovery code from Account → Security;
-13. from an Owner/Admin account, correct the test user's congregation and small-group assignment, then verify effective community context follows the corrected membership.
+On a clean browser/device profile verify:
+1. guest Home opens with no blocking account layer;
+2. optional account screen opens and exits cleanly;
+3. new v8 signup succeeds;
+4. ICAC active membership is created;
+5. recovery code is issued/saved;
+6. tutorial completes;
+7. logout returns to guest mode;
+8. login restores profile/progress;
+9. recovery-code password reset rotates the code and rejects/locks repeated bad attempts;
+10. Owner/Admin correction of congregation/group membership changes effective community context.
 
-Public Edge Functions must return client-safe errors only. Live `bq-signup` v8 resolves ICAC server-side and live `bq-admin` contains protected membership/group actions. Never restore browser `auth.signUp`, email-confirmation copy, SMTP reset links, or `resetPasswordForEmail`.
+Live backend functions/tables exist and earlier signup/login events are present, but this exact post-v8 clean cycle still needs current-build execution evidence.
 
-### 4. Doctrinal/content reconciliation
+### 4. Multi-account community field validation
 
-Draft PR #53 remains the current content-correctness blocker. The generated production manifest is still on doctrinal policy v1 while the runtime policy is v2.
+Use multiple real accounts/roles to verify congregation isolation, Pastor/Leader/Facilitator boundaries, Journey Group targeting/capacity, Cloud Team membership, assignments, Live Room reconnect/lifecycle, couple isolation/relink, pair-shared challenges, presence, roster/leaderboard/badges and expired/invalid invite/error states.
 
-Required sequence:
-- reconcile PR #53 with latest `main` without overwriting guest/PWA/auth changes;
-- run the current doctrinal classifier across the union of active imported packs and quarantined questions;
-- recover currently safe/context-framed questions;
-- keep hard-risk material quarantined;
-- review the generated recovered/quarantined diff rather than hand-editing imported Scripture-study answers;
-- regenerate pack/quarantine/manifest output to the current policy version;
-- run doctrinal safety, content audit, source/reference, and release validation locally before merge.
+### 5. Transform/Android operational acceptance
 
-Release must fail if recoverable items remain stranded or high-risk items leak into normal play.
+Verify real Grow → Transformation route, Escape/close, browser Back, Reader/Wisdom return action, reload, progress persistence and offline fallback on Android. Transform is implemented and enabled but not yet physically Android-release-verified.
 
-### 5. PWA/update/offline release validation
+### 6. PWA/update/offline acceptance
 
-Current merged service-worker cache baseline is v66. Optional shell caching is bounded to 12 seconds per asset and failures remain non-fatal through `Promise.allSettled`.
+Current merged cache baseline is v67.
 
-Verify:
-- fresh install;
-- ordinary browser reload;
-- guest first-run while online;
-- guest first-run/update in installed-PWA state;
-- upgrade from an older service-worker cache;
-- installed-PWA reload after controller change;
-- offline Home;
-- offline standalone Transform after its assets have been cached;
-- cached Scripture content already opened on the device;
-- network recovery after failed CDN/API state;
-- no stale release after Cloudflare deployment.
+Verify fresh install, upgrade from old cache, controller-change reload, slow/stalled network handling, guest first-run, installed-PWA reload, offline Home, cached Reader content, offline Transform after caching, and recovery after network returns.
 
-Large Bible/context libraries must remain on-demand rather than blocking startup or being indiscriminately precached.
+Required shell failures must fail installation rather than leave an incomplete active worker; stalled required fetches must abort after 8 s; optional failures must settle independently after 12 s.
 
-**Deployment evidence:** a GitHub `main` commit is not proof that Cloudflare has propagated the same SHA. Static deployment propagation must be independently verified before release acceptance.
+### 7. Cloudflare deployment identity
 
-## P1 — complete before broad public promotion
+A GitHub `main` commit is not proof that Cloudflare has propagated the same SHA. Confirm the deployed static build corresponds to the intended final `main` before release signoff.
 
-### 6. Reader and translation resilience
+## P1 — important hardening before broad promotion
 
-Implemented architecture on current `main`:
-- BSB bundled/on-demand packs;
-- Tagalog local packs;
-- Japanese 口語訳 live loading with Japanese learning/furigana support;
-- NLT licensed-reader behavior;
-- ESV/NIV/AMP licensed external-reader paths.
+### Runtime/code-sprawl consolidation
 
-PR #44 contains an official live NLT API implementation but remains open/unmerged and must not be reported as production behavior.
+`index.html` still boots more than 50 feature scripts. Broad MutationObservers remain in some high-traffic compatibility/enhancement modules (for example Reader translation enhancement and Home compatibility layers). Continue PR #57-style incremental consolidation only with regression evidence; do not big-bang rewrite.
 
-Still verify representative OT and NT chapters, tokenizer/CDN/API failure and retry, narrow-phone Reader layout, and Japanese learning modes. Scripture text, context notes, interpretation, and application must remain visibly and structurally distinct.
+### Reader resilience
 
-### 7. Daily Journey consolidation
+Verify representative OT/NT chapters across BSB/Tagalog/Japanese plus licensed-link behavior; test Japanese upstream/CDN failure and retry, Reader narrow-phone layout and offline previously loaded packs. Keep Scripture, context notes, interpretation and application visually distinct.
 
-Daily Journey is integrated and is the intended primary daily surface. Legacy Daily 5 compatibility code still exists and must not compete with it.
+### Daily Journey cleanup
 
-Verify resume/completion/cloud sync idempotency across refresh/offline transitions. Wrong answers should feed useful review without making the user feel progression was lost. Draft PR #57 contains further consolidation but remains browser/PWA-gated.
+Primary Home behavior is corrected, but retire obsolete Daily 5 compatibility selectors/copy at source once browser evidence confirms no old entry depends on them. Verify Journey resume/completion/cloud idempotency after refresh/offline transitions.
 
-### 8. Bible World / progression correctness
+### Community/Couples
 
-Bible World navigation has been recovered and progression/world/avatar systems are present. Users must always understand current region, completed regions, next unlock, why progress advanced, and what action comes next.
+No new surface area until the existing large feature set is field-validated. Prioritize reliability, isolation, role boundaries and clear recoverable errors over adding another mode.
 
-Test avatar/world unlock persistence locally and in cloud state. Never imply spiritual maturity, holiness, or faith level from XP/progression.
+### Security
 
-### 9. Tutorial/onboarding
+Browser configuration uses only the Supabase publishable key. Server-only tables with RLS/no browser policies remain intentionally inaccessible. Supabase currently reports leaked-password protection disabled; enable it when available/appropriate for the project plan. Never expose service-role credentials, recovery codes or private reflection data.
 
-The English tutorial is integrated, teaches Daily Journey, account recovery, and the major app surfaces, and can be reopened from Account. Verify the trainer/avatar positioning and screenshots/callouts on actual narrow phones rather than considering file presence sufficient.
+### Performance
 
-### 10. Community/Admin/Play Together field validation
-
-Broad implementation exists for congregation membership, roster/roles, small groups, Journey Groups, assignments, Cloud Teams, Live Rooms, Play Together, challenges, couples, leaderboards, badges, and presence.
-
-Recent hardening covers ICAC default membership, Owner/Admin correction tools, pastor/leader role parity, small-group ownership transfer, room score/write integrity, and scoped community writes. This area is **implemented but not sufficiently field-validated**.
-
-Use at least two test accounts and multiple roles. Verify default ICAC signup membership, intentionally wrong membership correction, pastor/leader/facilitator boundaries, group ownership transfer/capacity enforcement, cross-congregation/couple/group isolation, room lifecycle/reconnect, and graceful cloud failure.
-
-Do not add more community surface area until existing features are field-validated.
-
-### 11. Couples
-
-Couple Journey, shared pair state, cloud support, congregation-linked challenges, and visible cloud-read failure handling are implemented. Verify pair isolation, unlink/relink behavior, two-device consistency, and challenge history with real accounts.
-
-### 12. Transform + Psychometrics
-
-Transform is enabled through the standalone route and is no longer quarantined. Quick Transform v2 includes a 20-item Big Five reflection, five thinking-pattern scenarios, reflection/action plan, and private device-local journal. Psychometrics Lab is a separate deeper route.
-
-Status remains **implemented but not Android-release-verified**. Do not add default cloud synchronization for private personality/reflection data. Real Android-browser reproduction testing is required before calling the feature stable.
-
-## P2 — hardening and cleanup
-
-### 13. Startup architecture / code-sprawl reduction
-
-The main page still loads many feature scripts and styles. Reduce boot complexity incrementally through feature lazy-loading, duplicate-listener removal, and compatibility cleanup only with regression evidence. Do not perform a big-bang rewrite.
-
-### 14. Security hardening
-
-Keep Supabase server-only tables closed to browser roles where intended. Verify RLS/grants rather than adding permissive policies. Supabase leaked-password protection remains recommended platform hardening.
-
-Never expose service-role credentials, recovery codes, private reflection text, or sensitive profile data in browser logs/analytics.
-
-### 15. Performance and observability
-
-Priorities are startup payload/long tasks, Android memory pressure, repeated DOM observers/listeners, Reader/large-pack loading, service-worker update latency, and user-visible failure states without collecting private reflection/recovery content.
-
-### 16. Release governance
-
-`main` still lacks lightweight branch protection. Add protection/review rules after the sprint without restoring automatic Actions usage.
+Continue removing permanent observers/polling from modules where targeted lifecycle events can replace them. Measure startup payload, long tasks, Android memory pressure, Reader pack loading and service-worker update latency before deleting useful backend indexes based only on low-traffic “unused index” advisor notices.
 
 ## Release acceptance checklist
 
 Do not call BibleQuest production-ready until all P0 items pass with evidence:
 
-- Cloudflare static deployment matches the intended current `main` SHA.
-- A completely new user can enter as a guest without registration or a blocking account overlay.
-- A guest can deliberately open Sign in/Create account and exit without registering.
-- Signing out returns to guest mode rather than forcing login.
-- 320–430 px phone layout works at 100% zoom with no horizontal overflow.
-- Daily Journey starts, resumes, completes, preserves streak after one meaningful activity, and syncs safely.
-- Transform opens through the real Grow route, remains responsive on Android, persists progress, and returns cleanly.
-- Optional registration → automatic ICAC membership → recovery code → English tutorial → logout-to-guest → login → password recovery works end to end.
-- Owner/Admin can correct congregation/small-group membership and role boundaries work with multiple accounts.
-- Reader works across BSB/Tagalog/Japanese plus licensed/failure paths.
-- Doctrinal manifest/classifier/quarantine are reconciled to the current policy and audits pass.
-- PWA install/update/offline/recovery paths work, including the v66 guest-access shell and bounded optional caching.
-- Major community/admin privilege boundaries are verified with multiple accounts/roles.
-- No obvious runtime crash, silent no-op, permanent loader, broken link, exposed secret, stale quarantine marker, forced-registration startup gate, stale SMTP copy, contradictory Daily 5 onboarding, or dummy production content remains.
+- final Cloudflare build matches intended `main`;
+- guest startup/account exit/logout-to-guest works on a clean device;
+- current v8 registration → ICAC → recovery → tutorial → logout → login → recovery reset passes end to end;
+- Daily Journey starts/resumes/completes and remains the obvious primary action;
+- 320–430 px mobile layout passes at 100% zoom;
+- Transform passes real Android route/persistence/return/offline checks;
+- Reader passes BSB/Tagalog/Japanese and licensed/failure paths;
+- generated doctrinal policy equals runtime policy v2 and content audits pass;
+- PWA v67 install/update/offline/recovery paths pass under normal and degraded network conditions;
+- congregation/groups/teams/rooms/couples/admin privilege boundaries pass multi-account testing;
+- all auto-discovered static guards and repository-owned release validation pass;
+- no obvious runtime crash, silent no-op, permanent loader, broken local asset reference, stale source claim, forced-registration gate, exposed secret, stale Transform quarantine, competing Daily 5 primary CTA or dummy production content remains.
