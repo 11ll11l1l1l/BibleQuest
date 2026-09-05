@@ -33,3 +33,6 @@
 
 /psychometrics-suite.js
   Cache-Control: no-cache, must-revalidate
+
+/psychometrics-christian.js
+  Cache-Control: no-cache, must-revalidate
