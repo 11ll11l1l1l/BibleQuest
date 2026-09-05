@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
-const index=read('index.html'),home=read('modern-home.js'),recovery=read('runtime-recovery.js'),assignment=read('assignment-launch-hardening.js'),diag=read('client-diagnostics.js'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
+const index=read('index.html'),home=read('modern-home.js'),recovery=read('runtime-recovery.js'),assignment=read('assignment-launch-hardening.js'),baseAssignments=read('assignment-center.js'),leader=read('leader-dashboard.js'),diag=read('client-diagnostics.js'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
 const version=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 const labels=['Daily Journey','Smart Review','Quick Play','Who Said It?','What Happens Next?','Verse Order','Bible Detective','Characters & Places','Timeline','Context Mode','Bible Reader','Guided Study','Hebrew & Greek Context','Bible Workspace','Story Journey','Recall Decks','Review Mistakes','My Mission','Bible World','Avatar Vault','Situations & Wisdom','Transformation','Think Deeper','My Achievements','Assignments & Tasks','Community Live','Live BibleQuest Room','Play Together','Church Challenges','Couple Journey','Grow Together','Leaderboards & Awards','Congregation Badges','Congregation Roster'];
 for(const label of labels){assert(home.includes(`'${label}'`)||home.includes(`>${label}<`),`modern home missing ${label}`);assert(recovery.includes(`'${label}'`),`runtime recovery missing ${label}`)}
@@ -16,8 +16,13 @@ assert(assignment.includes("select('id,assignment_type,linked_activity')"),'assi
 for(const kind of ['reader','guided-study','mission','wisdom','journey','live','couples','group','reflection','quiz'])assert(assignment.includes(`k==='${kind}'`),`assignment launcher missing ${kind}`);
 assert(!assignment.includes("[data-daily]"),'assignment launcher must not use obsolete data-daily fallback');
 assert(assignment.includes('custom assignment has instructions but no linked app activity'),'custom assignments must explain instructions-only behavior instead of silently doing nothing');
+assert(baseAssignments.includes("select('id,name,team_type')")&&!baseAssignments.includes("select('id,name,kind')"),'canonical assignment center must use live Cloud Teams schema');
+assert(baseAssignments.includes("a.target_scope==='group'")&&baseAssignments.includes("<option value=\"group\">One Journey Group</option>"),'canonical assignments must understand Journey Group targets');
+assert(baseAssignments.includes('linked_activity?.kind')&&!baseAssignments.includes("[data-daily]"),'canonical assignment Start must honor linked activity and avoid obsolete fallback');
+assert(leader.includes(".eq('congregation_id',g.id).gte('earned_at'"),'Leader Dashboard badges must be scoped to active congregation');
+assert(!leader.includes("['facilitator','leader','pastor','admin'].includes(role)"),'full congregation Leader Dashboard must not be exposed to facilitator role');
 assert(version>=74,`runtime recovery requires PWA v74+, got v${version}`);
 for(const asset of ['modern-home.js','modern-home.css','client-diagnostics.js','runtime-recovery.js','runtime-feature-registry.js'])assert(sw.match(/const INSTALL_REQUIRED=\[[^;]+/s)?.[0].includes(`'./${asset}'`),`required PWA shell missing ${asset}`);
 assert(sw.includes('const cached=await caches.match(request);if(cached)return cached'),'non-OK script responses must prefer a cached feature copy');
 assert(pwa.includes(`bq_sw_controller_reload_v${version}`),'PWA controller generation must match cache');
-console.log(`✓ ${labels.length} modern feature launchers guarded · assignment linked activities hardened · PWA v${version}`);
+console.log(`✓ ${labels.length} modern feature launchers guarded · assignment/team targets hardened · leader badge scope guarded · PWA v${version}`);
