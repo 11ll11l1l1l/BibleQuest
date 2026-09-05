@@ -12,6 +12,18 @@ if (!policy || typeof policy.classify !== 'function') {
   process.exit(1);
 }
 
+const manifestPath = path.join('data', 'packs', 'manifest.json');
+if (!fs.existsSync(manifestPath)) {
+  console.error('ERROR: imported-pack manifest is missing');
+  process.exit(1);
+}
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+const manifestPolicyVersion = Number(manifest.doctrinal_safety?.version || 0);
+if (manifestPolicyVersion !== Number(policy.version || 0)) {
+  console.error(`ERROR: imported packs were sanitized with doctrinal policy v${manifestPolicyVersion || 'unknown'}, but runtime policy is v${policy.version}. Run scripts/apply-doctrinal-safety.js and commit the reconciled packs before release.`);
+  process.exit(1);
+}
+
 const BOOK_NAMES = {
   GEN:'Genesis',EXO:'Exodus',LEV:'Leviticus',NUM:'Numbers',DEU:'Deuteronomy',JOS:'Joshua',JDG:'Judges',RUT:'Ruth',
   '1SA':'1 Samuel','2SA':'2 Samuel','1KI':'1 Kings','2KI':'2 Kings','1CH':'1 Chronicles','2CH':'2 Chronicles',EZR:'Ezra',NEH:'Nehemiah',
@@ -64,7 +76,8 @@ if (held.stats.total) {
     for (const x of held.examples.quarantine) console.log(`- ${x}`);
   }
   if (recoverable) {
-    console.log('\nSample recoverable items:');
-    for (const x of [...held.examples.allow, ...held.examples.context].slice(0, 12)) console.log(`- ${x}`);
+    console.error('\nERROR: questions remain quarantined even though the current policy now permits contextual or normal learning use. Reconcile the packs before release:');
+    for (const x of [...held.examples.allow, ...held.examples.context].slice(0, 12)) console.error(`- ${x}`);
+    process.exit(1);
   }
 }
