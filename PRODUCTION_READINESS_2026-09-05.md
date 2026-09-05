@@ -4,7 +4,7 @@ This is the current release-priority source of truth. Work from latest `main` on
 
 ## Current integrated baseline
 
-- **Guest access is the default first-run path.** A new visitor must be able to enter BibleQuest without registering. Account creation/sign-in is optional and remains available from the app. Registration should be prompted contextually when cloud/account-only features are useful, not used as a startup gate.
+- **Guest access is the default first-run path.** A new visitor can enter BibleQuest without registering. Account creation/sign-in is optional and remains available from the app. A signed-out account screen includes a clear “Continue without an account” path, and signing out returns to guest use rather than trapping the user at login.
 - **Daily Journey is the primary daily experience**: Continue My Journey → recall → context → learn → apply → reflect. One meaningful Bible activity can preserve the streak; full completion gives stronger progress evidence. Scripture itself is never locked behind XP.
 - **Transform is an active standalone route**: Home → Grow → Transformation → `transform.html`. The main SPA does not execute the retired Transform runtimes. `transform.html` loads the isolated `transformation-v2.js` runtime and v2 styles. Transform v2 contains the 20-item Big Five reflection, five thinking-pattern scenarios, action plan, and private local journal. The former production quarantine is historical only.
 - **Account creation is immediate** through live `bq-signup` v8: email + password + password confirmation. No email-confirmation/SMTP dependency. Email is an unverified sign-in ID. Signed-out recovery uses the private rotating recovery code through `bq-password-reset`.
@@ -13,20 +13,24 @@ This is the current release-priority source of truth. Work from latest `main` on
 - **Platform and ministry authority are separate.** Platform roles are owner/admin/member. Congregation roles are admin/pastor/leader/facilitator/member. Pastor/Leader are congregation-scoped titles and never arise merely from profile church text.
 - **Owner access is explicit.** The signed-in platform Owner gets visible OWNER / PLATFORM OWNER identity and direct Admin & Ministry access.
 - **The registration/tutorial surface is intentionally English.** The tutorial teaches Continue My Journey rather than legacy Daily 5 and can be reopened later.
-- **Reader translations are intentionally mixed by licensing model.** BSB and Tagalog are delivered in-app; Japanese 口語訳 is loaded live with Japanese-learning/furigana support; NLT/ESV/NIV/AMP use truthful licensed-reader links unless explicit redistribution permission is available.
+- **Reader translations are intentionally mixed by licensing model.** BSB and Tagalog are delivered in-app; Japanese 口語訳 is loaded live with Japanese-learning/furigana support; current `main` keeps NLT/ESV/NIV/AMP on truthful licensed-reader paths. The separate live-NLT PR is not merged.
 - **Mobile baseline is four persistent bottom tabs.** Transform is reached through Grow rather than as a fifth persistent tab. Narrow-phone readability guards exist but real-device acceptance remains required.
-- **PWA cache baseline is v63** after the guest-access correction. Guest access is part of the install-required shell so installed-app updates do not restore the forced-registration behavior.
+- **PWA cache baseline is v66.** Guest access is install-required, controller-change recovery matches the cache version, and optional shell downloads abort after 12 seconds so one stalled optional asset cannot hold installation indefinitely.
 - **GitHub Actions are manual-only (`workflow_dispatch`)**. Autonomous work must never restore automatic push/pull-request/schedule triggers.
 
 ## Corrections integrated by the 2026-09-05 evening audit
 
-1. Added `guest-access-hardening.js` so unauthenticated first-run users are not blocked by the account registration overlay.
-2. Preserved an explicit optional account entry for guests so they can sign in or create an account when they choose.
-3. Added guest-access regression assertions to `tests/auth-flow-static-smoke.mjs`.
-4. Rotated the service-worker cache to v63 and made guest-access hardening install-required.
-5. Removed the stale `transform-disabled.marker` and converted `TRANSFORM_QUARANTINE.md` to historical documentation.
-6. Removed the obsolete Transform-quarantine static smoke test.
-7. Aligned `scripts/validate-release.mjs` with the current external standalone `transformation-v2.js` architecture and the guest-access shell.
+1. Added guest-access hardening so unauthenticated first-run users are not blocked by the account registration overlay.
+2. Preserved an explicit optional account entry for guests and added “Continue without an account” to signed-out auth surfaces.
+3. Corrected logout so `account.js`'s post-signout login screen is treated as an unintentional auth gate and the user returns to guest mode.
+4. Added guest startup/exit/logout regression assertions to `tests/auth-flow-static-smoke.mjs`.
+5. Rotated the service-worker/controller baseline to v66 and made guest-access hardening install-required.
+6. Added a 12-second AbortController bound to optional PWA shell caching and a dedicated `tests/pwa-install-bounds-static.mjs` guard.
+7. Updated the manual validation workflow to include the bounded-PWA regression guard.
+8. Removed the stale `transform-disabled.marker` and converted `TRANSFORM_QUARANTINE.md` to historical documentation.
+9. Removed the obsolete Transform-quarantine static smoke test.
+10. Aligned `scripts/validate-release.mjs` and `tests/reliability-smoke.mjs` with the current external standalone Transform runtime, Transform launcher v5, guest shell, and PWA baseline.
+11. Closed superseded PR #79 after integrating its bounded-install behavior directly into newer `main`.
 
 ## P0 — release blockers
 
@@ -36,7 +40,7 @@ Every Home/Play/Read/Grow/Together entry must either open correctly or show a re
 
 Transform acceptance is the real user path: Home → Grow → Transformation → `/transform.html`. Verify close, Escape, return-to-Reader/Wisdom, saved assessment/reflection progress, browser Back behavior, reload, and offline fallback.
 
-Draft PR #57 remains the current Wave 2 runtime/mobile consolidation. It is intentionally not merged until executable browser/PWA evidence is available and must be reconciled with newer `main` rather than overwriting guest/auth/admin/community work.
+Draft PR #57 remains the current Wave 2 runtime/mobile consolidation. It is intentionally not merged until executable browser/PWA evidence is available and must be reconciled with newer `main` rather than overwriting guest/auth/PWA/admin/community work.
 
 ### 2. Mobile-first real-device acceptance
 
@@ -55,17 +59,18 @@ Acceptance:
 
 Run a clean production cycle on a new device/browser profile:
 1. open BibleQuest with no account/session and confirm Home is usable without registration;
-2. open the optional account entry and create an account with email + password + password confirmation;
-3. confirm the new account is automatically assigned to the live ICAC congregation as an active `member`;
-4. receive and save the private recovery code;
-5. complete the protected English tutorial and reach Home;
-6. logout and confirm the app remains usable as a guest rather than forcing registration;
-7. login again and confirm cloud profile/progress restoration;
-8. recover password using email + recovery code + new password confirmation;
-9. confirm the old recovery code is invalidated and a new recovery code is issued;
-10. verify repeated bad recovery codes lock out safely;
-11. while signed in, issue a new recovery code from Account → Security;
-12. from an Owner/Admin account, correct the test user's congregation and small-group assignment, then verify effective community context follows the corrected membership.
+2. open the optional account entry, switch between Sign in/Create account, then choose “Continue without an account” and confirm Home remains usable;
+3. create an account with email + password + password confirmation;
+4. confirm the new account is automatically assigned to the live ICAC congregation as an active `member`;
+5. receive and save the private recovery code;
+6. complete the protected English tutorial and reach Home;
+7. logout and confirm the app immediately returns to usable guest mode rather than forcing login;
+8. login again and confirm cloud profile/progress restoration;
+9. recover password using email + recovery code + new password confirmation;
+10. confirm the old recovery code is invalidated and a new recovery code is issued;
+11. verify repeated bad recovery codes lock out safely;
+12. while signed in, issue a new recovery code from Account → Security;
+13. from an Owner/Admin account, correct the test user's congregation and small-group assignment, then verify effective community context follows the corrected membership.
 
 Public Edge Functions must return client-safe errors only. Live `bq-signup` v8 resolves ICAC server-side and live `bq-admin` contains protected membership/group actions. Never restore browser `auth.signUp`, email-confirmation copy, SMTP reset links, or `resetPasswordForEmail`.
 
@@ -86,7 +91,7 @@ Release must fail if recoverable items remain stranded or high-risk items leak i
 
 ### 5. PWA/update/offline release validation
 
-Current merged service-worker cache baseline is v63.
+Current merged service-worker cache baseline is v66. Optional shell caching is bounded to 12 seconds per asset and failures remain non-fatal through `Promise.allSettled`.
 
 Verify:
 - fresh install;
@@ -94,7 +99,7 @@ Verify:
 - guest first-run while online;
 - guest first-run/update in installed-PWA state;
 - upgrade from an older service-worker cache;
-- installed-PWA reload;
+- installed-PWA reload after controller change;
 - offline Home;
 - offline standalone Transform after its assets have been cached;
 - cached Scripture content already opened on the device;
@@ -109,12 +114,14 @@ Large Bible/context libraries must remain on-demand rather than blocking startup
 
 ### 6. Reader and translation resilience
 
-Implemented architecture:
+Implemented architecture on current `main`:
 - BSB bundled/on-demand packs;
 - Tagalog local packs;
 - Japanese 口語訳 live loading with Japanese learning/furigana support;
-- NLT connected/licensed reader behavior;
+- NLT licensed-reader behavior;
 - ESV/NIV/AMP licensed external-reader paths.
+
+PR #44 contains an official live NLT API implementation but remains open/unmerged and must not be reported as production behavior.
 
 Still verify representative OT and NT chapters, tokenizer/CDN/API failure and retry, narrow-phone Reader layout, and Japanese learning modes. Scripture text, context notes, interpretation, and application must remain visibly and structurally distinct.
 
@@ -180,6 +187,8 @@ Do not call BibleQuest production-ready until all P0 items pass with evidence:
 
 - Cloudflare static deployment matches the intended current `main` SHA.
 - A completely new user can enter as a guest without registration or a blocking account overlay.
+- A guest can deliberately open Sign in/Create account and exit without registering.
+- Signing out returns to guest mode rather than forcing login.
 - 320–430 px phone layout works at 100% zoom with no horizontal overflow.
 - Daily Journey starts, resumes, completes, preserves streak after one meaningful activity, and syncs safely.
 - Transform opens through the real Grow route, remains responsive on Android, persists progress, and returns cleanly.
@@ -187,6 +196,6 @@ Do not call BibleQuest production-ready until all P0 items pass with evidence:
 - Owner/Admin can correct congregation/small-group membership and role boundaries work with multiple accounts.
 - Reader works across BSB/Tagalog/Japanese plus licensed/failure paths.
 - Doctrinal manifest/classifier/quarantine are reconciled to the current policy and audits pass.
-- PWA install/update/offline/recovery paths work, including the v63 guest-access shell.
+- PWA install/update/offline/recovery paths work, including the v66 guest-access shell and bounded optional caching.
 - Major community/admin privilege boundaries are verified with multiple accounts/roles.
 - No obvious runtime crash, silent no-op, permanent loader, broken link, exposed secret, stale quarantine marker, forced-registration startup gate, stale SMTP copy, contradictory Daily 5 onboarding, or dummy production content remains.
