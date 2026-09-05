@@ -11,21 +11,21 @@ try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
-  await page.waitForFunction(()=>window.BQ_TRANSFORMATION?.mode==='rebuilt-v2');
 
-  // Exact user path: Home -> Grow -> Transformation.
+  // Exact user path: Home -> Grow -> Transformation must navigate to the isolated
+  // standalone Transform document instead of trying to mount inside the main SPA.
   await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/Transformation/}).click();
+  await page.waitForURL(/\/transform\.html$/);
   await page.waitForSelector('.bq-transform-v2');
+  assert.equal(await page.evaluate(()=>window.BQ_TRANSFORMATION?.mode),'rebuilt-v2');
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Personality Foundations/);
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Thinking Patterns Check/);
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Reflection & Action Plan/);
 
-  // A short timer must resolve after opening. This specifically catches event-loop freezes.
   const alive=await page.evaluate(()=>new Promise(resolve=>setTimeout(()=>resolve('alive'),100)));
-  assert.equal(alive,'alive','Transform must leave the browser event loop responsive');
+  assert.equal(alive,'alive','standalone Transform must leave the browser event loop responsive');
 
-  // Begin the real personality assessment and answer one page.
   await page.getByRole('button',{name:/Personality Foundations/}).click();
   await page.getByRole('button',{name:/Begin assessment/}).click();
   await page.waitForSelector('[data-t2-rate]');
@@ -34,15 +34,19 @@ try{
   await page.locator('[data-t2-personality-next]').click();
   assert.match(await page.locator('.bq-t2-heading h1').innerText(),/Page 2 of 4/);
 
-  // Close and reopen; saved progress must be usable without any legacy-state migration.
+  // Close now returns to the main BibleQuest document.
   await page.locator('[data-t2-close]').click();
-  await page.waitForFunction(()=>!document.querySelector('.bq-transform-v2'));
+  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForSelector('.modern-home');
+
+  // Reopen via Grow and verify saved assessment progress survived the document change.
   await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/Transformation/}).click();
+  await page.waitForURL(/\/transform\.html$/);
+  await page.waitForSelector('.bq-transform-v2');
   await page.getByRole('button',{name:/Personality Foundations/}).click();
   assert.match(await page.locator('.bq-t2-panel').innerText(),/Continue \(5\/20 answered\)/);
 
-  // Private journal must save independently of assessment completion.
   await page.locator('[data-t2-home]').click();
   await page.getByRole('button',{name:/Reflection Journal/}).click();
   await page.locator('[data-t2-noticed]').fill('I rush when I feel pressure.');
@@ -56,10 +60,8 @@ try{
   assert.equal(saved.personality.answers.E1,3);
   assert.equal(saved.reflection.action,'Pause and ask one clarifying question.');
 
-  await page.locator('[data-t2-close]').click();
-  assert.ok(await page.locator('.today-journey-card').count(),'closing Transform must leave the main BibleQuest shell usable');
   assert.equal(errors.length,0,`page errors: ${errors.join(' | ')}`);
-  console.log('BibleQuest rebuilt Transform operational smoke passed');
+  console.log('BibleQuest standalone Transform operational smoke passed');
 } finally {
   await browser.close();
 }
