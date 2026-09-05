@@ -1,9 +1,9 @@
-# Transform quarantine
+# Transform quarantine — historical note
 
-Transform is intentionally disabled in production as of 2026-09-05 after repeated Android browser crashes persisted across both the legacy assessment runtime and a replacement safe runtime.
+Transform was temporarily disabled in production on 2026-09-05 after repeated Android browser crashes across the legacy assessment runtime and an interim safe runtime.
 
-Production must not load `transformation.js`, `transformation-taglish.js`, `transformation-safe.js`, `transformation-state-guard.js`, their Transform styles, or the temporary `operational-hardening.js` layer. The Grow entry is intercepted by `transform-quarantine.js` and must fail closed with a small informational notice rather than opening a Transform page. The fifth Transform bottom tab is removed, leaving the stable four-tab navigation.
+That quarantine is no longer the active production architecture. Transform was subsequently restored as an isolated standalone route: Home → Grow → Transformation → `transform.html`. The main SPA does not load the assessment runtime; `transform.html` loads `transformation-v2.js` and `transformation-v2.css` independently, while `transform-launcher.js` handles entry and return actions.
 
-Do not re-enable Transform until a rebuilt implementation passes a real Android-browser reproduction test independently from the production shell. Repository-only static checks or direct API calls are not sufficient evidence.
+The retired runtimes (`transformation.js`, `transformation-taglish.js`, `transformation-safe.js`, `transformation-state-guard.js`, and `operational-hardening.js`) must remain outside the production boot path. Legacy Transform localStorage remains preserved.
 
-Legacy Transform localStorage is preserved and is not deleted by quarantine.
+Standalone Transform still requires real Android-browser acceptance before BibleQuest can be called production-ready. Static source checks alone are not sufficient evidence of crash-free behavior.
