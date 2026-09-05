@@ -39,3 +39,6 @@
 
 /psychometrics-insight.js
   Cache-Control: no-cache, must-revalidate
+
+/psychometrics-polish.js
+  Cache-Control: no-cache, must-revalidate
