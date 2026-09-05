@@ -1,6 +1,6 @@
 import {activeMembership,adminClient,asResponse,corsHeaders,json,parseJson,requireUser} from '../_shared/bq.ts';
 
-const leaderRoles=new Set(['facilitator','leader','admin']);
+const leaderRoles=new Set(['facilitator','leader','pastor','admin']);
 const allowedTypes=new Set(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const categoryFor=(type:string)=>({reading:'reading','guided-study':'reading',mission:'consistency',quiz:'knowledge',reflection:'wisdom',couples:'couples',group:'group',custom:'consistency'} as Record<string,string>)[type]||'consistency';
 const text=(v:unknown,max=500)=>String(v??'').trim().slice(0,max);
@@ -28,7 +28,7 @@ Deno.serve(async(req:Request)=>{
     if(!member)return json({error:'Active congregation membership required'},403);
 
     if(action==='create'){
-      if(!leaderRoles.has(member.role))return json({error:'Only facilitators and leaders can create assignments'},403);
+      if(!leaderRoles.has(member.role))return json({error:'Only facilitators, leaders, and pastors can create assignments'},403);
       const title=text(body?.title,120),instructions=text(body?.instructions,4000),assignmentType=String(body?.assignmentType||'custom');
       const targetScope=String(body?.targetScope||'all'),targetId=body?.targetId?String(body.targetId):null;
       if(title.length<2||!allowedTypes.has(assignmentType))return json({error:'Provide a valid assignment title and type'},400);
@@ -78,7 +78,7 @@ Deno.serve(async(req:Request)=>{
     }
 
     if(action==='feedback'){
-      if(!leaderRoles.has(member.role))return json({error:'Leader role required'},403);
+      if(!leaderRoles.has(member.role))return json({error:'Leader or pastor role required'},403);
       const targetUserId=String(body?.targetUserId||'');if(!targetUserId)return json({error:'targetUserId required'},400);
       const feedback=text(body?.feedback,2000);
       const updated=await admin.from('bible_assignment_progress').update({leader_feedback:feedback||null,updated_at:new Date().toISOString()}).eq('assignment_id',assignment.id).eq('user_id',targetUserId).select('*').maybeSingle();
