@@ -7,7 +7,6 @@
   const COUPLES='biblequest_couples_v1';
   const REVIEW='biblequest_open_review_v1';
   const LEARNING='biblequest_learning_v1';
-  const SAVED='biblequest_saved_passage_v1';
   const DEVICE='biblequest_device_key_v1';
   const ERROR_KEY='bq_startup_last_error_v1';
   const ALIASES=[
@@ -117,7 +116,8 @@
 
   function sanitizeStory(){
     const r=readJson(STORY);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(STORY,r);return}
-    const s={...r.value};let changed=false;if(!Array.isArray(s.completed)){s.completed=[];changed=true}else{s.completed=[...new Set(s.completed.filter(x=>typeof x==='string'))]}
+    const s={...r.value};let changed=false;
+    if(!Array.isArray(s.completed)){s.completed=[];changed=true}else{const clean=[...new Set(s.completed.filter(x=>typeof x==='string'))];if(clean.length!==s.completed.length||clean.some((x,i)=>x!==s.completed[i]))changed=true;s.completed=clean}
     if(s.current!=null&&!isObject(s.current)){s.current=null;changed=true}if(!isObject(s.review)){s.review={};changed=true}if(changed)replaceState(STORY,r,s)
   }
 
@@ -137,8 +137,7 @@
     const s={...r.value};let changed=false;if(!isObject(s.questionStats)){s.questionStats={};changed=true}if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}if(!isObject(s.connectionStats)){s.connectionStats={seen:0,correct:0,last:null};changed=true}if(changed)replaceState(LEARNING,r,s)
   }
 
-  function sanitizeSaved(){const r=readJson(SAVED);if(r.raw&&!isObject(r.value))removeUnsafe(SAVED,r)}
-  function sanitizeAll(){sanitizeApp();sanitizeGrowth();sanitizeReader();sanitizeSequence();sanitizeStory();sanitizeCouples();sanitizeReview();sanitizeLearning();sanitizeSaved();primeAliases()}
+  function sanitizeAll(){sanitizeApp();sanitizeGrowth();sanitizeReader();sanitizeSequence();sanitizeStory();sanitizeCouples();sanitizeReview();sanitizeLearning();primeAliases()}
 
   function installUuidFallback(){
     try{
