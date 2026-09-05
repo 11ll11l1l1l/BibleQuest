@@ -8,6 +8,7 @@ const admin=read('admin.js');
 const adminHtml=read('admin.html');
 const adminFn=read('supabase/functions/bq-admin/index.ts');
 const cloud=read('cloud.js');
+const assignmentUi=read('assignment-center.js');
 const assignment=read('supabase/functions/bq-assignment/index.ts');
 const invite=read('supabase/functions/bq-invite/index.ts');
 const score=read('supabase/functions/bq-score/index.ts');
@@ -27,9 +28,10 @@ must(admin.includes("functions.invoke('bq-create-congregation'"),'Admin console 
 must(admin.includes('MINISTRY SETUP REQUIRED'),'Admin console must make missing congregation setup explicit');
 must(admin.includes('Congregation ministry roles'),'User cards must distinguish ministry roles from platform access');
 
-for(const [name,src] of [['cloud.js',cloud],['bq-assignment',assignment],['bq-invite',invite],['bq-score',score]]){
+for(const [name,src] of [['cloud.js',cloud],['assignment-center.js',assignmentUi],['bq-assignment',assignment],['bq-invite',invite],['bq-score',score]]){
   must(src.includes("'pastor'"),`${name} must explicitly recognize Pastor authority where leadership controls apply`);
 }
 must(cloud.includes("['facilitator','leader','pastor','admin'].includes(callerRole())"),'Pastor must receive congregation controls already authorized by backend');
+must(assignmentUi.includes("['facilitator','leader','pastor','admin'].includes(role)"),'Pastor must receive the Assignment Leader Desk already authorized by backend');
 
 console.log('admin/ministry static checks passed');
