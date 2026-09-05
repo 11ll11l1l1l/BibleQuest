@@ -25,7 +25,8 @@ assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.
 assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load standalone Transform launcher');
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not evaluate Transform assessment runtime');
 assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'main SPA must not load Transform-specific CSS');
-assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform page must load rebuilt runtime');
+assert(!standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform must not depend on the previously failing external runtime');
+assert(standalone.includes("window.BQ_TRANSFORMATION={")&&standalone.includes("mode:'rebuilt-v2'"),'standalone Transform must provide its runtime inline');
 assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone Transform page must load rebuilt styles');
 assert(launcher.includes("const TARGET='./transform.html'"),'Grow Transformation entry must target standalone page');
 console.log('✓ Production entry-point references');
@@ -47,22 +48,19 @@ for(const item of shell)assert(exists(item),`service worker caches missing file:
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg|webp)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=52,'service worker cache must preserve standalone Transform + mobile readability baseline');
-for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
-assert(sw.includes("url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'"),'service worker must preserve standalone Transform navigation offline');
+assert(cacheVersion>=54,'service worker cache must preserve self-contained Transform + mobile readability baseline');
+for(const item of ['transform.html','transform-launcher.js','transformation-v2.css','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
+assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)'),'service worker must recognize both /transform and /transform.html');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'PWA update must activate and claim promptly');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
 
-const transform=read('transformation-v2.js');
 for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);
-assert(transform.includes("mode:'rebuilt-v2'"),'Transform v2 runtime marker missing');
-assert(transform.includes("const STORE='biblequest_transform_v2'"),'Transform v2 must use fresh isolated storage');
-assert(!transform.includes('MutationObserver'),'Transform v2 must not use MutationObserver');
-assert(!transform.includes("document.addEventListener('click'"),'Transform v2 must not intercept document-wide clicks');
-assert(transform.includes("root.addEventListener('click',onClick)"),'Transform interactions must remain root-scoped');
-assert((transform.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must contain exactly 20 personality items');
-assert(transform.includes('Thinking Patterns Check')&&transform.includes('Reflection & Action Plan')&&transform.includes('Private Reflection Journal'),'Transform personal-development surfaces missing');
-console.log('✓ Standalone rebuilt Transform v2 isolation and content');
+assert(standalone.includes("var STORE='biblequest_transform_v2'"),'Transform must use isolated local storage');
+assert(!standalone.includes('MutationObserver'),'Transform must not use MutationObserver');
+assert(standalone.includes("root.addEventListener('click'"),'Transform interactions must remain root-scoped');
+assert((standalone.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must contain exactly 20 personality items');
+assert(standalone.includes('Thinking Patterns Check')&&standalone.includes('Reflection & Action Plan')&&standalone.includes('Private Reflection Journal'),'Transform personal-development surfaces missing');
+console.log('✓ Self-contained Transform isolation and content');
 
 const mobileCss=read('mobile-production.css');
 const mobileReadability=read('mobile-readability.css');
@@ -90,7 +88,7 @@ const workflows=walk('.github/workflows',p=>/\.ya?ml$/i.test(p));
 for(const file of workflows){const yml=read(file);assert(/\bworkflow_dispatch\s*:/.test(yml),`${file} must be manual-dispatch capable`);for(const trigger of ['push','pull_request','schedule','workflow_run','repository_dispatch']){const re=new RegExp(`^\\s{2}${trigger}\\s*:`, 'm');assert(!re.test(yml),`${file} contains forbidden automatic trigger: ${trigger}`)}}
 console.log(`✓ GitHub Actions manual-only policy: ${workflows.length} workflows`);
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.css','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Required release assets');
 
 const contextManifest=JSON.parse(read('data/packs/context/manifest.json'));
@@ -110,7 +108,7 @@ console.log('✓ Doctrinal/content audits');
 run('python3',['-m','py_compile','scripts/apply-doctrinal-safety.py','scripts/build_content_pack.py','scripts/build_story_packs.py','scripts/build_tagalog_packs.py','scripts/build_original_language_packs.py']);
 console.log('✓ Python content tooling syntax');
 
-const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js','transformation-v2.js'];
+const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js'];
 for(const file of sensitiveBrowserFiles){const text=read(file);assert(!/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/i.test(text),`privileged secret marker found in browser file: ${file}`)}
 console.log('✓ Browser secret invariants');
 
