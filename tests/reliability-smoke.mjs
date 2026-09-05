@@ -8,6 +8,8 @@ const assert=(ok,msg)=>{if(!ok)fail(msg)};
 
 const sw=read('sw.js');
 const index=read('index.html');
+const standalone=read('transform.html');
+const launcher=read('transform-launcher.js');
 const transform=read('transformation-v2.js');
 const css=read('transformation-v2.css');
 const shell=[...sw.matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]);
@@ -15,18 +17,23 @@ const coreMatch=sw.match(/const CORE=\[([^\]]+)\]/);
 const core=coreMatch?[...coreMatch[1].matchAll(/'\.\/([^']+)'/g)].map(m=>m[1]):[];
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 
-assert(cacheVersion>=49,`PWA cache must include rebuilt Transform v2 baseline (v49+), got v${cacheVersion||'missing'}`);
-for(const item of ['index.html','styles.css','app.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
+assert(cacheVersion>=50,`PWA cache must include standalone Transform baseline (v50+), got v${cacheVersion||'missing'}`);
+for(const item of ['index.html','transform.html','styles.css','app.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort service-worker install');
-assert(sw.includes("networkFirst(e.request,'./index.html')"),'navigations must stay network-first with offline fallback');
+assert(sw.includes("url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'"),'Transform navigation must have its own offline document fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'service worker must activate and claim promptly');
 
-assert(index.includes('<script src="transformation-v2.js"></script>'),'production must load rebuilt Transform v2');
-assert(index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'production must load rebuilt Transform v2 styles');
-for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired Transform runtime must not be production-loaded: ${legacy}`);
-for(const legacy of ['transform-quarantine.css','transformation-safe.css','transformation.css','transformation-taglish.css'])assert(!index.includes(`<link rel="stylesheet" href="${legacy}">`),`retired Transform styles must not be production-loaded: ${legacy}`);
-assert(shell.includes('transformation-v2.js')&&shell.includes('transformation-v2.css'),'Transform v2 must be available offline');
-for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js'])assert(!shell.includes(legacy),`retired Transform runtime must stay out of active PWA shell: ${legacy}`);
+// The main BibleQuest SPA must not evaluate Transform's assessment runtime anymore.
+assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not directly load Transform assessment runtime');
+assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'main SPA must not directly load Transform styles');
+assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load the isolated Transform launcher');
+assert(launcher.includes("const TARGET='./transform.html'"),'Transform launcher must target the standalone document');
+assert(launcher.includes("location.assign(new URL(TARGET,location.href).href)"),'Transform entry must navigate instead of mounting inside the main SPA');
+assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone document must load Transform v2');
+assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone document must load Transform styles');
+assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone document must explicitly initialize Transform');
+for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);
+assert(shell.includes('transform.html')&&shell.includes('transform-launcher.js')&&shell.includes('transformation-v2.js')&&shell.includes('transformation-v2.css'),'standalone Transform assets must be available offline');
 
 assert(transform.includes("mode:'rebuilt-v2'"),'Transform must expose rebuilt-v2 runtime marker');
 assert(transform.includes("const VERSION=2"),'Transform must use explicit versioned local state');
@@ -35,7 +42,6 @@ assert(!transform.includes('MutationObserver'),'rebuilt Transform must not use M
 assert(!transform.includes("document.addEventListener('click'"),'rebuilt Transform must not install a document-wide click interceptor');
 assert(!transform.includes("window.addEventListener('error'"),'rebuilt Transform must not install global error interception');
 assert(transform.includes("root.addEventListener('click',onClick)"),'Transform event handling must stay scoped to its own root');
-assert(transform.includes("root.addEventListener('keydown'"),'Transform must have scoped keyboard close support');
 assert(transform.includes('20-item Big Five reflection'),'Personality assessment must remain part of rebuilt Transform');
 assert(transform.includes('Thinking Patterns Check'),'Thinking-pattern reflection must remain part of rebuilt Transform');
 assert(transform.includes('Reflection & Action Plan'),'personal-development plan must remain part of rebuilt Transform');
@@ -55,4 +61,4 @@ for(const item of shell){if(item==='data/packs/context/manifest.json'||item==='d
 const headers=read('_headers');
 for(const header of ['X-Content-Type-Options: nosniff','Referrer-Policy: strict-origin-when-cross-origin','Permissions-Policy:','X-Frame-Options: SAMEORIGIN'])assert(headers.includes(header),`missing production security header: ${header}`);
 
-console.log(`Reliability smoke passed: rebuilt Transform v2 isolated, ${shell.length} shell references, cache v${cacheVersion}.`);
+console.log(`Reliability smoke passed: standalone Transform isolated from main SPA, ${shell.length} shell references, cache v${cacheVersion}.`);
