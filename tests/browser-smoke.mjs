@@ -32,7 +32,8 @@ try{
     season:document.querySelector('.journey-season,.journey-season-empty')?.getBoundingClientRect().toJSON(),
     explore:document.querySelector('.modern-label')?.getBoundingClientRect().toJSON(),
     hub:document.querySelector('.modern-hub')?.getBoundingClientRect().toJSON(),
-    nav:[...document.querySelectorAll('.bottom .navbtn')].map(x=>x.getBoundingClientRect().toJSON())
+    nav:[...document.querySelectorAll('.bottom .navbtn')].map(x=>({rect:x.getBoundingClientRect().toJSON(),label:x.textContent.trim()})),
+    navColumns:getComputedStyle(document.querySelector('.bottom')).gridTemplateColumns
   }));
   assert.ok(geometry.scrollWidth<=geometry.innerWidth+1,`home must not horizontally overflow: ${geometry.scrollWidth}px > ${geometry.innerWidth}px`);
   assert.ok(geometry.daily&&geometry.daily.top<140,'Daily Journey should be the first substantial home card');
@@ -40,9 +41,11 @@ try{
   if(geometry.path&&geometry.season)assert.ok(geometry.path.top<geometry.season.top,'Bible path should appear before the optional season');
   assert.ok(geometry.explore&&geometry.explore.top<800,'Explore should begin within roughly one phone viewport after the core journey controls');
   assert.ok(geometry.hub&&geometry.hub.height<=110,'Explore cards must stay compact on mobile');
-  assert.equal(geometry.nav.length,5,'bottom navigation should contain Home, Journey, Think, Transform and Me');
-  assert.ok(Math.max(...geometry.nav.map(x=>x.top))-Math.min(...geometry.nav.map(x=>x.top))<3,'all five navigation tabs must remain on one row');
-  assert.ok(geometry.nav.every(x=>x.width>50&&x.width<90),'five navigation tabs must fit without clipping');
+  assert.equal(geometry.nav.length,4,'bottom navigation should contain Home, Journey, Think and Me');
+  assert.deepEqual(geometry.nav.map(x=>x.label),['🏡Home','🗺️Journey','💭Think','🌱Me'],'bottom navigation destinations changed unexpectedly');
+  assert.ok(Math.max(...geometry.nav.map(x=>x.rect.top))-Math.min(...geometry.nav.map(x=>x.rect.top))<3,'all four navigation tabs must remain on one row');
+  assert.ok(Math.max(...geometry.nav.map(x=>x.rect.width))-Math.min(...geometry.nav.map(x=>x.rect.width))<2,'four navigation tabs must remain equal width');
+  assert.equal(geometry.navColumns.trim().split(/\s+/).length,4,'computed bottom navigation must have four columns');
 
   // First visit must land directly on the Daily Journey. Personal focus is opt-in, not a blocking modal.
   assert.equal(await page.locator('#bqFrontStruggle:not(.hidden)').count(),0,'personal focus must not block the Daily Journey');
@@ -126,17 +129,17 @@ try{
   assert.match(world,/Genesis/);assert.match(world,/Exodus/);assert.match(world,/Kingdom/);assert.match(world,/Jesus/);assert.match(world,/Early Church/);
   await page.locator('#bqEngagementWorld [data-world-v3-close]').click();
 
-  console.log('phase: transformation');
+  console.log('phase: standalone transformation');
   await page.evaluate(()=>window.BQ_TRANSFORMATION.open());
-  await page.waitForSelector('.bq-transform-overlay');
-  assert.match(await page.locator('.bq-transform-overlay').innerText(),/Personality Foundations/);
-  assert.match(await page.locator('.local-chip').innerText(),/private on this device/i);
-  const personalityApi=await page.evaluate(()=>Boolean(window.BQPersonalityProfile?.presentation&&window.BQPersonalityProfile?.result));
-  assert.equal(personalityApi,true,'personality profile API should be available for later presentation personalization');
-  await page.locator('[data-route="home"]').first().click().catch(()=>{});
+  await page.waitForURL(/\/transform\.html$/);
+  await page.waitForSelector('.bq-transform-v2');
+  assert.equal(await page.evaluate(()=>window.BQ_TRANSFORMATION?.mode),'rebuilt-v2','standalone Transform must load rebuilt-v2 runtime');
+  assert.match(await page.locator('.bq-transform-v2').innerText(),/Personality Foundations/);
+  await page.keyboard.press('Escape');
+  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForSelector('.today-journey-card');
 
   console.log('phase: together');
-  await page.evaluate(()=>document.querySelector('.bq-transform-overlay')?.remove());
   await page.locator('[data-modern-hub="together"]').click();
   assert.match(await page.locator('.modern-sheet-list').innerText(),/Journey|Live BibleQuest Room|Play Together/);
   await page.getByRole('button',{name:/Live BibleQuest Room/}).click();
