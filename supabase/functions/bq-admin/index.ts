@@ -105,5 +105,5 @@ Deno.serve(async(req:Request)=>{
 
     if(action==='send_password_reset'||action==='issue_reset_code')return json(req,{error:'Password recovery is user-controlled with the private BibleQuest recovery code.'},410);
     return json(req,{error:'Unknown admin action'},400);
-  }catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:err instanceof Error?err.message:'Unexpected admin error'},500)}
+  }catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:'Unexpected admin error'},500)}
 });
