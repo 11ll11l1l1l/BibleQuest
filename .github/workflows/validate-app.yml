@@ -13,6 +13,8 @@ jobs:
           node-version: 22
       - name: Smoke PWA reliability guards
         run: node tests/reliability-smoke.mjs
+      - name: Smoke bounded PWA install
+        run: node tests/pwa-install-bounds-static.mjs
       - name: Smoke auth flow invariants
         run: node tests/auth-flow-static-smoke.mjs
       - name: Run repository-owned release validation
