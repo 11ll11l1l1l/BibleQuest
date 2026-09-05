@@ -7,6 +7,14 @@ page.setDefaultTimeout(12000);
 const errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 
+async function openTransformFromGrow(){
+  await page.waitForSelector('.today-journey-card');
+  await page.locator('[data-modern-hub="grow"]').click();
+  await page.getByRole('button',{name:/Transformation/}).click();
+  await page.waitForURL(/\/transform\.html$/);
+  await page.waitForSelector('.bq-transform-v2');
+}
+
 try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
@@ -14,10 +22,7 @@ try{
 
   // Exact user path: Home -> Grow -> Transformation must navigate to the isolated
   // standalone Transform document instead of trying to mount inside the main SPA.
-  await page.locator('[data-modern-hub="grow"]').click();
-  await page.getByRole('button',{name:/Transformation/}).click();
-  await page.waitForURL(/\/transform\.html$/);
-  await page.waitForSelector('.bq-transform-v2');
+  await openTransformFromGrow();
   assert.equal(await page.evaluate(()=>window.BQ_TRANSFORMATION?.mode),'rebuilt-v2');
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Personality Foundations/);
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Thinking Patterns Check/);
@@ -34,16 +39,12 @@ try{
   await page.locator('[data-t2-personality-next]').click();
   assert.match(await page.locator('.bq-t2-heading h1').innerText(),/Page 2 of 4/);
 
-  // Close now returns to the main BibleQuest document.
-  await page.locator('[data-t2-close]').click();
+  // Escape must always return to the main shell and leave saved progress intact.
+  await page.keyboard.press('Escape');
   await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
   await page.waitForSelector('.modern-home');
 
-  // Reopen via Grow and verify saved assessment progress survived the document change.
-  await page.locator('[data-modern-hub="grow"]').click();
-  await page.getByRole('button',{name:/Transformation/}).click();
-  await page.waitForURL(/\/transform\.html$/);
-  await page.waitForSelector('.bq-transform-v2');
+  await openTransformFromGrow();
   await page.getByRole('button',{name:/Personality Foundations/}).click();
   assert.match(await page.locator('.bq-t2-panel').innerText(),/Continue \(5\/20 answered\)/);
 
@@ -59,6 +60,29 @@ try{
   assert.equal(saved.version,2);
   assert.equal(saved.personality.answers.E1,3);
   assert.equal(saved.reflection.action,'Pause and ask one clarifying question.');
+
+  // The explicit Close control must also return cleanly.
+  await page.locator('[data-t2-close]').click();
+  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForSelector('.modern-home');
+
+  // Transform -> Reader must survive the document transition and consume its one-shot return action.
+  await openTransformFromGrow();
+  await page.locator('[data-t2-reader]').click();
+  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForSelector('[data-reader-book="GEN"]');
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('bq_transform_return_action')),null,'Reader return action must be consumed once');
+  await page.locator('[data-reader-close]').first().click();
+  await page.waitForSelector('.today-journey-card');
+
+  // Transform -> Situations & Wisdom must use the same recoverable one-shot return mechanism.
+  await openTransformFromGrow();
+  await page.getByRole('button',{name:/Reflection & Action Plan/}).click();
+  await page.locator('[data-t2-wisdom]').click();
+  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForSelector('.question-card');
+  assert.match(await page.locator('.question-card .eyebrow').innerText(),/Situations & Wisdom/);
+  assert.equal(await page.evaluate(()=>sessionStorage.getItem('bq_transform_return_action')),null,'Wisdom return action must be consumed once');
 
   assert.equal(errors.length,0,`page errors: ${errors.join(' | ')}`);
   console.log('BibleQuest standalone Transform operational smoke passed');

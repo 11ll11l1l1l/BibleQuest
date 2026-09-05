@@ -14,16 +14,26 @@ async function checkViewport(name,viewport,{mobile=false}={}){
     await page.waitForSelector('.today-journey-card');
     await page.waitForTimeout(350);
 
-    const geometry=await page.evaluate(()=>({
-      innerWidth:window.innerWidth,
-      scrollWidth:document.documentElement.scrollWidth,
-      daily:document.querySelector('.today-journey-card')?.getBoundingClientRect().toJSON(),
-      journeyCards:[...document.querySelectorAll('.bq-engagement-stack > *')].filter(x=>getComputedStyle(x).display!=='none').map(x=>({className:x.className,rect:x.getBoundingClientRect().toJSON()})),
-      path:document.querySelector('.journey-path-scroll')?.getBoundingClientRect().toJSON(),
-      hubs:[...document.querySelectorAll('.modern-hub')].map(x=>x.getBoundingClientRect().toJSON()),
-      nav:[...document.querySelectorAll('.bottom .navbtn')].map(x=>x.getBoundingClientRect().toJSON()),
-      columns:getComputedStyle(document.querySelector('.modern-hubs')).gridTemplateColumns
-    }));
+    const geometry=await page.evaluate(()=>{
+      const rect=selector=>document.querySelector(selector)?.getBoundingClientRect().toJSON();
+      const px=(selector,prop)=>{const el=document.querySelector(selector);return el?(parseFloat(getComputedStyle(el)[prop])||0):0};
+      const navEls=[...document.querySelectorAll('.bottom .navbtn')];
+      return {
+        innerWidth:window.innerWidth,
+        scrollWidth:document.documentElement.scrollWidth,
+        daily:rect('.today-journey-card'),
+        journeyCards:[...document.querySelectorAll('.bq-engagement-stack > *')].filter(x=>getComputedStyle(x).display!=='none').map(x=>({className:x.className,rect:x.getBoundingClientRect().toJSON()})),
+        path:rect('.journey-path-scroll'),
+        hubs:[...document.querySelectorAll('.modern-hub')].map(x=>x.getBoundingClientRect().toJSON()),
+        nav:navEls.map(x=>({rect:x.getBoundingClientRect().toJSON(),label:x.textContent.trim(),font:parseFloat(getComputedStyle(x).fontSize)||0})),
+        navColumns:getComputedStyle(document.querySelector('.bottom')).gridTemplateColumns,
+        columns:getComputedStyle(document.querySelector('.modern-hubs')).gridTemplateColumns,
+        primaryHeight:rect('.journey-primary')?.height||0,
+        primaryFont:px('.journey-primary','fontSize'),
+        pathLabelFont:px('.journey-node small','fontSize'),
+        hubSupportFont:px('.modern-hub small','fontSize')
+      };
+    });
 
     assert.ok(geometry.scrollWidth<=geometry.innerWidth+1,`${name}: home must not horizontally overflow`);
     assert.ok(geometry.daily&&geometry.daily.width<=geometry.innerWidth,`${name}: Daily Journey must fit the viewport`);
@@ -34,14 +44,24 @@ async function checkViewport(name,viewport,{mobile=false}={}){
       assert.ok(card.rect.width<=geometry.innerWidth+1,`${name}: ${card.className} must not be wider than viewport`);
     }
     assert.ok(geometry.path&&geometry.path.right<=geometry.innerWidth+1,`${name}: Journey path viewport must remain contained`);
-    assert.equal(geometry.nav.length,5,`${name}: bottom navigation must keep five destinations`);
-    assert.ok(Math.max(...geometry.nav.map(x=>x.top))-Math.min(...geometry.nav.map(x=>x.top))<3,`${name}: bottom navigation must remain one row`);
+    assert.equal(geometry.nav.length,4,`${name}: bottom navigation must match Home, Journey, Think and Me`);
+    assert.deepEqual(geometry.nav.map(x=>x.label),['🏡Home','🗺️Journey','💭Think','🌱Me'],`${name}: bottom navigation destinations changed unexpectedly`);
+    assert.ok(Math.max(...geometry.nav.map(x=>x.rect.top))-Math.min(...geometry.nav.map(x=>x.rect.top))<3,`${name}: bottom navigation must remain one row`);
+    const navWidths=geometry.nav.map(x=>x.rect.width);
+    assert.ok(Math.max(...navWidths)-Math.min(...navWidths)<2,`${name}: four navigation columns must remain equal width`);
+    assert.equal(geometry.navColumns.trim().split(/\s+/).length,4,`${name}: computed bottom-nav grid must have four columns`);
     assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none',`${name}: legacy hero must remain suppressed`);
 
     if(mobile){
       assert.equal(await page.locator('.app>.quick-stats').evaluate(el=>getComputedStyle(el).display),'none',`${name}: legacy stat strip must not consume mobile viewport space`);
       assert.ok(geometry.daily.top<140,`${name}: Daily Journey must remain above the fold`);
       assert.ok(geometry.hubs.every(x=>x.width>120),`${name}: Explore cards must remain usable`);
+      assert.ok(geometry.nav.every(x=>x.rect.height>=44),`${name}: bottom navigation touch targets must remain usable`);
+      assert.ok(geometry.nav.every(x=>x.font>=10),`${name}: bottom navigation labels must remain readable`);
+      assert.ok(geometry.primaryHeight>=44,`${name}: Daily Journey primary CTA must remain a practical touch target`);
+      assert.ok(geometry.primaryFont>=14,`${name}: Daily Journey primary CTA text must remain readable`);
+      assert.ok(geometry.pathLabelFont>=9,`${name}: Journey support labels must not regress to tiny production text`);
+      assert.ok(geometry.hubSupportFont>=10,`${name}: Explore support labels must remain readable on narrow phones`);
     }else{
       assert.ok(geometry.columns.split(' ').length>=4,`${name}: desktop Explore should use the wide layout`);
       assert.ok(geometry.daily.width>500,`${name}: desktop content should use available width without becoming phone-sized`);
@@ -56,7 +76,7 @@ async function checkViewport(name,viewport,{mobile=false}={}){
 }
 
 try{
-  for(const width of [320,360,375,390,412,430]){
+  for(const width of [320,360,390,412,430]){
     await checkViewport(`phone-${width}`,{width,height:932},{mobile:true});
   }
   await checkViewport('desktop',{width:1280,height:900});

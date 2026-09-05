@@ -15,9 +15,13 @@ console.log('BibleQuest release validation');
 const index=read('index.html');
 const standalone=read('transform.html');
 const launcher=read('transform-launcher.js');
+const browserSmoke=read('tests/browser-smoke.mjs');
+const layoutSmoke=read('tests/layout-matrix-smoke.mjs');
+const operationalSmoke=read('tests/operational-entry-smoke.mjs');
 const localRefs=[...[...index.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),...[...index.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1])].filter(x=>!/^https?:/i.test(x)&&!x.startsWith('data:')&&!x.startsWith('#'));
 for(const ref of localRefs){const clean=ref.replace(/^\.\//,'').split(/[?#]/)[0];assert(exists(clean),`index.html references missing file: ${clean}`)}
 assert(index.indexOf('mobile-production.css')>index.indexOf('release-hardening.css'),'mobile-production.css must load after release-hardening.css');
+assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.css'),'mobile-readability.css must remain the final mobile correction');
 assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load standalone Transform launcher');
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not evaluate Transform assessment runtime');
 assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'main SPA must not load Transform-specific CSS');
@@ -43,8 +47,8 @@ for(const item of shell)assert(exists(item),`service worker caches missing file:
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg|webp)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=50,'service worker cache must include standalone Transform route');
-for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css'])assert(shell.includes(item),`service worker shell missing standalone Transform asset: ${item}`);
+assert(cacheVersion>=52,'service worker cache must preserve standalone Transform + mobile readability baseline');
+for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
 assert(sw.includes("url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'"),'service worker must preserve standalone Transform navigation offline');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'PWA update must activate and claim promptly');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
@@ -61,9 +65,20 @@ assert(transform.includes('Thinking Patterns Check')&&transform.includes('Reflec
 console.log('✓ Standalone rebuilt Transform v2 isolation and content');
 
 const mobileCss=read('mobile-production.css');
+const mobileReadability=read('mobile-readability.css');
 assert(mobileCss.includes('@media(max-width:360px)'),'360px phones require an explicit compact layout');
 assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remain ahead of optional season on Home');
-console.log('✓ Mobile hierarchy guards');
+assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'),'final mobile override must match the four actual bottom tabs');
+assert(browserSmoke.includes('geometry.nav.length,4'),'primary browser smoke must guard the four-tab production nav');
+assert(!browserSmoke.includes('bq-transform-overlay'),'primary browser smoke must not restore retired same-page Transform assumptions');
+assert(browserSmoke.includes('standalone transformation')&&browserSmoke.includes('window.BQ_TRANSFORMATION.open()'),'primary browser smoke must exercise the standalone Transform route');
+assert(layoutSmoke.includes('for(const width of [320,360,390,412,430])'),'layout matrix must cover required narrow-phone widths');
+assert(layoutSmoke.includes('geometry.nav.length,4'),'layout matrix must guard four bottom destinations');
+assert(layoutSmoke.includes('primaryHeight>=44')&&layoutSmoke.includes('pathLabelFont>=9'),'layout matrix must guard practical touch targets and critical label readability');
+assert(operationalSmoke.includes("keyboard.press('Escape')"),'Transform operational smoke must exercise Escape return');
+assert(operationalSmoke.includes('[data-t2-reader]')&&operationalSmoke.includes('[data-t2-wisdom]'),'Transform operational smoke must exercise Reader and Wisdom return actions');
+assert(operationalSmoke.includes('bq_transform_return_action'),'Transform return actions must be verified as one-shot state');
+console.log('✓ Mobile hierarchy and operational browser-smoke guards');
 
 const cloud=read('cloud-config.js');
 assert(cloud.includes("publishableKey: 'sb_publishable_"),'cloud config must use a publishable key');
@@ -75,7 +90,7 @@ const workflows=walk('.github/workflows',p=>/\.ya?ml$/i.test(p));
 for(const file of workflows){const yml=read(file);assert(/\bworkflow_dispatch\s*:/.test(yml),`${file} must be manual-dispatch capable`);for(const trigger of ['push','pull_request','schedule','workflow_run','repository_dispatch']){const re=new RegExp(`^\\s{2}${trigger}\\s*:`, 'm');assert(!re.test(yml),`${file} contains forbidden automatic trigger: ${trigger}`)}}
 console.log(`✓ GitHub Actions manual-only policy: ${workflows.length} workflows`);
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Required release assets');
 
 const contextManifest=JSON.parse(read('data/packs/context/manifest.json'));
