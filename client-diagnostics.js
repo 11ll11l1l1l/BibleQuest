@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION='production-upgrade-v1';const sent=new Map();
+  const VERSION='pwa-v74-runtime-recovery';const sent=new Map();
   const account=()=>window.BQAccount,client=()=>account()?.client?.(),session=()=>account()?.session?.();
   function redact(text=''){return String(text).replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[email]').replace(/https?:\/\/\S+/gi,'[url]').replace(/[A-F0-9]{24,}/gi,'[token]').slice(0,1800)}
   function surface(){const open=[...document.querySelectorAll('[id$="Layer"]:not(.hidden),.modern-sheet:not(.hidden)')].at(-1);return (open?.id||open?.className||location.pathname||'BibleQuest').toString().slice(0,120)}
