@@ -114,24 +114,10 @@ assert(contextManifest.books?.length===66,`expected 66 Bible context packs, got 
 for(const row of contextManifest.books)assert(row.code&&row.path&&exists(row.path),`invalid/missing context pack: ${row.code||'unknown'}`);
 console.log('✓ 66-book context pack');
 
-const staticTests=[
-  'tests/reliability-smoke.mjs',
-  'tests/pwa-install-bounds-static.mjs',
-  'tests/cold-start-static.mjs',
-  'tests/auth-flow-static-smoke.mjs',
-  'tests/admin-link-static-smoke.mjs',
-  'tests/admin-membership-static.mjs',
-  'tests/admin-ministry-static.mjs',
-  'tests/owner-access-static.mjs',
-  'tests/cloud-teams-static.mjs',
-  'tests/community-role-parity-static.mjs',
-  'tests/linked-activities-static.mjs',
-  'tests/couple-challenge-link-static.mjs',
-  'tests/couple-cloud-reliability-static.mjs',
-  'tests/psychometrics-static-smoke.mjs'
-];
+const discoveredStatic=walk('tests',p=>p.endsWith('.mjs')&&path.basename(p).includes('static'));
+const staticTests=[...new Set(['tests/reliability-smoke.mjs',...discoveredStatic])].sort();
 for(const test of staticTests){assert(exists(test),`static regression test missing: ${test}`);run(process.execPath,[test])}
-console.log(`✓ Cross-feature static regression suite: ${staticTests.length} tests`);
+console.log(`✓ Auto-discovered cross-feature static regression suite: ${staticTests.length} tests`);
 
 const packManifest=JSON.parse(read('data/packs/manifest.json'));
 const doctrinalRuntime=read('data/doctrinal-safety.js');
