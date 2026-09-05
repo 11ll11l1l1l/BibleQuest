@@ -29,6 +29,12 @@ html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-app
     if(target.closest('[data-t2-reader]')){event.preventDefault();event.stopImmediatePropagation();goHome('reader');return;}
     if(target.closest('[data-t2-wisdom]')){event.preventDefault();event.stopImmediatePropagation();goHome('wisdom');}
   },true);
+  document.addEventListener('keydown',function(event){
+    if(event.key!=='Escape')return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    goHome();
+  },true);
   try{
     if(!window.BQ_TRANSFORMATION||typeof window.BQ_TRANSFORMATION.open!=='function')throw new Error('Transform module did not load.');
     window.BQ_TRANSFORMATION.open();
