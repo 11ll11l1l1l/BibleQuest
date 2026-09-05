@@ -43,9 +43,12 @@ assert.match(guestAccess,/!layer\|\|layer\.classList\.contains\('hidden'\)\|\|si
 assert.match(guestAccess,/querySelector\('\[data-account-register\]'\)/, 'Guest access may dismiss only the forced startup registration form');
 assert.match(guestAccess,/layer\.classList\.add\('hidden'\)/, 'Unauthenticated first-run registration must be non-blocking');
 assert.match(guestAccess,/data-account-open/, 'Guests must retain an explicit path to sign in or create an account');
+assert.match(guestAccess,/data-bq-continue-guest/, 'Signed-out account screens must provide an explicit guest exit');
+assert.match(guestAccess,/Continue without an account/, 'Guest exit copy must be visible and unambiguous');
+assert.match(guestAccess,/closeAccount:/, 'Guest access API must retain a non-destructive way to close the account surface');
 assert.match(uiTaglish,/closest\('\[data-bq-english\]/, 'Global Taglish translation must skip explicitly English account/tutorial surfaces');
 assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 'Recovery codes must never be written to browser console logs');
 assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
 assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
-console.log('Immediate signup, guest access, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');
+console.log('Immediate signup, guest access/exit, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');
