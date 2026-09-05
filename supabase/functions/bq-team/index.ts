@@ -15,7 +15,7 @@ Deno.serve(async(req:Request)=>{
 
     if(action==='create'){
       const name=cleanText(body?.name,60);if(name.length<2)return json({error:'Team name is required'},400);
-      const made=await admin.from('bible_teams').insert({congregation_id:congregationId,created_by:user.id,team_type:'assignment',name,active:true}).select('id,congregation_id,created_by,team_type,name,active,created_at').single();
+      const made=await admin.from('bible_teams').insert({congregation_id:congregationId,created_by:user.id,team_type:'game_team',name,active:true}).select('id,congregation_id,created_by,team_type,name,active,created_at').single();
       if(made.error)throw made.error;
       const joined=await admin.from('bible_team_members').upsert({team_id:made.data.id,user_id:user.id},{onConflict:'team_id,user_id'});
       if(joined.error)throw joined.error;
