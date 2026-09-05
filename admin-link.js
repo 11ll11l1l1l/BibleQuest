@@ -1,6 +1,8 @@
 (() => {
-  let resolved=false,role='';
+  let resolved=false,role='',retryTimer=null,retryCount=0;
   const DEFAULT_CONGREGATION='ICAC';
+  const MAX_RETRIES=20;
+  const RETRY_MS=500;
 
   const isAdmin=()=>['owner','admin'].includes(role);
   const roleLabel=()=>role==='owner'?'PLATFORM OWNER':role==='admin'?'SITE ADMIN':'';
@@ -60,32 +62,46 @@
       host.append(makeLink('','⚙ Admin & ministry'));
     });
   }
+  function stopRetry(){
+    if(retryTimer){clearTimeout(retryTimer);retryTimer=null}
+  }
+  function scheduleRetry(){
+    if(resolved||retryTimer||retryCount>=MAX_RETRIES)return;
+    retryTimer=setTimeout(()=>{
+      retryTimer=null;
+      retryCount++;
+      check().then(ok=>{if(!ok)scheduleRetry()}).catch(()=>scheduleRetry());
+    },RETRY_MS);
+  }
   async function check(){
     enforceRegistrationCongregation();
     const acc=window.BQAccount,session=acc?.session?.(),client=acc?.client?.();
-    if(!session?.user||!client){resolved=false;role='';removeInjected();return false}
+    if(!session?.user){resolved=true;role='';removeInjected();stopRetry();return true}
+    if(!client){resolved=false;scheduleRetry();return false}
     let next='';
     const direct=await client.from('bible_app_access').select('role,active').eq('user_id',session.user.id).maybeSingle();
     if(!direct.error&&direct.data?.active)next=String(direct.data.role||'');
     if(!next){
       const status=await client.functions.invoke('bq-admin',{body:{action:'status'}}).catch(()=>({error:true}));
       if(!status?.error&&status?.data?.role)next=String(status.data.role);
+      else if(direct.error){resolved=false;scheduleRetry();return false}
     }
-    role=next;resolved=true;inject();
+    role=next;resolved=true;stopRetry();inject();
     window.dispatchEvent(new CustomEvent('bq-admin-access',{detail:{role,allowed:isAdmin()}}));
     return true;
   }
+  function refresh(){
+    resolved=false;retryCount=0;stopRetry();
+    return check().then(ok=>{if(!ok)scheduleRetry();return ok});
+  }
 
-  let tries=0;
-  const timer=setInterval(()=>{
-    tries++;
-    enforceRegistrationCongregation();
-    if(!resolved)check().catch(()=>{});else inject();
-    if(tries>120&&resolved)clearInterval(timer);
-  },500);
-  new MutationObserver(()=>{enforceRegistrationCongregation();if(resolved)inject()}).observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){resolved=false;check().catch(()=>{})}});
-  window.addEventListener('bq-modern-home-rendered',inject);
-  window.addEventListener('bq-account-created',()=>{resolved=false;check().catch(()=>{})});
-  window.BQAdminAccess={refresh:check,status:()=>({resolved,role,allowed:isAdmin(),label:roleLabel()})};
+  document.addEventListener('click',event=>{
+    if(!event.target.closest('[data-account-open],[data-auth-tab]'))return;
+    queueMicrotask(()=>{enforceRegistrationCongregation();if(resolved)inject()});
+  });
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh().catch(()=>{})});
+  window.addEventListener('bq-modern-home-rendered',()=>{enforceRegistrationCongregation();if(resolved)inject()});
+  window.addEventListener('bq-account-created',()=>refresh().catch(()=>{}));
+  refresh().catch(()=>{});
+  window.BQAdminAccess={refresh,status:()=>({resolved,role,allowed:isAdmin(),label:roleLabel()})};
 })();
