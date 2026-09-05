@@ -16,7 +16,7 @@
   const avatarGlyph=a=>window.BQAvatar?.glyph?.(a)||'🙂';
   const accountProfile=()=>window.BQAccount?.profile?.()||null;
   function callerRole(){return active?.role||'member'}
-  function canFacilitate(){return ['facilitator','leader','admin'].includes(callerRole())}
+  function canFacilitate(){return ['facilitator','leader','pastor','admin'].includes(callerRole())}
   function currentUserId(){return session?.user?.id||''}
   function ownDisplayName(){const own=members.find(x=>x.user_id===currentUserId());return (own?.display_name||accountProfile()?.preferred_name||localApp()?.profile?.name||'You').trim()}
   function memberForLocalName(name){const key=String(name||'').trim().toLowerCase();if(!key)return null;const exact=members.filter(x=>String(x.display_name||'').trim().toLowerCase()===key);if(exact.length===1)return exact[0];if(key===ownDisplayName().toLowerCase())return members.find(x=>x.user_id===currentUserId())||null;return null}
