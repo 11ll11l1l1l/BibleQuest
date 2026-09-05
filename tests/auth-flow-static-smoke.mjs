@@ -45,8 +45,9 @@ assert.match(guestAccess,/const PREVIEW='bq_preview_mode_v1'/, 'Signed-out previ
 assert.match(guestAccess,/Preview BibleQuest/, 'Signed-out account screen must offer an explicit limited preview choice');
 assert.match(guestAccess,/Preview is limited to the Home page, Bible Reader and Tutorial/, 'Preview copy must disclose limited access');
 assert.match(guestAccess,/if\(!preview\(\)\)layer\.classList\.remove\('hidden'\)/, 'Signed-out startup must keep account creation/sign-in visible unless preview was chosen');
-assert.match(guestAccess,/data\.bqPreview='1'/, 'Preview entry must be an intentional action');
+assert.match(guestAccess,/dataset\.bqPreview='1'/, 'Preview entry must be an intentional action');
 assert.match(guestAccess,/data-account-signout/, 'Sign-out must clear preview state and return to authentication');
+assert.match(guestAccess,/\['127\.0\.0\.1','localhost'\]\.includes\(location\.hostname\)/, 'E2E full-access bypass must exist only on localhost');
 assert.match(previewAccess,/Journeys, games, saved progress, rankings, groups, assignments, polls, ministry messages, Transform, notes and community activity require a BibleQuest account/, 'Preview lock must cover account-backed feature families');
 assert.match(previewAccess,/\.reader-layer/, 'Bible Reader must remain allowed in preview');
 assert.match(previewAccess,/tutorial-layer/, 'Tutorial must remain allowed in preview');
