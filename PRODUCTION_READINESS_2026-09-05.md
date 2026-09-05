@@ -52,7 +52,7 @@ Public Edge Functions must return client-safe errors only. Live `bq-signup` v7 a
 
 ### 4. Doctrinal/content reconciliation
 
-PR #18 remains the main content-correctness blocker and must not be merged as scripts-only work.
+Draft PR #53 supersedes closed/unmerged PR #18 and is the current content-correctness blocker. It must not be merged as scripts-only work.
 
 Required sequence:
 - run the current doctrinal classifier across the union of active imported packs and quarantined questions;
@@ -67,7 +67,7 @@ Release must fail if recoverable items remain stranded or high-risk items leak i
 
 ### 5. PWA/update/offline release validation
 
-Current cache baseline is v52+. Verify:
+Current production service-worker cache baseline is v59. Verify:
 - fresh install;
 - ordinary browser reload;
 - upgrade from an older service-worker cache;
@@ -185,7 +185,7 @@ Agent rules:
 Do not call BibleQuest production-ready until all P0 items pass with evidence:
 
 - Current Cloudflare SHA matches intended `main`.
-- 360–430 px phone layout works at 100% zoom with no horizontal overflow.
+- 320–430 px phone layout works at 100% zoom with no horizontal overflow.
 - Daily Journey starts, resumes, completes, preserves streak after one meaningful activity, and syncs safely.
 - Transform opens through the real Grow route, remains responsive, persists progress, and returns cleanly.
 - New account → recovery code → English tutorial → login → password recovery works end to end.
