@@ -8,9 +8,13 @@ The following decisions are already integrated and must be preserved:
 
 - **Daily Journey is the primary daily experience**: Continue My Journey → recall → context → learn → apply → reflect. One meaningful Bible activity can preserve the streak; full completion gives stronger progress evidence. Scripture itself is never locked behind XP.
 - **Transform is a standalone route**: Home → Grow → Transformation → `transform.html`. The main SPA must not execute the retired Transform runtimes. Transform v2 contains the 20-item Big Five reflection, five thinking-pattern scenarios, action plan, and private local journal.
-- **Account creation is immediate** through `bq-signup`: email + password + password confirmation. No email-confirmation/SMTP dependency. Email is an unverified sign-in ID. Signed-out recovery uses the private rotating recovery code through `bq-password-reset`.
+- **Account creation is immediate** through live `bq-signup` v8: email + password + password confirmation. No email-confirmation/SMTP dependency. Email is an unverified sign-in ID. Signed-out recovery uses the private rotating recovery code through `bq-password-reset`.
+- **ICAC is the production default congregation for new registrations.** Signup resolves the active ICAC record at runtime, creates a real `bible_congregation_members` row as `member`, and fails closed if ICAC is not configured. The browser's free-text church field is not trusted by the signup backend.
+- **Owner/Admin can repair membership mistakes.** Admin & Ministry can set/remove a user's congregation, assign congregation ministry roles, create/assign/remove small groups, set group leaders, and transfer small-group ownership. Membership moves protect congregation/group owners and are audit logged.
+- **Platform and ministry authority are separate.** Platform roles are owner/admin/member. Congregation roles are admin/pastor/leader/facilitator/member. Pastor/Leader are congregation-scoped titles and never arise merely from profile church text.
+- **Owner access is explicit.** The signed-in platform Owner gets visible OWNER / PLATFORM OWNER identity and direct Admin & Ministry access.
 - **The registration/tutorial surface is intentionally English.** The tutorial now teaches Continue My Journey rather than legacy Daily 5 and can be reopened later.
-- **Mobile baseline is v52+**. The persistent app shell has four bottom tabs; Transform is not a fifth persistent tab. Narrow-phone readability guards now prevent the previous 6–10 px support text baseline.
+- **Mobile baseline is v52+**. The persistent app shell has four bottom tabs; Transform is not a fifth persistent tab. Narrow-phone readability guards prevent the previous 6–10 px support text baseline.
 - **Stale rollback markers were removed.** Old Transform-era source/history can remain for audit/history only when it is not production-loaded.
 - **GitHub Actions are manual-only (`workflow_dispatch`)**. Autonomous agents must never trigger them or add automatic triggers.
 
@@ -21,6 +25,8 @@ The following decisions are already integrated and must be preserved:
 Every Home/Play/Read/Grow/Together entry must either open correctly or show a recoverable visible error. No silent optional-chain no-ops, document-wide mutation feedback loops, permanent loaders, uncloseable overlays, or feature failure that kills the shell.
 
 Transform acceptance is specifically the real user path: Home → Grow → Transformation → `/transform.html`. Verify close, Escape, return-to-Reader/Wisdom, saved assessment/reflection progress, browser Back behavior, reload, and offline fallback. Do not replace this with only direct JavaScript API tests.
+
+Draft PR #57 contains the current Wave 2 runtime/mobile consolidation and is intentionally not merged until executable browser/PWA evidence is available. Its integration branch must remain reconciled with current `main` without overwriting newer Admin/auth/community work.
 
 ### 2. Mobile-first real-device acceptance
 
@@ -35,20 +41,22 @@ Acceptance:
 - primary controls are approximately 44 px or larger where practical;
 - Android browser and installed-PWA behavior are both checked.
 
-### 3. Immediate registration and recovery-code E2E
+### 3. Immediate registration, ICAC membership, and recovery-code E2E
 
 Run a clean production cycle on a new test account:
 1. register with email + password + password confirmation;
-2. receive the private recovery code;
-3. complete the protected English tutorial;
-4. reach Home;
-5. logout/login;
-6. recover password using email + recovery code + new password confirmation;
-7. confirm the old code is invalidated and a new recovery code is issued;
-8. verify repeated bad recovery codes lock out safely;
-9. while signed in, issue a new recovery code from Account → Security.
+2. confirm the new account is automatically assigned to the live ICAC congregation as an active `member`;
+3. receive the private recovery code;
+4. complete the protected English tutorial;
+5. reach Home;
+6. logout/login;
+7. recover password using email + recovery code + new password confirmation;
+8. confirm the old code is invalidated and a new recovery code is issued;
+9. verify repeated bad recovery codes lock out safely;
+10. while signed in, issue a new recovery code from Account → Security;
+11. from an Owner/Admin account, correct the test user's congregation and small-group assignment, then verify the user's effective community context follows the corrected membership.
 
-Public Edge Functions must return client-safe errors only. Live `bq-signup` v7 already uses a generic unexpected-error response; repository/live source parity must remain exact. Never restore `auth.signUp`, email-confirmation copy, SMTP reset links, or `resetPasswordForEmail`.
+Public Edge Functions must return client-safe errors only. Live `bq-signup` v8 resolves ICAC server-side and live `bq-admin` v7 contains the protected membership/group actions. Repository/live source parity must remain exact. Never restore `auth.signUp`, email-confirmation copy, SMTP reset links, or `resetPasswordForEmail`.
 
 ### 4. Doctrinal/content reconciliation
 
@@ -67,7 +75,9 @@ Release must fail if recoverable items remain stranded or high-risk items leak i
 
 ### 5. PWA/update/offline release validation
 
-Current production service-worker cache baseline is v59. Verify:
+Current merged production service-worker cache baseline remains v59. Draft Wave 2 PR #57 rotates the intended next shell to v60, but v60 is not production until that PR passes its executable acceptance gate and is merged.
+
+Verify:
 - fresh install;
 - ordinary browser reload;
 - upgrade from an older service-worker cache;
@@ -80,6 +90,8 @@ Current production service-worker cache baseline is v59. Verify:
 
 Large Bible/context libraries must remain on-demand rather than blocking startup or being indiscriminately precached.
 
+**Deployment evidence note:** GitHub `main` and the live Supabase function versions can be verified from the development environment. Direct DNS/web access to `mybiblequest.pages.dev` is currently unavailable from that environment, so static Cloudflare propagation must be independently verified before release acceptance. Do not infer deployment success from a GitHub merge alone.
+
 ## P1 — complete before broad public promotion
 
 ### 6. Reader and translation resilience
@@ -91,7 +103,7 @@ Verify representative OT and NT chapters across the actual user flows:
 - difficult-word/all-furigana/off modes;
 - tokenizer/CDN failure and retry;
 - narrow-phone Reader layout;
-- NLT connected loading and clear network-failure state;
+- NLT connected/licensed-link behavior and clear network-failure state;
 - ESV/NIV/AMP remain on legal licensed-link/live paths unless redistribution permission is explicit.
 
 Scripture text, context notes, interpretation, and application must remain visibly and structurally distinct.
@@ -105,6 +117,8 @@ Legacy Daily 5 code still exists for compatibility and older game paths. It must
 - Daily Journey resume/completion/cloud sync must be idempotent and survive refresh/offline transitions.
 - Wrong answers should feed useful review without making the user feel progression was lost.
 
+Draft Wave 2 PR #57 contains the next consolidation step but remains gated on executable browser/PWA validation.
+
 ### 8. Bible World / progression correctness
 
 Users must always understand:
@@ -116,11 +130,27 @@ Users must always understand:
 
 Test avatar/world unlock persistence locally and in cloud state. Never imply spiritual maturity, holiness, or faith level from XP/progression.
 
-### 9. Community feature field validation
+### 9. Community/Admin feature field validation
 
-Congregation, roster/roles, Journey Groups, assignments, Live Rooms, Play Together, challenges, couples, leaderboards, badges, and presence have broad implementation coverage but limited real usage.
+Congregation, roster/roles, small groups, Journey Groups, assignments, Live Rooms, Play Together, challenges, couples, leaderboards, badges, and presence have broad implementation coverage but limited real usage.
 
-Use at least two test accounts and two roles where applicable. Verify cross-congregation/couple/group isolation, role restrictions, room lifecycle, empty states, reconnect behavior, and graceful cloud failure. Do not add more community features until the existing ones are field-validated.
+Current production governance to preserve:
+- all new registrations default to the live ICAC congregation as `member`;
+- Owner/Admin can directly repair congregation and small-group assignments;
+- congregation roles are admin/pastor/leader/facilitator/member;
+- group roles are member/leader, with explicit group ownership that must be transferred before the owner can be removed/moved;
+- platform Owner/Admin authority remains separate from ministry roles;
+- password/recovery secrets remain user-controlled.
+
+Use at least two test accounts and multiple roles. Verify:
+- default ICAC signup membership;
+- Owner/Admin correction of an intentionally wrong congregation/group assignment;
+- pastor/leader/facilitator capability boundaries;
+- group ownership transfer and capacity enforcement;
+- cross-congregation/couple/group isolation;
+- room lifecycle, empty states, reconnect behavior, and graceful cloud failure.
+
+Do not add more community features until the existing ones are field-validated.
 
 ### 10. Transform quality after stability
 
@@ -146,11 +176,11 @@ Do not perform a big-bang rewrite. Instead:
 - inventory which modules are truly required at boot;
 - lazy-load feature-specific modules when their hub/feature opens;
 - eliminate duplicate global listeners and stale compatibility shims only with regression evidence;
-- keep app-shell, auth, Daily Journey, navigation, and recovery behavior stable during consolidation.
+- keep app-shell, auth, Daily Journey, navigation, recovery, and Admin access stable during consolidation.
 
 ### 12. Security hardening
 
-Supabase security advisors currently report several BibleQuest tables with RLS enabled but no policy. These are intentionally server-only only if anon/authenticated table grants remain closed; verify rather than adding permissive policies.
+Supabase security advisors may report BibleQuest tables with RLS enabled but no policy. These are intentionally server-only only if anon/authenticated table grants remain closed; verify rather than adding permissive policies.
 
 Supabase leaked-password protection is still disabled. Enabling it is recommended platform hardening and is independent of the custom immediate-signup/recovery architecture.
 
@@ -184,11 +214,12 @@ Agent rules:
 
 Do not call BibleQuest production-ready until all P0 items pass with evidence:
 
-- Current Cloudflare SHA matches intended `main`.
+- Current Cloudflare SHA/static deployment matches intended `main`.
 - 320–430 px phone layout works at 100% zoom with no horizontal overflow.
 - Daily Journey starts, resumes, completes, preserves streak after one meaningful activity, and syncs safely.
 - Transform opens through the real Grow route, remains responsive, persists progress, and returns cleanly.
-- New account → recovery code → English tutorial → login → password recovery works end to end.
+- New account → automatic ICAC membership → recovery code → English tutorial → login → password recovery works end to end.
+- Owner/Admin can correct congregation/small-group membership and role boundaries work with multiple accounts.
 - Reader works across BSB/Tagalog/Japanese plus connected/failure paths.
 - Doctrinal manifest/classifier/quarantine are reconciled and audits pass.
 - PWA install/update/offline/recovery paths work.
