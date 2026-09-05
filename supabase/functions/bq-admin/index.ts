@@ -3,7 +3,10 @@ import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
 const PRIMARY_ORIGIN='https://mybiblequest.pages.dev';
 const LEGACY_ORIGIN='https://11ll11l1l1l.github.io';
 const CLOUDFLARE_PROJECTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'];
-const SITE_ROLES=new Set(['member','leader','pastor','admin','owner']);
+// Platform authority is intentionally separate from congregation ministry authority.
+// Existing legacy leader/pastor rows can still be read and migrated by the admin UI,
+// but new site-level assignments are limited to member/admin/owner.
+const SITE_ROLES=new Set(['member','admin','owner']);
 const CONGREGATION_ROLES=new Set(['member','facilitator','leader','pastor','admin']);
 
 function isAllowedOrigin(value:string){
@@ -81,7 +84,7 @@ Deno.serve(async(req:Request)=>{
 
     if(action==='set_role'){
       const targetUserId=String(body?.targetUserId||''),role=String(body?.role||'member');
-      if(!targetUserId||!SITE_ROLES.has(role))return json(req,{error:'Valid target user and role required'},400);
+      if(!targetUserId||!SITE_ROLES.has(role))return json(req,{error:'Platform role must be member, admin, or owner. Pastor/Leader roles belong to a congregation.'},400);
       const existing=await admin.from('bible_app_access').select('role,active').eq('user_id',targetUserId).maybeSingle();if(existing.error)throw existing.error;
       const currentRole=existing.data?.role||'member';
       if(access.role!=='owner'&&(role==='admin'||role==='owner'||currentRole==='admin'||currentRole==='owner'))return json(req,{error:'Only the owner can change admin or owner access'},403);
@@ -95,7 +98,7 @@ Deno.serve(async(req:Request)=>{
 
     if(action==='set_congregation_role'){
       const targetUserId=String(body?.targetUserId||''),congregationId=String(body?.congregationId||''),role=String(body?.role||'member');
-      if(!targetUserId||!congregationId||!CONGREGATION_ROLES.has(role))return json(req,{error:'Valid user, congregation and role required'},400);
+      if(!targetUserId||!congregationId||!CONGREGATION_ROLES.has(role))return json(req,{error:'Valid user, congregation and ministry role required'},400);
       if(access.role!=='owner'&&role==='admin')return json(req,{error:'Only the owner can grant congregation admin access'},403);
       const member=await admin.from('bible_congregation_members').select('role').eq('user_id',targetUserId).eq('congregation_id',congregationId).maybeSingle();
       if(member.error)throw member.error;if(!member.data)return json(req,{error:'User is not a member of that congregation'},404);
