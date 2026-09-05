@@ -33,5 +33,8 @@ must(admin.includes('data-remove-congregation'),'Admin UI must allow an incorrec
 must(admin.includes('data-admin-create-group'),'Admin UI must allow small-group creation');
 must(admin.includes('data-assign-group'),'Admin UI must allow direct small-group assignment');
 must(admin.includes('data-remove-group'),'Admin UI must allow small-group removal');
+must(admin.includes('data-make-group-owner'),'Admin UI must expose small-group ownership transfer');
+must(admin.includes("action:'set_group_owner'"),'Group ownership transfer UI must call the protected backend action');
+must(admin.includes('Transfer group ownership before removing this member.'),'Group owners must not be removable before ownership transfer');
 
 console.log('ICAC default registration and admin membership static checks passed');
