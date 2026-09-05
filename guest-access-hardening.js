@@ -1,101 +1,32 @@
 (() => {
-  let intentionalAuth = false;
-
-  function signedIn(){
-    try{return Boolean(window.BQAccount?.session?.())}catch{return false}
-  }
-
+  const PREVIEW='bq_preview_mode_v1';
+  let intentionalAuth=false;
+  function signedIn(){try{return Boolean(window.BQAccount?.session?.())}catch{return false}}
+  function preview(){try{return sessionStorage.getItem(PREVIEW)==='1'}catch{return false}}
+  function setPreview(v){try{if(v)sessionStorage.setItem(PREVIEW,'1');else sessionStorage.removeItem(PREVIEW)}catch{}}
   function accountLayer(){return document.getElementById('bqAccountLayer')}
-
-  function hideAccount(){
-    const layer=accountLayer();
-    if(layer)layer.classList.add('hidden');
-    document.body.classList.remove('account-open');
+  function hideAccount(){const layer=accountLayer();if(layer)layer.classList.add('hidden');document.body.classList.remove('account-open')}
+  function ensurePreviewChoice(){
+    const layer=accountLayer();if(!layer||signedIn())return;
+    const authForm=layer.querySelector('[data-account-register],[data-account-login]'),card=layer.querySelector('.account-card');if(!authForm||!card)return;
+    card.querySelector('[data-bq-continue-guest]')?.closest('.account-actions')?.remove();
+    if(card.querySelector('[data-bq-preview]'))return;
+    const wrap=document.createElement('div');wrap.className='account-actions';wrap.style.marginTop='12px';
+    const button=document.createElement('button');button.type='button';button.className='account-secondary';button.dataset.bqPreview='1';button.textContent='Preview BibleQuest';wrap.appendChild(button);
+    const note=document.createElement('p');note.className='account-note';note.textContent='Preview is limited to the Home page, Bible Reader and Tutorial. Create an account to unlock journeys, games, progress, groups, rankings, assignments and ministry features.';wrap.appendChild(note);card.appendChild(wrap);
   }
-
-  function dismissUnintentionalAuth(){
-    const layer=accountLayer();
-    if(!layer||layer.classList.contains('hidden')||signedIn()||intentionalAuth)return;
-    const authForm=layer.querySelector('[data-account-register],[data-account-login]');
-    if(!authForm)return;
-    hideAccount();
-    try{window.dispatchEvent(new CustomEvent('bq-guest-ready'))}catch{}
+  function startupGate(){
+    const layer=accountLayer();if(!layer||signedIn())return;
+    ensurePreviewChoice();
+    if(preview()&&!intentionalAuth){hideAccount();window.dispatchEvent(new CustomEvent('bq-preview-ready'));return}
+    if(!preview())layer.classList.remove('hidden');
   }
-
-  function ensureGuestExit(){
-    const layer=accountLayer();
-    if(!layer||signedIn())return;
-    const authForm=layer.querySelector('[data-account-register],[data-account-login]');
-    const card=layer.querySelector('.account-card');
-    if(!authForm||!card||card.querySelector('[data-bq-continue-guest]'))return;
-    const wrap=document.createElement('div');
-    wrap.className='account-actions';
-    wrap.style.marginTop='12px';
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='account-secondary';
-    button.setAttribute('data-bq-continue-guest','1');
-    button.textContent='Continue without an account';
-    wrap.appendChild(button);
-    const note=document.createElement('p');
-    note.className='account-note';
-    note.textContent='You can use BibleQuest without registering. Create an account later when you want cloud sync or account features.';
-    wrap.appendChild(note);
-    card.appendChild(wrap);
-  }
-
-  function injectGuestAccountAccess(){
-    if(signedIn())return;
-    document.querySelectorAll('.top-actions').forEach(host=>{
-      if(host.querySelector('[data-account-open],[data-bq-guest-account]'))return;
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='account-avatar-btn';
-      button.setAttribute('data-account-open','1');
-      button.setAttribute('data-bq-guest-account','1');
-      button.setAttribute('aria-label','Sign in or create a BibleQuest account');
-      button.setAttribute('title','Sign in or create account');
-      button.textContent='👤';
-      host.appendChild(button);
-    });
-  }
-
-  function refreshGuestState(){
-    ensureGuestExit();
-    dismissUnintentionalAuth();
-    injectGuestAccountAccess();
-  }
-
-  function markIntentional(target){
-    if(target?.closest?.('[data-account-signout]')){intentionalAuth=false;return}
-    if(target?.closest?.('[data-account-open],[data-auth-tab],[data-account-register],[data-account-login]'))intentionalAuth=true;
-  }
-
+  function injectPreviewAccountAccess(){if(signedIn()||!preview())return;document.querySelectorAll('.top-actions').forEach(host=>{if(host.querySelector('[data-account-open],[data-bq-preview-account]'))return;const b=document.createElement('button');b.type='button';b.className='account-avatar-btn';b.dataset.accountOpen='1';b.dataset.bqPreviewAccount='1';b.setAttribute('aria-label','Create or sign in to a BibleQuest account');b.title='Create account / Sign in';b.textContent='🔐';host.appendChild(b)})}
+  function refresh(){ensurePreviewChoice();startupGate();injectPreviewAccountAccess();document.body.classList.toggle('bq-preview-mode',!signedIn()&&preview())}
+  function markIntentional(target){if(target?.closest?.('[data-account-signout]')){intentionalAuth=false;setPreview(false);return}if(target?.closest?.('[data-account-open],[data-auth-tab],[data-account-register],[data-account-login]'))intentionalAuth=true}
   document.addEventListener('pointerdown',e=>markIntentional(e.target),true);
-  document.addEventListener('click',e=>{
-    const guest=e.target.closest?.('[data-bq-continue-guest]');
-    if(guest){
-      e.preventDefault();
-      intentionalAuth=false;
-      hideAccount();
-      try{window.dispatchEvent(new CustomEvent('bq-guest-ready'))}catch{}
-      return;
-    }
-    markIntentional(e.target);
-    if(e.target.closest?.('[data-account-signout]'))setTimeout(refreshGuestState,0);
-  },true);
-
-  const observer=new MutationObserver(refreshGuestState);
-  observer.observe(document.documentElement,{childList:true,subtree:true});
-  window.addEventListener('load',refreshGuestState,{once:true});
-  window.addEventListener('bq-account-created',()=>{intentionalAuth=false;refreshGuestState()});
-  window.addEventListener('bq-guest-ready',injectGuestAccountAccess);
-  queueMicrotask(refreshGuestState);
-
-  window.BQGuestAccess={
-    refresh:refreshGuestState,
-    isGuest:()=>!signedIn(),
-    closeAccount:()=>{intentionalAuth=false;hideAccount();refreshGuestState()},
-    openAccount:()=>{intentionalAuth=true;return window.BQAccount?.open?.()}
-  };
+  document.addEventListener('click',e=>{const p=e.target.closest?.('[data-bq-preview]');if(p){e.preventDefault();intentionalAuth=false;setPreview(true);hideAccount();document.body.classList.add('bq-preview-mode');window.dispatchEvent(new CustomEvent('bq-preview-ready'));return}markIntentional(e.target);if(e.target.closest?.('[data-account-signout]'))setTimeout(refresh,0)},true);
+  new MutationObserver(refresh).observe(document.documentElement,{childList:true,subtree:true});
+  window.addEventListener('load',refresh,{once:true});window.addEventListener('bq-account-created',()=>{intentionalAuth=false;setPreview(false);refresh()});window.addEventListener('bq-preview-ready',injectPreviewAccountAccess);queueMicrotask(refresh);
+  window.BQGuestAccess={refresh,isGuest:()=>!signedIn(),isPreview:()=>!signedIn()&&preview(),closeAccount:()=>{intentionalAuth=false;if(preview())hideAccount();refresh()},openAccount:()=>{intentionalAuth=true;return window.BQAccount?.open?.()}};
 })();
