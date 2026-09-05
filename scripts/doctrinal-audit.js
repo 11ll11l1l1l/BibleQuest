@@ -109,12 +109,17 @@ if (held.stats.total) {
 }
 
 const countErrors = [];
+const manifestCodes = new Set();
 for (const row of manifest.question_books || []) {
+  manifestCodes.add(row.code);
   const active = normal.perBook[row.code] || 0;
   const quarantined = held.perBook[row.code] || 0;
   if (Number(row.questions || 0) !== active || Number(row.quarantined_questions || 0) !== quarantined) {
     countErrors.push(`${row.code}: manifest questions=${row.questions || 0}, quarantined=${row.quarantined_questions || 0}; files questions=${active}, quarantined=${quarantined}`);
   }
+}
+for (const code of new Set([...Object.keys(normal.perBook), ...Object.keys(held.perBook)])) {
+  if (!manifestCodes.has(code)) countErrors.push(`${code}: committed question/quarantine file is missing from manifest.question_books`);
 }
 const combined = {
   total: normal.stats.total + held.stats.total,
