@@ -1,5 +1,6 @@
 (() => {
   let resolved=false,role='';
+  const DEFAULT_CONGREGATION='ICAC';
 
   const isAdmin=()=>['owner','admin'].includes(role);
   const roleLabel=()=>role==='owner'?'PLATFORM OWNER':role==='admin'?'SITE ADMIN':'';
@@ -23,7 +24,20 @@
     chip.title=role==='owner'?'This signed-in BibleQuest account has full platform Owner authority.':'This signed-in BibleQuest account has site administration authority.';
     return chip;
   }
+  function enforceRegistrationCongregation(){
+    document.querySelectorAll('#bqAccountLayer:not(.hidden) form[data-account-register] input[name="church_group"]').forEach(input=>{
+      input.value=DEFAULT_CONGREGATION;
+      input.readOnly=true;
+      input.setAttribute('aria-readonly','true');
+      input.dataset.bqDefaultCongregation='1';
+      input.placeholder=DEFAULT_CONGREGATION;
+      const label=input.closest('label');
+      const note=label?.querySelector('.account-note');
+      if(note)note.textContent='Assigned automatically to ICAC. A BibleQuest administrator can correct your congregation later.';
+    });
+  }
   function inject(){
+    enforceRegistrationCongregation();
     if(!isAdmin()){removeInjected();return}
     document.querySelectorAll('.top-actions').forEach(host=>{
       if(role==='owner'&&!host.querySelector('[data-bq-platform-role]')){
@@ -47,6 +61,7 @@
     });
   }
   async function check(){
+    enforceRegistrationCongregation();
     const acc=window.BQAccount,session=acc?.session?.(),client=acc?.client?.();
     if(!session?.user||!client){resolved=false;role='';removeInjected();return false}
     let next='';
@@ -64,10 +79,11 @@
   let tries=0;
   const timer=setInterval(()=>{
     tries++;
+    enforceRegistrationCongregation();
     if(!resolved)check().catch(()=>{});else inject();
     if(tries>120&&resolved)clearInterval(timer);
   },500);
-  new MutationObserver(()=>{if(resolved)inject()}).observe(document.documentElement,{childList:true,subtree:true});
+  new MutationObserver(()=>{enforceRegistrationCongregation();if(resolved)inject()}).observe(document.documentElement,{childList:true,subtree:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){resolved=false;check().catch(()=>{})}});
   window.addEventListener('bq-modern-home-rendered',inject);
   window.addEventListener('bq-account-created',()=>{resolved=false;check().catch(()=>{})});
