@@ -1,7 +1,7 @@
 import { activeMembership, adminClient, asResponse, corsHeaders, json, parseJson, requireUser } from '../_shared/bq.ts';
 
 type Claim={sourceEventId?:string;source?:string;category?:string;claimedPoints?:number;meta?:Record<string,unknown>;targetUserId?:string};
-const facilitatorRoles=new Set(['facilitator','leader','admin']);
+const facilitatorRoles=new Set(['facilitator','leader','pastor','admin']);
 const delegatedSources=new Set(['Team Bible Sprint','Detective Hot Seat','Verse Hunt','Conversation Circle','Wisdom Table','Pair & Share','Live Room Participation']);
 const dailyCaps:Record<string,number>={knowledge:1000,reading:600,wisdom:400,mastery:300,consistency:120,group:600,couples:500};
 const num=(v:unknown,min=0,max=100)=>Math.min(max,Math.max(min,Math.round(Number(v)||0)));
