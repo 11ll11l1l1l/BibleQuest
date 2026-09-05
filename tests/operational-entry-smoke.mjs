@@ -27,8 +27,7 @@ try{
 
   // Hub routing must never silently no-op if one optional feature module is absent.
   // Simulate a failed Grow module through the real Home -> Grow -> Bible World click path.
-  const originalWorld=await page.evaluate(()=>window.BQWorld);
-  await page.evaluate(()=>{window.BQWorld=undefined});
+  await page.evaluate(()=>{window.__bqOperationalWorld=window.BQWorld;window.BQWorld=undefined});
   await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/Bible World/}).click();
   await page.waitForSelector('.modern-feature-failure');
@@ -37,27 +36,26 @@ try{
   assert.ok(await page.getByRole('button',{name:/Try again/}).isVisible(),'failed feature must expose a retry path');
   await closeModernSheet();
   assert.ok(await page.locator('.today-journey-card').isVisible(),'feature failure must not kill the Home shell');
-  await page.evaluate(value=>{window.BQWorld=value},originalWorld);
+  await page.evaluate(()=>{window.BQWorld=window.__bqOperationalWorld;delete window.__bqOperationalWorld});
 
   // Selector-backed features need the same visible recovery instead of closing the hub and doing nothing.
-  await page.locator('[data-reader-open]').evaluate(el=>el.dataset.operationalSaved='1');
-  await page.locator('[data-reader-open]').evaluate(el=>el.removeAttribute('data-reader-open'));
+  const readerTrigger=page.locator('[data-reader-open]').first();
+  await readerTrigger.evaluate(el=>{el.dataset.operationalSaved='1';el.removeAttribute('data-reader-open')});
   await page.locator('[data-modern-hub="read"]').click();
   await page.getByRole('button',{name:/Bible Reader/}).click();
   await page.waitForSelector('.modern-feature-failure');
   assert.match(await page.locator('#bqModernSheet').innerText(),/Bible Reader could not open/);
   await closeModernSheet();
-  await page.locator('[data-operational-saved="1"]').evaluate(el=>{el.setAttribute('data-reader-open','');delete el.dataset.operationalSaved});
+  await page.locator('[data-operational-saved="1"]').first().evaluate(el=>{el.setAttribute('data-reader-open','');delete el.dataset.operationalSaved});
 
   // A feature API that exists but rejects must also degrade visibly without an unhandled page failure.
-  const originalMission=await page.evaluate(()=>window.BQMission);
-  await page.evaluate(()=>{window.BQMission={open:()=>Promise.reject(new Error('simulated mission failure'))}});
+  await page.evaluate(()=>{window.__bqOperationalMission=window.BQMission;window.BQMission={open:()=>Promise.reject(new Error('simulated mission failure'))}});
   await page.locator('[data-modern-hub="grow"]').click();
   await page.getByRole('button',{name:/My Mission/}).click();
   await page.waitForSelector('.modern-feature-failure');
   assert.match(await page.locator('#bqModernSheet').innerText(),/My Mission could not open/);
   await closeModernSheet();
-  await page.evaluate(value=>{window.BQMission=value},originalMission);
+  await page.evaluate(()=>{window.BQMission=window.__bqOperationalMission;delete window.__bqOperationalMission});
 
   // Exact user path: Home -> Grow -> Transformation must navigate to the isolated
   // standalone Transform document instead of trying to mount inside the main SPA.
