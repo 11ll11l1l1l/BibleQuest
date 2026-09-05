@@ -1,19 +1,18 @@
 # BibleQuest Psychometrics Lab — sources and measurement boundaries
 
-The Psychometrics Lab is a non-clinical self-reflection feature. It does not diagnose mental illness, determine spiritual maturity, or replace evaluation by a qualified professional. Results are stored locally in the user's browser by default.
+The Psychometrics Lab is a non-clinical self-reflection feature. It does not diagnose mental illness or replace evaluation by a qualified professional. Results are stored locally in the user's browser by default.
 
 ## Purpose inside BibleQuest Transform
 
-The purpose of Psychometrics Lab is not to give the user a new identity label. It is to help reveal tendencies, blind spots, strengths, and recurring patterns that a person may not notice without structured reflection. BibleQuest then invites the user to examine those tendencies under Scripture and practice more Christlike obedience.
+The purpose of Psychometrics Lab is structured self-realization: to reveal tendencies, blind spots, strengths, triggers and recurring patterns that a person may not notice without a consistent questionnaire and explicit scoring.
 
-BibleQuest keeps two layers distinct:
+The result UI keeps three layers separate and in this order:
 
-1. **Measurement layer:** the psychometric instrument describes self-reported tendencies using its published scoring method.
-2. **Discipleship layer:** Scripture supplies the moral and spiritual standard. A high or low trait score is not automatically sinful, virtuous, mature, immature, saved, or unsaved.
+1. **Raw scored result:** the instrument score, scale mean, facet result or total exactly as calculated from the questionnaire.
+2. **Psychological interpretation and self-reflection:** a plain-language explanation of what a higher, lower or mixed result may look like in ordinary behavior, plus questions that help the user test whether the pattern actually appears in real life.
+3. **Optional Christian reflection:** Scripture references and a short Christian application are shown only after the psychometric interpretation. Scripture is not part of the score and does not change the measured result.
 
-The Christian reflection layer follows BibleQuest's existing doctrinal policy: **Scripture first; CAMACOP statement of faith for doctrinal alignment; secondary study resources are not doctrinal authorities.** Sanctification is treated as Christian growth after conversion, not salvation earned through personality change or improved test scores.
-
-The UI therefore uses the wording **“Jesus-centered reflection”** rather than claiming that Jesus had, or would have had, a particular psychometric score. Advice is tied to explicit Scripture references and to patterns Jesus teaches or models in the biblical text. Users are reminded to read cited passages in context.
+A trait result is not a fixed identity label or a moral grade. The practical goal is to help users notice where a tendency is useful, where it can become a blind spot, what situations amplify it, and what concrete behavior they may want to practice or change.
 
 ## Deep Personality — IPIP-NEO-120
 
@@ -23,35 +22,43 @@ The UI therefore uses the wording **“Jesus-centered reflection”** rather tha
 - Source/key: https://ipip.ori.org/30FacetNEO-PI-RItems.htm
 - IPIP materials are public-domain resources. The official IPIP site permits use, adaptation, translation, and web administration without seeking permission.
 - BibleQuest reports reverse-keyed raw 1–5 item means. It deliberately does not manufacture population percentiles without an appropriate normative reference sample.
-- All five broad domains and all 30 reported facets receive a Scripture-linked reflection in the BibleQuest result UI.
-- The historical **Liberalism / Values Openness** facet includes political and relativism-oriented items. BibleQuest explicitly warns that this facet is not a measure of biblical orthodoxy, holiness, or political faithfulness.
+- All five broad domains and all 30 reported facets receive a separate plain-language self-reflection explanation after the raw result.
+- The historical **Liberalism / Values Openness** facet includes political and relativism-oriented items and must not be treated as a measure of theology, morality or political correctness.
 - The historical **Depression** facet name is a personality construct in this inventory and is not presented as a diagnosis of depressive disorder.
 
 ## Character Strengths — IPIP-VIA-R
 
-- Implemented form: 96-item set of 24 balanced and culture-fair IPIP-VIA-R short scales.
+- Implemented form: 96-item set of 24 balanced IPIP-VIA-R short scales.
 - Four items per strength, balanced as two positively keyed and two negatively keyed items.
 - Reference: Bluemke, M., Partsch, M. V., Saucier, G., & Lechner, C. M. (2021). IPIP-VIA-R short-scale refinement described by the IPIP site.
 - Source/key: https://ipip.ori.org/IPIP-VIA-R_Key.html
 - Scale characteristics: https://ipip.ori.org/IPIP-VIA-R_Table.html
-- Results are ranked within the user's own profile. They are not a score of virtue, salvation, doctrine, calling, or spiritual maturity.
-- All 24 reported strengths receive a Scripture-linked reflection in the result UI.
-- The **Spirituality / Religiousness** scale remains a psychological construct. BibleQuest explicitly states that it is not a salvation, discipleship, doctrinal-orthodoxy, or Christian-maturity score.
+- Results are ranked within the user's own profile and shown numerically before interpretation.
+- All 24 reported strengths receive a separate self-reflection explanation.
+- The **Spirituality / Religiousness** scale remains the questionnaire's psychological construct and is not treated as a measure of doctrine or spiritual maturity.
 
 ## Rosenberg Self-Esteem Scale
 
 - Ten-item global self-esteem scale.
 - Source and scoring guidance: University of Maryland Department of Sociology, https://socy.umd.edu/about-us/using-rosenberg-self-esteem-scale
 - The University of Maryland states that the scale is in the public domain.
-- BibleQuest uses 0–3 scoring with the negatively worded items reversed, producing a total from 0 to 30.
+- BibleQuest uses 0–3 scoring with negatively worded items reversed, producing a total from 0 to 30.
 - The University of Maryland FAQ states that there are no discrete universal cutoffs for high versus low self-esteem. BibleQuest therefore does not invent categorical cutoffs.
-- The Christian reflection distinguishes healthy received worth from both self-contempt and self-exaltation; the score is explicitly not treated as the user's worth before God.
+- The result page first shows the raw 0–30 total, then explains what patterns of self-evaluation the score may be useful for investigating.
+
+## Raw result access
+
+Each completed assessment provides an expandable raw-data section containing the locally stored item responses and the scored domain/facet/scale values. Users can copy this data as JSON for their own review or comparison over time.
 
 ## Response-quality checks
 
 For the two long-form inventories, BibleQuest flags obvious response patterns that can reduce interpretability, including extreme straight-lining, unusually low response variation, and implausibly fast completion. These are caution flags only and do not automatically invalidate a result.
 
 The answering UI preserves the user's reading position after selecting an answer. Re-rendering a selected response must not send the user back to the top of a long questionnaire page.
+
+## Optional Christian reflection layer
+
+BibleQuest may show a collapsed Scripture reflection after the psychological explanation for users who want to consider the result from a Christian perspective. This layer is intentionally secondary to the measurement and self-awareness purpose of the tool. It should not turn a personality score into a sermon, a moral label, or a claim that Jesus had a particular psychometric profile.
 
 ## Deliberately excluded from this release
 
