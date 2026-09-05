@@ -14,7 +14,7 @@
     {actual:LEARNING,transport:'biblequest_learning_engine_v1'}
   ];
   const startedAt=Date.now();
-  let gate=null,timer=null,settledSince=0,lastError='';
+  let gate=null,timer=null,settledSince=0,lastError='',aliasTimer=null;
 
   const isObject=v=>Boolean(v)&&typeof v==='object'&&!Array.isArray(v);
   const finite=(v,fallback=0,min=0)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,n):fallback};
@@ -45,16 +45,7 @@
     const a=ALIASES.find(x=>x.actual===actual);if(!a)return;
     let parsed;try{parsed=JSON.parse(String(value))}catch{return}
     const envelope={__bq_alias:a.actual,version:1,value:parsed};
-    try{Storage.prototype.setItem.call(localStorage,a.transport,JSON.stringify(envelope))}catch{try{localStorage.setItem(a.transport,JSON.stringify(envelope))}catch{}}
-  }
-
-  function installAliasMirror(){
-    try{
-      if(window.__BQ_STORAGE_ALIAS_INSTALLED__||typeof Storage==='undefined')return;
-      const native=Storage.prototype.setItem;
-      Storage.prototype.setItem=function(key,value){native.call(this,key,value);if(this===localStorage&&ALIASES.some(a=>a.actual===key)){let parsed;try{parsed=JSON.parse(String(value))}catch{return}const a=ALIASES.find(x=>x.actual===key);native.call(this,a.transport,JSON.stringify({__bq_alias:a.actual,version:1,value:parsed}))}};
-      window.__BQ_STORAGE_ALIAS_INSTALLED__=true;
-    }catch{}
+    try{localStorage.setItem(a.transport,JSON.stringify(envelope))}catch{}
   }
 
   function primeAliases(){for(const a of ALIASES){let raw='';try{raw=localStorage.getItem(a.actual)||''}catch{}if(raw)mirrorAlias(a.actual,raw)}}
@@ -178,7 +169,8 @@
   }
 
   try{window.__BQ_HAD_DEVICE_AT_START__=Boolean(localStorage.getItem(DEVICE))}catch{window.__BQ_HAD_DEVICE_AT_START__=false}
-  hydrateAliases();installAliasMirror();sanitizeAll();installUuidFallback();
+  hydrateAliases();sanitizeAll();installUuidFallback();
+  aliasTimer=setInterval(primeAliases,750);
   window.addEventListener('pagehide',primeAliases,true);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')primeAliases()},true);
   window.addEventListener('error',e=>capture(e.error||e.message),true);
   window.addEventListener('unhandledrejection',e=>capture(e.reason),true);
