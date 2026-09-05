@@ -7,6 +7,11 @@ page.setDefaultTimeout(12000);
 const errors=[];
 page.on('pageerror',e=>errors.push(e.message));
 
+async function closeModernSheet(){
+  const close=page.locator('#bqModernSheet:not(.hidden) [data-modern-close]').first();
+  if(await close.count())await close.click();
+}
+
 async function openTransformFromGrow(){
   await page.waitForSelector('.today-journey-card');
   await page.locator('[data-modern-hub="grow"]').click();
@@ -19,6 +24,38 @@ try{
   await page.goto('http://127.0.0.1:4173',{waitUntil:'domcontentloaded'});
   await page.waitForSelector('.modern-home');
   await page.waitForSelector('.today-journey-card');
+
+  // Hub routing must never silently no-op if one optional feature module is absent.
+  // Simulate a failed Grow module through the real Home -> Grow -> Bible World click path.
+  await page.evaluate(()=>{window.__bqOperationalWorld=window.BQWorld;window.BQWorld=undefined});
+  await page.locator('[data-modern-hub="grow"]').click();
+  await page.getByRole('button',{name:/Bible World/}).click();
+  await page.waitForSelector('.modern-feature-failure');
+  assert.match(await page.locator('.modern-feature-failure').innerText(),/Feature unavailable right now/);
+  assert.match(await page.locator('#bqModernSheet').innerText(),/Bible World could not open/);
+  assert.ok(await page.getByRole('button',{name:/Try again/}).isVisible(),'failed feature must expose a retry path');
+  await closeModernSheet();
+  assert.ok(await page.locator('.today-journey-card').isVisible(),'feature failure must not kill the Home shell');
+  await page.evaluate(()=>{window.BQWorld=window.__bqOperationalWorld;delete window.__bqOperationalWorld});
+
+  // Selector-backed features need the same visible recovery instead of closing the hub and doing nothing.
+  const readerTrigger=page.locator('[data-reader-open]').first();
+  await readerTrigger.evaluate(el=>{el.dataset.operationalSaved='1';el.removeAttribute('data-reader-open')});
+  await page.locator('[data-modern-hub="read"]').click();
+  await page.getByRole('button',{name:/Bible Reader/}).click();
+  await page.waitForSelector('.modern-feature-failure');
+  assert.match(await page.locator('#bqModernSheet').innerText(),/Bible Reader could not open/);
+  await closeModernSheet();
+  await page.locator('[data-operational-saved="1"]').first().evaluate(el=>{el.setAttribute('data-reader-open','');delete el.dataset.operationalSaved});
+
+  // A feature API that exists but rejects must also degrade visibly without an unhandled page failure.
+  await page.evaluate(()=>{window.__bqOperationalMission=window.BQMission;window.BQMission={open:()=>Promise.reject(new Error('simulated mission failure'))}});
+  await page.locator('[data-modern-hub="grow"]').click();
+  await page.getByRole('button',{name:/My Mission/}).click();
+  await page.waitForSelector('.modern-feature-failure');
+  assert.match(await page.locator('#bqModernSheet').innerText(),/My Mission could not open/);
+  await closeModernSheet();
+  await page.evaluate(()=>{window.BQMission=window.__bqOperationalMission;delete window.__bqOperationalMission});
 
   // Exact user path: Home -> Grow -> Transformation must navigate to the isolated
   // standalone Transform document instead of trying to mount inside the main SPA.
@@ -85,7 +122,7 @@ try{
   assert.equal(await page.evaluate(()=>sessionStorage.getItem('bq_transform_return_action')),null,'Wisdom return action must be consumed once');
 
   assert.equal(errors.length,0,`page errors: ${errors.join(' | ')}`);
-  console.log('BibleQuest standalone Transform operational smoke passed');
+  console.log('BibleQuest operational entry + standalone Transform smoke passed');
 } finally {
   await browser.close();
 }
