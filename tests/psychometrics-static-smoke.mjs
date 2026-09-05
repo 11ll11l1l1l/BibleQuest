@@ -15,6 +15,7 @@ const html=read('psychometrics.html');
 const suite=read('psychometrics-suite.js');
 const launcher=read('transform-launcher.js');
 const sw=read('sw.js');
+const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 
 assert.equal(neo.length,30,'IPIP-NEO-120 must expose 30 facets');
 assert.equal(neo.reduce((n,f)=>n+f[3].length,0),120,'IPIP-NEO-120 must expose exactly 120 items');
@@ -38,7 +39,7 @@ assert.match(suite,/no discrete universal cutoffs/i,'RSE must not invent univers
 assert.match(suite,/more than 80%|straight-lining/i,'long-form assessments need a basic response-quality check');
 assert.match(launcher,/Psychometrics Lab/,'Grow launcher must expose the Psychometrics Lab');
 assert.match(launcher,/\.\/psychometrics\.html/,'launcher must use deployment-relative Psychometrics URL');
-assert.match(sw,/biblequest-v55/,'PWA cache generation must include Psychometrics Lab');
+assert.ok(cacheVersion>=55,`PWA cache generation must include Psychometrics Lab baseline v55+, got v${cacheVersion||'missing'}`);
 for(const asset of ['psychometrics.html','psychometrics.css','psychometrics-data-neo.js','psychometrics-data-via.js','psychometrics-suite.js'])assert.ok(sw.includes(`'./${asset}'`),`PWA shell missing ${asset}`);
 
-console.log('Psychometrics Lab static smoke passed');
+console.log(`Psychometrics Lab static smoke passed · PWA v${cacheVersion}`);
