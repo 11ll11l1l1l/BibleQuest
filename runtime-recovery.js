@@ -64,17 +64,22 @@
     'Congregation Badges':()=>openApi('Congregation Badges',()=>window.BQCommunity,'openBadges','community.js'),
     'Congregation Roster':()=>openApi('Congregation Roster',()=>window.BQCommunity,'openRoster','community.js')
   };
+  const background=[
+    ['Cloud Teams',()=>window.BQTeams,'team-center.js'],['Journey Groups',()=>window.BQJourneyGroups,'journey-groups.js'],['Ministry Hub',()=>window.BQMinistry,'ministry-hub.js'],['Videos & Media',()=>window.BQMediaLibrary,'media-library.js'],['Inbox',()=>window.BQNotifications,'notification-center.js'],['Leader Dashboard',()=>window.BQLeaderDashboard,'leader-dashboard.js'],['Security & Data',()=>window.BQSecurityCenter,'security-center.js'],['Advanced Assignments',()=>window.BQAssignmentAdvanced,'assignment-advanced.js'],['Content Reporting',()=>window.BQContentReport,'content-report.js'],['Verse Peek',()=>window.BQVersePeek,'verse-peek.js']
+  ];
   function failure(label,err,action){
     retryAction=action;window.BQDiagnostics?.report?.(`Feature launch failed: ${label}: ${err?.message||err}`,'',{kind:'feature-launch'}).catch?.(()=>{});
     const sheet=document.getElementById('bqModernSheet'),host=sheet?.querySelector('#modernSheetContent');if(!sheet||!host){alert(`${label} could not open. ${err?.message||''}`);return}
     const offline=navigator.onLine===false;host.innerHTML=`<header class="modern-sheet-head"><div><span>⚠️</span><div><small>RECOVERABLE ERROR</small><h2>${safe(label)} could not open</h2><p>${offline?'This feature needs a connection and its module is not available offline yet.':'BibleQuest could not initialize this feature module. A recovery reload was attempted.'}</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article class="modern-feature-failure" role="alert"><b>${offline?'Connection / cache unavailable':'Feature recovery failed'}</b><p>${safe(err?.message||String(err))}</p><div class="actions"><button class="primary" data-runtime-retry>Try again</button><button class="secondary" data-modern-close>Close</button></div></article></div>`;sheet.classList.remove('hidden');document.body.classList.add('modern-sheet-open');host.querySelector('[data-runtime-retry]')?.addEventListener('click',()=>{closeSheet();setTimeout(()=>retryAction?.(),80)})
   }
   async function launch(label){const action=specs[label];if(!action)return false;closeSheet();try{await action();return true}catch(err){failure(label,err,()=>launch(label));return false}}
+  async function repairInjected(){for(const [label,check,src] of background){if(exists(check))continue;try{await ensure(check,src)}catch(err){window.BQDiagnostics?.report?.(`Background feature missing: ${label}: ${err?.message||err}`,'',{kind:'capability-recovery'}).catch?.(()=>{})}}}
   document.addEventListener('click',e=>{
     const item=e.target.closest?.('[data-modern-item]');if(item){const label=item.querySelector('b')?.textContent?.trim();if(specs[label]){e.preventDefault();e.stopImmediatePropagation();launch(label);return}}
     if(e.target.closest?.('[data-modern-journey]')){e.preventDefault();e.stopImmediatePropagation();launch('Daily Journey');return}
     if(e.target.closest?.('[data-modern-review]')){e.preventDefault();e.stopImmediatePropagation();launch('Smart Review')}
   },true);
-  function audit(){return Object.fromEntries(Object.keys(specs).map(k=>[k,true]))}
-  window.BQRuntimeRecovery={launch,recoverScript,ensure,audit,features:Object.keys(specs)};
+  window.addEventListener('load',()=>setTimeout(()=>repairInjected(),1800),{once:true});
+  function audit(){return {launchers:Object.keys(specs),background:Object.fromEntries(background.map(([label,check])=>[label,exists(check)]))}}
+  window.BQRuntimeRecovery={launch,recoverScript,ensure,audit,repairInjected,features:Object.keys(specs)};
 })();
