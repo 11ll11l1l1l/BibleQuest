@@ -1,7 +1,7 @@
 (() => {
   if (!('serviceWorker' in navigator)) return;
 
-  const RELOAD_FLAG='bq_sw_controller_reload_v62';
+  const RELOAD_FLAG='bq_sw_controller_reload_v63';
   let hadController=Boolean(navigator.serviceWorker.controller);
 
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
