@@ -10,184 +10,60 @@
 <title>BibleQuest Transform</title>
 <style>
 html,body{margin:0;min-height:100%;background:#f4f1e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#263128}
-.bq-transform-v2{min-height:100dvh;box-sizing:border-box}
-.bq-t2-shell{min-height:100dvh}
-.bq-t2-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(244,241,233,.96);backdrop-filter:blur(10px);border-bottom:1px solid #dedbd2}
-.bq-t2-brand,.bq-t2-close{border:0;background:transparent;color:#263128;font:inherit}
-.bq-t2-brand{display:flex;gap:10px;align-items:center;text-align:left}.bq-t2-brand span{font-size:25px}.bq-t2-brand b{display:block;font-size:16px}.bq-t2-brand small{display:block;color:#687269}
-.bq-t2-close{font-size:30px;line-height:1;padding:6px 10px;cursor:pointer}
-.bq-t2-main{width:min(760px,100%);margin:0 auto;padding:20px 16px 40px;box-sizing:border-box}
-.bq-t2-heading>small{font-size:11px;font-weight:800;letter-spacing:.08em;color:#6b786f}.bq-t2-heading h1{font-size:clamp(26px,7vw,38px);line-height:1.08;margin:7px 0 8px}.bq-t2-heading p{color:#647068;line-height:1.55;margin:0 0 18px}
-.bq-t2-grid{display:grid;gap:12px}.bq-t2-card,.bq-t2-panel,.bq-t2-warning,.bq-t2-scripture,.bq-t2-question,.bq-t2-trait{background:#fff;border:1px solid #dfddd5;border-radius:18px;padding:16px;box-shadow:0 7px 20px rgba(47,55,48,.05)}
-.bq-t2-card{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;text-align:left;color:inherit;font:inherit;cursor:pointer}.bq-t2-card>span{font-size:26px}.bq-t2-card h2,.bq-t2-panel h2,.bq-t2-question h2,.bq-t2-trait h2{margin:2px 0 6px}.bq-t2-card p,.bq-t2-panel p,.bq-t2-warning p,.bq-t2-scripture p,.bq-t2-trait p{color:#657068;line-height:1.5;margin:4px 0}.bq-t2-card small,.bq-t2-scripture small{font-weight:800;color:#68766d}.bq-t2-card em{display:block;margin-top:7px;color:#355746;font-style:normal;font-weight:800}
-.bq-t2-warning,.bq-t2-scripture{margin:0 0 14px}.bq-t2-scripture{margin-top:14px}.bq-t2-scripture b{display:block;margin-top:4px}
-.bq-t2-actions,.bq-t2-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.bq-t2-actions button,.bq-t2-nav button,.bq-t2-scripture button,.bq-t2-question button,.bq-t2-panel button{min-height:44px;border:1px solid #cad0ca;border-radius:12px;padding:10px 14px;background:#fff;color:#263128;font:inherit;font-weight:800;cursor:pointer}.bq-t2-actions .primary,.bq-t2-nav .primary,.bq-t2-panel .primary{background:#355746;color:#fff;border-color:#355746}.bq-t2-nav{justify-content:space-between}.bq-t2-nav button[disabled]{opacity:.45;cursor:not-allowed}
-.bq-t2-progress{height:8px;background:#e2e2dc;border-radius:99px;overflow:hidden;margin:14px 0}.bq-t2-progress i{display:block;height:100%;background:#355746}
-.bq-t2-question-stack,.bq-t2-results{display:grid;gap:12px}.bq-t2-question h2{font-size:19px}.bq-t2-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}.bq-t2-scale button{padding:0;min-height:46px}.bq-t2-scale button.selected{background:#355746;color:#fff;border-color:#355746}.bq-t2-scale-labels{display:flex;justify-content:space-between;font-size:11px;color:#707972;margin-top:5px}
-.bq-t2-trait-head{display:flex;gap:10px;align-items:center}.bq-t2-trait-head>span{font-size:27px}.bq-t2-trait small{color:#6b756e}.bq-t2-meter{height:8px;background:#e3e4df;border-radius:99px;overflow:hidden;margin:10px 0}.bq-t2-meter i{display:block;height:100%;background:#355746}.bq-t2-practice{padding:10px 12px;background:#f2f5f1;border-radius:12px}.bq-t2-practice b{display:block;margin-bottom:3px}.bq-t2-practice span{color:#59645d;line-height:1.45}
-.bq-t2-field{display:grid;gap:6px;margin-top:13px}.bq-t2-field label{font-weight:800}.bq-t2-field textarea,.bq-t2-field input{width:100%;box-sizing:border-box;border:1px solid #cfd3cd;border-radius:12px;padding:12px;font:inherit;background:#fff;color:#263128}.bq-t2-field textarea{min-height:105px;resize:vertical}.bq-t2-status{min-height:20px;margin-top:10px;color:#355746;font-weight:800}
-.bq-t2-options{display:grid;gap:9px;margin-top:12px}.bq-t2-options button{width:100%;text-align:left}.bq-t2-options button.selected{border-color:#355746;background:#eef4ef}
-@media(max-width:420px){.bq-t2-main{padding-left:12px;padding-right:12px}.bq-t2-card{padding:14px}.bq-t2-card p{font-size:14px}.bq-t2-top{padding-left:12px;padding-right:10px}}
+.bq-transform-load-failure{max-width:560px;margin:15vh auto;padding:24px 18px;text-align:center}.bq-transform-load-failure a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;background:#355746;color:#fff;text-decoration:none;font-weight:800}
 </style>
 </head>
 <body>
-<section id="transformApp" class="bq-transform-v2" tabindex="-1" role="dialog" aria-modal="true" aria-label="Transform personal development and reflection"></section>
+<noscript><main class="bq-transform-load-failure"><h1>Transform needs JavaScript</h1><p>Return to BibleQuest and try again after JavaScript is available.</p><a href="./index.html">Return to BibleQuest</a></main></noscript>
+<script src="transformation-v2.js"></script>
 <script>
 (function(){
   'use strict';
-  var STORE='biblequest_transform_v2';
-  var VERSION=2;
   var RETURN_KEY='bq_transform_return_action';
-  var root=document.getElementById('transformApp');
 
-  var FACTORS={
-    E:{name:'Extraversion',icon:'🗣️',low:'You may recharge inwardly and prefer depth over frequent social stimulation.',high:'You may gain energy from interaction and initiate readily.',lowPractice:'Choose one intentional conversation instead of waiting for the perfect moment.',highPractice:'Practice listening long enough to understand before taking the lead.'},
-    A:{name:'Agreeableness',icon:'🤝',low:'You may be direct, questioning, and comfortable challenging ideas.',high:'You may be compassionate, cooperative, and strongly attentive to harmony.',lowPractice:'Ask one curious question before stating your disagreement.',highPractice:'Pair kindness with a clear boundary when something needs to be addressed.'},
-    C:{name:'Conscientiousness',icon:'🧭',low:'You may prefer flexibility and resist rigid structure.',high:'You may naturally plan, organize, and persist toward goals.',lowPractice:'Define one small next action and a time to do it.',highPractice:'Leave room for grace, people, and changing circumstances instead of over-controlling the plan.'},
-    S:{name:'Emotional Stability',icon:'🌊',low:'Stress and uncertainty may affect you quickly or intensely.',high:'You may stay relatively even-tempered under pressure.',lowPractice:'Name the emotion, pause, pray, then decide after the first wave passes.',highPractice:'Notice when other people need reassurance even if the situation feels manageable to you.'},
-    O:{name:'Openness / Intellect',icon:'💡',low:'You may prefer concrete, familiar, and practical approaches.',high:'You may enjoy ideas, imagination, reflection, and complexity.',lowPractice:'Explore one unfamiliar viewpoint or passage context before deciding.',highPractice:'Turn one idea into one concrete act instead of collecting more ideas.'}
-  };
-  var ITEMS=[
-    ['E1','E','I am the life of the party.',1],['A1','A','I sympathize with other people’s feelings.',1],['C1','C','I am always prepared.',1],['S1','S','I am relaxed most of the time.',1],['O1','O','I have a vivid imagination.',1],
-    ['E2','E','I do not talk a lot.',-1],['A2','A','I sometimes insult people.',-1],['C2','C','I leave my belongings around.',-1],['S2','S','I get stressed out easily.',-1],['O2','O','I have difficulty understanding abstract ideas.',-1],
-    ['E3','E','I feel comfortable around people.',1],['A3','A','I have a soft heart.',1],['C3','C','I pay attention to details.',1],['S3','S','I seldom feel blue.',1],['O3','O','I have excellent ideas.',1],
-    ['E4','E','I keep in the background.',-1],['A4','A','I feel little concern for others.',-1],['C4','C','I make a mess of things.',-1],['S4','S','I worry about things.',-1],['O4','O','I am not interested in abstract ideas.',-1]
-  ];
-  var BIAS=[
-    {id:'sunk',title:'Past cost vs. future value',scenario:'You paid for a course that is clearly not useful. Finishing it would consume time needed for an important responsibility. What should matter most now?',options:['Finish mainly because the money was already spent.','Compare the future cost and benefit from today forward.','Continue mainly because stopping would feel embarrassing.'],best:1,signal:'Sunk-cost thinking'},
-    {id:'base',title:'Use the base rate',scenario:'A rare defect affects about 1 in 100 devices. A scanner catches most defects but also creates false alarms. Your device is flagged. What is the best first response?',options:['Assume the scanner means the device is almost certainly defective.','Combine the scanner result with how rare the defect is before concluding.','Ignore the scanner because false alarms exist.'],best:1,signal:'Base-rate neglect'},
-    {id:'confirm',title:'Challenge your own belief',scenario:'Your group believes a new Bible-study format improves retention. Which check is most useful?',options:['Ask people who already love it for testimonials.','Compare later recall and actively look for cases where the format did not help.','Collect more positive comments about how engaging it feels.'],best:1,signal:'Confirmation bias'},
-    {id:'outcome',title:'Process vs. outcome',scenario:'Two leaders use the same careful process. One gets unlucky and the result is bad; the other gets lucky and the result is good. How should decision quality be judged?',options:['Mostly by the final outcome.','Mostly by the process and information available at the time.','The leader with the good result necessarily made the better decision.'],best:1,signal:'Outcome bias'},
-    {id:'frame',title:'Reframe the choice',scenario:'A choice sounds attractive when described as “90% success.” What is the most useful check?',options:['Accept the positive framing because 90% sounds strong.','Also restate it as “10% failure” and see whether your judgment changes.','Ignore percentages and go with intuition.'],best:1,signal:'Framing effect'}
-  ];
-  var state=load();
-  var personalityPage=0;
-  var biasStep=0;
-
-  function emptyState(){return {version:VERSION,personality:{answers:{},result:null},bias:{answers:{},result:null},reflection:{noticed:'',action:'',prayer:'',practice:''},history:[]};}
-  function load(){
-    var base=emptyState();
+  function homeUrl(){return new URL('./index.html',location.href).href;}
+  function returnHome(){
     try{
-      var raw=JSON.parse(localStorage.getItem(STORE)||'{}');
-      if(!raw||typeof raw!=='object'||raw.version!==VERSION)return base;
-      base.personality=raw.personality&&typeof raw.personality==='object'?raw.personality:base.personality;
-      base.bias=raw.bias&&typeof raw.bias==='object'?raw.bias:base.bias;
-      base.reflection=raw.reflection&&typeof raw.reflection==='object'?raw.reflection:base.reflection;
-      base.history=Array.isArray(raw.history)?raw.history.slice(-10):[];
-      if(!base.personality.answers)base.personality.answers={};
-      if(!base.bias.answers)base.bias.answers={};
-      return base;
-    }catch(e){return base;}
+      var ref=document.referrer?new URL(document.referrer):null;
+      if(ref&&ref.origin===location.origin&&history.length>1){history.back();return;}
+    }catch(_err){}
+    location.replace(homeUrl());
   }
-  function save(){try{localStorage.setItem(STORE,JSON.stringify(state));return true;}catch(e){return false;}}
-  function esc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
-  function shell(title,subtitle,body){
-    return '<div class="bq-t2-shell"><header class="bq-t2-top"><button type="button" class="bq-t2-brand" data-t2-home><span>🪞</span><div><b>Transform</b><small>Personal development &amp; reflection</small></div></button><button type="button" class="bq-t2-close" data-t2-close aria-label="Close Transform">×</button></header><main class="bq-t2-main"><div class="bq-t2-heading"><small>PRIVATE · STORED ON THIS DEVICE</small><h1>'+esc(title)+'</h1>'+(subtitle?'<p>'+esc(subtitle)+'</p>':'')+'</div>'+body+'</main></div>';
+  function openMain(action){
+    sessionStorage.setItem('bq_transform_return_action',action);
+    location.assign(homeUrl());
   }
-  function setView(html){root.innerHTML=html;window.scrollTo(0,0);try{root.focus();}catch(e){}}
-  function countAnswers(){return Object.keys(state.personality.answers||{}).length;}
-  function card(icon,kicker,title,text,cta,attr){return '<button type="button" class="bq-t2-card" '+attr+'><span>'+icon+'</span><div><small>'+kicker+'</small><h2>'+esc(title)+'</h2><p>'+esc(text)+'</p><em>'+esc(cta)+'</em></div><i>›</i></button>';}
-
-  function renderHub(){
-    setView(shell('Know your patterns. Practice what matters.','Personality describes tendencies; Scripture guides faithfulness. These tools are for reflection, not diagnosis.',
-      '<section class="bq-t2-warning"><b>Important boundary</b><p>A high or low personality score is not a moral ranking and does not measure faith. Use results as a mirror for habits, blind spots, strengths, and concrete growth.</p></section>'+
-      '<section class="bq-t2-grid">'+
-      card('🧬','20 ITEMS · ~4 MIN','Personality Foundations','A short Big Five self-reflection covering Extraversion, Agreeableness, Conscientiousness, Emotional Stability, and Openness / Intellect.',state.personality.result?'View results or retake':'Start assessment','data-t2-personality')+
-      card('🧠','5 SCENARIOS · ~3 MIN','Thinking Patterns Check','Practice noticing sunk-cost thinking, base-rate neglect, confirmation bias, outcome bias, and framing effects.',state.bias.result?'View results or retake':'Start check','data-t2-bias')+
-      card('🧭','PERSONAL GROWTH','Reflection & Action Plan','Turn your assessment signals into one practical experiment and one Scripture-centered reflection.',state.reflection.practice?'Continue my plan':'Build my plan','data-t2-plan')+
-      card('✍️','PRIVATE JOURNAL','Reflection Journal','Record what you noticed, your next action, and a short prayer or reflection.',state.reflection.noticed||state.reflection.action?'Continue reflection':'Start reflection','data-t2-journal')+
-      '</section><section class="bq-t2-scripture"><small>REFLECTION REFERENCES</small><b>Psalm 139:23–24 · Romans 12:2 · James 1:22</b><p>Open these passages in the Bible Reader for reflection.</p><button type="button" data-t2-reader>Open Bible Reader</button></section>'));
-  }
-  function renderPersonalityIntro(){
-    var answered=countAnswers();
-    setView(shell('Personality Foundations','Answer as you usually are over time, not as you wish you were today.',
-      '<section class="bq-t2-panel"><div class="bq-t2-icon">🧬</div><h2>20-item Big Five reflection</h2><p>This is a self-reflection snapshot, not a clinical or employment assessment.</p><ul><li>4 items per factor</li><li>1–5 response scale</li><li>No “good” or “bad” trait score</li><li>Stored only on this device</li></ul><div class="bq-t2-actions"><button type="button" class="primary" data-t2-personality-begin>'+(answered?'Continue ('+answered+'/20 answered)':'Begin assessment')+'</button>'+(answered?'<button type="button" data-t2-personality-reset>Start over</button>':'')+'</div></section>'));
-  }
-  function renderPersonalityPage(page){
-    personalityPage=Math.max(0,Math.min(3,page));
-    var start=personalityPage*5,chunk=ITEMS.slice(start,start+5),complete=true,questions='';
-    for(var i=0;i<chunk.length;i++){
-      var item=chunk[i],id=item[0],chosen=Number(state.personality.answers[id]||0),buttons='';
-      if(!chosen)complete=false;
-      for(var v=1;v<=5;v++)buttons+='<button type="button" class="'+(chosen===v?'selected':'')+'" data-t2-rate="'+id+'" data-value="'+v+'" aria-label="Rating '+v+'">'+v+'</button>';
-      questions+='<article class="bq-t2-question"><h2>'+esc(item[2])+'</h2><div class="bq-t2-scale">'+buttons+'</div><div class="bq-t2-scale-labels"><span>Very inaccurate</span><span>Very accurate</span></div></article>';
-    }
-    setView(shell('Personality · Page '+(personalityPage+1)+' of 4','Choose the answer that best describes your usual pattern.',
-      '<div class="bq-t2-progress"><i style="width:'+(countAnswers()/20*100)+'%"></i></div><section class="bq-t2-question-stack">'+questions+'</section><div class="bq-t2-nav"><button type="button" data-t2-personality-prev '+(personalityPage===0?'disabled':'')+'>← Previous</button><button type="button" class="primary" data-t2-personality-next '+(complete?'':'disabled')+'>'+(personalityPage===3?'Calculate results':'Next →')+'</button></div>'));
-  }
-  function scorePersonality(){
-    var scores={},keys=['E','A','C','S','O'];
-    for(var k=0;k<keys.length;k++){
-      var key=keys[k],sum=0,n=0;
-      for(var i=0;i<ITEMS.length;i++)if(ITEMS[i][1]===key){var raw=Number(state.personality.answers[ITEMS[i][0]]||3);sum+=ITEMS[i][3]===1?raw:6-raw;n++;}
-      var mean=sum/n;scores[key]={mean:Number(mean.toFixed(2)),band:mean<2.8?'Lower expression':mean>3.6?'Higher expression':'Midrange / mixed'};
-    }
-    state.personality.result={date:new Date().toISOString(),scores:scores};state.history.push({type:'personality',date:state.personality.result.date,scores:scores});state.history=state.history.slice(-10);save();renderPersonalityResults();
-  }
-  function renderPersonalityResults(){
-    var result=state.personality.result;if(!result||!result.scores){renderPersonalityIntro();return;}
-    var keys=['E','A','C','S','O'],rows='';
-    for(var i=0;i<keys.length;i++){
-      var key=keys[i],s=result.scores[key],f=FACTORS[key],pct=Math.max(0,Math.min(100,((s.mean-1)/4)*100));
-      var desc=s.band==='Higher expression'?f.high:s.band==='Lower expression'?f.low:'Your responses are relatively mixed or moderate on '+f.name.toLowerCase()+', so context may matter more than one strong tendency.';
-      var practice=s.band==='Higher expression'?f.highPractice:s.band==='Lower expression'?f.lowPractice:'Notice when this trait helps and when the situation asks for a different response.';
-      rows+='<article class="bq-t2-trait"><div class="bq-t2-trait-head"><span>'+f.icon+'</span><div><h2>'+esc(f.name)+'</h2><small>'+esc(s.band)+' · '+s.mean.toFixed(2)+'/5</small></div></div><div class="bq-t2-meter"><i style="width:'+pct+'%"></i></div><p>'+esc(desc)+'</p><div class="bq-t2-practice"><b>Growth experiment</b><span>'+esc(practice)+'</span></div></article>';
-    }
-    setView(shell('Your personality snapshot','These scores describe your questionnaire response pattern, not population percentiles.','<section class="bq-t2-results">'+rows+'</section><section class="bq-t2-warning"><b>Use this carefully</b><p>Personality is descriptive, not a spiritual score. Scripture—not a trait profile—defines Christian character and obedience.</p></section><div class="bq-t2-actions"><button type="button" class="primary" data-t2-plan>Build an action plan</button><button type="button" data-t2-personality-reset>Retake assessment</button></div>'));
+  function showFailure(){
+    document.body.innerHTML='<main class="bq-transform-load-failure" role="alert"><h1>Transform could not start</h1><p>The reflection tools did not load correctly. Return to BibleQuest and try again.</p><a href="./index.html">Return to BibleQuest</a></main>';
   }
 
-  function renderBiasIntro(){
-    setView(shell('Thinking Patterns Check','Five short scenarios to practice slowing down common reasoning errors.','<section class="bq-t2-panel"><div class="bq-t2-icon">🧠</div><h2>Practice better judgment</h2><p>This is not an intelligence test. Each scenario highlights a common bias that can affect ordinary decisions.</p><div class="bq-t2-actions"><button type="button" class="primary" data-t2-bias-begin>'+(Object.keys(state.bias.answers||{}).length?'Continue check':'Begin check')+'</button>'+(Object.keys(state.bias.answers||{}).length?'<button type="button" data-t2-bias-reset>Start over</button>':'')+'</div></section>'));
-  }
-  function renderBiasStep(step){
-    biasStep=Math.max(0,Math.min(BIAS.length-1,step));var task=BIAS[biasStep],chosen=state.bias.answers[task.id],opts='';
-    for(var i=0;i<task.options.length;i++)opts+='<button type="button" class="'+(Number(chosen)===i?'selected':'')+'" data-t2-bias-option="'+i+'">'+esc(task.options[i])+'</button>';
-    setView(shell('Thinking Patterns · '+(biasStep+1)+' of '+BIAS.length,task.title,'<section class="bq-t2-question"><h2>'+esc(task.scenario)+'</h2><div class="bq-t2-options">'+opts+'</div></section><div class="bq-t2-nav"><button type="button" data-t2-bias-prev '+(biasStep===0?'disabled':'')+'>← Previous</button><button type="button" class="primary" data-t2-bias-next '+(chosen===undefined?'disabled':'')+'>'+(biasStep===BIAS.length-1?'See results':'Next →')+'</button></div>'));
-  }
-  function scoreBias(){var correct=0,missed=[];for(var i=0;i<BIAS.length;i++){var t=BIAS[i],a=Number(state.bias.answers[t.id]);if(a===t.best)correct++;else missed.push(t.signal);}state.bias.result={date:new Date().toISOString(),correct:correct,missed:missed};save();renderBiasResults();}
-  function renderBiasResults(){
-    var r=state.bias.result;if(!r){renderBiasIntro();return;}var msg=r.correct===5?'Strong result. The useful next step is practicing the same checks when the decision is emotionally loaded.':r.correct>=3?'You caught several patterns. Review the missed signals and practice naming them before important decisions.':'Use this as a practice baseline. Slow down decisions and deliberately check for the listed patterns.';
-    setView(shell('Thinking-pattern snapshot',r.correct+' of 5 scenarios matched the stronger reasoning response.','<section class="bq-t2-panel"><h2>'+r.correct+'/5</h2><p>'+esc(msg)+'</p>'+(r.missed.length?'<div class="bq-t2-practice"><b>Patterns to revisit</b><span>'+esc(r.missed.join(' · '))+'</span></div>':'')+'<div class="bq-t2-actions"><button type="button" class="primary" data-t2-plan>Build an action plan</button><button type="button" data-t2-bias-reset>Retake check</button></div></section>'));
-  }
-  function renderPlan(){
-    setView(shell('Reflection & Action Plan','Turn insight into one small practice instead of collecting more self-knowledge.','<section class="bq-t2-panel"><h2>Choose one growth experiment</h2><p>Write one pattern you want to notice and one concrete behavior you will practice this week.</p><div class="bq-t2-field"><label for="t2Practice">Pattern to practice</label><input id="t2Practice" data-t2-practice maxlength="500" value="'+esc(state.reflection.practice||'')+'" placeholder="Example: Pause before answering when I feel criticized."></div><div class="bq-t2-field"><label for="t2Action">Specific next action</label><textarea id="t2Action" data-t2-action maxlength="1200" placeholder="What will you actually do?">'+esc(state.reflection.action||'')+'</textarea></div><div class="bq-t2-actions"><button type="button" class="primary" data-t2-plan-save>Save plan</button><button type="button" data-t2-wisdom>Practice with Situations &amp; Wisdom</button></div><div class="bq-t2-status" data-t2-status></div></section>'));
-  }
-  function renderJournal(){
-    setView(shell('Private Reflection Journal','Your notes stay in this browser on this device.','<section class="bq-t2-panel"><div class="bq-t2-field"><label for="t2Noticed">What did you notice?</label><textarea id="t2Noticed" data-t2-noticed maxlength="1200">'+esc(state.reflection.noticed||'')+'</textarea></div><div class="bq-t2-field"><label for="t2JournalAction">What will you do next?</label><textarea id="t2JournalAction" data-t2-action maxlength="1200">'+esc(state.reflection.action||'')+'</textarea></div><div class="bq-t2-field"><label for="t2Prayer">Prayer / Scripture reference</label><textarea id="t2Prayer" data-t2-prayer maxlength="1200">'+esc(state.reflection.prayer||'')+'</textarea></div><div class="bq-t2-actions"><button type="button" class="primary" data-t2-save>Save reflection</button><button type="button" data-t2-reader>Open Bible Reader</button></div><div class="bq-t2-status" data-t2-status></div></section>'));
+  if(!window.BQ_TRANSFORMATION||typeof window.BQ_TRANSFORMATION.open!=='function'){
+    showFailure();
+    return;
   }
 
-  function goHome(action){try{if(action)sessionStorage.setItem(RETURN_KEY,action);}catch(e){}location.assign(new URL('./',location.href).href);}
-  function resetPersonality(){if(window.confirm&&!window.confirm('Clear personality answers and results?'))return;state.personality={answers:{},result:null};save();personalityPage=0;renderPersonalityIntro();}
-  function resetBias(){if(window.confirm&&!window.confirm('Clear thinking-pattern answers and results?'))return;state.bias={answers:{},result:null};save();biasStep=0;renderBiasIntro();}
-  function closestAttr(el,attr){while(el&&el!==root){if(el.nodeType===1&&el.hasAttribute&&el.hasAttribute(attr))return el;el=el.parentNode;}return null;}
+  window.BQ_TRANSFORMATION.open();
+  var root=document.querySelector('.bq-transform-v2');
+  if(!root){showFailure();return;}
 
   root.addEventListener('click',function(event){
-    var t=event.target;
-    if(closestAttr(t,'data-t2-close')){goHome();return;}
-    if(closestAttr(t,'data-t2-home')){renderHub();return;}
-    if(closestAttr(t,'data-t2-reader')){goHome('reader');return;}
-    if(closestAttr(t,'data-t2-wisdom')){goHome('wisdom');return;}
-    if(closestAttr(t,'data-t2-personality')){state.personality.result?renderPersonalityResults():renderPersonalityIntro();return;}
-    if(closestAttr(t,'data-t2-personality-begin')){personalityPage=Math.min(3,Math.floor(countAnswers()/5));renderPersonalityPage(personalityPage);return;}
-    if(closestAttr(t,'data-t2-personality-reset')){resetPersonality();return;}
-    var rate=closestAttr(t,'data-t2-rate');if(rate){state.personality.answers[rate.getAttribute('data-t2-rate')]=Number(rate.getAttribute('data-value'));save();renderPersonalityPage(personalityPage);return;}
-    if(closestAttr(t,'data-t2-personality-prev')){if(personalityPage>0)renderPersonalityPage(personalityPage-1);return;}
-    if(closestAttr(t,'data-t2-personality-next')){if(personalityPage<3)renderPersonalityPage(personalityPage+1);else scorePersonality();return;}
-    if(closestAttr(t,'data-t2-bias')){state.bias.result?renderBiasResults():renderBiasIntro();return;}
-    if(closestAttr(t,'data-t2-bias-begin')){biasStep=Math.min(BIAS.length-1,Object.keys(state.bias.answers||{}).length);renderBiasStep(biasStep);return;}
-    if(closestAttr(t,'data-t2-bias-reset')){resetBias();return;}
-    var opt=closestAttr(t,'data-t2-bias-option');if(opt){state.bias.answers[BIAS[biasStep].id]=Number(opt.getAttribute('data-t2-bias-option'));save();renderBiasStep(biasStep);return;}
-    if(closestAttr(t,'data-t2-bias-prev')){if(biasStep>0)renderBiasStep(biasStep-1);return;}
-    if(closestAttr(t,'data-t2-bias-next')){if(biasStep<BIAS.length-1)renderBiasStep(biasStep+1);else scoreBias();return;}
-    if(closestAttr(t,'data-t2-plan')){renderPlan();return;}
-    if(closestAttr(t,'data-t2-plan-save')){var p=root.querySelector('[data-t2-practice]'),a=root.querySelector('[data-t2-action]'),s=root.querySelector('[data-t2-status]');state.reflection.practice=p?p.value.slice(0,500):'';state.reflection.action=a?a.value.slice(0,1200):'';save();if(s)s.textContent='Saved privately on this device.';return;}
-    if(closestAttr(t,'data-t2-journal')){renderJournal();return;}
-    if(closestAttr(t,'data-t2-save')){var n=root.querySelector('[data-t2-noticed]'),ac=root.querySelector('[data-t2-action]'),pr=root.querySelector('[data-t2-prayer]'),st=root.querySelector('[data-t2-status]');state.reflection.noticed=n?n.value.slice(0,1200):'';state.reflection.action=ac?ac.value.slice(0,1200):'';state.reflection.prayer=pr?pr.value.slice(0,1200):'';save();if(st)st.textContent='Saved privately on this device.';return;}
-  });
-  document.addEventListener('keydown',function(event){if(event.key==='Escape'){event.preventDefault();goHome();}});
-  window.BQ_TRANSFORMATION={open:renderHub,close:function(){goHome();},mode:'rebuilt-v2',version:VERSION,getState:function(){return JSON.parse(JSON.stringify(state));}};
-  window.BQTransformBootDiagnostics={version:'54-inline',page:location.pathname,online:navigator.onLine,serviceWorkerControlled:Boolean(navigator.serviceWorker&&navigator.serviceWorker.controller),runtime:'inline'};
-  renderHub();
+    var target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    if(target.closest('[data-t2-close]')){
+      event.preventDefault();event.stopImmediatePropagation();returnHome();return;
+    }
+    if(target.closest('[data-t2-reader]')){
+      event.preventDefault();event.stopImmediatePropagation();openMain('reader');return;
+    }
+    if(target.closest('[data-t2-wisdom]')){
+      event.preventDefault();event.stopImmediatePropagation();openMain('wisdom');
+    }
+  },true);
+
+  root.addEventListener('keydown',function(event){
+    if(event.key!=='Escape')return;
+    event.preventDefault();event.stopImmediatePropagation();returnHome();
+  },true);
 })();
 </script>
 </body>

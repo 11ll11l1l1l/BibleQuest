@@ -22,7 +22,7 @@ const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(cacheVersion>=52,`PWA cache must include standalone Transform + mobile readability baseline (v52+), got v${cacheVersion||'missing'}`);
 for(const item of ['index.html','transform.html','styles.css','mobile-readability.css','app.js','transform-launcher.js','transformation-v2.js','transformation-v2.css','pwa-runtime.js','onboarding-tutorial.js','manifest.webmanifest','app-icon.svg'])assert(core.includes(item),`required offline core missing: ${item}`);
 assert(sw.includes('Promise.allSettled(optional.map'),'optional shell precache failures must not abort service-worker install');
-assert(sw.includes("url.pathname.endsWith('/transform.html')?'./transform.html':'./index.html'"),'Transform navigation must have its own offline document fallback');
+assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)')&&sw.includes("fallback=isTransformNavigation?'./transform.html'"),'Transform navigation must have its own offline document fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'service worker must activate and claim promptly');
 
 // Narrow-phone production guards. The base app currently renders exactly four
@@ -55,6 +55,8 @@ assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">
 assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone document must explicitly initialize Transform');
 assert(standalone.includes("if(event.key!=='Escape')return"),'standalone Escape must return to BibleQuest instead of leaving a blank Transform document');
 assert(standalone.includes("sessionStorage.setItem('bq_transform_return_action',action)"),'Reader/Wisdom exits must preserve a return action for the main app');
+assert(!standalone.includes("var FACTORS=")&&!standalone.includes("var ITEMS=["),'standalone document must not carry a second inline assessment implementation');
+assert(!standalone.includes("localStorage.setItem(STORE"),'standalone document must delegate Transform state ownership to transformation-v2.js');
 for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);
 assert(shell.includes('transform.html')&&shell.includes('transform-launcher.js')&&shell.includes('transformation-v2.js')&&shell.includes('transformation-v2.css'),'standalone Transform assets must be available offline');
 
