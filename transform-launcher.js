@@ -34,7 +34,7 @@
     const sheet=document.getElementById('bqModernSheet');
     const host=sheet?.querySelector('#modernSheetContent');
     if(!sheet||!host){openStandalone();return;}
-    host.innerHTML='<header class="modern-sheet-head"><div><span>🪞</span><div><small>GROW</small><h2>Transformation</h2><p>See your patterns, then bring them under the teaching and character of Christ.</p></div></div><button data-bq-transform-back aria-label="Back">‹</button></header><div class="modern-sheet-list"><button data-bq-transform-quick><span>🌱</span><div><b>Quick Transform</b><small>20-item personality · thinking patterns · reflection · action plan</small></div><i>›</i></button><button data-bq-transform-psych><span>🔬</span><div><b>Psychometrics Lab</b><small>120-item personality · 30 facets · 24 strengths · self-esteem · biblical reflection</small></div><i>›</i></button></div><div class="modern-source-list"><article><b>Purpose</b><p>These tools do not define your identity or spiritual worth. They help uncover tendencies and blind spots so you can examine them in light of Scripture and grow in Christlike obedience.</p></article></div>';
+    host.innerHTML='<header class="modern-sheet-head"><div><span>🪞</span><div><small>GROW</small><h2>Transformation</h2><p>Understand patterns you may not notice in yourself, then decide what deserves attention or change.</p></div></div><button data-bq-transform-back aria-label="Back">‹</button></header><div class="modern-sheet-list"><button data-bq-transform-quick><span>🌱</span><div><b>Quick Transform</b><small>20-item personality · thinking patterns · reflection · action plan</small></div><i>›</i></button><button data-bq-transform-psych><span>🔬</span><div><b>Psychometrics Lab</b><small>120-item personality · 30 facets · 24 strengths · self-esteem · raw results · deeper interpretation</small></div><i>›</i></button></div><div class="modern-source-list"><article><b>Purpose</b><p>These tools are for self-realization, not labeling or preaching. First see the measured tendency as clearly as possible. Then examine how it actually shows up in your habits, relationships, decisions, triggers, strengths and blind spots. For Christian users, Scripture is provided afterward as a reflection lens—not as part of the score.</p></article></div>';
     sheet.classList.remove('hidden');
     document.body.classList.add('modern-sheet-open');
   }
@@ -70,7 +70,7 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',takePending,{once:true});
   else takePending();
 
-  window.BQ_TRANSFORMATION={open:openStandalone,menu:openTransformMenu,mode:'standalone-route',version:3};
+  window.BQ_TRANSFORMATION={open:openStandalone,menu:openTransformMenu,mode:'standalone-route',version:4};
   window.BQTransformLauncher={url:()=>new URL(TARGET,location.href).href,open:openStandalone,menu:openTransformMenu};
   window.BQPsychometrics={url:()=>new URL(PSYCH_TARGET,location.href).href,open:openPsychometrics};
 })();
