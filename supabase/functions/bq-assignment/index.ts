@@ -13,6 +13,10 @@ async function assignmentVisible(admin:ReturnType<typeof adminClient>,assignment
     const {data,error}=await admin.from('bible_team_members').select('user_id').eq('team_id',assignment.target_id).eq('user_id',userId).maybeSingle();
     if(error)throw error;return Boolean(data);
   }
+  if(assignment.target_scope==='group'){
+    const {data,error}=await admin.from('bible_group_members').select('user_id').eq('group_id',assignment.target_id).eq('user_id',userId).eq('active',true).maybeSingle();
+    if(error)throw error;return Boolean(data);
+  }
   return false;
 }
 
@@ -32,8 +36,8 @@ Deno.serve(async(req:Request)=>{
       const title=text(body?.title,120),instructions=text(body?.instructions,4000),assignmentType=String(body?.assignmentType||'custom');
       const targetScope=String(body?.targetScope||'all'),targetId=body?.targetId?String(body.targetId):null;
       if(title.length<2||!allowedTypes.has(assignmentType))return json({error:'Provide a valid assignment title and type'},400);
-      if(!['all','member','team'].includes(targetScope))return json({error:'Invalid assignment audience'},400);
-      if(targetScope!=='all'&&!targetId)return json({error:'Choose a member or team'},400);
+      if(!['all','member','team','group'].includes(targetScope))return json({error:'Invalid assignment audience'},400);
+      if(targetScope!=='all'&&!targetId)return json({error:'Choose a member, team, or Journey Group'},400);
       if(targetScope==='member'){
         const target=await activeMembership(admin,congregationId,String(targetId));
         if(!target)return json({error:'Target member is not active in this congregation'},400);
@@ -41,6 +45,10 @@ Deno.serve(async(req:Request)=>{
       if(targetScope==='team'){
         const t=await admin.from('bible_teams').select('id').eq('id',targetId).eq('congregation_id',congregationId).maybeSingle();
         if(t.error)throw t.error;if(!t.data)return json({error:'Team not found in this congregation'},400);
+      }
+      if(targetScope==='group'){
+        const g=await admin.from('bible_groups').select('id').eq('id',targetId).eq('congregation_id',congregationId).eq('active',true).maybeSingle();
+        if(g.error)throw g.error;if(!g.data)return json({error:'Journey Group not found in this congregation'},400);
       }
       const scriptureRefs=(Array.isArray(body?.scriptureRefs)?body.scriptureRefs:[]).map((x:unknown)=>text(x,80)).filter(Boolean).slice(0,20);
       const points=Math.min(25,Math.max(0,Math.round(Number(body?.points)||5)));
