@@ -49,15 +49,15 @@
     if(legacyFocus){
       const title=legacyFocus.querySelector('h2');
       const copy=legacyFocus.querySelector('p');
-      if(title&&!/Nice work/i.test(title.textContent||''))title.textContent='Continue My Journey';
-      if(copy&&!/Balik ka bukas/i.test(copy.textContent||''))copy.textContent='Recall → context → learn → apply → reflect.';
+      if(title&&!/Nice work/i.test(title.textContent||'')&&title.textContent!=='Continue My Journey')title.textContent='Continue My Journey';
+      if(copy&&!/Balik ka bukas/i.test(copy.textContent||'')&&copy.textContent!=='Recall → context → learn → apply → reflect.')copy.textContent='Recall → context → learn → apply → reflect.';
     }
     const legacyPlay=document.querySelector('[data-modern-item="play:0"]');
     if(legacyPlay){
       const title=legacyPlay.querySelector('b');
       const copy=legacyPlay.querySelector('small');
-      if(title)title.textContent='Daily Journey';
-      if(copy)copy.textContent='Recall → context → learn → apply → reflect';
+      if(title&&title.textContent!=='Daily Journey')title.textContent='Daily Journey';
+      if(copy&&copy.textContent!=='Recall → context → learn → apply → reflect')copy.textContent='Recall → context → learn → apply → reflect';
     }
   }
 
