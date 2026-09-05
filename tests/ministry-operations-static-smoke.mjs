@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
-const index=read('index.html'),guest=read('guest-access-hardening.js'),preview=read('preview-access.js'),standalone=read('standalone-account-gate.js'),transform=read('transform.html'),psych=read('psychometrics.html'),admin=read('admin.html'),owner=read('owner-delete-control.js'),ops=read('admin-operations.js'),opsFn=read('supabase/functions/bq-admin-ops/index.ts'),hub=read('ministry-hub.js'),migration=read('supabase/migrations/20260905_bible_ministry_messages_and_scoped_polls.sql'),pollRpc=read('supabase/migrations/20260905_bible_poll_totals_rpc.sql'),assignment=read('assignment-center.js'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
+const index=read('index.html'),guest=read('guest-access-hardening.js'),preview=read('preview-access.js'),standalone=read('standalone-account-gate.js'),transform=read('transform.html'),psych=read('psychometrics.html'),admin=read('admin.html'),opsHtml=read('admin-operations.html'),owner=read('owner-delete-control.js'),ops=read('admin-operations.js'),opsCss=read('admin-operations.css'),opsFn=read('supabase/functions/bq-admin-ops/index.ts'),hub=read('ministry-hub.js'),migration=read('supabase/migrations/20260905_bible_ministry_messages_and_scoped_polls.sql'),pollRpc=read('supabase/migrations/20260905_bible_poll_totals_rpc.sql'),assignment=read('assignment-center.js'),sw=read('sw.js'),pwa=read('pwa-runtime.js');
 const version=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(index.includes('preview-access.js')&&index.includes('ministry-hub.js'),'production index must load preview restriction and ministry hub');
 assert(!guest.includes('Continue without an account'),'unrestricted guest exit must be removed');
@@ -13,6 +13,8 @@ assert(standalone.includes("['127.0.0.1','localhost'].includes(location.hostname
 assert(transform.includes('standalone-account-gate.js')&&transform.includes('BQStandaloneGate?.ready'),'Transform direct URL must wait for account verification');
 assert(psych.includes('standalone-account-gate.js')&&psych.includes('BQStandaloneGate?.ready'),'Psychometrics direct URL must wait for account verification');
 assert(admin.includes('admin-operations.html')&&admin.includes('owner-delete-control.js'),'Admin page must expose operations and owner account control');
+assert(opsHtml.includes('admin-operations.css')&&opsHtml.includes('admin-operations.js')&&opsHtml.includes('cloud-config.js'),'Admin Operations standalone entry must load its local runtime and styling');
+assert(opsCss.includes('.ops-online')&&opsCss.includes('.ops-poll'),'Admin Operations styling must cover online and poll views');
 assert(owner.includes("action:'delete_user'")&&owner.includes('DELETE ${email||name}'),'Owner delete UI must require explicit destructive confirmation');
 assert(opsFn.includes("if(r!=='owner')")&&opsFn.includes('The active owner account cannot delete itself')&&opsFn.includes('Transfer congregation ownership first')&&opsFn.includes('Transfer small-group ownership first'),'server must enforce owner-only safe account deletion');
 for(const label of ['Who is online','Leader / pastor assignments','Devotionals & messages','Persistent congregation polls','Live rooms & live polls'])assert(ops.includes(label),`admin operations missing ${label}`);
