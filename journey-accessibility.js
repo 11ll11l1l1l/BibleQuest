@@ -37,11 +37,42 @@
     wasOpen=open;
   }
 
+  function showWorldRecovery(){
+    const card=document.querySelector('.journey-path-card');
+    if(!card)return false;
+    let status=card.querySelector('.journey-world-recovery');
+    if(!status){
+      status=document.createElement('p');
+      status.className='journey-world-recovery';
+      status.setAttribute('role','status');
+      status.textContent='Bible World is unavailable right now. Your Journey Path is still here; Continue My Journey for the next step.';
+      card.appendChild(status);
+    }
+    card.scrollIntoView?.({block:'center',behavior:'smooth'});
+    const current=card.querySelector('.journey-node.current')||card.querySelector('.journey-node');
+    current?.focus?.({preventScroll:true});
+    return true;
+  }
+
+  function recoverWorldEntry(e){
+    const trigger=e.target?.closest?.('[data-journey-world],[data-reveal-context]');
+    if(!trigger||typeof window.BQWorld?.open==='function')return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if(trigger.matches('[data-reveal-context]')){
+      const layer=document.getElementById('bqJourneyLoop');
+      const close=layer?.querySelector('[data-journey-close]');
+      if(close){close.click();requestAnimationFrame(showWorldRecovery);return}
+    }
+    showWorldRecovery();
+  }
+
   function refresh(){
     if(queued)return;queued=true;
     requestAnimationFrame(()=>{queued=false;labelPath();enhanceLayer()});
   }
 
+  document.addEventListener('click',recoverWorldEntry,true);
   document.addEventListener('keydown',e=>{
     const layer=document.getElementById('bqJourneyLoop');
     if(!visible(layer)||!layer.contains(e.target))return;
