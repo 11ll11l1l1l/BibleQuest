@@ -29,7 +29,7 @@ BibleQuest currently exposes these Reader choices:
 - **BSB · Berean Standard Bible** — full in-app text from BibleQuest's on-demand per-book packs.
 - **TGL · banal na Bibliya / Tagalog ULB** — full in-app Tagalog text from on-demand per-book packs under CC BY-SA 4.0.
 - **JKO · 口語訳聖書 (1954/1955)** — requested chapter-by-chapter from GetBible's `japkougo` resource. The Japan Bible Society states that copyright protection for the 1955 edition has expired, while authors' moral rights remain and wording introduced by later corrections can still be protected. BibleQuest does not rewrite the fetched verse text: furigana, vocabulary explanations, and English learning glosses are rendered separately as learning annotations.
-- **NLT · New Living Translation** — the current production client opens the selected passage in a licensed external reader. BibleQuest does not bundle the NLT text and does not expose a private publisher API credential in the browser.
+- **NLT · New Living Translation** — requested live from Tyndale's official NLT API. Tyndale's published anonymous API terms permit non-commercial web applications to request NLT text without a private key, with a maximum of 50 verses per request and 500 requests per day. BibleQuest therefore chunks long chapters into requests of at most 50 verses, keeps the returned passage only in memory for the current browser session, does not bundle or bulk-persist the NLT corpus, and falls back visibly to BSB or a licensed online reader if the API is unavailable. Any commercial deployment or higher-volume use requires the appropriate Tyndale permission/key arrangement.
 - **ESV · English Standard Version** — selectable in the reader. BibleQuest links the selected chapter to ESV.org rather than publishing a shared ESV API key or bulk-caching ESV text.
 - **NIV · New International Version** — selectable in the reader. Full digital-product use is subject to publisher licensing, so BibleQuest currently routes the selected passage to a licensed online reader rather than bundling NIV text.
 - **AMP · Amplified Bible** — selectable in the reader. BibleQuest currently routes the selected passage to a licensed online reader rather than bulk-storing or redistributing the copyrighted text.
@@ -40,7 +40,7 @@ Bible translations supply Scripture text; selecting a translation does not chang
 
 - **World English Bible (WEB)** — public-domain fallback/alternate Bible translation if BibleQuest later adds another fully bundled translation.
 - Additional openly licensed language resources may be added only when their license and provenance can remain clear in the interface.
-- NLT/ESV/NIV/AMP may be upgraded from licensed-reader links to direct in-app delivery only when BibleQuest has the appropriate private backend/API configuration or written digital-use permission. Any credential must stay off the public client.
+- ESV/NIV/AMP may move from licensed-reader links to direct in-app delivery only when BibleQuest has appropriate API/licensing permission. NLT already has a limited anonymous non-commercial web API path; any use beyond those published limits must obtain the appropriate Tyndale arrangement. Private credentials must stay off the public client.
 
 ## Product source rules
 
@@ -60,6 +60,7 @@ Bible translations supply Scripture text; selecting a translation does not chang
 14. API credentials for copyrighted translations must never be committed to the public GitHub repository.
 15. Live copyrighted Bible text must retain the publisher-required version label and copyright attribution.
 16. Japanese learning aids must never replace or silently modify the displayed 口語訳 verse wording; annotations remain visually and structurally separate from Scripture text.
+17. NLT live delivery must stay within Tyndale's published anonymous non-commercial limits: no more than 50 verses per request, no bulk corpus caching, and a visible recoverable failure state rather than relabeling another translation as NLT.
 
 ## Safety-sensitive topics
 
@@ -71,4 +72,4 @@ Large immutable resources are not loaded at app startup. BibleQuest uses small m
 
 Imported question packs are filtered at runtime before gameplay. The filter fails closed: if the doctrinal-safety policy cannot load or validate a pack, that imported pack is blocked rather than displayed raw. Content refresh jobs also run the pack sanitizer so future generated packs physically move quarantined questions into `data/quarantine/questions/` before publication.
 
-Copyrighted linked/API translations are handled separately from the bundled cache so publisher-specific storage and redistribution rules can be respected.
+Copyrighted live/API or linked translations are handled separately from the bundled cache so publisher-specific storage and redistribution rules can be respected. NLT API responses are kept only in an in-memory session cache by the translation module; the service worker does not intercept the cross-origin NLT API request.
