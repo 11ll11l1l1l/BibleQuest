@@ -23,7 +23,7 @@ function validateHtmlEntry(file){
 console.log('BibleQuest release validation');
 
 const entries={};
-for(const file of ['index.html','transform.html','psychometrics.html','admin.html','reset.html'])entries[file]=validateHtmlEntry(file);
+for(const file of ['index.html','transform.html','psychometrics.html','admin.html','reset.html','content-review.html'])entries[file]=validateHtmlEntry(file);
 const index=entries['index.html'].html;
 const localRefsIndex=entries['index.html'].refs;
 const standalone=entries['transform.html'].html;
@@ -43,7 +43,8 @@ assert(transformRuntime.includes("window.BQ_TRANSFORMATION={")&&transformRuntime
 assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone Transform page must load rebuilt styles');
 assert(launcher.includes("const TARGET='./transform.html'"),'Grow Transformation entry must target standalone page');
 assert(!exists('transform-disabled.marker'),'stale Transform quarantine marker must not exist');
-console.log('✓ Production entry-point references: index, Transform, Psychometrics, Admin, Reset');
+assert(index.indexOf('runtime-safety.js')<index.indexOf('content-moderation-runtime.js')&&index.indexOf('content-moderation-runtime.js')<index.indexOf('app.js'),'content moderation must layer after doctrinal filtering and before app content');
+console.log('✓ Production entry-point references: index, Transform, Psychometrics, Admin, Reset, Content Review');
 
 const jsFiles=walk('.',p=>p.endsWith('.js')&&!p.includes('/node_modules/'));
 for(const file of jsFiles)run(process.execPath,['--check',file]);
@@ -62,13 +63,14 @@ for(const item of shell)assert(exists(item),`service worker caches missing file:
 const indexShellRefs=localRefsIndex.filter(x=>/\.(?:js|css|webmanifest|svg|webp)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=67,'service worker cache must include bounded required/optional install behavior v67+');
-for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','psychometrics.html','guest-access-hardening.js','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
+assert(cacheVersion>=68,'service worker cache must include congregation recognition/content review release v68+');
+for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','psychometrics.html','content-review.html','content-review.css','content-review.js','content-moderation-runtime.js','content-report.js','content-review-link.js','congregation-recognition.js','guest-access-hardening.js','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
 assert(sw.includes('const REQUIRED_CACHE_TIMEOUT_MS=8000'),'required install shell must have a finite timeout');
 assert(sw.includes('const OPTIONAL_CACHE_TIMEOUT_MS=12000'),'optional install shell must have a finite timeout');
 assert(sw.includes('Promise.all(INSTALL_REQUIRED.map(item=>cacheWithTimeout(cache,item,REQUIRED_CACHE_TIMEOUT_MS,true)))'),'required PWA assets must fail closed without hanging indefinitely');
 assert(sw.includes('Promise.allSettled(optional.map(item=>cacheWithTimeout(cache,item,OPTIONAL_CACHE_TIMEOUT_MS,false)))'),'optional PWA assets must fail independently');
 assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)'),'service worker must recognize both /transform and /transform.html');
+assert(sw.includes('const isContentReviewNavigation=/\\/content-review(?:\\.html)?\\/?$/.test(url.pathname)'),'service worker must preserve the standalone Content Review fallback');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'PWA update must activate and claim promptly');
 console.log(`✓ Service worker coverage/install bounds · cache v${cacheVersion}`);
 
@@ -87,14 +89,14 @@ assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remai
 assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'),'final mobile override must match the four actual bottom tabs');
 assert(browserSmoke.includes('geometry.nav.length,4'),'primary browser smoke must guard the four-tab production nav');
 assert(!browserSmoke.includes('bq-transform-overlay'),'primary browser smoke must not restore retired same-page Transform assumptions');
-assert(browserSmoke.includes('standalone transformation')&&browserSmoke.includes('window.BQ_TRANSFORMATION.open()'),'primary browser smoke must exercise standalone Transform route');
+assert(browserSmoke.includes('standalone transformation')&&browserSmoke.includes('window.BQ_TRANSFORMATION.open()'),'primary browser smoke must exercise the standalone Transform route');
 assert(layoutSmoke.includes('for(const width of [320,360,390,412,430])'),'layout matrix must cover required narrow-phone widths');
 assert(layoutSmoke.includes('geometry.nav.length,4'),'layout matrix must guard four bottom destinations');
 assert(layoutSmoke.includes('primaryHeight>=44')&&layoutSmoke.includes('pathLabelFont>=9'),'layout matrix must guard practical touch targets and critical label readability');
 assert(operationalSmoke.includes("keyboard.press('Escape')"),'Transform operational smoke must exercise Escape return');
 assert(operationalSmoke.includes('[data-t2-reader]')&&operationalSmoke.includes('[data-t2-wisdom]'),'Transform operational smoke must exercise Reader and Wisdom return actions');
 assert(operationalSmoke.includes('bq_transform_return_action'),'Transform return actions must be verified as one-shot state');
-console.log('✓ Mobile hierarchy and executable browser-smoke contracts');
+console.log('✓ Mobile hierarchy and executable browser-smoke guards');
 
 const cloud=read('cloud-config.js');
 assert(cloud.includes("publishableKey: 'sb_publishable_"),'cloud config must use a publishable key');
@@ -106,7 +108,7 @@ const workflows=walk('.github/workflows',p=>/\.ya?ml$/i.test(p));
 for(const file of workflows){const yml=read(file);assert(/\bworkflow_dispatch\s*:/.test(yml),`${file} must be manual-dispatch capable`);for(const trigger of ['push','pull_request','schedule','workflow_run','repository_dispatch']){const re=new RegExp(`^\\s{2}${trigger}\\s*:`, 'm');assert(!re.test(yml),`${file} contains forbidden automatic trigger: ${trigger}`)}}
 console.log(`✓ GitHub Actions manual-only policy: ${workflows.length} workflows`);
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','guest-access-hardening.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','psychometrics.html','psychometrics-suite.js','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','guest-access-hardening.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','psychometrics.html','psychometrics-suite.js','content-review.html','content-review.css','content-review.js','content-moderation-runtime.js','content-report.css','content-report.js','content-review-link.js','congregation-recognition.css','congregation-recognition.js','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','tests/content-review-static-smoke.mjs','tests/congregation-recognition-static-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql','supabase/migrations/20260905_content_review_and_reports.sql','supabase/migrations/20260905_content_reviewer_member_read.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Required release assets');
 
 const contextManifest=JSON.parse(read('data/packs/context/manifest.json'));
@@ -132,7 +134,7 @@ console.log('✓ Doctrinal/content audits and policy-version alignment');
 run('python3',['-m','py_compile','scripts/apply-doctrinal-safety.py','scripts/build_content_pack.py','scripts/build_story_packs.py','scripts/build_tagalog_packs.py','scripts/build_original_language_packs.py']);
 console.log('✓ Python content tooling syntax');
 
-const sensitiveBrowserFiles=['cloud-config.js','account.js','guest-access-hardening.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js'];
+const sensitiveBrowserFiles=['cloud-config.js','account.js','guest-access-hardening.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','congregation-recognition.js','content-moderation-runtime.js','content-report.js','content-review-link.js','content-review.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js'];
 for(const file of sensitiveBrowserFiles){const text=read(file);assert(!/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/i.test(text),`privileged secret marker found in browser file: ${file}`)}
 console.log('✓ Browser secret invariants');
 
