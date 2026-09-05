@@ -1,5 +1,6 @@
 (() => {
   const badge=(text,kind='bible')=>`<span class="bq-source-badge ${kind}">${text}</span>`;
+  let queued=false;
 
   function injectHomeGuide(){
     const anchor=document.querySelector('.data-note');
@@ -17,9 +18,18 @@
   }
 
   function labelReader(){
+    const article=document.querySelector('.verse-list');
     const host=document.querySelector('.reader-title-row');
-    if(host&&!host.querySelector('.bq-source-badge'))host.insertAdjacentHTML('beforeend',badge('BSB · Berean Standard Bible'));
-    document.querySelectorAll('.verse-list p').forEach(p=>p.setAttribute('data-bq-scripture','BSB'));
+    if(!article||!host)return;
+    const scripture=article.dataset.bqScripture||'';
+    const applied=article.dataset.bqAppliedVersion||scripture;
+    let sourceBadge=host.querySelector('.bq-source-badge');
+    if(scripture==='BSB'&&applied==='BSB'){
+      if(!sourceBadge)host.insertAdjacentHTML('beforeend',badge('BSB · Berean Standard Bible'));
+      article.querySelectorAll('p').forEach(p=>p.setAttribute('data-bq-scripture','BSB'));
+    }else if(sourceBadge?.textContent?.includes('BSB')){
+      sourceBadge.remove();
+    }
   }
 
   function labelSequence(){
@@ -38,21 +48,16 @@
     document.querySelectorAll('.story-scene-text,.story-copy,.obs-scene,.story-current,.story-next-choices p').forEach(x=>x.setAttribute('data-bq-source-content','obs'));
   }
 
-  function correctProductionCopy(){
-    document.querySelectorAll('.modern-source-list article').forEach(article=>{
-      const title=article.querySelector('b')?.textContent||'';
-      if(!/^NLT\b/.test(title))return;
-      const p=article.querySelector('p');
-      const text='Opens the selected passage in a licensed reader. BibleQuest does not bundle or relabel copyrighted NLT text; internet is required.';
-      if(p&&p.textContent!==text)p.textContent=text;
-    });
-    document.querySelectorAll('.bqt-feature-map details p').forEach(p=>{
-      if(p.textContent.includes('Daily 5'))p.textContent=p.textContent.replace(/Daily 5/g,'Daily Journey');
-    });
-  }
+  function apply(){injectHomeGuide();labelReader();labelSequence();labelOpenReview();labelStory()}
+  function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
 
-  function apply(){injectHomeGuide();labelReader();labelSequence();labelOpenReview();labelStory();correctProductionCopy();}
-  const obs=new MutationObserver(apply);
-  document.addEventListener('DOMContentLoaded',()=>{apply();obs.observe(document.documentElement,{childList:true,subtree:true});});
-  setTimeout(apply,120);
+  document.addEventListener('DOMContentLoaded',()=>{
+    schedule();
+    const root=document.body;
+    if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true});
+  },{once:true});
+  window.addEventListener('bq-modern-home-rendered',schedule);
+  window.addEventListener('bq-reader-rendered',schedule);
+  window.addEventListener('bq-reader-translation-applied',schedule);
+  setTimeout(schedule,120);
 })();

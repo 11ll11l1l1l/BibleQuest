@@ -4,10 +4,11 @@
 
   const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function state(){try{return JSON.parse(localStorage.getItem(APP)||'{}')}catch{return {}}}
-  function today(){return new Date().toISOString().slice(0,10)}
   function due(){try{return window.BQOpenReview?.countDue?.()||0}catch{return 0}}
+  function report(code,error,label=''){window.BQRuntime?.report?.('modern-home',code,error,{feature:label})}
 
-  function featureFailure(label,retry){
+  function featureFailure(label,retry,error=null){
+    report('feature_open_failed',error||new Error(`${label} unavailable`),label);
     const el=sheet(),host=el.querySelector('#modernSheetContent');
     host.innerHTML=`<header class="modern-sheet-head"><div><span>⚠️</span><div><small>RECOVERABLE ERROR</small><h2>${esc(label)} could not open</h2><p>BibleQuest is still running. Try again, or close this message and continue elsewhere.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article class="modern-feature-failure" role="alert"><b>Feature unavailable right now</b><p>The feature module did not respond. Your current BibleQuest screen and saved progress were not discarded.</p><div class="actions"><button class="primary" data-feature-retry>Try again</button><button class="secondary" data-modern-close>Close</button></div></article></div>`;
     host.querySelector('[data-feature-retry]')?.addEventListener('click',()=>{
@@ -23,10 +24,10 @@
     closeSheet();
     try{
       const result=action();
-      if(result&&typeof result.then==='function')result.catch(()=>featureFailure(label,retry));
+      if(result&&typeof result.then==='function')result.catch(error=>featureFailure(label,retry,error));
       return true;
-    }catch(_err){
-      return featureFailure(label,retry);
+    }catch(error){
+      return featureFailure(label,retry,error);
     }
   }
 
@@ -34,23 +35,23 @@
     closeSheet();
     const el=document.querySelector(selector);
     if(el){
-      try{el.click();return true}catch(_err){return featureFailure(label,()=>trigger(selector,label))}
+      try{el.click();return true}catch(error){return featureFailure(label,()=>trigger(selector,label),error)}
     }
-    return featureFailure(label,()=>trigger(selector,label));
+    return featureFailure(label,()=>trigger(selector,label),new Error('Feature trigger not found'));
   }
 
   function openApi(label,getApi,method='open'){
     const retry=()=>openApi(label,getApi,method);
     let api;
-    try{api=getApi()}catch(_err){return featureFailure(label,retry)}
+    try{api=getApi()}catch(error){return featureFailure(label,retry,error)}
     const fn=api?.[method];
-    if(typeof fn!=='function')return featureFailure(label,retry);
+    if(typeof fn!=='function')return featureFailure(label,retry,new Error(`${label} API unavailable`));
     return runFeature(label,()=>fn.call(api),retry);
   }
 
   const hubs={
     play:{icon:'🎮',title:'Play',sub:'Games & challenges',items:[
-      ['⚡','Daily 5','Balanced 2–3 minute session',()=>trigger('[data-action="daily"]','Daily 5')],
+      ['🧭','Daily Journey','Recall → context → learn → apply → reflect',()=>openApi('Daily Journey',()=>window.BQJourneyLoop)],
       ['🧠','Smart Review','Balikan ang weak at due questions',()=>trigger('[data-open-review]','Smart Review')],
       ['🎯','Quick Play','10 mixed questions',()=>trigger('[data-action="quick"]','Quick Play')],
       ['🗣️','Who Said It?','Guess the speaker from a real BSB verse',()=>trigger('[data-who-said]','Who Said It?')],
@@ -62,7 +63,7 @@
       ['🧠','Context Mode','Understand why, not just who',()=>trigger('[data-action="context"]','Context Mode')]
     ]},
     read:{icon:'📖',title:'Read',sub:'Bible, context & notes',items:[
-      ['📚','Bible Reader','BSB · Tagalog ULB · NLT',()=>trigger('[data-reader-open]','Bible Reader')],
+      ['📚','Bible Reader','BSB · Tagalog ULB · Japanese · licensed NLT',()=>trigger('[data-reader-open]','Bible Reader')],
       ['📘','Guided Study','Read → Observe → Understand → Discuss → Apply → Pray',()=>openApi('Guided Study',()=>window.BQStudy)],
       ['אΩ','Hebrew & Greek Context','Lemma, transliteration, morphology, brief gloss, and careful context',()=>openApi('Hebrew & Greek Context',()=>window.BQContextLab)],
       ['🗂️','Bible Workspace','Cloud highlights, bookmarks, notes, and search',()=>openApi('Bible Workspace',()=>window.BQWorkspace)],
@@ -116,7 +117,7 @@
 
   function sourceSheet(){
     const el=sheet(),host=el.querySelector('#modernSheetContent');
-    host.innerHTML=`<header class="modern-sheet-head"><div><span>ℹ️</span><div><small>TRANSPARENT SOURCES</small><h2>Bible versions & sources</h2><p>Alam mo kung saan galing ang Scripture at study content.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article><b>BSB · Berean Standard Bible</b><p>Main English Bible text. Inside BibleQuest as on-demand book packs; offline after first load.</p></article><article><b>TGL · banal na Bibliya / Tagalog ULB</b><p>Tagalog Scripture text. Door43 World Missions Community · CC BY-SA 4.0 · on-demand book packs.</p></article><article><b>NLT · New Living Translation</b><p>Main connected English option. Loads inside BibleQuest through Tyndale’s official API; internet required.</p></article><article><b>STEPBible TBESH / TBESG</b><p>Hebrew and Greek lemma, transliteration, morphology and brief gloss used by Context Lab · STEP Bible / Tyndale House Cambridge · CC BY 4.0.</p></article><article><b>unfoldingWord Translation Questions v90</b><p>Open recall questions/reference answers · CC BY-SA 4.0.</p></article><article><b>Open Bible Stories</b><p>Illustrated Bible-story retelling · CC BY-SA 4.0. Hindi Bible translation.</p></article></div>`;
+    host.innerHTML=`<header class="modern-sheet-head"><div><span>ℹ️</span><div><small>TRANSPARENT SOURCES</small><h2>Bible versions & sources</h2><p>Alam mo kung saan galing ang Scripture at study content.</p></div></div><button data-modern-close aria-label="Close">×</button></header><div class="modern-source-list"><article><b>BSB · Berean Standard Bible</b><p>Main English Bible text. Inside BibleQuest as on-demand book packs; offline after first load.</p></article><article><b>TGL · banal na Bibliya / Tagalog ULB</b><p>Tagalog Scripture text. Door43 World Missions Community · CC BY-SA 4.0 · on-demand book packs.</p></article><article><b>JKO · 口語訳聖書</b><p>Japanese chapter text loads on demand from GetBible; Japanese-learning aids are displayed separately from Scripture text.</p></article><article><b>NLT · New Living Translation</b><p>Opens the selected passage in a licensed reader. BibleQuest does not bundle or relabel copyrighted NLT text; internet is required.</p></article><article><b>STEPBible TBESH / TBESG</b><p>Hebrew and Greek lemma, transliteration, morphology and brief gloss used by Context Lab · STEP Bible / Tyndale House Cambridge · CC BY 4.0.</p></article><article><b>unfoldingWord Translation Questions v90</b><p>Open recall questions/reference answers · CC BY-SA 4.0.</p></article><article><b>Open Bible Stories</b><p>Illustrated Bible-story retelling · CC BY-SA 4.0. Hindi Bible translation.</p></article></div>`;
     el.classList.remove('hidden');document.body.classList.add('modern-sheet-open');
   }
 
@@ -133,15 +134,15 @@
     let host=document.querySelector('.modern-home');
     const isNew=!host;
     if(!host){host=document.createElement('section');host.className='modern-home';stats.after(host)}
-    const s=state(),isDone=s.dailyDone===today(),review=due(),rawName=s.profile?.name||'',name=rawName?`, ${esc(rawName)}`:'';
-    const signature=[isDone,review,rawName,s.xp||0,s.answered||0].join('|');
+    const s=state(),review=due(),rawName=s.profile?.name||'',name=rawName?`, ${esc(rawName)}`:'';
+    const signature=[review,rawName,s.xp||0,s.answered||0].join('|');
     if(!isNew&&signature===lastSignature)return;
     lastSignature=signature;
     host.innerHTML=`
       <section class="modern-focus">
-        <button class="modern-daily ${isDone?'done':''}" data-modern-daily>
-          <div class="modern-focus-icon">${isDone?'✓':'⚡'}</div>
-          <div><small>${isDone?'TODAY COMPLETE':'TODAY · 2–3 MIN'}</small><h2>${isDone?'Nice work'+name+'.':'Daily 5'+name}</h2><p>${isDone?'Balik ka bukas, or play another mode.':'Isang balanced session para tuloy-tuloy ang Bible learning.'}</p></div><i>›</i>
+        <button class="modern-daily" data-modern-daily>
+          <div class="modern-focus-icon">🧭</div>
+          <div><small>TODAY · 3–5 MIN</small><h2>Continue My Journey${name}</h2><p>Recall → context → learn → apply → reflect.</p></div><i>›</i>
         </button>
         <button class="modern-review" data-modern-review><span>🧠</span><div><b>${review?review+' due':'Smart Review'}</b><small>${review?'Ready for review':'Adaptive recall'}</small></div></button>
       </section>
@@ -150,7 +151,7 @@
         ${Object.entries(hubs).map(([k,h])=>`<button class="modern-hub ${k}" data-modern-hub="${k}"><span>${h.icon}</span><div><b>${h.title}</b><small>${h.sub}</small></div><i>›</i></button>`).join('')}
       </section>
       <section class="modern-footer-row"><button data-modern-sources>ℹ️ Sources & Bible versions</button><span>Cloud account · private notes · congregation sync</span></section>`;
-    host.querySelector('[data-modern-daily]').onclick=()=>trigger('[data-action="daily"]','Daily 5');
+    host.querySelector('[data-modern-daily]').onclick=()=>openApi('Daily Journey',()=>window.BQJourneyLoop);
     host.querySelector('[data-modern-review]').onclick=()=>trigger('[data-open-review]','Smart Review');
     host.querySelectorAll('[data-modern-hub]').forEach(b=>b.onclick=()=>openHub(b.dataset.modernHub));
     host.querySelector('[data-modern-sources]').onclick=sourceSheet;
@@ -158,7 +159,12 @@
   }
 
   function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;render()})}
-  const obs=new MutationObserver(schedule);obs.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',schedule);setTimeout(schedule,250);
+  const appRoot=document.getElementById('app');
+  const obs=new MutationObserver(schedule);
+  if(appRoot)obs.observe(appRoot,{childList:true,subtree:true});
+  document.addEventListener('DOMContentLoaded',schedule,{once:true});
+  window.addEventListener('bq-account-profile',schedule);
+  window.addEventListener('bq-journey-change',schedule);
+  setTimeout(schedule,250);
   window.BQModernHome={render,openHub};
 })();

@@ -14,6 +14,7 @@ console.log('BibleQuest release validation');
 
 const index=read('index.html');
 const standalone=read('transform.html');
+const transform=read('transformation-v2.js');
 const launcher=read('transform-launcher.js');
 const browserSmoke=read('tests/browser-smoke.mjs');
 const layoutSmoke=read('tests/layout-matrix-smoke.mjs');
@@ -21,12 +22,14 @@ const operationalSmoke=read('tests/operational-entry-smoke.mjs');
 const localRefs=[...[...index.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m=>m[1]),...[...index.matchAll(/<link[^>]+href="([^"]+)"/g)].map(m=>m[1])].filter(x=>!/^https?:/i.test(x)&&!x.startsWith('data:')&&!x.startsWith('#'));
 for(const ref of localRefs){const clean=ref.replace(/^\.\//,'').split(/[?#]/)[0];assert(exists(clean),`index.html references missing file: ${clean}`)}
 assert(index.indexOf('mobile-production.css')>index.indexOf('release-hardening.css'),'mobile-production.css must load after release-hardening.css');
-assert(index.indexOf('mobile-readability.css')>index.indexOf('mobile-production.css'),'mobile-readability.css must remain the final mobile correction');
+assert(!index.includes('mobile-readability.css'),'retired mobile-readability.css must not be production-loaded');
+assert(index.indexOf('runtime-health.js')>index.indexOf('runtime-safety.js')&&index.indexOf('runtime-health.js')<index.indexOf('app.js'),'runtime-health.js must load before app modules');
 assert(index.includes('<script src="transform-launcher.js"></script>'),'main SPA must load standalone Transform launcher');
 assert(!index.includes('<script src="transformation-v2.js"></script>'),'main SPA must not evaluate Transform assessment runtime');
 assert(!index.includes('<link rel="stylesheet" href="transformation-v2.css">'),'main SPA must not load Transform-specific CSS');
-assert(!standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform must not depend on the previously failing external runtime');
-assert(standalone.includes("window.BQ_TRANSFORMATION={")&&standalone.includes("mode:'rebuilt-v2'"),'standalone Transform must provide its runtime inline');
+assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform must load the canonical Transform v2 runtime');
+assert(!standalone.includes('var FACTORS=')&&!standalone.includes('var ITEMS=['),'standalone Transform must not carry a second assessment implementation');
+assert(!standalone.includes('localStorage.setItem(STORE'),'standalone Transform must delegate state ownership to transformation-v2.js');
 assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone Transform page must load rebuilt styles');
 assert(launcher.includes("const TARGET='./transform.html'"),'Grow Transformation entry must target standalone page');
 console.log('✓ Production entry-point references');
@@ -48,47 +51,67 @@ for(const item of shell)assert(exists(item),`service worker caches missing file:
 const indexShellRefs=localRefs.map(x=>x.replace(/^\.\//,'').split(/[?#]/)[0]).filter(x=>/\.(?:js|css|webmanifest|svg|webp)$/i.test(x));
 for(const item of indexShellRefs)assert(shell.includes(item),`service worker shell missing index asset: ${item}`);
 const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
-assert(cacheVersion>=54,'service worker cache must preserve self-contained Transform + mobile readability baseline');
-for(const item of ['transform.html','transform-launcher.js','transformation-v2.css','mobile-readability.css'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
+assert(cacheVersion>=60,'service worker cache must preserve latest Transform + consolidated mobile/runtime-health baseline');
+for(const item of ['transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-production.css','runtime-health.js'])assert(shell.includes(item),`service worker shell missing production asset: ${item}`);
+assert(!sw.includes('mobile-readability.css'),'service worker must not cache retired mobile override');
 assert(sw.includes('const isTransformNavigation=/\\/transform(?:\\.html)?\\/?$/.test(url.pathname)'),'service worker must recognize both /transform and /transform.html');
 assert(sw.includes('self.skipWaiting()')&&sw.includes('self.clients.claim()'),'PWA update must activate and claim promptly');
 console.log(`✓ Service worker coverage · cache v${cacheVersion}`);
 
 for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);
-assert(standalone.includes("var STORE='biblequest_transform_v2'"),'Transform must use isolated local storage');
-assert(!standalone.includes('MutationObserver'),'Transform must not use MutationObserver');
-assert(standalone.includes("root.addEventListener('click'"),'Transform interactions must remain root-scoped');
-assert((standalone.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must contain exactly 20 personality items');
-assert(standalone.includes('Thinking Patterns Check')&&standalone.includes('Reflection & Action Plan')&&standalone.includes('Private Reflection Journal'),'Transform personal-development surfaces missing');
-console.log('✓ Self-contained Transform isolation and content');
+assert(transform.includes("const STORE='biblequest_transform_v2'"),'Transform must use isolated local storage');
+assert(transform.includes('const VERSION=2'),'Transform must use explicit versioned state');
+assert(!transform.includes('MutationObserver'),'Transform must not use MutationObserver');
+assert(transform.includes("root.addEventListener('click',onClick)"),'Transform interactions must remain root-scoped');
+assert((transform.match(/\['[EACSO]\d'/g)||[]).length===20,'Transform must contain exactly 20 personality items');
+assert(transform.includes('Thinking Patterns Check')&&transform.includes('Reflection & Action Plan')&&transform.includes('Private Reflection Journal'),'Transform personal-development surfaces missing');
+console.log('✓ Canonical standalone Transform source of truth and content');
 
 const mobileCss=read('mobile-production.css');
-const mobileReadability=read('mobile-readability.css');
 assert(mobileCss.includes('@media(max-width:360px)'),'360px phones require an explicit compact layout');
 assert(mobileCss.includes('journey-path-card{order:-30}'),'Bible path must remain ahead of optional season on Home');
-assert(mobileReadability.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'),'final mobile override must match the four actual bottom tabs');
+assert(mobileCss.includes('grid-template-columns:repeat(4,minmax(0,1fr))'),'production mobile CSS must match the four actual bottom tabs');
+assert(mobileCss.includes('min-height:54px!important')&&mobileCss.includes('font-size:12px!important'),'production nav must retain readable/touchable phone labels');
+assert(mobileCss.includes('.journey-node small{font-size:11px!important'),'Journey support labels must remain readable at 100% zoom');
 assert(browserSmoke.includes('geometry.nav.length,4'),'primary browser smoke must guard the four-tab production nav');
 assert(!browserSmoke.includes('bq-transform-overlay'),'primary browser smoke must not restore retired same-page Transform assumptions');
 assert(browserSmoke.includes('standalone transformation')&&browserSmoke.includes('window.BQ_TRANSFORMATION.open()'),'primary browser smoke must exercise the standalone Transform route');
 assert(layoutSmoke.includes('for(const width of [320,360,390,412,430])'),'layout matrix must cover required narrow-phone widths');
 assert(layoutSmoke.includes('geometry.nav.length,4'),'layout matrix must guard four bottom destinations');
-assert(layoutSmoke.includes('primaryHeight>=44')&&layoutSmoke.includes('pathLabelFont>=9'),'layout matrix must guard practical touch targets and critical label readability');
+assert(layoutSmoke.includes('primaryHeight>=44')&&layoutSmoke.includes('pathLabelFont>=11'),'layout matrix must guard practical touch targets and 11px minimum Journey labels');
+assert(layoutSmoke.includes('secondaryHeights.every(x=>x>=44)'),'layout matrix must guard Daily Journey secondary touch targets');
 assert(operationalSmoke.includes("keyboard.press('Escape')"),'Transform operational smoke must exercise Escape return');
 assert(operationalSmoke.includes('[data-t2-reader]')&&operationalSmoke.includes('[data-t2-wisdom]'),'Transform operational smoke must exercise Reader and Wisdom return actions');
 assert(operationalSmoke.includes('bq_transform_return_action'),'Transform return actions must be verified as one-shot state');
 console.log('✓ Mobile hierarchy and operational browser-smoke guards');
 
+const modernHome=read('modern-home.js');
+const tutorial=read('onboarding-tutorial.js');
+const reader=read('reader.js');
+const translations=read('translations.js');
+const sourceLabels=read('source-labels.js');
+assert(!modernHome.includes('Daily 5')&&!tutorial.includes('Daily 5'),'retired Daily 5 identity must not remain in Home or tutorial');
+assert(modernHome.includes("['🧭','Daily Journey','Recall → context → learn → apply → reflect'"),'Play daily entry must be native Daily Journey');
+assert(modernHome.includes('opens the selected passage in a licensed reader'),'NLT source copy must match current production behavior');
+assert(!modernHome.includes('Loads inside BibleQuest through Tyndale'),'unmerged live NLT capability must not be claimed');
+assert(reader.includes("new CustomEvent('bq-reader-rendered')"),'Reader must publish lifecycle events');
+assert(!translations.includes('MutationObserver')&&translations.includes("window.addEventListener('bq-reader-rendered',enhance)"),'translations must enhance Reader through explicit lifecycle events');
+assert(translations.includes("article.removeAttribute('data-bq-scripture')"),'external licensed translations must not inherit an in-app Scripture marker');
+assert(!sourceLabels.includes('correctProductionCopy'),'source labels must not patch stale Home/tutorial product copy after render');
+console.log('✓ Product-copy and Reader lifecycle contracts');
+
 const cloud=read('cloud-config.js');
 assert(cloud.includes("publishableKey: 'sb_publishable_"),'cloud config must use a publishable key');
 assert(!/service[_-]?role|sb_secret_/i.test(cloud),'privileged Supabase credential marker found in browser cloud config');
 assert(cloud.includes("authMode: 'email-password'"),'production auth mode must remain email-password');
+assert(cloud.includes("recoveryMode: 'instant-recovery-code'"),'recovery mode must remain explicit');
 console.log('✓ Browser cloud configuration');
 
 const workflows=walk('.github/workflows',p=>/\.ya?ml$/i.test(p));
 for(const file of workflows){const yml=read(file);assert(/\bworkflow_dispatch\s*:/.test(yml),`${file} must be manual-dispatch capable`);for(const trigger of ['push','pull_request','schedule','workflow_run','repository_dispatch']){const re=new RegExp(`^\\s{2}${trigger}\\s*:`, 'm');assert(!re.test(yml),`${file} contains forbidden automatic trigger: ${trigger}`)}}
 console.log(`✓ GitHub Actions manual-only policy: ${workflows.length} workflows`);
 
-for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.css','mobile-readability.css','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
+for(const required of ['reset.html','reset.js','password-recovery.js','admin.html','admin.js','admin-link.js','transform.html','transform-launcher.js','transformation-v2.js','transformation-v2.css','mobile-production.css','runtime-health.js','tests/browser-smoke.mjs','tests/layout-matrix-smoke.mjs','tests/operational-entry-smoke.mjs','LICENSE','THIRD_PARTY_NOTICES.md','_headers','SHARED_SUPABASE.md','supabase/functions/bq-admin/index.ts','supabase/functions/bq-signup/index.ts','supabase/functions/bq-password-reset/index.ts','supabase/migrations/20260905_account_recovery_code_v2.sql'])assert(exists(required),`required release file missing: ${required}`);
 console.log('✓ Required release assets');
 
 const contextManifest=JSON.parse(read('data/packs/context/manifest.json'));
@@ -108,7 +131,7 @@ console.log('✓ Doctrinal/content audits');
 run('python3',['-m','py_compile','scripts/apply-doctrinal-safety.py','scripts/build_content_pack.py','scripts/build_story_packs.py','scripts/build_tagalog_packs.py','scripts/build_original_language_packs.py']);
 console.log('✓ Python content tooling syntax');
 
-const sensitiveBrowserFiles=['cloud-config.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js'];
+const sensitiveBrowserFiles=['cloud-config.js','runtime-health.js','account.js','password-recovery.js','admin-link.js','admin.js','signup-enhancements.js','cloud.js','live-rooms.js','innovation-suite.js','workspace.js','couple-cloud.js','context-lab.js','assignment-center.js','assignment-push.js','presence.js','avatar-vault.js','journey-groups.js','journey-loop.js','journey-cloud-sync.js','engagement-v3.js','frontpage-daily.js','release-hardening.js','mobile-production.js','reset.js','japanese-learning.js','transform-launcher.js'];
 for(const file of sensitiveBrowserFiles){const text=read(file);assert(!/SUPABASE_SERVICE_ROLE_KEY|sb_secret_/i.test(text),`privileged secret marker found in browser file: ${file}`)}
 console.log('✓ Browser secret invariants');
 

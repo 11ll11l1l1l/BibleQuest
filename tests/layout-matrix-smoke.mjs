@@ -30,8 +30,12 @@ async function checkViewport(name,viewport,{mobile=false}={}){
         columns:getComputedStyle(document.querySelector('.modern-hubs')).gridTemplateColumns,
         primaryHeight:rect('.journey-primary')?.height||0,
         primaryFont:px('.journey-primary','fontSize'),
+        secondaryHeights:[...document.querySelectorAll('.today-journey-actions .journey-secondary')].map(x=>x.getBoundingClientRect().height),
         pathLabelFont:px('.journey-node small','fontSize'),
-        hubSupportFont:px('.modern-hub small','fontSize')
+        pathTitleFont:px('.journey-node b','fontSize'),
+        hubSupportFont:px('.modern-hub small','fontSize'),
+        languageHeight:rect('.ui-language-toggle')?.height||44,
+        languageWidth:rect('.ui-language-toggle')?.width||44
       };
     });
 
@@ -57,11 +61,13 @@ async function checkViewport(name,viewport,{mobile=false}={}){
       assert.ok(geometry.daily.top<140,`${name}: Daily Journey must remain above the fold`);
       assert.ok(geometry.hubs.every(x=>x.width>120),`${name}: Explore cards must remain usable`);
       assert.ok(geometry.nav.every(x=>x.rect.height>=44),`${name}: bottom navigation touch targets must remain usable`);
-      assert.ok(geometry.nav.every(x=>x.font>=10),`${name}: bottom navigation labels must remain readable`);
+      assert.ok(geometry.nav.every(x=>x.font>=11),`${name}: bottom navigation labels must remain readable`);
       assert.ok(geometry.primaryHeight>=44,`${name}: Daily Journey primary CTA must remain a practical touch target`);
       assert.ok(geometry.primaryFont>=14,`${name}: Daily Journey primary CTA text must remain readable`);
-      assert.ok(geometry.pathLabelFont>=9,`${name}: Journey support labels must not regress to tiny production text`);
-      assert.ok(geometry.hubSupportFont>=10,`${name}: Explore support labels must remain readable on narrow phones`);
+      assert.ok(geometry.secondaryHeights.every(x=>x>=44),`${name}: Daily Journey secondary actions must remain practical touch targets`);
+      assert.ok(geometry.pathLabelFont>=11&&geometry.pathTitleFont>=11,`${name}: Journey path labels must remain readable at 100% zoom`);
+      assert.ok(geometry.hubSupportFont>=11,`${name}: Explore support labels must remain readable on narrow phones`);
+      assert.ok(geometry.languageHeight>=44&&geometry.languageWidth>=44,`${name}: language control must retain an accessible touch target`);
     }else{
       assert.ok(geometry.columns.split(' ').length>=4,`${name}: desktop Explore should use the wide layout`);
       assert.ok(geometry.daily.width>500,`${name}: desktop content should use available width without becoming phone-sized`);
