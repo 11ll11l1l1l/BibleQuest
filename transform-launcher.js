@@ -25,19 +25,18 @@
     location.assign(new URL(PSYCH_TARGET,location.href).href);
   }
 
-  function ensurePsychometricsEntry(){
+  function backToGrow(){
+    if(typeof window.BQModernHome?.openHub==='function')window.BQModernHome.openHub('grow');
+    else closeSheet();
+  }
+
+  function openTransformMenu(){
     const sheet=document.getElementById('bqModernSheet');
-    if(!sheet||sheet.classList.contains('hidden'))return;
-    const list=sheet.querySelector('.modern-sheet-list');
-    const title=sheet.querySelector('.modern-sheet-head h2')?.textContent?.trim();
-    if(!list||title!=='Grow'||list.querySelector('[data-bq-psychometrics]'))return;
-    const button=document.createElement('button');
-    button.type='button';
-    button.setAttribute('data-bq-psychometrics','1');
-    button.innerHTML='<span>🔬</span><div><b>Psychometrics Lab</b><small>120-item personality · 24 strengths · self-esteem</small></div><i>›</i>';
-    button.addEventListener('click',openPsychometrics);
-    const transform=[...list.querySelectorAll('button')].find(x=>x.querySelector('b')?.textContent?.trim()==='Transformation');
-    if(transform)transform.after(button);else list.appendChild(button);
+    const host=sheet?.querySelector('#modernSheetContent');
+    if(!sheet||!host){openStandalone();return;}
+    host.innerHTML='<header class="modern-sheet-head"><div><span>🪞</span><div><small>GROW</small><h2>Transformation</h2><p>See your patterns, then bring them under the teaching and character of Christ.</p></div></div><button data-bq-transform-back aria-label="Back">‹</button></header><div class="modern-sheet-list"><button data-bq-transform-quick><span>🌱</span><div><b>Quick Transform</b><small>20-item personality · thinking patterns · reflection · action plan</small></div><i>›</i></button><button data-bq-transform-psych><span>🔬</span><div><b>Psychometrics Lab</b><small>120-item personality · 30 facets · 24 strengths · self-esteem · biblical reflection</small></div><i>›</i></button></div><div class="modern-source-list"><article><b>Purpose</b><p>These tools do not define your identity or spiritual worth. They help uncover tendencies and blind spots so you can examine them in light of Scripture and grow in Christlike obedience.</p></article></div>';
+    sheet.classList.remove('hidden');
+    document.body.classList.add('modern-sheet-open');
   }
 
   function takePending(){
@@ -59,18 +58,19 @@
   document.addEventListener('click',event=>{
     const target=event.target instanceof Element?event.target:null;
     if(!target)return;
-    if(target.closest('[data-modern-hub="grow"]'))setTimeout(ensurePsychometricsEntry,0);
+    if(target.closest('[data-bq-transform-quick]')){event.preventDefault();event.stopImmediatePropagation();openStandalone();return;}
+    if(target.closest('[data-bq-transform-psych]')){event.preventDefault();event.stopImmediatePropagation();openPsychometrics();return;}
+    if(target.closest('[data-bq-transform-back]')){event.preventDefault();event.stopImmediatePropagation();backToGrow();return;}
     if(!isTransformEntry(target))return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    openStandalone();
+    openTransformMenu();
   },true);
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',takePending,{once:true});
   else takePending();
 
-  // Fail-safe compatibility APIs keep standalone tools isolated from the main SPA.
-  window.BQ_TRANSFORMATION={open:openStandalone,mode:'standalone-route',version:2};
-  window.BQTransformLauncher={url:()=>new URL(TARGET,location.href).href,open:openStandalone};
+  window.BQ_TRANSFORMATION={open:openStandalone,menu:openTransformMenu,mode:'standalone-route',version:3};
+  window.BQTransformLauncher={url:()=>new URL(TARGET,location.href).href,open:openStandalone,menu:openTransformMenu};
   window.BQPsychometrics={url:()=>new URL(PSYCH_TARGET,location.href).href,open:openPsychometrics};
 })();
