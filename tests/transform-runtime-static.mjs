@@ -13,6 +13,9 @@ assert.match(html,/if\(!root\)root=await recoverAndOpen\(\)/,'Transform must att
 assert.match(html,/RECOVERY_TIMEOUT_MS=8000/,'Transform runtime recovery must have a finite timeout');
 assert.match(html,/data-bq-transform-retry/,'Transform hard failure must remain retryable without clearing user data');
 assert.doesNotMatch(html,/localStorage\.(?:clear|removeItem)\(/,'Transform startup recovery must never erase saved reflection data');
+const inlineScripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+assert.ok(inlineScripts.length,'Transform bootstrap inline script is missing');
+new Function(inlineScripts.at(-1)[1]);
 
 assert.match(runtime,/window\.BQ_TRANSFORMATION=\{open,close,mode:'rebuilt-v2'/,'rebuilt-v2 runtime export is missing');
 assert.match(runtime,/root\.className='bq-transform-v2'/,'rebuilt-v2 runtime root contract changed unexpectedly');
