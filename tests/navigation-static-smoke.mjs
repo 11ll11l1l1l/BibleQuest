@@ -35,7 +35,7 @@ function resolves(fromFile,raw){
     if(stat.isDirectory())return exists(path.join(target,'index.html'));
     return true;
   }
-  if(exists(`${target}.html`))return true; // Cloudflare Pages canonical extensionless route.
+  if(exists(`${target}.html`))return true;
   if(exists(path.join(target,'index.html')))return true;
   return false;
 }
@@ -74,8 +74,13 @@ for(const row of [
 ])assert(redirects.includes(row),`Missing Cloudflare compatibility redirect: ${row}`);
 
 const sw=read('sw.js');
-assert(sw.includes("const CACHE='biblequest-v75'"),'navigation repair requires PWA cache v75+');
+const cacheVersion=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
+assert(cacheVersion>=76,`navigation repair requires PWA cache v76+, got v${cacheVersion||'missing'}`);
 assert(sw.includes('function canonicalHtmlNavigation(url)'),'service worker must normalize stale .html bookmarks');
+assert(sw.includes('admin-operations|reset'),'service worker canonicalizer must include Admin Operations and Account Recovery');
+assert(sw.includes('const isResetNavigation=/\\/reset(?:\\.html)?\\/?$/'),'service worker must preserve the Account Recovery offline document');
 assert(sw.includes('Response.redirect(canonical,302)'),'service worker must redirect stale controlled .html navigations before network-first handling');
+assert(!sw.includes('security-center.js')&&!sw.includes('security-center.css'),'retired Security & data assets must not remain in PWA cache');
+assert(!sw.includes('accessibility-runtime.js')&&!sw.includes('accessibility-runtime.css'),'retired Accessibility settings assets must not remain in PWA cache');
 
-console.log(`Navigation static smoke passed: ${htmlFiles.length} HTML entries checked, canonical standalone routes guarded.`);
+console.log(`Navigation static smoke passed: ${htmlFiles.length} HTML entries checked, canonical standalone routes guarded, PWA v${cacheVersion}.`);
