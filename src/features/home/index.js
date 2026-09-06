@@ -1,6 +1,6 @@
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
-export function homePage({ progress, dailyMission, onMission }) {
+export function homePage({ progress, dailyMission, onMission, onRecordings }) {
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
   const daily = dailyMission?.today?.();
   const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
@@ -16,6 +16,7 @@ export function homePage({ progress, dailyMission, onMission }) {
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
       ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">TODAY · ${escapeHtml(daily.dateKey)}</p><h2>Continue My Journey — 4 min</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>Retrieve → Context → Learn → Apply → Reflect.</p><button type="button" class="bq-primary-button" data-open-daily>Open Daily Journey</button></section>` : ''}
+      <section class="bq-panel" data-home-recordings><p class="bq-eyebrow">CONGREGATION</p><h2>Live Recordings</h2><p>Watch published worship and Bible-study livestream replays through one controlled player.</p><button type="button" class="bq-secondary-button" data-open-recordings>View recordings</button></section>
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">YOUR PROGRESS</p>
         <div class="bq-progress-stats">
@@ -26,11 +27,16 @@ export function homePage({ progress, dailyMission, onMission }) {
         </div>
       </section>`,
     mount(root) {
-      const button = root.querySelector('[data-open-daily]');
-      if (!button) return undefined;
-      const open = () => onMission();
-      button.addEventListener('click', open);
-      return () => button.removeEventListener('click', open);
+      const dailyButton = root.querySelector('[data-open-daily]');
+      const recordingsButton = root.querySelector('[data-open-recordings]');
+      const openDaily = () => onMission?.();
+      const openRecordings = () => onRecordings?.();
+      dailyButton?.addEventListener('click', openDaily);
+      recordingsButton?.addEventListener('click', openRecordings);
+      return () => {
+        dailyButton?.removeEventListener('click', openDaily);
+        recordingsButton?.removeEventListener('click', openRecordings);
+      };
     }
   };
 }
