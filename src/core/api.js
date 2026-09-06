@@ -1,7 +1,6 @@
 import { authStorage } from './storage.js';
 
-const SUPABASE_VERSION = '2.112.4';
-const SUPABASE_MODULE = `https://cdn.jsdelivr.net/npm/@supabase/supabase-js@${SUPABASE_VERSION}/+esm`;
+const SUPABASE_MODULE = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/+esm';
 const CONFIG = Object.freeze({
   supabaseUrl: 'https://zkfmgezvzugchcwppreq.supabase.co',
   publishableKey: 'sb_publishable_mJyieT7WZT1vAZX7XFdsrg_lRgDxcsq'
