@@ -29,6 +29,8 @@ jobs:
         run: node tests/v3-reader-edge.mjs
       - name: Run progress edge regression
         run: node tests/v3-progress-edge.mjs
+      - name: Run lesson engine edge regression
+        run: node tests/v3-lesson-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -49,3 +51,5 @@ jobs:
         run: timeout 240s node tests/v3-reader-smoke.mjs
       - name: Run v3 progress browser regression
         run: timeout 240s node tests/v3-progress-smoke.mjs
+      - name: Run v3 lesson engine browser regression
+        run: timeout 240s node tests/v3-lesson-smoke.mjs

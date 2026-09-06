@@ -33,7 +33,7 @@ BibleQuest v3
 |   +-- src/core/recording.js      future one recordings/player owner
 |
 +-- Engines
-|   +-- src/engines/lesson.js      future one lesson lifecycle
+|   +-- src/engines/lesson.js      one guided-lesson lifecycle owner
 |   +-- src/engines/transform.js   future one transform engine
 |   +-- src/engines/game.js        future one game launcher/lifecycle
 |
@@ -72,13 +72,16 @@ Files listed as future milestones do not count as implemented until they exist a
 8. Bible metadata, translation registry, pack fetch/cache, search and external Bible-tool URLs go through `src/core/bible.js` only.
 9. Reader selection/navigation/read-state orchestration goes through `src/app/reader.js`; reader feature UI never fetches packs directly.
 10. XP, streak, meaningful-activity counters and achievements are mutated only by `src/core/progress.js`. Features submit deterministic event IDs and never mutate progression directly.
-11. Cross-service progress events use retry-safe ordering: record the idempotent progress event before the feature's secondary state write so a retry heals partial completion without duplicate XP.
-12. Audio and recording playback each have exactly one lifecycle owner when migrated.
-13. Transform logic has one engine and games have one launcher when migrated.
-14. A feature may render only inside the view handed to it by the shell. It must not replace the application shell.
-15. No v3 code may depend on `window.BQ*` legacy globals.
-16. Legacy modules may be consulted for behavior, content contracts, resources and edge cases, but are not boot dependencies.
-17. Copyrighted Bible translations are not bundled or transformed unless the repository has a verified redistribution/derivative-use basis. External links are permitted where the destination provider serves the text itself.
+11. Cross-service progress events use retry-safe ordering so a retry can heal partial completion without duplicate XP.
+12. Guided lesson lifecycle state—start/resume, current step, response lock, feedback, advance, completion, restart and teardown—is owned only by `src/engines/lesson.js`.
+13. Lesson definitions may use content, choice, confirmation and text-response steps. Game-specific mechanics remain outside the lesson engine.
+14. The lesson engine does not mutate XP/streak/badges; callers hand completion/activity events to the progress service explicitly.
+15. Audio and recording playback each have exactly one lifecycle owner when migrated.
+16. Transform logic has one engine and games have one launcher when migrated.
+17. A feature may render only inside the view handed to it by the shell. It must not replace the application shell.
+18. No v3 code may depend on `window.BQ*` legacy globals.
+19. Legacy modules may be consulted for behavior, content contracts, resources and edge cases, but are not boot dependencies.
+20. Copyrighted Bible translations are not bundled or transformed unless the repository has a verified redistribution/derivative-use basis. External links are permitted where the destination provider serves the text itself.
 
 ## Feature migration procedure
 
@@ -127,6 +130,7 @@ Known-good sequence:
 - `release/v3.1-session-core`
 - `release/v3.2-auth-complete`
 - `release/v3.3-reader-core`
-- next: progress snapshot only after its exact ledger/status commit is green
+- `release/v3.4-progress-core`
+- next: lesson-engine snapshot only after its exact ledger/status commit is green
 
 The current v2 deployment remains production until an explicit later cutover decision. A v2 compatibility path is not evidence that a v3 feature is verified.

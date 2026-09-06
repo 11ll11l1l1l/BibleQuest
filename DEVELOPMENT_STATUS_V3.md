@@ -7,9 +7,8 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 ## Deployment safety
 
 - Production GitHub Pages: **v2 unchanged** (`gh-pages` is not used for v3 development).
-- Last frozen milestone: `release/v3.3-reader-core` at `aaed163ca956e2fc6da33b13d467797ce7dfd2dd`.
-- Current work branch: `feature/v3-progress-core`.
-- Candidate progress release after this exact ledger commit passes: `release/v3.4-progress-core`.
+- Last frozen milestone: `release/v3.4-progress-core` at `b3f6f140606ff06fdffb2af3bfc565b0b5f63352`.
+- Current work branch: `feature/v3-lesson-engine`.
 - No Cloudflare changes are part of v3 development.
 
 ## Progress summary
@@ -22,85 +21,51 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 | Not started | 77 |
 | Total | 100 |
 
+The counts remain unchanged while #31 Core lesson engine is under implementation.
+
 ## Completed milestones
 
 - Milestone 1 — Foundation: #1–#5 Regression-tested.
 - Milestone 2 — Account/auth: #6–#10 Regression-tested.
-- Milestone 3A — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested after surviving the later progress milestone; #20 STEPBible remains Implemented pending unavailable-data behavior.
+- Milestone 3 — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested; #20 STEPBible remains Implemented pending unavailable-data behavior.
+- Milestone 4 — Progress: #24–#27 Verified.
 
-### Milestone 4 — User progress foundation — Verified
+## Current milestone — Milestone 5 Core lesson engine
 
-Verified rows:
+Target row: #31 Core lesson engine.
 
-- #24 User progress service
-- #25 XP
-- #26 Streak
-- #27 Achievements/badges
+The old audit found the same lifecycle machinery repeated across Quick Recall, Context Challenge, Mixed Quest, Story Journey, Wisdom Situations, Deep Questions, Timeline and Play Together: local current-step variables, manual response locks, feedback rendering, next/finish transitions, ad-hoc progress calls, and feature-specific teardown.
 
-Single owner:
+The clean engine contract:
 
-- `src/core/progress.js` — XP, streak, meaningful activities, metric counters, badges, deterministic event identities, timezone-aware civil dates, persistence, and immutable progress snapshots.
-
-Verified workflows include:
-
-- one global progress owner and one storage key
-- canonical progress state published into the global store
-- deterministic/idempotent event IDs
-- conflicting event-ID semantics rejected before mutation
-- unknown/invalid metrics rejected before mutation
-- XP awarded once across duplicate calls and reload
-- same-day activity without extra streak increment
-- next-day continuation and missed-day reset
-- explicit Asia/Tokyo midnight boundary regression
-- backdated-event protection
-- 3-day and 7-day streak badge unlocks
-- First Step, Reader, Bible Recall, and Reflection badge rules
-- malformed persisted-state recovery
-- reader mark-read routed through progress instead of direct XP mutation
-- simulated partial reader transaction failure followed by retry without duplicate XP
-- shell/home/Grow progress rendering
-- 390px mobile top-bar/progress layout regression
+1. `src/engines/lesson.js` owns guided-lesson lifecycle persistence.
+2. Supported guided step types are content, choice, confirmation and text response.
+3. Definitions have stable IDs and versions; a definition-version change resets stale persisted session state.
+4. Interactive responses lock after the first accepted value; exact repeated input is idempotent and conflicting second input fails.
+5. Correct-answer indexes stay private inside the engine and are not exposed in public step snapshots.
+6. Persisted feedback is never authoritative: resume reconstructs feedback and score from the versioned definition plus normalized stored responses.
+7. Reload/reopen resumes the same active or completed lifecycle; malformed timestamps/session structure recover to a fresh session.
+8. Restart deliberately resets only that lesson session; close tears down in-memory ownership without deleting persisted resume state.
+9. Storage writes commit before in-memory state changes so persistence failure cannot leave a phantom response/completion in memory.
+10. The engine reports completion but does not mutate XP/streak/badges; progress remains owned by `src/core/progress.js`.
+11. Game-specific ordering, timers, pass-and-play and scoring orchestration remain for the future game engine rather than expanding this foundation prematurely.
 
 ## Next major milestone
 
-Milestone 5 — #31 Core lesson engine.
-
-The lesson audit found repeated lifecycle machinery across old Quick Recall, Context Challenge, Mixed Quest, Story Journey, Wisdom Situations, Deep Questions, Timeline, and Play Together: start/resume, current step, response locking, feedback, advance, finish, progress handoff, and teardown. The v3 engine will centralize that lifecycle while allowing scored and reflective/unscored lesson types.
-
-Daily Mission/Journey (#28–#30) remains intentionally Not started until #31 is Verified. This prevents Daily Journey from becoming another isolated state machine.
+After #31 is frozen, migrate #28–#30 Daily Mission/Journey onto the lesson engine, including deterministic daily passage rotation and an idempotent completion bonus through the progress service.
 
 ## Defect / root-cause ledger
 
-### V3-ROUTER-001 — URL/view could become temporarily inconsistent
-- **Root cause:** router changed `location.hash` and relied on the later asynchronous `hashchange` event to render.
-- **Fix:** the single router owner updates history and resolves the route synchronously.
-- **Regression test:** accumulated navigation browser flow.
+- `V3-ROUTER-001` — synchronous single-owner route resolution fixed URL/view drift.
+- `V3-AUTH-GATE-001` — static dependency pinning made the Supabase browser version auditable.
+- `V3-SHELL-001` — brand and primary-nav selectors were separated while retaining one router.
+- `V3-SIGNUP-001` — recovery-code issuance became the signup transaction boundary so auto-sign-in failure cannot lose the code.
+- `V3-ACCOUNT-ACCEPTANCE-001` — duplicate-account and post-recovery sign-in behaviors became explicit assertions.
+- `V3-READER-ACCEPTANCE-001` — native invalid-search validation is tested as native validation rather than weakened to satisfy JavaScript expectations.
+- `V3-PROGRESS-UI-001` — static progress-chip readability was separated from interactive 44px touch-target semantics.
 
-### V3-AUTH-GATE-001 — Supabase version pin was not statically provable
-- **Root cause:** dependency version was assembled dynamically instead of being statically auditable.
-- **Fix:** literal pinned browser dependency plus architecture enforcement.
-
-### V3-SHELL-001 — duplicate primary-navigation selector contract
-- **Root cause:** brand navigation reused the primary Home selector.
-- **Fix:** unique brand selector with the same single router.
-
-### V3-SIGNUP-001 — successful signup could lose the one-time recovery code
-- **Root cause:** trusted account creation and optional automatic sign-in were treated as one success condition.
-- **Fix:** recovery-code issuance is the transaction boundary; sign-in/device registration are follow-up outcomes.
-
-### V3-ACCOUNT-ACCEPTANCE-001 — account parity requirements were not explicit assertions
-- **Root cause:** duplicate-account and post-recovery sign-in behavior were not individually asserted.
-- **Fix:** promotion was blocked until explicit tests existed.
-
-### V3-READER-ACCEPTANCE-001 — invalid-search assertion contradicted native form validation
-- **Root cause:** test expected JavaScript handling for a form submission the browser correctly blocked at `minlength=3`.
-- **Fix:** test native invalidity and reader stability instead of weakening validation.
-
-### V3-PROGRESS-UI-001 — mobile status-chip test used an interactive touch-target rule for static text
-- **Root cause:** the first progress browser acceptance test required the non-interactive XP status chip to be at least 44px wide, conflating a touch-target guideline with text readability. The chip could be narrower while fully legible.
-- **Fix:** keep the chip non-interactive, give it a stable compact minimum footprint to avoid top-bar jitter, and test visible XP text, font size, height, viewport fit, and overall horizontal overflow instead of treating it as a button.
-- **Regression prevention:** `tests/v3-progress-smoke.mjs` enforces 44px on the interactive account control and legibility/layout semantics on the static progress chip.
+Any lesson-engine defect found by acceptance will be recorded before promotion.
 
 ## Release rule
 
-A release snapshot is created only after the exact ledger/status commit passes every configured v3 architecture, service, and accumulated browser gate. No feature status is advanced merely because its screen renders.
+A release snapshot is created only after the exact ledger/status commit passes every configured v3 architecture, service, and accumulated browser gate. No feature status is advanced merely because its module exists.
