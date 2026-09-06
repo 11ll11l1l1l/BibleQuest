@@ -44,10 +44,27 @@ async function mobileFlow() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(`${BASE}#/grow`, { waitUntil: 'networkidle' });
   await page.locator('[data-progress-page]').waitFor();
-  const metrics = await page.evaluate(() => ({ innerWidth, scrollWidth: document.documentElement.scrollWidth, accountWidth: document.querySelector('[data-session-open]')?.getBoundingClientRect().width || 0, chipWidth: document.querySelector('[data-progress-chip]')?.getBoundingClientRect().width || 0 }));
+  const metrics = await page.evaluate(() => {
+    const account = document.querySelector('[data-session-open]');
+    const chip = document.querySelector('[data-progress-chip]');
+    const xp = document.querySelector('[data-progress-xp]');
+    const chipBox = chip?.getBoundingClientRect();
+    return {
+      innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      accountWidth: account?.getBoundingClientRect().width || 0,
+      chipWidth: chipBox?.width || 0,
+      chipHeight: chipBox?.height || 0,
+      chipRight: chipBox?.right || 0,
+      chipText: xp?.textContent?.trim() || '',
+      chipFontSize: Number.parseFloat(xp ? getComputedStyle(xp).fontSize : '0') || 0
+    };
+  });
   assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Progress mobile horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
-  assert(metrics.accountWidth >= 44, 'Progress shell change made account control too small.');
-  assert(metrics.chipWidth >= 44, 'Progress status chip is too small to read on mobile.');
+  assert(metrics.accountWidth >= 44, 'Progress shell change made the interactive account control too small.');
+  assert(metrics.chipText.includes('XP'), 'Progress status chip lost its XP label on mobile.');
+  assert(metrics.chipHeight >= 32 && metrics.chipFontSize >= 10, 'Progress status chip is not legible on mobile.');
+  assert(metrics.chipWidth > 0 && metrics.chipRight <= metrics.innerWidth + 1, 'Progress status chip does not fit inside the mobile viewport.');
   await page.close();
 }
 

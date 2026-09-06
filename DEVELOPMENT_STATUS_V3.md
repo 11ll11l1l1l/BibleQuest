@@ -80,6 +80,11 @@ After Milestone 4 is frozen, build #31 Core lesson engine. Only after the lesson
 - **Root cause:** test expected JavaScript handling for a form submission the browser correctly blocked at `minlength=3`.
 - **Fix:** test native invalidity and reader stability instead of weakening validation.
 
+### V3-PROGRESS-UI-001 — mobile status-chip test used an interactive touch-target rule for static text
+- **Root cause:** the first progress browser acceptance test required the non-interactive XP status chip to be at least 44px wide, conflating a touch-target guideline with text readability. The chip could be narrower while fully legible.
+- **Fix:** keep the chip non-interactive, give it a stable compact minimum footprint to avoid top-bar jitter, and test its visible XP text, font size, height, viewport fit, and overall horizontal overflow instead of treating it as a button.
+- **Regression prevention:** `tests/v3-progress-smoke.mjs` separately enforces the real 44px target on the interactive account button while checking the progress chip for legibility/layout semantics.
+
 ## Release rule
 
 A release snapshot is created only after the exact ledger/status commit passes every configured v3 architecture, service, and accumulated browser gate. No feature status is advanced merely because its screen renders.
