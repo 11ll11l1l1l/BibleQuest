@@ -1,8 +1,9 @@
 import { GAME_MODES, buildGameRound } from '../features/games/content.js';
 import { DETECTIVE_MODE, DETECTIVES } from '../features/games/detectives.js';
+import { TIMELINE_MODE, TIMELINES } from '../features/games/timelines.js';
 
-const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE]);
-const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3});
+const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE,TIMELINE_MODE]);
+const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3,timelineCorrect:20,timelineIncorrect:4});
 const RESULTS_KEY='games-results';
 const RECALL_KEY='games-recall';
 const modeById=id=>ALL_MODES.find(mode=>mode.id===id)||null;
@@ -11,6 +12,7 @@ const freezeResult=result=>result?Object.freeze({...result}):null;
 const freezeRecallItem=item=>item?Object.freeze({...item}):null;
 const freezeBook=book=>book?Object.freeze({...book}):null;
 const freezeDetective=item=>item?Object.freeze({...item,clues:Object.freeze([...item.clues])}):null;
+const freezeTimeline=item=>item?Object.freeze({...item,items:Object.freeze([...item.items])}):null;
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 const normalizeAnswer=value=>String(value||'').trim().toLocaleLowerCase();
 
@@ -47,11 +49,11 @@ function normalizeRecall(input){
   return {version:1,review,stats,results};
 }
 
-function emptyState(){return{phase:'launcher',mode:null,roundId:null,bank:[],index:0,score:0,gained:0,locked:false,selected:null,correct:null,recallBooks:[],recallQuery:'',recallBook:null,recallItems:[],revealed:false,remembered:0,reviewAgain:0,source:'',license:'',detectiveItem:null,detectiveAnswer:''}}
+function emptyState(){return{phase:'launcher',mode:null,roundId:null,bank:[],index:0,score:0,gained:0,locked:false,selected:null,correct:null,recallBooks:[],recallQuery:'',recallBook:null,recallItems:[],revealed:false,remembered:0,reviewAgain:0,source:'',license:'',detectiveItem:null,detectiveAnswer:'',timelineItem:null,timelineCurrent:[],timelineAttempted:false,timelineFeedback:''}}
 
 export function createGameLauncherService({progress,storage,recall,roundIdFactory,clock=()=>new Date()}={}){
   if(!progress||!storage||!recall)throw new Error('Game launcher requires verified Progress, Storage, and Recall Pack owners.');
-  let sequence=0,detectiveCursor=-1;
+  let sequence=0,detectiveCursor=-1,timelineCursor=-1;
   const bootNonce=`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`;
   const makeRoundId=typeof roundIdFactory==='function'?roundIdFactory:(mode,roundSequence)=>`${bootNonce}-${mode}-${roundSequence}`;
   let results=normalizeResults(storage.read(RESULTS_KEY,{}));
@@ -62,9 +64,9 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
     const mode=state.mode?modeById(state.mode):null;
     const question=state.phase==='question'?state.bank[state.index]||null:null;
     const recallItem=state.phase==='recall-question'?state.recallItems[state.index]||null:null;
-    const total=state.phase.startsWith('recall-')&&state.phase!=='recall-library'?state.recallItems.length:state.phase==='detective'?1:state.bank.length;
+    const total=state.phase.startsWith('recall-')&&state.phase!=='recall-library'?state.recallItems.length:(state.phase==='detective'||state.phase==='timeline'?1:state.bank.length);
     const remainingReview=state.recallBook?(recallState.review[state.recallBook.code]||[]).length:0;
-    return Object.freeze({phase:state.phase,mode:state.mode,modeTitle:mode?.title||'',roundId:state.roundId,index:state.index,total,score:state.score,gained:state.gained,locked:state.locked,selected:state.selected,correct:state.correct,question:freezeQuestion(question),lastResult:freezeResult(state.mode?results[state.mode]:null),recallBooks:Object.freeze(state.recallBooks.map(freezeBook)),recallQuery:state.recallQuery,recallBook:freezeBook(state.recallBook),recallItem:freezeRecallItem(recallItem),revealed:state.revealed,remembered:state.remembered,reviewAgain:state.reviewAgain,remainingReview,source:state.source,license:state.license,detectiveItem:freezeDetective(state.detectiveItem),detectiveAnswer:state.detectiveAnswer});
+    return Object.freeze({phase:state.phase,mode:state.mode,modeTitle:mode?.title||'',roundId:state.roundId,index:state.index,total,score:state.score,gained:state.gained,locked:state.locked,selected:state.selected,correct:state.correct,question:freezeQuestion(question),lastResult:freezeResult(state.mode?results[state.mode]:null),recallBooks:Object.freeze(state.recallBooks.map(freezeBook)),recallQuery:state.recallQuery,recallBook:freezeBook(state.recallBook),recallItem:freezeRecallItem(recallItem),revealed:state.revealed,remembered:state.remembered,reviewAgain:state.reviewAgain,remainingReview,source:state.source,license:state.license,detectiveItem:freezeDetective(state.detectiveItem),detectiveAnswer:state.detectiveAnswer,timelineItem:freezeTimeline(state.timelineItem),timelineCurrent:Object.freeze([...state.timelineCurrent]),timelineAttempted:state.timelineAttempted,timelineFeedback:state.timelineFeedback});
   };
 
   function persistRecall(){storage.write(RECALL_KEY,recallState)}
@@ -77,6 +79,7 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
     if(!definition)throw new Error('Unknown BibleQuest game mode.');
     if(definition.entry==='recall-library')throw new Error('Open the Per-book Recall library before choosing a book.');
     if(definition.entry==='detective')return startDetective();
+    if(definition.entry==='timeline')return startTimeline();
     const bank=[...buildGameRound(mode)];
     if(!bank.length)throw new Error('This BibleQuest game has no verified questions.');
     state={...emptyState(),phase:'question',mode,roundId:validRoundId(mode),bank};
@@ -101,7 +104,7 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
     state={...state,index:state.index+1,locked:false,selected:null,correct:null};return snapshot();
   }
 
-  function replay(){if(state.mode==='character-detective')return startDetective();if(!state.mode)throw new Error('Choose a BibleQuest game before replaying.');return start(state.mode)}
+  function replay(){if(state.mode==='character-detective')return startDetective();if(state.mode==='timeline-challenge')return startTimeline();if(!state.mode)throw new Error('Choose a BibleQuest game before replaying.');return start(state.mode)}
 
   function startDetective(){
     detectiveCursor=(detectiveCursor+1)%DETECTIVES.length;
@@ -126,22 +129,53 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
 
   function replayDetective(){if(state.mode!=='character-detective')throw new Error('Open Character Detective before replaying.');return startDetective()}
 
+  function startTimeline(){
+    timelineCursor=(timelineCursor+1)%TIMELINES.length;
+    const item=TIMELINES[timelineCursor],current=[...item.items];
+    if(current.length>1)[current[0],current[1]]=[current[1],current[0]];
+    state={...emptyState(),phase:'timeline',mode:'timeline-challenge',roundId:validRoundId('timeline-challenge'),timelineItem:item,timelineCurrent:current};
+    return snapshot();
+  }
+
+  function moveTimeline(index,direction){
+    if(state.phase!=='timeline'||!state.timelineItem)throw new Error('Start Timeline before moving events.');
+    if(state.locked)return snapshot();
+    const from=Number(index),delta=Number(direction);
+    if(!Number.isInteger(from)||![ -1,1 ].includes(delta))throw new Error('Timeline move is invalid.');
+    const to=from+delta;
+    if(from<0||from>=state.timelineCurrent.length||to<0||to>=state.timelineCurrent.length)return snapshot();
+    const current=[...state.timelineCurrent];[current[from],current[to]]=[current[to],current[from]];
+    state={...state,timelineCurrent:current,timelineFeedback:''};return snapshot();
+  }
+
+  function checkTimeline(){
+    if(state.phase!=='timeline'||!state.timelineItem)throw new Error('Start Timeline before checking order.');
+    if(state.locked)return Object.freeze({applied:false,duplicate:true,...snapshot()});
+    const correct=state.timelineCurrent.every((item,index)=>item===state.timelineItem.items[index]);
+    if(!correct){
+      if(state.timelineAttempted){state={...state,correct:false,timelineFeedback:'wrong'};return Object.freeze({applied:false,noAward:true,...snapshot()})}
+      progress.record({id:`game:${state.roundId}:timeline:first-miss`,type:'game.timeline',xp:XP.timelineIncorrect,meaningful:false});
+      state={...state,gained:state.gained+XP.timelineIncorrect,correct:false,timelineAttempted:true,timelineFeedback:'wrong'};
+      return Object.freeze({applied:true,noAward:false,...snapshot()});
+    }
+    const solveXp=state.timelineAttempted?XP.timelineCorrect-XP.timelineIncorrect:XP.timelineCorrect;
+    progress.record({id:`game:${state.roundId}:timeline:solve`,type:'game.timeline',xp:solveXp,meaningful:false,metrics:{quizCorrect:1}});
+    progress.record({id:`game:${state.roundId}:complete`,type:'game.timeline.complete',xp:0,meaningful:true});
+    const gained=state.gained+solveXp;persistResult('timeline-challenge',1,1,gained);
+    state={...state,score:1,gained,locked:true,correct:true,timelineFeedback:'correct'};
+    return Object.freeze({applied:true,noAward:false,...snapshot()});
+  }
+
+  function replayTimeline(){if(state.mode!=='timeline-challenge')throw new Error('Open Timeline before replaying.');return startTimeline()}
+
   async function openRecallLibrary(){
     const manifest=await recall.loadManifest();
     state={...emptyState(),phase:'recall-library',mode:'per-book-recall',recallBooks:[...manifest.books],source:manifest.source,license:manifest.license};
     return snapshot();
   }
 
-  function setRecallQuery(query){
-    if(state.phase!=='recall-library')throw new Error('Open the Per-book Recall library before searching.');
-    state={...state,recallQuery:String(query||'').trim().slice(0,80)};return snapshot();
-  }
-
-  function visibleRecallBooks(){
-    if(state.phase!=='recall-library')return Object.freeze([]);
-    const needle=state.recallQuery.toLocaleLowerCase();
-    return Object.freeze(state.recallBooks.filter(book=>!needle||book.name.toLocaleLowerCase().includes(needle)||book.code.toLocaleLowerCase().includes(needle)).map(freezeBook));
-  }
+  function setRecallQuery(query){if(state.phase!=='recall-library')throw new Error('Open the Per-book Recall library before searching.');state={...state,recallQuery:String(query||'').trim().slice(0,80)};return snapshot()}
+  function visibleRecallBooks(){if(state.phase!=='recall-library')return Object.freeze([]);const needle=state.recallQuery.toLocaleLowerCase();return Object.freeze(state.recallBooks.filter(book=>!needle||book.name.toLocaleLowerCase().includes(needle)||book.code.toLocaleLowerCase().includes(needle)).map(freezeBook))}
 
   async function startRecallBook(code){
     const loaded=await recall.loadBook(code),reviewIds=new Set(recallState.review[loaded.book.code]||[]);
@@ -164,30 +198,18 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
     progress.record({id:`game:${state.roundId}:recall:${item.id}`,type:'game.recall',xp,meaningful:false,metrics:got?{quizCorrect:1}:{}});
     const current=recallState.review[code]||[],review=got?current.filter(id=>id!==item.id):[...new Set([...current,item.id])];
     const prior=recallState.stats[code]||{seen:0,got:0,again:0},stats={seen:prior.seen+1,got:prior.got+(got?1:0),again:prior.again+(got?0:1)};
-    recallState={...recallState,review:{...recallState.review,[code]:review},stats:{...recallState.stats,[code]:stats}};
-    persistRecall();
+    recallState={...recallState,review:{...recallState.review,[code]:review},stats:{...recallState.stats,[code]:stats}};persistRecall();
     const remembered=state.remembered+(got?1:0),reviewAgain=state.reviewAgain+(got?0:1),gained=state.gained+xp;
-    if(state.index+1>=state.recallItems.length){
-      progress.record({id:`game:${state.roundId}:complete`,type:'game.recall.complete',xp:0,meaningful:true});
-      const result={remembered,total:state.recallItems.length,reviewAgain,gained,remaining:review.length,completedAt:completionTime()};
-      recallState={...recallState,results:{...recallState.results,[code]:result}};persistRecall();
-      state={...state,phase:'recall-complete',index:state.recallItems.length,remembered,reviewAgain,gained,revealed:false};
-      return snapshot();
-    }
+    if(state.index+1>=state.recallItems.length){progress.record({id:`game:${state.roundId}:complete`,type:'game.recall.complete',xp:0,meaningful:true});const result={remembered,total:state.recallItems.length,reviewAgain,gained,remaining:review.length,completedAt:completionTime()};recallState={...recallState,results:{...recallState.results,[code]:result}};persistRecall();state={...state,phase:'recall-complete',index:state.recallItems.length,remembered,reviewAgain,gained,revealed:false};return snapshot()}
     state={...state,index:state.index+1,remembered,reviewAgain,gained,revealed:false};return snapshot();
   }
 
-  function recallSummary(code){
-    const normalized=String(code||'').toUpperCase();if(!validCode(normalized))throw new Error('Unknown Per-book Recall book.');
-    const stats=recallState.stats[normalized]||{seen:0,got:0,again:0},last=recallState.results[normalized]||null;
-    return Object.freeze({review:(recallState.review[normalized]||[]).length,seen:stats.seen,got:stats.got,again:stats.again,last:freezeResult(last)});
-  }
-
+  function recallSummary(code){const normalized=String(code||'').toUpperCase();if(!validCode(normalized))throw new Error('Unknown Per-book Recall book.');const stats=recallState.stats[normalized]||{seen:0,got:0,again:0},last=recallState.results[normalized]||null;return Object.freeze({review:(recallState.review[normalized]||[]).length,seen:stats.seen,got:stats.got,again:stats.again,last:freezeResult(last)})}
   async function returnRecallLibrary(){return openRecallLibrary()}
   async function replayRecall(){if(!state.recallBook)throw new Error('Choose a Per-book Recall book before replaying.');return startRecallBook(state.recallBook.code)}
   function lastResult(mode){if(!modeById(mode))throw new Error('Unknown BibleQuest game mode.');return freezeResult(results[mode]||null)}
   function showLauncher(){state=emptyState();return snapshot()}
   function leave(){return showLauncher()}
 
-  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),start,answer,next,replay,startDetective,answerDetective,replayDetective,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,xp:XP});
+  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,xp:XP});
 }

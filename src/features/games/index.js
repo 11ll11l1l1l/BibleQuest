@@ -1,4 +1,4 @@
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 
 export function gamesPage({games,onHome}){
   return{
@@ -13,6 +13,10 @@ export function gamesPage({games,onHome}){
         if(state.phase==='detective'){
           const item=state.detectiveItem;
           host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-detective-score>Score <b>${state.score}</b> · +${state.gained} XP</div></section><section class="bq-panel bq-question-card bq-detective-card" data-detective="${escapeHtml(item.id)}"><p class="bq-eyebrow">BIBLE DETECTIVE</p><div class="bq-detective-mark" aria-hidden="true">🕵️</div><h1>Who am I?</h1><div class="bq-detective-clues">${item.clues.map((clue,index)=>`<div><span>${index+1}</span><p>${escapeHtml(clue)}</p></div>`).join('')}</div>${state.locked?`<div class="bq-game-explanation" data-detective-feedback><strong>${state.correct?'Correct':'Answer: '+escapeHtml(item.answer)}</strong><p>${state.correct?`You identified ${escapeHtml(item.answer)} from the clues.`:`Your answer was “${escapeHtml(state.detectiveAnswer)}”. Review the clues and Scripture reference.`}</p><span>📖 ${escapeHtml(item.ref)}</span><small>CHARACTER / CLUES</small></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-detective-replay>Another detective</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button></div>`:`<form class="bq-detective-form bq-recall-search" data-detective-form><label><span>Your answer</span><input type="text" required maxlength="80" autocomplete="off" autocapitalize="words" placeholder="Type the Bible character…" data-detective-answer></label><button type="submit" class="bq-primary-button" data-detective-submit>Check answer</button></form>`}</section>`;return;
+        }
+        if(state.phase==='timeline'){
+          const item=state.timelineItem;
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-timeline-score>Score <b>${state.score}</b> · +${state.gained} XP</div></section><section class="bq-panel bq-question-card bq-timeline-card" data-timeline="${escapeHtml(item.id)}"><p class="bq-eyebrow">TIMELINE CHALLENGE</p><h1>${escapeHtml(item.title)}</h1><p>Move the events until they are in chronological order, then check your timeline.</p><div class="bq-timeline-list">${state.timelineCurrent.map((event,index)=>`<div class="bq-timeline-row" data-timeline-row="${index}"><span class="bq-timeline-number">${index+1}</span><b>${escapeHtml(event)}</b><span class="bq-timeline-moves"><button type="button" aria-label="Move ${escapeHtml(event)} up" data-timeline-move="${index},-1" ${state.locked||index===0?'disabled':''}>↑</button><button type="button" aria-label="Move ${escapeHtml(event)} down" data-timeline-move="${index},1" ${state.locked||index===state.timelineCurrent.length-1?'disabled':''}>↓</button></span></div>`).join('')}</div>${state.timelineFeedback==='wrong'?`<div class="bq-game-explanation" data-timeline-feedback><strong>Not yet</strong><p>Your arrangement is preserved. Move the uncertain events and check again. The first miss awards review XP once; repeated checks cannot farm XP.</p></div>`:''}${state.timelineFeedback==='correct'?`<div class="bq-game-explanation" data-timeline-feedback><strong>Correct order</strong><p>You placed every event in chronological order.</p><small>TIMELINE / SEQUENCE</small></div>`:''}<div class="bq-game-actions">${state.locked?`<button type="button" class="bq-primary-button" data-timeline-replay>Next timeline</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button>`:`<button type="button" class="bq-primary-button" data-timeline-check>Check order</button>`}</div></section>`;return;
         }
         if(state.phase==='recall-library'){
           const books=games.visibleRecallBooks();
@@ -40,6 +44,9 @@ export function gamesPage({games,onHome}){
           if(target.closest('[data-game-home]')){games.leave();onHome();return}
           if(target.closest('[data-game-launcher]')){render(games.showLauncher());return}
           if(target.closest('[data-detective-replay]')){render(games.replayDetective());return}
+          if(target.closest('[data-timeline-replay]')){render(games.replayTimeline());return}
+          if(target.closest('[data-timeline-check]')){render(games.checkTimeline());return}
+          const move=target.closest('[data-timeline-move]');if(move){const [index,direction]=move.dataset.timelineMove.split(',');render(games.moveTimeline(index,direction));return}
           if(target.closest('[data-recall-library]')){loading('Opening recall library…');render(await games.returnRecallLibrary());return}
           if(target.closest('[data-recall-reveal]')){render(games.revealRecall());return}
           const rate=target.closest('[data-recall-rate]');if(rate){render(games.rateRecall(rate.dataset.recallRate));return}
