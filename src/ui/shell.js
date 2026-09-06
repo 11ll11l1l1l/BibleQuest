@@ -15,7 +15,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   root.innerHTML = `
     <div class="bq-shell" data-bq-shell="v3">
       <header class="bq-topbar">
-        <a class="bq-brand" href="#/home" data-route-link="home" aria-label="BibleQuest home">
+        <a class="bq-brand" href="#/home" data-brand-home aria-label="BibleQuest home">
           <span class="bq-brand-mark">BQ</span>
           <span><strong>BibleQuest</strong><small>Rebuild v3</small></span>
         </a>
@@ -38,6 +38,10 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       event.preventDefault();
       onNavigate(link.dataset.routeLink);
     });
+  });
+  root.querySelector('[data-brand-home]')?.addEventListener('click', event => {
+    event.preventDefault();
+    onNavigate('home');
   });
   root.querySelector('[data-session-open]')?.addEventListener('click', onAccountOpen);
 
