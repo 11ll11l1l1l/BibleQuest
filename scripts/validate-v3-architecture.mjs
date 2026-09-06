@@ -82,7 +82,7 @@ const transformUi=read('src/features/transform/index.js');
 if(/localStorage|sessionStorage|progress\.record|engine\.|createTransformEngine/.test(transformUi))fail('Transform UI bypasses an owning service.');
 
 const audio=read('src/app/audio.js');
-for(const contract of['youtube-nocookie.com','data.bqAudioPlayer','postMessage','function unload','function mount'])if(!audio.includes(contract))fail(`Audio owner missing required lifecycle contract: ${contract}`);
+for(const contract of['youtube-nocookie.com','dataset.bqAudioPlayer','postMessage','function unload','function mount'])if(!audio.includes(contract))fail(`Audio owner missing required lifecycle contract: ${contract}`);
 if(/MutationObserver|window\.onYouTubeIframeAPIReady|youtube\.com\/iframe_api/.test(audio))fail('Audio owner must not recreate the legacy YouTube global/runtime loader.');
 const recordings=read('src/app/recordings.js');
 for(const contract of['media.listLiveRecordings','audio.mount','audio.unload','session.isAuthenticated'])if(!recordings.includes(contract))fail(`Recordings owner missing required contract: ${contract}`);
