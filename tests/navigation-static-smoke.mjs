@@ -57,6 +57,9 @@ assert(index.includes('home-professional.css'),'final professional Home polish m
 const launcher=read('transform-launcher.js');
 assert(launcher.includes("const TARGET='./transform'"),'Transform launcher must use Cloudflare canonical /transform route');
 assert(launcher.includes("const PSYCH_TARGET='./psychometrics'"),'Psychometrics launcher must use Cloudflare canonical route');
+const runtimeRecovery=read('runtime-recovery.js');
+assert(index.indexOf('runtime-recovery.js')<index.indexOf('transform-launcher.js'),'Runtime recovery currently registers before the dedicated Transform launcher');
+assert(runtimeRecovery.includes("if(label==='Transformation')return"),'Generic runtime recovery must yield the Transformation row to the dedicated Transform menu launcher');
 const psychometrics=read('psychometrics.html');
 assert(!psychometrics.includes('if(!await window.BQStandaloneGate?.ready)return'),'Psychometrics must not silently remain hidden when the standalone account gate is missing or stalled');
 assert(psychometrics.includes('GATE_TIMEOUT_MS=8000'),'Psychometrics account verification must have a bounded wait');
