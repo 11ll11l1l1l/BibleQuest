@@ -60,7 +60,7 @@
     const signed=await client.auth.signInWithPassword({email,password});if(signed.error)throw signed.error;session=signed.data.session;
     await afterSignIn();
     const recoveryCode=String(invoked.data.recovery_code);sessionStorage.setItem('bq_pending_recovery_code',recoveryCode);
-    window.dispatchEvent(new CustomEvent('bq-account-created',{detail:{recoveryCode}}));
+    window.dispatchEvent(new CustomEvent('bq-account-created'));
   }
   async function signIn(form){const fd=new FormData(form),email=String(fd.get('email')||'').trim(),password=String(fd.get('password')||'');const {data,error}=await client.auth.signInWithPassword({email,password});if(error)throw error;session=data.session;await afterSignIn()}
 
