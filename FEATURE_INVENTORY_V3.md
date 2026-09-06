@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 10
-- **Verified:** 8
+- **Regression-tested:** 18
+- **Verified:** 4
 - **Implemented:** 1
-- **Not started:** 81
+- **Not started:** 77
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -31,23 +31,23 @@ This file is the authoritative parity ledger for the rebuild.
 | 8 | Signup | Yes | Compatibility | Regression-tested | create account; validation; duplicate account handling |
 | 9 | Recovery code/password recovery | Yes | Compatibility | Regression-tested | recover; rotate code; invalid code; session after reset |
 | 10 | Remembered device/security | Yes | Compatibility | Regression-tested | add/remove device; reload; unauthorized state |
-| 11 | Bible data service | Yes | Clean reader-specific | Verified | canonical book/chapter load API; errors; caching |
-| 12 | English BSB Bible | Yes | Clean | Verified | open multiple OT/NT books; chapters; attribution |
-| 13 | Tagalog Bible | Yes | Clean | Verified | translation switch; book/chapter; persistence |
+| 11 | Bible data service | Yes | Clean reader-specific | Regression-tested | canonical book/chapter load API; errors; caching |
+| 12 | English BSB Bible | Yes | Clean | Regression-tested | open multiple OT/NT books; chapters; attribution |
+| 13 | Tagalog Bible | Yes | Clean | Regression-tested | translation switch; book/chapter; persistence |
 | 14 | Japanese 口語訳 | Yes | Compatibility | Not started | load chapter; switch translation; fallback/errors |
 | 15 | Japanese furigana | Yes | Compatibility | Not started | toggle; persistence; mobile readability |
 | 16 | Japanese vocabulary learning | Yes | Compatibility | Not started | select verse; vocab display; return state |
 | 17 | NLT live path | Yes | Compatibility | Not started | source availability; failure handling; license-safe display |
-| 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Verified | correct external launch; safe return behavior |
-| 19 | Verse Peek | Yes | Compatibility | Verified | open verse detail; close; repeated use; no duplicate overlay |
+| 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
+| 19 | Verse Peek | Yes | Compatibility | Regression-tested | open verse detail; close; repeated use; no duplicate overlay |
 | 20 | STEPBible lexical/context tools | Yes | Compatibility | Implemented | lexical/context lookup; unavailable-data behavior |
-| 21 | Reader navigation | Yes | Clean | Verified | previous/next chapter; selector; reload state; mobile |
-| 22 | Reader search | Yes | Clean/basic | Verified | search valid/invalid; result navigation |
-| 23 | Reader read-progress marking | Yes | Clean | Verified | mark read; persist; reload; progress calculation |
-| 24 | User progress service | Yes | Clean/local | Not started | XP/streak/activity write via one service only |
-| 25 | XP | Yes | Clean | Not started | award once; reload; no duplicate award |
-| 26 | Streak | Yes | Clean | Not started | same-day activity; next-day continuation; missed day |
-| 27 | Achievements/badges | Yes | Clean | Not started | unlock rule; duplicate prevention; persistence |
+| 21 | Reader navigation | Yes | Clean | Regression-tested | previous/next chapter; selector; reload state; mobile |
+| 22 | Reader search | Yes | Clean/basic | Regression-tested | search valid/invalid; result navigation |
+| 23 | Reader read-progress marking | Yes | Clean | Regression-tested | mark read; persist; reload; progress calculation |
+| 24 | User progress service | Yes | Clean/local | Verified | XP/streak/activity write via one service only |
+| 25 | XP | Yes | Clean | Verified | award once; reload; no duplicate award |
+| 26 | Streak | Yes | Clean | Verified | same-day activity; next-day continuation; missed day |
+| 27 | Achievements/badges | Yes | Clean | Verified | unlock rule; duplicate prevention; persistence |
 | 28 | Daily Mission/Journey | Yes | Clean | Not started | retrieve→context→learn→apply→reflect; reload each stage |
 | 29 | Daily passage rotation | Yes | Clean | Not started | deterministic date selection; timezone boundary |
 | 30 | Daily Mission completion bonus | Yes | Clean | Not started | complete once; no repeat bonus; reload |

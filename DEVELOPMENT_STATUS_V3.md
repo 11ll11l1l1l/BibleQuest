@@ -9,49 +9,65 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 - Production GitHub Pages: **v2 unchanged** (`gh-pages` is not used for v3 development).
 - Last frozen milestone: `release/v3.3-reader-core` at `aaed163ca956e2fc6da33b13d467797ce7dfd2dd`.
 - Current work branch: `feature/v3-progress-core`.
+- Candidate progress release after this exact ledger commit passes: `release/v3.4-progress-core`.
 - No Cloudflare changes are part of v3 development.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 10 |
-| Verified | 8 |
+| Regression-tested | 18 |
+| Verified | 4 |
 | Implemented | 1 |
-| Not started | 81 |
+| Not started | 77 |
 | Total | 100 |
-
-The progress counts above remain unchanged while Milestone 4 is under implementation. Rows #24–#27 will advance only after their acceptance workflow and the complete accumulated suite pass.
 
 ## Completed milestones
 
 - Milestone 1 — Foundation: #1–#5 Regression-tested.
 - Milestone 2 — Account/auth: #6–#10 Regression-tested.
-- Milestone 3A — Reader/data: #11–#13, #18–#19, #21–#23 Verified; #20 STEPBible remains Implemented pending unavailable-data behavior.
+- Milestone 3A — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested after surviving the later progress milestone; #20 STEPBible remains Implemented pending unavailable-data behavior.
 
-## Current milestone — Milestone 4 User progress foundation
+### Milestone 4 — User progress foundation — Verified
 
-Target rows:
+Verified rows:
 
 - #24 User progress service
 - #25 XP
 - #26 Streak
 - #27 Achievements/badges
 
-Design contract:
+Single owner:
 
-1. `src/core/progress.js` is the only owner of XP, streak, activity counters, achievement state, and progress-event persistence.
-2. Every award uses a deterministic event ID. Repeated identical events are no-ops; reuse with conflicting semantics is a programmer error and fails loudly.
-3. Streaks use civil calendar dates in an explicit client timezone, not raw elapsed-hour arithmetic.
-4. Multiple meaningful events on one date increase activity count but never increase the streak more than once for that date.
-5. Backdated events cannot rewind or corrupt the current streak.
-6. Badge unlocks are monotonic and duplicate-proof.
-7. Reader mark-read now requests `reader.chapter.read` progress and uses retry-safe ordering rather than editing XP itself.
-8. The local schema is intentionally independent of guest/account identity so future cloud synchronization can define an explicit merge boundary instead of replacing local state ad hoc.
+- `src/core/progress.js` — XP, streak, meaningful activities, metric counters, badges, deterministic event identities, timezone-aware civil dates, persistence, and immutable progress snapshots.
+
+Verified workflows include:
+
+- one global progress owner and one storage key
+- canonical progress state published into the global store
+- deterministic/idempotent event IDs
+- conflicting event-ID semantics rejected before mutation
+- unknown/invalid metrics rejected before mutation
+- XP awarded once across duplicate calls and reload
+- same-day activity without extra streak increment
+- next-day continuation and missed-day reset
+- explicit Asia/Tokyo midnight boundary regression
+- backdated-event protection
+- 3-day and 7-day streak badge unlocks
+- First Step, Reader, Bible Recall, and Reflection badge rules
+- malformed persisted-state recovery
+- reader mark-read routed through progress instead of direct XP mutation
+- simulated partial reader transaction failure followed by retry without duplicate XP
+- shell/home/Grow progress rendering
+- 390px mobile top-bar/progress layout regression
 
 ## Next major milestone
 
-After Milestone 4 is frozen, build #31 Core lesson engine. Only after the lesson lifecycle is verified should #28–#30 Daily Mission/Journey be migrated onto it.
+Milestone 5 — #31 Core lesson engine.
+
+The lesson audit found repeated lifecycle machinery across old Quick Recall, Context Challenge, Mixed Quest, Story Journey, Wisdom Situations, Deep Questions, Timeline, and Play Together: start/resume, current step, response locking, feedback, advance, finish, progress handoff, and teardown. The v3 engine will centralize that lifecycle while allowing scored and reflective/unscored lesson types.
+
+Daily Mission/Journey (#28–#30) remains intentionally Not started until #31 is Verified. This prevents Daily Journey from becoming another isolated state machine.
 
 ## Defect / root-cause ledger
 
@@ -82,8 +98,8 @@ After Milestone 4 is frozen, build #31 Core lesson engine. Only after the lesson
 
 ### V3-PROGRESS-UI-001 — mobile status-chip test used an interactive touch-target rule for static text
 - **Root cause:** the first progress browser acceptance test required the non-interactive XP status chip to be at least 44px wide, conflating a touch-target guideline with text readability. The chip could be narrower while fully legible.
-- **Fix:** keep the chip non-interactive, give it a stable compact minimum footprint to avoid top-bar jitter, and test its visible XP text, font size, height, viewport fit, and overall horizontal overflow instead of treating it as a button.
-- **Regression prevention:** `tests/v3-progress-smoke.mjs` separately enforces the real 44px target on the interactive account button while checking the progress chip for legibility/layout semantics.
+- **Fix:** keep the chip non-interactive, give it a stable compact minimum footprint to avoid top-bar jitter, and test visible XP text, font size, height, viewport fit, and overall horizontal overflow instead of treating it as a button.
+- **Regression prevention:** `tests/v3-progress-smoke.mjs` enforces 44px on the interactive account control and legibility/layout semantics on the static progress chip.
 
 ## Release rule
 
