@@ -1,7 +1,5 @@
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
-const modeLabel=mode=>mode==='context-challenge'?'Context Challenge':'Quick Recall';
-
 export function gamesPage({games,onHome}){
   return{
     title:'Play',
@@ -14,7 +12,10 @@ export function gamesPage({games,onHome}){
         if(disposed)return;
         if(state.phase==='launcher'){
           host.innerHTML=`<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games, rebuilt cleanly</h1><p>Choose a verified game. Each round uses one shared launcher and scoring lifecycle.</p></section>
-          <section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>`<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p><button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">Play ${escapeHtml(mode.title)}</button></article>`).join('')}</section>
+          <section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>{
+            const last=games.lastResult(mode.id);
+            return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP</p>`:''}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">Play ${escapeHtml(mode.title)}</button></article>`;
+          }).join('')}</section>
           <div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;
           return;
         }
@@ -22,7 +23,7 @@ export function gamesPage({games,onHome}){
         if(state.phase==='complete'){
           const pct=Math.round((state.score/Math.max(1,state.total))*100);
           const message=pct>=90?'Excellent recall. Keep connecting the details to the bigger story.':pct>=70?'Good round. Review the explanations and keep strengthening the weak spots.':'Useful round. The misses point to what to review next.';
-          host.innerHTML=`<section class="bq-panel bq-game-result" data-game-complete><p class="bq-eyebrow">ROUND COMPLETE</p><div class="bq-game-medal" aria-hidden="true">${pct>=90?'🏆':pct>=70?'🌟':'🌱'}</div><h1>${state.score}/${state.total}</h1><p>${escapeHtml(message)}</p><div class="bq-game-stats"><div><b>${pct}%</b><span>accuracy</span></div><div><b>+${state.gained}</b><span>XP</span></div><div><b>${escapeHtml(modeLabel(state.mode))}</b><span>mode</span></div></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-game-replay>Play again</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div></section>`;
+          host.innerHTML=`<section class="bq-panel bq-game-result" data-game-complete><p class="bq-eyebrow">ROUND COMPLETE</p><div class="bq-game-medal" aria-hidden="true">${pct>=90?'🏆':pct>=70?'🌟':'🌱'}</div><h1>${state.score}/${state.total}</h1><p>${escapeHtml(message)}</p><div class="bq-game-stats"><div><b>${pct}%</b><span>accuracy</span></div><div><b>+${state.gained}</b><span>XP</span></div><div><b>${escapeHtml(state.modeTitle)}</b><span>mode</span></div></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-game-replay>Play again</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div></section>`;
           return;
         }
 

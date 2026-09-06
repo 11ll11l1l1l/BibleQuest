@@ -27,13 +27,20 @@ export const GAME_QUESTIONS = Object.freeze([
   {id:'q24',mode:'context',book:'Luke',level:2,q:'In the prodigal son parable, who objected to the celebration for the returning son?',choices:['The father','The older brother','A servant','A neighbor'],answer:1,ref:'Luke 15:25–32',why:'The older brother became angry about the celebration.'}
 ].map(freezeQuestion));
 
+const MIXED_QUEST_IDS = Object.freeze(['q1','q5','q9','q11','q15','q16','q19','q22','q23','q21']);
+
 export const GAME_MODES = Object.freeze([
-  Object.freeze({id:'quick-recall', title:'Quick Recall', kicker:'10 mixed questions', description:'Recall people, events, and key context from across Scripture.'}),
-  Object.freeze({id:'context-challenge', title:'Context Challenge', kicker:'Why, not just who', description:'Answer context and connection questions that require reading beyond isolated facts.'})
+  Object.freeze({id:'quick-recall', title:'Quick Recall', kicker:'10 recall questions', description:'Recall people, events, and key details from across Scripture.'}),
+  Object.freeze({id:'context-challenge', title:'Context Challenge', kicker:'Why, not just who', description:'Answer context and connection questions that require reading beyond isolated facts.'}),
+  Object.freeze({id:'mixed-quest', title:'Mixed Quest', kicker:'Recall + context + connections', description:'A balanced 10-question round that deliberately mixes direct recall, context, and cross-story connections.'})
 ]);
 
 export function buildGameRound(mode){
   if(mode==='quick-recall') return Object.freeze(GAME_QUESTIONS.slice(0,10));
   if(mode==='context-challenge') return Object.freeze(GAME_QUESTIONS.filter(row=>row.level>=2||row.mode==='context'||row.mode==='connection').slice(0,10));
+  if(mode==='mixed-quest'){
+    const byId=new Map(GAME_QUESTIONS.map(row=>[row.id,row]));
+    return Object.freeze(MIXED_QUEST_IDS.map(id=>byId.get(id)).filter(Boolean));
+  }
   throw new Error('Unknown BibleQuest game mode.');
 }

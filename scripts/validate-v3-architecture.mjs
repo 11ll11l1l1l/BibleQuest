@@ -6,10 +6,10 @@ const root=process.cwd(),failures=[];
 const fail=message=>failures.push(message);
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const required=[
-  'index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/app/daily-mission.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js',
+  'index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/app/daily-mission.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js',
   'src/core/storage.js','src/core/api.js','src/core/bible.js','src/core/progress.js','src/engines/lesson.js','src/engines/transform.js',
-  'src/features/transform/content.js','src/features/transform/index.js','src/features/recordings/index.js','src/features/media-library/index.js',
-  'src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css',
+  'src/features/transform/content.js','src/features/transform/index.js','src/features/recordings/index.js','src/features/media-library/index.js','src/features/games/content.js','src/features/games/index.js',
+  'src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css',
   'src/features/home/index.js','src/features/account/index.js','src/features/learn/index.js','src/features/reader/index.js','src/features/progress/index.js','src/features/daily-mission/content.js','src/features/daily-mission/index.js',
   'FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','data/packs/ATTRIBUTION.md'
 ];
@@ -19,7 +19,7 @@ const html=read('index.html');
 const scriptTags=[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match=>match[1]);
 if(scriptTags.length!==1||scriptTags[0]!=='src/app/bootstrap.js')fail(`index.html must boot exactly one script entry. Found: ${scriptTags.join(', ')||'none'}`);
 if(!/type=["']module["']/.test(html))fail('v3 bootstrap must be loaded as an ES module.');
-for(const style of['src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css'])if(!html.includes(style))fail(`index.html must load ${style}.`);
+for(const style of['src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css'])if(!html.includes(style))fail(`index.html must load ${style}.`);
 for(const legacy of['app.js','runtime-safety.js','cloud.js','live-rooms.js','modern-home.js','journey-loop.js','runtime-recovery.js','transform-launcher.js','bq2.js','media-library.js'])if(html.includes(legacy))fail(`Legacy runtime reference found in v3 index.html: ${legacy}`);
 
 const jsFiles=[];
@@ -56,6 +56,7 @@ onlyOwner(/export function createTransformService/,'src/app/transform.js','Trans
 onlyOwner(/export function createAudioManager/,'src/app/audio.js','Audio/player lifecycle');
 onlyOwner(/export function createRecordingsService/,'src/app/recordings.js','Recordings lifecycle');
 onlyOwner(/export function createMediaLibraryService/,'src/app/media-library.js','Media Library orchestration');
+onlyOwner(/export function createGameLauncherService/,'src/app/games.js','Game Launcher lifecycle');
 
 const api=read('src/core/api.js');
 if(!api.includes('@supabase/supabase-js@2.112.4'))fail('Supabase browser dependency must remain pinned to 2.112.4.');
@@ -75,12 +76,14 @@ const recordings=read('src/app/recordings.js');for(const contract of['media.list
 const recordingsUi=read('src/features/recordings/index.js');if(/createElement\(['"]iframe|youtube-nocookie|createClient|bible_media_library|localStorage|sessionStorage/.test(recordingsUi))fail('Recordings UI bypasses Audio/API/storage ownership.');
 const mediaLibrary=read('src/app/media-library.js');for(const contract of['recordings.load','recordings.select','recordings.leave'])if(!mediaLibrary.includes(contract))fail(`Media Library owner missing shared-owner contract: ${contract}`);if(/document\.|window\.|localStorage|sessionStorage|createClient|bible_media_library|youtube-nocookie/.test(mediaLibrary))fail('Media Library orchestration must remain DOM/storage/backend/player-implementation independent.');
 const mediaUi=read('src/features/media-library/index.js');if(/createElement\(['"]iframe|youtube-nocookie|createClient|bible_media_library|localStorage|sessionStorage|recordings\./.test(mediaUi))fail('Media Library UI bypasses its orchestration owner.');
+const games=read('src/app/games.js');for(const contract of['buildGameRound','progress.record','storage.read','storage.write'])if(!games.includes(contract))fail(`Game Launcher owner missing required contract: ${contract}`);if(/document\.|window\.|localStorage|sessionStorage|createClient/.test(games))fail('Game Launcher owner must remain DOM/storage-implementation/backend independent.');
+const gamesUi=read('src/features/games/index.js');if(/localStorage|sessionStorage|createClient|progress\.record|storage\./.test(gamesUi))fail('Games UI bypasses Game Launcher/progress/storage ownership.');
 
 const inventory=read('FEATURE_INVENTORY_V3.md'),allowed=new Set(['Not started','Implemented','Verified','Regression-tested']),rows=inventory.split('\n').filter(line=>/^\|\s*\d+\s*\|/.test(line));
 if(rows.length!==100)fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${rows.length}.`);
 rows.forEach((line,index)=>{const columns=line.split('|').slice(1,-1).map(value=>value.trim());if(Number(columns[0])!==index+1)fail(`Feature inventory row sequence error at ${index+1}.`);if(!allowed.has(columns[4]))fail(`Invalid v3 status on row ${columns[0]}.`)});
 
-const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/bible.js','src/app/reader.js','src/core/progress.js','src/engines/lesson.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
+const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/bible.js','src/app/reader.js','src/core/progress.js','src/engines/lesson.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
 const status=read('DEVELOPMENT_STATUS_V3.md');if(!status.includes('Defect / root-cause ledger')||!status.includes('Next major milestone'))fail('Development status must retain defect ledger and next-work queue.');
 
 if(failures.length){console.error(`BibleQuest v3 architecture validation FAILED (${failures.length})`);failures.forEach(message=>console.error(`- ${message}`));process.exit(1)}

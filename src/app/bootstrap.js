@@ -47,7 +47,7 @@ function start(){
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
   const mediaLibrary=createMediaLibraryService({recordings});
-  const games=createGameLauncherService({progress});
+  const games=createGameLauncherService({progress,storage});
 
   let router,shell;
   const routes=Object.freeze({
