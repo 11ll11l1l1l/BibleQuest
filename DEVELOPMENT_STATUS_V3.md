@@ -11,6 +11,7 @@ Updated: 2026-09-07
 - Frozen Audio/Recordings checkpoint: `release/v3.8-audio-recordings`.
 - Frozen Media Library checkpoint: `release/v3.9-media-library`.
 - Frozen Games core checkpoint: `release/v3.10-games-core`.
+- Frozen Mixed Quest checkpoint: `release/v3.11-mixed-quest` at `51a73758a8a3bc8def2de87b6ffa3466bee845f0`.
 - Current development branch: `feature/v3-games`.
 - Cloudflare remains untouched by the v3 rebuild.
 - Normal v3 GitHub Actions remain manual-only; isolated verification branches are one-shot CI gates only.
@@ -19,13 +20,13 @@ Updated: 2026-09-07
 
 | State | Count |
 |---|---:|
-| Regression-tested | 37 |
+| Regression-tested | 38 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 61 |
+| Not started | 60 |
 | Total | 100 |
 
-Strict verified-or-better parity is now **38/100** and fully regression-tested stability coverage is **37/100**. Quick Recall (#32), Context Challenge (#33), and Game launcher (#41) are Regression-tested after surviving the later Mixed Quest milestone. Mixed Quest (#34) is Verified. Media Library (#61) is now Regression-tested. #20 STEPBible lexical/context tooling remains Implemented parity debt.
+Strict verified-or-better parity is now **39/100** and fully regression-tested stability coverage is **38/100**. Quick Recall (#32), Context Challenge (#33), Mixed Quest (#34), and Game launcher (#41) are Regression-tested. Per-book Recall (#35) is Verified after accumulated run `34065874003`. Media Library (#61) remains Regression-tested. #20 STEPBible lexical/context tooling remains Implemented parity debt.
 
 ## Completed milestone 7 — Transform
 
@@ -48,20 +49,22 @@ Strict verified-or-better parity is now **38/100** and fully regression-tested s
 
 Current verified architecture and workflow:
 - `src/app/games.js` is the only game launcher/active-round/scoring/result-persistence owner.
-- `src/features/games/content.js` is the question/mode definition source.
+- `src/core/recall-packs.js` is the only Per-book Recall question-pack loading/validation/cache owner.
+- `src/features/games/content.js` is the built-in question/mode definition source.
 - `src/features/games/index.js` is presentation/event forwarding only.
 - game XP/counters are written only through `src/core/progress.js`.
-- completed result summaries are written only through the injected `src/core/storage.js` boundary.
+- completed result summaries and Per-book review queues/statistics are written only through the injected `src/core/storage.js` boundary.
 - starting/switching/leaving uses one lifecycle; no alternate game runtime or duplicate listeners are introduced.
 - Quick Recall (#32) — Regression-tested.
 - Context Challenge (#33) — Regression-tested.
+- Mixed Quest (#34) — Regression-tested.
 - Game launcher (#41) — Regression-tested.
-- Mixed Quest (#34) — Verified after run `34065176532`.
-- Mixed Quest deliberately combines recall, context, and connection questions; score/XP summary persists across reload; mobile controls and route teardown pass.
+- Per-book Recall (#35) — Verified after run `34065874003`.
+- Per-book Recall preserves on-demand book loading, reveal-before-rating, “Review again” / “Got it,” +1/+5 XP semantics, persistent review queues, reload-safe stats/results, source attribution, and mobile interaction.
 
 ## Next major milestone
 
-Continue Milestone 9 with #35 Per-book Recall. It must reuse the same Game launcher rather than introducing a standalone deck runtime. Required workflow: load a selected Bible-book question pack through a defined content/data boundary, reveal the reference answer, rate “review again” or “got it,” advance through the round, finish with a result, survive reload where parity requires it, and remain mobile-safe. Then continue #36 Character Detective, #37 Timeline, #38 Kids Memory Match, #39 Hiragana Match, #40 Kids Bible Who Am I, #42 Same-room Play Together, and #43 Live Rooms.
+Continue Milestone 9 with #36 Character Detective / Who Am I. It must run through the existing Game launcher, use a defined content source, support complete clue → answer → score → feedback/reference → replay behavior, cleanly reset on switch/leave, and pass the accumulated desktop/mobile regression suite. Then continue #37 Timeline, #38 Kids Memory Match, #39 Hiragana Match, #40 Kids Bible Who Am I, #42 Same-room Play Together, and #43 Live Rooms.
 
 ## Defect / root-cause ledger
 
@@ -79,7 +82,8 @@ Continue Milestone 9 with #35 Per-book Recall. It must reuse the same Game launc
 - `V3-MEDIA-OWNER-001` — Media Library parity could have recreated a second player/backend path. v3 instead composes the already-verified Recordings and Audio owners, and architecture validation forbids iframe/backend ownership inside the Media Library layer.
 - `V3-GAMES-SHELL-ACCEPTANCE-001` — the accumulated shell test hard-coded the old placeholder `Play` heading, so the first real Games route correctly changed UI while the old acceptance test falsely failed. The test now asserts the stable Games route/launcher contract instead of placeholder copy; run `34064004752` passed the complete suite afterward.
 - `V3-GAMES-OWNER-001` — old game modes shared fragmented global state and ad-hoc listeners. v3 centralizes launch/answer/score/replay/switch/leave and result persistence in `src/app/games.js`, with architecture and edge tests preventing duplicate owners or direct progress/storage bypass.
+- `V3-RECALL-PACK-001` — old Per-book Recall mixed fetching, filtering, review-state mutation, XP, and rendering in one runtime. v3 isolates pack loading/validation/cache in `src/core/recall-packs.js`, keeps gameplay in the existing Games owner, filters quarantined/non-allow rows, and verifies malformed/unavailable pack handling before browser acceptance.
 
 ## Release rule
 
-The Mixed Quest functional commit passed the entire accumulated suite on run `34065176532`. The inventory/status/timeline bookkeeping commit must now pass the full suite once more before freezing the exact checkpoint as `release/v3.11-mixed-quest`. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
+Per-book Recall passed the entire accumulated suite on run `34065874003`. The inventory/status/timeline bookkeeping state must pass the full suite once more before the exact checkpoint is frozen as `release/v3.12-per-book-recall`. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
