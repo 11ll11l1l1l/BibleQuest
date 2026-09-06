@@ -15,44 +15,51 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 
 | State | Count |
 |---|---:|
-| Regression-tested | 18 |
-| Verified | 4 |
+| Regression-tested | 22 |
+| Verified | 1 |
 | Implemented | 1 |
-| Not started | 77 |
+| Not started | 76 |
 | Total | 100 |
-
-The counts remain unchanged while #31 Core lesson engine is under implementation.
 
 ## Completed milestones
 
 - Milestone 1 — Foundation: #1–#5 Regression-tested.
 - Milestone 2 — Account/auth: #6–#10 Regression-tested.
 - Milestone 3 — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested; #20 STEPBible remains Implemented pending unavailable-data behavior.
-- Milestone 4 — Progress: #24–#27 Verified.
+- Milestone 4 — Progress: #24–#27 Regression-tested.
+- Milestone 5 — Core lesson engine: #31 Verified on the full service + browser acceptance suite.
 
-## Current milestone — Milestone 5 Core lesson engine
+## Milestone 5 acceptance evidence
 
-Target row: #31 Core lesson engine.
+`src/engines/lesson.js` is the single guided-lesson lifecycle owner. The verified workflow covers definition validation, content/choice/confirmation/text steps, response locking, private correct-answer state, score/feedback reconstruction from stored responses, reload/resume, completion, repeated-completion safety, restart, teardown/reopen, version reset, malformed-session recovery, timestamp normalization, and storage-failure atomicity.
 
-The old audit found the same lifecycle machinery repeated across Quick Recall, Context Challenge, Mixed Quest, Story Journey, Wisdom Situations, Deep Questions, Timeline and Play Together: local current-step variables, manual response locks, feedback rendering, next/finish transitions, ad-hoc progress calls, and feature-specific teardown.
-
-The clean engine contract:
-
-1. `src/engines/lesson.js` owns guided-lesson lifecycle persistence.
-2. Supported guided step types are content, choice, confirmation and text response.
-3. Definitions have stable IDs and versions; a definition-version change resets stale persisted session state.
-4. Interactive responses lock after the first accepted value; exact repeated input is idempotent and conflicting second input fails.
-5. Correct-answer indexes stay private inside the engine and are not exposed in public step snapshots.
-6. Persisted feedback is never authoritative: resume reconstructs feedback and score from the versioned definition plus normalized stored responses.
-7. Reload/reopen resumes the same active or completed lifecycle; malformed timestamps/session structure recover to a fresh session.
-8. Restart deliberately resets only that lesson session; close tears down in-memory ownership without deleting persisted resume state.
-9. Storage writes commit before in-memory state changes so persistence failure cannot leave a phantom response/completion in memory.
-10. The engine reports completion but does not mutate XP/streak/badges; progress remains owned by `src/core/progress.js`.
-11. Game-specific ordering, timers, pass-and-play and scoring orchestration remain for the future game engine rather than expanding this foundation prematurely.
+The lesson engine does not mutate XP/streak/badges and does not absorb game-specific mechanics. Progress remains in `src/core/progress.js`; future game lifecycle remains reserved for `src/engines/game.js`.
 
 ## Next major milestone
 
-After #31 is frozen, migrate #28–#30 Daily Mission/Journey onto the lesson engine, including deterministic daily passage rotation and an idempotent completion bonus through the progress service.
+Milestone 6 — Daily Mission/Journey only:
+
+- #28 Daily Mission/Journey
+- #29 Daily passage rotation
+- #30 Daily Mission completion bonus
+
+Required implementation boundaries:
+
+1. Daily Mission must be defined as a versioned five-step lesson using the verified lesson engine: Retrieve → Context → Learn → Apply → Reflect.
+2. Daily passage selection must be deterministic from an explicit civil date/timezone boundary, not random at render time.
+3. Each completed step must emit a deterministic progress event; retries/reloads must not duplicate XP.
+4. The final completion bonus must use its own deterministic progress event and be awarded exactly once.
+5. Opening the Bible passage must route through the existing reader owner rather than constructing another Bible loader/navigation path.
+6. Mission UI may orchestrate the feature but may not own a second lesson state machine, progress model, router, or Bible data path.
+7. Desktop/mobile and guest/account behavior must be tested without introducing cloud writes for guests.
+
+No Transform, games, recordings, Bible World, tutorial, or unrelated feature implementation is allowed in this milestone.
+
+## Drift check
+
+The locked milestone order remains unchanged: Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings → Games → Bible World → Tutorial → secondary parity work → full audit → mobile regression → production deployment.
+
+Current code still obeys the required single owners for router, session, storage, API, Bible data, reader state, progress, and lesson lifecycle. Production v2 remains isolated.
 
 ## Defect / root-cause ledger
 
@@ -64,7 +71,7 @@ After #31 is frozen, migrate #28–#30 Daily Mission/Journey onto the lesson eng
 - `V3-READER-ACCEPTANCE-001` — native invalid-search validation is tested as native validation rather than weakened to satisfy JavaScript expectations.
 - `V3-PROGRESS-UI-001` — static progress-chip readability was separated from interactive 44px touch-target semantics.
 
-Any lesson-engine defect found by acceptance will be recorded before promotion.
+No lesson-engine defect required a production-logic workaround during this milestone. Pre-publication hardening made stored responses, rather than stored feedback, authoritative for resume/scoring.
 
 ## Release rule
 

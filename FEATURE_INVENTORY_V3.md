@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 18
-- **Verified:** 4
+- **Regression-tested:** 22
+- **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 77
+- **Not started:** 76
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -44,14 +44,14 @@ This file is the authoritative parity ledger for the rebuild.
 | 21 | Reader navigation | Yes | Clean | Regression-tested | previous/next chapter; selector; reload state; mobile |
 | 22 | Reader search | Yes | Clean/basic | Regression-tested | search valid/invalid; result navigation |
 | 23 | Reader read-progress marking | Yes | Clean | Regression-tested | mark read; persist; reload; progress calculation |
-| 24 | User progress service | Yes | Clean/local | Verified | XP/streak/activity write via one service only |
-| 25 | XP | Yes | Clean | Verified | award once; reload; no duplicate award |
-| 26 | Streak | Yes | Clean | Verified | same-day activity; next-day continuation; missed day |
-| 27 | Achievements/badges | Yes | Clean | Verified | unlock rule; duplicate prevention; persistence |
+| 24 | User progress service | Yes | Clean/local | Regression-tested | XP/streak/activity write via one service only |
+| 25 | XP | Yes | Clean | Regression-tested | award once; reload; no duplicate award |
+| 26 | Streak | Yes | Clean | Regression-tested | same-day activity; next-day continuation; missed day |
+| 27 | Achievements/badges | Yes | Clean | Regression-tested | unlock rule; duplicate prevention; persistence |
 | 28 | Daily Mission/Journey | Yes | Clean | Not started | retrieve→context→learn→apply→reflect; reload each stage |
 | 29 | Daily passage rotation | Yes | Clean | Not started | deterministic date selection; timezone boundary |
 | 30 | Daily Mission completion bonus | Yes | Clean | Not started | complete once; no repeat bonus; reload |
-| 31 | Core lesson engine | Yes | Fragmented old | Not started | shared lesson lifecycle; resume; completion; errors |
+| 31 | Core lesson engine | Yes | Fragmented old | Verified | shared lesson lifecycle; resume; completion; errors |
 | 32 | Quick Recall | Yes | Clean | Not started | answer; feedback; score; next; finish; replay |
 | 33 | Context Challenge | Yes | Clean | Not started | context question workflow; references; score |
 | 34 | Mixed Quest | Yes | Clean | Not started | mixed pool; finish; score persistence |
