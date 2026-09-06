@@ -1,11 +1,6 @@
 name: BibleQuest v3 regression
 
 on:
-  push:
-    branches:
-      - 'feature/v3-foundation-shell'
-      - 'feature/v3-**'
-      - 'rebuild-v3-foundation'
   workflow_dispatch:
 
 concurrency:
