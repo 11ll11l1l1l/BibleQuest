@@ -15,13 +15,11 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 
 | State | Count |
 |---|---:|
-| Regression-tested | 23 |
-| Verified | 3 |
+| Regression-tested | 26 |
+| Verified | 1 |
 | Implemented | 1 |
-| Not started | 73 |
+| Not started | 72 |
 | Total | 100 |
-
-Counts remain unchanged during Transform engine implementation. #48 advances only after the engine acceptance suite and browser persistence regression pass; #46/#47 remain Not started until their UI workflows exist.
 
 ## Completed milestones
 
@@ -30,35 +28,25 @@ Counts remain unchanged during Transform engine implementation. #48 advances onl
 - Milestone 3 — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested; #20 STEPBible remains Implemented pending unavailable-data behavior.
 - Milestone 4 — Progress: #24–#27 Regression-tested.
 - Milestone 5 — Core lesson engine: #31 Regression-tested.
-- Milestone 6 — Daily Mission/Journey: #28–#30 Verified.
+- Milestone 6 — Daily Mission/Journey: #28–#30 Regression-tested.
+- Milestone 7A — Transform engine: #48 Verified.
 
-## Current milestone — Milestone 7A Transform engine
+## Transform engine acceptance evidence
 
-Old Transform audit found two user-facing surfaces that must eventually share one clean state owner:
+`src/engines/transform.js` is the single Transform state/scoring/persistence owner. The old standalone global/modal/runtime-recovery architecture is not loaded or recreated.
 
-1. Basic spiritual self-reflection (#46): 12 dimensions rated 1–5, a local result, lowest-three focus guidance, and an explicit “not a spiritual score/diagnosis” boundary.
-2. Full Transform (#47): 20-item Big Five reflection, five thinking-pattern scenarios, recommendations/action experiment, private journal, and bounded history.
-
-The old full runtime also had its own direct `localStorage`, global `window.BQ_TRANSFORMATION`, body-level modal/root, mutable page indexes, event delegation, standalone account gate and runtime-recovery loader. None of those lifecycle mechanisms are being copied into v3.
-
-Engine contract:
-
-- `src/engines/transform.js` is the only Transform persistence/state/scoring owner.
-- Spiritual, personality, bias and reflection domains share one versioned local state schema while remaining independently resettable.
-- Ratings and choices are validated before mutation.
-- Derived results are reconstructed from validated answers on reload rather than trusted from stored score objects.
-- Changing an answer invalidates that domain’s prior result.
-- Personality reverse-key scoring and score-band thresholds preserve the old useful behavior.
-- Thinking-pattern scoring preserves the five old scenario contracts without labeling the person as “having” a bias.
-- Recommendations are deterministic and bounded to four.
-- Personality/bias reset preserves the private reflection journal.
-- History is bounded to ten entries.
-- Storage writes are atomic with respect to engine memory.
-- Engine has no DOM, router, Supabase or progress dependency.
+Verified contracts include 12-dimension spiritual scoring and deterministic lowest-three focus guidance, 20-item reverse-key Big Five scoring with preserved bands, five thinking-pattern scenario scoring, answer-change result invalidation, repeated-calculation idempotence, deterministic bounded recommendations, reflection validation/persistence, personality/bias reset preserving the journal, bounded ten-entry history, incompatible-schema recovery, deep-frozen public state, persisted-result tamper reconstruction from answers, atomic storage failure behavior, browser reload persistence, and browser proof that neither `window.BQ_TRANSFORMATION` nor the legacy `.bq-transform-v2` modal root exists.
 
 ## Next major milestone
 
-After #48 Transform engine is independently verified, build #46 Basic Transform UI against it, then #47 Full Transform UI against the same owner. Only after all three pass accumulated regression can the Transform release freeze. Audio/Recordings remains next after that.
+Milestone 7B — Basic Transform (#46) only:
+
+1. Instantiate the verified Transform engine once at app composition.
+2. Add a clean `#/transform` workflow for the 12 spiritual dimensions, 1–5 responses, calculate, focus guidance, reload/reopen, and reset.
+3. Keep the explicit boundary: this is private self-reflection, not a spiritual score, diagnosis, or moral ranking.
+4. Any XP/reflection badge award must go through the existing progress service using a deterministic event identity; the Transform engine itself remains progress-independent.
+5. Do not implement Big Five, bias scenarios, journal, or other Full Transform UI in this sub-milestone.
+6. Full Transform (#47) starts only after #46’s exact promoted ledger is green.
 
 ## Defect / root-cause ledger
 
@@ -70,8 +58,8 @@ After #48 Transform engine is independently verified, build #46 Basic Transform 
 - `V3-READER-ACCEPTANCE-001` — native invalid-search validation is tested as native validation rather than weakened to satisfy JavaScript expectations.
 - `V3-PROGRESS-UI-001` — static progress-chip readability was separated from interactive touch-target semantics.
 
-Transform engine status remains unpromoted until exact CI evidence exists.
+No Transform engine CI defect required a post-publication behavior patch; the idempotent calculation rule was added during pre-publication audit.
 
 ## Release rule
 
-A snapshot is frozen only after the exact ledger/status commit passes every configured architecture, service and accumulated browser gate.
+Transform does not freeze as a release until #48, #46 and #47 all pass their own acceptance plus the complete accumulated regression on the exact final Transform ledger/status commit.

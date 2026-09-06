@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 23
-- **Verified:** 3
+- **Regression-tested:** 26
+- **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 73
+- **Not started:** 72
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -48,9 +48,9 @@ This file is the authoritative parity ledger for the rebuild.
 | 25 | XP | Yes | Clean | Regression-tested | award once; reload; no duplicate award |
 | 26 | Streak | Yes | Clean | Regression-tested | same-day activity; next-day continuation; missed day |
 | 27 | Achievements/badges | Yes | Clean | Regression-tested | unlock rule; duplicate prevention; persistence |
-| 28 | Daily Mission/Journey | Yes | Clean | Verified | retrieve→context→learn→apply→reflect; reload each stage |
-| 29 | Daily passage rotation | Yes | Clean | Verified | deterministic date selection; timezone boundary |
-| 30 | Daily Mission completion bonus | Yes | Clean | Verified | complete once; no repeat bonus; reload |
+| 28 | Daily Mission/Journey | Yes | Clean | Regression-tested | retrieve→context→learn→apply→reflect; reload each stage |
+| 29 | Daily passage rotation | Yes | Clean | Regression-tested | deterministic date selection; timezone boundary |
+| 30 | Daily Mission completion bonus | Yes | Clean | Regression-tested | complete once; no repeat bonus; reload |
 | 31 | Core lesson engine | Yes | Fragmented old | Regression-tested | shared lesson lifecycle; resume; completion; errors |
 | 32 | Quick Recall | Yes | Clean | Not started | answer; feedback; score; next; finish; replay |
 | 33 | Context Challenge | Yes | Clean | Not started | context question workflow; references; score |
@@ -68,7 +68,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
 | 46 | Transformation basic | Yes | Clean | Not started | answer all dimensions; calculate; persist; reopen |
 | 47 | Transformation full | Yes | Standalone old | Not started | passage/input→transform→result→leave→return; guest + account; mobile |
-| 48 | Transform engine | Yes | Multiple old paths | Not started | one engine; deterministic state transitions; no stale instance |
+| 48 | Transform engine | Yes | Multiple old paths | Verified | one engine; deterministic state transitions; no stale instance |
 | 49 | Story Journey | Yes | Clean | Not started | scene progression; checkpoint; finish; replay |
 | 50 | Wisdom Situations | Yes | Clean | Not started | scenario; choose; correct contract; references; replay |
 | 51 | Deep Questions | Yes | Clean | Not started | choose response; references; save-note handoff |
