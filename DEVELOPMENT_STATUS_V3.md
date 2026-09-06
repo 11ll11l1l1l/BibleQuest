@@ -1,29 +1,29 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-06
+Updated: 2026-09-07
 
 `FEATURE_INVENTORY_V3.md` remains the authoritative 100-capability parity matrix.
 
 ## Deployment safety
 
-- Production GitHub Pages: **v2 unchanged**.
-- Last frozen milestone: `release/v3.6-daily-mission` at `da43d4e8bccd2693639a5a60f824b6e647ca7e68`.
-- Current work branch: `feature/v3-transform-basic`.
-- Cloudflare untouched.
+- Production v2 remains unchanged.
+- Last frozen milestone before this candidate: `release/v3.6-daily-mission` at `da43d4e8bccd2693639a5a60f824b6e647ca7e68`.
+- Current completion branch: `feature/v3-transform-full`.
+- Cloudflare remains untouched by the v3 rebuild.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 27 |
+| Regression-tested | 28 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 71 |
+| Not started | 70 |
 | Total | 100 |
 
-#48 Transform engine is now Regression-tested after surviving the later Basic Transform milestone. #46 Basic Transform is Verified. #47 Full Transform remains Not started.
+Strict verified-or-better parity is now **29/100**. #46 Basic Transform and #48 Transform engine are Regression-tested. #47 Full Transform is Verified. #20 STEPBible lexical/context tooling remains Implemented and is still parity debt.
 
-## Completed Transform sub-milestones
+## Completed Transform milestone
 
 ### 7A — Transform engine (#48)
 
@@ -31,7 +31,7 @@ Updated: 2026-09-06
 
 ### 7B — Basic Transform (#46)
 
-Verified workflow:
+Regression-tested workflow:
 - Grow → `#/transform`
 - all 12 spiritual dimensions render
 - 1–5 ratings persist locally
@@ -47,9 +47,24 @@ Verified workflow:
 - guest workflow makes no Supabase request
 - desktop and 390px mobile workflows pass, including 44px rating targets and no horizontal overflow
 
+### 7C — Full Transform (#47)
+
+Verified workflow:
+- native Full Transform mode uses the same `src/engines/transform.js` and `src/app/transform.js` owners
+- all 20 personality prompts render and produce deterministic five-factor tendency output
+- all five thinking-pattern scenarios render and produce bounded recommendations
+- completion records deterministic `transform:full:v1:complete` progress exactly once
+- +35 XP and assessment/reflection counters are idempotent across reload and recalculation
+- private reflection/journal fields and history persist across reload
+- changing a completed section invalidates only that section until recalculated
+- switching back to Basic restores the Basic workflow without creating another Transform owner
+- guest Full Transform does not contact Supabase
+- desktop and 390px mobile browser workflows pass with no horizontal overflow and >=44px response targets
+- the accumulated v3 regression suite passed at `16a611708f55147008aa00b361309cbd1dc9999d` after the Full Transform progress-contract repair
+
 ## Next major milestone
 
-Milestone 7C — Full Transform (#47), using the same verified `src/engines/transform.js` and `src/app/transform.js` owners. Scope is the old full personal-development workflow: personality assessment, thinking-pattern scenarios, recommendations/action plan, private journal/reflection, Bible Reader handoff, leave/return persistence, guest/account separation, and mobile behavior. No Audio/Recordings implementation starts until #47 passes and the final Transform release is frozen.
+Milestone 8 — Audio / Live Recordings (#57–60), followed by Media Library (#61). The rebuild must introduce one audio/player owner and one recording-session owner. Required acceptance includes list load, play, pause, seek/stop where supported, switching sources, leaving and returning, teardown without duplicate players/listeners, error recovery, and mobile behavior. Old Live Recordings freeze-prone runtime logic is reference material only and must not be copied as the v3 architecture.
 
 ## Defect / root-cause ledger
 
@@ -60,8 +75,9 @@ Milestone 7C — Full Transform (#47), using the same verified `src/engines/tran
 - `V3-ACCOUNT-ACCEPTANCE-001` — duplicate signup and post-recovery login are explicit tests.
 - `V3-READER-ACCEPTANCE-001` — invalid search respects native form validation.
 - `V3-PROGRESS-UI-001` — static label readability is separate from touch-target semantics.
-- `V3-TRANSFORM-OWNER-001` — Basic orchestration initially defined a second `calculateSpiritual` function name. The architecture gate correctly rejected the semantic owner collision. The orchestration action is now `completeBasicAssessment`; only `src/engines/transform.js` defines `calculateSpiritual`, and the Basic edge suite asserts that duplicate owner name cannot reappear.
+- `V3-TRANSFORM-OWNER-001` — Basic orchestration initially defined a second `calculateSpiritual` function name. The architecture gate correctly rejected the semantic owner collision. The orchestration action is `completeBasicAssessment`; only `src/engines/transform.js` defines `calculateSpiritual`.
+- `V3-TRANSFORM-PROGRESS-001` — Full Transform emitted an `assessments` progress metric that the single progress owner did not yet recognize. `src/core/progress.js` now owns and persists the `assessments` counter, and `tests/v3-progress-edge.mjs` explicitly verifies acceptance, persistence, reload normalization and continued rejection of unknown metric names.
 
 ## Release rule
 
-Transform freezes only after engine + Basic + Full all pass and the final exact Transform ledger/status commit is green.
+Freeze `release/v3.7-transform-complete` only after the final inventory/status/timeline bookkeeping commit passes the entire accumulated v3 regression suite. After that exact freeze, automatic v3 push-triggered Actions must be removed and development continues from the frozen release into Milestone 8.
