@@ -91,7 +91,7 @@
   async function launch(label){const action=specs[label];if(!action)return false;closeSheet();try{await action();return true}catch(err){await failure(label,err,()=>launch(label));return false}}
   async function repairInjected(){for(const [label,check,src] of background){if(exists(check))continue;try{await ensure(check,src)}catch(err){const kind=err?.bqKind||'capability-recovery';const d=await window.BQDiagnostics?.diagnose?.(err,{kind,feature:label}).catch?.(()=>null);window.BQDiagnostics?.report?.(`${d?.code||'BQ-MOD-001'} Background feature missing: ${label}: ${err?.message||err}`,'',{kind,code:d?.code,category:d?.category,serverReachable:d?.serverReachable,httpStatus:d?.httpStatus,feature:label}).catch?.(()=>{})}}}
   document.addEventListener('click',e=>{
-    const item=e.target.closest?.('[data-modern-item]');if(item){const label=item.querySelector('b')?.textContent?.trim();if(specs[label]){e.preventDefault();e.stopImmediatePropagation();launch(label);return}}
+    const item=e.target.closest?.('[data-modern-item]');if(item){const label=item.querySelector('b')?.textContent?.trim();if(label==='Transformation')return;if(specs[label]){e.preventDefault();e.stopImmediatePropagation();launch(label);return}}
     if(e.target.closest?.('[data-modern-journey]')){e.preventDefault();e.stopImmediatePropagation();launch('Daily Journey');return}
     if(e.target.closest?.('[data-modern-review]')){e.preventDefault();e.stopImmediatePropagation();launch('Smart Review')}
   },true);
