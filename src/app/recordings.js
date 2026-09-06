@@ -1,10 +1,11 @@
 const YOUTUBE_ID=/^[A-Za-z0-9_-]{6,20}$/;
 const cloneRows=rows=>Object.freeze(rows.map(row=>Object.freeze({...row})));
 const snapshot=state=>Object.freeze({...state,rows:cloneRows(state.rows)});
+const youtubeIdFromUrl=value=>{try{const url=new URL(String(value||''));const host=url.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');if(host!=='youtube.com')return'';return url.pathname.match(/^\/live\/([A-Za-z0-9_-]{6,20})\/?$/)?.[1]||''}catch{return''}};
 
 function normalizeRow(row){
   if(!row||typeof row!=='object')return null;
-  const id=String(row.id||'').trim(),youtubeId=String(row.youtube_id||row.youtubeId||'').trim(),title=String(row.title||'').trim();
+  const id=String(row.id||'').trim(),storedId=String(row.youtube_id||row.youtubeId||'').trim(),derivedId=youtubeIdFromUrl(row.youtube_url||row.youtubeUrl),youtubeId=YOUTUBE_ID.test(storedId)?storedId:derivedId,title=String(row.title||'').trim();
   if(!id||!YOUTUBE_ID.test(youtubeId)||!title)return null;
   return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),createdAt:String(row.created_at||row.createdAt||'')};
 }
