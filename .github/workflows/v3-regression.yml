@@ -23,6 +23,8 @@ jobs:
           node-version: 22
       - name: Enforce v3 architecture boundaries
         run: node scripts/validate-v3-architecture.mjs
+      - name: Run account transaction edge regression
+        run: node tests/v3-account-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium

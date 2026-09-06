@@ -105,6 +105,27 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
     }
   }
 
+  async function changePassword(currentPassword, newPassword, confirmPassword) {
+    if (!state.authenticated || !state.user?.email) throw new Error('Sign in before changing your password.');
+    const current = String(currentPassword || '');
+    const next = String(newPassword || '');
+    const confirm = String(confirmPassword || '');
+    if (!current) throw new Error('Enter your current password.');
+    if (next.length < 8 || next.length > 128) throw new Error('New password must be 8 to 128 characters.');
+    if (next !== confirm) throw new Error('New passwords do not match.');
+    try {
+      const verified = await auth.verifyPassword(state.user.email, current);
+      if (!verified.session) throw new Error('Current password is incorrect.');
+      const changed = await auth.updatePassword(next);
+      const { session } = await auth.getSession();
+      if (!session || !changed.user) throw new Error('Password changed, but the session could not be refreshed. Sign in again.');
+      return toAuthenticated(session, changed.user);
+    } catch (error) {
+      publish({ status: 'authenticated', authenticated: true, error: error?.message || 'Could not change password.' });
+      throw error;
+    }
+  }
+
   async function signOut() {
     try { await auth.signOut(); }
     finally { toGuest(); }
@@ -119,6 +140,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
   return Object.freeze({
     boot,
     signIn,
+    changePassword,
     signOut,
     dispose,
     getState: () => state,

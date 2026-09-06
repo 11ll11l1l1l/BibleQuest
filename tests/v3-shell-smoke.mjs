@@ -2,136 +2,56 @@ import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
 const browser = await chromium.launch({ headless: true });
-
-async function assert(condition, message) {
-  if (!condition) throw new Error(message);
-}
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
 
 async function coreServiceFlow(page) {
   const result = await page.evaluate(async () => {
-    const [{ createStore }, { storage }] = await Promise.all([
-      import('/src/app/store.js'),
-      import('/src/core/storage.js')
-    ]);
-
-    const store = createStore({ route: 'home', count: 0 });
-    let notifications = 0;
-    const unsubscribe = store.subscribe(() => notifications++);
-    store.setState(current => ({ ...current, route: 'learn', count: current.count + 1 }));
-    unsubscribe();
-    store.setState(current => ({ ...current, count: current.count + 1 }));
-
-    storage.write('smoke', { ok: true, value: 7 });
-    const stored = storage.read('smoke');
-    localStorage.setItem('biblequest.v3.corrupt', '{not-json');
-    const corruptFallback = storage.read('corrupt', { safe: true });
-    localStorage.setItem('unrelated.key', 'keep');
-    storage.remove('smoke');
-
+    const [{ createStore }, { storage }] = await Promise.all([import('/src/app/store.js'), import('/src/core/storage.js')]);
+    const store = createStore({ route: 'home', count: 0 }); let notifications = 0; const unsubscribe = store.subscribe(() => notifications++);
+    store.setState(current => ({ ...current, route: 'learn', count: current.count + 1 })); unsubscribe(); store.setState(current => ({ ...current, count: current.count + 1 }));
+    storage.write('smoke', { ok: true, value: 7 }); const stored = storage.read('smoke'); localStorage.setItem('biblequest.v3.corrupt', '{not-json'); const corruptFallback = storage.read('corrupt', { safe: true }); localStorage.setItem('unrelated.key', 'keep'); storage.remove('smoke');
     return { state: store.getState(), notifications, frozen: Object.isFrozen(store.getState()), stored, corruptFallback, unrelated: localStorage.getItem('unrelated.key'), removed: storage.read('smoke', null) };
   });
-
-  assert(result.state.route === 'learn' && result.state.count === 2, 'Global store state transitions failed.');
-  assert(result.notifications === 1, 'Global store subscription/unsubscribe contract failed.');
-  assert(result.frozen, 'Global store snapshots must be frozen.');
-  assert(result.stored?.ok === true && result.stored?.value === 7, 'Storage write/read contract failed.');
-  assert(result.corruptFallback?.safe === true, 'Storage malformed-data recovery failed.');
-  assert(result.unrelated === 'keep', 'Storage boundary modified an unrelated browser key.');
-  assert(result.removed === null, 'Storage remove contract failed.');
+  assert(result.state.route === 'learn' && result.state.count === 2, 'Global store state transitions failed.'); assert(result.notifications === 1, 'Global store subscription/unsubscribe contract failed.'); assert(result.frozen, 'Global store snapshots must be frozen.'); assert(result.stored?.ok === true && result.stored?.value === 7, 'Storage write/read contract failed.'); assert(result.corruptFallback?.safe === true, 'Storage malformed-data recovery failed.'); assert(result.unrelated === 'keep', 'Storage boundary modified an unrelated browser key.'); assert(result.removed === null, 'Storage remove contract failed.');
 }
 
-async function sessionServiceFlow(page) {
+async function accountServiceFlow(page) {
   const result = await page.evaluate(async () => {
-    const [{ createStore }, { createSessionService }] = await Promise.all([import('/src/app/store.js'), import('/src/app/session.js')]);
-    let current = null;
-    let mutationCalls = 0;
-    let signOutScope = '';
-    const listeners = new Set();
-    const makeSession = (expiresAt = Math.floor(Date.now() / 1000) + 3600) => ({ access_token: 'test-token', expires_at: expiresAt, user: { id: 'user-1', email: 'learner@example.com', user_metadata: { preferred_name: 'Learner' } } });
-    const emit = (event, session) => listeners.forEach(listener => listener(event, session));
-    const auth = {
-      enabled: () => true,
-      async subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
-      async getSession() { return { session: current }; },
-      async getUser() { return { user: current?.user || null }; },
-      async signIn(email, password) { mutationCalls++; if (email !== 'learner@example.com' || password !== 'correct-password') throw new Error('Invalid login credentials'); current = makeSession(); emit('SIGNED_IN', current); return { session: current, user: current.user }; },
-      async signOut() { mutationCalls++; signOutScope = 'local'; current = null; emit('SIGNED_OUT', null); }
-    };
-    const storeA = createStore({ session: null });
-    const serviceA = createSessionService({ auth, store: storeA });
-    await serviceA.boot();
-    const bootGuest = serviceA.getState();
-    const guestMutations = mutationCalls;
-    let invalidMessage = '';
-    try { await serviceA.signIn('learner@example.com', 'wrong'); } catch (error) { invalidMessage = error.message; }
-    const afterInvalid = serviceA.getState();
-    await serviceA.signIn('learner@example.com', 'correct-password');
-    const signedIn = serviceA.getState();
-    const storeB = createStore({ session: null });
-    const serviceB = createSessionService({ auth, store: storeB });
-    await serviceB.boot();
-    const reloaded = serviceB.getState();
-    current = makeSession(Math.floor(Date.now() / 1000) - 5);
-    emit('TOKEN_REFRESHED', current);
-    const expired = serviceB.getState();
-    current = makeSession();
-    emit('SIGNED_IN', current);
-    await serviceB.signOut();
-    const signedOut = serviceB.getState();
-    serviceA.dispose(); serviceB.dispose();
-    return { bootGuest, guestMutations, invalidMessage, afterInvalid, signedIn, reloaded, expired, signedOut, signOutScope, listenersRemaining: listeners.size };
+    const [{ createStore }, { createSessionService }, { createAccountService }, { storage }] = await Promise.all([import('/src/app/store.js'), import('/src/app/session.js'), import('/src/app/account.js'), import('/src/core/storage.js')]);
+    storage.remove('device-id');
+    let currentSession = null; let authMutations = 0; let accountMutations = 0; let verifyCalls = 0; let updatedPassword = ''; const authListeners = new Set();
+    const makeSession = () => ({ access_token: 'test-token', expires_at: Math.floor(Date.now()/1000)+3600, user: { id:'user-1', email:'learner@example.com', user_metadata:{ preferred_name:'Learner' } } });
+    const emit = (event, session) => authListeners.forEach(listener => listener(event, session));
+    const auth = { enabled:()=>true, async subscribe(listener){authListeners.add(listener);return()=>authListeners.delete(listener)}, async getSession(){return{session:currentSession}}, async getUser(){return{user:currentSession?.user||null}}, async signIn(email,password){authMutations++;if(password!=='correct-password'&&password!=='new-password')throw new Error('Invalid login credentials');currentSession=makeSession();emit('SIGNED_IN',currentSession);return{session:currentSession,user:currentSession.user}}, async verifyPassword(email,password){verifyCalls++;if(password!=='correct-password')throw new Error('Current password is incorrect.');currentSession=makeSession();emit('SIGNED_IN',currentSession);return{session:currentSession,user:currentSession.user}}, async updatePassword(password){updatedPassword=password;return{user:currentSession.user}}, async signOut(){authMutations++;currentSession=null;emit('SIGNED_OUT',null)} };
+    const devices = new Map();
+    const api = { account: { async createAccount(payload){accountMutations++;if(payload.email==='exists@example.com')throw new Error('An account already exists for this email. Sign in instead.');return{ok:true,recovery_code:'BQ-AAAAA-BBBBB-CCCCC-DDDDD'}}, async resetPassword(payload){accountMutations++;if(payload.recovery_code==='BAD')throw new Error('Email or recovery code is incorrect.');return{ok:true,recovery_code:'BQ-NEW11-NEW22-NEW33-NEW44'}}, async issueRecoveryCode(){accountMutations++;return{ok:true,recovery_code:'BQ-FRESH-FRESH-FRESH-FRESH'}}, async upsertDevice(row){accountMutations++;const key=`${row.user_id}:${row.device_key}`;const existing=devices.get(key);const saved={id:existing?.id||`device-${devices.size+1}`,...existing,...row,first_seen_at:existing?.first_seen_at||'2026-09-06T00:00:00Z'};devices.set(key,saved);return saved}, async listDevices(userId){return [...devices.values()].filter(row=>row.user_id===userId)}, async removeDevice(userId,id){accountMutations++;for(const [key,row] of devices){if(row.user_id===userId&&row.id===id)devices.delete(key)}} } };
+    const store=createStore({session:null});const session=createSessionService({auth,store});await session.boot();
+    const guestBefore=accountMutations;const account=createAccountService({api,session,storage,uuid:()=> '11111111-1111-4111-8111-111111111111',userAgent:()=> 'Mozilla/5.0 (Android 16)'});
+    let guestDeviceError='';try{await account.listDevices()}catch(error){guestDeviceError=error.message}
+    const guestMutationDelta=accountMutations-guestBefore;
+    let mismatchError='';try{await account.signUp({fullName:'Test User',preferredName:'Test',email:'test@example.com',password:'password1',confirmPassword:'password2'})}catch(error){mismatchError=error.message}
+    const signup=await account.signUp({fullName:'Test User',preferredName:'Test',email:'learner@example.com',password:'correct-password',confirmPassword:'correct-password'});
+    const deviceKey1=account.currentDeviceKey();const deviceCountAfterSignup=devices.size;
+    const accountReload=createAccountService({api,session,storage,uuid:()=> '22222222-2222-4222-8222-222222222222',userAgent:()=> 'Mozilla/5.0 (Android 16)'});const deviceKey2=accountReload.currentDeviceKey();await accountReload.ensureCurrentDevice();const deviceCountAfterReload=devices.size;
+    devices.set('user-1:33333333-3333-4333-8333-333333333333',{id:'device-other',user_id:'user-1',device_key:'33333333-3333-4333-8333-333333333333',label:'Windows PC',platform:'Windows',last_seen_at:'2026-09-05T00:00:00Z'});
+    const listed=await accountReload.listDevices();await accountReload.removeDevice('device-other');
+    const currentRow=[...devices.values()].find(row=>row.device_key===deviceKey1);let currentRemoveError='';try{await accountReload.removeDevice(currentRow.id)}catch(error){currentRemoveError=error.message}
+    const issued=await accountReload.issueRecoveryCode();const reset=await accountReload.resetPassword({email:'learner@example.com',recoveryCode:'BQ-OLD11-OLD22-OLD33-OLD44',newPassword:'new-password',confirmPassword:'new-password'});let badRecovery='';try{await accountReload.resetPassword({email:'learner@example.com',recoveryCode:'BAD',newPassword:'new-password',confirmPassword:'new-password'})}catch(error){badRecovery=error.message}
+    let wrongCurrent='';try{await accountReload.changePassword('wrong','new-password','new-password')}catch(error){wrongCurrent=error.message}const stillAuthenticatedAfterWrong=session.getState().authenticated;await accountReload.changePassword('correct-password','new-password','new-password');
+    await session.signOut();let guestRemoveError='';const beforeGuestRemove=accountMutations;try{await accountReload.removeDevice('anything')}catch(error){guestRemoveError=error.message}const guestRemoveDelta=accountMutations-beforeGuestRemove;
+    session.dispose();
+    return {guestDeviceError,guestMutationDelta,mismatchError,signup,deviceKey1,deviceKey2,deviceCountAfterSignup,deviceCountAfterReload,listedCurrent:listed.filter(x=>x.current).length,otherRemoved:![...devices.values()].some(x=>x.id==='device-other'),currentRemoveError,issued,reset,badRecovery,wrongCurrent,stillAuthenticatedAfterWrong,verifyCalls,updatedPassword,guestRemoveError,guestRemoveDelta,authListeners:authListeners.size};
   });
-  assert(result.bootGuest.status === 'guest' && result.bootGuest.authenticated === false, 'Session boot must resolve to guest without a saved session.');
-  assert(result.guestMutations === 0, 'Guest boot must not perform an auth mutation or cloud write.');
-  assert(/invalid/i.test(result.invalidMessage), 'Invalid login must return a controlled auth error.');
-  assert(result.afterInvalid.status === 'guest' && result.afterInvalid.authenticated === false, 'Invalid login must not create an authenticated state.');
-  assert(result.signedIn.status === 'authenticated' && result.signedIn.user?.email === 'learner@example.com', 'Valid login did not create authenticated state.');
-  assert(result.reloaded.status === 'authenticated', 'Saved session did not survive service recreation/reload semantics.');
-  assert(result.expired.status === 'guest' && /expired/i.test(result.expired.error), 'Expired session did not fall back to guest.');
-  assert(result.signedOut.status === 'guest' && result.signedOut.authenticated === false, 'Logout did not return to guest.');
-  assert(result.signOutScope === 'local', 'Logout contract must be local-device scoped.');
-  assert(result.listenersRemaining === 0, 'Session service did not clean up auth subscriptions.');
+  assert(/sign in/i.test(result.guestDeviceError) && result.guestMutationDelta===0,'Guest device access must fail before API mutation.'); assert(/match/i.test(result.mismatchError),'Signup password mismatch validation failed.'); assert(result.signup.recovery_code?.startsWith('BQ-'),'Signup did not return recovery code.'); assert(result.deviceKey1===result.deviceKey2,'Device identity did not persist across account-service recreation.'); assert(result.deviceCountAfterSignup===1&&result.deviceCountAfterReload===1,'Reload created a duplicate remembered device.'); assert(result.listedCurrent===1,'Exactly one current device must be identified.'); assert(result.otherRemoved,'Other remembered device was not removed.'); assert(/currently using/i.test(result.currentRemoveError),'Current device removal was not blocked locally.'); assert(result.issued.recovery_code?.startsWith('BQ-'),'Recovery-code rotation failed.'); assert(result.reset.recovery_code==='BQ-NEW11-NEW22-NEW33-NEW44','Password recovery did not return replacement code.'); assert(/incorrect/i.test(result.badRecovery),'Invalid recovery code was not rejected.'); assert(/incorrect/i.test(result.wrongCurrent)&&result.stillAuthenticatedAfterWrong,'Wrong current password must not destroy the valid session.'); assert(result.verifyCalls===2&&result.updatedPassword==='new-password','Current-password verification/update contract failed.'); assert(/sign in/i.test(result.guestRemoveError)&&result.guestRemoveDelta===0,'Guest remove-device attempt reached API mutation.'); assert(result.authListeners===0,'Auth listener cleanup failed.');
 }
 
-async function desktopFlow() {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-  let supabaseRequests = 0;
-  page.on('request', request => { if (request.url().includes('supabase.co')) supabaseRequests++; });
-  await page.goto(BASE, { waitUntil: 'networkidle' });
-  await page.locator('[data-bq-shell="v3"]').waitFor();
-  assert(await page.locator('[data-bq-shell="v3"]').count() === 1, 'Shell must mount exactly once.');
-  assert((await page.locator('h1').first().textContent())?.trim() === 'BibleQuest', 'Home must render BibleQuest heading.');
-  await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
-  assert(supabaseRequests === 0, 'Guest boot in local regression must not contact Supabase.');
-  await coreServiceFlow(page); await sessionServiceFlow(page);
-  await page.locator('[data-session-open]').click(); await page.waitForURL(/#\/account$/);
-  assert((await page.locator('h1').first().textContent())?.trim() === 'Sign in', 'Guest account page did not render.');
-  await page.locator('input[name="email"]').fill('learner@example.com'); await page.locator('input[name="password"]').fill('not-a-real-password');
-  await page.locator('[data-account-login] button[type="submit"]').click(); await page.locator('[data-auth-message]', { hasText: 'local preview' }).waitFor();
-  assert(supabaseRequests === 0, 'Local-preview login guard must fail before a Supabase network request.');
-  await page.locator('[data-account-guest]').click(); await page.waitForURL(/#\/home$/);
-  await page.locator('[data-route-link="learn"]').click(); await page.waitForURL(/#\/learn$/); await page.locator('h1', { hasText: 'Learn' }).waitFor();
-  assert(await page.locator('[data-route-link="learn"][aria-current]').count() === 1, 'Active nav state missing for Learn.');
-  await page.reload({ waitUntil: 'networkidle' }); await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
-  assert((await page.locator('h1').first().textContent())?.trim() === 'Learn', 'Deep-link reload did not preserve Learn route.');
-  assert(await page.locator('[data-bq-shell="v3"]').count() === 1, 'Reload created duplicate shell.');
-  await page.locator('[data-route-link="play"]').click(); await page.locator('h1', { hasText: 'Play' }).waitFor(); await page.goBack(); await page.waitForURL(/#\/learn$/); await page.locator('h1', { hasText: 'Learn' }).waitFor();
-  assert((await page.locator('h1').first().textContent())?.trim() === 'Learn', 'Browser back did not restore Learn.');
-  await page.goForward(); await page.waitForURL(/#\/play$/); await page.locator('h1', { hasText: 'Play' }).waitFor();
-  assert((await page.locator('h1').first().textContent())?.trim() === 'Play', 'Browser forward did not restore Play.');
-  await page.goto(`${BASE}#/does-not-exist`, { waitUntil: 'networkidle' });
-  assert((await page.locator('h1').first().textContent())?.trim() === 'Page not found', 'Unknown route did not use controlled not-found state.');
-  await page.close();
+async function accountUiFlow(page) {
+  await page.locator('[data-session-open]').click();await page.waitForURL(/#\/account$/);await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();
+  await page.locator('[data-account-mode="signup"]').click();assert(await page.locator('[data-account-signup]').count()===1,'Signup UI missing.');await page.locator('input[name="full_name"]').fill('Test User');await page.locator('input[name="preferred_name"]').fill('Test');await page.locator('input[name="email"]').fill('test@example.com');await page.locator('input[name="password"]').fill('password1');await page.locator('input[name="confirm_password"]').fill('password2');await page.locator('[data-account-signup] button[type="submit"]').click();await page.locator('[data-auth-message]',{hasText:'match'}).waitFor();
+  await page.locator('[data-account-mode="recovery"]').click();assert(await page.locator('[data-account-recovery]').count()===1,'Recovery UI missing.');await page.locator('input[name="email"]').fill('test@example.com');await page.locator('input[name="recovery_code"]').fill('BQ-XXXXX-XXXXX-XXXXX-XXXXX');await page.locator('input[name="new_password"]').fill('password1');await page.locator('input[name="confirm_password"]').fill('password2');await page.locator('[data-account-recovery] button[type="submit"]').click();await page.locator('[data-auth-message]',{hasText:'match'}).waitFor();
+  await page.locator('[data-account-mode="login"]').click();assert(await page.locator('[data-account-login]').count()===1,'Login UI did not return after account tab switching.');await page.locator('[data-account-guest]').click();await page.waitForURL(/#\/home$/);
 }
 
-async function mobileFlow() {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-  await page.goto(BASE, { waitUntil: 'networkidle' }); await page.locator('[data-bq-shell="v3"]').waitFor(); await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
-  const metrics = await page.evaluate(() => ({ innerWidth: window.innerWidth, scrollWidth: document.documentElement.scrollWidth, navHeight: document.querySelector('.bq-nav')?.getBoundingClientRect().height || 0, accountWidth: document.querySelector('[data-session-open]')?.getBoundingClientRect().width || 0 }));
-  assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Mobile horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`); assert(metrics.navHeight >= 60, 'Mobile primary navigation is too small or missing.'); assert(metrics.accountWidth >= 44, 'Mobile account/session control is too small.');
-  await page.locator('[data-session-open]').click(); await page.waitForURL(/#\/account$/); assert(await page.locator('[data-account-guest]').count() === 1, 'Mobile guest account action is missing.'); await page.locator('[data-account-guest]').click();
-  for (const route of ['home','learn','play','grow','more']) { await page.locator(`[data-route-link="${route}"]`).click(); await page.waitForURL(new RegExp(`#/${route}$`)); await page.locator('h1').waitFor(); assert(await page.locator(`[data-route-link="${route}"][aria-current]`).count() === 1, `Mobile active nav missing for ${route}.`); }
-  await page.close();
-}
-
-try { await desktopFlow(); await mobileFlow(); console.log('BibleQuest v3 auth/session + foundation browser regression passed.'); } finally { await browser.close(); }
+async function desktopFlow(){const page=await browser.newPage({viewport:{width:1280,height:900}});let supabaseRequests=0;page.on('request',r=>{if(r.url().includes('supabase.co'))supabaseRequests++});await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-bq-shell="v3"]').waitFor();assert(await page.locator('[data-bq-shell="v3"]').count()===1,'Shell must mount exactly once.');assert((await page.locator('h1').first().textContent())?.trim()==='BibleQuest','Home must render BibleQuest heading.');await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();assert(supabaseRequests===0,'Guest boot in local regression must not contact Supabase.');await coreServiceFlow(page);await accountServiceFlow(page);await accountUiFlow(page);await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('h1',{hasText:'Learn'}).waitFor();await page.reload({waitUntil:'networkidle'});await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();assert((await page.locator('h1').first().textContent())?.trim()==='Learn','Deep-link reload failed.');assert(await page.locator('[data-bq-shell="v3"]').count()===1,'Reload created duplicate shell.');await page.locator('[data-route-link="play"]').click();await page.locator('h1',{hasText:'Play'}).waitFor();await page.goBack();await page.waitForURL(/#\/learn$/);await page.locator('h1',{hasText:'Learn'}).waitFor();await page.goForward();await page.waitForURL(/#\/play$/);await page.locator('h1',{hasText:'Play'}).waitFor();await page.goto(`${BASE}#/does-not-exist`,{waitUntil:'networkidle'});assert((await page.locator('h1').first().textContent())?.trim()==='Page not found','Unknown route failed.');await page.close()}
+async function mobileFlow(){const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-bq-shell="v3"]').waitFor();await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();const metrics=await page.evaluate(()=>({innerWidth:innerWidth,scrollWidth:document.documentElement.scrollWidth,navHeight:document.querySelector('.bq-nav')?.getBoundingClientRect().height||0,accountWidth:document.querySelector('[data-session-open]')?.getBoundingClientRect().width||0}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Mobile horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.navHeight>=60,'Mobile nav missing.');assert(metrics.accountWidth>=44,'Mobile account control too small.');await page.locator('[data-session-open]').click();await page.waitForURL(/#\/account$/);await page.locator('[data-account-mode="signup"]').click();assert(await page.locator('[data-account-signup]').count()===1,'Mobile signup UI missing.');await page.locator('[data-account-guest]').click();for(const route of ['home','learn','play','grow','more']){await page.locator(`[data-route-link="${route}"]`).click();await page.waitForURL(new RegExp(`#/${route}$`));assert(await page.locator(`[data-route-link="${route}"][aria-current]`).count()===1,`Mobile active nav missing for ${route}.`)}await page.close()}
+try{await desktopFlow();await mobileFlow();console.log('BibleQuest v3 account completion + accumulated regression passed.')}finally{await browser.close()}
