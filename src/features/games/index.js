@@ -2,66 +2,53 @@ const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;'
 
 export function gamesPage({games,onHome}){
   return{
-    title:'Play',
-    html:'<section data-games-page></section>',
+    title:'Play',html:'<section data-games-page></section>',
     mount(root){
-      const host=root.querySelector('[data-games-page]');
-      let disposed=false;
-
+      const host=root.querySelector('[data-games-page]');let disposed=false;
       const render=state=>{
         if(disposed)return;
         if(state.phase==='launcher'){
-          host.innerHTML=`<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games, rebuilt cleanly</h1><p>Choose a verified game. Each round uses one shared launcher and scoring lifecycle.</p></section>
-          <section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>{
-            const last=games.lastResult(mode.id);
-            return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP</p>`:''}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">Play ${escapeHtml(mode.title)}</button></article>`;
-          }).join('')}</section>
-          <div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;
-          return;
+          host.innerHTML=`<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games, rebuilt cleanly</h1><p>Choose a verified game. Every mode uses the same controlled launcher, progress, and cleanup boundaries.</p></section><section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>{const last=mode.id==='per-book-recall'?null:games.lastResult(mode.id);return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP</p>`:''}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">${mode.id==='per-book-recall'?'Open recall library':`Play ${escapeHtml(mode.title)}`}</button></article>`}).join('')}</section><div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;return;
         }
-
+        if(state.phase==='recall-library'){
+          const books=games.visibleRecallBooks();
+          host.innerHTML=`<section class="bq-panel bq-games-head" data-recall-library><p class="bq-eyebrow">PER-BOOK RECALL</p><h1>Choose one Bible book</h1><p>Only the selected book pack is loaded. Reveal each reference answer, then mark it for review or remembered.</p><label class="bq-recall-search"><span>Search books</span><input type="search" maxlength="80" value="${escapeHtml(state.recallQuery)}" placeholder="Ruth, John, Romans…" data-recall-search></label></section><section class="bq-recall-books">${books.length?books.map(book=>{const summary=games.recallSummary(book.code);return `<button type="button" class="bq-panel bq-recall-book" data-recall-book="${escapeHtml(book.code)}"><span class="bq-recall-icon" aria-hidden="true">📘</span><span><b>${escapeHtml(book.name)}</b><small>${book.questions} questions · <span data-recall-summary="${escapeHtml(book.code)}">${summary.review} review${summary.seen?` · ${summary.seen} studied`:''}${summary.last?` · last ${summary.last.remembered}/${summary.last.total}`:''}</span></small></span><strong aria-hidden="true">›</strong></button>`}).join(''):'<section class="bq-panel"><h2>No matching books</h2><p>Try a different book name.</p></section>'}</section><section class="bq-panel bq-recall-source"><p><strong>Source:</strong> ${escapeHtml(state.source)} · ${escapeHtml(state.license)}. These are open study questions and reference answers; Scripture remains the primary text to examine.</p></section><div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button></div>`;return;
+        }
+        if(state.phase==='recall-question'){
+          const item=state.recallItem,progressPct=Math.round((state.index/Math.max(1,state.total))*100);
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-recall-library>Recall library</button><div class="bq-game-score">Remembered <b>${state.remembered}</b> · +${state.gained} XP</div></section><section class="bq-panel bq-question-card" data-recall-question="${escapeHtml(item.id)}"><div class="bq-game-meta"><span>${escapeHtml(state.recallBook.name)} · Recall Deck</span><span data-recall-progress>Question ${state.index+1} of ${state.total}</span></div><div class="bq-game-progress" aria-hidden="true"><i style="width:${progressPct}%"></i></div><div class="bq-recall-mark" aria-hidden="true">🧠</div><h1>${escapeHtml(item.question)}</h1>${state.revealed?`<div class="bq-recall-answer" data-recall-answer><small>REFERENCE ANSWER</small><p>${escapeHtml(item.answer)}</p>${item.reference?`<strong>📖 ${escapeHtml(state.recallBook.name)} ${escapeHtml(item.reference)}</strong>`:''}</div><div class="bq-recall-ratings"><button type="button" class="bq-secondary-button" data-recall-rate="again">Review again</button><button type="button" class="bq-primary-button" data-recall-rate="got">Got it</button></div>`:`<p class="bq-recall-think">Try to answer from memory before revealing the reference answer.</p><button type="button" class="bq-primary-button" data-recall-reveal>Reveal answer</button>`}<p class="bq-recall-license">${escapeHtml(state.source)} · ${escapeHtml(state.license)}</p></section>`;return;
+        }
+        if(state.phase==='recall-complete'){
+          host.innerHTML=`<section class="bq-panel bq-game-result" data-recall-complete><p class="bq-eyebrow">${escapeHtml(state.recallBook.name)} DECK COMPLETE</p><div class="bq-game-medal" aria-hidden="true">🗃️</div><h1>${state.remembered}/${state.total}</h1><p>${state.reviewAgain?`${state.reviewAgain} item${state.reviewAgain===1?'':'s'} will return in a future ${escapeHtml(state.recallBook.name)} session.`:'Everything in this round was marked remembered.'}</p><div class="bq-game-stats"><div><b>+${state.gained}</b><span>XP</span></div><div><b>${state.remembered}</b><span>got it</span></div><div><b>${state.remainingReview}</b><span>book review</span></div></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-recall-replay>Study ${escapeHtml(state.recallBook.name)} again</button><button type="button" class="bq-secondary-button" data-recall-library>Choose another book</button><button type="button" class="bq-secondary-button" data-game-launcher>All games</button></div></section>`;return;
+        }
         if(state.phase==='complete'){
-          const pct=Math.round((state.score/Math.max(1,state.total))*100);
-          const message=pct>=90?'Excellent recall. Keep connecting the details to the bigger story.':pct>=70?'Good round. Review the explanations and keep strengthening the weak spots.':'Useful round. The misses point to what to review next.';
-          host.innerHTML=`<section class="bq-panel bq-game-result" data-game-complete><p class="bq-eyebrow">ROUND COMPLETE</p><div class="bq-game-medal" aria-hidden="true">${pct>=90?'🏆':pct>=70?'🌟':'🌱'}</div><h1>${state.score}/${state.total}</h1><p>${escapeHtml(message)}</p><div class="bq-game-stats"><div><b>${pct}%</b><span>accuracy</span></div><div><b>+${state.gained}</b><span>XP</span></div><div><b>${escapeHtml(state.modeTitle)}</b><span>mode</span></div></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-game-replay>Play again</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div></section>`;
-          return;
+          const pct=Math.round((state.score/Math.max(1,state.total))*100),message=pct>=90?'Excellent recall. Keep connecting the details to the bigger story.':pct>=70?'Good round. Review the explanations and keep strengthening the weak spots.':'Useful round. The misses point to what to review next.';
+          host.innerHTML=`<section class="bq-panel bq-game-result" data-game-complete><p class="bq-eyebrow">ROUND COMPLETE</p><div class="bq-game-medal" aria-hidden="true">${pct>=90?'🏆':pct>=70?'🌟':'🌱'}</div><h1>${state.score}/${state.total}</h1><p>${escapeHtml(message)}</p><div class="bq-game-stats"><div><b>${pct}%</b><span>accuracy</span></div><div><b>+${state.gained}</b><span>XP</span></div><div><b>${escapeHtml(state.modeTitle)}</b><span>mode</span></div></div><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-game-replay>Play again</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div></section>`;return;
         }
-
-        const q=state.question;
-        const typeLabel=q.mode==='connection'?'Connections':q.level>=2?'Context':'Recall';
-        const progressPct=Math.round((state.index/Math.max(1,state.total))*100);
-        host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-game-score>Score <b>${state.score}</b> · +${state.gained} XP</div></section>
-        <section class="bq-panel bq-question-card" data-game-question="${escapeHtml(q.id)}">
-          <div class="bq-game-meta"><span>${escapeHtml(q.book)} · ${escapeHtml(typeLabel)}</span><span data-game-progress>Question ${state.index+1} of ${state.total}</span></div>
-          <div class="bq-game-progress" aria-hidden="true"><i style="width:${progressPct}%"></i></div>
-          <h1>${escapeHtml(q.q)}</h1>
-          <div class="bq-game-choices">${q.choices.map((choice,index)=>{
-            const isCorrect=state.locked&&index===q.answer;
-            const isWrong=state.locked&&index===state.selected&&!state.correct;
-            const className=isCorrect?' is-correct':isWrong?' is-wrong':'';
-            return `<button type="button" class="bq-game-choice${className}" data-game-answer="${index}" ${state.locked?'disabled':''}><span aria-hidden="true">${String.fromCharCode(65+index)}</span><b>${escapeHtml(choice)}</b></button>`;
-          }).join('')}</div>
-          <div class="bq-game-feedback" aria-live="polite">${state.locked?`<div class="bq-game-explanation" data-game-feedback><strong>${state.correct?'Correct':'Review this one'}</strong><p>${escapeHtml(q.why)}</p><span>📖 ${escapeHtml(q.ref)}</span><small>${q.mode==='basic'?'DIRECT / RECALL':'CONTEXT / CONNECTION'}</small></div><button type="button" class="bq-primary-button" data-game-next>${state.index+1===state.total?'See results':'Next question'}</button>`:''}</div>
-        </section>`;
+        const q=state.question,typeLabel=q.mode==='connection'?'Connections':q.level>=2?'Context':'Recall',progressPct=Math.round((state.index/Math.max(1,state.total))*100);
+        host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-game-score>Score <b>${state.score}</b> · +${state.gained} XP</div></section><section class="bq-panel bq-question-card" data-game-question="${escapeHtml(q.id)}"><div class="bq-game-meta"><span>${escapeHtml(q.book)} · ${escapeHtml(typeLabel)}</span><span data-game-progress>Question ${state.index+1} of ${state.total}</span></div><div class="bq-game-progress" aria-hidden="true"><i style="width:${progressPct}%"></i></div><h1>${escapeHtml(q.q)}</h1><div class="bq-game-choices">${q.choices.map((choice,index)=>{const isCorrect=state.locked&&index===q.answer,isWrong=state.locked&&index===state.selected&&!state.correct,className=isCorrect?' is-correct':isWrong?' is-wrong':'';return `<button type="button" class="bq-game-choice${className}" data-game-answer="${index}" ${state.locked?'disabled':''}><span aria-hidden="true">${String.fromCharCode(65+index)}</span><b>${escapeHtml(choice)}</b></button>`}).join('')}</div><div class="bq-game-feedback" aria-live="polite">${state.locked?`<div class="bq-game-explanation" data-game-feedback><strong>${state.correct?'Correct':'Review this one'}</strong><p>${escapeHtml(q.why)}</p><span>📖 ${escapeHtml(q.ref)}</span><small>${q.mode==='basic'?'DIRECT / RECALL':'CONTEXT / CONNECTION'}</small></div><button type="button" class="bq-primary-button" data-game-next>${state.index+1===state.total?'See results':'Next question'}</button>`:''}</div></section>`;
       };
-
-      const safeRender=next=>{try{render(next)}catch(error){host.innerHTML=`<section class="bq-panel" role="alert"><h1>Game could not continue</h1><p>${escapeHtml(error?.message||'Unknown game error.')}</p><button type="button" class="bq-secondary-button" data-game-launcher>Back to games</button></section>`}};
-      const onClick=event=>{
-        const target=event.target instanceof Element?event.target:null;
-        if(!target)return;
+      const loading=text=>{host.innerHTML=`<section class="bq-panel" role="status"><p class="bq-eyebrow">PLAY</p><h1>${escapeHtml(text)}</h1><p>Loading only the content this activity needs.</p></section>`};
+      const showError=error=>{host.innerHTML=`<section class="bq-panel" role="alert"><h1>Game could not continue</h1><p>${escapeHtml(error?.message||'Unknown game error.')}</p><button type="button" class="bq-secondary-button" data-game-launcher>Back to games</button></section>`};
+      const onClick=async event=>{
+        const target=event.target instanceof Element?event.target:null;if(!target)return;
         try{
           if(target.closest('[data-game-home]')){games.leave();onHome();return}
           if(target.closest('[data-game-launcher]')){render(games.showLauncher());return}
-          const launch=target.closest('[data-game-launch]');if(launch){render(games.start(launch.dataset.gameLaunch));return}
+          if(target.closest('[data-recall-library]')){loading('Opening recall library…');render(await games.returnRecallLibrary());return}
+          if(target.closest('[data-recall-reveal]')){render(games.revealRecall());return}
+          const rate=target.closest('[data-recall-rate]');if(rate){render(games.rateRecall(rate.dataset.recallRate));return}
+          if(target.closest('[data-recall-replay]')){loading('Preparing this book again…');render(await games.replayRecall());return}
+          const book=target.closest('[data-recall-book]');if(book){loading('Loading selected Bible book…');render(await games.startRecallBook(book.dataset.recallBook));return}
+          const launch=target.closest('[data-game-launch]');if(launch){if(launch.dataset.gameLaunch==='per-book-recall'){loading('Opening recall library…');render(await games.openRecallLibrary())}else render(games.start(launch.dataset.gameLaunch));return}
           const answer=target.closest('[data-game-answer]');if(answer){render(games.answer(answer.dataset.gameAnswer));return}
           if(target.closest('[data-game-next]')){render(games.next());return}
           if(target.closest('[data-game-replay]')){render(games.replay());return}
-        }catch(error){safeRender(games.getState());const message=host.querySelector('[data-game-feedback] p');if(message)message.textContent=error?.message||'Game action failed.'}
+        }catch(error){showError(error)}
       };
-
-      host.addEventListener('click',onClick);
-      render(games.showLauncher());
-      return()=>{disposed=true;host.removeEventListener('click',onClick);games.leave()};
+      const onInput=event=>{const target=event.target instanceof Element?event.target:null;if(target?.matches('[data-recall-search]'))render(games.setRecallQuery(target.value))};
+      host.addEventListener('click',onClick);host.addEventListener('input',onInput);render(games.showLauncher());
+      return()=>{disposed=true;host.removeEventListener('click',onClick);host.removeEventListener('input',onInput);games.leave()};
     }
   };
 }

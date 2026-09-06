@@ -30,17 +30,15 @@ export const GAME_QUESTIONS = Object.freeze([
 const MIXED_QUEST_IDS = Object.freeze(['q1','q5','q9','q11','q15','q16','q19','q22','q23','q21']);
 
 export const GAME_MODES = Object.freeze([
-  Object.freeze({id:'quick-recall', title:'Quick Recall', kicker:'10 recall questions', description:'Recall people, events, and key details from across Scripture.'}),
-  Object.freeze({id:'context-challenge', title:'Context Challenge', kicker:'Why, not just who', description:'Answer context and connection questions that require reading beyond isolated facts.'}),
-  Object.freeze({id:'mixed-quest', title:'Mixed Quest', kicker:'Recall + context + connections', description:'A balanced 10-question round that deliberately mixes direct recall, context, and cross-story connections.'})
+  Object.freeze({id:'quick-recall',title:'Quick Recall',kicker:'10 recall questions',description:'Recall people, events, and key details from across Scripture.'}),
+  Object.freeze({id:'context-challenge',title:'Context Challenge',kicker:'Why, not just who',description:'Answer context and connection questions that require reading beyond isolated facts.'}),
+  Object.freeze({id:'mixed-quest',title:'Mixed Quest',kicker:'Recall + context + connections',description:'A balanced 10-question round that deliberately mixes direct recall, context, and cross-story connections.'}),
+  Object.freeze({id:'per-book-recall',title:'Per-book Recall',kicker:'Open one Bible book at a time',description:'Study open recall questions from a selected Bible book, reveal the reference answer, and build a persistent review queue.',entry:'recall-library'})
 ]);
 
 export function buildGameRound(mode){
-  if(mode==='quick-recall') return Object.freeze(GAME_QUESTIONS.slice(0,10));
-  if(mode==='context-challenge') return Object.freeze(GAME_QUESTIONS.filter(row=>row.level>=2||row.mode==='context'||row.mode==='connection').slice(0,10));
-  if(mode==='mixed-quest'){
-    const byId=new Map(GAME_QUESTIONS.map(row=>[row.id,row]));
-    return Object.freeze(MIXED_QUEST_IDS.map(id=>byId.get(id)).filter(Boolean));
-  }
+  if(mode==='quick-recall')return Object.freeze(GAME_QUESTIONS.slice(0,10));
+  if(mode==='context-challenge')return Object.freeze(GAME_QUESTIONS.filter(row=>row.level>=2||row.mode==='context'||row.mode==='connection').slice(0,10));
+  if(mode==='mixed-quest'){const byId=new Map(GAME_QUESTIONS.map(row=>[row.id,row]));return Object.freeze(MIXED_QUEST_IDS.map(id=>byId.get(id)).filter(Boolean))}
   throw new Error('Unknown BibleQuest game mode.');
 }
