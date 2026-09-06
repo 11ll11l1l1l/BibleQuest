@@ -14,9 +14,7 @@
     leaderDashboard:()=>window.BQLeaderDashboard,
     recognition:()=>window.BQRecognition||window.BQCommunity,
     reporting:()=>window.BQContentReport,
-    security:()=>window.BQSecurityCenter,
     adaptive:()=>window.BQAdaptiveLearning,
-    accessibility:()=>window.BQAccessibility,
     diagnostics:()=>window.BQDiagnostics,
     recovery:()=>window.BQRuntimeRecovery,
     firstFive:()=>window.BQFirstFive,
@@ -54,8 +52,7 @@
     button.setAttribute('aria-label','Open Kids Games in a separate page');
     button.innerHTML='<span>🌈</span><div><b>Kids Games</b><small>Brain games · Japanese · coding · arcade · opens separately</small></div><i>↗</i>';
     button.addEventListener('click',openKidsGames);
-    const play=hubs.querySelector('[data-modern-hub="play"]');
-    if(play)play.after(button);else hubs.prepend(button);
+    hubs.append(button);
   }
   window.addEventListener('bq-modern-home-rendered',install);
   document.addEventListener('DOMContentLoaded',()=>{install();setTimeout(install,300)});
