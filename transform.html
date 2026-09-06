@@ -15,7 +15,7 @@ html:not(.bq-account-confirmed) body{visibility:hidden}
 </style>
 </head>
 <body>
-<noscript><main class="bq-transform-load-failure"><h1>Transform needs JavaScript</h1><p>Return to BibleQuest and try again after JavaScript is available.</p><a href="./index.html">Return to BibleQuest</a></main></noscript>
+<noscript><main class="bq-transform-load-failure"><h1>Transform needs JavaScript</h1><p>Return to BibleQuest and try again after JavaScript is available.</p><a href="./">Return to BibleQuest</a></main></noscript>
 <script src="cloud-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 <script src="standalone-account-gate.js"></script>
@@ -25,13 +25,13 @@ html:not(.bq-account-confirmed) body{visibility:hidden}
   'use strict';
   var RETURN_KEY='bq_transform_return_action';
   if(!await window.BQStandaloneGate?.ready)return;
-  function homeUrl(){return new URL('./index.html',location.href).href;}
+  function homeUrl(){return new URL('./',location.href).href;}
   function returnHome(){
     try{var ref=document.referrer?new URL(document.referrer):null;if(ref&&ref.origin===location.origin&&history.length>1){history.back();return;}}catch(_err){}
     location.replace(homeUrl());
   }
   function openMain(action){sessionStorage.setItem(RETURN_KEY,action);location.assign(homeUrl());}
-  function showFailure(){document.body.innerHTML='<main class="bq-transform-load-failure" role="alert"><h1>Transform could not start</h1><p>The reflection tools did not load correctly. Return to BibleQuest and try again.</p><a href="./index.html">Return to BibleQuest</a></main>';}
+  function showFailure(){document.body.innerHTML='<main class="bq-transform-load-failure" role="alert"><h1>Transform could not start</h1><p>The reflection tools did not load correctly. Return to BibleQuest and try again.</p><a href="./">Return to BibleQuest</a></main>';}
   if(!window.BQ_TRANSFORMATION||typeof window.BQ_TRANSFORMATION.open!=='function'){showFailure();return;}
   window.BQ_TRANSFORMATION.open();
   var root=document.querySelector('.bq-transform-v2');if(!root){showFailure();return;}
