@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#11152d">
+<title>BrainBloom Kids Games</title>
+<style>html,body{height:100%;margin:0}body{display:grid;place-items:center;background:#11152d;color:#fff;font:600 16px system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box}.loader{max-width:420px}.spinner{width:46px;height:46px;border:5px solid #ffffff35;border-top-color:#fff;border-radius:50%;margin:0 auto 18px;animation:s .85s linear infinite}@keyframes s{to{transform:rotate(360deg)}}small{display:block;opacity:.75;margin-top:8px}button{margin-top:18px;border:0;border-radius:14px;padding:12px 18px;font:700 15px system-ui;cursor:pointer}</style>
+</head>
+<body>
+<div class="loader"><div class="spinner"></div><div id="msg">Loading BrainBloom Kids Games…</div><small>Memory · Japanese · coding · arcade</small></div>
+<script>
+(async()=>{
+ const PARTS=['bundle-00.txt','bundle-01.txt','bundle-02.txt','bundle-03.txt','bundle-04.txt','bundle-05.txt','bundle-06.txt','bundle-07.txt','bundle-08.txt','bundle-09.txt','bundle-10.txt','bundle-11.txt'];
+ const fail=e=>{console.error(e);document.body.innerHTML='<div class="loader"><b>Kids Games could not load.</b><small>Check your connection, then try again.</small><button onclick="location.reload()">Try again</button></div>'};
+ try{
+   if(!('DecompressionStream' in window))throw new Error('Browser decompression support is required.');
+   if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+   const chunks=await Promise.all(PARTS.map(async p=>{const r=await fetch(p);if(!r.ok)throw new Error('Missing '+p);return r.text()}));
+   const bin=atob(chunks.join('').trim()),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+   const bundle=JSON.parse(await new Response(stream).text());
+   const classic=new URLSearchParams(location.search).get('mode')==='classic';
+   let html=bundle[classic?'classic/index.html':'index.html'];
+   const css=bundle[classic?'classic/styles.css':'styles.css'],js=bundle[classic?'classic/app.js':'app.js'],icon=bundle[classic?'classic/brainbloom-icon.svg':'assets/logo.svg'];
+   const cssUrl=URL.createObjectURL(new Blob([css],{type:'text/css'})),jsUrl=URL.createObjectURL(new Blob([js],{type:'text/javascript'})),iconUrl=URL.createObjectURL(new Blob([icon],{type:'image/svg+xml'}));
+   html=html.replace(/<link rel="manifest"[^>]*>/g,'').replace(/href="styles\.css"/g,`href="${cssUrl}"`).replace(/src="app\.js"/g,`src="${jsUrl}"`);
+   if(classic)html=html.replace(/href="brainbloom-icon\.svg"/g,`href="${iconUrl}"`).replace(/src="brainbloom-icon\.svg"/g,`src="${iconUrl}"`).replace(/href="\.\.\/index\.html"/g,'href="./"');
+   else html=html.replace(/href="assets\/logo\.svg"/g,`href="${iconUrl}"`).replace(/src="assets\/logo\.svg"/g,`src="${iconUrl}"`).replace(/href="classic\/index\.html"/g,'href="?mode=classic"');
+   document.open();document.write(html);document.close();
+ }catch(e){fail(e)}
+})();
+</script>
+</body>
+</html>

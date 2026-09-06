@@ -2,37 +2,12 @@
   const cfg=window.BQ_CLOUD_CONFIG||{};
   const root=document.getElementById('adminApp');
   const roleChip=document.getElementById('adminRole');
+  const DEFAULT_CONGREGATION='ICAC';
   const esc=(s='')=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  let client=null,session=null,adminRole='',users=[];
+  let client=null,session=null,adminRole='',users=[],options={congregations:[],groups:[]},lastInviteCode='',lastInviteName='',lastGroupInviteCode='',lastGroupName='';
 
-  function message(title,body,action=''){
-    root.className='admin-message';
-    root.innerHTML=`<h1>${esc(title)}</h1><p>${esc(body)}</p>${action}`;
-  }
-  function toast(text,error=false){
-    document.querySelector('.admin-toast')?.remove();
-    const el=document.createElement('div');el.className=`admin-toast${error?' error':''}`;el.textContent=text;document.body.appendChild(el);setTimeout(()=>el.remove(),3500);
-  }
-  function closeModal(){document.querySelector('.admin-modal-layer')?.remove()}
-  function showResetCode(user,res){
-    closeModal();
-    const expires=new Date(res.expiresAt);
-    const layer=document.createElement('div');layer.className='admin-modal-layer';
-    layer.innerHTML=`<section class="admin-modal" role="dialog" aria-modal="true" aria-label="One-time password recovery code">
-      <div class="admin-modal-kicker">ONE-TIME RECOVERY</div>
-      <h2>${esc(user.name)} password reset</h2>
-      <p>Give this code privately to the account owner. They must enter their <b>registered email address</b>, this code, and a new password.</p>
-      <div class="admin-reset-code" data-reset-code>${esc(res.resetCode)}</div>
-      <div class="admin-reset-meta">For ${esc(res.emailMasked||user.email)} · expires ${Number.isNaN(expires.getTime())?'in 15 minutes':expires.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · maximum 5 failed attempts</div>
-      <div class="admin-modal-actions"><button data-copy-code>Copy code</button><a href="${esc(res.resetUrl||'./reset.html')}" target="_blank" rel="noopener">Open reset page</a></div>
-      <div class="admin-security-note"><b>Important:</b> this code is shown only now. BibleQuest stores only its SHA-256 hash. It is not based on the user's name and it is not their new password.</div>
-      <button class="admin-modal-close" data-close-modal>Done</button>
-    </section>`;
-    document.body.appendChild(layer);
-    layer.querySelector('[data-close-modal]').onclick=closeModal;
-    layer.addEventListener('click',e=>{if(e.target===layer)closeModal()});
-    layer.querySelector('[data-copy-code]').onclick=async e=>{try{await navigator.clipboard.writeText(res.resetCode);e.currentTarget.textContent='Copied'}catch{toast('Copy failed. Select the code manually.',true)}};
-  }
+  function message(title,body,action=''){root.className='admin-message';root.innerHTML=`<h1>${esc(title)}</h1><p>${esc(body)}</p>${action}`}
+  function toast(text,error=false){document.querySelector('.admin-toast')?.remove();const el=document.createElement('div');el.className=`admin-toast${error?' error':''}`;el.textContent=text;document.body.appendChild(el);setTimeout(()=>el.remove(),3500)}
   async function invoke(body){
     const current=(await client.auth.getSession()).data.session;
     if(!current?.access_token)throw new Error('Your session expired. Sign in again.');
@@ -41,94 +16,77 @@
     if(!r.ok)throw new Error(data.error||`Admin request failed (${r.status})`);
     return data;
   }
-  const roleLabel=r=>({owner:'Owner',admin:'Admin',pastor:'Pastor',leader:'Leader',member:'Member'}[r]||r);
-  const roleNote=r=>({owner:'Full site authority. Cannot be changed by an admin.',admin:'Can manage users, password recovery, leaders and pastors.',pastor:'Ministry role. No account-admin or password access.',leader:'Leader tools only. No account-admin or password access.',member:'Regular BibleQuest access.'}[r]||'');
-  function roleOptions(current){
-    const allowed=adminRole==='owner'?['member','leader','pastor','admin','owner']:['member','leader','pastor'];
-    return allowed.map(r=>`<option value="${r}" ${r===current?'selected':''}>${roleLabel(r)}</option>`).join('');
+  async function functionMessage(error,fallback){try{const response=error?.context;if(response?.clone){const payload=await response.clone().json();if(payload?.error)return String(payload.error)}}catch{}return error?.message||fallback}
+
+  const roleLabel=r=>({owner:'Owner',admin:'Admin',pastor:'Pastor',leader:'Leader',facilitator:'Facilitator',member:'Member'}[r]||r);
+  const siteRoleNote=r=>({owner:'Platform owner. Full BibleQuest administration and final authority for site admins.',admin:'Platform administrator. Manages users and ministry assignments, but cannot create or remove owners/site admins.',pastor:'Legacy global ministry label. Move this person to a congregation Pastor role.',leader:'Legacy global ministry label. Move this person to a congregation Leader role.',member:'Regular BibleQuest site access. Ministry authority is assigned per congregation.'}[r]||'');
+  function siteRoleOptions(current){
+    const allowed=adminRole==='owner'?['member','admin','owner']:['member'];
+    const result=[];
+    if(!allowed.includes(current))result.push(`<option value="${esc(current)}" selected>${esc(roleLabel(current))} · legacy</option>`);
+    for(const r of allowed)result.push(`<option value="${r}" ${r===current?'selected':''}>${roleLabel(r)}</option>`);
+    return result.join('');
   }
-  function congregationOptions(current){
+  function congregationRoleOptions(current){
     const roles=adminRole==='owner'?['member','facilitator','leader','pastor','admin']:['member','facilitator','leader','pastor'];
-    return roles.map(r=>`<option value="${r}" ${r===current?'selected':''}>${r[0].toUpperCase()+r.slice(1)}</option>`).join('');
+    if(!roles.includes(current))return `<option value="${esc(current)}" selected>${esc(roleLabel(current))}</option>`+roles.map(r=>`<option value="${r}">${roleLabel(r)}</option>`).join('');
+    return roles.map(r=>`<option value="${r}" ${r===current?'selected':''}>${roleLabel(r)}</option>`).join('')
   }
-  function relative(iso){if(!iso)return 'Never';const d=new Date(iso);if(Number.isNaN(d.getTime()))return 'Unknown';const days=Math.floor((Date.now()-d.getTime())/86400000);if(days<=0)return 'Today';if(days===1)return 'Yesterday';if(days<30)return `${days} days ago`;return d.toLocaleDateString();}
+  function groupRoleOptions(current){return ['member','leader'].map(r=>`<option value="${r}" ${r===current?'selected':''}>${roleLabel(r)}</option>`).join('')}
+  function relative(iso){if(!iso)return 'Never';const d=new Date(iso);if(Number.isNaN(d.getTime()))return 'Unknown';const days=Math.floor((Date.now()-d.getTime())/86400000);if(days<=0)return 'Today';if(days===1)return 'Yesterday';if(days<30)return `${days} days ago`;return d.toLocaleDateString()}
+  function memberships(){return users.flatMap(u=>(u.memberships||[]).filter(m=>m.active!==false).map(m=>({...m,userId:u.id,userName:u.name}))) }
+  function defaultCongregation(){return options.congregations.find(c=>String(c.name).toUpperCase()===DEFAULT_CONGREGATION)||options.congregations[0]||null}
+  function congregationSelectOptions(selected=''){return options.congregations.map(c=>`<option value="${esc(c.id)}" ${c.id===selected?'selected':''}>${esc(c.name)}${String(c.name).toUpperCase()===DEFAULT_CONGREGATION?' · default':''}</option>`).join('')}
+  function groupsForUser(u){const congregationIds=new Set((u.memberships||[]).filter(m=>m.active!==false).map(m=>m.congregationId));return options.groups.filter(g=>congregationIds.has(g.congregationId))}
+  function groupById(id){return options.groups.find(g=>g.id===id)||null}
+  function groupSelectOptions(u,selected=''){return groupsForUser(u).map(g=>`<option value="${esc(g.id)}" ${g.id===selected?'selected':''}>${esc(g.name)} · ${g.memberCount||0}/${g.maxMembers||6}</option>`).join('')}
+
+  function ministryGuide(){return `<section class="admin-role-guide"><div><b>Owner / Admin</b><p>Platform roles. They control BibleQuest itself. These are not church ministry titles.</p></div><div><b>Pastor</b><p>Congregation ministry authority: assignments, invitations, group ministry tools and oversight of leaders/facilitators.</p></div><div><b>Leader</b><p>Congregation operational leader: assignments, activities, invitations and member feedback. Cannot appoint pastors or site admins.</p></div><div><b>Facilitator</b><p>Session helper for group activities and assigned ministry tasks with narrower authority.</p></div><div><b>Member</b><p>Regular participant. Can learn, join congregation activities and complete assigned work.</p></div></section>`}
+  function setupPanel(){
+    const empty=!options.congregations.length,defaultC=defaultCongregation();
+    return `<section class="admin-setup ${empty?'needs-setup':''}"><div class="admin-setup-copy"><small>${empty?'MINISTRY SETUP REQUIRED':'MINISTRY STRUCTURE'}</small><h2>${empty?'Create the first congregation':'Congregations & groups'}</h2><p>${empty?'BibleQuest needs a congregation before ministry roles can be assigned.':'New registrations are automatically assigned to ICAC. Owner/Admin can correct a person’s congregation or small group below if they joined the wrong one.'}</p></div>${defaultC?`<div class="admin-default-congregation"><b>Default registration congregation</b><strong>${esc(defaultC.name)}</strong><span>Every new BibleQuest account joins this congregation automatically.</span></div>`:''}<form data-admin-create-congregation class="admin-create"><label>Congregation / church name<input name="name" minlength="2" maxlength="100" placeholder="Church or fellowship" required></label><button class="admin-action">${empty?'Create congregation':'Create another congregation'}</button></form>${lastInviteCode?`<div class="admin-invite"><small>NEW INVITE FOR ${esc(lastInviteName||'CONGREGATION')}</small><code>${esc(lastInviteCode)}</code><p>Share this code with members if they are joining manually. Admin can also assign them directly below.</p></div>`:''}${options.congregations.length?`<form data-admin-create-group class="admin-create admin-create-group"><label>Congregation<select name="congregation_id" required>${congregationSelectOptions(defaultC?.id||'')}</select></label><label>Small group name<input name="name" minlength="2" maxlength="60" placeholder="e.g. Couples, Youth, Group A" required></label><label>Maximum members<select name="max_members"><option>6</option><option>5</option><option>4</option><option>3</option><option>2</option></select></label><button class="admin-action">Create small group</button></form>`:''}${lastGroupInviteCode?`<div class="admin-invite"><small>NEW GROUP CODE FOR ${esc(lastGroupName||'SMALL GROUP')}</small><code>${esc(lastGroupInviteCode)}</code><p>Admin assignment does not require this code, but members can also use it to join themselves.</p></div>`:''}${ministryGuide()}</section>`
+  }
 
   function render(){
-    const term=(root.querySelector('[data-admin-search]')?.value||'').toLowerCase();
-    const filtered=users.filter(u=>`${u.name} ${u.email} ${u.role}`.toLowerCase().includes(term));
-    const counts={owner:0,admin:0,pastor:0,leader:0};users.forEach(u=>{if(counts[u.role]!==undefined)counts[u.role]++});
+    const previousSearch=root.querySelector('[data-admin-search]')?.value||'';
+    const term=previousSearch.toLowerCase();
+    const filtered=users.filter(u=>`${u.name} ${u.email} ${u.role} ${(u.memberships||[]).map(m=>`${m.congregationName} ${m.role}`).join(' ')} ${(u.groupMemberships||[]).map(g=>`${g.groupName} ${g.role}`).join(' ')}`.toLowerCase().includes(term));
+    const ms=memberships(),counts={pastor:ms.filter(m=>m.role==='pastor').length,leader:ms.filter(m=>m.role==='leader').length,facilitator:ms.filter(m=>m.role==='facilitator').length};
     root.className='';
-    root.innerHTML=`
-      <section class="admin-toolbar">
-        <input class="admin-search" data-admin-search placeholder="Search name, email or role…" value="${esc(term)}">
-        <button class="admin-refresh" data-admin-refresh>Refresh</button>
-      </section>
-      <section class="admin-summary">
-        <div class="admin-stat"><b>${users.length}</b><span>Users</span></div>
-        <div class="admin-stat"><b>${counts.pastor}</b><span>Pastors</span></div>
-        <div class="admin-stat"><b>${counts.leader}</b><span>Leaders</span></div>
-        <div class="admin-stat"><b>${counts.admin+counts.owner}</b><span>Site admins</span></div>
-      </section>
-      <section class="admin-users">${filtered.map(userCard).join('')||'<div class="admin-empty">No matching users.</div>'}</section>`;
+    root.innerHTML=`${setupPanel()}<section class="admin-toolbar"><input class="admin-search" data-admin-search placeholder="Search name, email, congregation, group or role…" value="${esc(previousSearch)}"><button class="admin-refresh" data-admin-refresh>Refresh</button></section><section class="admin-summary"><div class="admin-stat"><b>${users.length}</b><span>Users</span></div><div class="admin-stat"><b>${options.congregations.length}</b><span>Congregations</span></div><div class="admin-stat"><b>${options.groups.length}</b><span>Small groups</span></div><div class="admin-stat"><b>${counts.pastor}</b><span>Pastors</span></div><div class="admin-stat"><b>${counts.leader+counts.facilitator}</b><span>Leaders / facilitators</span></div></section><section class="admin-users">${filtered.map(userCard).join('')||'<div class="admin-empty">No matching users.</div>'}</section>`;
     bind();
   }
   function userCard(u){
-    const isSelf=u.id===session.user.id;
-    const lockedByAdmin=adminRole!=='owner'&&['admin','owner'].includes(u.role);
-    const disableRole=(isSelf&&u.role==='owner')||lockedByAdmin;
-    return `<article class="admin-user" data-user="${esc(u.id)}">
-      <div class="admin-user-main">
-        <b>${esc(u.name||'Member')}</b><small>${esc(u.email||'No email')}</small>
-        <div class="admin-meta">Joined ${relative(u.createdAt)} · Last sign-in ${relative(u.lastSignInAt||u.lastActiveAt)}</div>
-      </div>
-      <div class="admin-rolebox">
-        <label>App access
-          <select data-role-user="${esc(u.id)}" ${disableRole?'disabled':''}>${roleOptions(u.role)}</select>
-        </label>
-        <div class="role-note">${esc(roleNote(u.role))}</div>
-      </div>
-      <div class="admin-actions">
-        <button class="admin-reset" data-reset-user="${esc(u.id)}" ${!u.email?'disabled':''}>Generate reset code</button>
-      </div>
-      ${(u.memberships||[]).length?`<div class="memberships"><div class="memberships-title">Congregation permissions</div>${u.memberships.map(m=>`<div class="membership-row"><span>${esc(m.congregationName)}</span><label>Role<select data-congregation-role data-user-id="${esc(u.id)}" data-congregation-id="${esc(m.congregationId)}">${congregationOptions(m.role)}</select></label></div>`).join('')}</div>`:''}
-    </article>`;
+    const isSelf=u.id===session.user.id,lockedByAdmin=adminRole!=='owner'&&['admin','owner'].includes(u.role),disableSite=(isSelf&&u.role==='owner')||lockedByAdmin;
+    const legacy=['pastor','leader'].includes(u.role),activeMemberships=(u.memberships||[]).filter(m=>m.active!==false),activeGroups=(u.groupMemberships||[]).filter(g=>g.active!==false),currentCongregation=activeMemberships[0]?.congregationId||defaultCongregation()?.id||'';
+    const availableGroups=groupsForUser(u);
+    return `<article class="admin-user" data-user="${esc(u.id)}"><div class="admin-user-main"><b>${esc(u.name||'Member')}</b><small>${esc(u.email||'No email')}</small><div class="admin-meta">Joined ${relative(u.createdAt)} · Last sign-in ${relative(u.lastSignInAt||u.lastActiveAt)}</div>${legacy?'<div class="admin-warning">Legacy global ministry role — move this authority to a congregation role.</div>':''}</div><div class="admin-rolebox"><label>Platform access<select data-role-user="${esc(u.id)}" ${disableSite?'disabled':''}>${siteRoleOptions(u.role)}</select></label><div class="role-note">${esc(siteRoleNote(u.role))}</div></div><div class="admin-actions"><span class="admin-meta">Passwords and recovery codes remain private to each user.</span></div><div class="admin-correction"><div class="memberships-title">Admin membership correction</div><div class="correction-row"><label>Main congregation<select data-set-congregation-user="${esc(u.id)}" ${!options.congregations.length?'disabled':''}>${congregationSelectOptions(currentCongregation)}</select></label><button class="admin-action" data-set-congregation="${esc(u.id)}" ${!options.congregations.length?'disabled':''}>Set congregation</button></div><small>Setting a congregation deactivates other congregation memberships and groups so an incorrect registration can be fixed cleanly.</small></div>${activeMemberships.length?`<div class="memberships"><div class="memberships-title">Congregation ministry roles</div>${activeMemberships.map(m=>{const locked=adminRole!=='owner'&&m.role==='admin';return `<div class="membership-row"><span><b>${esc(m.congregationName)}</b><small>Active membership</small></span><div class="membership-controls"><label>Ministry role<select data-congregation-role data-user-id="${esc(u.id)}" data-congregation-id="${esc(m.congregationId)}" ${locked?'disabled':''}>${congregationRoleOptions(m.role)}</select></label><button class="admin-remove" data-remove-congregation data-user-id="${esc(u.id)}" data-congregation-id="${esc(m.congregationId)}" data-congregation-name="${esc(m.congregationName)}" ${locked?'disabled':''}>Remove</button></div></div>`}).join('')}</div>`:'<div class="memberships"><div class="memberships-title">Congregation ministry roles</div><div class="admin-empty compact">No active congregation. Use “Set congregation” above.</div></div>'}<div class="memberships groups"><div class="memberships-title">Small groups</div>${activeGroups.map(g=>{const group=groupById(g.groupId),isOwner=group?.ownerId===u.id;return `<div class="membership-row"><span><b>${esc(g.groupName)}</b><small>${isOwner?'Owner · ':''}${roleLabel(g.role)} · small group</small></span><div class="membership-controls"><label>Group role<select data-group-role data-user-id="${esc(u.id)}" data-group-id="${esc(g.groupId)}">${groupRoleOptions(g.role)}</select></label>${isOwner?'<span class="admin-badge role-owner">Group owner</span>':`<button class="admin-action" data-make-group-owner data-user-id="${esc(u.id)}" data-group-id="${esc(g.groupId)}" data-group-name="${esc(g.groupName)}">Make owner</button>`}<button class="admin-remove" data-remove-group data-user-id="${esc(u.id)}" data-group-id="${esc(g.groupId)}" data-group-name="${esc(g.groupName)}" ${isOwner?'disabled title="Transfer group ownership before removing this member."':''}>Remove</button></div></div>`}).join('')}${availableGroups.length?`<div class="correction-row compact"><label>Assign to group<select data-assign-group-user="${esc(u.id)}">${groupSelectOptions(u)}</select></label><button class="admin-action" data-assign-group="${esc(u.id)}">Assign group</button></div>`:'<div class="admin-empty compact">No small groups are available in this person’s congregation.</div>'}</div></article>`;
   }
   function bind(){
-    root.querySelector('[data-admin-search]')?.addEventListener('input',e=>{const value=e.target.value;render();const input=root.querySelector('[data-admin-search]');input.value=value;input.focus();input.setSelectionRange(value.length,value.length)});
+    root.querySelector('[data-admin-search]')?.addEventListener('input',e=>{const value=e.target.value;render();const input=root.querySelector('[data-admin-search]');if(input){input.value=value;input.focus();input.setSelectionRange(value.length,value.length)}});
     root.querySelector('[data-admin-refresh]')?.addEventListener('click',loadUsers);
-    root.querySelectorAll('[data-role-user]').forEach(sel=>sel.addEventListener('change',async e=>{
-      const target=e.currentTarget;const user=users.find(x=>x.id===target.dataset.roleUser);if(!user)return;
-      const next=target.value,previous=user.role;
-      if(['admin','owner'].includes(next)&&!confirm(`Grant ${roleLabel(next)} access to ${user.name}? This includes site administration privileges.`)){target.value=previous;return}
-      target.disabled=true;
-      try{await invoke({action:'set_role',targetUserId:user.id,role:next});user.role=next;toast(`${user.name} is now ${roleLabel(next)}.`);render()}
-      catch(err){target.value=previous;target.disabled=false;toast(err.message,true)}
-    }));
-    root.querySelectorAll('[data-reset-user]').forEach(btn=>btn.addEventListener('click',async e=>{
-      const target=e.currentTarget;const user=users.find(x=>x.id===target.dataset.resetUser);if(!user)return;
-      if(!confirm(`Generate a one-time recovery code for ${user.name}? Any older unused code for this account will stop working.`))return;
-      target.disabled=true;target.textContent='Generating…';
-      try{const res=await invoke({action:'issue_reset_code',targetUserId:user.id});showResetCode(user,res);target.textContent='Generate new code';target.disabled=false}
-      catch(err){target.disabled=false;target.textContent='Generate reset code';toast(err.message,true)}
-    }));
-    root.querySelectorAll('[data-congregation-role]').forEach(sel=>sel.addEventListener('change',async e=>{
-      const el=e.currentTarget;const old=(users.find(x=>x.id===el.dataset.userId)?.memberships||[]).find(m=>m.congregationId===el.dataset.congregationId)?.role||'member';
-      el.disabled=true;
-      try{await invoke({action:'set_congregation_role',targetUserId:el.dataset.userId,congregationId:el.dataset.congregationId,role:el.value});const u=users.find(x=>x.id===el.dataset.userId);const m=(u?.memberships||[]).find(x=>x.congregationId===el.dataset.congregationId);if(m)m.role=el.value;toast('Congregation role updated.');el.disabled=false}
-      catch(err){el.value=old;el.disabled=false;toast(err.message,true)}
-    }));
+    root.querySelector('[data-admin-create-congregation]')?.addEventListener('submit',createCongregation);
+    root.querySelector('[data-admin-create-group]')?.addEventListener('submit',createSmallGroup);
+    root.querySelectorAll('[data-role-user]').forEach(sel=>sel.addEventListener('change',async e=>{const target=e.currentTarget,user=users.find(x=>x.id===target.dataset.roleUser);if(!user)return;const next=target.value,previous=user.role;if(next===previous)return;if(['admin','owner'].includes(next)&&!confirm(`Grant ${roleLabel(next)} platform access to ${user.name}? This includes BibleQuest administration privileges.`)){target.value=previous;return}target.disabled=true;try{await invoke({action:'set_role',targetUserId:user.id,role:next});toast(`${user.name} platform access: ${roleLabel(next)}.`);await loadUsers()}catch(err){target.value=previous;target.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-set-congregation]').forEach(button=>button.addEventListener('click',async e=>{const id=e.currentTarget.dataset.setCongregation,u=users.find(x=>x.id===id),sel=root.querySelector(`[data-set-congregation-user="${CSS.escape(id)}"]`),congregation=options.congregations.find(c=>c.id===sel?.value);if(!u||!congregation)return;if(!confirm(`Set ${u.name}’s main congregation to ${congregation.name}? Other congregation and small-group memberships will be deactivated.`))return;e.currentTarget.disabled=true;try{await invoke({action:'set_congregation',targetUserId:id,congregationId:congregation.id,replace:true});toast(`${u.name} is now assigned to ${congregation.name}.`);await loadUsers()}catch(err){e.currentTarget.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-remove-congregation]').forEach(button=>button.addEventListener('click',async e=>{const b=e.currentTarget,u=users.find(x=>x.id===b.dataset.userId);if(!u||!confirm(`Remove ${u.name} from ${b.dataset.congregationName}? Related small-group memberships will also be deactivated.`))return;b.disabled=true;try{await invoke({action:'remove_congregation',targetUserId:u.id,congregationId:b.dataset.congregationId});toast(`${u.name} removed from ${b.dataset.congregationName}.`);await loadUsers()}catch(err){b.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-congregation-role]').forEach(sel=>sel.addEventListener('change',async e=>{const el=e.currentTarget,u=users.find(x=>x.id===el.dataset.userId),m=(u?.memberships||[]).find(x=>x.congregationId===el.dataset.congregationId),old=m?.role||'member',next=el.value;if(next===old)return;if(['pastor','admin'].includes(next)&&!confirm(`Assign ${roleLabel(next)} responsibility to ${u?.name||'this member'} in ${m?.congregationName||'this congregation'}?`)){el.value=old;return}el.disabled=true;try{await invoke({action:'set_congregation_role',targetUserId:el.dataset.userId,congregationId:el.dataset.congregationId,role:next});toast(`${u?.name||'Member'} is now ${roleLabel(next)} in ${m?.congregationName||'the congregation'}.`);await loadUsers()}catch(err){el.value=old;el.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-assign-group]').forEach(button=>button.addEventListener('click',async e=>{const id=e.currentTarget.dataset.assignGroup,u=users.find(x=>x.id===id),sel=root.querySelector(`[data-assign-group-user="${CSS.escape(id)}"]`),group=options.groups.find(g=>g.id===sel?.value);if(!u||!group)return;e.currentTarget.disabled=true;try{await invoke({action:'set_group_membership',targetUserId:id,groupId:group.id,role:'member',active:true});toast(`${u.name} assigned to ${group.name}.`);await loadUsers()}catch(err){e.currentTarget.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-group-role]').forEach(sel=>sel.addEventListener('change',async e=>{const el=e.currentTarget,u=users.find(x=>x.id===el.dataset.userId),g=(u?.groupMemberships||[]).find(x=>x.groupId===el.dataset.groupId),old=g?.role||'member',next=el.value;if(next===old)return;el.disabled=true;try{await invoke({action:'set_group_membership',targetUserId:el.dataset.userId,groupId:el.dataset.groupId,role:next,active:true});toast(`${u?.name||'Member'} is now ${roleLabel(next)} in ${g?.groupName||'the group'}.`);await loadUsers()}catch(err){el.value=old;el.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-make-group-owner]').forEach(button=>button.addEventListener('click',async e=>{const b=e.currentTarget,u=users.find(x=>x.id===b.dataset.userId);if(!u||!confirm(`Transfer ownership of ${b.dataset.groupName} to ${u.name}? They will also become an active group Leader.`))return;b.disabled=true;try{await invoke({action:'set_group_owner',targetUserId:u.id,groupId:b.dataset.groupId});toast(`${u.name} now owns ${b.dataset.groupName}.`);await loadUsers()}catch(err){b.disabled=false;toast(err.message,true)}}));
+    root.querySelectorAll('[data-remove-group]').forEach(button=>button.addEventListener('click',async e=>{const b=e.currentTarget,u=users.find(x=>x.id===b.dataset.userId);if(!u||!confirm(`Remove ${u.name} from ${b.dataset.groupName}?`))return;b.disabled=true;try{await invoke({action:'set_group_membership',targetUserId:u.id,groupId:b.dataset.groupId,active:false,role:'member'});toast(`${u.name} removed from ${b.dataset.groupName}.`);await loadUsers()}catch(err){b.disabled=false;toast(err.message,true)}}));
   }
-  async function loadUsers(){
-    try{const data=await invoke({action:'list_users',page:1,perPage:200});users=data.users||[];adminRole=data.role||adminRole;roleChip.textContent=roleLabel(adminRole);roleChip.className=`admin-badge role-${adminRole}`;render()}
-    catch(err){message('Could not load admin users',err.message,`<p><a class="admin-back" href="./">Back to BibleQuest</a></p>`)}
+  async function createCongregation(e){
+    e.preventDefault();const form=e.currentTarget,name=String(new FormData(form).get('name')||'').trim();if(name.length<2)return;
+    const button=form.querySelector('button');if(button)button.disabled=true;
+    try{const result=await client.functions.invoke('bq-create-congregation',{body:{name}});if(result.error)throw new Error(await functionMessage(result.error,'Could not create congregation.'));lastInviteCode=String(result.data?.inviteCode||'');lastInviteName=String(result.data?.congregation?.name||name);toast(`${lastInviteName} created.`);await loadUsers()}catch(err){toast(err.message||String(err),true);if(button)button.disabled=false}
   }
-  async function boot(){
-    if(!cfg.enabled||!cfg.supabaseUrl||!cfg.publishableKey||!window.supabase?.createClient){return message('Admin unavailable','BibleQuest cloud configuration is not available on this page.');}
-    client=window.supabase.createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-    const result=await client.auth.getSession();session=result.data.session;
-    if(!session)return message('Sign in required','Sign in to BibleQuest with your owner/admin account, then open this page again.',`<p><a class="admin-back" href="./">Open BibleQuest</a></p>`);
-    try{const status=await invoke({action:'status'});adminRole=status.role;roleChip.textContent=roleLabel(adminRole);roleChip.className=`admin-badge role-${adminRole}`;await loadUsers()}
-    catch(err){roleChip.textContent='No access';message('Admin access required',err.message,`<p><a class="admin-back" href="./">Back to BibleQuest</a></p>`)}
+  async function createSmallGroup(e){
+    e.preventDefault();const form=e.currentTarget,fd=new FormData(form),congregationId=String(fd.get('congregation_id')||''),name=String(fd.get('name')||'').trim(),maxMembers=Number(fd.get('max_members')||6);if(!congregationId||name.length<2)return;
+    const button=form.querySelector('button');if(button)button.disabled=true;
+    try{const result=await invoke({action:'create_small_group',congregationId,name,maxMembers});lastGroupInviteCode=String(result.inviteCode||'');lastGroupName=String(result.group?.name||name);toast(`${lastGroupName} created.`);await loadUsers()}catch(err){toast(err.message||String(err),true);if(button)button.disabled=false}
   }
+  async function loadUsers(){try{const data=await invoke({action:'list_users',page:1,perPage:200});users=data.users||[];options=data.options||{congregations:[],groups:[]};adminRole=data.role||adminRole;roleChip.textContent=roleLabel(adminRole);roleChip.className=`admin-badge role-${adminRole}`;render()}catch(err){message('Could not load admin users',err.message,`<p><a class="admin-back" href="./">Back to BibleQuest</a></p>`)}}
+  async function boot(){if(!cfg.enabled||!cfg.supabaseUrl||!cfg.publishableKey||!window.supabase?.createClient)return message('Admin unavailable','BibleQuest cloud configuration is not available on this page.');client=window.supabase.createClient(cfg.supabaseUrl,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const result=await client.auth.getSession();session=result.data.session;if(!session)return message('Sign in required','Sign in to BibleQuest with your owner/admin account, then open this page again.',`<p><a class="admin-back" href="./">Open BibleQuest</a></p>`);try{const status=await invoke({action:'status'});adminRole=status.role;roleChip.textContent=roleLabel(adminRole);roleChip.className=`admin-badge role-${adminRole}`;await loadUsers()}catch(err){roleChip.textContent='No access';message('Admin access required',err.message,`<p><a class="admin-back" href="./">Back to BibleQuest</a></p>`)}}
   boot().catch(err=>message('Admin page error',err.message||String(err)));
 })();

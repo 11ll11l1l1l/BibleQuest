@@ -1,0 +1,3 @@
+# Generated raw source datasets that are too large for Cloudflare Pages assets.
+# Browser-ready per-book packs under data/packs/ are the deployable copies.
+data/library/translation_notes.jsonl

@@ -1,0 +1,80 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Frame-Options: SAMEORIGIN
+
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/client-diagnostics.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/runtime-recovery.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/media-library.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transform
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transform.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transformation-v2.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transformation-v2.css
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/standalone-account-gate.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transform-launcher.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/psychometrics
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/psychometrics.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin-operations
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin-operations.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/content-review
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/content-review.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/psychometrics.css
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-data-neo.js
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-data-via.js
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-suite.js
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-christian.js
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-insight.js
+  Cache-Control: no-cache, must-revalidate
+
+/psychometrics-polish.js
+  Cache-Control: no-cache, must-revalidate

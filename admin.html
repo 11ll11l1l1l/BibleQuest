@@ -7,23 +7,27 @@
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="app-icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="admin.css">
-<title>BibleQuest Admin</title>
+<link rel="stylesheet" href="owner-delete-control.css">
+<title>BibleQuest Admin & Ministry</title>
 </head>
 <body>
 <main class="admin-shell">
   <header class="admin-top">
     <a href="./" class="admin-back">← BibleQuest</a>
-    <div><b>BibleQuest Admin</b><small>Account recovery & access control</small></div>
+    <div><b>BibleQuest Admin & Ministry</b><small>Site access, congregation setup, pastors, leaders and facilitators</small></div>
     <span class="admin-badge" id="adminRole">Checking…</span>
   </header>
+  <div style="width:min(1180px,calc(100% - 28px));margin:12px auto 0;display:flex;gap:8px;flex-wrap:wrap"><a href="admin-operations" class="admin-ops-link">🟢 Ministry Operations · online, tasks, messages & polls</a><a href="content-review" class="admin-ops-link">🛡 Content Review · quarantine & reports</a></div>
   <section id="adminApp" class="admin-loading">
     <div class="admin-loader">🐑</div>
     <h1>Checking admin access…</h1>
-    <p>This page requires a signed-in BibleQuest owner or administrator.</p>
+    <p>This page requires a signed-in BibleQuest owner or site administrator.</p>
   </section>
 </main>
 <script src="cloud-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 <script src="admin.js"></script>
+<script src="admin-hardening.js"></script>
+<script src="owner-delete-control.js"></script>
 </body>
 </html>

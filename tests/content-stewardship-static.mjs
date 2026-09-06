@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
+const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
+const html=read('content-review.html'),review=read('content-review.js'),editor=read('content-review-editor.js'),runtime=read('content-moderation-runtime.js'),migration=read('supabase/migrations/20260905212500_content_review_revisions_and_retirement.sql'),manifest=JSON.parse(read('data/packs/manifest.json'));
+const quarantined=(manifest.question_books||[]).reduce((n,b)=>n+(Number(b.quarantined_questions)||0),0);
+assert(quarantined>=500,`expected full auto-quarantine review surface, got ${quarantined}`);
+assert(review.includes("data/quarantine/questions/${encodeURIComponent(code)}.json"),'review page must load exact quarantined source packs');
+assert(review.includes("REVIEW_ROLES=new Set(['leader','pastor','admin'])"),'review authority must stay limited to leader/pastor/admin plus platform access');
+assert(html.includes('content-review-editor.css')&&html.includes('content-review-editor.js'),'content review page must load full editor controls');
+assert(editor.includes('Edit wording & approve')&&editor.includes('Retire permanently'),'review cards must expose edit/approve and permanent retirement actions');
+assert(editor.includes("decision:'include'")&&editor.includes("decision:'delete'"),'editor must persist approved revisions and retired decisions');
+assert(editor.includes('original:')&&editor.includes('revised:'),'editor must retain original and revised wording in the audit snapshot');
+assert(runtime.includes("['exempt','remove','delete']"),'runtime must suppress quarantined, removed, and retired content');
+assert(runtime.includes('content_snapshot')&&runtime.includes('applyRevision'),'runtime must apply approved ministry wording changes');
+assert(migration.includes("'delete'::text"),'database decision constraint must support retired content');
+console.log(`✓ Content stewardship: ${quarantined} quarantined source items reviewable with revise/approve/quarantine/remove/retire handling`);

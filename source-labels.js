@@ -38,7 +38,20 @@
     document.querySelectorAll('.story-scene-text,.story-copy,.obs-scene,.story-current,.story-next-choices p').forEach(x=>x.setAttribute('data-bq-source-content','obs'));
   }
 
-  function apply(){injectHomeGuide();labelReader();labelSequence();labelOpenReview();labelStory();}
+  function correctProductionCopy(){
+    document.querySelectorAll('.modern-source-list article').forEach(article=>{
+      const title=article.querySelector('b')?.textContent||'';
+      if(!/^NLT\b/.test(title))return;
+      const p=article.querySelector('p');
+      const text='Opens the selected passage in a licensed reader. BibleQuest does not bundle or relabel copyrighted NLT text; internet is required.';
+      if(p&&p.textContent!==text)p.textContent=text;
+    });
+    document.querySelectorAll('.bqt-feature-map details p').forEach(p=>{
+      if(p.textContent.includes('Daily 5'))p.textContent=p.textContent.replace(/Daily 5/g,'Daily Journey');
+    });
+  }
+
+  function apply(){injectHomeGuide();labelReader();labelSequence();labelOpenReview();labelStory();correctProductionCopy();}
   const obs=new MutationObserver(apply);
   document.addEventListener('DOMContentLoaded',()=>{apply();obs.observe(document.documentElement,{childList:true,subtree:true});});
   setTimeout(apply,120);

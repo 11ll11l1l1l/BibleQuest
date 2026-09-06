@@ -6,6 +6,7 @@
   const dayDiff=(a,b)=>Math.round((new Date(`${b}T12:00:00`).getTime()-new Date(`${a}T12:00:00`).getTime())/86400000);
   const monthKey=d=>String(d||localDay()).slice(0,7);
   const uid=s=>`${s}-${Math.random().toString(36).slice(2,7)}`;
+  let booted=false,evidenceTimer=null;
 
   const STAGES=[
     {key:'creation',icon:'🌍',title:'Creation',cat:'Genesis',progress:m=>Math.min(100,(m.Genesis||0)*2),ref:{code:'GEN',chapter:1,verse:1}},
@@ -104,7 +105,7 @@
 
   function completeTask(id,evidence='manual'){
     let e=readEng(),t=e.daily[localDay()]||createToday(e);if(t.done?.[id])return;
-    t.done={...(t.done||{}),[id]:{at:new Date().toISOString(),evidence}};e.daily[t.date]=t;recordMeaningful(`daily_${id}`);e=readEng();t=e.daily[localDay()];updateHistory(e,t);
+    t.done={...(t.done||{}),[id]:{at:new Date().toISOString(),evidence}};e.daily[t.date]=t;writeEng(e);recordMeaningful(`daily_${id}`);e=readEng();t=e.daily[localDay()];updateHistory(e,t);
     if(Object.keys(t.done).length===t.tasks.length&&!t.completedAt){t.completedAt=new Date().toISOString();t.revealId=String(Math.abs([...t.date].reduce((n,c)=>n+c.charCodeAt(0),0))%REVEALS.length);e.daily[t.date]=t;e.history[t.date]={...(e.history[t.date]||{}),journeyComplete:true};const season=SEASONS[e.season?.key];if(season&&e.season.lastCountDate!==t.date){e.season.progress=Math.min(season.days,(Number(e.season.progress)||0)+1);e.season.lastCountDate=t.date;if(e.season.progress>=season.days&&!e.season.completed?.includes(e.season.key))e.season.completed=[...(e.season.completed||[]),e.season.key]}
       window.BQCommunity?.awardPoints?.(activeName(),10,'consistency','Daily Journey',{date:t.date,completed:1});window.BQAccount?.track?.('daily_journey','completed',{date:t.date,season:e.season?.key||'',focus:t.focusKey||''}).catch?.(()=>{});
     }
@@ -153,7 +154,19 @@
 
   function openRecap(){const e=readEng(),today=localDay(),days=Object.entries(e.history||{}).filter(([d])=>{const n=dayDiff(d,today);return n>=0&&n<=6}),active=days.filter(([,v])=>v.active).length,complete=days.filter(([,v])=>v.journeyComplete).length,questions=days.reduce((n,[,v])=>n+Math.max(0,(v.answeredEnd||0)-(v.answeredStart||0)),0),recalls=days.filter(([,v])=>(v.tasksDone||0)>0).length,m=app().mastery||{},strong=Object.entries(m).sort((a,b)=>(b[1]||0)-(a[1]||0))[0]?.[0]||'Gospels',weak=weakest(m),gains={};days.forEach(([,v])=>Object.keys(v.masteryEnd||{}).forEach(k=>gains[k]=(gains[k]||0)+Math.max(0,(v.masteryEnd[k]||0)-(v.masteryStart?.[k]||0))));const improving=Object.entries(gains).sort((a,b)=>b[1]-a[1])[0]?.[0]||weak,x=show(`<header class="journey-loop-head"><button data-journey-close>← BibleQuest</button><b>Your Week</b><span>📊</span></header><section class="weekly-recap"><small>LAST 7 DAYS</small><h1>${active} active day${active===1?'':'s'} · ${complete} full journey${complete===1?'':'s'}</h1><div class="recap-grid"><article><b>${questions}</b><small>questions answered</small></article><article><b>${recalls}</b><small>days with Journey evidence</small></article><article><b>${esc(strong)}</b><small>strongest area</small></article><article><b>${esc(improving)}</b><small>improving focus</small></article></div><div class="recap-objective"><small>ONE OBJECTIVE FOR NEXT WEEK</small><h2>Strengthen ${esc(weak)}</h2><p>Your current learning evidence is lightest here. BibleQuest will quietly bring this area back into Daily Journeys.</p><button data-recap-start>Start today’s next step →</button></div></section>`);x.querySelector('[data-journey-close]').onclick=close;x.querySelector('[data-recap-start]').onclick=()=>openJourney()}
 
-  function boot(){todayState();renderHome();setInterval(evidenceTick,1200);window.addEventListener('bq-modern-home-rendered',renderHome);window.addEventListener('bq-community-change',evidenceTick);window.addEventListener('bq-account-profile',renderHome);document.addEventListener('visibilitychange',()=>{if(!document.hidden){evidenceTick();renderHome()}})}
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,420));setTimeout(boot,900);
-  window.BQJourneyLoop={open:openJourney,openRecap,openSupport,openSeasons,completeTask,recordMeaningful,read:readEng,render:renderHome};
+  function boot(){
+    if(booted)return;
+    booted=true;
+    todayState();
+    renderHome();
+    evidenceTimer=setInterval(evidenceTick,1200);
+    window.addEventListener('bq-modern-home-rendered',renderHome);
+    window.addEventListener('bq-community-change',evidenceTick);
+    window.addEventListener('bq-account-profile',renderHome);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden){evidenceTick();renderHome()}});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,420),{once:true});
+  else setTimeout(boot,0);
+  setTimeout(boot,900);
+  window.BQJourneyLoop={open:openJourney,openRecap,openSupport,openSeasons,completeTask,recordMeaningful,read:readEng,render:renderHome,diagnostics:()=>({booted,evidenceTimerActive:Boolean(evidenceTimer)})};
 })();

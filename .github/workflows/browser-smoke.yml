@@ -12,6 +12,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Smoke PWA reliability guards
+        run: node tests/reliability-smoke.mjs
+      - name: Smoke auth flow invariants
+        run: node tests/auth-flow-static-smoke.mjs
       - name: Install browser test dependency
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -26,10 +30,19 @@ jobs:
           done
           cat /tmp/biblequest-http.log
           exit 1
-      - name: Exercise real browser flows
-        run: |
-          node tests/browser-smoke.mjs
-          node tests/completion-smoke.mjs
-          node tests/journey-loop-smoke.mjs
+      - name: Smoke current navigation and reader
+        run: timeout 180s node tests/browser-smoke.mjs
+      - name: Smoke operational feature entry points
+        run: timeout 180s node tests/operational-entry-smoke.mjs
+      - name: Smoke Reader dependency failures
+        run: timeout 180s node tests/reader-resilience-smoke.mjs
+      - name: Smoke phone and desktop layouts
+        run: timeout 180s node tests/layout-matrix-smoke.mjs
+      - name: Smoke installed PWA offline reload
+        run: timeout 180s node tests/pwa-offline-smoke.mjs
+      - name: Smoke completion-stage modules
+        run: timeout 180s node tests/completion-smoke.mjs
+      - name: Smoke Daily Journey loop
+        run: timeout 180s node tests/journey-loop-smoke.mjs
       - name: Verify cloud-ready state
-        run: node tests/cloud-smoke.mjs
+        run: timeout 180s node tests/cloud-smoke.mjs

@@ -1,5 +1,6 @@
 (() => {
-  let timer=null,renderScheduled=false;
+  let timer=null,renderScheduled=false,observer=null;
+
   async function sync(){
     const loop=window.BQJourneyLoop;if(!loop)return;
     const client=window.BQAccount?.client?.()||window.BQ_SUPABASE_CLIENT;if(!client)return;
@@ -13,24 +14,43 @@
       window.dispatchEvent(new CustomEvent('bq-journey-cloud-synced'));
     }catch{/* local journey remains usable offline */}
   }
+
   function schedule(){clearTimeout(timer);timer=setTimeout(sync,900)}
-  function retargetHero(){const b=document.querySelector('[data-pinoy-mission]');if(!b)return;b.setAttribute('aria-label',"Continue today's Bible Journey");const title=b.querySelector('b'),sub=b.querySelector('small');if(title)title.textContent='Today’s Journey';if(sub)sub.textContent='Continue your 3–5 min path';b.onclick=()=>window.BQJourneyLoop?.open?.()}
-  function compatibilityActions(){
+
+  function retargetHero(){
+    const b=document.querySelector('[data-pinoy-mission]');if(!b)return;
+    b.setAttribute('aria-label',"Continue today's Bible Journey");
+    const title=b.querySelector('b'),sub=b.querySelector('small');
+    if(title)title.textContent='Today’s Journey';
+    if(sub)sub.textContent='Continue your 3–5 min path';
+    b.onclick=()=>window.BQJourneyLoop?.open?.();
+  }
+
+  function secondaryActions(){
     const home=document.querySelector('.modern-home'),stack=home?.querySelector('.bq-engagement-stack');if(!home||!stack)return;
     const legacyReview=document.querySelector('.modern-focus [data-modern-review]');legacyReview?.removeAttribute('data-modern-review');
+    stack.querySelectorAll('[data-daily5-play]').forEach(x=>x.remove());
     let row=stack.querySelector('.journey-familiar-tools');
-    if(!row){row=document.createElement('div');row.className='journey-mini-row journey-familiar-tools';row.innerHTML='<button type="button" data-modern-review>🧠 Smart Review</button><button type="button" data-daily5-play>🎮 Daily 5 · in Play</button>';stack.appendChild(row)}
-    const review=row.querySelector('[data-modern-review]');if(review&&!review.dataset.bound){review.dataset.bound='1';review.onclick=()=>{const old=document.querySelector('.modern-focus .modern-review');if(old)old.click();else window.BQOpenReview?.open?.()}}
-    const daily=row.querySelector('[data-daily5-play]');if(daily&&!daily.dataset.bound){daily.dataset.bound='1';daily.onclick=()=>window.BQModernHome?.openHub?.('play')}
+    if(!row){row=document.createElement('div');row.className='journey-mini-row journey-familiar-tools';stack.appendChild(row)}
+    let review=row.querySelector('[data-modern-review]');
+    if(!review){review=document.createElement('button');review.type='button';review.dataset.modernReview='1';review.textContent='🧠 Smart Review';row.replaceChildren(review)}
+    if(!review.dataset.bound){review.dataset.bound='1';review.onclick=()=>{const old=document.querySelector('.modern-focus .modern-review');if(old)old.click();else window.BQOpenReview?.open?.()}}
   }
-  function refreshHome(){retargetHero();compatibilityActions()}
+
+  function refreshHome(){retargetHero();secondaryActions()}
   function queueRefresh(){if(renderScheduled)return;renderScheduled=true;requestAnimationFrame(()=>{renderScheduled=false;refreshHome()})}
+
+  function startObserver(){
+    if(observer)return;
+    const root=document.getElementById('app');if(!root)return;
+    observer=new MutationObserver(()=>{if(root.querySelector('.bq-engagement-stack')||root.querySelector('.bq-pinoy-hero'))queueRefresh()});
+    observer.observe(root,{childList:true,subtree:true});
+  }
+
   window.addEventListener('bq-journey-change',()=>{schedule();queueRefresh()});
   window.addEventListener('bq-account-profile',()=>{schedule();queueRefresh()});
   window.addEventListener('bq-modern-home-rendered',queueRefresh);
-  const observer=new MutationObserver(()=>{if(document.querySelector('.bq-engagement-stack')||document.querySelector('.bq-pinoy-hero'))queueRefresh()});
-  observer.observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener('DOMContentLoaded',()=>{queueRefresh();schedule()});
-  setTimeout(queueRefresh,500);
+  document.addEventListener('DOMContentLoaded',()=>{startObserver();queueRefresh();schedule()});
+  setTimeout(()=>{startObserver();queueRefresh()},500);
   window.BQJourneyCloud={sync};
 })();

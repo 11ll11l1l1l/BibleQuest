@@ -1,0 +1,181 @@
+(() => {
+  const APP='biblequest_state_v4';
+  const GROWTH='biblequest_growth_v1';
+  const READER='biblequest_reader_v1';
+  const SEQUENCE='biblequest_sequence_v1';
+  const STORY='biblequest_story_journey_v1';
+  const COUPLES='biblequest_couples_v1';
+  const REVIEW='biblequest_open_review_v1';
+  const LEARNING='biblequest_learning_v1';
+  const DEVICE='biblequest_device_key_v1';
+  const ERROR_KEY='bq_startup_last_error_v1';
+  const ALIASES=[
+    {actual:'biblequest_transform_v2',transport:'biblequest_transformation_v1'},
+    {actual:LEARNING,transport:'biblequest_learning_engine_v1'}
+  ];
+  let lastError='',aliasTimer=null;
+
+  const isObject=v=>Boolean(v)&&typeof v==='object'&&!Array.isArray(v);
+  const finite=(v,fallback=0,min=0)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,n):fallback};
+  const safeString=v=>typeof v==='string'?v:'';
+  const redact=v=>String(v||'').replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[email]').replace(/eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}/g,'[token]').replace(/https?:\/\/[^\s]+/g,'[url]').slice(0,500);
+
+  function backup(key,raw){
+    if(!raw||raw.length>250000)return;
+    try{sessionStorage.setItem(`${key}_cold_start_backup`,raw)}catch{}
+  }
+
+  function readJson(key){
+    let raw='';
+    try{raw=localStorage.getItem(key)||'';if(!raw)return {raw:'',value:null};return {raw,value:JSON.parse(raw)}}catch{backup(key,raw);return {raw,value:null,invalid:true}}
+  }
+
+  function replaceState(key,r,value){backup(key,r.raw);try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
+  function removeUnsafe(key,r){backup(key,r.raw);try{localStorage.removeItem(key)}catch{}}
+
+  function hydrateAliases(){
+    for(const a of ALIASES){
+      const t=readJson(a.transport);
+      if(!isObject(t.value)||t.value.__bq_alias!==a.actual||!('value' in t.value))continue;
+      try{localStorage.setItem(a.actual,JSON.stringify(t.value.value))}catch{}
+    }
+  }
+
+  function mirrorAlias(actual,value){
+    const a=ALIASES.find(x=>x.actual===actual);if(!a)return;
+    let parsed;try{parsed=JSON.parse(String(value))}catch{return}
+    try{localStorage.setItem(a.transport,JSON.stringify({__bq_alias:a.actual,version:1,value:parsed}))}catch{}
+  }
+
+  function primeAliases(){
+    for(const a of ALIASES){let raw='';try{raw=localStorage.getItem(a.actual)||''}catch{}if(raw)mirrorAlias(a.actual,raw)}
+  }
+
+  function sanitizeApp(){
+    const r=readJson(APP);if(!r.raw)return;
+    if(!isObject(r.value)){removeUnsafe(APP,r);return}
+    const s={...r.value};let changed=false;
+    for(const key of ['seen','wrong','achievements'])if(!Array.isArray(s[key])){s[key]=[];changed=true}
+    for(const key of ['mastery','settings','profile','deckReview','deckStats','polls'])if(!isObject(s[key])){s[key]={};changed=true}
+    for(const key of ['xp','answered','correct','situations','rounds']){const next=finite(s[key],0);if(next!==s[key]){s[key]=next;changed=true}}
+    const streak=finite(s.streak,1,1);if(streak!==s.streak){s.streak=streak;changed=true}
+    if(typeof s.profile.name!=='string'){s.profile={...s.profile,name:safeString(s.profile.name)};changed=true}
+    Object.keys(s.deckReview).forEach(k=>{if(!Array.isArray(s.deckReview[k])){s.deckReview[k]=[];changed=true}});
+    Object.keys(s.deckStats).forEach(k=>{if(!isObject(s.deckStats[k])){delete s.deckStats[k];changed=true}});
+    if(changed)replaceState(APP,r,s)
+  }
+
+  function sanitizeGrowth(){
+    const r=readJson(GROWTH);if(!r.raw)return;
+    if(!isObject(r.value)){removeUnsafe(GROWTH,r);return}
+    const g={...r.value};if(g.engagementV2==null)return;
+    if(!isObject(g.engagementV2)){delete g.engagementV2;replaceState(GROWTH,r,g);return}
+    const e={...g.engagementV2};let changed=false;
+    if(!isObject(e.daily)){e.daily={};changed=true}
+    if(!isObject(e.history)){e.history={};changed=true}
+    if(!isObject(e.streak)){e.streak={};changed=true}
+    if(!isObject(e.streak.graceByMonth)){e.streak={...e.streak,graceByMonth:{}};changed=true}
+    const streakCount=finite(e.streak.count,0);if(streakCount!==e.streak.count){e.streak={...e.streak,count:streakCount};changed=true}
+    if(typeof e.streak.lastMeaningful!=='string'){e.streak={...e.streak,lastMeaningful:''};changed=true}
+    if(!isObject(e.season)){e.season={};changed=true}
+    if(!Array.isArray(e.season.completed)){e.season={...e.season,completed:[]};changed=true}
+    const seasonProgress=finite(e.season.progress,0);if(seasonProgress!==e.season.progress){e.season={...e.season,progress:seasonProgress};changed=true}
+    for(const [day,row] of Object.entries(e.daily)){
+      if(!isObject(row)||!Array.isArray(row.tasks)||row.tasks.length===0){delete e.daily[day];changed=true;continue}
+      const tasks=row.tasks.filter(t=>isObject(t)&&typeof t.id==='string');if(!tasks.length){delete e.daily[day];changed=true;continue}
+      const next={...row,tasks};if(tasks.length!==row.tasks.length)changed=true;
+      if(!isObject(next.done)){next.done={};changed=true}
+      if(!isObject(next.baseline)){next.baseline={};changed=true}
+      e.daily[day]=next;
+    }
+    for(const [day,row] of Object.entries(e.history))if(!isObject(row)){delete e.history[day];changed=true}
+    if(changed){g.engagementV2=e;replaceState(GROWTH,r,g)}
+  }
+
+  function sanitizeReader(){
+    const r=readJson(READER);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(READER,r);return}
+    const s={...r.value};let changed=false;
+    if(s.code!=null&&typeof s.code!=='string'){delete s.code;changed=true}
+    if(s.name!=null&&typeof s.name!=='string'){delete s.name;changed=true}
+    if(s.chapter!=null){const n=Math.max(1,Math.floor(finite(s.chapter,1,1)));if(n!==s.chapter){s.chapter=n;changed=true}}
+    if(changed)replaceState(READER,r,s)
+  }
+
+  function sanitizeSequence(){
+    const r=readJson(SEQUENCE);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(SEQUENCE,r);return}
+    const s={...r.value};let changed=false;
+    for(const key of ['played','solved','streak','best']){const n=Math.floor(finite(s[key],0));if(n!==s[key]){s[key]=n;changed=true}}
+    if(changed)replaceState(SEQUENCE,r,s)
+  }
+
+  function sanitizeStory(){
+    const r=readJson(STORY);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(STORY,r);return}
+    const s={...r.value};let changed=false;
+    if(!Array.isArray(s.completed)){s.completed=[];changed=true}else{const clean=[...new Set(s.completed.filter(x=>typeof x==='string'))];if(clean.length!==s.completed.length||clean.some((x,i)=>x!==s.completed[i]))changed=true;s.completed=clean}
+    if(s.current!=null&&!isObject(s.current)){s.current=null;changed=true}
+    if(!isObject(s.review)){s.review={};changed=true}
+    if(changed)replaceState(STORY,r,s)
+  }
+
+  function sanitizeCouples(){
+    const r=readJson(COUPLES);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(COUPLES,r);return}
+    const s={...r.value};let changed=false;
+    for(const key of ['favorites','history','commitments','checkins'])if(!Array.isArray(s[key])){s[key]=[];changed=true}
+    const n=Math.floor(finite(s.listenCount,0));if(n!==s.listenCount){s.listenCount=n;changed=true}
+    if(changed)replaceState(COUPLES,r,s)
+  }
+
+  function sanitizeReview(){
+    const r=readJson(REVIEW);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(REVIEW,r);return}
+    const s={...r.value};let changed=false;
+    if(!isObject(s.items)){s.items={};changed=true}
+    if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}
+    if(changed)replaceState(REVIEW,r,s)
+  }
+
+  function sanitizeLearning(){
+    const r=readJson(LEARNING);if(!r.raw)return;if(!isObject(r.value)){removeUnsafe(LEARNING,r);return}
+    const s={...r.value};let changed=false;
+    if(!isObject(s.questionStats)){s.questionStats={};changed=true}
+    if(!Array.isArray(s.sessions)){s.sessions=[];changed=true}
+    if(!isObject(s.connectionStats)){s.connectionStats={seen:0,correct:0,last:null};changed=true}
+    if(changed)replaceState(LEARNING,r,s)
+  }
+
+  function sanitizeAll(){sanitizeApp();sanitizeGrowth();sanitizeReader();sanitizeSequence();sanitizeStory();sanitizeCouples();sanitizeReview();sanitizeLearning();primeAliases()}
+
+  function installUuidFallback(){
+    try{
+      if(!window.crypto||typeof crypto.randomUUID==='function'||typeof crypto.getRandomValues!=='function')return;
+      const uuid=()=>{const b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0'));return `${h.slice(0,4).join('')}-${h.slice(4,6).join('')}-${h.slice(6,8).join('')}-${h.slice(8,10).join('')}-${h.slice(10).join('')}`};
+      try{Object.defineProperty(crypto,'randomUUID',{configurable:true,value:uuid})}catch{try{crypto.randomUUID=uuid}catch{}}
+    }catch{}
+  }
+
+  function capture(reason){
+    lastError=redact(reason?.message||reason?.reason?.message||reason?.reason||reason||'startup error');
+    try{sessionStorage.setItem(ERROR_KEY,JSON.stringify({at:new Date().toISOString(),message:lastError}))}catch{}
+  }
+
+  function removeLegacyGate(){
+    try{document.getElementById('bqStartupGate')?.remove();document.getElementById('bqColdStartStyle')?.remove()}catch{}
+  }
+
+  try{window.__BQ_HAD_DEVICE_AT_START__=Boolean(localStorage.getItem(DEVICE))}catch{window.__BQ_HAD_DEVICE_AT_START__=false}
+  hydrateAliases();sanitizeAll();installUuidFallback();removeLegacyGate();
+  aliasTimer=setInterval(primeAliases,5000);
+  window.addEventListener('pagehide',primeAliases,true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')primeAliases()},true);
+  window.addEventListener('error',e=>capture(e.error||e.message),true);
+  window.addEventListener('unhandledrejection',e=>capture(e.reason),true);
+  window.addEventListener('load',removeLegacyGate,{once:true});
+  window.BQStartupGate={
+    dismiss:removeLegacyGate,
+    fail:removeLegacyGate,
+    sanitize:sanitizeAll,
+    lastError:()=>lastError,
+    syncProgressAliases:primeAliases,
+    blocking:false
+  };
+  try{window.dispatchEvent(new CustomEvent('bq-startup-sanitized'))}catch{}
+})();
