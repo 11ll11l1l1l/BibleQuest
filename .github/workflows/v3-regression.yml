@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - 'verify/v3-per-book-recall-once-20260907'
   workflow_dispatch:
 
 concurrency:
