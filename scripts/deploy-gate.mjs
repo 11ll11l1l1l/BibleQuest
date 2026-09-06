@@ -56,6 +56,10 @@ if(!liveRooms.includes('window.BQLiveRooms='))fail('Live Rooms module does not e
 if(!liveRooms.includes("}).join('')}</div>`}"))fail('Live Rooms poll rendering regression guard failed');
 console.log('✓ Live Rooms startup/module guard');
 
+const runtimeRecovery=read('runtime-recovery.js');
+if(!runtimeRecovery.includes("if(label==='Transformation')return"))fail('Generic runtime recovery must yield Transformation clicks to the dedicated Transform menu launcher');
+console.log('✓ Transform menu click ownership guard');
+
 const runtimeRegistry=read('runtime-feature-registry.js');
 if(runtimeRegistry.includes('new MutationObserver'))fail('Runtime feature registry must not observe the entire document');
 if(!runtimeRegistry.includes('bq-modern-home-rendered'))fail('Runtime feature injection must follow the Home render lifecycle');
