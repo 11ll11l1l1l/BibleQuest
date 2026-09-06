@@ -14,6 +14,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/core/bible.js` — Bible sources/packs/search/external links
 - `src/app/reader.js` — reader state/navigation/read marking
 - `src/core/progress.js` — XP/streak/activity/badges/counters
+- `src/core/recall-packs.js` — Per-book Recall manifest/question-pack loading, validation, approval filtering, and cache
 - `src/engines/lesson.js` — guided lesson lifecycle
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
@@ -21,7 +22,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/audio.js` — one browser media/player instance and playback command lifecycle
 - `src/app/recordings.js` — protected recordings list/source selection/switch/leave lifecycle
 - `src/app/media-library.js` — Media Library browse/filter/open orchestration over the verified Recordings owner
-- `src/app/games.js` — one Games launcher/round/scoring/result-persistence lifecycle
+- `src/app/games.js` — one Games launcher/round/scoring/review/result-persistence lifecycle
 
 ## Transform boundaries
 
@@ -57,21 +58,23 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 
 ## Games boundaries
 
-1. `src/app/games.js` is the only v3 owner of game launch, active round state, answer locking, score, XP handoff, replay, switch, leave, and persisted result summaries.
-2. `src/features/games/content.js` is the game question/mode definition source. UI does not construct a competing question bank.
-3. `src/features/games/index.js` is presentation and event forwarding only. It does not write progress, call browser storage, call Supabase, or create its own navigation runtime.
-4. Game progress writes go only through `src/core/progress.js`. The launcher never mutates XP/streak/badges directly.
-5. Persisted round-result summaries go only through the injected `src/core/storage.js` boundary. No game module uses `localStorage` or `sessionStorage` directly.
-6. Starting another mode replaces the active round inside the same owner. Leaving Play tears the round down; returning creates a clean launcher view rather than another listener/runtime instance.
-7. Quick Recall and Context Challenge are frozen through `release/v3.10-games-core`. New game modes must extend the same owner rather than adding parallel launch/scoring engines.
-8. Mixed Quest must deliberately contain recall, context, and connection questions and preserve its last completed result across reload through the shared storage boundary.
+1. `src/app/games.js` is the only v3 owner of game launch, active round state, answer/reveal locking, score, XP handoff, replay, switch, leave, review queues, and persisted game result summaries.
+2. `src/features/games/content.js` is the built-in quiz mode/question definition source. UI does not construct a competing question bank.
+3. `src/core/recall-packs.js` is the only owner allowed to fetch `data/packs/manifest.json` and `data/packs/questions/*`. It validates manifest paths, validates pack shape, caches on demand, and excludes any question whose safety action is not `allow`.
+4. `src/features/games/index.js` is presentation and event forwarding only. It does not fetch packs, write progress, call browser storage, call Supabase, or create its own navigation runtime.
+5. Game progress writes go only through `src/core/progress.js`. The launcher never mutates XP/streak/badges directly.
+6. Persisted round summaries, Per-book Recall review queues, and study statistics go only through the injected `src/core/storage.js` boundary. No game module uses `localStorage` or `sessionStorage` directly.
+7. Starting another mode replaces the active round inside the same owner. Leaving Play tears the round down; returning creates a clean launcher rather than another listener/runtime instance.
+8. Quick Recall, Context Challenge, and Mixed Quest are frozen through `release/v3.11-mixed-quest`. New game modes extend the same owner rather than adding parallel launch/scoring engines.
+9. Per-book Recall reuses retained unfoldingWord Translation Questions v90 data assets only. The old global deck runtime is reference behavior and is not imported.
+10. Per-book Recall preserves on-demand book loading, reveal-before-rating, `Review again` / `Got it`, +1/+5 XP parity, a persistent per-book review queue, study/result persistence, and CC BY-SA 4.0 attribution.
 
 ## Global hard boundaries
 
-One boot, one router, one session owner, one storage boundary, one API boundary, one Bible service, one reader state owner, one progress owner, one lesson engine, one Transform engine, one Audio owner, one Recordings owner, one Media Library orchestration owner, and one Games launcher owner. Features render only inside the shell and clean up listeners. No v3 source depends on legacy `window.BQ*` globals.
+One boot, one router, one session owner, one storage boundary, one API boundary, one Bible service, one reader state owner, one progress owner, one Recall Pack data owner, one lesson engine, one Transform engine, one Audio owner, one Recordings owner, one Media Library orchestration owner, and one Games launcher owner. Features render only inside the shell and clean up listeners. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
 Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games → Bible World → Tutorial → remaining parity → full audit → mobile regression → production deployment.
 
-Known-good frozen releases now extend through `release/v3.10-games-core`; Media Library is frozen at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.11-mixed-quest`; Games core is independently frozen at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
