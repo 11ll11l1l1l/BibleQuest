@@ -15,13 +15,11 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 
 | State | Count |
 |---|---:|
-| Regression-tested | 22 |
-| Verified | 1 |
+| Regression-tested | 23 |
+| Verified | 3 |
 | Implemented | 1 |
-| Not started | 76 |
+| Not started | 73 |
 | Total | 100 |
-
-Counts remain unchanged while Milestone 6 is under implementation. #28–#30 advance only after the complete acceptance and accumulated suite pass.
 
 ## Completed milestones
 
@@ -29,32 +27,25 @@ Counts remain unchanged while Milestone 6 is under implementation. #28–#30 adv
 - Milestone 2 — Account/auth: #6–#10 Regression-tested.
 - Milestone 3 — Reader/data: #11–#13, #18–#19, #21–#23 Regression-tested; #20 STEPBible remains Implemented pending unavailable-data behavior.
 - Milestone 4 — Progress: #24–#27 Regression-tested.
-- Milestone 5 — Core lesson engine: #31 Verified.
+- Milestone 5 — Core lesson engine: #31 Regression-tested.
+- Milestone 6 — Daily Mission/Journey: #28–#30 Verified.
 
-## Current milestone — Milestone 6 Daily Mission/Journey
+## Milestone 6 acceptance evidence
 
-Target rows:
+Daily Journey is implemented as one dated five-step lesson on the shared engine: Retrieve → Context → Learn → Apply → Reflect. `src/app/daily-mission.js` stores no parallel mission state and uses only the lesson, progress and reader owners.
 
-- #28 Daily Mission/Journey
-- #29 Daily passage rotation
-- #30 Daily Mission completion bonus
-
-Implementation contract:
-
-1. The five movements are a versioned lesson definition: Retrieve → Context → Learn → Apply → Reflect.
-2. `src/app/daily-mission.js` is orchestration only. It owns no browser persistence and no second lesson state machine.
-3. Passage rotation is deterministic from a civil date supplied through the progress service timezone boundary.
-4. Step awards use deterministic IDs `daily:<date>:step:<step>`; the completion bonus uses `daily:<date>:complete`.
-5. Step progress is reconciled from persisted lesson responses on reopen, allowing a failed cross-service progress write to heal without duplicate XP.
-6. The +25 completion bonus is non-meaningful for streak/activity count and can be awarded only once.
-7. Context opens Scripture by setting the existing reader owner and routing through the existing router.
-8. Home can preview today’s passage without opening/persisting a lesson session.
-9. Guest execution remains local and must generate no Supabase traffic.
-10. Transform, recordings, games, Bible World and other later milestones remain untouched.
+Verified behavior includes pure non-persisting home preview, deterministic civil-date rotation, timezone-boundary rollover, invalid-date rejection, independent next-day sessions, reload/resume at an intermediate stage, Reader round-trip through the existing owner/router, five deterministic step progress events, cross-service retry healing, exactly one non-meaningful +25 completion bonus, completion reload without duplicate XP, streak continuation, guest execution with zero Supabase traffic, desktop flow, and 390px mobile layout/touch targets.
 
 ## Next major milestone
 
-After #28–#30 are frozen, begin Milestone 7 — Transform. First audit and create the single Transform engine before migrating basic/full Transform workflows.
+Milestone 7 — Transform:
+
+1. Audit basic Transform (#46), full Transform (#47), and the multiple old Transform paths (#48).
+2. Build `src/engines/transform.js` as the single deterministic Transform state owner before feature UI migration.
+3. Preserve private local reflection behavior and explicit guest/account boundaries.
+4. Reuse existing Bible reader/service contracts for passage selection rather than creating another Bible loader.
+5. Do not copy the old standalone runtime recovery/global-module architecture into v3.
+6. No Audio/Recordings, Games, Bible World, Tutorial, or secondary-feature implementation until Transform is frozen.
 
 ## Defect / root-cause ledger
 
@@ -66,7 +57,7 @@ After #28–#30 are frozen, begin Milestone 7 — Transform. First audit and cre
 - `V3-READER-ACCEPTANCE-001` — native invalid-search validation is tested as native validation rather than weakened to satisfy JavaScript expectations.
 - `V3-PROGRESS-UI-001` — static progress-chip readability was separated from interactive touch-target semantics.
 
-Any Daily Journey defect found by acceptance will be recorded before promotion.
+No Daily Journey acceptance defect required a code workaround after publication; the candidate passed its architecture, service, accumulated browser and dedicated Daily Journey suites.
 
 ## Release rule
 
