@@ -1,0 +1,40 @@
+name: BibleQuest v3 regression
+
+on:
+  push:
+    branches:
+      - 'feature/v3-*'
+      - 'rebuild-v3-foundation'
+  workflow_dispatch:
+
+concurrency:
+  group: biblequest-v3-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enforce v3 architecture boundaries
+        run: node scripts/validate-v3-architecture.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest v3 locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v3-http.log 2>&1 &
+          echo $! > /tmp/biblequest-v3-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v3-http.log
+          exit 1
+      - name: Run full v3 browser regression
+        run: timeout 240s node tests/v3-shell-smoke.mjs
