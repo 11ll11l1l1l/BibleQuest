@@ -20,6 +20,7 @@ const required = [
   'src/features/home/index.js',
   'src/features/account/index.js',
   'FEATURE_INVENTORY_V3.md',
+  'DEVELOPMENT_STATUS_V3.md',
   'ARCHITECTURE_V3.md'
 ];
 
@@ -68,8 +69,22 @@ if (!api.includes("signOut({ scope: 'local' })")) fail('Session sign-out must be
 if (/service_role|sb_secret_/i.test(api)) fail('Privileged Supabase credentials are forbidden in browser code.');
 
 const inventory = read('FEATURE_INVENTORY_V3.md');
-for (const status of ['Not started','Implemented','Verified','Regression-tested']) if (!inventory.includes(status)) fail(`Feature inventory is missing required status: ${status}`);
-if (/Compatibility\s*\|\s*(Verified|Regression-tested)/i.test(inventory)) fail('Compatibility access cannot be marked Verified or Regression-tested.');
+const allowedStatuses = new Set(['Not started','Implemented','Verified','Regression-tested']);
+for (const status of allowedStatuses) if (!inventory.includes(status)) fail(`Feature inventory is missing required status vocabulary: ${status}`);
+const inventoryRows = inventory.split('\n').filter(line => /^\|\s*\d+\s*\|/.test(line));
+if (inventoryRows.length !== 100) fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${inventoryRows.length}.`);
+inventoryRows.forEach((line, index) => {
+  const columns = line.split('|').slice(1, -1).map(value => value.trim());
+  const expectedNumber = index + 1;
+  const rowNumber = Number(columns[0]);
+  const v3Status = columns[4];
+  if (rowNumber !== expectedNumber) fail(`Feature inventory row sequence error: expected ${expectedNumber}, found ${columns[0] || 'missing'}.`);
+  if (!allowedStatuses.has(v3Status)) fail(`Feature inventory row ${columns[0] || '?'} has invalid v3 status: ${v3Status || 'missing'}.`);
+});
+
+const developmentStatus = read('DEVELOPMENT_STATUS_V3.md');
+if (!developmentStatus.includes('Defect / root-cause ledger')) fail('Development status must retain the root-cause ledger.');
+if (!developmentStatus.includes('Next major milestone')) fail('Development status must retain the next-work queue.');
 
 if (failures.length) {
   console.error(`BibleQuest v3 architecture validation FAILED (${failures.length})`);
@@ -78,5 +93,5 @@ if (failures.length) {
 }
 
 console.log('BibleQuest v3 architecture validation passed.');
-console.log(`Checked ${jsFiles.length} v3 JavaScript modules.`);
-console.log('Single boot, router, store/storage, API and session ownership confirmed; legacy BQ globals remain excluded.');
+console.log(`Checked ${jsFiles.length} v3 JavaScript modules and ${inventoryRows.length} feature-inventory rows.`);
+console.log('Single boot, router, store/storage, API and session ownership confirmed; v3 status columns are structurally validated.');
