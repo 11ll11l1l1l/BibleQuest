@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 5
-- **Verified:** 2
+- **Regression-tested:** 7
+- **Verified:** 3
 - **Implemented:** 0
-- **Not started:** 93
+- **Not started:** 90
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -26,11 +26,11 @@ This file is the authoritative parity ledger for the rebuild.
 | 3 | Mobile shell/layout | Yes | Clean | Regression-tested | 390px + desktop; no horizontal overflow; nav usable |
 | 4 | Global application state | Yes | Partial clean | Regression-tested | one store; route change consistency; no competing globals |
 | 5 | Storage boundary | Yes | Partial clean | Regression-tested | one persistence API; malformed data recovery; key isolation |
-| 6 | Authentication/session | Yes | Compatibility | Verified | login; logout; expired session; reload; guest/logged-in separation |
-| 7 | Guest mode | Yes | Partial clean | Verified | guest boot; guest feature access; no accidental cloud write |
-| 8 | Signup | Yes | Compatibility | Not started | create account; validation; duplicate account handling |
-| 9 | Recovery code/password recovery | Yes | Compatibility | Not started | recover; rotate code; invalid code; session after reset |
-| 10 | Remembered device/security | Yes | Compatibility | Not started | add/remove device; reload; unauthorized state |
+| 6 | Authentication/session | Yes | Compatibility | Regression-tested | login; logout; expired session; reload; guest/logged-in separation |
+| 7 | Guest mode | Yes | Partial clean | Regression-tested | guest boot; guest feature access; no accidental cloud write |
+| 8 | Signup | Yes | Compatibility | Verified | create account; validation; duplicate account handling |
+| 9 | Recovery code/password recovery | Yes | Compatibility | Verified | recover; rotate code; invalid code; session after reset |
+| 10 | Remembered device/security | Yes | Compatibility | Verified | add/remove device; reload; unauthorized state |
 | 11 | Bible data service | Yes | Clean reader-specific | Not started | canonical book/chapter load API; errors; caching |
 | 12 | English BSB Bible | Yes | Clean | Not started | open multiple OT/NT books; chapters; attribution |
 | 13 | Tagalog Bible | Yes | Clean | Not started | translation switch; book/chapter; persistence |
