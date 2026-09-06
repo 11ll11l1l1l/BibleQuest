@@ -1,5 +1,5 @@
-const CACHE='biblequest-clean-v4';
-const CORE=['./','./index.html','./classic.html','./bq2.css','./bq2-parity.css','./bq2-data.js','./bq2.js','./bq2-reader.js','./bq2-games.js','./bq2-grow.js','./bq2-study.js','./bq2-bookquiz.js','./bq2-parity.js','./bq2-classic-bridge.js','./data/questions.js','./data/stories.js','./data/packs/manifest.json','./app-icon.svg','./assets/bq-pinoy-japan-hero.svg','./assets/avatar-scholar.webp'];
+const CACHE='biblequest-clean-v5';
+const CORE=['./','./index.html','./classic.html','./bq2.css','./bq2-parity.css','./bq2-data.js','./bq2.js','./bq2-reader.js','./bq2-games.js','./bq2-grow.js','./bq2-study.js','./bq2-study-routes.js','./bq2-bookquiz.js','./bq2-parity.js','./bq2-classic-bridge.js','./data/questions.js','./data/stories.js','./data/packs/manifest.json','./app-icon.svg','./assets/bq-pinoy-japan-hero.svg','./assets/avatar-scholar.webp'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('biblequest-clean-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
