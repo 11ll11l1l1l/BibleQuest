@@ -1,77 +1,123 @@
-# BibleQuest — clean rebuild
+# BibleQuest
 
-Active rebuild branch: `rebuild-v2-clean`
+BibleQuest is a mobile-first Bible learning PWA built around one clear Daily Journey instead of a menu-first quiz experience.
 
-This version is a from-scratch replacement runtime based on the September 4 content/data baseline. It does not boot the old layered BibleQuest JavaScript, Cloudflare-specific runtime, Supabase client modules, runtime observers, or feature-repair patches.
+## Public app
 
-## Current goal
+Canonical deployment: `https://mybiblequest.pages.dev/` (Cloudflare Pages)
 
-Keep BibleQuest usable today with a small static GitHub-hostable application first. Reintroduce remote/cloud features later only as isolated modules after the local core is stable.
+Compatibility deployment: `https://biblequest-7th.pages.dev/` (Cloudflare Pages)
 
-## Clean boot
+Both Cloudflare projects are currently attached to this repository and deploy current `main`. Deployment previews use subdomains of the corresponding project host and are not canonical public URLs.
 
-`index.html` loads one stylesheet plus explicit clean modules:
+Legacy/fallback deployment: `https://11ll11l1l1l.github.io/BibleQuest/`
 
-- `bq2.js` — shell, routing, local state, Daily Journey
-- `bq2-reader.js` — English BSB + Tagalog Bible reader
-- `bq2-games.js` — quizzes, group play, kids games
-- `bq2-bookquiz.js` — large on-demand per-book recall banks
-- `bq2-grow.js` — Bible World, Transformation, profile/backup
-- `bq2-study.js` — stories, wisdom, deep questions, notes, recordings, family tools
-- `bq2-data.js` — small application data model
-- `bq2-sw.js` — clean PWA cache
+Cloudflare Pages is the normal production host. GitHub Pages deployment is manual-only and is not part of the normal release path.
 
-Legacy application files remain in repository history/reference but are not loaded by this rebuild.
+## Core learning loop
 
-## Available now
+The home screen centers on **Continue My Journey — 4 min**. A Daily Journey contains five movements:
 
-- Daily Journey: Retrieve → Context → Learn → Apply → Reflect
-- XP, streak, badges, local progress
-- Full 66-book English BSB reader
-- Full 66-book Tagalog reader
-- Lazy book loading and offline cache after content is opened
-- Quick Recall, Context Challenge, Mixed Quest
-- Large Book Recall mode from bundled per-book question packs
-- Who Am I and Timeline games
-- Story Journey
-- Situations & Wisdom
-- Deep Questions
-- Bible World progression
-- Transformation reflection and next-step guidance
-- Play Together pass-and-play scoreboard
-- Kids Memory Match, Hiragana Match, Bible Who Am I
-- Private notes
-- Lightweight Recordings link library with no embedded video runtime
-- Couples & Family discussion notes
-- Local JSON backup/export/import/reset
-- Mobile-first PWA shell
+1. Retrieve — answer from memory before revealing.
+2. Context — read the actual passage and surrounding context.
+3. Learn — strengthen one new or weak connection.
+4. Apply — use biblical wisdom in a real situation.
+5. Reflect — write one concise takeaway or next action.
 
-## Not in the clean boot yet
+One meaningful Bible activity is enough to protect the daily streak. Completing all five movements gives the full Daily Journey progress and reveal.
 
-These depend on server-side infrastructure and are intentionally excluded from the replacement runtime for now:
+Personal-focus Scripture support is deliberately opt-in from the Daily Journey card; it does not block first visit with an extra chooser.
 
-- account/login synchronization
-- congregation administration and roles
-- remote live rooms
-- cloud leaderboards
-- assignments/push workflows
-- remote media management
-- server-managed multi-device synchronization
+## Bible World
 
-Their old implementations are not to be re-enabled by adding more startup scripts. Each should return as a separately tested module with an explicit interface.
+Learning evidence is visualized as a journey through Scripture:
+
+Creation → Patriarchs → Exodus → Kingdom → Wisdom → Prophets → Jesus → Early Church → Letters
+
+The map reveals as mastery evidence grows. Scripture itself is never locked. World progress is a learning aid, not a measure of spiritual maturity.
+
+Bible World also connects to guided study, adaptive recall, characters, places, short seasons, challenges, avatars, and discovery rewards.
+
+## Bible resources and translations
+
+- Berean Standard Bible (BSB) — bundled/on-demand BibleQuest packs.
+- Tagalog ULB / banal na Bibliya — bundled/on-demand with source attribution.
+- Japanese 口語訳 — live chapter loading with optional furigana and Japanese vocabulary support.
+- NLT — live in-app integration where the official source is available.
+- ESV, NIV, AMP — secondary licensed-reader links rather than bulk redistribution.
+- STEPBible Hebrew/Greek context packs — all 66 books, used as lexical/context aids.
+- Open/public Bible learning resources — see `DATA_SOURCES.md`.
+
+Copyrighted translation text is not relicensed by the BibleQuest MIT code license.
+
+## Doctrinal safety
+
+BibleQuest uses a Scripture-first content policy. Scored material distinguishes direct textual recall from interpretation, doctrinal claims, and application. Sensitive questions are context-framed or quarantined until reviewed.
+
+See `DOCTRINAL_SAFETY.md`.
+
+## Cloud and accounts
+
+BibleQuest currently shares the existing Supabase project used by Karimen to remain within the free-plan project limit. BibleQuest data is isolated with `bible_*` tables, policies, functions, and storage conventions.
+
+Current cloud capabilities include:
+
+- immediate email/password accounts with password confirmation
+- private rotating recovery codes instead of email-confirmation or SMTP password-reset links
+- cross-device progress snapshots
+- private notes and remembered devices
+- daily journey sync
+- congregation membership and roles
+- trusted score events and leaderboards
+- assignments and presence
+- Journey Groups and encouragements
+- couples and congregation challenge infrastructure
+- owner/admin tools without administrator access to user recovery credentials
+
+The email address is an unverified sign-in identifier, not proof of identity. `bq-signup` creates the account immediately and returns a private recovery code. `bq-password-reset` verifies and rotates that code for forgotten-password recovery. A signed-in user can generate a replacement recovery code from Account → Security. Administrators cannot view recovery codes or reset a user's password by email.
+
+The browser contains only the Supabase project URL and publishable key. Privileged keys stay in server-side Edge Functions.
+
+## Operational reliability
+
+`operational-hardening.js` protects major feature entry points. It validates the feature module before opening it, catches immediate feature exceptions/rejected promises, keeps the main BibleQuest shell mounted, and offers a Home recovery path instead of leaving the user on a blank or apparently crashed screen.
+
+Transformation receives additional protection because its local assessment data can outlive application releases: incompatible saved result objects are discarded safely while valid partial answers are retained. Transformation also has an explicit close control.
+
+The manual browser smoke suite includes a real Grow → Transformation launch with deliberately stale local data and a simulated missing-feature launch.
+
+## Deployment behavior
+
+`cloud-config.js` derives the current app root from the deployment URL. Trusted Edge Functions accept the canonical `mybiblequest.pages.dev` host, the `biblequest-7th.pages.dev` compatibility host, their Cloudflare preview subdomains, and the legacy GitHub Pages path where explicitly supported.
+
+Cloudflare-specific security headers are defined in `_headers`.
+
+The current signup/recovery flow does not depend on Supabase Auth redirect emails. If a future custom domain is introduced, update the trusted Edge Function origin lists before using it.
+
+## GitHub Actions policy
+
+All workflows in `.github/workflows/` are intentionally **manual-only** (`workflow_dispatch`). Normal pushes and Cloudflare deployments must not start GitHub Actions jobs.
+
+The repository validator checks this invariant so a later workflow edit cannot silently re-enable automatic Actions usage.
 
 ## Validation
 
-Run locally from the repository root:
+Run before release:
 
 ```bash
-node scripts/validate-rebuild-v2.mjs
+node scripts/validate-release.mjs
 ```
 
-The validator checks clean boot references, bans legacy runtime files from `index.html`, syntax-checks the clean JavaScript, verifies the 66-book English and Tagalog pack sets, and verifies listed per-book recall packs.
+The validator checks JavaScript syntax, required static assets, service-worker coverage, PWA manifest basics, operational recovery, Bible context-pack integrity, doctrinal/content audits, browser-secret invariants, current account/admin invariants, and the manual-only GitHub Actions policy.
 
-## Hosting direction
+Browser smoke tests remain available as a manual workflow when a real browser regression run is needed. They are not automatically triggered by pushes.
 
-For this rebuild, treat GitHub as the source of truth. Do not make Cloudflare changes as part of clean-core development. The existing repository's historical GitHub Pages workflow should also not be treated as part of the new runtime architecture.
+## Licensing
 
-See `REBUILD_V2.md` for the feature and architecture contract.
+Original BibleQuest application code is MIT licensed. Third-party Scripture texts, datasets, libraries, and services retain their own licenses and terms.
+
+See:
+
+- `LICENSE`
+- `THIRD_PARTY_NOTICES.md`
+- `DATA_SOURCES.md`
