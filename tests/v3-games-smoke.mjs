@@ -25,7 +25,7 @@ async function run(){
   const detectiveFeedback=await page.locator('[data-detective-feedback]').textContent();assert(detectiveFeedback?.includes('Correct'),'Case-insensitive Character Detective answer failed.');assert(detectiveFeedback?.includes('1 Samuel 16–17'),'Character Detective Scripture reference missing.');assert((await page.locator('[data-detective-score]').textContent())?.includes('+12'),'Character Detective correct XP is wrong.');
   await page.locator('[data-detective-replay]').click();await page.locator('[data-detective="d2"]').waitFor();assert(await page.locator('[data-detective-feedback]').count()===0,'Another detective must reset locked feedback.');
   await page.locator('[data-detective-answer]').fill('Moses');await page.locator('[data-detective-submit]').click();await page.locator('[data-detective-feedback]').waitFor();assert((await page.locator('[data-detective-feedback]').textContent())?.includes('Answer: Joseph'),'Incorrect Detective feedback must reveal the answer.');assert((await page.locator('[data-detective-score]').textContent())?.includes('+3'),'Character Detective incorrect XP is wrong.');
-  await page.locator('[data-game-launcher]').click();
+  await page.locator('.bq-game-actions [data-game-launcher]').click();
 
   await page.locator('[data-game-launch="per-book-recall"]').click();await page.locator('[data-recall-library]').waitFor();assert(await page.locator('[data-recall-book]').count()>40,'Per-book Recall did not load the retained book manifest.');
   assert((await page.locator('.bq-recall-source').textContent())?.includes('CC BY-SA 4.0'),'Per-book Recall attribution is missing.');
