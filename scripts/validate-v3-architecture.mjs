@@ -12,15 +12,18 @@ const required = [
   'src/app/bootstrap.js',
   'src/app/router.js',
   'src/app/store.js',
+  'src/app/session.js',
   'src/core/storage.js',
+  'src/core/api.js',
   'src/ui/shell.js',
   'src/ui/app.css',
   'src/features/home/index.js',
+  'src/features/account/index.js',
   'FEATURE_INVENTORY_V3.md',
   'ARCHITECTURE_V3.md'
 ];
 
-for (const file of required) if (!fs.existsSync(path.join(root, file))) fail(`Missing v3 foundation file: ${file}`);
+for (const file of required) if (!fs.existsSync(path.join(root, file))) fail(`Missing v3 required file: ${file}`);
 
 const html = read('index.html');
 const scriptTags = [...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
@@ -47,13 +50,22 @@ for (const file of jsFiles) {
   const text = fs.readFileSync(file, 'utf8');
   try { execFileSync(process.execPath, ['--check', file], { stdio: 'pipe' }); }
   catch (error) { fail(`Syntax check failed: ${rel}\n${error.stderr?.toString() || error.message}`); }
-  if (rel !== 'src/core/storage.js' && /\blocalStorage\b/.test(text)) fail(`Direct localStorage use outside storage service: ${rel}`);
-  if (rel !== 'src/app/router.js' && /(hashchange|location\.hash|history\.replaceState)/.test(text)) fail(`Navigation ownership leaked outside router: ${rel}`);
+  if (rel !== 'src/core/storage.js' && /\b(localStorage|sessionStorage)\b/.test(text)) fail(`Direct browser storage use outside storage service: ${rel}`);
+  if (rel !== 'src/app/router.js' && /(hashchange|location\.hash|history\.(replaceState|pushState))/.test(text)) fail(`Navigation ownership leaked outside router: ${rel}`);
   if (/window\.BQ[A-Z0-9_]*/.test(text)) fail(`Legacy/global BQ namespace is forbidden in v3 source: ${rel}`);
+  if (rel !== 'src/core/api.js' && /(supabase-js|createClient\s*\(|signInWithPassword|onAuthStateChange)/.test(text)) fail(`Supabase client ownership leaked outside API wrapper: ${rel}`);
 }
 
 const routerOwners = jsFiles.filter(file => /addEventListener\(['"]hashchange/.test(fs.readFileSync(file,'utf8')));
 if (routerOwners.length !== 1 || path.relative(root, routerOwners[0]).replaceAll('\\','/') !== 'src/app/router.js') fail('Exactly one hashchange listener owner is required: src/app/router.js');
+
+const sessionOwners = jsFiles.filter(file => /export function createSessionService/.test(fs.readFileSync(file,'utf8')));
+if (sessionOwners.length !== 1 || path.relative(root, sessionOwners[0]).replaceAll('\\','/') !== 'src/app/session.js') fail('Exactly one session service owner is required: src/app/session.js');
+
+const api = read('src/core/api.js');
+if (!api.includes('@supabase/supabase-js@2.112.4')) fail('Supabase browser dependency must remain pinned to 2.112.4 for this milestone.');
+if (!api.includes("signOut({ scope: 'local' })")) fail('Session sign-out must be device-local, not global.');
+if (/service_role|sb_secret_/i.test(api)) fail('Privileged Supabase credentials are forbidden in browser code.');
 
 const inventory = read('FEATURE_INVENTORY_V3.md');
 for (const status of ['Not started','Implemented','Verified','Regression-tested']) if (!inventory.includes(status)) fail(`Feature inventory is missing required status: ${status}`);
@@ -67,4 +79,4 @@ if (failures.length) {
 
 console.log('BibleQuest v3 architecture validation passed.');
 console.log(`Checked ${jsFiles.length} v3 JavaScript modules.`);
-console.log('Single boot entry, router ownership, storage ownership, and no legacy BQ globals confirmed.');
+console.log('Single boot, router, store/storage, API and session ownership confirmed; legacy BQ globals remain excluded.');

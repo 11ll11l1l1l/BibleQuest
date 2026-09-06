@@ -5,6 +5,10 @@ function key(name) {
   return PREFIX + name;
 }
 
+function authKey(name) {
+  return `${PREFIX}auth.${encodeURIComponent(String(name))}`;
+}
+
 export const storage = Object.freeze({
   read(name, fallback = null) {
     try {
@@ -20,5 +24,18 @@ export const storage = Object.freeze({
   },
   remove(name) {
     localStorage.removeItem(key(name));
+  }
+});
+
+export const authStorage = Object.freeze({
+  getItem(name) {
+    try { return localStorage.getItem(authKey(name)); }
+    catch { return null; }
+  },
+  setItem(name, value) {
+    localStorage.setItem(authKey(name), String(value));
+  },
+  removeItem(name) {
+    localStorage.removeItem(authKey(name));
   }
 });
