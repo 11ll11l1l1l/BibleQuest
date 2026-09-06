@@ -2,7 +2,7 @@
   'use strict';
   const cfg=window.BQ_CLOUD_CONFIG||{};
   function localTestAuth(){try{return ['127.0.0.1','localhost'].includes(location.hostname)}catch{return false}}
-  function fail(){try{sessionStorage.removeItem('bq_preview_mode_v1')}catch{}location.replace('./index.html?account=required');return false}
+  function fail(){try{sessionStorage.removeItem('bq_preview_mode_v1')}catch{}location.replace('./?account=required');return false}
   async function boot(){
     try{
       if(localTestAuth()){document.documentElement.classList.add('bq-account-confirmed');return true}
