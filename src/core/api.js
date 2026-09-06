@@ -28,6 +28,14 @@ async function functionMessage(error, fallback) {
   return error?.message || fallback;
 }
 
+function withTimeout(promise, milliseconds, message) {
+  let timer;
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), milliseconds); })
+  ]).finally(() => clearTimeout(timer));
+}
+
 export function createApi() {
   let clientPromise = null;
 
@@ -149,5 +157,24 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account });
+  const media = Object.freeze({
+    async listLiveRecordings() {
+      const client = await getClient();
+      const now = new Date().toISOString();
+      const request = client.from('bible_media_library')
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type')
+        .eq('active', true)
+        .eq('media_type', 'youtube_video')
+        .lte('publish_at', now)
+        .order('featured', { ascending: false })
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(80);
+      const { data, error } = await withTimeout(request, 10000, 'Live Recordings took too long to load. Please try again.');
+      if (error) throw error;
+      return (data || []).filter(row => String(row.youtube_url || '').includes('youtube.com/live/'));
+    }
+  });
+
+  return Object.freeze({ auth, account, media });
 }
