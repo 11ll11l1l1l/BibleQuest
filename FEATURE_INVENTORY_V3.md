@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 28
-- **Verified:** 1
+- **Regression-tested:** 29
+- **Verified:** 4
 - **Implemented:** 1
-- **Not started:** 70
+- **Not started:** 66
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -67,7 +67,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 44 | Bible World | Yes | Clean | Not started | render path; unlock thresholds; route into content |
 | 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
 | 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
-| 47 | Transformation full | Yes | Standalone old | Verified | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
+| 47 | Transformation full | Yes | Standalone old | Regression-tested | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
 | 48 | Transform engine | Yes | Multiple old paths | Regression-tested | one engine; deterministic state transitions; no stale instance |
 | 49 | Story Journey | Yes | Clean | Not started | scene progression; checkpoint; finish; replay |
 | 50 | Wisdom Situations | Yes | Clean | Not started | scenario; choose; correct contract; references; replay |
@@ -77,10 +77,10 @@ This file is the authoritative parity ledger for the rebuild.
 | 54 | Open/weak-area review | Yes | Compatibility | Not started | queue generation; complete; persistence |
 | 55 | Private local notes | Yes | Clean | Not started | create; edit/delete if supported; reload; export |
 | 56 | Cloud notes | Yes | Compatibility | Not started | account sync; offline/failure behavior; no guest leak |
-| 57 | Audio manager | Yes | Fragmented old | Not started | one player owner; play/pause/seek/stop; teardown |
-| 58 | Recordings list | Yes | Clean link library only | Not started | list load; empty/error states; reload |
-| 59 | Live Recordings playback | Yes | Missing in clean | Not started | play; pause; switch; leave; return; no freeze; one player instance |
-| 60 | Recording manager | Yes | Fragmented old | Not started | one owner; switch source; cleanup; error recovery |
+| 57 | Audio manager | Yes | Fragmented old | Verified | one player owner; play/pause/seek/stop; teardown |
+| 58 | Recordings list | Yes | Clean link library only | Verified | list load; empty/error states; reload |
+| 59 | Live Recordings playback | Yes | Missing in clean | Verified | play; pause; switch; leave; return; no freeze; one player instance |
+| 60 | Recording manager | Yes | Fragmented old | Verified | one owner; switch source; cleanup; error recovery |
 | 61 | Media Library | Yes | Compatibility | Not started | browse; open media; failure handling; return state |
 | 62 | Couples/family local tools | Yes | Clean | Not started | topic open; save note/action; reload |
 | 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |
