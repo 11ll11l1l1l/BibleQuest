@@ -8,7 +8,7 @@
   const roleLabel=()=>role==='owner'?'PLATFORM OWNER':role==='admin'?'SITE ADMIN':'';
   function makeLink(className='level-chip',label='⚙ Admin'){
     const a=document.createElement('a');
-    a.href='admin.html';
+    a.href='admin';
     a.dataset.bqAdminLink='1';
     a.className=className;
     a.textContent=label;
