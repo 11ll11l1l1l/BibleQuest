@@ -6,7 +6,7 @@
 
   const isAdmin=()=>['owner','admin'].includes(role);
   const roleLabel=()=>role==='owner'?'PLATFORM OWNER':role==='admin'?'SITE ADMIN':'';
-  function makeLink(className='level-chip',label='⚙ Admin'){
+  function makeLink(className='',label='⚙ Admin & ministry'){
     const a=document.createElement('a');
     a.href='admin';
     a.dataset.bqAdminLink='1';
@@ -41,25 +41,21 @@
   function inject(){
     enforceRegistrationCongregation();
     if(!isAdmin()){removeInjected();return}
-    document.querySelectorAll('.top-actions').forEach(host=>{
-      if(role==='owner'&&!host.querySelector('[data-bq-platform-role]')){
-        const chip=document.createElement('span');chip.dataset.bqPlatformRole='1';chip.className='level-chip';chip.textContent='OWNER';chip.title='BibleQuest platform owner';host.prepend(chip);
-      }
-      if(host.querySelector('[data-bq-admin-link]'))return;
-      const a=makeLink();
-      a.style.color='inherit';a.style.display='inline-flex';a.style.alignItems='center';
-      host.prepend(a);
-    });
+
+    // Keep the primary mobile header reserved for BibleQuest status (level/streak).
+    // Administration stays available in Account and the low-priority Home footer.
+    document.querySelectorAll('.top-actions [data-bq-admin-link],.top-actions [data-bq-platform-role]').forEach(x=>x.remove());
+
     document.querySelectorAll('#bqAccountLayer:not(.hidden) .account-brand').forEach(host=>{
       if(!host.querySelector('[data-bq-platform-role]'))host.insertBefore(makeRoleChip(),host.querySelector('[data-account-close]')||null);
-      if(!host.querySelector('[data-bq-admin-link]'))host.append(makeLink('account-secondary','Admin & ministry'));
+      if(!host.querySelector('[data-bq-admin-link]'))host.append(makeLink('account-secondary'));
     });
     document.querySelectorAll('#bqAccountLayer:not(.hidden) .account-profile-head>div').forEach(host=>{
       if(!host.querySelector('[data-bq-platform-role]'))host.prepend(makeRoleChip());
     });
     document.querySelectorAll('.modern-footer-row').forEach(host=>{
       if(host.querySelector('[data-bq-admin-link]'))return;
-      host.append(makeLink('','⚙ Admin & ministry'));
+      host.append(makeLink());
     });
   }
   function stopRetry(){
