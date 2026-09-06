@@ -7,15 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inv
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 29
-- **Verified:** 4
+- **Regression-tested:** 33
+- **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 66
-- **Verified or better:** 33 / 100 (**33% strict parity completion**)
-- **Fully regression-tested:** 29 / 100 (**29% stability coverage**)
+- **Not started:** 65
+- **Verified or better:** 34 / 100 (**34% strict parity completion**)
+- **Fully regression-tested:** 33 / 100 (**33% stability coverage**)
 - **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
-- **Milestone 8A:** Audio / Live Recordings verified
-- **Active target:** Milestone 8B — Media Library (#61)
+- **Milestone 8A:** Audio / Live Recordings frozen at `release/v3.8-audio-recordings`
+- **Milestone 8B:** Media Library verified; final bookkeeping gate pending
+- **Next target:** Milestone 9 — Games (#32–43)
 - **Production:** v2 remains live; v3 has not replaced production
 
 Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`. Milestone states below are schedule/progress labels only.
@@ -31,8 +32,8 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 5 | Lesson engine | **Complete (engine)** | #31 Regression-tested; individual game experiences belong to Games |
 | 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
 | 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
-| 8 | Audio / Live Recordings / Media | **Active** | #57–60 Verified; #61 Media Library next |
-| 9 | Games | **Not started** | #32–43 migration/verification, including one game lifecycle owner |
+| 8 | Audio / Live Recordings / Media | **Complete candidate** | #57–60 Regression-tested; #61 Verified; final exact bookkeeping regression then freeze `release/v3.9-media-library` |
+| 9 | Games | **Next** | #32–43; start with one launcher/lifecycle owner (#41) plus Quick Recall (#32) |
 | 10 | Bible World | **Not started** | #44–45 |
 | 11 | Tutorial / avatar | **Not started** | #84–85 |
 | 12 | Secondary features | **Not started** | Remaining guided study, notes, community, ministry, admin, PWA/offline, recovery, and related parity rows |
@@ -40,45 +41,50 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 14 | Mobile regression | **Not started** | Full accumulated mobile workflow pass after parity audit |
 | 15 | Production deployment | **Not started** | Deploy v3 only after parity + stability gates pass |
 
-## Milestone 8A evidence
+## Milestone 8 completion evidence
 
-Audio / Live Recordings passed the entire accumulated suite on isolated verification run `34044293858` at `a4493a9b72d6d3ef1d1ccc4f4e6371b30f75ae99`.
+Audio / Live Recordings passed its accumulated suite on run `34044293858`; the Audio bookkeeping suite later passed on run `34044792031`. Media Library then passed the entire later accumulated suite on run `34045487840`.
 
-Acceptance demonstrated:
-1. One Audio/player owner.
-2. One Recordings lifecycle owner.
-3. Defined API/media boundary with bounded request failure.
-4. Guest access produces no cloud request.
-5. Loading, empty and error states are explicit.
-6. Play, pause, seek and stop operate through the single owner.
-7. Switching sources tears the prior iframe down first.
-8. Leaving and returning does not leave hidden/duplicate players.
-9. Unsupported/malformed recording sources fail safely.
-10. Legacy valid YouTube live URLs remain readable even when a stored `youtube_id` is missing.
-11. Desktop and 390px mobile browser regressions pass.
-12. All earlier v3 milestones remained green, regression-promoting Full Transform (#47).
+The later Media Library run demonstrated:
+1. Existing shell/account/Reader/progress/lesson/Daily Mission/Transform regressions remain green.
+2. Audio/Recordings edge and browser regressions remain green, regression-promoting #57–60.
+3. Media Library architecture and edge tests pass.
+4. Guest route makes no protected cloud request.
+5. Browse, All/Featured filter and search work.
+6. Media opens through the existing Recordings → Audio ownership chain.
+7. Play/pause/seek/stop work without a second player.
+8. Back-to-library, source reopen, route leave and return leave no hidden/duplicate player.
+9. Desktop and 390px mobile workflows pass with no overflow and 44px minimum controls.
+10. Media Library remains a browse orchestration layer rather than another backend/player runtime.
 
 Current bookkeeping:
 - #47 Full Transform — **Regression-tested**
-- #57 Audio manager — **Verified**
-- #58 Recordings list — **Verified**
-- #59 Live Recordings playback — **Verified**
-- #60 Recording manager — **Verified**
+- #57 Audio manager — **Regression-tested**
+- #58 Recordings list — **Regression-tested**
+- #59 Live Recordings playback — **Regression-tested**
+- #60 Recording manager — **Regression-tested**
+- #61 Media Library — **Verified**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **29 Regression-tested / 4 Verified / 1 Implemented / 66 Not started**
+- Totals — **33 Regression-tested / 1 Verified / 1 Implemented / 65 Not started**
 
-## Milestone 8B acceptance contract — Media Library (#61)
+## Milestone 9 implementation order — Games
 
-1. Browse supported published media through an owning media service/data boundary.
-2. Explicit loading, empty, permission and failure states.
-3. Open supported media through existing Audio/Recordings ownership when playback is required; do not create another player owner.
-4. External resources use validated safe links and clean return behavior.
-5. Leaving and returning keeps shell/navigation stable and does not leak media state or listeners.
-6. Guest/account boundaries are explicit; guests must not accidentally contact protected cloud data.
-7. Desktop and 390px mobile workflows pass without overflow or unusable controls.
-8. Architecture validation must reject a second media/player runtime.
-9. The entire accumulated v3 suite must pass before #61 is promoted.
-10. After #61 is Verified, #57–60 become Regression-tested and the exact green bookkeeping checkpoint is frozen as the complete Milestone 8 release.
+To avoid rebuilding the old fragmented runtime, Games starts by defining one launcher/lifecycle boundary and immediately exercising it with a real game.
+
+1. #41 Game launcher — one launch/switch/teardown/session owner.
+2. #32 Quick Recall — first complete game through that launcher; answer → feedback → score → next → finish → replay.
+3. #33 Context Challenge.
+4. #34 Mixed Quest.
+5. #35 Per-book Recall.
+6. #36 Character Detective / Who Am I.
+7. #37 Timeline game.
+8. #38 Kids Memory Match.
+9. #39 Hiragana Match.
+10. #40 Kids Bible Who Am I.
+11. #42 Same-room Play Together.
+12. #43 Live Rooms.
+
+Each game must use defined shared lifecycle/progress/content interfaces, clean up all listeners/state on switch/leave, pass mobile interaction, and run the entire accumulated suite before promotion.
 
 ## Deferred parity debt that must be cleared before 100%
 
@@ -93,6 +99,6 @@ Current bookkeeping:
 - Do not modify `main` during the rebuild line.
 - Do not replace production with incomplete v3.
 - Do not modify Cloudflare during the isolated rebuild.
-- Each milestone closes only on an exact green commit and a frozen known-good release snapshot.
+- Each milestone closes only on an exact green bookkeeping commit and a frozen known-good release snapshot.
 - Every bug fix records a root cause and adds a regression test that would have caught the bug.
-- Normal v3 CI remains manual-only; isolated one-shot verification branches may temporarily use a push trigger solely to execute a single accumulated gate.
+- Normal v3 CI remains manual-only; isolated one-shot verification branches may temporarily use a push trigger solely for a single accumulated gate.
