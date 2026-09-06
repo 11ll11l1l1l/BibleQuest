@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 37
+- **Regression-tested:** 38
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 61
+- **Not started:** 60
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -54,8 +54,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 31 | Core lesson engine | Yes | Fragmented old | Regression-tested | shared lesson lifecycle; resume; completion; errors |
 | 32 | Quick Recall | Yes | Clean | Regression-tested | answer; feedback; score; next; finish; replay |
 | 33 | Context Challenge | Yes | Clean | Regression-tested | context question workflow; references; score |
-| 34 | Mixed Quest | Yes | Clean | Verified | mixed pool; finish; score persistence |
-| 35 | Per-book Recall | Yes | Clean | Not started | load book pack; reveal; rate; next; finish; reload |
+| 34 | Mixed Quest | Yes | Clean | Regression-tested | mixed pool; finish; score persistence |
+| 35 | Per-book Recall | Yes | Clean | Verified | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Not started | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Not started | order interaction; result; replay |
 | 38 | Kids Memory Match | Yes | Clean | Not started | full match; reset; mobile |
