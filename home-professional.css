@@ -1,0 +1,106 @@
+/* Final home-page hierarchy and touch-layout polish. Loaded after mobile rules on purpose. */
+body.bq-modern-home{background:linear-gradient(180deg,#f7f8f4 0%,#f3f5f0 100%)}
+body.bq-modern-home .app{width:min(100% - 24px,760px);max-width:760px;margin-inline:auto;padding-bottom:96px}
+body.bq-modern-home .topbar{min-height:54px;padding:10px 2px 8px;align-items:center}
+body.bq-modern-home .brand{font-size:20px;letter-spacing:-.45px}
+body.bq-modern-home .top-actions{gap:7px}
+body.bq-modern-home .level-chip,body.bq-modern-home .streak{min-height:32px;display:inline-flex;align-items:center;padding:0 10px;border-radius:999px;font-size:11px}
+
+body.bq-modern-home .hero{min-height:118px;margin-top:2px;padding:18px 18px;border-radius:24px;background:linear-gradient(135deg,#eef6ef 0%,#fffaf0 100%);border:1px solid rgba(55,91,67,.1);box-shadow:0 10px 28px rgba(33,52,40,.06)}
+body.bq-modern-home .hero-copy{width:min(78%,520px)}
+body.bq-modern-home .hero .eyebrow{font-size:9px;letter-spacing:.12em;font-weight:900;color:#617468}
+body.bq-modern-home .hero h1{margin:5px 0 5px;font-size:clamp(24px,6vw,30px);line-height:1.03;letter-spacing:-.75px;color:#1f3127}
+body.bq-modern-home .hero p{max-width:430px;margin:0;font-size:12px;line-height:1.45;color:#66766d}
+body.bq-modern-home .hero .level-row{margin-top:10px}
+body.bq-modern-home .hero .progress{height:6px;background:rgba(54,84,65,.1)}
+body.bq-modern-home .hero .level-row small{font-size:9px;color:#6d7b73}
+body.bq-modern-home .mascot{right:13px;bottom:11px;font-size:56px;filter:saturate(.92)}
+
+body.bq-modern-home .quick-stats{margin-top:9px;padding:3px;border-radius:16px;background:#fff;border:1px solid rgba(38,61,47,.08);box-shadow:0 7px 20px rgba(36,50,41,.04)}
+body.bq-modern-home .quick-stats>div{min-height:48px;padding:6px 8px;display:flex;flex-direction:column;justify-content:center}
+body.bq-modern-home .quick-stats b{font-size:16px;color:#25362c}
+body.bq-modern-home .quick-stats span{font-size:9px;color:#758079}
+
+body.bq-modern-home .modern-home{margin-top:11px}
+body.bq-modern-home .modern-focus{display:grid;grid-template-columns:1fr;gap:9px}
+body.bq-modern-home .modern-daily{min-height:104px;padding:17px 16px;border-radius:20px;grid-template-columns:46px minmax(0,1fr) 18px;gap:12px;background:linear-gradient(135deg,#2f704d 0%,#43865e 100%);box-shadow:0 10px 24px rgba(47,112,77,.19)}
+body.bq-modern-home .modern-daily.done{background:linear-gradient(135deg,#456856,#607d6b)}
+body.bq-modern-home .modern-focus-icon{width:46px;height:46px;border-radius:14px;font-size:22px}
+body.bq-modern-home .modern-daily small{font-size:9px;letter-spacing:.09em}
+body.bq-modern-home .modern-daily h2{font-size:19px;line-height:1.15;margin:3px 0 4px}
+body.bq-modern-home .modern-daily p{font-size:11px;line-height:1.4;max-width:520px}
+body.bq-modern-home .modern-daily>i{font-size:25px}
+
+body.bq-modern-home .modern-review{min-height:62px;padding:10px 13px;border-radius:17px;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;background:#fff;border:1px solid rgba(116,91,25,.12);box-shadow:0 7px 20px rgba(45,55,48,.05)}
+body.bq-modern-home .modern-review>span{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#fff5d9;font-size:20px}
+body.bq-modern-home .modern-review>div{min-width:0}
+body.bq-modern-home .modern-review b{font-size:13px;color:#2a382f}
+body.bq-modern-home .modern-review small{font-size:10px;color:#788279}
+body.bq-modern-home .modern-review::after{content:'›';font-size:23px;color:#8a928c;font-weight:500}
+
+body.bq-modern-home .modern-label{margin:20px 2px 9px;align-items:center}
+body.bq-modern-home .modern-label span{font-size:17px;color:#23342a}
+body.bq-modern-home .modern-label small{font-size:10px;color:#7a857d}
+
+body.bq-modern-home .modern-hubs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+body.bq-modern-home .modern-hub{min-height:116px;padding:14px;border-radius:20px;border:1px solid rgba(39,61,47,.085);box-shadow:0 7px 22px rgba(35,48,40,.055);background:#fff;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+body.bq-modern-home .modern-hub>span{font-size:27px;line-height:1}
+body.bq-modern-home .modern-hub b{margin-top:11px;font-size:15px;line-height:1.15;color:#24352b}
+body.bq-modern-home .modern-hub small{max-width:none;margin-top:3px;font-size:10px;line-height:1.3;color:#727f77}
+body.bq-modern-home .modern-hub>i{font-size:21px;color:#87918a}
+body.bq-modern-home .modern-hub.play{background:linear-gradient(145deg,#f4f8fc,#fff)}
+body.bq-modern-home .modern-hub.read{background:linear-gradient(145deg,#fff9e9,#fff)}
+body.bq-modern-home .modern-hub.grow{background:linear-gradient(145deg,#f1f8f1,#fff)}
+body.bq-modern-home .modern-hub.together{background:linear-gradient(145deg,#fff4f5,#fff)}
+body.bq-modern-home .modern-hub[data-kids-games]{grid-column:1/-1;min-height:64px;display:grid;grid-template-columns:42px minmax(0,1fr) 22px;align-items:center;align-content:center;gap:10px;padding:10px 13px;background:#fff;border-style:dashed;box-shadow:none}
+body.bq-modern-home .modern-hub[data-kids-games]>span{grid-column:auto;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#f6f2ff;font-size:21px}
+body.bq-modern-home .modern-hub[data-kids-games] b{margin:0;font-size:13px}
+body.bq-modern-home .modern-hub[data-kids-games] small{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.bq-modern-home .modern-hub[data-kids-games]>i{align-self:center}
+
+body.bq-modern-home button,body.bq-modern-home a{-webkit-tap-highlight-color:transparent}
+body.bq-modern-home .modern-daily,body.bq-modern-home .modern-review,body.bq-modern-home .modern-hub{cursor:pointer}
+body.bq-modern-home .modern-daily:focus-visible,body.bq-modern-home .modern-review:focus-visible,body.bq-modern-home .modern-hub:focus-visible,body.bq-modern-home .modern-footer-row button:focus-visible{outline:3px solid rgba(46,111,76,.28);outline-offset:2px}
+@media(hover:hover){body.bq-modern-home .modern-hub:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(35,48,40,.075);border-color:rgba(47,112,77,.16)}body.bq-modern-home .modern-review:hover{border-color:rgba(47,112,77,.16)}}
+
+body.bq-modern-home .modern-footer-row{margin:15px 1px 2px;padding:9px 2px 4px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:7px 12px;border-top:1px solid rgba(39,61,47,.07);font-size:9px}
+body.bq-modern-home .modern-footer-row button{min-height:40px;padding:7px 2px;font-size:10px}
+body.bq-modern-home .modern-footer-row span{align-self:center;color:#818a84}
+
+body.bq-modern-home .bottom{height:68px;padding-bottom:max(4px,env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-top:1px solid rgba(40,61,48,.08);box-shadow:0 -6px 22px rgba(35,48,40,.05)}
+body.bq-modern-home .navbtn{min-height:54px;font-size:10px;gap:1px}
+body.bq-modern-home .navbtn b{font-size:20px}
+
+body.bq-modern-home .modern-sheet-panel{width:min(720px,100%);max-height:min(82vh,720px);border-radius:26px 26px 0 0;padding-inline:14px;background:#f8faf7}
+body.bq-modern-home .modern-sheet-list{gap:6px}
+body.bq-modern-home .modern-sheet-list>button{min-height:66px;padding:10px;border-radius:16px;grid-template-columns:42px minmax(0,1fr) 20px}
+body.bq-modern-home .modern-sheet-list b{font-size:13px}
+body.bq-modern-home .modern-sheet-list small{font-size:9.5px;line-height:1.35}
+
+@media(max-width:420px){
+  body.bq-modern-home .app{width:min(100% - 18px,760px)}
+  body.bq-modern-home .hero{min-height:112px;padding:16px;border-radius:21px}
+  body.bq-modern-home .hero-copy{width:80%}
+  body.bq-modern-home .hero h1{font-size:24px}
+  body.bq-modern-home .hero p{font-size:11px;line-height:1.35}
+  body.bq-modern-home .mascot{font-size:49px;right:9px}
+  body.bq-modern-home .modern-daily{min-height:98px;padding:15px 13px;grid-template-columns:42px minmax(0,1fr) 15px;gap:9px}
+  body.bq-modern-home .modern-focus-icon{width:42px;height:42px}
+  body.bq-modern-home .modern-daily h2{font-size:17px}
+  body.bq-modern-home .modern-daily p{font-size:10px}
+  body.bq-modern-home .modern-hubs{gap:8px}
+  body.bq-modern-home .modern-hub{min-height:112px;padding:13px}
+  body.bq-modern-home .modern-hub b{font-size:14px}
+  body.bq-modern-home .modern-hub small{font-size:9px}
+  body.bq-modern-home .modern-label small{display:none}
+}
+
+@media(max-width:340px){
+  body.bq-modern-home .hero-copy{width:77%}
+  body.bq-modern-home .hero h1{font-size:22px}
+  body.bq-modern-home .modern-hubs{grid-template-columns:1fr}
+  body.bq-modern-home .modern-hub{min-height:82px;display:grid;grid-template-columns:40px minmax(0,1fr) 18px;align-items:center;align-content:center;gap:9px}
+  body.bq-modern-home .modern-hub>span{grid-column:auto;font-size:23px}
+  body.bq-modern-home .modern-hub b{margin-top:0}
+  body.bq-modern-home .modern-hub[data-kids-games]{grid-column:auto}
+}
