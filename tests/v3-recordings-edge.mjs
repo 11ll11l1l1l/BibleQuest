@@ -18,8 +18,9 @@ let authenticated=false,mediaCalls=0,fail=false;
 const session={isAuthenticated:()=>authenticated};
 const media={async listLiveRecordings(){mediaCalls++;if(fail)throw new Error('simulated recordings failure');return[
   {id:'one',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Replay',featured:true},
-  {id:'bad',youtube_id:'bad!',title:'Invalid source'},
-  {id:'two',youtube_id:'ZyxWV987654',title:'Bible Study'}
+  {id:'bad',youtube_id:'bad!',youtube_url:'https://youtu.be/not-live',title:'Invalid source'},
+  {id:'two',youtube_id:'ZyxWV987654',title:'Bible Study'},
+  {id:'legacy',youtube_id:'',youtube_url:'https://www.youtube.com/live/Qwerty12345',title:'Legacy Live URL'}
 ]}};
 const recordings=createRecordingsService({media,audio,session});
 
@@ -28,7 +29,8 @@ assert(state.status==='locked'&&state.access==='signin','Guest recordings must b
 assert(mediaCalls===0,'Guest recordings load must not contact cloud media.');
 
 authenticated=true;state=await recordings.load();
-assert(state.status==='ready'&&state.rows.length===2,'Authenticated recordings load must keep only valid rows.');
+assert(state.status==='ready'&&state.rows.length===3,'Authenticated recordings load must keep valid stored-ID and legacy URL rows only.');
+assert(state.rows.find(row=>row.id==='legacy')?.youtubeId==='Qwerty12345','Legacy youtube.com/live URL must recover a missing stored video ID.');
 assert(state.rows[0].title==='Sunday Worship'&&Object.isFrozen(state.rows),'Recordings snapshots must be immutable.');
 recordings.select('one',{});assert(recordings.getState().selectedId==='one','Recording selection failed.');
 recordings.play();recordings.pause();recordings.seek(45);recordings.stop();
