@@ -7,8 +7,8 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 ## Deployment safety
 
 - Production GitHub Pages: **v2 unchanged**.
-- Last frozen milestone: `release/v3.5-lesson-engine` at `e63325882a07681c396d5ecc6e0b0a9765a2e892`.
-- Current work branch: `feature/v3-daily-mission`.
+- Last frozen milestone: `release/v3.6-daily-mission` at `da43d4e8bccd2693639a5a60f824b6e647ca7e68`.
+- Current work branch: `feature/v3-transform-engine`.
 - No Cloudflare changes are part of v3 development.
 
 ## Progress summary
@@ -21,6 +21,8 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 | Not started | 73 |
 | Total | 100 |
 
+Counts remain unchanged during Transform engine implementation. #48 advances only after the engine acceptance suite and browser persistence regression pass; #46/#47 remain Not started until their UI workflows exist.
+
 ## Completed milestones
 
 - Milestone 1 — Foundation: #1–#5 Regression-tested.
@@ -30,22 +32,33 @@ This is the working execution ledger. `FEATURE_INVENTORY_V3.md` remains the auth
 - Milestone 5 — Core lesson engine: #31 Regression-tested.
 - Milestone 6 — Daily Mission/Journey: #28–#30 Verified.
 
-## Milestone 6 acceptance evidence
+## Current milestone — Milestone 7A Transform engine
 
-Daily Journey is implemented as one dated five-step lesson on the shared engine: Retrieve → Context → Learn → Apply → Reflect. `src/app/daily-mission.js` stores no parallel mission state and uses only the lesson, progress and reader owners.
+Old Transform audit found two user-facing surfaces that must eventually share one clean state owner:
 
-Verified behavior includes pure non-persisting home preview, deterministic civil-date rotation, timezone-boundary rollover, invalid-date rejection, independent next-day sessions, reload/resume at an intermediate stage, Reader round-trip through the existing owner/router, five deterministic step progress events, cross-service retry healing, exactly one non-meaningful +25 completion bonus, completion reload without duplicate XP, streak continuation, guest execution with zero Supabase traffic, desktop flow, and 390px mobile layout/touch targets.
+1. Basic spiritual self-reflection (#46): 12 dimensions rated 1–5, a local result, lowest-three focus guidance, and an explicit “not a spiritual score/diagnosis” boundary.
+2. Full Transform (#47): 20-item Big Five reflection, five thinking-pattern scenarios, recommendations/action experiment, private journal, and bounded history.
+
+The old full runtime also had its own direct `localStorage`, global `window.BQ_TRANSFORMATION`, body-level modal/root, mutable page indexes, event delegation, standalone account gate and runtime-recovery loader. None of those lifecycle mechanisms are being copied into v3.
+
+Engine contract:
+
+- `src/engines/transform.js` is the only Transform persistence/state/scoring owner.
+- Spiritual, personality, bias and reflection domains share one versioned local state schema while remaining independently resettable.
+- Ratings and choices are validated before mutation.
+- Derived results are reconstructed from validated answers on reload rather than trusted from stored score objects.
+- Changing an answer invalidates that domain’s prior result.
+- Personality reverse-key scoring and score-band thresholds preserve the old useful behavior.
+- Thinking-pattern scoring preserves the five old scenario contracts without labeling the person as “having” a bias.
+- Recommendations are deterministic and bounded to four.
+- Personality/bias reset preserves the private reflection journal.
+- History is bounded to ten entries.
+- Storage writes are atomic with respect to engine memory.
+- Engine has no DOM, router, Supabase or progress dependency.
 
 ## Next major milestone
 
-Milestone 7 — Transform:
-
-1. Audit basic Transform (#46), full Transform (#47), and the multiple old Transform paths (#48).
-2. Build `src/engines/transform.js` as the single deterministic Transform state owner before feature UI migration.
-3. Preserve private local reflection behavior and explicit guest/account boundaries.
-4. Reuse existing Bible reader/service contracts for passage selection rather than creating another Bible loader.
-5. Do not copy the old standalone runtime recovery/global-module architecture into v3.
-6. No Audio/Recordings, Games, Bible World, Tutorial, or secondary-feature implementation until Transform is frozen.
+After #48 Transform engine is independently verified, build #46 Basic Transform UI against it, then #47 Full Transform UI against the same owner. Only after all three pass accumulated regression can the Transform release freeze. Audio/Recordings remains next after that.
 
 ## Defect / root-cause ledger
 
@@ -57,7 +70,7 @@ Milestone 7 — Transform:
 - `V3-READER-ACCEPTANCE-001` — native invalid-search validation is tested as native validation rather than weakened to satisfy JavaScript expectations.
 - `V3-PROGRESS-UI-001` — static progress-chip readability was separated from interactive touch-target semantics.
 
-No Daily Journey acceptance defect required a code workaround after publication; the candidate passed its architecture, service, accumulated browser and dedicated Daily Journey suites.
+Transform engine status remains unpromoted until exact CI evidence exists.
 
 ## Release rule
 

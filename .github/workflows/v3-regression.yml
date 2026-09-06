@@ -33,6 +33,8 @@ jobs:
         run: node tests/v3-lesson-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
+      - name: Run Transform engine edge regression
+        run: node tests/v3-transform-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -57,3 +59,5 @@ jobs:
         run: timeout 240s node tests/v3-lesson-smoke.mjs
       - name: Run v3 Daily Mission browser regression
         run: timeout 240s node tests/v3-daily-mission-smoke.mjs
+      - name: Run v3 Transform engine browser regression
+        run: timeout 240s node tests/v3-transform-engine-smoke.mjs

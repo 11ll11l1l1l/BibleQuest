@@ -28,7 +28,7 @@ BibleQuest v3
 |
 +-- Engines
 |   +-- src/engines/lesson.js      one guided-lesson lifecycle owner
-|   +-- src/engines/transform.js   future one transform engine
+|   +-- src/engines/transform.js   one Transform state/scoring owner
 |   +-- src/engines/game.js        future one game launcher/lifecycle
 |
 +-- Features
@@ -37,18 +37,11 @@ BibleQuest v3
 |   +-- src/features/reader/
 |   +-- src/features/progress/
 |   +-- src/features/daily-mission/
-|   +-- src/features/transform/
+|   +-- src/features/transform/    definitions now; UI after engine verification
 |   +-- src/features/recordings/
 |   +-- src/features/games/
 |   +-- src/features/bible-world/
 |   +-- src/features/tutorial/
-|
-+-- Shared UI
-    +-- src/ui/shell.js
-    +-- src/ui/app.css
-    +-- src/ui/reader.css
-    +-- src/ui/progress.css
-    +-- src/ui/daily-mission.css
 ```
 
 ## Hard boundaries
@@ -63,23 +56,23 @@ BibleQuest v3
 8. Bible metadata, pack fetch/cache, search and external Bible-tool links go through `src/core/bible.js` only.
 9. Reader selection/navigation/read-state orchestration goes through `src/app/reader.js`.
 10. XP, streak, activity counters and achievements are mutated only by `src/core/progress.js`; callers submit deterministic event IDs.
-11. Cross-service progress events use retry-safe ordering and idempotent reconciliation.
-12. Guided lesson lifecycle state is owned only by `src/engines/lesson.js`.
-13. The lesson engine supports content, choice, confirmation and text-response steps and does not absorb game-specific mechanics.
-14. The lesson engine does not mutate progress; progress events are explicit at the orchestration boundary.
-15. Daily Journey composition, dated definition selection, progress reconciliation and reader handoff are owned by `src/app/daily-mission.js`; it stores no parallel mission state.
-16. Daily Journey passage rotation uses the explicit civil date/timezone boundary supplied by the progress service, not random render-time selection.
-17. Daily Journey UI does not call storage, progress, lesson, reader or router internals directly.
-18. Audio, recording, Transform and games each receive one lifecycle owner only when their locked milestone begins.
-19. Features render only inside the shell view and must clean up listeners on teardown.
+11. Guided lesson lifecycle state is owned only by `src/engines/lesson.js`.
+12. Daily Journey composition and reader/progress reconciliation are owned by `src/app/daily-mission.js`; it stores no parallel mission state.
+13. All Transform answers, derived scores/results, journal/reflection, bounded history, reset behavior and Transform persistence are owned only by `src/engines/transform.js`.
+14. Transform definition/content data lives in `src/features/transform/content.js`; UI must consume engine state rather than recalculate scores.
+15. Persisted Transform derived results are never authoritative. On load, result values are reconstructed from validated answers when a valid result timestamp proves the assessment had been calculated.
+16. A changed Transform answer invalidates that domain’s previous result before a new calculation.
+17. Transform engine writes storage before replacing in-memory state and has no DOM, router, Supabase or progress dependency.
+18. Basic/full Transform UI is not implemented until the engine has independently passed architecture, service and browser regression.
+19. Audio, recording and games remain untouched until their locked milestones.
 20. No v3 source may depend on `window.BQ*` legacy globals.
 21. Copyrighted Bible translations are not bundled without verified redistribution rights.
 
 ## Feature migration procedure
 
-For each feature: audit old behavior → define acceptance → implement behind owners → run architecture/service tests → run full accumulated browser suite → promote in a separate ledger commit → rerun the exact ledger commit → freeze known-good release → continue.
+Audit old behavior → define acceptance → implement behind owners → run architecture/service tests → run full accumulated browser suite → promote in a separate ledger commit → rerun exact ledger commit → freeze release → continue.
 
-Every bug fix must record both root cause and the automated test that prevents recurrence.
+Every bug fix must document root cause and the automated regression that prevents recurrence.
 
 ## Milestone order
 
@@ -99,18 +92,8 @@ Every bug fix must record both root cause and the automated test that prevents r
 14. Mobile regression.
 15. Production deployment.
 
-No unrelated new feature work is allowed during parity migration.
-
 ## Releases
 
-Known-good sequence:
+Known-good sequence: `release/v3.0-base` → `release/v3.1-session-core` → `release/v3.2-auth-complete` → `release/v3.3-reader-core` → `release/v3.4-progress-core` → `release/v3.5-lesson-engine` → `release/v3.6-daily-mission`.
 
-- `release/v3.0-base`
-- `release/v3.1-session-core`
-- `release/v3.2-auth-complete`
-- `release/v3.3-reader-core`
-- `release/v3.4-progress-core`
-- `release/v3.5-lesson-engine`
-- next: Daily Mission snapshot only after #28–#30 and their exact ledger/status commit are green
-
-Production remains the isolated v2 GitHub Pages deployment until an explicit cutover decision.
+Next snapshot is Transform only after #48 engine plus #46/#47 feature workflows are independently verified and the exact promoted ledger is green. Production remains isolated v2.
