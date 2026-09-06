@@ -65,4 +65,10 @@ if(runtimeRegistry.includes('new MutationObserver'))fail('Runtime feature regist
 if(!runtimeRegistry.includes('bq-modern-home-rendered'))fail('Runtime feature injection must follow the Home render lifecycle');
 console.log('✓ Runtime feature injection guard');
 
+const psychPolish=read('psychometrics-polish.js');
+if(psychPolish.includes('new MutationObserver'))fail('Psychometrics polish must not create a self-triggering subtree mutation loop');
+if(!psychPolish.includes("root.addEventListener('click',()=>setTimeout(polish,50))"))fail('Psychometrics polish must remain event-driven after interactions');
+if(!psychPolish.includes('if(order.innerHTML!==html)order.innerHTML=html'))fail('Psychometrics result-order rewrite must remain idempotent');
+console.log('✓ Psychometrics polish mutation-loop guard');
+
 console.log('BibleQuest deployment gate passed.');
