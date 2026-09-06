@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 27
+- **Regression-tested:** 28
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 71
+- **Not started:** 70
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -66,8 +66,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 43 | Live Rooms | Yes | Compatibility | Not started | create/join/leave; reconnect; no stale room state |
 | 44 | Bible World | Yes | Clean | Not started | render path; unlock thresholds; route into content |
 | 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
-| 46 | Transformation basic | Yes | Clean | Verified | answer all dimensions; calculate; persist; reopen |
-| 47 | Transformation full | Yes | Standalone old | Not started | passage/input→transform→result→leave→return; guest + account; mobile |
+| 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
+| 47 | Transformation full | Yes | Standalone old | Verified | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
 | 48 | Transform engine | Yes | Multiple old paths | Regression-tested | one engine; deterministic state transitions; no stale instance |
 | 49 | Story Journey | Yes | Clean | Not started | scene progression; checkpoint; finish; replay |
 | 50 | Wisdom Situations | Yes | Clean | Not started | scenario; choose; correct contract; references; replay |
@@ -128,4 +128,4 @@ BibleQuest v3 reaches feature parity only when every applicable row is **Verifie
 
 ## Regression rule
 
-After each feature milestone, the entire v3 regression suite must run. A newly verified feature becomes **Regression-tested** only after a later milestone also passes the full suite.
+After each feature milestone, the entire v3 regression suite must run. A newly verified feature becomes **Regression-tested** only after a later feature milestone also passes the full suite.
