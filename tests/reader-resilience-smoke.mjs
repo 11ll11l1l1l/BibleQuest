@@ -15,6 +15,16 @@ async function openGenesis(){
   await page.waitForSelector('#bqTranslationSelect');
 }
 
+function nltFixture(route){
+  const url=new URL(route.request().url());
+  const ref=url.searchParams.get('ref')||'';
+  return route.fulfill({status:200,contentType:'text/html',body:`<div class="nlt-test-fixture" style="background:url(javascript:bad)">NLT TEST FIXTURE ${ref}</div><script>window.__nltUnsafe=1</script>`});
+}
+
+function rangeSize(ref=''){
+  const m=ref.match(/:(\d+)-(\d+)$/);return m?Number(m[2])-Number(m[1])+1:Infinity;
+}
+
 try{
   console.log('phase: Japanese source failure');
   await page.route('https://api.getbible.net/**',route=>route.abort());
@@ -42,8 +52,65 @@ try{
   await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='BSB');
   await page.unroute('**/data/packs/tagalog/GEN.json');
 
-  console.log('phase: licensed-link versions');
-  for(const code of ['NLT','ESV','NIV','AMP']){
+  console.log('phase: live NLT success');
+  const nltRequests=[];
+  await page.route('https://api.nlt.to/**',route=>{nltRequests.push(route.request().url());return nltFixture(route)});
+  await page.locator('#bqTranslationSelect').selectOption('NLT');
+  await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='NLT');
+  assert.match(await page.locator('.verse-list').innerText(),/NLT TEST FIXTURE/,'NLT should render the live publisher-response surface');
+  assert.equal(await page.locator('.verse-list script').count(),0,'NLT publisher HTML must be sanitized before insertion');
+  assert.equal(await page.locator('.nlt-test-fixture').getAttribute('style'),null,'NLT publisher HTML must not retain inline active styles');
+  assert.equal(await page.evaluate(()=>Boolean(window.__nltUnsafe)),false,'sanitized NLT HTML must not execute publisher-returned script');
+  assert.match(await page.locator('[data-bq-version-source]').innerText(),/copyright © 1996, 2004, 2015 by Tyndale House Foundation/,'NLT display must retain the required publisher credit');
+  assert.ok(nltRequests.length>=1,'NLT selection must call the official NLT API');
+  for(const request of nltRequests){const url=new URL(request),ref=url.searchParams.get('ref');assert.equal(url.hostname,'api.nlt.to');assert.equal(url.searchParams.get('key'),'TEST');assert.ok(rangeSize(ref)<=50,`NLT request must stay within 50 verses: ${ref}`)}
+
+  console.log('phase: NLT explicit failure and recovery');
+  await page.locator('#bqTranslationSelect').selectOption('BSB');
+  await page.locator('#readerChapter').selectOption('2');
+  await page.waitForSelector('#bqTranslationSelect');
+  await page.unroute('https://api.nlt.to/**');
+  await page.route('https://api.nlt.to/**',route=>route.abort());
+  await page.locator('#bqTranslationSelect').selectOption('NLT');
+  await page.waitForSelector('.reader-load-failure');
+  const nltFailure=await page.locator('.reader-load-failure').innerText();
+  assert.match(nltFailure,/NLT text unavailable/);
+  assert.match(nltFailure,/will not substitute another translation under an NLT label or invent missing Scripture text/);
+  assert.equal(await page.locator('.verse-list[data-bq-scripture="NLT"]').count(),0,'failed NLT request must not retain an NLT Scripture label');
+  assert.equal(await page.locator('.reader-load-failure .verse-text').count(),0,'failed NLT request must not synthesize verse rows');
+  const nltFallback=await page.locator('.reader-load-failure a[href*="version=NLT"]').getAttribute('href');
+  assert.match(nltFallback,/^https:\/\/www\.biblegateway\.com\//,'NLT failure must retain a legal external-reader fallback');
+  await page.locator('[data-reader-use-bsb]').click();
+  await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='BSB');
+  await page.unroute('https://api.nlt.to/**');
+
+  console.log('phase: NLT 50-verse request ceiling');
+  const psalmRequests=[];
+  await page.route('https://api.nlt.to/**',route=>{psalmRequests.push(route.request().url());return nltFixture(route)});
+  await page.evaluate(()=>window.BQReader.openBook('PSA',119));
+  await page.waitForSelector('#bqTranslationSelect');
+  await page.locator('#bqTranslationSelect').selectOption('NLT');
+  await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='NLT');
+  assert.equal(psalmRequests.length,4,'Psalm 119 should be split into four <=50-verse NLT requests');
+  const psalmRefs=psalmRequests.map(x=>new URL(x).searchParams.get('ref'));
+  assert.ok(psalmRefs.every(ref=>rangeSize(ref)<=50),`all NLT chunks must stay <=50 verses: ${psalmRefs.join(', ')}`);
+  assert.match(psalmRefs[0],/Psalm[s]? 119:1-50/i);
+  assert.match(psalmRefs.at(-1),/119:151-176$/);
+  await page.unroute('https://api.nlt.to/**');
+
+  console.log('phase: local NLT daily-limit guard');
+  await page.locator('#bqTranslationSelect').selectOption('BSB');
+  await page.locator('#readerChapter').selectOption('118');
+  await page.evaluate(()=>{const d=new Date(),day=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;localStorage.setItem('biblequest_nlt_api_usage_v1',JSON.stringify({day,count:500}))});
+  await page.locator('#bqTranslationSelect').selectOption('NLT');
+  await page.waitForSelector('.reader-load-failure');
+  assert.match(await page.locator('.reader-load-failure').innerText(),/daily request limit reached/,'device must fail closed before exceeding Tyndale anonymous daily quota');
+  await page.evaluate(()=>localStorage.removeItem('biblequest_nlt_api_usage_v1'));
+  await page.locator('[data-reader-use-bsb]').click();
+  await page.waitForFunction(()=>document.querySelector('.verse-list')?.dataset.bqScripture==='BSB');
+
+  console.log('phase: linked licensed versions');
+  for(const code of ['ESV','NIV','AMP']){
     await page.locator('#bqTranslationSelect').selectOption(code);
     const link=page.locator('.verse-list a.reader-primary');
     await link.waitFor();
