@@ -1,26 +1,137 @@
 <!doctype html>
 <html lang="en-PH">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f5f1e8">
-  <meta name="description" content="BibleQuest — a local-first Bible learning journey.">
-  <title>BibleQuest</title>
-  <link rel="icon" href="app-icon.svg" type="image/svg+xml">
-  <link rel="manifest" href="bq2-manifest.webmanifest">
-  <link rel="stylesheet" href="bq2.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f2">
+<meta name="description" content="BibleQuest — learn the Bible through games, stories, situations, challenges, reflection, congregation activities, and Christ-centered growth.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="app-icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="decks.css">
+<link rel="stylesheet" href="reader.css">
+<link rel="stylesheet" href="verse-peek.css">
+<link rel="stylesheet" href="japanese-learning.css">
+<link rel="stylesheet" href="sequence.css">
+<link rel="stylesheet" href="storyjourney.css">
+<link rel="stylesheet" href="growth.css">
+<link rel="stylesheet" href="growth-nudge.css">
+<link rel="stylesheet" href="learning-engine.css">
+<link rel="stylesheet" href="open-review.css">
+<link rel="stylesheet" href="ui-enhancements.css">
+<link rel="stylesheet" href="extra-games.css">
+<link rel="stylesheet" href="couples.css">
+<link rel="stylesheet" href="community.css">
+<link rel="stylesheet" href="congregation-recognition.css">
+<link rel="stylesheet" href="group-play.css">
+<link rel="stylesheet" href="cloud.css">
+<link rel="stylesheet" href="content-report.css">
+<link rel="stylesheet" href="hard-wisdom.css">
+<link rel="stylesheet" href="ministry-hub.css">
+<link rel="stylesheet" href="media-library.css">
+<link rel="stylesheet" href="notification-center.css">
+<link rel="stylesheet" href="leader-dashboard.css">
+<link rel="stylesheet" href="assignment-advanced.css">
+<link rel="stylesheet" href="adaptive-learning.css">
+<link rel="stylesheet" href="first-five.css">
+<link rel="stylesheet" href="preview-access.css">
+<link rel="stylesheet" href="account.css">
+<link rel="stylesheet" href="notes.css">
+<link rel="stylesheet" href="innovation.css">
+<link rel="stylesheet" href="modern-home.css">
+<link rel="stylesheet" href="completion.css">
+<link rel="stylesheet" href="kawaii-polish.css">
+<link rel="stylesheet" href="round2-polish.css">
+<link rel="stylesheet" href="pinoy-hero.css">
+<link rel="stylesheet" href="journey-loop.css">
+<link rel="stylesheet" href="journey-groups.css">
+<link rel="stylesheet" href="release-hardening.css">
+<link rel="stylesheet" href="mobile-production.css">
+<link rel="stylesheet" href="tutorial.css">
+<link rel="stylesheet" href="mobile-readability.css">
+<link rel="stylesheet" href="home-professional.css">
+<title>BibleQuest</title>
 </head>
 <body>
-  <div id="app" aria-live="polite"></div>
-  <noscript>BibleQuest requires JavaScript.</noscript>
-  <script src="data/questions.js"></script>
-  <script src="data/stories.js"></script>
-  <script src="bq2-data.js"></script>
-  <script src="bq2.js"></script>
-  <script src="bq2-reader.js"></script>
-  <script src="bq2-games.js"></script>
-  <script src="bq2-grow.js"></script>
-  <script src="bq2-study.js"></script>
-  <script src="bq2-bookquiz.js"></script>
+<div id="app"></div>
+<div id="loader" class="loader-layer hidden" aria-live="polite"></div>
+<script src="cloud-config.js"></script>
+<script src="client-diagnostics.js"></script>
+<script src="cold-start-hardening.js"></script>
+<script src="account.js"></script>
+<script src="guest-access-hardening.js"></script>
+<script src="preview-access.js"></script>
+<script src="onboarding-tutorial.js"></script>
+<script src="data/doctrinal-safety.js"></script>
+<script src="data/doctrinal-context.js"></script>
+<script src="runtime-safety.js"></script>
+<script src="content-moderation-runtime.js"></script>
+<script src="app.js"></script>
+<script src="hard-wisdom.js"></script>
+<script src="reader.js"></script>
+<script src="verse-peek.js"></script>
+<script src="translations.js"></script>
+<script src="japanese-learning.js"></script>
+<script src="sequence.js"></script>
+<script src="storyjourney.js"></script>
+<script src="growth.js"></script>
+<script src="growth-nudge.js"></script>
+<script src="learning-engine.js"></script>
+<script src="open-review.js"></script>
+<script src="extra-games.js"></script>
+<script src="couples.js"></script>
+<script src="community.js"></script>
+<script src="community-bridge.js"></script>
+<script src="tutorial-launcher.js"></script>
+<script src="password-recovery.js"></script>
+<script src="admin-link.js"></script>
+<script src="personality-profile.js"></script>
+<script src="signup-enhancements.js"></script>
+<script src="notes.js"></script>
+<script src="cloud-copy.js"></script>
+<script src="cloud.js"></script>
+<script src="runtime-recovery.js"></script>
+<script src="notification-center.js"></script>
+<script src="congregation-recognition.js"></script>
+<script src="content-report.js"></script>
+<script src="content-review-link.js"></script>
+<script src="group-play.js"></script>
+<script src="live-rooms.js"></script>
+<script src="innovation-suite.js"></script>
+<script src="guided-study-expanded.js"></script>
+<script src="workspace.js"></script>
+<script src="couple-cloud.js"></script>
+<script src="context-lab.js"></script>
+<script src="assignment-center.js"></script>
+<script src="assignment-push.js"></script>
+<script src="assignment-advanced.js"></script>
+<script src="assignment-launch-hardening.js"></script>
+<script src="presence.js"></script>
+<script src="ministry-hub.js"></script>
+<script src="media-library.js"></script>
+<script src="leader-dashboard.js"></script>
+<script src="avatar-vault.js"></script>
+<script src="source-labels.js"></script>
+<script src="ui-taglish.js"></script>
+<script src="account-taglish.js"></script>
+<script src="modern-home.js"></script>
+<script src="transform-launcher.js"></script>
+<script src="pinoy-hero.js"></script>
+<script src="journey-groups.js"></script>
+<script src="linked-activities.js"></script>
+<script src="team-center.js"></script>
+<script src="journey-loop.js"></script>
+<script src="journey-accessibility.js"></script>
+<script src="journey-cloud-sync.js"></script>
+<script src="engagement-v3.js"></script>
+<script src="adaptive-learning.js"></script>
+<script src="first-five.js"></script>
+<script src="frontpage-daily.js"></script>
+<script src="quest-media.js"></script>
+<script src="release-hardening.js"></script>
+<script src="mobile-production.js"></script>
+<script src="runtime-feature-registry.js"></script>
+<script src="pwa-runtime.js"></script>
+<script src="faith-declaration.js"></script>
 </body>
 </html>
