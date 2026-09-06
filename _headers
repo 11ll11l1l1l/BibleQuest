@@ -13,6 +13,18 @@
 /transform.html
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 
+/transformation-v2.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transformation-v2.css
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/standalone-account-gate.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transform-launcher.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
 /psychometrics
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 
@@ -36,9 +48,6 @@
 
 /content-review.html
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-
-/transformation-v2.css
-  Cache-Control: no-cache, must-revalidate
 
 /psychometrics.css
   Cache-Control: no-cache, must-revalidate
