@@ -3,7 +3,7 @@
   const REVIEW_ROLES=new Set(['leader','pastor','admin']);
   let retryTimer=null,retries=0;
   function allowed(){const admin=window.BQAdminAccess?.status?.();if(admin?.allowed)return true;const role=window.BQCloud?.status?.().activeCongregation?.role||'';return REVIEW_ROLES.has(role)}
-  function link(className='',label='🛡 Content review'){const a=document.createElement('a');a.href='content-review.html';a.dataset.bqContentReviewLink='1';a.className=className;a.textContent=label;a.style.textDecoration='none';return a}
+  function link(className='',label='🛡 Content review'){const a=document.createElement('a');a.href='content-review';a.dataset.bqContentReviewLink='1';a.className=className;a.textContent=label;a.style.textDecoration='none';return a}
   function remove(){document.querySelectorAll('[data-bq-content-review-link]').forEach(x=>x.remove())}
   function inject(){
     if(!allowed()){remove();return false}
