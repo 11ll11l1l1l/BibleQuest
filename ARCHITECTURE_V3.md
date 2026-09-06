@@ -28,7 +28,7 @@ BibleQuest v3
 |   +-- src/core/storage.js        one browser persistence boundary
 |   +-- src/core/api.js            one Supabase/remote API wrapper
 |   +-- src/core/bible.js          one Bible source/fetch/cache/search/link service
-|   +-- src/core/progress.js       future one XP/streak/progress service
+|   +-- src/core/progress.js       one XP/streak/activity/achievement owner
 |   +-- src/core/audio.js          future one audio owner
 |   +-- src/core/recording.js      future one recordings/player owner
 |
@@ -41,6 +41,7 @@ BibleQuest v3
 |   +-- src/features/account/
 |   +-- src/features/learn/
 |   +-- src/features/reader/
+|   +-- src/features/progress/
 |   +-- src/features/daily-mission/
 |   +-- src/features/transform/
 |   +-- src/features/recordings/
@@ -53,6 +54,7 @@ BibleQuest v3
     +-- src/ui/shell.js
     +-- src/ui/app.css
     +-- src/ui/reader.css
+    +-- src/ui/progress.css
     +-- future reusable cards/dialogs/buttons/layout helpers
 ```
 
@@ -69,13 +71,14 @@ Files listed as future milestones do not count as implemented until they exist a
 7. Supabase and account backend calls go through `src/core/api.js` only.
 8. Bible metadata, translation registry, pack fetch/cache, search and external Bible-tool URLs go through `src/core/bible.js` only.
 9. Reader selection/navigation/read-state orchestration goes through `src/app/reader.js`; reader feature UI never fetches packs directly.
-10. XP, streak, achievements and cross-feature learning progress will go through one future progress service; reader read marking must not award XP independently.
-11. Audio and recording playback each have exactly one lifecycle owner when migrated.
-12. Transform logic has one engine and games have one launcher when migrated.
-13. A feature may render only inside the view handed to it by the shell. It must not replace the application shell.
-14. No v3 code may depend on `window.BQ*` legacy globals.
-15. Legacy modules may be consulted for behavior, content contracts, resources and edge cases, but are not boot dependencies.
-16. Copyrighted Bible translations are not bundled or transformed unless the repository has a verified redistribution/derivative-use basis. External links are permitted where the destination provider serves the text itself.
+10. XP, streak, meaningful-activity counters and achievements are mutated only by `src/core/progress.js`. Features submit deterministic event IDs and never mutate progression directly.
+11. Cross-service progress events use retry-safe ordering: record the idempotent progress event before the feature's secondary state write so a retry heals partial completion without duplicate XP.
+12. Audio and recording playback each have exactly one lifecycle owner when migrated.
+13. Transform logic has one engine and games have one launcher when migrated.
+14. A feature may render only inside the view handed to it by the shell. It must not replace the application shell.
+15. No v3 code may depend on `window.BQ*` legacy globals.
+16. Legacy modules may be consulted for behavior, content contracts, resources and edge cases, but are not boot dependencies.
+17. Copyrighted Bible translations are not bundled or transformed unless the repository has a verified redistribution/derivative-use basis. External links are permitted where the destination provider serves the text itself.
 
 ## Feature migration procedure
 
@@ -92,12 +95,7 @@ For each feature:
 
 ## Bug-fix rule
 
-Every bug fix must document:
-
-1. **Root cause** — the mechanism that produced the defect, not merely the visible symptom.
-2. **Regression test** — the automated workflow or invariant that fails before the fix and passes after it.
-
-If either is missing, the change is considered a patch and should not be accepted into a stable milestone branch.
+Every bug fix must document the root cause and an automated regression test. If either is missing, the change is considered a patch and should not be accepted into a stable milestone branch.
 
 ## Milestone order
 
@@ -128,6 +126,7 @@ Known-good sequence:
 - `release/v3.0-base`
 - `release/v3.1-session-core`
 - `release/v3.2-auth-complete`
-- next: reader/data snapshot only after its exact ledger/status commit is green
+- `release/v3.3-reader-core`
+- next: progress snapshot only after its exact ledger/status commit is green
 
-The current v2 deployment is retained separately and remains production until an explicit later cutover decision. A v2 compatibility path is not evidence that a v3 feature is verified.
+The current v2 deployment remains production until an explicit later cutover decision. A v2 compatibility path is not evidence that a v3 feature is verified.

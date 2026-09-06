@@ -6,17 +6,15 @@ const root = process.cwd();
 const failures = [];
 const fail = message => failures.push(message);
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const required = ['index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/core/storage.js','src/core/api.js','src/core/bible.js','src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/features/home/index.js','src/features/account/index.js','src/features/learn/index.js','src/features/reader/index.js','FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','data/packs/ATTRIBUTION.md'];
+const required = ['index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/core/storage.js','src/core/api.js','src/core/bible.js','src/core/progress.js','src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/features/home/index.js','src/features/account/index.js','src/features/learn/index.js','src/features/reader/index.js','src/features/progress/index.js','FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','data/packs/ATTRIBUTION.md'];
 for (const file of required) if (!fs.existsSync(path.join(root, file))) fail(`Missing v3 required file: ${file}`);
-
 const html = read('index.html');
 const scriptTags = [...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
 if (scriptTags.length !== 1 || scriptTags[0] !== 'src/app/bootstrap.js') fail(`index.html must boot exactly one script entry. Found: ${scriptTags.join(', ') || 'none'}`);
 if (!/type=["']module["']/.test(html)) fail('v3 bootstrap must be loaded as an ES module.');
-if (!html.includes('src/ui/app.css') || !html.includes('src/ui/reader.css')) fail('index.html must load shared v3 shell and reader stylesheets.');
+for (const style of ['src/ui/app.css','src/ui/reader.css','src/ui/progress.css']) if (!html.includes(style)) fail(`index.html must load ${style}.`);
 const legacyNames = ['app.js','runtime-safety.js','cloud.js','live-rooms.js','modern-home.js','journey-loop.js','runtime-recovery.js','transform-launcher.js','bq2.js'];
 for (const legacy of legacyNames) if (html.includes(legacy)) fail(`Legacy runtime reference found in v3 index.html: ${legacy}`);
-
 const srcRoot = path.join(root, 'src');
 const jsFiles = [];
 function walk(dir) { for (const entry of fs.readdirSync(dir, { withFileTypes: true })) { const full = path.join(dir, entry.name); if (entry.isDirectory()) walk(full); else if (entry.name.endsWith('.js')) jsFiles.push(full); } }
@@ -30,18 +28,16 @@ for (const file of jsFiles) {
   if (/window\.BQ[A-Z0-9_]*/.test(text)) fail(`Legacy/global BQ namespace is forbidden in v3 source: ${rel}`);
   if (rel !== 'src/core/api.js' && /(supabase-js|createClient\s*\(|signInWithPassword|onAuthStateChange|bq-signup|bq-password-reset|bible_devices)/.test(text)) fail(`Account/backend ownership leaked outside API wrapper: ${rel}`);
   if (rel !== 'src/core/bible.js' && /data\/packs\/(?:bible|tagalog)\//.test(text)) fail(`Bible pack ownership leaked outside Bible data service: ${rel}`);
+  if (rel !== 'src/core/progress.js' && /['"]progress-state['"]/.test(text)) fail(`Progress persistence ownership leaked outside progress service: ${rel}`);
+  if (rel !== 'src/core/progress.js' && /(?:\.xp|\.streak|\.badges|\.totalActivities)\s*(?:[+\-*/]?=|\+\+|--)/.test(text)) fail(`Direct progress mutation outside progress service: ${rel}`);
 }
-const routerOwners = jsFiles.filter(file => /addEventListener\(['"]hashchange/.test(fs.readFileSync(file,'utf8')));
-if (routerOwners.length !== 1 || path.relative(root, routerOwners[0]).replaceAll('\\','/') !== 'src/app/router.js') fail('Exactly one hashchange listener owner is required: src/app/router.js');
-const sessionOwners = jsFiles.filter(file => /export function createSessionService/.test(fs.readFileSync(file,'utf8')));
-if (sessionOwners.length !== 1 || path.relative(root, sessionOwners[0]).replaceAll('\\','/') !== 'src/app/session.js') fail('Exactly one session service owner is required: src/app/session.js');
-const accountOwners = jsFiles.filter(file => /export function createAccountService/.test(fs.readFileSync(file,'utf8')));
-if (accountOwners.length !== 1 || path.relative(root, accountOwners[0]).replaceAll('\\','/') !== 'src/app/account.js') fail('Exactly one account workflow owner is required: src/app/account.js');
-const bibleOwners = jsFiles.filter(file => /export function createBibleDataService/.test(fs.readFileSync(file,'utf8')));
-if (bibleOwners.length !== 1 || path.relative(root, bibleOwners[0]).replaceAll('\\','/') !== 'src/core/bible.js') fail('Exactly one Bible data-service owner is required: src/core/bible.js');
-const readerOwners = jsFiles.filter(file => /export function createReaderService/.test(fs.readFileSync(file,'utf8')));
-if (readerOwners.length !== 1 || path.relative(root, readerOwners[0]).replaceAll('\\','/') !== 'src/app/reader.js') fail('Exactly one reader-state owner is required: src/app/reader.js');
-
+const onlyOwner = (pattern, expected, label) => { const owners = jsFiles.filter(file => pattern.test(fs.readFileSync(file,'utf8'))); if (owners.length !== 1 || path.relative(root, owners[0]).replaceAll('\\','/') !== expected) fail(`Exactly one ${label} owner is required: ${expected}`); };
+onlyOwner(/addEventListener\(['"]hashchange/, 'src/app/router.js', 'hashchange listener');
+onlyOwner(/export function createSessionService/, 'src/app/session.js', 'session service');
+onlyOwner(/export function createAccountService/, 'src/app/account.js', 'account workflow');
+onlyOwner(/export function createBibleDataService/, 'src/core/bible.js', 'Bible data-service');
+onlyOwner(/export function createReaderService/, 'src/app/reader.js', 'reader-state');
+onlyOwner(/export function createProgressService/, 'src/core/progress.js', 'progress service');
 const api = read('src/core/api.js');
 if (!api.includes('@supabase/supabase-js@2.112.4')) fail('Supabase browser dependency must remain pinned to 2.112.4 for this milestone.');
 if (!api.includes("signOut({ scope: 'local' })")) fail('Session sign-out must be device-local, not global.');
@@ -51,9 +47,13 @@ const bible = read('src/core/bible.js');
 for (const translation of ["id: 'bsb'","id: 'tl'"]) if (!bible.includes(translation)) fail(`Bible data service is missing bundled translation contract ${translation}.`);
 if (!bible.includes('data/packs/${translation.folder}/')) fail('Bible data service must own on-demand translation pack loading.');
 if (!bible.includes('https://www.esv.org/verses/') || !bible.includes('https://www.biblegateway.com/passage/') || !bible.includes('https://www.stepbible.org/')) fail('Bible data service is missing external reader/tool contracts.');
+const progress = read('src/core/progress.js');
+for (const contract of ['first-step','streak-3','streak-7','bible-recall','reader','reflection']) if (!progress.includes(`id: '${contract}'`)) fail(`Progress badge contract missing ${contract}.`);
+if (!progress.includes('Progress event identity conflict')) fail('Progress service must reject conflicting reuse of an event identity.');
+const reader = read('src/app/reader.js');
+if (!reader.includes('progress.record') || !reader.includes('reader.read:${key}')) fail('Reader read marking must request deterministic progress events through the progress service.');
 const attribution = read('data/packs/ATTRIBUTION.md');
 if (!attribution.includes('Tagalog Unlocked Literal Bible') || !attribution.includes('CC BY-SA 4.0')) fail('Tagalog pack attribution/license is incomplete.');
-
 const inventory = read('FEATURE_INVENTORY_V3.md');
 const allowedStatuses = new Set(['Not started','Implemented','Verified','Regression-tested']);
 for (const status of allowedStatuses) if (!inventory.includes(status)) fail(`Feature inventory is missing required status vocabulary: ${status}`);
@@ -64,9 +64,8 @@ const developmentStatus = read('DEVELOPMENT_STATUS_V3.md');
 if (!developmentStatus.includes('Defect / root-cause ledger')) fail('Development status must retain the root-cause ledger.');
 if (!developmentStatus.includes('Next major milestone')) fail('Development status must retain the next-work queue.');
 const architecture = read('ARCHITECTURE_V3.md');
-if (!architecture.includes('src/core/bible.js') || !architecture.includes('src/app/reader.js')) fail('Architecture document must name the active Bible-data and reader-state owners.');
-
+for (const owner of ['src/core/bible.js','src/app/reader.js','src/core/progress.js']) if (!architecture.includes(owner)) fail(`Architecture document must name active owner ${owner}.`);
 if (failures.length) { console.error(`BibleQuest v3 architecture validation FAILED (${failures.length})`); failures.forEach(message => console.error(`- ${message}`)); process.exit(1); }
 console.log('BibleQuest v3 architecture validation passed.');
 console.log(`Checked ${jsFiles.length} v3 JavaScript modules and ${inventoryRows.length} feature-inventory rows.`);
-console.log('Single boot, router, store/storage, API, session, account, Bible-data and reader-state ownership confirmed.');
+console.log('Single boot, router, store/storage, API, session, account, Bible-data, reader-state and progress ownership confirmed.');

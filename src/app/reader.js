@@ -1,16 +1,8 @@
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
 
-const localDate = date => {
-  const value = date instanceof Date ? date : new Date(date);
-  const y = value.getFullYear();
-  const m = String(value.getMonth() + 1).padStart(2, '0');
-  const d = String(value.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-};
-
-export function createReaderService({ bible, storage, clock = () => new Date() }) {
-  if (!bible || !storage) throw new Error('Reader service requires Bible data and storage boundaries.');
+export function createReaderService({ bible, storage, progress }) {
+  if (!bible || !storage || !progress) throw new Error('Reader service requires Bible data, storage and progress boundaries.');
 
   const normalize = input => {
     const translation = bible.translations.some(item => item.id === input?.translation) ? input.translation : DEFAULT_STATE.translation;
@@ -74,8 +66,12 @@ export function createReaderService({ bible, storage, clock = () => new Date() }
 
   function markRead() {
     const key = readKey();
-    if (!state.read[key]) state = { ...state, read: { ...state.read, [key]: localDate(clock()) } };
-    return persist();
+    if (state.read[key]) return Object.freeze({ newlyRead: false, progress: null, state: getState() });
+    const award = progress.record({ id: `reader.read:${key}`, type: 'reader.chapter.read', xp: 10, meaningful: true, metrics: { chaptersRead: 1 } });
+    const next = { ...state, read: { ...state.read, [key]: award.date } };
+    storage.write(STORAGE_KEY, next);
+    state = next;
+    return Object.freeze({ newlyRead: true, progress: award, state: getState() });
   }
 
   function isRead() {

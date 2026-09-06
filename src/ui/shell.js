@@ -20,7 +20,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
           <span><strong>BibleQuest</strong><small>Rebuild v3</small></span>
         </a>
         <div class="bq-top-actions">
-          <span class="bq-build-chip">auth milestone</span>
+          <span class="bq-progress-chip" data-progress-chip aria-label="BibleQuest progress"><b data-progress-xp>0 XP</b><small data-progress-streak>0 day streak</small></span>
           <button type="button" class="bq-session-chip" data-session-open aria-label="Open account">
             <span data-session-dot aria-hidden="true"></span>
             <span data-session-label>Starting…</span>
@@ -48,6 +48,8 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const view = root.querySelector('#bq-view');
   const sessionLabel = root.querySelector('[data-session-label]');
   const sessionChip = root.querySelector('[data-session-open]');
+  const progressXp = root.querySelector('[data-progress-xp]');
+  const progressStreak = root.querySelector('[data-progress-streak]');
   let cleanupPage = null;
 
   return Object.freeze({
@@ -75,6 +77,13 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       }
       sessionLabel.textContent = 'Guest';
       sessionChip.dataset.sessionState = 'guest';
+    },
+    updateProgress(progress) {
+      if (!progressXp || !progressStreak) return;
+      const xp = Number(progress?.xp || 0);
+      const streak = Number(progress?.streak || 0);
+      progressXp.textContent = `${xp} XP`;
+      progressStreak.textContent = `${streak} day${streak === 1 ? '' : 's'} streak`;
     },
     renderError(message) {
       cleanupPage?.();
