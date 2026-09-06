@@ -57,6 +57,10 @@ assert(index.includes('home-professional.css'),'final professional Home polish m
 const launcher=read('transform-launcher.js');
 assert(launcher.includes("const TARGET='./transform'"),'Transform launcher must use Cloudflare canonical /transform route');
 assert(launcher.includes("const PSYCH_TARGET='./psychometrics'"),'Psychometrics launcher must use Cloudflare canonical route');
+const psychometrics=read('psychometrics.html');
+assert(!psychometrics.includes('if(!await window.BQStandaloneGate?.ready)return'),'Psychometrics must not silently remain hidden when the standalone account gate is missing or stalled');
+assert(psychometrics.includes('GATE_TIMEOUT_MS=8000'),'Psychometrics account verification must have a bounded wait');
+assert(psychometrics.includes("document.documentElement.classList.add('bq-account-confirmed')")&&psychometrics.includes("e.classList.add('show')"),'Psychometrics gate failure must reveal a visible recovery state');
 assert(read('admin-link.js').includes("a.href='admin'"),'Admin launcher must use canonical /admin route');
 assert(read('content-review-link.js').includes("a.href='content-review'"),'Content Review launcher must use canonical route');
 const recovery=read('password-recovery.js');
