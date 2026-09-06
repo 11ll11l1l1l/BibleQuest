@@ -18,9 +18,11 @@
     UNREACHABLE:{code:'BQ-NET-002',category:'Connection',title:'Internet path unavailable',message:'The device reports a connection, but BibleQuest cannot reach its server.'},
     AUTH:{code:'BQ-AUTH-001',category:'Account',title:'Sign-in required',message:'This action needs a valid BibleQuest session.'},
     FORBIDDEN:{code:'BQ-AUTH-002',category:'Account',title:'Permission denied',message:'The account is signed in but does not have permission for this action.'},
+    INPUT:{code:'BQ-INP-001',category:'Input',title:'Invalid input',message:'The information entered is not valid for this action.'},
     RATE:{code:'BQ-SRV-429',category:'Server',title:'Too many requests',message:'The server is temporarily rate-limiting requests.'},
     SERVER:{code:'BQ-SRV-500',category:'Server',title:'Server unavailable',message:'The internet connection is working, but the BibleQuest service returned a server error.'},
     DATA:{code:'BQ-DATA-001',category:'Data',title:'Data request failed',message:'The internet connection is working, but the requested BibleQuest data could not be loaded.'},
+    DATA_TIMEOUT:{code:'BQ-DATA-002',category:'Data',title:'Data request timed out',message:'The internet connection is working, but the BibleQuest data request did not finish in time.'},
     MODULE:{code:'BQ-MOD-001',category:'App module',title:'Feature module failed',message:'The internet connection is working, but part of the BibleQuest app did not initialize correctly.'},
     MODULE_TIMEOUT:{code:'BQ-MOD-002',category:'App module',title:'Feature module timed out',message:'The internet connection is working, but a BibleQuest feature did not initialize in time.'},
     RESOURCE:{code:'BQ-MOD-003',category:'App resource',title:'App resource failed to load',message:'A required BibleQuest script or style failed to load.'},
@@ -62,7 +64,7 @@
 
   function timeoutLike(error,context={}){
     const text=textOf(error).toLowerCase();
-    return context.kind==='timeout'||context.kind==='module-timeout'||error?.name==='TimeoutError'||/timed out|timeout|took too long|did not load within/.test(text);
+    return context.kind==='timeout'||context.kind==='module-timeout'||error?.name==='TimeoutError'||error?.bqTimedOut===true||/timed out|timeout|took too long|did not load within/.test(text);
   }
 
   async function probeConnection(force=false){
@@ -101,6 +103,7 @@
       const probe=await probeConnection(true);
       return detail(probe.reachable?CODES.RESOURCE:CODES.UNREACHABLE,error,context,probe);
     }
+    if(kind==='input')return detail(CODES.INPUT,error,context,null);
     if(authLike(error))return detail(CODES.AUTH,error,context,null);
     if(forbiddenLike(error))return detail(CODES.FORBIDDEN,error,context,null);
     if(status===429)return detail(CODES.RATE,error,context,null);
@@ -114,6 +117,7 @@
       if(!probe.reachable)return detail(CODES.UNREACHABLE,error,context,probe);
     }
 
+    if((kind==='data'||kind==='cloud'||kind==='server')&&timeoutLike(error,context))return detail(CODES.DATA_TIMEOUT,error,context,probe);
     if(kind==='data'||kind==='cloud'||kind==='server')return detail(CODES.DATA,error,context,probe);
     if(kind==='module-timeout'||(kind==='feature-launch'&&timeoutLike(error,context)))return detail(CODES.MODULE_TIMEOUT,error,context,probe);
     if(kind==='feature-launch'||kind==='capability-recovery'||kind==='module')return detail(CODES.MODULE,error,context,probe);
@@ -175,9 +179,12 @@
   }
 
   window.addEventListener('error',event=>{
-    const resource=event.target&&event.target!==window&&(event.target.src||event.target.href);
-    const error=event.error||new Error(resource?`Resource failed to load: ${event.target.src||event.target.href}`:(event.message||'Unknown client error'));
-    diagnoseAndPresent(error,{kind:resource?'resource':'error',feature:resource?'App resource':''}).catch(()=>{});
+    const target=event.target;
+    const tag=String(target?.tagName||'').toUpperCase();
+    const criticalResource=target&&target!==window&&['SCRIPT','LINK'].includes(tag)&&(target.src||target.href);
+    if(target&&target!==window&&!criticalResource)return;
+    const error=event.error||new Error(criticalResource?`Resource failed to load: ${target.src||target.href}`:(event.message||'Unknown client error'));
+    diagnoseAndPresent(error,{kind:criticalResource?'resource':'error',feature:criticalResource?'App resource':''}).catch(()=>{});
   },true);
 
   window.addEventListener('unhandledrejection',event=>{
