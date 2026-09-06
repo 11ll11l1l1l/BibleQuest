@@ -54,6 +54,7 @@ After #46’s exact promoted ledger is green, start 7C Full Transform (#47) usin
 - `V3-ACCOUNT-ACCEPTANCE-001` — duplicate signup and post-recovery login are explicit tests.
 - `V3-READER-ACCEPTANCE-001` — invalid search respects native form validation.
 - `V3-PROGRESS-UI-001` — static label readability is separate from touch-target semantics.
+- `V3-TRANSFORM-OWNER-001` — Basic orchestration initially defined a second `calculateSpiritual` function name. The architecture gate correctly rejected the semantic owner collision. The orchestration action is now `completeBasicAssessment`; only `src/engines/transform.js` defines `calculateSpiritual`, and the Basic edge suite asserts that duplicate owner name cannot reappear.
 
 Basic Transform remains unpromoted until its exact CI evidence exists.
 
