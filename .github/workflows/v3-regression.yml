@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - 'verify/v3-audio-bookkeeping-1'
   workflow_dispatch:
 
 concurrency:
