@@ -36,6 +36,8 @@ jobs:
         run: node tests/v3-recordings-edge.mjs
       - name: Run Media Library edge regression
         run: node tests/v3-media-library-edge.mjs
+      - name: Run Recall Pack edge regression
+        run: node tests/v3-recall-packs-edge.mjs
       - name: Run Games edge regression
         run: node tests/v3-games-edge.mjs
       - name: Install Playwright
