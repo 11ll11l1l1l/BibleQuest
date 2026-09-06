@@ -7,6 +7,15 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+/client-diagnostics.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/runtime-recovery.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/media-library.js
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
 /transform
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 

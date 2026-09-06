@@ -4,15 +4,15 @@
   let layer=null,rows=[],role='member',siteRole='',tab='all',loading=false,bound=false;
   const account=()=>window.BQAccount,client=()=>account()?.client?.(),session=()=>account()?.session?.(),cloud=()=>window.BQCloud?.status?.()||{},congregation=()=>cloud().activeCongregation||null;
   const editor=()=>['owner','admin'].includes(siteRole)||['leader','pastor','admin'].includes(role);
-  const timeout=(promise,ms=10000,message='Live Recordings took too long to load. Please try again.')=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))]);
+  const timeout=(promise,ms=10000,message='Live Recordings took too long to load. Please try again.')=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>{const e=new Error(message);e.bqKind='data';e.bqTimedOut=true;reject(e)},ms))]);
 
   function youtube(value){
-    let u;try{u=new URL(String(value||'').trim())}catch{throw new Error('Enter a valid YouTube live-recording URL.')}
+    let u;try{u=new URL(String(value||'').trim())}catch{const e=new Error('Enter a valid YouTube live-recording URL.');e.bqCode='BQ-INP-001';e.bqCategory='Input';e.bqTitle='Invalid recording link';e.bqMessage='The recording link is not a valid URL.';throw e}
     const host=u.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
-    if(host!=='youtube.com')throw new Error('Use a youtube.com/live/... recording link.');
+    if(host!=='youtube.com'){const e=new Error('Use a youtube.com/live/... recording link.');e.bqCode='BQ-INP-001';e.bqCategory='Input';e.bqTitle='Unsupported recording link';e.bqMessage='Live Recordings accepts youtube.com/live/... links.';throw e}
     const match=u.pathname.match(/^\/live\/([A-Za-z0-9_-]{6,20})\/?$/);
     const id=match?.[1]||'';
-    if(!/^[A-Za-z0-9_-]{6,20}$/.test(id))throw new Error('Only YouTube live-recording links such as youtube.com/live/VIDEO_ID are accepted.');
+    if(!/^[A-Za-z0-9_-]{6,20}$/.test(id)){const e=new Error('Only YouTube live-recording links such as youtube.com/live/VIDEO_ID are accepted.');e.bqCode='BQ-INP-001';e.bqCategory='Input';e.bqTitle='Unsupported recording link';e.bqMessage='Use a YouTube live recording URL with a valid video ID.';throw e}
     return {url:u.href,id};
   }
   function youtubeThumb(id){return /^[A-Za-z0-9_-]{6,20}$/.test(String(id||''))?`https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`:''}
@@ -27,15 +27,15 @@
         if(target.matches('[data-media-close]')){close();return}
         if(target.matches('[data-media-tab]')){tab=target.dataset.mediaTab;render();return}
         if(target.matches('[data-media-report]')){report(target.dataset.mediaReport);return}
-        if(target.matches('[data-media-feature]')){const r=rows.find(x=>x.id===target.dataset.mediaFeature);if(r)patch(r.id,{featured:!r.featured}).catch(err=>render(err.message||String(err)));return}
-        if(target.matches('[data-media-up]')){const r=rows.find(x=>x.id===target.dataset.mediaUp);if(r)patch(r.id,{display_order:(Number(r.display_order)||0)-1}).catch(err=>render(err.message||String(err)));return}
-        if(target.matches('[data-media-down]')){const r=rows.find(x=>x.id===target.dataset.mediaDown);if(r)patch(r.id,{display_order:(Number(r.display_order)||0)+1}).catch(err=>render(err.message||String(err)));return}
-        if(target.matches('[data-media-edit]')){edit(target.dataset.mediaEdit).catch(err=>render(err.message||String(err)));return}
-        if(target.matches('[data-media-archive]')){if(confirm('Archive this live recording?'))patch(target.dataset.mediaArchive,{active:false}).catch(err=>render(err.message||String(err)));return}
+        if(target.matches('[data-media-feature]')){const r=rows.find(x=>x.id===target.dataset.mediaFeature);if(r)patch(r.id,{featured:!r.featured}).catch(err=>handleError(err,'data'));return}
+        if(target.matches('[data-media-up]')){const r=rows.find(x=>x.id===target.dataset.mediaUp);if(r)patch(r.id,{display_order:(Number(r.display_order)||0)-1}).catch(err=>handleError(err,'data'));return}
+        if(target.matches('[data-media-down]')){const r=rows.find(x=>x.id===target.dataset.mediaDown);if(r)patch(r.id,{display_order:(Number(r.display_order)||0)+1}).catch(err=>handleError(err,'data'));return}
+        if(target.matches('[data-media-edit]')){edit(target.dataset.mediaEdit).catch(err=>handleError(err,'data'));return}
+        if(target.matches('[data-media-archive]')){if(confirm('Archive this live recording?'))patch(target.dataset.mediaArchive,{active:false}).catch(err=>handleError(err,'data'));return}
         if(target.matches('[data-media-retry]'))open(true);
       });
       layer.addEventListener('submit',event=>{
-        const form=event.target.closest?.('[data-media-create]');if(!form)return;event.preventDefault();createMedia(form).catch(err=>render(err.message||String(err)));
+        const form=event.target.closest?.('[data-media-create]');if(!form)return;event.preventDefault();createMedia(form).catch(err=>handleError(err,err?.bqCode?'input':'data'));
       });
     }
     return layer;
@@ -45,12 +45,13 @@
 
   function loadingView(){
     const x=ensureLayer(),g=congregation();
-    x.innerHTML=`<main class="media-app"><header class="media-top"><button type="button" data-media-close>← BibleQuest</button><b>Live Recordings</b><span>📺</span></header><section class="media-loading" role="status" aria-live="polite"><div class="media-loading-mark">▶</div><div><small>${esc(g?.name||'CONGREGATION')}</small><h1>Loading recordings…</h1><p>BibleQuest is getting the latest published livestream replays.</p></div></section></main>`;
+    x.innerHTML=`<main class="media-app"><header class="media-top"><button type="button" data-media-close>← BibleQuest</button><b>Live Recordings</b><span>📺</span></header><section class="media-loading" role="status" aria-live="polite"><div class="media-loading-mark">▶</div><div><small>${esc(g?.name||'CONGREGATION')}</small><h1>Loading recordings…</h1><p>BibleQuest is getting the latest published livestream replays. Network requests are time-limited so this screen cannot wait forever.</p></div></section></main>`;
     showLayer();
   }
 
   async function resolveAccess(){
-    const c=client(),s=session(),g=congregation();if(!c||!s||!g)throw new Error('Sign in and select a congregation first.');
+    const c=client(),s=session(),g=congregation();
+    if(!c||!s||!g){const e=new Error('Sign in and select a congregation first.');e.bqCode='BQ-AUTH-001';e.bqCategory='Account';e.bqTitle='Sign-in required';e.bqMessage='Live Recordings requires a signed-in BibleQuest account and congregation.';throw e}
     role=g.role||'member';
     const known=window.BQAdminAccess?.status?.();
     if(known?.resolved){siteRole=known.allowed?String(known.role||''):'';return}
@@ -77,10 +78,19 @@
   }
   function createForm(){if(!editor())return '';return `<details class="media-create"><summary>＋ Add YouTube live recording</summary><form data-media-create><label>YouTube live-recording link<input name="url" type="url" placeholder="https://www.youtube.com/live/VIDEO_ID" required></label><label>Title<input name="title" maxlength="160" placeholder="Sunday Worship · September 6" required></label><label>Description<textarea name="description" rows="3" maxlength="2500" placeholder="Optional short note"></textarea></label><div class="media-inline"><label>Publish<input name="publish" type="datetime-local"></label><label>Order<input name="order" type="number" value="0" min="-999" max="999"></label></div><label><span><input name="featured" type="checkbox"> Feature this recording</span></label><div class="media-note">Only <b>youtube.com/live/…</b> recordings are accepted. BibleQuest shows the YouTube thumbnail automatically and opens playback on YouTube instead of embedding a heavy player inside the app.</div><button type="submit">Publish recording</button></form></details>`}
 
-  function render(error=''){
+  function render(error='',diagnostic=null){
     const g=congregation(),x=ensureLayer(),shown=rows.filter(r=>tab==='all'||r.featured);
-    x.innerHTML=`<main class="media-app"><header class="media-top"><button type="button" data-media-close>← BibleQuest</button><b>Live Recordings</b><span>📺</span></header><section class="media-hero"><small>${esc(g?.name||'CONGREGATION')}</small><h1>Live recordings</h1><p>Worship services, Bible studies and congregation livestream replays. Tap a thumbnail to watch on YouTube without loading a video player inside BibleQuest.</p></section>${error?`<section class="media-section media-error" role="alert"><b>Could not load Live Recordings</b><p>${esc(error)}</p><button type="button" data-media-retry>Try again</button></section>`:''}${error?'':createForm()}${error?'':`<div class="media-tabs"><button type="button" data-media-tab="all" class="${tab==='all'?'active':''}">All recordings</button><button type="button" data-media-tab="featured" class="${tab==='featured'?'active':''}">Featured</button></div><section class="media-grid">${shown.length?shown.map(card).join(''):'<div class="media-empty">No live recordings have been published yet.</div>'}</section>`}</main>`;
+    const diag=diagnostic?`<small style="display:block;font-weight:800">${esc(diagnostic.code)} · ${esc(diagnostic.category)}</small><b>${esc(diagnostic.title)}</b><p>${esc(diagnostic.message)}</p>${diagnostic.serverReachable===true?'<p><small>Internet check passed. The connection is not the likely cause.</small></p>':diagnostic.serverReachable===false?'<p><small>Internet/server reachability check failed. Connection is the likely cause.</small></p>':''}`:'';
+    x.innerHTML=`<main class="media-app"><header class="media-top"><button type="button" data-media-close>← BibleQuest</button><b>Live Recordings</b><span>📺</span></header><section class="media-hero"><small>${esc(g?.name||'CONGREGATION')}</small><h1>Live recordings</h1><p>Worship services, Bible studies and congregation livestream replays. Tap a thumbnail to watch on YouTube without loading a video player inside BibleQuest.</p></section>${error?`<section class="media-section media-error" role="alert">${diag||'<b>Could not load Live Recordings</b>'}<p><small>Technical detail: ${esc(error)}</small></p><button type="button" data-media-retry>Try again</button></section>`:''}${error?'':createForm()}${error?'':`<div class="media-tabs"><button type="button" data-media-tab="all" class="${tab==='all'?'active':''}">All recordings</button><button type="button" data-media-tab="featured" class="${tab==='featured'?'active':''}">Featured</button></div><section class="media-grid">${shown.length?shown.map(card).join(''):'<div class="media-empty">No live recordings have been published yet.</div>'}</section>`}</main>`;
     showLayer();
+  }
+
+  async function handleError(err,kind='data'){
+    const context={kind:err?.bqKind||kind,feature:'Live Recordings'};
+    const diagnostic=await window.BQDiagnostics?.diagnose?.(err,context).catch?.(()=>null)||{code:navigator.onLine===false?'BQ-NET-001':'BQ-DATA-001',category:navigator.onLine===false?'Connection':'Data',title:navigator.onLine===false?'Device is offline':'Data request failed',message:navigator.onLine===false?'BibleQuest cannot reach the internet from this device.':'The request failed while BibleQuest remained responsive.',serverReachable:navigator.onLine===false?false:null};
+    window.BQDiagnostics?.report?.(`${diagnostic.code} Live Recordings: ${err?.message||err}`,err?.stack||'',{...context,code:diagnostic.code,category:diagnostic.category,serverReachable:diagnostic.serverReachable,httpStatus:diagnostic.httpStatus,feature:'Live Recordings'}).catch?.(()=>{});
+    render(err?.message||String(err),diagnostic);
+    return diagnostic;
   }
 
   async function createMedia(form){
@@ -95,7 +105,7 @@
   async function open(force=false){
     if(loading&&!force){showLayer();return}
     loading=true;loadingView();
-    try{await loadData();render()}catch(err){render(err?.message||String(err))}finally{loading=false}
+    try{await loadData();render()}catch(err){await handleError(err,'data')}finally{loading=false}
   }
 
   function inject(){
@@ -108,5 +118,5 @@
   document.addEventListener('click',event=>{if(event.target.closest?.('[data-media-open]'))open()});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!ensureLayer().classList.contains('hidden'))close()});
   new MutationObserver(inject).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});setTimeout(inject,900);
-  window.BQMediaLibrary={open,refresh,parseYoutube:youtube,thumbnail:youtubeThumb};
+  window.BQMediaLibrary={open,refresh,parseYoutube:youtube,thumbnail:youtubeThumb,diagnoseError:handleError};
 })();
