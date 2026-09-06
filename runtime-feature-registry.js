@@ -56,6 +56,5 @@
   }
   window.addEventListener('bq-modern-home-rendered',install);
   document.addEventListener('DOMContentLoaded',()=>{install();setTimeout(install,300)});
-  new MutationObserver(install).observe(document.documentElement,{childList:true,subtree:true});
   window.BQKidsGames={open:openKidsGames};
 })();
