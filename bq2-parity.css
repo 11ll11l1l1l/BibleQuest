@@ -1,0 +1,55 @@
+/* BibleQuest clean-host visual parity layer.
+   Reuses the design language and original art without importing the legacy CSS cascade. */
+:root{
+  --bq-ink:#23342a;--bq-muted:#738078;--bq-green:#2f704d;--bq-green2:#43865e;
+  --bq-paper:#f6f7f2;--bq-gold:#d8a739;--bq-line:rgba(39,61,47,.09);
+  --bq-shadow:0 10px 28px rgba(33,52,40,.07);
+}
+body.bq-parity{background:linear-gradient(180deg,#f7f8f4 0%,#f3f5f0 100%);color:var(--bq-ink)}
+body.bq-parity .app-shell{min-height:100dvh}
+body.bq-parity .topbar{background:rgba(250,251,248,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bq-line)}
+body.bq-parity .topbar-inner{width:min(100% - 22px,760px)}
+body.bq-parity .brand-mark{background:linear-gradient(135deg,#2f704d,#57916b);box-shadow:0 6px 16px rgba(47,112,77,.2)}
+body.bq-parity .brand-copy strong{letter-spacing:-.35px}
+body.bq-parity .brand-copy small{color:#758079}
+body.bq-parity .main{width:min(100% - 22px,760px);max-width:760px;padding-bottom:104px}
+body.bq-parity .bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(15px);border-top:1px solid var(--bq-line);box-shadow:0 -6px 22px rgba(35,48,40,.045)}
+body.bq-parity .bottom-nav-inner{max-width:760px}
+body.bq-parity .nav-item.active{color:var(--bq-green)}
+
+.parity-home{display:grid;gap:12px}
+.parity-hero{position:relative;min-height:168px;padding:22px 20px;border-radius:26px;overflow:hidden;background:linear-gradient(135deg,#eef6ef 0%,#fff8e9 100%);border:1px solid rgba(55,91,67,.1);box-shadow:var(--bq-shadow)}
+.parity-hero-copy{position:relative;z-index:2;width:min(68%,470px)}
+.parity-hero .eyebrow{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#617468}
+.parity-hero h1{margin:6px 0 7px;font-size:clamp(26px,6vw,34px);line-height:1.02;letter-spacing:-.95px;color:#1f3127}
+.parity-hero p{margin:0;max-width:430px;font-size:12px;line-height:1.48;color:#66766d}
+.parity-hero-art{position:absolute;z-index:1;right:-12px;bottom:-5px;width:min(42%,260px);max-height:164px;object-fit:contain;object-position:right bottom;filter:saturate(.94) contrast(.98);pointer-events:none}
+.parity-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border-radius:18px;background:#fff;border:1px solid var(--bq-line);box-shadow:0 7px 20px rgba(36,50,41,.04)}
+.parity-stat{min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid rgba(39,61,47,.06)}
+.parity-stat:last-child{border-right:0}.parity-stat b{font-size:17px}.parity-stat span{font-size:9px;color:#7b867f}
+
+.parity-daily{display:grid;grid-template-columns:50px minmax(0,1fr) 22px;align-items:center;gap:12px;padding:17px 16px;border-radius:21px;color:#fff;text-decoration:none;background:linear-gradient(135deg,var(--bq-green),var(--bq-green2));box-shadow:0 11px 25px rgba(47,112,77,.19)}
+.parity-daily-icon{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.16);font-size:23px}
+.parity-daily small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:.78;font-weight:800}
+.parity-daily strong{display:block;margin:3px 0;font-size:19px;line-height:1.12}.parity-daily p{margin:0;font-size:10.5px;line-height:1.35;opacity:.87}.parity-daily i{font-style:normal;font-size:26px;opacity:.8}
+.parity-progress{height:5px;margin-top:8px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.18)}.parity-progress span{display:block;height:100%;border-radius:inherit;background:#fff}
+
+.parity-label{display:flex;align-items:end;justify-content:space-between;margin:10px 2px 0}.parity-label h2{margin:0;font-size:18px;letter-spacing:-.35px}.parity-label small{font-size:10px;color:#7a857d}
+.parity-hubs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.parity-hub{min-height:116px;padding:15px;border-radius:20px;display:flex;flex-direction:column;text-decoration:none;color:inherit;border:1px solid var(--bq-line);background:#fff;box-shadow:0 7px 22px rgba(35,48,40,.05);transition:transform .12s ease,box-shadow .12s ease}
+.parity-hub:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(35,48,40,.075)}
+.parity-hub .icon{font-size:28px;line-height:1}.parity-hub strong{margin-top:12px;font-size:15px;line-height:1.15}.parity-hub span:last-child{margin-top:4px;font-size:10px;line-height:1.35;color:#727f77}
+.parity-hub.play{background:linear-gradient(145deg,#f4f8fc,#fff)}.parity-hub.read{background:linear-gradient(145deg,#fff9e9,#fff)}.parity-hub.grow{background:linear-gradient(145deg,#f1f8f1,#fff)}.parity-hub.together{background:linear-gradient(145deg,#fff4f5,#fff)}
+.parity-hub.full{grid-column:1/-1;min-height:82px;display:grid;grid-template-columns:52px minmax(0,1fr) 24px;align-items:center;gap:12px;background:linear-gradient(135deg,#203d2d,#315b41);color:#fff;border:0}.parity-hub.full .icon{width:52px;height:52px;display:grid;place-items:center;border-radius:15px;background:rgba(255,255,255,.12)}.parity-hub.full strong{margin:0;font-size:16px}.parity-hub.full span:last-child{color:rgba(255,255,255,.75);margin-top:3px}.parity-hub.full::after{content:'›';font-size:28px;opacity:.7}
+
+.parity-feature-intro{padding:18px;border-radius:22px;background:linear-gradient(135deg,#eef6ef,#fffaf0);border:1px solid var(--bq-line);box-shadow:var(--bq-shadow)}
+.parity-feature-intro h2{margin:4px 0 6px;font-size:23px;letter-spacing:-.6px}.parity-feature-intro p{margin:0;color:#66766d;line-height:1.5}
+.parity-mode-card{display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;align-items:center;padding:16px;border-radius:20px;background:#fff;border:1px solid var(--bq-line);box-shadow:0 8px 24px rgba(35,48,40,.05)}
+.parity-mode-card img{width:58px;height:58px;object-fit:contain;border-radius:16px;background:#f5f4ef}.parity-mode-card h3{margin:0 0 4px}.parity-mode-card p{margin:0 0 10px;font-size:11px;color:var(--bq-muted);line-height:1.45}
+.parity-groups{display:grid;gap:13px}.parity-group{padding:14px;border-radius:19px;background:#fff;border:1px solid var(--bq-line)}.parity-group h3{margin:0 0 10px;font-size:15px}.parity-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.parity-feature{min-height:68px;padding:10px;border-radius:14px;background:#f8faf7;border:1px solid rgba(39,61,47,.065);text-decoration:none;color:inherit}.parity-feature b{display:block;font-size:12px}.parity-feature small{display:block;margin-top:3px;font-size:9.5px;line-height:1.35;color:#77827a}.parity-feature.native::before{content:'Clean';display:inline-block;margin-bottom:5px;padding:2px 6px;border-radius:99px;background:#e8f5eb;color:#2f704d;font-size:8px;font-weight:900;text-transform:uppercase}.parity-feature.compat::before{content:'Original';display:inline-block;margin-bottom:5px;padding:2px 6px;border-radius:99px;background:#fff1d7;color:#815c12;font-size:8px;font-weight:900;text-transform:uppercase}.parity-feature.standalone::before{content:'Isolated';display:inline-block;margin-bottom:5px;padding:2px 6px;border-radius:99px;background:#eef0ff;color:#4e5391;font-size:8px;font-weight:900;text-transform:uppercase}
+.parity-note{padding:11px 12px;border-radius:14px;background:#f7f4eb;color:#625a48;font-size:10px;line-height:1.45;border:1px solid rgba(116,91,25,.1)}
+
+.classic-return{position:fixed;z-index:999999;right:10px;top:max(10px,env(safe-area-inset-top));min-height:38px;padding:0 12px;display:flex;align-items:center;border-radius:999px;background:rgba(31,49,39,.92);color:#fff!important;text-decoration:none!important;font:700 11px/1 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.18);backdrop-filter:blur(10px)}
+
+@media(max-width:480px){.parity-hero{min-height:154px;padding:18px 16px}.parity-hero-copy{width:70%}.parity-hero h1{font-size:26px}.parity-hero p{font-size:10.5px}.parity-hero-art{width:43%;right:-18px}.parity-daily{grid-template-columns:44px minmax(0,1fr) 18px;padding:15px 13px}.parity-daily-icon{width:44px;height:44px}.parity-daily strong{font-size:17px}.parity-hub{min-height:110px;padding:13px}.parity-hub strong{font-size:14px}.parity-feature-grid{grid-template-columns:1fr}.parity-stats{gap:1px}.parity-stat b{font-size:15px}}
+@media(max-width:340px){.parity-hero-copy{width:75%}.parity-hero h1{font-size:23px}.parity-hubs{grid-template-columns:1fr}.parity-hub.full{grid-column:auto}.parity-stat span{font-size:8px}}
