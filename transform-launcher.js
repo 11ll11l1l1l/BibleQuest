@@ -1,7 +1,7 @@
 (() => {
   'use strict';
-  const TARGET='./transform.html';
-  const PSYCH_TARGET='./psychometrics.html';
+  const TARGET='./transform';
+  const PSYCH_TARGET='./psychometrics';
   const RETURN_KEY='bq_transform_return_action';
   const RETURN_FAILURE_ID='bqTransformReturnFailure';
 
