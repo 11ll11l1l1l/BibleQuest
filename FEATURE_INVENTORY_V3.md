@@ -13,11 +13,11 @@ This file is the authoritative parity ledger for the rebuild.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
-| 1 | App shell | Yes | Clean | Implemented | boot once; no duplicate shell; error boundary |
-| 2 | Primary navigation | Yes | Clean | Implemented | all primary routes; deep link; back/forward; reload |
-| 3 | Mobile shell/layout | Yes | Clean | Implemented | 390px + desktop; no horizontal overflow; nav usable |
-| 4 | Global application state | Yes | Partial clean | Implemented | one store; route change consistency; no competing globals |
-| 5 | Storage boundary | Yes | Partial clean | Implemented | one persistence API; malformed data recovery; key isolation |
+| 1 | App shell | Yes | Clean | Verified | boot once; no duplicate shell; error boundary |
+| 2 | Primary navigation | Yes | Clean | Verified | all primary routes; deep link; back/forward; reload |
+| 3 | Mobile shell/layout | Yes | Clean | Verified | 390px + desktop; no horizontal overflow; nav usable |
+| 4 | Global application state | Yes | Partial clean | Verified | one store; route change consistency; no competing globals |
+| 5 | Storage boundary | Yes | Partial clean | Verified | one persistence API; malformed data recovery; key isolation |
 | 6 | Authentication/session | Yes | Compatibility | Not started | login; logout; expired session; reload; guest/logged-in separation |
 | 7 | Guest mode | Yes | Partial clean | Not started | guest boot; guest feature access; no accidental cloud write |
 | 8 | Signup | Yes | Compatibility | Not started | create account; validation; duplicate account handling |
