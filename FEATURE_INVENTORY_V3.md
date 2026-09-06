@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 7
-- **Verified:** 3
-- **Implemented:** 0
-- **Not started:** 90
+- **Regression-tested:** 10
+- **Verified:** 8
+- **Implemented:** 1
+- **Not started:** 81
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -28,22 +28,22 @@ This file is the authoritative parity ledger for the rebuild.
 | 5 | Storage boundary | Yes | Partial clean | Regression-tested | one persistence API; malformed data recovery; key isolation |
 | 6 | Authentication/session | Yes | Compatibility | Regression-tested | login; logout; expired session; reload; guest/logged-in separation |
 | 7 | Guest mode | Yes | Partial clean | Regression-tested | guest boot; guest feature access; no accidental cloud write |
-| 8 | Signup | Yes | Compatibility | Verified | create account; validation; duplicate account handling |
-| 9 | Recovery code/password recovery | Yes | Compatibility | Verified | recover; rotate code; invalid code; session after reset |
-| 10 | Remembered device/security | Yes | Compatibility | Verified | add/remove device; reload; unauthorized state |
-| 11 | Bible data service | Yes | Clean reader-specific | Not started | canonical book/chapter load API; errors; caching |
-| 12 | English BSB Bible | Yes | Clean | Not started | open multiple OT/NT books; chapters; attribution |
-| 13 | Tagalog Bible | Yes | Clean | Not started | translation switch; book/chapter; persistence |
+| 8 | Signup | Yes | Compatibility | Regression-tested | create account; validation; duplicate account handling |
+| 9 | Recovery code/password recovery | Yes | Compatibility | Regression-tested | recover; rotate code; invalid code; session after reset |
+| 10 | Remembered device/security | Yes | Compatibility | Regression-tested | add/remove device; reload; unauthorized state |
+| 11 | Bible data service | Yes | Clean reader-specific | Verified | canonical book/chapter load API; errors; caching |
+| 12 | English BSB Bible | Yes | Clean | Verified | open multiple OT/NT books; chapters; attribution |
+| 13 | Tagalog Bible | Yes | Clean | Verified | translation switch; book/chapter; persistence |
 | 14 | Japanese 口語訳 | Yes | Compatibility | Not started | load chapter; switch translation; fallback/errors |
 | 15 | Japanese furigana | Yes | Compatibility | Not started | toggle; persistence; mobile readability |
 | 16 | Japanese vocabulary learning | Yes | Compatibility | Not started | select verse; vocab display; return state |
 | 17 | NLT live path | Yes | Compatibility | Not started | source availability; failure handling; license-safe display |
-| 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Not started | correct external launch; safe return behavior |
-| 19 | Verse Peek | Yes | Compatibility | Not started | open verse detail; close; repeated use; no duplicate overlay |
-| 20 | STEPBible lexical/context tools | Yes | Compatibility | Not started | lexical/context lookup; unavailable-data behavior |
-| 21 | Reader navigation | Yes | Clean | Not started | previous/next chapter; selector; reload state; mobile |
-| 22 | Reader search | Yes | Clean/basic | Not started | search valid/invalid; result navigation |
-| 23 | Reader read-progress marking | Yes | Clean | Not started | mark read; persist; reload; progress calculation |
+| 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Verified | correct external launch; safe return behavior |
+| 19 | Verse Peek | Yes | Compatibility | Verified | open verse detail; close; repeated use; no duplicate overlay |
+| 20 | STEPBible lexical/context tools | Yes | Compatibility | Implemented | lexical/context lookup; unavailable-data behavior |
+| 21 | Reader navigation | Yes | Clean | Verified | previous/next chapter; selector; reload state; mobile |
+| 22 | Reader search | Yes | Clean/basic | Verified | search valid/invalid; result navigation |
+| 23 | Reader read-progress marking | Yes | Clean | Verified | mark read; persist; reload; progress calculation |
 | 24 | User progress service | Yes | Clean/local | Not started | XP/streak/activity write via one service only |
 | 25 | XP | Yes | Clean | Not started | award once; reload; no duplicate award |
 | 26 | Streak | Yes | Clean | Not started | same-day activity; next-day continuation; missed day |
