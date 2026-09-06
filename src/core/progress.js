@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'progress-state';
 const VERSION = 1;
-const COUNTER_KEYS = Object.freeze(['chaptersRead', 'quizCorrect', 'reflections']);
+const COUNTER_KEYS = Object.freeze(['chaptersRead', 'quizCorrect', 'reflections', 'assessments']);
 
 export const PROGRESS_BADGES = Object.freeze([
   Object.freeze({ id: 'first-step', label: 'First Step', description: 'Complete one meaningful BibleQuest activity.' }),
@@ -27,7 +27,7 @@ function defaultState() {
     streak: 0,
     lastActivityDate: null,
     totalActivities: 0,
-    counters: { chaptersRead: 0, quizCorrect: 0, reflections: 0 },
+    counters: { chaptersRead: 0, quizCorrect: 0, reflections: 0, assessments: 0 },
     badges: [],
     events: {}
   };
