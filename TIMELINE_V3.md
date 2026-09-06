@@ -7,16 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inv
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 33
+- **Regression-tested:** 37
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 65
-- **Verified or better:** 34 / 100 (**34% strict parity completion**)
-- **Fully regression-tested:** 33 / 100 (**33% stability coverage**)
+- **Not started:** 61
+- **Verified or better:** 38 / 100 (**38% strict parity completion**)
+- **Fully regression-tested:** 37 / 100 (**37% stability coverage**)
 - **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
-- **Milestone 8A:** Audio / Live Recordings frozen at `release/v3.8-audio-recordings`
-- **Milestone 8B:** Media Library verified; final bookkeeping gate pending
-- **Next target:** Milestone 9 — Games (#32–43)
+- **Milestone 8:** Audio / Live Recordings / Media frozen through `release/v3.9-media-library`
+- **Milestone 9:** Games active; launcher/Quick Recall/Context Challenge frozen at `release/v3.10-games-core`; Mixed Quest verified and awaiting exact bookkeeping freeze
+- **Next target:** #35 Per-book Recall after Mixed Quest bookkeeping freeze
 - **Production:** v2 remains live; v3 has not replaced production
 
 Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`. Milestone states below are schedule/progress labels only.
@@ -32,8 +32,8 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 5 | Lesson engine | **Complete (engine)** | #31 Regression-tested; individual game experiences belong to Games |
 | 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
 | 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
-| 8 | Audio / Live Recordings / Media | **Complete candidate** | #57–60 Regression-tested; #61 Verified; final exact bookkeeping regression then freeze `release/v3.9-media-library` |
-| 9 | Games | **Next** | #32–43; start with one launcher/lifecycle owner (#41) plus Quick Recall (#32) |
+| 8 | Audio / Live Recordings / Media | **Frozen complete** | #57–61 Regression-tested; through `release/v3.9-media-library` |
+| 9 | Games | **Active** | #32, #33, #41 Regression-tested; #34 Verified; #35–40, #42–43 remaining |
 | 10 | Bible World | **Not started** | #44–45 |
 | 11 | Tutorial / avatar | **Not started** | #84–85 |
 | 12 | Secondary features | **Not started** | Remaining guided study, notes, community, ministry, admin, PWA/offline, recovery, and related parity rows |
@@ -43,39 +43,39 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 
 ## Milestone 8 completion evidence
 
-Audio / Live Recordings passed its accumulated suite on run `34044293858`; the Audio bookkeeping suite later passed on run `34044792031`. Media Library then passed the entire later accumulated suite on run `34045487840`.
+Audio / Live Recordings passed its accumulated suite on run `34044293858`; the Audio bookkeeping suite later passed on run `34044792031`. Media Library then passed the entire later accumulated suite on run `34045487840` and is frozen at `release/v3.9-media-library`.
 
-The later Media Library run demonstrated:
-1. Existing shell/account/Reader/progress/lesson/Daily Mission/Transform regressions remain green.
-2. Audio/Recordings edge and browser regressions remain green, regression-promoting #57–60.
-3. Media Library architecture and edge tests pass.
-4. Guest route makes no protected cloud request.
-5. Browse, All/Featured filter and search work.
-6. Media opens through the existing Recordings → Audio ownership chain.
-7. Play/pause/seek/stop work without a second player.
-8. Back-to-library, source reopen, route leave and return leave no hidden/duplicate player.
-9. Desktop and 390px mobile workflows pass with no overflow and 44px minimum controls.
-10. Media Library remains a browse orchestration layer rather than another backend/player runtime.
+## Milestone 9 evidence — Games
+
+The first Games slice passed the accumulated suite on run `34064004752`, verifying one launcher owner with Quick Recall and Context Challenge. That checkpoint is frozen as `release/v3.10-games-core`.
+
+Mixed Quest then passed the entire accumulated suite on run `34065176532`. The run verified:
+1. `src/app/games.js` remains the sole launcher/round/scoring owner.
+2. Quick Recall and Context Challenge remain green, promoting #32, #33, and #41 to Regression-tested.
+3. Mixed Quest contains direct recall, context, and connection questions in one deterministic 10-question round.
+4. Each answer locks after one submission and XP still flows only through the central Progress owner.
+5. Mixed Quest completion produces the correct score/XP summary.
+6. The last completed Mixed Quest result persists across reload only through the shared Storage boundary.
+7. Leaving Play tears down the active round and returning restores a clean launcher.
+8. The 390px mobile flow retains no horizontal overflow and minimum 44px controls.
+9. Shell/account, Reader, Progress, Lesson, Daily Mission, Transform, Live Recordings, and Media Library browser regressions all remained green.
 
 Current bookkeeping:
-- #47 Full Transform — **Regression-tested**
-- #57 Audio manager — **Regression-tested**
-- #58 Recordings list — **Regression-tested**
-- #59 Live Recordings playback — **Regression-tested**
-- #60 Recording manager — **Regression-tested**
-- #61 Media Library — **Verified**
+- #32 Quick Recall — **Regression-tested**
+- #33 Context Challenge — **Regression-tested**
+- #34 Mixed Quest — **Verified**
+- #41 Game launcher — **Regression-tested**
+- #61 Media Library — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **33 Regression-tested / 1 Verified / 1 Implemented / 65 Not started**
+- Totals — **37 Regression-tested / 1 Verified / 1 Implemented / 61 Not started**
 
 ## Milestone 9 implementation order — Games
 
-To avoid rebuilding the old fragmented runtime, Games starts by defining one launcher/lifecycle boundary and immediately exercising it with a real game.
-
-1. #41 Game launcher — one launch/switch/teardown/session owner.
-2. #32 Quick Recall — first complete game through that launcher; answer → feedback → score → next → finish → replay.
-3. #33 Context Challenge.
-4. #34 Mixed Quest.
-5. #35 Per-book Recall.
+1. #41 Game launcher — **Regression-tested**.
+2. #32 Quick Recall — **Regression-tested**.
+3. #33 Context Challenge — **Regression-tested**.
+4. #34 Mixed Quest — **Verified**; exact bookkeeping freeze pending.
+5. #35 Per-book Recall — next implementation target.
 6. #36 Character Detective / Who Am I.
 7. #37 Timeline game.
 8. #38 Kids Memory Match.
@@ -84,7 +84,7 @@ To avoid rebuilding the old fragmented runtime, Games starts by defining one lau
 11. #42 Same-room Play Together.
 12. #43 Live Rooms.
 
-Each game must use defined shared lifecycle/progress/content interfaces, clean up all listeners/state on switch/leave, pass mobile interaction, and run the entire accumulated suite before promotion.
+Each game must use the shared lifecycle/progress/content/storage interfaces, clean up all listeners/state on switch/leave, pass mobile interaction, and run the entire accumulated suite before promotion.
 
 ## Deferred parity debt that must be cleared before 100%
 

@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 33
+- **Regression-tested:** 37
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 65
+- **Not started:** 61
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -52,16 +52,16 @@ This file is the authoritative parity ledger for the rebuild.
 | 29 | Daily passage rotation | Yes | Clean | Regression-tested | deterministic date selection; timezone boundary |
 | 30 | Daily Mission completion bonus | Yes | Clean | Regression-tested | complete once; no repeat bonus; reload |
 | 31 | Core lesson engine | Yes | Fragmented old | Regression-tested | shared lesson lifecycle; resume; completion; errors |
-| 32 | Quick Recall | Yes | Clean | Not started | answer; feedback; score; next; finish; replay |
-| 33 | Context Challenge | Yes | Clean | Not started | context question workflow; references; score |
-| 34 | Mixed Quest | Yes | Clean | Not started | mixed pool; finish; score persistence |
+| 32 | Quick Recall | Yes | Clean | Regression-tested | answer; feedback; score; next; finish; replay |
+| 33 | Context Challenge | Yes | Clean | Regression-tested | context question workflow; references; score |
+| 34 | Mixed Quest | Yes | Clean | Verified | mixed pool; finish; score persistence |
 | 35 | Per-book Recall | Yes | Clean | Not started | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Not started | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Not started | order interaction; result; replay |
 | 38 | Kids Memory Match | Yes | Clean | Not started | full match; reset; mobile |
 | 39 | Hiragana Match | Yes | Clean | Not started | match full board; reset; mobile |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | full round; reset; mobile |
-| 41 | Game launcher | Yes | Fragmented | Not started | one launch/teardown owner; switch games; no duplicate listeners |
+| 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Not started | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Not started | create/join/leave; reconnect; no stale room state |
 | 44 | Bible World | Yes | Clean | Not started | render path; unlock thresholds; route into content |
@@ -81,7 +81,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 58 | Recordings list | Yes | Clean link library only | Regression-tested | list load; empty/error states; reload |
 | 59 | Live Recordings playback | Yes | Missing in clean | Regression-tested | play; pause; switch; leave; return; no freeze; one player instance |
 | 60 | Recording manager | Yes | Fragmented old | Regression-tested | one owner; switch source; cleanup; error recovery |
-| 61 | Media Library | Yes | Compatibility | Verified | browse/filter/search; open through shared player; failure handling; leave/return; guest/account; mobile |
+| 61 | Media Library | Yes | Compatibility | Regression-tested | browse/filter/search; open through shared player; failure handling; leave/return; guest/account; mobile |
 | 62 | Couples/family local tools | Yes | Clean | Not started | topic open; save note/action; reload |
 | 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |
 | 64 | Journey Groups | Yes | Compatibility | Not started | create/join/view/leave; membership persistence |
