@@ -6,8 +6,12 @@ const normalize = raw => {
 export function createRouter({ routes, onRoute }) {
   if (!routes || typeof routes !== 'object') throw new Error('Router requires a route table.');
   let started = false;
+  let lastResolvedUrl = null;
 
-  const resolve = () => {
+  const resolve = (force = false) => {
+    const signature = location.href;
+    if (!force && signature === lastResolvedUrl) return;
+    lastResolvedUrl = signature;
     const requested = normalize(location.hash);
     const route = Object.prototype.hasOwnProperty.call(routes, requested) ? requested : 'not-found';
     onRoute(route, routes[route], requested);
@@ -17,15 +21,17 @@ export function createRouter({ routes, onRoute }) {
     start() {
       if (started) return;
       started = true;
+      window.addEventListener('popstate', resolve);
       window.addEventListener('hashchange', resolve);
       if (!location.hash) history.replaceState(null, '', '#/home');
-      resolve();
+      resolve(true);
     },
     navigate(route) {
       const target = normalize(route);
       const next = `#/${target}`;
-      if (location.hash === next) return resolve();
-      location.hash = next;
+      if (location.hash === next) return resolve(true);
+      history.pushState(null, '', next);
+      resolve(true);
     },
     current() { return normalize(location.hash); }
   });
