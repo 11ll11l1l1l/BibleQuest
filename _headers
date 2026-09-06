@@ -13,14 +13,32 @@
 /transform.html
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 
-/transformation-v2.css
-  Cache-Control: no-cache, must-revalidate
-
 /psychometrics
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 
 /psychometrics.html
   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin-operations
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/admin-operations.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/content-review
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/content-review.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+
+/transformation-v2.css
+  Cache-Control: no-cache, must-revalidate
 
 /psychometrics.css
   Cache-Control: no-cache, must-revalidate
