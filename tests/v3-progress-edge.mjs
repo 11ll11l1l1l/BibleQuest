@@ -42,6 +42,8 @@ progress.record({ id: 'quiz:batch:1', type: 'quiz.correct', xp: 0, metrics: { qu
 assert(progress.getState().badges.includes('bible-recall'), 'Bible Recall badge contract failed.');
 progress.record({ id: 'reflection:1', type: 'reflection.saved', xp: 0, metrics: { reflections: 1 } });
 assert(progress.getState().badges.includes('reflection'), 'Reflection badge contract failed.');
+progress.record({ id: 'assessment:1', type: 'assessment.complete', xp: 0, metrics: { assessments: 1 } });
+assert(progress.getState().counters.assessments === 1, 'Assessment progress metric must be accepted and persisted by the single progress owner.');
 const beforeBackdated = progress.getState();
 now = new Date('2026-09-05T12:00:00Z');
 progress.record({ id: 'test:backdated', type: 'test.activity', xp: 0 });
@@ -51,6 +53,7 @@ const reloaded = createProgressService({ storage, store: reloadedStore, clock: (
 const beforeReloadDuplicate = reloaded.getState().xp;
 const reloadDuplicate = reloaded.record({ id: 'test:first', type: 'test.activity', xp: 10 });
 assert(reloadDuplicate.duplicate && reloaded.getState().xp === beforeReloadDuplicate, 'Idempotency must survive service recreation/reload.');
+assert(reloaded.getState().counters.assessments === 1, 'Assessment counter must survive service recreation/reload.');
 assert(Object.isFrozen(reloaded.getState()) && Object.isFrozen(reloaded.getState().counters) && Object.isFrozen(reloaded.getState().events), 'Progress snapshots must be immutable.');
 const stringClockMemory = new Map();
 const stringClockStorage = { read(key, fallback) { return stringClockMemory.has(key) ? clone(stringClockMemory.get(key)) : clone(fallback); }, write(key, value) { stringClockMemory.set(key, clone(value)); return value; } };
@@ -60,5 +63,5 @@ const brokenMemory = new Map([['progress-state', { version: 1, xp: -20, streak: 
 const brokenStorage = { read(key, fallback) { return brokenMemory.has(key) ? clone(brokenMemory.get(key)) : clone(fallback); }, write(key, value) { brokenMemory.set(key, clone(value)); return value; } };
 const brokenStore = { state: {}, setState(patch) { this.state = typeof patch === 'function' ? patch(this.state) : patch; return this.state; } };
 const normalized = createProgressService({ storage: brokenStorage, store: brokenStore, timeZone: 'UTC' }).getState();
-assert(normalized.xp === 0 && normalized.streak === 0 && normalized.lastActivityDate === null && normalized.badges.length === 0 && Object.keys(normalized.events).length === 0, 'Malformed persisted progress must normalize safely.');
+assert(normalized.xp === 0 && normalized.streak === 0 && normalized.lastActivityDate === null && normalized.badges.length === 0 && normalized.counters.assessments === 0 && Object.keys(normalized.events).length === 0, 'Malformed persisted progress must normalize safely.');
 console.log('BibleQuest v3 progress edge regression passed.');
