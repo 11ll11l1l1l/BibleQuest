@@ -15,35 +15,41 @@ Updated: 2026-09-06
 
 | State | Count |
 |---|---:|
-| Regression-tested | 26 |
+| Regression-tested | 27 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 72 |
+| Not started | 71 |
 | Total | 100 |
 
-Counts stay unchanged while #46 Basic Transform is under implementation. #48 Transform engine is Verified; #46/#47 are not promoted by engine availability.
+#48 Transform engine is now Regression-tested after surviving the later Basic Transform milestone. #46 Basic Transform is Verified. #47 Full Transform remains Not started.
 
-## Current sub-milestone — 7B Basic Transform
+## Completed Transform sub-milestones
 
-Scope is exactly row #46:
-- 12 spiritual dimensions
-- 1–5 response UI
-- complete-only calculation through the verified engine
-- deterministic lowest-three focus guidance
-- private local persistence/reload/reopen
-- reset/edit/recalculate
-- explicit non-diagnostic/non-ranking safety language
-- one retry-safe +20 XP / Reflection metric through progress event `transform:spiritual:v1:complete`
-- guest workflow with zero Supabase traffic
-- desktop + 390px mobile regression
+### 7A — Transform engine (#48)
 
-`src/app/transform.js` is orchestration only. It reconciles an already-saved Basic Transform result to the canonical progress service. A progress-write failure after result persistence is recoverable on reopen and cannot duplicate XP.
+`src/engines/transform.js` is the single Transform state/scoring/persistence owner. It owns spiritual, personality, thinking-pattern and reflection state; derived results are reconstructed from validated answers; answer changes invalidate stale results; repeated calculations are idempotent; storage writes are atomic with respect to memory; old `window.BQ_TRANSFORMATION`/modal/runtime-recovery architecture is not recreated.
 
-Full Transform Big Five, thinking patterns, recommendations and journal UI (#47) remain intentionally absent from this sub-milestone.
+### 7B — Basic Transform (#46)
+
+Verified workflow:
+- Grow → `#/transform`
+- all 12 spiritual dimensions render
+- 1–5 ratings persist locally
+- calculation is performed only by the Transform engine
+- exactly three deterministic focus recommendations render
+- explicit non-diagnostic/non-ranking boundary is shown
+- completion requests deterministic progress event `transform:spiritual:v1:complete`
+- +20 XP and Reflection metric award exactly once per v3 assessment version
+- reload/reopen restores result without duplicate XP
+- editing an answer invalidates the old result and recalculation does not farm XP
+- reset clears spiritual answers/result
+- failed progress write after result persistence heals on reopen through the same deterministic event
+- guest workflow makes no Supabase request
+- desktop and 390px mobile workflows pass, including 44px rating targets and no horizontal overflow
 
 ## Next major milestone
 
-After #46’s exact promoted ledger is green, start 7C Full Transform (#47) using the same `src/engines/transform.js` and `src/app/transform.js`. No Audio/Recordings work starts until all Transform rows #46–#48 are completed and the Transform release is frozen.
+Milestone 7C — Full Transform (#47), using the same verified `src/engines/transform.js` and `src/app/transform.js` owners. Scope is the old full personal-development workflow: personality assessment, thinking-pattern scenarios, recommendations/action plan, private journal/reflection, Bible Reader handoff, leave/return persistence, guest/account separation, and mobile behavior. No Audio/Recordings implementation starts until #47 passes and the final Transform release is frozen.
 
 ## Defect / root-cause ledger
 
@@ -55,8 +61,6 @@ After #46’s exact promoted ledger is green, start 7C Full Transform (#47) usin
 - `V3-READER-ACCEPTANCE-001` — invalid search respects native form validation.
 - `V3-PROGRESS-UI-001` — static label readability is separate from touch-target semantics.
 - `V3-TRANSFORM-OWNER-001` — Basic orchestration initially defined a second `calculateSpiritual` function name. The architecture gate correctly rejected the semantic owner collision. The orchestration action is now `completeBasicAssessment`; only `src/engines/transform.js` defines `calculateSpiritual`, and the Basic edge suite asserts that duplicate owner name cannot reappear.
-
-Basic Transform remains unpromoted until its exact CI evidence exists.
 
 ## Release rule
 
