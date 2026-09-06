@@ -62,7 +62,8 @@ async function desktopFlow() {
   let search = page.locator('[data-reader-search] input[name="query"]');
   await search.fill('ab');
   await page.locator('[data-reader-search] button[type="submit"]').click();
-  await page.locator('[data-reader-message]', { hasText: 'at least 3' }).waitFor();
+  assert(await search.evaluate(input => !input.checkValidity()), 'Short search must remain invalid at the browser form boundary.');
+  assert(page.url().endsWith('#/reader'), 'Invalid search must not navigate away from the reader.');
   await search.fill('John 3:16');
   await page.locator('[data-reader-search] button[type="submit"]').click();
   await page.locator('[data-search-result="0"]').waitFor();
