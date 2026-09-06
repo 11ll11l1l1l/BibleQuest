@@ -10,6 +10,11 @@ assert.match(html,/<script src="transformation-v2\.js"><\/script>/,'Transform mu
 assert.match(html,/api\.mode==='rebuilt-v2'/,'Transform bootstrap must reject unrelated or incomplete runtime globals');
 assert.match(html,/transformation-v2\.js\?bq-recover=/,'Transform bootstrap must have a cache-busting clean-runtime recovery path');
 assert.match(html,/if\(!root\)root=await recoverAndOpen\(\)/,'Transform must attempt clean recovery before showing a startup failure');
+assert.match(html,/GATE_TIMEOUT_MS=8000/,'Transform account verification must have a finite timeout');
+assert.match(html,/Promise\.race\(\[/,'Transform startup must bound a stalled account-gate promise');
+assert.match(html,/T-GATE-MISSING/,'Transform must visibly recover when the standalone account gate did not load');
+assert.match(html,/T-GATE-TIMEOUT/,'Transform must visibly recover when account verification stalls');
+assert.match(html,/document\.documentElement\.classList\.add\('bq-account-confirmed'\)/,'Transform failure UI must become visible instead of remaining hidden behind the account gate');
 assert.match(html,/RECOVERY_TIMEOUT_MS=8000/,'Transform runtime recovery must have a finite timeout');
 assert.match(html,/data-bq-transform-retry/,'Transform hard failure must remain retryable without clearing user data');
 assert.doesNotMatch(html,/localStorage\.(?:clear|removeItem)\(/,'Transform startup recovery must never erase saved reflection data');

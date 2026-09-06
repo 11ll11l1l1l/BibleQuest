@@ -25,8 +25,8 @@ html:not(.bq-account-confirmed) body{visibility:hidden}
   'use strict';
   var RETURN_KEY='bq_transform_return_action';
   var RUNTIME_URL='transformation-v2.js';
+  var GATE_TIMEOUT_MS=8000;
   var RECOVERY_TIMEOUT_MS=8000;
-  if(!await window.BQStandaloneGate?.ready)return;
 
   function homeUrl(){return new URL('./',location.href).href;}
   function returnHome(){
@@ -68,10 +68,23 @@ html:not(.bq-account-confirmed) body{visibility:hidden}
       return document.querySelector('.bq-transform-v2');
     }catch(_err){return null;}
   }
-  function showFailure(code){
-    document.body.innerHTML='<main class="bq-transform-load-failure" role="alert"><h1>Transform could not start</h1><p>BibleQuest tried a clean runtime recovery but the reflection tools are still unavailable.</p><div class="actions"><button type="button" data-bq-transform-retry>Try Transform again</button><a href="./">Return to BibleQuest</a></div><small>Diagnostic '+code+'</small></main>';
+  function showFailure(code,message){
+    document.documentElement.classList.add('bq-account-confirmed');
+    document.body.innerHTML='<main class="bq-transform-load-failure" role="alert"><h1>Transform could not start</h1><p>'+message+'</p><div class="actions"><button type="button" data-bq-transform-retry>Try Transform again</button><a href="./">Return to BibleQuest</a></div><small>Diagnostic '+code+'</small></main>';
     document.querySelector('[data-bq-transform-retry]')?.addEventListener('click',function(){location.replace(location.pathname+'?bq-retry='+Date.now());});
   }
+  async function waitForAccountGate(){
+    var gate=window.BQStandaloneGate?.ready;
+    if(!gate){showFailure('T-GATE-MISSING','BibleQuest could not verify your account for Transform. Please retry from the main app.');return false;}
+    var result=await Promise.race([
+      Promise.resolve(gate).then(Boolean).catch(function(){return false;}),
+      new Promise(function(resolve){setTimeout(function(){resolve('timeout');},GATE_TIMEOUT_MS);})
+    ]);
+    if(result==='timeout'){showFailure('T-GATE-TIMEOUT','Account verification took too long, so Transform stopped instead of leaving a blank screen.');return false;}
+    return result;
+  }
+
+  if(!await waitForAccountGate())return;
 
   var api=runtimeApi();
   var root=null;
@@ -79,7 +92,7 @@ html:not(.bq-account-confirmed) body{visibility:hidden}
     try{api.open();root=document.querySelector('.bq-transform-v2');}catch(_err){}
   }
   if(!root)root=await recoverAndOpen();
-  if(!root){showFailure(api?'T-ROOT':'T-RUNTIME');return;}
+  if(!root){showFailure(api?'T-ROOT':'T-RUNTIME','BibleQuest tried a clean runtime recovery but the reflection tools are still unavailable.');return;}
 
   root.addEventListener('click',function(event){var target=event.target instanceof Element?event.target:null;if(!target)return;if(target.closest('[data-t2-close]')){event.preventDefault();event.stopImmediatePropagation();returnHome();return}if(target.closest('[data-t2-reader]')){event.preventDefault();event.stopImmediatePropagation();openMain('reader');return}if(target.closest('[data-t2-wisdom]')){event.preventDefault();event.stopImmediatePropagation();openMain('wisdom')}},true);
   root.addEventListener('keydown',function(event){if(event.key!=='Escape')return;event.preventDefault();event.stopImmediatePropagation();returnHome()},true);
