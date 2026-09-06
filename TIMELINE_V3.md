@@ -7,16 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inv
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 37
+- **Regression-tested:** 38
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 61
-- **Verified or better:** 38 / 100 (**38% strict parity completion**)
-- **Fully regression-tested:** 37 / 100 (**37% stability coverage**)
+- **Not started:** 60
+- **Verified or better:** 39 / 100 (**39% strict parity completion**)
+- **Fully regression-tested:** 38 / 100 (**38% stability coverage**)
 - **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
 - **Milestone 8:** Audio / Live Recordings / Media frozen through `release/v3.9-media-library`
-- **Milestone 9:** Games active; launcher/Quick Recall/Context Challenge frozen at `release/v3.10-games-core`; Mixed Quest verified and awaiting exact bookkeeping freeze
-- **Next target:** #35 Per-book Recall after Mixed Quest bookkeeping freeze
+- **Milestone 9:** Games active; core frozen at `release/v3.10-games-core`, Mixed Quest frozen at `release/v3.11-mixed-quest`, Per-book Recall verified and awaiting exact bookkeeping freeze
+- **Next target:** #36 Character Detective / Who Am I after Per-book Recall bookkeeping freeze
 - **Production:** v2 remains live; v3 has not replaced production
 
 Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`. Milestone states below are schedule/progress labels only.
@@ -33,7 +33,7 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
 | 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
 | 8 | Audio / Live Recordings / Media | **Frozen complete** | #57–61 Regression-tested; through `release/v3.9-media-library` |
-| 9 | Games | **Active** | #32, #33, #41 Regression-tested; #34 Verified; #35–40, #42–43 remaining |
+| 9 | Games | **Active** | #32–34, #41 Regression-tested; #35 Verified; #36–40, #42–43 remaining |
 | 10 | Bible World | **Not started** | #44–45 |
 | 11 | Tutorial / avatar | **Not started** | #84–85 |
 | 12 | Secondary features | **Not started** | Remaining guided study, notes, community, ministry, admin, PWA/offline, recovery, and related parity rows |
@@ -41,42 +41,43 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 14 | Mobile regression | **Not started** | Full accumulated mobile workflow pass after parity audit |
 | 15 | Production deployment | **Not started** | Deploy v3 only after parity + stability gates pass |
 
-## Milestone 8 completion evidence
-
-Audio / Live Recordings passed its accumulated suite on run `34044293858`; the Audio bookkeeping suite later passed on run `34044792031`. Media Library then passed the entire later accumulated suite on run `34045487840` and is frozen at `release/v3.9-media-library`.
-
 ## Milestone 9 evidence — Games
 
-The first Games slice passed the accumulated suite on run `34064004752`, verifying one launcher owner with Quick Recall and Context Challenge. That checkpoint is frozen as `release/v3.10-games-core`.
+The Games core passed the accumulated suite on run `34064004752`, verifying one launcher owner with Quick Recall and Context Challenge. That checkpoint is frozen as `release/v3.10-games-core`.
 
-Mixed Quest then passed the entire accumulated suite on run `34065176532`. The run verified:
-1. `src/app/games.js` remains the sole launcher/round/scoring owner.
-2. Quick Recall and Context Challenge remain green, promoting #32, #33, and #41 to Regression-tested.
-3. Mixed Quest contains direct recall, context, and connection questions in one deterministic 10-question round.
-4. Each answer locks after one submission and XP still flows only through the central Progress owner.
-5. Mixed Quest completion produces the correct score/XP summary.
-6. The last completed Mixed Quest result persists across reload only through the shared Storage boundary.
-7. Leaving Play tears down the active round and returning restores a clean launcher.
-8. The 390px mobile flow retains no horizontal overflow and minimum 44px controls.
-9. Shell/account, Reader, Progress, Lesson, Daily Mission, Transform, Live Recordings, and Media Library browser regressions all remained green.
+Mixed Quest passed the entire accumulated suite on run `34065176532`, and its exact bookkeeping run `34065347665` also passed. It is frozen as `release/v3.11-mixed-quest`.
+
+Per-book Recall then passed the entire accumulated suite on run `34065874003`. The run verified:
+1. `src/core/recall-packs.js` is the sole question-pack load/validation/cache owner.
+2. Question packs load on demand from the retained manifest rather than increasing startup work.
+3. Invalid paths, malformed payloads, duplicate rows, unavailable packs, and quarantined/non-allow records are handled by the data boundary.
+4. Per-book sessions run through the existing `src/app/games.js` lifecycle rather than a standalone deck runtime.
+5. The workflow is select book → open session → recall from memory → reveal reference answer → Review again/Got it → advance → complete.
+6. Old +1 Review Again / +5 Got It XP semantics are preserved through the central Progress owner.
+7. Review queues, per-book statistics, and completed results persist only through the shared Storage boundary.
+8. Review items are prioritized in future sessions without duplicating progress writes.
+9. Source/license attribution remains visible for unfoldingWord Translation Questions v90 / CC BY-SA 4.0.
+10. Shell/account, Reader, Progress, Lesson, Daily Mission, Transform, Live Recordings, Media Library, and earlier Games browser regressions all remained green.
+11. The 390px mobile workflow passed with no horizontal overflow and usable touch targets.
 
 Current bookkeeping:
 - #32 Quick Recall — **Regression-tested**
 - #33 Context Challenge — **Regression-tested**
-- #34 Mixed Quest — **Verified**
+- #34 Mixed Quest — **Regression-tested**
+- #35 Per-book Recall — **Verified**
 - #41 Game launcher — **Regression-tested**
 - #61 Media Library — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **37 Regression-tested / 1 Verified / 1 Implemented / 61 Not started**
+- Totals — **38 Regression-tested / 1 Verified / 1 Implemented / 60 Not started**
 
 ## Milestone 9 implementation order — Games
 
 1. #41 Game launcher — **Regression-tested**.
 2. #32 Quick Recall — **Regression-tested**.
 3. #33 Context Challenge — **Regression-tested**.
-4. #34 Mixed Quest — **Verified**; exact bookkeeping freeze pending.
-5. #35 Per-book Recall — next implementation target.
-6. #36 Character Detective / Who Am I.
+4. #34 Mixed Quest — **Regression-tested**; frozen through `release/v3.11-mixed-quest`.
+5. #35 Per-book Recall — **Verified**; exact bookkeeping freeze pending.
+6. #36 Character Detective / Who Am I — next implementation target.
 7. #37 Timeline game.
 8. #38 Kids Memory Match.
 9. #39 Hiragana Match.
