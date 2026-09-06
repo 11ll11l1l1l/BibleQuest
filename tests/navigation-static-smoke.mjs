@@ -59,6 +59,8 @@ assert(launcher.includes("const TARGET='./transform'"),'Transform launcher must 
 assert(launcher.includes("const PSYCH_TARGET='./psychometrics'"),'Psychometrics launcher must use Cloudflare canonical route');
 assert(read('admin-link.js').includes("a.href='admin'"),'Admin launcher must use canonical /admin route');
 assert(read('content-review-link.js').includes("a.href='content-review'"),'Content Review launcher must use canonical route');
+const recovery=read('password-recovery.js');
+assert(recovery.includes("a.href='reset'")&&recovery.includes("setAttribute('href','reset')"),'Account Recovery must normalize legacy reset.html links to /reset');
 
 const redirects=read('_redirects');
 for(const row of [
@@ -67,7 +69,8 @@ for(const row of [
   '/psychometrics.html /psychometrics 301',
   '/admin.html /admin 301',
   '/admin-operations.html /admin-operations 301',
-  '/content-review.html /content-review 301'
+  '/content-review.html /content-review 301',
+  '/reset.html /reset 301'
 ])assert(redirects.includes(row),`Missing Cloudflare compatibility redirect: ${row}`);
 
 const sw=read('sw.js');
