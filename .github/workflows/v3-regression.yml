@@ -32,6 +32,8 @@ jobs:
         run: node tests/v3-transform-edge.mjs
       - name: Run Basic Transform edge regression
         run: node tests/v3-transform-basic-edge.mjs
+      - name: Run Audio and Recordings edge regression
+        run: node tests/v3-recordings-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -62,3 +64,5 @@ jobs:
         run: timeout 240s node tests/v3-transform-basic-smoke.mjs
       - name: Run v3 Full Transform browser regression
         run: timeout 240s node tests/v3-transform-full-smoke.mjs
+      - name: Run v3 Live Recordings browser regression
+        run: timeout 240s node tests/v3-recordings-smoke.mjs
