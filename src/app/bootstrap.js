@@ -3,9 +3,11 @@ import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
 import { createReaderService } from './reader.js';
+import { createDailyMissionService } from './daily-mission.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
+import { createLessonEngine } from '../engines/lesson.js';
 import { storage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { homePage, pendingPage } from '../features/home/index.js';
@@ -13,6 +15,7 @@ import { accountPage } from '../features/account/index.js';
 import { learnPage } from '../features/learn/index.js';
 import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
+import { dailyMissionPage } from '../features/daily-mission/index.js';
 
 function start() {
   const root = document.getElementById('app');
@@ -24,14 +27,17 @@ function start() {
   const api = createApi();
   const bible = createBibleDataService();
   const progress = createProgressService({ storage, store });
+  const lesson = createLessonEngine({ storage });
   const session = createSessionService({ auth: api.auth, store });
   const account = createAccountService({ api, session, storage });
   const reader = createReaderService({ bible, storage, progress });
+  const dailyMission = createDailyMissionService({ lesson, progress, reader });
   let router;
   let shell;
 
   const routes = Object.freeze({
-    home: () => homePage({ progress }),
+    home: () => homePage({ progress, dailyMission, onMission: () => router.navigate('mission') }),
+    mission: () => dailyMissionPage({ mission: dailyMission, onReader: () => router.navigate('reader'), onHome: () => router.navigate('home') }),
     learn: () => learnPage({ onReader: () => router.navigate('reader') }),
     reader: () => readerPage({ reader }),
     play: () => pendingPage('Play'),

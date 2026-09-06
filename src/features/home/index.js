@@ -1,5 +1,9 @@
-export function homePage({ progress }) {
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+
+export function homePage({ progress, dailyMission, onMission }) {
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
+  const daily = dailyMission?.today?.();
+  const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
   return {
     title: 'Home',
     html: `
@@ -7,10 +11,11 @@ export function homePage({ progress }) {
         <div>
           <p class="bq-eyebrow">Rebuild and verify</p>
           <h1>BibleQuest</h1>
-          <p>The clean v3 core now has verified account, Bible reader, and progress foundations. Features are restored only when their complete workflow passes regression.</p>
+          <p>The clean v3 rebuild restores each old workflow on one stable architecture and keeps every completed milestone under regression.</p>
         </div>
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
+      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">TODAY · ${escapeHtml(daily.dateKey)}</p><h2>Continue My Journey — 4 min</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>Retrieve → Context → Learn → Apply → Reflect.</p><button type="button" class="bq-primary-button" data-open-daily>Open Daily Journey</button></section>` : ''}
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">YOUR PROGRESS</p>
         <div class="bq-progress-stats">
@@ -19,11 +24,14 @@ export function homePage({ progress }) {
           <div><b data-home-activities>${state.totalActivities}</b><span>Activities</span></div>
           <div><b data-home-badges>${state.badges.length}</b><span>Badges</span></div>
         </div>
-      </section>
-      <section class="bq-panel">
-        <h2>Continue learning</h2>
-        <p>Open Learn to read Scripture. Marking a new chapter read is now one idempotent progress event: it awards once, protects streak consistency, and can never double-award on reload.</p>
-      </section>`
+      </section>`,
+    mount(root) {
+      const button = root.querySelector('[data-open-daily]');
+      if (!button) return undefined;
+      const open = () => onMission();
+      button.addEventListener('click', open);
+      return () => button.removeEventListener('click', open);
+    }
   };
 }
 

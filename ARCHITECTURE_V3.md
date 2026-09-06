@@ -2,14 +2,7 @@
 
 ## Development model
 
-BibleQuest v3 uses **rebuild-and-verify**, not patch-and-accumulate.
-
-Two goals are tracked separately:
-
-1. **Feature parity** — every old workflow exists cleanly in v3.
-2. **Stability** — every implemented workflow remains passing as later features are added.
-
-A feature cannot be called complete until it passes its real acceptance workflow. Compatibility pages and legacy scripts are reference material only.
+BibleQuest v3 uses **rebuild-and-verify**, not patch-and-accumulate. Feature parity and stability are tracked separately. A capability is complete only after its actual workflow is verified; legacy/compatibility code is reference material only.
 
 ## Single-owner architecture
 
@@ -23,6 +16,7 @@ BibleQuest v3
 |   +-- src/app/session.js         one auth/session/password owner
 |   +-- src/app/account.js         one signup/recovery/device workflow owner
 |   +-- src/app/reader.js          one reader navigation/read-state owner
+|   +-- src/app/daily-mission.js   one Daily Journey orchestration owner
 |
 +-- Core Services
 |   +-- src/core/storage.js        one browser persistence boundary
@@ -48,57 +42,44 @@ BibleQuest v3
 |   +-- src/features/games/
 |   +-- src/features/bible-world/
 |   +-- src/features/tutorial/
-|   +-- ...remaining parity features
 |
 +-- Shared UI
     +-- src/ui/shell.js
     +-- src/ui/app.css
     +-- src/ui/reader.css
     +-- src/ui/progress.css
-    +-- future reusable cards/dialogs/buttons/layout helpers
+    +-- src/ui/daily-mission.css
 ```
-
-Files listed as future milestones do not count as implemented until they exist and are verified.
 
 ## Hard boundaries
 
-1. `index.html` has exactly one JavaScript entry: `src/app/bootstrap.js`.
-2. Features never register their own hash/router listeners.
-3. Features never create independent global application stores.
+1. `index.html` boots exactly one JavaScript entry: `src/app/bootstrap.js`.
+2. Router/history ownership stays in `src/app/router.js`.
+3. Global application state stays in `src/app/store.js`; feature-local globals are forbidden.
 4. Browser persistence is accessed only through `src/core/storage.js`.
 5. Authentication/session/password transitions are owned by `src/app/session.js`.
 6. Signup, recovery and remembered-device workflows are owned by `src/app/account.js`.
-7. Supabase and account backend calls go through `src/core/api.js` only.
-8. Bible metadata, translation registry, pack fetch/cache, search and external Bible-tool URLs go through `src/core/bible.js` only.
-9. Reader selection/navigation/read-state orchestration goes through `src/app/reader.js`; reader feature UI never fetches packs directly.
-10. XP, streak, meaningful-activity counters and achievements are mutated only by `src/core/progress.js`. Features submit deterministic event IDs and never mutate progression directly.
-11. Cross-service progress events use retry-safe ordering so a retry can heal partial completion without duplicate XP.
-12. Guided lesson lifecycle state—start/resume, current step, response lock, feedback, advance, completion, restart and teardown—is owned only by `src/engines/lesson.js`.
-13. Lesson definitions may use content, choice, confirmation and text-response steps. Game-specific mechanics remain outside the lesson engine.
-14. The lesson engine does not mutate XP/streak/badges; callers hand completion/activity events to the progress service explicitly.
-15. Audio and recording playback each have exactly one lifecycle owner when migrated.
-16. Transform logic has one engine and games have one launcher when migrated.
-17. A feature may render only inside the view handed to it by the shell. It must not replace the application shell.
-18. No v3 code may depend on `window.BQ*` legacy globals.
-19. Legacy modules may be consulted for behavior, content contracts, resources and edge cases, but are not boot dependencies.
-20. Copyrighted Bible translations are not bundled or transformed unless the repository has a verified redistribution/derivative-use basis. External links are permitted where the destination provider serves the text itself.
+7. Supabase/backend calls go through `src/core/api.js` only.
+8. Bible metadata, pack fetch/cache, search and external Bible-tool links go through `src/core/bible.js` only.
+9. Reader selection/navigation/read-state orchestration goes through `src/app/reader.js`.
+10. XP, streak, activity counters and achievements are mutated only by `src/core/progress.js`; callers submit deterministic event IDs.
+11. Cross-service progress events use retry-safe ordering and idempotent reconciliation.
+12. Guided lesson lifecycle state is owned only by `src/engines/lesson.js`.
+13. The lesson engine supports content, choice, confirmation and text-response steps and does not absorb game-specific mechanics.
+14. The lesson engine does not mutate progress; progress events are explicit at the orchestration boundary.
+15. Daily Journey composition, dated definition selection, progress reconciliation and reader handoff are owned by `src/app/daily-mission.js`; it stores no parallel mission state.
+16. Daily Journey passage rotation uses the explicit civil date/timezone boundary supplied by the progress service, not random render-time selection.
+17. Daily Journey UI does not call storage, progress, lesson, reader or router internals directly.
+18. Audio, recording, Transform and games each receive one lifecycle owner only when their locked milestone begins.
+19. Features render only inside the shell view and must clean up listeners on teardown.
+20. No v3 source may depend on `window.BQ*` legacy globals.
+21. Copyrighted Bible translations are not bundled without verified redistribution rights.
 
 ## Feature migration procedure
 
-For each feature:
+For each feature: audit old behavior → define acceptance → implement behind owners → run architecture/service tests → run full accumulated browser suite → promote in a separate ledger commit → rerun the exact ledger commit → freeze known-good release → continue.
 
-1. Read the old workflow and resources.
-2. Write the acceptance workflow into `FEATURE_INVENTORY_V3.md` and tests before calling it verified.
-3. Implement against core interfaces only.
-4. Run architecture validation and fast service/transaction tests.
-5. Run the entire accumulated v3 browser regression suite.
-6. If the workflow passes, mark **Verified** in a separate audited ledger/status commit.
-7. Run the complete suite again on that exact status commit.
-8. On the next later milestone that still passes the entire suite, promote the prior feature to **Regression-tested**.
-
-## Bug-fix rule
-
-Every bug fix must document the root cause and an automated regression test. If either is missing, the change is considered a patch and should not be accepted into a stable milestone branch.
+Every bug fix must record both root cause and the automated test that prevents recurrence.
 
 ## Milestone order
 
@@ -122,8 +103,6 @@ No unrelated new feature work is allowed during parity migration.
 
 ## Releases
 
-Milestone snapshots use immutable-style `release/...` branches. Do not move a release snapshot after it is declared known-good.
-
 Known-good sequence:
 
 - `release/v3.0-base`
@@ -131,6 +110,7 @@ Known-good sequence:
 - `release/v3.2-auth-complete`
 - `release/v3.3-reader-core`
 - `release/v3.4-progress-core`
-- next: lesson-engine snapshot only after its exact ledger/status commit is green
+- `release/v3.5-lesson-engine`
+- next: Daily Mission snapshot only after #28–#30 and their exact ledger/status commit are green
 
-The current v2 deployment remains production until an explicit later cutover decision. A v2 compatibility path is not evidence that a v3 feature is verified.
+Production remains the isolated v2 GitHub Pages deployment until an explicit cutover decision.
