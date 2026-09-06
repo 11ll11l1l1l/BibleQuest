@@ -55,6 +55,8 @@ assert.match(previewAccess,/stopImmediatePropagation\(\)/, 'Preview lock must st
 assert.match(uiTaglish,/closest\('\[data-bq-english\]/, 'Global Taglish translation must skip explicitly English account/tutorial surfaces');
 assert.doesNotMatch(account,/console\.(?:log|warn|error)\([^\n]*recoveryCode/i, 'Recovery codes must never be written to browser console logs');
 assert.doesNotMatch(account,/track\([^\n]*recoveryCode/i, 'Recovery codes must never be sent through account analytics/tracking');
+assert.match(account,/new CustomEvent\('bq-account-created'\)/, 'Account creation must emit only a non-secret completion signal');
+assert.doesNotMatch(account,/CustomEvent\('bq-account-created',[\s\S]{0,120}recoveryCode/, 'Recovery codes must never be placed in globally observable account-created event detail');
 assert.doesNotMatch(tutorial,/console\.(?:log|warn|error)/, 'Onboarding tutorial must not log recovery-code-bearing state');
 
 console.log('Immediate signup, limited signed-out preview, rotating recovery-code, canonical password security, protected English Daily Journey onboarding, and recovery-code privacy static smoke passed');
