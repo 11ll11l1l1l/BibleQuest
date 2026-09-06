@@ -2,10 +2,18 @@
 
 This file is the authoritative parity ledger for the rebuild.
 
+## Current totals
+
+- **Regression-tested:** 5
+- **Verified:** 2
+- **Implemented:** 0
+- **Not started:** 93
+- **Total old-version capabilities:** 100
+
 ## Status definitions
 
 - **Not started** — no clean v3 implementation exists.
-- **Implemented** — clean v3 code exists behind the defined architecture, but the complete real workflow has not yet passed verification.
+- **Implemented** — clean v3 code exists behind the defined architecture, but the complete acceptance workflow has not yet passed verification.
 - **Verified** — the feature's acceptance workflow has passed in the v3 browser regression suite.
 - **Regression-tested** — after the feature was verified, at least one later feature milestone ran the entire v3 suite and the feature still passed.
 
@@ -13,13 +21,13 @@ This file is the authoritative parity ledger for the rebuild.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
-| 1 | App shell | Yes | Clean | Verified | boot once; no duplicate shell; error boundary |
-| 2 | Primary navigation | Yes | Clean | Verified | all primary routes; deep link; back/forward; reload |
-| 3 | Mobile shell/layout | Yes | Clean | Verified | 390px + desktop; no horizontal overflow; nav usable |
-| 4 | Global application state | Yes | Partial clean | Verified | one store; route change consistency; no competing globals |
-| 5 | Storage boundary | Yes | Partial clean | Verified | one persistence API; malformed data recovery; key isolation |
-| 6 | Authentication/session | Yes | Compatibility | Not started | login; logout; expired session; reload; guest/logged-in separation |
-| 7 | Guest mode | Yes | Partial clean | Not started | guest boot; guest feature access; no accidental cloud write |
+| 1 | App shell | Yes | Clean | Regression-tested | boot once; no duplicate shell; error boundary |
+| 2 | Primary navigation | Yes | Clean | Regression-tested | all primary routes; deep link; back/forward; reload |
+| 3 | Mobile shell/layout | Yes | Clean | Regression-tested | 390px + desktop; no horizontal overflow; nav usable |
+| 4 | Global application state | Yes | Partial clean | Regression-tested | one store; route change consistency; no competing globals |
+| 5 | Storage boundary | Yes | Partial clean | Regression-tested | one persistence API; malformed data recovery; key isolation |
+| 6 | Authentication/session | Yes | Compatibility | Verified | login; logout; expired session; reload; guest/logged-in separation |
+| 7 | Guest mode | Yes | Partial clean | Verified | guest boot; guest feature access; no accidental cloud write |
 | 8 | Signup | Yes | Compatibility | Not started | create account; validation; duplicate account handling |
 | 9 | Recovery code/password recovery | Yes | Compatibility | Not started | recover; rotate code; invalid code; session after reset |
 | 10 | Remembered device/security | Yes | Compatibility | Not started | add/remove device; reload; unauthorized state |

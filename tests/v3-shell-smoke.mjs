@@ -44,6 +44,7 @@ async function sessionServiceFlow(page) {
   const result = await page.evaluate(async () => {
     const [{ createStore }, { createSessionService }] = await Promise.all([import('/src/app/store.js'), import('/src/app/session.js')]);
     let current = null;
+    let mutationCalls = 0;
     let signOutScope = '';
     const listeners = new Set();
     const makeSession = (expiresAt = Math.floor(Date.now() / 1000) + 3600) => ({ access_token: 'test-token', expires_at: expiresAt, user: { id: 'user-1', email: 'learner@example.com', user_metadata: { preferred_name: 'Learner' } } });
@@ -53,13 +54,14 @@ async function sessionServiceFlow(page) {
       async subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
       async getSession() { return { session: current }; },
       async getUser() { return { user: current?.user || null }; },
-      async signIn(email, password) { if (email !== 'learner@example.com' || password !== 'correct-password') throw new Error('Invalid login credentials'); current = makeSession(); emit('SIGNED_IN', current); return { session: current, user: current.user }; },
-      async signOut() { signOutScope = 'local'; current = null; emit('SIGNED_OUT', null); }
+      async signIn(email, password) { mutationCalls++; if (email !== 'learner@example.com' || password !== 'correct-password') throw new Error('Invalid login credentials'); current = makeSession(); emit('SIGNED_IN', current); return { session: current, user: current.user }; },
+      async signOut() { mutationCalls++; signOutScope = 'local'; current = null; emit('SIGNED_OUT', null); }
     };
     const storeA = createStore({ session: null });
     const serviceA = createSessionService({ auth, store: storeA });
     await serviceA.boot();
     const bootGuest = serviceA.getState();
+    const guestMutations = mutationCalls;
     let invalidMessage = '';
     try { await serviceA.signIn('learner@example.com', 'wrong'); } catch (error) { invalidMessage = error.message; }
     const afterInvalid = serviceA.getState();
@@ -77,9 +79,10 @@ async function sessionServiceFlow(page) {
     await serviceB.signOut();
     const signedOut = serviceB.getState();
     serviceA.dispose(); serviceB.dispose();
-    return { bootGuest, invalidMessage, afterInvalid, signedIn, reloaded, expired, signedOut, signOutScope, listenersRemaining: listeners.size };
+    return { bootGuest, guestMutations, invalidMessage, afterInvalid, signedIn, reloaded, expired, signedOut, signOutScope, listenersRemaining: listeners.size };
   });
   assert(result.bootGuest.status === 'guest' && result.bootGuest.authenticated === false, 'Session boot must resolve to guest without a saved session.');
+  assert(result.guestMutations === 0, 'Guest boot must not perform an auth mutation or cloud write.');
   assert(/invalid/i.test(result.invalidMessage), 'Invalid login must return a controlled auth error.');
   assert(result.afterInvalid.status === 'guest' && result.afterInvalid.authenticated === false, 'Invalid login must not create an authenticated state.');
   assert(result.signedIn.status === 'authenticated' && result.signedIn.user?.email === 'learner@example.com', 'Valid login did not create authenticated state.');
@@ -92,16 +95,20 @@ async function sessionServiceFlow(page) {
 
 async function desktopFlow() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  let supabaseRequests = 0;
+  page.on('request', request => { if (request.url().includes('supabase.co')) supabaseRequests++; });
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.locator('[data-bq-shell="v3"]').waitFor();
   assert(await page.locator('[data-bq-shell="v3"]').count() === 1, 'Shell must mount exactly once.');
   assert((await page.locator('h1').first().textContent())?.trim() === 'BibleQuest', 'Home must render BibleQuest heading.');
   await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
+  assert(supabaseRequests === 0, 'Guest boot in local regression must not contact Supabase.');
   await coreServiceFlow(page); await sessionServiceFlow(page);
   await page.locator('[data-session-open]').click(); await page.waitForURL(/#\/account$/);
   assert((await page.locator('h1').first().textContent())?.trim() === 'Sign in', 'Guest account page did not render.');
   await page.locator('input[name="email"]').fill('learner@example.com'); await page.locator('input[name="password"]').fill('not-a-real-password');
   await page.locator('[data-account-login] button[type="submit"]').click(); await page.locator('[data-auth-message]', { hasText: 'local preview' }).waitFor();
+  assert(supabaseRequests === 0, 'Local-preview login guard must fail before a Supabase network request.');
   await page.locator('[data-account-guest]').click(); await page.waitForURL(/#\/home$/);
   await page.locator('[data-route-link="learn"]').click(); await page.waitForURL(/#\/learn$/); await page.locator('h1', { hasText: 'Learn' }).waitFor();
   assert(await page.locator('[data-route-link="learn"][aria-current]').count() === 1, 'Active nav state missing for Learn.');
