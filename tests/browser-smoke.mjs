@@ -6,6 +6,7 @@ const page=await browser.newPage({viewport:{width:360,height:800}});
 page.setDefaultTimeout(12000);
 page.setDefaultNavigationTimeout(20000);
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const isTransform=url=>url.pathname.replace(/\/+$/,'')==='/transform';
 
 try{
   console.log('phase: load home');
@@ -14,7 +15,8 @@ try{
   await page.waitForSelector('.today-journey-card');
   await page.waitForTimeout(500);
 
-  assert.equal(await page.locator('.modern-hub').count(),4,'Home should retain four secondary hubs');
+  assert.equal(await page.locator('[data-modern-hub]').count(),4,'Home should retain four primary Explore hubs');
+  assert.ok((await page.locator('[data-kids-games]').count())<=1,'Kids Games may appear once as a secondary external card');
   assert.equal(await page.locator('.modern-focus').evaluate(el=>getComputedStyle(el).display),'none','old Daily 5 block should be hidden');
   assert.equal(await page.locator('.bq-pinoy-hero').evaluate(el=>getComputedStyle(el).display),'none','large decorative hero should not compete with the Daily Journey');
   assert.equal(await page.locator('.app>.hero').evaluate(el=>getComputedStyle(el).display),'none','legacy Keep growing hero must not precede the Daily Journey on mobile');
@@ -31,7 +33,7 @@ try{
     path:document.querySelector('.journey-path-card')?.getBoundingClientRect().toJSON(),
     season:document.querySelector('.journey-season,.journey-season-empty')?.getBoundingClientRect().toJSON(),
     explore:document.querySelector('.modern-label')?.getBoundingClientRect().toJSON(),
-    hub:document.querySelector('.modern-hub')?.getBoundingClientRect().toJSON(),
+    hub:document.querySelector('[data-modern-hub]')?.getBoundingClientRect().toJSON(),
     nav:[...document.querySelectorAll('.bottom .navbtn')].map(x=>({rect:x.getBoundingClientRect().toJSON(),label:x.textContent.trim()})),
     navColumns:getComputedStyle(document.querySelector('.bottom')).gridTemplateColumns
   }));
@@ -40,7 +42,7 @@ try{
   assert.ok(geometry.daily.height<270,'Daily Journey should remain compact on a phone');
   if(geometry.path&&geometry.season)assert.ok(geometry.path.top<geometry.season.top,'Bible path should appear before the optional season');
   assert.ok(geometry.explore&&geometry.explore.top<800,'Explore should begin within roughly one phone viewport after the core journey controls');
-  assert.ok(geometry.hub&&geometry.hub.height<=110,'Explore cards must stay compact on mobile');
+  assert.ok(geometry.hub&&geometry.hub.height<=110,'primary Explore cards must stay compact on mobile');
   assert.equal(geometry.nav.length,4,'bottom navigation should contain Home, Journey, Think and Me');
   assert.deepEqual(geometry.nav.map(x=>x.label),['🏡Home','🗺️Journey','💭Think','🌱Me'],'bottom navigation destinations changed unexpectedly');
   assert.ok(Math.max(...geometry.nav.map(x=>x.rect.top))-Math.min(...geometry.nav.map(x=>x.rect.top))<3,'all four navigation tabs must remain on one row');
@@ -96,8 +98,7 @@ try{
   for(const label of ['BSB','TGL','日本語','NLT','ESV','NIV','AMP'])assert.match(versions,new RegExp(label));
   assert.ok((await page.locator('.verse-list').innerText()).length>100);
 
-  // Regression: on <=380px the version and chapter controls used to occupy the same grid row,
-  // making Tagalog appear to have disappeared. They must remain distinct, visible controls.
+  // Regression: on <=380px the version and chapter controls used to occupy the same grid row.
   const versionBox=await page.locator('#bqTranslationSelect').boundingBox();
   const chapterBox=await page.locator('#readerChapter').boundingBox();
   assert.ok(versionBox&&versionBox.width>120,'Bible version selector must be visibly usable on narrow phones');
@@ -129,14 +130,14 @@ try{
   assert.match(world,/Genesis/);assert.match(world,/Exodus/);assert.match(world,/Kingdom/);assert.match(world,/Jesus/);assert.match(world,/Early Church/);
   await page.locator('#bqEngagementWorld [data-world-v3-close]').click();
 
-  console.log('phase: standalone transformation');
+  console.log('phase: canonical standalone transformation');
   await page.evaluate(()=>window.BQ_TRANSFORMATION.open());
-  await page.waitForURL(/\/transform\.html$/);
+  await page.waitForURL(isTransform);
   await page.waitForSelector('.bq-transform-v2');
   assert.equal(await page.evaluate(()=>window.BQ_TRANSFORMATION?.mode),'rebuilt-v2','standalone Transform must load rebuilt-v2 runtime');
   assert.match(await page.locator('.bq-transform-v2').innerText(),/Personality Foundations/);
   await page.keyboard.press('Escape');
-  await page.waitForURL(url=>!url.pathname.endsWith('/transform.html'));
+  await page.waitForURL(url=>!isTransform(url));
   await page.waitForSelector('.today-journey-card');
 
   console.log('phase: together');
