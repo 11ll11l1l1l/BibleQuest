@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 29
-- **Verified:** 4
+- **Regression-tested:** 33
+- **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 66
+- **Not started:** 65
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -77,11 +77,11 @@ This file is the authoritative parity ledger for the rebuild.
 | 54 | Open/weak-area review | Yes | Compatibility | Not started | queue generation; complete; persistence |
 | 55 | Private local notes | Yes | Clean | Not started | create; edit/delete if supported; reload; export |
 | 56 | Cloud notes | Yes | Compatibility | Not started | account sync; offline/failure behavior; no guest leak |
-| 57 | Audio manager | Yes | Fragmented old | Verified | one player owner; play/pause/seek/stop; teardown |
-| 58 | Recordings list | Yes | Clean link library only | Verified | list load; empty/error states; reload |
-| 59 | Live Recordings playback | Yes | Missing in clean | Verified | play; pause; switch; leave; return; no freeze; one player instance |
-| 60 | Recording manager | Yes | Fragmented old | Verified | one owner; switch source; cleanup; error recovery |
-| 61 | Media Library | Yes | Compatibility | Not started | browse; open media; failure handling; return state |
+| 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
+| 58 | Recordings list | Yes | Clean link library only | Regression-tested | list load; empty/error states; reload |
+| 59 | Live Recordings playback | Yes | Missing in clean | Regression-tested | play; pause; switch; leave; return; no freeze; one player instance |
+| 60 | Recording manager | Yes | Fragmented old | Regression-tested | one owner; switch source; cleanup; error recovery |
+| 61 | Media Library | Yes | Compatibility | Verified | browse/filter/search; open through shared player; failure handling; leave/return; guest/account; mobile |
 | 62 | Couples/family local tools | Yes | Clean | Not started | topic open; save note/action; reload |
 | 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |
 | 64 | Journey Groups | Yes | Compatibility | Not started | create/join/view/leave; membership persistence |
