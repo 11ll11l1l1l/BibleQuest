@@ -2,43 +2,40 @@ import { createStore } from './store.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
+import { createReaderService } from './reader.js';
 import { createApi } from '../core/api.js';
+import { createBibleDataService } from '../core/bible.js';
 import { storage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { homePage, pendingPage } from '../features/home/index.js';
 import { accountPage } from '../features/account/index.js';
+import { learnPage } from '../features/learn/index.js';
+import { readerPage } from '../features/reader/index.js';
 
 function start() {
   const root = document.getElementById('app');
   const store = createStore({
     route: 'home',
     bootedAt: Date.now(),
-    session: Object.freeze({
-      status: 'booting',
-      authenticated: false,
-      remoteAvailable: true,
-      user: null,
-      expiresAt: null,
-      error: ''
-    })
+    session: Object.freeze({ status: 'booting', authenticated: false, remoteAvailable: true, user: null, expiresAt: null, error: '' })
   });
   const api = createApi();
+  const bible = createBibleDataService();
   const session = createSessionService({ auth: api.auth, store });
   const account = createAccountService({ api, session, storage });
+  const reader = createReaderService({ bible, storage });
   let router;
   let shell;
 
   const routes = Object.freeze({
     home: homePage,
-    learn: () => pendingPage('Learn'),
+    learn: () => learnPage({ onReader: () => router.navigate('reader') }),
+    reader: () => readerPage({ reader }),
     play: () => pendingPage('Play'),
     grow: () => pendingPage('Grow'),
     more: () => pendingPage('More'),
     account: () => accountPage({ account, session, onHome: () => router.navigate('home') }),
-    'not-found': () => ({
-      title: 'Not found',
-      html: '<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'
-    })
+    'not-found': () => ({ title: 'Not found', html: '<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>' })
   });
 
   router = createRouter({
@@ -54,19 +51,13 @@ function start() {
     }
   });
 
-  shell = mountShell(root, {
-    onNavigate: route => router.navigate(route),
-    onAccountOpen: () => router.navigate('account')
-  });
-
+  shell = mountShell(root, { onNavigate: route => router.navigate(route), onAccountOpen: () => router.navigate('account') });
   const unsubscribeStore = store.subscribe(state => shell.updateSession(state.session));
   shell.updateSession(store.getState().session);
   router.start();
   session.boot().then(() => {
     if (session.isAuthenticated()) account.ensureCurrentDevice().catch(error => console.warn('Device registration failed', error));
-  }).catch(error => {
-    console.error('Session boot failed', error);
-  });
+  }).catch(error => console.error('Session boot failed', error));
 
   window.addEventListener('pagehide', () => {
     unsubscribeStore();

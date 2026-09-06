@@ -25,6 +25,8 @@ jobs:
         run: node scripts/validate-v3-architecture.mjs
       - name: Run account transaction edge regression
         run: node tests/v3-account-edge.mjs
+      - name: Run Bible data and reader edge regression
+        run: node tests/v3-reader-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -39,5 +41,7 @@ jobs:
           done
           cat /tmp/biblequest-v3-http.log
           exit 1
-      - name: Run full v3 browser regression
+      - name: Run accumulated v3 shell/account regression
         run: timeout 240s node tests/v3-shell-smoke.mjs
+      - name: Run v3 reader browser regression
+        run: timeout 240s node tests/v3-reader-smoke.mjs
