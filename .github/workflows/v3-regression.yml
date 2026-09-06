@@ -36,6 +36,8 @@ jobs:
         run: node tests/v3-recordings-edge.mjs
       - name: Run Media Library edge regression
         run: node tests/v3-media-library-edge.mjs
+      - name: Run Games edge regression
+        run: node tests/v3-games-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
@@ -70,3 +72,5 @@ jobs:
         run: timeout 240s node tests/v3-recordings-smoke.mjs
       - name: Run v3 Media Library browser regression
         run: timeout 240s node tests/v3-media-library-smoke.mjs
+      - name: Run v3 Games browser regression
+        run: timeout 240s node tests/v3-games-smoke.mjs
