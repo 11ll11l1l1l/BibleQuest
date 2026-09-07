@@ -3,6 +3,7 @@ import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
 import { createReaderService } from './reader.js';
+import { createJapaneseVocabularyService } from './japanese-vocabulary.js';
 import { createGuidedStudyService } from './study.js';
 import { createDeepQuestionsService } from './deep-questions.js';
 import { createStoryJourneyService } from './story-journey.js';
@@ -52,6 +53,7 @@ function start(){
   const session=createSessionService({auth:api.auth,store});
   const account=createAccountService({api,session,storage});
   const reader=createReaderService({bible,storage,progress});
+  const vocabulary=createJapaneseVocabularyService({storage});
   const study=createGuidedStudyService({lesson,progress,reader});
   const deepQuestions=createDeepQuestionsService({lesson,reader});
   const storyJourney=createStoryJourneyService({lesson,progress,reader});
@@ -76,7 +78,7 @@ function start(){
     'wisdom-situations':()=>wisdomSituationsPage({wisdom:wisdomSituations,onLearn:()=>router.navigate('learn')}),
     'adaptive-learning':()=>adaptiveLearningPage({adaptive:adaptiveLearning,onLearn:()=>router.navigate('learn')}),
     'open-review':()=>openReviewPage({review:openReview,onLearn:()=>router.navigate('learn')}),
-    reader:()=>readerPage({reader}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
     more:()=>pendingPage('More'),account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
