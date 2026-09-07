@@ -19,6 +19,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/study.js` — Guided Study orchestration over Lesson
 - `src/app/deep-questions.js` — Deep Questions orchestration over Lesson
 - `src/app/story-journey.js` — Story Journey orchestration over Lesson/Progress/Reader
+- `src/app/wisdom-situations.js` — Wisdom Situations orchestration over Lesson/Progress
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration only
@@ -32,10 +33,11 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 1. `src/engines/lesson.js` is the only reusable lesson/session/step/response persistence engine. Guided Study, Deep Questions, Story Journey, Wisdom Situations, adaptive study, or pastor-linked study activities must not create parallel lesson runtimes when the shared contract fits.
 2. Feature `content.js` modules are static definitions only. They cannot own storage, backend calls, navigation, Progress mutation, or DOM lifecycle.
 3. Feature `index.js` modules are presentation/event forwarding only. They cannot call storage/backend owners directly or calculate competing lifecycle state.
-4. `src/app/reader.js` remains the only Reader state owner. Study features delegate Scripture handoff through it.
+4. `src/app/reader.js` remains the only Reader state owner. Study features delegate Scripture handoff through it when the retained behavior requires one.
 5. `src/core/progress.js` remains the only XP/streak/activity/counter/event owner. A study feature cannot mutate XP or counters directly.
 6. Reflection/application text is never interpreted as a spiritual-quality score, diagnosis, moral rank, or measure of divine approval.
 7. Persisted Lesson definitions use explicit versions; version changes invalidate incompatible stale sessions through the shared Lesson contract instead of feature-specific migration patches.
+8. Parity rewards are retained only when verified from the old implementation; new study features do not invent XP schemes.
 
 ## Guided Study boundaries
 
@@ -67,11 +69,26 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 10. Story Journey styling is isolated to `src/ui/story-journey.css`; the stable Learn shell contract remains unchanged.
 11. Story Journey must remain compatible with 390px mobile no-overflow and >=44px touch controls.
 
-## Future Wisdom / adaptive-study boundaries
+## Wisdom Situations boundaries
 
-1. #50 Wisdom Situations should reuse the Lesson engine for scenario/choice/reference lifecycle and use Progress only if verified parity evidence requires a reward.
-2. #53 Adaptive learning may select content using mastery/weak-area data but must not become a second Lesson engine or second Progress owner.
-3. #54 Open/weak-area review should generate review queues through one defined owner/service and feed verified activities rather than duplicate their scoring/persistence logic.
+1. `src/features/wisdom-situations/content.js` is the sole retained Wisdom definition source and contains all 24 immutable recovered situations plus their one-step Lesson definitions.
+2. `src/app/wisdom-situations.js` is the single Wisdom orchestration owner. It owns random selection, immediate-repeat avoidance, open/resume/restart/another, answer-to-Progress reconciliation, and close.
+3. Choice locking, strongest-option evaluation, attempt identity, completion state, restart, and session persistence remain exclusively in `src/engines/lesson.js`.
+4. Wisdom never writes browser storage directly, never owns a backend path, and never creates a parallel scoring/session runtime.
+5. The recovered v2 completion reward is parity behavior: every answered attempt awards `+8 XP` and increments the central `situations` metric by one regardless of whether the strongest option was selected.
+6. Choosing the strongest supported option does not increment `quizCorrect`, does not award additional XP, and is not treated as a score of spiritual quality, moral worth, or divine approval.
+7. Reward writes go only through `src/core/progress.js` using deterministic event id `wisdom-situation:<id>:v<definitionVersion>:<startedAt>`. Reopening the same completed attempt must reconcile as duplicate and award nothing.
+8. Restart or a newly selected situation creates a new Lesson attempt with a new `startedAt`, allowing that attempt to earn the retained completion reward once.
+9. The pre-answer public snapshot does not expose the strongest answer, rationales, or Scripture references. After the first locked answer, presentation may reveal the strongest supported option, all four rationales, and references.
+10. `src/features/wisdom-situations/index.js` is presentation/event forwarding only and cannot import Lesson, Progress, storage, API, or backend implementation internals.
+11. `src/ui/wisdom-situations.css` owns Wisdom styling; the stable Learn `<h1>Learn</h1>` contract remains unchanged.
+12. Wisdom must remain compatible with 390px mobile no-overflow and >=44px touch controls.
+
+## Future adaptive-study boundaries
+
+1. #53 Adaptive learning may select content using mastery/weak-area data but must not become a second Lesson engine or second Progress owner.
+2. #54 Open/weak-area review should generate review queues through one defined owner/service and feed verified activities rather than duplicate their scoring/persistence logic.
+3. Any mastery model introduced for #53 must use one explicit owner and must not reinterpret open reflection text or Wisdom judgments as spiritual quality.
 
 ## Future Devotional / Ministry boundaries
 
@@ -119,4 +136,4 @@ One boot, one router, one session owner, one global store, one storage boundary,
 
 Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive learning → weak-area review)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
 
-Known-good frozen releases now extend through `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`. Story Journey is Verified after functional run `34083462882` but must not be called frozen until its exact bookkeeping state passes the full accumulated suite. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`. Wisdom Situations is Verified after full functional run `34084573320` but must not be called frozen until its exact bookkeeping state passes the full accumulated suite. Production remains isolated on v2 until parity and stability release gates pass.
