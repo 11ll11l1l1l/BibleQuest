@@ -52,6 +52,8 @@ jobs:
         run: node tests/v3-recall-packs-edge.mjs
       - name: Run Games edge regression
         run: node tests/v3-games-edge.mjs
+      - name: Run Games recall review interface regression
+        run: node tests/v3-games-review-interface-edge.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
