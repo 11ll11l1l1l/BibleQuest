@@ -7,19 +7,20 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 46
+- **Regression-tested:** 47
 - **Verified:** 1
-- **Implemented:** 1
+- **Implemented:** 0
 - **Not started:** 52
-- **Verified or better:** 47 / 100 (**47% strict parity completion**)
-- **Fully regression-tested:** 46 / 100 (**46% stability coverage**)
-- **Latest frozen checkpoint:** `release/v3.19-adaptive-learning` at `39ab8269e4fd83a09138404bd9466df0c70ee30e`
-- **Current active feature:** #54 Open/weak-area review — Verified after full functional run `34108734009`; exact bookkeeping/freeze gate pending
-- **#53 Adaptive Learning:** Regression-tested after surviving the later #54 full suite
-- **Next target after v3.20 freeze:** reassess remaining Bible-study/core-content parity debt before selecting the next capability
+- **Verified or better:** 48 / 100 (**48% strict parity completion**)
+- **Fully regression-tested:** 47 / 100 (**47% stability coverage**)
+- **Latest frozen checkpoint:** `release/v3.20-open-review` at `40013d194015004d763d2fc0cf3a34567e89d003`
+- **Current active feature:** #20 STEPBible lexical/context tools — Verified after complete functional run `34114885252`; exact bookkeeping/freeze gate pending
+- **#54 Open Review:** Regression-tested after surviving the later #20 full suite
+- **Next target after v3.21 freeze:** #14 Japanese 口語訳
+- **Reader-language sequence after #14:** #15 Japanese furigana → #16 Japanese vocabulary learning → #17 NLT live path
 - **Kids arcade:** accessible; deeper #38–40 integration remains deferred
-- **Later high-priority ministry requirement:** see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
-- **Production:** v2 remains live; v3 has not replaced production
+- **Later ministry requirement:** see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
+- **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
 ## Rebuild sequence
 
@@ -27,19 +28,20 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 |---:|---|---|---|
 | 1 | Shell / navigation | Complete | #1–5 Regression-tested |
 | 2 | Authentication / session | Complete | #6–10 Regression-tested |
-| 3 | Bible data / content | Partial | #11–13, #18–19, #21–23 Regression-tested; #20 Implemented; #14–17 remain debt |
+| 3 | Bible data / content | Active | #11–13, #18–23 verified-or-better; #20 Verified; #14–17 remain reader-language/source debt |
 | 4 | User progress / state | Complete | #24–27 Regression-tested; Progress remains sole XP/counter/event owner |
 | 5 | Lesson engine | Complete engine | #31 Regression-tested; shared across verified study workflows |
 | 6 | Daily Mission | Complete | #28–30 Regression-tested |
 | 7 | Transform | Frozen complete | #46–48 Regression-tested |
 | 8 | Audio / Live Recordings / Media | Frozen complete | #57–61 Regression-tested |
-| 9 | Games core | Frozen core | #32–37 and #41 Regression-tested; Games owns per-book Recall review IDs |
-| 10 | Bible-study core | Freeze gate | #49–53 Regression-tested; #54 Verified; exact bookkeeping then v3.20 freeze |
-| 11 | Devotional / Ministry foundation | Designed, not implemented | maps mainly to #66 and #73–78 |
-| 12 | Bible World / tutorial / remaining parity | Not started | remaining inventory rows |
-| 13 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 14 | Mobile regression | Not started | full accumulated mobile pass after parity audit |
-| 15 | Production deployment | Not started | only after parity + stability gates |
+| 9 | Games core | Frozen core | #32–37 and #41 Regression-tested |
+| 10 | Bible-study core | Frozen through Open Review | #49–54 Regression-tested after #20 full suite |
+| 11 | Reader language/source completion | Active next | #20 Verified → #14 → #15 → #16 → #17 |
+| 12 | Devotional / Ministry foundation | Designed, not implemented | maps mainly to #66 and #73–78 |
+| 13 | Bible World / tutorial / remaining parity | Not started | remaining inventory rows |
+| 14 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 15 | Accumulated mobile regression | Ongoing + final gate later | every milestone already carries browser/mobile coverage; final all-feature audit remains |
+| 16 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -56,34 +58,36 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Story Journey — `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`; functional run `34083462882`; corrected bookkeeping run `34083885682`
 - Wisdom Situations — `release/v3.18-wisdom-situations` at `fd344208e12942d911f05d02b4e99d5b735a7c29`; functional run `34084573320`; bookkeeping run `34084926656`
 - Adaptive Learning — `release/v3.19-adaptive-learning` at `39ab8269e4fd83a09138404bd9466df0c70ee30e`; functional run `34105551106`; bookkeeping run `34106252587`
+- Open Review — `release/v3.20-open-review` at `40013d194015004d763d2fc0cf3a34567e89d003`; functional run `34108734009`; exact bookkeeping run `34109708245`
 
-## Milestone 10 — Bible-study core
+## #20 STEPBible lexical/context tools — Verified
 
-### #53 Adaptive Learning — Regression-tested
+The actual old loaded `context-lab.js` was recovered before rebuilding. It proved that #20 was an in-app Hebrew/Greek Context Lab rather than only an external STEP Bible link.
 
-Adaptive Learning remains frozen at v3.19. It reuses q1–q24 from Games, uses the shared Lesson lifecycle, retains +10/+3 XP, uses 1/3/7/14/30 spaced retrieval with misses due immediately, and exposes only a read-only deterministic weakest-category focus signal for Open Review. It passed again in the complete #54 functional run `34108734009`.
+Clean v3 parity now includes:
+1. BSB verse context loaded through `src/core/bible.js`.
+2. Hebrew/Greek Strong’s identifiers, lemma, transliteration, morphology, and brief glosses from retained context packs.
+3. previous/current/next verse context so word study is not isolated from the sentence.
+4. same-book Strong’s-tag usage references.
+5. source/license/limits display and the old caution against turning a lexicon entry or etymology into doctrine.
+6. direct Reader access plus Verse Peek → Context Lab handoff.
+7. the existing external STEP lexical/context link remains as a separate secondary handoff.
+8. unavailable or malformed context data fails safely without breaking the Reader.
+9. no XP/progress reward was invented because the recovered old Context Lab was a study utility, not a scored activity.
+10. 390px browser coverage protects layout, touch targets, no horizontal overflow, safe close/return, and unavailable-pack handling.
 
-### #54 Open/weak-area review — Verified
+Architecture boundaries:
+- `src/core/bible.js` remains sole Bible/context-pack loader, validator, normalizer, and cache owner.
+- `src/app/reader.js` delegates context lookup through the Bible service and remains the Reader-state owner.
+- `src/features/reader/context.js` and Reader presentation code render/forward events only; they cannot fetch packs, access storage/backend, award Progress, create globals, or install MutationObservers.
+- `src/ui/context.css` owns Context Lab presentation.
+- retained context pack paths cannot be addressed outside `src/core/bible.js`.
 
-Functional run `34108734009` passed the entire accumulated suite.
+Functional run `34114885252` passed the entire accumulated suite after one real integration defect was found and corrected.
 
-Verified Open Review behavior:
-1. Learn → Open Smart Review while the stable Learn heading remains intact.
-2. Seven open-answer recall items are built from approved unfoldingWord Translation Questions v90 packs with CC BY-SA 4.0 attribution.
-3. Queue priority is scheduled/due Open Review history → existing Games per-book review IDs → fresh questions from the Adaptive weakest category → wider fresh fallback only if necessary.
-4. The member answers mentally before reveal; answer/reference is hidden in the public snapshot until Reveal.
-5. After reveal the member self-rates `Review again` or `Got it`; Lesson does not pretend to automatically grade free recall wording.
-6. Retained reward is +1 XP Review again / +5 XP Got it; Got it contributes one `quizCorrect`.
-7. Review again resets the retrieval streak and is due immediately; successive Got it ratings space approximately 1 → 3 → 7 → 14 → 30 days.
-8. Games remains sole owner of per-book review IDs through immutable `recallReviewQueue()` and idempotent `syncRecallReviewItem()`; Open Review never reads Games storage.
-9. Adaptive remains sole weak-area/mastery owner through read-only `reviewFocusCategory()`.
-10. Recall Pack service remains sole question-pack loader/validator/cache; Open Review stores identity/statistics only and rehydrates source text on resume.
-11. Shared Lesson owns the 14-step seven-question memory/reveal/rating lifecycle, leave/return, reload, locking, and completion.
-12. deterministic Progress event identity prevents duplicate XP/counters on reload/reopen.
-13. 390px browser regression verifies resume, one Review again + six Got it = +31 XP / +6 quizCorrect, one completion history record, due-item reprioritization, no overflow, >=44px controls, and no page/console errors.
-14. every older browser regression remained green afterward, including Transform, Live Recordings, Media Library, and Games.
+### Retained #20 defect regression
 
-Two failed pre-green verification attempts were test-fixture defects, not application patches: run `34108325481` assumed the wrong date-tie category in Adaptive focus; run `34108543938` assumed one scheduled item should outrank older overdue items. Both regressions were corrected to model the actual deterministic rules, and attempt `34108734009` passed fully.
+`V3-STEP-PEEK-SELECTOR-001` — the first integrated Context Lab build stored the current Verse Peek verse on the dialog using `data-verse`, colliding with the existing `[data-verse]` selector owned by Scripture verse buttons. Functional run `34114585936` correctly stopped at the original Reader browser regression before #20 promotion. Root cause was fixed by namespacing the dialog metadata as `data-peek-verse`; the old Reader test was not weakened. Run `34114885252` then passed both the old Reader regression and the new Context Lab browser regression, followed by every accumulated downstream browser test through Games.
 
 ## Current bookkeeping
 
@@ -92,16 +96,21 @@ Two failed pre-green verification attempts were test-fixture defects, not applic
 - #51 Deep Questions — **Regression-tested**
 - #52 Expanded Guided Study — **Regression-tested**
 - #53 Adaptive Learning — **Regression-tested**
-- #54 Open/weak-area review — **Verified**
-- #20 STEPBible tooling — **Implemented**
-- Totals — **46 Regression-tested / 1 Verified / 1 Implemented / 52 Not started**
+- #54 Open/weak-area review — **Regression-tested**
+- #20 STEPBible lexical/context tools — **Verified**
+- Totals — **47 Regression-tested / 1 Verified / 0 Implemented / 52 Not started**
 
 ## Next sequence
 
-1. Run the entire accumulated suite on the exact #54 bookkeeping state.
-2. If green, freeze exact commit as `release/v3.20-open-review`.
-3. Reassess remaining Bible-study/core-content debt rather than jumping automatically to a later unrelated feature. #20 remains Implemented; #14–17 remain Not started and are obvious candidates for dependency review.
-4. Preserve Kids #38–40 as deferred/unpromoted until the priority order calls for them.
+1. Run the entire accumulated suite on this exact #20 bookkeeping state.
+2. If green, freeze the exact commit as `release/v3.21-step-context`.
+3. Start #14 Japanese 口語訳 by first recovering the old loaded source/licensing/fallback behavior rather than assuming the retained compatibility path is correct.
+4. After #14, continue #15 furigana → #16 Japanese vocabulary → #17 NLT live path unless dependency recovery proves a safer order.
+5. Preserve Kids #38–40 as deferred/unpromoted until the priority order calls for them.
+
+## What remains overall
+
+Literal old-version feature parity has **52 capability rows remaining**. They are not all equal-sized blockers. The immediate Reader/source path contains four rows (#14–17). Much of the remaining inventory is later community, ministry/admin, Bible World/tutorial, accessibility/moderation, PWA/offline, diagnostics, and backup/import work. The project is therefore not repeating the same rebuild work: each closed row is frozen and protected by the accumulated suite, while remaining work moves into distinct capability groups.
 
 ## Devotional / Ministry later milestone
 
