@@ -22,6 +22,8 @@ jobs:
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
         run: node scripts/validate-v3-japanese-kougo.mjs
+      - name: Enforce Japanese vocabulary boundaries
+        run: node scripts/validate-v3-japanese-vocabulary.mjs
       - name: Run account transaction edge regression
         run: node tests/v3-account-edge.mjs
       - name: Run Bible data and reader edge regression
@@ -30,6 +32,8 @@ jobs:
         run: node tests/v3-step-context-edge.mjs
       - name: Run Japanese Kougo live-source edge regression
         run: node tests/v3-japanese-kougo-edge.mjs
+      - name: Run Japanese vocabulary edge regression
+        run: node tests/v3-japanese-vocabulary-edge.mjs
       - name: Run progress edge regression
         run: node tests/v3-progress-edge.mjs
       - name: Run lesson engine edge regression
@@ -86,6 +90,8 @@ jobs:
         run: timeout 240s node tests/v3-step-context-smoke.mjs
       - name: Run v3 Japanese Kougo mobile browser regression
         run: timeout 240s node tests/v3-japanese-kougo-smoke.mjs
+      - name: Run v3 Japanese vocabulary mobile browser regression
+        run: timeout 240s node tests/v3-japanese-vocabulary-smoke.mjs
       - name: Run v3 progress browser regression
         run: timeout 240s node tests/v3-progress-smoke.mjs
       - name: Run v3 lesson engine browser regression
