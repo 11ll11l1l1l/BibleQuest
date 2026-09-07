@@ -39,7 +39,8 @@ let missingPackError = '';
 try { await bible.loadChapter('bsb', 'PSA', 1); } catch (error) { missingPackError = error.message; }
 assert(/unavailable/i.test(missingPackError), 'Missing pack must produce a controlled data-service error.');
 const links = bible.externalLinks('JHN', 3, 16);
-assert(links.length === 4, 'Reader external link contract is incomplete.');
+assert(links.length === 5, 'Reader external link contract is incomplete.');
+assert(links.find(item => item.id === 'nlt')?.href.includes('version=NLT'), 'NLT link is malformed.');
 assert(links.find(item => item.id === 'esv')?.href.includes('esv.org/verses/John+3%3A16'), 'ESV link is malformed.');
 assert(links.find(item => item.id === 'niv')?.href.includes('version=NIV'), 'NIV link is malformed.');
 assert(links.find(item => item.id === 'amp')?.href.includes('version=AMP'), 'AMP link is malformed.');
