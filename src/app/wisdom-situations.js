@@ -1,9 +1,15 @@
 import { WISDOM_SITUATIONS, getWisdomSituation } from '../features/wisdom-situations/content.js';
+import { assertNeutralAssessment, reviewNeutralContent } from '../core/doctrinal-safety.js';
 
 const hasOwn=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
+const safetyFor=item=>{
+  const safety=reviewNeutralContent({q:item.scenario,a:item.why,ref:item.refs.join(' · ')},{reason:'Wisdom Situations compares plausible applied judgments; its preferred option is not a declaration of universally binding doctrine.'});
+  assertNeutralAssessment({safety},`Wisdom Situation ${item.id}`);
+  return safety;
+};
 
 function publicSituation(item,reveal=false){
-  const base={id:item.id,title:item.title,tension:item.tension,scenario:item.scenario,options:Object.freeze([...item.options]),difficulty:item.difficulty};
+  const base={id:item.id,title:item.title,tension:item.tension,scenario:item.scenario,options:Object.freeze([...item.options]),difficulty:item.difficulty,safety:safetyFor(item)};
   if(!reveal)return Object.freeze(base);
   return Object.freeze({...base,best:item.best,why:item.why,rationales:Object.freeze([...item.rationales]),refs:Object.freeze([...item.refs])});
 }
@@ -36,6 +42,7 @@ export function createWisdomSituationsService({lesson,progress,random=Math.rando
   function count(){return WISDOM_SITUATIONS.length}
   function open(id,{restart=false}={}){
     const item=getWisdomSituation(id);
+    safetyFor(item);
     const result=lesson.open(item.definition,{restart});
     activeId=item.id;lastId=item.id;
     return snapshot(result.state,result.resumed,reconcile(item,result.state));
@@ -48,6 +55,7 @@ export function createWisdomSituationsService({lesson,progress,random=Math.rando
   }
   function answer(value){
     const item=requireActive();
+    safetyFor(item);
     const response=lesson.respond(value);
     const progressResult=reconcile(item,response.state);
     const finish=lesson.advance();
