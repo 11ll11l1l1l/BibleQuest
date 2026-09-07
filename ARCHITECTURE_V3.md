@@ -58,18 +58,20 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 
 ## Games boundaries
 
-1. `src/app/games.js` is the only v3 owner of game launch, active round state, answer/reveal locking, score, XP handoff, replay, switch, leave, review queues, and persisted game result summaries.
+1. `src/app/games.js` is the only v3 owner of game launch, active round state, answer/reveal/order locking, score, XP handoff, replay, switch, leave, review queues, and persisted game result summaries.
 2. `src/features/games/content.js` is the built-in quiz mode/question definition source. UI does not construct a competing question bank.
 3. `src/features/games/detectives.js` is the retained static clue/reference definition source for Character Detective. It contains no scoring, storage, navigation, or event lifecycle.
-4. `src/core/recall-packs.js` is the only owner allowed to fetch `data/packs/manifest.json` and `data/packs/questions/*`. It validates manifest paths, validates pack shape, caches on demand, and excludes any question whose safety action is not `allow`.
-5. `src/features/games/index.js` is presentation and event forwarding only. It does not fetch packs, write progress, call browser storage, call Supabase, or create its own navigation runtime.
-6. Game progress writes go only through `src/core/progress.js`. The launcher never mutates XP/streak/badges directly.
-7. Persisted round summaries, Character Detective results, Per-book Recall review queues, and study statistics go only through the injected `src/core/storage.js` boundary. No game module uses `localStorage` or `sessionStorage` directly.
-8. Starting another mode replaces the active round inside the same owner. Leaving Play tears the round down; returning creates a clean launcher rather than another listener/runtime instance.
-9. Quick Recall, Context Challenge, Mixed Quest, and Per-book Recall are frozen through `release/v3.12-per-book-recall`. New game modes extend the same owner rather than adding parallel launch/scoring engines.
-10. Per-book Recall reuses retained unfoldingWord Translation Questions v90 data assets only. The old global deck runtime is reference behavior and is not imported.
-11. Per-book Recall preserves on-demand book loading, reveal-before-rating, `Review again` / `Got it`, +1/+5 XP parity, a persistent per-book review queue, study/result persistence, and CC BY-SA 4.0 attribution.
-12. Character Detective reuses only the five retained clue/reference records from the old content source. Typed answer comparison, +12/+3 XP, duplicate-submit protection, result persistence, replay, switch, and leave are all owned by `src/app/games.js`; no standalone Detective runtime or global data owner is permitted.
+4. `src/features/games/timelines.js` is the retained static event-order definition source for Timeline. It contains no reorder state, answer checking, XP, storage, navigation, or listener lifecycle.
+5. `src/core/recall-packs.js` is the only owner allowed to fetch `data/packs/manifest.json` and `data/packs/questions/*`. It validates manifest paths, validates pack shape, caches on demand, and excludes any question whose safety action is not `allow`.
+6. `src/features/games/index.js` is presentation and event forwarding only. It does not fetch packs, calculate progress, write browser storage, call Supabase, or create its own navigation/game runtime.
+7. Game progress writes go only through `src/core/progress.js`. The launcher never mutates XP/streak/badges directly.
+8. Persisted round summaries, Character Detective results, Timeline results, Per-book Recall review queues, and study statistics go only through the injected `src/core/storage.js` boundary. No game module uses `localStorage` or `sessionStorage` directly.
+9. Starting another mode replaces the active round inside the same owner. Leaving Play tears the round down; returning creates a clean launcher rather than another listener/runtime instance.
+10. Quick Recall, Context Challenge, Mixed Quest, Per-book Recall, and Character Detective are frozen through `release/v3.13-character-detective`. New game modes extend the same owner rather than adding parallel launch/scoring engines.
+11. Per-book Recall reuses retained unfoldingWord Translation Questions v90 data assets only. The old global deck runtime is reference behavior and is not imported.
+12. Per-book Recall preserves on-demand book loading, reveal-before-rating, `Review again` / `Got it`, +1/+5 XP parity, a persistent per-book review queue, study/result persistence, and CC BY-SA 4.0 attribution.
+13. Character Detective reuses only the five retained clue/reference records from the old content source. Typed answer comparison, +12/+3 XP, duplicate-submit protection, result persistence, replay, switch, and leave are owned by `src/app/games.js`; no standalone Detective runtime or global data owner is permitted.
+14. Timeline reuses only the three retained ordered event sets from the old content source. Reorder/check/retry/result/replay state is owned by `src/app/games.js`. A first failed check may award +4 XP once; repeated failed checks award nothing; solving after a miss awards the remaining +16 so a solved round totals +20. This anti-farming rule is regression-tested.
 
 ## Global hard boundaries
 
@@ -79,4 +81,4 @@ One boot, one router, one session owner, one storage boundary, one API boundary,
 
 Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games → Bible World → Tutorial → remaining parity → full audit → mobile regression → production deployment.
 
-Known-good frozen releases now extend through `release/v3.12-per-book-recall`; Mixed Quest is frozen at `release/v3.11-mixed-quest`, Games core at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.13-character-detective`; Per-book Recall is frozen at `release/v3.12-per-book-recall`, Mixed Quest at `release/v3.11-mixed-quest`, Games core at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Timeline has passed its functional accumulated gate and becomes the next frozen checkpoint only after the exact bookkeeping state passes. Production remains isolated on v2 until parity and stability release gates pass.
