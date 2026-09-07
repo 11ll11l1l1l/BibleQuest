@@ -18,6 +18,8 @@ jobs:
           node-version: 22
       - name: Enforce v3 architecture boundaries
         run: node scripts/validate-v3-architecture.mjs
+      - name: Enforce Private Notes boundaries
+        run: node scripts/validate-v3-private-notes.mjs
       - name: Enforce STEPBible Context Lab boundaries
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
