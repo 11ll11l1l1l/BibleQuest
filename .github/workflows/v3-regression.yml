@@ -1,4 +1,4 @@
-name: BibleQuest Kids source inspection
+name: BibleQuest Kids reward inspection
 
 on:
   push:
@@ -14,28 +14,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Recover retained Memory Match source
+      - name: Recover retained game completion semantics
         run: |
           node <<'NODE'
-          const fs=require('fs');
-          const zlib=require('zlib');
-          let encoded='';
-          for(let i=0;i<12;i++) encoded+=fs.readFileSync(`kids-games/bundle-${String(i).padStart(2,'0')}.txt`,'utf8').trim();
+          const fs=require('fs'),zlib=require('zlib');
+          let encoded='';for(let i=0;i<12;i++)encoded+=fs.readFileSync(`kids-games/bundle-${String(i).padStart(2,'0')}.txt`,'utf8').trim();
           const bundle=JSON.parse(zlib.gunzipSync(Buffer.from(encoded,'base64')).toString('utf8'));
-          console.log('BUNDLE_KEYS',Object.keys(bundle).join(' | '));
-          const files=['app.js','classic/app.js','index.html','classic/index.html'];
-          for(const name of files){
-            const src=String(bundle[name]||'');
-            console.log(`\n=== ${name} (${src.length} chars) ===`);
-            const regex=/memory|matching|match card|flip card|pairs?|hiragana|who am i/ig;
-            const hits=[]; let m;
-            while((m=regex.exec(src))&&hits.length<40) hits.push(m.index);
-            const windows=[];
-            for(const index of hits){
-              const start=Math.max(0,index-1800),end=Math.min(src.length,index+2600);
-              if(windows.some(([s,e])=>start<=e&&end>=s)) continue;
-              windows.push([start,end]);
+          for(const name of ['classic/app.js','app.js']){
+            const src=bundle[name]||'';
+            console.log(`=== ${name} ===`);
+            for(const needle of ['finish(result','finish(res','finish(data','finish(out','finish(o','class Runner','class GameRunner','function startGame']){
+              const i=src.indexOf(needle);if(i>=0)console.log(`\n--- ${needle} @ ${i} ---\n${src.slice(Math.max(0,i-2200),Math.min(src.length,i+5200))}`);
             }
-            windows.slice(0,16).forEach(([s,e],n)=>console.log(`\n--- HIT ${n+1} ${s}:${e} ---\n${src.slice(s,e)}`));
           }
           NODE
