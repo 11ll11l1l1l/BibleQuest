@@ -11,8 +11,8 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/core/api.js` — Supabase/remote calls
 - `src/app/session.js` — auth/session/password lifecycle
 - `src/app/account.js` — signup/recovery/device workflows
-- `src/core/bible.js` — Bible sources/packs/search/external links
-- `src/app/reader.js` — Reader state/navigation/read marking
+- `src/core/bible.js` — Bible sources/packs/search/external links/original-language context-pack loading and normalization
+- `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context delegation
 - `src/core/progress.js` — XP/streak/activity/badges/counters/events
 - `src/core/recall-packs.js` — Recall pack loading/validation/cache
 - `src/engines/lesson.js` — shared lesson/session/step/response lifecycle and persistence
@@ -36,11 +36,25 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 2. `src/core/progress.js` is the only XP/streak/activity/counter/event owner. Feature code cannot mutate progress directly.
 3. `src/core/storage.js` is the only browser storage implementation boundary. No feature uses direct `localStorage` or `sessionStorage`.
 4. `src/core/recall-packs.js` is the only owner that loads, validates, caches, or addresses unfoldingWord question-pack files.
-5. Static feature/content modules contain definitions only. Feature `index.js` modules are presentation/event-forwarding only.
-6. Open reflection/application text is never converted into a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
-7. Retained rewards are implemented only when recovered from the old behavior. No parity feature invents a new XP scheme.
-8. Deterministic Progress identities and Lesson attempt identities must prevent reload/reopen duplication.
-9. Legacy `window.BQ*` globals, MutationObserver feature injection, direct DOM surveillance, competing global runtimes, and direct backend/storage shortcuts are forbidden in v3.
+5. `src/core/bible.js` is the only owner that loads or addresses bundled Bible and original-language context packs.
+6. Static feature/content modules contain definitions only. Feature `index.js` modules are presentation/event-forwarding only.
+7. Open reflection/application text is never converted into a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
+8. Retained rewards are implemented only when recovered from the old behavior. No parity feature invents a new XP scheme.
+9. Deterministic Progress identities and Lesson attempt identities must prevent reload/reopen duplication.
+10. Legacy `window.BQ*` globals, MutationObserver feature injection, direct DOM surveillance, competing global runtimes, and direct backend/storage shortcuts are forbidden in v3.
+
+## Reader / STEPBible Context Lab boundaries
+
+1. #20 retains the old in-app Hebrew & Greek Context Lab rather than reducing parity to an external STEP link.
+2. `src/core/bible.js` alone loads `data/packs/context/manifest.json`, follows manifest-owned context-pack paths, validates/normalizes lexical data, caches it, and combines it with the BSB verse/context.
+3. `src/app/reader.js` exposes only Reader-facing delegation through `contextChapter()` and `lexicalContext()`. Context browsing must not mutate the main Reader passage or read-progress state.
+4. `src/features/reader/context.js` is presentation/event forwarding only. It cannot fetch packs, access Storage/Progress/backend APIs, create a second lexical engine, use MutationObserver, or publish `window.BQ*` globals.
+5. `src/ui/context-lab.css` is isolated presentation/mobile styling. The Context Lab must remain usable at 390px with approximately 44px interactive targets and no horizontal overflow.
+6. Retained lexical/context fields are Strong’s ID, original-language identification, lemma, transliteration, morphology, brief gloss, BSB previous/current/next context, same-book tagged usage references, coverage/source/license/limits, and an external verse-specific STEP handoff.
+7. Lexical fields are study aids, not a reconstructed word-for-word interlinear and not theological conclusions. The UI keeps the recovered safety guidance: read sentence/paragraph first; a lexicon supplies a semantic range that grammar/context narrow; do not build doctrine from etymology or one Strong’s entry alone.
+8. Missing context data must degrade inside Reader with a controlled unavailable state. Malformed source data must produce a controlled Bible-data error rather than silent corruption.
+9. Context Lab study has no recovered XP/progress reward, so v3 does not invent one.
+10. Verse Peek metadata is namespaced as `data-peek-verse`; the established `[data-verse]` selector remains exclusive to Scripture verse buttons. This contract is protected by both the original Reader smoke and the Context Lab browser regression.
 
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
@@ -95,6 +109,6 @@ One boot, router, session owner, global store, storage boundary, API boundary, B
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → remaining Reader-language/source parity (#14–17) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases currently extend through `release/v3.19-adaptive-learning` at `39ab8269e4fd83a09138404bd9466df0c70ee30e`. Open Smart Review is **Verified** after complete functional run `34108734009`; it becomes a frozen checkpoint only after the exact bookkeeping state passes the full accumulated suite. Production v2 remains isolated.
+Known-good frozen releases currently extend through `release/v3.20-open-review` at `2da79e9ab04cb05d63005b6cda7eb4471c149e92`; exact Open Review bookkeeping run `34109591650` passed before that freeze. #20 STEPBible Context Lab is **Verified** after repaired complete functional run `34114885252`. It becomes the v3.21 frozen checkpoint only after the exact bookkeeping state, including the Context Lab architecture gate and milestone records, passes the complete accumulated suite. Production v2 remains isolated.
