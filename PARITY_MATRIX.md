@@ -1,8 +1,6 @@
 # BibleQuest v3 Feature Parity Matrix
 
-The previous matrix treated **Clean**, **Standalone**, and **Compatibility** access as feature-surface parity. That definition is retired because it could call a feature complete without verifying its real workflow.
-
-The authoritative audit is now [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md), containing 100 old-version capability rows and only four allowed implementation states:
+The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md), containing 100 old-version capability rows and only four allowed implementation states:
 
 1. **Not started**
 2. **Implemented**
@@ -16,21 +14,25 @@ The authoritative audit is now [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.
 - A standalone old page is not parity.
 - A page rendering without completing its workflow is not verification.
 - A feature becomes **Verified** only after its complete acceptance workflow passes the v3 browser regression suite.
-- A verified feature becomes **Regression-tested** only after at least one later feature milestone also passes the full suite.
+- A verified feature becomes **Regression-tested** only after at least one later feature milestone also passes the full accumulated suite.
 - BibleQuest v3 reaches 100% feature parity only when every applicable inventory row is **Verified** or **Regression-tested**.
 
 ## Current audit result
 
-At the start of v3, the old/current application still supplies the behavioral and visual reference set, but most capabilities are intentionally reset to **Not started** for the clean architecture.
+After the v3.27 #55 Private local notes functional gate:
 
-The v3 foundation milestone currently implements only:
+| State | Count |
+|---|---:|
+| Regression-tested | 53 |
+| Verified | 1 |
+| Implemented | 0 |
+| Not started | 46 |
+| Total | 100 |
 
-- application shell
-- primary navigation
-- mobile shell/layout
-- global application state owner
-- storage boundary
+Strict verified-or-better parity is **54/100**.
 
-These remain **Implemented**, not Verified, until the foundation browser regression passes.
+Official regression stability remains **53/100**. #55 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Private Notes still green.
 
-All other old-version capabilities remain explicitly tracked in `FEATURE_INVENTORY_V3.md` and will be migrated in the ordered architecture plan in `ARCHITECTURE_V3.md`.
+#55 Private local notes passed functional run `34169365596`, including its edge regression and real 390px browser workflow for create, reload, edit, JSON export, delete, touch targets, and no horizontal overflow.
+
+#56 Cloud notes remains **Not started** and must compose the verified local Notes owner rather than create a second note model or storage path.
