@@ -50,9 +50,10 @@ export function createStoryJourneyService({lesson,progress,reader,random=Math.ra
   }
   function answer(value){
     const item=requireActive();
-    const result=lesson.respond(value);
-    const progressResult=reconcileCheckpoint(item,result.state);
-    return Object.freeze({...result,...snapshot(result.state,true,progressResult)});
+    const response=lesson.respond(value);
+    const progressResult=reconcileCheckpoint(item,response.state);
+    const finish=lesson.advance();
+    return Object.freeze({applied:response.applied,duplicate:response.duplicate,feedback:response.feedback,completed:finish.completed,...snapshot(finish.state,true,progressResult)});
   }
   function restart(){
     requireActive();
