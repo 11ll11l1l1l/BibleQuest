@@ -5,7 +5,7 @@ export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, 
   const guide = sourceGuide({
     translations,
     recall: recallSource,
-    custom: [getContentProvenance('bq-study'), getContentProvenance('bq-retelling'), getContentProvenance('bq-wisdom'), getContentProvenance('bq-recall')]
+    custom: [getContentProvenance('bq-study'), getContentProvenance('bq-retelling'), getContentProvenance('bq-wisdom'), getContentProvenance('bq-recall'), getContentProvenance('bq-game')]
   });
   return {
     title: 'Learn',
