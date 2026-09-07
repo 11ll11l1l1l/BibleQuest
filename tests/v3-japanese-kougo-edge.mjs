@@ -55,6 +55,18 @@ let malformed = '';
 try { await malformedBible.loadChapter('jko', 'JHN', 3); } catch (error) { malformed = error.message; }
 assert(/no readable verses|malformed/i.test(malformed), 'Malformed/empty Japanese source data must fail without inventing Scripture.');
 
+let semanticCalls = 0;
+const semanticRetryBible = createBibleDataService({ fetcher: async path => {
+  if (path !== JHN3) return { ok: false, async json() { return null; } };
+  semanticCalls++;
+  return { ok: true, async json() { return semanticCalls === 1 ? { verses: [] } : { verses: [{ verse: 16, text: '回復後の口語訳本文' }] }; } };
+} });
+let semanticError = '';
+try { await semanticRetryBible.loadChapter('jko', 'JHN', 3); } catch (error) { semanticError = error.message; }
+assert(/no readable verses/i.test(semanticError), 'Semantically invalid HTTP-200 Japanese payload must fail clearly.');
+const semanticRecovered = await semanticRetryBible.loadChapter('jko', 'JHN', 3);
+assert(semanticCalls === 2 && semanticRecovered.verses[0]?.text === '回復後の口語訳本文', 'Invalid HTTP-200 Japanese payload must be evicted so Retry performs a new source request.');
+
 const memory = new Map();
 const storage = { read(key, fallback = null) { return memory.has(key) ? structuredClone(memory.get(key)) : structuredClone(fallback); }, write(key, value) { memory.set(key, structuredClone(value)); return value; } };
 const store = { state: {}, setState(patch) { this.state = typeof patch === 'function' ? patch(this.state) : { ...this.state, ...patch }; return this.state; } };
