@@ -18,6 +18,8 @@ jobs:
           node-version: 22
       - name: Enforce v3 architecture boundaries
         run: node scripts/validate-v3-architecture.mjs
+      - name: Enforce STEPBible Context Lab boundaries
+        run: node scripts/validate-v3-step-context.mjs
       - name: Run account transaction edge regression
         run: node tests/v3-account-edge.mjs
       - name: Run Bible data and reader edge regression
