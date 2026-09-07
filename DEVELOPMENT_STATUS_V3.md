@@ -79,11 +79,13 @@ Architecture:
 - `src/app/reader.js` — sole Reader state owner.
 - `src/features/story-journey/index.js` — presentation/event forwarding only.
 
-Full accumulated functional run `34083462882` passed architecture validation, all accumulated edge regressions, the Story Journey edge regression, and the complete browser suite including Story Journey at 390px. No Story Journey application defect was found by this functional gate, so no post-gate bug patch was required.
+Full accumulated functional run `34083462882` passed architecture validation, all accumulated edge regressions, the Story Journey edge regression, and the complete browser suite including Story Journey at 390px. No Story Journey application defect was found by this functional gate, so no post-gate application patch was required.
 
-The exact Story Journey bookkeeping state still requires one final accumulated run before any `release/v3.17-story-journey` checkpoint may be frozen.
+The first bookkeeping run `34083748928` was correctly blocked by the architecture validator because the required development-status queue heading had been renamed. That bookkeeping-only contract is restored here before the gate is rerun.
 
-## Next Bible-study target
+The exact corrected Story Journey bookkeeping state still requires one final accumulated run before any `release/v3.17-story-journey` checkpoint may be frozen.
+
+## Next major milestone
 
 After the Story Journey bookkeeping gate is green and `release/v3.17-story-journey` is frozen, continue directly with:
 1. #50 Wisdom Situations
@@ -131,9 +133,10 @@ Primary later inventory mapping remains #66 and #73–78. Design documentation a
 - `V3-STUDY-BOUNDARY-001` — Study `getState()` now enforces its own public boundary before delegating to Lesson.
 - `V3-STUDY-LEARN-ACCEPTANCE-001` — stable Learn `<h1>` was restored and protected.
 - `V3-STUDY-READER-TEST-001` — Reader acceptance waits for actual controls and asserts correct book/chapter.
+- `V3-STORY-BOOKKEEPING-001` — Story Journey bookkeeping renamed the validator-required `Next major milestone` queue heading. Architecture run `34083748928` blocked the freeze; the heading is restored and the existing validator assertion is retained as the regression guard.
 
-No new Story Journey defect entry is added because the first full functional gate passed without an application failure.
+No new Story Journey application defect entry is added because the first full functional gate passed without an application failure.
 
 ## Release rule
 
-Story Journey passed the entire accumulated functional suite on run `34083462882`. The exact inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before `release/v3.17-story-journey` may be frozen. Production v2 remains unchanged until all applicable capability rows satisfy parity and stability gates.
+Story Journey passed the entire accumulated functional suite on run `34083462882`. The exact corrected inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before `release/v3.17-story-journey` may be frozen. Production v2 remains unchanged until all applicable capability rows satisfy parity and stability gates.
