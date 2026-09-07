@@ -30,8 +30,9 @@ async function desktopFlow() {
   await page.locator('[data-verse-close]').click();
 
   const external = await page.locator('[data-external-reader]').evaluateAll(nodes => nodes.map(node => ({ id: node.dataset.externalReader, href: node.href, target: node.target, rel: node.rel })));
-  assert(external.length === 4, 'External reader/tool link set is incomplete.');
+  assert(external.length === 5, 'External reader/tool link set is incomplete.');
   assert(external.every(item => item.target === '_blank' && item.rel.includes('noopener') && item.rel.includes('noreferrer')), 'External reader links must open safely without replacing BibleQuest.');
+  assert(external.find(item => item.id === 'nlt')?.href.includes('version=NLT'), 'NLT external passage link is incorrect.');
   assert(external.find(item => item.id === 'esv')?.href.includes('esv.org/verses/Genesis+1'), 'ESV external passage link is incorrect.');
   assert(external.find(item => item.id === 'niv')?.href.includes('version=NIV'), 'NIV external passage link is incorrect.');
   assert(external.find(item => item.id === 'amp')?.href.includes('version=AMP'), 'AMP external passage link is incorrect.');
