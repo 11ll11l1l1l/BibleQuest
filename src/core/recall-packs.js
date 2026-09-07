@@ -1,6 +1,7 @@
 const MANIFEST_PATH='data/packs/manifest.json';
 const SOURCE='unfoldingWord Translation Questions v90';
 const LICENSE='CC BY-SA 4.0';
+const SOURCE_INFO=Object.freeze({source:SOURCE,license:LICENSE});
 const freezeBook=row=>Object.freeze({code:row.code,name:row.name,questions:row.questions,path:row.path});
 const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a});
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
@@ -57,5 +58,5 @@ export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
     try{return await pending}catch(error){bookCache.delete(normalized);throw error}
   }
 
-  return Object.freeze({loadManifest,loadBook,clearCache(){manifestPromise=null;bookCache.clear()},cacheSize(){return bookCache.size}});
+  return Object.freeze({sourceInfo(){return SOURCE_INFO},loadManifest,loadBook,clearCache(){manifestPromise=null;bookCache.clear()},cacheSize(){return bookCache.size}});
 }
