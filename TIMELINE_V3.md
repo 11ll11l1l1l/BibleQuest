@@ -1,23 +1,20 @@
 # BibleQuest v3 Rebuild Timeline
 
-Updated: 2026-09-07 JST
+Updated: 2026-09-08 JST
 
-This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory remains authoritative.
+This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory remains authoritative. BibleQuest v3 uses rebuild-and-verify rather than patch-and-accumulate.
 
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 51
-- **Verified:** 1
-- **Implemented:** 0
-- **Not started:** 48
-- **Verified or better:** 52 / 100 (**52% strict parity completion**)
-- **Fully regression-tested:** 51 / 100 (**51% stability coverage**)
-- **Latest frozen checkpoint:** `release/v3.24-nlt-licensed` at `37ff989dac122f31a53f9bc771639e3ca59b4b03`
-- **v3.24 functional:** `34126567141` — fully green
-- **v3.24 bookkeeping:** `34127324969` — fully green
-- **Current feature:** #90 Source labels/attribution — Verified after corrected full functional run `34130447654`; bookkeeping/freeze pending
-- **#17 NLT licensed-link:** Regression-tested after surviving the #90 full suite
+- **Inventory states after #89 functional verification:** 52 Regression-tested / 1 Verified / 0 Implemented / 47 Not started
+- **Verified or better:** 53 / 100 (**53% strict parity completion**)
+- **Official release stability metric:** 51 / 100 until the #89 bookkeeping gate passes
+- **Latest frozen checkpoint:** `release/v3.25-source-provenance` at `04f20094a03cd0b189d1626ef4f372917ce599e3`
+- **v3.25 bookkeeping:** `34160651319` — fully green
+- **Current feature:** #89 Doctrinal safety/context — Verified after full functional run `34166910207`
+- **Exact #89 green implementation candidate before bookkeeping:** `827e5edc5af48bb76a805fcb3d546975bfc14ec1`
+- **#90 Source labels/attribution:** Regression-tested after surviving the later #89 functional suite
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -36,12 +33,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 9 | Games core | Frozen core | #32–37 and #41 Regression-tested |
 | 10 | Bible-study core | Frozen through Open Review/STEP | #49–54 plus #20 Regression-tested |
 | 11 | Reader language/source completion | Frozen through NLT | v3.24; #15 deferred |
-| 12 | Source provenance | Verified, freeze gate active | #90 Verified; exact bookkeeping next |
-| 13 | Core-content safety / remaining parity | Reassessment next | #89 leading candidate; inspect dependencies before coding |
-| 14 | Devotional / Ministry foundation | Designed, not implemented | later; `DEVOTIONAL_MINISTRY_DESIGN_V3.md` |
-| 15 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 16 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
-| 17 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 12 | Source provenance | Frozen | v3.25; #90 now Regression-tested |
+| 13 | Doctrinal safety/context | Functional gate green; bookkeeping gate active | #89 Verified; functional `34166910207` |
+| 14 | Remaining core-content parity | Reassess after v3.26 | choose from actual remaining study/core debt, not by row order |
+| 15 | Devotional / Ministry foundation | Designed, not implemented | later; `DEVOTIONAL_MINISTRY_DESIGN_V3.md` |
+| 16 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 17 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
+| 18 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -56,46 +54,57 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.22-japanese-kougo` — `06eda2948db3a4c5462bc24a2b79596fa7d275f0`; repaired functional `34120997990`; bookkeeping `34122128228`
 - `release/v3.23-japanese-vocabulary` — `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`; functional `34123075200`; bookkeeping `34123607629`
 - `release/v3.24-nlt-licensed` — `37ff989dac122f31a53f9bc771639e3ca59b4b03`; functional `34126567141`; bookkeeping `34127324969`
+- `release/v3.25-source-provenance` — `04f20094a03cd0b189d1626ef4f372917ce599e3`; source-provenance functional `34130447654`; bookkeeping `34160651319`
 
-## #90 Source labels/attribution — Verified
+## #90 Source labels/attribution — Regression-tested
 
 Recovered requirement: users must be able to distinguish actual Scripture text, third-party/open reference answers, story retellings, and BibleQuest-authored study/application/game prose.
 
+#90 was frozen in v3.25 and remained green throughout #89 functional verification run `34166910207`, including architecture, edge, Reader/source, and 390px browser checks. It is therefore promoted from Verified to Regression-tested in the parity inventory.
+
+## #89 Doctrinal safety/context — Verified
+
+Recovered requirement: factual recall, passage-sensitive comprehension, and disputed/universal doctrinal claims cannot all be treated as the same kind of binary quiz content.
+
 Clean v3 behavior:
-- one immutable `src/core/content-provenance.js` registry for BibleQuest-authored content types;
-- one presentation-only `src/ui/source-labels.js` helper;
-- Bible translation attribution remains owned by `src/core/bible.js`;
-- unfoldingWord source/license remains owned by `src/core/recall-packs.js` and exposed through immutable `sourceInfo()`;
-- Learn source guide consumes owner metadata and keeps exact `Learn` heading;
-- Guided Study, Deep Questions, Story Journey, Wisdom, Adaptive, Daily Journey, Quick/Context/Mixed games, Detective and Timeline are labeled according to content type;
-- Story Journey differentiates retelling scenes from checkpoint questions;
-- Per-book Recall preserves real unfoldingWord source/license rather than receiving a BibleQuest label;
-- no MutationObserver/global source-label injector or direct storage/network bypass;
-- 390px provenance path has no horizontal overflow.
+- one pure `src/core/doctrinal-safety.js` classification/admission owner;
+- `TEXTUAL_FACT` may enter normal scored recall;
+- `PASSAGE_CONTEXT` may enter passage-bound recall with a separate BibleQuest context note;
+- `INTERPRETIVE_OR_DOCTRINAL` is quarantined from normal binary/scored play pending rewrite/pastor review;
+- imported unfoldingWord Translation Questions are re-evaluated at the Recall boundary and stale embedded allow tags are not trusted;
+- missing/unsafe imported safety metadata fails closed;
+- imported reference answer, Scripture reference, source/license, and BibleQuest context remain separate fields;
+- per-book Recall and Open Smart Review hide BibleQuest context before reveal and show it only with the revealed answer/reference;
+- no UI classifier, no `window.BQ_DOCTRINAL_SAFETY`, no global fetch override, no MutationObserver policy injector, no Lesson/Progress doctrinal logic, and no #89 XP change;
+- Deep Questions remains non-binary and Wisdom Situations remains strongest-supported-judgment teaching rather than universal doctrinal scoring.
 
 Functional verification history:
-- `34129966606` — stopped at a new edge-test regex that incorrectly rejected valid “not a direct Scripture quotation” wording; application unchanged.
-- `34130146826` — reached browser tests but the new provenance smoke used nonexistent `[data-reader-source]`; existing Reader regression had passed, and the test was corrected to `.bq-reader-source`; application unchanged.
-- `34130447654` — corrected complete suite fully green through Games.
+- `34166578446` — failed at the general architecture validator. Root cause: obsolete pre-#89 validator requirement for raw imported `allow` admission. The validator was updated to require current `reviewImportedRecall` evaluation, quarantine filtering, trusted context projection, and rejection of raw imported allow-tag admission.
+- `34166769435` — reached browser regressions and exposed the global shell account button at 38px. Root cause: `.bq-session-chip{min-height:38px}` outside Wisdom’s already-correct 44px controls. Shell owner fixed to 44px; the existing mobile regression is retained.
+- `34166910207` — full accumulated suite green through Games. The new Acts 1:8 real browser path proves the contextual item has no answer/context before reveal, shows a separate BibleQuest context note after reveal, preserves the exact unfoldingWord answer/source/license, then carries the same review item into Open Smart Review safely.
 
 ## Current bookkeeping
 
 - #15 Japanese furigana — **Not started / intentionally deferred**
-- #17 NLT live path — **Regression-tested**
-- #90 Source labels/attribution — **Verified**
-- Totals — **51 Regression-tested / 1 Verified / 0 Implemented / 48 Not started**
+- #90 Source labels/attribution — **Regression-tested**
+- #89 Doctrinal safety/context — **Verified**
+- Inventory states — **52 Regression-tested / 1 Verified / 0 Implemented / 47 Not started**
+- Strict parity — **53/100**
+- Official release stability — **51/100** until the independent bookkeeping gate is green
 
 ## Next sequence
 
-1. Run the full accumulated suite on the exact #90 bookkeeping state.
-2. If green, freeze `release/v3.25-source-provenance` at that exact SHA.
-3. Reassess the remaining core-content dependency order.
-4. #89 Doctrinal safety/context is the leading next candidate because provenance is now available for transparent context notices, but recover the actual old policy behavior and current-v3 integration points before coding.
-5. Keep #15 furigana deferred unless explicitly reopened.
+1. Finish `FEATURE_INVENTORY_V3.md`, `DEVELOPMENT_STATUS_V3.md`, `TIMELINE_V3.md`, and `ARCHITECTURE_V3.md` on one exact bookkeeping candidate.
+2. Create/reset `verify/v3-doctrinal-safety-bookkeeping` exactly from that candidate.
+3. Add the push trigger only on that isolated verification branch and run the entire accumulated suite again.
+4. If any step fails, fix only its identified root cause, retain regression coverage, rebuild the exact bookkeeping candidate, and rerun the entire suite.
+5. If fully green, reset the verification branch to the candidate, create `release/v3.26-doctrinal-safety` exactly at that SHA, and verify the release ref.
+6. Report #89 Regression-tested and official **53/100 parity / 52/100 stability** only after that release gate.
+7. Reassess remaining core Bible-study parity debt before choosing the next feature. Kids #38–40 and ministry/devotional implementation remain deferred unless core debt is sufficiently closed.
 
 ## What remains overall
 
-Literal old-version parity has **48 Not started rows** after #90 promotion. Remaining work includes doctrinal/content safety, notes, Kids, Bible World, community/ministry/admin, accessibility, diagnostics/recovery, PWA/offline behavior, and backup/import.
+Literal old-version parity has **47 Not started rows** after #89 verification. Remaining work includes private/cloud notes, Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, diagnostics/recovery, PWA/offline behavior, backup/import, and the intentionally deferred Japanese furigana row.
 
 ## Release discipline
 
