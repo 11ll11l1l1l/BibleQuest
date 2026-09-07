@@ -1,9 +1,11 @@
+import { reviewImportedRecall } from './doctrinal-safety.js';
+
 const MANIFEST_PATH='data/packs/manifest.json';
 const SOURCE='unfoldingWord Translation Questions v90';
 const LICENSE='CC BY-SA 4.0';
 const SOURCE_INFO=Object.freeze({source:SOURCE,license:LICENSE});
 const freezeBook=row=>Object.freeze({code:row.code,name:row.name,questions:row.questions,path:row.path});
-const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a});
+const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a,safety:Object.freeze({...row.safety,topics:Object.freeze([...(row.safety?.topics||[])])})});
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 
 export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
@@ -45,11 +47,12 @@ export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
       if(!Array.isArray(payload))throw new Error(`${book.name} Recall pack is malformed.`);
       const seen=new Set(),items=[];
       for(const row of payload){
-        if(row?.safety?.action!=='allow')continue;
         const id=String(row?.id||'').trim(),question=String(row?.q||'').trim(),answer=String(row?.a||'').trim(),reference=String(row?.r||'').trim();
         if(!id||id.length>100||!question||!answer)continue;
+        const safety=reviewImportedRecall({q:question,a:answer,r:reference,bookName:book.name,safety:row?.safety});
+        if(safety.action==='quarantine')continue;
         if(seen.has(id))throw new Error(`${book.name} Recall pack contains duplicate item ${id}.`);
-        seen.add(id);items.push(freezeItem({id,q:question,a:answer,r:reference}));
+        seen.add(id);items.push(freezeItem({id,q:question,a:answer,r:reference,safety}));
       }
       if(!items.length)throw new Error(`${book.name} Recall pack contains no approved questions.`);
       return Object.freeze({book,source:manifest.source,license:manifest.license,items:Object.freeze(items)});
