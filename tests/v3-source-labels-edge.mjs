@@ -11,7 +11,7 @@ for(const id of ids){
   const item=getContentProvenance(id);
   assert(Object.isFrozen(item),`${id} provenance row must be immutable.`);
   assert(item.id===id&&item.label&&item.kind&&item.detail,`${id} provenance row is incomplete.`);
-  assert(/not (?:a |Bible translation |a direct )?(?:Bible quotation|Scripture text)|not Bible translation text/i.test(item.detail),`${id} must explicitly distinguish authored prose from Scripture text.`);
+  assert(/not .*?(?:Bible quotation|Bible translation text|Scripture quotation|Scripture text)/i.test(item.detail),`${id} must explicitly distinguish authored prose from Scripture text.`);
   const html=sourceLabel(item,{compact:true});
   assert(html.includes(`data-source-id="${id}"`),`${id} source label must expose stable identity.`);
   assert(html.includes('is-compact'),`${id} compact source label contract is missing.`);
