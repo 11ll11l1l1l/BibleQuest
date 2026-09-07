@@ -13,6 +13,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/account.js` — signup/recovery/device workflows
 - `src/core/bible.js` — Bible sources/packs/search/external links/original-language context-pack loading and live Japanese chapter-source normalization
 - `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context/source delegation
+- `src/app/japanese-vocabulary.js` — Japanese vocabulary-learning preference and curated term lookup
 - `src/core/progress.js` — XP/streak/activity/badges/counters/events
 - `src/core/recall-packs.js` — Recall pack loading/validation/cache
 - `src/engines/lesson.js` — shared lesson/session/step/response lifecycle and persistence
@@ -71,6 +72,20 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 11. `scripts/validate-v3-japanese-kougo.mjs`, `tests/v3-japanese-kougo-edge.mjs`, and `tests/v3-japanese-kougo-smoke.mjs` permanently protect these boundaries.
 12. #15 furigana is intentionally deferred. Old `kuromoji` CDN injection, direct DOM mutation, and `window.BQJapaneseLearning` must not leak into #14 or #16 merely because they existed in the legacy combined module.
 
+## Reader / Japanese vocabulary boundaries
+
+1. #16 reuses the curated vocabulary definitions recovered from the loaded legacy `japanese-learning.js` but does not recreate its combined furigana/tokenizer runtime.
+2. `src/app/japanese-vocabulary.js` alone owns the persisted vocabulary-learning enabled preference and curated note lookup. It uses the central Storage boundary and cannot access DOM, network, Progress, or Scripture sources.
+3. `src/features/reader/vocabulary-content.js` is static definition data only. The recovered 27 terms retain term, reading, learner-friendly explanation, fuller meaning, and optional English gloss.
+4. `src/features/reader/vocabulary.js` is presentation-only. It renders the control and note block but cannot access Storage, network, Progress, `kuromoji`, or legacy globals.
+5. Reader exposes vocabulary only when Japanese 口語訳 is selected. Verse selection continues to use the existing Verse Peek interaction; vocabulary notes are composed inside Verse Peek rather than creating another overlay or competing verse-click owner.
+6. The vocabulary enabled preference persists through `src/core/storage.js`; selected Reader translation/book/chapter remains owned by `src/app/reader.js`.
+7. A selected verse shows at most three curated matching notes, preferring longer terms before contained shorter terms. If no curated term matches, the UI shows a controlled empty-learning state and must not fabricate a reading or definition.
+8. The UI must state that readings, modern-language explanations, and English glosses are study aids and are not Scripture text.
+9. Vocabulary browsing has no recovered XP/progress reward, so v3 does not invent one.
+10. #15 furigana remains deferred. `kuromoji`, CDN script injection, `data-jp-furigana`, and `window.BQJapaneseLearning` are forbidden from the #16 implementation.
+11. `src/ui/japanese-vocabulary.css` owns the isolated vocabulary/mobile presentation. The control must remain >=44px and the 390px Reader path must not overflow horizontally.
+
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
 - Guided Study uses `src/app/study.js` + Lesson + Progress/Reader interfaces; completion has no invented XP and personal reflection is unscored.
@@ -120,10 +135,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
 Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → remaining Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.21-step-context` at `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`; exact STEPBible bookkeeping run `34118918425` passed before that freeze. #14 Japanese 口語訳 is **Verified** after repaired complete functional run `34120997990`. It becomes the v3.22 frozen checkpoint only after this exact bookkeeping state passes the complete accumulated suite. Production v2 remains isolated.
+Known-good frozen releases extend through `release/v3.22-japanese-kougo` at `06eda2948db3a4c5462bc24a2b79596fa7d275f0`; exact Japanese 口語訳 bookkeeping run `34122128228` passed before that freeze. #16 Japanese vocabulary is now under rebuild and cannot be promoted until its complete accumulated functional gate passes. Production v2 remains isolated.
