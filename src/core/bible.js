@@ -8,8 +8,9 @@ const BOOK_ROWS = [
 export const BIBLE_BOOKS = Object.freeze(BOOK_ROWS.map(([name, code, chapters], index) => Object.freeze({ name, code, chapters, index })));
 
 const TRANSLATIONS = Object.freeze({
-  bsb: Object.freeze({ id: 'bsb', label: 'English · BSB', folder: 'bible', language: 'English', bundled: true, source: 'Berean Standard Bible', license: 'Public-domain / CC0 browser source', attribution: 'See data/packs/ATTRIBUTION.md' }),
-  tl: Object.freeze({ id: 'tl', label: 'Tagalog · ULB', folder: 'tagalog', language: 'Tagalog', bundled: true, source: 'Tagalog Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2018 Door43 World Missions Community' })
+  bsb: Object.freeze({ id: 'bsb', label: 'English · BSB', folder: 'bible', language: 'English', bundled: true, mode: 'bundled', source: 'Berean Standard Bible', license: 'Public-domain / CC0 browser source', attribution: 'See data/packs/ATTRIBUTION.md' }),
+  tl: Object.freeze({ id: 'tl', label: 'Tagalog · ULB', folder: 'tagalog', language: 'Tagalog', bundled: true, mode: 'bundled', source: 'Tagalog Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2018 Door43 World Missions Community' }),
+  jko: Object.freeze({ id: 'jko', label: '日本語 · 口語訳', language: 'Japanese', bundled: false, mode: 'live-kougo', source: '口語訳聖書 (1954/1955) · GetBible japkougo', license: '1955 edition copyright term expired; moral rights remain; later corrected wording may be protected', attribution: 'GetBible/CrossWire japkougo public-domain module · Scripture text displayed without modification' })
 });
 
 const BOOK_ALIASES = new Map();
@@ -26,7 +27,7 @@ for (const book of BIBLE_BOOKS) {
   for (const alias of aliases[book.code] || []) BOOK_ALIASES.set(normalizeBookToken(alias), book);
 }
 
-const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam','1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
+const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam', '1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
 const safeVerse = row => row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(Number(row.v)) && Number(row.v) > 0 && typeof row.t === 'string' && row.t.trim();
 const freezeVerse = row => Object.freeze({ chapter: Number(row.c), verse: Number(row.v), text: String(row.t).trim() });
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
@@ -53,12 +54,14 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
   async function loadBook(translationId, code) {
     const translation = getTranslation(translationId);
     const book = getBook(code);
+    if (!translation.bundled) throw new Error(`${translation.label} is a live chapter source and does not expose bundled book packs.`);
     const key = `${translation.id}:${book.code}`;
     if (cache.has(key)) return cache.get(key);
     const pending = (async () => {
       const response = await fetcher(`data/packs/${translation.folder}/${book.code}.json`);
       if (!response?.ok) throw new Error(`${translation.label} pack for ${book.name} is unavailable.`);
-      const payload = await response.json();
+      let payload;
+      try { payload = await response.json(); } catch { throw new Error(`${translation.label} pack for ${book.name} is malformed.`); }
       if (!Array.isArray(payload)) throw new Error(`${translation.label} pack for ${book.name} is malformed.`);
       const verses = payload.filter(safeVerse).map(freezeVerse).sort((a, b) => a.chapter - b.chapter || a.verse - b.verse);
       if (!verses.length) throw new Error(`${translation.label} pack for ${book.name} contains no readable verses.`);
@@ -75,11 +78,39 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     try { return await pending; } catch (error) { cache.delete(key); throw error; }
   }
 
+  async function loadKougoChapter(book, chapterNumber, translation) {
+    const bookNumber = book.index + 1;
+    const path = `https://api.getbible.net/v2/japkougo/${bookNumber}/${chapterNumber}.json`;
+    const payload = await fetchJson(
+      path,
+      `口語訳 for ${book.name} ${chapterNumber} is unavailable. Check your internet connection and retry.`,
+      `口語訳 for ${book.name} ${chapterNumber} returned malformed data.`
+    );
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error(`口語訳 for ${book.name} ${chapterNumber} returned malformed data.`);
+    const raw = Array.isArray(payload.verses) ? payload.verses : payload.verses && typeof payload.verses === 'object' ? Object.values(payload.verses) : [];
+    const verses = raw.map((row, index) => ({
+      chapter: chapterNumber,
+      verse: Number(row?.verse ?? row?.v ?? row?.number ?? index + 1),
+      text: String(row?.text ?? row?.t ?? row?.content ?? '').trim()
+    })).filter(row => Number.isInteger(row.verse) && row.verse > 0 && row.text);
+    if (!verses.length) throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains no readable verses.`);
+    verses.sort((a, b) => a.verse - b.verse);
+    const seen = new Set();
+    for (const verse of verses) {
+      if (seen.has(verse.verse)) throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains duplicate verse ${verse.verse}.`);
+      seen.add(verse.verse);
+      Object.freeze(verse);
+    }
+    return Object.freeze({ book, translation, chapter: chapterNumber, verses: Object.freeze(verses) });
+  }
+
   async function loadChapter(translationId, code, chapter) {
+    const translation = getTranslation(translationId);
     const book = getBook(code);
     const chapterNumber = Number(chapter);
     if (!Number.isInteger(chapterNumber) || chapterNumber < 1 || chapterNumber > book.chapters) throw new Error(`Invalid chapter for ${book.name}.`);
-    const loaded = await loadBook(translationId, code);
+    if (translation.mode === 'live-kougo') return loadKougoChapter(book, chapterNumber, translation);
+    const loaded = await loadBook(translation.id, code);
     const verses = loaded.verses.filter(verse => verse.chapter === chapterNumber);
     if (!verses.length) throw new Error(`No verses found for ${book.name} ${chapterNumber}.`);
     return Object.freeze({ book, translation: loaded.translation, chapter: chapterNumber, verses: Object.freeze(verses) });
@@ -99,21 +130,22 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
   }
 
   async function search(translationId, query, { limit = 30 } = {}) {
-    getTranslation(translationId);
+    const translation = getTranslation(translationId);
     const text = String(query || '').trim();
     if (text.length < 3) throw new Error('Search needs at least 3 characters or a Bible reference such as John 3:16.');
     const parsed = parseReference(text);
     if (parsed) {
-      const chapter = await loadChapter(translationId, parsed.book.code, parsed.chapter);
+      const chapter = await loadChapter(translation.id, parsed.book.code, parsed.chapter);
       const selected = parsed.verseStart === null ? chapter.verses : chapter.verses.filter(verse => verse.verse >= parsed.verseStart && verse.verse <= parsed.verseEnd);
       return Object.freeze({ query: text, type: 'reference', results: Object.freeze(selected.slice(0, limit).map(verse => Object.freeze({ book: parsed.book, chapter: parsed.chapter, verse: verse.verse, text: verse.text, reference: referenceText(parsed.book, parsed.chapter, verse.verse) }))), skippedBooks: Object.freeze([]) });
     }
+    if (!translation.bundled) throw new Error(`${translation.label} text search is unavailable because this translation is loaded live one chapter at a time. Search by Bible reference instead.`);
     const needle = text.toLocaleLowerCase();
     const results = [];
     const skippedBooks = [];
     for (const book of BIBLE_BOOKS) {
       try {
-        const loaded = await loadBook(translationId, book.code);
+        const loaded = await loadBook(translation.id, book.code);
         for (const verse of loaded.verses) {
           if (!verse.text.toLocaleLowerCase().includes(needle)) continue;
           results.push(Object.freeze({ book, chapter: verse.chapter, verse: verse.verse, text: verse.text, reference: referenceText(book, verse.chapter, verse.verse) }));
