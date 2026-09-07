@@ -15,6 +15,7 @@ Updated: 2026-09-07
 - Frozen Per-book Recall checkpoint: `release/v3.12-per-book-recall` at `38fb34b1b068c6678957a0a25f6cda88fb185cf0`.
 - Frozen Character Detective checkpoint: `release/v3.13-character-detective` at `7c33895158037727880a3ae8eb6c2d44ccef6621`.
 - Frozen Timeline checkpoint: `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`.
+- Frozen Guided Study checkpoint: `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`, after exact bookkeeping run `34081724365` passed.
 - Current development branch: `feature/v3-study-core`.
 - Cloudflare remains untouched by the v3 rebuild.
 - Normal v3 GitHub Actions remain manual-only; isolated verification branches are one-shot CI gates only.
@@ -23,13 +24,13 @@ Updated: 2026-09-07
 
 | State | Count |
 |---|---:|
-| Regression-tested | 41 |
+| Regression-tested | 42 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 57 |
+| Not started | 56 |
 | Total | 100 |
 
-Strict verified-or-better parity is now **42/100** and fully regression-tested stability coverage is **41/100**. Timeline (#37) is Regression-tested after the later Guided Study accumulated gate. Expanded Guided Study (#52) is Verified after run `34080576745`. #20 STEPBible lexical/context tooling remains Implemented parity debt.
+Strict verified-or-better parity is now **43/100** and fully regression-tested stability coverage is **42/100**. Expanded Guided Study (#52) is Regression-tested after surviving the later Deep Questions accumulated gate. Deep Questions (#51) is Verified after run `34082339971`. #20 STEPBible lexical/context tooling remains Implemented parity debt.
 
 ## Completed milestone 7 — Transform
 
@@ -55,51 +56,73 @@ Strict verified-or-better parity is now **42/100** and fully regression-tested s
 - Mixed Quest (#34) — Regression-tested.
 - Per-book Recall (#35) — Regression-tested.
 - Character Detective / Who Am I (#36) — Regression-tested.
-- Timeline (#37) — Regression-tested after the later Guided Study milestone passed.
+- Timeline (#37) — Regression-tested.
 - Game launcher (#41) — Regression-tested.
 - Core Games are frozen through `release/v3.14-timeline`.
-- Deeper Kids integration (#38–40) is intentionally deferred while the Bible-study core is prioritized. The separate Kids game surface remains accessible and is not being removed.
+- Deeper Kids integration (#38–40) remains intentionally deferred while the Bible-study core is prioritized. The separate Kids game surface remains accessible.
 
 ## Milestone 10 — Bible-study core
 
-### Expanded Guided Study (#52) — Verified candidate complete
+### Expanded Guided Study (#52) — Regression-tested and frozen
 
-Functional accumulated run `34080576745` passed the full architecture, edge, and browser suite, including the new 390px Guided Study workflow and all earlier v3 subsystems.
+Functional accumulated run `34080576745` verified Guided Study. Exact bookkeeping run `34081724365` then passed and the unchanged bookkeeping commit was frozen as `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`.
 
-Verified design:
-- `src/engines/lesson.js` remains the only lesson lifecycle/state/persistence engine.
-- `src/features/study/content.js` contains static curated study definitions only.
-- `src/app/study.js` owns Guided Study library/open/resume/restart/completion/Reader handoff/close orchestration.
-- `src/features/study/index.js` is presentation and event forwarding only.
-- `src/core/progress.js` receives one deterministic completion event; reopening or repeated completion cannot duplicate activity/streak effects.
-- Guided Study does not invent an unverified XP reward. Completion records `xp: 0`, meaningful activity, and one reflection metric.
-- Objective lesson questions may be checked; personal reflection/application text is never scored as spiritual quality, diagnosis, moral rank, or divine approval.
+Guided Study continues to use:
+- `src/engines/lesson.js` as the only lesson lifecycle/state/persistence engine.
+- `src/features/study/content.js` for static curated definitions.
+- `src/app/study.js` for Guided Study selection/open/resume/restart/completion/Reader handoff/close orchestration.
+- `src/features/study/index.js` for presentation/event forwarding only.
+- one deterministic `xp: 0` meaningful completion event; personal reflection/application is not spiritually scored.
 
-Initial Scripture-first studies:
-1. **Who Is My Neighbor?** — Luke 10:25–37.
-2. **Abide and Bear Fruit** — John 15:1–17.
-3. **Faith That Acts** — James 2:14–26.
+Guided Study survived the later full Deep Questions run `34082339971`, so #52 is now Regression-tested.
 
-Each follows passage → context → observation → meaning → private reflection → concrete response → completion.
+### Deep Questions (#51) — Verified
 
-Acceptance verified in run `34080576745`:
-- Learn → Guided Study navigation.
-- mobile 390px library/session without horizontal overflow.
-- touch targets >=44px.
-- full Good Samaritan study completion.
-- answer locking and correct feedback.
-- private text response persistence.
-- deterministic completion progress with no duplicate award.
-- reload/reopen completed state.
-- explicit restart.
-- Reader handoff to Luke 10.
-- all earlier shell/account/reader/progress/lesson/Daily Mission/Transform/media/Games browser regressions remained green.
+Recovered parity content contains the 18 retained Deep Questions from the old Story/Wisdom pack. The clean rebuild does not import the old global `BQ_DEEP_QUESTIONS` runtime.
 
-The exact bookkeeping state still requires one final accumulated run before the checkpoint is frozen as `release/v3.15-guided-study`.
+Verified architecture:
+- `src/features/deep-questions/content.js` is static question/reflection/reference content only.
+- `src/app/deep-questions.js` is the single Deep Questions orchestration owner.
+- `src/engines/lesson.js` remains the only lifecycle/session/response persistence engine; Deep Questions creates no storage key or parallel note store.
+- `src/app/reader.js` remains the only Reader state owner; Deep Questions delegates Scripture handoff through `reader.setBook`.
+- `src/features/deep-questions/index.js` is presentation/event forwarding only.
+- Deep Questions has no Progress dependency and awards no XP because no verified old parity evidence supports an XP award.
+- Initial response options are deliberately unscored; no spiritual-quality, moral-rank, or divine-approval score is created.
+- The reflection and Scripture references are revealed after the initial response.
+- The private note is a shared Lesson text response, so it survives leave/return and reload without creating a second persistence model.
+- Contextual Reader handoff can open any listed reference and the Deep Question resumes on return.
+- The old day-of-month rotating-question rule is retained for the featured daily question, while all 18 questions remain directly selectable.
+
+Full accumulated run `34082339971` passed:
+- architecture validator.
+- all accumulated edge regressions.
+- new Deep Questions edge regression.
+- shell/account, Reader, Progress, Lesson, Guided Study, Daily Mission, Transform, Live Recordings, Media Library, and Games browser regressions.
+- new Deep Questions browser regression at 390px.
+
+Deep Questions browser verification covered:
+- Learn → Deep Questions route while retaining the stable `<h1>Learn</h1>` shell contract.
+- all 18 recovered questions.
+- rotating featured question.
+- no horizontal overflow and >=44px controls.
+- no Scripture-reference reveal before the initial response.
+- unscored response locking.
+- reflection/reference reveal after response.
+- Reader handoff to Matthew 18 for p1.
+- resume after Reader handoff.
+- private-note save, reload, and return persistence.
+- completion with zero Progress mutation/XP.
+- reopen completed state without side effects.
+- restart.
+- no console/page errors.
+
+No Deep Questions application defect was found by the first functional gate, so no post-gate patch was required.
+
+The exact Deep Questions bookkeeping state still requires one final accumulated run before any `release/v3.16-deep-questions` checkpoint may be frozen.
 
 ## Future Devotional / Ministry requirement
 
-`DEVOTIONAL_MINISTRY_DESIGN_V3.md` is now the design contract for the later high-priority ministry workflow.
+`DEVOTIONAL_MINISTRY_DESIGN_V3.md` remains the design contract for the later high-priority ministry workflow.
 
 Required future behavior:
 - Pastor/Admin publishes first-class **Message**, **Devotional**, or **Task** posts through a freeform composer.
@@ -114,7 +137,7 @@ Primary later inventory mapping: #66 and #73–78. Design documentation alone do
 
 ## Next major milestone
 
-After the exact Guided Study bookkeeping gate is green and `release/v3.15-guided-study` is frozen, continue Bible-study core with **#51 Deep Questions**. Deep Questions should reuse the verified Lesson/Study infrastructure where practical and should hand reflections/notes toward the future #55 private-notes owner rather than creating its own persistence model. Then continue #49 Story Journey and #50 Wisdom Situations before adaptive learning (#53–54).
+After the exact Deep Questions bookkeeping gate is green and any `release/v3.16-deep-questions` checkpoint is frozen, continue Bible-study core with **#49 Story Journey**, then #50 Wisdom Situations, #53 Adaptive learning, and #54 Open/weak-area review.
 
 Kids #38–40 remain deferred but accessible through the existing separate Kids surface.
 
@@ -144,4 +167,4 @@ Kids #38–40 remain deferred but accessible through the existing separate Kids 
 
 ## Release rule
 
-Expanded Guided Study passed the entire accumulated functional suite on run `34080576745`. The exact inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before the checkpoint is frozen as `release/v3.15-guided-study`. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
+Deep Questions passed the entire accumulated functional suite on run `34082339971`. The exact inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before a Deep Questions checkpoint can be frozen. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
