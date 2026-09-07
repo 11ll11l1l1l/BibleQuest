@@ -26,6 +26,8 @@ jobs:
         run: node scripts/validate-v3-japanese-vocabulary.mjs
       - name: Enforce NLT licensed-link boundaries
         run: node scripts/validate-v3-nlt-licensed.mjs
+      - name: Enforce source-label provenance boundaries
+        run: node scripts/validate-v3-source-labels.mjs
       - name: Run account transaction edge regression
         run: node tests/v3-account-edge.mjs
       - name: Run Bible data and reader edge regression
@@ -38,6 +40,8 @@ jobs:
         run: node tests/v3-japanese-vocabulary-edge.mjs
       - name: Run NLT licensed-link edge regression
         run: node tests/v3-nlt-licensed-edge.mjs
+      - name: Run source-label provenance edge regression
+        run: node tests/v3-source-labels-edge.mjs
       - name: Run progress edge regression
         run: node tests/v3-progress-edge.mjs
       - name: Run lesson engine edge regression
@@ -98,6 +102,8 @@ jobs:
         run: timeout 240s node tests/v3-japanese-vocabulary-smoke.mjs
       - name: Run v3 NLT licensed-link mobile browser regression
         run: timeout 240s node tests/v3-nlt-licensed-smoke.mjs
+      - name: Run v3 source-label provenance mobile browser regression
+        run: timeout 240s node tests/v3-source-labels-smoke.mjs
       - name: Run v3 progress browser regression
         run: timeout 240s node tests/v3-progress-smoke.mjs
       - name: Run v3 lesson engine browser regression
