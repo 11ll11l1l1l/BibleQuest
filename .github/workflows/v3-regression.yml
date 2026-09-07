@@ -36,6 +36,8 @@ jobs:
         run: node tests/v3-wisdom-situations-edge.mjs
       - name: Run Adaptive Learning edge regression
         run: node tests/v3-adaptive-learning-edge.mjs
+      - name: Run Open Review edge regression
+        run: node tests/v3-open-review-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
       - name: Run Transform engine edge regression
@@ -82,6 +84,8 @@ jobs:
         run: timeout 240s node tests/v3-wisdom-situations-smoke.mjs
       - name: Run v3 Adaptive Learning browser regression
         run: timeout 240s node tests/v3-adaptive-learning-smoke.mjs
+      - name: Run v3 Open Review browser regression
+        run: timeout 240s node tests/v3-open-review-smoke.mjs
       - name: Run v3 Daily Mission browser regression
         run: timeout 240s node tests/v3-daily-mission-smoke.mjs
       - name: Run v3 Transform engine browser regression
