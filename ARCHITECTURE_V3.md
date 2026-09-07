@@ -21,6 +21,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/story-journey.js` — Story Journey orchestration over Lesson/Progress/Reader
 - `src/app/wisdom-situations.js` — Wisdom Situations orchestration over Lesson/Progress
 - `src/app/adaptive-learning.js` — Adaptive Learning evidence/mastery/selection orchestration over Storage/Lesson/Progress
+- `src/app/open-review.js` — Open Smart Review queue/spacing orchestration over Recall/Adaptive/Games/Lesson/Progress
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration only
@@ -31,7 +32,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 
 ## Bible-study shared boundaries
 
-1. `src/engines/lesson.js` is the only reusable lesson/session/step/response persistence engine. Guided Study, Deep Questions, Story Journey, Wisdom Situations, Adaptive Learning, weak-area review, or pastor-linked study activities must not create parallel lesson runtimes when the shared contract fits.
+1. `src/engines/lesson.js` is the only reusable lesson/session/step/response persistence engine. Guided Study, Deep Questions, Story Journey, Wisdom Situations, Adaptive Learning, Open Review, or pastor-linked study activities must not create parallel lesson runtimes when the shared contract fits.
 2. Static feature/content modules cannot own storage, backend calls, navigation, Progress mutation, or DOM lifecycle.
 3. Feature `index.js` modules are presentation/event forwarding only. They cannot call storage/backend owners directly or calculate competing lifecycle state.
 4. `src/app/reader.js` remains the only Reader state owner. Study features delegate Scripture handoff through it when retained behavior requires one.
@@ -82,7 +83,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 ## Adaptive Learning boundaries
 
 1. `src/features/games/content.js` remains the single static definition source for q1–q24. Adaptive Learning imports and reuses those verified questions; it cannot create a copied/adaptive-only bank.
-2. `src/app/adaptive-learning.js` is the single Adaptive Learning owner. It owns retrieval-evidence normalization, category mastery, Games-event ingestion, ranking, seven-question Smart Review selection, adaptive attempt identity, review-list mutation, and completed-session summaries.
+2. `src/app/adaptive-learning.js` is the single Adaptive Learning owner. It owns retrieval-evidence normalization, category mastery, Games-event ingestion, ranking, seven-question Smart Review selection, adaptive attempt identity, review-list mutation, completed-session summaries, and the read-only weakest-category review-focus signal consumed by Open Review.
 3. Adaptive Learning uses one namespaced `adaptive-learning` record only through `src/core/storage.js`; direct `localStorage`/`sessionStorage` is forbidden.
 4. The shared Lesson engine alone owns the seven-question response lifecycle, answer locking, score, resume/reload, completion, and step persistence. Adaptive cannot become a second quiz/Lesson engine.
 5. The central Progress service alone owns Adaptive XP and `quizCorrect`. Retained reward parity is +10 XP correct / +3 XP incorrect; only a correct Adaptive answer contributes one `quizCorrect`.
@@ -96,12 +97,22 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 13. `src/features/adaptive-learning/index.js` is presentation/event forwarding only and cannot import Storage, Lesson, Progress implementation internals, API/backend clients, or Games orchestration.
 14. `src/ui/adaptive-learning.css` owns Adaptive styling; the stable Learn `<h1>Learn</h1>` and 390px no-overflow / >=44px touch-control contracts remain protected.
 
-## Future weak-area review boundaries
+## Open Smart Review boundaries
 
-1. #54 Open/weak-area review must first recover the actually loaded old `open-review.js` behavior before implementation.
-2. It should consume the existing Adaptive evidence/review contract rather than create a second mastery database or second review-tracking source.
-3. Review queue generation must have one owner/service and feed verified content/lesson activities rather than duplicate scoring, question definitions, storage, or Progress logic.
-4. Any XP or review-completion reward must be verified from retained behavior before implementation.
+1. `src/app/open-review.js` is the single #54 orchestration owner. It owns seven-item open-review queue assembly, its namespaced spaced-history record, attempt identity, due scheduling, self-rating reconciliation, completed-session summaries, and coordination across existing owners.
+2. `src/core/recall-packs.js` remains the only owner allowed to load, validate, cache, or address unfoldingWord question packs. Open Review receives approved pack records through `loadManifest()` / `loadBook()` and cannot fetch pack files or hard-code pack paths.
+3. `src/app/games.js` remains the owner of the existing per-book Recall review-ID queue. It exposes only `recallReviewQueue()` and idempotent `syncRecallReviewItem()` for #54; Open Review must never read or write `games-recall` storage directly.
+4. `src/app/adaptive-learning.js` remains the only mastery/weak-area model. Open Review consumes `reviewFocusCategory()` and cannot create or mutate a second Bible-category mastery table.
+5. The shared Lesson engine owns the interactive lifecycle as fourteen steps: seven memory-prompt content steps alternating with seven unscored self-rating choice steps. Leaving, returning, reload, answer locking, and completion remain Lesson responsibilities.
+6. The pre-reveal Open Review snapshot contains the question but not the reference answer/reference. Advancing the content step reveals the source answer, after which the member self-rates `Review again` or `Got it`.
+7. Retained old reward parity is +1 XP for `Review again` and +5 XP for `Got it`. Only `Got it` contributes one `quizCorrect`, matching the retained open/per-book recall behavior. Progress remains the sole XP/counter/event owner.
+8. Open Review Progress identity is `open-review:<attemptId>:item:<bookCode>:<itemId>`; duplicate/reload paths cannot award the same rating twice.
+9. The retained spacing sequence is 1, 3, 7, 14, and 30 days after successive `Got it` ratings; `Review again` resets streak to zero and makes the item due immediately.
+10. Queue priority is retained: scheduled due Open Review items first, then existing Games per-book review IDs, then unseen approved questions from the Adaptive weakest category, with wider fresh-pack fallback only when necessary to fill seven items.
+11. Open Review keeps only question identity and retrieval statistics in `open-review` storage. Question/answer/source text remains owned by Recall Pack data and is rehydrated on resume.
+12. `src/features/open-review/index.js` is presentation/event forwarding only and cannot access Storage, Lesson, Progress, Games, Adaptive, backend clients, or pack fetching directly.
+13. `src/ui/open-review.css` owns Open Review styling. Required attribution remains visible, stable Learn routing is preserved, and the 390px no-overflow / >=44px touch-control contract applies.
+14. The historical `open-review.js` global overlay/MutationObserver/direct-`localStorage` runtime is reference-only and must not be recreated.
 
 ## Future Devotional / Ministry boundaries
 
@@ -134,19 +145,20 @@ The detailed design contract is `DEVOTIONAL_MINISTRY_DESIGN_V3.md`; documentatio
 
 ## Games boundaries
 
-1. `src/app/games.js` is the only game launch/round/score/XP/replay/switch/leave/result owner.
+1. `src/app/games.js` is the only game launch/round/score/XP/replay/switch/leave/result owner and remains the sole owner of `games-recall` persistence.
 2. `src/features/games/content.js` remains the one static q1–q24 definition source shared with Adaptive Learning; static modules contain no scoring, persistence, navigation, or listener lifecycle.
 3. `src/core/recall-packs.js` alone loads/validates/caches per-book Recall pack data.
 4. Game Progress writes go only through `src/core/progress.js`.
-5. Starting another game replaces the active round inside the same owner; leaving tears it down.
-6. Kids arcade parity may remain accessible as a separate surface while deeper #38–40 integration is deferred.
+5. `recallReviewQueue()` returns an immutable review-ID snapshot; `syncRecallReviewItem()` is the only cross-feature mutation allowed for that queue and is idempotent add/remove semantics only.
+6. Starting another game replaces the active round inside the same owner; leaving tears it down.
+7. Kids arcade parity may remain accessible as a separate surface while deeper #38–40 integration is deferred.
 
 ## Global hard boundary
 
-One boot, one router, one session owner, one global store, one storage boundary, one API boundary, one Bible service, one Reader owner, one Progress owner, one Recall Pack owner, one Lesson engine, one Adaptive Learning owner, one orchestration owner per other study feature, one Transform engine, one Audio owner, one Recordings owner, one Media Library owner, and one Games owner. No v3 source depends on legacy `window.BQ*` globals.
+One boot, one router, one session owner, one global store, one storage boundary, one API boundary, one Bible service, one Reader owner, one Progress owner, one Recall Pack owner, one Lesson engine, one Adaptive Learning owner, one Open Review owner, one orchestration owner per other study feature, one Transform engine, one Audio owner, one Recordings owner, one Media Library owner, and one Games owner. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → weak-area review)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
 
-Known-good frozen releases now extend through `release/v3.18-wisdom-situations` at `fd344208e12942d911f05d02b4e99d5b735a7c29`. Adaptive Learning is Verified after full functional run `34105551106` but must not be called frozen until its exact bookkeeping state passes the full accumulated suite. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.19-adaptive-learning` at `39ab8269e4fd83a09138404bd9466df0c70ee30e`; exact Adaptive bookkeeping run `34106252587` passed before that freeze. Open Smart Review is under rebuild and is not promoted until its own acceptance workflow and the entire accumulated suite pass. Production remains isolated on v2 until parity and stability release gates pass.
