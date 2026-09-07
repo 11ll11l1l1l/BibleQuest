@@ -5,7 +5,7 @@ const SOURCE='unfoldingWord Translation Questions v90';
 const LICENSE='CC BY-SA 4.0';
 const SOURCE_INFO=Object.freeze({source:SOURCE,license:LICENSE});
 const freezeBook=row=>Object.freeze({code:row.code,name:row.name,questions:row.questions,path:row.path});
-const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a,safety:Object.freeze({...row.safety,topics:Object.freeze([...(row.safety?.topics||[])])})});
+const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a,contextNote:row.safety?.action==='context'?String(row.safety?.contextNote||'').trim():'',safety:Object.freeze({...row.safety,topics:Object.freeze([...(row.safety?.topics||[])])})});
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 
 export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
