@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 49
+- **Regression-tested:** 50
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 50
+- **Not started:** 49
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -36,8 +36,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 13 | Tagalog Bible | Yes | Clean | Regression-tested | translation switch; book/chapter; persistence |
 | 14 | Japanese 口語訳 | Yes | Compatibility | Regression-tested | live GetBible japkougo chapter load; canonical book mapping; translation persistence; exact text; explicit Retry/Use BSB fallback; invalid-response cache eviction; 390px recovery controls |
 | 15 | Japanese furigana | Yes | Compatibility | Not started | intentionally deferred by current priority decision; do not implement unless priority is explicitly reopened |
-| 16 | Japanese vocabulary learning | Yes | Compatibility | Verified | Japanese-only ON/OFF control; select verse through Verse Peek; up to three recovered curated notes; persistence/reload; safe no-note state; learning-aid disclaimer; no XP; no furigana/tokenizer runtime; 390px mobile |
-| 17 | NLT live path | Yes | Compatibility | Not started | source availability; failure handling; license-safe display |
+| 16 | Japanese vocabulary learning | Yes | Compatibility | Regression-tested | Japanese-only ON/OFF control; select verse through Verse Peek; up to three recovered curated notes; persistence/reload; safe no-note state; learning-aid disclaimer; no XP; no furigana/tokenizer runtime; 390px mobile |
+| 17 | NLT live path | Yes | Compatibility | Verified | selectable/persisted licensed-link mode; exact book/chapter handoff; no redistributed NLT text or hidden fetch; no in-app NLT search/read credit; safe external return; source/license attribution; 390px mobile |
 | 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
 | 19 | Verse Peek | Yes | Compatibility | Regression-tested | open verse detail; close; repeated use; no duplicate overlay |
 | 20 | STEPBible lexical/context tools | Yes | Compatibility | Regression-tested | BSB verse context; Strong’s/lemma/transliteration/morphology/gloss; in-book usage; source/limits; unavailable-data behavior; Verse Peek handoff; 390px mobile |
