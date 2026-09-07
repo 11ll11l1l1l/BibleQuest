@@ -10,7 +10,8 @@ export const BIBLE_BOOKS = Object.freeze(BOOK_ROWS.map(([name, code, chapters], 
 const TRANSLATIONS = Object.freeze({
   bsb: Object.freeze({ id: 'bsb', label: 'English · BSB', folder: 'bible', language: 'English', bundled: true, mode: 'bundled', source: 'Berean Standard Bible', license: 'Public-domain / CC0 browser source', attribution: 'See data/packs/ATTRIBUTION.md' }),
   tl: Object.freeze({ id: 'tl', label: 'Tagalog · ULB', folder: 'tagalog', language: 'Tagalog', bundled: true, mode: 'bundled', source: 'Tagalog Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2018 Door43 World Missions Community' }),
-  jko: Object.freeze({ id: 'jko', label: '日本語 · 口語訳', language: 'Japanese', bundled: false, mode: 'live-kougo', source: '口語訳聖書 (1954/1955) · GetBible japkougo', license: '1955 edition copyright term expired; moral rights remain; later corrected wording may be protected', attribution: 'GetBible/CrossWire japkougo public-domain module · Scripture text displayed without modification' })
+  jko: Object.freeze({ id: 'jko', label: '日本語 · 口語訳', language: 'Japanese', bundled: false, mode: 'live-kougo', source: '口語訳聖書 (1954/1955) · GetBible japkougo', license: '1955 edition copyright term expired; moral rights remain; later corrected wording may be protected', attribution: 'GetBible/CrossWire japkougo public-domain module · Scripture text displayed without modification' }),
+  nlt: Object.freeze({ id: 'nlt', label: 'English · NLT', language: 'English', bundled: false, mode: 'licensed-link', externalVersion: 'NLT', source: 'New Living Translation', license: 'Copyrighted translation · licensed external reader only', attribution: 'Tyndale House Publishers · BibleQuest does not redistribute the NLT text' })
 });
 
 const BOOK_ALIASES = new Map();
@@ -54,6 +55,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
   async function loadBook(translationId, code) {
     const translation = getTranslation(translationId);
     const book = getBook(code);
+    if (translation.mode === 'licensed-link') throw new Error(`${translation.label} is an external licensed-reader mode and does not expose Scripture packs.`);
     if (!translation.bundled) throw new Error(`${translation.label} is a live chapter source and does not expose bundled book packs.`);
     const key = `${translation.id}:${book.code}`;
     if (cache.has(key)) return cache.get(key);
@@ -104,12 +106,30 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     return Object.freeze({ book, translation, chapter: chapterNumber, verses: Object.freeze(verses) });
   }
 
+  function licensedPassage(translationId, code, chapter, verse = null) {
+    const translation = getTranslation(translationId);
+    if (translation.mode !== 'licensed-link' || !translation.externalVersion) throw new Error(`${translation.label} is not a licensed external-reader translation.`);
+    const book = getBook(code);
+    const chapterNumber = Number(chapter);
+    const verseNumber = verse === null ? null : Number(verse);
+    if (!Number.isInteger(chapterNumber) || chapterNumber < 1 || chapterNumber > book.chapters) throw new Error(`Invalid chapter for ${book.name}.`);
+    if (verseNumber !== null && (!Number.isInteger(verseNumber) || verseNumber < 1)) throw new Error('Invalid verse.');
+    const ref = referenceText(book, chapterNumber, verseNumber);
+    return Object.freeze({
+      id: translation.id,
+      label: translation.label,
+      reference: ref,
+      href: `https://www.biblegateway.com/passage/?search=${encodeURIComponent(ref)}&version=${encodeURIComponent(translation.externalVersion)}`
+    });
+  }
+
   async function loadChapter(translationId, code, chapter) {
     const translation = getTranslation(translationId);
     const book = getBook(code);
     const chapterNumber = Number(chapter);
     if (!Number.isInteger(chapterNumber) || chapterNumber < 1 || chapterNumber > book.chapters) throw new Error(`Invalid chapter for ${book.name}.`);
     if (translation.mode === 'live-kougo') return loadKougoChapter(book, chapterNumber, translation);
+    if (translation.mode === 'licensed-link') return Object.freeze({ book, translation, chapter: chapterNumber, verses: Object.freeze([]), external: licensedPassage(translation.id, book.code, chapterNumber) });
     const loaded = await loadBook(translation.id, code);
     const verses = loaded.verses.filter(verse => verse.chapter === chapterNumber);
     if (!verses.length) throw new Error(`No verses found for ${book.name} ${chapterNumber}.`);
@@ -133,6 +153,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     const translation = getTranslation(translationId);
     const text = String(query || '').trim();
     if (text.length < 3) throw new Error('Search needs at least 3 characters or a Bible reference such as John 3:16.');
+    if (translation.mode === 'licensed-link') throw new Error(`${translation.label} search stays in the licensed external reader. Choose a book and chapter here, then open that passage externally.`);
     const parsed = parseReference(text);
     if (parsed) {
       const chapter = await loadChapter(translation.id, parsed.book.code, parsed.chapter);
@@ -266,6 +287,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     const esvPath = encodedRef.replace(/%20/g, '+');
     const stepRef = `${STEP_BOOK[book.code]}.${chapterNumber}${verse ? `.${Number(verse)}` : ''}`;
     return Object.freeze([
+      Object.freeze({ id: 'nlt', label: 'NLT', href: licensedPassage('nlt', book.code, chapterNumber, verse).href }),
       Object.freeze({ id: 'esv', label: 'ESV', href: `https://www.esv.org/verses/${esvPath}/` }),
       Object.freeze({ id: 'niv', label: 'NIV', href: `https://www.biblegateway.com/passage/?search=${encodedRef}&version=NIV` }),
       Object.freeze({ id: 'amp', label: 'AMP', href: `https://www.biblegateway.com/passage/?search=${encodedRef}&version=AMP` }),
@@ -280,6 +302,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     getTranslation,
     loadBook,
     loadChapter,
+    licensedPassage,
     lexicalContext,
     parseReference,
     search,
