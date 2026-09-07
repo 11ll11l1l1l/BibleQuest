@@ -52,7 +52,7 @@ export function createGuidedStudyService({lesson,progress,reader}){
     }
   }
 
-  function getState(){return decorate(lesson.getState())}
+  function getState(){requireOpen();return decorate(lesson.getState())}
 
   function respond(value){
     requireOpen();
