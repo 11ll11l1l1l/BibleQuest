@@ -1,4 +1,9 @@
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+import { getContentProvenance } from '../../core/content-provenance.js';
+import { sourceLabel } from '../../ui/source-labels.js';
+
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const STORY_SOURCE=sourceLabel(getContentProvenance('bq-retelling'),{compact:true});
+const CHECKPOINT_SOURCE=sourceLabel(getContentProvenance('bq-recall'),{compact:true});
 
 export function storyJourneyPage({storyJourney,onReader,onLearn}){
   return{
@@ -21,19 +26,19 @@ export function storyJourneyPage({storyJourney,onReader,onLearn}){
           const feedback=state.feedback.checkpoint;
           const correct=feedback?.correct===true;
           const reward=correct?15:4;
-          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button></section><section class="bq-panel bq-story-session" data-story-complete="${escapeHtml(story.id)}"><div class="bq-story-finish-icon" aria-hidden="true">${escapeHtml(story.emoji)}</div><p class="bq-eyebrow">STORY COMPLETE</p><h1>${escapeHtml(story.title)}</h1><div class="bq-story-result ${correct?'is-correct':'is-review'}"><strong>${correct?'You followed the key idea':'Revisit the key moment'}</strong><span>+${reward} XP</span><p>📖 ${escapeHtml(story.checkpoint.reference)}</p></div><div class="bq-story-actions"><button type="button" class="bq-primary-button" data-story-another>Another story</button><button type="button" class="bq-secondary-button" data-story-restart>Replay this story</button><button type="button" class="bq-secondary-button" data-story-reader>Open Scripture</button><button type="button" class="bq-secondary-button" data-story-learn>Back to Learn</button></div></section>`;
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button></section><section class="bq-panel bq-story-session" data-story-complete="${escapeHtml(story.id)}"><div class="bq-story-finish-icon" aria-hidden="true">${escapeHtml(story.emoji)}</div><p class="bq-eyebrow">STORY COMPLETE</p><h1>${escapeHtml(story.title)}</h1><div class="bq-story-result ${correct?'is-correct':'is-review'}"><strong>${correct?'You followed the key idea':'Revisit the key moment'}</strong><span>+${reward} XP</span><p>📖 ${escapeHtml(story.checkpoint.reference)}</p></div>${CHECKPOINT_SOURCE}<div class="bq-story-actions"><button type="button" class="bq-primary-button" data-story-another>Another story</button><button type="button" class="bq-secondary-button" data-story-restart>Replay this story</button><button type="button" class="bq-secondary-button" data-story-reader>Open Scripture</button><button type="button" class="bq-secondary-button" data-story-learn>Back to Learn</button></div></section>`;
           return;
         }
 
         const step=state.currentStep;
         if(step.type==='content'){
           const sceneNumber=state.index+1;
-          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button><span>${escapeHtml(story.book)}</span></section><section class="bq-panel bq-story-session" data-story-session="${escapeHtml(story.id)}"><div class="bq-game-meta"><span>${escapeHtml(story.emoji)} ${escapeHtml(story.title)}</span><span>Scene ${sceneNumber} of ${story.sceneCount}</span></div><div class="bq-game-progress" aria-label="${percent}% complete"><i style="width:${percent}%"></i></div><div class="bq-story-scene"><span>${sceneNumber}</span><p>${escapeHtml(step.prompt)}</p></div><div class="bq-story-actions"><button type="button" class="bq-primary-button" data-story-advance>${sceneNumber===story.sceneCount?'Go to checkpoint':'Continue story'}</button></div></section>`;
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button><span>${escapeHtml(story.book)}</span></section><section class="bq-panel bq-story-session" data-story-session="${escapeHtml(story.id)}"><div class="bq-game-meta"><span>${escapeHtml(story.emoji)} ${escapeHtml(story.title)}</span><span>Scene ${sceneNumber} of ${story.sceneCount}</span></div><div class="bq-game-progress" aria-label="${percent}% complete"><i style="width:${percent}%"></i></div><div class="bq-story-scene"><span>${sceneNumber}</span><p>${escapeHtml(step.prompt)}</p></div>${STORY_SOURCE}<div class="bq-story-actions"><button type="button" class="bq-primary-button" data-story-advance>${sceneNumber===story.sceneCount?'Go to checkpoint':'Continue story'}</button></div></section>`;
           return;
         }
 
         if(step.type==='choice'){
-          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button><span>${escapeHtml(story.book)}</span></section><section class="bq-panel bq-story-session" data-story-checkpoint="${escapeHtml(story.id)}"><p class="bq-eyebrow">STORY CHECKPOINT</p><h1>${escapeHtml(step.prompt)}</h1><div class="bq-study-choices">${step.choices.map((choice,index)=>`<button type="button" class="bq-game-choice" data-story-choice="${index}"><span aria-hidden="true">${String.fromCharCode(65+index)}</span><b>${escapeHtml(choice)}</b></button>`).join('')}</div><p class="bq-story-reference">📖 ${escapeHtml(story.checkpoint.reference)}</p></section>`;
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-story-library>All stories</button><span>${escapeHtml(story.book)}</span></section><section class="bq-panel bq-story-session" data-story-checkpoint="${escapeHtml(story.id)}"><p class="bq-eyebrow">STORY CHECKPOINT</p><h1>${escapeHtml(step.prompt)}</h1><div class="bq-study-choices">${step.choices.map((choice,index)=>`<button type="button" class="bq-game-choice" data-story-choice="${index}"><span aria-hidden="true">${String.fromCharCode(65+index)}</span><b>${escapeHtml(choice)}</b></button>`).join('')}</div><p class="bq-story-reference">📖 ${escapeHtml(story.checkpoint.reference)}</p>${CHECKPOINT_SOURCE}</section>`;
         }
       };
 
