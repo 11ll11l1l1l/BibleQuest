@@ -28,6 +28,8 @@ jobs:
         run: node tests/v3-lesson-edge.mjs
       - name: Run Guided Study edge regression
         run: node tests/v3-study-edge.mjs
+      - name: Run Deep Questions edge regression
+        run: node tests/v3-deep-questions-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
       - name: Run Transform engine edge regression
@@ -66,6 +68,8 @@ jobs:
         run: timeout 240s node tests/v3-lesson-smoke.mjs
       - name: Run v3 Guided Study browser regression
         run: timeout 240s node tests/v3-study-smoke.mjs
+      - name: Run v3 Deep Questions browser regression
+        run: timeout 240s node tests/v3-deep-questions-smoke.mjs
       - name: Run v3 Daily Mission browser regression
         run: timeout 240s node tests/v3-daily-mission-smoke.mjs
       - name: Run v3 Transform engine browser regression
