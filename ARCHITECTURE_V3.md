@@ -15,6 +15,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context/source delegation
 - `src/app/japanese-vocabulary.js` — Japanese vocabulary-learning preference and curated term lookup
 - `src/core/content-provenance.js` — immutable BibleQuest-authored content provenance registry
+- `src/core/doctrinal-safety.js` — doctrinal/content-safety classification, reviewed admission and context/quarantine policy
 - `src/core/progress.js` — XP/streak/activity/badges/counters/events
 - `src/core/recall-packs.js` — Recall pack loading/validation/cache and unfoldingWord source/license metadata
 - `src/engines/lesson.js` — shared lesson/session/step/response lifecycle and persistence
@@ -118,6 +119,29 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 11. `scripts/validate-v3-source-labels.mjs`, `tests/v3-source-labels-edge.mjs`, and `tests/v3-source-labels-smoke.mjs` permanently protect ownership, escaping, source composition, explicit Scripture-vs-authored distinctions, real 390px rendering, and no horizontal overflow.
 12. Source/provenance labels are transparency metadata only. They do not alter question correctness, XP, mastery, doctrinal classification, Lesson state, or Progress state.
 
+## Doctrinal safety / context boundaries
+
+1. `src/core/doctrinal-safety.js` is the single policy owner for doctrinal/content classification and admission.
+2. The three categories are `TEXTUAL_FACT`, `PASSAGE_CONTEXT`, and `INTERPRETIVE_OR_DOCTRINAL`.
+3. Binary/scored Bible content must be reviewed before admission.
+4. `PASSAGE_CONTEXT` may remain usable when tightly tied to an explicit passage but must retain contextual framing.
+5. `INTERPRETIVE_OR_DOCTRINAL` is quarantined from normal binary/scored play until rewritten or pastor-reviewed.
+6. `src/core/recall-packs.js` re-reviews imported unfoldingWord questions using `reviewImportedRecall`.
+7. Imported `safety.action="allow"` is not authoritative and cannot bypass the policy owner.
+8. Recall Pack may expose a separate immutable `contextNote` for reviewed contextual questions.
+9. Third-party answer, reference, and source/provenance remain distinct from the BibleQuest context note.
+10. Per-book Recall and Open Review reveal contextual framing only after answer reveal.
+11. UI modules only render owner-supplied safety/context metadata. They do not classify wording.
+12. Guided Study, Story Journey, Daily Mission, and other binary Bible-content features use `reviewAuthoredBinary` + `assertBinaryScorable`.
+13. Deep Questions and Wisdom use neutral review contracts and do not convert open interpretation/application into doctrinal correctness scoring.
+14. Wisdom must not emit `quizCorrect`.
+15. Lesson and Progress remain doctrinal-policy agnostic.
+16. Doctrinal safety introduces no new XP or reward rules.
+17. Source/provenance remains separate from doctrinal classification.
+18. unfoldingWord is a study/reference source and not CAMACOP doctrinal authority.
+19. Legacy global/fetch/MutationObserver doctrinal injection is forbidden, including `window.BQ_DOCTRINAL_SAFETY`, `window.BQ_DOCTRINAL_CONTEXT`, global fetch overrides, `runtime-safety.js`, DOM surveillance, and duplicate regex classifiers.
+20. Permanent regression protection includes `scripts/validate-v3-doctrinal-safety.mjs`, `tests/v3-doctrinal-safety-edge.mjs`, `tests/v3-doctrinal-context-presentation-edge.mjs`, `tests/v3-doctrinal-safety-smoke.mjs`, `tests/v3-doctrinal-context-presentation-smoke.mjs`, and Recall Pack regressions.
+
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
 - Guided Study uses `src/app/study.js` + Lesson + Progress/Reader interfaces; completion has no invented XP and personal reflection is unscored.
@@ -167,10 +191,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → reassess remaining core Bible-study parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.24-nlt-licensed` at `37ff989dac122f31a53f9bc771639e3ca59b4b03`; exact v3.24 bookkeeping run `34127324969` passed before that freeze. #90 Source labels/attribution is Verified after complete functional run `34130447654` and cannot be frozen until the exact 52/100 parity / 51/100 stability bookkeeping state passes the complete suite. Production v2 remains isolated.
+Known-good frozen releases extend through `release/v3.25-source-provenance` at `04f20094a03cd0b189d1626ef4f372917ce599e3`; exact v3.25 bookkeeping run `34160651319` passed before that freeze. #89 Doctrinal safety/context is Verified after complete functional run `34166910207`; #90 Source labels/attribution is Regression-tested. Current strict parity is 53/100 and official regression stability remains 51/100 pending the independent v3.26 bookkeeping/release gate. Production v2, `main`, and production Cloudflare remain isolated.
