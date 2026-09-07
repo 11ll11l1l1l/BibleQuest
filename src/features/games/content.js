@@ -1,4 +1,11 @@
-const freezeQuestion = row => Object.freeze({...row, choices:Object.freeze([...row.choices])});
+import { assertBinaryScorable, reviewAuthoredBinary } from '../../core/doctrinal-safety.js';
+
+const freezeQuestion = row => {
+  const safety=reviewAuthoredBinary({q:row.q,why:row.why,ref:row.ref},{contextual:row.mode!=='basic',label:`Game question ${row.id}`});
+  const question=Object.freeze({...row,choices:Object.freeze([...row.choices]),safety});
+  assertBinaryScorable(question,`Game question ${row.id}`);
+  return question;
+};
 
 export const GAME_QUESTIONS = Object.freeze([
   {id:'q1',mode:'basic',book:'Genesis',level:1,q:'Who built the ark before the flood?',choices:['Abraham','Noah','Moses','David'],answer:1,ref:'Genesis 6:13–22',why:'God instructed Noah to build the ark before the flood.'},
