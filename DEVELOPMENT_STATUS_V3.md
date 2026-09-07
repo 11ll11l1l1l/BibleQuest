@@ -7,114 +7,100 @@ Updated: 2026-09-07
 ## Deployment safety
 
 - Production v2 remains unchanged.
-- Cloudflare remains untouched by the v3 rebuild.
+- `main` and production Cloudflare remain untouched by the v3 rebuild.
 - Current development branch: `feature/v3-study-core`.
-- Normal v3 GitHub Actions remain manual-only; isolated verification branches are one-shot CI gates only.
-- Latest frozen checkpoint: `release/v3.18-wisdom-situations` at `fd344208e12942d911f05d02b4e99d5b735a7c29`.
-- Wisdom Situations functional run `34084573320` and bookkeeping run `34084926656` both passed before that freeze.
-- Prior Bible-study checkpoints remain `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`, `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`, and `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`.
-- Earlier frozen core line remains unchanged through Transform, Audio/Recordings/Media, Games, Mixed Quest, Per-book Recall, Character Detective, and Timeline.
+- Normal v3 GitHub Actions remain manual-only; isolated verification branches may temporarily use a push trigger for one-shot CI execution only.
+- Latest frozen checkpoint: `release/v3.19-adaptive-learning` at `39ab8269e4fd83a09138404bd9466df0c70ee30e`.
+- Adaptive Learning functional run `34105551106` and exact bookkeeping run `34106252587` both passed before the v3.19 freeze.
+- Earlier Bible-study checkpoints remain v3.18 Wisdom Situations, v3.17 Story Journey, v3.16 Deep Questions, and v3.15 Guided Study.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 45 |
+| Regression-tested | 46 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 53 |
+| Not started | 52 |
 | Total | 100 |
 
-Strict verified-or-better parity is **46/100**. Fully regression-tested stability coverage is **45/100**.
+Strict verified-or-better parity is **47/100**. Fully regression-tested stability coverage is **46/100**.
 
 Current promotions:
-- #52 Expanded Guided Study — Regression-tested.
-- #51 Deep Questions — Regression-tested.
 - #49 Story Journey — Regression-tested.
-- #50 Wisdom Situations — Regression-tested after surviving Adaptive Learning functional run `34105551106`.
-- #53 Adaptive Learning — Verified after functional run `34105551106`; exact bookkeeping gate pending.
+- #50 Wisdom Situations — Regression-tested.
+- #51 Deep Questions — Regression-tested.
+- #52 Expanded Guided Study — Regression-tested.
+- #53 Adaptive Learning — Regression-tested after surviving the complete Open Review functional run `34108734009`.
+- #54 Open/weak-area review — Verified after complete functional run `34108734009`; exact bookkeeping/freeze gate pending.
 - #20 STEPBible lexical/context tooling — Implemented.
 
 ## Milestone 10 — Bible-study core
 
-### Expanded Guided Study (#52)
+### #53 Adaptive Learning — Regression-tested
 
-Frozen at `release/v3.15-guided-study`. It continues to use `src/engines/lesson.js` as the only Lesson lifecycle/state/persistence engine and `src/app/study.js` as the thin Study orchestration owner. Personal reflection/application is not spiritually scored and completion uses one deterministic meaningful Progress event with `xp: 0`.
+Adaptive Learning is frozen at `release/v3.19-adaptive-learning`. It reuses the verified q1–q24 Games question source instead of carrying an adaptive-only copy, uses the shared Lesson engine for the seven-question lifecycle, Progress for +10/+3 parity rewards, and one namespaced adaptive persistence record through Storage. Its retrieval spacing remains approximately 1 → 3 → 7 → 14 → 30 days, misses are due immediately, and its category mastery is explicitly an internal retrieval-practice signal rather than a spiritual-quality score.
 
-### Deep Questions (#51)
+For #54 integration, Adaptive now exposes only `reviewFocusCategory()`: a read-only weakest-category signal. When multiple categories share the same minimum mastery, the selection rotates deterministically by date rather than inventing evidence. Open Review can consume that signal but cannot mutate Adaptive mastery.
 
-Frozen at `release/v3.16-deep-questions` after functional run `34082339971` and bookkeeping run `34082727818`. It uses the shared Lesson engine, keeps private notes inside Lesson responses, delegates Reader handoff to the Reader owner, and has no invented XP or spiritual-quality scoring.
+Adaptive survived the later complete #54 run `34108734009`, including its original edge and 390px browser regressions plus the new review-focus regression, so #53 is now Regression-tested.
 
-### Story Journey (#49) — Regression-tested
+### #54 Open/weak-area review — Verified
 
-Frozen at `release/v3.17-story-journey` after functional run `34083462882` and corrected bookkeeping run `34083885682`. It retains 10 journeys, five scenes plus one checkpoint, +15/+4 XP parity, one `quizCorrect` for a correct checkpoint, deterministic duplicate protection, Reader handoff, resume/reload/replay, and 390px mobile coverage.
-
-### Wisdom Situations (#50) — Regression-tested
-
-Frozen at `release/v3.18-wisdom-situations` after functional run `34084573320` and bookkeeping run `34084926656`. It retains all 24 recovered situations, four plausible options, strongest-supported judgment and all rationales/references, +8 XP/+1 `situations` per answered attempt regardless of strongest/weaker choice, no `quizCorrect` inflation, deterministic duplicate protection, and 390px mobile coverage.
-
-Wisdom Situations survived the later complete Adaptive Learning functional run `34105551106`, so #50 is now Regression-tested.
-
-### Adaptive Learning (#53) — Verified
-
-The retained loaded v2 runtime was recovered before rebuilding. The later historical `adaptive-learning.js` layer was not loaded by the retained app shell, so it was not copied into v3. The parity source is the actually wired `learning-engine.js` behavior. This avoids recreating duplicate adaptive runtimes.
+The actually loaded old `open-review.js` runtime was recovered before rebuilding. The retained feature is a separate open-answer spaced-retrieval workflow, not another multiple-choice Adaptive quiz.
 
 Recovered parity behavior:
-- the adaptive source uses the same 24 `q1`–`q24` Bible questions already retained by the verified v3 Games content source.
-- eight Bible categories: Genesis, Exodus, History, Wisdom, Prophets, Gospels, Acts, Letters.
-- per-question retrieval evidence tracks seen, correct, wrong, streak, next-due date, and last-reviewed date.
-- a correct adaptive answer advances spacing approximately `1 → 3 → 7 → 14 → 30` days; a miss becomes due immediately.
-- Smart Review builds seven questions.
-- selection prioritizes retained weak/review items, due items, unseen items, historical miss ratio, low category mastery, context questions, and connection questions.
-- where enough content exists, one category is limited to at most three of the seven selected questions.
-- the old adaptive reward is retained: `+10 XP` correct and `+3 XP` incorrect.
-- correct adaptive answers contribute exactly one central `quizCorrect`; incorrect answers do not.
-- adaptive category mastery changes only for Adaptive Review answers: +5 correct / +2 incorrect, capped at 100.
-- missed adaptive questions enter the persistent review list; later correct adaptive retrieval removes them.
-- ordinary verified Games `game.question` outcomes are observed as retrieval evidence without a second XP award and without inventing Adaptive mastery credit.
+- source: unfoldingWord Translation Questions v90, CC BY-SA 4.0.
+- seven open recall items per session.
+- queue priority: already scheduled/due Open Review items first; existing per-book Recall review IDs second; then fresh approved questions from the weakest Adaptive Bible category; wider fresh-pack fallback only if needed to fill seven.
+- each item starts with the question only so the member answers from memory.
+- the source/reference answer is then revealed.
+- the member self-rates `Review again` or `Got it`; exact wording is not automatically judged.
+- retained reward: `+1 XP` for Review again and `+5 XP` for Got it.
+- Got it contributes one central `quizCorrect`, matching the retained open/per-book recall behavior; Review again does not.
+- correct/self-rated Got it spacing advances 1 → 3 → 7 → 14 → 30 days; Review again resets streak and is due immediately.
+- completed sessions persist got/again totals; completed reload/resume cannot duplicate XP/events/history.
+- a same-day Review again item is prioritized in the next session.
 
 Clean architecture:
-- `src/features/games/content.js` remains the single static source for the 24 shared q1–q24 question definitions. Adaptive Learning does not duplicate them.
-- `src/app/adaptive-learning.js` is the single Adaptive Learning owner for mastery/evidence normalization, Games-progress ingestion, ranking, seven-question selection, adaptive review identity, and session summary history.
-- `src/engines/lesson.js` remains the sole question-session lifecycle, response lock, score, resume/reload, and completion owner.
+- `src/app/open-review.js` is the single Open Review coordinator and owns only Open Review spacing/history/attempt identity/queue assembly.
+- `src/core/recall-packs.js` remains the sole loader/validator/cache for unfoldingWord packs. Open Review never fetches or addresses pack paths itself.
+- `src/app/games.js` remains the sole owner of the existing per-book Recall review-ID queue and exposes only immutable `recallReviewQueue()` plus idempotent `syncRecallReviewItem()` for #54 interoperability.
+- `src/app/adaptive-learning.js` remains the sole weak-area/mastery model; Open Review consumes only `reviewFocusCategory()`.
+- `src/engines/lesson.js` owns the interactive lifecycle as 14 alternating steps: seven memory prompts and seven unscored self-rating steps. It owns leave/return, reload, locking, progression, and completion.
 - `src/core/progress.js` remains the sole XP/quizCorrect/event owner.
-- `src/core/storage.js` remains the sole browser persistence boundary; Adaptive Learning uses one namespaced `adaptive-learning` record through that service.
-- `src/features/adaptive-learning/index.js` is presentation/event forwarding only.
-- `src/ui/adaptive-learning.css` owns feature styling.
-- no MutationObserver, direct `localStorage`, `window.BQ*` global, second quiz engine, or second Progress owner was recreated.
+- `src/core/storage.js` remains the sole browser persistence boundary. Open Review persists identity/statistics only; source question/answer text is rehydrated from Recall Packs on resume.
+- `src/features/open-review/index.js` is presentation/event forwarding only; `src/ui/open-review.css` owns presentation/mobile styling.
+- the historical direct-localStorage/global-overlay/MutationObserver runtime was not recreated.
 
-Adaptive Progress event identities are deterministic per Adaptive attempt and question: `adaptive:<attemptId>:question:<questionId>`. Duplicate reads or reopening a completed attempt cannot award XP or mastery twice. Completed session summaries are also identity-protected.
+Progress identity is deterministic per attempt/item: `open-review:<attemptId>:item:<bookCode>:<itemId>`.
 
-Functional run `34105551106` passed:
+Functional run `34108734009` passed completely:
 - architecture validation.
-- all accumulated edge regressions.
-- Adaptive Learning edge regression covering all 24 reused questions, category mapping, Games-event ingestion, idempotency, due/missed ranking, max-three-per-category mix, spacing, +10/+3 rewards, mastery/review updates, duplicate prevention, completion history, reload, malformed-state recovery, and invalid RNG handling.
+- all accumulated pre-existing edge regressions.
+- Adaptive review-focus interface regression.
+- Games recall-review interface regression for immutable snapshot, idempotent add/remove, validation, persistence/reload.
+- Open Review edge regression for source hiding/reveal, attribution, queue priority, rating-before-reveal rejection, +1/+5 rewards, quizCorrect behavior, shared review synchronization, immediate-due misses, exact 1/3/7/14/30 spacing in an isolated history fixture, completion persistence, reload duplicate prevention, malformed-state recovery, and invalid RNG handling.
 - all accumulated browser regressions.
-- Adaptive Learning browser regression at 390px covering Learn routing, stable heading, seven-question flow, miss→review persistence, leave/return resume, six subsequent correct answers, exact +63 XP for one miss plus six correct, `quizCorrect` delta, session history, reload duplicate protection, weak-item prioritization on another review, >=44px controls, no overflow, and no console/page errors.
+- Open Review 390px browser regression covering Learn routing/stable heading, hidden answer before reveal, visible source attribution after reveal, Review again persistence/reward, leave/return resume of the same question, six Got it completions, exact +31 XP / +6 quizCorrect for one Again plus six Got it ratings, one completion history entry, reload idempotence, missed-item reprioritization, >=44px controls, no horizontal overflow, and no console/page errors.
+- accumulated Daily Mission, Transform, Live Recordings, Media Library, and Games browser regressions remained green afterward.
 
-No Adaptive Learning application defect was found by the full functional gate. The earlier Contents API 404 while creating the test file was a repository-write-path issue only; the test was created through the Git data tree/commit path without an application patch.
-
-The exact inventory/status/timeline/architecture bookkeeping state must pass one full accumulated suite before `release/v3.19-adaptive-learning` may be frozen.
+The exact inventory/status/timeline/architecture bookkeeping state must pass one additional complete accumulated suite before `release/v3.20-open-review` may be frozen.
 
 ## Next major milestone
 
-After the Adaptive Learning bookkeeping gate is green and `release/v3.19-adaptive-learning` is frozen, continue directly with:
-1. #54 Open/weak-area review
-2. then reassess the remaining Bible-study/core-content parity debt before moving to the next planned milestone.
+After the Open Review bookkeeping gate is green and `release/v3.20-open-review` is frozen, do **not** automatically start an unrelated feature. First reassess the remaining Bible-study/core-content parity debt against the authoritative inventory and old loaded source. Current obvious debt includes #20 STEPBible still only Implemented and reader-language/source items #14–17 still Not started. Select the next target based on dependency order and recovered old behavior.
 
-Kids #38–40 remain deferred but accessible through the existing Kids surface.
+Kids #38–40 remain deferred but accessible through the existing Kids surface. Ministry/Devotional remains a later high-priority milestone governed by `DEVOTIONAL_MINISTRY_DESIGN_V3.md`.
 
 ## Future Devotional / Ministry requirement
 
-`DEVOTIONAL_MINISTRY_DESIGN_V3.md` remains the later high-priority design contract.
-
-Required future behavior:
 - Pastor/Admin publishes first-class Message, Devotional, or Task posts through one freeform ministry service/model.
 - Members receive eligible congregation posts.
-- Tasks can contain one or more freeform prompts and member responses.
+- Tasks support freeform prompts and member responses.
 - Members can read their own response but not other members' response bodies.
-- Pastor/Admin can review individual responses only inside their congregation scope.
-- Members may see allowed aggregate counts such as `18 answered`.
+- Pastor/Admin review is congregation/role scoped.
+- Aggregate counts may be visible where allowed.
 - Privacy must be enforced by backend/API/RLS, not UI hiding.
 - Ministry Hub, Inbox, Assignments, Workspace, and Assignment Push must reuse one coherent post/task identity.
 
@@ -125,27 +111,19 @@ Primary later inventory mapping remains #66 and #73–78. Design documentation a
 - `V3-ROUTER-001` — single synchronous router fixed URL/view drift.
 - `V3-AUTH-GATE-001` — static Supabase version pin is architecture-auditable.
 - `V3-SHELL-001` — brand and primary navigation selectors are distinct.
-- `V3-SIGNUP-001` — recovery-code issuance is independent from optional auto-sign-in.
-- `V3-ACCOUNT-ACCEPTANCE-001` — duplicate signup and post-recovery login are explicit tests.
-- `V3-READER-ACCEPTANCE-001` — invalid search respects native form validation.
-- `V3-PROGRESS-UI-001` — static label readability is separate from touch-target semantics.
 - `V3-TRANSFORM-OWNER-001` — orchestration no longer defines a competing Transform calculation owner.
-- `V3-TRANSFORM-PROGRESS-001` — Full Transform used an unsupported `assessments` metric; the central progress owner defines and tests it.
 - `V3-RECORDINGS-FREEZE-001` — v3 replaced fragmented global media lifecycle with one Audio owner, one Recordings owner, explicit teardown, bounded requests, and one-player regression.
-- `V3-AUDIO-VALIDATOR-001` — the architecture validator initially checked the wrong source token and was corrected before functional CI proceeded.
-- `V3-MEDIA-OWNER-001` — Media Library composes the verified Recordings and Audio owners instead of creating a second player/backend path.
-- `V3-GAMES-SHELL-ACCEPTANCE-001` — shell acceptance now asserts stable Games route/launcher contract instead of placeholder copy.
-- `V3-GAMES-OWNER-001` — v3 centralizes launch/answer/score/replay/switch/leave/result persistence in `src/app/games.js`.
-- `V3-RECALL-PACK-001` — pack loading/validation/cache is isolated in `src/core/recall-packs.js`; gameplay remains in Games owner.
-- `V3-DETECTIVE-SELECTOR-001` — Character Detective test selector was made explicit after a non-unique selector false failure.
-- `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP; regression protects the remaining +16 solve award.
-- `V3-STUDY-SYNTAX-001` — dense Guided Study freezer syntax was replaced by explicit `freezeStudy()` and remains syntax-gated.
-- `V3-STUDY-BOUNDARY-001` — Study `getState()` now enforces its own public boundary before delegating to Lesson.
-- `V3-STUDY-LEARN-ACCEPTANCE-001` — stable Learn `<h1>` was restored and protected.
-- `V3-STUDY-READER-TEST-001` — Reader acceptance waits for actual controls and asserts correct book/chapter.
-- `V3-STORY-BOOKKEEPING-001` — Story Journey bookkeeping renamed the validator-required `Next major milestone` queue heading. Architecture run `34083748928` blocked the freeze; the heading was restored and the validator assertion remains the regression guard.
-- `V3-WISDOM-ESCAPE-001` — the first Wisdom presentation draft mapped the quote character to an incomplete HTML entity. The escaping map was corrected before functional CI; the retained Wisdom browser regression exercises rendered scenario/result content and fails on page/console errors.
+- `V3-MEDIA-OWNER-001` — Media Library composes verified Recordings/Audio owners instead of creating another player/backend path.
+- `V3-GAMES-OWNER-001` — game launch/answer/score/replay/switch/leave/result persistence is centralized in `src/app/games.js`.
+- `V3-RECALL-PACK-001` — pack loading/validation/cache is isolated in `src/core/recall-packs.js`.
+- `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
+- `V3-STUDY-BOUNDARY-001` — Study public state stays behind its orchestration/Lesson boundary.
+- `V3-STORY-BOOKKEEPING-001` — the validator protects required status headings after a bookkeeping-only regression was caught before freeze.
+- `V3-WISDOM-ESCAPE-001` — malformed escaping in the first presentation draft was corrected before functional CI and remains browser-protected.
+- `V3-OPEN-REVIEW-OWNER-001` — a temporary helper that would have read `games-recall` directly was rejected and deleted before verification. Cross-feature queue access now remains inside Games through two narrow methods.
+- `V3-OPEN-REVIEW-FOCUS-TEST-001` — functional run `34108325481` failed because the new test incorrectly expected the first remaining minimum category after Genesis mastery. The implementation was correct; the regression was corrected to assert the deterministic dated tie rotation (`Gospels` on the fixture date) and remains retained.
+- `V3-OPEN-REVIEW-SPACING-TEST-001` — functional run `34108543938` failed because the spacing test assumed one item would outrank six older overdue items. Queue behavior was correct; spacing verification was isolated into a fresh one-item history fixture while the multi-item test continues to protect real overdue priority.
 
 ## Release rule
 
-Adaptive Learning passed the entire accumulated functional suite on run `34105551106`. The exact bookkeeping state must pass the full suite once more before `release/v3.19-adaptive-learning` may be frozen. Production v2 remains unchanged until all applicable capability rows satisfy parity and stability gates.
+Open Review passed the entire accumulated functional suite on run `34108734009`. The exact bookkeeping state must pass the full suite once more before `release/v3.20-open-review` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged until applicable parity and stability gates are satisfied.
