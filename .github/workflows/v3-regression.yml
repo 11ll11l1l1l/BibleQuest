@@ -36,6 +36,8 @@ jobs:
         run: node tests/v3-wisdom-situations-edge.mjs
       - name: Run Adaptive Learning edge regression
         run: node tests/v3-adaptive-learning-edge.mjs
+      - name: Run Adaptive review focus edge regression
+        run: node tests/v3-adaptive-focus-edge.mjs
       - name: Run Open Review edge regression
         run: node tests/v3-open-review-edge.mjs
       - name: Run Daily Mission edge regression
