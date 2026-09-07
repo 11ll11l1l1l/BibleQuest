@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict';
 import { createRecallPackService } from '../src/core/recall-packs.js';
 
-const manifest={question_books:[{code:'RUT',name:'Ruth',questions:3,path:'data/packs/questions/RUT.json'},{code:'JHN',name:'John',questions:2,path:'data/packs/questions/JHN.json'}]};
+const manifest={question_books:[{code:'RUT',name:'Ruth',questions:6,path:'data/packs/questions/RUT.json'},{code:'JHN',name:'John',questions:2,path:'data/packs/questions/JHN.json'}]};
 const packs={
   'data/packs/questions/RUT.json':[
     {id:'r1',r:'1:1',q:'Question one?',a:'Answer one.',safety:{action:'allow',topics:[]}},
     {id:'r2',r:'1:2',q:'Question two?',a:'Answer two.',safety:{action:'quarantine',topics:['test']}},
-    {id:'r3',r:'1:3',q:'Question three?',a:'Answer three.',safety:{action:'allow',topics:[]}}
+    {id:'r3',r:'1:3',q:'Question three?',a:'Answer three.',safety:{action:'allow',topics:[]}},
+    {id:'r4',r:'1:4',q:'How is a person saved?',a:'By grace through faith.',safety:{action:'allow',topics:[]}},
+    {id:'r5',r:'1:5',q:'Who was baptized in this passage?',a:'The named believer.',safety:{action:'context',topics:['baptism']}},
+    {id:'r6',r:'1:6',q:'Untagged imported question?',a:'Untagged answer.'}
   ],
   'data/packs/questions/JHN.json':[{id:'j1',r:'1:1',q:'John question?',a:'John answer.',safety:{action:'allow',topics:[]}}]
 };
@@ -26,9 +29,17 @@ assert.equal(calls.filter(path=>path==='data/packs/manifest.json').length,1);
 
 const ruth=await service.loadBook('rut');
 assert.equal(ruth.book.code,'RUT');
-assert.deepEqual(ruth.items.map(row=>row.id),['r1','r3'],'Quarantined recall rows must not enter v3 play.');
-assert.deepEqual(ruth.items[0],{id:'r1',reference:'1:1',question:'Question one?',answer:'Answer one.'});
+assert.deepEqual(ruth.items.map(row=>row.id),['r1','r3','r5'],'Quarantined, high-risk and untagged recall rows must fail closed while contextual rows remain available.');
+assert.equal(ruth.items[0].question,'Question one?');
+assert.equal(ruth.items[0].safety.action,'allow');
+assert.equal(ruth.items[0].safety.classification,'TEXTUAL_FACT');
+assert.equal(ruth.items[0].safety.reviewed,true);
 assert.equal(Object.isFrozen(ruth.items[0]),true);
+assert.equal(Object.isFrozen(ruth.items[0].safety),true);
+const contextual=ruth.items.find(row=>row.id==='r5');
+assert.equal(contextual.safety.action,'context');
+assert.equal(contextual.safety.classification,'PASSAGE_CONTEXT');
+assert.match(contextual.safety.contextNote,/passage|context|baptism/i);
 const ruthAgain=await service.loadBook('RUT');
 assert.equal(ruthAgain,ruth,'Recall book should be cached.');
 assert.equal(calls.filter(path=>path==='data/packs/questions/RUT.json').length,1);
