@@ -1,4 +1,5 @@
 import { buildDailyMissionDefinition, selectDailyPassage } from '../features/daily-mission/content.js';
+import { assertBinaryScorable, reviewAuthoredBinary } from '../core/doctrinal-safety.js';
 
 const STEP_XP = Object.freeze({ retrieve:12, context:8, learn:8, apply:8, reflect:8 });
 const COMPLETE_XP = 25;
@@ -12,10 +13,16 @@ export function createDailyMissionService({ lesson, progress, reader, clock = ()
   const requireOpen = () => {
     if (!activeDate || !activePassage) throw new Error('Open the Daily Journey before using it.');
   };
+  const retrieveSafety=passage=>{
+    const safety=reviewAuthoredBinary({q:passage.retrieve.q,why:passage.retrieve.why,ref:passage.retrieve.ref},{label:`Daily Journey ${passage.code} ${passage.chapter} retrieve`});
+    assertBinaryScorable({q:passage.retrieve.q,ref:passage.retrieve.ref,safety},`Daily Journey ${passage.code} ${passage.chapter} retrieve`);
+    return safety;
+  };
   const decorate = state => {
     requireOpen();
     const completedSteps = Object.keys(state.responses || {}).length;
-    return Object.freeze({ dateKey:activeDate, passage:activePassage, completedSteps, percent:Math.round((completedSteps / state.totalSteps) * 100), state });
+    const safety=state.status!=='complete'&&state.currentStep?.id==='retrieve'?retrieveSafety(activePassage):null;
+    return Object.freeze({ dateKey:activeDate, passage:activePassage, completedSteps, percent:Math.round((completedSteps / state.totalSteps) * 100), safety, state });
   };
   const reconcile = state => {
     requireOpen();
@@ -30,13 +37,16 @@ export function createDailyMissionService({ lesson, progress, reader, clock = ()
 
   function today() {
     const key = dateKey();
-    return Object.freeze({ dateKey:key, passage:selectDailyPassage(key) });
+    const passage=selectDailyPassage(key);
+    retrieveSafety(passage);
+    return Object.freeze({ dateKey:key, passage });
   }
 
   function open() {
     const key = dateKey();
     activeDate = key;
     activePassage = selectDailyPassage(key);
+    retrieveSafety(activePassage);
     const opened = lesson.open(buildDailyMissionDefinition(key));
     reconcile(opened.state);
     return Object.freeze({ resumed:opened.resumed, ...decorate(opened.state) });
