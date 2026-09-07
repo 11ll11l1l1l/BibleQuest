@@ -11,8 +11,8 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/core/api.js` — Supabase/remote calls
 - `src/app/session.js` — auth/session/password lifecycle
 - `src/app/account.js` — signup/recovery/device workflows
-- `src/core/bible.js` — Bible sources/packs/search/external links/original-language context-pack loading and normalization
-- `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context delegation
+- `src/core/bible.js` — Bible sources/packs/search/external links/original-language context-pack loading and live Japanese chapter-source normalization
+- `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context/source delegation
 - `src/core/progress.js` — XP/streak/activity/badges/counters/events
 - `src/core/recall-packs.js` — Recall pack loading/validation/cache
 - `src/engines/lesson.js` — shared lesson/session/step/response lifecycle and persistence
@@ -36,7 +36,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 2. `src/core/progress.js` is the only XP/streak/activity/counter/event owner. Feature code cannot mutate progress directly.
 3. `src/core/storage.js` is the only browser storage implementation boundary. No feature uses direct `localStorage` or `sessionStorage`.
 4. `src/core/recall-packs.js` is the only owner that loads, validates, caches, or addresses unfoldingWord question-pack files.
-5. `src/core/bible.js` is the only owner that loads or addresses bundled Bible and original-language context packs.
+5. `src/core/bible.js` is the only owner that loads or addresses bundled Bible packs, live Bible sources, and original-language context packs.
 6. Static feature/content modules contain definitions only. Feature `index.js` modules are presentation/event-forwarding only.
 7. Open reflection/application text is never converted into a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
 8. Retained rewards are implemented only when recovered from the old behavior. No parity feature invents a new XP scheme.
@@ -54,7 +54,22 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 7. Lexical fields are study aids, not a reconstructed word-for-word interlinear and not theological conclusions. The UI keeps the recovered safety guidance: read sentence/paragraph first; a lexicon supplies a semantic range that grammar/context narrow; do not build doctrine from etymology or one Strong’s entry alone.
 8. Missing context data must degrade inside Reader with a controlled unavailable state. Malformed source data must produce a controlled Bible-data error rather than silent corruption.
 9. Context Lab study has no recovered XP/progress reward, so v3 does not invent one.
-10. Verse Peek metadata is namespaced as `data-peek-verse`; the established `[data-verse]` selector remains exclusive to Scripture verse buttons. This contract is protected by both the original Reader smoke and the Context Lab browser regression.
+10. Verse Peek metadata is namespaced as `data-peek-verse`; the established `[data-verse]` selector remains exclusive to Scripture verse buttons.
+
+## Reader / Japanese 口語訳 boundaries
+
+1. `src/core/bible.js` remains the single Bible-source owner for #14. No Japanese-specific module may directly call GetBible or create another Scripture cache.
+2. Japanese `口語訳聖書 (1954/1955)` is represented as a live chapter-only translation. It must not masquerade as a bundled whole-book pack.
+3. The recovered source path is `https://api.getbible.net/v2/japkougo/<canonical-book-number>/<chapter>.json`. Canonical book numbers are derived from the existing `BIBLE_BOOKS` order; a second book-number mapping is forbidden.
+4. Returned verse arrays or object-shaped verse collections are normalized and sorted by `src/core/bible.js`. Scripture text is preserved except surrounding transport whitespace; v3 must not rewrite, modernize, annotate inside, or silently replace the source text.
+5. A live Japanese chapter is cacheable only after semantic validation produces readable verses. Network/JSON failures and HTTP-200-but-invalid/empty verse payloads must evict the source cache so Retry performs a genuine new request.
+6. `src/app/reader.js` owns selected translation/book/chapter persistence. Japanese source code cannot use direct `localStorage`.
+7. Source failure must remain explicit. Reader may offer Retry and an explicit `Use BSB` action, but it must never silently substitute BSB or fabricate Japanese Scripture.
+8. Reference navigation/search may load the requested live chapter. Whole-Bible Japanese text search is not allowed to fan out across all 66 books unless a future explicitly verified source contract is introduced.
+9. Selecting/loading Japanese Scripture carries no recovered XP/progress reward and must not generate one.
+10. Japanese recovery/navigation controls remain >=44px on the 390px mobile path and must not create horizontal overflow.
+11. `scripts/validate-v3-japanese-kougo.mjs`, `tests/v3-japanese-kougo-edge.mjs`, and `tests/v3-japanese-kougo-smoke.mjs` permanently protect these boundaries.
+12. #15 furigana is intentionally deferred. Old `kuromoji` CDN injection, direct DOM mutation, and `window.BQJapaneseLearning` must not leak into #14 or #16 merely because they existed in the legacy combined module.
 
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
@@ -109,6 +124,6 @@ One boot, router, session owner, global store, storage boundary, API boundary, B
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → remaining Reader-language/source parity (#14–17) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → remaining Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases currently extend through `release/v3.20-open-review` at `2da79e9ab04cb05d63005b6cda7eb4471c149e92`; exact Open Review bookkeeping run `34109591650` passed before that freeze. #20 STEPBible Context Lab is **Verified** after repaired complete functional run `34114885252`. It becomes the v3.21 frozen checkpoint only after the exact bookkeeping state, including the Context Lab architecture gate and milestone records, passes the complete accumulated suite. Production v2 remains isolated.
+Known-good frozen releases extend through `release/v3.21-step-context` at `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`; exact STEPBible bookkeeping run `34118918425` passed before that freeze. #14 Japanese 口語訳 is **Verified** after repaired complete functional run `34120997990`. It becomes the v3.22 frozen checkpoint only after this exact bookkeeping state passes the complete accumulated suite. Production v2 remains isolated.
