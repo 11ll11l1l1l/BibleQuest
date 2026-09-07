@@ -10,94 +10,79 @@ Updated: 2026-09-07
 - `main` and production Cloudflare remain untouched by the v3 rebuild.
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only; isolated verification branches may temporarily use a push trigger for one-shot CI execution only.
-- Latest frozen checkpoint: `release/v3.20-open-review` at `2da79e9ab04cb05d63005b6cda7eb4471c149e92`.
-- Open Review functional run `34108734009` and exact bookkeeping run `34109591650` both passed before the v3.20 freeze.
-- #20 STEPBible Context Lab repaired functional run `34114885252` passed completely; its exact bookkeeping/freeze gate is pending.
+- Latest frozen checkpoint: `release/v3.21-step-context` at `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`.
+- #20 STEPBible Context Lab is frozen at v3.21 and is now Regression-tested after surviving the later Japanese 口語訳 full suite.
+- #14 Japanese 口語訳 repaired functional run `34120997990` passed completely; exact bookkeeping/freeze gate is pending.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 47 |
+| Regression-tested | 48 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 52 |
+| Not started | 51 |
 | Total | 100 |
 
-Strict verified-or-better parity is **48/100**. Fully regression-tested stability coverage is **47/100**.
+Strict verified-or-better parity is **49/100**. Fully regression-tested stability coverage is **48/100**.
 
 Current promotions:
-- #49 Story Journey — Regression-tested.
-- #50 Wisdom Situations — Regression-tested.
-- #51 Deep Questions — Regression-tested.
-- #52 Expanded Guided Study — Regression-tested.
-- #53 Adaptive Learning — Regression-tested.
-- #54 Open/weak-area review — Regression-tested after surviving complete #20 run `34114885252`.
-- #20 STEPBible lexical/context tools — Verified after complete repaired functional run `34114885252`; exact bookkeeping/freeze gate pending.
+- #20 STEPBible lexical/context tools — Regression-tested.
+- #14 Japanese 口語訳 — Verified.
+- #15 Japanese furigana — Not started and intentionally deferred by current priority decision; it must not be marked complete unless explicitly reopened and verified.
 
-## Milestone 10 — Bible-study core
+## Milestone 11 — Reader language/source completion
 
-### #54 Open/weak-area review — Regression-tested
+### #14 Japanese 口語訳 — Verified
 
-Open Review is frozen at `release/v3.20-open-review`. It retains the old seven-item open-answer spaced-review workflow: scheduled/due items first, existing Games review IDs second, fresh weak-category items next, then wider fallback. The member answers from memory, reveals the source answer, and self-rates `Review again` (+1 XP) or `Got it` (+5 XP). Success spacing remains approximately 1 → 3 → 7 → 14 → 30 days and Review again is due immediately.
+The actually loaded v2 behavior was recovered before rebuilding. v2 used the GetBible `japkougo` chapter endpoint for `口語訳聖書 (1954/1955)`, persisted translation selection, displayed a retry path on source failure, and provided an explicit BSB fallback rather than fabricating or silently substituting Scripture.
 
-Open Review kept its clean ownership boundaries through the later full #20 run `34114885252`: Recall Packs remains question-pack owner, Games remains per-book review-ID owner, Adaptive remains weak-area owner, Lesson remains lifecycle owner, Progress remains reward owner, and Open Review remains only the queue/spacing coordinator. It is therefore now Regression-tested.
-
-### #20 STEPBible lexical/context tools — Verified
-
-The old loaded runtime was recovered before rebuilding. The retained capability was an in-app Hebrew & Greek Context Lab, not merely an external STEP Bible link.
-
-Recovered parity behavior:
-- BSB current verse plus previous/next verse context.
-- Strong’s IDs and Hebrew/Greek identification.
-- lemma, transliteration, morphology, and brief gloss.
-- same-book tagged usage count and usage-reference navigation.
-- context-pack coverage metadata and visible source/license/limits.
-- verse-specific external STEP Bible handoff retained as a secondary path.
-- explicit study cautions: read sentence/paragraph first; lexical entries provide a range that grammar/context narrow; do not build doctrine from etymology or one Strong’s entry alone.
-- explicit limitation that tagged lexical fields are not a reconstructed word-for-word interlinear or theological conclusion.
-- unavailable context data degrades inside Reader rather than breaking the Reader route.
-- no recovered XP/progress reward; v3 does not invent one.
-
-Clean architecture:
-- `src/core/bible.js` is the sole owner of context manifest/pack loading, normalization, cache, BSB context composition, source metadata, and Strong’s usage calculation.
-- `src/app/reader.js` only delegates through `contextChapter()` and `lexicalContext()`; Context Lab browsing does not mutate the selected Reader passage.
-- `src/features/reader/context.js` is presentation/event forwarding only and cannot fetch, persist, award Progress, address pack paths, create globals, or use MutationObserver.
-- `src/ui/context-lab.css` owns isolated Context Lab/mobile presentation.
-- the old direct-localStorage/global-overlay/MutationObserver/`window.BQContextLab` runtime was not recreated.
-- `scripts/validate-v3-step-context.mjs` enforces the Context Lab boundary in every accumulated regression run.
+Clean v3 behavior:
+- `src/core/bible.js` remains the sole Bible-source owner.
+- Japanese is declared as a live, chapter-only translation rather than pretending to be a bundled whole-book pack.
+- GetBible book numbers are derived from the existing canonical Bible-book order, avoiding a second book map.
+- successful chapters are cached by exact live source URL.
+- returned verse arrays or object-shaped verse collections are normalized and sorted.
+- Scripture text is preserved except surrounding transport whitespace; v3 does not rewrite the 口語訳 text.
+- reference navigation/search remains available, but full-text 66-book live search is rejected rather than creating an uncontrolled API fan-out.
+- source failure is explicit and offers Retry plus an explicit `Use BSB` action.
+- no silent fallback occurs and no missing Japanese text is synthesized.
+- selecting/loading Japanese Scripture awards no XP.
 
 Verification coverage:
-- `tests/v3-step-context-edge.mjs` verifies BSB context, Strong’s/lemma/transliteration/morphology/gloss, in-book usage, coverage/source/license, immutable snapshots, cache behavior, empty-tag behavior, controlled unavailable/malformed data, Reader delegation, no Reader mutation, and no invented XP/activity.
-- `tests/v3-step-context-smoke.mjs` verifies the 390px Reader → Verse Peek → Context Lab path, original-language cards, safety guidance, source attribution, usage navigation, unavailable-data behavior, approximately 44px controls, no horizontal overflow, safe close/return, and no page/console errors.
-- repaired complete functional run `34114885252` passed architecture, all accumulated edge tests, the original Reader browser test, the new Context Lab browser test, and every later browser regression through Games.
+- `scripts/validate-v3-japanese-kougo.mjs` enforces the live-source boundary.
+- `tests/v3-japanese-kougo-edge.mjs` verifies canonical book mapping, payload normalization, exact text preservation, successful caching, source failure/recovery, semantic-invalid-response cache eviction, Reader persistence, and zero invented XP.
+- `tests/v3-japanese-kougo-smoke.mjs` verifies the real 390px Reader flow, translation persistence, source/license display, Retry, explicit BSB fallback, no horizontal overflow, and >=44px recovery controls.
+- repaired complete functional run `34120997990` passed all architecture checks, all accumulated edge tests, Reader, STEPBible, Japanese 口語訳, and every later browser regression through Games.
 
-The exact inventory/status/timeline/architecture bookkeeping state must pass one additional complete accumulated suite before `release/v3.21-step-context` may be frozen.
+### #15 Japanese furigana — intentionally deferred
+
+The old loaded `japanese-learning.js` has been recovered. It provided OFF / difficult-terms-only / all-readings modes, with `kuromoji` used for the all-readings mode and a retained static term list for support mode. The user has explicitly asked to skip this capability for now.
+
+Therefore #15 remains **Not started**. No partial furigana implementation will be introduced, and the current sequence jumps directly from #14 to #16.
 
 ## Next major milestone
 
-After the #20 bookkeeping gate is green and `release/v3.21-step-context` is frozen, the next priority is **#14 Japanese 口語訳**. Recover the actually loaded old Japanese source behavior before implementation, then rebuild it through the existing single Bible/Reader owners. Do not jump to #15 furigana until #14 passes its own full functional and bookkeeping gates.
+After the #14 bookkeeping gate is green and the exact state is frozen as `release/v3.22-japanese-kougo`, continue directly to **#16 Japanese vocabulary learning**.
 
-Planned Reader-language/source sequence remains:
-1. #14 Japanese 口語訳.
-2. #15 Japanese furigana.
-3. #16 Japanese vocabulary learning.
-4. #17 NLT live path.
+Recovered #16 behavior from the loaded old `japanese-learning.js`:
+- visible only when Japanese 口語訳 is selected.
+- a verse is selected/tapped and the learning panel shows up to three matching vocabulary notes.
+- retained static terms include Japanese term, reading, learner-friendly explanation, fuller meaning, and optional English gloss.
+- when no retained static term matches, old v2 could use the tokenizer to surface up to three kanji terms with a generic contextual-learning note.
+- vocabulary/reading explanations are explicitly labeled as learning aids, not Scripture text.
+- learning-panel on/off preference was persisted in the old shared Japanese-learning state.
 
-Kids #38–40 remain deferred but accessible through the existing Kids surface. Ministry/Devotional remains a later high-priority milestone governed by `DEVOTIONAL_MINISTRY_DESIGN_V3.md`; it does not displace the current Reader/core parity sequence.
+Clean #16 direction:
+1. Do not revive old DOM injection, direct `localStorage`, CDN script injection, `window.BQJapaneseLearning`, or MutationObserver-style behavior.
+2. Keep Japanese Scripture text owned by `src/core/bible.js` and Reader passage state owned by `src/app/reader.js`.
+3. Add one clean Japanese-learning owner/data boundary for vocabulary notes only if needed; do not create another Bible source or Reader state owner.
+4. Preserve the old learning-aid disclaimer and no-XP behavior unless contrary evidence is recovered.
+5. Add dedicated edge + 390px browser regressions, then run the entire accumulated suite.
 
-## Future Devotional / Ministry requirement
+After #16, continue to **#17 NLT live path**. #15 remains deferred until explicitly reopened.
 
-- Pastor/Admin publishes first-class Message, Devotional, or Task posts through one freeform ministry service/model.
-- Members receive eligible congregation posts.
-- Tasks support freeform prompts and member responses.
-- Members can read their own response but not other members' response bodies.
-- Pastor/Admin review is congregation/role scoped.
-- Aggregate counts may be visible where allowed.
-- Privacy must be enforced by backend/API/RLS, not UI hiding.
-- Ministry Hub, Inbox, Assignments, Workspace, and Assignment Push must reuse one coherent post/task identity.
-
-Primary later inventory mapping remains #66 and #73–78. Design documentation alone does not promote those rows.
+Kids #38–40 remain deferred/unpromoted. Ministry/Devotional remains a later high-priority milestone governed by `DEVOTIONAL_MINISTRY_DESIGN_V3.md`; it does not displace the Reader/core sequence.
 
 ## Defect / root-cause ledger retained
 
@@ -111,13 +96,15 @@ Primary later inventory mapping remains #66 and #73–78. Design documentation a
 - `V3-RECALL-PACK-001` — pack loading/validation/cache is isolated in `src/core/recall-packs.js`.
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
 - `V3-STUDY-BOUNDARY-001` — Study public state stays behind its orchestration/Lesson boundary.
-- `V3-STORY-BOOKKEEPING-001` — the validator protects required status headings after a bookkeeping-only regression was caught before freeze.
-- `V3-WISDOM-ESCAPE-001` — malformed escaping in the first presentation draft was corrected before functional CI and remains browser-protected.
-- `V3-OPEN-REVIEW-OWNER-001` — a temporary helper that would have read `games-recall` directly was rejected and deleted before verification; cross-feature access remains inside Games.
-- `V3-OPEN-REVIEW-FOCUS-TEST-001` — functional run `34108325481` failed because the test expected the wrong deterministic dated tie category; implementation was correct and the fixture was corrected.
-- `V3-OPEN-REVIEW-SPACING-TEST-001` — functional run `34108543938` failed because the test assumed one scheduled item outranked older overdue items; spacing verification was isolated while real overdue priority remained protected.
-- `V3-STEP-PEEK-SELECTOR-001` — first #20 functional run `34114585936` failed because Verse Peek stored its selected verse as `data-verse`, colliding with the established `[data-verse]` Scripture-button selector. Production metadata was namespaced to `data-peek-verse`; the old Reader smoke was not weakened, the new Context Lab smoke also protects the handoff, and repaired run `34114885252` passed fully.
+- `V3-STORY-BOOKKEEPING-001` — validator protects required status headings.
+- `V3-WISDOM-ESCAPE-001` — malformed presentation escaping was corrected before functional promotion.
+- `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot read `games-recall` directly; Games remains queue owner.
+- `V3-OPEN-REVIEW-FOCUS-TEST-001` — incorrect deterministic tie-category fixture was corrected without changing working logic.
+- `V3-OPEN-REVIEW-SPACING-TEST-001` — spacing fixture was isolated from legitimately older overdue items.
+- `V3-STEP-PEEK-SELECTOR-001` — Verse Peek metadata was namespaced to avoid collision with Scripture `[data-verse]` buttons.
+- `V3-JKO-SEMANTIC-CACHE-001` — first Japanese browser gate found that an HTTP-200 but unusable verse payload remained cached after post-fetch semantic validation. `src/core/bible.js` now evicts invalid Japanese chapter payloads so Retry performs a real source request; the edge and browser tests retain this regression.
+- `V3-JKO-TOUCH-001` — the repaired Japanese run then found Retry/Use BSB controls at 42px. Reader recovery/navigation controls now enforce >=44px and the browser regression retains the assertion.
 
 ## Release rule
 
-#20 passed the entire repaired accumulated functional suite on run `34114885252`. The exact bookkeeping state must pass the full suite once more before `release/v3.21-step-context` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged until applicable parity and stability gates are satisfied.
+#14 passed the entire repaired accumulated functional suite on run `34120997990`. The exact bookkeeping state must pass the full suite once more before `release/v3.22-japanese-kougo` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged.
