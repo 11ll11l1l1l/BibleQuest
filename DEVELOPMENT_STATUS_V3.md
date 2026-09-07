@@ -11,30 +11,32 @@ Updated: 2026-09-08 JST
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact candidate SHA after each gate.
-- Latest frozen checkpoint remains `release/v3.25-source-provenance` at `04f20094a03cd0b189d1626ef4f372917ce599e3`.
-- Exact v3.25 bookkeeping run `34160651319` passed the complete accumulated suite before that freeze.
+- Latest frozen checkpoint is `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+- Exact v3.26 bookkeeping run `34168229627` passed the complete accumulated suite before that freeze.
+- Previous frozen checkpoint was `release/v3.25-source-provenance` at `04f20094a03cd0b189d1626ef4f372917ce599e3`; exact v3.25 bookkeeping run `34160651319` passed the complete accumulated suite.
 - #89 Doctrinal safety/context functional run `34166910207` passed the complete accumulated suite.
 - #89 exact green implementation candidate before bookkeeping: `827e5edc5af48bb76a805fcb3d546975bfc14ec1`.
+- #89 exact v3.26 bookkeeping/release candidate: `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
 
 ## Progress summary
 
-Inventory row states after the #89 functional gate:
+Inventory row states after the #89 bookkeeping/release gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 52 |
-| Verified | 1 |
+| Regression-tested | 53 |
+| Verified | 0 |
 | Implemented | 0 |
 | Not started | 47 |
 | Total | 100 |
 
 Strict verified-or-better parity is **53/100**.
 
-The release stability metric remains **51/100** until the independent #89 bookkeeping candidate passes the entire accumulated suite and `release/v3.26-doctrinal-safety` is frozen. No stability promotion is claimed from the functional run alone.
+Official regression stability is **53/100** because the authoritative inventory now contains 53 rows in Regression-tested state. The earlier projected 52/100 post-v3.26 figure was stale bookkeeping language and is superseded by the actual inventory count.
 
 Current promotions:
-- #89 Doctrinal safety/context — **Verified** after functional run `34166910207`.
-- #90 Source labels/attribution — **Regression-tested** after surviving the later #89 full functional suite.
+- #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
+- #90 Source labels/attribution — **Regression-tested** after surviving the later #89 full functional and bookkeeping suites.
 - #17 NLT licensed-link path — Regression-tested.
 - #16 Japanese vocabulary learning — Regression-tested.
 - #15 Japanese furigana — Not started and intentionally deferred.
@@ -52,7 +54,7 @@ Reader/source parity remains closed through the recovered NLT behavior except th
 
 ### #90 Source labels/attribution — Regression-tested
 
-#90 remains owned by the immutable BibleQuest content provenance registry plus the existing Scripture and Recall source owners. It survived the complete #89 functional suite on run `34166910207`, including its architecture, edge, and 390px browser regressions.
+#90 remains owned by the immutable BibleQuest content provenance registry plus the existing Scripture and Recall source owners. It survived the complete #89 functional suite on run `34166910207` and the v3.26 bookkeeping suite on run `34168229627`, including its architecture, edge, and 390px browser regressions.
 
 Frozen checkpoint:
 - `release/v3.25-source-provenance`
@@ -63,7 +65,7 @@ No source-label MutationObserver, `window.BQ*` source injector, direct storage a
 
 ## Milestone 13 — Doctrinal safety/context
 
-### #89 Doctrinal safety/context — Verified
+### #89 Doctrinal safety/context — Regression-tested
 
 Recovered legacy behavior is represented by one pure doctrinal-safety owner rather than the old runtime/global injection layer.
 
@@ -107,6 +109,13 @@ Functional verification history:
 - Run `34166769435` — all architecture/edge checks and early browser regressions passed, then the existing doctrinal mobile smoke exposed the global shell account button at 38px. Root cause was `.bq-session-chip{min-height:38px}` outside Wisdom’s already-correct 44px controls. The shell owner now enforces 44px and the existing mobile regression remains permanent coverage.
 - Run `34166910207` — complete accumulated suite fully green through Games, including the real 390px Acts per-book Recall → Review again → Open Smart Review passage-context reveal path.
 
+Bookkeeping/release verification:
+- Candidate `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` added the #89 architecture owner/boundaries and aligned the four bookkeeping documents without changing runtime code.
+- Isolated branch `verify/v3-doctrinal-safety-bookkeeping` temporarily enabled push only for the verification run.
+- Run `34168229627` passed the complete accumulated architecture, edge, Playwright, browser, mobile, Transform, recordings, media, Recall, and Games suite.
+- The verification branch was reset back to the exact clean candidate SHA, removing the temporary push-trigger commit.
+- `release/v3.26-doctrinal-safety` was created and SHA-verified at exactly `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+
 ## Defect / root-cause ledger retained
 
 - `V3-ROUTER-001` — single synchronous router fixed URL/view drift.
@@ -134,15 +143,10 @@ Functional verification history:
 
 ## Next major milestone
 
-Complete the independent #89 bookkeeping gate on the exact four-document bookkeeping candidate. The gate must rerun the entire accumulated suite from an isolated `verify/v3-doctrinal-safety-bookkeeping` branch. If fully green:
+v3.26 is frozen. Reassess remaining study/core parity debt against the authoritative inventory, recovered loaded old source, dependencies, partial v3 work, user value, and architectural risk before choosing the next implementation. Do not blindly start Kids #38–40 or ministry/devotional work while higher-value core Bible-study parity debt remains.
 
-1. Reset the bookkeeping verification branch to the exact candidate SHA, removing its temporary push trigger.
-2. Create `release/v3.26-doctrinal-safety` exactly at that green bookkeeping SHA.
-3. Verify the release branch SHA.
-4. Promote #89 to Regression-tested in the release status and report official **53/100 parity / 52/100 stability**.
-
-After v3.26 is frozen, reassess remaining study/core parity debt against the inventory, recovered loaded old source, dependencies, partial v3 work, user value, and architectural risk before choosing the next implementation. Do not blindly start Kids #38–40 or ministry/devotional work while higher-value core Bible-study parity debt remains.
+Potential core candidates to assess include #55 private local notes, #56 cloud notes, #86 accessibility support, #87 content reporting, #88 content moderation, #91 Content Review workbench, #95 client diagnostics, #96 operational recovery/error boundary, and #97–99 PWA/offline behavior. Also assess whether any remaining Bible-content path depends on content-review infrastructure.
 
 ## Release rule
 
-#89 passed the complete functional suite on run `34166910207`. The exact bookkeeping state must now pass the complete accumulated suite again before `release/v3.26-doctrinal-safety` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged.
+#89 passed the complete functional suite on run `34166910207` and the exact v3.26 bookkeeping state passed the complete accumulated suite on run `34168229627`. `release/v3.26-doctrinal-safety` is frozen at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`. Production v2, `main`, and production Cloudflare remain unchanged.
