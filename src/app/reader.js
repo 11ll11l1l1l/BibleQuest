@@ -65,6 +65,8 @@ export function createReaderService({ bible, storage, progress }) {
   }
 
   function markRead() {
+    const translation = bible.getTranslation(state.translation);
+    if (translation.mode === 'licensed-link') throw new Error(`${translation.label} opens externally; BibleQuest cannot mark unseen Scripture text as read.`);
     const key = readKey();
     if (state.read[key]) return Object.freeze({ newlyRead: false, progress: null, state: getState() });
     const award = progress.record({ id: `reader.read:${key}`, type: 'reader.chapter.read', xp: 10, meaningful: true, metrics: { chaptersRead: 1 } });
