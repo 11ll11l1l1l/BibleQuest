@@ -9,82 +9,72 @@ Updated: 2026-09-07
 - Production v2 remains unchanged.
 - `main` and production Cloudflare remain untouched.
 - Current development branch: `feature/v3-study-core`.
-- Normal v3 GitHub Actions are manual-only. Isolated verification branches may temporarily use a push trigger only for one-shot CI execution, then are reset to the exact candidate SHA.
-- Latest frozen checkpoint: `release/v3.23-japanese-vocabulary` at `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`.
-- Exact #16 bookkeeping run `34123607629` passed the complete accumulated suite before the v3.23 freeze.
-- #17 NLT licensed-link functional run `34126567141` passed the complete accumulated suite; exact bookkeeping/freeze gate remains.
+- Normal v3 GitHub Actions remain manual-only. Isolated verification branches may temporarily use a push trigger for a one-shot full-suite execution, then are reset to the exact candidate SHA.
+- Latest frozen checkpoint: `release/v3.24-nlt-licensed` at `37ff989dac122f31a53f9bc771639e3ca59b4b03`.
+- Exact v3.24 bookkeeping run `34127324969` passed the complete accumulated suite before that freeze.
+- #90 Source labels/attribution functional run `34130447654` passed the complete accumulated suite.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 50 |
+| Regression-tested | 51 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 49 |
+| Not started | 48 |
 | Total | 100 |
 
-Strict verified-or-better parity is **51/100**. Fully regression-tested stability coverage is **50/100**.
+Strict verified-or-better parity is **52/100**. Fully regression-tested stability coverage is **51/100**.
 
 Current promotions:
-- #14 Japanese 口語訳 — Regression-tested.
-- #16 Japanese vocabulary learning — Regression-tested after surviving the later #17 full suite.
-- #17 NLT live path — Verified as the recovered licensed external-reader path.
-- #15 Japanese furigana — Not started and intentionally deferred by user direction.
+- #16 Japanese vocabulary learning — Regression-tested.
+- #17 NLT licensed-link path — Regression-tested after surviving the later #90 full suite.
+- #90 Source labels/attribution — Verified.
+- #15 Japanese furigana — Not started and intentionally deferred.
 
 ## Milestone 11 — Reader language/source completion
 
-### #14 Japanese 口語訳 — Regression-tested
+Reader/source parity is closed through the recovered NLT behavior except the intentionally deferred furigana row.
 
-Frozen in `release/v3.22-japanese-kougo` after exact bookkeeping run `34122128228`. The Reader loads `口語訳聖書 (1954/1955)` chapter-by-chapter through the single Bible service, persists selection, validates and caches only usable chapter data, exposes Retry and explicit Use BSB recovery, never silently substitutes or fabricates Scripture, and awards no XP for loading Scripture.
+- #14 Japanese 口語訳 — Regression-tested; frozen through `release/v3.22-japanese-kougo`.
+- #16 Japanese vocabulary learning — Regression-tested; frozen through `release/v3.23-japanese-vocabulary`.
+- #17 NLT licensed-link — Regression-tested; frozen in `release/v3.24-nlt-licensed` at `37ff989dac122f31a53f9bc771639e3ca59b4b03` after functional run `34126567141` and bookkeeping run `34127324969`.
+- #15 Japanese furigana — intentionally deferred; no `kuromoji`, CDN tokenizer, legacy global, or direct DOM mutation runtime may leak into adjacent features.
 
-Retained defects:
-- `V3-JKO-SEMANTIC-CACHE-001` — HTTP-200 but unusable Japanese payloads are evicted so Retry performs a real new request.
-- `V3-JKO-TOUCH-001` — Japanese recovery controls remain at least 44px on mobile.
+## Milestone 12 — Source provenance
 
-### #15 Japanese furigana — intentionally deferred
+### #90 Source labels/attribution — Verified
 
-The loaded old implementation was recovered, including OFF/support/all modes and its old `kuromoji` path. The user explicitly directed us to skip furigana. #15 therefore remains Not started and does not block adjacent Reader/core work. No kuromoji/CDN/global furigana runtime is allowed to leak into other features.
-
-### #16 Japanese vocabulary learning — Regression-tested
-
-Clean v3 uses `src/app/japanese-vocabulary.js` as the sole vocabulary preference/lookup owner, preserves the recovered 27 curated terms, composes notes inside the existing Verse Peek interaction, persists ON/OFF through the Storage boundary, shows a controlled no-note state rather than inventing readings, labels notes as learning aids rather than Scripture, and awards no XP. The skipped furigana/tokenizer runtime is not recreated.
-
-Functional run `34123075200` and bookkeeping run `34123607629` were fully green. #16 then survived the later complete #17 functional suite `34126567141`, so it is now Regression-tested.
-
-### #17 NLT live path — Verified as licensed-link parity
-
-Recovered loaded v2 behavior before coding:
-- NLT was one of the main translation-picker choices.
-- It was explicitly `mode:'licensed-link'`, not a bundled or hidden live-text API.
-- selected translation/book/chapter were retained by the Reader.
-- the selected passage opened on BibleGateway with `version=NLT`.
-- v2 explicitly stated that BibleQuest did not redistribute the full copyrighted NLT text or expose a private API key in the browser.
+Recovered legacy behavior established the content-provenance requirement: BibleQuest distinguished actual Bible translation text from unfoldingWord reference answers, story/retelling content, and BibleQuest-authored study/application prose. The old implementation used a MutationObserver/global injection layer; v3 does not recreate that architecture.
 
 Clean v3 implementation:
-- `src/core/bible.js` remains the sole Bible-source/external-translation owner and declares NLT as `licensed-link`.
-- `licensedPassage()` builds the exact external passage URL from the canonical Bible book/chapter/verse model.
-- `loadChapter('nlt',...)` returns passage metadata, an empty immutable verse collection, and the licensed external handoff. It performs no NLT Scripture fetch.
-- NLT pack loading and in-app NLT search are rejected explicitly rather than pretending redistributed text exists.
-- `src/app/reader.js` remains the sole translation/book/chapter persistence owner.
-- NLT mode retains book/chapter and Previous/Next navigation.
-- NLT mode shows no in-app verse list, no in-app NLT text search, and no Mark Read button.
-- Reader `markRead()` also blocks licensed-link translations at the service boundary, preventing programmatic XP/read-credit for Scripture BibleQuest did not display.
-- the NLT handoff opens safely in a new tab with `noopener noreferrer` and preserves BibleQuest state on return.
-- source/license attribution is visible and no XP is awarded for browsing external NLT passages.
+- `src/core/content-provenance.js` is the immutable registry for BibleQuest-authored content types only: study material, retelling, wisdom/application, recall/context questions, and game content.
+- `src/ui/source-labels.js` is a shared presentation helper only. It renders provenance notices and the Learn source guide but owns no translation, question-pack, or Scripture metadata.
+- `src/core/bible.js` remains the owner of Scripture translation source/license/attribution metadata, including the licensed NLT handoff.
+- `src/core/recall-packs.js` remains the owner of unfoldingWord Translation Questions source/license metadata and now exposes immutable `sourceInfo()` without loading a pack.
+- `src/app/bootstrap.js` passes existing Reader/Bible translation metadata and Recall metadata to Learn instead of duplicating source strings.
+- Learn retains the exact `<h1>Learn</h1>` and adds a source guide explaining that a Scripture reference is not presented as though it were a quotation.
+- Guided Study, Deep Questions, Daily Journey, Wisdom Situations, Adaptive Learning, Story Journey, and Games render the correct BibleQuest-authored provenance label through the shared helper.
+- Story Journey explicitly distinguishes authored retelling scenes from authored checkpoint questions.
+- Per-book Recall keeps the actual unfoldingWord source/license from the Recall owner rather than being mislabeled as BibleQuest-authored content.
+- Reader, STEPBible, Japanese, NLT, and Open Review retain their established source-owner contracts.
+- No source-label MutationObserver, `window.BQ*` source injector, direct storage access, or source-fetch path was introduced.
 
 Verification:
-- `scripts/validate-v3-nlt-licensed.mjs` enforces sole NLT URL/source ownership and forbids UI/storage/global/network bypasses.
-- `tests/v3-nlt-licensed-edge.mjs` proves zero hidden fetch, zero redistributed verses, exact passage URLs, pack/search rejection, persistence, navigation, and zero read-credit/XP.
-- existing Reader edge/browser tests now retain NLT in the general external-link contract.
-- `tests/v3-nlt-licensed-smoke.mjs` verifies the real 390px NLT flow, exact passage changes/reload, safe external attributes, source/license text, no verse/search/read controls, no XP, and no horizontal overflow.
-- Complete functional run `34126567141` passed all architecture checks, every accumulated edge regression, Reader/Japanese/NLT mobile paths, and every downstream browser regression through Games.
+- `scripts/validate-v3-source-labels.mjs` protects registry ownership, owner-fed metadata, required active-surface labels, stable Learn heading, and the prohibition on the legacy injector pattern.
+- `tests/v3-source-labels-edge.mjs` protects immutable registry/source metadata, exact Recall attribution, no-fetch metadata reads, source-guide composition, explicit Scripture-vs-authored distinction, and escaping.
+- `tests/v3-source-labels-smoke.mjs` validates the real 390px flow across Learn, Reader, Guided Study, Deep Questions, Story Journey, Wisdom, Adaptive, Daily Journey, and Quick Recall with no horizontal overflow.
+- Corrected complete functional run `34130447654` passed all architecture checks, every accumulated edge test, the new provenance browser test, and every downstream browser regression through Games.
+
+Two pre-verification failures were test-fixture defects, not application defects:
+- `V3-SOURCE-LABEL-TEST-001` — run `34129966606`: the new edge-test regex incorrectly rejected the valid phrase “not a direct Scripture quotation.” The test matcher was corrected; application code was unchanged.
+- `V3-SOURCE-LABEL-SELECTOR-TEST-001` — run `34130146826`: the new browser test waited for nonexistent `[data-reader-source]` instead of the established `.bq-reader-source`. The test selector was corrected; the normal Reader regression had already passed in that same run.
 
 ## Next major milestone
 
-Run the entire accumulated suite on the exact **51/100 parity / 50/100 stability** bookkeeping state. If green, freeze it as `release/v3.24-nlt-licensed`.
+Run the complete accumulated suite on the exact **52/100 parity / 51/100 stability** bookkeeping state. If fully green, freeze `release/v3.25-source-provenance` at that exact SHA.
 
-After the v3.24 freeze, reassess the remaining Bible-study/core-content debt before selecting another capability. Do not automatically jump to Kids/community/ministry. #15 remains deferred unless explicitly reopened. The remaining core-adjacent candidates include private/cloud notes (#55–56), accessibility (#86), doctrinal safety/context (#89), source labels/attribution (#90), diagnostics/recovery (#95–96), and PWA/offline Bible behavior (#97–99); inspect the recovered old behavior and dependency order before choosing.
+After v3.25 is frozen, reassess the remaining core-content dependency order before implementation. **#89 Doctrinal safety/context is the leading candidate** because the recovered legacy policy layer classifies sensitive questions as allow/context/quarantine and source provenance is now available to support transparent context notices. Do not start #89 merely by copying the old regex/global runtime: first recover which current v3 content surfaces need policy evaluation, define one policy owner, preserve Scripture-first framing, and ensure reflection/application content is not converted into spiritual scoring. Private/cloud notes (#55–56), accessibility (#86), diagnostics/recovery (#95–96), and PWA/offline Bible behavior (#97–99) remain important alternatives if dependency analysis shows they should precede #89. #15 remains deferred unless explicitly reopened.
 
 ## Defect / root-cause ledger retained
 
@@ -106,7 +96,9 @@ After the v3.24 freeze, reassess the remaining Bible-study/core-content debt bef
 - `V3-STEP-PEEK-SELECTOR-001` — Verse Peek metadata is namespaced away from Scripture `[data-verse]`.
 - `V3-JKO-SEMANTIC-CACHE-001` — invalid live Japanese payloads are evicted before retry.
 - `V3-JKO-TOUCH-001` — Japanese recovery controls enforce >=44px.
+- `V3-SOURCE-LABEL-TEST-001` — corrected the new provenance edge matcher; no app change.
+- `V3-SOURCE-LABEL-SELECTOR-TEST-001` — corrected the new provenance smoke Reader selector; no app change.
 
 ## Release rule
 
-#17 passed the complete functional suite on run `34126567141`. The exact bookkeeping state must pass the complete accumulated suite again before `release/v3.24-nlt-licensed` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged.
+#90 passed the complete corrected functional suite on run `34130447654`. Its exact bookkeeping state must pass the complete accumulated suite again before `release/v3.25-source-provenance` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged.
