@@ -25,6 +25,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/wisdom-situations.js` — Wisdom Situations orchestration
 - `src/app/adaptive-learning.js` — Adaptive retrieval evidence/mastery/selection orchestration
 - `src/app/open-review.js` — Open Smart Review queue/spacing orchestration
+- `src/app/private-notes.js` — standalone private local-note CRUD/order/export state and persistence contract
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration
@@ -145,7 +146,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
 - Guided Study uses `src/app/study.js` + Lesson + Progress/Reader interfaces; completion has no invented XP and personal reflection is unscored.
-- Deep Questions uses `src/app/deep-questions.js` + Lesson/Reader; private notes are Lesson responses and there is no separate note runtime or XP scheme.
+- Deep Questions uses `src/app/deep-questions.js` + Lesson/Reader; its inline private response is Lesson-owned and remains separate from #55 standalone Private Notes. It is not migrated into or overwritten by the standalone Notes store.
 - Story Journey uses `src/app/story-journey.js` + Lesson/Progress/Reader. Retained checkpoint reward is +15 XP correct / +4 incorrect; correct contributes one `quizCorrect`.
 - Wisdom uses `src/app/wisdom-situations.js` + Lesson/Progress. Retained reward is +8 XP and +1 `situations` for each answered attempt regardless of strongest/weaker choice. Strongest-option selection does not add `quizCorrect` or become a spiritual-quality score.
 
@@ -176,6 +177,20 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 11. `src/features/open-review/index.js` is presentation/event forwarding only; `src/ui/open-review.css` owns feature styling and 390px mobile behavior.
 12. The historical direct-localStorage/global-overlay/MutationObserver Open Review runtime is reference-only and must not be recreated.
 
+## Private local notes boundaries
+
+1. `src/app/private-notes.js` is the single owner for standalone #55 Private Notes CRUD, note identity/order, persistence normalization, and export data.
+2. It uses `src/core/storage.js` and the single namespaced `private-notes` record. No Private Notes feature or UI may call `localStorage` or `sessionStorage` directly.
+3. `src/features/private-notes/index.js` is presentation/event forwarding only; `src/ui/private-notes.css` owns feature presentation/mobile behavior.
+4. #55 is device-local only. It cannot call `src/core/api.js`, Supabase, account/session mutations, or invent a cloud table/path.
+5. #56 Cloud notes must compose this verified local model and existing account/API boundaries rather than fork note identity, local persistence, validation, or UI state into a second system.
+6. Deep Questions' inline private response remains a Lesson response. It is intentionally separate from standalone #55 notes unless a future explicitly verified migration/linking contract is added.
+7. Standalone notes have no recovered XP, streak, mastery, spiritual score, or Lesson progression effect.
+8. Persisted data uses deterministic `note-N` IDs, preserves creation time on edit, updates modification time, rejects empty notes, and normalizes malformed/duplicate persisted records safely.
+9. Export is local JSON using schema `biblequest.private-notes`, version 1. Export does not imply backup/import parity; #100 remains separate.
+10. The UI must state the device-only/no-cloud boundary and remain usable at 390px with >=44px interactive targets and no horizontal overflow.
+11. Permanent protection includes `tests/v3-private-notes-edge.mjs`, `tests/v3-private-notes-smoke.mjs`, and the accumulated v3 workflow.
+
 ## Transform, Audio, Recordings, Media, Games
 
 - `src/engines/transform.js` alone owns Transform calculations/state; `src/app/transform.js` only coordinates with Progress.
@@ -191,10 +206,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → reassess remaining core Bible-study parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56, after #55 freeze and old/backend contract recovery) → reassess remaining core Bible-study parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; exact v3.26 bookkeeping run `34168229627` passed before that freeze. #89 Doctrinal safety/context and #90 Source labels/attribution are Regression-tested. Current strict parity is 53/100 and official regression stability is 53/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; exact v3.26 bookkeeping run `34168229627` passed before that freeze. #55 Private local notes passed complete functional run `34169365596` and is Verified pending the v3.27 bookkeeping/release gate. Current strict parity is 54/100 and official regression stability is 53/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
