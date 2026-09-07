@@ -1,6 +1,12 @@
 import { STORY_JOURNEYS, getStoryJourney } from '../features/story-journey/content.js';
+import { assertBinaryScorable, reviewAuthoredBinary } from '../core/doctrinal-safety.js';
 
-const publicStory=item=>Object.freeze({id:item.id,title:item.title,emoji:item.emoji,book:item.book,sceneCount:item.scenes.length,checkpoint:Object.freeze({question:item.checkpoint.question,reference:item.checkpoint.reference})});
+const checkpointSafety=item=>{
+  const safety=reviewAuthoredBinary({q:item.checkpoint.question,a:item.checkpoint.choices[item.checkpoint.answer],ref:item.checkpoint.reference},{contextual:true,label:`Story Journey ${item.id} checkpoint`});
+  assertBinaryScorable({q:item.checkpoint.question,ref:item.checkpoint.reference,safety},`Story Journey ${item.id} checkpoint`);
+  return safety;
+};
+const publicStory=item=>Object.freeze({id:item.id,title:item.title,emoji:item.emoji,book:item.book,sceneCount:item.scenes.length,checkpoint:Object.freeze({question:item.checkpoint.question,reference:item.checkpoint.reference,safety:checkpointSafety(item)})});
 const hasOwn=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 
 export function createStoryJourneyService({lesson,progress,reader,random=Math.random}) {
@@ -32,6 +38,7 @@ export function createStoryJourneyService({lesson,progress,reader,random=Math.ra
   }
   function open(id,{restart=false}={}){
     const item=getStoryJourney(id);
+    checkpointSafety(item);
     const result=lesson.open(item.definition,{restart});
     activeId=item.id;
     const progressResult=reconcileCheckpoint(item,result.state);
@@ -50,6 +57,7 @@ export function createStoryJourneyService({lesson,progress,reader,random=Math.ra
   }
   function answer(value){
     const item=requireActive();
+    checkpointSafety(item);
     const response=lesson.respond(value);
     const progressResult=reconcileCheckpoint(item,response.state);
     const finish=lesson.advance();
