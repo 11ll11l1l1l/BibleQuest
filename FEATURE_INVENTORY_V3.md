@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 39
+- **Regression-tested:** 40
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 59
+- **Not started:** 58
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -56,8 +56,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 33 | Context Challenge | Yes | Clean | Regression-tested | context question workflow; references; score |
 | 34 | Mixed Quest | Yes | Clean | Regression-tested | mixed pool; finish; score persistence |
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
-| 36 | Character detective / Who Am I | Yes | Clean | Verified | play full round; score; replay |
-| 37 | Timeline game | Yes | Clean | Not started | order interaction; result; replay |
+| 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
+| 37 | Timeline game | Yes | Clean | Verified | order interaction; result; replay |
 | 38 | Kids Memory Match | Yes | Clean | Not started | full match; reset; mobile |
 | 39 | Hiragana Match | Yes | Clean | Not started | match full board; reset; mobile |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | full round; reset; mobile |
