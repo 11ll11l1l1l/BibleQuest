@@ -30,11 +30,25 @@ const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'D
 const safeVerse = row => row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(Number(row.v)) && Number(row.v) > 0 && typeof row.t === 'string' && row.t.trim();
 const freezeVerse = row => Object.freeze({ chapter: Number(row.c), verse: Number(row.v), text: String(row.t).trim() });
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
+const plainString = value => typeof value === 'string' ? value.trim() : '';
 
 export function createBibleDataService({ fetcher = (...args) => fetch(...args) } = {}) {
   const cache = new Map();
   const getBook = code => { const book = BIBLE_BOOKS.find(item => item.code === String(code || '').toUpperCase()); if (!book) throw new Error(`Unknown Bible book: ${code || 'missing'}.`); return book; };
   const getTranslation = id => { const translation = TRANSLATIONS[String(id || '')]; if (!translation) throw new Error(`Unsupported translation: ${id || 'missing'}.`); return translation; };
+
+  async function fetchJson(path, unavailableMessage, malformedMessage) {
+    if (cache.has(path)) return cache.get(path);
+    const pending = (async () => {
+      const response = await fetcher(path);
+      if (!response?.ok) throw new Error(unavailableMessage);
+      let payload;
+      try { payload = await response.json(); } catch { throw new Error(malformedMessage); }
+      return payload;
+    })();
+    cache.set(path, pending);
+    try { return await pending; } catch (error) { cache.delete(path); throw error; }
+  }
 
   async function loadBook(translationId, code) {
     const translation = getTranslation(translationId);
@@ -111,6 +125,106 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     return Object.freeze({ query: text, type: 'text', results: Object.freeze(results), skippedBooks: Object.freeze(skippedBooks) });
   }
 
+  async function loadContextManifest() {
+    const path = 'data/packs/context/manifest.json';
+    const payload = await fetchJson(path, 'Original-language context manifest is unavailable.', 'Original-language context manifest is malformed.');
+    if (!payload || !Array.isArray(payload.books)) throw new Error('Original-language context manifest is malformed.');
+    return payload;
+  }
+
+  async function lexicalContext(code, chapter, verse) {
+    const book = getBook(code);
+    const chapterNumber = Number(chapter);
+    const verseNumber = Number(verse);
+    if (!Number.isInteger(chapterNumber) || chapterNumber < 1 || chapterNumber > book.chapters) throw new Error(`Invalid chapter for ${book.name}.`);
+    if (!Number.isInteger(verseNumber) || verseNumber < 1) throw new Error('Invalid verse.');
+    const scripture = await loadChapter('bsb', book.code, chapterNumber);
+    const index = scripture.verses.findIndex(item => item.verse === verseNumber);
+    if (index < 0) throw new Error(`${referenceText(book, chapterNumber, verseNumber)} is unavailable.`);
+
+    let manifest;
+    try { manifest = await loadContextManifest(); }
+    catch (error) {
+      if (/malformed/i.test(error?.message || '')) throw error;
+      return Object.freeze({
+        available: false, reason: error?.message || 'Original-language context is unavailable.',
+        book, chapter: chapterNumber, verse: verseNumber, reference: referenceText(book, chapterNumber, verseNumber),
+        scripture: scripture.verses[index], previous: scripture.verses[index - 1] || null, next: scripture.verses[index + 1] || null,
+        entries: Object.freeze([]), coverage: null, source: 'STEPBible TBESH/TBESG', license: 'CC BY 4.0',
+        note: 'Brief lexical fields only; not an interlinear or theological interpretation.',
+        external: externalLinks(book.code, chapterNumber, verseNumber)
+      });
+    }
+    const meta = manifest.books.find(item => item?.code === book.code);
+    if (!meta?.path) {
+      return Object.freeze({
+        available: false, reason: `Original-language context pack for ${book.name} is unavailable.`,
+        book, chapter: chapterNumber, verse: verseNumber, reference: referenceText(book, chapterNumber, verseNumber),
+        scripture: scripture.verses[index], previous: scripture.verses[index - 1] || null, next: scripture.verses[index + 1] || null,
+        entries: Object.freeze([]), coverage: null, source: plainString(manifest.source) || 'STEPBible TBESH/TBESG', license: plainString(manifest.license) || 'CC BY 4.0',
+        note: plainString(manifest.note) || 'Brief lexical fields only; not an interlinear or theological interpretation.',
+        external: externalLinks(book.code, chapterNumber, verseNumber)
+      });
+    }
+
+    let pack;
+    try {
+      pack = await fetchJson(meta.path, `Original-language context pack for ${book.name} is unavailable.`, `Original-language context pack for ${book.name} is malformed.`);
+    } catch (error) {
+      if (/malformed/i.test(error?.message || '')) throw error;
+      return Object.freeze({
+        available: false, reason: error?.message || `Original-language context pack for ${book.name} is unavailable.`,
+        book, chapter: chapterNumber, verse: verseNumber, reference: referenceText(book, chapterNumber, verseNumber),
+        scripture: scripture.verses[index], previous: scripture.verses[index - 1] || null, next: scripture.verses[index + 1] || null,
+        entries: Object.freeze([]), coverage: Object.freeze({ taggedVerses: Number(meta.tagged_verses) || 0, lexemes: Number(meta.lexemes) || 0 }),
+        source: plainString(manifest.source) || 'STEPBible TBESH/TBESG', license: plainString(manifest.license) || 'CC BY 4.0',
+        note: plainString(manifest.note) || 'Brief lexical fields only; not an interlinear or theological interpretation.',
+        external: externalLinks(book.code, chapterNumber, verseNumber)
+      });
+    }
+    if (!pack || typeof pack !== 'object' || Array.isArray(pack) || !pack.verses || typeof pack.verses !== 'object' || !pack.lexicon || typeof pack.lexicon !== 'object') {
+      throw new Error(`Original-language context pack for ${book.name} is malformed.`);
+    }
+
+    const verseId = `${book.code}.${chapterNumber}.${verseNumber}`;
+    const strongs = Array.isArray(pack.verses[verseId]) ? pack.verses[verseId].filter(value => typeof value === 'string' && value.trim()) : [];
+    const entries = [];
+    for (const strong of strongs) {
+      const raw = pack.lexicon[strong];
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) continue;
+      const usages = [];
+      for (const [id, tags] of Object.entries(pack.verses)) {
+        if (!Array.isArray(tags) || !tags.includes(strong)) continue;
+        const match = String(id).match(/^([A-Z0-9]{3})\.(\d+)\.(\d+)$/);
+        if (!match || match[1] !== book.code) continue;
+        const useChapter = Number(match[2]), useVerse = Number(match[3]);
+        usages.push(Object.freeze({ code: book.code, chapter: useChapter, verse: useVerse, reference: referenceText(book, useChapter, useVerse) }));
+      }
+      entries.push(Object.freeze({
+        strong,
+        language: plainString(raw.language) || (strong.startsWith('H') ? 'Hebrew' : strong.startsWith('G') ? 'Greek' : 'Original language'),
+        lemma: plainString(raw.lemma),
+        transliteration: plainString(raw.transliteration),
+        morphology: plainString(raw.morphology),
+        gloss: plainString(raw.gloss),
+        usageTotal: usages.length,
+        usages: Object.freeze(usages.slice(0, 8))
+      }));
+    }
+
+    return Object.freeze({
+      available: true, reason: '',
+      book, chapter: chapterNumber, verse: verseNumber, reference: referenceText(book, chapterNumber, verseNumber),
+      scripture: scripture.verses[index], previous: scripture.verses[index - 1] || null, next: scripture.verses[index + 1] || null,
+      entries: Object.freeze(entries),
+      coverage: Object.freeze({ taggedVerses: Number(meta.tagged_verses) || 0, lexemes: Number(meta.lexemes) || 0 }),
+      source: plainString(pack.source) || plainString(manifest.source) || 'STEPBible TBESH/TBESG',
+      license: plainString(pack.license) || plainString(manifest.license) || 'CC BY 4.0',
+      note: plainString(manifest.note) || 'Brief lexical fields only; not an interlinear or theological interpretation.',
+      external: externalLinks(book.code, chapterNumber, verseNumber)
+    });
+  }
+
   function externalLinks(code, chapter, verse = null) {
     const book = getBook(code);
     const chapterNumber = Number(chapter);
@@ -134,6 +248,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     getTranslation,
     loadBook,
     loadChapter,
+    lexicalContext,
     parseReference,
     search,
     externalLinks,

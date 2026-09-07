@@ -103,6 +103,14 @@ export function createReaderService({ bible, storage, progress }) {
     return Object.freeze({ ...found, reference: `${loaded.book.name} ${loaded.chapter}:${found.verse}`, links: bible.externalLinks(loaded.book.code, loaded.chapter, found.verse) });
   }
 
+  async function contextChapter(code = state.book, chapter = state.chapter) {
+    return bible.loadChapter('bsb', code, chapter);
+  }
+
+  async function lexicalContext({ code = state.book, chapter = state.chapter, verse = 1 } = {}) {
+    return bible.lexicalContext(code, chapter, verse);
+  }
+
   return Object.freeze({
     getState,
     setTranslation,
@@ -115,6 +123,8 @@ export function createReaderService({ bible, storage, progress }) {
     search,
     openSearchResult,
     peek,
+    contextChapter,
+    lexicalContext,
     externalLinks() { return bible.externalLinks(state.book, state.chapter); },
     books: bible.books,
     translations: bible.translations
