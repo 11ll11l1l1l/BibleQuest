@@ -1,0 +1,5 @@
+.bq-doctrinal-notice{margin:14px 0;padding:12px 14px;border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:14px;background:color-mix(in srgb,currentColor 5%,transparent)}
+.bq-doctrinal-notice b{display:block;font-size:.75rem;letter-spacing:.08em;margin-bottom:4px}
+.bq-doctrinal-notice p{margin:0;line-height:1.5;font-size:.92rem}
+.bq-doctrinal-notice.is-compact{padding:10px 12px;margin:10px 0}
+@media(max-width:520px){.bq-doctrinal-notice{overflow-wrap:anywhere}.bq-doctrinal-notice p{font-size:.9rem}}
