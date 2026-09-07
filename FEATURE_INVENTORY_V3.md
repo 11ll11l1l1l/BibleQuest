@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 50
+- **Regression-tested:** 51
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 49
+- **Not started:** 48
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -37,7 +37,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 14 | Japanese 口語訳 | Yes | Compatibility | Regression-tested | live GetBible japkougo chapter load; canonical book mapping; translation persistence; exact text; explicit Retry/Use BSB fallback; invalid-response cache eviction; 390px recovery controls |
 | 15 | Japanese furigana | Yes | Compatibility | Not started | intentionally deferred by current priority decision; do not implement unless priority is explicitly reopened |
 | 16 | Japanese vocabulary learning | Yes | Compatibility | Regression-tested | Japanese-only ON/OFF control; select verse through Verse Peek; up to three recovered curated notes; persistence/reload; safe no-note state; learning-aid disclaimer; no XP; no furigana/tokenizer runtime; 390px mobile |
-| 17 | NLT live path | Yes | Compatibility | Verified | selectable/persisted licensed-link mode; exact book/chapter handoff; no redistributed NLT text or hidden fetch; no in-app NLT search/read credit; safe external return; source/license attribution; 390px mobile |
+| 17 | NLT live path | Yes | Compatibility | Regression-tested | selectable/persisted licensed-link mode; exact book/chapter handoff; no redistributed NLT text or hidden fetch; no in-app NLT search/read credit; safe external return; source/license attribution; 390px mobile |
 | 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
 | 19 | Verse Peek | Yes | Compatibility | Regression-tested | open verse detail; close; repeated use; no duplicate overlay |
 | 20 | STEPBible lexical/context tools | Yes | Compatibility | Regression-tested | BSB verse context; Strong’s/lemma/transliteration/morphology/gloss; in-book usage; source/limits; unavailable-data behavior; Verse Peek handoff; 390px mobile |
@@ -110,7 +110,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 87 | Content reporting | Yes | Compatibility | Not started | submit report; validation; success/error |
 | 88 | Content moderation | Yes | Compatibility | Not started | moderation contract; blocked/context-sensitive paths |
 | 89 | Doctrinal safety/context | Yes | Resource retained | Not started | policy action applied consistently across engines |
-| 90 | Source labels/attribution | Yes | Mixed | Not started | source shown where required; links/attribution accurate |
+| 90 | Source labels/attribution | Yes | Mixed | Verified | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
 | 91 | Content Review workbench | Yes | Standalone old | Not started | open review item; decision; save; permissions |
 | 92 | Admin console | Yes | Standalone old | Not started | auth guard; read/admin actions; permission denial |
 | 93 | Admin operations | Yes | Standalone old | Not started | operational actions; role guard; error recovery |
