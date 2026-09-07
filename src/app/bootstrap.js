@@ -71,7 +71,7 @@ function start(){
   const routes=Object.freeze({
     home:()=>homePage({progress,dailyMission,onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review')}),
+    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review')}),
     study:()=>guidedStudyPage({study,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
