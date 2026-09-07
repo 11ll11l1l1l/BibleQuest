@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 45
+- **Regression-tested:** 46
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 53
+- **Not started:** 52
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -73,8 +73,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 50 | Wisdom Situations | Yes | Clean | Regression-tested | scenario; choose strongest supported judgment; reveal all rationales/references; +8 XP/+1 situation once per attempt; replay; mobile |
 | 51 | Deep Questions | Yes | Clean | Regression-tested | choose response; reveal reflection/references; private note save/resume; Reader handoff; no spiritual scoring |
 | 52 | Expanded guided study | Yes | Compatibility | Regression-tested | open lesson; navigate sections; save/return state |
-| 53 | Adaptive learning | Yes | Compatibility | Verified | weak/due selection; 7-question Smart Review; 1/3/7/14/30 spacing; mastery update; +10/+3 parity; resume/reload; mobile |
-| 54 | Open/weak-area review | Yes | Compatibility | Not started | queue generation; complete; persistence |
+| 53 | Adaptive learning | Yes | Compatibility | Regression-tested | weak/due selection; 7-question Smart Review; 1/3/7/14/30 spacing; mastery update; +10/+3 parity; resume/reload; mobile |
+| 54 | Open/weak-area review | Yes | Compatibility | Verified | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
 | 55 | Private local notes | Yes | Clean | Not started | create; edit/delete if supported; reload; export |
 | 56 | Cloud notes | Yes | Compatibility | Not started | account sync; offline/failure behavior; no guest leak |
 | 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
