@@ -35,7 +35,7 @@ function normalize(input){
   return{version:VERSION,attemptSeq:safeInt(input.attemptSeq),items,sessions,active,rated};
 }
 function addDays(key,days){const [year,month,day]=key.split('-').map(Number),date=new Date(Date.UTC(year,month-1,day+days));return date.toISOString().slice(0,10)}
-function freezeItem(item,{reveal=false}={}){if(!item)return null;const base={key:item.key,code:item.code,id:item.id,book:item.book,question:item.question,source:item.source,license:item.license};if(reveal){base.answer=item.answer;base.reference=item.reference}return Object.freeze(base)}
+function freezeItem(item,{reveal=false}={}){if(!item)return null;const base={key:item.key,code:item.code,id:item.id,book:item.book,question:item.question,source:item.source,license:item.license};if(reveal){base.answer=item.answer;base.reference=item.reference;base.contextNote=String(item.contextNote||'').trim()}return Object.freeze(base)}
 
 export function createOpenReviewService({storage,lesson,progress,recall,games,adaptive,clock=()=>new Date(),random=Math.random}={}){
   if(!storage||!lesson||!progress||!recall||!games||!adaptive)throw new Error('Open Review requires Storage, Lesson, Progress, Recall Pack, Games, and Adaptive Learning owners.');
@@ -57,7 +57,7 @@ export function createOpenReviewService({storage,lesson,progress,recall,games,ad
   const summaryFromLesson=lessonState=>{let got=0,again=0;for(const [stepId,value] of Object.entries(lessonState?.responses||{}))if(/-rate$/.test(stepId)){if(Number(value)===1)got++;else if(Number(value)===0)again++}return Object.freeze({got,again,total:state.active?.itemKeys.length||0,gained:got*5+again})};
   const overview=()=>Object.freeze({due:dueCount(),accuracy:accuracy(),weakest:adaptive.reviewFocusCategory(),hasActive:Boolean(state.active),recentSessions:Object.freeze(state.sessions.slice(-5).map(row=>Object.freeze({...row,itemKeys:Object.freeze([...row.itemKeys])})))});
 
-  async function hydrateKey(key){const parsed=splitKey(key);if(!parsed||!validCode(parsed.code))return null;const loaded=await recall.loadBook(parsed.code),item=loaded.items.find(row=>row.id===parsed.id);if(!item)return null;return Object.freeze({key,code:loaded.book.code,id:item.id,book:loaded.book.name,question:item.question,answer:item.answer,reference:item.reference,source:loaded.source,license:loaded.license})}
+  async function hydrateKey(key){const parsed=splitKey(key);if(!parsed||!validCode(parsed.code))return null;const loaded=await recall.loadBook(parsed.code),item=loaded.items.find(row=>row.id===parsed.id);if(!item)return null;return Object.freeze({key,code:loaded.book.code,id:item.id,book:loaded.book.name,question:item.question,answer:item.answer,reference:item.reference,contextNote:String(item.contextNote||'').trim(),source:loaded.source,license:loaded.license})}
   async function hydrateKeys(keys){const out=[];for(const key of keys){const item=await hydrateKey(key);if(item)out.push(item)}return out}
   async function scheduledCandidates(limit){
     const rows=Object.entries(state.items).filter(([,row])=>row.nextDue&&row.nextDue<=today()).sort((a,b)=>String(a[1].nextDue).localeCompare(String(b[1].nextDue))||((a[1].got||0)/(a[1].seen||1))-((b[1].got||0)/(b[1].seen||1)));
@@ -74,11 +74,11 @@ export function createOpenReviewService({storage,lesson,progress,recall,games,ad
     const out=[];
     for(const book of books.slice(0,3)){
       const loaded=await recall.loadBook(book.code),rows=shuffled(loaded.items);
-      for(const row of rows){const key=keyFor(book.code,row.id);if(exclude.has(key)||state.items[key])continue;out.push(Object.freeze({key,code:book.code,id:row.id,book:book.name,question:row.question,answer:row.answer,reference:row.reference,source:loaded.source,license:loaded.license}));exclude.add(key);if(out.length>=limit)return out}
+      for(const row of rows){const key=keyFor(book.code,row.id);if(exclude.has(key)||state.items[key])continue;out.push(Object.freeze({key,code:book.code,id:row.id,book:book.name,question:row.question,answer:row.answer,reference:row.reference,contextNote:String(row.contextNote||'').trim(),source:loaded.source,license:loaded.license}));exclude.add(key);if(out.length>=limit)return out}
     }
     if(out.length<limit)for(const book of shuffled(manifest.books)){
       const loaded=await recall.loadBook(book.code),rows=shuffled(loaded.items);
-      for(const row of rows){const key=keyFor(book.code,row.id);if(exclude.has(key)||state.items[key])continue;out.push(Object.freeze({key,code:book.code,id:row.id,book:book.name,question:row.question,answer:row.answer,reference:row.reference,source:loaded.source,license:loaded.license}));exclude.add(key);if(out.length>=limit)return out}
+      for(const row of rows){const key=keyFor(book.code,row.id);if(exclude.has(key)||state.items[key])continue;out.push(Object.freeze({key,code:book.code,id:row.id,book:book.name,question:row.question,answer:row.answer,reference:row.reference,contextNote:String(row.contextNote||'').trim(),source:loaded.source,license:loaded.license}));exclude.add(key);if(out.length>=limit)return out}
     }
     return out;
   }
