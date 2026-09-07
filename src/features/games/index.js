@@ -1,4 +1,4 @@
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 export function gamesPage({games,onHome}){
   return{
@@ -8,7 +8,7 @@ export function gamesPage({games,onHome}){
       const render=state=>{
         if(disposed)return;
         if(state.phase==='launcher'){
-          host.innerHTML=`<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games, rebuilt cleanly</h1><p>Choose a verified game. Every mode uses the same controlled launcher, progress, and cleanup boundaries.</p></section><section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>{const last=mode.id==='per-book-recall'?null:games.lastResult(mode.id);return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP</p>`:''}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">${mode.id==='per-book-recall'?'Open recall library':`Play ${escapeHtml(mode.title)}`}</button></article>`}).join('')}</section><div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;return;
+          host.innerHTML=`<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games, rebuilt cleanly</h1><p>Choose a verified game. Every mode uses the same controlled launcher, progress, and cleanup boundaries.</p></section><section class="bq-game-launcher" aria-label="BibleQuest games">${games.modes.map(mode=>{const last=mode.id==='per-book-recall'?null:games.lastResult(mode.id),lastText=last?(mode.id==='kids-memory-match'?`Last result: <b>${last.score} star${last.score===1?'':'s'}</b>`:`Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP`):'';return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">${lastText}</p>`:''}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">${mode.id==='per-book-recall'?'Open recall library':`Play ${escapeHtml(mode.title)}`}</button></article>`}).join('')}</section><div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;return;
         }
         if(state.phase==='detective'){
           const item=state.detectiveItem;
@@ -17,6 +17,10 @@ export function gamesPage({games,onHome}){
         if(state.phase==='timeline'){
           const item=state.timelineItem;
           host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-timeline-score>Score <b>${state.score}</b> · +${state.gained} XP</div></section><section class="bq-panel bq-question-card bq-timeline-card" data-timeline="${escapeHtml(item.id)}"><p class="bq-eyebrow">TIMELINE CHALLENGE</p><h1>${escapeHtml(item.title)}</h1><p>Move the events until they are in chronological order, then check your timeline.</p><div class="bq-timeline-list">${state.timelineCurrent.map((event,index)=>`<div class="bq-timeline-row" data-timeline-row="${index}"><span class="bq-timeline-number">${index+1}</span><b>${escapeHtml(event)}</b><span class="bq-timeline-moves"><button type="button" aria-label="Move ${escapeHtml(event)} up" data-timeline-move="${index},-1" ${state.locked||index===0?'disabled':''}>↑</button><button type="button" aria-label="Move ${escapeHtml(event)} down" data-timeline-move="${index},1" ${state.locked||index===state.timelineCurrent.length-1?'disabled':''}>↓</button></span></div>`).join('')}</div>${state.timelineFeedback==='wrong'?`<div class="bq-game-explanation" data-timeline-feedback><strong>Not yet</strong><p>Your arrangement is preserved. Move the uncertain events and check again. The first miss awards review XP once; repeated checks cannot farm XP.</p></div>`:''}${state.timelineFeedback==='correct'?`<div class="bq-game-explanation" data-timeline-feedback><strong>Correct order</strong><p>You placed every event in chronological order.</p><small>TIMELINE / SEQUENCE</small></div>`:''}<div class="bq-game-actions">${state.locked?`<button type="button" class="bq-primary-button" data-timeline-replay>Next timeline</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button>`:`<button type="button" class="bq-primary-button" data-timeline-check>Check order</button>`}</div></section>`;return;
+        }
+        if(state.phase==='memory'){
+          const complete=state.memoryStars>0;
+          host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-game-launcher>All games</button><div class="bq-game-score" data-memory-score>Moves <b>${state.memoryMoves}</b> · Pairs ${state.memoryMatched}/${state.memoryCards.length/2}</div></section><section class="bq-panel bq-question-card bq-memory-card" data-memory-game><p class="bq-eyebrow">MEMORY MEADOW · AGE 3+</p><div class="bq-memory-mark" aria-hidden="true">🦊</div><h1>Match the animal friends</h1><p class="bq-memory-help">Flip two cards. Matching animals stay open; different animals turn back over.</p><div class="bq-memory-grid" style="--memory-cols:${state.memoryColumns}" data-memory-grid="${state.memoryColumns}">${state.memoryCards.map((card,index)=>{const face=card.open||card.done,className=card.done?' is-matched':face?' is-open':'';return `<button type="button" class="bq-memory-tile${className}" data-memory-card="${index}" data-memory-pair="${card.pair}" aria-label="Memory card ${index+1}${face?`, ${card.icon}`:''}" ${state.memoryResolving||card.done||card.open?'disabled':''}><span>${face?card.icon:'?'}</span></button>`}).join('')}</div>${state.memoryResolving?'<p class="bq-memory-status" role="status">Checking the pair…</p>':''}${complete?`<section class="bq-memory-complete" data-memory-complete><div class="bq-memory-stars" data-memory-stars>${'★'.repeat(state.memoryStars)}${'☆'.repeat(5-state.memoryStars)}</div><h2>${escapeHtml(state.memoryMessage)}</h2><p>Old arcade reward preserved: <strong>${state.memoryStars} stars</strong> · <strong>${state.memoryCoins} coins</strong>. This game did not award XP in the original arcade.</p><div class="bq-game-actions"><button type="button" class="bq-primary-button" data-memory-replay>Play again</button><button type="button" class="bq-secondary-button" data-game-launcher>Choose another game</button></div></section>`:''}</section>`;return;
         }
         if(state.phase==='recall-library'){
           const books=games.visibleRecallBooks();
@@ -46,13 +50,15 @@ export function gamesPage({games,onHome}){
           if(target.closest('[data-detective-replay]')){render(games.replayDetective());return}
           if(target.closest('[data-timeline-replay]')){render(games.replayTimeline());return}
           if(target.closest('[data-timeline-check]')){render(games.checkTimeline());return}
+          if(target.closest('[data-memory-replay]')){render(games.replayMemory());return}
+          const memory=target.closest('[data-memory-card]');if(memory){render(games.selectMemory(memory.dataset.memoryCard));return}
           const move=target.closest('[data-timeline-move]');if(move){const [index,direction]=move.dataset.timelineMove.split(',');render(games.moveTimeline(index,direction));return}
           if(target.closest('[data-recall-library]')){loading('Opening recall library…');render(await games.returnRecallLibrary());return}
           if(target.closest('[data-recall-reveal]')){render(games.revealRecall());return}
           const rate=target.closest('[data-recall-rate]');if(rate){render(games.rateRecall(rate.dataset.recallRate));return}
           if(target.closest('[data-recall-replay]')){loading('Preparing this book again…');render(await games.replayRecall());return}
           const book=target.closest('[data-recall-book]');if(book){loading('Loading selected Bible book…');render(await games.startRecallBook(book.dataset.recallBook));return}
-          const launch=target.closest('[data-game-launch]');if(launch){if(launch.dataset.gameLaunch==='per-book-recall'){loading('Opening recall library…');render(await games.openRecallLibrary())}else render(games.start(launch.dataset.gameLaunch));return}
+          const launch=target.closest('[data-game-launch]');if(launch){if(launch.dataset.gameLaunch==='per-book-recall'){loading('Opening recall library…');render(await games.openRecallLibrary())}else if(launch.dataset.gameLaunch==='kids-memory-match')render(games.start('kids-memory-match',{compact:host.getBoundingClientRect().width<420}));else render(games.start(launch.dataset.gameLaunch));return}
           const answer=target.closest('[data-game-answer]');if(answer){render(games.answer(answer.dataset.gameAnswer));return}
           if(target.closest('[data-game-next]')){render(games.next());return}
           if(target.closest('[data-game-replay]')){render(games.replay());return}
@@ -60,8 +66,9 @@ export function gamesPage({games,onHome}){
       };
       const onInput=event=>{const target=event.target instanceof Element?event.target:null;if(target?.matches('[data-recall-search]'))render(games.setRecallQuery(target.value))};
       const onSubmit=event=>{const form=event.target instanceof HTMLFormElement?event.target:null;if(!form?.matches('[data-detective-form]'))return;event.preventDefault();try{const input=form.querySelector('[data-detective-answer]');render(games.answerDetective(input?.value||''))}catch(error){showError(error)}};
+      const unsubscribe=games.subscribe(render);
       host.addEventListener('click',onClick);host.addEventListener('input',onInput);host.addEventListener('submit',onSubmit);render(games.showLauncher());
-      return()=>{disposed=true;host.removeEventListener('click',onClick);host.removeEventListener('input',onInput);host.removeEventListener('submit',onSubmit);games.leave()};
+      return()=>{disposed=true;unsubscribe();host.removeEventListener('click',onClick);host.removeEventListener('input',onInput);host.removeEventListener('submit',onSubmit);games.leave()};
     }
   };
 }
