@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-open-review-bookkeeping
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
