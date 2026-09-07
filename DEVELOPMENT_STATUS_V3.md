@@ -10,31 +10,31 @@ Updated: 2026-09-08 JST
 - `main` and production Cloudflare remain untouched.
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
-- Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact candidate SHA after each gate.
-- Latest frozen checkpoint is `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+- Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
+- Latest frozen checkpoint remains `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` until the v3.27 bookkeeping gate and freeze finish.
 - Exact v3.26 bookkeeping run `34168229627` passed the complete accumulated suite before that freeze.
-- Previous frozen checkpoint was `release/v3.25-source-provenance` at `04f20094a03cd0b189d1626ef4f372917ce599e3`; exact v3.25 bookkeeping run `34160651319` passed the complete accumulated suite.
-- #89 Doctrinal safety/context functional run `34166910207` passed the complete accumulated suite.
-- #89 exact green implementation candidate before bookkeeping: `827e5edc5af48bb76a805fcb3d546975bfc14ec1`.
-- #89 exact v3.26 bookkeeping/release candidate: `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+- #55 Private local notes functional implementation candidate: `14893c5987234325165b3990e4f513423f3c1992`.
+- #55 functional verification run `34169365596` passed the complete accumulated suite.
+- The temporary verification branch `verify/v3.27-private-notes` was reset to the exact clean implementation candidate after the green run, removing its push trigger.
 
 ## Progress summary
 
-Inventory row states after the #89 bookkeeping/release gate:
+Inventory row states after the #55 functional gate:
 
 | State | Count |
 |---|---:|
 | Regression-tested | 53 |
-| Verified | 0 |
+| Verified | 1 |
 | Implemented | 0 |
-| Not started | 47 |
+| Not started | 46 |
 | Total | 100 |
 
-Strict verified-or-better parity is **53/100**.
+Strict verified-or-better parity is **54/100**.
 
-Official regression stability is **53/100** because the authoritative inventory now contains 53 rows in Regression-tested state. The earlier projected 52/100 post-v3.26 figure was stale bookkeeping language and is superseded by the actual inventory count.
+Official regression stability remains **53/100**. #55 is Verified, not Regression-tested, because the regression-promotion rule requires a later feature milestone to run the full suite with #55 still green.
 
 Current promotions:
+- #55 Private local notes — **Verified** after complete functional run `34169365596`; awaiting the v3.27 bookkeeping/release gate.
 - #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
 - #90 Source labels/attribution — **Regression-tested** after surviving the later #89 full functional and bookkeeping suites.
 - #17 NLT licensed-link path — Regression-tested.
@@ -54,14 +54,14 @@ Reader/source parity remains closed through the recovered NLT behavior except th
 
 ### #90 Source labels/attribution — Regression-tested
 
-#90 remains owned by the immutable BibleQuest content provenance registry plus the existing Scripture and Recall source owners. It survived the complete #89 functional suite on run `34166910207` and the v3.26 bookkeeping suite on run `34168229627`, including its architecture, edge, and 390px browser regressions.
+#90 remains owned by the immutable BibleQuest content provenance registry plus the existing Scripture and Recall source owners. It survived the complete #89 functional suite on run `34166910207` and the v3.26 bookkeeping suite on run `34168229627`, including architecture, edge, and 390px browser regressions.
 
 Frozen checkpoint:
 - `release/v3.25-source-provenance`
 - SHA `04f20094a03cd0b189d1626ef4f372917ce599e3`
 - bookkeeping run `34160651319` — fully green.
 
-No source-label MutationObserver, `window.BQ*` source injector, direct storage access, or source-fetch path was reintroduced by #89.
+No source-label MutationObserver, `window.BQ*` source injector, direct storage access, or source-fetch path was reintroduced.
 
 ## Milestone 13 — Doctrinal safety/context
 
@@ -86,35 +86,47 @@ Clean v3 implementation:
 - `src/core/recall-packs.js` re-evaluates imported unfoldingWord questions through the current policy and never trusts a stale embedded `safety:{action:"allow"}` tag.
 - Missing/unsafe imported safety metadata fails closed. High-risk universal/disputed doctrine is quarantined.
 - A reviewed `PASSAGE_CONTEXT` Recall item exposes a separate immutable `contextNote`; the imported answer and Scripture reference are preserved unchanged.
-- Per-book Recall renders the BibleQuest context note only after answer reveal and keeps unfoldingWord source/license separate.
-- `src/app/open-review.js` transports the trusted context note but deliberately withholds answer, reference, and context note before reveal.
-- Open Smart Review renders the note only after reveal and does no doctrinal classification in its UI.
+- Per-book Recall and Open Smart Review render BibleQuest context only after answer reveal and keep source/license separate.
 - Shared Games/Adaptive, Story Journey checkpoints, Guided Study observation questions, and Daily Journey retrieval questions retain safety admission at their established service/content boundaries.
-- Deep Questions remains non-binary and does not score spiritual quality.
-- Wisdom Situations remains a strongest-supported-judgment exercise; +8 XP/+1 situation is participation-based and does not increment `quizCorrect` merely for selecting a doctrinally preferred answer.
+- Deep Questions and Wisdom remain non-spiritual-scoring workflows.
 - Lesson and Progress ownership was not changed and no #89 XP scheme was introduced.
-- Learn retains the exact `Learn` heading and safety/source transparency.
 
-Permanent protection:
-- `scripts/validate-v3-doctrinal-safety.mjs`
-- updated `scripts/validate-v3-architecture.mjs`
-- `tests/v3-doctrinal-safety-edge.mjs`
-- updated `tests/v3-recall-packs-edge.mjs`
-- `tests/v3-doctrinal-context-presentation-edge.mjs`
-- `tests/v3-doctrinal-safety-smoke.mjs`
-- `tests/v3-doctrinal-context-presentation-smoke.mjs`
+Permanent protection includes the doctrinal-safety validators plus edge and 390px browser regressions.
 
-Functional verification history:
-- Run `34166578446` — failed immediately in the general architecture validator because it still required the obsolete pre-#89 raw `row?.safety?.action!=='allow'` Recall contract. Root cause was a stale validator, not runtime classification. The validator now requires current re-evaluation via `reviewImportedRecall`, quarantine filtering, trusted context projection, and rejects raw imported allow-tag admission.
-- Run `34166769435` — all architecture/edge checks and early browser regressions passed, then the existing doctrinal mobile smoke exposed the global shell account button at 38px. Root cause was `.bq-session-chip{min-height:38px}` outside Wisdom’s already-correct 44px controls. The shell owner now enforces 44px and the existing mobile regression remains permanent coverage.
-- Run `34166910207` — complete accumulated suite fully green through Games, including the real 390px Acts per-book Recall → Review again → Open Smart Review passage-context reveal path.
+Verification history:
+- Run `34166578446` exposed a stale architecture-validator assumption; validator contract was corrected, not runtime behavior.
+- Run `34166769435` exposed a 38px global shell account control; the shell owner was corrected to the 44px mobile target.
+- Run `34166910207` passed the complete accumulated functional suite.
+- Run `34168229627` passed the exact v3.26 bookkeeping state before freeze.
 
-Bookkeeping/release verification:
-- Candidate `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` added the #89 architecture owner/boundaries and aligned the four bookkeeping documents without changing runtime code.
-- Isolated branch `verify/v3-doctrinal-safety-bookkeeping` temporarily enabled push only for the verification run.
-- Run `34168229627` passed the complete accumulated architecture, edge, Playwright, browser, mobile, Transform, recordings, media, Recall, and Games suite.
-- The verification branch was reset back to the exact clean candidate SHA, removing the temporary push-trigger commit.
-- `release/v3.26-doctrinal-safety` was created and SHA-verified at exactly `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+## Milestone 14 — Private local notes
+
+### #55 Private local notes — Verified
+
+The implementation deliberately separates standalone Private Notes from Deep Questions' existing inline Lesson response. No second Lesson or Progress owner was created.
+
+Clean v3 implementation:
+- `src/app/private-notes.js` is the single standalone Private Notes state/orchestration owner.
+- It consumes the existing `src/core/storage.js` boundary and owns only the namespaced `private-notes` record; feature/UI code never touches browser storage directly.
+- Note IDs are deterministic (`note-1`, `note-2`, ...), timestamps are normalized, malformed persisted records fail safely, and duplicate/invalid records are discarded during normalization.
+- Create, read/list, edit, delete, service recreation/reload, and local versioned JSON export are supported.
+- Export schema is `biblequest.private-notes`, version 1.
+- The Learn page routes to one `private-notes` route through the existing router.
+- `src/features/private-notes/index.js` is presentation/event forwarding only.
+- The UI explicitly states that v3.27 notes are private to the current device and are not uploaded or account-synced.
+- #55 does not call Supabase/account APIs. Cloud sync remains #56 and is not partially implemented here.
+- No XP, streak, mastery, spiritual score, or lesson-state mutation was invented for notes.
+
+Permanent regression coverage:
+- `tests/v3-private-notes-edge.mjs` — CRUD, normalization, deterministic IDs, reload, delete, export schema, invalid clock, and shared-storage-boundary requirements.
+- `tests/v3-private-notes-smoke.mjs` — real 390px Learn → Notes workflow; create, reload, edit, JSON download, delete, >=44px targets, no horizontal overflow, no browser/page errors.
+- `.github/workflows/v3-regression.yml` permanently includes both tests while remaining manual-only on the development branch.
+
+Functional verification:
+- Clean implementation candidate: `14893c5987234325165b3990e4f513423f3c1992`.
+- Isolated verification trigger commit: `e3d67f3f562fe328fc3b34ed1f9efdd1e0dda831` — verification-only and never a release candidate.
+- Run `34169365596` — complete accumulated architecture, edge, Playwright/browser/mobile, Transform, recordings, media, Recall, and Games suite fully green.
+- After the run, `verify/v3.27-private-notes` was reset to the exact clean candidate, restoring manual-only workflow state.
 
 ## Defect / root-cause ledger retained
 
@@ -138,15 +150,19 @@ Bookkeeping/release verification:
 - `V3-JKO-TOUCH-001` — Japanese recovery controls enforce >=44px.
 - `V3-SOURCE-LABEL-TEST-001` — corrected the provenance edge matcher; no app change.
 - `V3-SOURCE-LABEL-SELECTOR-TEST-001` — corrected the provenance smoke Reader selector; no app change.
-- `V3-DOCTRINE-ARCH-VALIDATOR-001` — run `34166578446`; removed obsolete raw-only-allow validator contract and replaced it with reviewed-safety invariants.
-- `V3-SHELL-TOUCH-001` — run `34166769435`; shell account button increased from 38px to the 44px mobile touch-target contract.
+- `V3-DOCTRINE-ARCH-VALIDATOR-001` — removed obsolete raw-only-allow validator contract and replaced it with reviewed-safety invariants.
+- `V3-SHELL-TOUCH-001` — shell account button increased from 38px to the 44px mobile touch-target contract.
 
 ## Next major milestone
 
-v3.26 is frozen. Reassess remaining study/core parity debt against the authoritative inventory, recovered loaded old source, dependencies, partial v3 work, user value, and architectural risk before choosing the next implementation. Do not blindly start Kids #38–40 or ministry/devotional work while higher-value core Bible-study parity debt remains.
+Finish the v3.27 bookkeeping gate and freeze #55 before beginning another feature.
 
-Potential core candidates to assess include #55 private local notes, #56 cloud notes, #86 accessibility support, #87 content reporting, #88 content moderation, #91 Content Review workbench, #95 client diagnostics, #96 operational recovery/error boundary, and #97–99 PWA/offline behavior. Also assess whether any remaining Bible-content path depends on content-review infrastructure.
+After the v3.27 freeze, the default next core dependency is **#56 Cloud notes** because it should compose the now-verified local Notes model rather than create a parallel note schema. #56 must add account ownership/sync, guest isolation, conflict/error behavior, and offline/failure behavior through the existing API/session boundaries.
+
+Before #56 implementation, inspect the recovered old cloud-note contract and current Supabase schema/API permissions. Do not invent a backend table or client-side trust model from assumptions.
+
+Kids #38–40 and ministry/community work remain deferred while higher-priority core parity debt is being closed. Accessibility #86, reporting/moderation #87–88, Content Review #91, diagnostics/recovery #95–96, and PWA/offline #97–99 remain later candidates after dependency reassessment.
 
 ## Release rule
 
-#89 passed the complete functional suite on run `34166910207` and the exact v3.26 bookkeeping state passed the complete accumulated suite on run `34168229627`. `release/v3.26-doctrinal-safety` is frozen at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`. Production v2, `main`, and production Cloudflare remain unchanged.
+#55 passed its complete functional suite on run `34169365596`. The exact bookkeeping state must now pass the same full accumulated suite before `release/v3.27-private-local-notes` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
