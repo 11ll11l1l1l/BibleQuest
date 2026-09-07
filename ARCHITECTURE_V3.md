@@ -8,123 +8,115 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/router.js` — navigation/history
 - `src/app/store.js` — global application state
 - `src/core/storage.js` — browser persistence boundary
-- `src/core/api.js` — Supabase/remote calls, including protected media data
+- `src/core/api.js` — Supabase/remote calls
 - `src/app/session.js` — auth/session/password lifecycle
 - `src/app/account.js` — signup/recovery/device workflows
 - `src/core/bible.js` — Bible sources/packs/search/external links
-- `src/app/reader.js` — reader state/navigation/read marking
-- `src/core/progress.js` — XP/streak/activity/badges/counters
-- `src/core/recall-packs.js` — Per-book Recall manifest/question-pack loading, validation, approval filtering, and cache
-- `src/engines/lesson.js` — one guided lesson lifecycle/state/persistence engine
-- `src/app/study.js` — Guided Study library/open/resume/restart/completion orchestration over the Lesson engine
-- `src/app/deep-questions.js` — Deep Questions selection/open/resume/restart/Reader handoff/close orchestration over the Lesson engine
+- `src/app/reader.js` — Reader state/navigation/read marking
+- `src/core/progress.js` — XP/streak/activity/badges/counters/events
+- `src/core/recall-packs.js` — Recall pack loading/validation/cache
+- `src/engines/lesson.js` — one shared lesson lifecycle/state/persistence engine
+- `src/app/study.js` — Guided Study orchestration over Lesson
+- `src/app/deep-questions.js` — Deep Questions orchestration over Lesson
+- `src/app/story-journey.js` — Story Journey orchestration over Lesson/Progress/Reader
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration only
-- `src/app/audio.js` — one browser media/player instance and playback command lifecycle
-- `src/app/recordings.js` — protected recordings list/source selection/switch/leave lifecycle
-- `src/app/media-library.js` — Media Library browse/filter/open orchestration over the verified Recordings owner
-- `src/app/games.js` — one Games launcher/round/scoring/review/result-persistence lifecycle
+- `src/app/audio.js` — one browser media/player lifecycle
+- `src/app/recordings.js` — protected recording list/source lifecycle
+- `src/app/media-library.js` — Media Library orchestration over Recordings
+- `src/app/games.js` — one Games launcher/round/scoring/review/result lifecycle
+
+## Bible-study shared boundaries
+
+1. `src/engines/lesson.js` is the only reusable lesson/session/step/response persistence engine. Guided Study, Deep Questions, Story Journey, Wisdom Situations, adaptive study, or pastor-linked study activities must not create parallel lesson runtimes when the shared contract fits.
+2. Feature `content.js` modules are static definitions only. They cannot own storage, backend calls, navigation, Progress mutation, or DOM lifecycle.
+3. Feature `index.js` modules are presentation/event forwarding only. They cannot call storage/backend owners directly or calculate competing lifecycle state.
+4. `src/app/reader.js` remains the only Reader state owner. Study features delegate Scripture handoff through it.
+5. `src/core/progress.js` remains the only XP/streak/activity/counter/event owner. A study feature cannot mutate XP or counters directly.
+6. Reflection/application text is never interpreted as a spiritual-quality score, diagnosis, moral rank, or measure of divine approval.
+7. Persisted Lesson definitions use explicit versions; version changes invalidate incompatible stale sessions through the shared Lesson contract instead of feature-specific migration patches.
 
 ## Guided Study boundaries
 
-1. `src/engines/lesson.js` remains the only lesson lifecycle engine. Guided Study must not create a parallel step/session/response state machine.
-2. `src/features/study/content.js` is static curated study definition content only. It contains no storage, navigation, progress mutation, Supabase calls, or DOM lifecycle.
-3. `src/app/study.js` owns Guided Study library selection, opening/resuming/restarting a study, completion handoff to Progress, and leave/close behavior. It delegates all per-step response, validation, score, and persisted session state to the verified Lesson engine.
-4. `src/features/study/index.js` is presentation and event forwarding only. It cannot read/write browser storage, call Supabase, mutate Progress directly, or calculate a competing lesson state.
-5. Completion uses a deterministic event identity derived from the study id + definition version. Reopening a completed study or retrying completion cannot duplicate XP/activity/streak effects.
-6. Curated Guided Study content follows Scripture-first progression: passage/context → observation/understanding → checked recall/context question where useful → personal reflection → concrete response/action. Reflection text is not graded as spiritual quality.
-7. Guided Study scores only objective/evaluated lesson questions. Reflection, confirmation, or application responses are never converted into a spiritual score, diagnosis, moral ranking, or measure of divine approval.
-8. Leaving Study closes only the active in-memory Lesson engine selection; persisted session state remains available for explicit resume. Returning must not create a second engine/runtime.
-9. Definition version changes intentionally invalidate stale persisted sessions through the existing Lesson engine contract rather than migration patches inside the UI.
-10. Later Story Journey, Wisdom Situations, and pastor-linked study activities should reuse the same Lesson lifecycle where their behavior fits rather than create another lesson engine.
+1. `src/features/study/content.js` contains static curated study definitions only.
+2. `src/app/study.js` owns library selection, open/resume/restart, completion reconciliation, Reader handoff, and close only.
+3. Per-step response/validation/persistence remains in Lesson.
+4. Completion uses one deterministic Progress identity and cannot duplicate activity on reopen.
+5. No unverified XP scheme is invented; current verified completion records `xp: 0`, meaningful activity, and one reflection metric.
 
 ## Deep Questions boundaries
 
-1. `src/engines/lesson.js` remains the only lifecycle/session/response persistence engine for Deep Questions. No Deep Questions-specific storage key or second note/session state machine is permitted.
-2. `src/features/deep-questions/content.js` contains static recovered question, option, reflection, and Scripture-reference definitions only. It cannot own storage, progress, navigation, backend calls, or DOM lifecycle.
-3. `src/app/deep-questions.js` is the single Deep Questions orchestration owner. It owns library selection, rotating-question selection, open/resume/restart, Reader handoff, and close only; response validation/persistence remains delegated to Lesson.
-4. `src/features/deep-questions/index.js` is presentation and event forwarding only. It cannot call Lesson directly, mutate Progress, access browser storage, or calculate competing session state.
-5. Deep Questions has no Progress/XP handoff unless verified parity evidence is established later. The retained v2 response path did not award XP, so v3 must not invent one.
-6. Deep Question choices are open reflection prompts, not objective doctrine quiz answers. No answer index may be treated as a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
-7. The supported sequence is initial response → open reflection and Scripture references → private note. References are available for Reader handoff after the response.
-8. The private note is currently a Lesson text response only. This preserves save/resume/reload without prematurely implementing or duplicating #55 Private local notes; #55 remains a separate future owner/capability.
-9. Reader handoff delegates to `src/app/reader.js`; returning to Deep Questions resumes the persisted Lesson session rather than creating a second runtime.
-10. The retained featured-question rotation uses the old day-of-month rule while the full 18-question library remains selectable.
-11. Story Journey and Wisdom Situations should reuse this shared Lesson foundation where appropriate while keeping their own thin feature orchestration inside clearly defined owner boundaries.
+1. `src/features/deep-questions/content.js` contains the 18 retained static definitions only.
+2. `src/app/deep-questions.js` owns selection, featured rotation, open/resume/restart, Reader handoff, and close.
+3. Deep Questions creates no separate storage key or note runtime; its private note is a Lesson text response.
+4. Deep Questions has no Progress dependency because the retained parity path did not award XP.
+5. Open reflection choices are unscored; Scripture/reflection reveal follows the initial response.
+
+## Story Journey boundaries
+
+1. `src/features/story-journey/content.js` is the sole retained Story Journey definition source. It contains 10 immutable stories, their five scene texts, checkpoint choices/answers/references, and Lesson definitions only.
+2. `src/app/story-journey.js` is the single Story Journey orchestration owner. It owns library selection, random selection, open/resume/restart/another, checkpoint-to-Progress reconciliation, Reader handoff, and close.
+3. Scene progression, checkpoint response locking, completion state, attempt identity, and persistence remain exclusively in `src/engines/lesson.js`.
+4. Story Journey never writes browser storage directly and never owns a backend path.
+5. Story Journey rewards are parity behavior, not invented values: correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP`; a correct answer contributes exactly one `quizCorrect` metric.
+6. Reward writes go only through `src/core/progress.js` using deterministic event id `story-journey:<story>:v<definitionVersion>:<startedAt>`. Reopening a completed attempt must reconcile as duplicate and award nothing.
+7. Restart creates a new Lesson attempt with a new `startedAt`, allowing that new attempt to earn its checkpoint reward once. Repeated reads of the same completed attempt cannot farm XP.
+8. Reader handoff delegates to `src/app/reader.js`; Story Journey cannot own Bible book/chapter state.
+9. `src/features/story-journey/index.js` is presentation/event forwarding only and cannot import Lesson, Progress, storage, API, or Reader implementation internals.
+10. Story Journey styling is isolated to `src/ui/story-journey.css`; the stable Learn shell contract remains unchanged.
+11. Story Journey must remain compatible with 390px mobile no-overflow and >=44px touch controls.
+
+## Future Wisdom / adaptive-study boundaries
+
+1. #50 Wisdom Situations should reuse the Lesson engine for scenario/choice/reference lifecycle and use Progress only if verified parity evidence requires a reward.
+2. #53 Adaptive learning may select content using mastery/weak-area data but must not become a second Lesson engine or second Progress owner.
+3. #54 Open/weak-area review should generate review queues through one defined owner/service and feed verified activities rather than duplicate their scoring/persistence logic.
 
 ## Future Devotional / Ministry boundaries
 
-The detailed design contract is `DEVOTIONAL_MINISTRY_DESIGN_V3.md`. These boundaries are future requirements and do not mark the ministry inventory rows implemented.
+The detailed design contract is `DEVOTIONAL_MINISTRY_DESIGN_V3.md`; documentation does not mark ministry rows implemented.
 
-1. Message, Devotional, and Task are first-class ministry post types. A Devotional must not be reduced to a generic assignment label.
+1. Message, Devotional, and Task are first-class ministry post types under one ministry post/task identity.
 2. Pastor/Admin authoring uses one freeform ministry composer/service model shared by Ministry Hub, Inbox, Workspace, Assignments, and later push delivery.
-3. A member may read the published post, their own Task response, and permitted aggregate completion counts. A member must never receive another member's response body from the client API.
-4. Pastor/Admin response review is role- and congregation-scoped.
-5. Response privacy must be enforced by backend authorization/RLS and API shape. UI hiding is never access control.
-6. Aggregate counts such as `18 answered` must come from an authorized aggregate query/view/RPC or equivalent service contract; the browser must not fetch all private responses merely to count them.
-7. Future Ministry UI owns presentation only. The verified API/service layer remains the only direct Supabase boundary, while Session/Congregation owners remain authoritative for identity, role, and membership.
-8. Assignment push workflow (#75) must layer delivery/notification on the same ministry post/task identity rather than create a second assignment system.
-9. Pastor-authored Devotionals may later link to a Bible passage, Guided Study, Deep Question, or Task, but do not bypass Ministry publication/privacy rules or duplicate the Lesson engine.
+3. A member may read the published post, their own Task response, and permitted aggregate counts only.
+4. Another member's response body must never be delivered to an ordinary member client.
+5. Pastor/Admin response review is role- and congregation-scoped.
+6. Response privacy is enforced by backend authorization/RLS/API shape, not UI hiding.
+7. Aggregate counts such as `18 answered` must come from an authorized aggregate query/view/RPC or equivalent service contract.
+8. Assignment Push (#75) layers delivery/notification on the same ministry post/task identity; it cannot create a second assignment system.
 
 ## Transform boundaries
 
-1. `src/engines/transform.js` alone owns spiritual/personality/bias/reflection Transform state and derived results.
-2. `src/features/transform/content.js` is the definition source; UI never recalculates result logic.
-3. `src/app/transform.js` coordinates Transform results with `src/core/progress.js`, but owns no Transform state and accesses no storage implementation.
-4. Basic and Full completion use deterministic progress events; reopening or recalculating cannot duplicate XP/counters.
-5. Old `window.BQ_TRANSFORMATION`, direct `localStorage`, standalone account gates, body modals, mutable runtime page indexes, and runtime-recovery loaders are forbidden in v3.
-6. Transform is private reflection; its results are not diagnosis, spiritual ranking, or a measure of divine approval.
+1. `src/engines/transform.js` alone owns Transform state and derived results.
+2. `src/features/transform/content.js` is the definition source; UI never recalculates results.
+3. `src/app/transform.js` coordinates with Progress but owns no competing Transform state.
+4. Completion uses deterministic Progress events; reopen/recalculate cannot duplicate XP/counters.
+5. Old `window.BQ_TRANSFORMATION`, direct `localStorage`, standalone account gates, body modals, mutable page globals, and recovery loaders are forbidden in v3.
 
-## Audio / Live Recordings boundaries
+## Audio / Recordings / Media boundaries
 
-1. `src/app/audio.js` is the only v3 owner allowed to create, replace, command, or destroy an embedded media player.
-2. At most one `[data-bq-audio-player]` iframe may exist for the active Audio owner. Loading a new source tears the old frame down before creating the new one.
-3. YouTube replay playback uses a single `youtube-nocookie.com` iframe with direct postMessage commands. v3 must not inject the YouTube iframe API script, global callbacks, MutationObservers, or document-global player registries.
-4. `src/app/recordings.js` alone owns protected recordings data state, selected source, switch lifecycle, leave cleanup, and recoverable list errors. It talks to the Audio owner and media API only.
-5. `src/features/recordings/index.js` is presentation only. It does not create iframes, call Supabase, or own player state.
-6. `src/core/api.js` remains the only Supabase boundary. Media list requests are bounded; guest mode is stopped before a protected media request is made.
-7. Leaving any playback route unloads the active player. Returning creates a clean view over the same owners rather than another player runtime.
-8. A failed or unsupported media source must surface a recoverable state while the BibleQuest shell remains usable.
-9. The v2 `window.BQMediaLibrary`/body-layer/MutationObserver/document-handler implementation is behavioral reference only and must not be imported into v3.
-
-## Media Library boundaries
-
-1. `src/app/media-library.js` is the only owner of Media Library browse state: all/featured view, search query, current library selection, and route-local leave/reset behavior.
-2. Media Library does not query Supabase directly. It consumes the already-verified `src/app/recordings.js` list contract, preserving one protected-media data path.
-3. Media Library does not create or command an iframe directly. Opening an item delegates to Recordings, which delegates to the single Audio owner.
-4. Browse filtering/search is local and deterministic. Changing browse filters tears down active playback before rerendering the library.
-5. `src/features/media-library/index.js` is presentation only and cannot import backend/player implementation details.
-6. Guest/account separation is inherited from the Recordings owner; a guest Media Library load must make no media API request.
-7. The supported parity surface is the published YouTube replay media actually exposed by the old operational `bible_media_library` path. v3 does not invent unsupported PDF/audio/document types during parity reconstruction.
-8. Leave/return must reset route-local library state and leave zero hidden player instances or leaked listeners.
+1. `src/app/audio.js` is the only owner allowed to create/replace/command/destroy the embedded media player.
+2. `src/app/recordings.js` alone owns protected recording list/source/switch/leave lifecycle.
+3. `src/app/media-library.js` owns browse/filter/open orchestration but delegates protected data to Recordings and playback to Audio.
+4. `src/core/api.js` is the only Supabase boundary.
+5. Leaving playback routes tears down the active player; returning creates a clean view over the same owners.
 
 ## Games boundaries
 
-1. `src/app/games.js` is the only v3 owner of game launch, active round state, answer/reveal/order locking, score, XP handoff, replay, switch, leave, review queues, and persisted game result summaries.
-2. `src/features/games/content.js` is the built-in quiz mode/question definition source. UI does not construct a competing question bank.
-3. `src/features/games/detectives.js` is the retained static clue/reference definition source for Character Detective. It contains no scoring, storage, navigation, or event lifecycle.
-4. `src/features/games/timelines.js` is the retained static event-order definition source for Timeline. It contains no reorder state, answer checking, XP, storage, navigation, or listener lifecycle.
-5. `src/core/recall-packs.js` is the only owner allowed to fetch `data/packs/manifest.json` and `data/packs/questions/*`. It validates manifest paths, validates pack shape, caches on demand, and excludes any question whose safety action is not `allow`.
-6. `src/features/games/index.js` is presentation and event forwarding only. It does not fetch packs, calculate progress, write browser storage, call Supabase, or create its own navigation/game runtime.
-7. Game progress writes go only through `src/core/progress.js`. The launcher never mutates XP/streak/badges directly.
-8. Persisted round summaries, Character Detective results, Timeline results, Per-book Recall review queues, and study statistics go only through the injected `src/core/storage.js` boundary. No game module uses `localStorage` or `sessionStorage` directly.
-9. Starting another mode replaces the active round inside the same owner. Leaving Play tears the round down; returning creates a clean launcher rather than another listener/runtime instance.
-10. Quick Recall, Context Challenge, Mixed Quest, Per-book Recall, Character Detective, and Timeline are frozen through `release/v3.14-timeline`. New game modes extend the same owner rather than adding parallel launch/scoring engines.
-11. Per-book Recall reuses retained unfoldingWord Translation Questions v90 data assets only. The old global deck runtime is reference behavior and is not imported.
-12. Per-book Recall preserves on-demand book loading, reveal-before-rating, `Review again` / `Got it`, +1/+5 XP parity, a persistent per-book review queue, study/result persistence, and CC BY-SA 4.0 attribution.
-13. Character Detective reuses only the five retained clue/reference records from the old content source. Typed answer comparison, +12/+3 XP, duplicate-submit protection, result persistence, replay, switch, and leave are owned by `src/app/games.js`; no standalone Detective runtime or global data owner is permitted.
-14. Timeline reuses only the three retained ordered event sets from the old content source. Reorder/check/retry/result/replay state is owned by `src/app/games.js`. A first failed check may award +4 XP once; repeated failed checks award nothing; solving after a miss awards the remaining +16 so a solved round totals +20. This anti-farming rule is regression-tested.
-15. Kids arcade parity may remain accessible as a separate surface while Bible-study core work is prioritized. Optional deeper Kids integration must not be pulled into core Study owners or block the Study roadmap.
+1. `src/app/games.js` is the only game launch/round/score/XP/replay/switch/leave/result owner.
+2. Static game definition modules contain no scoring, persistence, navigation, or listener lifecycle.
+3. `src/core/recall-packs.js` alone loads/validates/caches per-book Recall pack data.
+4. Game Progress writes go only through `src/core/progress.js`.
+5. Starting another game replaces the active round inside the same owner; leaving tears it down.
+6. Kids arcade parity may remain accessible as a separate surface while deeper #38–40 integration is deferred.
 
-## Global hard boundaries
+## Global hard boundary
 
-One boot, one router, one session owner, one storage boundary, one API boundary, one Bible service, one reader state owner, one progress owner, one Recall Pack data owner, one lesson engine, one Guided Study orchestration owner, one Deep Questions orchestration owner, one Transform engine, one Audio owner, one Recordings owner, one Media Library orchestration owner, and one Games launcher owner. Features render only inside the shell and clean up listeners. No v3 source depends on legacy `window.BQ*` globals.
+One boot, one router, one session owner, one global store, one storage boundary, one API boundary, one Bible service, one Reader owner, one Progress owner, one Recall Pack owner, one Lesson engine, one orchestration owner per study feature, one Transform engine, one Audio owner, one Recordings owner, one Media Library owner, and one Games owner. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive learning → weak-area review)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
 
-Kids arcade accessibility remains required, but deeper Kids integration is intentionally deferred while Bible-study and devotional/ministry core work is prioritized.
-
-Known-good frozen releases now extend through `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`; Timeline is frozen at `release/v3.14-timeline`, Character Detective at `release/v3.13-character-detective`, Per-book Recall at `release/v3.12-per-book-recall`, Mixed Quest at `release/v3.11-mixed-quest`, Games core at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`. Story Journey is Verified after functional run `34083462882` but must not be called frozen until its exact bookkeeping state passes the full accumulated suite. Production remains isolated on v2 until parity and stability release gates pass.

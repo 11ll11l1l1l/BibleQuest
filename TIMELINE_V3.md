@@ -2,187 +2,113 @@
 
 Updated: 2026-09-07 JST
 
-This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inventory remains the authoritative parity ledger.
+This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory remains authoritative.
 
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 42
+- **Regression-tested:** 43
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 56
-- **Verified or better:** 43 / 100 (**43% strict parity completion**)
-- **Fully regression-tested:** 42 / 100 (**42% stability coverage**)
-- **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
-- **Milestone 8:** Audio / Live Recordings / Media frozen through `release/v3.9-media-library`
-- **Milestone 9:** Core Games frozen through `release/v3.14-timeline`
-- **Milestone 10 current state:** #52 Expanded Guided Study frozen at `release/v3.15-guided-study`; #51 Deep Questions Verified after accumulated run `34082339971`; exact Deep Questions bookkeeping gate still required before freeze
-- **Next Bible-study target after Deep Questions freeze:** #49 Story Journey
-- **Kids arcade:** remains accessible; deeper #38–40 integration is deferred while Bible-study core is prioritized
-- **Later high-priority ministry requirement:** Pastor/Admin Message + Devotional + Task publishing, member private task responses, Pastor/Admin-only response bodies, member-visible aggregate answer count; see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
+- **Not started:** 55
+- **Verified or better:** 44 / 100 (**44% strict parity completion**)
+- **Fully regression-tested:** 43 / 100 (**43% stability coverage**)
+- **Latest frozen checkpoint:** `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`
+- **Current active feature:** #49 Story Journey — Verified after run `34083462882`; exact bookkeeping gate pending
+- **Next target after Story Journey freeze:** #50 Wisdom Situations
+- **Kids arcade:** accessible; deeper #38–40 integration remains deferred
+- **Later high-priority ministry requirement:** see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
 - **Production:** v2 remains live; v3 has not replaced production
 
-Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`. Design documentation alone never promotes a feature row.
+## Rebuild sequence
 
-## Reprioritized rebuild sequence
-
-| Milestone | Scope | Milestone state | Completion evidence / remaining work |
+| Milestone | Scope | State | Evidence / next action |
 |---:|---|---|---|
-| 1 | Shell / navigation | **Complete** | #1–5 Regression-tested |
-| 2 | Authentication / session | **Complete** | #6–10 Regression-tested |
-| 3 | Bible data / content | **Partial — parity gaps deferred** | #11–13, #18–19, #21–23 Regression-tested; #20 Implemented; #14–17 Not started |
-| 4 | User progress / state | **Complete** | #24–27 Regression-tested |
-| 5 | Lesson engine | **Complete (engine)** | #31 Regression-tested; shared by Guided Study and Deep Questions |
-| 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
-| 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
-| 8 | Audio / Live Recordings / Media | **Frozen complete** | #57–61 Regression-tested; through `release/v3.9-media-library` |
-| 9 | Games core | **Frozen core** | #32–37, #41 Regression-tested; frozen through `release/v3.14-timeline` |
-| 10 | Bible-study core | **Active** | #52 Regression-tested/frozen; #51 Verified; exact bookkeeping/freeze next; then #49/#50 |
-| 11 | Devotional / Ministry foundation | **Designed, not implemented** | High priority later; maps primarily to #66 and #73–78 |
-| 12 | Bible World / tutorial / remaining parity | **Not started** | #44–45, #84–85 and other remaining parity rows |
-| 13 | Full old-vs-new audit | **Not started** | Reconcile all 100 inventory rows; no compatibility-only row counts as parity |
-| 14 | Mobile regression | **Not started** | Full accumulated mobile workflow pass after parity audit |
-| 15 | Production deployment | **Not started** | Deploy v3 only after parity + stability gates pass |
+| 1 | Shell / navigation | Complete | #1–5 Regression-tested |
+| 2 | Authentication / session | Complete | #6–10 Regression-tested |
+| 3 | Bible data / content | Partial | #11–13, #18–19, #21–23 Regression-tested; #20 Implemented; #14–17 deferred parity debt |
+| 4 | User progress / state | Complete | #24–27 Regression-tested |
+| 5 | Lesson engine | Complete engine | #31 Regression-tested; shared by Guided Study, Deep Questions, Story Journey |
+| 6 | Daily Mission | Complete | #28–30 Regression-tested |
+| 7 | Transform | Frozen complete | #46–48 Regression-tested |
+| 8 | Audio / Live Recordings / Media | Frozen complete | #57–61 Regression-tested |
+| 9 | Games core | Frozen core | #32–37 and #41 Regression-tested |
+| 10 | Bible-study core | Active | #52 and #51 Regression-tested; #49 Verified; bookkeeping/freeze next; then #50/#53/#54 |
+| 11 | Devotional / Ministry foundation | Designed, not implemented | maps mainly to #66 and #73–78 |
+| 12 | Bible World / tutorial / remaining parity | Not started | remaining inventory rows |
+| 13 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 14 | Mobile regression | Not started | full accumulated mobile pass after parity audit |
+| 15 | Production deployment | Not started | only after parity + stability gates |
 
-## Milestone 9 evidence — Games core
+## Frozen release line
 
-- Games core passed accumulated run `34064004752` and is frozen as `release/v3.10-games-core`.
-- Mixed Quest passed run `34065176532` plus bookkeeping run `34065347665` and is frozen as `release/v3.11-mixed-quest`.
-- Per-book Recall passed run `34065874003` plus bookkeeping run `34066568163` and is frozen as `release/v3.12-per-book-recall` at `38fb34b1b068c6678957a0a25f6cda88fb185cf0`.
-- Character Detective passed retry run `34067063009` plus bookkeeping run `34067320927` and is frozen as `release/v3.13-character-detective` at `7c33895158037727880a3ae8eb6c2d44ccef6621`.
-- Timeline passed the full accumulated functional run `34071571139` and exact bookkeeping run `34071916832`.
-- Timeline is frozen as `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`.
-- Timeline later survived the full Guided Study accumulated run `34080576745` and is therefore Regression-tested.
+- Transform — `release/v3.7-transform-complete`
+- Audio/Recordings — `release/v3.8-audio-recordings`
+- Media Library — `release/v3.9-media-library`
+- Games core — `release/v3.10-games-core`
+- Mixed Quest — `release/v3.11-mixed-quest`
+- Per-book Recall — `release/v3.12-per-book-recall`
+- Character Detective — `release/v3.13-character-detective`
+- Timeline — `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`
+- Guided Study — `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`; bookkeeping run `34081724365`
+- Deep Questions — `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`; functional run `34082339971`; bookkeeping run `34082727818`
 
 ## Milestone 10 — Bible-study core
 
-### #52 Expanded Guided Study — Regression-tested and frozen
+### #52 Expanded Guided Study — Regression-tested
 
-Guided Study is built on the Regression-tested `src/engines/lesson.js`; it does not create a second lesson engine.
+Guided Study remains built on the single shared Lesson engine. Personal reflection/application is not spiritually scored, completion uses deterministic meaningful progress with `xp: 0`, and the stable Learn heading remains protected.
 
-Verified owner boundaries:
-1. Static curated definitions live in `src/features/study/content.js`.
-2. `src/app/study.js` owns library selection, open/resume/restart, completion reconciliation, Reader handoff, and leave/close.
-3. Lesson step/response/validation/persistence remains exclusively in `src/engines/lesson.js`.
-4. `src/features/study/index.js` is presentation/event forwarding only.
-5. Completion records one deterministic Progress event; reopening/repeated completion cannot farm XP or activity.
-6. Guided Study intentionally adds no unverified XP reward; completion uses `xp: 0`, meaningful activity, and `{reflections:1}`.
-7. Personal reflection/application remains private lesson response data and is never scored as spiritual quality, diagnosis, moral rank, or divine approval.
+### #51 Deep Questions — Regression-tested
 
-Initial studies:
-- **Who Is My Neighbor?** — Luke 10:25–37
-- **Abide and Bear Fruit** — John 15:1–17
-- **Faith That Acts** — James 2:14–26
+Deep Questions is frozen at v3.16 and then survived Story Journey run `34083462882`. It retains 18 recovered questions, unscored reflection choices, private Lesson-backed notes, Reader handoff, no invented XP, and no separate persistence runtime.
 
-Functional accumulated run `34080576745` passed the full suite. Exact bookkeeping run `34081724365` also passed. The exact bookkeeping commit was frozen as `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`.
+### #49 Story Journey — Verified
 
-Guided Study then survived the later Deep Questions accumulated run `34082339971`, so #52 is now Regression-tested.
+Functional run `34083462882` passed the full accumulated suite.
 
-### #51 Deep Questions — Verified
+Verified Story Journey behavior:
+1. Learn → Story Journey route while retaining `<h1>Learn</h1>`.
+2. 10 retained story records.
+3. Five scene steps plus one checkpoint per story.
+4. leave/return and reload resume through `src/engines/lesson.js`.
+5. correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP` parity.
+6. correct checkpoint increments `quizCorrect` once.
+7. deterministic Progress event prevents duplicate reward on reopen.
+8. restart creates a new attempt; replay is eligible once for that new attempt.
+9. Reader handoff opens the correct book/chapter.
+10. 390px mobile no-overflow, controls >=44px, no console/page errors.
 
-The rebuild recovered all 18 retained v2 Deep Questions and rebuilt them without importing the old global `BQ_DEEP_QUESTIONS` runtime.
+No Story Journey application defect was found in the first functional gate.
 
-Clean owner boundaries:
-1. `src/features/deep-questions/content.js` contains static question, reflection, option, and Scripture-reference definitions only.
-2. `src/app/deep-questions.js` owns selection/open/resume/restart/Reader handoff/close only.
-3. `src/engines/lesson.js` remains the sole lifecycle/session/response persistence owner; Deep Questions has no storage key or parallel note store.
-4. `src/features/deep-questions/index.js` is presentation/event forwarding only.
-5. `src/app/reader.js` remains the Reader state owner; Scripture handoff delegates through `reader.setBook`.
-6. Deep Questions has no Progress dependency and no XP award because no verified parity evidence supports one.
-7. Initial response choices are deliberately unscored; no spiritual-quality, moral-rank, or divine-approval score is created.
-8. Reflection and Scripture references are revealed after the initial response.
-9. The private note is persisted as the shared Lesson text response, preserving resume/reload without prematurely implementing #55 Private local notes.
-10. The old day-of-month rotating featured-question behavior is retained while all 18 questions remain directly selectable.
+### Next sequence
 
-Full accumulated functional run `34082339971` passed:
-- architecture validator
-- all accumulated edge regressions
-- Deep Questions edge regression
-- shell/account browser regression
-- Reader, Progress, Lesson, Guided Study browser regressions
-- Deep Questions browser regression at 390px
-- Daily Mission
-- Transform engine/basic/full
-- Live Recordings
-- Media Library
-- Games
-
-Deep Questions browser verification included:
-- Learn → Deep Questions while retaining stable `<h1>Learn</h1>`
-- all 18 recovered questions and rotating featured question
-- mobile no-overflow and >=44px controls
-- references hidden before the initial response
-- unscored response locking
-- reflection/reference reveal after response
-- Reader handoff to Matthew 18
-- resume after Reader handoff
-- private-note save, reload, and return persistence
-- completion/reopen with zero Progress mutation and no XP
-- restart
-- no console/page errors
-
-No Deep Questions application defect was found by the first functional gate, so no post-gate patch was required.
-
-### Next after Deep Questions freeze
-
-After the exact bookkeeping state passes one more accumulated gate and `release/v3.16-deep-questions` is frozen:
-1. #49 Story Journey
-2. #50 Wisdom Situations
-3. #53 Adaptive learning
-4. #54 Open/weak-area review
+After the exact Story Journey bookkeeping state passes and `release/v3.17-story-journey` is frozen:
+1. #50 Wisdom Situations
+2. #53 Adaptive learning
+3. #54 Open/weak-area review
 
 ## Current bookkeeping
 
-- #32 Quick Recall — **Regression-tested**
-- #33 Context Challenge — **Regression-tested**
-- #34 Mixed Quest — **Regression-tested**
-- #35 Per-book Recall — **Regression-tested**
-- #36 Character Detective / Who Am I — **Regression-tested**
-- #37 Timeline — **Regression-tested**
-- #41 Game launcher — **Regression-tested**
-- #51 Deep Questions — **Verified**
+- #49 Story Journey — **Verified**
+- #51 Deep Questions — **Regression-tested**
 - #52 Expanded Guided Study — **Regression-tested**
-- #61 Media Library — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **42 Regression-tested / 1 Verified / 1 Implemented / 56 Not started**
+- Totals — **43 Regression-tested / 1 Verified / 1 Implemented / 55 Not started**
 
 ## Devotional / Ministry later milestone
 
-This is a high-priority product requirement and is intentionally designed before implementation so privacy is not patched in later.
-
-Required future behavior:
-1. Pastor/Admin can publish a freeform **Message**, **Devotional**, or **Task**.
-2. Congregation members receive published items in the future Ministry Hub/Inbox.
-3. Tasks can contain one or more questions/prompts and members can submit their own freeform response.
-4. Individual response bodies are visible only to authorized Pastor/Admin for that congregation and to the member who authored their own response.
-5. Ordinary members may see only allowed aggregate completion information such as `18 answered`; they cannot read peer answers.
-6. Privacy is enforced server-side/RLS/API, not by hiding UI elements.
-7. Ministry Hub, Inbox, Assignments, Workspace, and Assignment Push reuse one ministry post/task identity and service boundary.
-
-Detailed contract: `DEVOTIONAL_MINISTRY_DESIGN_V3.md`.
-
-Primary later inventory mapping: #66 and #73–78. No status promotion occurs until implementation and regression are complete.
+Future implementation must preserve one ministry post/task identity for Message, Devotional, and Task; Pastor/Admin congregation-scoped response review; member-only access to their own response bodies; aggregate-only peer completion visibility; and backend/API/RLS privacy enforcement. Ministry Hub, Inbox, Assignments, Workspace, and Assignment Push must reuse this same service architecture.
 
 ## Kids accessibility decision
 
-The separate Kids game surface remains available for parity/accessibility. Deeper integration of #38 Kids Memory Match, #39 Hiragana Match, and #40 Kids Bible Who Am I is deferred while core Bible-study and devotional/ministry work is prioritized.
-
-Any unfinished Kids implementation remains isolated from the clean Bible-study branch and cannot be used as evidence to promote #38–40.
-
-## Deferred parity debt that must be cleared before 100%
-
-- #14 Japanese 口語訳 — Not started
-- #15 Japanese furigana — Not started
-- #16 Japanese vocabulary learning — Not started
-- #17 NLT live path — Not started
-- #20 STEPBible lexical/context tools — Implemented, not yet Verified
-- #38–40 deeper Kids integration — deferred, not promoted
+The separate Kids surface remains available. #38 Kids Memory Match, #39 Hiragana Match, and #40 Kids Bible Who Am I stay deferred and unpromoted while Bible-study core work continues.
 
 ## Release discipline
 
 - Do not modify `main` during the rebuild line.
 - Do not replace production with incomplete v3.
-- Do not modify Cloudflare during the isolated rebuild.
-- Each milestone closes only on an exact green bookkeeping commit and a frozen known-good release snapshot.
-- Every bug fix records a root cause and adds a regression test that would have caught the bug.
-- Normal v3 CI remains manual-only; isolated one-shot verification branches may temporarily use a push trigger solely for a single accumulated gate.
+- Do not modify production Cloudflare during the rebuild.
+- Each milestone closes only after the exact bookkeeping state passes the accumulated suite and is frozen as a known-good release.
+- Every bug fix records root cause and retains a regression test.
+- Normal v3 CI is manual-only; isolated verification branches may temporarily use a push trigger for one-shot CI execution.
