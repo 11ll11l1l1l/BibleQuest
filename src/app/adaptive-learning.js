@@ -80,6 +80,7 @@ export function createAdaptiveLearningService({storage,lesson,progress,clock=()=
   const dueCount=()=>{const date=today(),due=Object.values(state.questionStats).filter(row=>row.nextDue&&row.nextDue<=date).length;return Math.max(due,state.review.length)};
   const evidenceAccuracy=()=>{const rows=Object.values(state.questionStats),seen=rows.reduce((sum,row)=>sum+row.seen,0),correct=rows.reduce((sum,row)=>sum+row.correct,0);return seen?Math.round(correct/seen*100):0};
   const weakestTrack=()=>{const explored=ADAPTIVE_CATEGORIES.filter(key=>(state.mastery[key]||0)>0);return explored.sort((a,b)=>state.mastery[a]-state.mastery[b])[0]||null};
+  function reviewFocusCategory(){syncFromProgress();const min=Math.min(...ADAPTIVE_CATEGORIES.map(key=>state.mastery[key]||0)),tied=ADAPTIVE_CATEGORIES.filter(key=>(state.mastery[key]||0)===min),day=Math.floor(new Date(`${today()}T00:00:00Z`).getTime()/86400000);return tied[day%tied.length]||'Genesis'}
   const overview=()=>{syncFromProgress();return Object.freeze({due:dueCount(),accuracy:evidenceAccuracy(),weakest:weakestTrack(),mastery:Object.freeze({...state.mastery}),hasActive:Boolean(state.active),recentSessions:Object.freeze(state.sessions.slice(-5).map(row=>Object.freeze({...row,questionIds:Object.freeze([...row.questionIds])})))});};
   function rankQuestions(){
     syncFromProgress();const date=today(),review=new Set(state.review);
@@ -129,5 +130,5 @@ export function createAdaptiveLearningService({storage,lesson,progress,clock=()=
   function close(){lesson.close()}
   function getProfile(){syncFromProgress();return immutableProfile(state)}
 
-  return Object.freeze({overview,start,resume,answer,next,restart,another,close,getProfile,smartBank,categories:ADAPTIVE_CATEGORIES,questionCount:GAME_QUESTIONS.length});
+  return Object.freeze({overview,reviewFocusCategory,start,resume,answer,next,restart,another,close,getProfile,smartBank,categories:ADAPTIVE_CATEGORIES,questionCount:GAME_QUESTIONS.length});
 }
