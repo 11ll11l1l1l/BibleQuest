@@ -6,12 +6,12 @@ const root=process.cwd(),failures=[];
 const fail=message=>failures.push(message);
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const required=[
-  'index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/app/daily-mission.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js',
+  'index.html','src/app/bootstrap.js','src/app/router.js','src/app/store.js','src/app/session.js','src/app/account.js','src/app/reader.js','src/app/study.js','src/app/daily-mission.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js',
   'src/core/storage.js','src/core/api.js','src/core/bible.js','src/core/progress.js','src/core/recall-packs.js','src/engines/lesson.js','src/engines/transform.js',
-  'src/features/transform/content.js','src/features/transform/index.js','src/features/recordings/index.js','src/features/media-library/index.js','src/features/games/content.js','src/features/games/index.js',
-  'src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css',
+  'src/features/study/content.js','src/features/study/index.js','src/features/transform/content.js','src/features/transform/index.js','src/features/recordings/index.js','src/features/media-library/index.js','src/features/games/content.js','src/features/games/index.js',
+  'src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/study.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css',
   'src/features/home/index.js','src/features/account/index.js','src/features/learn/index.js','src/features/reader/index.js','src/features/progress/index.js','src/features/daily-mission/content.js','src/features/daily-mission/index.js',
-  'FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','data/packs/ATTRIBUTION.md'
+  'FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','DEVOTIONAL_MINISTRY_DESIGN_V3.md','data/packs/ATTRIBUTION.md'
 ];
 for(const file of required)if(!fs.existsSync(path.join(root,file)))fail(`Missing v3 required file: ${file}`);
 
@@ -19,7 +19,7 @@ const html=read('index.html');
 const scriptTags=[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match=>match[1]);
 if(scriptTags.length!==1||scriptTags[0]!=='src/app/bootstrap.js')fail(`index.html must boot exactly one script entry. Found: ${scriptTags.join(', ')||'none'}`);
 if(!/type=["']module["']/.test(html))fail('v3 bootstrap must be loaded as an ES module.');
-for(const style of['src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css'])if(!html.includes(style))fail(`index.html must load ${style}.`);
+for(const style of['src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/study.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css'])if(!html.includes(style))fail(`index.html must load ${style}.`);
 for(const legacy of['app.js','runtime-safety.js','cloud.js','live-rooms.js','modern-home.js','journey-loop.js','runtime-recovery.js','transform-launcher.js','bq2.js','media-library.js'])if(html.includes(legacy))fail(`Legacy runtime reference found in v3 index.html: ${legacy}`);
 
 const jsFiles=[];
@@ -52,6 +52,7 @@ onlyOwner(/export function createReaderService/,'src/app/reader.js','reader-stat
 onlyOwner(/export function createProgressService/,'src/core/progress.js','progress service');
 onlyOwner(/export function createRecallPackService/,'src/core/recall-packs.js','Recall Pack data service');
 onlyOwner(/export function createLessonEngine/,'src/engines/lesson.js','lesson lifecycle');
+onlyOwner(/export function createGuidedStudyService/,'src/app/study.js','Guided Study orchestration');
 onlyOwner(/export function createDailyMissionService/,'src/app/daily-mission.js','Daily Mission orchestration');
 onlyOwner(/export function createTransformEngine/,'src/engines/transform.js','Transform state/scoring');
 onlyOwner(/export function createTransformService/,'src/app/transform.js','Transform orchestration');
@@ -69,6 +70,11 @@ if(!api.includes('Live Recordings took too long to load'))fail('Media cloud requ
 
 const progress=read('src/core/progress.js');if(!progress.includes('Progress event identity conflict'))fail('Progress service must reject conflicting reuse of an event identity.');
 const recallPacks=read('src/core/recall-packs.js');for(const contract of['data/packs/manifest.json','data/packs/questions/${code}.json',"row?.safety?.action!=='allow'",'fetcher'])if(!recallPacks.includes(contract))fail(`Recall Pack service missing required contract: ${contract}`);if(/document\.|window\.|localStorage|sessionStorage|progress\.record|createClient/.test(recallPacks))fail('Recall Pack service must remain DOM/storage/progress/backend independent.');
+
+const study=read('src/app/study.js');for(const contract of['lesson.open','lesson.respond','lesson.advance','lesson.restart','lesson.close','progress.record','reader.setBook'])if(!study.includes(contract))fail(`Guided Study owner missing required contract: ${contract}`);if(/document\.|window\.|localStorage|sessionStorage|createClient|fetch\s*\(/.test(study))fail('Guided Study orchestration must remain DOM/storage-implementation/backend/fetch independent.');
+const studyUi=read('src/features/study/index.js');if(/progress\.record|localStorage|sessionStorage|createClient|storage\.|fetch\s*\(/.test(studyUi))fail('Guided Study UI bypasses Study/Lesson/Progress/storage ownership.');
+const studyContent=read('src/features/study/content.js');if(/progress\.record|localStorage|sessionStorage|createClient|document\.|window\.|fetch\s*\(/.test(studyContent))fail('Guided Study content must remain static definition data.');
+
 const transformEngine=read('src/engines/transform.js');if(/window\.|document\.|localStorage|sessionStorage|progress\.record|createClient/.test(transformEngine))fail('Transform engine must remain DOM/router/storage-implementation/API/progress independent.');
 for(const name of['calculateSpiritual','calculatePersonality','calculateBias']){const owners=jsFiles.filter(file=>new RegExp(`function\\s+${name}\\s*\\(`).test(fs.readFileSync(file,'utf8')));if(owners.length!==1||path.relative(root,owners[0]).replaceAll('\\','/')!=='src/engines/transform.js')fail(`Transform derived-result function ${name} must be defined only by src/engines/transform.js.`)}
 const transformService=read('src/app/transform.js');for(const contract of['transform:spiritual:v1:complete','progress.record','engine.calculateSpiritual'])if(!transformService.includes(contract))fail(`Transform orchestration missing contract ${contract}.`);if(/localStorage|sessionStorage|\.xp\s*=|\.streak\s*=/.test(transformService))fail('Transform orchestration bypasses storage/progress ownership.');
@@ -86,7 +92,8 @@ const inventory=read('FEATURE_INVENTORY_V3.md'),allowed=new Set(['Not started','
 if(rows.length!==100)fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${rows.length}.`);
 rows.forEach((line,index)=>{const columns=line.split('|').slice(1,-1).map(value=>value.trim());if(Number(columns[0])!==index+1)fail(`Feature inventory row sequence error at ${index+1}.`);if(!allowed.has(columns[4]))fail(`Invalid v3 status on row ${columns[0]}.`)});
 
-const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/bible.js','src/app/reader.js','src/core/progress.js','src/core/recall-packs.js','src/engines/lesson.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
+const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/bible.js','src/app/reader.js','src/core/progress.js','src/core/recall-packs.js','src/engines/lesson.js','src/app/study.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
+if(!architecture.includes('DEVOTIONAL_MINISTRY_DESIGN_V3.md'))fail('Architecture document must retain the future Devotional/Ministry design contract.');
 const status=read('DEVELOPMENT_STATUS_V3.md');if(!status.includes('Defect / root-cause ledger')||!status.includes('Next major milestone'))fail('Development status must retain defect ledger and next-work queue.');
 
 if(failures.length){console.error(`BibleQuest v3 architecture validation FAILED (${failures.length})`);failures.forEach(message=>console.error(`- ${message}`));process.exit(1)}
