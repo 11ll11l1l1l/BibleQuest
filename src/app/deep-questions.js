@@ -1,7 +1,13 @@
 import { DEEP_QUESTIONS, getDeepQuestion } from '../features/deep-questions/content.js';
+import { assertNeutralAssessment, reviewNeutralContent } from '../core/doctrinal-safety.js';
 
 const freezeReference=reference=>Object.freeze({...reference});
-const publicQuestion=item=>Object.freeze({id:item.id,prompt:item.prompt,options:Object.freeze([...item.options]),references:Object.freeze(item.references.map(freezeReference))});
+const safetyFor=item=>{
+  const safety=reviewNeutralContent({q:item.prompt,a:item.reflection,ref:item.references.map(reference=>reference.label).join(' · ')},{reason:'Deep Questions is reflective interpretive material and does not score a right or wrong spiritual answer.'});
+  assertNeutralAssessment({safety},`Deep Question ${item.id}`);
+  return safety;
+};
+const publicQuestion=item=>Object.freeze({id:item.id,prompt:item.prompt,options:Object.freeze([...item.options]),references:Object.freeze(item.references.map(freezeReference)),safety:safetyFor(item)});
 
 export function createDeepQuestionsService({lesson,reader,clock=()=>new Date()}) {
   if (!lesson || !reader) throw new Error('Deep Questions requires Lesson and Reader boundaries.');
@@ -25,6 +31,7 @@ export function createDeepQuestionsService({lesson,reader,clock=()=>new Date()})
   }
   function open(id,{restart=false}={}){
     const item=getDeepQuestion(id);
+    safetyFor(item);
     const result=lesson.open(item.definition,{restart});
     activeId=item.id;
     return snapshot(result.state,result.resumed);
