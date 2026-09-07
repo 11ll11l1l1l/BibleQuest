@@ -39,11 +39,20 @@ async function run(){
   assert(runtime.q10==='context'&&runtime.q21==='context','Passage-sensitive authored questions lost context classification.');
   assert(runtime.baptismAction==='context'&&/baptism|passage|context/i.test(runtime.baptismNote),'Imported John baptism question did not retain contextual safety metadata.');
 
-  await page.goto(`${BASE}#/deep-questions`,{waitUntil:'networkidle'});await page.locator('[data-deep-open="p1"]').click();await page.locator('[data-deep-session="p1"]').waitFor();await page.locator('[data-deep-choice="0"]').click();await page.locator('.bq-deep-feedback').waitFor();
+  await page.goto(`${BASE}#/deep-questions`,{waitUntil:'networkidle'});await page.locator('[data-deep-open="p1"]').click();await page.locator('[data-deep-session="p1"]').waitFor();
+  await page.locator('[data-doctrinal-action="neutral"]').waitFor();
+  assert(/interpretive|reflection|doctrine/i.test((await page.locator('[data-doctrinal-action="neutral"]').textContent())||''),'Deep Questions neutral safety notice is missing.');
+  await page.locator('[data-deep-choice="0"]').click();await page.locator('.bq-deep-feedback').waitFor();
   assert(/does not score/i.test((await page.locator('.bq-deep-feedback').textContent())||''),'Deep Questions no longer states its neutral no-score contract.');
 
-  await page.goto(`${BASE}#/wisdom-situations`,{waitUntil:'networkidle'});await page.locator('[data-wisdom-session]').waitFor();await page.locator('[data-wisdom-choice="0"]').click();await page.locator('[data-wisdom-complete]').waitFor();
+  await page.goto(`${BASE}#/story-journey`,{waitUntil:'networkidle'});await page.locator('[data-story-open="s1"]').click();await page.locator('[data-story-session="s1"]').waitFor();
+  for(let index=0;index<5;index++)await page.locator('[data-story-advance]').click();
+  await page.locator('[data-story-checkpoint="s1"]').waitFor();await page.locator('[data-doctrinal-action="context"]').waitFor();
+  assert(/passage|context|complete doctrine/i.test((await page.locator('[data-doctrinal-action="context"]').textContent())||''),'Story checkpoint passage-context notice is missing.');
+
+  await page.goto(`${BASE}#/wisdom-situations`,{waitUntil:'networkidle'});await page.locator('[data-wisdom-session]').waitFor();await page.locator('[data-doctrinal-action="neutral"]').waitFor();await page.locator('[data-wisdom-choice="0"]').click();await page.locator('[data-wisdom-complete]').waitFor();
   assert(/not a declaration.*universally binding response/i.test((await page.locator('.bq-wisdom-warning').textContent())||''),'Wisdom Situations lost its neutral applied-judgment warning.');
+  assert(await page.locator('[data-doctrinal-action="neutral"]').count()===1,'Wisdom Situations neutral safety notice is missing or duplicated.');
   metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('button')].map(node=>node.getBoundingClientRect().height).filter(Boolean))}));
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Doctrinal safety mobile flow overflows: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
   assert(metrics.minTarget>=44,`Doctrinal safety mobile flow has a touch target below 44px: ${metrics.minTarget}px.`);
