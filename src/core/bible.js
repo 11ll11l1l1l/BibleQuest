@@ -27,7 +27,7 @@ for (const book of BIBLE_BOOKS) {
   for (const alias of aliases[book.code] || []) BOOK_ALIASES.set(normalizeBookToken(alias), book);
 }
 
-const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam', '1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
+const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam','1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
 const safeVerse = row => row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(Number(row.v)) && Number(row.v) > 0 && typeof row.t === 'string' && row.t.trim();
 const freezeVerse = row => Object.freeze({ chapter: Number(row.c), verse: Number(row.v), text: String(row.t).trim() });
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
@@ -86,18 +86,18 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
       `口語訳 for ${book.name} ${chapterNumber} is unavailable. Check your internet connection and retry.`,
       `口語訳 for ${book.name} ${chapterNumber} returned malformed data.`
     );
-    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error(`口語訳 for ${book.name} ${chapterNumber} returned malformed data.`);
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) { cache.delete(path); throw new Error(`口語訳 for ${book.name} ${chapterNumber} returned malformed data.`); }
     const raw = Array.isArray(payload.verses) ? payload.verses : payload.verses && typeof payload.verses === 'object' ? Object.values(payload.verses) : [];
     const verses = raw.map((row, index) => ({
       chapter: chapterNumber,
       verse: Number(row?.verse ?? row?.v ?? row?.number ?? index + 1),
       text: String(row?.text ?? row?.t ?? row?.content ?? '').trim()
     })).filter(row => Number.isInteger(row.verse) && row.verse > 0 && row.text);
-    if (!verses.length) throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains no readable verses.`);
+    if (!verses.length) { cache.delete(path); throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains no readable verses.`); }
     verses.sort((a, b) => a.verse - b.verse);
     const seen = new Set();
     for (const verse of verses) {
-      if (seen.has(verse.verse)) throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains duplicate verse ${verse.verse}.`);
+      if (seen.has(verse.verse)) { cache.delete(path); throw new Error(`口語訳 for ${book.name} ${chapterNumber} contains duplicate verse ${verse.verse}.`); }
       seen.add(verse.verse);
       Object.freeze(verse);
     }
