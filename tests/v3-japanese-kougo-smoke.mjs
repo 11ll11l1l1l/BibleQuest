@@ -50,7 +50,7 @@ try {
   assert(await page.locator('[data-reader-translation]').inputValue() === 'jko' && await page.locator('[data-reader-book]').inputValue() === 'JHN' && await page.locator('[data-reader-chapter]').inputValue() === '3', 'Japanese translation/book/chapter did not persist across reload.');
   assert(japaneseRequests === beforeReload + 1, 'Reload should re-request the live Japanese chapter in the new page lifecycle.');
 
-  const xpBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest:v3:progress-state') || '{}').xp || 0);
+  const xpBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest.v3.progress-state') || '{}').xp || 0);
   assert(xpBefore === 0, 'Loading Japanese Scripture must not award XP.');
 
   breakGenesis = true;
