@@ -2,87 +2,84 @@
 
 Updated: 2026-09-07
 
-`FEATURE_INVENTORY_V3.md` remains the authoritative 100-capability parity matrix.
+`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity matrix.
 
 ## Deployment safety
 
 - Production v2 remains unchanged.
-- `main` and production Cloudflare remain untouched by the v3 rebuild.
+- `main` and production Cloudflare remain untouched.
 - Current development branch: `feature/v3-study-core`.
-- Normal v3 GitHub Actions remain manual-only; isolated verification branches may temporarily use a push trigger for one-shot CI execution only.
-- Latest frozen checkpoint: `release/v3.21-step-context` at `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`.
-- #20 STEPBible Context Lab is frozen at v3.21 and is now Regression-tested after surviving the later Japanese 口語訳 full suite.
-- #14 Japanese 口語訳 repaired functional run `34120997990` passed completely; exact bookkeeping/freeze gate is pending.
+- Normal v3 GitHub Actions are manual-only. Isolated verification branches may temporarily use a push trigger only for one-shot CI execution, then are reset to the exact candidate SHA.
+- Latest frozen checkpoint: `release/v3.22-japanese-kougo` at `06eda2948db3a4c5462bc24a2b79596fa7d275f0`.
+- Exact #14 bookkeeping run `34122128228` passed the complete accumulated suite before the v3.22 freeze.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 48 |
+| Regression-tested | 49 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 51 |
+| Not started | 50 |
 | Total | 100 |
 
-Strict verified-or-better parity is **49/100**. Fully regression-tested stability coverage is **48/100**.
+Strict verified-or-better parity is **50/100**. Fully regression-tested stability coverage is **49/100**.
 
 Current promotions:
-- #20 STEPBible lexical/context tools — Regression-tested.
-- #14 Japanese 口語訳 — Verified.
-- #15 Japanese furigana — Not started and intentionally deferred by current priority decision; it must not be marked complete unless explicitly reopened and verified.
+- #14 Japanese 口語訳 — Regression-tested after surviving the later #16 full suite.
+- #16 Japanese vocabulary learning — Verified.
+- #15 Japanese furigana — Not started and intentionally deferred by user direction.
+- #17 NLT live path — next active Reader/source target after #16 freeze.
 
 ## Milestone 11 — Reader language/source completion
 
-### #14 Japanese 口語訳 — Verified
+### #14 Japanese 口語訳 — Regression-tested
 
-The actually loaded v2 behavior was recovered before rebuilding. v2 used the GetBible `japkougo` chapter endpoint for `口語訳聖書 (1954/1955)`, persisted translation selection, displayed a retry path on source failure, and provided an explicit BSB fallback rather than fabricating or silently substituting Scripture.
+Frozen in `release/v3.22-japanese-kougo` after exact bookkeeping run `34122128228` passed. The Reader loads `口語訳聖書 (1954/1955)` chapter-by-chapter through the single Bible service, persists selection, validates and caches only usable chapter data, exposes Retry and explicit Use BSB recovery, never silently substitutes or fabricates Scripture, and awards no XP for loading Scripture.
 
-Clean v3 behavior:
-- `src/core/bible.js` remains the sole Bible-source owner.
-- Japanese is declared as a live, chapter-only translation rather than pretending to be a bundled whole-book pack.
-- GetBible book numbers are derived from the existing canonical Bible-book order, avoiding a second book map.
-- successful chapters are cached by exact live source URL.
-- returned verse arrays or object-shaped verse collections are normalized and sorted.
-- Scripture text is preserved except surrounding transport whitespace; v3 does not rewrite the 口語訳 text.
-- reference navigation/search remains available, but full-text 66-book live search is rejected rather than creating an uncontrolled API fan-out.
-- source failure is explicit and offers Retry plus an explicit `Use BSB` action.
-- no silent fallback occurs and no missing Japanese text is synthesized.
-- selecting/loading Japanese Scripture awards no XP.
-
-Verification coverage:
-- `scripts/validate-v3-japanese-kougo.mjs` enforces the live-source boundary.
-- `tests/v3-japanese-kougo-edge.mjs` verifies canonical book mapping, payload normalization, exact text preservation, successful caching, source failure/recovery, semantic-invalid-response cache eviction, Reader persistence, and zero invented XP.
-- `tests/v3-japanese-kougo-smoke.mjs` verifies the real 390px Reader flow, translation persistence, source/license display, Retry, explicit BSB fallback, no horizontal overflow, and >=44px recovery controls.
-- repaired complete functional run `34120997990` passed all architecture checks, all accumulated edge tests, Reader, STEPBible, Japanese 口語訳, and every later browser regression through Games.
+Retained defects:
+- `V3-JKO-SEMANTIC-CACHE-001` — HTTP-200 but unusable Japanese payloads are evicted so Retry performs a real new request.
+- `V3-JKO-TOUCH-001` — Japanese recovery controls remain at least 44px on mobile.
 
 ### #15 Japanese furigana — intentionally deferred
 
-The old loaded `japanese-learning.js` has been recovered. It provided OFF / difficult-terms-only / all-readings modes, with `kuromoji` used for the all-readings mode and a retained static term list for support mode. The user has explicitly asked to skip this capability for now.
+The loaded old implementation was recovered, including OFF/support/all modes and its old `kuromoji` path. The user explicitly directed us to skip furigana. #15 therefore remains Not started and does not block #16/#17. No kuromoji/CDN/global furigana runtime is allowed to leak into adjacent features.
 
-Therefore #15 remains **Not started**. No partial furigana implementation will be introduced, and the current sequence jumps directly from #14 to #16.
+### #16 Japanese vocabulary learning — Verified
+
+Recovered old behavior:
+- available only while Japanese 口語訳 is active;
+- user selects/taps a verse;
+- up to three vocabulary notes are shown;
+- each retained curated note may include Japanese term, reading, learner-friendly explanation, fuller meaning, and English gloss;
+- the learning-panel enabled preference persists;
+- notes are explicitly labeled as learning aids, not Scripture;
+- no recovered XP reward exists.
+
+Clean v3 implementation:
+- `src/app/japanese-vocabulary.js` is the sole vocabulary preference/lookup owner and uses the Storage boundary.
+- `src/features/reader/vocabulary-content.js` contains the recovered 27 curated vocabulary definitions only.
+- `src/features/reader/vocabulary.js` is presentation-only.
+- Reader continues to own verse selection via Verse Peek; vocabulary is composed inside that existing interaction rather than creating another overlay or click owner.
+- only Japanese 口語訳 shows the vocabulary ON/OFF control.
+- at most three curated notes are shown, with longer matching terms prioritized.
+- when no curated note matches, v3 shows a safe no-additional-notes state rather than inventing a reading.
+- the skipped furigana/tokenizer runtime is not recreated: no `kuromoji`, CDN injection, MutationObserver, direct localStorage, or `window.BQJapaneseLearning`.
+- vocabulary browsing awards no XP.
+
+Verification:
+- `scripts/validate-v3-japanese-vocabulary.mjs` — ownership and skipped-furigana boundary.
+- `tests/v3-japanese-vocabulary-edge.mjs` — 27-term contract, max-three/longest-first lookup, persistence, malformed state normalization, no fabricated fallback.
+- `tests/v3-japanese-vocabulary-smoke.mjs` — 390px Japanese Reader → Verse Peek → vocabulary notes/disclaimer → ON/OFF → reload → safe empty state → switch BSB; no overflow/errors; no XP.
+- Complete functional run `34123075200` passed all architecture checks, all accumulated edge tests, the new vocabulary mobile test, and every downstream browser regression through Games.
 
 ## Next major milestone
 
-After the #14 bookkeeping gate is green and the exact state is frozen as `release/v3.22-japanese-kougo`, continue directly to **#16 Japanese vocabulary learning**.
+Complete #16 bookkeeping on the exact **50/100 parity / 49/100 stability** state. If the full accumulated suite remains green, freeze `release/v3.23-japanese-vocabulary`.
 
-Recovered #16 behavior from the loaded old `japanese-learning.js`:
-- visible only when Japanese 口語訳 is selected.
-- a verse is selected/tapped and the learning panel shows up to three matching vocabulary notes.
-- retained static terms include Japanese term, reading, learner-friendly explanation, fuller meaning, and optional English gloss.
-- when no retained static term matches, old v2 could use the tokenizer to surface up to three kanji terms with a generic contextual-learning note.
-- vocabulary/reading explanations are explicitly labeled as learning aids, not Scripture text.
-- learning-panel on/off preference was persisted in the old shared Japanese-learning state.
+Then start **#17 NLT live path**. Recover the actually loaded old NLT behavior and source contract before coding. Because NLT is copyrighted, do not bundle or cache redistributed NLT text unless redistribution rights are explicitly verified. Prefer the exact old compatibility/live handoff behavior if that is what production v2 actually used, with controlled unavailable/failure handling and no fabricated text.
 
-Clean #16 direction:
-1. Do not revive old DOM injection, direct `localStorage`, CDN script injection, `window.BQJapaneseLearning`, or MutationObserver-style behavior.
-2. Keep Japanese Scripture text owned by `src/core/bible.js` and Reader passage state owned by `src/app/reader.js`.
-3. Add one clean Japanese-learning owner/data boundary for vocabulary notes only if needed; do not create another Bible source or Reader state owner.
-4. Preserve the old learning-aid disclaimer and no-XP behavior unless contrary evidence is recovered.
-5. Add dedicated edge + 390px browser regressions, then run the entire accumulated suite.
-
-After #16, continue to **#17 NLT live path**. #15 remains deferred until explicitly reopened.
-
-Kids #38–40 remain deferred/unpromoted. Ministry/Devotional remains a later high-priority milestone governed by `DEVOTIONAL_MINISTRY_DESIGN_V3.md`; it does not displace the Reader/core sequence.
+After #17, reassess the remaining Bible-study/core-content debt before allowing Kids/community/ministry work to displace priority. #15 remains deferred unless explicitly reopened.
 
 ## Defect / root-cause ledger retained
 
@@ -90,21 +87,21 @@ Kids #38–40 remain deferred/unpromoted. Ministry/Devotional remains a later hi
 - `V3-AUTH-GATE-001` — static Supabase version pin is architecture-auditable.
 - `V3-SHELL-001` — brand and primary navigation selectors are distinct.
 - `V3-TRANSFORM-OWNER-001` — orchestration no longer defines a competing Transform calculation owner.
-- `V3-RECORDINGS-FREEZE-001` — v3 replaced fragmented global media lifecycle with one Audio owner, one Recordings owner, explicit teardown, bounded requests, and one-player regression.
-- `V3-MEDIA-OWNER-001` — Media Library composes verified Recordings/Audio owners instead of creating another player/backend path.
-- `V3-GAMES-OWNER-001` — game launch/answer/score/replay/switch/leave/result persistence is centralized in `src/app/games.js`.
-- `V3-RECALL-PACK-001` — pack loading/validation/cache is isolated in `src/core/recall-packs.js`.
+- `V3-RECORDINGS-FREEZE-001` — one Audio owner + Recordings owner, explicit teardown and one-player regression.
+- `V3-MEDIA-OWNER-001` — Media Library composes verified Recordings/Audio owners.
+- `V3-GAMES-OWNER-001` — game lifecycle is centralized in `src/app/games.js`.
+- `V3-RECALL-PACK-001` — Recall pack loading/validation/cache is isolated.
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
-- `V3-STUDY-BOUNDARY-001` — Study public state stays behind its orchestration/Lesson boundary.
+- `V3-STUDY-BOUNDARY-001` — Study public state stays behind orchestration/Lesson boundaries.
 - `V3-STORY-BOOKKEEPING-001` — validator protects required status headings.
-- `V3-WISDOM-ESCAPE-001` — malformed presentation escaping was corrected before functional promotion.
-- `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot read `games-recall` directly; Games remains queue owner.
-- `V3-OPEN-REVIEW-FOCUS-TEST-001` — incorrect deterministic tie-category fixture was corrected without changing working logic.
-- `V3-OPEN-REVIEW-SPACING-TEST-001` — spacing fixture was isolated from legitimately older overdue items.
-- `V3-STEP-PEEK-SELECTOR-001` — Verse Peek metadata was namespaced to avoid collision with Scripture `[data-verse]` buttons.
-- `V3-JKO-SEMANTIC-CACHE-001` — first Japanese browser gate found that an HTTP-200 but unusable verse payload remained cached after post-fetch semantic validation. `src/core/bible.js` now evicts invalid Japanese chapter payloads so Retry performs a real source request; the edge and browser tests retain this regression.
-- `V3-JKO-TOUCH-001` — the repaired Japanese run then found Retry/Use BSB controls at 42px. Reader recovery/navigation controls now enforce >=44px and the browser regression retains the assertion.
+- `V3-WISDOM-ESCAPE-001` — malformed presentation escaping fixed before promotion.
+- `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot directly own Games recall persistence.
+- `V3-OPEN-REVIEW-FOCUS-TEST-001` — corrected an invalid deterministic tie-category test fixture.
+- `V3-OPEN-REVIEW-SPACING-TEST-001` — isolated spacing fixture from legitimately older overdue items.
+- `V3-STEP-PEEK-SELECTOR-001` — Verse Peek metadata is namespaced away from Scripture `[data-verse]`.
+- `V3-JKO-SEMANTIC-CACHE-001` — invalid live Japanese payloads are evicted before retry.
+- `V3-JKO-TOUCH-001` — Japanese recovery controls enforce >=44px.
 
 ## Release rule
 
-#14 passed the entire repaired accumulated functional suite on run `34120997990`. The exact bookkeeping state must pass the full suite once more before `release/v3.22-japanese-kougo` may be frozen. Production v2, `main`, and production Cloudflare remain unchanged.
+#16 passed the complete functional suite on run `34123075200`. Its exact bookkeeping state must pass the complete accumulated suite again before `release/v3.23-japanese-vocabulary` is frozen. Production v2, `main`, and production Cloudflare remain unchanged.
