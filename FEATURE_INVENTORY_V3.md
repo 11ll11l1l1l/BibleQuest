@@ -4,8 +4,8 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 52
-- **Verified:** 1
+- **Regression-tested:** 53
+- **Verified:** 0
 - **Implemented:** 0
 - **Not started:** 47
 - **Total old-version capabilities:** 100
@@ -109,7 +109,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 86 | Accessibility support | Yes | Partial clean | Not started | keyboard nav; focus order; labels; reduced motion/readability |
 | 87 | Content reporting | Yes | Compatibility | Not started | submit report; validation; success/error |
 | 88 | Content moderation | Yes | Compatibility | Not started | moderation contract; blocked/context-sensitive paths |
-| 89 | Doctrinal safety/context | Yes | Resource retained | Verified | one doctrinal-safety policy owner; imported Recall re-evaluation; passage-context notice revealed separately from source answer/reference/provenance; unsafe universal/disputed claims quarantined; no spiritual scoring; 390px Recall/Open Review verification |
+| 89 | Doctrinal safety/context | Yes | Resource retained | Regression-tested | one doctrinal-safety policy owner; imported Recall re-evaluation; passage-context notice revealed separately from source answer/reference/provenance; unsafe universal/disputed claims quarantined; no spiritual scoring; 390px Recall/Open Review verification |
 | 90 | Source labels/attribution | Yes | Mixed | Regression-tested | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
 | 91 | Content Review workbench | Yes | Standalone old | Not started | open review item; decision; save; permissions |
 | 92 | Admin console | Yes | Standalone old | Not started | auth guard; read/admin actions; permission denial |
