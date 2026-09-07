@@ -10,27 +10,28 @@ Updated: 2026-09-07
 - Cloudflare remains untouched by the v3 rebuild.
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only; isolated verification branches are one-shot CI gates only.
-- Frozen checkpoints now extend through `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`.
-- Deep Questions bookkeeping run `34082727818` passed before that freeze.
-- Prior Bible-study checkpoint: `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c` after run `34081724365`.
+- Latest frozen checkpoint: `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`.
+- Story Journey functional run `34083462882` and corrected bookkeeping run `34083885682` both passed before that freeze.
+- Earlier Bible-study checkpoints remain `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd` and `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`.
 - Earlier frozen core line remains unchanged through Transform, Audio/Recordings/Media, Games, Mixed Quest, Per-book Recall, Character Detective, and Timeline.
 
 ## Progress summary
 
 | State | Count |
 |---|---:|
-| Regression-tested | 43 |
+| Regression-tested | 44 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 55 |
+| Not started | 54 |
 | Total | 100 |
 
-Strict verified-or-better parity is **44/100**. Fully regression-tested stability coverage is **43/100**.
+Strict verified-or-better parity is **45/100**. Fully regression-tested stability coverage is **44/100**.
 
 Current promotions:
 - #52 Expanded Guided Study — Regression-tested.
-- #51 Deep Questions — Regression-tested after surviving Story Journey run `34083462882`.
-- #49 Story Journey — Verified after run `34083462882`.
+- #51 Deep Questions — Regression-tested.
+- #49 Story Journey — Regression-tested after surviving Wisdom Situations functional run `34084573320`.
+- #50 Wisdom Situations — Verified after functional run `34084573320`; exact bookkeeping gate pending.
 - #20 STEPBible lexical/context tooling — Implemented.
 
 ## Milestone 10 — Bible-study core
@@ -41,56 +42,62 @@ Frozen at `release/v3.15-guided-study`. It continues to use `src/engines/lesson.
 
 ### Deep Questions (#51)
 
-Frozen at `release/v3.16-deep-questions` after functional run `34082339971` and bookkeeping run `34082727818`.
+Frozen at `release/v3.16-deep-questions` after functional run `34082339971` and bookkeeping run `34082727818`. It uses the shared Lesson engine, keeps private notes inside Lesson responses, delegates Reader handoff to the Reader owner, and has no invented XP or spiritual-quality scoring.
 
-Owner boundaries remain:
-- `src/features/deep-questions/content.js` — static definitions only.
-- `src/app/deep-questions.js` — one Deep Questions orchestration owner.
-- `src/engines/lesson.js` — sole lifecycle/session/response persistence engine.
-- `src/app/reader.js` — sole Reader state owner.
-- `src/features/deep-questions/index.js` — presentation/event forwarding only.
-- No invented XP or spiritual-quality scoring.
+### Story Journey (#49) — Regression-tested
 
-Deep Questions survived Story Journey accumulated run `34083462882`; it is therefore Regression-tested.
+Frozen at `release/v3.17-story-journey` after functional run `34083462882` and corrected bookkeeping run `34083885682`.
 
-### Story Journey (#49) — Verified
+Retained behavior remains:
+- 10 Story Journeys.
+- 5 scenes plus one Scripture checkpoint.
+- resume/reload/restart through the shared Lesson engine.
+- correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP`.
+- correct checkpoint increments `quizCorrect` exactly once.
+- deterministic Progress identity prevents duplicate reward on reopen.
+- Reader handoff through the existing Reader owner.
+- 390px mobile no-overflow and >=44px controls.
 
-Story Journey was rebuilt cleanly from the retained v2 behavior instead of importing the old runtime.
+Story Journey survived the later complete Wisdom Situations functional run `34084573320`, so #49 is now Regression-tested.
 
-Verified behavior:
-- 10 retained Story Journeys.
-- 5 scene steps followed by one checkpoint.
-- leave/return and reload resume through the shared Lesson engine.
-- checkpoint answers lock correctly and complete the Lesson session.
-- verified v2 reward parity: correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP`.
-- a correct checkpoint increments `quizCorrect` exactly once.
-- completion uses deterministic Progress event identity derived from story id, definition version, and Lesson attempt start; reopening a completed attempt cannot duplicate XP or counters.
-- restart creates a new Lesson attempt and therefore a new eligible checkpoint event.
-- Reader handoff opens the story's verified book/chapter through the existing Reader owner.
-- mobile browser verification runs at 390px with no horizontal overflow and controls >=44px.
-- stable Learn heading remains `Learn`.
-- no console/page errors were found.
+### Wisdom Situations (#50) — Verified
 
-Architecture:
-- `src/features/story-journey/content.js` — static retained story/checkpoint definitions only.
-- `src/app/story-journey.js` — single Story Journey orchestration owner.
-- `src/engines/lesson.js` — sole scene/checkpoint lifecycle and persistence engine.
-- `src/core/progress.js` — sole XP/counter/event owner.
-- `src/app/reader.js` — sole Reader state owner.
-- `src/features/story-journey/index.js` — presentation/event forwarding only.
+The retained v2 source was recovered before rebuilding. The clean v3 implementation preserves the old behavior without importing its direct `localStorage`, global state, or overlay runtime.
 
-Full accumulated functional run `34083462882` passed architecture validation, all accumulated edge regressions, the Story Journey edge regression, and the complete browser suite including Story Journey at 390px. No Story Journey application defect was found by this functional gate, so no post-gate application patch was required.
+Recovered parity evidence:
+- 24 difficult situations (`hw01`–`hw24`).
+- each situation has a title, competing tension, scenario, four deliberately plausible options, one strongest supported option, a general explanation, four per-option rationales, Scripture references, and difficulty 4 or 5.
+- opening Wisdom starts a random situation.
+- the immediately previous situation is excluded from the next random choice when alternatives exist.
+- the first answer locks the attempt and reveals the strongest supported option, all four rationales, and Scripture references.
+- the original reward was `+8 XP` and `+1 situations` for completing an answered situation regardless of whether the member selected the strongest option.
+- the v3 rebuild therefore does **not** convert Wisdom into a spiritual-quality score or award extra Bible quiz correctness for choosing the strongest option.
 
-The first bookkeeping run `34083748928` was correctly blocked by the architecture validator because the required development-status queue heading had been renamed. That bookkeeping-only contract is restored here before the gate is rerun.
+Clean architecture:
+- `src/features/wisdom-situations/content.js` — sole static source for the 24 retained immutable definitions and one-step Lesson definitions.
+- `src/app/wisdom-situations.js` — sole Wisdom orchestration owner over Lesson + Progress.
+- `src/engines/lesson.js` — sole answer lock, attempt identity, completion, restart, and session persistence owner.
+- `src/core/progress.js` — sole XP/counter/event owner; verified central `situations` metric added here.
+- `src/features/wisdom-situations/index.js` — presentation/event forwarding only.
+- `src/ui/wisdom-situations.css` — Wisdom presentation styling only.
+- the stable Learn heading remains `Learn`.
 
-The exact corrected Story Journey bookkeeping state still requires one final accumulated run before any `release/v3.17-story-journey` checkpoint may be frozen.
+Reward identity is deterministic per Lesson attempt: `wisdom-situation:<id>:v<definitionVersion>:<startedAt>`. Reopening the same completed attempt reconciles as a duplicate and cannot award XP/counters again. Restart or a newly opened situation creates a new Lesson attempt and is eligible once.
+
+Functional run `34084573320` passed:
+- architecture validation.
+- all accumulated edge regressions.
+- Wisdom Situations edge regression covering all 24 definitions, four options/rationales, answer reveal, +8 XP/+1 situation, no `quizCorrect` inflation, duplicate prevention, replay, non-repeat selection, close boundary, and invalid RNG handling.
+- all accumulated browser regressions.
+- Wisdom Situations browser regression at 390px covering Learn routing, stable heading, weaker/strongest feedback, rationale/reference reveal, Progress persistence, reload, replay, another-situation behavior, >=44px controls, no overflow, and no console/page errors.
+
+The exact inventory/status/timeline/architecture bookkeeping state must still pass one full accumulated suite before `release/v3.18-wisdom-situations` may be frozen.
 
 ## Next major milestone
 
-After the Story Journey bookkeeping gate is green and `release/v3.17-story-journey` is frozen, continue directly with:
-1. #50 Wisdom Situations
-2. #53 Adaptive learning
-3. #54 Open/weak-area review
+After the Wisdom Situations bookkeeping gate is green and `release/v3.18-wisdom-situations` is frozen, continue directly with:
+1. #53 Adaptive learning
+2. #54 Open/weak-area review
 
 Kids #38–40 remain deferred but accessible through the existing Kids surface.
 
@@ -133,10 +140,9 @@ Primary later inventory mapping remains #66 and #73–78. Design documentation a
 - `V3-STUDY-BOUNDARY-001` — Study `getState()` now enforces its own public boundary before delegating to Lesson.
 - `V3-STUDY-LEARN-ACCEPTANCE-001` — stable Learn `<h1>` was restored and protected.
 - `V3-STUDY-READER-TEST-001` — Reader acceptance waits for actual controls and asserts correct book/chapter.
-- `V3-STORY-BOOKKEEPING-001` — Story Journey bookkeeping renamed the validator-required `Next major milestone` queue heading. Architecture run `34083748928` blocked the freeze; the heading is restored and the existing validator assertion is retained as the regression guard.
-
-No new Story Journey application defect entry is added because the first full functional gate passed without an application failure.
+- `V3-STORY-BOOKKEEPING-001` — Story Journey bookkeeping renamed the validator-required `Next major milestone` queue heading. Architecture run `34083748928` blocked the freeze; the heading was restored and the validator assertion remains the regression guard.
+- `V3-WISDOM-ESCAPE-001` — the first Wisdom presentation draft mapped the quote character to an incomplete HTML entity. The escaping map was corrected before functional CI; the retained Wisdom browser regression exercises rendered scenario/result content and fails on page/console errors.
 
 ## Release rule
 
-Story Journey passed the entire accumulated functional suite on run `34083462882`. The exact corrected inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before `release/v3.17-story-journey` may be frozen. Production v2 remains unchanged until all applicable capability rows satisfy parity and stability gates.
+Wisdom Situations passed the entire accumulated functional suite on run `34084573320`. The exact bookkeeping state must pass the full suite once more before `release/v3.18-wisdom-situations` may be frozen. Production v2 remains unchanged until all applicable capability rows satisfy parity and stability gates.
