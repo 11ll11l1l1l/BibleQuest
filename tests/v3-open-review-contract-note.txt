@@ -1,0 +1,1 @@
+Functional verification scope: architecture boundary, Adaptive focus interface, Games recall-review interface, Open Review edge workflow, 390px browser workflow, and full accumulated v3 regression. This file is temporary test-scope documentation and may be removed during bookkeeping.
