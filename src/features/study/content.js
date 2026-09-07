@@ -1,4 +1,16 @@
-const freezeStudy=study=>Object.freeze({...study,passage:Object.freeze({...study.passage}),definition:Object.freeze({...study.definition,steps:Object.freeze(study.definition.steps.map(step=>Object.freeze({...step,choices:step.choices?Object.freeze([...step.choices]):undefined,feedback:step.feedback?Object.freeze({...step.feedback}):undefined}))})});
+function freezeStudy(study){
+  const steps=study.definition.steps.map(step=>{
+    const frozen={...step};
+    if(step.choices)frozen.choices=Object.freeze([...step.choices]);
+    if(step.feedback)frozen.feedback=Object.freeze({...step.feedback});
+    return Object.freeze(frozen);
+  });
+  return Object.freeze({
+    ...study,
+    passage:Object.freeze({...study.passage}),
+    definition:Object.freeze({...study.definition,steps:Object.freeze(steps)})
+  });
+}
 
 export const GUIDED_STUDIES=Object.freeze([
   freezeStudy({
