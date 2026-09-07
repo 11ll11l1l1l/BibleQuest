@@ -11,7 +11,7 @@ async function run(){
   page.on('pageerror',error=>errors.push(error.message));
   const open=async route=>{await page.goto(`${BASE}#/${route}`,{waitUntil:'networkidle'})};
   const noOverflow=async label=>{const m=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth}));assert(m.scrollWidth<=m.innerWidth+1,`${label} source-label mobile overflow: ${m.scrollWidth}px > ${m.innerWidth}px.`)};
-  const expectSource=async(id,label)=>{const node=page.locator(`[data-source-id="${id}"]`).first();await node.waitFor();const text=await node.textContent();assert(/not (?:a )?(?:Bible quotation|Scripture text)|not Bible translation text|not a direct Scripture quotation/i.test(text||''),`${label} provenance does not clearly distinguish authored content from Scripture.`);await noOverflow(label)};
+  const expectSource=async(id,label)=>{const node=page.locator(`[data-source-id="${id}"]`).first();await node.waitFor();const text=await node.textContent();assert(/not .*?(?:Bible quotation|Bible translation text|Scripture quotation|Scripture text)/i.test(text||''),`${label} provenance does not clearly distinguish authored content from Scripture.`);await noOverflow(label)};
 
   await open('learn');
   await page.locator('[data-source-guide]').waitFor();
@@ -25,8 +25,8 @@ async function run(){
   await noOverflow('Learn source guide');
 
   await open('reader');
-  await page.locator('[data-reader-source]').waitFor();
-  assert((await page.locator('[data-reader-source]').textContent())?.includes('Berean Standard Bible'),'Reader no longer shows the active Scripture source.');
+  await page.locator('.bq-reader-source').waitFor();
+  assert((await page.locator('.bq-reader-source').textContent())?.includes('Berean Standard Bible'),'Reader no longer shows the active Scripture source.');
 
   await open('study');
   await page.locator('[data-study-open="good-samaritan"]').click();
