@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 43
+- **Regression-tested:** 44
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 55
+- **Not started:** 54
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -69,8 +69,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
 | 47 | Transformation full | Yes | Standalone old | Regression-tested | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
 | 48 | Transform engine | Yes | Multiple old paths | Regression-tested | one engine; deterministic state transitions; no stale instance |
-| 49 | Story Journey | Yes | Clean | Verified | scene progression; checkpoint; finish; replay |
-| 50 | Wisdom Situations | Yes | Clean | Not started | scenario; choose; correct contract; references; replay |
+| 49 | Story Journey | Yes | Clean | Regression-tested | scene progression; checkpoint; finish; replay |
+| 50 | Wisdom Situations | Yes | Clean | Verified | scenario; choose strongest supported judgment; reveal all rationales/references; +8 XP/+1 situation once per attempt; replay; mobile |
 | 51 | Deep Questions | Yes | Clean | Regression-tested | choose response; reveal reflection/references; private note save/resume; Reader handoff; no spiritual scoring |
 | 52 | Expanded guided study | Yes | Compatibility | Regression-tested | open lesson; navigate sections; save/return state |
 | 53 | Adaptive learning | Yes | Compatibility | Not started | weak-area selection; review; update mastery |
