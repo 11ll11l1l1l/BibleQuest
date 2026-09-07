@@ -7,15 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 43
+- **Regression-tested:** 44
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 55
-- **Verified or better:** 44 / 100 (**44% strict parity completion**)
-- **Fully regression-tested:** 43 / 100 (**43% stability coverage**)
-- **Latest frozen checkpoint:** `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`
-- **Current active feature:** #49 Story Journey — Verified after run `34083462882`; exact bookkeeping gate pending
-- **Next target after Story Journey freeze:** #50 Wisdom Situations
+- **Not started:** 54
+- **Verified or better:** 45 / 100 (**45% strict parity completion**)
+- **Fully regression-tested:** 44 / 100 (**44% stability coverage**)
+- **Latest frozen checkpoint:** `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`
+- **Current active feature:** #50 Wisdom Situations — Verified after run `34084573320`; exact bookkeeping gate pending
+- **Next target after Wisdom freeze:** #53 Adaptive learning
+- **Then:** #54 Open/weak-area review
 - **Kids arcade:** accessible; deeper #38–40 integration remains deferred
 - **Later high-priority ministry requirement:** see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
 - **Production:** v2 remains live; v3 has not replaced production
@@ -27,13 +28,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 1 | Shell / navigation | Complete | #1–5 Regression-tested |
 | 2 | Authentication / session | Complete | #6–10 Regression-tested |
 | 3 | Bible data / content | Partial | #11–13, #18–19, #21–23 Regression-tested; #20 Implemented; #14–17 deferred parity debt |
-| 4 | User progress / state | Complete | #24–27 Regression-tested |
-| 5 | Lesson engine | Complete engine | #31 Regression-tested; shared by Guided Study, Deep Questions, Story Journey |
+| 4 | User progress / state | Complete | #24–27 Regression-tested; central Progress now also owns verified Wisdom `situations` metric |
+| 5 | Lesson engine | Complete engine | #31 Regression-tested; shared by Guided Study, Deep Questions, Story Journey, Wisdom Situations |
 | 6 | Daily Mission | Complete | #28–30 Regression-tested |
 | 7 | Transform | Frozen complete | #46–48 Regression-tested |
 | 8 | Audio / Live Recordings / Media | Frozen complete | #57–61 Regression-tested |
 | 9 | Games core | Frozen core | #32–37 and #41 Regression-tested |
-| 10 | Bible-study core | Active | #52 and #51 Regression-tested; #49 Verified; bookkeeping/freeze next; then #50/#53/#54 |
+| 10 | Bible-study core | Active | #52/#51/#49 Regression-tested; #50 Verified; bookkeeping/freeze next; then #53/#54 |
 | 11 | Devotional / Ministry foundation | Designed, not implemented | maps mainly to #66 and #73–78 |
 | 12 | Bible World / tutorial / remaining parity | Not started | remaining inventory rows |
 | 13 | Full old-vs-new audit | Not started | reconcile all 100 rows |
@@ -52,6 +53,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Timeline — `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`
 - Guided Study — `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`; bookkeeping run `34081724365`
 - Deep Questions — `release/v3.16-deep-questions` at `e287fb6179bddece7d9cb31e5496924e524f83fd`; functional run `34082339971`; bookkeeping run `34082727818`
+- Story Journey — `release/v3.17-story-journey` at `7690cc18b723fda1bed7802d2a56f49648f7f6b0`; functional run `34083462882`; corrected bookkeeping run `34083885682`
 
 ## Milestone 10 — Bible-study core
 
@@ -61,40 +63,56 @@ Guided Study remains built on the single shared Lesson engine. Personal reflecti
 
 ### #51 Deep Questions — Regression-tested
 
-Deep Questions is frozen at v3.16 and then survived Story Journey run `34083462882`. It retains 18 recovered questions, unscored reflection choices, private Lesson-backed notes, Reader handoff, no invented XP, and no separate persistence runtime.
+Deep Questions is frozen at v3.16. It retains 18 recovered questions, unscored reflection choices, private Lesson-backed notes, Reader handoff, no invented XP, and no separate persistence runtime.
 
-### #49 Story Journey — Verified
+### #49 Story Journey — Regression-tested
 
-Functional run `34083462882` passed the full accumulated suite.
+Story Journey is frozen at v3.17 and survived the later Wisdom Situations full functional run `34084573320`.
 
-Verified Story Journey behavior:
+Retained Story Journey behavior:
 1. Learn → Story Journey route while retaining `<h1>Learn</h1>`.
 2. 10 retained story records.
 3. Five scene steps plus one checkpoint per story.
 4. leave/return and reload resume through `src/engines/lesson.js`.
-5. correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP` parity.
+5. correct checkpoint `+15 XP`; incorrect checkpoint `+4 XP`.
 6. correct checkpoint increments `quizCorrect` once.
 7. deterministic Progress event prevents duplicate reward on reopen.
 8. restart creates a new attempt; replay is eligible once for that new attempt.
 9. Reader handoff opens the correct book/chapter.
 10. 390px mobile no-overflow, controls >=44px, no console/page errors.
 
-No Story Journey application defect was found in the first functional gate.
+### #50 Wisdom Situations — Verified
+
+Functional run `34084573320` passed the full accumulated suite.
+
+Verified Wisdom behavior:
+1. Learn → Wisdom Situations route while retaining `<h1>Learn</h1>`.
+2. all 24 recovered difficult situations are retained.
+3. each contains four deliberately plausible choices, one strongest supported judgment, one general explanation, four per-choice rationales, Scripture references, and difficulty 4/5.
+4. a random situation opens immediately and the immediately previous situation is excluded from the next random selection when alternatives exist.
+5. the first answer locks the attempt and reveals the strongest supported option, all rationales, and Scripture references.
+6. recovered parity reward is `+8 XP` and `+1 situations` for every answered attempt, regardless of strongest/weaker choice.
+7. Wisdom does not increment `quizCorrect` and does not score spiritual quality.
+8. deterministic Progress event identity prevents duplicate reward on reopen/reload.
+9. restart/new situation creates a new Lesson attempt eligible once.
+10. 390px mobile no-overflow, controls >=44px, no console/page errors.
+
+Architecture remains single-source: static definitions in `src/features/wisdom-situations/content.js`, orchestration in `src/app/wisdom-situations.js`, lifecycle/persistence in `src/engines/lesson.js`, XP/counters/events in `src/core/progress.js`, and presentation only in `src/features/wisdom-situations/index.js`.
 
 ### Next sequence
 
-After the exact Story Journey bookkeeping state passes and `release/v3.17-story-journey` is frozen:
-1. #50 Wisdom Situations
-2. #53 Adaptive learning
-3. #54 Open/weak-area review
+After the exact Wisdom bookkeeping state passes and `release/v3.18-wisdom-situations` is frozen:
+1. #53 Adaptive learning
+2. #54 Open/weak-area review
 
 ## Current bookkeeping
 
-- #49 Story Journey — **Verified**
+- #49 Story Journey — **Regression-tested**
+- #50 Wisdom Situations — **Verified**
 - #51 Deep Questions — **Regression-tested**
 - #52 Expanded Guided Study — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **43 Regression-tested / 1 Verified / 1 Implemented / 55 Not started**
+- Totals — **44 Regression-tested / 1 Verified / 1 Implemented / 54 Not started**
 
 ## Devotional / Ministry later milestone
 
