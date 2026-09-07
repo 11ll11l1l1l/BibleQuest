@@ -14,7 +14,8 @@ Updated: 2026-09-07
 - Frozen Mixed Quest checkpoint: `release/v3.11-mixed-quest` at `51a73758a8a3bc8def2de87b6ffa3466bee845f0`.
 - Frozen Per-book Recall checkpoint: `release/v3.12-per-book-recall` at `38fb34b1b068c6678957a0a25f6cda88fb185cf0`.
 - Frozen Character Detective checkpoint: `release/v3.13-character-detective` at `7c33895158037727880a3ae8eb6c2d44ccef6621`.
-- Current development branch: `feature/v3-games`.
+- Frozen Timeline checkpoint: `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`.
+- Current development branch: `feature/v3-study-core`.
 - Cloudflare remains untouched by the v3 rebuild.
 - Normal v3 GitHub Actions remain manual-only; isolated verification branches are one-shot CI gates only.
 
@@ -22,13 +23,13 @@ Updated: 2026-09-07
 
 | State | Count |
 |---|---:|
-| Regression-tested | 40 |
+| Regression-tested | 41 |
 | Verified | 1 |
 | Implemented | 1 |
-| Not started | 58 |
+| Not started | 57 |
 | Total | 100 |
 
-Strict verified-or-better parity is now **41/100** and fully regression-tested stability coverage is **40/100**. Quick Recall (#32), Context Challenge (#33), Mixed Quest (#34), Per-book Recall (#35), Character Detective / Who Am I (#36), and Game launcher (#41) are Regression-tested. Timeline (#37) is Verified after accumulated run `34071571139`. #20 STEPBible lexical/context tooling remains Implemented parity debt.
+Strict verified-or-better parity is now **42/100** and fully regression-tested stability coverage is **41/100**. Timeline (#37) is Regression-tested after the later Guided Study accumulated gate. Expanded Guided Study (#52) is Verified after run `34080576745`. #20 STEPBible lexical/context tooling remains Implemented parity debt.
 
 ## Completed milestone 7 — Transform
 
@@ -45,33 +46,77 @@ Strict verified-or-better parity is now **41/100** and fully regression-tested s
 - #61 Media Library — Regression-tested.
 - `src/app/audio.js`, `src/app/recordings.js`, and `src/app/media-library.js` remain separate single owners with one shared player chain.
 - Guest access makes no protected media cloud request.
-- Leaving/switching playback tears down the prior player and accumulated later Games regressions remain green.
+- Leaving/switching playback tears down the prior player and accumulated later regressions remain green.
 
-## Milestone 9 — Games
+## Completed milestone 9 — Games core
 
-Current verified architecture and workflow:
-- `src/app/games.js` is the only game launcher/active-round/scoring/review/result-persistence owner.
-- `src/core/recall-packs.js` is the only Per-book Recall question-pack loading/validation/cache owner.
-- `src/features/games/content.js` owns built-in quiz definitions.
-- `src/features/games/detectives.js` owns retained Character Detective clue/reference definitions.
-- `src/features/games/timelines.js` owns retained Timeline event-order definitions only.
-- `src/features/games/index.js` is presentation/event forwarding only.
-- Game XP/counters are written only through `src/core/progress.js`.
-- Completed result summaries and Per-book review queues/statistics are written only through the injected `src/core/storage.js` boundary.
-- Starting/switching/leaving uses one lifecycle; no alternate game runtime or duplicate listeners are introduced.
 - Quick Recall (#32) — Regression-tested.
 - Context Challenge (#33) — Regression-tested.
 - Mixed Quest (#34) — Regression-tested.
 - Per-book Recall (#35) — Regression-tested.
-- Character Detective / Who Am I (#36) — Regression-tested after the later Timeline milestone passed.
-- Timeline (#37) — Verified after run `34071571139`.
+- Character Detective / Who Am I (#36) — Regression-tested.
+- Timeline (#37) — Regression-tested after the later Guided Study milestone passed.
 - Game launcher (#41) — Regression-tested.
+- Core Games are frozen through `release/v3.14-timeline`.
+- Deeper Kids integration (#38–40) is intentionally deferred while the Bible-study core is prioritized. The separate Kids game surface remains accessible and is not being removed.
 
-Timeline preserves the three retained old datasets: Big Bible Story, Life of Jesus, and Genesis Journey. Users reorder events with mobile-safe controls, check the order, correct mistakes, and replay/advance through the shared Games owner. Old +20 solved / +4 failed-check semantics are preserved without the old XP-farming weakness: only the first failed check can award +4, and solving afterward awards the remaining +16 so a solved round still totals +20. Repeated failed checks award nothing further. Results persist through the shared Storage boundary.
+## Milestone 10 — Bible-study core
+
+### Expanded Guided Study (#52) — Verified candidate complete
+
+Functional accumulated run `34080576745` passed the full architecture, edge, and browser suite, including the new 390px Guided Study workflow and all earlier v3 subsystems.
+
+Verified design:
+- `src/engines/lesson.js` remains the only lesson lifecycle/state/persistence engine.
+- `src/features/study/content.js` contains static curated study definitions only.
+- `src/app/study.js` owns Guided Study library/open/resume/restart/completion/Reader handoff/close orchestration.
+- `src/features/study/index.js` is presentation and event forwarding only.
+- `src/core/progress.js` receives one deterministic completion event; reopening or repeated completion cannot duplicate activity/streak effects.
+- Guided Study does not invent an unverified XP reward. Completion records `xp: 0`, meaningful activity, and one reflection metric.
+- Objective lesson questions may be checked; personal reflection/application text is never scored as spiritual quality, diagnosis, moral rank, or divine approval.
+
+Initial Scripture-first studies:
+1. **Who Is My Neighbor?** — Luke 10:25–37.
+2. **Abide and Bear Fruit** — John 15:1–17.
+3. **Faith That Acts** — James 2:14–26.
+
+Each follows passage → context → observation → meaning → private reflection → concrete response → completion.
+
+Acceptance verified in run `34080576745`:
+- Learn → Guided Study navigation.
+- mobile 390px library/session without horizontal overflow.
+- touch targets >=44px.
+- full Good Samaritan study completion.
+- answer locking and correct feedback.
+- private text response persistence.
+- deterministic completion progress with no duplicate award.
+- reload/reopen completed state.
+- explicit restart.
+- Reader handoff to Luke 10.
+- all earlier shell/account/reader/progress/lesson/Daily Mission/Transform/media/Games browser regressions remained green.
+
+The exact bookkeeping state still requires one final accumulated run before the checkpoint is frozen as `release/v3.15-guided-study`.
+
+## Future Devotional / Ministry requirement
+
+`DEVOTIONAL_MINISTRY_DESIGN_V3.md` is now the design contract for the later high-priority ministry workflow.
+
+Required future behavior:
+- Pastor/Admin publishes first-class **Message**, **Devotional**, or **Task** posts through a freeform composer.
+- Members receive eligible congregation posts in the future Ministry Hub/Inbox.
+- A Task may contain question/prompt fields and members submit their own response.
+- A normal member can read only the published post, their own response, their own status, and permitted aggregate completion count such as `18 answered`.
+- Other members' response bodies remain unavailable to ordinary members at the API/RLS level, not merely hidden by UI.
+- Authorized Pastor/Admin users can review individual responses only within their congregation scope.
+- Ministry Hub, Inbox, Assignments, Workspace, and later push delivery must reuse one ministry post/task identity and service boundary.
+
+Primary later inventory mapping: #66 and #73–78. Design documentation alone does not promote those rows.
 
 ## Next major milestone
 
-Continue Milestone 9 with #38 Kids Memory Match. It must use the existing Game launcher and shared progress/storage/lifecycle contracts, complete a full pair-matching board, reset/replay cleanly, survive game switching without stale state/listeners, and pass the accumulated 390px mobile/browser regression suite. Then continue #39 Hiragana Match, #40 Kids Bible Who Am I, #42 Same-room Play Together, and #43 Live Rooms.
+After the exact Guided Study bookkeeping gate is green and `release/v3.15-guided-study` is frozen, continue Bible-study core with **#51 Deep Questions**. Deep Questions should reuse the verified Lesson/Study infrastructure where practical and should hand reflections/notes toward the future #55 private-notes owner rather than creating its own persistence model. Then continue #49 Story Journey and #50 Wisdom Situations before adaptive learning (#53–54).
+
+Kids #38–40 remain deferred but accessible through the existing separate Kids surface.
 
 ## Defect / root-cause ledger
 
@@ -92,7 +137,11 @@ Continue Milestone 9 with #38 Kids Memory Match. It must use the existing Game l
 - `V3-RECALL-PACK-001` — old Per-book Recall mixed fetching, filtering, review-state mutation, XP, and rendering in one runtime. v3 isolates pack loading/validation/cache in `src/core/recall-packs.js`, keeps gameplay in the existing Games owner, filters quarantined/non-allow rows, and verifies malformed/unavailable pack handling.
 - `V3-DETECTIVE-SELECTOR-001` — the first Character Detective browser gate used a non-unique `[data-game-launcher]` test selector after feedback rendered two valid launcher actions. The application lifecycle was correct; the acceptance selector was made explicit and retry run `34067063009` passed the entire suite.
 - `V3-TIMELINE-XP-001` — the old Timeline retry path could award +4 XP repeatedly for repeated wrong checks. v3 records only the first miss, gives no additional reward for repeated failed checks, and awards the remaining +16 on later solve; edge/browser regression guards this behavior.
+- `V3-STUDY-SYNTAX-001` — the first Guided Study content freezer compressed nested immutable transforms into one dense expression and had an unmatched parenthesis. The architecture syntax gate caught it before functional tests. It was replaced by an explicit `freezeStudy()` function and remains syntax-checked with every architecture run.
+- `V3-STUDY-BOUNDARY-001` — after Study close, `getState()` initially leaked the lower Lesson-engine error instead of enforcing the Study owner's public boundary. Edge regression caught it; `getState()` now runs `requireOpen()` before delegating to Lesson.
+- `V3-STUDY-LEARN-ACCEPTANCE-001` — adding Guided Study changed the stable Learn `<h1>` copy and broke the accumulated shell acceptance workflow. The stable `Learn` heading was restored while retaining the new Study entry and richer description; the old shell regression then passed unchanged.
+- `V3-STUDY-READER-TEST-001` — the Guided Study Reader acceptance was hardened to wait for the actual Reader controls and assert `LUK` + chapter `10`, preventing a false pass/failure on the Reader's loading shell.
 
 ## Release rule
 
-Timeline passed the entire accumulated suite on run `34071571139`. The exact inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before the checkpoint is frozen as `release/v3.14-timeline`. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
+Expanded Guided Study passed the entire accumulated functional suite on run `34080576745`. The exact inventory/status/timeline/architecture bookkeeping state must pass the full suite once more before the checkpoint is frozen as `release/v3.15-guided-study`. Production v2 remains unchanged until all applicable capability rows satisfy the parity and stability gates.
