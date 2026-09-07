@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 40
+- **Regression-tested:** 41
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 58
+- **Not started:** 57
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -57,7 +57,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 34 | Mixed Quest | Yes | Clean | Regression-tested | mixed pool; finish; score persistence |
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
-| 37 | Timeline game | Yes | Clean | Verified | order interaction; result; replay |
+| 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
 | 38 | Kids Memory Match | Yes | Clean | Not started | full match; reset; mobile |
 | 39 | Hiragana Match | Yes | Clean | Not started | match full board; reset; mobile |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | full round; reset; mobile |
@@ -72,7 +72,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 49 | Story Journey | Yes | Clean | Not started | scene progression; checkpoint; finish; replay |
 | 50 | Wisdom Situations | Yes | Clean | Not started | scenario; choose; correct contract; references; replay |
 | 51 | Deep Questions | Yes | Clean | Not started | choose response; references; save-note handoff |
-| 52 | Expanded guided study | Yes | Compatibility | Not started | open lesson; navigate sections; save/return state |
+| 52 | Expanded guided study | Yes | Compatibility | Verified | open lesson; navigate sections; save/return state |
 | 53 | Adaptive learning | Yes | Compatibility | Not started | weak-area selection; review; update mastery |
 | 54 | Open/weak-area review | Yes | Compatibility | Not started | queue generation; complete; persistence |
 | 55 | Private local notes | Yes | Clean | Not started | create; edit/delete if supported; reload; export |
