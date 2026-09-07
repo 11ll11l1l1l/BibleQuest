@@ -7,18 +7,18 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 49
+- **Regression-tested:** 50
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 50
-- **Verified or better:** 50 / 100 (**50% strict parity completion**)
-- **Fully regression-tested:** 49 / 100 (**49% stability coverage**)
-- **Latest frozen checkpoint:** `release/v3.22-japanese-kougo` at `06eda2948db3a4c5462bc24a2b79596fa7d275f0`
-- **v3.22 bookkeeping run:** `34122128228` — fully green
-- **Current feature:** #16 Japanese vocabulary learning — Verified after full functional run `34123075200`; bookkeeping/freeze pending
-- **#14 Japanese 口語訳:** Regression-tested after surviving the #16 full suite
-- **#15 Japanese furigana:** intentionally deferred; remains Not started and does not block the active sequence
-- **Next target:** #17 NLT live path
+- **Not started:** 49
+- **Verified or better:** 51 / 100 (**51% strict parity completion**)
+- **Fully regression-tested:** 50 / 100 (**50% stability coverage**)
+- **Latest frozen checkpoint:** `release/v3.23-japanese-vocabulary` at `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`
+- **v3.23 bookkeeping run:** `34123607629` — fully green
+- **Current feature:** #17 NLT licensed-link — Verified after complete functional run `34126567141`; bookkeeping/freeze pending
+- **#16 Japanese vocabulary:** Regression-tested after surviving the #17 full suite
+- **#15 Japanese furigana:** intentionally deferred; remains Not started
+- **Next action after v3.24:** reassess remaining Bible-study/core-content debt before selecting another capability
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
 ## Rebuild sequence
@@ -27,7 +27,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 |---:|---|---|---|
 | 1 | Shell / navigation | Complete | #1–5 Regression-tested |
 | 2 | Authentication / session | Complete | #6–10 Regression-tested |
-| 3 | Bible data / content | Active | Reader core through #16 verified-or-better; #15 deferred; #17 remains active source debt |
+| 3 | Bible data / content | Active | Reader core through #17 verified-or-better; #15 deferred; remaining core debt to reassess after v3.24 |
 | 4 | User progress / state | Complete | #24–27 Regression-tested |
 | 5 | Lesson engine | Complete | #31 Regression-tested |
 | 6 | Daily Mission | Complete | #28–30 Regression-tested |
@@ -35,7 +35,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 8 | Audio / Live Recordings / Media | Frozen complete | #57–61 Regression-tested |
 | 9 | Games core | Frozen core | #32–37 and #41 Regression-tested |
 | 10 | Bible-study core | Frozen through STEPBible | #49–54 plus #20 Regression-tested |
-| 11 | Reader language/source completion | Active | #14 Regression-tested; #16 Verified; #17 next; #15 deferred |
+| 11 | Reader language/source completion | Active final gate | #14/#16 Regression-tested; #17 Verified; #15 deferred |
 | 12 | Devotional / Ministry foundation | Designed, not implemented | later; maps mainly to #66 and #73–78 |
 | 13 | Bible World / tutorial / remaining parity | Not started | remaining inventory rows |
 | 14 | Full old-vs-new audit | Not started | reconcile all 100 rows |
@@ -60,51 +60,49 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Open Review — `release/v3.20-open-review` at `2da79e9ab04cb05d63005b6cda7eb4471c149e92`; functional `34108734009`; bookkeeping `34109591650`
 - STEPBible Context Lab — `release/v3.21-step-context` at `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`; functional `34114885252`; bookkeeping `34118918425`
 - Japanese 口語訳 — `release/v3.22-japanese-kougo` at `06eda2948db3a4c5462bc24a2b79596fa7d275f0`; repaired functional `34120997990`; bookkeeping `34122128228`
+- Japanese vocabulary — `release/v3.23-japanese-vocabulary` at `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`; functional `34123075200`; bookkeeping `34123607629`
 
-## #16 Japanese vocabulary — Verified
+## #17 NLT licensed-link — Verified
 
-Recovered loaded behavior from legacy `japanese-learning.js`:
-1. learning panel available only with Japanese 口語訳;
-2. verse selection drives vocabulary notes;
-3. up to three matching curated notes;
-4. term, reading, simple explanation, fuller meaning, optional English gloss;
-5. persisted learning ON/OFF preference;
-6. explicit learning-aid/not-Scripture disclaimer;
-7. no recovered XP reward.
+Recovered loaded v2 behavior:
+1. NLT was a main Reader translation choice.
+2. It was `licensed-link`, not bundled or in-app live text.
+3. Reader selection/book/chapter persisted.
+4. selected passage opened externally on BibleGateway with `version=NLT`.
+5. BibleQuest explicitly did not redistribute full NLT text or expose a private browser API key.
 
 Clean v3 behavior:
-- one `src/app/japanese-vocabulary.js` owner for preference and lookup;
-- 27 recovered curated definitions in a static content module;
-- Verse Peek remains the one verse-selection interaction;
-- notes compose inside Verse Peek and do not mutate Scripture;
-- only Japanese 口語訳 shows the vocabulary control;
-- unknown text produces a controlled no-notes state instead of an invented reading;
-- no kuromoji, CDN injection, direct storage, MutationObserver, or legacy global runtime;
-- no XP;
-- 390px mobile, >=44px control, no horizontal overflow.
+- `src/core/bible.js` owns NLT metadata and exact licensed passage URL construction.
+- NLT chapter load returns canonical passage metadata, zero verse text, and the external handoff without any hidden Scripture fetch.
+- pack loading and in-app NLT search are explicitly unavailable.
+- Reader preserves translation/book/chapter and normal Previous/Next passage navigation.
+- no verse list, no Mark Read, no in-app NLT search, and no read-credit/XP are allowed for externally viewed Scripture.
+- external link opens safely in a new tab and returns without replacing BibleQuest.
+- source/license attribution is shown.
+- dedicated edge + 390px browser tests protect no-text/no-fetch/no-XP and no-overflow behavior.
 
-Full functional run `34123075200` passed the new architecture/edge/mobile regressions and every accumulated regression through Games.
+Complete functional run `34126567141` passed the new NLT architecture/edge/mobile regressions and every accumulated regression through Games.
 
 ## Current bookkeeping
 
 - #14 Japanese 口語訳 — **Regression-tested**
 - #15 Japanese furigana — **Not started / intentionally deferred**
-- #16 Japanese vocabulary learning — **Verified**
+- #16 Japanese vocabulary learning — **Regression-tested**
+- #17 NLT live path — **Verified as licensed-link parity**
 - #20 and #49–54 — **Regression-tested**
-- Totals — **49 Regression-tested / 1 Verified / 0 Implemented / 50 Not started**
+- Totals — **50 Regression-tested / 1 Verified / 0 Implemented / 49 Not started**
 
 ## Next sequence
 
-1. Run the complete accumulated suite on the exact #16 bookkeeping state.
-2. If green, freeze `release/v3.23-japanese-vocabulary`.
-3. Start #17 NLT live path by recovering the actual loaded v2 behavior/source/license contract first.
-4. Because NLT is copyrighted, do not bundle or redistribute text without verified rights; reproduce only the legacy-compatible live/external behavior supported by evidence.
-5. After #17, reassess the remaining Bible-study/core-content debt before changing priority.
-6. #15 remains deferred unless explicitly reopened.
+1. Run the complete accumulated suite on the exact #17 bookkeeping state.
+2. If green, freeze `release/v3.24-nlt-licensed`.
+3. Keep #15 furigana deferred unless explicitly reopened.
+4. Reassess remaining Bible-study/core-content debt before selecting the next implementation.
+5. Inspect old loaded behavior/dependencies for the strongest core-adjacent candidates instead of automatically jumping to Kids, community, or ministry.
 
 ## What remains overall
 
-Literal old-version parity has **50 Not started rows** after #16 promotion. #15 is deliberately deferred. The immediate Reader/source sequence now has only **#17** active. The other remaining rows cover notes, Kids, community/ministry/admin, Bible World/tutorial, accessibility/moderation, PWA/offline, diagnostics, and backup/import.
+Literal old-version parity has **49 Not started rows** after #17 promotion. #15 is deliberately deferred. Reader language/source parity is otherwise closed through the recovered NLT behavior. Remaining rows include notes, Kids, Bible World, community/ministry/admin, accessibility/moderation/source labeling, diagnostics/recovery, PWA/offline behavior, and backup/import.
 
 ## Release discipline
 
