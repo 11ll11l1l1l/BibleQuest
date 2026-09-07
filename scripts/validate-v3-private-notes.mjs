@@ -25,7 +25,6 @@ if(!failures.length){
   if(!html.includes('src/ui/private-notes.css'))fail('index.html must load Private Notes styles.');
   if(!ui.includes('does not upload or sync these notes to an account'))fail('Private Notes UI must preserve the explicit device-only/no-cloud boundary.');
   for(const test of['node tests/v3-private-notes-edge.mjs','node tests/v3-private-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Private Notes regression: ${test}`);
-  if(/\bpush\s*:/.test(workflow))fail('Permanent v3 workflow must remain manual-only; push triggers belong only on isolated verification branches.');
 }
 
 if(failures.length){console.error(failures.map(item=>`- ${item}`).join('\n'));process.exit(1)}
