@@ -4,9 +4,9 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 46
+- **Regression-tested:** 47
 - **Verified:** 1
-- **Implemented:** 1
+- **Implemented:** 0
 - **Not started:** 52
 - **Total old-version capabilities:** 100
 
@@ -40,7 +40,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 17 | NLT live path | Yes | Compatibility | Not started | source availability; failure handling; license-safe display |
 | 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
 | 19 | Verse Peek | Yes | Compatibility | Regression-tested | open verse detail; close; repeated use; no duplicate overlay |
-| 20 | STEPBible lexical/context tools | Yes | Compatibility | Implemented | lexical/context lookup; unavailable-data behavior |
+| 20 | STEPBible lexical/context tools | Yes | Compatibility | Verified | BSB verse context; Strong’s/lemma/transliteration/morphology/gloss; in-book usage; source/limits; unavailable-data behavior; Verse Peek handoff; 390px mobile |
 | 21 | Reader navigation | Yes | Clean | Regression-tested | previous/next chapter; selector; reload state; mobile |
 | 22 | Reader search | Yes | Clean/basic | Regression-tested | search valid/invalid; result navigation |
 | 23 | Reader read-progress marking | Yes | Clean | Regression-tested | mark read; persist; reload; progress calculation |
@@ -74,7 +74,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 51 | Deep Questions | Yes | Clean | Regression-tested | choose response; reveal reflection/references; private note save/resume; Reader handoff; no spiritual scoring |
 | 52 | Expanded guided study | Yes | Compatibility | Regression-tested | open lesson; navigate sections; save/return state |
 | 53 | Adaptive learning | Yes | Compatibility | Regression-tested | weak/due selection; 7-question Smart Review; 1/3/7/14/30 spacing; mastery update; +10/+3 parity; resume/reload; mobile |
-| 54 | Open/weak-area review | Yes | Compatibility | Verified | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
+| 54 | Open/weak-area review | Yes | Compatibility | Regression-tested | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
 | 55 | Private local notes | Yes | Clean | Not started | create; edit/delete if supported; reload; export |
 | 56 | Cloud notes | Yes | Compatibility | Not started | account sync; offline/failure behavior; no guest leak |
 | 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
