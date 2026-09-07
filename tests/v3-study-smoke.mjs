@@ -29,7 +29,7 @@ async function run(){
   await page.locator('[data-study-restart]').click();await page.locator('[data-study-session="good-samaritan"]').waitFor();assert((await page.locator('.bq-study-prompt').textContent())?.includes('Read Luke 10:25–37 slowly'),'Guided Study restart did not return to the first step.');
   metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-study-page] button, [data-study-page] textarea')].map(node=>node.getBoundingClientRect().height))}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Guided Study session mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Guided Study session control below 44px: ${metrics.minTarget}px.`);
 
-  await page.locator('[data-study-reader]').click();await page.waitForURL(/#\/reader$/);await page.locator('[data-reader-page]').waitFor();const readerText=await page.locator('[data-reader-page]').textContent();assert(readerText?.includes('Luke'),'Guided Study Reader handoff did not open Luke.');
+  await page.locator('[data-study-reader]').click();await page.waitForURL(/#\/reader$/);await page.locator('[data-reader-book]').waitFor();assert(await page.locator('[data-reader-book]').inputValue()==='LUK','Guided Study Reader handoff did not open Luke.');assert(await page.locator('[data-reader-chapter]').inputValue()==='10','Guided Study Reader handoff did not open Luke 10.');
   assert(errors.length===0,`Unexpected Guided Study console/page errors: ${errors.join(' | ')}`);await page.close();
 }
 try{await run();console.log('BibleQuest v3 Guided Study browser regression passed.')}finally{await browser.close()}
