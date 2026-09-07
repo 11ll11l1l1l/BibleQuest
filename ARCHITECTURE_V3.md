@@ -11,7 +11,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/core/api.js` — Supabase/remote calls
 - `src/app/session.js` — auth/session/password lifecycle
 - `src/app/account.js` — signup/recovery/device workflows
-- `src/core/bible.js` — Bible sources/packs/search/external links/original-language context-pack loading and live Japanese chapter-source normalization
+- `src/core/bible.js` — Bible sources/packs/search/external licensed-translation handoffs/original-language context-pack loading and live Japanese chapter-source normalization
 - `src/app/reader.js` — Reader state/navigation/read marking and Reader-facing context/source delegation
 - `src/app/japanese-vocabulary.js` — Japanese vocabulary-learning preference and curated term lookup
 - `src/core/progress.js` — XP/streak/activity/badges/counters/events
@@ -37,7 +37,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 2. `src/core/progress.js` is the only XP/streak/activity/counter/event owner. Feature code cannot mutate progress directly.
 3. `src/core/storage.js` is the only browser storage implementation boundary. No feature uses direct `localStorage` or `sessionStorage`.
 4. `src/core/recall-packs.js` is the only owner that loads, validates, caches, or addresses unfoldingWord question-pack files.
-5. `src/core/bible.js` is the only owner that loads or addresses bundled Bible packs, live Bible sources, and original-language context packs.
+5. `src/core/bible.js` is the only owner that loads or addresses bundled Bible packs, live Bible sources, licensed external translation handoffs, and original-language context packs.
 6. Static feature/content modules contain definitions only. Feature `index.js` modules are presentation/event-forwarding only.
 7. Open reflection/application text is never converted into a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
 8. Retained rewards are implemented only when recovered from the old behavior. No parity feature invents a new XP scheme.
@@ -85,6 +85,20 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 9. Vocabulary browsing has no recovered XP/progress reward, so v3 does not invent one.
 10. #15 furigana remains deferred. `kuromoji`, CDN script injection, `data-jp-furigana`, and `window.BQJapaneseLearning` are forbidden from the #16 implementation.
 11. `src/ui/japanese-vocabulary.css` owns the isolated vocabulary/mobile presentation. The control must remain >=44px and the 390px Reader path must not overflow horizontally.
+
+## Reader / NLT licensed-link boundaries
+
+1. #17 reproduces the actually loaded legacy NLT behavior: NLT is a selectable `licensed-link` mode, not a bundled Bible pack and not a hidden live-text API.
+2. `src/core/bible.js` alone owns NLT translation metadata and exact BibleGateway passage URL construction through `licensedPassage()`.
+3. BibleQuest must not fetch, cache, store, synthesize, or redistribute NLT verse text. `loadChapter('nlt',...)` returns canonical passage metadata, an empty immutable verse list, and the licensed external handoff only.
+4. NLT `loadBook()` and in-app NLT `search()` are rejected explicitly. Missing redistributed text must never trigger BSB substitution or another translation fallback.
+5. `src/app/reader.js` remains the sole selected translation/book/chapter persistence owner. NLT mode retains the normal Book, Chapter, Previous, and Next navigation state.
+6. Because BibleQuest has not displayed the NLT Scripture text, NLT mode exposes no verse buttons and no Mark Read UI. `src/app/reader.js` also blocks `markRead()` for all `licensed-link` translations so programmatic calls cannot invent chapter-read XP.
+7. NLT mode does not expose in-app NLT text search. The UI explains that search stays in the licensed external reader.
+8. The external NLT link must open the exact selected passage in a new tab with `noopener noreferrer`, preserving BibleQuest state for safe return.
+9. NLT source/license attribution must be visible. No private translation API key belongs in the browser.
+10. Browsing or opening NLT licensed passages has no recovered XP/progress reward and v3 must not invent one.
+11. `scripts/validate-v3-nlt-licensed.mjs`, `tests/v3-nlt-licensed-edge.mjs`, the general Reader regressions, and `tests/v3-nlt-licensed-smoke.mjs` permanently protect these boundaries, including the 390px no-overflow path.
 
 ## Guided Study / Deep Questions / Story Journey / Wisdom
 
@@ -141,4 +155,4 @@ One boot, router, session owner, global store, storage boundary, API boundary, B
 
 Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → remaining Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → reassess remaining core/content parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.22-japanese-kougo` at `06eda2948db3a4c5462bc24a2b79596fa7d275f0`; exact Japanese 口語訳 bookkeeping run `34122128228` passed before that freeze. #16 Japanese vocabulary is now under rebuild and cannot be promoted until its complete accumulated functional gate passes. Production v2 remains isolated.
+Known-good frozen releases extend through `release/v3.23-japanese-vocabulary` at `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`; exact Japanese vocabulary bookkeeping run `34123607629` passed before that freeze. #17 NLT licensed-link is Verified after complete functional run `34126567141` and cannot be frozen until its exact bookkeeping state passes the complete suite. Production v2 remains isolated.
