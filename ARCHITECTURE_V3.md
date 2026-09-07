@@ -17,6 +17,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/core/recall-packs.js` — Per-book Recall manifest/question-pack loading, validation, approval filtering, and cache
 - `src/engines/lesson.js` — one guided lesson lifecycle/state/persistence engine
 - `src/app/study.js` — Guided Study library/open/resume/restart/completion orchestration over the Lesson engine
+- `src/app/deep-questions.js` — Deep Questions selection/open/resume/restart/Reader handoff/close orchestration over the Lesson engine
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration only
@@ -36,7 +37,21 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 7. Guided Study scores only objective/evaluated lesson questions. Reflection, confirmation, or application responses are never converted into a spiritual score, diagnosis, moral ranking, or measure of divine approval.
 8. Leaving Study closes only the active in-memory Lesson engine selection; persisted session state remains available for explicit resume. Returning must not create a second engine/runtime.
 9. Definition version changes intentionally invalidate stale persisted sessions through the existing Lesson engine contract rather than migration patches inside the UI.
-10. Later Story Journey, Deep Questions, Wisdom Situations, and pastor-linked study activities should reuse this Lesson/Study infrastructure where their lifecycle fits, rather than each creating a new lesson engine.
+10. Later Story Journey, Wisdom Situations, and pastor-linked study activities should reuse the same Lesson lifecycle where their behavior fits rather than create another lesson engine.
+
+## Deep Questions boundaries
+
+1. `src/engines/lesson.js` remains the only lifecycle/session/response persistence engine for Deep Questions. No Deep Questions-specific storage key or second note/session state machine is permitted.
+2. `src/features/deep-questions/content.js` contains static recovered question, option, reflection, and Scripture-reference definitions only. It cannot own storage, progress, navigation, backend calls, or DOM lifecycle.
+3. `src/app/deep-questions.js` is the single Deep Questions orchestration owner. It owns library selection, rotating-question selection, open/resume/restart, Reader handoff, and close only; response validation/persistence remains delegated to Lesson.
+4. `src/features/deep-questions/index.js` is presentation and event forwarding only. It cannot call Lesson directly, mutate Progress, access browser storage, or calculate competing session state.
+5. Deep Questions has no Progress/XP handoff unless verified parity evidence is established later. The retained v2 response path did not award XP, so v3 must not invent one.
+6. Deep Question choices are open reflection prompts, not objective doctrine quiz answers. No answer index may be treated as a spiritual-quality score, moral rank, diagnosis, or measure of divine approval.
+7. The supported sequence is initial response → open reflection and Scripture references → private note. References are available for Reader handoff after the response.
+8. The private note is currently a Lesson text response only. This preserves save/resume/reload without prematurely implementing or duplicating #55 Private local notes; #55 remains a separate future owner/capability.
+9. Reader handoff delegates to `src/app/reader.js`; returning to Deep Questions resumes the persisted Lesson session rather than creating a second runtime.
+10. The retained featured-question rotation uses the old day-of-month rule while the full 18-question library remains selectable.
+11. Story Journey and Wisdom Situations should reuse this shared Lesson foundation where appropriate while keeping their own thin feature orchestration inside clearly defined owner boundaries.
 
 ## Future Devotional / Ministry boundaries
 
@@ -50,7 +65,7 @@ The detailed design contract is `DEVOTIONAL_MINISTRY_DESIGN_V3.md`. These bounda
 6. Aggregate counts such as `18 answered` must come from an authorized aggregate query/view/RPC or equivalent service contract; the browser must not fetch all private responses merely to count them.
 7. Future Ministry UI owns presentation only. The verified API/service layer remains the only direct Supabase boundary, while Session/Congregation owners remain authoritative for identity, role, and membership.
 8. Assignment push workflow (#75) must layer delivery/notification on the same ministry post/task identity rather than create a second assignment system.
-9. Pastor-authored Devotionals may later link to a Bible passage, Guided Study, or Task, but do not bypass Ministry publication/privacy rules or duplicate the Guided Study engine.
+9. Pastor-authored Devotionals may later link to a Bible passage, Guided Study, Deep Question, or Task, but do not bypass Ministry publication/privacy rules or duplicate the Lesson engine.
 
 ## Transform boundaries
 
@@ -104,12 +119,12 @@ The detailed design contract is `DEVOTIONAL_MINISTRY_DESIGN_V3.md`. These bounda
 
 ## Global hard boundaries
 
-One boot, one router, one session owner, one storage boundary, one API boundary, one Bible service, one reader state owner, one progress owner, one Recall Pack data owner, one lesson engine, one Guided Study orchestration owner, one Transform engine, one Audio owner, one Recordings owner, one Media Library orchestration owner, and one Games launcher owner. Features render only inside the shell and clean up listeners. No v3 source depends on legacy `window.BQ*` globals.
+One boot, one router, one session owner, one storage boundary, one API boundary, one Bible service, one reader state owner, one progress owner, one Recall Pack data owner, one lesson engine, one Guided Study orchestration owner, one Deep Questions orchestration owner, one Transform engine, one Audio owner, one Recordings owner, one Media Library orchestration owner, and one Games launcher owner. Features render only inside the shell and clean up listeners. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions/Story/Wisdom)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson Engine → Daily Mission → Transform → Audio/Live Recordings/Media → Games core → **Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations)** → Ministry/Devotional foundation → remaining parity → full audit → mobile regression → production deployment.
 
 Kids arcade accessibility remains required, but deeper Kids integration is intentionally deferred while Bible-study and devotional/ministry core work is prioritized.
 
-Known-good frozen releases now extend through `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`; Character Detective is frozen at `release/v3.13-character-detective`, Per-book Recall at `release/v3.12-per-book-recall`, Mixed Quest at `release/v3.11-mixed-quest`, Games core at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
+Known-good frozen releases now extend through `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`; Timeline is frozen at `release/v3.14-timeline`, Character Detective at `release/v3.13-character-detective`, Per-book Recall at `release/v3.12-per-book-recall`, Mixed Quest at `release/v3.11-mixed-quest`, Games core at `release/v3.10-games-core`, Media Library at `release/v3.9-media-library`, Audio/Recordings at `release/v3.8-audio-recordings`, and Transform at `release/v3.7-transform-complete`. Production remains isolated on v2 until parity and stability release gates pass.
