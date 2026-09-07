@@ -7,16 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inv
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 39
+- **Regression-tested:** 40
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 59
-- **Verified or better:** 40 / 100 (**40% strict parity completion**)
-- **Fully regression-tested:** 39 / 100 (**39% stability coverage**)
+- **Not started:** 58
+- **Verified or better:** 41 / 100 (**41% strict parity completion**)
+- **Fully regression-tested:** 40 / 100 (**40% stability coverage**)
 - **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
 - **Milestone 8:** Audio / Live Recordings / Media frozen through `release/v3.9-media-library`
-- **Milestone 9:** Games active; core frozen at `release/v3.10-games-core`, Mixed Quest at `release/v3.11-mixed-quest`, Per-book Recall at `release/v3.12-per-book-recall`; Character Detective verified and awaiting exact bookkeeping freeze
-- **Next target:** #37 Timeline after Character Detective bookkeeping freeze
+- **Milestone 9:** Games active; frozen through `release/v3.13-character-detective`; Timeline verified and awaiting exact bookkeeping freeze
+- **Next target:** #38 Kids Memory Match after Timeline bookkeeping freeze
 - **Production:** v2 remains live; v3 has not replaced production
 
 Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`. Milestone states below are schedule/progress labels only.
@@ -33,7 +33,7 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
 | 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
 | 8 | Audio / Live Recordings / Media | **Frozen complete** | #57–61 Regression-tested; through `release/v3.9-media-library` |
-| 9 | Games | **Active** | #32–35, #41 Regression-tested; #36 Verified; #37–40, #42–43 remaining |
+| 9 | Games | **Active** | #32–36, #41 Regression-tested; #37 Verified; #38–40, #42–43 remaining |
 | 10 | Bible World | **Not started** | #44–45 |
 | 11 | Tutorial / avatar | **Not started** | #84–85 |
 | 12 | Secondary features | **Not started** | Remaining guided study, notes, community, ministry, admin, PWA/offline, recovery, and related parity rows |
@@ -43,24 +43,35 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 
 ## Milestone 9 evidence — Games
 
-The Games core passed the accumulated suite on run `34064004752`, verifying one launcher owner with Quick Recall and Context Challenge. That checkpoint is frozen as `release/v3.10-games-core`.
+- Games core passed accumulated run `34064004752` and is frozen as `release/v3.10-games-core`.
+- Mixed Quest passed run `34065176532` plus bookkeeping run `34065347665` and is frozen as `release/v3.11-mixed-quest`.
+- Per-book Recall passed run `34065874003` plus bookkeeping run `34066568163` and is frozen as `release/v3.12-per-book-recall` at `38fb34b1b068c6678957a0a25f6cda88fb185cf0`.
+- Character Detective passed retry run `34067063009` plus bookkeeping run `34067320927` and is frozen as `release/v3.13-character-detective` at `7c33895158037727880a3ae8eb6c2d44ccef6621`.
+- Timeline code was added at `e49c9c08b2f3cf8a107b2a16880657e35e4c4f16` and passed the complete accumulated suite on run `34071571139`.
 
-Mixed Quest passed the entire accumulated suite on run `34065176532`, and its exact bookkeeping run `34065347665` also passed. It is frozen as `release/v3.11-mixed-quest`.
-
-Per-book Recall passed the entire accumulated suite on run `34065874003`, then its exact bookkeeping run `34066568163` also passed. It is frozen as `release/v3.12-per-book-recall` at `38fb34b1b068c6678957a0a25f6cda88fb185cf0`.
-
-Character Detective / Who Am I then passed the complete accumulated suite on retry run `34067063009`. The feature preserves the retained five clue/reference records for David, Joseph, Zacchaeus, Esther, and Peter; typed answers are trimmed and case-insensitive; correct/incorrect scoring is +12/+3 XP through Progress; duplicate submissions cannot award twice; last results persist; and replay advances to another clue set through the same Games owner. The first verification run `34066936451` reached the final Games browser test but failed only because the test used a non-unique `[data-game-launcher]` selector after the result view contained both “All games” and “Choose another game.” The stable result-action selector was made explicit and the complete retry run passed.
+Timeline verification covered:
+1. Three retained datasets: Big Bible Story, Life of Jesus, and Genesis Journey.
+2. All reorder/check/retry/result/replay state runs through `src/app/games.js`.
+3. `src/features/games/timelines.js` is static content only.
+4. Repeated failed checks cannot farm XP.
+5. The first failed check awards +4 XP; a later solve awards +16, preserving +20 total for a solved round.
+6. Correct-first completion awards +20 once.
+7. Result persistence uses the shared Storage boundary.
+8. Switching/leaving resets active Timeline state through the shared launcher lifecycle.
+9. Mobile reorder controls remain usable at 390px with no horizontal overflow.
+10. All earlier shell/account, Reader, Progress, Lesson, Daily Mission, Transform, Live Recordings, Media Library, Recall and Games regressions remained green.
 
 Current bookkeeping:
 - #32 Quick Recall — **Regression-tested**
 - #33 Context Challenge — **Regression-tested**
 - #34 Mixed Quest — **Regression-tested**
 - #35 Per-book Recall — **Regression-tested**
-- #36 Character Detective / Who Am I — **Verified**
+- #36 Character Detective / Who Am I — **Regression-tested**
+- #37 Timeline — **Verified**
 - #41 Game launcher — **Regression-tested**
 - #61 Media Library — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **39 Regression-tested / 1 Verified / 1 Implemented / 59 Not started**
+- Totals — **40 Regression-tested / 1 Verified / 1 Implemented / 58 Not started**
 
 ## Milestone 9 implementation order — Games
 
@@ -69,9 +80,9 @@ Current bookkeeping:
 3. #33 Context Challenge — **Regression-tested**.
 4. #34 Mixed Quest — **Regression-tested**; frozen through `release/v3.11-mixed-quest`.
 5. #35 Per-book Recall — **Regression-tested**; frozen through `release/v3.12-per-book-recall`.
-6. #36 Character Detective / Who Am I — **Verified**; exact bookkeeping freeze pending.
-7. #37 Timeline game — next implementation target.
-8. #38 Kids Memory Match.
+6. #36 Character Detective / Who Am I — **Regression-tested**; frozen through `release/v3.13-character-detective`.
+7. #37 Timeline game — **Verified**; exact bookkeeping freeze pending.
+8. #38 Kids Memory Match — next implementation target.
 9. #39 Hiragana Match.
 10. #40 Kids Bible Who Am I.
 11. #42 Same-room Play Together.
