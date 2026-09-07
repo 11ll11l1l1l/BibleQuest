@@ -22,6 +22,12 @@ const rows = {
     label: 'BibleQuest recall / context question',
     kind: 'question',
     detail: 'BibleQuest-authored question and explanation. The displayed Scripture reference is the place to verify the answer; the explanation is not a Bible quotation.'
+  },
+  'bq-game': {
+    id: 'bq-game',
+    label: 'BibleQuest game content',
+    kind: 'game',
+    detail: 'BibleQuest-authored clues, event wording, or game summaries based on the cited biblical account; this wording is not Scripture text.'
   }
 };
 
