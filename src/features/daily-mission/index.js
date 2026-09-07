@@ -1,5 +1,9 @@
+import { getContentProvenance } from '../../core/content-provenance.js';
+import { sourceLabel } from '../../ui/source-labels.js';
+
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const LABELS = Object.freeze({ retrieve:'Retrieve', context:'Context', learn:'Learn', apply:'Apply', reflect:'Reflect' });
+const JOURNEY_SOURCE=sourceLabel(getContentProvenance('bq-study'),{compact:true});
 
 export function dailyMissionPage({ mission, onReader, onHome }) {
   return {
@@ -47,7 +51,7 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
           return;
         }
         const step = state.currentStep;
-        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p><div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
+        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p><div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
       };
 
       const answer = value => {
