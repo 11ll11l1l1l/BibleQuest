@@ -7,17 +7,17 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`. The feature inv
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Regression-tested:** 41
+- **Regression-tested:** 42
 - **Verified:** 1
 - **Implemented:** 1
-- **Not started:** 57
-- **Verified or better:** 42 / 100 (**42% strict parity completion**)
-- **Fully regression-tested:** 41 / 100 (**41% stability coverage**)
+- **Not started:** 56
+- **Verified or better:** 43 / 100 (**43% strict parity completion**)
+- **Fully regression-tested:** 42 / 100 (**42% stability coverage**)
 - **Milestone 7:** Transform frozen at `release/v3.7-transform-complete`
 - **Milestone 8:** Audio / Live Recordings / Media frozen through `release/v3.9-media-library`
 - **Milestone 9:** Core Games frozen through `release/v3.14-timeline`
-- **Milestone 10 current state:** #52 Expanded Guided Study Verified after accumulated run `34080576745`; exact bookkeeping gate still required before freeze
-- **Next Bible-study target after freeze:** #51 Deep Questions
+- **Milestone 10 current state:** #52 Expanded Guided Study frozen at `release/v3.15-guided-study`; #51 Deep Questions Verified after accumulated run `34082339971`; exact Deep Questions bookkeeping gate still required before freeze
+- **Next Bible-study target after Deep Questions freeze:** #49 Story Journey
 - **Kids arcade:** remains accessible; deeper #38–40 integration is deferred while Bible-study core is prioritized
 - **Later high-priority ministry requirement:** Pastor/Admin Message + Devotional + Task publishing, member private task responses, Pastor/Admin-only response bodies, member-visible aggregate answer count; see `DEVOTIONAL_MINISTRY_DESIGN_V3.md`
 - **Production:** v2 remains live; v3 has not replaced production
@@ -32,12 +32,12 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 | 2 | Authentication / session | **Complete** | #6–10 Regression-tested |
 | 3 | Bible data / content | **Partial — parity gaps deferred** | #11–13, #18–19, #21–23 Regression-tested; #20 Implemented; #14–17 Not started |
 | 4 | User progress / state | **Complete** | #24–27 Regression-tested |
-| 5 | Lesson engine | **Complete (engine)** | #31 Regression-tested; reused by Guided Study |
+| 5 | Lesson engine | **Complete (engine)** | #31 Regression-tested; shared by Guided Study and Deep Questions |
 | 6 | Daily Mission | **Complete** | #28–30 Regression-tested |
 | 7 | Transform | **Frozen complete** | #46–48 Regression-tested; `release/v3.7-transform-complete` |
 | 8 | Audio / Live Recordings / Media | **Frozen complete** | #57–61 Regression-tested; through `release/v3.9-media-library` |
 | 9 | Games core | **Frozen core** | #32–37, #41 Regression-tested; frozen through `release/v3.14-timeline` |
-| 10 | Bible-study core | **Active** | #52 Verified; exact bookkeeping/freeze next, then #51/#49/#50 |
+| 10 | Bible-study core | **Active** | #52 Regression-tested/frozen; #51 Verified; exact bookkeeping/freeze next; then #49/#50 |
 | 11 | Devotional / Ministry foundation | **Designed, not implemented** | High priority later; maps primarily to #66 and #73–78 |
 | 12 | Bible World / tutorial / remaining parity | **Not started** | #44–45, #84–85 and other remaining parity rows |
 | 13 | Full old-vs-new audit | **Not started** | Reconcile all 100 inventory rows; no compatibility-only row counts as parity |
@@ -52,13 +52,13 @@ Feature status words retain their strict meanings from `FEATURE_INVENTORY_V3.md`
 - Character Detective passed retry run `34067063009` plus bookkeeping run `34067320927` and is frozen as `release/v3.13-character-detective` at `7c33895158037727880a3ae8eb6c2d44ccef6621`.
 - Timeline passed the full accumulated functional run `34071571139` and exact bookkeeping run `34071916832`.
 - Timeline is frozen as `release/v3.14-timeline` at `ddc40d54125185bfd47f96765182e76d89cb37c3`.
-- Timeline later survived the full Guided Study accumulated run `34080576745` and is therefore now Regression-tested.
+- Timeline later survived the full Guided Study accumulated run `34080576745` and is therefore Regression-tested.
 
 ## Milestone 10 — Bible-study core
 
-### #52 Expanded Guided Study — Verified
+### #52 Expanded Guided Study — Regression-tested and frozen
 
-Guided Study is built on the already Regression-tested `src/engines/lesson.js`; it does not create a second lesson engine.
+Guided Study is built on the Regression-tested `src/engines/lesson.js`; it does not create a second lesson engine.
 
 Verified owner boundaries:
 1. Static curated definitions live in `src/features/study/content.js`.
@@ -67,45 +67,69 @@ Verified owner boundaries:
 4. `src/features/study/index.js` is presentation/event forwarding only.
 5. Completion records one deterministic Progress event; reopening/repeated completion cannot farm XP or activity.
 6. Guided Study intentionally adds no unverified XP reward; completion uses `xp: 0`, meaningful activity, and `{reflections:1}`.
-7. Personal reflection/application remains private lesson response data at this stage and is never scored as spiritual quality, diagnosis, moral rank, or divine approval.
+7. Personal reflection/application remains private lesson response data and is never scored as spiritual quality, diagnosis, moral rank, or divine approval.
 
 Initial studies:
 - **Who Is My Neighbor?** — Luke 10:25–37
 - **Abide and Bear Fruit** — John 15:1–17
 - **Faith That Acts** — James 2:14–26
 
-Each uses passage → context → observation → meaning → reflection → concrete response → completion.
+Functional accumulated run `34080576745` passed the full suite. Exact bookkeeping run `34081724365` also passed. The exact bookkeeping commit was frozen as `release/v3.15-guided-study` at `cf8740e623460f062c321d01d903267e79885c4c`.
 
-Accumulated verification run `34080576745` passed:
-- strengthened Study architecture boundaries
-- all existing edge regressions
-- Guided Study edge regression
+Guided Study then survived the later Deep Questions accumulated run `34082339971`, so #52 is now Regression-tested.
+
+### #51 Deep Questions — Verified
+
+The rebuild recovered all 18 retained v2 Deep Questions and rebuilt them without importing the old global `BQ_DEEP_QUESTIONS` runtime.
+
+Clean owner boundaries:
+1. `src/features/deep-questions/content.js` contains static question, reflection, option, and Scripture-reference definitions only.
+2. `src/app/deep-questions.js` owns selection/open/resume/restart/Reader handoff/close only.
+3. `src/engines/lesson.js` remains the sole lifecycle/session/response persistence owner; Deep Questions has no storage key or parallel note store.
+4. `src/features/deep-questions/index.js` is presentation/event forwarding only.
+5. `src/app/reader.js` remains the Reader state owner; Scripture handoff delegates through `reader.setBook`.
+6. Deep Questions has no Progress dependency and no XP award because no verified parity evidence supports one.
+7. Initial response choices are deliberately unscored; no spiritual-quality, moral-rank, or divine-approval score is created.
+8. Reflection and Scripture references are revealed after the initial response.
+9. The private note is persisted as the shared Lesson text response, preserving resume/reload without prematurely implementing #55 Private local notes.
+10. The old day-of-month rotating featured-question behavior is retained while all 18 questions remain directly selectable.
+
+Full accumulated functional run `34082339971` passed:
+- architecture validator
+- all accumulated edge regressions
+- Deep Questions edge regression
 - shell/account browser regression
-- Reader, Progress, Lesson browser regressions
-- full 390px Guided Study browser workflow
+- Reader, Progress, Lesson, Guided Study browser regressions
+- Deep Questions browser regression at 390px
 - Daily Mission
 - Transform engine/basic/full
 - Live Recordings
 - Media Library
 - Games
 
-Guided Study browser verification included mobile no-overflow/touch targets, full Luke 10 completion, answer locking, private response persistence, deterministic completion event, reload/reopen, restart, and Reader handoff to Luke 10.
+Deep Questions browser verification included:
+- Learn → Deep Questions while retaining stable `<h1>Learn</h1>`
+- all 18 recovered questions and rotating featured question
+- mobile no-overflow and >=44px controls
+- references hidden before the initial response
+- unscored response locking
+- reflection/reference reveal after response
+- Reader handoff to Matthew 18
+- resume after Reader handoff
+- private-note save, reload, and return persistence
+- completion/reopen with zero Progress mutation and no XP
+- restart
+- no console/page errors
 
-Three defects were caught and fixed before verification:
-- dense content-freezer syntax error caught by architecture syntax validation
-- Study `getState()` leaking the lower Lesson error after close, caught by edge regression
-- Learn page stable `<h1>Learn</h1>` compatibility regression caught by the accumulated shell browser suite
+No Deep Questions application defect was found by the first functional gate, so no post-gate patch was required.
 
-### Next after Guided Study freeze
+### Next after Deep Questions freeze
 
-After the exact bookkeeping state passes one more accumulated gate and `release/v3.15-guided-study` is frozen:
-1. #51 Deep Questions
-2. #49 Story Journey
-3. #50 Wisdom Situations
-4. #53 Adaptive learning
-5. #54 Open/weak-area review
-
-Deep Questions should reuse Study/Lesson lifecycle where appropriate and should not create its own permanent note store; any save-note handoff should lead toward the future #55 Private local notes owner.
+After the exact bookkeeping state passes one more accumulated gate and `release/v3.16-deep-questions` is frozen:
+1. #49 Story Journey
+2. #50 Wisdom Situations
+3. #53 Adaptive learning
+4. #54 Open/weak-area review
 
 ## Current bookkeeping
 
@@ -116,10 +140,11 @@ Deep Questions should reuse Study/Lesson lifecycle where appropriate and should 
 - #36 Character Detective / Who Am I — **Regression-tested**
 - #37 Timeline — **Regression-tested**
 - #41 Game launcher — **Regression-tested**
-- #52 Expanded Guided Study — **Verified**
+- #51 Deep Questions — **Verified**
+- #52 Expanded Guided Study — **Regression-tested**
 - #61 Media Library — **Regression-tested**
 - #20 STEPBible tooling — **Implemented**
-- Totals — **41 Regression-tested / 1 Verified / 1 Implemented / 57 Not started**
+- Totals — **42 Regression-tested / 1 Verified / 1 Implemented / 56 Not started**
 
 ## Devotional / Ministry later milestone
 
