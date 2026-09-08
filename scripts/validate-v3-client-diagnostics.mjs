@@ -13,7 +13,7 @@ if(!failures.length){
   if(!shell.includes('data-recovery-diagnostic')||!shell.includes('data-diagnostic-code'))fail('Shell must render owner-supplied diagnostic status/code.');
   for(const contract of['src/core/client-diagnostics.js','## Client diagnostics boundaries','API owner performs the same-origin probe'])if(!architecture.includes(contract))fail(`Architecture missing client diagnostics boundary: ${contract}`);
   if(!inventory.includes('| 95 | Client diagnostics | Yes | Compatibility | Regression-tested |'))fail('#95 must remain Regression-tested after later complete suites.');
-  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
+  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
   for(const forbidden of['addEventListener(\'error\'','unhandledrejection','setInterval','bible_client_errors','window.BQDiagnostics','MutationObserver'])if(owner.includes(forbidden)||bootstrap.includes(forbidden))fail(`Client diagnostics must not recreate legacy global behavior: ${forbidden}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
