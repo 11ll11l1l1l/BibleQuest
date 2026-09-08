@@ -92,7 +92,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
     },
     renderRecovery(failure, { onRetry, onHome }) {
       try { releasePage(); } catch {}
-      view.innerHTML = `<section class="bq-panel bq-recovery-panel" data-recovery-route="${escapeHtml(failure?.route || 'feature')}"><div role="alert"><p class="bq-eyebrow">RECOVERY</p><h1>${escapeHtml(failure?.title || 'Feature could not open')}</h1><p>${escapeHtml(failure?.message || 'The BibleQuest shell is still available.')}</p><div class="bq-recovery-actions"><button type="button" class="bq-primary-button" data-recovery-retry>Try again</button><button type="button" class="bq-secondary-button" data-recovery-home>Go Home</button></div></div></section>`;
+      view.innerHTML = `<section class="bq-panel bq-recovery-panel" data-recovery-id="${escapeHtml(failure?.id || '')}" data-recovery-route="${escapeHtml(failure?.route || 'feature')}"><div role="alert"><p class="bq-eyebrow">RECOVERY</p><h1>${escapeHtml(failure?.title || 'Feature could not open')}</h1><p>${escapeHtml(failure?.message || 'The BibleQuest shell is still available.')}</p><p class="bq-recovery-diagnostic" data-recovery-diagnostic aria-live="polite">Checking whether this is an app or connection problem…</p><div class="bq-recovery-actions"><button type="button" class="bq-primary-button" data-recovery-retry>Try again</button><button type="button" class="bq-secondary-button" data-recovery-home>Go Home</button></div></div></section>`;
       document.title = 'Recovery · BibleQuest';
       const retryButton = view.querySelector('[data-recovery-retry]');
       const homeButton = view.querySelector('[data-recovery-home]');
@@ -105,6 +105,16 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
         homeButton?.removeEventListener('click', home);
       };
       view.focus({ preventScroll: true });
+    },
+    updateRecoveryDiagnostic(id, diagnostic) {
+      const panel=view.querySelector('[data-recovery-id]');
+      if(!panel||panel.dataset.recoveryId!==id||!diagnostic?.code)return false;
+      const host=panel.querySelector('[data-recovery-diagnostic]');
+      if(!host)return false;
+      const connection=diagnostic.serverReachable===true?'BibleQuest host check passed.':diagnostic.serverReachable===false?'BibleQuest host check failed.':'Connection was not tested.';
+      host.dataset.diagnosticReachable=String(diagnostic.serverReachable);
+      host.innerHTML=`<strong data-diagnostic-code>${escapeHtml(diagnostic.code)} · ${escapeHtml(diagnostic.category)}</strong><span>${escapeHtml(diagnostic.message)}</span><small>${escapeHtml(connection)}</small>`;
+      return true;
     }
   });
 }

@@ -9,6 +9,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/store.js` — global application state
 - `src/core/storage.js` — browser persistence boundary
 - `src/core/api.js` — Supabase/remote calls
+- `src/core/client-diagnostics.js` — stable client diagnostic codes, connection-probe evidence/cache, and module-versus-network classification
 - `src/app/session.js` — auth/session/password lifecycle
 - `src/app/account.js` — signup/recovery/device workflows
 - `src/core/bible.js` — Bible sources/packs/search/external licensed-translation handoffs/original-language context-pack loading and live Japanese chapter-source normalization
@@ -233,6 +234,19 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 9. Legacy `window.onerror`, `unhandledrejection`, global wrappers, `MutationObserver`, DOM surveillance, script reinjection, fetch overrides, and `window.BQ*` recovery runtimes are forbidden.
 10. Recovery has no Progress, Lesson, session, account, membership, doctrinal, provenance, storage, or reward side effect. Permanent protection includes `scripts/validate-v3-operational-recovery.mjs`, `tests/v3-operational-recovery-edge.mjs`, `tests/v3-operational-recovery-smoke.mjs`, and the complete accumulated workflow.
 
+## Client diagnostics boundaries
+
+1. `src/core/client-diagnostics.js` is the single #95 owner of stable client codes, probe evidence/cache, and module-versus-network classification.
+2. Retained codes in scope are `BQ-NET-001` (browser offline), `BQ-NET-002` (host unreachable), `BQ-MOD-001` (module failure with reachable host), and `BQ-UNK-001` (insufficient evidence).
+3. Browser online state is not proof of reachability. The API owner performs the same-origin probe with a cache-busting query and no-store request; Diagnostics consumes only its result.
+4. `src/app/operational-recovery.js` remains the only recovery-state and Retry/Home owner. Diagnostics returns a safe immutable classification and never stores retry actions.
+5. `src/ui/shell.js` renders diagnostic code/category/message/reachability only from owner-supplied data. It cannot classify errors or probe connectivity.
+6. `src/app/bootstrap.js` composes Diagnostics through Recovery's injected best-effort report callback and ignores late results for a superseded recovery ID.
+7. Public diagnostic state excludes arbitrary error message, stack, email, URL, token, credential, and backend data.
+8. #95 adds no persisted diagnostic state, `bible_client_errors` write, account requirement, Progress/Lesson/reward change, or production service dependency.
+9. Legacy global error/promise/online listeners, main-thread watchdog, DOM diagnostic injector, `window.BQDiagnostics`, fetch override, script reinjection, and MutationObserver are forbidden.
+10. Permanent protection includes `scripts/validate-v3-client-diagnostics.mjs`, `tests/v3-client-diagnostics-edge.mjs`, `tests/v3-client-diagnostics-smoke.mjs`, the #96 regressions, and the complete accumulated workflow.
+
 ## Transform, Audio, Recordings, Media, Games
 
 - `src/engines/transform.js` alone owns Transform calculations/state; `src/app/transform.js` only coordinates with Progress.
@@ -248,10 +262,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Client Diagnostics owner, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → Client diagnostics (#95) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; exact v3.29 bookkeeping run `34200768014` passed before that freeze. #96 Operational recovery/error boundary passed complete functional run `34202531302` at clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` and is Verified pending the independent v3.30 bookkeeping/release gate; #66 advanced to Regression-tested in that later full run. Current strict parity is 57/100 and official regression stability is 56/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.30-operational-recovery` at `7ec0290a50086112210c4c301db3288b970a2cc0`; exact v3.30 bookkeeping run `34203169381` passed before that freeze. #96 remains Verified under the later-feature promotion rule. Current strict parity is 57/100 and official regression stability is 56/100 according to the authoritative inventory. #95 Client diagnostics is the active implementation milestone and does not affect either count until its exact verification/bookkeeping gates pass. Production v2, `main`, and production Cloudflare remain isolated.

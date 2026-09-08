@@ -11,9 +11,9 @@ Updated: 2026-09-08 JST
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
-- Latest frozen checkpoint is `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`.
-- Exact v3.29 bookkeeping run `34200768014` passed all 76 accumulated job steps before that freeze.
-- Previous checkpoint `release/v3.28-cloud-notes` is frozen at `1b8cb0a4847b1fc633ce23412982c91c38825148`; bookkeeping run `34184699391` was fully green.
+- Latest frozen checkpoint is `release/v3.30-operational-recovery` at `7ec0290a50086112210c4c301db3288b970a2cc0`.
+- Exact v3.30 bookkeeping run `34203169381` passed all 79 accumulated job steps before that freeze.
+- Previous checkpoint `release/v3.29-congregation-membership` is frozen at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping run `34200768014` was fully green.
 - #66 Congregation membership/roles clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
 - #66 functional run `34185569051` passed the complete accumulated suite and explicitly asserted that clean SHA.
 
@@ -34,7 +34,7 @@ Strict verified-or-better parity is **57/100**.
 Official regression stability is **56/100**. #66 advanced to Regression-tested after surviving the later #96 complete functional suite. #96 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #96 Operational recovery/error boundary — **Verified** after exact complete functional run `34202531302`; awaiting the independent v3.30 bookkeeping/release gate.
+- #96 Operational recovery/error boundary — **Verified** after functional run `34202531302` and bookkeeping run `34203169381`; frozen in v3.30.
 - #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
 - #55 Private local notes — **Regression-tested**; frozen in v3.27.
@@ -169,7 +169,17 @@ Functional verification:
 - #95 Client diagnostics, offline/PWA behavior, backup/reset, global event interception, DOM surveillance, and script reinjection remain excluded.
 - Exact clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` passed all 79 job steps in functional run `34202531302`.
 - The isolated trigger commit `08e187236e384b41ed50d5261d20d62c2554196e` explicitly checked out and asserted the clean candidate, then the verification branch was reset to remove the trigger.
-- #96 is Verified pending the independent exact bookkeeping/release gate.
+- Exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
+
+## Milestone 18 — Client diagnostics
+
+### #95 Client diagnostics — implementation active
+
+- Recovered stable module/network codes compose with #96 through one `src/core/client-diagnostics.js` classification owner.
+- `src/core/api.js` owns the same-origin cache-busting probe; Diagnostics never calls `fetch` or Supabase directly.
+- Browser-offline, host-unreachable, reachable-module, and unknown states are narrow, immutable, and exclude arbitrary error data.
+- No global error listeners, freeze watchdog, DOM injector, backend diagnostic write, or `window.BQDiagnostics` compatibility path is restored.
+- Official counts remain 57/100 strict parity and 56/100 stability until exact #95 verification/bookkeeping gates pass.
 
 ## Defect / root-cause ledger retained
 
@@ -198,15 +208,16 @@ Functional verification:
 - `V3-CLOUD-NOTES-OWNER-001` — remote note state composes the API/session boundaries and remains separate from device-local Private Notes.
 - `V3-CONGREGATION-OWNER-001` — membership normalization, join orchestration, and client role projection are centralized without replacing server authorization.
 - `V3-RECOVERY-OWNER-001` — route failure state and Retry/Home action lifecycle are centralized without duplicating Router or Shell ownership.
+- `V3-DIAGNOSTICS-OWNER-001` — module/network classification is centralized while same-origin probing remains inside the API boundary.
 
 ## Next major milestone
 
-Complete the exact #96 bookkeeping suite, then freeze `release/v3.30-operational-recovery` only at the verified clean bookkeeping SHA.
+Complete #95 Client diagnostics through exact functional and bookkeeping suites, then freeze `release/v3.31-client-diagnostics` only at the verified clean SHA.
 
-After v3.30, reassess #67 Community Bridge against accessibility, diagnostics, PWA/offline, backup/import, and remaining user-facing parity debt.
+After v3.31, reassess #67 Community Bridge against accessibility, PWA/offline, backup/import, and remaining user-facing parity debt.
 
 Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#96 passed its complete functional suite on run `34202531302`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.30-operational-recovery` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#95 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

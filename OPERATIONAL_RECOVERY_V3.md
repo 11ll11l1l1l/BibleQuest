@@ -50,5 +50,9 @@ The #96 functional verification gate completed with:
 - Isolated verification-only commit: `08e187236e384b41ed50d5261d20d62c2554196e`; it checked out and asserted the clean candidate before testing.
 - Complete accumulated run: `34202531302` — all 79 job steps green, including architecture, edge, real 390px render/mount/cleanup recovery, and every prior browser regression.
 - `verify/v3.30-operational-recovery-functional` was reset to the clean candidate after the run, removing its temporary push trigger.
+- Exact bookkeeping candidate: `7ec0290a50086112210c4c301db3288b970a2cc0`.
+- Isolated bookkeeping verification commit: `4638aea18ec1f8049ae28cdf9395f7ed8a369dd4`; it checked out and asserted the clean candidate.
+- Complete bookkeeping run: `34203169381` — all 79 job steps green.
+- `release/v3.30-operational-recovery` is frozen at the exact verified bookkeeping SHA `7ec0290a50086112210c4c301db3288b970a2cc0`; normal workflow state is manual-only.
 
-#96 is Verified and #66 is Regression-tested in the authoritative inventory through this later-feature evidence. The independent exact bookkeeping candidate must pass the complete accumulated suite before `release/v3.30-operational-recovery` may be frozen.
+#96 is Verified and #66 is Regression-tested in the authoritative inventory. #96 advances again only after a later feature milestone passes the complete accumulated suite with it still green.

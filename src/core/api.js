@@ -67,6 +67,21 @@ export function createApi() {
     return data || {};
   };
 
+  const diagnostics = Object.freeze({
+    async probe() {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 3500);
+      try {
+        const target = new URL('./index.html', location.href);
+        target.searchParams.set('bq-net-probe', String(Date.now()));
+        const response = await fetch(target.href, { method:'GET',cache:'no-store',credentials:'same-origin',signal:controller.signal });
+        return Object.freeze({ reachable:response.ok,status:response.status,reason:response.ok?'ok':'http' });
+      } catch (error) {
+        return Object.freeze({ reachable:false,status:0,reason:error?.name==='AbortError'?'timeout':'fetch-failed' });
+      } finally { clearTimeout(timer); }
+    }
+  });
+
   const auth = Object.freeze({
     enabled() {
       return !localPreview();
@@ -229,5 +244,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, cloudNotes, media });
+  return Object.freeze({ auth, account, congregation, cloudNotes, media, diagnostics });
 }

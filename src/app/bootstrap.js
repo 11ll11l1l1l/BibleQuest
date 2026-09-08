@@ -20,6 +20,7 @@ import { createPrivateNotesService } from './private-notes.js';
 import { createCloudNotesService } from './cloud-notes.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
 import { createOperationalRecoveryService } from './operational-recovery.js';
+import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
@@ -53,6 +54,7 @@ function start(){
   const root=document.getElementById('app');
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const api=createApi();
+  const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe});
   const bible=createBibleDataService();
   const progress=createProgressService({storage,store});
   const recall=createRecallPackService();
@@ -77,7 +79,10 @@ function start(){
   const privateNotes=createPrivateNotesService({storage});
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
   const congregation=createCongregationMembershipService({api,session});
-  const recovery=createOperationalRecoveryService();
+  let recovery;
+  recovery=createOperationalRecoveryService({report:(error,context)=>diagnostics.classify(error,{kind:'module',route:context.route}).then(diagnostic=>{
+    if(recovery.getState()?.id===context.id)shell?.updateRecoveryDiagnostic(context.id,diagnostic);
+  })});
 
   let router,shell;
   const routes=Object.freeze({

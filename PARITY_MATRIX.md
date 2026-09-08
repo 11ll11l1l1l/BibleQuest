@@ -19,7 +19,7 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the #96 Operational recovery/error boundary functional gate:
+After the v3.30 Operational recovery/error boundary bookkeeping/release gate:
 
 | State | Count |
 |---|---:|
@@ -39,4 +39,6 @@ Official regression stability is **56/100**. #66 Congregation membership/roles a
 
 #66 Congregation membership/roles passed functional run `34185569051`. Its exact bookkeeping candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed all 76 steps in run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
 
-#96 Operational recovery/error boundary passed its exact clean functional candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` on all 79 steps of run `34202531302`. Its independent v3.30 bookkeeping/release gate remains pending.
+#96 Operational recovery/error boundary passed functional run `34202531302`. Its exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed all 79 steps in run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
+
+#95 Client diagnostics is the active implementation milestone. It remains **Not started** here until its exact functional candidate passes the complete accumulated suite.

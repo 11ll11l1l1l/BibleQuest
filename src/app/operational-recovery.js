@@ -21,7 +21,7 @@ export function createOperationalRecoveryService({ report = (error, context) => 
       message: 'This feature did not finish loading. The BibleQuest shell is still available.'
     });
     active = { view, retry, home };
-    try { report(asError(error), Object.freeze({ id: view.id, route: view.route })); } catch {}
+    try { const result=report(asError(error), Object.freeze({ id: view.id, route: view.route }));result?.catch?.(()=>{}); } catch {}
     return view;
   };
 
