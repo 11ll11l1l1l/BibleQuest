@@ -1,20 +1,21 @@
 # BibleQuest v3 Rebuild Timeline
 
-Updated: 2026-09-08 JST
+Updated: 2026-09-09 JST
 
 This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory remains authoritative. BibleQuest v3 uses rebuild-and-verify rather than patch-and-accumulate.
 
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #63 functional verification:** 63 Regression-tested / 1 Verified / 0 Implemented / 36 Not started
-- **Verified or better:** 64 / 100 (**64% strict parity completion**)
-- **Official regression stability:** 63 / 100
-- **Latest frozen checkpoint:** `release/v3.36-couples-family-local` at `488fea911cc432c9843a2af39480b6f2cc67711e`
-- **v3.36 bookkeeping:** `34236023685` — complete accumulated suite green against the frozen SHA
+- **Inventory states after #64 functional verification:** 64 Regression-tested / 1 Verified / 0 Implemented / 35 Not started
+- **Verified or better:** 65 / 100 (**65% strict parity completion**)
+- **Official regression stability:** 64 / 100
+- **Latest frozen checkpoint:** `release/v3.37-couples-cloud` at `f706896d8f4e8d2ee19e607a38cc87dada70d671`
+- **v3.37 bookkeeping:** `34240373295` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
-- **#63 Couples cloud:** Verified; exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294`, run `34238007365`
+- **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
+- **#64 Journey Groups:** Verified; corrected exact functional candidate `c49ce887bd28323292b6f1b60f7689a1aa194615`, run `34258746664`
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -45,10 +46,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 21 | Offline opened Bible packs | Frozen | v3.34; #99 Regression-tested |
 | 22 | Backup/export/import/reset | Frozen | v3.35; #100 Regression-tested after #62 suite |
 | 23 | Couples/family local tools | Frozen | v3.36; #62 Regression-tested after #63 suite |
-| 24 | Couples cloud | Functional gate green; bookkeeping active | #63 Verified; functional `34238007365` |
-| 25 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 26 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 27 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
+| 25 | Journey Groups | Functional gate green; bookkeeping active | #64 Verified; functional `34258746664` |
+| 26 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 27 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 28 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -75,6 +77,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; functional `34217190770`; bookkeeping `34218225949`
 - `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; functional `34219329591`; bookkeeping `34220313765`
 - `release/v3.36-couples-family-local` — `488fea911cc432c9843a2af39480b6f2cc67711e`; corrected functional `34229105566`; bookkeeping `34236023685`
+- `release/v3.37-couples-cloud` — `f706896d8f4e8d2ee19e607a38cc87dada70d671`; functional `34238007365`; bookkeeping `34240373295`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -96,13 +99,24 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Exact bookkeeping candidate `488fea911cc432c9843a2af39480b6f2cc67711e` passed run `34236023685` and is frozen as v3.36.
 - #62 survived the later complete #63 functional suite and advanced to Regression-tested.
 
-## #63 Couples cloud — Verified
+## #63 Couples cloud — Regression-tested
 
 - `src/app/couples-cloud.js` owns authenticated pairing, normalized shared state and fail-closed cloud orchestration; `src/core/api.js` remains the sole Supabase boundary.
 - Existing `bq-couple` and RLS-protected `bible_couple_shared` contracts are reused without a new migration.
 - Shared history is append-only and limited to journey completions, commitments and read-only challenge history; local/private/Transform/account data is excluded.
 - Exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed complete run `34238007365`.
 - The one-shot functional branch was reset from trigger `936cf0755abcd50ef438761c8bfb91dd019d260d` to the clean candidate after verification.
+- Exact bookkeeping candidate `f706896d8f4e8d2ee19e607a38cc87dada70d671` passed run `34240373295` and is frozen as v3.37.
+- #63 survived the later complete #64 functional suite and advanced to Regression-tested.
+
+## #64 Journey Groups — Verified
+
+- `src/app/journey-groups.js` owns group normalization, authenticated membership orchestration and fail-closed permissions; `src/core/api.js` remains the sole Supabase boundary.
+- Existing `bq-journey-group`, `bible_groups` and `bible_group_members` contracts are reused without a production migration.
+- The recovered lifecycle covers create, join, view, invite-code rotation and non-owner leave for 2–6-member groups; owning-leader leave fails closed.
+- Initial run `34244782912` exposed only the workflow/validator command-shape mismatch recorded as `V3-WORKFLOW-LOOP-001`.
+- Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
+- The one-shot branch was reset from trigger `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` to the clean candidate after verification.
 
 ## Current bookkeeping
 
@@ -117,21 +131,22 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #99 Offline opened Bible packs — **Regression-tested**
 - #100 Backup/export/import/reset — **Regression-tested**
 - #62 Couples/family local tools — **Regression-tested**
-- #63 Couples cloud — **Verified**
-- Inventory states — **63 Regression-tested / 1 Verified / 0 Implemented / 36 Not started**
-- Strict parity — **64/100**
-- Official regression stability — **63/100**
+- #63 Couples cloud — **Regression-tested**
+- #64 Journey Groups — **Verified**
+- Inventory states — **64 Regression-tested / 1 Verified / 0 Implemented / 35 Not started**
+- Strict parity — **65/100**
+- Official regression stability — **64/100**
 
 ## Next sequence
 
-1. Run the independent exact #63 bookkeeping gate against the complete accumulated suite.
-2. Freeze v3.37 only at the exact bookkeeping SHA that passes.
-3. Reassess the next dependency-safe inventory row only after the v3.37 gate closes.
+1. Run the independent exact #64 bookkeeping gate against the complete accumulated suite.
+2. Freeze v3.38 only at the exact bookkeeping SHA that passes.
+3. Reassess the next dependency-safe inventory row only after the v3.38 gate closes.
 4. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **36 Not started rows** after #63 functional verification. Remaining work includes Journey Groups, Encouragements, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics, reset/recovery and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+Literal old-version parity has **35 Not started rows** after #64 functional verification. Remaining work includes Encouragements, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics, reset/recovery and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 

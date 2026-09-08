@@ -27,3 +27,10 @@ Inventory row #64 restores only the group-membership lifecycle: create, join, vi
 Inventory row #65 Encouragements is not pulled forward. #64 does not send/read `bible_group_encouragements`, does not own daily Journey completion sharing, assignments, presence, chat, rankings or XP, and does not expose private notes/reflections/answers.
 
 No localStorage compatibility state is imported. Production v2 and production Supabase remain unchanged by this v3 rebuild milestone.
+
+## Verification evidence
+
+- Initial exact run `34244782912` stopped before feature execution because accumulated validators were coupled to literal direct `node` commands after the workflow had been consolidated into executable shell loops.
+- `scripts/v3-workflow-contract.mjs` now verifies both direct and looped Node invocations without accepting comments, non-executing loops, mismatched variables or partial path matches; `tests/v3-workflow-contract-edge.mjs` permanently covers that harness boundary.
+- Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
+- The isolated `verify/v3.38-journey-groups-functional-r2` branch was reset from trigger commit `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` to the clean candidate after verification.

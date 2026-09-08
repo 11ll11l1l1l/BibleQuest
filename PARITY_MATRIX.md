@@ -19,19 +19,19 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the corrected #63 Couples cloud functional gate:
+After the corrected #64 Journey Groups functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 63 |
+| Regression-tested | 64 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 36 |
+| Not started | 35 |
 | Total | 100 |
 
-Strict verified-or-better parity is **64/100**.
+Strict verified-or-better parity is **65/100**.
 
-Official regression stability is **63/100**. #62 Couples/family local tools advanced to **Regression-tested** after the later #63 complete functional suite remained green. #63 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Couples cloud behavior still green.
+Official regression stability is **64/100**. #63 Couples cloud advanced to **Regression-tested** after the later #64 complete functional suite remained green. #64 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Journey Groups behavior still green.
 
 Recent frozen checkpoints:
 - `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping `34200768014`.
@@ -42,7 +42,10 @@ Recent frozen checkpoints:
 - `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; bookkeeping `34218225949`.
 - `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; bookkeeping `34220313765`.
 - `release/v3.36-couples-family-local` — `488fea911cc432c9843a2af39480b6f2cc67711e`; bookkeeping `34236023685`.
+- `release/v3.37-couples-cloud` — `f706896d8f4e8d2ee19e607a38cc87dada70d671`; bookkeeping `34240373295`.
 
 #62 Couples/family local tools corrected functional candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb` passed run `34229105566`, then exact bookkeeping SHA `488fea911cc432c9843a2af39480b6f2cc67711e` passed run `34236023685` and was frozen in v3.36.
 
-#63 Couples cloud exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed the complete accumulated architecture, edge and browser/mobile suite in run `34238007365`. It is Verified pending its independent exact v3.37 bookkeeping/release gate; #62 is Regression-tested through this later complete-suite evidence.
+#63 Couples cloud exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed run `34238007365`, then exact bookkeeping SHA `f706896d8f4e8d2ee19e607a38cc87dada70d671` passed run `34240373295` and was frozen in v3.37. It is Regression-tested through the later #64 complete-suite evidence.
+
+#64 Journey Groups corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`. It is Verified pending its independent exact v3.38 bookkeeping/release gate.

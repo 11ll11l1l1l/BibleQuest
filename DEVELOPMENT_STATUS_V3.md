@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-08 JST
+Updated: 2026-09-09 JST
 
 `FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. `TIMELINE_V3.md` retains release/milestone history. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
 
@@ -11,30 +11,31 @@ Updated: 2026-09-08 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.36-couples-family-local` at `488fea911cc432c9843a2af39480b6f2cc67711e`.
-- Exact v3.36 bookkeeping run `34236023685` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.37-couples-cloud` at `f706896d8f4e8d2ee19e607a38cc87dada70d671`.
+- Exact v3.37 bookkeeping run `34240373295` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the corrected #63 Couples cloud functional gate:
+Inventory state after the corrected #64 Journey Groups functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 63 |
+| Regression-tested | 64 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 36 |
+| Not started | 35 |
 | Total | 100 |
 
-Strict verified-or-better parity is **64/100**.
+Strict verified-or-better parity is **65/100**.
 
-Official regression stability is **63/100**.
+Official regression stability is **64/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
 - #100 Backup/export/import/reset — **Regression-tested** after surviving the complete #62 functional suite; frozen in v3.35.
 - #62 Couples/family local tools — **Regression-tested** after exact v3.36 bookkeeping run `34236023685` and the later complete #63 functional suite.
-- #63 Couples cloud — **Verified** after exact functional run `34238007365` against `a7fdf3354efb688163d35fec8e2df3a93b4e9294`.
+- #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
+- #64 Journey Groups — **Verified** after exact functional run `34258746664` against `c49ce887bd28323292b6f1b60f7689a1aa194615`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -45,9 +46,10 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/backup.js` — sole #100 backup file-format/workflow owner.
 - `src/app/couples-family.js` — sole #62 local Couples persistence/orchestration owner.
 - `src/app/couples-cloud.js` — sole #63 authenticated pair/shared-history orchestration owner.
+- `src/app/journey-groups.js` — sole #64 Journey Group membership orchestration and fail-closed normalization owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
-- `src/core/api.js` — sole Supabase/trusted-function boundary, including `bq-couple` and `bible_couple_shared`.
+- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples and Journey Group remote contracts.
 - `src/core/bible.js` — Bible-source loading and opened-pack persistence.
 - `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
 - Existing Router, Session, API, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
@@ -116,7 +118,7 @@ Functional verification:
 
 ## Milestone 24 — Couples cloud
 
-### #63 — Verified
+### #63 — Regression-tested
 
 - `src/app/couples-cloud.js` is the sole pair/session validation, shared-row normalization and authenticated cloud workflow owner.
 - `src/core/api.js` is the only module that invokes the existing trusted `bq-couple` function or accesses `bible_couple_shared`.
@@ -125,7 +127,22 @@ Functional verification:
 - Permanent protection is retained in `COUPLES_CLOUD_V3.md`, `scripts/validate-v3-couples-cloud.mjs`, `tests/v3-couples-cloud-edge.mjs` and `tests/v3-couples-cloud-smoke.mjs`.
 - Exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed the complete accumulated architecture, edge and browser/mobile suite in run `34238007365`.
 - The isolated trigger commit `936cf0755abcd50ef438761c8bfb91dd019d260d` explicitly checked out and asserted that candidate; `verify/v3.37-couples-cloud-functional` was then reset to the clean candidate.
-- #63 is therefore Verified. #62 is Regression-tested through this later complete-suite evidence.
+- Exact bookkeeping candidate `f706896d8f4e8d2ee19e607a38cc87dada70d671` passed run `34240373295` and is frozen at `release/v3.37-couples-cloud`.
+- #63 survived the later complete #64 functional suite and is therefore Regression-tested.
+
+## Milestone 25 — Journey Groups
+
+### #64 — Verified
+
+- `src/app/journey-groups.js` is the sole group normalization, authenticated membership and permission orchestration owner.
+- `src/core/api.js` remains the only browser Supabase boundary and reuses the retained `bq-journey-group`, `bible_groups` and `bible_group_members` contracts without a production migration.
+- The recovered lifecycle covers create, join, view, invite-code rotation and non-owner leave for 2–6-member groups. Owning leaders fail closed until leadership is transferred or the group is archived.
+- Encouragements, Journey completion sharing, assignments, presence, chat, rankings, XP and private study data remain outside #64.
+- Permanent protection is retained in `JOURNEY_GROUPS_V3.md`, `scripts/validate-v3-journey-groups.mjs`, `tests/v3-journey-groups-edge.mjs` and `tests/v3-journey-groups-smoke.mjs`.
+- Initial run `34244782912` stopped before feature tests because consolidated workflow loops no longer matched seven validators' literal command-text assumptions.
+- Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
+- The isolated trigger commit `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` explicitly checked out and asserted that candidate; `verify/v3.38-journey-groups-functional-r2` was then reset to the clean candidate.
+- #64 is therefore Verified. #63 is Regression-tested through this later complete-suite evidence.
 
 ## Defect / root-cause ledger
 
@@ -142,10 +159,11 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-COUPLES-SMOKE-SELECTOR-001` — #62 smoke used an ambiguous strict locator after the result view intentionally exposed two dashboard-return controls; the regression now selects the intended result completion control specifically.
 - `V3-COUPLES-CLOUD-VALIDATOR-001` — broad substring checks treated harmless source text such as `progress` as forbidden ownership; the validator now checks precise API/global tokens while retaining all storage, Supabase and score-owner boundaries.
 - `V3-COUPLES-CLOUD-FOREIGN-ROW-001` — the initial edge fixture prefiltered shared rows and could not prove the owner rejects foreign-pair data; the fixture now returns mixed rows and permanently exercises owner-side rejection.
+- `V3-WORKFLOW-LOOP-001` — workflow consolidation retained every regression but seven validators required literal `node <path>` text, so run `34244782912` failed before feature tests. A shared invocation parser now recognizes executable direct and looped commands, while `tests/v3-workflow-contract-edge.mjs` rejects comments, non-Node loops, variable mismatches and prefix-only path matches.
 
 ## Next major milestone
 
-Complete the independent exact #63 bookkeeping suite and freeze v3.37 only at the exact SHA that passes the complete accumulated regression workflow. Do not begin another feature before that release gate closes.
+Complete the independent exact #64 bookkeeping suite and freeze v3.38 only at the exact SHA that passes the complete accumulated regression workflow. Do not begin another feature before that release gate closes.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
