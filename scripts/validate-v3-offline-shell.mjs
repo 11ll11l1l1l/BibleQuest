@@ -16,8 +16,8 @@ if(!failures.length){
   for(const item of["import { createOfflineShellService } from './offline-shell.js'",'const offlineShell=createOfflineShellService()','offlineShell.start()','offlineShell.dispose()'])if(!bootstrap.includes(item))fail(`Bootstrap missing Offline Shell composition: ${item}.`);
   if(/serviceWorker|offline-shell-sw\.js/.test(index))fail('index.html must not become a second service-worker registration owner.');
   if(!contract.includes('#99 alone may add an opened-Bible-pack cache'))fail('Offline Shell contract must preserve the #99 pack boundary.');
-  if(!inventory.includes('| 98 | Offline shell | Yes | Clean | Regression-tested | reload offline after first load; bounded shell cache; no pack/API/probe interception; 390px offline reload |'))fail('#98 must advance to Regression-tested after surviving the complete #99 suite.');
-  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
+  if(!inventory.includes('| 98 | Offline shell | Yes | Clean | Regression-tested | reload offline after first load; bounded shell cache; no pack/API/probe interception; 390px offline reload |'))fail('#98 must remain Regression-tested.');
+  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 Offline Shell architecture boundary passed.');
