@@ -24,8 +24,8 @@ if(!failures.length){
   for(const contract of['createCongregationMembershipService','congregationPage','morePage'])if(!boot.includes(contract))fail(`Bootstrap is missing congregation composition contract ${contract}.`);
   if(!roles.includes('| Pastor | One congregation |')||!roles.includes('| Facilitator | One congregation |'))fail('Live ministry role documentation is missing recovered congregation roles.');
   if(!roles.includes('Authorization must be enforced on the server'))fail('Server-authority rule must remain explicit in MINISTRY_ROLES.md.');
-  if(!inventory.includes('| 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested |'))fail('Inventory must promote #66 after the later #96 full functional gate.');
-  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
+  if(!inventory.includes('| 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested |'))fail('Inventory must keep #66 Regression-tested.');
+  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
   for(const contract of['src/app/congregation-membership.js','## Congregation membership / role boundaries','RLS and trusted server functions remain authoritative'])if(!architecture.includes(contract))fail(`Architecture contract missing Congregation Membership boundary: ${contract}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
