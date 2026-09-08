@@ -20,7 +20,7 @@ if(!failures.length){
     if(/\blocalStorage\b|\bsessionStorage\b/.test(read(file)))fail(`Direct browser storage use outside storage owner: ${file}`);
   }
   for(const statement of['`biblequest.v3.auth.*` is excluded','`biblequest.v3.device-id` is excluded and preserved','If a storage write fails','reloads BibleQuest'])if(!contract.includes(statement))fail(`Backup contract missing boundary: ${statement}`);
-  if(!inventory.includes('| 100 | Backup/export/import/reset | Yes | Clean | Not started | export → import → state restored |'))fail('#100 must remain Not started until the complete functional gate passes.');
+  if(!inventory.includes('| 100 | Backup/export/import/reset | Yes | Clean | Not started | export; reset; import; schema validation; corrupt backup |'))fail('#100 must remain Not started until the complete functional gate passes.');
   for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals changed before #100 verification: ${total}`);
   for(const test of['node scripts/validate-v3-backup.mjs','node tests/v3-backup-edge.mjs','node tests/v3-backup-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #100 regression: ${test}`);
 }
