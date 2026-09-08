@@ -33,9 +33,39 @@ const safeVerse = row => row && Number.isInteger(Number(row.c)) && Number(row.c)
 const freezeVerse = row => Object.freeze({ chapter: Number(row.c), verse: Number(row.v), text: String(row.t).trim() });
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
 const plainString = value => typeof value === 'string' ? value.trim() : '';
+const OFFLINE_PACK_CACHE = 'biblequest-v3-opened-bible-packs-v1';
 
-export function createBibleDataService({ fetcher = (...args) => fetch(...args) } = {}) {
-  const cache = new Map();
+function createOpenedPackStore({ cacheStorage = globalThis.caches, ResponseCtor = globalThis.Response, locationRef = globalThis.location } = {}) {
+  const supported = Boolean(cacheStorage?.open && typeof ResponseCtor === 'function');
+  const keyFor = path => {
+    try { return new URL(path, locationRef?.href || 'http://localhost/').href; }
+    catch { return String(path || ''); }
+  };
+  return Object.freeze({
+    supported,
+    async read(path) {
+      if (!supported) return null;
+      const cache = await cacheStorage.open(OFFLINE_PACK_CACHE), key = keyFor(path), response = await cache.match(key);
+      if (!response) return null;
+      try { return await response.json(); }
+      catch { await cache.delete(key); return null; }
+    },
+    async write(path, payload) {
+      if (!supported) return false;
+      const cache = await cacheStorage.open(OFFLINE_PACK_CACHE), key = keyFor(path);
+      await cache.put(key, new ResponseCtor(JSON.stringify(payload), { headers: { 'content-type': 'application/json; charset=utf-8' } }));
+      return true;
+    },
+    async remove(path) {
+      if (!supported) return false;
+      const cache = await cacheStorage.open(OFFLINE_PACK_CACHE);
+      return cache.delete(keyFor(path));
+    }
+  });
+}
+
+export function createBibleDataService({ fetcher = (...args) => fetch(...args), packStore = createOpenedPackStore() } = {}) {
+  const cache = new Map(), persistedPacks = new Set();
   const getBook = code => { const book = BIBLE_BOOKS.find(item => item.code === String(code || '').toUpperCase()); if (!book) throw new Error(`Unknown Bible book: ${code || 'missing'}.`); return book; };
   const getTranslation = id => { const translation = TRANSLATIONS[String(id || '')]; if (!translation) throw new Error(`Unsupported translation: ${id || 'missing'}.`); return translation; };
 
@@ -52,29 +82,71 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     try { return await pending; } catch (error) { cache.delete(path); throw error; }
   }
 
-  async function loadBook(translationId, code) {
+  function normalizeBundledPack(payload, translation, book) {
+    if (!Array.isArray(payload)) throw new Error(`${translation.label} pack for ${book.name} is malformed.`);
+    const verses = payload.filter(safeVerse).map(freezeVerse).sort((a, b) => a.chapter - b.chapter || a.verse - b.verse);
+    if (!verses.length) throw new Error(`${translation.label} pack for ${book.name} contains no readable verses.`);
+    const seen = new Set();
+    for (const verse of verses) {
+      const verseKey = `${verse.chapter}:${verse.verse}`;
+      if (seen.has(verseKey)) throw new Error(`${translation.label} pack for ${book.name} contains duplicate verse ${verseKey}.`);
+      if (verse.chapter > book.chapters) throw new Error(`${translation.label} pack for ${book.name} contains invalid chapter ${verse.chapter}.`);
+      seen.add(verseKey);
+    }
+    return Object.freeze({ book, translation, verses: Object.freeze(verses) });
+  }
+
+  const serializedPack = loaded => loaded.verses.map(verse => ({ c: verse.chapter, v: verse.verse, t: verse.text }));
+  async function persistOpenedPack(path, loaded) {
+    if (!packStore?.write || persistedPacks.has(path)) return;
+    try { if (await packStore.write(path, serializedPack(loaded))) persistedPacks.add(path); }
+    catch { /* Offline persistence failure must not break an otherwise valid online Scripture load. */ }
+  }
+  async function readOpenedPack(path, translation, book) {
+    if (!packStore?.read) return null;
+    let payload;
+    try { payload = await packStore.read(path); }
+    catch { return null; }
+    if (payload === null || payload === undefined) return null;
+    try {
+      const loaded = normalizeBundledPack(payload, translation, book);
+      persistedPacks.add(path);
+      return loaded;
+    } catch {
+      try { await packStore.remove?.(path); } catch {}
+      throw new Error(`Offline ${translation.label} pack for ${book.name} is malformed and was removed. Reconnect to reload it.`);
+    }
+  }
+
+  async function loadBook(translationId, code, { persistOffline = true } = {}) {
     const translation = getTranslation(translationId);
     const book = getBook(code);
     if (translation.mode === 'licensed-link') throw new Error(`${translation.label} is an external licensed-reader mode and does not expose Scripture packs.`);
     if (!translation.bundled) throw new Error(`${translation.label} is a live chapter source and does not expose bundled book packs.`);
-    const key = `${translation.id}:${book.code}`;
-    if (cache.has(key)) return cache.get(key);
+    const key = `${translation.id}:${book.code}`, path = `data/packs/${translation.folder}/${book.code}.json`;
+    if (cache.has(key)) {
+      const loaded = await cache.get(key);
+      if (persistOffline) await persistOpenedPack(path, loaded);
+      return loaded;
+    }
     const pending = (async () => {
-      const response = await fetcher(`data/packs/${translation.folder}/${book.code}.json`);
-      if (!response?.ok) throw new Error(`${translation.label} pack for ${book.name} is unavailable.`);
+      let response;
+      try { response = await fetcher(path); }
+      catch {
+        const stored = await readOpenedPack(path, translation, book);
+        if (stored) return stored;
+        throw new Error(`${translation.label} pack for ${book.name} is unavailable.`);
+      }
+      if (!response?.ok) {
+        const stored = await readOpenedPack(path, translation, book);
+        if (stored) return stored;
+        throw new Error(`${translation.label} pack for ${book.name} is unavailable.`);
+      }
       let payload;
       try { payload = await response.json(); } catch { throw new Error(`${translation.label} pack for ${book.name} is malformed.`); }
-      if (!Array.isArray(payload)) throw new Error(`${translation.label} pack for ${book.name} is malformed.`);
-      const verses = payload.filter(safeVerse).map(freezeVerse).sort((a, b) => a.chapter - b.chapter || a.verse - b.verse);
-      if (!verses.length) throw new Error(`${translation.label} pack for ${book.name} contains no readable verses.`);
-      const seen = new Set();
-      for (const verse of verses) {
-        const verseKey = `${verse.chapter}:${verse.verse}`;
-        if (seen.has(verseKey)) throw new Error(`${translation.label} pack for ${book.name} contains duplicate verse ${verseKey}.`);
-        if (verse.chapter > book.chapters) throw new Error(`${translation.label} pack for ${book.name} contains invalid chapter ${verse.chapter}.`);
-        seen.add(verseKey);
-      }
-      return Object.freeze({ book, translation, verses: Object.freeze(verses) });
+      const loaded = normalizeBundledPack(payload, translation, book);
+      if (persistOffline) await persistOpenedPack(path, loaded);
+      return loaded;
     })();
     cache.set(key, pending);
     try { return await pending; } catch (error) { cache.delete(key); throw error; }
@@ -166,7 +238,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     const skippedBooks = [];
     for (const book of BIBLE_BOOKS) {
       try {
-        const loaded = await loadBook(translation.id, book.code);
+        const loaded = await loadBook(translation.id, book.code, { persistOffline: false });
         for (const verse of loaded.verses) {
           if (!verse.text.toLocaleLowerCase().includes(needle)) continue;
           results.push(Object.freeze({ book, chapter: verse.chapter, verse: verse.verse, text: verse.text, reference: referenceText(book, verse.chapter, verse.verse) }));
@@ -307,7 +379,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args) }
     parseReference,
     search,
     externalLinks,
-    clearCache() { cache.clear(); },
+    clearCache() { cache.clear(); persistedPacks.clear(); },
     cacheSize() { return cache.size; }
   });
 }
