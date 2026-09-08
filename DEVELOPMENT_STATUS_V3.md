@@ -2,240 +2,115 @@
 
 Updated: 2026-09-08 JST
 
-`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity matrix. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
+`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. `TIMELINE_V3.md` retains the release/milestone history. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
 
 ## Deployment safety
 
 - Production v2 remains unchanged.
 - `main` and production Cloudflare remain untouched.
-- Current development branch: `feature/v3-study-core`.
+- Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
-- Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
-- Latest frozen checkpoint is `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`.
-- Exact v3.31 bookkeeping run `34208493773` passed all 82 accumulated job steps against that SHA before the freeze.
-- Previous checkpoint `release/v3.29-congregation-membership` is frozen at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping run `34200768014` was fully green.
-- #66 Congregation membership/roles clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
-- #66 functional run `34185569051` passed the complete accumulated suite and explicitly asserted that clean SHA.
+- Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
+- Latest frozen checkpoint: `release/v3.32-pwa-install` at `200d69ec37b9aba48e8b926dfef7f2a8203d4855`.
+- Exact v3.32 bookkeeping run `34213223642` passed the complete accumulated suite against that SHA before freeze.
 
-## Progress summary
+## Current progress
 
-Inventory row states after the #97 functional gate:
+Inventory state after the corrected #98 Offline Shell functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 58 |
+| Regression-tested | 59 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 41 |
+| Not started | 40 |
 | Total | 100 |
 
-Strict verified-or-better parity is **59/100**.
+Strict verified-or-better parity is **60/100**.
 
-Official regression stability is **58/100**. #95 advanced to Regression-tested after surviving the later #97 complete functional suite. #97 remains Verified until a later feature milestone passes the complete suite with it still green.
+Official regression stability is **59/100**.
 
-Current promotions:
-- #97 PWA install/manifest — **Verified** after exact complete functional run `34212434449`; awaiting the independent v3.32 bookkeeping/release gate.
-- #95 Client diagnostics — **Regression-tested** after surviving #97 run `34212434449`; frozen in v3.31.
-- #96 Operational recovery/error boundary — **Regression-tested** after surviving #95 run `34204562845`; frozen in v3.30.
-- #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
-- #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
-- #55 Private local notes — **Regression-tested**; frozen in v3.27.
-- #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
-- #90 Source labels/attribution — **Regression-tested** after surviving the later #89 full functional and bookkeeping suites.
-- #17 NLT licensed-link path — Regression-tested.
-- #16 Japanese vocabulary learning — Regression-tested.
-- #15 Japanese furigana — Not started and intentionally deferred.
+Current leading rows:
+- #97 PWA install/manifest — **Regression-tested** after surviving the later complete #98 functional suite; frozen in v3.32.
+- #98 Offline Shell — **Verified** after corrected exact functional run `34214663407` against `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4`; exact bookkeeping/release gate is active.
+- #99 Offline opened Bible packs — **Not started** and explicitly separate from #98.
+- #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
-## Milestone 11 — Reader language/source completion
+## Current architecture boundary
 
-Reader/source parity remains closed through the recovered NLT behavior except the intentionally deferred furigana row.
+The rebuild still follows one source of truth per function. The currently relevant owners are:
 
-- #14 Japanese 口語訳 — Regression-tested; frozen through `release/v3.22-japanese-kougo`.
-- #16 Japanese vocabulary learning — Regression-tested; frozen through `release/v3.23-japanese-vocabulary`.
-- #17 NLT licensed-link — Regression-tested; frozen through `release/v3.24-nlt-licensed`.
-- #15 Japanese furigana — intentionally deferred; no `kuromoji`, CDN tokenizer, legacy global, or direct DOM mutation runtime may leak into adjacent features.
+- `src/app/pwa-install.js` — install-prompt lifecycle only.
+- `src/app/offline-shell.js` — page-side service-worker registration and first-load shell warmup only.
+- `offline-shell-sw.js` — application-shell Cache Storage and shell fetch fallback only.
+- `src/core/client-diagnostics.js` + `src/core/api.js` — diagnostics classification and the real no-store network probe.
+- `src/core/bible.js` — Bible data owner; #99 may extend opened-pack offline availability without moving Bible-pack ownership into the shell worker.
+- Existing router, session, store, storage, Lesson, Progress, Transform, Audio, Recordings, Games, Notes, and congregation owners remain unchanged.
 
-## Milestone 12 — Source provenance
-
-### #90 Source labels/attribution — Regression-tested
-
-#90 remains owned by the immutable BibleQuest content provenance registry plus the existing Scripture and Recall source owners. It survived the complete #89 functional suite on run `34166910207` and the v3.26 bookkeeping suite on run `34168229627`, including architecture, edge, and 390px browser regressions.
-
-Frozen checkpoint:
-- `release/v3.25-source-provenance`
-- SHA `04f20094a03cd0b189d1626ef4f372917ce599e3`
-- bookkeeping run `34160651319` — fully green.
-
-No source-label MutationObserver, `window.BQ*` source injector, direct storage access, or source-fetch path was reintroduced.
-
-## Milestone 13 — Doctrinal safety/context
-
-### #89 Doctrinal safety/context — Regression-tested
-
-Recovered legacy behavior is represented by one pure doctrinal-safety owner rather than the old runtime/global injection layer.
-
-Classification contract:
-- `TEXTUAL_FACT` — factual Scripture recall that may participate in normal binary/scored play.
-- `PASSAGE_CONTEXT` — passage-sensitive comprehension tied to an explicit Scripture passage. It may participate in recall only with BibleQuest contextual framing and must not be presented as a complete universal doctrinal formulation.
-- `INTERPRETIVE_OR_DOCTRINAL` — universal/disputed doctrinal claims are quarantined from normal binary/scored play until rewritten or pastor-reviewed.
-
-Authority order retained for framing:
-1. Scripture text and immediate/broader context.
-2. Official CAMACOP Statement of Faith.
-3. Alliance World Fellowship where compatible and CAMACOP is silent.
-4. Pastor-reviewed local teaching.
-5. Secondary study resources such as unfoldingWord, STEPBible, OpenBible.info, and Open Bible Stories as aids only.
-
-Clean v3 implementation:
-- `src/core/doctrinal-safety.js` is the single doctrinal classification/admission owner.
-- `src/core/recall-packs.js` re-evaluates imported unfoldingWord questions through the current policy and never trusts a stale embedded `safety:{action:"allow"}` tag.
-- Missing/unsafe imported safety metadata fails closed. High-risk universal/disputed doctrine is quarantined.
-- A reviewed `PASSAGE_CONTEXT` Recall item exposes a separate immutable `contextNote`; the imported answer and Scripture reference are preserved unchanged.
-- Per-book Recall and Open Smart Review render BibleQuest context only after answer reveal and keep source/license separate.
-- Shared Games/Adaptive, Story Journey checkpoints, Guided Study observation questions, and Daily Journey retrieval questions retain safety admission at their established service/content boundaries.
-- Deep Questions and Wisdom remain non-spiritual-scoring workflows.
-- Lesson and Progress ownership was not changed and no #89 XP scheme was introduced.
-
-Permanent protection includes the doctrinal-safety validators plus edge and 390px browser regressions.
-
-Verification history:
-- Run `34166578446` exposed a stale architecture-validator assumption; validator contract was corrected, not runtime behavior.
-- Run `34166769435` exposed a 38px global shell account control; the shell owner was corrected to the 44px mobile target.
-- Run `34166910207` passed the complete accumulated functional suite.
-- Run `34168229627` passed the exact v3.26 bookkeeping state before freeze.
-
-## Milestone 14 — Private local notes
-
-### #55 Private local notes — Regression-tested
-
-The implementation deliberately separates standalone Private Notes from Deep Questions' existing inline Lesson response. No second Lesson or Progress owner was created.
-
-Clean v3 implementation:
-- `src/app/private-notes.js` is the single standalone Private Notes state/orchestration owner.
-- It consumes the existing `src/core/storage.js` boundary and owns only the namespaced `private-notes` record; feature/UI code never touches browser storage directly.
-- Note IDs are deterministic (`note-1`, `note-2`, ...), timestamps are normalized, malformed persisted records fail safely, and duplicate/invalid records are discarded during normalization.
-- Create, read/list, edit, delete, service recreation/reload, and local versioned JSON export are supported.
-- Export schema is `biblequest.private-notes`, version 1.
-- The Learn page routes to one `private-notes` route through the existing router.
-- `src/features/private-notes/index.js` is presentation/event forwarding only.
-- The UI explicitly states that v3.27 notes are private to the current device and are not uploaded or account-synced.
-- #55 does not call Supabase/account APIs. Regression-tested #56 Cloud Notes remains a separate authenticated remote capability and never auto-uploads these device-local notes.
-- No XP, streak, mastery, spiritual score, or lesson-state mutation was invented for notes.
-
-Permanent regression coverage:
-- `tests/v3-private-notes-edge.mjs` — CRUD, normalization, deterministic IDs, reload, delete, export schema, invalid clock, and shared-storage-boundary requirements.
-- `tests/v3-private-notes-smoke.mjs` — real 390px Learn → Notes workflow; create, reload, edit, JSON download, delete, >=44px targets, no horizontal overflow, no browser/page errors.
-- `.github/workflows/v3-regression.yml` permanently includes both tests while remaining manual-only on the development branch.
-
-Functional verification:
-- Clean implementation candidate: `14893c5987234325165b3990e4f513423f3c1992`.
-- Isolated verification trigger commit: `e3d67f3f562fe328fc3b34ed1f9efdd1e0dda831` — verification-only and never a release candidate.
-- Run `34169365596` — complete accumulated architecture, edge, Playwright/browser/mobile, Transform, recordings, media, Recall, and Games suite fully green.
-- After the run, `verify/v3.27-private-notes` was reset to the exact clean candidate, restoring manual-only workflow state.
-- Bookkeeping run `34169778300` passed before `release/v3.27-private-local-notes` was frozen at `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`.
-- #55 later survived the #56 and #66 full suites and is Regression-tested.
-
-## Milestone 15 — Cloud Notes
-
-### #56 Cloud Notes — Regression-tested
-
-- `src/app/cloud-notes.js` is the single authenticated remote-note owner; `src/core/api.js` is the only Supabase boundary.
-- The recovered `public.bible_notes` RLS/user-ownership contract is reused without a new migration.
-- Authenticated Scripture-linked CRUD, explicit stale-write conflict handling, signed-out/local-preview recovery, and 390px behavior are permanently covered.
-- Private Notes remain device-local and are never uploaded, merged, or converted automatically.
-- Functional run `34183773524` and bookkeeping run `34184699391` passed the complete accumulated suite.
-- `release/v3.28-cloud-notes` is frozen at `1b8cb0a4847b1fc633ce23412982c91c38825148`.
-- #56 survived the later #66 full functional run and is Regression-tested.
-
-## Milestone 16 — Congregation membership/roles
-
-### #66 Congregation membership/roles — Regression-tested
-
-- `src/app/congregation-membership.js` is the single membership/role orchestration owner.
-- `src/core/api.js` owns the RLS-protected membership/congregation reads and trusted `bq-join` invocation.
-- Recognized congregation roles are member, facilitator, leader, pastor, and admin; platform roles remain separate.
-- Unknown roles and unsupported client capabilities fail closed. Client gates never replace server/RLS authorization.
-- Signed-out/local-preview flows issue no membership operation; join reloads server-backed membership and never invents a local role.
-- Architecture, edge, and 390px browser coverage is permanently included in the accumulated workflow.
-- Clean functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` passed complete run `34185569051`.
-- Exact candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed bookkeeping run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
-- #66 survived the later #96 complete functional suite and is Regression-tested.
-
-## Milestone 17 — Operational recovery/error boundary
-
-### #96 Operational recovery/error boundary — Regression-tested
-
-- Recovered v2 behavior and the current v3 shell/router composition select #96 ahead of #67 Community Bridge because failure containment supports every remaining route.
-- `src/app/operational-recovery.js` is the single active recovery-state and Retry/Home lifecycle owner.
-- Router remains the only navigation/history owner; Shell remains presentation/event forwarding only.
-- #95 Client diagnostics, offline/PWA behavior, backup/reset, global event interception, DOM surveillance, and script reinjection remain excluded.
-- Exact clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` passed all 79 job steps in functional run `34202531302`.
-- The isolated trigger commit `08e187236e384b41ed50d5261d20d62c2554196e` explicitly checked out and asserted the clean candidate, then the verification branch was reset to remove the trigger.
-- Exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
-- #96 survived the later #95 complete functional suite and is Regression-tested.
-
-## Milestone 18 — Client diagnostics
-
-### #95 Client diagnostics — Regression-tested
-
-- Recovered stable module/network codes compose with #96 through one `src/core/client-diagnostics.js` classification owner.
-- `src/core/api.js` owns the same-origin cache-busting probe; Diagnostics never calls `fetch` or Supabase directly.
-- Browser-offline, host-unreachable, reachable-module, and unknown states are narrow, immutable, and exclude arbitrary error data.
-- No global error listeners, freeze watchdog, DOM injector, backend diagnostic write, or `window.BQDiagnostics` compatibility path is restored.
-- Exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` passed all 82 job steps in functional run `34204562845`.
-- The isolated trigger commit `e2926cacab280f66844d6b8156b5861d2f72115b` explicitly checked out and asserted the candidate, then the branch was reset to remove the trigger.
-- Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 job steps in run `34208493773` and is frozen at `release/v3.31-client-diagnostics`.
-- #95 survived the later corrected #97 complete functional suite and is Regression-tested.
+#98 deliberately does **not** cache generic fetch/XHR payloads, Bible packs, Supabase/API responses, account/cloud state, or media. Runtime interception is restricted to same-origin in-scope navigation and shell destinations (script/style/image/font). The `bq-net-probe` is excluded from both warming and fetch interception so Client Diagnostics remains truthful offline.
 
 ## Milestone 19 — PWA install/manifest
 
-### #97 PWA install/manifest — Verified
+### #97 — Regression-tested
 
-- `manifest.webmanifest` is the single deployment-relative app identity and standalone launch contract.
-- `src/app/pwa-install.js` is the only install-prompt lifecycle owner; More presents its state and forwards the user action.
-- #97 intentionally adds no service worker, Cache Storage, offline fallback, opened-pack cache, or network interception; those remain #98/#99 work.
-- Permanent architecture, lifecycle edge, and 390px browser coverage is included in the accumulated workflow.
-- Corrected exact clean functional candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed all 85 job steps in run `34212434449`.
-- The isolated trigger commit `ec6336ff417c023ee4b4b176765ac9518963dc6d` explicitly checked out and asserted the corrected candidate, then the verification branch was reset to remove the trigger.
-- #97 is Verified pending the independent exact bookkeeping/release gate; #95 is Regression-tested through this later complete-suite evidence.
+- Deployment-relative `manifest.webmanifest` remains the single app identity/launch contract.
+- `src/app/pwa-install.js` remains the sole optional `beforeinstallprompt` / `appinstalled` owner.
+- Corrected functional candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed run `34212434449`.
+- Exact bookkeeping SHA `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
+- #97 survived the complete #98 functional suite and therefore advanced to Regression-tested.
 
-## Defect / root-cause ledger retained
+## Milestone 20 — Offline Shell
 
+### #98 — Verified
+
+Implementation:
+- `src/app/offline-shell.js` registers deployment-relative `offline-shell-sw.js` with deployment-relative `./` scope.
+- First online load reports only the already-loaded same-origin document/script/style/image shell resources; generic `fetch`/XHR entries are excluded.
+- Warmup uses `BIBLEQUEST_WARM_SHELL` plus MessageChannel acknowledgement before the owner reports ready.
+- `offline-shell-sw.js` uses a versioned BibleQuest shell cache, network-first refresh, cached navigation/static fallback, `skipWaiting`, client claim, and removal only of superseded BibleQuest shell caches.
+- Bible pack/API/probe ownership remains outside #98; #99 alone may add opened-Bible-pack caching.
+
+Permanent verification:
+- `scripts/validate-v3-offline-shell.mjs` enforces ownership and #99 boundary.
+- `tests/v3-offline-shell-edge.mjs` verifies registration, filtering, acknowledgement, idempotence, disposal, and unsupported-browser behavior.
+- `tests/v3-offline-shell-smoke.mjs` verifies real Chromium 390px online load → offline switch → reload, one mounted shell, no horizontal overflow, service-worker control, and absence of Bible packs / `bq-net-probe` in the shell cache.
+
+Functional verification history:
+- Initial candidate `627601ecc28df466bc7dd561d40983917c3ee773` reached browser regressions but exposed one obsolete #97 test assumption.
+- Root cause `V3-PWA-OFFLINE-COMPOSITION-TEST-001`: the #97 PWA smoke test asserted that no service-worker controller could exist anywhere, rather than asserting that #97 itself does not own/register one.
+- The regression was corrected to permit a controller only when its script is the dedicated `offline-shell-sw.js`; the PWA owner remains service-worker independent.
+- Corrected exact candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all **85 numbered accumulated steps** in run `34214663407`.
+- #98 is therefore Verified and #97 is Regression-tested.
+
+## Retained defect/root-cause discipline
+
+Every real defect remains root-caused and protected by a regression. Important retained examples include:
 - `V3-ROUTER-001` — single synchronous router fixed URL/view drift.
-- `V3-AUTH-GATE-001` — static Supabase version pin is architecture-auditable.
-- `V3-SHELL-001` — brand and primary navigation selectors are distinct.
-- `V3-TRANSFORM-OWNER-001` — orchestration no longer defines a competing Transform calculation owner.
-- `V3-RECORDINGS-FREEZE-001` — one Audio owner + Recordings owner, explicit teardown and one-player regression.
-- `V3-MEDIA-OWNER-001` — Media Library composes verified Recordings/Audio owners.
-- `V3-GAMES-OWNER-001` — game lifecycle is centralized in `src/app/games.js`.
-- `V3-RECALL-PACK-001` — Recall pack loading/validation/cache is isolated.
+- `V3-TRANSFORM-OWNER-001` — removed competing Transform calculation ownership.
+- `V3-RECORDINGS-FREEZE-001` — one Audio owner + one Recordings owner with teardown coverage.
+- `V3-GAMES-OWNER-001` — centralized game lifecycle.
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
-- `V3-STUDY-BOUNDARY-001` — Study public state stays behind orchestration/Lesson boundaries.
-- `V3-STORY-BOOKKEEPING-001` — validator protects required status headings.
-- `V3-WISDOM-ESCAPE-001` — malformed presentation escaping fixed before promotion.
 - `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot directly own Games recall persistence.
-- `V3-OPEN-REVIEW-FOCUS-TEST-001` — corrected an invalid deterministic tie-category test fixture.
-- `V3-OPEN-REVIEW-SPACING-TEST-001` — isolated spacing fixture from legitimately older overdue items.
-- `V3-STEP-PEEK-SELECTOR-001` — Verse Peek metadata is namespaced away from Scripture `[data-verse]`.
-- `V3-JKO-SEMANTIC-CACHE-001` — invalid live Japanese payloads are evicted before retry.
-- `V3-JKO-TOUCH-001` — Japanese recovery controls enforce >=44px.
-- `V3-SOURCE-LABEL-TEST-001` — corrected the provenance edge matcher; no app change.
-- `V3-SOURCE-LABEL-SELECTOR-TEST-001` — corrected the provenance smoke Reader selector; no app change.
-- `V3-DOCTRINE-ARCH-VALIDATOR-001` — removed obsolete raw-only-allow validator contract and replaced it with reviewed-safety invariants.
-- `V3-SHELL-TOUCH-001` — shell account button increased from 38px to the 44px mobile touch-target contract.
-- `V3-CLOUD-NOTES-OWNER-001` — remote note state composes the API/session boundaries and remains separate from device-local Private Notes.
-- `V3-CONGREGATION-OWNER-001` — membership normalization, join orchestration, and client role projection are centralized without replacing server authorization.
-- `V3-RECOVERY-OWNER-001` — route failure state and Retry/Home action lifecycle are centralized without duplicating Router or Shell ownership.
-- `V3-DIAGNOSTICS-OWNER-001` — module/network classification is centralized while same-origin probing remains inside the API boundary.
-- `V3-PWA-INSTALL-OWNER-001` — manifest identity and browser install prompting are bounded without prematurely restoring the legacy offline runtime.
-- `V3-PWA-MANIFEST-ICON-001` — the first #97 candidate declared only an `any`-size SVG; explicit 192px/512px PNG and maskable requirements plus real-dimension regressions were added before promotion.
+- `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test now validates ownership rather than assuming a permanently service-worker-free app.
 
-## Next major milestone
+Historical detail remains available in Git history and `TIMELINE_V3.md`; this status file intentionally emphasizes the current handoff state.
 
-Complete the exact #97 bookkeeping suite, then freeze `release/v3.32-pwa-install` only at the verified clean bookkeeping SHA. Continue to #98 Offline Shell only in a later milestone.
+## Next dependency-safe milestone
 
-Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
+After the exact #98 bookkeeping candidate passes the complete suite and `release/v3.33-offline-shell` is frozen, continue directly to **#99 Offline opened Bible packs**.
+
+#99 acceptance boundary:
+- open a Bible pack/chapter online;
+- persist only the intended opened Bible content through the Bible-data ownership boundary;
+- reload/use the same opened content offline;
+- do not turn the #98 shell cache into a generic API cache;
+- preserve translation/source attribution and malformed-cache recovery;
+- preserve truthful Client Diagnostics;
+- add permanent edge + real mobile/browser offline regression;
+- run the entire accumulated suite before promotion.
+
+Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#97 passed its corrected complete functional suite on run `34212434449`. The exact bookkeeping state must pass the complete accumulated suite before `release/v3.32-pwa-install` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+Never freeze a release until the exact clean bookkeeping SHA has passed the complete accumulated regression workflow. Temporary verification trigger commits are never release SHAs. Production v2, `main`, and production Cloudflare remain unchanged throughout the rebuild.
