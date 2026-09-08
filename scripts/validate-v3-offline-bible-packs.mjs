@@ -26,8 +26,8 @@ if(!failures.length){
     if(read(file).includes('biblequest-v3-opened-bible-packs-v1'))fail(`#99 cache ownership leaked outside src/core/bible.js: ${file}`);
   }
   for(const statement of['Japanese 口語訳 remains a verified live chapter source and is not persisted by #99','NLT remains a licensed external-reader mode and is never cached or redistributed by #99','Whole-translation text search','semantically corrupt persisted pack is removed'])if(!contract.includes(statement))fail(`Offline Bible packs contract missing boundary: ${statement}`);
-  if(!inventory.includes('| 99 | Offline opened Bible packs | Yes | Clean | Not started | open pack online; offline reload same content |'))fail('#99 must remain Not started until its complete functional gate passes.');
-  for(const total of['**Regression-tested:** 59','**Verified:** 1','**Not started:** 40'])if(!inventory.includes(total))fail(`Inventory totals changed before #99 verification: ${total}`);
+  if(!inventory.includes('| 99 | Offline opened Bible packs | Yes | Clean | Verified | opened bundled BSB/Tagalog pack persists only through Bible owner; offline reload/switch; corrupt-cache eviction; no bulk search caching; live/licensed sources excluded; 390px mobile |'))fail('#99 must be Verified after its exact complete functional gate passes.');
+  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
   for(const test of['node tests/v3-offline-bible-packs-edge.mjs','node tests/v3-offline-bible-packs-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #99 regression: ${test}`);
 }
 
