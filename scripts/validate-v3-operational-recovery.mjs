@@ -21,7 +21,7 @@ if(!failures.length){
   if(/renderRecovery|createOperationalRecoveryService/.test(router))fail('Router must remain recovery-agnostic and own navigation/history only.');
   for(const contract of['src/app/operational-recovery.js','## Operational recovery / error-boundary boundaries','router remains the only navigation/history owner'])if(!architecture.includes(contract))fail(`Architecture contract missing operational recovery boundary: ${contract}`);
   if(!inventory.includes('| 96 | Operational recovery/error boundary | Yes | Clean basic | Regression-tested |'))fail('#96 must remain Regression-tested after later complete suites.');
-  for(const total of['**Regression-tested:** 59','**Verified:** 1','**Not started:** 40'])if(!inventory.includes(total))fail(`Inventory totals missing post-#98 bookkeeping: ${total}`);
+  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
   if(!index.includes('src/ui/operational-recovery.css'))fail('Operational recovery stylesheet is not loaded by the v3 shell.');
   for(const forbidden of['window.onerror','unhandledrejection','MutationObserver','recoverScript','window.BQ'])if(bootstrap.includes(forbidden)||owner.includes(forbidden))fail(`Operational recovery must not recreate legacy runtime behavior: ${forbidden}`);
 }
