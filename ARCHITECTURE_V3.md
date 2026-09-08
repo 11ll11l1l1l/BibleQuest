@@ -26,6 +26,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/adaptive-learning.js` — Adaptive retrieval evidence/mastery/selection orchestration
 - `src/app/open-review.js` — Open Smart Review queue/spacing orchestration
 - `src/app/private-notes.js` — standalone private local-note CRUD/order/export state and persistence contract
+- `src/app/cloud-notes.js` — authenticated remote Scripture-note validation/cache/concurrency orchestration
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration
@@ -183,13 +184,26 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 2. It uses `src/core/storage.js` and the single namespaced `private-notes` record. No Private Notes feature or UI may call `localStorage` or `sessionStorage` directly.
 3. `src/features/private-notes/index.js` is presentation/event forwarding only; `src/ui/private-notes.css` owns feature presentation/mobile behavior.
 4. #55 is device-local only. It cannot call `src/core/api.js`, Supabase, account/session mutations, or invent a cloud table/path.
-5. #56 Cloud notes must compose this verified local model and existing account/API boundaries rather than fork note identity, local persistence, validation, or UI state into a second system.
+5. #56 Cloud Notes is a separate authenticated remote capability recovered from the existing `public.bible_notes` backend contract. It must not auto-migrate #55 notes, reuse `private-notes` persistence, or reinterpret deterministic local `note-N` IDs as cloud UUIDs.
 6. Deep Questions' inline private response remains a Lesson response. It is intentionally separate from standalone #55 notes unless a future explicitly verified migration/linking contract is added.
 7. Standalone notes have no recovered XP, streak, mastery, spiritual score, or Lesson progression effect.
 8. Persisted data uses deterministic `note-N` IDs, preserves creation time on edit, updates modification time, rejects empty notes, and normalizes malformed/duplicate persisted records safely.
 9. Export is local JSON using schema `biblequest.private-notes`, version 1. Export does not imply backup/import parity; #100 remains separate.
 10. The UI must state the device-only/no-cloud boundary and remain usable at 390px with >=44px interactive targets and no horizontal overflow.
-11. Permanent protection includes `tests/v3-private-notes-edge.mjs`, `tests/v3-private-notes-smoke.mjs`, and the accumulated v3 workflow.
+11. Permanent protection includes `scripts/validate-v3-private-notes.mjs`, `tests/v3-private-notes-edge.mjs`, `tests/v3-private-notes-smoke.mjs`, and the accumulated v3 workflow.
+
+## Cloud Notes boundaries
+
+1. `src/app/cloud-notes.js` is the single #56 remote-notes owner. It owns input normalization, in-memory ordering/cache, authenticated CRUD orchestration, and optimistic-concurrency behavior.
+2. `src/core/api.js` remains the only Supabase implementation boundary. No Cloud Notes feature/UI may create a Supabase client, query `bible_notes`, call `fetch`, or access auth tokens directly.
+3. The recovered backend contract is existing `public.bible_notes`: UUID primary key, `user_id`, Scripture location (`book`, `chapter`, optional verse range), title/content/tags/type/pinned metadata, timestamps, and RLS policies restricting SELECT/INSERT/UPDATE/DELETE to `auth.uid() = user_id`. #56 requires no schema migration.
+4. Cloud Notes requires the shared authenticated session. Guest/local-preview state must not issue note reads or writes, and the UI must present account unavailability/sign-in explicitly rather than falling back to a guest cloud identity.
+5. Cloud Notes creates no localStorage/sessionStorage persistence key and does not provide an offline write queue. Its cache is memory-only; remote/load failure is explicit and retryable. #55 remains the intentional device-local note path.
+6. The cloud owner validates Scripture reference, content, optional verse range, title, tags, note type, and pin state before calling the API. Returned rows are normalized back into the owner model.
+7. Because `bible_notes.updated_at` has no database update trigger, #56 supplies an explicit monotonically newer `updated_at` on edit. Update and delete both require the previously loaded `updated_at`; zero matched rows produce `BQ_CLOUD_NOTES_CONFLICT` rather than silently overwriting another device's newer version.
+8. Private Notes are never uploaded, merged, converted, or deleted automatically by Cloud Notes. Any future explicit migration/import feature requires its own verified contract and must preserve the #55 privacy promise.
+9. Cloud Notes has no recovered XP, streak, mastery, spiritual score, Lesson progression, or Progress event side effect.
+10. `src/features/cloud-notes/index.js` is presentation/event forwarding only; `src/ui/cloud-notes.css` owns feature/mobile styling. Permanent protection includes `scripts/validate-v3-cloud-notes.mjs`, `tests/v3-cloud-notes-edge.mjs`, `tests/v3-cloud-notes-smoke.mjs`, the Private Notes validator/regressions, and the accumulated workflow.
 
 ## Transform, Audio, Recordings, Media, Games
 
@@ -206,10 +220,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
 Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56, after #55 freeze and old/backend contract recovery) → reassess remaining core Bible-study parity debt → Ministry/Devotional foundation when dependency order calls for it → remaining parity → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; exact v3.26 bookkeeping run `34168229627` passed before that freeze. #55 Private local notes passed complete functional run `34169365596` and is Verified pending the v3.27 bookkeeping/release gate. Current strict parity is 54/100 and official regression stability is 53/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.27-private-local-notes` at `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; exact v3.27 bookkeeping run `34169778300` passed before that freeze. #56 Cloud Notes passed complete functional run `34183773524` and is Verified pending the v3.28 bookkeeping/release gate; #55 advanced to Regression-tested in that later full run. Current strict parity is 55/100 and official regression stability is 54/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
