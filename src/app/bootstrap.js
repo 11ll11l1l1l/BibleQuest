@@ -19,6 +19,7 @@ import { createMediaLibraryService } from './media-library.js';
 import { createGameLauncherService } from './games.js';
 import { createPrivateNotesService } from './private-notes.js';
 import { createCloudNotesService } from './cloud-notes.js';
+import { createCouplesFamilyService } from './couples-family.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
 import { createOperationalRecoveryService } from './operational-recovery.js';
 import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
@@ -44,6 +45,7 @@ import { adaptiveLearningPage } from '../features/adaptive-learning/index.js';
 import { openReviewPage } from '../features/open-review/index.js';
 import { privateNotesPage } from '../features/private-notes/index.js';
 import { cloudNotesPage } from '../features/cloud-notes/index.js';
+import { couplesFamilyPage } from '../features/couples-family/index.js';
 import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
@@ -85,6 +87,7 @@ function start(){
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const privateNotes=createPrivateNotesService({storage});
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
+  const couplesFamily=createCouplesFamilyService({storage});
   const congregation=createCongregationMembershipService({api,session});
   let recovery;
   recovery=createOperationalRecoveryService({report:(error,context)=>diagnostics.classify(error,{kind:'module',route:context.route}).then(diagnostic=>{
@@ -93,6 +96,7 @@ function start(){
 
   let router,shell;
   const reloadAfterLocalDataChange=()=>location.reload();
+  const openCouplesScripture=card=>{reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const routes=Object.freeze({
     home:()=>homePage({progress,dailyMission,onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
@@ -105,10 +109,11 @@ function start(){
     'open-review':()=>openReviewPage({review:openReview,onLearn:()=>router.navigate('learn')}),
     'private-notes':()=>privateNotesPage({notes:privateNotes,onLearn:()=>router.navigate('learn')}),
     'cloud-notes':()=>cloudNotesPage({notes:cloudNotes,onLearn:()=>router.navigate('learn'),onAccount:()=>router.navigate('account')}),
+    'couples-family':()=>couplesFamilyPage({couples:couplesFamily,onBack:()=>router.navigate('more'),onReader:openCouplesScripture}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCongregation:()=>router.navigate('congregation'),onBackup:()=>router.navigate('backup')}),
+    more:()=>morePage({pwaInstall,onCouplesFamily:()=>router.navigate('couples-family'),onCongregation:()=>router.navigate('congregation'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
     congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
     account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
