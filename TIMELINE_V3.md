@@ -7,15 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #97 functional verification:** 58 Regression-tested / 1 Verified / 0 Implemented / 41 Not started
-- **Verified or better:** 59 / 100 (**59% strict parity completion**)
-- **Official regression stability:** 58 / 100
-- **Latest frozen checkpoint:** `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`
-- **v3.31 bookkeeping:** `34208493773` — all 82 job steps green against the frozen SHA
+- **Inventory states after #98 functional verification:** 59 Regression-tested / 1 Verified / 0 Implemented / 40 Not started
+- **Verified or better:** 60 / 100 (**60% strict parity completion**)
+- **Official regression stability:** 59 / 100
+- **Latest frozen checkpoint:** `release/v3.32-pwa-install` at `200d69ec37b9aba48e8b926dfef7f2a8203d4855`
+- **v3.32 bookkeeping:** `34213223642` — complete accumulated suite green against the exact frozen SHA
 - **#66 Congregation membership/roles:** Regression-tested after surviving #96; frozen in v3.29
 - **#96 Operational recovery/error boundary:** Regression-tested after surviving #95; frozen in v3.30
 - **#95 Client diagnostics:** Regression-tested after surviving #97; frozen in v3.31
-- **#97 PWA install/manifest:** Verified; corrected clean candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667`, run `34212434449`
+- **#97 PWA install/manifest:** Regression-tested after surviving #98; frozen in v3.32
+- **#98 Offline Shell:** Verified; corrected exact clean candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4`, functional run `34214663407`
 - **#56 Cloud Notes:** Regression-tested after surviving #66; frozen in v3.28
 - **#55 Private local notes:** Regression-tested; frozen in v3.27
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
@@ -43,10 +44,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 16 | Congregation membership/roles | Frozen | v3.29; #66 Regression-tested after later #96 suite |
 | 17 | Operational recovery/error boundary | Frozen | v3.30; #96 Regression-tested after later #95 suite |
 | 18 | Client diagnostics | Frozen | v3.31; #95 Regression-tested after later #97 suite; functional `34204562845`; bookkeeping `34208493773` |
-| 19 | PWA install/manifest | Functional gate green; bookkeeping active | #97 Verified; `34212434449`; no offline/service-worker scope |
-| 20 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 21 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
-| 22 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 19 | PWA install/manifest | Frozen | v3.32; #97 Regression-tested after later #98 suite; bookkeeping `34213223642` |
+| 20 | Offline Shell | Functional gate green; bookkeeping active | #98 Verified; functional `34214663407`; #99 pack cache explicitly excluded |
+| 21 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 22 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
+| 23 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -67,6 +69,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.28-cloud-notes` — `1b8cb0a4847b1fc633ce23412982c91c38825148`; functional `34183773524`; bookkeeping `34184699391`
 - `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; functional `34185569051`; bookkeeping `34200768014`
 - `release/v3.30-operational-recovery` — `7ec0290a50086112210c4c301db3288b970a2cc0`; functional `34202531302`; bookkeeping `34203169381`
+- `release/v3.31-client-diagnostics` — `61af8aaee121356d6ef0388130df2b545ff943d9`; functional `34204562845`; bookkeeping `34208493773`
+- `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; corrected functional `34212434449`; bookkeeping `34213223642`
 
 ## #90 Source labels/attribution — Regression-tested
 
@@ -111,22 +115,23 @@ Bookkeeping/release verification:
 - #56 Cloud Notes — **Regression-tested**
 - #66 Congregation membership/roles — **Regression-tested**
 - #95 Client diagnostics — **Regression-tested**
-- #97 PWA install/manifest — **Verified**
 - #96 Operational recovery/error boundary — **Regression-tested**
-- Inventory states — **58 Regression-tested / 1 Verified / 0 Implemented / 41 Not started**
-- Strict parity — **59/100**
-- Official regression stability — **58/100**
+- #97 PWA install/manifest — **Regression-tested**
+- #98 Offline Shell — **Verified**
+- Inventory states — **59 Regression-tested / 1 Verified / 0 Implemented / 40 Not started**
+- Strict parity — **60/100**
+- Official regression stability — **59/100**
 
 ## Next sequence
 
-1. Complete the exact #97 bookkeeping gate.
-2. Freeze `release/v3.32-pwa-install` only at the exact verified bookkeeping SHA.
-3. Continue to #98 Offline Shell and then #99 Offline opened Bible packs as separate bounded milestones.
-4. Keep Kids #38–40 explicitly deferred and keep production deployment out of scope.
+1. Complete the exact #98 bookkeeping gate.
+2. Freeze `release/v3.33-offline-shell` only at the exact verified bookkeeping SHA.
+3. Continue to #99 Offline opened Bible packs as the next bounded milestone; do not broaden #98 shell-cache ownership into Bible pack/API caching.
+4. Keep Kids #38–40 and Japanese furigana #15 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **41 Not started rows** after #97 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, offline behavior, backup/import, and Japanese furigana.
+Literal old-version parity has **40 Not started rows** after #98 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, couples/community/ministry/admin capabilities, accessibility, reporting/moderation workbench, opened-pack offline behavior, backup/import, and Japanese furigana.
 
 ## Release discipline
 
