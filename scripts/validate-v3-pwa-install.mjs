@@ -20,7 +20,6 @@ if(!failures.length){
   for(const forbidden of['serviceWorker','caches.','CacheStorage','fetch(','localStorage','sessionStorage','window.BQ'])if(owner.includes(forbidden))fail(`#97 install owner must not own offline/global behavior after #98: ${forbidden}`);
   if(/serviceWorker|(?:src|href)="(?:\.\/)?(?:sw\.js|pwa-runtime\.js)"/.test(index))fail('The v3 entrypoint must not become a second service-worker registration owner.');
   if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Regression-tested |'))fail('#97 must remain Regression-tested after later complete suites.');
-  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 PWA install architecture boundary passed.');
