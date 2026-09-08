@@ -247,6 +247,15 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 9. Legacy global error/promise/online listeners, main-thread watchdog, DOM diagnostic injector, `window.BQDiagnostics`, fetch override, script reinjection, and MutationObserver are forbidden.
 10. Permanent protection includes `scripts/validate-v3-client-diagnostics.mjs`, `tests/v3-client-diagnostics-edge.mjs`, `tests/v3-client-diagnostics-smoke.mjs`, the #96 regressions, and the complete accumulated workflow.
 
+## PWA install / manifest boundaries
+
+1. `manifest.webmanifest` is the sole declarative #97 app identity and launch contract; its identity, start, scope, and asset URLs remain deployment-relative.
+2. `src/app/pwa-install.js` alone owns `beforeinstallprompt`, `appinstalled`, deferred-prompt state, prompting, and listener cleanup.
+3. Bootstrap composes that owner. More renders owner-supplied state and forwards an explicit user install action; neither owns install lifecycle state.
+4. The install action is hidden unless the browser supplies an eligible prompt. Unsupported browsers retain their native installation path without false availability UI.
+5. #97 adds no service worker, Cache Storage, fetch interception, offline fallback, precache, opened-pack cache, controller reload, persistence, or production dependency. Those responsibilities remain isolated to #98 and #99.
+6. Permanent protection includes `scripts/validate-v3-pwa-install.mjs`, `tests/v3-pwa-install-edge.mjs`, `tests/v3-pwa-install-smoke.mjs`, and the complete accumulated workflow.
+
 ## Transform, Audio, Recordings, Media, Games
 
 - `src/engines/transform.js` alone owns Transform calculations/state; `src/app/transform.js` only coordinates with Progress.
@@ -262,10 +271,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Client Diagnostics owner, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Client Diagnostics owner, PWA Install owner, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → Client diagnostics (#95) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → Client diagnostics (#95) → PWA install/manifest (#97) → Offline shell (#98) → Offline opened Bible packs (#99) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.30-operational-recovery` at `7ec0290a50086112210c4c301db3288b970a2cc0`; exact v3.30 bookkeeping run `34203169381` passed before that freeze. #95 Client diagnostics passed complete functional run `34204562845` at clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` and is Verified pending the independent v3.31 bookkeeping/release gate; #96 advanced to Regression-tested in that later full run. Current strict parity is 58/100 and official regression stability is 57/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`; exact v3.31 bookkeeping run `34208493773` passed all 82 job steps against that SHA before the freeze. #95 remains Verified and #96 is Regression-tested. Current strict parity is 58/100 and official regression stability is 57/100 according to the authoritative inventory. #97 PWA install/manifest is the active bounded milestone; production v2, `main`, and production Cloudflare remain isolated.

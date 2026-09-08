@@ -19,7 +19,7 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the #95 Client diagnostics functional gate:
+After the v3.31 Client diagnostics bookkeeping/release gate:
 
 | State | Count |
 |---|---:|
@@ -41,4 +41,4 @@ Official regression stability is **57/100**. #96 Operational recovery/error boun
 
 #96 Operational recovery/error boundary passed functional run `34202531302`. Its exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed all 79 steps in run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
 
-#95 Client diagnostics passed its exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` on all 82 steps of run `34204562845`. Its independent v3.31 bookkeeping/release gate remains pending.
+#95 Client diagnostics passed functional run `34204562845`. Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 steps of run `34208493773` and is frozen at `release/v3.31-client-diagnostics`. #97 PWA install/manifest is active and remains Not started until its complete functional suite passes.

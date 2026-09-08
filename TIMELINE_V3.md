@@ -10,8 +10,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - **Inventory states after #95 functional verification:** 57 Regression-tested / 1 Verified / 0 Implemented / 42 Not started
 - **Verified or better:** 58 / 100 (**58% strict parity completion**)
 - **Official regression stability:** 57 / 100
-- **Latest frozen checkpoint:** `release/v3.30-operational-recovery` at `7ec0290a50086112210c4c301db3288b970a2cc0`
-- **v3.30 bookkeeping:** `34203169381` — all 79 job steps green
+- **Latest frozen checkpoint:** `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`
+- **v3.31 bookkeeping:** `34208493773` — all 82 job steps green against the frozen SHA
 - **#66 Congregation membership/roles:** Regression-tested after surviving #96; frozen in v3.29
 - **#96 Operational recovery/error boundary:** Regression-tested after surviving #95; frozen in v3.30
 - **#95 Client diagnostics:** Verified; clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b`, run `34204562845`
@@ -41,8 +41,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested after later #66 suite |
 | 16 | Congregation membership/roles | Frozen | v3.29; #66 Regression-tested after later #96 suite |
 | 17 | Operational recovery/error boundary | Frozen | v3.30; #96 Regression-tested after later #95 suite |
-| 18 | Client diagnostics | Functional gate green; bookkeeping active | #95 Verified; `34204562845` |
-| 19 | Remaining parity | Reassess after v3.31 | select by dependency and user value, not row order |
+| 18 | Client diagnostics | Frozen | v3.31; #95 Verified; functional `34204562845`; bookkeeping `34208493773` |
+| 19 | PWA install/manifest | Implementation active | #97; no offline/service-worker scope |
 | 20 | Full old-vs-new audit | Not started | reconcile all 100 rows |
 | 21 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
 | 22 | Production deployment | Not started | only after selected parity/stability acceptance gates |
@@ -117,9 +117,9 @@ Bookkeeping/release verification:
 
 ## Next sequence
 
-1. Complete the exact #95 bookkeeping gate.
-2. Freeze `release/v3.31-client-diagnostics` only at the exact verified bookkeeping SHA.
-3. Reassess #67 Community Bridge against accessibility, PWA/offline, backup/import, and remaining user-facing parity debt.
+1. Complete #97 PWA install/manifest through exact functional and bookkeeping gates.
+2. Freeze only the exact verified bookkeeping SHA.
+3. Continue to #98 Offline Shell and then #99 Offline opened Bible packs as separate bounded milestones.
 4. Keep Kids #38–40 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall

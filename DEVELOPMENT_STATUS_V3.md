@@ -11,8 +11,8 @@ Updated: 2026-09-08 JST
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
-- Latest frozen checkpoint is `release/v3.30-operational-recovery` at `7ec0290a50086112210c4c301db3288b970a2cc0`.
-- Exact v3.30 bookkeeping run `34203169381` passed all 79 accumulated job steps before that freeze.
+- Latest frozen checkpoint is `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`.
+- Exact v3.31 bookkeeping run `34208493773` passed all 82 accumulated job steps against that SHA before the freeze.
 - Previous checkpoint `release/v3.29-congregation-membership` is frozen at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping run `34200768014` was fully green.
 - #66 Congregation membership/roles clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
 - #66 functional run `34185569051` passed the complete accumulated suite and explicitly asserted that clean SHA.
@@ -34,7 +34,7 @@ Strict verified-or-better parity is **58/100**.
 Official regression stability is **57/100**. #96 advanced to Regression-tested after surviving the later #95 complete functional suite. #95 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #95 Client diagnostics — **Verified** after exact complete functional run `34204562845`; awaiting the independent v3.31 bookkeeping/release gate.
+- #95 Client diagnostics — **Verified** after functional run `34204562845` and exact bookkeeping run `34208493773`; frozen in v3.31.
 - #96 Operational recovery/error boundary — **Regression-tested** after surviving #95 run `34204562845`; frozen in v3.30.
 - #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
@@ -183,7 +183,17 @@ Functional verification:
 - No global error listeners, freeze watchdog, DOM injector, backend diagnostic write, or `window.BQDiagnostics` compatibility path is restored.
 - Exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` passed all 82 job steps in functional run `34204562845`.
 - The isolated trigger commit `e2926cacab280f66844d6b8156b5861d2f72115b` explicitly checked out and asserted the candidate, then the branch was reset to remove the trigger.
-- #95 is Verified pending the independent exact bookkeeping/release gate.
+- Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 job steps in run `34208493773` and is frozen at `release/v3.31-client-diagnostics`.
+
+## Milestone 19 — PWA install/manifest
+
+### #97 PWA install/manifest — implementation active
+
+- `manifest.webmanifest` is the single deployment-relative app identity and standalone launch contract.
+- `src/app/pwa-install.js` is the only install-prompt lifecycle owner; More presents its state and forwards the user action.
+- #97 intentionally adds no service worker, Cache Storage, offline fallback, opened-pack cache, or network interception; those remain #98/#99 work.
+- Permanent architecture, lifecycle edge, and 390px browser coverage is included in the accumulated workflow.
+- Official counts remain 58/100 strict parity and 57/100 stability until the exact #97 functional gate passes.
 
 ## Defect / root-cause ledger retained
 
@@ -213,15 +223,14 @@ Functional verification:
 - `V3-CONGREGATION-OWNER-001` — membership normalization, join orchestration, and client role projection are centralized without replacing server authorization.
 - `V3-RECOVERY-OWNER-001` — route failure state and Retry/Home action lifecycle are centralized without duplicating Router or Shell ownership.
 - `V3-DIAGNOSTICS-OWNER-001` — module/network classification is centralized while same-origin probing remains inside the API boundary.
+- `V3-PWA-INSTALL-OWNER-001` — manifest identity and browser install prompting are bounded without prematurely restoring the legacy offline runtime.
 
 ## Next major milestone
 
-Complete the exact #95 bookkeeping suite, then freeze `release/v3.31-client-diagnostics` only at the verified clean bookkeeping SHA.
-
-After v3.31, reassess #67 Community Bridge against accessibility, PWA/offline, backup/import, and remaining user-facing parity debt.
+Complete #97 PWA install/manifest through its exact functional and bookkeeping suites, then freeze only the verified clean SHA. Continue to #98 Offline Shell only in a later milestone.
 
 Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#95 passed its complete functional suite on run `34204562845`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.31-client-diagnostics` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#97 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
