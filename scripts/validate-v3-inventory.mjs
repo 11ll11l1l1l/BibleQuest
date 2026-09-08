@@ -38,7 +38,7 @@ if(!failures.length){
   };
 
   for(const [label,count] of Object.entries(expectedHeaders)){
-    const match=inventory.match(new RegExp(`- \\*\\*${label}:\\*\\* \\(\\d+\\)`));
+    const match=inventory.match(new RegExp(`- \\*\\*${label}:\\*\\* (\\d+)`));
     if(!match)fail(`Inventory summary is missing ${label}.`);
     else if(Number(match[1])!==count)fail(`Inventory summary ${label}=${match[1]} but numbered rows compute ${count}.`);
   }
