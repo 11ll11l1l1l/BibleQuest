@@ -11,52 +11,46 @@ Updated: 2026-09-08 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.34-offline-bible-packs` at `bfba29fdb500c2f8ea3f466e941f043dae908f26`.
-- Exact v3.34 bookkeeping run `34218225949` passed all 88 accumulated checks against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.35-backup-export-import-reset` at `cb72905992b2549d727b4e74f5887bfc53210a06`.
+- Exact v3.35 bookkeeping run `34220313765` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the corrected #100 Backup/export/import/reset functional gate:
+Inventory state after the corrected #62 Couples/family local functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 61 |
+| Regression-tested | 62 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 38 |
+| Not started | 37 |
 | Total | 100 |
 
-Strict verified-or-better parity is **62/100**.
+Strict verified-or-better parity is **63/100**.
 
-Official regression stability is **61/100**.
+Official regression stability is **62/100**.
 
 Current leading rows:
-- #98 Offline Shell — **Regression-tested**; frozen in v3.33.
-- #99 Offline opened Bible packs — **Regression-tested** after surviving the complete #100 functional suite; frozen in v3.34.
-- #100 Backup/export/import/reset — **Verified** after corrected exact functional run `34219329591` against `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215`.
-- #62 Couples/family local tools is the next dependency-safe non-deferred local capability under active assessment.
+- #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
+- #100 Backup/export/import/reset — **Regression-tested** after surviving the complete #62 functional suite; frozen in v3.35.
+- #62 Couples/family local tools — **Verified** after corrected exact functional run `34229105566` against `964fde5ad3381e4fe4d571c15591040c4e55fecb`.
+- #63 Couples cloud is the next dependency-safe capability after the independent v3.36 bookkeeping freeze.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
 
 The rebuild still follows one source of truth per function. Relevant owners now include:
 
-- `src/core/storage.js` — sole direct browser local-storage owner, including #100 portable namespace enumeration and transactional replacement/reset.
+- `src/core/storage.js` — sole direct browser local-storage owner.
 - `src/app/backup.js` — sole #100 backup file-format/workflow owner.
-- `src/features/backup/index.js` — file/download/confirmation UI only; no persistence ownership.
-- `src/core/bible.js` — Bible-source loading and #99 opened-pack persistence.
+- `src/app/couples-family.js` — sole #62 local Couples persistence/orchestration owner.
+- `src/content/couples-family.js` — recovered static Couples topic/card content only.
+- `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
+- `src/core/bible.js` — Bible-source loading and opened-pack persistence.
 - `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
 - Existing Router, Session, API, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
 
-#100 exports/imports/resets only portable `biblequest.v3.` local learning state. `biblequest.v3.auth.*`, `biblequest.v3.device-id`, Supabase/cloud state, congregation server state, Cloud Notes, media, Cache Storage, opened Bible packs and unrelated browser storage are excluded. Import validates the complete backup before destructive writes, rolls back after storage-write failure, and reloads the app so existing owners rehydrate normally rather than receiving direct backup-specific mutations.
-
-## Milestone 20 — Offline Shell
-
-### #98 — Regression-tested
-
-- Corrected functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered steps in run `34214663407`.
-- Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed run `34216091431` and is frozen at `release/v3.33-offline-shell`.
-- #98 has remained green through #99 and #100.
+#62 deliberately excludes #63 Couples cloud. The local owner uses only the shared v3 storage boundary, does not read the classic unprefixed `biblequest_couples_v1` key, and does not call Supabase, account/session APIs, cloud notes, congregation APIs or Progress. Scripture references hand off to the existing BSB Reader owner. No XP/progress reward was invented because none was recovered for this local Couples capability.
 
 ## Milestone 21 — Offline opened Bible packs
 
@@ -64,15 +58,13 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 
 - `src/core/bible.js` remains the sole bundled Scripture pack-path, semantic-validation and opened-pack persistence owner.
 - Only explicitly opened bundled BSB/Tagalog books persist; Japanese live source, NLT licensed-link mode, context packs, APIs/cloud/media and bulk search persistence remain excluded.
-- Functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 accumulated checks in run `34217190770`.
+- Functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed the complete accumulated suite in run `34217190770`.
 - Exact bookkeeping candidate `bfba29fdb500c2f8ea3f466e941f043dae908f26` passed run `34218225949` and is frozen at `release/v3.34-offline-bible-packs`.
-- #99 survived the complete #100 functional suite and therefore advanced to Regression-tested.
 
 ## Milestone 22 — Backup/export/import/reset
 
-### #100 — Verified
+### #100 — Regression-tested
 
-Implementation:
 - `src/core/storage.js` enumerates and transactionally replaces only portable BibleQuest v3 local-state keys.
 - `src/app/backup.js` defines versioned JSON format `biblequest-v3-local-backup` version `1` and owns export/import/reset orchestration.
 - `src/features/backup/index.js` exposes Download backup, Restore backup and confirmed Reset controls through More.
@@ -80,17 +72,44 @@ Implementation:
 - Import rejects malformed JSON, wrong format/version, forbidden/duplicate keys and non-JSON data before mutation.
 - Failed replacement attempts rollback to the previous portable snapshot.
 - Successful import/reset reloads BibleQuest so Reader, Progress and other existing owners rehydrate through their normal boundaries.
+- Corrected exact functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed run `34219329591`.
+- Exact bookkeeping candidate `cb72905992b2549d727b4e74f5887bfc53210a06` passed run `34220313765` and is frozen at `release/v3.35-backup-export-import-reset`.
+- #100 survived the later complete #62 functional suite and therefore advanced to Regression-tested.
+
+## Milestone 23 — Couples/family local tools
+
+### #62 — Verified
+
+Recovered legacy scope:
+- exact eight local categories and 32 conversation cards from retained `couples.js`;
+- saved/favorite cards and discussed history;
+- 7-day practices;
+- Listen First drills;
+- pass-the-phone Couple Check-in;
+- Repair Room with the recovered safety boundary for fear, threats, coercion, stalking or violence;
+- Us & God and Date Night local modes;
+- explicit separation from retained `couple-cloud.js`.
+
+Clean v3 implementation:
+- `src/content/couples-family.js` owns static recovered content.
+- `src/app/couples-family.js` owns versioned local state through shared storage only.
+- `src/features/couples-family/index.js` owns the view only.
+- More/router/bootstrap compose the page through existing v3 ownership.
+- Scripture links use the existing BSB Reader owner instead of DOM-click emulation.
+- malformed state is normalized and bounded histories are enforced.
+- local state uses the v3-prefixed Couples key and never reads or mutates classic v2 storage.
 
 Permanent protection:
-- `BACKUP_IMPORT_V3.md` defines the ownership, portable-data and transaction contracts.
-- `scripts/validate-v3-backup.mjs` prevents storage ownership leakage and enforces the verified ledger state.
-- `tests/v3-backup-edge.mjs` covers exclusion, exact restore, schema rejection and simulated write-failure rollback.
-- `tests/v3-backup-smoke.mjs` performs a real 390px Reader +10 XP setup → backup download → reset/reload → import/reload → Reader/Progress restoration workflow.
+- `COUPLES_FAMILY_LOCAL_V3.md` defines the local/cloud/privacy ownership boundary.
+- `scripts/validate-v3-couples-family.mjs` prevents storage, cloud, session, progress and legacy-runtime leakage.
+- `tests/v3-couples-family-edge.mjs` covers normalization, persistence, invalid input, limits and ownership.
+- `tests/v3-couples-family-smoke.mjs` covers 390px mobile, favorite/practice persistence, reload, listening completion, Couple Check-in, Repair Room safety copy and Reader handoff.
 
 Functional verification:
-- Initial candidate `f8fb9e03840cc2c7ba141f19352c79f7bc65e8c1` stopped at the new #100 validator because the validator used a stale shorthand acceptance phrase instead of the authoritative inventory row.
-- Corrected exact candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed the complete accumulated architecture, edge and browser/mobile suite in run `34219329591`.
-- #100 is therefore Verified. #99 is Regression-tested through this later complete-suite evidence.
+- Initial candidate `500d5e86bec2b8a16cfad485d5f3869e9277668b` reached the browser stage but exposed `V3-COUPLES-SMOKE-SELECTOR-001`: a strict Playwright locator matched both valid result-page controls returning to the Couples dashboard.
+- Runtime behavior was correct; the regression selector was made specific to the intended `Done` control without changing acceptance behavior.
+- Corrected exact candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb` passed the complete accumulated architecture, edge and browser/mobile suite in run `34229105566`.
+- #62 is therefore Verified. #100 is Regression-tested through this later complete-suite evidence.
 
 ## Defect / root-cause ledger
 
@@ -104,18 +123,19 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test validates ownership rather than assuming a permanently service-worker-free app.
 - `V3-STATUS-STRUCTURE-001` — bookkeeping status headings remain validator-enforced rather than weakened.
 - `V3-BACKUP-LEDGER-TEST-001` — the initial #100 validator expected stale shorthand wording instead of the authoritative inventory acceptance text; the validator was aligned to the ledger without weakening runtime or acceptance coverage.
+- `V3-COUPLES-SMOKE-SELECTOR-001` — #62 smoke used an ambiguous strict locator after the result view intentionally exposed two dashboard-return controls; the regression now selects the intended result completion control specifically.
 
 ## Next major milestone
 
-Complete the independent exact #100 bookkeeping suite and freeze v3.35 only at the exact SHA that passes the complete accumulated regression workflow. After that freeze, continue with **#62 Couples/family local tools** as the first non-deferred dependency-safe local capability after the rebuilt 1–61 block.
+Complete the independent exact #62 bookkeeping suite and freeze v3.36 only at the exact SHA that passes the complete accumulated regression workflow. After that freeze, continue with **#63 Couples cloud**.
 
-#62 acceptance boundary from the authoritative ledger:
-- open a couples/family topic;
-- save a private local note/action through one dedicated owner using the central storage boundary;
-- leave/reload and recover the saved state;
-- keep #63 Couples cloud explicitly separate;
-- add permanent edge + 390px browser regression;
-- run the complete accumulated suite before promotion.
+Recovered #63 legacy boundary from retained `couple-cloud.js`:
+- two authenticated accounts link through an 8-character pair code;
+- only intentionally shared Couples journey/reflection/commitment/challenge data may synchronize;
+- private local notes, Transform results, passwords and unrelated personal account data remain excluded;
+- remote access must be user-scoped and fail closed;
+- local #62 state remains owned separately and must not be silently uploaded;
+- sync/error/reload behavior needs permanent edge and 390px browser coverage before promotion.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
