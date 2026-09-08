@@ -19,32 +19,28 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the #99 Offline opened Bible packs functional gate:
+After the corrected #100 Backup/export/import/reset functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 60 |
+| Regression-tested | 61 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 39 |
+| Not started | 38 |
 | Total | 100 |
 
-Strict verified-or-better parity is **61/100**.
+Strict verified-or-better parity is **62/100**.
 
-Official regression stability is **60/100**. #98 Offline Shell advanced to **Regression-tested** after the later #99 full functional suite remained green. #99 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with opened-pack offline behavior still green.
+Official regression stability is **61/100**. #99 Offline opened Bible packs advanced to **Regression-tested** after the later #100 complete functional suite remained green. #100 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with backup/export/import/reset behavior still green.
 
-#55 Private local notes is frozen at `release/v3.27-private-local-notes` (`e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300`).
+Recent frozen checkpoints:
+- `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping `34200768014`.
+- `release/v3.30-operational-recovery` — `7ec0290a50086112210c4c301db3288b970a2cc0`; bookkeeping `34203169381`.
+- `release/v3.31-client-diagnostics` — `61af8aaee121356d6ef0388130df2b545ff943d9`; bookkeeping `34208493773`.
+- `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; bookkeeping `34213223642`.
+- `release/v3.33-offline-shell` — `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`; bookkeeping `34216091431`.
+- `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; bookkeeping `34218225949`.
 
-#56 Cloud Notes is frozen at `release/v3.28-cloud-notes` (`1b8cb0a4847b1fc633ce23412982c91c38825148`; functional run `34183773524`; bookkeeping run `34184699391`).
+#99 Offline opened Bible packs functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed run `34217190770`, then exact bookkeeping SHA `bfba29fdb500c2f8ea3f466e941f043dae908f26` passed run `34218225949` and was frozen in v3.34.
 
-#66 Congregation membership/roles passed functional run `34185569051`. Its exact bookkeeping candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed all 76 steps in run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
-
-#96 Operational recovery/error boundary passed functional run `34202531302`. Its exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed all 79 steps in run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
-
-#95 Client diagnostics passed functional run `34204562845`. Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 steps of run `34208493773` and is frozen at `release/v3.31-client-diagnostics`.
-
-#97 PWA install/manifest passed corrected functional run `34212434449`. Exact bookkeeping candidate `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
-
-#98 Offline Shell corrected functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed run `34214663407`. Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed all 85 numbered steps in run `34216091431` and is frozen at `release/v3.33-offline-shell`.
-
-#99 Offline opened Bible packs exact functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 numbered steps in run `34217190770`. It is Verified pending its independent exact v3.34 bookkeeping/release gate; #98 is Regression-tested through this later complete-suite evidence.
+#100 Backup/export/import/reset corrected exact functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed the complete accumulated architecture, edge and browser/mobile suite in run `34219329591`. It is Verified pending its independent exact v3.35 bookkeeping/release gate; #99 is Regression-tested through this later complete-suite evidence.
