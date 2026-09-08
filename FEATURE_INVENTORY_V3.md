@@ -58,9 +58,9 @@ This file is the authoritative parity ledger for the rebuild.
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
-| 38 | Kids Memory Match | Yes | Clean | Not started | full match; reset; mobile |
-| 39 | Hiragana Match | Yes | Clean | Not started | match full board; reset; mobile |
-| 40 | Kids Bible Who Am I | Yes | Clean | Not started | full round; reset; mobile |
+| 38 | Kids Memory Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
+| 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
+| 40 | Kids Bible Who Am I | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Not started | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Not started | create/join/leave; reconnect; no stale room state |
@@ -125,6 +125,8 @@ This file is the authoritative parity ledger for the rebuild.
 ## Parity completion rule
 
 BibleQuest v3 reaches feature parity only when every applicable row is **Verified** or **Regression-tested**. A row is not complete because a page renders, an old module still exists, or a compatibility page can be opened.
+
+Rows explicitly deferred by user priority remain visible as **Not started** and are excluded from the active implementation sequence until explicitly reopened. They are not silently counted as complete.
 
 ## Regression rule
 
