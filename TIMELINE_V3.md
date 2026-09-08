@@ -7,14 +7,14 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #100 functional verification:** 61 Regression-tested / 1 Verified / 0 Implemented / 38 Not started
-- **Verified or better:** 62 / 100 (**62% strict parity completion**)
-- **Official regression stability:** 61 / 100
-- **Latest frozen checkpoint:** `release/v3.34-offline-bible-packs` at `bfba29fdb500c2f8ea3f466e941f043dae908f26`
-- **v3.34 bookkeeping:** `34218225949` — complete accumulated 88-check suite green against the frozen SHA
-- **#99 Offline opened Bible packs:** Regression-tested after surviving #100; frozen in v3.34
-- **#100 Backup/export/import/reset:** Verified; corrected exact functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215`, run `34219329591`
-- **#62 Couples/family local tools:** next non-deferred dependency-safe local milestone after v3.35 freeze
+- **Inventory states after #62 functional verification:** 62 Regression-tested / 1 Verified / 0 Implemented / 37 Not started
+- **Verified or better:** 63 / 100 (**63% strict parity completion**)
+- **Official regression stability:** 62 / 100
+- **Latest frozen checkpoint:** `release/v3.35-backup-export-import-reset` at `cb72905992b2549d727b4e74f5887bfc53210a06`
+- **v3.35 bookkeeping:** `34220313765` — complete accumulated suite green against the frozen SHA
+- **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
+- **#62 Couples/family local tools:** Verified; corrected exact functional candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb`, run `34229105566`
+- **#63 Couples cloud:** next after exact v3.36 bookkeeping freeze
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -42,12 +42,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 18 | Client diagnostics | Frozen | v3.31; #95 Regression-tested |
 | 19 | PWA install/manifest | Frozen | v3.32; #97 Regression-tested |
 | 20 | Offline Shell | Frozen | v3.33; #98 Regression-tested |
-| 21 | Offline opened Bible packs | Frozen | v3.34; #99 Regression-tested after #100 suite |
-| 22 | Backup/export/import/reset | Functional gate green; bookkeeping active | #100 Verified; functional `34219329591` |
-| 23 | Couples/family local tools | Next | #62 after exact v3.35 freeze |
-| 24 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 25 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 26 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 21 | Offline opened Bible packs | Frozen | v3.34; #99 Regression-tested |
+| 22 | Backup/export/import/reset | Frozen | v3.35; #100 Regression-tested after #62 suite |
+| 23 | Couples/family local tools | Functional gate green; bookkeeping active | #62 Verified; functional `34229105566` |
+| 24 | Couples cloud | Next after v3.36 freeze | #63 recovered legacy contract; implementation not started |
+| 25 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 26 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 27 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -72,22 +73,25 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; bookkeeping `34213223642`
 - `release/v3.33-offline-shell` — `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`; bookkeeping `34216091431`
 - `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; functional `34217190770`; bookkeeping `34218225949`
+- `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; functional `34219329591`; bookkeeping `34220313765`
 
-## #99 Offline opened Bible packs — Regression-tested
-
-- `src/core/bible.js` remains the single bundled Bible pack path/validation/persistence owner.
-- Only explicitly opened bundled BSB/Tagalog packs are persisted; search does not bulk-persist, and live/licensed/context/API/cloud/media sources remain outside #99.
-- Functional run `34217190770` and v3.34 bookkeeping run `34218225949` were green.
-- #99 survived #100 functional run `34219329591` and advanced to Regression-tested.
-
-## #100 Backup/export/import/reset — Verified
+## #100 Backup/export/import/reset — Regression-tested
 
 - Portable local-state ownership remains in `src/core/storage.js`; versioned backup workflow ownership is in `src/app/backup.js`.
 - `device-id`, auth/session keys, cloud/server state, caches and unrelated browser storage are excluded.
 - Import prevalidates the full snapshot and attempts rollback if replacement fails.
-- The 390px browser acceptance performs Reader +10 XP setup → download backup → reset/reload → import/reload → Reader/Progress restoration.
-- Initial candidate `f8fb9e03840cc2c7ba141f19352c79f7bc65e8c1` exposed `V3-BACKUP-LEDGER-TEST-001`, a stale validator wording mismatch.
-- Corrected exact candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed complete run `34219329591`.
+- Corrected functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed run `34219329591`.
+- Exact bookkeeping candidate `cb72905992b2549d727b4e74f5887bfc53210a06` passed run `34220313765` and is frozen as v3.35.
+- #100 survived the complete #62 functional suite and advanced to Regression-tested.
+
+## #62 Couples/family local tools — Verified
+
+- Retained `couples.js` proved eight categories, 32 cards, favorites/discussed state, 7-day practices, listening drills, pass-the-phone check-in, Repair Room, Us & God and Date Night.
+- Retained `couple-cloud.js` proves the local/cloud split; #62 does not own Supabase/session/cloud behavior.
+- `src/content/couples-family.js` owns recovered static content; `src/app/couples-family.js` owns local state through shared storage; `src/features/couples-family/index.js` owns view behavior.
+- BSB references hand off through the existing Reader owner.
+- Initial candidate `500d5e86bec2b8a16cfad485d5f3869e9277668b` exposed only an ambiguous strict Playwright selector in the new check-in result.
+- Corrected exact candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb` passed complete run `34229105566`.
 
 ## Current bookkeeping
 
@@ -100,21 +104,22 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #97 PWA install/manifest — **Regression-tested**
 - #98 Offline Shell — **Regression-tested**
 - #99 Offline opened Bible packs — **Regression-tested**
-- #100 Backup/export/import/reset — **Verified**
-- Inventory states — **61 Regression-tested / 1 Verified / 0 Implemented / 38 Not started**
-- Strict parity — **62/100**
-- Official regression stability — **61/100**
+- #100 Backup/export/import/reset — **Regression-tested**
+- #62 Couples/family local tools — **Verified**
+- Inventory states — **62 Regression-tested / 1 Verified / 0 Implemented / 37 Not started**
+- Strict parity — **63/100**
+- Official regression stability — **62/100**
 
 ## Next sequence
 
-1. Run the independent exact #100 bookkeeping gate against the complete accumulated suite.
-2. Freeze v3.35 only at the exact bookkeeping SHA that passes.
-3. Continue with #62 Couples/family local tools, explicitly keeping #63 Couples cloud separate.
+1. Run the independent exact #62 bookkeeping gate against the complete accumulated suite.
+2. Freeze v3.36 only at the exact bookkeeping SHA that passes.
+3. Rebuild #63 Couples cloud from retained `couple-cloud.js` with one authenticated remote owner and explicit privacy boundaries.
 4. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **38 Not started rows** after #100 functional verification. Remaining work includes deferred Japanese/Kids capabilities, Play Together/Live Rooms, Bible World, couples/community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics, reset/recovery and other inventory-defined workflows.
+Literal old-version parity has **37 Not started rows** after #62 functional verification. Remaining work includes Couples cloud, Journey Groups, Encouragements, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics, reset/recovery and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 
