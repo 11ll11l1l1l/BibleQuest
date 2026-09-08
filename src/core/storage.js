@@ -1,12 +1,87 @@
 const PREFIX = 'biblequest.v3.';
+const AUTH_PREFIX = 'auth.';
+const DEVICE_ID = 'device-id';
+const NAME_RE = /^[a-z0-9._-]+$/i;
 
 function key(name) {
-  if (!/^[a-z0-9._-]+$/i.test(name)) throw new Error('Invalid storage key.');
+  if (!NAME_RE.test(name)) throw new Error('Invalid storage key.');
   return PREFIX + name;
 }
 
 function authKey(name) {
-  return `${PREFIX}auth.${encodeURIComponent(String(name))}`;
+  return `${PREFIX}${AUTH_PREFIX}${encodeURIComponent(String(name))}`;
+}
+
+function backing() {
+  if (typeof localStorage === 'undefined') throw new Error('Local device storage is unavailable.');
+  return localStorage;
+}
+
+function isPortableName(name) {
+  return NAME_RE.test(name) && name !== DEVICE_ID && !name.startsWith(AUTH_PREFIX);
+}
+
+function portableEntries(store = backing()) {
+  const entries = [];
+  for (let index = 0; index < store.length; index += 1) {
+    const rawKey = store.key(index);
+    if (!rawKey?.startsWith(PREFIX)) continue;
+    const name = rawKey.slice(PREFIX.length);
+    if (!isPortableName(name)) continue;
+    const raw = store.getItem(rawKey);
+    let value;
+    try { value = JSON.parse(raw); }
+    catch { throw new Error(`BibleQuest local state "${name}" is malformed and cannot be exported.`); }
+    entries.push(Object.freeze({ name, value }));
+  }
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  return entries;
+}
+
+function validatePortableEntries(entries) {
+  if (!Array.isArray(entries)) throw new Error('Backup entries must be an array.');
+  const seen = new Set();
+  return entries.map(entry => {
+    const name = String(entry?.name || '');
+    if (!isPortableName(name)) throw new Error(`Backup contains a non-portable storage key: ${name || 'missing'}.`);
+    if (seen.has(name)) throw new Error(`Backup contains duplicate storage key: ${name}.`);
+    seen.add(name);
+    let value;
+    try { value = JSON.parse(JSON.stringify(entry?.value)); }
+    catch { throw new Error(`Backup value for ${name} is not valid JSON data.`); }
+    return Object.freeze({ name, value });
+  });
+}
+
+function replacePortableEntries(entries) {
+  const store = backing();
+  const incoming = validatePortableEntries(entries);
+  const before = portableEntries(store);
+  const currentKeys = [];
+  for (let index = 0; index < store.length; index += 1) {
+    const rawKey = store.key(index);
+    if (!rawKey?.startsWith(PREFIX)) continue;
+    const name = rawKey.slice(PREFIX.length);
+    if (isPortableName(name)) currentKeys.push(rawKey);
+  }
+  try {
+    for (const rawKey of currentKeys) store.removeItem(rawKey);
+    for (const entry of incoming) store.setItem(key(entry.name), JSON.stringify(entry.value));
+  } catch (error) {
+    try {
+      const rollbackKeys = [];
+      for (let index = 0; index < store.length; index += 1) {
+        const rawKey = store.key(index);
+        if (!rawKey?.startsWith(PREFIX)) continue;
+        const name = rawKey.slice(PREFIX.length);
+        if (isPortableName(name)) rollbackKeys.push(rawKey);
+      }
+      for (const rawKey of rollbackKeys) store.removeItem(rawKey);
+      for (const entry of before) store.setItem(key(entry.name), JSON.stringify(entry.value));
+    } catch {}
+    throw new Error(`BibleQuest local state could not be replaced: ${error?.message || 'storage write failed'}`);
+  }
+  return incoming.length;
 }
 
 export const storage = Object.freeze({
@@ -24,6 +99,15 @@ export const storage = Object.freeze({
   },
   remove(name) {
     localStorage.removeItem(key(name));
+  },
+  exportPortableEntries() {
+    return Object.freeze(portableEntries().map(entry => Object.freeze({ name: entry.name, value: entry.value })));
+  },
+  replacePortableEntries(entries) {
+    return replacePortableEntries(entries);
+  },
+  resetPortableEntries() {
+    return replacePortableEntries([]);
   }
 });
 
