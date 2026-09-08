@@ -20,8 +20,8 @@ if(!failures.length){
     if(/\blocalStorage\b|\bsessionStorage\b/.test(read(file)))fail(`Direct browser storage use outside storage owner: ${file}`);
   }
   for(const statement of['`biblequest.v3.auth.*` is excluded','`biblequest.v3.device-id` is excluded and preserved','If a storage write fails','reloads BibleQuest'])if(!contract.includes(statement))fail(`Backup contract missing boundary: ${statement}`);
-  if(!inventory.includes('| 100 | Backup/export/import/reset | Yes | Clean | Verified | export; reset; import; schema validation; corrupt backup |'))fail('#100 must remain Verified after its complete functional gate passes.');
-  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals do not match post-#100 verification: ${total}`);
+  if(!inventory.includes('| 100 | Backup/export/import/reset | Yes | Clean | Regression-tested | export; reset; import; schema validation; corrupt backup |'))fail('#100 must be Regression-tested after the later complete #62 functional gate passes.');
+  for(const total of['**Regression-tested:** 62','**Verified:** 1','**Not started:** 37'])if(!inventory.includes(total))fail(`Inventory totals do not match post-#62 promotion: ${total}`);
   for(const test of['node scripts/validate-v3-backup.mjs','node tests/v3-backup-edge.mjs','node tests/v3-backup-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #100 regression: ${test}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
