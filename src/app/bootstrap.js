@@ -22,6 +22,7 @@ import { createCloudNotesService } from './cloud-notes.js';
 import { createCouplesFamilyService } from './couples-family.js';
 import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
+import { createJourneyGroupsService } from './journey-groups.js';
 import { createOperationalRecoveryService } from './operational-recovery.js';
 import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
 import { createPwaInstallService } from './pwa-install.js';
@@ -48,6 +49,7 @@ import { privateNotesPage } from '../features/private-notes/index.js';
 import { cloudNotesPage } from '../features/cloud-notes/index.js';
 import { couplesFamilyPage } from '../features/couples-family/index.js';
 import { couplesCloudPage } from '../features/couples-cloud/index.js';
+import { journeyGroupsPage } from '../features/journey-groups/index.js';
 import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
@@ -92,6 +94,7 @@ function start(){
   const couplesFamily=createCouplesFamilyService({storage});
   const couplesCloud=createCouplesCloudService({api:api.couples,session});
   const congregation=createCongregationMembershipService({api,session});
+  const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   let recovery;
   recovery=createOperationalRecoveryService({report:(error,context)=>diagnostics.classify(error,{kind:'module',route:context.route}).then(diagnostic=>{
     if(recovery.getState()?.id===context.id)shell?.updateRecoveryDiagnostic(context.id,diagnostic);
@@ -114,10 +117,11 @@ function start(){
     'cloud-notes':()=>cloudNotesPage({notes:cloudNotes,onLearn:()=>router.navigate('learn'),onAccount:()=>router.navigate('account')}),
     'couples-family':()=>couplesFamilyPage({couples:couplesFamily,onBack:()=>router.navigate('more'),onReader:openCouplesScripture}),
     'couples-cloud':()=>couplesCloudPage({couples:couplesCloud,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
+    'journey-groups':()=>journeyGroupsPage({journeyGroups,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onBackup:()=>router.navigate('backup')}),
+    more:()=>morePage({pwaInstall,onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
     congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
     account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
@@ -136,6 +140,6 @@ function start(){
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error))}).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();journeyGroups.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
