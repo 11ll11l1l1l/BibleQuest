@@ -16,7 +16,7 @@ const api={
   async create(){calls.push(['create']);return{pair:{id:'pair-2',user_a:'user-a',user_b:null,status:'pending',created_at:now,updated_at:now},inviteCode:'ABCD2345'}},
   async join(code){calls.push(['join',code]);return{pair:{id:'pair-3',user_a:'user-b',user_b:'user-a',status:'active',created_at:now,updated_at:now}}},
   async leave(pairId){calls.push(['leave',pairId]);return{ok:true}},
-  async listShared(pairId){calls.push(['listShared',pairId]);return shared.filter(row=>row.pair_id===pairId)},
+  async listShared(pairId){calls.push(['listShared',pairId]);return shared.slice()},
   async addShared(rows){calls.push(['addShared',rows]);for(const row of rows)shared.push({id:`s${shared.length+1}`,...row,created_at:now,updated_at:now});return rows}
 };
 
