@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 59
+- **Regression-tested:** 60
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 40
+- **Not started:** 39
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -118,8 +118,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 95 | Client diagnostics | Yes | Compatibility | Regression-tested | one classifier; offline/host-unreachable/reachable-module/unknown codes; API-owned no-store probe; brief probe cache/forced refresh; safe immutable UI; #96 composition; 390px mobile |
 | 96 | Operational recovery/error boundary | Yes | Clean basic | Regression-tested | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
 | 97 | PWA install/manifest | Yes | Clean | Regression-tested | deployment-relative manifest; explicit any/maskable install icons; single optional prompt owner; accepted/dismissed/installed/cleanup lifecycle; no service-worker ownership; remains compatible with dedicated #98 worker; 390px mobile |
-| 98 | Offline shell | Yes | Clean | Verified | reload offline after first load; bounded shell cache; no pack/API/probe interception; 390px offline reload |
-| 99 | Offline opened Bible packs | Yes | Clean | Not started | open pack online; offline reload same content |
+| 98 | Offline shell | Yes | Clean | Regression-tested | reload offline after first load; bounded shell cache; no pack/API/probe interception; 390px offline reload |
+| 99 | Offline opened Bible packs | Yes | Clean | Verified | opened bundled BSB/Tagalog pack persists only through Bible owner; offline reload/switch; corrupt-cache eviction; no bulk search caching; live/licensed sources excluded; 390px mobile |
 | 100 | Backup/export/import/reset | Yes | Clean | Not started | export; reset; import; schema validation; corrupt backup |
 
 ## Parity completion rule
