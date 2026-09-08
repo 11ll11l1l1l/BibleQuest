@@ -19,8 +19,8 @@ if(!failures.length){
   if(!more.includes('data-install-app')||!more.includes('pwaInstall?.subscribe')||!more.includes('pwaInstall?.prompt'))fail('More must present and forward the PWA owner contract.');
   for(const forbidden of['serviceWorker','caches.','CacheStorage','fetch(','localStorage','sessionStorage','window.BQ'])if(owner.includes(forbidden))fail(`#97 install owner must not own offline/global behavior after #98: ${forbidden}`);
   if(/serviceWorker|(?:src|href)="(?:\.\/)?(?:sw\.js|pwa-runtime\.js)"/.test(index))fail('The v3 entrypoint must not become a second service-worker registration owner.');
-  if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Regression-tested |'))fail('#97 must advance to Regression-tested after surviving the complete #98 functional suite.');
-  for(const total of['**Regression-tested:** 59','**Verified:** 1','**Not started:** 40'])if(!inventory.includes(total))fail(`Inventory totals missing post-#98 bookkeeping: ${total}`);
+  if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Regression-tested |'))fail('#97 must remain Regression-tested after later complete suites.');
+  for(const total of['**Regression-tested:** 60','**Verified:** 1','**Not started:** 39'])if(!inventory.includes(total))fail(`Inventory totals missing post-#99 bookkeeping: ${total}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 PWA install architecture boundary passed.');
