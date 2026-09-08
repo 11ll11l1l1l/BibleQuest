@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 53
+- **Regression-tested:** 54
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 46
+- **Not started:** 45
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -75,8 +75,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 52 | Expanded guided study | Yes | Compatibility | Regression-tested | open lesson; navigate sections; save/return state |
 | 53 | Adaptive learning | Yes | Compatibility | Regression-tested | weak/due selection; 7-question Smart Review; 1/3/7/14/30 spacing; mastery update; +10/+3 parity; resume/reload; mobile |
 | 54 | Open/weak-area review | Yes | Compatibility | Regression-tested | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
-| 55 | Private local notes | Yes | Clean | Verified | one local Notes owner; create/edit/delete; reload persistence; versioned JSON export; explicit device-only/no-cloud boundary; malformed-state normalization; deterministic IDs; 390px mobile |
-| 56 | Cloud notes | Yes | Compatibility | Not started | account sync; offline/failure behavior; no guest leak |
+| 55 | Private local notes | Yes | Clean | Regression-tested | one local Notes owner; create/edit/delete; reload persistence; versioned JSON export; explicit device-only/no-cloud boundary; malformed-state normalization; deterministic IDs; 390px mobile |
+| 56 | Cloud notes | Yes | Compatibility | Verified | separate authenticated remote owner; existing `bible_notes` RLS/user ownership; Scripture-linked CRUD; explicit `updated_at` stale-write conflict rejection; no local cache key; no guest write; local-preview/error recovery; Private Notes never auto-uploaded; 390px mobile |
 | 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
 | 58 | Recordings list | Yes | Clean link library only | Regression-tested | list load; empty/error states; reload |
 | 59 | Live Recordings playback | Yes | Missing in clean | Regression-tested | play; pause; switch; leave; return; no freeze; one player instance |
