@@ -35,10 +35,19 @@ The recovered sources are `client-diagnostics.js`, `runtime-recovery.js`, `ERROR
 
 ## Verification gate
 
-Before #95 becomes Verified:
+The #95 functional verification gate completed with:
 
 1. architecture validation confirms one classifier and API-owned probe;
 2. edge regression covers offline, reachable module failure, unreachable host, unknown failure, cache/forced refresh, immutable safe output, and async reporting failure isolation;
 3. real 390px browser regression proves diagnostic code/reachability presentation composes with #96 Retry/Home recovery without losing the shell;
 4. the complete accumulated suite passes on the exact functional candidate;
 5. the independent bookkeeping candidate passes the same complete suite before `release/v3.31-client-diagnostics` is frozen.
+
+## Functional verification evidence
+
+- Exact clean functional candidate: `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b`.
+- Isolated verification-only commit: `e2926cacab280f66844d6b8156b5861d2f72115b`; it checked out and asserted the clean candidate before testing.
+- Complete accumulated run: `34204562845` — all 82 job steps green, including architecture, edge, API-owned live probe, 390px reachable/unreachable recovery presentation, and every prior browser regression.
+- `verify/v3.31-client-diagnostics-functional` was reset to the clean candidate, removing its temporary push trigger.
+
+#95 is Verified and #96 is Regression-tested in the authoritative inventory through this later-feature evidence. The independent exact bookkeeping candidate must pass the complete accumulated suite before `release/v3.31-client-diagnostics` may be frozen.

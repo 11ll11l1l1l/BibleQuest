@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 56
+- **Regression-tested:** 57
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 43
+- **Not started:** 42
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -115,8 +115,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 92 | Admin console | Yes | Standalone old | Not started | auth guard; read/admin actions; permission denial |
 | 93 | Admin operations | Yes | Standalone old | Not started | operational actions; role guard; error recovery |
 | 94 | Reset/recovery page | Yes | Standalone old | Not started | reset path; cancellation; invalid state |
-| 95 | Client diagnostics | Yes | Compatibility | Not started | classify module/network failure; safe user recovery |
-| 96 | Operational recovery/error boundary | Yes | Clean basic | Verified | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
+| 95 | Client diagnostics | Yes | Compatibility | Verified | one classifier; offline/host-unreachable/reachable-module/unknown codes; API-owned no-store probe; brief probe cache/forced refresh; safe immutable UI; #96 composition; 390px mobile |
+| 96 | Operational recovery/error boundary | Yes | Clean basic | Regression-tested | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
 | 97 | PWA install/manifest | Yes | Clean | Not started | manifest valid; installable shell |
 | 98 | Offline shell | Yes | Clean | Not started | reload offline after first load |
 | 99 | Offline opened Bible packs | Yes | Clean | Not started | open pack online; offline reload same content |

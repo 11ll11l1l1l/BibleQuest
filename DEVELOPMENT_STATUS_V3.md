@@ -19,22 +19,23 @@ Updated: 2026-09-08 JST
 
 ## Progress summary
 
-Inventory row states after the #96 functional gate:
+Inventory row states after the #95 functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 56 |
+| Regression-tested | 57 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 43 |
+| Not started | 42 |
 | Total | 100 |
 
-Strict verified-or-better parity is **57/100**.
+Strict verified-or-better parity is **58/100**.
 
-Official regression stability is **56/100**. #66 advanced to Regression-tested after surviving the later #96 complete functional suite. #96 remains Verified until a later feature milestone passes the complete suite with it still green.
+Official regression stability is **57/100**. #96 advanced to Regression-tested after surviving the later #95 complete functional suite. #95 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #96 Operational recovery/error boundary — **Verified** after functional run `34202531302` and bookkeeping run `34203169381`; frozen in v3.30.
+- #95 Client diagnostics — **Verified** after exact complete functional run `34204562845`; awaiting the independent v3.31 bookkeeping/release gate.
+- #96 Operational recovery/error boundary — **Regression-tested** after surviving #95 run `34204562845`; frozen in v3.30.
 - #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
 - #55 Private local notes — **Regression-tested**; frozen in v3.27.
@@ -161,7 +162,7 @@ Functional verification:
 
 ## Milestone 17 — Operational recovery/error boundary
 
-### #96 Operational recovery/error boundary — Verified
+### #96 Operational recovery/error boundary — Regression-tested
 
 - Recovered v2 behavior and the current v3 shell/router composition select #96 ahead of #67 Community Bridge because failure containment supports every remaining route.
 - `src/app/operational-recovery.js` is the single active recovery-state and Retry/Home lifecycle owner.
@@ -170,16 +171,19 @@ Functional verification:
 - Exact clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` passed all 79 job steps in functional run `34202531302`.
 - The isolated trigger commit `08e187236e384b41ed50d5261d20d62c2554196e` explicitly checked out and asserted the clean candidate, then the verification branch was reset to remove the trigger.
 - Exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
+- #96 survived the later #95 complete functional suite and is Regression-tested.
 
 ## Milestone 18 — Client diagnostics
 
-### #95 Client diagnostics — implementation active
+### #95 Client diagnostics — Verified
 
 - Recovered stable module/network codes compose with #96 through one `src/core/client-diagnostics.js` classification owner.
 - `src/core/api.js` owns the same-origin cache-busting probe; Diagnostics never calls `fetch` or Supabase directly.
 - Browser-offline, host-unreachable, reachable-module, and unknown states are narrow, immutable, and exclude arbitrary error data.
 - No global error listeners, freeze watchdog, DOM injector, backend diagnostic write, or `window.BQDiagnostics` compatibility path is restored.
-- Official counts remain 57/100 strict parity and 56/100 stability until exact #95 verification/bookkeeping gates pass.
+- Exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` passed all 82 job steps in functional run `34204562845`.
+- The isolated trigger commit `e2926cacab280f66844d6b8156b5861d2f72115b` explicitly checked out and asserted the candidate, then the branch was reset to remove the trigger.
+- #95 is Verified pending the independent exact bookkeeping/release gate.
 
 ## Defect / root-cause ledger retained
 
@@ -212,7 +216,7 @@ Functional verification:
 
 ## Next major milestone
 
-Complete #95 Client diagnostics through exact functional and bookkeeping suites, then freeze `release/v3.31-client-diagnostics` only at the verified clean SHA.
+Complete the exact #95 bookkeeping suite, then freeze `release/v3.31-client-diagnostics` only at the verified clean bookkeeping SHA.
 
 After v3.31, reassess #67 Community Bridge against accessibility, PWA/offline, backup/import, and remaining user-facing parity debt.
 
@@ -220,4 +224,4 @@ Kids #38–40 remain explicitly deferred. Production deployment remains out of s
 
 ## Release rule
 
-#95 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#95 passed its complete functional suite on run `34204562845`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.31-client-diagnostics` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

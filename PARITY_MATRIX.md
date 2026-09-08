@@ -19,19 +19,19 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the v3.30 Operational recovery/error boundary bookkeeping/release gate:
+After the #95 Client diagnostics functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 56 |
+| Regression-tested | 57 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 43 |
+| Not started | 42 |
 | Total | 100 |
 
-Strict verified-or-better parity is **57/100**.
+Strict verified-or-better parity is **58/100**.
 
-Official regression stability is **56/100**. #66 Congregation membership/roles advanced to **Regression-tested** after the later #96 full functional suite remained green. #96 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Operational Recovery still green.
+Official regression stability is **57/100**. #96 Operational recovery/error boundary advanced to **Regression-tested** after the later #95 full functional suite remained green. #95 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Client Diagnostics still green.
 
 #55 Private local notes is frozen at `release/v3.27-private-local-notes` (`e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300`).
 
@@ -41,4 +41,4 @@ Official regression stability is **56/100**. #66 Congregation membership/roles a
 
 #96 Operational recovery/error boundary passed functional run `34202531302`. Its exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed all 79 steps in run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
 
-#95 Client diagnostics is the active implementation milestone. It remains **Not started** here until its exact functional candidate passes the complete accumulated suite.
+#95 Client diagnostics passed its exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` on all 82 steps of run `34204562845`. Its independent v3.31 bookkeeping/release gate remains pending.
