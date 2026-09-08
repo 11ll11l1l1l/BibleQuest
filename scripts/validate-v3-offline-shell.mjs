@@ -16,7 +16,8 @@ if(!failures.length){
   for(const item of["import { createOfflineShellService } from './offline-shell.js'",'const offlineShell=createOfflineShellService()','offlineShell.start()','offlineShell.dispose()'])if(!bootstrap.includes(item))fail(`Bootstrap missing Offline Shell composition: ${item}.`);
   if(/serviceWorker|offline-shell-sw\.js/.test(index))fail('index.html must not become a second service-worker registration owner.');
   if(!contract.includes('#99 alone may add an opened-Bible-pack cache'))fail('Offline Shell contract must preserve the #99 pack boundary.');
-  if(!inventory.includes('| 98 | Offline shell | Yes | Clean | Not started | reload offline after first load |'))fail('#98 must remain Not started until the exact complete functional gate passes.');
+  if(!inventory.includes('| 98 | Offline shell | Yes | Clean | Verified | reload offline after first load; bounded shell cache; no pack/API/probe interception; 390px offline reload |'))fail('#98 must be Verified after its exact complete functional gate passes.');
+  for(const total of['**Regression-tested:** 59','**Verified:** 1','**Not started:** 40'])if(!inventory.includes(total))fail(`Inventory totals missing post-#98 bookkeeping: ${total}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 Offline Shell architecture boundary passed.');
