@@ -6,8 +6,8 @@ This file is the authoritative parity ledger for the rebuild.
 
 - **Regression-tested:** 63
 - **Verified:** 1
-- **Implemented:** 0
-- **Not started:** 36
+- **Implemented:** 1
+- **Not started:** 35
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -84,7 +84,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 61 | Media Library | Yes | Compatibility | Regression-tested | browse/filter/search; open through shared player; failure handling; leave/return; guest/account; mobile |
 | 62 | Couples/family local tools | Yes | Clean | Regression-tested | topic open; save note/action; reload |
 | 63 | Couples cloud | Yes | Compatibility | Verified | shared state; permission; sync; failure handling |
-| 64 | Journey Groups | Yes | Compatibility | Not started | create/join/view/leave; membership persistence |
+| 64 | Journey Groups | Yes | Compatibility | Implemented | create/join/view/leave; membership persistence |
 | 65 | Encouragements | Yes | Compatibility | Not started | send/receive; permission; duplicate prevention |
 | 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
 | 67 | Community bridge | Yes | Compatibility | Not started | cross-feature navigation/data contract |
