@@ -6,6 +6,7 @@ const CONFIG = Object.freeze({
   publishableKey: 'sb_publishable_mJyieT7WZT1vAZX7XFdsrg_lRgDxcsq'
 });
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
+const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,content,tags,note_type,is_pinned,created_at,updated_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -157,6 +158,33 @@ export function createApi() {
     }
   });
 
+  const cloudNotes = Object.freeze({
+    async list(userId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').select(CLOUD_NOTE_FIELDS).eq('user_id',userId).order('is_pinned',{ascending:false}).order('updated_at',{ascending:false});
+      if(error)throw error;
+      return data||[];
+    },
+    async create(userId,payload) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').insert({...payload,user_id:userId}).select(CLOUD_NOTE_FIELDS).single();
+      if(error)throw error;
+      return data;
+    },
+    async update(userId,id,expectedUpdatedAt,payload) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').update(payload).eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select(CLOUD_NOTE_FIELDS).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async remove(userId,id,expectedUpdatedAt) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').delete().eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select('id').maybeSingle();
+      if(error)throw error;
+      return data||null;
+    }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -176,5 +204,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, media });
+  return Object.freeze({ auth, account, cloudNotes, media });
 }
