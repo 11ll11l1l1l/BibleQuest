@@ -19,7 +19,7 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the #66 Congregation membership/roles functional gate:
+After the v3.29 Congregation membership/roles bookkeeping/release gate:
 
 | State | Count |
 |---|---:|
@@ -37,4 +37,6 @@ Official regression stability is **55/100**. #56 Cloud Notes advanced to **Regre
 
 #56 Cloud Notes is frozen at `release/v3.28-cloud-notes` (`1b8cb0a4847b1fc633ce23412982c91c38825148`; functional run `34183773524`; bookkeeping run `34184699391`).
 
-#66 Congregation membership/roles passed its exact functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` on full-suite run `34185569051`. Its independent v3.29 bookkeeping/release gate remains pending.
+#66 Congregation membership/roles passed functional run `34185569051`. Its exact bookkeeping candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed all 76 steps in run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
+
+#96 Operational recovery/error boundary is the active implementation milestone. It remains **Not started** here until its exact functional candidate passes the complete accumulated suite.

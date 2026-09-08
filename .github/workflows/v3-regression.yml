@@ -24,6 +24,8 @@ jobs:
         run: node scripts/validate-v3-cloud-notes.mjs
       - name: Enforce congregation membership boundaries
         run: node scripts/validate-v3-congregation-membership.mjs
+      - name: Enforce operational recovery boundaries
+        run: node scripts/validate-v3-operational-recovery.mjs
       - name: Enforce STEPBible Context Lab boundaries
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
@@ -78,6 +80,8 @@ jobs:
         run: node tests/v3-cloud-notes-edge.mjs
       - name: Run congregation membership edge regression
         run: node tests/v3-congregation-membership-edge.mjs
+      - name: Run operational recovery edge regression
+        run: node tests/v3-operational-recovery-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
       - name: Run Transform engine edge regression
@@ -110,6 +114,8 @@ jobs:
           exit 1
       - name: Run accumulated v3 shell/account regression
         run: timeout 240s node tests/v3-shell-smoke.mjs
+      - name: Run v3 operational recovery mobile browser regression
+        run: timeout 240s node tests/v3-operational-recovery-smoke.mjs
       - name: Run v3 reader browser regression
         run: timeout 240s node tests/v3-reader-smoke.mjs
       - name: Run v3 STEPBible lexical/context browser regression

@@ -28,6 +28,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/private-notes.js` — standalone private local-note CRUD/order/export state and persistence contract
 - `src/app/cloud-notes.js` — authenticated remote Scripture-note validation/cache/concurrency orchestration
 - `src/app/congregation-membership.js` — authenticated congregation membership/role orchestration and fail-closed client capability projection
+- `src/app/operational-recovery.js` — active route-failure containment and Retry/Home action lifecycle
 - `src/app/daily-mission.js` — Daily Journey orchestration
 - `src/engines/transform.js` — Transform state/scoring/persistence
 - `src/app/transform.js` — Transform cross-service orchestration
@@ -219,6 +220,19 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 9. `src/features/congregation/index.js` is presentation/event forwarding only; `src/features/more/index.js` exposes the route through the existing router.
 10. Permanent protection includes `scripts/validate-v3-congregation-membership.mjs`, `tests/v3-congregation-membership-edge.mjs`, `tests/v3-congregation-membership-smoke.mjs`, and the complete accumulated workflow.
 
+## Operational recovery / error-boundary boundaries
+
+1. `src/app/operational-recovery.js` is the single #96 owner for active recovery state, failure capture, and Retry/Home action lifecycle.
+2. The router remains the only navigation/history owner. Recovery receives router callbacks and never reads or writes `location` or `history`.
+3. `src/ui/shell.js` owns presentation only. It keeps the mounted shell and primary navigation available, renders the owner-supplied safe recovery view, and forwards Retry/Home events.
+4. `src/app/bootstrap.js` composes the synchronous route operation with Recovery, Shell, Store, and Router. Successful rendering clears stale recovery.
+5. Route construction, page mount, and prior-page cleanup failures are contained. Cleanup ownership is cleared before cleanup executes so one broken cleanup cannot block recovery rendering.
+6. One active failure replaces the previous failure. Retry/Home clear that failure before invoking the registered route action; another failure is captured without an unhandled rejection.
+7. Public recovery presentation never exposes arbitrary technical error text, stacks, credentials, or tokens. Reporting is injected and best-effort.
+8. #95 Client diagnostics remains separate. #96 introduces no diagnostic taxonomy, remote reporter, backend/storage call, script recovery, or offline/PWA behavior.
+9. Legacy `window.onerror`, `unhandledrejection`, global wrappers, `MutationObserver`, DOM surveillance, script reinjection, fetch overrides, and `window.BQ*` recovery runtimes are forbidden.
+10. Recovery has no Progress, Lesson, session, account, membership, doctrinal, provenance, storage, or reward side effect. Permanent protection includes `scripts/validate-v3-operational-recovery.mjs`, `tests/v3-operational-recovery-edge.mjs`, `tests/v3-operational-recovery-smoke.mjs`, and the complete accumulated workflow.
+
 ## Transform, Audio, Recordings, Media, Games
 
 - `src/engines/transform.js` alone owns Transform calculations/state; `src/app/transform.js` only coordinates with Progress.
@@ -234,10 +248,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.28-cloud-notes` at `1b8cb0a4847b1fc633ce23412982c91c38825148`; exact v3.28 bookkeeping run `34184699391` passed before that freeze. #66 Congregation membership/roles passed complete functional run `34185569051` at candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` and is Verified pending the v3.29 bookkeeping/release gate; #56 advanced to Regression-tested in that later full run. Current strict parity is 56/100 and official regression stability is 55/100 according to the authoritative inventory. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; exact v3.29 bookkeeping run `34200768014` passed before that freeze. #66 Congregation membership/roles remains Verified under the later-feature promotion rule. Current strict parity is 56/100 and official regression stability is 55/100 according to the authoritative inventory. #96 Operational recovery/error boundary is the active implementation milestone and does not affect either count until its exact verification/bookkeeping gates pass. Production v2, `main`, and production Cloudflare remain isolated.

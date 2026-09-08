@@ -78,6 +78,10 @@ The #66 functional verification gate completed with:
 - Clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
 - Isolated verification-only commit: `406f1856fe128634c6313174f67b5a2df4064806`; it explicitly checked out and asserted the clean candidate before testing.
 - Complete accumulated run: `34185569051` — fully green, including architecture, edge, authenticated/signed-out behavior, the 390px join/role workflow, and every prior v3 regression.
-- The development workflow remains manual-only. The temporary trigger exists only on the isolated verification commit and is not eligible for release.
+- Exact bookkeeping/release candidate: `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`.
+- Isolated bookkeeping verification commit: `dfbb0a0ca8f134c5c80c33a14ee4f442789abbca`; it checked out and asserted the exact clean candidate.
+- Complete bookkeeping run: `34200768014` — all 76 job steps green.
+- `release/v3.29-congregation-membership` is frozen at the exact verified candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`.
+- The development and cleaned verification branches point to that same clean SHA. The development workflow remains manual-only; the temporary trigger existed only in the isolated verification commit and is not eligible for release.
 
-#66 is Verified in the authoritative inventory only through the functional evidence above. It does not become Regression-tested until a later feature milestone passes the complete accumulated suite with #66 still green. The v3.29 bookkeeping candidate must pass the complete suite before `release/v3.29-congregation-membership` may be frozen.
+#66 is Verified in the authoritative inventory. It does not become Regression-tested until a later feature milestone passes the complete accumulated suite with #66 still green.

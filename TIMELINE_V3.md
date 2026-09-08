@@ -7,12 +7,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #66 functional verification:** 55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started
+- **Inventory states after v3.29 bookkeeping/release verification:** 55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started
 - **Verified or better:** 56 / 100 (**56% strict parity completion**)
 - **Official regression stability:** 55 / 100
-- **Latest frozen checkpoint:** `release/v3.28-cloud-notes` at `1b8cb0a4847b1fc633ce23412982c91c38825148`
-- **v3.28 bookkeeping:** `34184699391` — fully green
-- **#66 Congregation membership/roles:** Verified; functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`, run `34185569051`
+- **Latest frozen checkpoint:** `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`
+- **v3.29 bookkeeping:** `34200768014` — all 76 job steps green
+- **#66 Congregation membership/roles:** Verified and frozen; functional `34185569051`, bookkeeping `34200768014`
+- **#96 Operational recovery/error boundary:** active implementation milestone; official state remains Not started until functional verification
 - **#56 Cloud Notes:** Regression-tested after surviving #66; frozen in v3.28
 - **#55 Private local notes:** Regression-tested; frozen in v3.27
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
@@ -37,11 +38,12 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 13 | Doctrinal safety/context | Frozen | v3.26; #89 Regression-tested; functional `34166910207`; bookkeeping `34168229627` |
 | 14 | Private local notes | Frozen | v3.27; #55 Regression-tested |
 | 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested after later #66 suite |
-| 16 | Congregation membership/roles | Functional gate green; bookkeeping active | #66 Verified; `34185569051` |
-| 17 | Remaining parity | Reassess after v3.29 | select by dependency and user value, not row order |
-| 18 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 19 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
-| 20 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 16 | Congregation membership/roles | Frozen | v3.29; #66 Verified; functional `34185569051`; bookkeeping `34200768014` |
+| 17 | Operational recovery/error boundary | Implementation active | #96; exact functional and bookkeeping gates required |
+| 18 | Remaining parity | Reassess after v3.30 | select by dependency and user value, not row order |
+| 19 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 20 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
+| 21 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -60,6 +62,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.26-doctrinal-safety` — `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; doctrinal functional `34166910207`; bookkeeping `34168229627`
 - `release/v3.27-private-local-notes` — `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; functional `34169365596`; bookkeeping `34169778300`
 - `release/v3.28-cloud-notes` — `1b8cb0a4847b1fc633ce23412982c91c38825148`; functional `34183773524`; bookkeeping `34184699391`
+- `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; functional `34185569051`; bookkeeping `34200768014`
 
 ## #90 Source labels/attribution — Regression-tested
 
@@ -109,9 +112,9 @@ Bookkeeping/release verification:
 
 ## Next sequence
 
-1. Complete the exact v3.29 bookkeeping gate for #66 and freeze `release/v3.29-congregation-membership` only at its verified clean SHA.
-2. Reassess the remaining 44 Not started rows after the freeze.
-3. Compare #67 Community bridge against #96 Operational recovery/error boundary and other foundational debt before selecting the next implementation.
+1. Complete #96 Operational recovery/error boundary through exact functional and bookkeeping gates.
+2. Freeze `release/v3.30-operational-recovery` only at the exact verified bookkeeping SHA.
+3. Reassess #67 Community Bridge against accessibility, diagnostics, PWA/offline, backup/import, and remaining user-facing parity debt.
 4. Keep Kids #38–40 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall

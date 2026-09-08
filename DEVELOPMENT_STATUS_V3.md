@@ -11,9 +11,9 @@ Updated: 2026-09-08 JST
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
-- Latest frozen checkpoint is `release/v3.28-cloud-notes` at `1b8cb0a4847b1fc633ce23412982c91c38825148`.
-- Exact v3.28 bookkeeping run `34184699391` passed the complete accumulated suite before that freeze.
-- Previous checkpoint `release/v3.27-private-local-notes` is frozen at `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300` was fully green.
+- Latest frozen checkpoint is `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`.
+- Exact v3.29 bookkeeping run `34200768014` passed all 76 accumulated job steps before that freeze.
+- Previous checkpoint `release/v3.28-cloud-notes` is frozen at `1b8cb0a4847b1fc633ce23412982c91c38825148`; bookkeeping run `34184699391` was fully green.
 - #66 Congregation membership/roles clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
 - #66 functional run `34185569051` passed the complete accumulated suite and explicitly asserted that clean SHA.
 
@@ -34,7 +34,7 @@ Strict verified-or-better parity is **56/100**.
 Official regression stability is **55/100**. #56 advanced to Regression-tested after surviving the later #66 complete functional suite. #66 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #66 Congregation membership/roles — **Verified** after complete functional run `34185569051`; awaiting the v3.29 bookkeeping/release gate.
+- #66 Congregation membership/roles — **Verified** after functional run `34185569051` and exact bookkeeping run `34200768014`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
 - #55 Private local notes — **Regression-tested**; frozen in v3.27.
 - #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
@@ -155,7 +155,17 @@ Functional verification:
 - Signed-out/local-preview flows issue no membership operation; join reloads server-backed membership and never invents a local role.
 - Architecture, edge, and 390px browser coverage is permanently included in the accumulated workflow.
 - Clean functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` passed complete run `34185569051`.
-- The independent v3.29 bookkeeping/release gate remains pending.
+- Exact candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed bookkeeping run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
+
+## Milestone 17 — Operational recovery/error boundary
+
+### #96 Operational recovery/error boundary — implementation active
+
+- Recovered v2 behavior and the current v3 shell/router composition select #96 ahead of #67 Community Bridge because failure containment supports every remaining route.
+- `src/app/operational-recovery.js` is the single active recovery-state and Retry/Home lifecycle owner.
+- Router remains the only navigation/history owner; Shell remains presentation/event forwarding only.
+- #95 Client diagnostics, offline/PWA behavior, backup/reset, global event interception, DOM surveillance, and script reinjection remain excluded.
+- Official counts do not change until the exact #96 functional and bookkeeping gates pass.
 
 ## Defect / root-cause ledger retained
 
@@ -183,15 +193,16 @@ Functional verification:
 - `V3-SHELL-TOUCH-001` — shell account button increased from 38px to the 44px mobile touch-target contract.
 - `V3-CLOUD-NOTES-OWNER-001` — remote note state composes the API/session boundaries and remains separate from device-local Private Notes.
 - `V3-CONGREGATION-OWNER-001` — membership normalization, join orchestration, and client role projection are centralized without replacing server authorization.
+- `V3-RECOVERY-OWNER-001` — route failure state and Retry/Home action lifecycle are centralized without duplicating Router or Shell ownership.
 
 ## Next major milestone
 
-Finish the exact v3.29 bookkeeping gate and freeze #66 before beginning another implementation milestone.
+Complete #96 Operational recovery/error boundary through its exact functional and bookkeeping suites, then freeze `release/v3.30-operational-recovery` only at the verified clean SHA.
 
-After that freeze, reassess the 44 remaining Not started rows by dependency order. The leading candidates are #67 Community bridge, which can compose the new membership owner for later congregation features, and #96 Operational recovery/error boundary, which can reduce risk across every remaining route. Do not select solely by row number.
+After v3.30, reassess #67 Community Bridge against accessibility, diagnostics, PWA/offline, backup/import, and remaining user-facing parity debt.
 
 Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#66 passed its complete functional suite on run `34185569051`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.29-congregation-membership` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#96 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

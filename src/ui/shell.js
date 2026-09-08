@@ -52,10 +52,15 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const progressStreak = root.querySelector('[data-progress-streak]');
   let cleanupPage = null;
 
+  const releasePage = () => {
+    const cleanup = cleanupPage;
+    cleanupPage = null;
+    cleanup?.();
+  };
+
   return Object.freeze({
     render(route, page) {
-      cleanupPage?.();
-      cleanupPage = null;
+      releasePage();
       root.querySelectorAll('.bq-nav [data-route-link]').forEach(link => link.toggleAttribute('aria-current', link.dataset.routeLink === route));
       view.innerHTML = page.html;
       document.title = page.title ? `${page.title} · BibleQuest` : 'BibleQuest';
@@ -85,10 +90,21 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       progressXp.textContent = `${xp} XP`;
       progressStreak.textContent = `${streak} day${streak === 1 ? '' : 's'} streak`;
     },
-    renderError(message) {
-      cleanupPage?.();
-      cleanupPage = null;
-      view.innerHTML = `<section class="bq-panel"><h1>Something went wrong</h1><p>${escapeHtml(message)}</p></section>`;
+    renderRecovery(failure, { onRetry, onHome }) {
+      try { releasePage(); } catch {}
+      view.innerHTML = `<section class="bq-panel bq-recovery-panel" data-recovery-route="${escapeHtml(failure?.route || 'feature')}"><div role="alert"><p class="bq-eyebrow">RECOVERY</p><h1>${escapeHtml(failure?.title || 'Feature could not open')}</h1><p>${escapeHtml(failure?.message || 'The BibleQuest shell is still available.')}</p><div class="bq-recovery-actions"><button type="button" class="bq-primary-button" data-recovery-retry>Try again</button><button type="button" class="bq-secondary-button" data-recovery-home>Go Home</button></div></div></section>`;
+      document.title = 'Recovery · BibleQuest';
+      const retryButton = view.querySelector('[data-recovery-retry]');
+      const homeButton = view.querySelector('[data-recovery-home]');
+      const retry = () => { void onRetry?.(); };
+      const home = () => { void onHome?.(); };
+      retryButton?.addEventListener('click', retry);
+      homeButton?.addEventListener('click', home);
+      cleanupPage = () => {
+        retryButton?.removeEventListener('click', retry);
+        homeButton?.removeEventListener('click', home);
+      };
+      view.focus({ preventScroll: true });
     }
   });
 }
