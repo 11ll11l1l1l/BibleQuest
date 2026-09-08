@@ -7,6 +7,7 @@ const CONFIG = Object.freeze({
 });
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,content,tags,note_type,is_pinned,created_at,updated_at';
+const COUPLE_SHARED_FIELDS='id,pair_id,author_id,item_type,body,due_on,completed_at,created_at,updated_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -225,6 +226,25 @@ export function createApi() {
     }
   });
 
+  const couples = Object.freeze({
+    async status() { return invoke('bq-couple',{action:'status'}); },
+    async create() { return invoke('bq-couple',{action:'create'}); },
+    async join(code) { return invoke('bq-couple',{action:'join',code}); },
+    async leave(pairId) { return invoke('bq-couple',{action:'leave',pairId}); },
+    async listShared(pairId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_couple_shared').select(COUPLE_SHARED_FIELDS).eq('pair_id',pairId).order('created_at',{ascending:false}).limit(60);
+      if(error)throw error;
+      return data||[];
+    },
+    async addShared(rows) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_couple_shared').insert(rows).select(COUPLE_SHARED_FIELDS);
+      if(error)throw error;
+      return data||[];
+    }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -244,5 +264,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, cloudNotes, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, cloudNotes, couples, media, diagnostics });
 }
