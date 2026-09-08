@@ -16,5 +16,6 @@ unsubscribe();service.dispose();
 const late=new Event('beforeinstallprompt');late.prompt=async()=>{prompts++};late.userChoice=Promise.resolve({outcome:'accepted'});target.dispatchEvent(late);
 assert(service.getState().status==='installed'&&prompts===2,'Disposed owner must remove global listeners.');
 const standalone=createPwaInstallService({eventTarget:new EventTarget(),displayMode:()=>({matches:true})});assert(standalone.getState().status==='installed','Standalone launch must start installed.');standalone.dispose();
+const guarded=createPwaInstallService({eventTarget:new EventTarget(),displayMode:()=>{throw new Error('detached display-mode failure')}});assert(guarded.getState().status==='unavailable','Display-mode probing must not break app startup.');guarded.dispose();
 assert(states.includes('available')&&states.includes('prompting')&&states.includes('dismissed'),'Subscribers must receive lifecycle changes.');
 console.log('BibleQuest v3 PWA install edge regression passed.');

@@ -17,7 +17,7 @@
 
 ## Acceptance
 
-- The linked manifest is valid JSON with a stable name, standalone display, matching theme/background color, relative identity/start/scope, and a valid 512-viewBox SVG icon.
+- The linked manifest is valid JSON with a stable name, standalone display, matching theme/background color, relative identity/start/scope, explicit 192px and 512px PNG install icons, a separate opaque 512px maskable icon, and the scalable SVG artwork source.
 - The install owner handles unavailable, available, prompting, accepted, dismissed, installed, repeated prompt, and disposal paths without leaking listeners.
-- A 390px browser regression verifies manifest delivery, one visible prompt control only after browser eligibility, accepted flow, no overflow, and a 44px target.
+- A 390px browser regression verifies manifest/icon delivery, one visible prompt control only after browser eligibility, accepted flow, no overflow, and a 44px target.
 - Architecture validation forbids service workers, Cache Storage, global compatibility APIs, or install ownership outside the dedicated owner.

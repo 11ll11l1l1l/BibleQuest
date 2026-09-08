@@ -249,7 +249,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 
 ## PWA install / manifest boundaries
 
-1. `manifest.webmanifest` is the sole declarative #97 app identity and launch contract; its identity, start, scope, and asset URLs remain deployment-relative.
+1. `manifest.webmanifest` is the sole declarative #97 app identity and launch contract; its identity, start, scope, and asset URLs remain deployment-relative, with explicit 192px/512px PNG install icons, a separate maskable PNG, and the scalable SVG source.
 2. `src/app/pwa-install.js` alone owns `beforeinstallprompt`, `appinstalled`, deferred-prompt state, prompting, and listener cleanup.
 3. Bootstrap composes that owner. More renders owner-supplied state and forwards an explicit user install action; neither owns install lifecycle state.
 4. The install action is hidden unless the browser supplies an eligible prompt. Unsupported browsers retain their native installation path without false availability UI.

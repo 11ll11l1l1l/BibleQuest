@@ -61,6 +61,8 @@ onlyOwner(/export function createOpenReviewService/,'src/app/open-review.js','Op
 onlyOwner(/export function createCongregationMembershipService/,'src/app/congregation-membership.js','Congregation Membership orchestration');
 onlyOwner(/export function createOperationalRecoveryService/,'src/app/operational-recovery.js','Operational Recovery orchestration');
 onlyOwner(/export function createClientDiagnosticsService/,'src/core/client-diagnostics.js','Client Diagnostics classification');
+onlyOwner(/export function createPwaInstallService/,'src/app/pwa-install.js','PWA install lifecycle');
+onlyOwner(/addEventListener\(['"]beforeinstallprompt/,'src/app/pwa-install.js','PWA install-prompt listener');
 onlyOwner(/export function createDailyMissionService/,'src/app/daily-mission.js','Daily Mission orchestration');
 onlyOwner(/export function createTransformEngine/,'src/engines/transform.js','Transform state/scoring');
 onlyOwner(/export function createTransformService/,'src/app/transform.js','Transform orchestration');
@@ -111,7 +113,7 @@ const inventory=read('FEATURE_INVENTORY_V3.md'),allowed=new Set(['Not started','
 if(rows.length!==100)fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${rows.length}.`);
 rows.forEach((line,index)=>{const columns=line.split('|').slice(1,-1).map(value=>value.trim());if(Number(columns[0])!==index+1)fail(`Feature inventory row sequence error at ${index+1}.`);if(!allowed.has(columns[4]))fail(`Invalid v3 status on row ${columns[0]}.`)});
 
-const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/client-diagnostics.js','src/core/bible.js','src/app/reader.js','src/core/progress.js','src/core/recall-packs.js','src/engines/lesson.js','src/app/study.js','src/app/deep-questions.js','src/app/story-journey.js','src/app/wisdom-situations.js','src/app/adaptive-learning.js','src/app/open-review.js','src/app/congregation-membership.js','src/app/operational-recovery.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
+const architecture=read('ARCHITECTURE_V3.md');for(const owner of['src/core/client-diagnostics.js','src/app/pwa-install.js','src/core/bible.js','src/app/reader.js','src/core/progress.js','src/core/recall-packs.js','src/engines/lesson.js','src/app/study.js','src/app/deep-questions.js','src/app/story-journey.js','src/app/wisdom-situations.js','src/app/adaptive-learning.js','src/app/open-review.js','src/app/congregation-membership.js','src/app/operational-recovery.js','src/app/daily-mission.js','src/engines/transform.js','src/app/transform.js','src/app/audio.js','src/app/recordings.js','src/app/media-library.js','src/app/games.js'])if(!architecture.includes(owner))fail(`Architecture document must name active owner ${owner}.`);
 if(!architecture.includes('DEVOTIONAL_MINISTRY_DESIGN_V3.md'))fail('Architecture document must retain the future Devotional/Ministry design contract.');
 const status=read('DEVELOPMENT_STATUS_V3.md');if(!status.includes('Defect / root-cause ledger')||!status.includes('Next major milestone'))fail('Development status must retain defect ledger and next-work queue.');
 

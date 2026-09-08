@@ -3,12 +3,16 @@ const snapshot = state => Object.freeze({
   canPrompt: state.status === 'available'
 });
 
-export function createPwaInstallService({ eventTarget = globalThis.window, displayMode = globalThis.matchMedia } = {}) {
+const defaultDisplayMode = query => typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(query) : { matches: false };
+
+export function createPwaInstallService({ eventTarget = globalThis.window, displayMode = defaultDisplayMode } = {}) {
   if (!eventTarget?.addEventListener || !eventTarget?.removeEventListener) throw new Error('PWA install requires an event target.');
   const subscribers = new Set();
   let promptEvent = null;
+  let launchedStandalone = false;
+  try { launchedStandalone = Boolean(displayMode?.('(display-mode: standalone)')?.matches); } catch {}
   let state = {
-    status: typeof displayMode === 'function' && displayMode('(display-mode: standalone)').matches ? 'installed' : 'unavailable'
+    status: launchedStandalone ? 'installed' : 'unavailable'
   };
   let disposed = false;
 

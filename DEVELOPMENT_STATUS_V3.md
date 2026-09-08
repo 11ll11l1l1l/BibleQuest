@@ -224,6 +224,7 @@ Functional verification:
 - `V3-RECOVERY-OWNER-001` — route failure state and Retry/Home action lifecycle are centralized without duplicating Router or Shell ownership.
 - `V3-DIAGNOSTICS-OWNER-001` — module/network classification is centralized while same-origin probing remains inside the API boundary.
 - `V3-PWA-INSTALL-OWNER-001` — manifest identity and browser install prompting are bounded without prematurely restoring the legacy offline runtime.
+- `V3-PWA-MANIFEST-ICON-001` — the first #97 candidate declared only an `any`-size SVG; explicit 192px/512px PNG and maskable requirements plus real-dimension regressions were added before promotion.
 
 ## Next major milestone
 
