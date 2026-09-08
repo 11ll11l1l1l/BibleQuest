@@ -7,7 +7,7 @@ const required=['src/app/cloud-notes.js','src/features/cloud-notes/index.js','sr
 for(const file of required)if(!fs.existsSync(file))fail(`Missing Cloud Notes contract file: ${file}`);
 
 if(!failures.length){
-  const owner=read('src/app/cloud-notes.js'),ui=read('src/features/cloud-notes/index.js'),api=read('src/core/api.js'),privateOwner=read('src/app/private-notes.js'),privateUi=read('src/features/private-notes/index.js'),bootstrap=read('src/app/bootstrap.js'),learn=read('src/features/learn/index.js'),html=read('index.html'),workflow=read('.github/workflows/v3-regression.yml');
+  const owner=read('src/app/cloud-notes.js'),ui=read('src/features/cloud-notes/index.js'),api=read('src/core/api.js'),privateOwner=read('src/app/private-notes.js'),privateUi=read('src/features/private-notes/index.js'),bootstrap=read('src/app/bootstrap.js'),learn=read('src/features/learn/index.js'),html=read('index.html'),workflow=read('.github/workflows/v3-regression.yml'),architecture=read('ARCHITECTURE_V3.md'),inventory=read('FEATURE_INVENTORY_V3.md');
   for(const contract of['export function createCloudNotesService','api.list','api.create','api.update','api.remove','BQ_CLOUD_NOTES_AUTH_REQUIRED','BQ_CLOUD_NOTES_CONFLICT','updatedAt'])if(!owner.includes(contract))fail(`Cloud Notes owner missing required contract: ${contract}`);
   if(/localStorage|sessionStorage|storage\.|from\(['"]bible_notes|createClient|supabase|document\.|window\./.test(owner))fail('Cloud Notes owner must use only centralized API/session boundaries and in-memory state.');
   if(/localStorage|sessionStorage|storage\.|createClient|supabase|from\(['"]bible_notes|fetch\s*\(/.test(ui))fail('Cloud Notes UI bypasses its owner or shared API/session boundaries.');
@@ -18,6 +18,10 @@ if(!failures.length){
   if(!learn.includes('data-open-cloud-notes'))fail('Learn must expose Cloud Notes separately from Private Notes.');
   if(!html.includes('src/ui/cloud-notes.css'))fail('index.html must load Cloud Notes styles.');
   if(!ui.includes('never uploaded automatically'))fail('Cloud Notes UI must state that Private Notes are never auto-uploaded.');
+  for(const contract of['## Cloud Notes boundaries','existing `public.bible_notes` backend contract','Private Notes are never uploaded','Cloud Notes owner'])if(!architecture.includes(contract))fail(`Architecture contract missing Cloud Notes boundary: ${contract}`);
+  if(!inventory.includes('| 55 | Private local notes | Yes | Clean | Regression-tested |'))fail('Inventory must promote #55 to Regression-tested after the #56 full gate.');
+  if(!inventory.includes('| 56 | Cloud notes | Yes | Compatibility | Verified |'))fail('Inventory must record #56 Cloud Notes as Verified.');
+  for(const total of['**Regression-tested:** 54','**Verified:** 1','**Not started:** 45'])if(!inventory.includes(total))fail(`Inventory totals missing Cloud Notes bookkeeping: ${total}`);
   for(const test of['node tests/v3-cloud-notes-edge.mjs','node tests/v3-cloud-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Cloud Notes regression: ${test}`);
 }
 
