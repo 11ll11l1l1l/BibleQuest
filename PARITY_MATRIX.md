@@ -19,19 +19,19 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the corrected #97 PWA install/manifest functional gate:
+After the corrected #98 Offline Shell functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 58 |
+| Regression-tested | 59 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 41 |
+| Not started | 40 |
 | Total | 100 |
 
-Strict verified-or-better parity is **59/100**.
+Strict verified-or-better parity is **60/100**.
 
-Official regression stability is **58/100**. #95 Client diagnostics advanced to **Regression-tested** after the later corrected #97 full functional suite remained green. #97 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with PWA install still green.
+Official regression stability is **59/100**. #97 PWA install/manifest advanced to **Regression-tested** after the later #98 full functional suite remained green. #98 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Offline Shell still green.
 
 #55 Private local notes is frozen at `release/v3.27-private-local-notes` (`e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300`).
 
@@ -41,4 +41,8 @@ Official regression stability is **58/100**. #95 Client diagnostics advanced to 
 
 #96 Operational recovery/error boundary passed functional run `34202531302`. Its exact bookkeeping candidate `7ec0290a50086112210c4c301db3288b970a2cc0` passed all 79 steps in run `34203169381` and is frozen at `release/v3.30-operational-recovery`.
 
-#95 Client diagnostics passed functional run `34204562845`. Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 steps of run `34208493773` and is frozen at `release/v3.31-client-diagnostics`. Corrected #97 PWA install/manifest candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed all 85 steps of functional run `34212434449`; its independent bookkeeping/release gate remains pending.
+#95 Client diagnostics passed functional run `34204562845`. Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 steps of run `34208493773` and is frozen at `release/v3.31-client-diagnostics`.
+
+#97 PWA install/manifest passed corrected functional run `34212434449`. Exact bookkeeping candidate `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
+
+#98 Offline Shell corrected exact functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered steps in run `34214663407`. It is Verified pending the final exact v3.33 bookkeeping/release gate; #97 is Regression-tested through this later complete-suite evidence.
