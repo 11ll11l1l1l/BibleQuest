@@ -21,7 +21,7 @@ if(!failures.length){
   for(const contract of['## Cloud Notes boundaries','existing `public.bible_notes` backend contract','Private Notes are never uploaded','Cloud Notes owner'])if(!architecture.includes(contract))fail(`Architecture contract missing Cloud Notes boundary: ${contract}`);
   if(!inventory.includes('| 55 | Private local notes | Yes | Clean | Regression-tested |'))fail('Inventory must keep #55 Regression-tested.');
   if(!inventory.includes('| 56 | Cloud notes | Yes | Compatibility | Regression-tested |'))fail('Inventory must keep #56 Cloud Notes Regression-tested.');
-  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
+  for(const total of['**Regression-tested:** 62','**Verified:** 1','**Not started:** 37'])if(!inventory.includes(total))fail(`Inventory totals missing post-#62 promotion: ${total}`);
   for(const test of['node tests/v3-cloud-notes-edge.mjs','node tests/v3-cloud-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Cloud Notes regression: ${test}`);
 }
 
