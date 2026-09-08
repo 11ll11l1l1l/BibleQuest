@@ -1,5 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+execFileSync(process.execPath,['scripts/validate-v3-inventory.mjs'],{stdio:'inherit'});
 
 const failures=[];const fail=message=>failures.push(message);const read=file=>fs.readFileSync(file,'utf8');
 const required=['COUPLES_FAMILY_LOCAL_V3.md','FEATURE_INVENTORY_V3.md','classic.html','couples.js','couple-cloud.js','src/content/couples-family.js','src/app/couples-family.js','src/features/couples-family/index.js','src/ui/couples-family.css','src/app/bootstrap.js','src/features/more/index.js','index.html','tests/v3-couples-family-edge.mjs','tests/v3-couples-family-smoke.mjs','.github/workflows/v3-regression.yml'];
