@@ -158,6 +158,31 @@ export function createApi() {
     }
   });
 
+  const congregation = Object.freeze({
+    async listMemberships(userId) {
+      const client = await getClient();
+      const { data: memberships, error: membershipError } = await client.from('bible_congregation_members')
+        .select('congregation_id,user_id,role,display_name,active,joined_at')
+        .eq('user_id', userId)
+        .eq('active', true)
+        .order('joined_at', { ascending: true });
+      if (membershipError) throw membershipError;
+      const rows = memberships || [];
+      if (!rows.length) return [];
+      const ids = [...new Set(rows.map(row => row.congregation_id).filter(Boolean))];
+      const { data: congregations, error: congregationError } = await client.from('bible_congregations')
+        .select('id,name,timezone,owner_id,active')
+        .in('id', ids)
+        .eq('active', true);
+      if (congregationError) throw congregationError;
+      const byId = new Map((congregations || []).map(row => [String(row.id), row]));
+      return rows.map(row => ({ ...row, congregation: byId.get(String(row.congregation_id)) || null })).filter(row => row.congregation);
+    },
+    async join(code) {
+      return invoke('bq-join', { code });
+    }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -204,5 +229,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, cloudNotes, media });
+  return Object.freeze({ auth, account, congregation, cloudNotes, media });
 }
