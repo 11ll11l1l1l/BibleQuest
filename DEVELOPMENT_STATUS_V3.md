@@ -19,22 +19,23 @@ Updated: 2026-09-08 JST
 
 ## Progress summary
 
-Inventory row states after the #95 functional gate:
+Inventory row states after the #97 functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 57 |
+| Regression-tested | 58 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 42 |
+| Not started | 41 |
 | Total | 100 |
 
-Strict verified-or-better parity is **58/100**.
+Strict verified-or-better parity is **59/100**.
 
-Official regression stability is **57/100**. #96 advanced to Regression-tested after surviving the later #95 complete functional suite. #95 remains Verified until a later feature milestone passes the complete suite with it still green.
+Official regression stability is **58/100**. #95 advanced to Regression-tested after surviving the later #97 complete functional suite. #97 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #95 Client diagnostics — **Verified** after functional run `34204562845` and exact bookkeeping run `34208493773`; frozen in v3.31.
+- #97 PWA install/manifest — **Verified** after exact complete functional run `34212434449`; awaiting the independent v3.32 bookkeeping/release gate.
+- #95 Client diagnostics — **Regression-tested** after surviving #97 run `34212434449`; frozen in v3.31.
 - #96 Operational recovery/error boundary — **Regression-tested** after surviving #95 run `34204562845`; frozen in v3.30.
 - #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
@@ -175,7 +176,7 @@ Functional verification:
 
 ## Milestone 18 — Client diagnostics
 
-### #95 Client diagnostics — Verified
+### #95 Client diagnostics — Regression-tested
 
 - Recovered stable module/network codes compose with #96 through one `src/core/client-diagnostics.js` classification owner.
 - `src/core/api.js` owns the same-origin cache-busting probe; Diagnostics never calls `fetch` or Supabase directly.
@@ -184,16 +185,19 @@ Functional verification:
 - Exact clean candidate `1f8d7e927660ac4b8349f015c1a8b5f2f7210b0b` passed all 82 job steps in functional run `34204562845`.
 - The isolated trigger commit `e2926cacab280f66844d6b8156b5861d2f72115b` explicitly checked out and asserted the candidate, then the branch was reset to remove the trigger.
 - Exact bookkeeping candidate `61af8aaee121356d6ef0388130df2b545ff943d9` passed all 82 job steps in run `34208493773` and is frozen at `release/v3.31-client-diagnostics`.
+- #95 survived the later corrected #97 complete functional suite and is Regression-tested.
 
 ## Milestone 19 — PWA install/manifest
 
-### #97 PWA install/manifest — implementation active
+### #97 PWA install/manifest — Verified
 
 - `manifest.webmanifest` is the single deployment-relative app identity and standalone launch contract.
 - `src/app/pwa-install.js` is the only install-prompt lifecycle owner; More presents its state and forwards the user action.
 - #97 intentionally adds no service worker, Cache Storage, offline fallback, opened-pack cache, or network interception; those remain #98/#99 work.
 - Permanent architecture, lifecycle edge, and 390px browser coverage is included in the accumulated workflow.
-- Official counts remain 58/100 strict parity and 57/100 stability until the exact #97 functional gate passes.
+- Corrected exact clean functional candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed all 85 job steps in run `34212434449`.
+- The isolated trigger commit `ec6336ff417c023ee4b4b176765ac9518963dc6d` explicitly checked out and asserted the corrected candidate, then the verification branch was reset to remove the trigger.
+- #97 is Verified pending the independent exact bookkeeping/release gate; #95 is Regression-tested through this later complete-suite evidence.
 
 ## Defect / root-cause ledger retained
 
@@ -228,10 +232,10 @@ Functional verification:
 
 ## Next major milestone
 
-Complete #97 PWA install/manifest through its exact functional and bookkeeping suites, then freeze only the verified clean SHA. Continue to #98 Offline Shell only in a later milestone.
+Complete the exact #97 bookkeeping suite, then freeze `release/v3.32-pwa-install` only at the verified clean bookkeeping SHA. Continue to #98 Offline Shell only in a later milestone.
 
 Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#97 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#97 passed its corrected complete functional suite on run `34212434449`. The exact bookkeeping state must pass the complete accumulated suite before `release/v3.32-pwa-install` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

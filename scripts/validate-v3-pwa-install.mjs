@@ -19,7 +19,8 @@ if(!failures.length){
   if(!more.includes('data-install-app')||!more.includes('pwaInstall?.subscribe')||!more.includes('pwaInstall?.prompt'))fail('More must present and forward the PWA owner contract.');
   for(const forbidden of['serviceWorker','caches.','CacheStorage','fetch(','localStorage','sessionStorage','window.BQ'])if(owner.includes(forbidden)||bootstrap.includes(forbidden))fail(`#97 must not own offline/global behavior: ${forbidden}`);
   if(/serviceWorker|(?:src|href)="(?:\.\/)?(?:sw\.js|pwa-runtime\.js)"/.test(index))fail('#97 v3 entrypoint must not register or load a service worker before #98.');
-  if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Not started |'))fail('#97 must remain Not started until the complete functional suite passes.');
+  if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Verified |'))fail('#97 must be Verified after its corrected exact functional candidate passes the complete suite.');
+  for(const total of['**Regression-tested:** 58','**Verified:** 1','**Not started:** 41'])if(!inventory.includes(total))fail(`Inventory totals missing #97 functional bookkeeping: ${total}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 PWA install architecture boundary passed.');

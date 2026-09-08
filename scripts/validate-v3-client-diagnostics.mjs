@@ -12,8 +12,8 @@ if(!failures.length){
   if(!recovery.includes("result?.catch?.(()=>{})"))fail('Recovery must isolate rejected async diagnostic reporters.');
   if(!shell.includes('data-recovery-diagnostic')||!shell.includes('data-diagnostic-code'))fail('Shell must render owner-supplied diagnostic status/code.');
   for(const contract of['src/core/client-diagnostics.js','## Client diagnostics boundaries','API owner performs the same-origin probe'])if(!architecture.includes(contract))fail(`Architecture missing client diagnostics boundary: ${contract}`);
-  if(!inventory.includes('| 95 | Client diagnostics | Yes | Compatibility | Verified |'))fail('#95 must be Verified after its exact functional candidate passes the complete suite.');
-  for(const total of['**Regression-tested:** 57','**Verified:** 1','**Not started:** 42'])if(!inventory.includes(total))fail(`Inventory totals missing #95 functional bookkeeping: ${total}`);
+  if(!inventory.includes('| 95 | Client diagnostics | Yes | Compatibility | Regression-tested |'))fail('#95 must advance after the later corrected #97 complete functional suite.');
+  for(const total of['**Regression-tested:** 58','**Verified:** 1','**Not started:** 41'])if(!inventory.includes(total))fail(`Inventory totals missing post-#97 bookkeeping: ${total}`);
   for(const forbidden of['addEventListener(\'error\'','unhandledrejection','setInterval','bible_client_errors','window.BQDiagnostics','MutationObserver'])if(owner.includes(forbidden)||bootstrap.includes(forbidden))fail(`Client diagnostics must not recreate legacy global behavior: ${forbidden}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
