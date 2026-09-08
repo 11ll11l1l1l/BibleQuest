@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 54
+- **Regression-tested:** 55
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 45
+- **Not started:** 44
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -76,7 +76,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 53 | Adaptive learning | Yes | Compatibility | Regression-tested | weak/due selection; 7-question Smart Review; 1/3/7/14/30 spacing; mastery update; +10/+3 parity; resume/reload; mobile |
 | 54 | Open/weak-area review | Yes | Compatibility | Regression-tested | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
 | 55 | Private local notes | Yes | Clean | Regression-tested | one local Notes owner; create/edit/delete; reload persistence; versioned JSON export; explicit device-only/no-cloud boundary; malformed-state normalization; deterministic IDs; 390px mobile |
-| 56 | Cloud notes | Yes | Compatibility | Verified | separate authenticated remote owner; existing `bible_notes` RLS/user ownership; Scripture-linked CRUD; explicit `updated_at` stale-write conflict rejection; no local cache key; no guest write; local-preview/error recovery; Private Notes never auto-uploaded; 390px mobile |
+| 56 | Cloud notes | Yes | Compatibility | Regression-tested | separate authenticated remote owner; existing `bible_notes` RLS/user ownership; Scripture-linked CRUD; explicit `updated_at` stale-write conflict rejection; no local cache key; no guest write; local-preview/error recovery; Private Notes never auto-uploaded; 390px mobile |
 | 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
 | 58 | Recordings list | Yes | Clean link library only | Regression-tested | list load; empty/error states; reload |
 | 59 | Live Recordings playback | Yes | Missing in clean | Regression-tested | play; pause; switch; leave; return; no freeze; one player instance |
@@ -86,7 +86,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |
 | 64 | Journey Groups | Yes | Compatibility | Not started | create/join/view/leave; membership persistence |
 | 65 | Encouragements | Yes | Compatibility | Not started | send/receive; permission; duplicate prevention |
-| 66 | Congregation membership/roles | Yes | Compatibility | Not started | join; role visibility; permission enforcement |
+| 66 | Congregation membership/roles | Yes | Compatibility | Verified | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
 | 67 | Community bridge | Yes | Compatibility | Not started | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Not started | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Not started | team list; member/role workflows |

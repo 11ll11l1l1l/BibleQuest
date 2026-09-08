@@ -20,8 +20,8 @@ if(!failures.length){
   if(!ui.includes('never uploaded automatically'))fail('Cloud Notes UI must state that Private Notes are never auto-uploaded.');
   for(const contract of['## Cloud Notes boundaries','existing `public.bible_notes` backend contract','Private Notes are never uploaded','Cloud Notes owner'])if(!architecture.includes(contract))fail(`Architecture contract missing Cloud Notes boundary: ${contract}`);
   if(!inventory.includes('| 55 | Private local notes | Yes | Clean | Regression-tested |'))fail('Inventory must promote #55 to Regression-tested after the #56 full gate.');
-  if(!inventory.includes('| 56 | Cloud notes | Yes | Compatibility | Verified |'))fail('Inventory must record #56 Cloud Notes as Verified.');
-  for(const total of['**Regression-tested:** 54','**Verified:** 1','**Not started:** 45'])if(!inventory.includes(total))fail(`Inventory totals missing Cloud Notes bookkeeping: ${total}`);
+  if(!inventory.includes('| 56 | Cloud notes | Yes | Compatibility | Regression-tested |'))fail('Inventory must promote #56 Cloud Notes after the later #66 full gate.');
+  for(const total of['**Regression-tested:** 55','**Verified:** 1','**Not started:** 44'])if(!inventory.includes(total))fail(`Inventory totals missing post-#66 bookkeeping: ${total}`);
   for(const test of['node tests/v3-cloud-notes-edge.mjs','node tests/v3-cloud-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Cloud Notes regression: ${test}`);
 }
 

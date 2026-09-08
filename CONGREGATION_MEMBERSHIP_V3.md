@@ -65,10 +65,19 @@ Unknown or malformed roles fail closed and receive no capability. These client c
 
 ## Verification gate
 
-Before #66 becomes Verified:
+The #66 functional verification gate completed with:
 
 1. architecture validator confirms one owner and backend isolation;
 2. edge regression covers role normalization, fail-closed permission checks, authentication, invite normalization, and reload after join;
 3. browser regression covers signed-out route safety and a mocked mobile join/role workflow at 390 px;
 4. the complete accumulated v3 regression suite passes on the exact functional SHA;
 5. inventory/architecture bookkeeping is updated and the exact bookkeeping SHA passes the full suite before any release freeze.
+
+## Functional verification evidence
+
+- Clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
+- Isolated verification-only commit: `406f1856fe128634c6313174f67b5a2df4064806`; it explicitly checked out and asserted the clean candidate before testing.
+- Complete accumulated run: `34185569051` — fully green, including architecture, edge, authenticated/signed-out behavior, the 390px join/role workflow, and every prior v3 regression.
+- The development workflow remains manual-only. The temporary trigger exists only on the isolated verification commit and is not eligible for release.
+
+#66 is Verified in the authoritative inventory only through the functional evidence above. It does not become Regression-tested until a later feature milestone passes the complete accumulated suite with #66 still green. The v3.29 bookkeeping candidate must pass the complete suite before `release/v3.29-congregation-membership` may be frozen.

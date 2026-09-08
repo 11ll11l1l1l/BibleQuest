@@ -7,13 +7,14 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #89 bookkeeping/release verification:** 53 Regression-tested / 0 Verified / 0 Implemented / 47 Not started
-- **Verified or better:** 53 / 100 (**53% strict parity completion**)
-- **Official regression stability:** 53 / 100
-- **Latest frozen checkpoint:** `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`
-- **v3.26 bookkeeping:** `34168229627` — fully green
-- **#89 Doctrinal safety/context:** Regression-tested; functional `34166910207`, bookkeeping `34168229627`
-- **#90 Source labels/attribution:** Regression-tested
+- **Inventory states after #66 functional verification:** 55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started
+- **Verified or better:** 56 / 100 (**56% strict parity completion**)
+- **Official regression stability:** 55 / 100
+- **Latest frozen checkpoint:** `release/v3.28-cloud-notes` at `1b8cb0a4847b1fc633ce23412982c91c38825148`
+- **v3.28 bookkeeping:** `34184699391` — fully green
+- **#66 Congregation membership/roles:** Verified; functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`, run `34185569051`
+- **#56 Cloud Notes:** Regression-tested after surviving #66; frozen in v3.28
+- **#55 Private local notes:** Regression-tested; frozen in v3.27
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -34,11 +35,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 11 | Reader language/source completion | Frozen through NLT | v3.24; #15 deferred |
 | 12 | Source provenance | Frozen | v3.25; #90 Regression-tested |
 | 13 | Doctrinal safety/context | Frozen | v3.26; #89 Regression-tested; functional `34166910207`; bookkeeping `34168229627` |
-| 14 | Remaining core-content parity | Reassessment active | choose from actual remaining study/core debt, not by row order |
-| 15 | Devotional / Ministry foundation | Designed, not implemented | later; `DEVOTIONAL_MINISTRY_DESIGN_V3.md` |
-| 16 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 17 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
-| 18 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 14 | Private local notes | Frozen | v3.27; #55 Regression-tested |
+| 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested after later #66 suite |
+| 16 | Congregation membership/roles | Functional gate green; bookkeeping active | #66 Verified; `34185569051` |
+| 17 | Remaining parity | Reassess after v3.29 | select by dependency and user value, not row order |
+| 18 | Full old-vs-new audit | Not started | reconcile all 100 rows |
+| 19 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
+| 20 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -55,6 +58,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.24-nlt-licensed` — `37ff989dac122f31a53f9bc771639e3ca59b4b03`; functional `34126567141`; bookkeeping `34127324969`
 - `release/v3.25-source-provenance` — `04f20094a03cd0b189d1626ef4f372917ce599e3`; source-provenance functional `34130447654`; bookkeeping `34160651319`
 - `release/v3.26-doctrinal-safety` — `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; doctrinal functional `34166910207`; bookkeeping `34168229627`
+- `release/v3.27-private-local-notes` — `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; functional `34169365596`; bookkeeping `34169778300`
+- `release/v3.28-cloud-notes` — `1b8cb0a4847b1fc633ce23412982c91c38825148`; functional `34183773524`; bookkeeping `34184699391`
 
 ## #90 Source labels/attribution — Regression-tested
 
@@ -95,24 +100,23 @@ Bookkeeping/release verification:
 - #15 Japanese furigana — **Not started / intentionally deferred**
 - #90 Source labels/attribution — **Regression-tested**
 - #89 Doctrinal safety/context — **Regression-tested**
-- Inventory states — **53 Regression-tested / 0 Verified / 0 Implemented / 47 Not started**
-- Strict parity — **53/100**
-- Official regression stability — **53/100**
-
-The earlier projected 52/100 post-v3.26 stability figure was stale. The authoritative inventory now contains 53 Regression-tested rows, so stability is 53/100 under the project’s own definition.
+- #55 Private local notes — **Regression-tested**
+- #56 Cloud Notes — **Regression-tested**
+- #66 Congregation membership/roles — **Verified**
+- Inventory states — **55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started**
+- Strict parity — **56/100**
+- Official regression stability — **55/100**
 
 ## Next sequence
 
-1. Reassess remaining core Bible-study/content parity debt from the authoritative 47 Not started rows and recovered old source.
-2. Prefer a milestone with high core-study value and clean dependencies over inventory order.
-3. Assess #55 private local notes, #56 cloud notes, #86 accessibility, #87 reporting, #88 moderation, #91 Content Review workbench, #95 diagnostics, #96 recovery/error boundary, and #97–99 PWA/offline behavior.
-4. Check whether any remaining Bible-content path depends on content-review infrastructure before implementing a new feature.
-5. Keep Kids #38–40 and ministry/devotional implementation deferred unless the core-debt assessment justifies changing priority.
-6. Do not implement the next milestone until the reassessment is complete.
+1. Complete the exact v3.29 bookkeeping gate for #66 and freeze `release/v3.29-congregation-membership` only at its verified clean SHA.
+2. Reassess the remaining 44 Not started rows after the freeze.
+3. Compare #67 Community bridge against #96 Operational recovery/error boundary and other foundational debt before selecting the next implementation.
+4. Keep Kids #38–40 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **47 Not started rows** after the v3.26 freeze. Remaining work includes private/cloud notes, Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, diagnostics/recovery, PWA/offline behavior, backup/import, and the intentionally deferred Japanese furigana row.
+Literal old-version parity has **44 Not started rows** after #66 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, diagnostics/recovery, PWA/offline behavior, backup/import, and Japanese furigana.
 
 ## Release discipline
 

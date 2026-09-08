@@ -11,30 +11,32 @@ Updated: 2026-09-08 JST
 - Current development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary push triggers are permitted only on isolated one-shot verification branches and are removed by resetting the branch to the exact clean candidate SHA after each gate.
-- Latest frozen checkpoint remains `release/v3.26-doctrinal-safety` at `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` until the v3.27 bookkeeping gate and freeze finish.
-- Exact v3.26 bookkeeping run `34168229627` passed the complete accumulated suite before that freeze.
-- #55 Private local notes functional implementation candidate: `14893c5987234325165b3990e4f513423f3c1992`.
-- #55 functional verification run `34169365596` passed the complete accumulated suite.
-- The temporary verification branch `verify/v3.27-private-notes` was reset to the exact clean implementation candidate after the green run, removing its push trigger.
+- Latest frozen checkpoint is `release/v3.28-cloud-notes` at `1b8cb0a4847b1fc633ce23412982c91c38825148`.
+- Exact v3.28 bookkeeping run `34184699391` passed the complete accumulated suite before that freeze.
+- Previous checkpoint `release/v3.27-private-local-notes` is frozen at `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300` was fully green.
+- #66 Congregation membership/roles clean functional candidate: `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349`.
+- #66 functional run `34185569051` passed the complete accumulated suite and explicitly asserted that clean SHA.
 
 ## Progress summary
 
-Inventory row states after the #55 functional gate:
+Inventory row states after the #66 functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 53 |
+| Regression-tested | 55 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 46 |
+| Not started | 44 |
 | Total | 100 |
 
-Strict verified-or-better parity is **54/100**.
+Strict verified-or-better parity is **56/100**.
 
-Official regression stability remains **53/100**. #55 is Verified, not Regression-tested, because the regression-promotion rule requires a later feature milestone to run the full suite with #55 still green.
+Official regression stability is **55/100**. #56 advanced to Regression-tested after surviving the later #66 complete functional suite. #66 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #55 Private local notes — **Verified** after complete functional run `34169365596`; awaiting the v3.27 bookkeeping/release gate.
+- #66 Congregation membership/roles — **Verified** after complete functional run `34185569051`; awaiting the v3.29 bookkeeping/release gate.
+- #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
+- #55 Private local notes — **Regression-tested**; frozen in v3.27.
 - #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
 - #90 Source labels/attribution — **Regression-tested** after surviving the later #89 full functional and bookkeeping suites.
 - #17 NLT licensed-link path — Regression-tested.
@@ -101,7 +103,7 @@ Verification history:
 
 ## Milestone 14 — Private local notes
 
-### #55 Private local notes — Verified
+### #55 Private local notes — Regression-tested
 
 The implementation deliberately separates standalone Private Notes from Deep Questions' existing inline Lesson response. No second Lesson or Progress owner was created.
 
@@ -114,7 +116,7 @@ Clean v3 implementation:
 - The Learn page routes to one `private-notes` route through the existing router.
 - `src/features/private-notes/index.js` is presentation/event forwarding only.
 - The UI explicitly states that v3.27 notes are private to the current device and are not uploaded or account-synced.
-- #55 does not call Supabase/account APIs. Cloud sync remains #56 and is not partially implemented here.
+- #55 does not call Supabase/account APIs. Regression-tested #56 Cloud Notes remains a separate authenticated remote capability and never auto-uploads these device-local notes.
 - No XP, streak, mastery, spiritual score, or lesson-state mutation was invented for notes.
 
 Permanent regression coverage:
@@ -127,6 +129,33 @@ Functional verification:
 - Isolated verification trigger commit: `e3d67f3f562fe328fc3b34ed1f9efdd1e0dda831` — verification-only and never a release candidate.
 - Run `34169365596` — complete accumulated architecture, edge, Playwright/browser/mobile, Transform, recordings, media, Recall, and Games suite fully green.
 - After the run, `verify/v3.27-private-notes` was reset to the exact clean candidate, restoring manual-only workflow state.
+- Bookkeeping run `34169778300` passed before `release/v3.27-private-local-notes` was frozen at `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`.
+- #55 later survived the #56 and #66 full suites and is Regression-tested.
+
+## Milestone 15 — Cloud Notes
+
+### #56 Cloud Notes — Regression-tested
+
+- `src/app/cloud-notes.js` is the single authenticated remote-note owner; `src/core/api.js` is the only Supabase boundary.
+- The recovered `public.bible_notes` RLS/user-ownership contract is reused without a new migration.
+- Authenticated Scripture-linked CRUD, explicit stale-write conflict handling, signed-out/local-preview recovery, and 390px behavior are permanently covered.
+- Private Notes remain device-local and are never uploaded, merged, or converted automatically.
+- Functional run `34183773524` and bookkeeping run `34184699391` passed the complete accumulated suite.
+- `release/v3.28-cloud-notes` is frozen at `1b8cb0a4847b1fc633ce23412982c91c38825148`.
+- #56 survived the later #66 full functional run and is Regression-tested.
+
+## Milestone 16 — Congregation membership/roles
+
+### #66 Congregation membership/roles — Verified
+
+- `src/app/congregation-membership.js` is the single membership/role orchestration owner.
+- `src/core/api.js` owns the RLS-protected membership/congregation reads and trusted `bq-join` invocation.
+- Recognized congregation roles are member, facilitator, leader, pastor, and admin; platform roles remain separate.
+- Unknown roles and unsupported client capabilities fail closed. Client gates never replace server/RLS authorization.
+- Signed-out/local-preview flows issue no membership operation; join reloads server-backed membership and never invents a local role.
+- Architecture, edge, and 390px browser coverage is permanently included in the accumulated workflow.
+- Clean functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` passed complete run `34185569051`.
+- The independent v3.29 bookkeeping/release gate remains pending.
 
 ## Defect / root-cause ledger retained
 
@@ -152,17 +181,17 @@ Functional verification:
 - `V3-SOURCE-LABEL-SELECTOR-TEST-001` — corrected the provenance smoke Reader selector; no app change.
 - `V3-DOCTRINE-ARCH-VALIDATOR-001` — removed obsolete raw-only-allow validator contract and replaced it with reviewed-safety invariants.
 - `V3-SHELL-TOUCH-001` — shell account button increased from 38px to the 44px mobile touch-target contract.
+- `V3-CLOUD-NOTES-OWNER-001` — remote note state composes the API/session boundaries and remains separate from device-local Private Notes.
+- `V3-CONGREGATION-OWNER-001` — membership normalization, join orchestration, and client role projection are centralized without replacing server authorization.
 
 ## Next major milestone
 
-Finish the v3.27 bookkeeping gate and freeze #55 before beginning another feature.
+Finish the exact v3.29 bookkeeping gate and freeze #66 before beginning another implementation milestone.
 
-After the v3.27 freeze, the default next core dependency is **#56 Cloud notes** because it should compose the now-verified local Notes model rather than create a parallel note schema. #56 must add account ownership/sync, guest isolation, conflict/error behavior, and offline/failure behavior through the existing API/session boundaries.
+After that freeze, reassess the 44 remaining Not started rows by dependency order. The leading candidates are #67 Community bridge, which can compose the new membership owner for later congregation features, and #96 Operational recovery/error boundary, which can reduce risk across every remaining route. Do not select solely by row number.
 
-Before #56 implementation, inspect the recovered old cloud-note contract and current Supabase schema/API permissions. Do not invent a backend table or client-side trust model from assumptions.
-
-Kids #38–40 and ministry/community work remain deferred while higher-priority core parity debt is being closed. Accessibility #86, reporting/moderation #87–88, Content Review #91, diagnostics/recovery #95–96, and PWA/offline #97–99 remain later candidates after dependency reassessment.
+Kids #38–40 remain explicitly deferred. Production deployment remains out of scope.
 
 ## Release rule
 
-#55 passed its complete functional suite on run `34169365596`. The exact bookkeeping state must now pass the same full accumulated suite before `release/v3.27-private-local-notes` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#66 passed its complete functional suite on run `34185569051`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.29-congregation-membership` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

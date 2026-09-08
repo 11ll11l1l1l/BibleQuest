@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const failures=[];
 const fail=message=>failures.push(message);
 const read=file=>fs.readFileSync(file,'utf8');
-const required=['CONGREGATION_MEMBERSHIP_V3.md','MINISTRY_ROLES.md','src/app/congregation-membership.js','src/features/congregation/index.js','src/features/more/index.js','src/core/api.js','src/app/bootstrap.js'];
+const required=['CONGREGATION_MEMBERSHIP_V3.md','MINISTRY_ROLES.md','FEATURE_INVENTORY_V3.md','ARCHITECTURE_V3.md','src/app/congregation-membership.js','src/features/congregation/index.js','src/features/more/index.js','src/core/api.js','src/app/bootstrap.js'];
 for(const file of required)if(!fs.existsSync(file))fail(`Missing congregation membership recovery file: ${file}`);
 if(!failures.length){
   const owner=read('src/app/congregation-membership.js');
@@ -12,6 +12,8 @@ if(!failures.length){
   const more=read('src/features/more/index.js');
   const boot=read('src/app/bootstrap.js');
   const roles=read('MINISTRY_ROLES.md');
+  const inventory=read('FEATURE_INVENTORY_V3.md');
+  const architecture=read('ARCHITECTURE_V3.md');
   for(const role of['member','facilitator','leader','pastor','admin'])if(!owner.includes(`'${role}'`))fail(`Membership owner is missing recovered congregation role ${role}.`);
   if(owner.includes("'owner'"))fail('Platform Owner must not be accepted as a congregation role.');
   for(const contract of['api.congregation.listMemberships','api.congregation.join','BQ_CONGREGATION_PERMISSION_DENIED','BQ_CONGREGATION_AUTH_REQUIRED'])if(!owner.includes(contract))fail(`Membership owner missing contract ${contract}.`);
@@ -22,6 +24,9 @@ if(!failures.length){
   for(const contract of['createCongregationMembershipService','congregationPage','morePage'])if(!boot.includes(contract))fail(`Bootstrap is missing congregation composition contract ${contract}.`);
   if(!roles.includes('| Pastor | One congregation |')||!roles.includes('| Facilitator | One congregation |'))fail('Live ministry role documentation is missing recovered congregation roles.');
   if(!roles.includes('Authorization must be enforced on the server'))fail('Server-authority rule must remain explicit in MINISTRY_ROLES.md.');
+  if(!inventory.includes('| 66 | Congregation membership/roles | Yes | Compatibility | Verified |'))fail('Inventory must record #66 Congregation membership/roles as Verified after its full functional gate.');
+  for(const total of['**Regression-tested:** 55','**Verified:** 1','**Not started:** 44'])if(!inventory.includes(total))fail(`Inventory totals missing #66 functional bookkeeping: ${total}`);
+  for(const contract of['src/app/congregation-membership.js','## Congregation membership / role boundaries','RLS and trusted server functions remain authoritative'])if(!architecture.includes(contract))fail(`Architecture contract missing Congregation Membership boundary: ${contract}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 congregation membership architecture boundary passed.');
