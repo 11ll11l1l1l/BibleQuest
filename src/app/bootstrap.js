@@ -18,6 +18,7 @@ import { createMediaLibraryService } from './media-library.js';
 import { createGameLauncherService } from './games.js';
 import { createPrivateNotesService } from './private-notes.js';
 import { createCloudNotesService } from './cloud-notes.js';
+import { createCongregationMembershipService } from './congregation-membership.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
@@ -26,7 +27,7 @@ import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
 import { storage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
-import { homePage, pendingPage } from '../features/home/index.js';
+import { homePage } from '../features/home/index.js';
 import { accountPage } from '../features/account/index.js';
 import { learnPage } from '../features/learn/index.js';
 import { guidedStudyPage } from '../features/study/index.js';
@@ -44,6 +45,8 @@ import { transformPage } from '../features/transform/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
 import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
+import { congregationPage } from '../features/congregation/index.js';
+import { morePage } from '../features/more/index.js';
 
 function start(){
   const root=document.getElementById('app');
@@ -72,6 +75,7 @@ function start(){
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const privateNotes=createPrivateNotesService({storage});
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
+  const congregation=createCongregationMembershipService({api,session});
 
   let router,shell;
   const routes=Object.freeze({
@@ -89,12 +93,14 @@ function start(){
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>pendingPage('More'),account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
+    more:()=>morePage({onCongregation:()=>router.navigate('congregation')}),
+    congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
+    account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
   });
   router=createRouter({routes,onRoute(route,renderPage){try{store.setState(current=>({...current,route}));shell.render(route,renderPage())}catch(error){console.error(error);shell.renderError(error?.message||'Unknown application error.')}}});
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
   session.boot().then(()=>{if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error))}).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();congregation.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
