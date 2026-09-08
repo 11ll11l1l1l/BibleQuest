@@ -2,7 +2,7 @@
 
 Updated: 2026-09-08 JST
 
-`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. `TIMELINE_V3.md` retains the release/milestone history. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
+`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. `TIMELINE_V3.md` retains release/milestone history. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
 
 ## Deployment safety
 
@@ -11,87 +11,86 @@ Updated: 2026-09-08 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.33-offline-shell` at `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`.
-- Exact v3.33 bookkeeping run `34216091431` passed all 85 numbered accumulated regression steps against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.34-offline-bible-packs` at `bfba29fdb500c2f8ea3f466e941f043dae908f26`.
+- Exact v3.34 bookkeeping run `34218225949` passed all 88 accumulated checks against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the #99 Offline opened Bible packs functional gate:
+Inventory state after the corrected #100 Backup/export/import/reset functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 60 |
+| Regression-tested | 61 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 39 |
+| Not started | 38 |
 | Total | 100 |
 
-Strict verified-or-better parity is **61/100**.
+Strict verified-or-better parity is **62/100**.
 
-Official regression stability is **60/100**.
+Official regression stability is **61/100**.
 
 Current leading rows:
-- #97 PWA install/manifest — **Regression-tested**; frozen in v3.32.
-- #98 Offline Shell — **Regression-tested** after surviving the later complete #99 functional suite; frozen in v3.33.
-- #99 Offline opened Bible packs — **Verified** after exact functional run `34217190770` against `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e`; exact bookkeeping/release gate is active.
+- #98 Offline Shell — **Regression-tested**; frozen in v3.33.
+- #99 Offline opened Bible packs — **Regression-tested** after surviving the complete #100 functional suite; frozen in v3.34.
+- #100 Backup/export/import/reset — **Verified** after corrected exact functional run `34219329591` against `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215`.
+- #62 Couples/family local tools is the next dependency-safe non-deferred local capability under active assessment.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
 
-The rebuild still follows one source of truth per function. The currently relevant offline owners are:
+The rebuild still follows one source of truth per function. Relevant owners now include:
 
-- `src/app/pwa-install.js` — install-prompt lifecycle only.
-- `src/app/offline-shell.js` — page-side service-worker registration and first-load shell warmup only.
-- `offline-shell-sw.js` — application-shell Cache Storage and shell fetch fallback only.
-- `src/core/bible.js` — Bible-source loading, bundled pack validation, in-memory cache, and #99 opened-pack Cache Storage persistence.
-- `src/core/client-diagnostics.js` + `src/core/api.js` — diagnostics classification and the real no-store network probe.
+- `src/core/storage.js` — sole direct browser local-storage owner, including #100 portable namespace enumeration and transactional replacement/reset.
+- `src/app/backup.js` — sole #100 backup file-format/workflow owner.
+- `src/features/backup/index.js` — file/download/confirmation UI only; no persistence ownership.
+- `src/core/bible.js` — Bible-source loading and #99 opened-pack persistence.
+- `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
+- Existing Router, Session, API, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
 
-#98 still does **not** cache generic fetch/XHR payloads, Bible packs, Supabase/API responses, account/cloud state, or media. #99 uses a distinct `biblequest-v3-opened-bible-packs-v1` cache through the Bible-data owner only. Reader UI and the #98 service worker do not own Bible-pack persistence.
-
-Eligible #99 persistence is limited to bundled BSB and Tagalog book packs that are explicitly opened. Japanese 口語訳 remains live, NLT remains external/licensed, STEPBible context packs remain outside #99, and whole-translation text search does not silently populate the offline pack cache.
-
-## Milestone 19 — PWA install/manifest
-
-### #97 — Regression-tested
-
-- Deployment-relative `manifest.webmanifest` remains the single app identity/launch contract.
-- `src/app/pwa-install.js` remains the sole optional `beforeinstallprompt` / `appinstalled` owner.
-- Corrected functional candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed run `34212434449`.
-- Exact bookkeeping SHA `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
-- #97 survived #98 and remains Regression-tested.
+#100 exports/imports/resets only portable `biblequest.v3.` local learning state. `biblequest.v3.auth.*`, `biblequest.v3.device-id`, Supabase/cloud state, congregation server state, Cloud Notes, media, Cache Storage, opened Bible packs and unrelated browser storage are excluded. Import validates the complete backup before destructive writes, rolls back after storage-write failure, and reloads the app so existing owners rehydrate normally rather than receiving direct backup-specific mutations.
 
 ## Milestone 20 — Offline Shell
 
 ### #98 — Regression-tested
 
-- `src/app/offline-shell.js` and `offline-shell-sw.js` remain the bounded #98 shell owners.
 - Corrected functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered steps in run `34214663407`.
-- Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed all 85 numbered steps in run `34216091431` and is frozen at `release/v3.33-offline-shell`.
-- #98 survived the later complete #99 functional suite and advanced to Regression-tested.
+- Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed run `34216091431` and is frozen at `release/v3.33-offline-shell`.
+- #98 has remained green through #99 and #100.
 
 ## Milestone 21 — Offline opened Bible packs
 
-### #99 — Verified
+### #99 — Regression-tested
+
+- `src/core/bible.js` remains the sole bundled Scripture pack-path, semantic-validation and opened-pack persistence owner.
+- Only explicitly opened bundled BSB/Tagalog books persist; Japanese live source, NLT licensed-link mode, context packs, APIs/cloud/media and bulk search persistence remain excluded.
+- Functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 accumulated checks in run `34217190770`.
+- Exact bookkeeping candidate `bfba29fdb500c2f8ea3f466e941f043dae908f26` passed run `34218225949` and is frozen at `release/v3.34-offline-bible-packs`.
+- #99 survived the complete #100 functional suite and therefore advanced to Regression-tested.
+
+## Milestone 22 — Backup/export/import/reset
+
+### #100 — Verified
 
 Implementation:
-- `src/core/bible.js` remains the sole bundled Scripture pack-path and semantic-validation owner.
-- Opened bundled BSB/Tagalog book packs are persisted only after the network payload passes the existing verse/chapter/duplicate validation.
-- Network remains first choice. If network is unavailable or non-successful, a previously opened persisted pack may be reused.
-- Persisted content is revalidated before use; semantically corrupt persisted data is evicted and rejected with controlled recovery guidance.
-- Cache write/quota failure never breaks an otherwise valid online Scripture read.
-- Full-text search uses `persistOffline:false`, so scanning books does not become a bulk offline download. If a searched in-memory pack is later explicitly opened, that normalized pack is then persisted.
-- Live Japanese, licensed NLT, context packs, generic APIs, cloud/account state, media, and arbitrary fetches remain excluded.
+- `src/core/storage.js` enumerates and transactionally replaces only portable BibleQuest v3 local-state keys.
+- `src/app/backup.js` defines versioned JSON format `biblequest-v3-local-backup` version `1` and owns export/import/reset orchestration.
+- `src/features/backup/index.js` exposes Download backup, Restore backup and confirmed Reset controls through More.
+- `device-id`, auth keys and unrelated browser storage are preserved and excluded from backup payloads.
+- Import rejects malformed JSON, wrong format/version, forbidden/duplicate keys and non-JSON data before mutation.
+- Failed replacement attempts rollback to the previous portable snapshot.
+- Successful import/reset reloads BibleQuest so Reader, Progress and other existing owners rehydrate through their normal boundaries.
 
 Permanent protection:
-- `OFFLINE_BIBLE_PACKS_V3.md` defines the #99 ownership and eligibility contract.
-- `scripts/validate-v3-offline-bible-packs.mjs` prevents persistence ownership from leaking into Reader or the #98 worker.
-- `tests/v3-offline-bible-packs-edge.mjs` covers online→persistent→offline recovery, source metadata, bounded search persistence, corrupt-cache eviction, cache-write failure, malformed network behavior, Japanese exclusion, and NLT exclusion.
-- `tests/v3-offline-bible-packs-smoke.mjs` performs a real 390px Chromium BSB + Tagalog online open, separate persistent-cache check, offline reload/switch, attribution check, shell-cache separation, and unopened Exodus rejection.
+- `BACKUP_IMPORT_V3.md` defines the ownership, portable-data and transaction contracts.
+- `scripts/validate-v3-backup.mjs` prevents storage ownership leakage and enforces the verified ledger state.
+- `tests/v3-backup-edge.mjs` covers exclusion, exact restore, schema rejection and simulated write-failure rollback.
+- `tests/v3-backup-smoke.mjs` performs a real 390px Reader +10 XP setup → backup download → reset/reload → import/reload → Reader/Progress restoration workflow.
 
 Functional verification:
-- Exact clean functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all **88 numbered accumulated regression steps** in run `34217190770`.
-- The isolated trigger commit checked out and asserted that exact candidate; the verification branch was reset afterward to remove its temporary push trigger.
-- #99 is Verified pending its independent exact bookkeeping/release gate. #98 is Regression-tested through this later complete-suite evidence.
+- Initial candidate `f8fb9e03840cc2c7ba141f19352c79f7bc65e8c1` stopped at the new #100 validator because the validator used a stale shorthand acceptance phrase instead of the authoritative inventory row.
+- Corrected exact candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed the complete accumulated architecture, edge and browser/mobile suite in run `34219329591`.
+- #100 is therefore Verified. #99 is Regression-tested through this later complete-suite evidence.
 
 ## Defect / root-cause ledger
 
@@ -103,11 +102,20 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
 - `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot directly own Games recall persistence.
 - `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test validates ownership rather than assuming a permanently service-worker-free app.
-- `V3-STATUS-STRUCTURE-001` — the v3.33 bookkeeping attempt exposed validator-required status headings; the document structure was restored instead of weakening validation.
+- `V3-STATUS-STRUCTURE-001` — bookkeeping status headings remain validator-enforced rather than weakened.
+- `V3-BACKUP-LEDGER-TEST-001` — the initial #100 validator expected stale shorthand wording instead of the authoritative inventory acceptance text; the validator was aligned to the ledger without weakening runtime or acceptance coverage.
 
 ## Next major milestone
 
-Complete the independent exact #99 bookkeeping suite and freeze `release/v3.34-offline-bible-packs` only at the exact SHA that passes all 88 accumulated steps. After that freeze, reassess the remaining 39 Not started rows and select the next dependency-safe parity milestone rather than blindly continuing inventory order.
+Complete the independent exact #100 bookkeeping suite and freeze v3.35 only at the exact SHA that passes the complete accumulated regression workflow. After that freeze, continue with **#62 Couples/family local tools** as the first non-deferred dependency-safe local capability after the rebuilt 1–61 block.
+
+#62 acceptance boundary from the authoritative ledger:
+- open a couples/family topic;
+- save a private local note/action through one dedicated owner using the central storage boundary;
+- leave/reload and recover the saved state;
+- keep #63 Couples cloud explicitly separate;
+- add permanent edge + 390px browser regression;
+- run the complete accumulated suite before promotion.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
