@@ -8,6 +8,8 @@ const CONFIG = Object.freeze({
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
 const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,content,tags,note_type,is_pinned,created_at,updated_at';
 const COUPLE_SHARED_FIELDS='id,pair_id,author_id,item_type,body,due_on,completed_at,created_at,updated_at';
+const JOURNEY_GROUP_FIELDS='id,owner_id,congregation_id,name,description,schedule_text,max_members,active,created_at,updated_at';
+const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -245,6 +247,27 @@ export function createApi() {
     }
   });
 
+  const journeyGroups = Object.freeze({
+    async list(userId) {
+      const client=await getClient();
+      const {data:mine,error:mineError}=await client.from('bible_group_members').select(JOURNEY_GROUP_MEMBER_FIELDS).eq('user_id',userId).eq('active',true).order('joined_at',{ascending:true});
+      if(mineError)throw mineError;
+      const groupIds=[...new Set((mine||[]).map(row=>row.group_id).filter(Boolean))];
+      if(!groupIds.length)return {groups:[],members:[]};
+      const {data:groups,error:groupError}=await client.from('bible_groups').select(JOURNEY_GROUP_FIELDS).in('id',groupIds).eq('active',true).order('created_at',{ascending:true});
+      if(groupError)throw groupError;
+      const visibleIds=[...new Set((groups||[]).map(row=>row.id).filter(Boolean))];
+      if(!visibleIds.length)return {groups:[],members:[]};
+      const {data:members,error:memberError}=await client.from('bible_group_members').select(JOURNEY_GROUP_MEMBER_FIELDS).in('group_id',visibleIds).eq('active',true).order('joined_at',{ascending:true});
+      if(memberError)throw memberError;
+      return {groups:groups||[],members:members||[]};
+    },
+    async create(payload) { return invoke('bq-journey-group',{action:'create',...payload}); },
+    async join(inviteCode) { return invoke('bq-journey-group',{action:'join',invite_code:inviteCode}); },
+    async rotateCode(groupId) { return invoke('bq-journey-group',{action:'rotate_code',group_id:groupId}); },
+    async leave(groupId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId}); }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -264,5 +287,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, cloudNotes, couples, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, cloudNotes, couples, journeyGroups, media, diagnostics });
 }
