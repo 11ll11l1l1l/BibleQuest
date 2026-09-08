@@ -46,3 +46,12 @@ Offline fallback returns the same translation metadata, source, license, attribu
 - Real 390px Chromium regression opens BSB and Tagalog Genesis online, confirms a separate opened-pack cache, goes offline, reloads BSB, switches to Tagalog offline, and confirms an unopened book still fails rather than being fabricated.
 - The browser regression confirms the #98 shell cache does not contain Bible packs and that source/license presentation survives offline fallback.
 - The complete accumulated v3 suite must pass before #99 can be promoted.
+
+## Functional verification — 2026-09-08 JST
+
+- Exact clean functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 numbered accumulated regression steps in GitHub Actions run `34217190770`.
+- Architecture validation confirmed Cache Storage ownership remains in `src/core/bible.js`; Reader and `offline-shell-sw.js` do not own #99 pack persistence.
+- The edge suite passed online persistence, service recreation/offline recovery, source metadata retention, search non-persistence, later explicit-open persistence, corrupt-cache eviction, quota/write failure isolation, malformed-network rejection, live Japanese exclusion, and licensed NLT exclusion.
+- The 390px Chromium suite opened BSB and Tagalog Genesis online, confirmed both in `biblequest-v3-opened-bible-packs-v1`, confirmed the #98 shell cache remained pack-free, reloaded BSB offline, switched to Tagalog offline, preserved source/license display, and rejected unopened Exodus.
+- #99 is Verified. #98 advances to Regression-tested because it survived this later complete suite.
+- The exact v3.34 bookkeeping candidate must independently pass the complete 88-step suite before `release/v3.34-offline-bible-packs` is frozen.
