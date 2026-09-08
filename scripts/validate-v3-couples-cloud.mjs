@@ -18,7 +18,9 @@ if(!failures.length){
   if(!more.includes('data-open-couples-cloud'))fail('More must expose Couples cloud separately from local Couples tools.');
   if(!html.includes('src/ui/couples-cloud.css'))fail('v3 shell must load Couples cloud styles.');
   for(const statement of['8 characters','expire after 14 days','append-only','Private Notes','Transformation results','trusted cloud score submission is owned by inventory row #70'])if(!contract.includes(statement))fail(`Couples cloud contract missing boundary: ${statement}`);
-  if(!inventory.includes('| 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |'))fail('#63 must remain Not started until its complete functional gate passes.');
+  const verifiedRow='| 63 | Couples cloud | Yes | Compatibility | Verified | shared state; permission; sync; failure handling |';
+  const regressionRow='| 63 | Couples cloud | Yes | Compatibility | Regression-tested | shared state; permission; sync; failure handling |';
+  if(!inventory.includes(verifiedRow)&&!inventory.includes(regressionRow))fail('#63 must be Verified or Regression-tested after its complete functional gate passes.');
   for(const test of['node scripts/validate-v3-couples-cloud.mjs','node tests/v3-couples-cloud-edge.mjs','node tests/v3-couples-cloud-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #63 regression: ${test}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
