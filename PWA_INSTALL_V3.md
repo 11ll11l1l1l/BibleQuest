@@ -20,4 +20,4 @@
 - The linked manifest is valid JSON with a stable name, standalone display, matching theme/background color, relative identity/start/scope, explicit 192px and 512px PNG install icons, a separate opaque 512px maskable icon, and the scalable SVG artwork source.
 - The install owner handles unavailable, available, prompting, accepted, dismissed, installed, repeated prompt, and disposal paths without leaking listeners.
 - A 390px browser regression verifies manifest/icon delivery, one visible prompt control only after browser eligibility, accepted flow, no overflow, and a 44px target.
-- Architecture validation forbids service workers, Cache Storage, global compatibility APIs, or install ownership outside the dedicated owner.
+- Architecture validation keeps service-worker, Cache Storage, fetch interception, and global compatibility behavior out of the #97 install owner. Any #98 offline-shell implementation must remain a separate owner and preserve this install-prompt boundary.

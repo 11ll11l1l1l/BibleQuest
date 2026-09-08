@@ -17,8 +17,8 @@ if(!failures.length){
   for(const contract of['createPwaInstallService','beforeinstallprompt','appinstalled','preventDefault','userChoice','dispose'])if(!owner.includes(contract))fail(`PWA install owner missing contract ${contract}.`);
   for(const contract of['createPwaInstallService','pwaInstall.dispose()','morePage({pwaInstall'])if(!bootstrap.includes(contract))fail(`Bootstrap missing PWA install composition: ${contract}.`);
   if(!more.includes('data-install-app')||!more.includes('pwaInstall?.subscribe')||!more.includes('pwaInstall?.prompt'))fail('More must present and forward the PWA owner contract.');
-  for(const forbidden of['serviceWorker','caches.','CacheStorage','fetch(','localStorage','sessionStorage','window.BQ'])if(owner.includes(forbidden)||bootstrap.includes(forbidden))fail(`#97 must not own offline/global behavior: ${forbidden}`);
-  if(/serviceWorker|(?:src|href)="(?:\.\/)?(?:sw\.js|pwa-runtime\.js)"/.test(index))fail('#97 v3 entrypoint must not register or load a service worker before #98.');
+  for(const forbidden of['serviceWorker','caches.','CacheStorage','fetch(','localStorage','sessionStorage','window.BQ'])if(owner.includes(forbidden))fail(`#97 install owner must not own offline/global behavior after #98: ${forbidden}`);
+  if(/serviceWorker|(?:src|href)="(?:\.\/)?(?:sw\.js|pwa-runtime\.js)"/.test(index))fail('The v3 entrypoint must not become a second service-worker registration owner.');
   if(!inventory.includes('| 97 | PWA install/manifest | Yes | Clean | Verified |'))fail('#97 must be Verified after its corrected exact functional candidate passes the complete suite.');
   for(const total of['**Regression-tested:** 58','**Verified:** 1','**Not started:** 41'])if(!inventory.includes(total))fail(`Inventory totals missing #97 functional bookkeeping: ${total}`);
 }

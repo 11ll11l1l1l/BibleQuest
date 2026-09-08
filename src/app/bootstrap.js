@@ -22,6 +22,7 @@ import { createCongregationMembershipService } from './congregation-membership.j
 import { createOperationalRecoveryService } from './operational-recovery.js';
 import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
 import { createPwaInstallService } from './pwa-install.js';
+import { createOfflineShellService } from './offline-shell.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
@@ -57,6 +58,7 @@ function start(){
   const api=createApi();
   const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe});
   const pwaInstall=createPwaInstallService();
+  const offlineShell=createOfflineShellService();
   const bible=createBibleDataService();
   const progress=createProgressService({storage,store});
   const recall=createRecallPackService();
@@ -118,7 +120,8 @@ function start(){
   }});
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
+  offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error))}).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();pwaInstall.dispose();congregation.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();congregation.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

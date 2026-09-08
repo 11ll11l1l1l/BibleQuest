@@ -30,6 +30,8 @@ jobs:
         run: node scripts/validate-v3-client-diagnostics.mjs
       - name: Enforce PWA install boundaries
         run: node scripts/validate-v3-pwa-install.mjs
+      - name: Enforce Offline Shell boundaries
+        run: node scripts/validate-v3-offline-shell.mjs
       - name: Enforce STEPBible Context Lab boundaries
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
@@ -90,6 +92,8 @@ jobs:
         run: node tests/v3-client-diagnostics-edge.mjs
       - name: Run PWA install edge regression
         run: node tests/v3-pwa-install-edge.mjs
+      - name: Run Offline Shell edge regression
+        run: node tests/v3-offline-shell-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
       - name: Run Transform engine edge regression
@@ -128,6 +132,8 @@ jobs:
         run: timeout 240s node tests/v3-client-diagnostics-smoke.mjs
       - name: Run v3 PWA install mobile browser regression
         run: timeout 240s node tests/v3-pwa-install-smoke.mjs
+      - name: Run v3 Offline Shell mobile browser regression
+        run: timeout 240s node tests/v3-offline-shell-smoke.mjs
       - name: Run v3 reader browser regression
         run: timeout 240s node tests/v3-reader-smoke.mjs
       - name: Run v3 STEPBible lexical/context browser regression
