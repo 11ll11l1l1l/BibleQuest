@@ -36,6 +36,8 @@ jobs:
         run: node scripts/validate-v3-offline-bible-packs.mjs
       - name: Enforce Backup/export/import/reset boundaries
         run: node scripts/validate-v3-backup.mjs
+      - name: Enforce Couples/family local boundaries
+        run: node scripts/validate-v3-couples-family.mjs
       - name: Enforce STEPBible Context Lab boundaries
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
@@ -56,6 +58,8 @@ jobs:
         run: node tests/v3-offline-bible-packs-edge.mjs
       - name: Run Backup/export/import/reset edge regression
         run: node tests/v3-backup-edge.mjs
+      - name: Run Couples/family local edge regression
+        run: node tests/v3-couples-family-edge.mjs
       - name: Run STEPBible lexical/context edge regression
         run: node tests/v3-step-context-edge.mjs
       - name: Run Japanese Kougo live-source edge regression
@@ -146,6 +150,8 @@ jobs:
         run: timeout 240s node tests/v3-offline-bible-packs-smoke.mjs
       - name: Run v3 Backup/export/import/reset mobile browser regression
         run: timeout 240s node tests/v3-backup-smoke.mjs
+      - name: Run v3 Couples/family local mobile browser regression
+        run: timeout 240s node tests/v3-couples-family-smoke.mjs
       - name: Run v3 reader browser regression
         run: timeout 240s node tests/v3-reader-smoke.mjs
       - name: Run v3 STEPBible lexical/context browser regression
