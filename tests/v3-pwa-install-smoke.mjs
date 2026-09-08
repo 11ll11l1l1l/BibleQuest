@@ -10,8 +10,9 @@ async function run(){
   assert(await page.locator('[data-more-install]').isHidden(),'Install UI must stay hidden before browser eligibility.');
   await page.evaluate(()=>{const event=new Event('beforeinstallprompt');event.prompt=async()=>{};event.userChoice=Promise.resolve({outcome:'accepted'});window.dispatchEvent(event)});
   const panel=page.locator('[data-more-install]');await panel.waitFor();const button=panel.locator('[data-install-app]');
-  const metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,target:document.querySelector('[data-install-app]')?.getBoundingClientRect().height||0,workers:'serviceWorker' in navigator?navigator.serviceWorker.controller:null}));
-  assert(metrics.scrollWidth<=metrics.innerWidth+1&&metrics.target>=44,`PWA install UI is not mobile safe: ${JSON.stringify(metrics)}`);assert(metrics.workers===null,'#97 must not install a service-worker controller.');
+  const metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,target:document.querySelector('[data-install-app]')?.getBoundingClientRect().height||0,workerScript:'serviceWorker' in navigator?navigator.serviceWorker.controller?.scriptURL||'':''}));
+  assert(metrics.scrollWidth<=metrics.innerWidth+1&&metrics.target>=44,`PWA install UI is not mobile safe: ${JSON.stringify(metrics)}`);
+  assert(!metrics.workerScript||metrics.workerScript.endsWith('/offline-shell-sw.js'),`Any service-worker controller present after #98 must belong to Offline Shell, not #97: ${metrics.workerScript}`);
   await button.click();await panel.waitFor({state:'hidden'});assert(errors.length===0,`Unexpected PWA install console/page errors: ${errors.join(' | ')}`);await page.close();
 }
 try{await run();console.log('BibleQuest v3 PWA install browser regression passed.')}finally{await browser.close()}
