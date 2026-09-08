@@ -22,6 +22,8 @@ jobs:
         run: node scripts/validate-v3-private-notes.mjs
       - name: Enforce Cloud Notes boundaries
         run: node scripts/validate-v3-cloud-notes.mjs
+      - name: Enforce congregation membership boundaries
+        run: node scripts/validate-v3-congregation-membership.mjs
       - name: Enforce STEPBible Context Lab boundaries
         run: node scripts/validate-v3-step-context.mjs
       - name: Enforce Japanese Kougo boundaries
@@ -74,6 +76,8 @@ jobs:
         run: node tests/v3-private-notes-edge.mjs
       - name: Run Cloud Notes edge regression
         run: node tests/v3-cloud-notes-edge.mjs
+      - name: Run congregation membership edge regression
+        run: node tests/v3-congregation-membership-edge.mjs
       - name: Run Daily Mission edge regression
         run: node tests/v3-daily-mission-edge.mjs
       - name: Run Transform engine edge regression
@@ -142,6 +146,8 @@ jobs:
         run: timeout 240s node tests/v3-private-notes-smoke.mjs
       - name: Run v3 Cloud Notes mobile browser regression
         run: timeout 240s node tests/v3-cloud-notes-smoke.mjs
+      - name: Run v3 congregation membership mobile browser regression
+        run: timeout 240s node tests/v3-congregation-membership-smoke.mjs
       - name: Run v3 Daily Mission browser regression
         run: timeout 240s node tests/v3-daily-mission-smoke.mjs
       - name: Run v3 Transform engine browser regression
