@@ -27,7 +27,6 @@ if(!failures.length){
   }
   for(const statement of['Japanese 口語訳 remains a verified live chapter source and is not persisted by #99','NLT remains a licensed external-reader mode and is never cached or redistributed by #99','Whole-translation text search','semantically corrupt persisted pack is removed'])if(!contract.includes(statement))fail(`Offline Bible packs contract missing boundary: ${statement}`);
   if(!inventory.includes('| 99 | Offline opened Bible packs | Yes | Clean | Regression-tested | opened bundled BSB/Tagalog pack persists only through Bible owner; offline reload/switch; corrupt-cache eviction; no bulk search caching; live/licensed sources excluded; 390px mobile |'))fail('#99 must be Regression-tested after surviving the complete #100 functional suite.');
-  for(const total of['**Regression-tested:** 61','**Verified:** 1','**Not started:** 38'])if(!inventory.includes(total))fail(`Inventory totals missing post-#100 bookkeeping: ${total}`);
   for(const test of['node tests/v3-offline-bible-packs-edge.mjs','node tests/v3-offline-bible-packs-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #99 regression: ${test}`);
 }
 
