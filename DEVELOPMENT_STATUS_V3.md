@@ -11,43 +11,44 @@ Updated: 2026-09-08 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.32-pwa-install` at `200d69ec37b9aba48e8b926dfef7f2a8203d4855`.
-- Exact v3.32 bookkeeping run `34213223642` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.33-offline-shell` at `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`.
+- Exact v3.33 bookkeeping run `34216091431` passed all 85 numbered accumulated regression steps against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the corrected #98 Offline Shell functional gate:
+Inventory state after the #99 Offline opened Bible packs functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 59 |
+| Regression-tested | 60 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 40 |
+| Not started | 39 |
 | Total | 100 |
 
-Strict verified-or-better parity is **60/100**.
+Strict verified-or-better parity is **61/100**.
 
-Official regression stability is **59/100**.
+Official regression stability is **60/100**.
 
 Current leading rows:
-- #97 PWA install/manifest — **Regression-tested** after surviving the later complete #98 functional suite; frozen in v3.32.
-- #98 Offline Shell — **Verified** after corrected exact functional run `34214663407` against `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4`; exact bookkeeping/release gate is active.
-- #99 Offline opened Bible packs — **Not started** and explicitly separate from #98.
+- #97 PWA install/manifest — **Regression-tested**; frozen in v3.32.
+- #98 Offline Shell — **Regression-tested** after surviving the later complete #99 functional suite; frozen in v3.33.
+- #99 Offline opened Bible packs — **Verified** after exact functional run `34217190770` against `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e`; exact bookkeeping/release gate is active.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
 
-The rebuild still follows one source of truth per function. The currently relevant owners are:
+The rebuild still follows one source of truth per function. The currently relevant offline owners are:
 
 - `src/app/pwa-install.js` — install-prompt lifecycle only.
 - `src/app/offline-shell.js` — page-side service-worker registration and first-load shell warmup only.
 - `offline-shell-sw.js` — application-shell Cache Storage and shell fetch fallback only.
+- `src/core/bible.js` — Bible-source loading, bundled pack validation, in-memory cache, and #99 opened-pack Cache Storage persistence.
 - `src/core/client-diagnostics.js` + `src/core/api.js` — diagnostics classification and the real no-store network probe.
-- `src/core/bible.js` — Bible data owner; #99 may extend opened-pack offline availability without moving Bible-pack ownership into the shell worker.
-- Existing router, session, store, storage, Lesson, Progress, Transform, Audio, Recordings, Games, Notes, and congregation owners remain unchanged.
 
-#98 deliberately does **not** cache generic fetch/XHR payloads, Bible packs, Supabase/API responses, account/cloud state, or media. Runtime interception is restricted to same-origin in-scope navigation and shell destinations (script/style/image/font). The `bq-net-probe` is excluded from both warming and fetch interception so Client Diagnostics remains truthful offline.
+#98 still does **not** cache generic fetch/XHR payloads, Bible packs, Supabase/API responses, account/cloud state, or media. #99 uses a distinct `biblequest-v3-opened-bible-packs-v1` cache through the Bible-data owner only. Reader UI and the #98 service worker do not own Bible-pack persistence.
+
+Eligible #99 persistence is limited to bundled BSB and Tagalog book packs that are explicitly opened. Japanese 口語訳 remains live, NLT remains external/licensed, STEPBible context packs remain outside #99, and whole-translation text search does not silently populate the offline pack cache.
 
 ## Milestone 19 — PWA install/manifest
 
@@ -57,30 +58,40 @@ The rebuild still follows one source of truth per function. The currently releva
 - `src/app/pwa-install.js` remains the sole optional `beforeinstallprompt` / `appinstalled` owner.
 - Corrected functional candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed run `34212434449`.
 - Exact bookkeeping SHA `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
-- #97 survived the complete #98 functional suite and therefore advanced to Regression-tested.
+- #97 survived #98 and remains Regression-tested.
 
 ## Milestone 20 — Offline Shell
 
-### #98 — Verified
+### #98 — Regression-tested
+
+- `src/app/offline-shell.js` and `offline-shell-sw.js` remain the bounded #98 shell owners.
+- Corrected functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered steps in run `34214663407`.
+- Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed all 85 numbered steps in run `34216091431` and is frozen at `release/v3.33-offline-shell`.
+- #98 survived the later complete #99 functional suite and advanced to Regression-tested.
+
+## Milestone 21 — Offline opened Bible packs
+
+### #99 — Verified
 
 Implementation:
-- `src/app/offline-shell.js` registers deployment-relative `offline-shell-sw.js` with deployment-relative `./` scope.
-- First online load reports only the already-loaded same-origin document/script/style/image shell resources; generic `fetch`/XHR entries are excluded.
-- Warmup uses `BIBLEQUEST_WARM_SHELL` plus MessageChannel acknowledgement before the owner reports ready.
-- `offline-shell-sw.js` uses a versioned BibleQuest shell cache, network-first refresh, cached navigation/static fallback, `skipWaiting`, client claim, and removal only of superseded BibleQuest shell caches.
-- Bible pack/API/probe ownership remains outside #98; #99 alone may add opened-Bible-pack caching.
+- `src/core/bible.js` remains the sole bundled Scripture pack-path and semantic-validation owner.
+- Opened bundled BSB/Tagalog book packs are persisted only after the network payload passes the existing verse/chapter/duplicate validation.
+- Network remains first choice. If network is unavailable or non-successful, a previously opened persisted pack may be reused.
+- Persisted content is revalidated before use; semantically corrupt persisted data is evicted and rejected with controlled recovery guidance.
+- Cache write/quota failure never breaks an otherwise valid online Scripture read.
+- Full-text search uses `persistOffline:false`, so scanning books does not become a bulk offline download. If a searched in-memory pack is later explicitly opened, that normalized pack is then persisted.
+- Live Japanese, licensed NLT, context packs, generic APIs, cloud/account state, media, and arbitrary fetches remain excluded.
 
-Permanent verification:
-- `scripts/validate-v3-offline-shell.mjs` enforces ownership and #99 boundary.
-- `tests/v3-offline-shell-edge.mjs` verifies registration, filtering, acknowledgement, idempotence, disposal, and unsupported-browser behavior.
-- `tests/v3-offline-shell-smoke.mjs` verifies real Chromium 390px online load → offline switch → reload, one mounted shell, no horizontal overflow, service-worker control, and absence of Bible packs / `bq-net-probe` in the shell cache.
+Permanent protection:
+- `OFFLINE_BIBLE_PACKS_V3.md` defines the #99 ownership and eligibility contract.
+- `scripts/validate-v3-offline-bible-packs.mjs` prevents persistence ownership from leaking into Reader or the #98 worker.
+- `tests/v3-offline-bible-packs-edge.mjs` covers online→persistent→offline recovery, source metadata, bounded search persistence, corrupt-cache eviction, cache-write failure, malformed network behavior, Japanese exclusion, and NLT exclusion.
+- `tests/v3-offline-bible-packs-smoke.mjs` performs a real 390px Chromium BSB + Tagalog online open, separate persistent-cache check, offline reload/switch, attribution check, shell-cache separation, and unopened Exodus rejection.
 
-Functional verification history:
-- Initial candidate `627601ecc28df466bc7dd561d40983917c3ee773` reached browser regressions but exposed one obsolete #97 test assumption.
-- Root cause `V3-PWA-OFFLINE-COMPOSITION-TEST-001`: the #97 PWA smoke test asserted that no service-worker controller could exist anywhere, rather than asserting that #97 itself does not own/register one.
-- The regression was corrected to permit a controller only when its script is the dedicated `offline-shell-sw.js`; the PWA owner remains service-worker independent.
-- Corrected exact candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all **85 numbered accumulated steps** in run `34214663407`.
-- #98 is therefore Verified and #97 is Regression-tested.
+Functional verification:
+- Exact clean functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all **88 numbered accumulated regression steps** in run `34217190770`.
+- The isolated trigger commit checked out and asserted that exact candidate; the verification branch was reset afterward to remove its temporary push trigger.
+- #99 is Verified pending its independent exact bookkeeping/release gate. #98 is Regression-tested through this later complete-suite evidence.
 
 ## Defect / root-cause ledger
 
@@ -91,24 +102,12 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-GAMES-OWNER-001` — centralized game lifecycle.
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
 - `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot directly own Games recall persistence.
-- `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test now validates ownership rather than assuming a permanently service-worker-free app.
-- `V3-STATUS-STRUCTURE-001` — the v3.33 bookkeeping attempt exposed that shortening `DEVELOPMENT_STATUS_V3.md` removed validator-required defect-ledger and next-work-queue headings; the headings were restored instead of weakening the architecture validator.
-
-Historical detail remains available in Git history and `TIMELINE_V3.md`; this status file intentionally emphasizes the current handoff state.
+- `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test validates ownership rather than assuming a permanently service-worker-free app.
+- `V3-STATUS-STRUCTURE-001` — the v3.33 bookkeeping attempt exposed validator-required status headings; the document structure was restored instead of weakening validation.
 
 ## Next major milestone
 
-After the exact #98 bookkeeping candidate passes the complete suite and `release/v3.33-offline-shell` is frozen, continue directly to **#99 Offline opened Bible packs**.
-
-#99 acceptance boundary:
-- open a Bible pack/chapter online;
-- persist only the intended opened Bible content through the Bible-data ownership boundary;
-- reload/use the same opened content offline;
-- do not turn the #98 shell cache into a generic API cache;
-- preserve translation/source attribution and malformed-cache recovery;
-- preserve truthful Client Diagnostics;
-- add permanent edge + real mobile/browser offline regression;
-- run the entire accumulated suite before promotion.
+Complete the independent exact #99 bookkeeping suite and freeze `release/v3.34-offline-bible-packs` only at the exact SHA that passes all 88 accumulated steps. After that freeze, reassess the remaining 39 Not started rows and select the next dependency-safe parity milestone rather than blindly continuing inventory order.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
