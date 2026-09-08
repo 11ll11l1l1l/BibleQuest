@@ -19,22 +19,23 @@ Updated: 2026-09-08 JST
 
 ## Progress summary
 
-Inventory row states after the #66 functional gate:
+Inventory row states after the #96 functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 55 |
+| Regression-tested | 56 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 44 |
+| Not started | 43 |
 | Total | 100 |
 
-Strict verified-or-better parity is **56/100**.
+Strict verified-or-better parity is **57/100**.
 
-Official regression stability is **55/100**. #56 advanced to Regression-tested after surviving the later #66 complete functional suite. #66 remains Verified until a later feature milestone passes the complete suite with it still green.
+Official regression stability is **56/100**. #66 advanced to Regression-tested after surviving the later #96 complete functional suite. #96 remains Verified until a later feature milestone passes the complete suite with it still green.
 
 Current promotions:
-- #66 Congregation membership/roles — **Verified** after functional run `34185569051` and exact bookkeeping run `34200768014`; frozen in v3.29.
+- #96 Operational recovery/error boundary — **Verified** after exact complete functional run `34202531302`; awaiting the independent v3.30 bookkeeping/release gate.
+- #66 Congregation membership/roles — **Regression-tested** after surviving #96 run `34202531302`; frozen in v3.29.
 - #56 Cloud Notes — **Regression-tested** after surviving the later #66 full functional suite; frozen in v3.28.
 - #55 Private local notes — **Regression-tested**; frozen in v3.27.
 - #89 Doctrinal safety/context — **Regression-tested** after bookkeeping run `34168229627` and freeze at `release/v3.26-doctrinal-safety`.
@@ -146,7 +147,7 @@ Functional verification:
 
 ## Milestone 16 — Congregation membership/roles
 
-### #66 Congregation membership/roles — Verified
+### #66 Congregation membership/roles — Regression-tested
 
 - `src/app/congregation-membership.js` is the single membership/role orchestration owner.
 - `src/core/api.js` owns the RLS-protected membership/congregation reads and trusted `bq-join` invocation.
@@ -156,16 +157,19 @@ Functional verification:
 - Architecture, edge, and 390px browser coverage is permanently included in the accumulated workflow.
 - Clean functional candidate `87ed099fb9b0a18f0f5b85b9476a16af6bbb5349` passed complete run `34185569051`.
 - Exact candidate `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1` passed bookkeeping run `34200768014` and is frozen at `release/v3.29-congregation-membership`.
+- #66 survived the later #96 complete functional suite and is Regression-tested.
 
 ## Milestone 17 — Operational recovery/error boundary
 
-### #96 Operational recovery/error boundary — implementation active
+### #96 Operational recovery/error boundary — Verified
 
 - Recovered v2 behavior and the current v3 shell/router composition select #96 ahead of #67 Community Bridge because failure containment supports every remaining route.
 - `src/app/operational-recovery.js` is the single active recovery-state and Retry/Home lifecycle owner.
 - Router remains the only navigation/history owner; Shell remains presentation/event forwarding only.
 - #95 Client diagnostics, offline/PWA behavior, backup/reset, global event interception, DOM surveillance, and script reinjection remain excluded.
-- Official counts do not change until the exact #96 functional and bookkeeping gates pass.
+- Exact clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784` passed all 79 job steps in functional run `34202531302`.
+- The isolated trigger commit `08e187236e384b41ed50d5261d20d62c2554196e` explicitly checked out and asserted the clean candidate, then the verification branch was reset to remove the trigger.
+- #96 is Verified pending the independent exact bookkeeping/release gate.
 
 ## Defect / root-cause ledger retained
 
@@ -197,7 +201,7 @@ Functional verification:
 
 ## Next major milestone
 
-Complete #96 Operational recovery/error boundary through its exact functional and bookkeeping suites, then freeze `release/v3.30-operational-recovery` only at the verified clean SHA.
+Complete the exact #96 bookkeeping suite, then freeze `release/v3.30-operational-recovery` only at the verified clean bookkeeping SHA.
 
 After v3.30, reassess #67 Community Bridge against accessibility, diagnostics, PWA/offline, backup/import, and remaining user-facing parity debt.
 
@@ -205,4 +209,4 @@ Kids #38–40 remain explicitly deferred. Production deployment remains out of s
 
 ## Release rule
 
-#96 remains Not started in the authoritative inventory until its exact clean functional candidate passes the complete accumulated suite. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.
+#96 passed its complete functional suite on run `34202531302`. The exact bookkeeping state must now pass the complete accumulated suite before `release/v3.30-operational-recovery` can be frozen. The verification trigger commit is never eligible as a release SHA. Production v2, `main`, and production Cloudflare remain unchanged.

@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 55
+- **Regression-tested:** 56
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 44
+- **Not started:** 43
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -86,7 +86,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 63 | Couples cloud | Yes | Compatibility | Not started | shared state; permission; sync; failure handling |
 | 64 | Journey Groups | Yes | Compatibility | Not started | create/join/view/leave; membership persistence |
 | 65 | Encouragements | Yes | Compatibility | Not started | send/receive; permission; duplicate prevention |
-| 66 | Congregation membership/roles | Yes | Compatibility | Verified | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
+| 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
 | 67 | Community bridge | Yes | Compatibility | Not started | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Not started | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Not started | team list; member/role workflows |
@@ -116,7 +116,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 93 | Admin operations | Yes | Standalone old | Not started | operational actions; role guard; error recovery |
 | 94 | Reset/recovery page | Yes | Standalone old | Not started | reset path; cancellation; invalid state |
 | 95 | Client diagnostics | Yes | Compatibility | Not started | classify module/network failure; safe user recovery |
-| 96 | Operational recovery/error boundary | Yes | Clean basic | Not started | feature failure keeps shell alive; retry/home recovery |
+| 96 | Operational recovery/error boundary | Yes | Clean basic | Verified | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
 | 97 | PWA install/manifest | Yes | Clean | Not started | manifest valid; installable shell |
 | 98 | Offline shell | Yes | Clean | Not started | reload offline after first load |
 | 99 | Offline opened Bible packs | Yes | Clean | Not started | open pack online; offline reload same content |

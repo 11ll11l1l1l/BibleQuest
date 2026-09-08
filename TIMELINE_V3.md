@@ -7,13 +7,13 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after v3.29 bookkeeping/release verification:** 55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started
-- **Verified or better:** 56 / 100 (**56% strict parity completion**)
-- **Official regression stability:** 55 / 100
+- **Inventory states after #96 functional verification:** 56 Regression-tested / 1 Verified / 0 Implemented / 43 Not started
+- **Verified or better:** 57 / 100 (**57% strict parity completion**)
+- **Official regression stability:** 56 / 100
 - **Latest frozen checkpoint:** `release/v3.29-congregation-membership` at `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`
 - **v3.29 bookkeeping:** `34200768014` — all 76 job steps green
-- **#66 Congregation membership/roles:** Verified and frozen; functional `34185569051`, bookkeeping `34200768014`
-- **#96 Operational recovery/error boundary:** active implementation milestone; official state remains Not started until functional verification
+- **#66 Congregation membership/roles:** Regression-tested after surviving #96; frozen in v3.29
+- **#96 Operational recovery/error boundary:** Verified; clean candidate `90cd1d15db7baeacf9240514d6d8b2da1d68b784`, run `34202531302`
 - **#56 Cloud Notes:** Regression-tested after surviving #66; frozen in v3.28
 - **#55 Private local notes:** Regression-tested; frozen in v3.27
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
@@ -38,8 +38,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 13 | Doctrinal safety/context | Frozen | v3.26; #89 Regression-tested; functional `34166910207`; bookkeeping `34168229627` |
 | 14 | Private local notes | Frozen | v3.27; #55 Regression-tested |
 | 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested after later #66 suite |
-| 16 | Congregation membership/roles | Frozen | v3.29; #66 Verified; functional `34185569051`; bookkeeping `34200768014` |
-| 17 | Operational recovery/error boundary | Implementation active | #96; exact functional and bookkeeping gates required |
+| 16 | Congregation membership/roles | Frozen | v3.29; #66 Regression-tested after later #96 suite |
+| 17 | Operational recovery/error boundary | Functional gate green; bookkeeping active | #96 Verified; `34202531302` |
 | 18 | Remaining parity | Reassess after v3.30 | select by dependency and user value, not row order |
 | 19 | Full old-vs-new audit | Not started | reconcile all 100 rows |
 | 20 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
@@ -105,21 +105,22 @@ Bookkeeping/release verification:
 - #89 Doctrinal safety/context — **Regression-tested**
 - #55 Private local notes — **Regression-tested**
 - #56 Cloud Notes — **Regression-tested**
-- #66 Congregation membership/roles — **Verified**
-- Inventory states — **55 Regression-tested / 1 Verified / 0 Implemented / 44 Not started**
-- Strict parity — **56/100**
-- Official regression stability — **55/100**
+- #66 Congregation membership/roles — **Regression-tested**
+- #96 Operational recovery/error boundary — **Verified**
+- Inventory states — **56 Regression-tested / 1 Verified / 0 Implemented / 43 Not started**
+- Strict parity — **57/100**
+- Official regression stability — **56/100**
 
 ## Next sequence
 
-1. Complete #96 Operational recovery/error boundary through exact functional and bookkeeping gates.
+1. Complete the exact #96 bookkeeping gate.
 2. Freeze `release/v3.30-operational-recovery` only at the exact verified bookkeeping SHA.
 3. Reassess #67 Community Bridge against accessibility, diagnostics, PWA/offline, backup/import, and remaining user-facing parity debt.
 4. Keep Kids #38–40 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **44 Not started rows** after #66 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, diagnostics/recovery, PWA/offline behavior, backup/import, and Japanese furigana.
+Literal old-version parity has **43 Not started rows** after #96 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation workbench, client diagnostics, PWA/offline behavior, backup/import, and Japanese furigana.
 
 ## Release discipline
 

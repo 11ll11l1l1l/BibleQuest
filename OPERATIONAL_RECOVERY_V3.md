@@ -36,10 +36,19 @@ The recovered sources are `bq2.js`, `operational-hardening.js`, and `runtime-rec
 
 ## Verification gate
 
-Before #96 becomes Verified:
+The #96 functional verification gate completed with:
 
 1. architecture validation confirms one recovery owner and preserves router/shell ownership;
 2. edge regression covers capture, replacement, clear, Retry, Home, repeated failure, and reporting failure;
 3. browser regression proves render, mount, and cleanup failures keep the shell alive and recover at 390px;
 4. the complete accumulated v3 regression suite passes on the exact clean functional candidate;
 5. the independent bookkeeping candidate then passes the complete suite before `release/v3.30-operational-recovery` is frozen.
+
+## Functional verification evidence
+
+- Exact clean functional candidate: `90cd1d15db7baeacf9240514d6d8b2da1d68b784`.
+- Isolated verification-only commit: `08e187236e384b41ed50d5261d20d62c2554196e`; it checked out and asserted the clean candidate before testing.
+- Complete accumulated run: `34202531302` — all 79 job steps green, including architecture, edge, real 390px render/mount/cleanup recovery, and every prior browser regression.
+- `verify/v3.30-operational-recovery-functional` was reset to the clean candidate after the run, removing its temporary push trigger.
+
+#96 is Verified and #66 is Regression-tested in the authoritative inventory through this later-feature evidence. The independent exact bookkeeping candidate must pass the complete accumulated suite before `release/v3.30-operational-recovery` may be frozen.
