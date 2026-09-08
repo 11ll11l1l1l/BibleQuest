@@ -7,16 +7,17 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #98 functional verification:** 59 Regression-tested / 1 Verified / 0 Implemented / 40 Not started
-- **Verified or better:** 60 / 100 (**60% strict parity completion**)
-- **Official regression stability:** 59 / 100
-- **Latest frozen checkpoint:** `release/v3.32-pwa-install` at `200d69ec37b9aba48e8b926dfef7f2a8203d4855`
-- **v3.32 bookkeeping:** `34213223642` — complete accumulated suite green against the exact frozen SHA
+- **Inventory states after #99 functional verification:** 60 Regression-tested / 1 Verified / 0 Implemented / 39 Not started
+- **Verified or better:** 61 / 100 (**61% strict parity completion**)
+- **Official regression stability:** 60 / 100
+- **Latest frozen checkpoint:** `release/v3.33-offline-shell` at `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`
+- **v3.33 bookkeeping:** `34216091431` — all 85 numbered accumulated regression steps green against the frozen SHA
 - **#66 Congregation membership/roles:** Regression-tested after surviving #96; frozen in v3.29
 - **#96 Operational recovery/error boundary:** Regression-tested after surviving #95; frozen in v3.30
 - **#95 Client diagnostics:** Regression-tested after surviving #97; frozen in v3.31
-- **#97 PWA install/manifest:** Regression-tested after surviving #98; frozen in v3.32
-- **#98 Offline Shell:** Verified; corrected exact clean candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4`, functional run `34214663407`
+- **#97 PWA install/manifest:** Regression-tested; frozen in v3.32
+- **#98 Offline Shell:** Regression-tested after surviving #99; frozen in v3.33
+- **#99 Offline opened Bible packs:** Verified; exact clean candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e`, functional run `34217190770`
 - **#56 Cloud Notes:** Regression-tested after surviving #66; frozen in v3.28
 - **#55 Private local notes:** Regression-tested; frozen in v3.27
 - **#15 Japanese furigana:** intentionally deferred; remains Not started
@@ -43,12 +44,14 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested after later #66 suite |
 | 16 | Congregation membership/roles | Frozen | v3.29; #66 Regression-tested after later #96 suite |
 | 17 | Operational recovery/error boundary | Frozen | v3.30; #96 Regression-tested after later #95 suite |
-| 18 | Client diagnostics | Frozen | v3.31; #95 Regression-tested after later #97 suite; functional `34204562845`; bookkeeping `34208493773` |
-| 19 | PWA install/manifest | Frozen | v3.32; #97 Regression-tested after later #98 suite; bookkeeping `34213223642` |
-| 20 | Offline Shell | Functional gate green; bookkeeping active | #98 Verified; functional `34214663407`; #99 pack cache explicitly excluded |
-| 21 | Full old-vs-new audit | Not started | reconcile all 100 rows |
-| 22 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
-| 23 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 18 | Client diagnostics | Frozen | v3.31; #95 Regression-tested; functional `34204562845`; bookkeeping `34208493773` |
+| 19 | PWA install/manifest | Frozen | v3.32; #97 Regression-tested; corrected functional `34212434449`; bookkeeping `34213223642` |
+| 20 | Offline Shell | Frozen | v3.33; #98 Regression-tested after later #99 suite; functional `34214663407`; bookkeeping `34216091431` |
+| 21 | Offline opened Bible packs | Functional gate green; bookkeeping active | #99 Verified; functional `34217190770`; Bible-owner-only BSB/Tagalog persistence |
+| 22 | Dependency-safe parity continuation | Reassessment next | choose from remaining non-deferred rows only after v3.34 freeze |
+| 23 | Full old-vs-new audit | Not started | reconcile all 100 rows after selected parity milestones |
+| 24 | Accumulated mobile regression | Ongoing + final gate later | each milestone carries browser/mobile coverage |
+| 25 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -71,6 +74,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.30-operational-recovery` — `7ec0290a50086112210c4c301db3288b970a2cc0`; functional `34202531302`; bookkeeping `34203169381`
 - `release/v3.31-client-diagnostics` — `61af8aaee121356d6ef0388130df2b545ff943d9`; functional `34204562845`; bookkeeping `34208493773`
 - `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; corrected functional `34212434449`; bookkeeping `34213223642`
+- `release/v3.33-offline-shell` — `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`; corrected functional `34214663407`; bookkeeping `34216091431`
 
 ## #90 Source labels/attribution — Regression-tested
 
@@ -97,14 +101,27 @@ Clean v3 behavior:
 Functional verification history:
 - `34166578446` — failed at the general architecture validator. Root cause: obsolete pre-#89 validator requirement for raw imported `allow` admission. The validator was updated to require current `reviewImportedRecall` evaluation, quarantine filtering, trusted context projection, and rejection of raw imported allow-tag admission.
 - `34166769435` — reached browser regressions and exposed the global shell account button at 38px. Root cause: `.bq-session-chip{min-height:38px}` outside Wisdom’s already-correct 44px controls. Shell owner fixed to 44px; the existing mobile regression is retained.
-- `34166910207` — full accumulated suite green through Games. The new Acts 1:8 real browser path proves the contextual item has no answer/context before reveal, shows a separate BibleQuest context note after reveal, preserves the exact unfoldingWord answer/source/license, then carries the same review item into Open Smart Review safely.
+- `34166910207` — full accumulated suite green through Games. The Acts 1:8 browser path proves the contextual item has no answer/context before reveal, shows a separate BibleQuest context note after reveal, preserves the exact unfoldingWord answer/source/license, then carries the same review item into Open Smart Review safely.
 
 Bookkeeping/release verification:
-- Exact candidate `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` added the #89 architecture owner/boundaries and completed the four-document bookkeeping state.
-- `verify/v3-doctrinal-safety-bookkeeping` was created from that exact candidate; push was enabled only on the isolated verification branch.
+- Exact candidate `e223ac5e5022db2dc609e8fe15df9f9d020d4e75` added the #89 architecture owner/boundaries and completed the bookkeeping state.
 - Run `34168229627` completed fully green across every accumulated architecture, edge, browser, mobile, Transform, recording/media, Recall, and Games step.
-- The verification branch was reset to the clean candidate, removing the temporary trigger.
 - `release/v3.26-doctrinal-safety` was created and SHA-verified at exactly `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`.
+
+## #98 Offline Shell — Regression-tested
+
+- Corrected exact functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered accumulated steps in run `34214663407`.
+- Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed all 85 numbered steps in run `34216091431` and is frozen at `release/v3.33-offline-shell`.
+- #98 survived #99 functional run `34217190770` and is now Regression-tested.
+
+## #99 Offline opened Bible packs — Verified
+
+- `src/core/bible.js` remains the single Bible pack path, validation, in-memory cache, and opened-pack persistence owner.
+- Only explicitly opened bundled BSB and Tagalog book packs are eligible for persistent offline fallback.
+- Search does not bulk-persist scanned packs; live Japanese, NLT licensed-link mode, STEPBible context packs, APIs, cloud/account state, and media stay outside #99.
+- Persisted content is revalidated and corrupt stored packs are evicted.
+- Exact clean functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 numbered accumulated steps in run `34217190770`, including the 390px online→offline BSB/Tagalog Reader regression.
+- #99 is Verified pending its independent exact v3.34 bookkeeping/release gate.
 
 ## Current bookkeeping
 
@@ -117,21 +134,22 @@ Bookkeeping/release verification:
 - #95 Client diagnostics — **Regression-tested**
 - #96 Operational recovery/error boundary — **Regression-tested**
 - #97 PWA install/manifest — **Regression-tested**
-- #98 Offline Shell — **Verified**
-- Inventory states — **59 Regression-tested / 1 Verified / 0 Implemented / 40 Not started**
-- Strict parity — **60/100**
-- Official regression stability — **59/100**
+- #98 Offline Shell — **Regression-tested**
+- #99 Offline opened Bible packs — **Verified**
+- Inventory states — **60 Regression-tested / 1 Verified / 0 Implemented / 39 Not started**
+- Strict parity — **61/100**
+- Official regression stability — **60/100**
 
 ## Next sequence
 
-1. Complete the exact #98 bookkeeping gate.
-2. Freeze `release/v3.33-offline-shell` only at the exact verified bookkeeping SHA.
-3. Continue to #99 Offline opened Bible packs as the next bounded milestone; do not broaden #98 shell-cache ownership into Bible pack/API caching.
+1. Run the independent exact #99 bookkeeping gate against the complete 88-step accumulated suite.
+2. Freeze `release/v3.34-offline-bible-packs` only at the exact bookkeeping SHA that passes.
+3. Reassess the remaining 39 Not started rows and choose the next dependency-safe, non-deferred parity milestone.
 4. Keep Kids #38–40 and Japanese furigana #15 explicitly deferred and keep production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **40 Not started rows** after #98 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, couples/community/ministry/admin capabilities, accessibility, reporting/moderation workbench, opened-pack offline behavior, backup/import, and Japanese furigana.
+Literal old-version parity has **39 Not started rows** after #99 functional verification. Remaining work includes the explicitly deferred Kids modes, Play Together/Live Rooms, Bible World, couples/community/ministry/admin capabilities, accessibility, reporting/moderation workbench, backup/export/import/reset, onboarding/avatar/personality/psychometrics features, and Japanese furigana.
 
 ## Release discipline
 
