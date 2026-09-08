@@ -82,7 +82,7 @@ Functional verification history:
 - Corrected exact candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all **85 numbered accumulated steps** in run `34214663407`.
 - #98 is therefore Verified and #97 is Regression-tested.
 
-## Retained defect/root-cause discipline
+## Defect / root-cause ledger
 
 Every real defect remains root-caused and protected by a regression. Important retained examples include:
 - `V3-ROUTER-001` — single synchronous router fixed URL/view drift.
@@ -92,10 +92,11 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-TIMELINE-XP-001` — repeated failed Timeline checks cannot farm XP.
 - `V3-OPEN-REVIEW-OWNER-001` — Open Review cannot directly own Games recall persistence.
 - `V3-PWA-OFFLINE-COMPOSITION-TEST-001` — PWA test now validates ownership rather than assuming a permanently service-worker-free app.
+- `V3-STATUS-STRUCTURE-001` — the v3.33 bookkeeping attempt exposed that shortening `DEVELOPMENT_STATUS_V3.md` removed validator-required defect-ledger and next-work-queue headings; the headings were restored instead of weakening the architecture validator.
 
 Historical detail remains available in Git history and `TIMELINE_V3.md`; this status file intentionally emphasizes the current handoff state.
 
-## Next dependency-safe milestone
+## Next major milestone
 
 After the exact #98 bookkeeping candidate passes the complete suite and `release/v3.33-offline-shell` is frozen, continue directly to **#99 Offline opened Bible packs**.
 
