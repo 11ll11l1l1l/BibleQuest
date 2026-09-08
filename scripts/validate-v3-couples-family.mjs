@@ -21,7 +21,7 @@ if(!failures.length){
   if(!more.includes('data-open-couples-family'))fail('More must expose the recovered Couples local entry.');
   if(!index.includes('src/ui/couples-family.css'))fail('v3 shell must load Couples local styles.');
   for(const statement of['exactly eight categories and 32 conversation cards','`couple-cloud.js`, Supabase, session/account APIs','does not read or mutate the classic unprefixed `biblequest_couples_v1` key','fear, threats, coercion, stalking, or violence','No recovered #62 XP/progress reward exists'])if(!contract.includes(statement))fail(`Couples local contract missing boundary: ${statement}`);
-  if(!inventory.includes('| 62 | Couples/family local tools | Yes | Clean | Verified | topic open; save note/action; reload |'))fail('#62 must remain Verified after its complete functional gate passes.');
+  if(!inventory.includes('| 62 | Couples/family local tools | Yes | Clean | Regression-tested | topic open; save note/action; reload |'))fail('#62 must remain Regression-tested after a later complete milestone gate passes.');
   for(const test of['node scripts/validate-v3-couples-family.mjs','node tests/v3-couples-family-edge.mjs','node tests/v3-couples-family-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #62 regression: ${test}`);
   for(const file of jsFiles('src')){if(file==='src/core/storage.js')continue;if(/\blocalStorage\b|\bsessionStorage\b/.test(read(file)))fail(`Direct browser storage use outside storage owner: ${file}`)}
 }
