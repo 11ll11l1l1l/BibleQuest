@@ -70,3 +70,10 @@ The old implementation called the legacy community points global after a shared 
 - 390px mobile layout has no horizontal overflow and usable touch targets;
 - failure/retry paths do not corrupt the current pair state;
 - the complete accumulated regression suite remains green.
+
+## Functional verification evidence
+
+- Exact candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed complete accumulated run `34238007365`.
+- The isolated one-shot trigger explicitly checked out and asserted that SHA; its verification branch was reset to the clean candidate after the run.
+- `V3-COUPLES-CLOUD-VALIDATOR-001` replaced broad substring ownership checks with precise forbidden API/global tokens, preventing false positives without weakening architecture enforcement.
+- `V3-COUPLES-CLOUD-FOREIGN-ROW-001` corrected the edge fixture so mixed-pair rows reach the owner and prove that foreign rows are rejected there.

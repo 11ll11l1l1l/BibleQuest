@@ -19,19 +19,19 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the corrected #100 Backup/export/import/reset functional gate:
+After the corrected #63 Couples cloud functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 61 |
+| Regression-tested | 63 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 38 |
+| Not started | 36 |
 | Total | 100 |
 
-Strict verified-or-better parity is **62/100**.
+Strict verified-or-better parity is **64/100**.
 
-Official regression stability is **61/100**. #99 Offline opened Bible packs advanced to **Regression-tested** after the later #100 complete functional suite remained green. #100 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with backup/export/import/reset behavior still green.
+Official regression stability is **63/100**. #62 Couples/family local tools advanced to **Regression-tested** after the later #63 complete functional suite remained green. #63 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Couples cloud behavior still green.
 
 Recent frozen checkpoints:
 - `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping `34200768014`.
@@ -40,7 +40,9 @@ Recent frozen checkpoints:
 - `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; bookkeeping `34213223642`.
 - `release/v3.33-offline-shell` — `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`; bookkeeping `34216091431`.
 - `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; bookkeeping `34218225949`.
+- `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; bookkeeping `34220313765`.
+- `release/v3.36-couples-family-local` — `488fea911cc432c9843a2af39480b6f2cc67711e`; bookkeeping `34236023685`.
 
-#99 Offline opened Bible packs functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed run `34217190770`, then exact bookkeeping SHA `bfba29fdb500c2f8ea3f466e941f043dae908f26` passed run `34218225949` and was frozen in v3.34.
+#62 Couples/family local tools corrected functional candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb` passed run `34229105566`, then exact bookkeeping SHA `488fea911cc432c9843a2af39480b6f2cc67711e` passed run `34236023685` and was frozen in v3.36.
 
-#100 Backup/export/import/reset corrected exact functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed the complete accumulated architecture, edge and browser/mobile suite in run `34219329591`. It is Verified pending its independent exact v3.35 bookkeeping/release gate; #99 is Regression-tested through this later complete-suite evidence.
+#63 Couples cloud exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed the complete accumulated architecture, edge and browser/mobile suite in run `34238007365`. It is Verified pending its independent exact v3.37 bookkeeping/release gate; #62 is Regression-tested through this later complete-suite evidence.

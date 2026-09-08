@@ -28,6 +28,8 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 - `src/app/open-review.js` — Open Smart Review queue/spacing orchestration
 - `src/app/private-notes.js` — standalone private local-note CRUD/order/export state and persistence contract
 - `src/app/cloud-notes.js` — authenticated remote Scripture-note validation/cache/concurrency orchestration
+- `src/app/couples-family.js` — local Couples/family state and workflow orchestration through shared storage
+- `src/app/couples-cloud.js` — authenticated Couples pair/shared-history orchestration
 - `src/app/congregation-membership.js` — authenticated congregation membership/role orchestration and fail-closed client capability projection
 - `src/app/operational-recovery.js` — active route-failure containment and Retry/Home action lifecycle
 - `src/app/daily-mission.js` — Daily Journey orchestration
@@ -208,6 +210,16 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 9. Cloud Notes has no recovered XP, streak, mastery, spiritual score, Lesson progression, or Progress event side effect.
 10. `src/features/cloud-notes/index.js` is presentation/event forwarding only; `src/ui/cloud-notes.css` owns feature/mobile styling. Permanent protection includes `scripts/validate-v3-cloud-notes.mjs`, `tests/v3-cloud-notes-edge.mjs`, `tests/v3-cloud-notes-smoke.mjs`, the Private Notes validator/regressions, and the accumulated workflow.
 
+## Couples local / cloud boundaries
+
+1. `src/app/couples-family.js` is the sole #62 local Couples state owner and uses only `src/core/storage.js`; it cannot call account, session, Supabase, Cloud Notes, congregation or Progress owners.
+2. `src/app/couples-cloud.js` is the sole #63 authenticated pair and shared-history orchestration owner. It has no browser-storage key and cannot inspect or upload #62 state.
+3. `src/core/api.js` is the only module allowed to invoke the existing `bq-couple` trusted function or query/insert the RLS-protected `bible_couple_shared` table.
+4. Shared cloud history is append-only and limited to recovered journey completions, entered commitments and read-only challenge history. Private Notes, Cloud Notes, Transform results, credentials and unrelated account data remain excluded.
+5. Pair identity is accepted only from the authenticated session and normalized server responses. Foreign pair rows, malformed roles/statuses and signed-out/local-preview actions fail closed.
+6. #63 does not create a migration, direct Supabase client, offline queue, trusted score event or local/cloud auto-migration. Row #70 remains the sole future owner for trusted score submission.
+7. Permanent protection includes `COUPLES_FAMILY_LOCAL_V3.md`, `COUPLES_CLOUD_V3.md`, their architecture validators, edge regressions, 390px browser regressions and the complete accumulated workflow.
+
 ## Congregation membership / role boundaries
 
 1. `src/app/congregation-membership.js` is the single #66 membership/role orchestration owner. It owns membership normalization, the in-memory membership list, trusted join orchestration, and fail-closed client capability projection.
@@ -271,10 +283,10 @@ Message, Devotional, and Task must share one ministry post/task identity. Pastor
 
 ## Global hard boundary
 
-One boot, router, session owner, global store, storage boundary, API boundary, Client Diagnostics owner, PWA Install owner, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
+One boot, router, session owner, global store, storage boundary, API boundary, Client Diagnostics owner, PWA Install owner, Bible service, Reader owner, Japanese vocabulary owner, BibleQuest-authored provenance registry, doctrinal/content-safety policy owner, Progress owner, Recall Pack owner, Lesson engine, Adaptive owner, Open Review owner, Private Notes owner, Cloud Notes owner, local Couples owner, Couples Cloud owner, Congregation Membership owner, Operational Recovery owner, Transform engine, Audio owner, Recordings owner, Media Library owner, Games owner, and one orchestration owner per feature. No v3 source depends on legacy `window.BQ*` globals.
 
 ## Milestone order
 
-Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → Client diagnostics (#95) → PWA install/manifest (#97) → Offline shell (#98) → Offline opened Bible packs (#99) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
+Foundation → Account → Reader → Progress → Lesson → Daily Mission → Transform → Audio/Recordings/Media → Games core → Bible-study core (Guided Study → Deep Questions → Story Journey → Wisdom Situations → Adaptive Learning → Open Smart Review → STEPBible Context Lab) → Reader-language/source parity (#14 → #16 → #17; #15 furigana intentionally deferred) → source provenance (#90) → doctrinal safety/context (#89) → Private local notes (#55) → Cloud notes (#56) → Congregation membership/roles (#66) → Operational recovery/error boundary (#96) → Client diagnostics (#95) → PWA install/manifest (#97) → Offline shell (#98) → Offline opened Bible packs (#99) → Backup/export/import/reset (#100) → Couples/family local tools (#62) → Couples cloud (#63) → reassess the next dependency-safe parity milestone → full old-vs-new audit → accumulated mobile regression → production deployment.
 
-Known-good frozen releases extend through `release/v3.31-client-diagnostics` at `61af8aaee121356d6ef0388130df2b545ff943d9`; exact v3.31 bookkeeping run `34208493773` passed all 82 job steps against that SHA before the freeze. Corrected #97 PWA install candidate `b0f3e81c5a85addf7580e5ad0bd02fcdfe642667` passed all 85 steps of functional run `34212434449` and is Verified pending its independent bookkeeping/release gate; #95 advanced to Regression-tested. Current strict parity is 59/100 and official regression stability is 58/100. Production v2, `main`, and production Cloudflare remain isolated.
+Known-good frozen releases extend through `release/v3.36-couples-family-local` at `488fea911cc432c9843a2af39480b6f2cc67711e`; exact v3.36 bookkeeping run `34236023685` passed the complete accumulated suite against that SHA before the freeze. #63 Couples cloud candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed exact functional run `34238007365` and is Verified pending its independent bookkeeping/release gate; #62 advanced to Regression-tested. Current strict parity is 64/100 and official regression stability is 63/100. Production v2, `main`, and production Cloudflare remain isolated.
