@@ -17,6 +17,7 @@ import { createRecordingsService } from './recordings.js';
 import { createMediaLibraryService } from './media-library.js';
 import { createGameLauncherService } from './games.js';
 import { createPrivateNotesService } from './private-notes.js';
+import { createCloudNotesService } from './cloud-notes.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
@@ -35,6 +36,7 @@ import { wisdomSituationsPage } from '../features/wisdom-situations/index.js';
 import { adaptiveLearningPage } from '../features/adaptive-learning/index.js';
 import { openReviewPage } from '../features/open-review/index.js';
 import { privateNotesPage } from '../features/private-notes/index.js';
+import { cloudNotesPage } from '../features/cloud-notes/index.js';
 import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
@@ -69,12 +71,13 @@ function start(){
   const games=createGameLauncherService({progress,storage,recall});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const privateNotes=createPrivateNotesService({storage});
+  const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
 
   let router,shell;
   const routes=Object.freeze({
     home:()=>homePage({progress,dailyMission,onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes')}),
+    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
@@ -82,6 +85,7 @@ function start(){
     'adaptive-learning':()=>adaptiveLearningPage({adaptive:adaptiveLearning,onLearn:()=>router.navigate('learn')}),
     'open-review':()=>openReviewPage({review:openReview,onLearn:()=>router.navigate('learn')}),
     'private-notes':()=>privateNotesPage({notes:privateNotes,onLearn:()=>router.navigate('learn')}),
+    'cloud-notes':()=>cloudNotesPage({notes:cloudNotes,onLearn:()=>router.navigate('learn'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
@@ -91,6 +95,6 @@ function start(){
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
   session.boot().then(()=>{if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error))}).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
