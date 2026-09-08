@@ -19,19 +19,19 @@ The authoritative audit is [`FEATURE_INVENTORY_V3.md`](FEATURE_INVENTORY_V3.md),
 
 ## Current audit result
 
-After the corrected #98 Offline Shell functional gate:
+After the #99 Offline opened Bible packs functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 59 |
+| Regression-tested | 60 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 40 |
+| Not started | 39 |
 | Total | 100 |
 
-Strict verified-or-better parity is **60/100**.
+Strict verified-or-better parity is **61/100**.
 
-Official regression stability is **59/100**. #97 PWA install/manifest advanced to **Regression-tested** after the later #98 full functional suite remained green. #98 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with Offline Shell still green.
+Official regression stability is **60/100**. #98 Offline Shell advanced to **Regression-tested** after the later #99 full functional suite remained green. #99 is correctly held at **Verified** until a later feature milestone runs the entire accumulated suite with opened-pack offline behavior still green.
 
 #55 Private local notes is frozen at `release/v3.27-private-local-notes` (`e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping run `34169778300`).
 
@@ -45,4 +45,6 @@ Official regression stability is **59/100**. #97 PWA install/manifest advanced t
 
 #97 PWA install/manifest passed corrected functional run `34212434449`. Exact bookkeeping candidate `200d69ec37b9aba48e8b926dfef7f2a8203d4855` passed run `34213223642` and is frozen at `release/v3.32-pwa-install`.
 
-#98 Offline Shell corrected exact functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered steps in run `34214663407`. It is Verified pending the final exact v3.33 bookkeeping/release gate; #97 is Regression-tested through this later complete-suite evidence.
+#98 Offline Shell corrected functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed run `34214663407`. Exact bookkeeping candidate `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7` passed all 85 numbered steps in run `34216091431` and is frozen at `release/v3.33-offline-shell`.
+
+#99 Offline opened Bible packs exact functional candidate `8eaaf4e0687cd4d10a74f00de8ffbee291fe062e` passed all 88 numbered steps in run `34217190770`. It is Verified pending its independent exact v3.34 bookkeeping/release gate; #98 is Regression-tested through this later complete-suite evidence.
