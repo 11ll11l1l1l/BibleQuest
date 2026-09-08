@@ -2,6 +2,7 @@ import { createStore } from './store.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
+import { createBackupService } from './backup.js';
 import { createReaderService } from './reader.js';
 import { createJapaneseVocabularyService } from './japanese-vocabulary.js';
 import { createGuidedStudyService } from './study.js';
@@ -33,6 +34,7 @@ import { storage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { homePage } from '../features/home/index.js';
 import { accountPage } from '../features/account/index.js';
+import { backupPage } from '../features/backup/index.js';
 import { learnPage } from '../features/learn/index.js';
 import { guidedStudyPage } from '../features/study/index.js';
 import { deepQuestionsPage } from '../features/deep-questions/index.js';
@@ -66,6 +68,7 @@ function start(){
   const transformEngine=createTransformEngine({storage});
   const session=createSessionService({auth:api.auth,store});
   const account=createAccountService({api,session,storage});
+  const backup=createBackupService({storage});
   const reader=createReaderService({bible,storage,progress});
   const vocabulary=createJapaneseVocabularyService({storage});
   const study=createGuidedStudyService({lesson,progress,reader});
@@ -89,6 +92,7 @@ function start(){
   })});
 
   let router,shell;
+  const reloadAfterLocalDataChange=()=>location.reload();
   const routes=Object.freeze({
     home:()=>homePage({progress,dailyMission,onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
@@ -104,7 +108,8 @@ function start(){
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCongregation:()=>router.navigate('congregation')}),
+    more:()=>morePage({pwaInstall,onCongregation:()=>router.navigate('congregation'),onBackup:()=>router.navigate('backup')}),
+    backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
     congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
     account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
   });
