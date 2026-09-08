@@ -36,3 +36,13 @@
 - Edge regression verifies registration, resource filtering, warmup acknowledgement, idempotent start, unsupported behavior, and disposal.
 - Browser regression loads the real app once online, confirms the shell cache is populated, switches Chromium offline, reloads, and confirms the single v3 shell still boots at 390px without horizontal overflow.
 - The test also proves the Client Diagnostics cache-busting probe is absent from the shell cache.
+
+## Functional verification — 2026-09-08 JST
+
+- Initial implementation candidate `627601ecc28df466bc7dd561d40983917c3ee773` exposed one stale pre-#98 regression assumption in the existing #97 PWA browser test: it rejected the presence of any service-worker controller even when the controller belonged exclusively to the new #98 owner.
+- Root cause `V3-PWA-OFFLINE-COMPOSITION-TEST-001`: the #97 smoke test encoded the former global condition “no service worker exists” instead of its actual ownership contract “#97 does not own or install a service worker.”
+- The regression was corrected to allow a controller only when its script is the dedicated `offline-shell-sw.js`; the #97 install owner itself remains service-worker independent.
+- Corrected exact clean functional candidate `85de7cd753f7a74606b1feb8bbe4fd81205d3aa4` passed all 85 numbered accumulated regression steps in GitHub Actions run `34214663407`.
+- The run includes the real Chromium 390px online-load → offline-switch → reload path, confirms one v3 shell mounts, confirms no horizontal overflow, and confirms Bible packs plus the Client Diagnostics `bq-net-probe` are absent from the shell cache.
+- #98 is therefore Verified. #97 advances to Regression-tested because it survived this later complete functional suite.
+- The exact bookkeeping candidate must independently pass the complete accumulated suite before `release/v3.33-offline-shell` is frozen.
