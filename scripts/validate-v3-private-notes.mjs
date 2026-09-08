@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const failures=[];
 const fail=message=>failures.push(message);
@@ -24,7 +25,7 @@ if(!failures.length){
   if(!learn.includes('data-open-private-notes'))fail('Learn must expose the verified Private Notes route.');
   if(!html.includes('src/ui/private-notes.css'))fail('index.html must load Private Notes styles.');
   if(!ui.includes('does not upload or sync these notes to an account'))fail('Private Notes UI must preserve the explicit device-only/no-cloud boundary.');
-  for(const test of['node tests/v3-private-notes-edge.mjs','node tests/v3-private-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Private Notes regression: ${test}`);
+  for(const test of['tests/v3-private-notes-edge.mjs','tests/v3-private-notes-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing Private Notes regression: ${test}`);
 }
 
 if(failures.length){console.error(failures.map(item=>`- ${item}`).join('\n'));process.exit(1)}

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const root=process.cwd(),failures=[];
 const fail=message=>failures.push(message);
@@ -11,11 +12,14 @@ const required=[
   'src/features/study/content.js','src/features/study/index.js','src/features/deep-questions/content.js','src/features/deep-questions/index.js','src/features/story-journey/content.js','src/features/story-journey/index.js','src/features/wisdom-situations/content.js','src/features/wisdom-situations/index.js','src/features/adaptive-learning/index.js','src/features/open-review/index.js','src/features/transform/content.js','src/features/transform/index.js','src/features/recordings/index.js','src/features/media-library/index.js','src/features/games/content.js','src/features/games/index.js',
   'src/ui/shell.js','src/ui/app.css','src/ui/reader.css','src/ui/progress.css','src/ui/study.css','src/ui/deep-questions.css','src/ui/story-journey.css','src/ui/wisdom-situations.css','src/ui/adaptive-learning.css','src/ui/open-review.css','src/ui/daily-mission.css','src/ui/transform.css','src/ui/recordings.css','src/ui/media-library.css','src/ui/games.css',
   'src/features/home/index.js','src/features/account/index.js','src/features/learn/index.js','src/features/reader/index.js','src/features/progress/index.js','src/features/daily-mission/content.js','src/features/daily-mission/index.js',
-  'FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','DEVOTIONAL_MINISTRY_DESIGN_V3.md','data/packs/ATTRIBUTION.md'
+  'FEATURE_INVENTORY_V3.md','DEVELOPMENT_STATUS_V3.md','ARCHITECTURE_V3.md','DEVOTIONAL_MINISTRY_DESIGN_V3.md','data/packs/ATTRIBUTION.md',
+  'scripts/v3-workflow-contract.mjs','tests/v3-workflow-contract-edge.mjs','.github/workflows/v3-regression.yml'
 ];
 for(const file of required)if(!fs.existsSync(path.join(root,file)))fail(`Missing v3 required file: ${file}`);
 
 const html=read('index.html');
+const workflow=read('.github/workflows/v3-regression.yml');
+if(!workflowInvokesNode(workflow,'tests/v3-workflow-contract-edge.mjs'))fail('Accumulated workflow must execute the workflow invocation contract regression.');
 const scriptTags=[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match=>match[1]);
 if(scriptTags.length!==1||scriptTags[0]!=='src/app/bootstrap.js')fail(`index.html must boot exactly one script entry. Found: ${scriptTags.join(', ')||'none'}`);
 if(!/type=["']module["']/.test(html))fail('v3 bootstrap must be loaded as an ES module.');

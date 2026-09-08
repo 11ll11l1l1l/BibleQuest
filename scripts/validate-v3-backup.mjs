@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const failures=[];const fail=message=>failures.push(message);const read=file=>fs.readFileSync(file,'utf8');
 const required=['BACKUP_IMPORT_V3.md','FEATURE_INVENTORY_V3.md','src/core/storage.js','src/app/backup.js','src/app/bootstrap.js','src/features/backup/index.js','src/features/more/index.js','tests/v3-backup-edge.mjs','tests/v3-backup-smoke.mjs','.github/workflows/v3-regression.yml'];
@@ -21,7 +22,7 @@ if(!failures.length){
   }
   for(const statement of['`biblequest.v3.auth.*` is excluded','`biblequest.v3.device-id` is excluded and preserved','If a storage write fails','reloads BibleQuest'])if(!contract.includes(statement))fail(`Backup contract missing boundary: ${statement}`);
   if(!inventory.includes('| 100 | Backup/export/import/reset | Yes | Clean | Regression-tested | export; reset; import; schema validation; corrupt backup |'))fail('#100 must be Regression-tested after the later complete #62 functional gate passes.');
-  for(const test of['node scripts/validate-v3-backup.mjs','node tests/v3-backup-edge.mjs','node tests/v3-backup-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #100 regression: ${test}`);
+  for(const test of['scripts/validate-v3-backup.mjs','tests/v3-backup-edge.mjs','tests/v3-backup-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #100 regression: ${test}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 Backup/export/import/reset architecture boundary passed.');

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const failures=[];const fail=message=>failures.push(message);const read=file=>fs.readFileSync(file,'utf8');
 const required=['COUPLES_CLOUD_V3.md','FEATURE_INVENTORY_V3.md','couple-cloud.js','supabase/functions/bq-couple/index.ts','supabase/migrations/20260904_innovation_stage.sql','supabase/migrations/20260905071100_couple_shared_write_hardening.sql','src/core/api.js','src/app/couples-cloud.js','src/features/couples-cloud/index.js','src/ui/couples-cloud.css','src/app/bootstrap.js','src/features/more/index.js','index.html','tests/v3-couples-cloud-edge.mjs','tests/v3-couples-cloud-smoke.mjs','.github/workflows/v3-regression.yml'];
@@ -21,7 +22,7 @@ if(!failures.length){
   const verifiedRow='| 63 | Couples cloud | Yes | Compatibility | Verified | shared state; permission; sync; failure handling |';
   const regressionRow='| 63 | Couples cloud | Yes | Compatibility | Regression-tested | shared state; permission; sync; failure handling |';
   if(!inventory.includes(verifiedRow)&&!inventory.includes(regressionRow))fail('#63 must be Verified or Regression-tested after its complete functional gate passes.');
-  for(const test of['node scripts/validate-v3-couples-cloud.mjs','node tests/v3-couples-cloud-edge.mjs','node tests/v3-couples-cloud-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #63 regression: ${test}`);
+  for(const test of['scripts/validate-v3-couples-cloud.mjs','tests/v3-couples-cloud-edge.mjs','tests/v3-couples-cloud-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #63 regression: ${test}`);
 }
 if(failures.length){for(const item of failures)console.error(`- ${item}`);process.exit(1)}
 console.log('BibleQuest v3 Couples cloud architecture boundary passed.');

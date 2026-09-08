@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const failures=[];
 const fail=message=>failures.push(message);
@@ -21,7 +22,7 @@ if(!failures.length){
   for(const contract of['## Cloud Notes boundaries','existing `public.bible_notes` backend contract','Private Notes are never uploaded','Cloud Notes owner'])if(!architecture.includes(contract))fail(`Architecture contract missing Cloud Notes boundary: ${contract}`);
   if(!inventory.includes('| 55 | Private local notes | Yes | Clean | Regression-tested |'))fail('Inventory must keep #55 Regression-tested.');
   if(!inventory.includes('| 56 | Cloud notes | Yes | Compatibility | Regression-tested |'))fail('Inventory must keep #56 Cloud Notes Regression-tested.');
-  for(const test of['node tests/v3-cloud-notes-edge.mjs','node tests/v3-cloud-notes-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing Cloud Notes regression: ${test}`);
+  for(const test of['tests/v3-cloud-notes-edge.mjs','tests/v3-cloud-notes-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing Cloud Notes regression: ${test}`);
 }
 
 if(failures.length){console.error(failures.map(item=>`- ${item}`).join('\n'));process.exit(1)}

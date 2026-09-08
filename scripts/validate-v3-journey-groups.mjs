@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 const failures=[],fail=m=>failures.push(m),read=f=>fs.readFileSync(f,'utf8');
 const required=['JOURNEY_GROUPS_V3.md','FEATURE_INVENTORY_V3.md','journey-groups.js','supabase/functions/bq-journey-group/index.ts','supabase/migrations/20260904_journey_groups_daily_loop.sql','src/core/api.js','src/app/journey-groups.js','src/features/journey-groups/index.js','src/ui/journey-groups.css','src/app/bootstrap.js','src/features/more/index.js','index.html','tests/v3-journey-groups-edge.mjs','tests/v3-journey-groups-smoke.mjs','.github/workflows/v3-regression.yml'];
 for(const f of required)if(!fs.existsSync(f))fail(`Missing #64 Journey Groups file: ${f}`);
@@ -16,6 +17,6 @@ if(!failures.length){
  if(!html.includes('src/ui/journey-groups.css'))fail('v3 shell must load Journey Groups styles.');
  for(const item of['create, join, view and leave','2–6 members','Inventory row #65 Encouragements is not pulled forward','Production v2'])if(!contract.includes(item))fail(`Journey Groups contract missing boundary: ${item}`);
  const rows=['| 64 | Journey Groups | Yes | Compatibility | Implemented | create/join/view/leave; membership persistence |','| 64 | Journey Groups | Yes | Compatibility | Verified | create/join/view/leave; membership persistence |','| 64 | Journey Groups | Yes | Compatibility | Regression-tested | create/join/view/leave; membership persistence |'];if(!rows.some(row=>inventory.includes(row)))fail('#64 must be Implemented or better once clean v3 code exists.');
- for(const test of['node scripts/validate-v3-journey-groups.mjs','node tests/v3-journey-groups-edge.mjs','node tests/v3-journey-groups-smoke.mjs'])if(!workflow.includes(test))fail(`Accumulated workflow missing #64 regression: ${test}`);
+ for(const test of['scripts/validate-v3-journey-groups.mjs','tests/v3-journey-groups-edge.mjs','tests/v3-journey-groups-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #64 regression: ${test}`);
 }
 if(failures.length){failures.forEach(x=>console.error(`- ${x}`));process.exit(1)}console.log('BibleQuest v3 Journey Groups architecture boundary passed.');
