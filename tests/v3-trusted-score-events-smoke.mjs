@@ -8,7 +8,7 @@ async function run(){
     let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},remoteCalls=0;
     const session={getState:()=>sessionState};
     const congregation={can:(id,cap)=>id==='c1'&&cap==='read',load:async()=>[{congregationId:'c1',userId:'u1'}]};
-    const api={async submit(congregationId,claims){remoteCalls++;return{processed:claims.map((claim,index)=>index===0?{sourceEventId:claim.sourceEventId,accepted:true,points:5,category:'reading',targetUserId:'u1'}:{sourceEventId:claim.sourceEventId,accepted:false,duplicate:true})}};
+    const api={async submit(congregationId,claims){remoteCalls++;return{processed:claims.map((claim,index)=>index===0?{sourceEventId:claim.sourceEventId,accepted:true,points:5,category:'reading',targetUserId:'u1'}:{sourceEventId:claim.sourceEventId,accepted:false,duplicate:true})}}};
     const service=createTrustedScoreEventsService({api,session,congregation});
     const response=await service.submit('c1',[{sourceEventId:' browser-accepted ',source:'Guided Study',meta:{completed:1}},{sourceEventId:'browser-existing',source:'Guided Study',meta:{completed:1}}]);
     const callsAfterRemote=remoteCalls;
