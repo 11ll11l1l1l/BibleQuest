@@ -39,6 +39,8 @@ Current leading rows:
 
 ## Current architecture boundary
 
+`ARCHITECTURE_V3.md` remains the detailed foundational architecture contract, but its final narrative progress snapshot is historical and still describes the v3.40 checkpoint. Do not use that trailing snapshot as the current progress ledger. Current milestone state and post-v3.40 owner additions are authoritative in `FEATURE_INVENTORY_V3.md`, this status file, `DEVELOPMENT_HANDOFF_V3.md`, `TIMELINE_V3.md`, the milestone-specific contracts, and their accumulated architecture validators. The detailed architecture file will be safely reconciled as a whole during the full old-vs-new audit rather than risk truncating its retained contract through a full-file-only editing surface.
+
 - `src/core/storage.js` — sole direct browser local-storage owner.
 - `src/core/api.js` — sole browser Supabase/trusted-function boundary.
 - `src/app/congregation-membership.js` — congregation membership and client capability boundary.
@@ -83,10 +85,10 @@ All earlier defect regressions remain in the accumulated suite.
 
 ## Next major milestone
 
-1. Finish the #72 promotion/bookkeeping documentation on `feature/v3-congregation-recognition`.
-2. Run the exact clean bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
-3. If green, reset that branch to the exact clean candidate and freeze `release/v3.45-congregation-recognition` at the same SHA.
-4. Only after v3.45 is frozen, create `feature/v3-assignments` and recover #73 receive/open/complete/status-sync contracts before implementation.
+1. Run the exact clean #72 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
+2. If green, reset that branch to the exact clean candidate and freeze `release/v3.45-congregation-recognition` at the same SHA.
+3. Only after v3.45 is frozen, create `feature/v3-assignments` and recover #73 receive/open/complete/status-sync contracts before implementation.
+4. Reconcile the full `ARCHITECTURE_V3.md` narrative safely during the later full old-vs-new audit; do not use its stale v3.40 tail as current bookkeeping.
 
 ## Release rule
 
