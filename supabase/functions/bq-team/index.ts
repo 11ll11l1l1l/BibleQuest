@@ -23,8 +23,8 @@ Deno.serve(async(req:Request)=>{
     }
 
     const teamId=cleanText(body?.teamId,64);if(!teamId)return json({error:'teamId required'},400);
-    const found=await admin.from('bible_teams').select('id,congregation_id,created_by,team_type,name,active').eq('id',teamId).eq('congregation_id',congregationId).maybeSingle();
-    if(found.error)throw found.error;if(!found.data||!found.data.active)return json({error:'Active team not found in this congregation'},404);
+    const found=await admin.from('bible_teams').select('id,congregation_id,created_by,team_type,name,active').eq('id',teamId).eq('congregation_id',congregationId).eq('team_type','game_team').maybeSingle();
+    if(found.error)throw found.error;if(!found.data||!found.data.active)return json({error:'Active Team Center team not found in this congregation'},404);
     const team=found.data;
 
     if(action==='add'){
