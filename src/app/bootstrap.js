@@ -22,6 +22,7 @@ import { createCloudNotesService } from './cloud-notes.js';
 import { createCouplesFamilyService } from './couples-family.js';
 import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
+import { createPresenceService } from './presence.js';
 import { createJourneyGroupsService } from './journey-groups.js';
 import { createEncouragementsService } from './encouragements.js';
 import { createCommunityBridgeService } from './community-bridge.js';
@@ -98,6 +99,7 @@ function start(){
   const couplesFamily=createCouplesFamilyService({storage});
   const couplesCloud=createCouplesCloudService({api:api.couples,session});
   const congregation=createCongregationMembershipService({api,session});
+  const presence=createPresenceService({api:api.presence,session,congregation,store});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});
@@ -147,7 +149,10 @@ function start(){
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
-  session.boot().then(()=>{if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error))}).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  session.boot().then(()=>{
+    presence.start().catch(error=>console.warn('Presence unavailable',error));
+    if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
+  }).catch(error=>console.error('Session boot failed',error));
+  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();void presence.dispose();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
