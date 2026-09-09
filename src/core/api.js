@@ -12,6 +12,9 @@ const JOURNEY_GROUP_FIELDS='id,owner_id,congregation_id,name,description,schedul
 const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
 const ENCOURAGEMENT_FIELDS='id,group_id,sender_id,recipient_id,kind,created_at';
 const PRESENCE_FIELDS='congregation_id,user_id,last_seen_at,surface';
+const TEAM_FIELDS='id,congregation_id,created_by,team_type,name,active,created_at';
+const TEAM_MEMBER_FIELDS='team_id,user_id,joined_at';
+const TEAM_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,active,joined_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -220,6 +223,27 @@ export function createApi() {
     }
   });
 
+  const teamCenter = Object.freeze({
+    async list(congregationIds) {
+      const ids=[...new Set((congregationIds||[]).map(String).filter(Boolean))];
+      if(!ids.length)return {teams:[],members:[],directory:[]};
+      const client=await getClient();
+      const {data:teams,error:teamError}=await client.from('bible_teams').select(TEAM_FIELDS).in('congregation_id',ids).eq('team_type','game_team').eq('active',true).order('created_at',{ascending:true});
+      if(teamError)throw teamError;
+      const teamIds=[...new Set((teams||[]).map(row=>row.id).filter(Boolean))];
+      let members=[];
+      if(teamIds.length){const {data,error}=await client.from('bible_team_members').select(TEAM_MEMBER_FIELDS).in('team_id',teamIds).order('joined_at',{ascending:true});if(error)throw error;members=data||[]}
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(TEAM_DIRECTORY_FIELDS).in('congregation_id',ids).eq('active',true).order('joined_at',{ascending:true});
+      if(directoryError)throw directoryError;
+      return {teams:teams||[],members,directory:directory||[]};
+    },
+    async create(congregationId,name) { return invoke('bq-team',{action:'create',congregationId,name}); },
+    async add(congregationId,teamId,targetUserId) { return invoke('bq-team',{action:'add',congregationId,teamId,targetUserId}); },
+    async remove(congregationId,teamId,targetUserId) { return invoke('bq-team',{action:'remove',congregationId,teamId,targetUserId}); },
+    async rename(congregationId,teamId,name) { return invoke('bq-team',{action:'rename',congregationId,teamId,name}); },
+    async archive(congregationId,teamId) { return invoke('bq-team',{action:'archive',congregationId,teamId}); }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -318,5 +342,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
