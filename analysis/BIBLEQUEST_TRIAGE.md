@@ -24,18 +24,18 @@ Analysis-only handoff on `agent-analysis`. Current `main` is implementation trut
 - **NOT EXECUTED:** core browser flows, required 320/360/390/412/430 px mobile matrix, installed-PWA behavior, deployed Supabase RLS/auth lifecycle, and exhaustive doctrinal/content audit. Evidence gaps are not failures.
 - **P4 suppressed:** layered observers, Modern Home orchestration, Reader local-state ownership, Journey summary persistence, Community compatibility wrappers, and similar architecture complexity with no separate demonstrated user/release failure.
 
-## Current cycle — 2026-09-10 02:51 JST
+## Current cycle — 2026-09-10 03:47 JST
 
 - **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`.
 - **Reports available:** Investigator 1, 2, 3, and 4; none missing.
-- **Investigator 1:** latest report again finds no executable core-flow FAIL. It independently identifies only the source-confirmed stale existing-device cloud overwrite as material; startup/Home/navigation, Reader, Journey completion/resume, Transformation/Grow, games, and Community remain NOT EXECUTED. Successful deployment checks for this SHA do not establish browser-flow correctness.
-- **Investigator 2:** latest report de-duplicates the same P0 and confirms normal Journey changes can reach `BQAccount.pushProgress()`. Other architecture/ownership observations remain P4 because no separate user/release failure is demonstrated.
-- **Investigator 3:** mobile/PWA acceptance remains NOT EXECUTED, not failed; no verified UI/PWA regression.
-- **Investigator 4:** same cloud overwrite plus deferred recovery-code atomicity concern; no new material privacy, Scripture/content, or auth failure established.
+- **Investigator 1:** latest report finds no new executable core-flow FAIL and again identifies the stale existing-device cloud overwrite as the only demonstrated material functional risk. Startup/Home/navigation, Reader, Journey completion/resume, Transformation/Grow, games, and Community remain NOT EXECUTED.
+- **Investigator 2:** latest report de-duplicates the same P0 and confirms ordinary Journey activity can reach `BQAccount.pushProgress()`. Other ownership/observer/compatibility observations remain P4 because no separate user or release failure is demonstrated.
+- **Investigator 3:** mobile/PWA acceptance remains NOT EXECUTED rather than failed; no verified UI/PWA regression is available.
+- **Investigator 4:** same cloud overwrite risk plus deferred recovery-code atomicity concern; no new material privacy, Scripture/content, or auth failure is established.
 - **Independent verification:** exact `main` branch metadata was re-read. Current `account.js` still defines the broad `PROGRESS_KEYS` snapshot and the existing-device restore/push arbitration described above. Current `journey-cloud-sync.js` still listens for `bq-journey-change`, schedules `sync()`, upserts Journey status, and then calls `BQAccount.pushProgress()`. No destructive browser/database test was performed.
 - **Counterfactual:** deferring the cloud overwrite can silently destroy newer user progress, so it remains interrupting. Deferring the other findings does not show comparable immediate harm.
 - **Firewall result:** **1 P0 STOP, 0 verified P1, 0 active P2.**
 
 ## Historical state
 
-From 2026-09-09 09:50 through 2026-09-10 02:51 JST, every triage cycle observed the same `main` SHA. The queue consistently remained one P0 stale-device cloud-progress corruption item; recovery-code atomicity stayed deferred P2; mobile/PWA and core browser paths remained NOT EXECUTED rather than failed; no additional verified P1 was established.
+From 2026-09-09 09:50 through 2026-09-10 03:47 JST, every triage cycle observed the same `main` SHA. The queue consistently remained one P0 stale-device cloud-progress corruption item; recovery-code atomicity stayed deferred P2; mobile/PWA and core browser paths remained NOT EXECUTED rather than failed; no additional verified P1 was established.
