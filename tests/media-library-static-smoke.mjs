@@ -5,12 +5,12 @@ const index=read('index.html'),media=read('media-library.js'),css=read('media-li
 const v=Number(sw.match(/const CACHE='biblequest-v(\d+)'/)?.[1]||0);
 assert(index.includes('media-library.css')&&index.includes('media-library.js'),'production index must load Media Library assets');
 assert(index.includes('runtime-feature-registry.js'),'production index must wire central capability registry');
-assert(media.includes("youtube_video")&&media.includes("youtube_channel")&&media.includes("youtube_playlist"),'Media Library must support videos, channels and playlists');
-assert(media.includes("youtube-nocookie.com/embed/")&&media.includes("youtube-nocookie.com/embed/videoseries"),'embeds must use YouTube privacy-enhanced player');
-assert(media.includes('data-media-play')&&media.includes('function play('),'YouTube iframe must be created only after explicit Play here action');
+assert(media.includes(".eq('media_type','youtube_video')")&&media.includes(".like('youtube_url','%youtube.com/live/%')"),'Live Recordings must load only supported YouTube livestream replays');
+assert(media.includes('https://i.ytimg.com/vi/')&&media.includes('target="_blank"')&&media.includes('rel="noopener noreferrer"'),'recordings must use lightweight thumbnails and safe external YouTube playback');
+assert(!media.includes('<iframe')&&!media.includes('youtube-nocookie.com/embed/'),'Live Recordings must not create a heavy embedded player');
 assert(media.includes("['owner','admin'].includes(siteRole)")&&media.includes("['leader','pastor','admin'].includes(role)"),'publishing UI must be limited to Owner/Admin or Leader/Pastor/Admin');
 assert(!media.includes("['facilitator','leader','pastor','admin'].includes(role)"),'facilitator must not inherit curated-video publishing');
-assert(media.includes("BUCKET='biblequest-announcements'")&&media.includes('5*1024*1024'),'covers must reuse private ministry image storage with 5 MB cap');
+assert(media.includes('cover_path:null')&&!media.includes("BUCKET='biblequest-announcements'"),'Live Recordings must use YouTube thumbnails without uploading duplicate cover files');
 assert(media.includes('openFor?.({key:`media:${x.id}`'),'media cards must report the exact curated entry');
 assert(report.includes('function openFor(entry)')&&report.includes('.media-layer:not(.hidden)'),'global reporting must support exact media entries and media surface discovery');
 assert(report.includes('#bqReaderLayer:not(.hidden)')&&report.includes('.bq-transform-v2')&&report.includes('#psychApp'),'reporting exclusions must remain Bible Reader, Transform and Psychometrics');
@@ -25,8 +25,8 @@ assert(grants.includes('revoke all on table public.bible_media_library from anon
 assert(storage.includes('announcement media leader update')&&storage.includes('with check')&&storage.match(/private\.bible_can_review_content/g)?.length>=2,'storage UPDATE must re-authorize both existing and destination congregation paths');
 assert(opsFn.includes('OPS_VERSION=5')&&opsFn.includes("'bible_media_library'")&&opsFn.includes("from('bible_media_library')"),'Owner operations v5 must include curated media health/data');
 assert(ops.includes('Handpicked videos & channels')&&ops.includes('Curated media'),'Owner operations UI must surface curated media');
-assert(css.includes('.media-player iframe')&&css.includes('@media(max-width:700px)'),'Media Library must include responsive embedded-player styling');
+assert(css.includes('.media-youtube-thumb')&&css.includes('@media(max-width:700px)'),'Live Recordings must include responsive thumbnail styling');
 assert(v>=73,`curated media requires PWA v73+, got v${v}`);
 for(const asset of ['media-library.js','media-library.css','runtime-feature-registry.js'])assert(sw.includes(`./${asset}`),`PWA shell missing ${asset}`);
 assert(pwa.includes(`bq_sw_controller_reload_v${v}`),'PWA reload generation must match cache version');
-console.log(`✓ Curated YouTube media library + exact reporting + Owner health · PWA v${v}`);
+console.log(`✓ Lightweight YouTube Live Recordings + exact reporting + Owner health · PWA v${v}`);

@@ -60,7 +60,7 @@ assert(launcher.includes("const PSYCH_TARGET='./psychometrics'"),'Psychometrics 
 assert(launcher.includes("mode:'standalone-route',version:5"),'Grow callback must expose current standalone Transform v5 launcher');
 assert(standalone.includes('<script src="transformation-v2.js"></script>'),'standalone Transform must load v2 runtime');
 assert(standalone.includes('<link rel="stylesheet" href="transformation-v2.css">'),'standalone Transform must load rebuilt styles');
-assert(standalone.includes("window.BQ_TRANSFORMATION.open()"),'standalone Transform must initialize explicitly');
+assert(standalone.includes('function runtimeApi()')&&standalone.includes('api.open();'),'standalone Transform must validate and initialize the rebuilt-v2 API explicitly');
 assert(standalone.includes("if(event.key!=='Escape')return"),'Escape must return from standalone Transform');
 assert(standalone.includes("sessionStorage.setItem(RETURN_KEY,action)"),'Reader/Wisdom exits must preserve return action');
 for(const legacy of ['transform-quarantine.js','transformation-safe.js','transformation-state-guard.js','transformation.js','transformation-taglish.js','operational-hardening.js'])assert(!index.includes(`<script src="${legacy}"></script>`),`retired runtime must not be production-loaded: ${legacy}`);

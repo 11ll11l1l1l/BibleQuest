@@ -12,7 +12,7 @@ assert(guest.includes("['127.0.0.1','localhost'].includes(location.hostname)"),'
 assert(standalone.includes("['127.0.0.1','localhost'].includes(location.hostname)")&&standalone.includes('client.auth.getSession()'),'standalone assessment gate must require a real production session and only bypass localhost tests');
 assert(transform.includes('standalone-account-gate.js')&&transform.includes('BQStandaloneGate?.ready'),'Transform direct URL must wait for account verification');
 assert(psych.includes('standalone-account-gate.js')&&psych.includes('BQStandaloneGate?.ready'),'Psychometrics direct URL must wait for account verification');
-assert(admin.includes('admin-operations.html')&&admin.includes('owner-delete-control.js'),'Admin page must expose operations and owner account control');
+assert(admin.includes('href="admin-operations"')&&admin.includes('owner-delete-control.js'),'Admin page must expose canonical operations and owner account control');
 assert(opsHtml.includes('admin-operations.css')&&opsHtml.includes('admin-operations.js')&&opsHtml.includes('cloud-config.js'),'Admin Operations standalone entry must load its local runtime and styling');
 assert(opsCss.includes('.ops-online')&&opsCss.includes('.ops-poll'),'Admin Operations styling must cover online and poll views');
 assert(owner.includes("action:'delete_user'")&&owner.includes('DELETE ${email||name}'),'Owner delete UI must require explicit destructive confirmation');

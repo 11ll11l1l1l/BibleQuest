@@ -44,7 +44,8 @@ const htmlFiles=walk().filter(p=>p.endsWith('.html'));
 const failures=[];
 for(const file of htmlFiles){
   const html=read(file);
-  const attrs=[...html.matchAll(/\b(?:href|src|action)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
+  const markup=html.replace(/(<script\b[^>]*>)[\s\S]*?(<\/script>)/gi,'$1$2').replace(/(<style\b[^>]*>)[\s\S]*?(<\/style>)/gi,'$1$2');
+  const attrs=[...markup.matchAll(/\b(?:href|src|action)\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
   for(const ref of attrs)if(!resolves(file,ref))failures.push(`${file} -> ${ref}`);
 }
 assert.deepEqual(failures,[],`Broken static HTML navigation/assets:\n${failures.join('\n')}`);

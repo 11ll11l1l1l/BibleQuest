@@ -10,7 +10,7 @@ assert.match(index,/linked-activities\.js/,'linked activity adapter must load in
 assert.match(edge,/\['all','member','team','group'\]/,'assignment Edge Function must accept Journey Group audiences');
 assert.match(edge,/target_scope==='group'/,'assignment visibility must check Journey Group membership');
 assert.match(edge,/Journey Group not found in this congregation/,'group target must be congregation-scoped');
-assert.match(migration,/target_scope = 'group'/,'database visibility must implement group scope');
+assert.match(migration,/target_scope\s*=\s*'group'/,'database visibility must implement group scope');
 assert.match(migration,/bible_group_members/,'group assignment visibility must depend on group membership');
 assert.match(linked,/One Journey Group/,'leader assignment UI must expose Journey Group targeting');
 assert.match(linked,/BQCoupleCloud\?\.open/,'couples assignments must route to linked Couple Journey');

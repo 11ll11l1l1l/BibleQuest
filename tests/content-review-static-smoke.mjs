@@ -21,12 +21,12 @@ assert(review.includes('data/quarantine/questions/${encodeURIComponent(code)}.js
 assert(report.includes("bible_content_reports').insert"),'member report command must persist to the review queue');
 for(const reason of ['doctrinal','accuracy','wording','inappropriate','duplicate','source','other'])assert(report.includes(`value=\"${reason}\"`),`report reason missing: ${reason}`);
 assert(report.includes(".verse-list,[data-bq-scripture]")||report.includes(".verse-list,[data-bq-scripture]"),'Report must avoid treating raw Scripture verses as removable app content');
-assert(moderation.includes("['exempt','remove'].includes"),'runtime must suppress exempted/removed questions');
+assert(moderation.includes("['exempt','remove','delete'].includes"),'runtime must suppress exempted, removed, and deleted questions');
 assert(moderation.includes("decision==='include'")&&moderation.includes('data/quarantine/questions/'),'approved quarantine items must be able to re-enter the congregation question pack');
 assert(moderation.includes('question:${code}:${row.id}'),'imported question decisions must use stable exact IDs');
 assert(index.indexOf('runtime-safety.js')<index.indexOf('content-moderation-runtime.js')&&index.indexOf('content-moderation-runtime.js')<index.indexOf('app.js'),'moderation must run after doctrinal safety and before app content');
 assert(index.includes('content-report.js')&&index.includes('content-review-link.js'),'production app must load report/review entry points');
-assert(link.includes("new Set(['leader','pastor','admin'])")&&link.includes('content-review.html'),'authorized ministry review link missing');
+assert(link.includes("REVIEW_ROLES=new Set(['leader','pastor','admin'])")&&link.includes("a.href='content-review'"),'authorized ministry review link must use current roles and canonical route');
 assert(migration.includes('private.bible_can_review_content')&&migration.includes("role in ('leader','pastor','admin')"),'database reviewer authorization missing');
 assert(migration.includes('enable row level security'),'moderation tables must use RLS');
 assert(!migration.includes('grant delete on table public.bible_content_'),'browser roles must not receive moderation delete privileges');

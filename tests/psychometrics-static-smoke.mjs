@@ -38,7 +38,7 @@ assert.match(suite,/Raw scale means, not invented population percentiles/i,'NEO 
 assert.match(suite,/no discrete universal cutoffs/i,'RSE must not invent universal cutoffs');
 assert.match(suite,/more than 80%|straight-lining/i,'long-form assessments need a basic response-quality check');
 assert.match(launcher,/Psychometrics Lab/,'Grow launcher must expose the Psychometrics Lab');
-assert.match(launcher,/\.\/psychometrics\.html/,'launcher must use deployment-relative Psychometrics URL');
+assert.match(launcher,/const PSYCH_TARGET='\.\/psychometrics'/,'launcher must use the deployment-relative canonical Psychometrics URL');
 assert.ok(cacheVersion>=55,`PWA cache generation must include Psychometrics Lab baseline v55+, got v${cacheVersion||'missing'}`);
 for(const asset of ['psychometrics.html','psychometrics.css','psychometrics-data-neo.js','psychometrics-data-via.js','psychometrics-suite.js'])assert.ok(sw.includes(`'./${asset}'`),`PWA shell missing ${asset}`);
 
