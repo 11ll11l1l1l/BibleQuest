@@ -70,9 +70,9 @@ Private Notes, Cloud Notes, Transform answers, Couple Journey data, credentials,
 
 #73 does not implement leader create/feedback/archive controls. Those belong to later assignment/ministry milestones and must retain server-side authorization.
 
-## Verification
+## Permanent verification
 
-Permanent verification must cover:
+Coverage proves:
 - signed-in receive and empty state;
 - selected congregation scope and malformed/foreign data rejection;
 - open/close and unknown assignment rejection;
@@ -84,5 +84,11 @@ Permanent verification must cover:
 - realtime refresh signal plus exactly-once cleanup;
 - 390px browser flow with no horizontal overflow or console/page errors;
 - architecture proof that direct Supabase/Realtime ownership remains in `src/core/api.js` and #74/#75/#79 remain outside #73.
+
+Functional gate evidence:
+- Initial exact candidate `502e9fd86b96415d379d65295ba76ec3f117f9fd` ran as `34416898681`. Architecture and all earlier edge coverage were green, then the new #73 foreign-scope edge assertion failed because its fake API filtered the deliberately malformed row before the owner could receive it.
+- Root cause `V3-ASSIGNMENTS-EDGE-FIXTURE-001` is test-only: the fixture contradicted the scenario it intended to exercise. The owner behavior did not require an application fix.
+- Corrected exact candidate `33871d45aec7111be95524333fe5210dceed71af` passed the complete accumulated architecture, edge, and Playwright/browser-mobile suite in run `34417012845`.
+- After that successful later suite, #72 Congregation Recognition advanced to Regression-tested and #73 advanced to Verified.
 
 No production v2, `main`, production Supabase schema/function, or production Cloudflare modification is required for this milestone.
