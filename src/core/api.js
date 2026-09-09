@@ -244,6 +244,10 @@ export function createApi() {
     async archive(congregationId,teamId) { return invoke('bq-team',{action:'archive',congregationId,teamId}); }
   });
 
+  const scoreEvents = Object.freeze({
+    async submit(congregationId,claims) { return invoke('bq-score',{congregationId,claims}); }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -342,5 +346,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
