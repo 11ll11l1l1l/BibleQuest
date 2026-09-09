@@ -56,12 +56,23 @@ No verified P1 release blocker is established. The narrow-mobile/PWA acceptance 
 
 - **P2 deferred — Recovery-code rotation is non-atomic.** Investigator 4 found separate retire/insert operations around recovery-code replacement, with password reset capable of progressing before fresh-code issuance completes. This passes the auth-integrity impact gate, but remains a partial-failure edge case and does not outrank the P0 cloud-progress risk or current milestone. Future correction should make replacement transactional/recoverable and prove failure-injection behavior.
 - **Acceptance evidence gap — core browser flows:** Daily Journey, Reader, games, Transformation, community/live paths and installed-PWA behavior remain partly or wholly NOT EXECUTED on current HEAD. They are not promoted without a reproduced failure.
-- **Suppressed P3/P4 architecture observations:** dynamic module recovery can re-execute scripts after partial initialization; several global MutationObservers remain active with convergence guards; Reader/translation and Community/cloud ownership are layered. No concrete current user failure was demonstrated.
-- **Suppressed resolved/static areas:** current main structurally guards the former Psychometrics mutation loop and Transform blank-start failure. Investigator 1's latest report did not reproduce either regression.
-- **Suppressed stale tracking:** Investigator 1's latest report notes issue #82 describes a recovery-code event exposure already corrected in current `account.js`, and several old PR descriptions reference obsolete SHAs/architecture. These are tracking/documentation observations, not current development work.
-- **Content/security:** Investigator 4's latest report found no specific currently shipped unsafe Scripture item, broken reference, quarantine leak, or manifest inconsistency. Full doctrinal corpus and complete production auth lifecycle were NOT EXECUTED, so no broader pass is inferred.
+- **Suppressed P3/P4 architecture observations:** multiple Home/UI MutationObservers and compatibility wrappers remain layered but guarded/idempotent in inspected source; modern Home delegates to existing feature owners; Reader local state is intentionally included in account cloud snapshots. Investigator 2 found no concrete current user/release failure from these structures.
+- **Suppressed UI/PWA source observations:** current mobile CSS contains explicit 430/360 px protections, four-column bottom navigation, safe-area handling and touch-target rules; current PWA runtime/manifest/service-worker source is structurally coherent. These are source observations only and do not substitute for required browser/device acceptance.
+- **Suppressed resolved/static areas:** current main structurally guards the former Psychometrics mutation loop and Transform blank-start failure. Investigator 1 did not reproduce either regression.
+- **Suppressed stale tracking:** issue #82 describes a recovery-code event exposure already corrected in current `account.js`, and several old PR descriptions reference obsolete SHAs/architecture. These are tracking/documentation observations, not current development work.
+- **Content/security:** Investigator 4 found no specific currently shipped unsafe Scripture item, broken reference, quarantine leak, or manifest inconsistency. Full doctrinal corpus and complete production auth lifecycle were NOT EXECUTED, so no broader pass is inferred.
 
 ## Triage history
+
+### 2026-09-09 15:50 JST
+
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
+- **Reports available:** latest Investigator 1, Investigator 2, Investigator 3, and Investigator 4 reports are all present in the current context; none is missing.
+- **Change since prior cycle:** `main` is unchanged. Investigator 1 adds successful Cloudflare deployment-check evidence for the exact SHA but no new user-facing FAIL. Investigator 2 de-duplicates the cloud-sync defect and classifies remaining ownership/observer layers as P4/no-action. Investigator 3 confirms required 320/360/390/412/430 px and installed-PWA acceptance remains NOT EXECUTED, while source-level mobile/PWA protections appear coherent. Investigator 4 remains unchanged: cloud overwrite P0 candidate and recovery-code atomicity P2 candidate.
+- **Independent verification:** re-read exact `main` branch metadata and current `account.js`. `registerDevice()` still checks whether the device already exists and returns device-newness; the synchronized `PROGRESS_KEYS` still include core, Reader, Journey/story, Transformation, Growth, Couples, learning/review and saved-passage state. Because `main` has not changed from the exact source previously verified to restore remote state only for new devices and otherwise push local state without a freshness/conflict guard, the stale-device overwrite path remains applicable. No destructive multi-device/database reproduction was performed.
+- **De-duplication / impact gate:** Investigators 1, 2 and 4 describe the same cloud-sync flaw, retained as one P0 item. No Investigator 2 architecture observation supplies a separate concrete failure. Investigator 3's mobile/PWA result is an acceptance evidence gap, not a demonstrated P1. Recovery-code atomicity remains deferred P2.
+- **Counterfactual:** deliberately leaving the cloud overwrite unfixed through the milestone can silently destroy newer synchronized user progress, so it remains interrupting. Leaving the observer/ownership complexity, mobile source layering, stale tracking notes, and unexecuted acceptance gaps through the milestone causes no comparably demonstrated harm; they must not derail primary work.
+- **Firewall result:** actionable queue remains exactly 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt the primary milestone.
 
 ### 2026-09-09 14:50 JST
 
@@ -81,7 +92,7 @@ No verified P1 release blocker is established. The narrow-mobile/PWA acceptance 
 - **Independent verification:** re-read current `main` branch metadata and current `account.js`. The existing-device/new-device split and stale-overwrite path remain present on the unchanged implementation SHA. No destructive multi-device or database reproduction was performed because investigator/firewall scope is read-only.
 - **De-duplication / impact gate:** Investigator 4's P0 cloud-sync finding is the same issue already independently identified by Investigator 1 and already present in the actionable queue, so it is not duplicated. Recovery-code atomicity remains deferred P2. Auth lifecycle, doctrinal corpus, Reader/community/live, and mobile/PWA items remain unexecuted evidence gaps rather than demonstrated failures.
 - **Counterfactual:** deferring the cloud overwrite can still silently destroy newer synchronized progress, so it remains the only interrupting P0 STOP. Deferring the recovery-code edge case and unexecuted acceptance gaps through the current milestone does not have equivalently demonstrated immediate harm.
-- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt primary milestone work.
+- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 item may interrupt primary milestone work.
 
 ### 2026-09-09 12:51 JST
 
