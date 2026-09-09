@@ -17,6 +17,6 @@ The retained database function `public.bible_leaderboard(uuid,timestamptz)` aggr
 
 #71 is read-only. It does not own trusted score submission, XP, achievements, awards, badges, recognition (#72), teams, assignments, notifications, moderation, or private study data. `overall` is a presentation sum of the trusted category aggregates returned by the server. Scores from users who are no longer in the active congregation directory are not exposed.
 
-Period boundaries retain the recovered behavior: Today begins at local midnight; This Week begins Monday at local midnight; All Time passes no cutoff. The server receives that cutoff and performs aggregation.
+Period boundaries retain the recovered behavior: Today begins at local midnight; This Week begins Monday at local midnight; All Time passes no cutoff. The active congregation's existing IANA timezone is the authoritative calendar timezone when present, with the browser's resolved local timezone used only as fallback. The server receives that calculated cutoff and performs aggregation. Period calculation therefore must not depend on the CI runner or server machine timezone.
 
 Guest, signed-out and local-preview states do not read cloud rankings. Empty active congregations and zero-point active members render safely.
