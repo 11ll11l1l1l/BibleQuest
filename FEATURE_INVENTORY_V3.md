@@ -4,9 +4,9 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 68
+- **Regression-tested:** 69
 - **Verified:** 1
-- **Implemented:** 1
+- **Implemented:** 0
 - **Not started:** 30
 - **Total old-version capabilities:** 100
 
@@ -89,8 +89,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
 | 67 | Community bridge | Yes | Compatibility | Regression-tested | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Regression-tested | online/offline update; cleanup; stale timeout |
-| 69 | Team Center | Yes | Compatibility | Verified | team list; member/role workflows |
-| 70 | Trusted score events | Yes | Compatibility | Implemented | submit trusted event; reject invalid duplicate |
+| 69 | Team Center | Yes | Compatibility | Regression-tested | team list; member/role workflows |
+| 70 | Trusted score events | Yes | Compatibility | Verified | submit trusted event; reject invalid duplicate |
 | 71 | Leaderboards | Yes | Compatibility | Not started | load; rank; empty/error; account boundaries |
 | 72 | Congregation recognition | Yes | Compatibility | Not started | load/award/display; permissions |
 | 73 | Assignments | Yes | Compatibility | Not started | receive; open; complete; status sync |
