@@ -19,7 +19,7 @@ const RECOGNITION_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,av
 const RECOGNITION_FIELDS='id,congregation_id,user_id,awarded_by,award_code,title,note,icon,visible,created_at';
 const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
 const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
-const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at';
+const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at,schedule_at,recurrence_rule,reminder_at,required_reflection,min_quiz_score,evidence_type';
 const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
 
 function localPreview() {
@@ -297,7 +297,7 @@ export function createApi() {
       return {assignments:assignmentRows,progress:progress||[]};
     },
     async start(congregationId,assignmentId) { return invoke('bq-assignment',{action:'start',congregationId,assignmentId}); },
-    async complete(congregationId,assignmentId,submission) { return invoke('bq-assignment',{action:'complete',congregationId,assignmentId,submission}); },
+    async complete(congregationId,assignmentId,submission,quizScore=null) { return invoke('bq-assignment',{action:'complete',congregationId,assignmentId,submission,quizScore}); },
     async subscribe(congregationId,userId,listener) {
       const client=await getClient();
       let closed=false;
