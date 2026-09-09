@@ -11,9 +11,10 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - Frozen base SHA: `7c06c3380eaac0e20e579ae26453611e63ac564d`
 - v3.38 bookkeeping run: `34259986598` (reported complete accumulated suite green)
 - Active remote branch: `feature/v3-encouragements`
-- Canonical remote #65 code commit: `f6272064192201dd95da6945ce10c4003d9418fc`
-- Canonical code tree: `32777c3a84a82aa846d20e4ab48443b7bb34916d`
-- Local equivalent commit: `feb849ef8bcded1b549110b8d3e2a5df3c5c6688` (same tree; commit metadata differs)
+- Canonical remote #65 code commit: `9cc487538624d3609b8c603cf205b8afde354230`
+- Canonical code tree: `0eb470139c8b7a1c428f6b4790526b1cee706578`
+- Local equivalent commit: `289eb5bfc576df67dc9914529e57e6586c03427b` (same tree; commit metadata differs)
+- Initial implementation commit `f6272064192201dd95da6945ce10c4003d9418fc` was superseded by the former-member history fix.
 - Draft v3 PR: `#89` — `feature/v3-encouragements` into `feature/v3-study-core`
 - Separate production-v2 safety PR: `#88` — stale-device progress conflict protection into `main`; draft, unmerged
 
@@ -35,6 +36,7 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - `bq-journey-group` verifies active group/membership and derives sender plus UTC duplicate bucket;
 - additive partial unique index rejects concurrent identical same-day sends without rewriting/deleting retained v2 rows;
 - dedicated route, responsive UI, Journey Groups entry point, contract, architecture validator, edge regression and 390px browser regression;
+- historical encouragements remain readable after a sender leaves; current active membership is enforced at send time instead of being misapplied to retained history;
 - free-text chat, DMs, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
 
 ## Executed evidence
@@ -54,7 +56,9 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 4. Run an independent exact-SHA bookkeeping workflow. Freeze `release/v3.39-encouragements` only after that exact candidate passes.
 5. Only after v3.39 freezes, begin #67 Community Bridge on a new isolated branch.
 
-Local Chromium is absent. An official Playwright Chromium download was attempted three times and timed out. Do not claim the browser regression executed locally.
+Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
+
+Local Chromium is absent. An official Playwright Chromium download was attempted three times and timed out. The cloud browser also blocks loopback access to the local test server. Do not claim the browser regression executed locally.
 
 ## Non-negotiable continuation rules
 
