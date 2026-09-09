@@ -1,59 +1,61 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-09 UTC
+Updated: 2026-09-10 JST
 
 This file is the durable restart point if a chat or usage window ends. GitHub is authoritative; reconcile remote branches and workflow runs before changing code.
 
 ## Repository and immutable checkpoints
 
 - Repository: `11ll11l1l1l/BibleQuest`
-- Latest frozen base: `release/v3.42-team-center`
-- Frozen base SHA: `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`
-- Exact v3.42 bookkeeping run: `34372856979` (complete accumulated suite green against the frozen SHA)
-- Active remote branch: `feature/v3-trusted-score-events`
-- Exact #70 functional candidate: `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b`
-- Exact #70 functional run: `34407306308` (architecture, edge, browser/mobile all green against that exact SHA)
+- Latest frozen base: `release/v3.43-trusted-score-events`
+- Frozen base SHA: `80d01efa06f3ff08a0284389cf027d16afd35225`
+- Exact v3.43 bookkeeping run: `34407984154` (complete accumulated suite green against the frozen SHA)
+- Active remote branch: `feature/v3-leaderboards`
+- Exact #71 functional candidate: `08345c522c007679915d9a072db8cbd81fdd4eec`
+- Exact #71 functional run: `34411253995` (architecture, edge, browser/mobile all green against that exact SHA)
 - Separate production-v2 safety PR: `#88` — stale-device progress conflict protection into `main`; draft and unmerged
 
 ## Current authoritative inventory
 
-- Regression-tested: 69, including #69 Team Center after surviving the complete #70 suite.
-- Verified: 1 (#70 Trusted score events).
+- Regression-tested: 70, including #70 Trusted score events after surviving the complete #71 suite.
+- Verified: 1 (#71 Leaderboards).
 - Implemented: 0.
-- Not started: 30.
-- Strict implemented-or-better parity: 70/100.
-- Official regression stability: 69/100.
+- Not started: 29.
+- Strict implemented-or-better parity: 71/100.
+- Official regression stability: 70/100.
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40.
-
-## #69 Team Center checkpoint
-
-- `src/app/team-center.js` remains the sole team normalization, congregation scope, roster projection and management orchestration owner.
-- `src/core/api.js` remains the sole browser Supabase/Edge Function boundary.
-- Corrected functional candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the entire accumulated suite in run `34367001625`.
-- Exact bookkeeping candidate `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4` passed the complete accumulated suite in run `34372856979` and is frozen as `release/v3.42-team-center`.
-- #69 is now Regression-tested because it survived the later complete #70 Trusted score events suite.
 
 ## #70 Trusted score events checkpoint
 
-- `src/app/trusted-score-events.js` is the sole v3 client owner for authenticated congregation scope, score-event claim normalization, canonical event IDs, and trusted-response normalization.
+- `src/app/trusted-score-events.js` remains the sole v3 client owner for authenticated congregation scope, score-event claim normalization, canonical event IDs, and trusted-response normalization.
 - `src/core/api.js` remains the sole browser Supabase/Edge Function boundary and sends score claims only through the retained authenticated `bq-score` function.
 - `bq-score` remains the trusted server authority for supported sources, point derivation, delegated scoring, active-membership checks, category/rate caps, duplicate handling, database writes, and badge evaluation. The browser does not calculate arbitrary award points and does not write `bible_score_events` directly.
-- Stable event IDs are trimmed and capped to 120 characters before submission; duplicate canonical IDs in one browser batch fail before mutation. Cross-request/concurrent duplicate authority remains server/database-owned.
-- A real authenticated account and active readable congregation are required. Local preview, guest, signed-out and foreign-congregation requests fail closed before remote submission; the trusted server independently rechecks authority.
-- Permanent coverage: `TRUSTED_SCORE_EVENTS_V3.md`, `scripts/validate-v3-trusted-score-events.mjs`, `tests/v3-trusted-score-events-edge.mjs`, and `tests/v3-trusted-score-events-smoke.mjs`.
-- Initial exact candidate `33c5f9cc446d61bcbda7a15262d41e3172020447` reached the browser stage in run `34406989680`; all architecture, edge, and prior browser regressions through Team Center passed, then the new #70 smoke test failed to parse because its fake API object was missing one closing brace. This was a test-only syntax defect; no application behavior was promoted from that run.
-- Corrected exact candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` passed the complete accumulated architecture, edge, and Playwright/mobile suite in run `34407306308`.
+- Corrected exact functional candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` passed the complete accumulated architecture, edge, and Playwright/mobile suite in run `34407306308`.
+- Exact bookkeeping candidate `80d01efa06f3ff08a0284389cf027d16afd35225` passed run `34407984154` and is frozen as `release/v3.43-trusted-score-events`.
+- #70 is now Regression-tested because it survived the later complete #71 Leaderboards suite.
+
+## #71 Leaderboards checkpoint
+
+- `src/app/leaderboards.js` is the sole v3 period/lane normalization and ranking-projection owner.
+- `src/core/api.js` remains the sole browser Supabase boundary and consumes the retained `public.bible_leaderboard(uuid,timestamptz)` aggregate plus the active congregation directory.
+- The recovered board retains Today / This Week / All Time and eight lanes: Overall, Knowledge, Reading, Wisdom, Mastery, Consistency, Group and Couples.
+- Rankings sort by trusted points descending, then display name; active congregation members remain visible with zero points; scores for former/out-of-scope members fail closed from the projection.
+- `overall` is a presentation sum of trusted server category aggregates. #71 does not calculate source award points and does not own trusted score writes, XP, badges, awards or #72 Recognition.
+- Period cutoffs use the active congregation's existing IANA timezone when present, with browser-local timezone only as fallback. Today starts at congregation-local midnight and This Week starts Monday at congregation-local midnight.
+- Initial exact candidate `4286669555e8a1ce7faf59a9d74f28c920d9ca06` exposed a literal adjacency assumption in the #70 validator before runtime testing; the validator was corrected to verify exported API boundaries structurally.
+- Candidate `d44479b4543a4e56f7507c8836245a918e1c3b57` then exposed a real timezone defect in #71: CI UTC was incorrectly used for recovered local period boundaries. The owner was corrected and permanent Asia/Tokyo plus America/New_York edge coverage added.
+- Corrected exact functional candidate `08345c522c007679915d9a072db8cbd81fdd4eec` passed the complete accumulated architecture, edge and browser/mobile suite in run `34411253995`.
 - The isolated functional verification branch was reset from its temporary trigger commit to the exact clean candidate after success.
-- Production Supabase, Cloudflare, v2 and `main` were not modified by #70.
+- Production Supabase, Cloudflare, v2 and `main` were not modified by #71.
 
 ## Exact next sequence
 
-1. Finish only the #70 promotion/bookkeeping documentation on `feature/v3-trusted-score-events`.
-2. Create/reset an isolated `verify/v3.43-trusted-score-events-bookkeeping` branch from that exact clean bookkeeping candidate.
+1. Finish only the #71 promotion/bookkeeping documentation on `feature/v3-leaderboards`.
+2. Create/reset isolated `verify/v3.44-leaderboards-bookkeeping` from the exact clean bookkeeping candidate.
 3. Add only the temporary one-shot trigger required to run the manual-only workflow, with checkout/assertion pinned to the clean bookkeeping SHA.
 4. Require all accumulated architecture, edge and Playwright/browser-mobile regressions to pass against that exact SHA.
-5. Reset the bookkeeping verification branch to the clean candidate and freeze `release/v3.43-trusted-score-events` at that SHA.
-6. Only after the freeze, create `feature/v3-leaderboards` from v3.43 and recover #71 Leaderboards data, ranking, privacy, empty/error and account-boundary contracts before implementation.
+5. Reset the bookkeeping verification branch to the clean candidate and freeze `release/v3.44-leaderboards` at that exact SHA.
+6. Only after the freeze, create `feature/v3-congregation-recognition` from v3.44 and recover #72 Recognition load/award/display/permission contracts before implementation.
 
 Production deployment remains out of scope during rebuild verification. Do not deploy pending migrations or functions merely to satisfy parity testing.
 
