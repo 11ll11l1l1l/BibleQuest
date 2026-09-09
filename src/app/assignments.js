@@ -55,7 +55,6 @@ export function createAssignmentsService({api,session,congregation}){
 
   async function load({congregationId,activeId}={}){
     const current=sessionState();
-    stopSync();
     if(!current?.remoteAvailable){state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:''});return state}
     if(!current?.authenticated||!current?.user?.id){state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:''});return state}
     const memberships=await congregation.load();
