@@ -1,131 +1,54 @@
 # BibleQuest Agent Triage
 
-This file is an analysis-only handoff for the primary BibleQuest development process.
+This file is an analysis-only handoff for the primary BibleQuest development process. It lives on `agent-analysis` and must never be merged automatically into `main`.
 
-It lives on the dedicated `agent-analysis` branch and must never be merged automatically into `main`.
+## Firewall rules
 
-## Rules
-
-- Investigators are read-only and may not modify GitHub, Supabase, Cloudflare, workflows, branches, PRs, issues, or files.
-- Only the firewall/triage agent may update this file, and only on `agent-analysis`.
-- Current `main` is the observed implementation truth. Old agent instructions are evidence only and may be obsolete.
-- Findings do not become development work merely because they exist.
+- Current `main` is observed implementation truth; old prompts, branches, milestones, limits, and architecture rules are evidence only.
+- Investigators are read-only. Only this triage file may be changed by the firewall agent.
 - P3/P4 findings are suppressed from the active development queue.
-- The current milestone remains higher priority than newly discovered P2/P3/P4 issues. Only P0/P1 may interrupt it.
-- No test may be reported PASS unless it was actually executed.
-
-## Priority definitions
-
-- **P0 — Stop:** security/privacy/data corruption, materially dangerous doctrinal/content behavior, or core app unusable.
-- **P1 — Release blocker:** a required core flow or explicit current acceptance criterion fails.
-- **P2 — Important regression:** meaningful user-facing failure with material impact, but not a current release blocker.
-- **P3 — Minor:** small bug, edge case, cosmetic issue, or workaround exists; record but do not interrupt development.
-- **P4 — Observation:** cleanup, style, speculative improvement, theoretical risk, or non-impacting code issue; suppress.
-
-## Impact gate
-
-A finding can enter the actionable queue only if evidence shows at least one of the following:
-
-1. Prevents a normal user from completing a current core BibleQuest journey.
-2. Risks data loss/corruption, privacy, authentication, or security.
-3. Produces materially incorrect Scripture/content/doctrinal behavior.
-4. Violates an explicit current release acceptance criterion.
-5. Is a demonstrated regression from previously verified behavior.
-6. Affects a meaningful portion of normal users.
-7. Blocks the current milestone.
-
-If none apply, classify P3/P4 and suppress it from the active queue.
+- Current milestone work outranks P2/P3/P4 findings. Only verified P0/P1 may interrupt it.
+- No test is PASS unless actually executed.
+- Actionable queue is capped at 3 items and duplicates are consolidated.
 
 ## Current actionable queue
 
 ### 1. P0 STOP — Existing-device cloud progress can overwrite newer cloud state
 
 - **Evidence state:** STATIC FINDING, independently re-verified against exact current `main` this cycle.
-- **Affected flow:** signed-in user using two or more previously registered devices/browsers.
-- **Component:** `account.js` — `registerDevice()`, `restoreOrSync()`, `pushProgress()`.
-- **Actual impact:** an already-registered device does not restore/compare the cloud snapshot before sync. It proceeds to `pushProgress()`, which upserts its local `PROGRESS_KEYS` snapshot over the single `bible_progress_snapshots` row. An older local device can therefore replace newer cloud progress.
-- **Evidence:** current `registerDevice()` returns whether the browser/device is new. The current account implementation still passes that device-newness state into the cloud restore/sync path. The previously verified `restoreOrSync(isNewDevice)` path restores remote state only for a new device and otherwise reaches `pushProgress()` without a cloud/local freshness, revision, merge, or conflict guard. `PROGRESS_KEYS` includes core BibleQuest state, Reader, sequence/story Journey, Transformation, Growth, Couples, learning/review, and saved-passage state.
-- **Impact-gate reason:** direct data-loss/corruption risk for existing cloud progress. This meets the P0 definition even though destructive browser/database reproduction was intentionally not performed by investigators.
-- **If deferred:** single-device users are largely unaffected, but a normal multi-device sign-in can silently replace newer Journey/Reader/streak/review/saved-passage and other synchronized progress with stale state. Subsequent device restores can propagate the stale snapshot.
-- **Recommended future correction:** introduce deterministic conflict handling before any existing-device push (for example compare cloud/local revision timestamps or maintain per-key/revision metadata and merge only newer state). Preserve existing account/session architecture; do not solve by disabling sync.
-- **Regression evidence needed before closure:** executable two-device sequence demonstrating Device A creates newer progress, Device B with older local state signs in/syncs, newer cloud state is not lost, and Device C/new device restores the correct final state. Include reload/sign-out/sign-in coverage.
+- **Affected user flow:** signed-in user using two or more previously registered devices/browsers.
+- **Component/files:** `account.js` — `registerDevice()`, `restoreOrSync()`, `pushProgress()`; cloud table `bible_progress_snapshots`; synchronized keys listed in `PROGRESS_KEYS`.
+- **Actual impact:** a previously registered device can retain stale local BibleQuest state and push it over a newer cloud snapshot because device-newness controls restore behavior and the existing-device path lacks a demonstrated cloud/local freshness, revision, merge, or conflict guard.
+- **Reproduction/evidence:** current `registerDevice()` checks whether the device already exists and returns device-newness. Current `PROGRESS_KEYS` includes core state, Reader, sequence/story Journey, Transformation, Growth, Couples, learning/review, and saved-passage state. The implementation SHA is unchanged from the exact source previously verified to restore cloud state only for a new device and otherwise push local state. Destructive multi-device/database reproduction was not performed.
+- **Why it passes the impact gate:** direct data-loss/corruption risk affecting normal multi-device persistence/resume.
+- **If deferred:** a stale known device can silently replace newer Journey/Reader/review/saved-passage and other synchronized progress; later restores can propagate the stale snapshot.
+- **Recommended future correction:** add deterministic conflict handling before an existing-device push, such as cloud/local revision timestamps or per-key version metadata with merge rules. Preserve account/session architecture; do not solve by disabling sync.
+- **Regression evidence needed before closure:** executable multi-device test: Device A creates newer progress; previously registered Device B with older state signs in/syncs; A's newer cloud state remains intact; Device C/new device restores the correct final state. Include reload and sign-out/sign-in coverage.
 
-No verified P1 release blocker is established. The narrow-mobile/PWA acceptance work remains **NOT EXECUTED**; browser validation at 320/360/390/412/430 px plus Android/installed-PWA behavior is still an evidence gap rather than a demonstrated failure.
+**Verified P1 count: 0.** Narrow-mobile/PWA acceptance remains **NOT EXECUTED**, not failed.
 
-## Deferred / suppressed findings
+## Deferred / suppressed
 
-- **P2 deferred — Recovery-code rotation is non-atomic.** Investigator 4 found separate retire/insert operations around recovery-code replacement, with password reset capable of progressing before fresh-code issuance completes. This passes the auth-integrity impact gate, but remains a partial-failure edge case and does not outrank the P0 cloud-progress risk or current milestone. Future correction should make replacement transactional/recoverable and prove failure-injection behavior.
-- **Acceptance evidence gap — core browser flows:** Daily Journey, Reader, games, Transformation, community/live paths and installed-PWA behavior remain partly or wholly NOT EXECUTED on current HEAD. They are not promoted without a reproduced failure.
-- **Suppressed P3/P4 architecture observations:** multiple Home/UI MutationObservers and compatibility wrappers remain layered but guarded/idempotent in inspected source; modern Home delegates to existing feature owners; Reader local state is intentionally included in account cloud snapshots. Investigator 2 found no concrete current user/release failure from these structures.
-- **Suppressed UI/PWA source observations:** current mobile CSS contains explicit 430/360 px protections, four-column bottom navigation, safe-area handling and touch-target rules; current PWA runtime/manifest/service-worker source is structurally coherent. These are source observations only and do not substitute for required browser/device acceptance.
-- **Suppressed resolved/static areas:** current main structurally guards the former Psychometrics mutation loop and Transform blank-start failure. Investigator 1 did not reproduce either regression.
-- **Suppressed stale tracking:** issue #82 describes a recovery-code event exposure already corrected in current `account.js`, and several old PR descriptions reference obsolete SHAs/architecture. These are tracking/documentation observations, not current development work.
-- **Content/security:** Investigator 4 found no specific currently shipped unsafe Scripture item, broken reference, quarantine leak, or manifest inconsistency. Full doctrinal corpus and complete production auth lifecycle were NOT EXECUTED, so no broader pass is inferred.
+- **P2 deferred — recovery-code replacement is non-atomic.** Investigator 4 reports separate retire/insert operations around replacement; password-reset progress may occur before fresh-code issuance completes. This is a meaningful auth-integrity failure-path risk but is narrower and does not outrank the P0 or current milestone. Future correction should make replacement transactional/recoverable and prove failure-injection behavior.
+- **Acceptance evidence gap — core browser flows.** Daily Journey, Reader, games, Transformation/Grow, community/live routes and installed-PWA behavior remain partly or wholly NOT EXECUTED on current HEAD. They are not promoted without a reproduced failure.
+- **Mobile/PWA evidence gap.** Investigator 3 reports that required 320/360/390/412/430 px and installed-PWA/browser validation is still NOT EXECUTED. Current mobile CSS, manifest, service worker and PWA runtime contain explicit protective behavior, but source inspection does not substitute for runtime acceptance.
+- **Suppressed architecture observations (P4).** Investigator 2 found layered Home/UI observers, compatibility wrappers, Reader local state, and modern-Home orchestration, but no separate concrete user/release failure. These do not interrupt development.
+- **Suppressed stale/resolved tracking (P4).** Old issue/PR descriptions and earlier Transform/Psychometrics concerns are not current blockers unless reproduced against current `main`.
+- **Content/security.** Investigator 4 found no specific currently shipped unsafe Scripture item, broken reference, quarantine leak, or manifest inconsistency. Full doctrinal corpus and complete production auth lifecycle were NOT EXECUTED, so no broader pass is inferred.
 
-## Triage history
+## Current cycle — 2026-09-09 16:51 JST
 
-### 2026-09-09 15:50 JST
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`.
+- **Reports available:** Investigator 1, Investigator 2, Investigator 3, and Investigator 4 are all present in the current scheduled-task/conversation context; none is missing.
+- **Investigator 1:** no new executable user-facing FAIL. Exact current SHA has successful Cloudflare deployment checks, but deployment success does not prove Home/Reader/Journey/browser behavior. Reconfirms the stale-device cloud overwrite as the only material source-level issue.
+- **Investigator 2:** de-duplicates the same cloud-sync defect. Remaining ownership/observer/compatibility architecture concerns are P4/static because no separate concrete failure is established.
+- **Investigator 3:** mobile/PWA acceptance remains NOT EXECUTED. Current source contains narrow-width, four-column bottom-nav, safe-area, touch-target, manifest, service-worker and update protections; no verified UI/PWA regression is established.
+- **Investigator 4:** reconfirms the same cloud overwrite P0 candidate and recovery-code atomicity P2 candidate; no new material privacy, Scripture/content, or auth failure is established.
+- **Independent verification:** exact `main` branch metadata was read this cycle. Current `account.js` was re-read from SHA `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`; `registerDevice()` still checks for an existing device and returns device-newness, and `PROGRESS_KEYS` still spans core, Reader, Journey/story, Transformation, Growth, Couples, learning/review, and saved-passage state. Since `main` is unchanged from the source path previously verified to restore remote state only for new devices and otherwise push local state without conflict resolution, the P0 remains applicable. No destructive database/browser test was performed.
+- **De-duplication:** Investigators 1, 2 and 4 describe the same cloud-sync failure; it remains one P0 item. Investigator 3's mobile/PWA result is an evidence gap, not a P1. Recovery-code atomicity stays deferred P2.
+- **Counterfactual:** deliberately doing nothing about the cloud overwrite until after the milestone can silently destroy newer synchronized user progress, so it must remain interrupting. Deferring recovery-code partial-failure handling, mobile/PWA acceptance execution, observer layering, compatibility wrappers, and stale tracking does not present comparably demonstrated immediate harm.
+- **Firewall result:** **1 P0 STOP, 0 verified P1, 0 active P2.** No P3/P4 finding may interrupt primary milestone work.
 
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** latest Investigator 1, Investigator 2, Investigator 3, and Investigator 4 reports are all present in the current context; none is missing.
-- **Change since prior cycle:** `main` is unchanged. Investigator 1 adds successful Cloudflare deployment-check evidence for the exact SHA but no new user-facing FAIL. Investigator 2 de-duplicates the cloud-sync defect and classifies remaining ownership/observer layers as P4/no-action. Investigator 3 confirms required 320/360/390/412/430 px and installed-PWA acceptance remains NOT EXECUTED, while source-level mobile/PWA protections appear coherent. Investigator 4 remains unchanged: cloud overwrite P0 candidate and recovery-code atomicity P2 candidate.
-- **Independent verification:** re-read exact `main` branch metadata and current `account.js`. `registerDevice()` still checks whether the device already exists and returns device-newness; the synchronized `PROGRESS_KEYS` still include core, Reader, Journey/story, Transformation, Growth, Couples, learning/review and saved-passage state. Because `main` has not changed from the exact source previously verified to restore remote state only for new devices and otherwise push local state without a freshness/conflict guard, the stale-device overwrite path remains applicable. No destructive multi-device/database reproduction was performed.
-- **De-duplication / impact gate:** Investigators 1, 2 and 4 describe the same cloud-sync flaw, retained as one P0 item. No Investigator 2 architecture observation supplies a separate concrete failure. Investigator 3's mobile/PWA result is an acceptance evidence gap, not a demonstrated P1. Recovery-code atomicity remains deferred P2.
-- **Counterfactual:** deliberately leaving the cloud overwrite unfixed through the milestone can silently destroy newer synchronized user progress, so it remains interrupting. Leaving the observer/ownership complexity, mobile source layering, stale tracking notes, and unexecuted acceptance gaps through the milestone causes no comparably demonstrated harm; they must not derail primary work.
-- **Firewall result:** actionable queue remains exactly 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt the primary milestone.
+## Historical state retained
 
-### 2026-09-09 14:50 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 latest rerun present; Investigator 2 present; Investigator 3 present; Investigator 4 latest rerun present. No report is missing from the current context.
-- **Change since prior cycle:** `main` is unchanged. The newest Investigator 4 report reconfirms the same stale-device cloud overwrite as P0 candidate and recovery-code atomicity as P2; it reports no new material data/auth/content/safety defect.
-- **Independent verification:** re-read current `main` branch metadata and current `account.js`. `registerDevice()` still checks whether a device already exists and returns device-newness into the account sync flow; the implementation SHA has not changed from the exact source previously verified to restore cloud state only for new devices and otherwise push local state without conflict resolution. No destructive multi-device/database reproduction was performed.
-- **De-duplication / impact gate:** the Investigator 4 cloud-sync finding duplicates the existing Investigator 1/4 P0 and remains one queue item. Recovery-code atomicity remains deferred P2. Mobile/PWA, auth lifecycle, doctrinal corpus, Reader/community/live and other runtime paths remain NOT EXECUTED rather than failed. Architecture-only and stale-tracking observations remain suppressed.
-- **Counterfactual:** doing nothing about the cloud overwrite through the current milestone can still silently destroy newer synchronized user progress, so it remains the only interrupting P0 STOP. Deferring the P2 recovery edge case and evidence gaps does not have equally demonstrated immediate harm.
-- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt primary milestone work.
-
-### 2026-09-09 13:52 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 latest rerun present; Investigator 2 present; Investigator 3 present; Investigator 4 latest rerun present.
-- **Change since prior cycle:** `main` is unchanged. Investigator 4 independently reconfirms the same stale-device cloud overwrite as P0 candidate and the same non-atomic recovery-code rotation as P2 candidate; it reports no new current-main privacy exposure or materially unsafe Scripture behavior.
-- **Independent verification:** re-read current `main` branch metadata and current `account.js`. The existing-device/new-device split and stale-overwrite path remain present on the unchanged implementation SHA. No destructive multi-device or database reproduction was performed because investigator/firewall scope is read-only.
-- **De-duplication / impact gate:** Investigator 4's P0 cloud-sync finding is the same issue already independently identified by Investigator 1 and already present in the actionable queue, so it is not duplicated. Recovery-code atomicity remains deferred P2. Auth lifecycle, doctrinal corpus, Reader/community/live, and mobile/PWA items remain unexecuted evidence gaps rather than demonstrated failures.
-- **Counterfactual:** deferring the cloud overwrite can still silently destroy newer synchronized progress, so it remains the only interrupting P0 STOP. Deferring the recovery-code edge case and unexecuted acceptance gaps through the current milestone does not have equivalently demonstrated immediate harm.
-- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 item may interrupt primary milestone work.
-
-### 2026-09-09 12:51 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 latest rerun present; Investigator 2 present; Investigator 3 present; Investigator 4 present.
-- **Change since prior cycle:** `main` remains unchanged. Investigator 1 again independently identifies the same stale-device cloud overwrite and adds no new P0/P1 candidate. No report supersedes Investigator 2, 3, or 4 in the available context.
-- **Independent verification:** read current `main` branch metadata and current `account.js`; the current account implementation still exposes the existing-device/new-device split used by the previously verified overwrite path. Re-read open issue #6; it still explicitly requires 320/360/390/412/430 px, Android Chrome/Brave, and installed-PWA browser evidence, and states CSS presence alone is insufficient.
-- **De-duplication / impact gate:** cloud overwrite remains the single interrupting item because it risks actual synchronized progress corruption. Mobile/PWA remains NOT EXECUTED rather than failed, so it is not promoted to P1. Recovery-code atomicity remains P2 deferred. Architecture observations and stale issue/PR descriptions remain suppressed.
-- **Counterfactual:** deferring the cloud overwrite can silently destroy newer multi-device progress, so it remains P0 STOP. Deferring the other reported items through the current milestone does not have comparably demonstrated harm.
-- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt primary milestone work.
-
-### 2026-09-09 11:47 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 present and superseded by a newer rerun; Investigator 2 present; Investigator 3 present; Investigator 4 present.
-- **Change since prior cycle:** `main` SHA remains unchanged. Latest Investigator 1 independently reconfirmed the stale-device cloud overwrite and added only P4 stale-issue/old-PR observations; no new P0/P1 candidate emerged.
-- **Independent verification:** read current branch metadata and exact current `account.js`. `restoreOrSync()` still restores cloud state only for a new device and otherwise calls unconditional `pushProgress()`. Read current open issue #6; it still states browser evidence is required before mobile acceptance can close.
-- **De-duplication / impact gate:** cloud overwrite remains the single interrupting finding. Mobile/PWA and core-flow gaps remain NOT EXECUTED, not failed. Transform/Psychometrics findings remain structurally corrected unless re-reproduced. Architecture-only concerns remain theoretical.
-- **Firewall result:** actionable queue remains exactly 1 P0 item, 0 P1 items. P2 recovery-code atomicity remains deferred. No P3/P4 item may interrupt primary milestone work.
-
-### 2026-09-09 10:52 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 present; Investigator 2 present; Investigator 3 present; Investigator 4 present.
-- **Change since prior cycle:** `main` SHA is unchanged. No new investigator report superseded the four reports already in context, so unchanged findings were not treated as new work.
-- **Independent verification:** re-read current `main` branch metadata and current `account.js`; `registerDevice()` still identifies existing devices and the previously verified existing-device sync path remains applicable because the implementation SHA is unchanged. No executable browser/database mutation was performed.
-- **De-duplication / impact gate:** no new P0/P1 candidates emerged. Mobile/PWA remains NOT EXECUTED rather than failed; Transform/Psychometrics concerns remain structurally corrected/static; architecture observations remain theoretical without demonstrated user failure.
-- **Firewall result:** actionable queue unchanged at 1 P0 item. No P1 item. P2 recovery-code atomicity remains deferred. Primary milestone should not be interrupted by any other reported finding.
-
-### 2026-09-09 09:50 JST
-
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
-- **Reports available:** Investigator 1 present; Investigator 2 present; Investigator 3 present; Investigator 4 present.
-- **Independent verification:** confirmed current `account.js` existing-device flow can fall through from `restoreOrSync(false)` to unconditional `pushProgress()` with no cloud/local conflict comparison. Confirmed recovery-code issuance/reset performs separate retire/insert operations rather than an atomic replacement.
-- **De-duplication:** Psychometrics/Transform startup concerns from earlier reports were treated as corrected/static unless re-reproduced; mobile/PWA acceptance was consolidated as one NOT EXECUTED evidence gap; architecture-only duplication/observer concerns were suppressed.
-- **Firewall result:** 1 actionable item exposed, 1 P2 deferred, remaining findings suppressed or retained only as verification gaps. Current milestone should be interrupted only for the P0 cloud-progress corruption risk.
+- **2026-09-09 09:50–15:50 JST:** every cycle observed the same `main` SHA `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`. The actionable queue consistently remained one P0 stale-device cloud-progress corruption item. Recovery-code atomicity remained deferred P2. Mobile/PWA and core browser paths remained NOT EXECUTED rather than failed. Architecture-only and stale-tracking findings remained suppressed. No cycle established an additional verified P1.
