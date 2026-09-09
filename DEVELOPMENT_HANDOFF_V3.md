@@ -7,59 +7,60 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 ## Repository and immutable checkpoints
 
 - Repository: `11ll11l1l1l/BibleQuest`
-- Latest frozen base: `release/v3.44-leaderboards`
-- Frozen base SHA: `b14415bb9b59c1eed109f02a822a48298844f8d1`
-- Exact v3.44 bookkeeping run: `34412074523` (complete accumulated suite green against the frozen SHA)
-- Active remote branch: `feature/v3-congregation-recognition`
-- Exact #72 functional candidate: `516d2f2da33d73aea076b9cdd35225b8e68c0a27`
-- Exact #72 functional run: `34414579164` (architecture, edge and browser/mobile all green against that exact SHA)
-- Separate production-v2 safety PR: `#88` — stale-device progress conflict protection into `main`; draft and unmerged
+- Latest frozen base: `release/v3.45-congregation-recognition`
+- Frozen base SHA: `483662cbad75ee98f0914ee66517b9eeb57f7f61`
+- Exact v3.45 bookkeeping run: `34415308296` (complete accumulated suite green against the frozen SHA)
+- Active remote branch: `feature/v3-assignments`
+- Corrected exact #73 functional candidate: `33871d45aec7111be95524333fe5210dceed71af`
+- Exact #73 functional run: `34417012845` (architecture, edge and browser/mobile all green against that exact SHA)
+- Initial #73 run `34416898681` failed only because of test fixture defect `V3-ASSIGNMENTS-EDGE-FIXTURE-001`; it was not an application defect.
+- Separate production-v2 safety PR `#88` remains draft/unmerged.
 
 ## Current authoritative inventory
 
-- Regression-tested: 71, including #71 Leaderboards after surviving the complete #72 suite.
-- Verified: 1 (#72 Congregation Recognition).
+- Regression-tested: 72, including #72 Congregation Recognition after surviving the complete #73 suite.
+- Verified: 1 (#73 Assignments).
 - Implemented: 0.
-- Not started: 28.
-- Strict implemented-or-better parity: 72/100.
-- Official regression stability: 71/100.
+- Not started: 27.
+- Strict implemented-or-better parity: 73/100.
+- Official regression stability: 72/100.
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40.
-
-## #71 Leaderboards checkpoint
-
-- `src/app/leaderboards.js` is the sole v3 period/lane normalization and ranking-projection owner.
-- `src/core/api.js` remains the sole browser Supabase boundary and consumes the retained `public.bible_leaderboard(uuid,timestamptz)` aggregate plus the active congregation directory.
-- Today / This Week / All Time and the eight recovered lanes remain verified.
-- Period cutoffs use the active congregation IANA timezone when present, with browser-local timezone only as fallback.
-- Corrected exact functional candidate `08345c522c007679915d9a072db8cbd81fdd4eec` passed run `34411253995`.
-- Exact bookkeeping candidate `b14415bb9b59c1eed109f02a822a48298844f8d1` passed run `34412074523` and is frozen as `release/v3.44-leaderboards`.
-- #71 is now Regression-tested because it survived the complete #72 functional suite.
 
 ## #72 Congregation Recognition checkpoint
 
-- Retained `congregation-recognition.js` plus the later leader-dashboard role/privacy hardening were recovered before implementation instead of guessing behavior.
-- `src/app/congregation-recognition.js` is the sole v3 client owner for recognition normalization, congregation scope, active-target validation, the nine retained presets and client-side award permission checks.
-- `src/features/congregation-recognition/index.js` is presentation-only and is reached through the existing Community route.
-- `src/core/api.js` remains the sole browser Supabase boundary. It reads active congregation directory rows, visible `bible_member_recognitions`, congregation `bible_user_badges`, active `bible_badge_catalog`, and performs the bounded recognition insert.
-- Persisted special recognition is limited to `leader`, `pastor` and `admin`; `facilitator` is deliberately view-only. Existing Supabase RLS independently enforces the same authority and active-target membership.
-- All active congregation members may view visible recognition and earned congregation badges allowed by existing RLS.
-- Awards target only active members of the selected congregation and support the retained nine presets plus bounded optional custom title/note.
-- #72 does not own trusted score-event calculation, leaderboard ranking, local XP, private study notes, Couple Journey data or credentials.
-- Permanent architecture, edge and 390px browser/mobile regressions are accumulated in `.github/workflows/v3-regression.yml`.
-- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed the complete accumulated architecture, edge and Playwright/mobile suite in run `34414579164`.
-- The isolated functional verification branch was reset from its temporary trigger commit to the exact clean candidate after success.
-- No production Supabase migration/function, Cloudflare, v2 or `main` change was made for #72.
+- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed run `34414579164`.
+- Exact bookkeeping candidate `483662cbad75ee98f0914ee66517b9eeb57f7f61` passed run `34415308296` and is frozen as `release/v3.45-congregation-recognition`.
+- #72 is now Regression-tested because it survived the complete #73 functional suite.
+
+## #73 Assignments checkpoint
+
+- `src/app/assignments.js` is the sole #73 application owner for assignment normalization, selected congregation, current-user progress, open/close, member Start/Complete and Realtime refresh lifecycle.
+- `src/core/api.js` remains the sole browser Supabase/trusted-function/Realtime implementation boundary.
+- Assignment reads rely on existing RLS visibility and request only active selected-congregation rows. Progress reads are further restricted to the signed-in user and visible assignment IDs.
+- Start/Complete use only the authenticated retained `bq-assignment` Edge Function. Browser code does not write `bible_assignment_progress` or `bible_score_events` directly and does not calculate trusted assignment points.
+- Realtime listens only for selected-congregation assignment changes and signed-in-user progress changes, then reloads server truth. Payloads do not become application truth; cleanup is idempotent.
+- Normal members may receive/open/start/complete and view only their own submitted response plus leader feedback.
+- Ministry roles (`facilitator`, `leader`, `pastor`, `admin`) are deliberately read-only in #73, matching the retained member-facing assignment center. Leader create/feedback/archive/scheduling/management belongs to later rows.
+- #74 Advanced assignments, #75 Assignment push, #76–78 ministry surfaces and #79 Linked activities remain Not started and outside #73.
+- Permanent coverage is in `scripts/validate-v3-assignments.mjs`, `tests/v3-assignments-edge.mjs`, `tests/v3-assignments-smoke.mjs`, and the accumulated workflow.
+- Initial exact candidate `502e9fd86b96415d379d65295ba76ec3f117f9fd` reached #73 edge coverage in run `34416898681`; the fake API filtered the foreign-row fixture before the owner could inspect it. That test-only defect is recorded as `V3-ASSIGNMENTS-EDGE-FIXTURE-001`.
+- Corrected exact candidate `33871d45aec7111be95524333fe5210dceed71af` passed the complete accumulated architecture, edge and Playwright/mobile suite in run `34417012845`.
+- The isolated functional verification branch was reset to the exact clean corrected candidate after success.
+- No production Supabase schema/function, Cloudflare, v2 or `main` change was made for #73.
 
 ## Exact next sequence
 
-1. Complete only the #72 promotion/bookkeeping documentation on `feature/v3-congregation-recognition`.
-2. Create/reset isolated `verify/v3.45-congregation-recognition-bookkeeping` from the exact clean bookkeeping candidate.
-3. Add only the temporary one-shot trigger needed to execute the manual-only workflow, explicitly checking out/asserting that clean bookkeeping SHA.
-4. Require the complete accumulated architecture, edge and Playwright/browser-mobile suite to pass against that exact SHA.
-5. Reset the bookkeeping verification branch to the exact clean candidate and freeze `release/v3.45-congregation-recognition` at that same SHA.
-6. Only after the freeze, create `feature/v3-assignments` from v3.45 and recover #73 Assignments receive/open/complete/status-sync contracts before implementation.
+1. Finish only #73 promotion/bookkeeping documentation on `feature/v3-assignments`.
+2. Treat the resulting branch head as the clean v3.46 bookkeeping candidate.
+3. Create/reset isolated `verify/v3.46-assignments-bookkeeping` at that exact SHA.
+4. Add only a temporary one-shot trigger that explicitly checks out/asserts the clean candidate.
+5. Require all accumulated architecture, edge and Playwright/browser-mobile regressions to pass.
+6. Reset the bookkeeping verification branch to the exact candidate and freeze `release/v3.46-assignments` at the same SHA.
+7. Only after freeze create `feature/v3-advanced-assignments` from v3.46 and recover #74 advanced fields, due-state, completion and permission contracts before implementation.
 
-Production deployment remains out of scope during rebuild verification. Do not deploy pending migrations or functions merely to satisfy parity testing.
+## #74 recovery guardrails
+
+The retained live `bq-assignment` already contains server-side support for advanced fields such as scheduled opening, reminder timestamp, recurrence rule, required reflection, minimum quiz score, evidence type and linked activity metadata. Do not automatically expose all of these in #74; first recover retained old UI/behavior and the inventory acceptance contract. Keep #75 push workflow and #79 linked-activity launching separate.
 
 ## Non-negotiable continuation rules
 
