@@ -1,6 +1,7 @@
 const ASSIGNMENT_TYPES=Object.freeze(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const TARGET_SCOPES=Object.freeze(['all','member','team','group']);
 const PROGRESS_STATES=Object.freeze(['assigned','started','completed']);
+const EVIDENCE_TYPES=Object.freeze(['none','text','confirmation']);
 const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin']);
 
 function fail(code,message){const error=new Error(message);error.code=code;throw error}
@@ -21,13 +22,25 @@ function normalizeAssignment(row,congregationId){
   if(title.length<2)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data was missing a valid title.');
   const points=Number(row?.points);
   if(!Number.isFinite(points)||points<0||points>25)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned invalid completion points.');
-  const dueAt=validIso(row?.due_at);
+  const dueAt=validIso(row?.due_at),scheduleAt=validIso(row?.schedule_at),reminderAt=validIso(row?.reminder_at);
   if(row?.due_at&&!dueAt)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid deadline.');
+  if(row?.schedule_at&&!scheduleAt)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid scheduled opening.');
+  if(row?.reminder_at&&!reminderAt)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid reminder time.');
+  const recurrenceRule=text(row?.recurrence_rule,120)||null;
+  const evidenceType=String(row?.evidence_type||'none');
+  if(!EVIDENCE_TYPES.includes(evidenceType))fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an unsupported evidence requirement.');
+  let minQuizScore=null;
+  if(row?.min_quiz_score!==null&&row?.min_quiz_score!==undefined&&row?.min_quiz_score!==''){
+    minQuizScore=Number(row.min_quiz_score);
+    if(!Number.isFinite(minQuizScore)||minQuizScore<0||minQuizScore>100)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid minimum quiz score.');
+    minQuizScore=Math.round(minQuizScore);
+  }
   const scriptureRefs=(Array.isArray(row?.scripture_refs)?row.scripture_refs:[]).map(value=>text(value,80)).filter(Boolean).slice(0,20);
   return Object.freeze({
     id,congregationId:String(congregationId),createdBy:String(row?.created_by||''),title,
     instructions:text(row?.instructions,4000),type,scriptureRefs,targetScope,targetId,
-    dueAt,points:Math.round(points),createdAt:validIso(row?.created_at),updatedAt:validIso(row?.updated_at)
+    dueAt,scheduleAt,reminderAt,recurrenceRule,requiredReflection:Boolean(row?.required_reflection),minQuizScore,evidenceType,
+    points:Math.round(points),createdAt:validIso(row?.created_at),updatedAt:validIso(row?.updated_at)
   });
 }
 
@@ -49,9 +62,16 @@ function normalizeMutation(payload,assignmentId,userId){
   return Object.freeze({status,awarded,alreadyCompleted:Boolean(payload?.alreadyCompleted)});
 }
 
-export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),submissionMax:4000});
+function dueState(assignment,progress,nowMs){
+  if(progress.status==='completed')return'completed';
+  if(assignment.scheduleAt&&new Date(assignment.scheduleAt).getTime()>nowMs)return'scheduled';
+  if(assignment.dueAt&&new Date(assignment.dueAt).getTime()<nowMs)return'overdue';
+  return'open';
+}
 
-export function createAssignmentsService({api,session,congregation}){
+export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),submissionMax:4000,recurrenceGeneration:false});
+
+export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
   if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
   let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});
   let stopRemote=null;
@@ -72,7 +92,8 @@ export function createAssignmentsService({api,session,congregation}){
     const assignments=(Array.isArray(payload?.assignments)?payload.assignments:[]).map(row=>normalizeAssignment(row,selected.congregationId));
     const visibleIds=new Set(assignments.map(row=>row.id)),progressMap=new Map();
     for(const raw of Array.isArray(payload?.progress)?payload.progress:[]){const progress=normalizeProgress(raw,current.user.id,visibleIds);if(progress&&!progressMap.has(progress.assignmentId))progressMap.set(progress.assignmentId,progress)}
-    const rows=assignments.map(assignment=>Object.freeze({...assignment,progress:progressMap.get(assignment.id)||Object.freeze({assignmentId:assignment.id,userId:String(current.user.id),status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null})}));
+    const nowValue=now(),nowMs=nowValue instanceof Date?nowValue.getTime():new Date(nowValue).getTime();
+    const rows=assignments.map(assignment=>{const progress=progressMap.get(assignment.id)||Object.freeze({assignmentId:assignment.id,userId:String(current.user.id),status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null});return Object.freeze({...assignment,progress,dueState:dueState(assignment,progress,nowMs)})});
     const wanted=String(activeId||state.activeId||''),nextActive=rows.some(row=>row.id===wanted)?wanted:'';
     state=Object.freeze({status:'ready',authenticated:true,remoteAvailable:true,userId:String(current.user.id),congregations:memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel})),congregationId:selected.congregationId,congregationName:selected.congregation.name,role:selected.role,assignments:rows,activeId:nextActive});
     return state;
@@ -87,19 +108,30 @@ export function createAssignmentsService({api,session,congregation}){
   }
   function close(){if(state.activeId)state=Object.freeze({...state,activeId:''});return state}
   const currentAssignment=id=>{if(state.status!=='ready')fail('BQ_ASSIGNMENT_NOT_READY','Assignments are not ready yet.');const assignment=state.assignments.find(row=>row.id===String(id||state.activeId));if(!assignment)fail('BQ_ASSIGNMENT_NOT_FOUND','This assignment is no longer available.');return assignment};
+  const assertOpen=assignment=>{if(assignment.dueState==='scheduled')fail('BQ_ASSIGNMENT_NOT_OPEN','This assignment has not opened yet.');};
 
   async function start(assignmentId){
     assertMemberResponse();
-    const assignment=currentAssignment(assignmentId),user=sessionState()?.user;
-    const result=normalizeMutation(await api.start(state.congregationId,assignment.id),assignment.id,user?.id);
+    const assignment=currentAssignment(assignmentId);assertOpen(assignment);
+    const user=sessionState()?.user,result=normalizeMutation(await api.start(state.congregationId,assignment.id),assignment.id,user?.id);
     if(result.status!=='started'&&result.status!=='completed')fail('BQ_ASSIGNMENT_RESPONSE','Starting the assignment did not return a started state.');
     return load({congregationId:state.congregationId,activeId:assignment.id});
   }
 
-  async function complete(assignmentId,submission=''){
+  async function complete(assignmentId,submission='',requirements={}){
     assertMemberResponse();
-    const assignment=currentAssignment(assignmentId),user=sessionState()?.user,body=text(submission,assignmentsContract.submissionMax);
-    const result=normalizeMutation(await api.complete(state.congregationId,assignment.id,body),assignment.id,user?.id);
+    const assignment=currentAssignment(assignmentId);assertOpen(assignment);
+    const user=sessionState()?.user,body=text(submission,assignmentsContract.submissionMax);
+    if((assignment.requiredReflection||assignment.evidenceType==='text')&&!body)fail('BQ_ASSIGNMENT_REFLECTION_REQUIRED','This assignment requires a written reflection or evidence before completion.');
+    if(assignment.evidenceType==='confirmation'&&!requirements?.confirmed)fail('BQ_ASSIGNMENT_CONFIRMATION_REQUIRED','Confirm completion before submitting this assignment.');
+    let quizScore=null;
+    const rawQuiz=requirements?.quizScore;
+    if(rawQuiz!==null&&rawQuiz!==undefined&&rawQuiz!==''){
+      quizScore=Number(rawQuiz);
+      if(!Number.isFinite(quizScore)||quizScore<0||quizScore>100)fail('BQ_ASSIGNMENT_QUIZ_SCORE_INVALID','Enter a quiz score from 0 to 100.');
+    }
+    if(assignment.minQuizScore!==null&&(quizScore===null||quizScore<assignment.minQuizScore))fail('BQ_ASSIGNMENT_QUIZ_SCORE_REQUIRED',`A quiz score of at least ${assignment.minQuizScore}% is required.`);
+    const result=normalizeMutation(await api.complete(state.congregationId,assignment.id,body,quizScore),assignment.id,user?.id);
     if(result.status!=='completed')fail('BQ_ASSIGNMENT_RESPONSE','Completing the assignment did not return a completed state.');
     const refreshed=await load({congregationId:state.congregationId,activeId:assignment.id});
     return Object.freeze({state:refreshed,awarded:result.awarded,alreadyCompleted:result.alreadyCompleted});
