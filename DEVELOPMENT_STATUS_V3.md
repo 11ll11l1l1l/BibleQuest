@@ -2,93 +2,91 @@
 
 Updated: 2026-09-10 JST
 
-`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. `TIMELINE_V3.md` retains release history. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
+`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. BibleQuest v3 continues to use rebuild-and-verify rather than patch-and-accumulate.
 
 ## Deployment safety
 
 - Production v2 remains unchanged.
 - `main`, production Supabase and production Cloudflare remain untouched.
-- Development branch: `feature/v3-congregation-recognition`.
+- Development branch: `feature/v3-assignments`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
-- Temporary `push:` triggers are permitted only on isolated one-shot verification branches; trigger commits are never release candidates and verification branches are reset to the exact clean candidate after each run.
-- Latest frozen checkpoint: `release/v3.44-leaderboards` at `b14415bb9b59c1eed109f02a822a48298844f8d1`.
-- Exact v3.44 bookkeeping run `34412074523` passed the complete accumulated suite against that SHA before freeze.
+- Temporary `push:` triggers are allowed only on isolated one-shot verification branches; trigger commits are never release candidates and verification branches are reset to the exact clean candidate after each run.
+- Latest frozen checkpoint: `release/v3.45-congregation-recognition` at `483662cbad75ee98f0914ee66517b9eeb57f7f61`.
+- Exact v3.45 bookkeeping run `34415308296` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the complete #72 Congregation Recognition functional gate:
+Inventory state after the complete #73 Assignments functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 71 |
+| Regression-tested | 72 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 28 |
+| Not started | 27 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **72/100**.
+Strict implemented-or-better parity is **73/100**.
 
-Official regression stability is **71/100**.
+Official regression stability is **72/100**.
 
 Current leading rows:
-- #69 Team Center — Regression-tested; frozen in v3.42.
-- #70 Trusted score events — Regression-tested; frozen in v3.43.
-- #71 Leaderboards — Regression-tested after surviving the complete #72 suite; frozen in v3.44.
-- #72 Congregation Recognition — Verified by exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` in run `34414579164`.
+- #71 Leaderboards — Regression-tested; frozen in v3.44.
+- #72 Congregation Recognition — Regression-tested after surviving the complete #73 suite; frozen in v3.45.
+- #73 Assignments — Verified by corrected exact functional candidate `33871d45aec7111be95524333fe5210dceed71af` in run `34417012845`.
+- #74 Advanced assignments — Not started.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
 
-`ARCHITECTURE_V3.md` remains the detailed foundational architecture contract, but its final narrative progress snapshot is historical and still describes the v3.40 checkpoint. Do not use that trailing snapshot as the current progress ledger. Current milestone state and post-v3.40 owner additions are authoritative in `FEATURE_INVENTORY_V3.md`, this status file, `DEVELOPMENT_HANDOFF_V3.md`, `TIMELINE_V3.md`, the milestone-specific contracts, and their accumulated architecture validators. The detailed architecture file will be safely reconciled as a whole during the full old-vs-new audit rather than risk truncating its retained contract through a full-file-only editing surface.
+`ARCHITECTURE_V3.md` remains the detailed foundational architecture contract, but its trailing progress snapshot is historical. Current progress and post-v3.40 owner additions are authoritative in `FEATURE_INVENTORY_V3.md`, this status file, `DEVELOPMENT_HANDOFF_V3.md`, milestone contracts, and accumulated validators. The architecture narrative will be reconciled safely during the later full old-vs-new audit rather than risk truncating retained material through a full-file-only editing surface.
 
-- `src/core/storage.js` — sole direct browser local-storage owner.
-- `src/core/api.js` — sole browser Supabase/trusted-function boundary.
-- `src/app/congregation-membership.js` — congregation membership and client capability boundary.
-- `src/app/trusted-score-events.js` — sole #70 client score-event normalization/scope/stable-ID owner.
-- `src/app/leaderboards.js` — sole #71 period/lane normalization and ranking-projection owner.
-- `src/app/congregation-recognition.js` — sole #72 client recognition normalization, congregation scope, preset and award-permission owner.
-- `src/features/congregation-recognition/index.js` — #72 presentation only.
-- Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, Couples, Journey Group, Community and diagnostics owners remain unchanged.
+- `src/core/api.js` — sole browser Supabase/trusted-function/Realtime implementation boundary.
+- `src/app/congregation-membership.js` — congregation membership and role capability boundary.
+- `src/app/congregation-recognition.js` — sole #72 recognition owner.
+- `src/app/assignments.js` — sole #73 assignment receive/open/start/complete/status-sync owner.
+- `src/features/assignments/index.js` — #73 presentation/event forwarding only.
+- Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, Couples, Journey Group, Community, Presence, Team Center, Leaderboards and diagnostics owners remain unchanged.
 
-Recovered #72 behavior:
-- active congregation members can view visible persisted recognition and earned congregation badges;
-- persisted special recognition can be created only by `leader`, `pastor` and `admin` roles;
-- `facilitator` remains view-only for persisted recognition;
-- award targets must be active members of the selected congregation;
-- nine retained recognition presets are supported, with optional bounded custom title/note;
-- browser-side checks are fail-closed, while existing Supabase RLS remains the independent final authorization boundary;
-- #72 does not own score calculation, leaderboard ranking, XP, private notes, Couple Journey data or account credentials;
+## #72 Congregation Recognition — Regression-tested
+
+- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed run `34414579164`.
+- Exact v3.45 bookkeeping candidate `483662cbad75ee98f0914ee66517b9eeb57f7f61` passed run `34415308296` and is frozen as `release/v3.45-congregation-recognition`.
+- #72 survived the complete #73 functional suite and therefore advanced to Regression-tested.
+
+## #73 Assignments — Verified
+
+Recovered before implementation:
+- legacy member-facing `assignment-center.js` lifecycle;
+- live `bible_assignments` / `bible_assignment_progress` schema, RLS, grants and Realtime publication;
+- authenticated retained `bq-assignment` Edge Function;
+- later assignment target/schema hardening.
+
+Verified v3 behavior:
+- active RLS-visible assignments load by selected congregation;
+- progress reads are explicitly restricted to the signed-in user;
+- receive, open, started, completed, own submission and leader-feedback states are normalized by one application owner;
+- Start/Complete mutations use only the retained authenticated `bq-assignment` function;
+- browser code does not directly write assignment progress or trusted score events;
+- completion preserves server idempotency and trusted award response;
+- optional member submission is trimmed/bounded to 4000 characters;
+- Realtime is a refresh signal only, with congregation/user-scoped subscriptions and idempotent teardown;
+- ministry roles (`facilitator`, `leader`, `pastor`, `admin`) remain read-only in the #73 member surface; leader management belongs to later milestones;
+- #74 Advanced assignments, #75 Assignment push workflow, #76–78 Ministry surfaces and #79 Linked activities remain outside #73;
 - permanent architecture, edge and 390px browser/mobile coverage is accumulated in the normal workflow.
 
-## #71 Leaderboards — Regression-tested
-
-- Corrected exact functional candidate `08345c522c007679915d9a072db8cbd81fdd4eec` passed run `34411253995`.
-- Exact v3.44 bookkeeping candidate `b14415bb9b59c1eed109f02a822a48298844f8d1` passed run `34412074523` and is frozen as `release/v3.44-leaderboards`.
-- #71 survived the complete #72 functional suite and therefore advanced to Regression-tested.
-
-## #72 Congregation Recognition — Verified
-
-- Retained old recognition and later privacy/role hardening were recovered before implementation.
-- Live read-only schema/RLS inspection confirmed visible congregation reads and persisted award authority for `leader`, `pastor` and `admin` only.
-- Clean v3 composition uses `src/app/congregation-recognition.js`, `src/features/congregation-recognition/index.js` and the existing central `src/core/api.js`; no production migration or new backend function was introduced.
-- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed every accumulated architecture, edge and Playwright/mobile regression in run `34414579164`.
-- The isolated functional verification branch was reset from its temporary trigger commit to the exact clean candidate after success.
-- #72 remains Verified until its documentation/bookkeeping candidate independently passes the same complete suite and is frozen as v3.45.
-
-## Defect / root-cause ledger
-
-- `V3-LEADERBOARDS-VALIDATOR-001` — a #70 validator encoded meaningless API-export adjacency; it was corrected to verify exported boundaries structurally without weakening ownership/security checks.
-- `V3-LEADERBOARDS-TIMEZONE-001` — leaderboard period cutoffs depended on the executing machine timezone; the owner now calculates congregation-calendar boundaries from the congregation IANA timezone with permanent multi-zone regression coverage.
-- No new application defect was exposed during the #72 functional gate; the exact #72 candidate passed its first complete accumulated run.
-
-All earlier defect regressions remain in the accumulated suite.
+Functional verification evidence:
+- Initial exact candidate `502e9fd86b96415d379d65295ba76ec3f117f9fd`, run `34416898681`: all architecture validators and all earlier edge regressions passed, then the new #73 edge fixture failed before browser execution.
+- Root cause `V3-ASSIGNMENTS-EDGE-FIXTURE-001`: the fake API filtered a deliberately foreign-congregation test row before the owner could receive it, so the test expected a rejection from data it never delivered. This was a test-only fixture defect, not an application defect.
+- Corrected exact candidate `33871d45aec7111be95524333fe5210dceed71af` passed the complete accumulated architecture, edge and Playwright/browser-mobile suite in run `34417012845`.
+- The isolated functional verification branch was reset to that exact clean candidate after success.
 
 ## Next major milestone
 
-1. Run the exact clean #72 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
-2. If green, reset that branch to the exact clean candidate and freeze `release/v3.45-congregation-recognition` at the same SHA.
-3. Only after v3.45 is frozen, create `feature/v3-assignments` and recover #73 receive/open/complete/status-sync contracts before implementation.
-4. Reconcile the full `ARCHITECTURE_V3.md` narrative safely during the later full old-vs-new audit; do not use its stale v3.40 tail as current bookkeeping.
+1. Run the exact clean #73 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
+2. If green, reset the bookkeeping verification branch to the exact clean candidate and freeze `release/v3.46-assignments` at the same SHA.
+3. Only after v3.46 is frozen, create `feature/v3-advanced-assignments` and recover #74 advanced-field/due-state/completion/permission contracts before implementation.
+4. Keep #75 Assignment push and #79 Linked activities separate until their own milestones.
 
 ## Release rule
 
