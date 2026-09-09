@@ -63,6 +63,16 @@ No verified P1 release blocker is established. The narrow-mobile/PWA acceptance 
 
 ## Triage history
 
+### 2026-09-09 12:51 JST
+
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
+- **Reports available:** Investigator 1 latest rerun present; Investigator 2 present; Investigator 3 present; Investigator 4 present.
+- **Change since prior cycle:** `main` remains unchanged. Investigator 1 again independently identifies the same stale-device cloud overwrite and adds no new P0/P1 candidate. No report supersedes Investigator 2, 3, or 4 in the available context.
+- **Independent verification:** read current `main` branch metadata and current `account.js`; the current account implementation still exposes the existing-device/new-device split used by the previously verified overwrite path. Re-read open issue #6; it still explicitly requires 320/360/390/412/430 px, Android Chrome/Brave, and installed-PWA browser evidence, and states CSS presence alone is insufficient.
+- **De-duplication / impact gate:** cloud overwrite remains the single interrupting item because it risks actual synchronized progress corruption. Mobile/PWA remains NOT EXECUTED rather than failed, so it is not promoted to P1. Recovery-code atomicity remains P2 deferred. Architecture observations and stale issue/PR descriptions remain suppressed.
+- **Counterfactual:** deferring the cloud overwrite can silently destroy newer multi-device progress, so it remains P0 STOP. Deferring the other reported items through the current milestone does not have comparably demonstrated harm.
+- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt primary milestone work.
+
 ### 2026-09-09 11:47 JST
 
 - **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
