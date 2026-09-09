@@ -51,7 +51,7 @@ export function createPresenceService({
   if(!Number.isFinite(heartbeatMs)||heartbeatMs<=0||!Number.isFinite(staleMs)||staleMs<=heartbeatMs)throw new Error('Presence timing requires a positive heartbeat and a longer stale timeout.');
 
   let state=baseState(session.getState?.()||{},'idle');
-  let timer=null,unsubscribeStore=null,started=false,generation=0,sessionSignature='';
+  let timer=null,unsubscribeStore=null,unsubscribeBeforeSignOut=null,started=false,generation=0,sessionSignature='';
   let activeCongregationIds=[];
   const cache=new Map();
 
@@ -124,6 +124,7 @@ export function createPresenceService({
       sessionSignature=nextSignature;
       reconcile().catch(error=>publish({status:'degraded',error:error?.message||'Presence reconciliation failed.'}));
     });
+    if(typeof session.beforeSignOut==='function')unsubscribeBeforeSignOut=session.beforeSignOut(()=>leave());
     return reconcile();
   }
 
@@ -165,6 +166,7 @@ export function createPresenceService({
   async function dispose({remove=true}={}){
     started=false;
     unsubscribeStore?.();unsubscribeStore=null;
+    unsubscribeBeforeSignOut?.();unsubscribeBeforeSignOut=null;
     if(remove)return leave();
     ++generation;clearRuntime();
     return [];
