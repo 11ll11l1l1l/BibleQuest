@@ -27,6 +27,7 @@ import { createTeamCenterService } from './team-center.js';
 import { createTrustedScoreEventsService } from './trusted-score-events.js';
 import { createLeaderboardsService } from './leaderboards.js';
 import { createCongregationRecognitionService } from './congregation-recognition.js';
+import { createAssignmentsService } from './assignments.js';
 import { createJourneyGroupsService } from './journey-groups.js';
 import { createEncouragementsService } from './encouragements.js';
 import { createCommunityBridgeService } from './community-bridge.js';
@@ -62,6 +63,7 @@ import { communityPage } from '../features/community/index.js';
 import { teamCenterPage } from '../features/team-center/index.js';
 import { leaderboardsPage } from '../features/leaderboards/index.js';
 import { congregationRecognitionPage } from '../features/congregation-recognition/index.js';
+import { assignmentsPage } from '../features/assignments/index.js';
 import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
@@ -111,6 +113,7 @@ function start(){
   const scoreEvents=createTrustedScoreEventsService({api:api.scoreEvents,session,congregation});
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
+  const assignments=createAssignmentsService({api:api.assignments,session,congregation});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});
@@ -143,6 +146,7 @@ function start(){
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     leaderboards:()=>leaderboardsPage({leaderboards,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
+    assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
@@ -168,6 +172,6 @@ function start(){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
