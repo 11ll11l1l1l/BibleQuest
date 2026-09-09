@@ -16,27 +16,27 @@ Updated: 2026-09-09 JST
 
 ## Current progress
 
-Inventory state after #65 Encouragements implementation, before its browser gate:
+Inventory state after the complete #65 Encouragements functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 64 |
+| Regression-tested | 65 |
 | Verified | 1 |
-| Implemented | 1 |
+| Implemented | 0 |
 | Not started | 34 |
 | Total | 100 |
 
 Strict implemented-or-better parity is **66/100**.
 
-Official regression stability is **64/100**.
+Official regression stability is **65/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
 - #100 Backup/export/import/reset — **Regression-tested** after surviving the complete #62 functional suite; frozen in v3.35.
 - #62 Couples/family local tools — **Regression-tested** after exact v3.36 bookkeeping run `34236023685` and the later complete #63 functional suite.
 - #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
-- #64 Journey Groups — **Verified** after exact functional run `34258746664` against `c49ce887bd28323292b6f1b60f7689a1aa194615`.
-- #65 Encouragements — **Implemented** on remote candidate `f6272064192201dd95da6945ce10c4003d9418fc`; accumulated browser verification remains pending.
+- #64 Journey Groups — **Regression-tested** through the later complete #65 functional suite.
+- #65 Encouragements — **Verified** by exact-candidate functional run `34337262620` against `b2fb1013822891930e017c8da0ea38e3e5c68b9e`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -134,7 +134,7 @@ Functional verification:
 
 ## Milestone 25 — Journey Groups
 
-### #64 — Verified
+### #64 — Regression-tested
 
 - `src/app/journey-groups.js` is the sole group normalization, authenticated membership and permission orchestration owner.
 - `src/core/api.js` remains the only browser Supabase boundary and reuses the retained `bq-journey-group`, `bible_groups` and `bible_group_members` contracts without a production migration.
@@ -144,19 +144,20 @@ Functional verification:
 - Initial run `34244782912` stopped before feature tests because consolidated workflow loops no longer matched seven validators' literal command-text assumptions.
 - Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
 - The isolated trigger commit `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` explicitly checked out and asserted that candidate; `verify/v3.38-journey-groups-functional-r2` was then reset to the clean candidate.
-- #64 is therefore Verified. #63 is Regression-tested through this later complete-suite evidence.
+- #64 was Verified here and is now Regression-tested through the later complete #65 suite. #63 remains Regression-tested.
 - Exact bookkeeping run `34259986598` passed candidate `7c06c3380eaac0e20e579ae26453611e63ac564d`, now frozen as `release/v3.38-journey-groups`.
 
 ## Milestone 26 — Encouragements
 
-### #65 — Implemented
+### #65 — Verified
 
 - `src/app/encouragements.js` owns the five retained preset definitions, received-row normalization, group-membership projection and same-day duplicate rejection.
 - `src/core/api.js` remains the sole browser Supabase boundary. Reads use retained group-member RLS; sends use the authenticated `bq-journey-group` function.
 - The trusted function derives the sender, verifies an active group and active membership, and rejects unknown presets.
 - `20260909_encouragement_duplicate_guard.sql` makes a database trigger the sole UTC bucket owner for every new insert and adds a partial unique index. Direct/legacy inserts cannot bypass the guard; retained v2 rows are not rewritten or deleted.
 - The dedicated route is preset-only and group-wide. Free text, direct messages, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
-- All JavaScript syntax checks, accumulated architecture validators and accumulated edge regressions pass locally. The 390px test exists in the manual workflow but Chromium execution remains pending.
+- Exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e` passed the complete accumulated architecture, edge and browser/mobile suite in run `34337262620`.
+- Isolated trigger commit `aa765edbfd11112c5d6db710fe4e0e83faba03d3` checked out and asserted that exact candidate; `verify/v3.39-encouragements-dedupe-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`; draft PR: `#89`.
 
 ## Defect / root-cause ledger
@@ -180,7 +181,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Run the complete manual v3 regression workflow against the exact #65 candidate. Promote #65 only after the browser/mobile suite passes; then run independent bookkeeping and freeze v3.39 before starting #67 Community Bridge.
+Run independent bookkeeping against the exact post-promotion candidate and freeze v3.39 before starting #67 Community Bridge.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 

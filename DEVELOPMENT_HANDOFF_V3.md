@@ -20,12 +20,12 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 
 ## Current authoritative inventory
 
-- Regression-tested: 64
-- Verified: 1 (#64 Journey Groups)
-- Implemented: 1 (#65 Encouragements)
+- Regression-tested: 65 (including #64 Journey Groups)
+- Verified: 1 (#65 Encouragements)
+- Implemented: 0
 - Not started: 34
 - Strict implemented-or-better parity: 66/100
-- Official regression stability: 64/100
+- Official regression stability: 65/100
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40
 
 ## #65 completed implementation
@@ -45,17 +45,18 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - `scripts/validate-v3-inventory.mjs`: pass.
 - Complete accumulated architecture validator set: 20/20 pass.
 - Complete accumulated edge regression set: 41/41 pass.
+- Complete accumulated browser/mobile regression set: pass in functional run `34337262620` against asserted code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e`.
+- Isolated functional trigger commit: `aa765edbfd11112c5d6db710fe4e0e83faba03d3`; verification branch reset to the exact clean candidate after success.
 - `git diff --check`: pass.
 - Production Supabase, Cloudflare, v2 and `main`: untouched by #65.
 - Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
 
 ## Open gate and exact next sequence
 
-1. Manually dispatch workflow `BibleQuest v3 regression` on branch `feature/v3-encouragements` because GitHub App-authored commits do not trigger Actions and the connector exposes no dispatch action.
-2. Do not call #65 Verified unless the complete architecture, edge and browser/mobile workflow passes.
-3. On a green functional run, record run ID and exact tested SHA; promote #65 to Verified and #64 to Regression-tested. Expected counts: 65 Regression-tested / 1 Verified / 0 Implemented / 34 Not started; strict parity 66/100; stability 65/100.
-4. Run an independent exact-SHA bookkeeping workflow. Freeze `release/v3.39-encouragements` only after that exact candidate passes.
-5. Only after v3.39 freezes, begin #67 Community Bridge on a new isolated branch.
+1. Commit the #65 promotion bookkeeping and publish it to `feature/v3-encouragements`.
+2. Run an independent exact-SHA bookkeeping workflow against that candidate.
+3. Freeze `release/v3.39-encouragements` only after that exact candidate passes.
+4. Only after v3.39 freezes, begin #67 Community Bridge on a new isolated branch.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 
