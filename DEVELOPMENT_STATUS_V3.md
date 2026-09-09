@@ -11,22 +11,22 @@ Updated: 2026-09-09 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.37-couples-cloud` at `f706896d8f4e8d2ee19e607a38cc87dada70d671`.
-- Exact v3.37 bookkeeping run `34240373295` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.38-journey-groups` at `7c06c3380eaac0e20e579ae26453611e63ac564d`.
+- Exact v3.38 bookkeeping run `34259986598` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the corrected #64 Journey Groups functional gate:
+Inventory state after #65 Encouragements implementation, before its browser gate:
 
 | State | Count |
 |---|---:|
 | Regression-tested | 64 |
 | Verified | 1 |
-| Implemented | 0 |
-| Not started | 35 |
+| Implemented | 1 |
+| Not started | 34 |
 | Total | 100 |
 
-Strict verified-or-better parity is **65/100**.
+Strict implemented-or-better parity is **66/100**.
 
 Official regression stability is **64/100**.
 
@@ -36,6 +36,7 @@ Current leading rows:
 - #62 Couples/family local tools — **Regression-tested** after exact v3.36 bookkeeping run `34236023685` and the later complete #63 functional suite.
 - #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
 - #64 Journey Groups — **Verified** after exact functional run `34258746664` against `c49ce887bd28323292b6f1b60f7689a1aa194615`.
+- #65 Encouragements — **Implemented** on remote candidate `f6272064192201dd95da6945ce10c4003d9418fc`; accumulated browser verification remains pending.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -47,6 +48,7 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/couples-family.js` — sole #62 local Couples persistence/orchestration owner.
 - `src/app/couples-cloud.js` — sole #63 authenticated pair/shared-history orchestration owner.
 - `src/app/journey-groups.js` — sole #64 Journey Group membership orchestration and fail-closed normalization owner.
+- `src/app/encouragements.js` — sole #65 encouragement normalization, membership projection and duplicate-prevention owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
 - `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples and Journey Group remote contracts.
@@ -143,6 +145,19 @@ Functional verification:
 - Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
 - The isolated trigger commit `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` explicitly checked out and asserted that candidate; `verify/v3.38-journey-groups-functional-r2` was then reset to the clean candidate.
 - #64 is therefore Verified. #63 is Regression-tested through this later complete-suite evidence.
+- Exact bookkeeping run `34259986598` passed candidate `7c06c3380eaac0e20e579ae26453611e63ac564d`, now frozen as `release/v3.38-journey-groups`.
+
+## Milestone 26 — Encouragements
+
+### #65 — Implemented
+
+- `src/app/encouragements.js` owns the five retained preset definitions, received-row normalization, group-membership projection and same-day duplicate rejection.
+- `src/core/api.js` remains the sole browser Supabase boundary. Reads use retained group-member RLS; sends use the authenticated `bq-journey-group` function.
+- The trusted function derives the sender and UTC duplicate bucket, verifies an active group and active membership, and rejects unknown presets.
+- `20260909_encouragement_duplicate_guard.sql` adds a partial unique index only for server-bucketed rows. Retained v2 rows are not rewritten or deleted.
+- The dedicated route is preset-only and group-wide. Free text, direct messages, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
+- All JavaScript syntax checks, accumulated architecture validators and accumulated edge regressions pass locally. The 390px test exists in the manual workflow but Chromium execution remains pending.
+- Canonical remote code candidate: `f6272064192201dd95da6945ce10c4003d9418fc`; draft PR: `#89`.
 
 ## Defect / root-cause ledger
 
@@ -163,7 +178,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Complete the independent exact #64 bookkeeping suite and freeze v3.38 only at the exact SHA that passes the complete accumulated regression workflow. Do not begin another feature before that release gate closes.
+Run the complete manual v3 regression workflow against the exact #65 candidate. Promote #65 only after the browser/mobile suite passes; then run independent bookkeeping and freeze v3.39 before starting #67 Community Bridge.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 

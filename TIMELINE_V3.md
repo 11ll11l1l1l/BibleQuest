@@ -7,15 +7,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #64 functional verification:** 64 Regression-tested / 1 Verified / 0 Implemented / 35 Not started
-- **Verified or better:** 65 / 100 (**65% strict parity completion**)
+- **Inventory states after #65 implementation:** 64 Regression-tested / 1 Verified / 1 Implemented / 34 Not started
+- **Implemented or better:** 66 / 100 (**66% strict parity completion**)
 - **Official regression stability:** 64 / 100
-- **Latest frozen checkpoint:** `release/v3.37-couples-cloud` at `f706896d8f4e8d2ee19e607a38cc87dada70d671`
-- **v3.37 bookkeeping:** `34240373295` — complete accumulated suite green against the frozen SHA
+- **Latest frozen checkpoint:** `release/v3.38-journey-groups` at `7c06c3380eaac0e20e579ae26453611e63ac564d`
+- **v3.38 bookkeeping:** `34259986598` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
 - **#64 Journey Groups:** Verified; corrected exact functional candidate `c49ce887bd28323292b6f1b60f7689a1aa194615`, run `34258746664`
+- **#65 Encouragements:** Implemented; exact remote code candidate `f6272064192201dd95da6945ce10c4003d9418fc`, browser gate pending
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -47,10 +48,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 22 | Backup/export/import/reset | Frozen | v3.35; #100 Regression-tested after #62 suite |
 | 23 | Couples/family local tools | Frozen | v3.36; #62 Regression-tested after #63 suite |
 | 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
-| 25 | Journey Groups | Functional gate green; bookkeeping active | #64 Verified; functional `34258746664` |
-| 26 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 27 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 28 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 25 | Journey Groups | Frozen | v3.38; #64 Verified; bookkeeping `34259986598` |
+| 26 | Encouragements | Implemented; functional gate pending | #65 candidate `f6272064192201dd95da6945ce10c4003d9418fc` |
+| 27 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 28 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 29 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -78,6 +80,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; functional `34219329591`; bookkeeping `34220313765`
 - `release/v3.36-couples-family-local` — `488fea911cc432c9843a2af39480b6f2cc67711e`; corrected functional `34229105566`; bookkeeping `34236023685`
 - `release/v3.37-couples-cloud` — `f706896d8f4e8d2ee19e607a38cc87dada70d671`; functional `34238007365`; bookkeeping `34240373295`
+- `release/v3.38-journey-groups` — `7c06c3380eaac0e20e579ae26453611e63ac564d`; corrected functional `34258746664`; bookkeeping `34259986598`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -117,6 +120,15 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Initial run `34244782912` exposed only the workflow/validator command-shape mismatch recorded as `V3-WORKFLOW-LOOP-001`.
 - Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
 - The one-shot branch was reset from trigger `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` to the clean candidate after verification.
+- Exact bookkeeping candidate `7c06c3380eaac0e20e579ae26453611e63ac564d` passed run `34259986598` and is frozen as v3.38.
+
+## #65 Encouragements — Implemented
+
+- Preset-only, group-wide encouragements reuse verified Journey Group membership and retained RLS-protected rows.
+- One v3 owner normalizes received rows and blocks duplicate sends; the central API alone reads Supabase and invokes the authenticated send action.
+- The server derives the sender and UTC day. An additive partial unique index prevents concurrent identical sends without rewriting retained v2 rows.
+- Architecture, inventory, syntax and accumulated edge gates pass locally. The 390px browser regression is accumulated but has not executed against this candidate.
+- Remote candidate `f6272064192201dd95da6945ce10c4003d9418fc`; draft PR `#89`.
 
 ## Current bookkeeping
 
@@ -133,20 +145,22 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #62 Couples/family local tools — **Regression-tested**
 - #63 Couples cloud — **Regression-tested**
 - #64 Journey Groups — **Verified**
-- Inventory states — **64 Regression-tested / 1 Verified / 0 Implemented / 35 Not started**
-- Strict parity — **65/100**
+- #65 Encouragements — **Implemented**
+- Inventory states — **64 Regression-tested / 1 Verified / 1 Implemented / 34 Not started**
+- Strict parity — **66/100**
 - Official regression stability — **64/100**
 
 ## Next sequence
 
-1. Run the independent exact #64 bookkeeping gate against the complete accumulated suite.
-2. Freeze v3.38 only at the exact bookkeeping SHA that passes.
-3. Reassess the next dependency-safe inventory row only after the v3.38 gate closes.
-4. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
+1. Run the complete manual functional workflow on `feature/v3-encouragements`.
+2. If green, promote #65 to Verified and #64 to Regression-tested.
+3. Run the exact bookkeeping gate and freeze v3.39 only after it passes.
+4. Start #67 Community Bridge only after v3.39 freezes.
+5. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **35 Not started rows** after #64 functional verification. Remaining work includes Encouragements, Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics, reset/recovery and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+Literal old-version parity has **34 Not started rows** after #65 implementation. Remaining work includes Play Together/Live Rooms, Bible World, community/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 
