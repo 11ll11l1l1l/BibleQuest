@@ -33,8 +33,8 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - preset-only, group-wide send/receive using the five retained encouragement kinds;
 - `src/app/encouragements.js` is the sole feature owner;
 - `src/core/api.js` is the sole browser Supabase boundary;
-- `bq-journey-group` verifies active group/membership and derives sender plus UTC duplicate bucket;
-- additive partial unique index rejects concurrent identical same-day sends without rewriting/deleting retained v2 rows;
+- `bq-journey-group` verifies active group/membership and derives the authenticated sender;
+- a database `BEFORE INSERT` trigger is the sole UTC-bucket owner for every future insert; an additive partial unique index rejects direct, legacy and concurrent identical same-day sends without rewriting/deleting retained v2 rows;
 - dedicated route, responsive UI, Journey Groups entry point, contract, architecture validator, edge regression and 390px browser regression;
 - historical encouragements remain readable after a sender leaves; current active membership is enforced at send time instead of being misapplied to retained history;
 - free-text chat, DMs, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.

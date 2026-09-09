@@ -7,7 +7,7 @@ Inventory row #65 restores preset-only, group-wide encouragements on top of veri
 - Retained `journey-groups.js` supplies the five old presets and group feed behavior.
 - `src/app/encouragements.js` is the sole v3 normalization and permission-orchestration owner.
 - `src/core/api.js` is the only browser Supabase boundary.
-- `bq-journey-group` authenticates sends and assigns the duplicate bucket server-side.
+- `bq-journey-group` authenticates sends; the database trigger is the sole duplicate-bucket owner.
 - Existing group-member RLS remains authoritative for reads.
 
 ## Exact #65 scope
@@ -20,7 +20,7 @@ Inventory row #65 restores preset-only, group-wide encouragements on top of veri
 
 The trusted send path requires current active membership. Historical encouragements remain readable after their sender leaves, because membership changes must not invalidate an otherwise authorized group history.
 
-The duplicate guard is additive: retained v2 rows remain readable and are not rewritten or deleted. New trusted sends receive a server-owned `dedupe_bucket`, backed by a partial unique index so concurrent duplicates fail consistently.
+The duplicate guard is additive: retained v2 rows remain readable and are not rewritten or deleted. A `BEFORE INSERT` trigger assigns the UTC `dedupe_bucket` to every new insert, including retained v2/direct REST callers, and a partial unique index makes concurrent duplicates fail consistently. The client-side check remains an early user-experience guard, not the data-integrity authority.
 
 ## Explicit exclusions
 

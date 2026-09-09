@@ -153,8 +153,8 @@ Functional verification:
 
 - `src/app/encouragements.js` owns the five retained preset definitions, received-row normalization, group-membership projection and same-day duplicate rejection.
 - `src/core/api.js` remains the sole browser Supabase boundary. Reads use retained group-member RLS; sends use the authenticated `bq-journey-group` function.
-- The trusted function derives the sender and UTC duplicate bucket, verifies an active group and active membership, and rejects unknown presets.
-- `20260909_encouragement_duplicate_guard.sql` adds a partial unique index only for server-bucketed rows. Retained v2 rows are not rewritten or deleted.
+- The trusted function derives the sender, verifies an active group and active membership, and rejects unknown presets.
+- `20260909_encouragement_duplicate_guard.sql` makes a database trigger the sole UTC bucket owner for every new insert and adds a partial unique index. Direct/legacy inserts cannot bypass the guard; retained v2 rows are not rewritten or deleted.
 - The dedicated route is preset-only and group-wide. Free text, direct messages, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
 - All JavaScript syntax checks, accumulated architecture validators and accumulated edge regressions pass locally. The 390px test exists in the manual workflow but Chromium execution remains pending.
 - Canonical remote code candidate: `f6272064192201dd95da6945ce10c4003d9418fc`; draft PR: `#89`.
@@ -176,6 +176,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-COUPLES-CLOUD-FOREIGN-ROW-001` — the initial edge fixture prefiltered shared rows and could not prove the owner rejects foreign-pair data; the fixture now returns mixed rows and permanently exercises owner-side rejection.
 - `V3-WORKFLOW-LOOP-001` — workflow consolidation retained every regression but seven validators required literal `node <path>` text, so run `34244782912` failed before feature tests. A shared invocation parser now recognizes executable direct and looped commands, while `tests/v3-workflow-contract-edge.mjs` rejects comments, non-Node loops, variable mismatches and prefix-only path matches.
 - `V3-ENCOURAGEMENT-HISTORY-001` — the initial #65 owner treated current sender membership as a read-time invariant, which would reject valid history after a sender left. Current membership is now enforced only when sending; a permanent edge regression retains former-member history.
+- `V3-ENCOURAGEMENT-DEDUPE-001` — the initial partial index covered only callers that supplied a non-null bucket, so direct/legacy inserts could bypass duplicate prevention. A database `BEFORE INSERT` trigger now owns and overwrites the UTC bucket for every new row; the Edge Function no longer competes for that value.
 
 ## Next major milestone
 
