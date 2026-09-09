@@ -19,6 +19,8 @@ const RECOGNITION_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,av
 const RECOGNITION_FIELDS='id,congregation_id,user_id,awarded_by,award_code,title,note,icon,visible,created_at';
 const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
 const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
+const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at';
+const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -283,6 +285,30 @@ export function createApi() {
     }
   });
 
+  const assignments = Object.freeze({
+    async load(congregationId,userId) {
+      const client=await getClient();
+      const {data:rows,error}=await client.from('bible_assignments').select(ASSIGNMENT_FIELDS).eq('congregation_id',congregationId).eq('active',true).order('due_at',{ascending:true,nullsFirst:false}).order('created_at',{ascending:false}).limit(200);
+      if(error)throw error;
+      const assignmentRows=rows||[],ids=[...new Set(assignmentRows.map(row=>row.id).filter(Boolean))];
+      if(!ids.length)return {assignments:[],progress:[]};
+      const {data:progress,error:progressError}=await client.from('bible_assignment_progress').select(ASSIGNMENT_PROGRESS_FIELDS).eq('user_id',userId).in('assignment_id',ids).order('updated_at',{ascending:false});
+      if(progressError)throw progressError;
+      return {assignments:assignmentRows,progress:progress||[]};
+    },
+    async start(congregationId,assignmentId) { return invoke('bq-assignment',{action:'start',congregationId,assignmentId}); },
+    async complete(congregationId,assignmentId,submission) { return invoke('bq-assignment',{action:'complete',congregationId,assignmentId,submission}); },
+    async subscribe(congregationId,userId,listener) {
+      const client=await getClient();
+      let closed=false;
+      const channel=client.channel(`bq-v3-assignments-${congregationId}-${userId}`)
+        .on('postgres_changes',{event:'*',schema:'public',table:'bible_assignments',filter:`congregation_id=eq.${congregationId}`},()=>listener?.())
+        .on('postgres_changes',{event:'*',schema:'public',table:'bible_assignment_progress',filter:`user_id=eq.${userId}`},()=>listener?.())
+        .subscribe();
+      return ()=>{if(closed)return;closed=true;void client.removeChannel(channel)};
+    }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -381,5 +407,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, assignments, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
