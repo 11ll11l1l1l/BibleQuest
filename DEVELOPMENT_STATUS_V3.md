@@ -8,27 +8,27 @@ Updated: 2026-09-09 JST
 
 - Production v2 remains unchanged.
 - `main` and production Cloudflare remain untouched.
-- Development branch: `feature/v3-study-core`.
+- Development branch: `feature/v3-presence`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2`.
+- Latest frozen checkpoint remains `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2` until the exact #68 bookkeeping candidate passes its final release gate.
 - Exact v3.40 bookkeeping run `34340610144` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the complete #67 Community Bridge functional gate:
+Inventory state after the complete #68 Presence verification gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 66 |
+| Regression-tested | 67 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 33 |
+| Not started | 32 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **67/100**.
+Strict implemented-or-better parity is **68/100**.
 
-Official regression stability is **66/100**.
+Official regression stability is **67/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
@@ -37,7 +37,8 @@ Current leading rows:
 - #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
 - #64 Journey Groups — **Regression-tested** through the later complete #65 functional suite.
 - #65 Encouragements — **Regression-tested** through the later complete #67 functional suite.
-- #67 Community Bridge — **Verified** by exact-candidate functional run `34340063733` against `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
+- #67 Community Bridge — **Regression-tested** after surviving the complete #68 Presence suite.
+- #68 Presence — **Verified** by the exact-SHA complete suite against `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` in run `34354132909`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -51,12 +52,13 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/journey-groups.js` — sole #64 Journey Group membership orchestration and fail-closed normalization owner.
 - `src/app/encouragements.js` — sole #65 encouragement normalization, membership projection and duplicate-prevention owner.
 - `src/app/community-bridge.js` — sole #67 privacy-minimized cross-feature projection owner.
+- `src/app/presence.js` — sole #68 online/offline lifecycle, heartbeat, stale-state interpretation and cleanup owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
-- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples and Journey Group remote contracts.
+- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples, Journey Group and Presence remote contracts.
 - `src/core/bible.js` — Bible-source loading and opened-pack persistence.
 - `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
-- Existing Router, Session, API, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
+- Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
 
 #62 deliberately excludes #63 Couples cloud. The local owner uses only the shared v3 storage boundary, does not read the classic unprefixed `biblequest_couples_v1` key, and does not call Supabase, account/session APIs, cloud notes, congregation APIs or Progress. Scripture references hand off to the existing BSB Reader owner. No XP/progress reward was invented because none was recovered for this local Couples capability.
 
@@ -166,7 +168,7 @@ Functional verification:
 
 ## Milestone 27 — Community Bridge
 
-### #67 — Verified
+### #67 — Regression-tested
 
 - `src/app/community-bridge.js` is the sole read-only cross-feature projection owner. It composes Session, Congregation Membership, Journey Groups, and Encouragements without direct storage, API, or cloud access.
 - The projection exposes only congregation ID/name/role, group ID/name/role/member counts, and an encouragement total. Foreign-scope rows fail closed; signed-out and local-preview states expose no stale cloud data.
@@ -176,6 +178,20 @@ Functional verification:
 - Isolated trigger commit `ef62892ead75098928005fe751582c394d8f832c` checked out and asserted that exact candidate; `verify/v3.40-community-bridge-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
 - Exact bookkeeping candidate `fca8edd2e18015b246aced2dff6590308ff6bde2` passed run `34340610144`; the isolated bookkeeping branch was reset to that candidate, now frozen as `release/v3.40-community-bridge`.
+- #67 survived the later complete #68 Presence suite and therefore advanced to Regression-tested.
+
+## Milestone 28 — Presence
+
+### #68 — Verified
+
+- `src/app/presence.js` is the sole Presence lifecycle owner; `src/core/api.js` remains the sole browser Supabase boundary.
+- The retained `public.bible_presence` contract is reused without a production migration: authenticated congregation members may read in-scope presence; a user may only write/delete the user's own row.
+- Presence writes `online` only for a real authenticated account, refreshes `last_seen` on a 60-second heartbeat, interprets rows older than 120 seconds as stale/offline, and performs bounded best-effort cleanup on sign-out/unmount.
+- Same-identity session refresh reuses the active lifecycle; identity changes restart it. Local preview, guest, and signed-out states never produce cloud writes.
+- Presence remains privacy-minimized and does not own Team Center, assignments, leaderboards, recognition, chat, XP, private study state, or other community workflows.
+- Permanent protection is retained in `PRESENCE_V3.md`, `scripts/validate-v3-presence.mjs`, `tests/v3-presence-edge.mjs`, and `tests/v3-presence-smoke.mjs`.
+- Exact Presence bookkeeping/verification SHA `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` passed the complete accumulated architecture, edge, and browser/mobile suite in run `34354132909`; the isolated trigger explicitly checked out and asserted that exact SHA.
+- The final documentation-only release candidate created after this record update must still pass the complete accumulated suite before `release/v3.41-presence` can be frozen.
 
 ## Defect / root-cause ledger
 
@@ -199,7 +215,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Begin #68 Presence from frozen `release/v3.40-community-bridge` on `feature/v3-presence`. Recover the retained online/offline update, cleanup, stale-timeout, authorization, and privacy contract before implementation.
+After the exact final #68 bookkeeping SHA passes the complete accumulated suite and `release/v3.41-presence` is frozen, begin #69 Team Center from that frozen release. Recover the retained team list, membership/role workflow, authorization, and trusted-server mutation contract before implementation. Do not implement member or role mutations as direct browser table writes where RLS does not authorize them.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
