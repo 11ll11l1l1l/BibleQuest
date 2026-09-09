@@ -84,7 +84,7 @@ Recovered Leaderboards parity:
 
 All earlier defect regressions remain in the accumulated suite.
 
-## Exact next sequence
+## Next major milestone
 
 1. Run the exact #71 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite.
 2. If green, reset the isolated bookkeeping verification branch to the exact clean candidate.
