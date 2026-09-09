@@ -25,6 +25,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
   let state = initialState(auth.enabled?.() !== false);
   let unsubscribeAuth = null;
   let bootPromise = null;
+  const beforeSignOutListeners = new Set();
 
   const publish = patch => {
     state = Object.freeze({ ...state, ...patch });
@@ -126,7 +127,15 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
     }
   }
 
+  function beforeSignOut(listener) {
+    if (typeof listener !== 'function') throw new Error('Session sign-out cleanup must be a function.');
+    beforeSignOutListeners.add(listener);
+    return () => beforeSignOutListeners.delete(listener);
+  }
+
   async function signOut() {
+    const cleanups = [...beforeSignOutListeners].map(listener => Promise.resolve().then(listener));
+    if (cleanups.length) await Promise.allSettled(cleanups);
     try { await auth.signOut(); }
     finally { toGuest(); }
     return state;
@@ -135,6 +144,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
   function dispose() {
     unsubscribeAuth?.();
     unsubscribeAuth = null;
+    beforeSignOutListeners.clear();
   }
 
   return Object.freeze({
@@ -142,6 +152,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
     signIn,
     changePassword,
     signOut,
+    beforeSignOut,
     dispose,
     getState: () => state,
     isAuthenticated: () => state.authenticated === true
