@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 69
+- **Regression-tested:** 70
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 30
+- **Not started:** 29
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -90,8 +90,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 67 | Community bridge | Yes | Compatibility | Regression-tested | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Regression-tested | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Regression-tested | team list; member/role workflows |
-| 70 | Trusted score events | Yes | Compatibility | Verified | submit trusted event; reject invalid duplicate |
-| 71 | Leaderboards | Yes | Compatibility | Not started | load; rank; empty/error; account boundaries |
+| 70 | Trusted score events | Yes | Compatibility | Regression-tested | submit trusted event; reject invalid duplicate |
+| 71 | Leaderboards | Yes | Compatibility | Verified | load; rank; empty/error; account boundaries |
 | 72 | Congregation recognition | Yes | Compatibility | Not started | load/award/display; permissions |
 | 73 | Assignments | Yes | Compatibility | Not started | receive; open; complete; status sync |
 | 74 | Advanced assignments | Yes | Compatibility | Not started | advanced fields; due-state; completion; permissions |
