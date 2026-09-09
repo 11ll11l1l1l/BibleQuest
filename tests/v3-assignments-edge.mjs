@@ -35,14 +35,22 @@ progress.push({assignment_id:'other',user_id:'u1',status:'completed',submission:
 
 assignmentRows=[{...baseAssignment,congregation_id:'foreign'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_SCOPE');
 assignmentRows=[{...baseAssignment,assignment_type:'invented'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
+assignmentRows=[{...baseAssignment,target_id:'u1'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
+assignmentRows=[{...baseAssignment,due_at:'not-a-date'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
 assignmentRows=[baseAssignment];progress=[];
+
+memberships=[membership('c1','leader')];state=await assignments.load();assignments.open('a1');
+await assert.rejects(()=>assignments.start('a1'),error=>error.code==='BQ_ASSIGNMENT_ROLE_READ_ONLY');
+await assert.rejects(()=>assignments.complete('a1','leader response'),error=>error.code==='BQ_ASSIGNMENT_ROLE_READ_ONLY');
+assert.equal(startCalls.length,1,'Read-only ministry role must not invoke assignment start.');assert.equal(completeCalls.length,2,'Read-only ministry role must not invoke assignment completion.');
 
 sessionState={authenticated:false,remoteAvailable:true,user:null};state=await assignments.load();assert.equal(state.status,'signed-out');
 sessionState={authenticated:true,remoteAvailable:false,user:{id:'u1'}};state=await assignments.load();assert.equal(state.status,'local-preview');
 sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}};memberships=[];state=await assignments.load();assert.equal(state.status,'no-congregation');
 
 memberships=[membership()];state=await assignments.load();
-const synced=new Promise((resolve,reject)=>{assignments.watch((next,error)=>error?reject(error):resolve(next)).catch(reject)});await new Promise(resolve=>setTimeout(resolve,0));assignmentRows=[{...baseAssignment,title:'Read John 1 carefully'}];syncCallback?.();const syncedState=await synced;assert.equal(syncedState.assignments[0].title,'Read John 1 carefully','Realtime signal must reload server truth.');assignments.stopSync();assert.equal(syncCleaned,1,'Realtime channel cleanup must execute once.');
+let resolveSynced,rejectSynced;const synced=new Promise((resolve,reject)=>{resolveSynced=resolve;rejectSynced=reject});
+const stop=await assignments.watch((next,error)=>error?rejectSynced(error):resolveSynced(next));assignmentRows=[{...baseAssignment,title:'Read John 1 carefully'}];syncCallback?.();const syncedState=await synced;assert.equal(syncedState.assignments[0].title,'Read John 1 carefully','Realtime signal must reload server truth.');stop();assignments.stopSync();assert.equal(syncCleaned,1,'Realtime channel cleanup must execute exactly once even when both returned cleanup and owner teardown run.');
 
 const badMutation=createAssignmentsService({api:{...api,start:async()=>({progress:{assignment_id:'wrong',user_id:'u1',status:'started'},awarded:0}),complete:api.complete},session,congregation});await badMutation.load();badMutation.open('a1');await assert.rejects(()=>badMutation.start('a1'),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
 console.log('BibleQuest v3 Assignments edge regression passed.');
