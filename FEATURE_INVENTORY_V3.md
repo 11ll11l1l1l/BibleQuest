@@ -6,8 +6,8 @@ This file is the authoritative parity ledger for the rebuild.
 
 - **Regression-tested:** 71
 - **Verified:** 1
-- **Implemented:** 0
-- **Not started:** 28
+- **Implemented:** 1
+- **Not started:** 27
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -93,7 +93,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 70 | Trusted score events | Yes | Compatibility | Regression-tested | submit trusted event; reject invalid duplicate |
 | 71 | Leaderboards | Yes | Compatibility | Regression-tested | load; rank; empty/error; account boundaries |
 | 72 | Congregation recognition | Yes | Compatibility | Verified | load/award/display; permissions |
-| 73 | Assignments | Yes | Compatibility | Not started | receive; open; complete; status sync |
+| 73 | Assignments | Yes | Compatibility | Implemented | receive; open; complete; status sync |
 | 74 | Advanced assignments | Yes | Compatibility | Not started | advanced fields; due-state; completion; permissions |
 | 75 | Assignment push workflow | Yes | Compatibility | Not started | leader publish→member receive→complete |
 | 76 | Ministry Hub | Yes | Compatibility | Not started | open tools; role guard; navigation |
