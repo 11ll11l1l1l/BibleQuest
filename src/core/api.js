@@ -248,6 +248,17 @@ export function createApi() {
     async submit(congregationId,claims) { return invoke('bq-score',{congregationId,claims}); }
   });
 
+  const leaderboards = Object.freeze({
+    async load(congregationId,since=null) {
+      const client=await getClient();
+      const {data:scores,error:scoreError}=await client.rpc('bible_leaderboard',{p_congregation:congregationId,p_since:since});
+      if(scoreError)throw scoreError;
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(TEAM_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).order('joined_at',{ascending:true});
+      if(directoryError)throw directoryError;
+      return {scores:scores||[],directory:directory||[]};
+    }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -346,5 +357,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
