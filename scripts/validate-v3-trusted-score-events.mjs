@@ -6,7 +6,7 @@ for(const file of required)if(!fs.existsSync(file))fail(`Missing #70 Trusted Sco
 if(!failures.length){
   const contract=read('TRUSTED_SCORE_EVENTS_V3.md'),inventory=read('FEATURE_INVENTORY_V3.md'),api=read('src/core/api.js'),owner=read('src/app/trusted-score-events.js'),bootstrap=read('src/app/bootstrap.js'),fn=read('supabase/functions/bq-score/index.ts'),workflow=read('.github/workflows/v3-regression.yml');
   for(const item of["const scoreEvents = Object.freeze", "invoke('bq-score',{congregationId,claims})"])if(!api.includes(item))fail(`Central API missing #70 contract: ${item}`);
-  const apiExports=api.match(/return Object\.freeze\(\{([^}]]+)\}\);\s*\n\}/)?.[1]||'';
+  const apiExports=api.match(/return Object\.freeze\(\{([^}]+)\}\);\s*\n\}/)?.[1]||'';
   for(const item of['scoreEvents','cloudNotes'])if(!new RegExp(`(?:^|[,\\s])${item}(?:[,\\s]|$)`).test(apiExports))fail(`Central API missing #70 exported boundary: ${item}`);
   if(api.includes("from('bible_score_events')"))fail('Browser API must not write/read score rows as the #70 submission authority; use bq-score.');
   for(const item of['createTrustedScoreEventsService({api,session,congregation}','SCORE_EVENT_ID_MAX=120','SCORE_EVENT_BATCH_MAX=50','canonicalScoreEventId','BQ_SCORE_EVENT_AUTH_REQUIRED','BQ_SCORE_EVENT_REMOTE_DISABLED','BQ_SCORE_EVENT_SCOPE','BQ_SCORE_EVENT_DUPLICATE','BQ_SCORE_EVENT_RESPONSE',"congregation.can(id,'read')",'api.submit(scope.congregationId,normalized)'])if(!owner.includes(item))fail(`Trusted Score Events owner missing contract: ${item}`);
