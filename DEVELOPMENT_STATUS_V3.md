@@ -8,27 +8,27 @@ Updated: 2026-09-09 JST
 
 - Production v2 remains unchanged.
 - `main` and production Cloudflare remain untouched.
-- Development branch: `feature/v3-team-center`.
+- Development branch: `feature/v3-trusted-score-events`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint is `release/v3.41-presence` at `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`.
-- Exact v3.41 bookkeeping run `34357429102` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint is `release/v3.42-team-center` at `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`.
+- Exact v3.42 bookkeeping run `34372856979` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the complete #69 Team Center functional gate:
+Inventory state after the complete #70 Trusted score events functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 68 |
+| Regression-tested | 69 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 31 |
+| Not started | 30 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **69/100**.
+Strict implemented-or-better parity is **70/100**.
 
-Official regression stability is **68/100**.
+Official regression stability is **69/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
@@ -39,7 +39,8 @@ Current leading rows:
 - #65 Encouragements — **Regression-tested** through the later complete #67 functional suite.
 - #67 Community Bridge — **Regression-tested** after surviving the complete #68 Presence suite.
 - #68 Presence — **Regression-tested** after surviving the complete #69 Team Center suite; frozen in v3.41 after bookkeeping run `34357429102`.
-- #69 Team Center — **Verified** by the exact-SHA complete suite against `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` in run `34367001625`.
+- #69 Team Center — **Regression-tested** after surviving the complete #70 Trusted score events suite; frozen in v3.42 after bookkeeping run `34372856979`.
+- #70 Trusted score events — **Verified** by the exact-SHA complete suite against `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` in run `34407306308`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -55,9 +56,11 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/community-bridge.js` — sole #67 privacy-minimized cross-feature projection owner.
 - `src/app/presence.js` — sole #68 online/offline lifecycle, heartbeat, stale-state interpretation and cleanup owner.
 - `src/app/team-center.js` — sole #69 team scope, roster projection and management orchestration owner.
+- `src/app/trusted-score-events.js` — sole #70 client score-event normalization, authenticated congregation scope, stable event-ID and trusted-response owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
-- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples, Journey Group, Presence and Team Center remote contracts.
+- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples, Journey Group, Presence, Team Center and trusted score-event remote contracts.
+- `supabase/functions/bq-score/index.ts` — retained trusted server scoring authority; the browser does not calculate arbitrary award points or write `bible_score_events` directly.
 - `src/core/bible.js` — Bible-source loading and opened-pack persistence.
 - `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
 - Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
@@ -198,7 +201,7 @@ Functional verification:
 
 ## Milestone 29 — Team Center
 
-### #69 — Verified
+### #69 — Regression-tested
 
 - `src/app/team-center.js` is the sole team normalization, congregation scope, roster projection and management orchestration owner; `src/core/api.js` remains the sole browser Supabase and Edge Function boundary.
 - Reads are restricted to active `game_team` rows in the signed-in account's active congregations. Foreign, malformed, inactive and unsupported-team data fail closed.
@@ -206,7 +209,22 @@ Functional verification:
 - Existing congregation roles are displayed; no speculative per-team role schema, scoring, leaderboard, presence, assignment, chat, XP or private-study ownership was introduced.
 - Permanent protection is retained in `TEAM_CENTER_V3.md`, `scripts/validate-v3-team-center.mjs`, `tests/v3-team-center-edge.mjs`, and `tests/v3-team-center-smoke.mjs`.
 - Exact corrected functional candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the complete accumulated architecture, edge, and browser/mobile suite in run `34367001625`; the isolated trigger explicitly checked out and asserted that SHA.
-- The final documentation-only bookkeeping candidate created after this promotion must pass the same complete suite before `release/v3.42-team-center` can be frozen.
+- Exact bookkeeping candidate `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4` passed the complete accumulated suite in run `34372856979` and is frozen at `release/v3.42-team-center`.
+- #69 survived the later complete #70 Trusted score events functional suite and therefore advanced to Regression-tested.
+
+## Milestone 30 — Trusted score events
+
+### #70 — Verified
+
+- `src/app/trusted-score-events.js` is the sole v3 client owner for authenticated congregation scope, claim normalization, canonical source-event IDs and trusted-response normalization; `src/core/api.js` remains the sole browser Supabase/Edge Function boundary.
+- The retained authenticated `bq-score` function remains the trusted server authority for supported activity sources, point derivation, delegated scoring, active-membership checks, category/rate caps, database writes, duplicate handling and badge evaluation.
+- The browser trims/caps stable source-event IDs to 120 characters and rejects duplicate canonical IDs within a batch before mutation, but does not maintain a competing cross-request duplicate ledger and does not calculate arbitrary award points.
+- Signed-out, guest/local-preview and foreign-congregation requests fail closed before submission; the server independently rechecks authority.
+- Permanent protection is retained in `TRUSTED_SCORE_EVENTS_V3.md`, `scripts/validate-v3-trusted-score-events.mjs`, `tests/v3-trusted-score-events-edge.mjs`, and `tests/v3-trusted-score-events-smoke.mjs`.
+- Initial exact candidate `33c5f9cc446d61bcbda7a15262d41e3172020447` passed architecture, edge and all earlier browser regressions in run `34406989680`, then the new #70 smoke test failed to parse because its fake API object lacked one closing brace. The test fixture was corrected without changing application behavior.
+- Corrected exact candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` passed the complete accumulated architecture, edge and browser/mobile suite in run `34407306308`; its isolated functional branch was reset from the temporary trigger to the clean candidate after success.
+- Production Supabase, Cloudflare, v2 and `main` were not modified by #70.
+- The final documentation-only bookkeeping candidate created after this promotion must pass the same complete suite before `release/v3.43-trusted-score-events` can be frozen.
 
 ## Defect / root-cause ledger
 
@@ -228,10 +246,11 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-ENCOURAGEMENT-DEDUPE-001` — the initial partial index covered only callers that supplied a non-null bucket, so direct/legacy inserts could bypass duplicate prevention. A database `BEFORE INSERT` trigger now owns and overwrites the UTC bucket for every new row; the Edge Function no longer competes for that value.
 - `V3-COMMUNITY-VALIDATOR-PATH-001` — the initial #67 validator imported the shared workflow parser from `tests/` instead of its actual `scripts/` owner. The import was corrected before candidate publication; the accumulated architecture run permanently exercises it.
 - `V3-TEAM-CENTER-ARCHIVE-FIXTURE-001` — run `34366738460` exposed an inaccurate edge fixture that returned an archived team even though the production list query filters `active = true`. The mock now removes the archived row and memberships, matching the API contract; corrected run `34367001625` passed the full suite.
+- `V3-TRUSTED-SCORE-SMOKE-SYNTAX-001` — run `34406989680` exposed a missing closing brace in the new #70 browser test's fake API object after every earlier regression had passed. The fixture syntax was corrected; exact candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` then passed the complete suite in run `34407306308`.
 
 ## Next major milestone
 
-After the exact final #69 bookkeeping SHA passes the complete accumulated suite and `release/v3.42-team-center` is frozen, begin #70 Trusted score events from that frozen release. Recover the retained trusted-event schema, server authority, idempotency key and duplicate-rejection contract before implementation; never allow browser-authored arbitrary score values.
+Run independent bookkeeping verification against the exact final #70 documentation candidate and freeze `release/v3.43-trusted-score-events` only after that complete suite passes. Then begin #71 Leaderboards from the frozen release, recovering ranking data, privacy, empty/error and account-boundary contracts before implementation.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
