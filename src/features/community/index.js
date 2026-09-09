@@ -1,0 +1,26 @@
+const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+
+function readyView(state){
+  const congregations=state.congregations.length?state.congregations.map(row=>`<article class="bq-community-row"><div><p class="bq-eyebrow">${esc(row.roleLabel)}</p><h3>${esc(row.name)}</h3></div><span>${row.canMinistry?'Ministry-capable role':'Member access'}</span></article>`).join(''):'<p>You are not linked to an active congregation yet.</p>';
+  const groups=state.groups.length?state.groups.map(row=>`<article class="bq-community-row"><div><p class="bq-eyebrow">${esc(row.role)}</p><h3>${esc(row.name)}</h3></div><span>${esc(String(row.memberCount))}/${esc(String(row.maxMembers))} members</span></article>`).join(''):'<p>No Journey Group is connected yet.</p>';
+  return `<section class="bq-community-summary" aria-label="Community connection summary"><div><strong>${state.congregations.length}</strong><span>Congregations</span></div><div><strong>${state.groups.length}</strong><span>Journey Groups</span></div><div><strong>${state.encouragementCount}</strong><span>Encouragements</span></div></section><section class="bq-panel"><h2>Your congregation links</h2>${congregations}</section><section class="bq-panel"><h2>Your Journey Group links</h2>${groups}</section>`;
+}
+
+export function communityPage({bridge,onNavigate,onBack,onAccount}={}){
+  return{title:'Community',html:'<section class="bq-community" data-community-view></section>',mount(root){
+    const view=root.querySelector('[data-community-view]');let disposed=false,busy=false;
+    const bind=()=>{
+      view.querySelector('[data-community-back]')?.addEventListener('click',()=>onBack?.(),{once:true});
+      view.querySelector('[data-community-account]')?.addEventListener('click',()=>onAccount?.(),{once:true});
+      view.querySelector('[data-community-retry]')?.addEventListener('click',load,{once:true});
+      view.querySelectorAll('[data-community-route]').forEach(button=>button.addEventListener('click',()=>onNavigate?.(button.dataset.communityRoute),{once:true}));
+    };
+    const actions=state=>`<section class="bq-community-grid"><button type="button" data-community-route="congregation"><span>⛪</span><b>Membership & role</b><small>View or join a congregation</small></button><button type="button" data-community-route="journey-groups" ${state.status==='ready'?'':'disabled'}><span>👥</span><b>Journey Groups</b><small>Open your 2–6 person groups</small></button><button type="button" data-community-route="encouragements" ${state.status==='ready'&&state.groups.length?'':'disabled'}><span>💛</span><b>Encouragements</b><small>Send one of five safe presets</small></button></section>`;
+    const render=state=>{if(disposed)return;const intro='<div class="bq-community-head"><div><p class="bq-eyebrow">COMMUNITY BRIDGE</p><h1>Grow together without exposing private study.</h1><p>One safe connection point for congregation access, Journey Groups, and preset Encouragements.</p></div><button type="button" class="bq-secondary-button" data-community-back>Back to More</button></div>';
+      if(state.status==='signed-out')view.innerHTML=`${intro}<section class="bq-panel"><h2>Sign in to connect</h2><p>Community membership is account-backed. Guest mode does not contact the cloud.</p><button type="button" class="bq-primary-button" data-community-account>Open account</button></section>${actions(state)}`;
+      else if(state.status==='local-preview')view.innerHTML=`${intro}<section class="bq-panel"><h2>Community connections are disabled in local preview.</h2><p>The bridge never invents local congregation members or cloud activity.</p></section>${actions(state)}`;
+      else view.innerHTML=`${intro}${actions(state)}${readyView(state)}<section class="bq-panel bq-community-boundary"><h2>What stays separate</h2><p>Private notes, answers, reflections, Couple Journey data, scores, XP, presence, teams, assignments, notifications, leaderboards, and ministry controls do not cross this bridge.</p></section>`;bind()};
+    async function load(){if(busy||disposed)return;busy=true;view.innerHTML='<p class="bq-eyebrow">COMMUNITY BRIDGE</p><h1>Connecting verified community tools…</h1>';try{render(await bridge.load())}catch(error){if(disposed)return;view.innerHTML=`<p class="bq-eyebrow">COMMUNITY BRIDGE</p><h1>Community connections could not load.</h1><p class="bq-form-message" role="alert">${esc(error?.message||'Try again.')}</p><button type="button" class="bq-secondary-button" data-community-retry>Try again</button><button type="button" class="bq-secondary-button" data-community-back>Back to More</button>`;bind()}finally{busy=false}}
+    void load();return()=>{disposed=true};
+  }};
+}

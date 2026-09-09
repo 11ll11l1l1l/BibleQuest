@@ -6,8 +6,8 @@ This file is the authoritative parity ledger for the rebuild.
 
 - **Regression-tested:** 65
 - **Verified:** 1
-- **Implemented:** 0
-- **Not started:** 34
+- **Implemented:** 1
+- **Not started:** 33
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -87,7 +87,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 64 | Journey Groups | Yes | Compatibility | Regression-tested | create/join/view/leave; membership persistence |
 | 65 | Encouragements | Yes | Compatibility | Verified | send/receive; permission; duplicate prevention |
 | 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
-| 67 | Community bridge | Yes | Compatibility | Not started | cross-feature navigation/data contract |
+| 67 | Community bridge | Yes | Compatibility | Implemented | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Not started | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Not started | team list; member/role workflows |
 | 70 | Trusted score events | Yes | Compatibility | Not started | submit trusted event; reject invalid duplicate |

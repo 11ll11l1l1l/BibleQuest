@@ -16,17 +16,17 @@ Updated: 2026-09-09 JST
 
 ## Current progress
 
-Inventory state after the complete #65 Encouragements functional gate:
+Inventory state after #67 Community Bridge implementation, before its browser gate:
 
 | State | Count |
 |---|---:|
 | Regression-tested | 65 |
 | Verified | 1 |
-| Implemented | 0 |
-| Not started | 34 |
+| Implemented | 1 |
+| Not started | 33 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **66/100**.
+Strict implemented-or-better parity is **67/100**.
 
 Official regression stability is **65/100**.
 
@@ -37,6 +37,7 @@ Current leading rows:
 - #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
 - #64 Journey Groups — **Regression-tested** through the later complete #65 functional suite.
 - #65 Encouragements — **Verified** by exact-candidate functional run `34337262620` against `b2fb1013822891930e017c8da0ea38e3e5c68b9e`.
+- #67 Community Bridge — **Implemented** on the isolated feature branch; accumulated browser verification remains pending.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -49,6 +50,7 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/couples-cloud.js` — sole #63 authenticated pair/shared-history orchestration owner.
 - `src/app/journey-groups.js` — sole #64 Journey Group membership orchestration and fail-closed normalization owner.
 - `src/app/encouragements.js` — sole #65 encouragement normalization, membership projection and duplicate-prevention owner.
+- `src/app/community-bridge.js` — sole #67 privacy-minimized cross-feature projection owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
 - `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples and Journey Group remote contracts.
@@ -161,6 +163,16 @@ Functional verification:
 - Canonical remote code candidate: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`; draft PR: `#89`.
 - Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329`; the isolated bookkeeping branch was reset to that candidate, now frozen as `release/v3.39-encouragements`.
 
+## Milestone 27 — Community Bridge
+
+### #67 — Implemented
+
+- `src/app/community-bridge.js` is the sole read-only cross-feature projection owner. It composes Session, Congregation Membership, Journey Groups, and Encouragements without direct storage, API, or cloud access.
+- The projection exposes only congregation ID/name/role, group ID/name/role/member counts, and an encouragement total. Foreign-scope rows fail closed; signed-out and local-preview states expose no stale cloud data.
+- `src/features/community/index.js` adds one responsive route connecting Membership & role, Journey Groups, and Encouragements through the existing Router owner.
+- The retained storage monkey patch and local point conversion were not copied. Scores, XP, leaderboards, presence, teams, assignments, notifications, ministry controls, identities, and private study/Couples data remain excluded.
+- Architecture, edge, and 390px browser regressions are accumulated in the manual workflow. Browser execution remains pending.
+
 ## Defect / root-cause ledger
 
 Every real defect remains root-caused and protected by a regression. Important retained examples include:
@@ -179,10 +191,11 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-WORKFLOW-LOOP-001` — workflow consolidation retained every regression but seven validators required literal `node <path>` text, so run `34244782912` failed before feature tests. A shared invocation parser now recognizes executable direct and looped commands, while `tests/v3-workflow-contract-edge.mjs` rejects comments, non-Node loops, variable mismatches and prefix-only path matches.
 - `V3-ENCOURAGEMENT-HISTORY-001` — the initial #65 owner treated current sender membership as a read-time invariant, which would reject valid history after a sender left. Current membership is now enforced only when sending; a permanent edge regression retains former-member history.
 - `V3-ENCOURAGEMENT-DEDUPE-001` — the initial partial index covered only callers that supplied a non-null bucket, so direct/legacy inserts could bypass duplicate prevention. A database `BEFORE INSERT` trigger now owns and overwrites the UTC bucket for every new row; the Edge Function no longer competes for that value.
+- `V3-COMMUNITY-VALIDATOR-PATH-001` — the initial #67 validator imported the shared workflow parser from `tests/` instead of its actual `scripts/` owner. The import was corrected before candidate publication; the accumulated architecture run permanently exercises it.
 
 ## Next major milestone
 
-Begin #67 Community Bridge from frozen `release/v3.39-encouragements` on the isolated `feature/v3-community-bridge` branch. Recover the retained cross-feature contract before implementing it.
+Run the complete manual v3 regression workflow against the exact #67 candidate. Promote #67 only after the browser/mobile suite passes; then run independent bookkeeping and freeze v3.40 before selecting the next dependency-safe capability.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 

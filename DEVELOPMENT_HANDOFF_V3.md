@@ -22,9 +22,9 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 
 - Regression-tested: 65 (including #64 Journey Groups)
 - Verified: 1 (#65 Encouragements)
-- Implemented: 0
-- Not started: 34
-- Strict implemented-or-better parity: 66/100
+- Implemented: 1 (#67 Community Bridge)
+- Not started: 33
+- Strict implemented-or-better parity: 67/100
 - Official regression stability: 65/100
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40
 
@@ -39,24 +39,34 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - historical encouragements remain readable after a sender leaves; current active membership is enforced at send time instead of being misapplied to retained history;
 - free-text chat, DMs, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
 
+## #67 current implementation
+
+- `src/app/community-bridge.js` is the sole read-only projection owner over verified Session, Congregation Membership, Journey Groups, and Encouragements owners;
+- exposes only congregation ID/name/role, group ID/name/role/member counts, and an encouragement total;
+- rejects foreign-scope group/encouragement data and never reuses stale data while signed out or in local preview;
+- adds one responsive Community route and a More entry point for Membership & role, Journey Groups, and Encouragements;
+- deliberately does not copy the legacy `Storage.prototype` interception or local score conversion;
+- excludes scores, XP, presence, teams, leaderboards, recognition, assignments, notifications, ministry controls, identities, private study content, and private Couples data.
+
 ## Executed evidence
 
 - All v3 JavaScript syntax checks: pass.
 - `scripts/validate-v3-inventory.mjs`: pass.
-- Complete accumulated architecture validator set: 20/20 pass.
-- Complete accumulated edge regression set: 41/41 pass.
+- Complete accumulated architecture validator set: 21/21 pass locally with #67.
+- Complete accumulated edge regression set: 42/42 pass locally with #67.
 - Complete accumulated browser/mobile regression set: pass in functional run `34337262620` against asserted code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e`.
 - Isolated functional trigger commit: `aa765edbfd11112c5d6db710fe4e0e83faba03d3`; verification branch reset to the exact clean candidate after success.
 - `git diff --check`: pass.
 - Production Supabase, Cloudflare, v2 and `main`: untouched by #65.
 - Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
+- The #67 390px browser regression is accumulated but has not executed against the new candidate yet.
 
-## Closed #65 gate and exact next sequence
+## Open #67 gate and exact next sequence
 
-1. Functional run `34337262620` passed the exact code candidate; #65 is Verified and #64 is Regression-tested.
-2. Bookkeeping run `34337802329` passed exact candidate `41c42a4030140ac1387612fbdbe3334baa5676a7`.
-3. `release/v3.39-encouragements` is frozen at that clean candidate; both temporary verification branches were reset to their asserted candidates.
-4. Continue #67 Community Bridge only on `feature/v3-community-bridge`, starting with retained-contract recovery and an explicit boundary document.
+1. Publish the exact #67 implementation candidate and draft review surface.
+2. Run the complete accumulated architecture, edge, and browser/mobile workflow against that exact candidate.
+3. On green, promote #67 to Verified and #65 to Regression-tested.
+4. Run an independent bookkeeping gate and freeze `release/v3.40-community-bridge` only after the exact candidate passes.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 
