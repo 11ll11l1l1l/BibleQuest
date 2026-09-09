@@ -23,12 +23,12 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 
 ## Current authoritative inventory
 
-- Regression-tested: 65 (including #64 Journey Groups)
-- Verified: 1 (#65 Encouragements)
-- Implemented: 1 (#67 Community Bridge)
+- Regression-tested: 66 (including #65 Encouragements)
+- Verified: 1 (#67 Community Bridge)
+- Implemented: 0
 - Not started: 33
 - Strict implemented-or-better parity: 67/100
-- Official regression stability: 65/100
+- Official regression stability: 66/100
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40
 
 ## #65 completed implementation
@@ -62,13 +62,13 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - `git diff --check`: pass.
 - Production Supabase, Cloudflare, v2 and `main`: untouched by #65.
 - Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
-- The #67 390px browser regression is accumulated but has not executed against the new candidate yet.
+- Complete #67 functional run `34340063733` passed against asserted code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`; trigger commit `ef62892ead75098928005fe751582c394d8f832c` was reset from the verification branch after success.
 
-## Open #67 gate and exact next sequence
+## Closed #67 functional gate and exact next sequence
 
-1. Run the complete accumulated architecture, edge, and browser/mobile workflow against exact candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
-2. On green, promote #67 to Verified and #65 to Regression-tested.
-3. Run an independent bookkeeping gate and freeze `release/v3.40-community-bridge` only after the exact candidate passes.
+1. Commit and publish the #67 promotion bookkeeping.
+2. Run an independent exact-SHA bookkeeping workflow against that candidate.
+3. Freeze `release/v3.40-community-bridge` only after the complete suite passes.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 

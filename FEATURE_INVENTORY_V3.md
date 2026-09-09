@@ -4,9 +4,9 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 65
+- **Regression-tested:** 66
 - **Verified:** 1
-- **Implemented:** 1
+- **Implemented:** 0
 - **Not started:** 33
 - **Total old-version capabilities:** 100
 
@@ -85,9 +85,9 @@ This file is the authoritative parity ledger for the rebuild.
 | 62 | Couples/family local tools | Yes | Clean | Regression-tested | topic open; save note/action; reload |
 | 63 | Couples cloud | Yes | Compatibility | Regression-tested | shared state; permission; sync; failure handling |
 | 64 | Journey Groups | Yes | Compatibility | Regression-tested | create/join/view/leave; membership persistence |
-| 65 | Encouragements | Yes | Compatibility | Verified | send/receive; permission; duplicate prevention |
+| 65 | Encouragements | Yes | Compatibility | Regression-tested | send/receive; permission; duplicate prevention |
 | 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
-| 67 | Community bridge | Yes | Compatibility | Implemented | cross-feature navigation/data contract |
+| 67 | Community bridge | Yes | Compatibility | Verified | cross-feature navigation/data contract |
 | 68 | Presence | Yes | Compatibility | Not started | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Not started | team list; member/role workflows |
 | 70 | Trusted score events | Yes | Compatibility | Not started | submit trusted event; reject invalid duplicate |

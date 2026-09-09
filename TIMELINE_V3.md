@@ -7,17 +7,17 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after #67 implementation:** 65 Regression-tested / 1 Verified / 1 Implemented / 33 Not started
+- **Inventory states after the #67 functional gate:** 66 Regression-tested / 1 Verified / 0 Implemented / 33 Not started
 - **Implemented or better:** 67 / 100 (**67% strict parity completion**)
-- **Official regression stability:** 65 / 100
+- **Official regression stability:** 66 / 100
 - **Latest frozen checkpoint:** `release/v3.39-encouragements` at `41c42a4030140ac1387612fbdbe3334baa5676a7`
 - **v3.39 bookkeeping:** `34337802329` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
 - **#64 Journey Groups:** Regression-tested through the later complete #65 suite
-- **#65 Encouragements:** Verified; corrected exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e`, functional run `34337262620`
-- **#67 Community Bridge:** Implemented; exact remote code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`, browser gate pending
+- **#65 Encouragements:** Regression-tested through the later complete #67 suite
+- **#67 Community Bridge:** Verified; exact remote code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`, functional run `34340063733`
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -50,8 +50,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 23 | Couples/family local tools | Frozen | v3.36; #62 Regression-tested after #63 suite |
 | 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
 | 25 | Journey Groups | Frozen | v3.38; #64 Regression-tested through #65 |
-| 26 | Encouragements | Frozen | v3.39; #65 Verified; bookkeeping `34337802329` |
-| 27 | Community Bridge | Implemented; functional gate pending | #67 candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` |
+| 26 | Encouragements | Frozen | v3.39; #65 Regression-tested through #67 |
+| 27 | Community Bridge | Verified; bookkeeping pending | #67 functional `34340063733` |
 | 28 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
 | 29 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
 | 30 | Production deployment | Not started | only after selected parity/stability acceptance gates |
@@ -126,13 +126,21 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Exact bookkeeping candidate `7c06c3380eaac0e20e579ae26453611e63ac564d` passed run `34259986598` and is frozen as v3.38.
 - #64 survived the later complete #65 functional suite and advanced to Regression-tested.
 
-## #65 Encouragements — Verified
+## #65 Encouragements — Regression-tested
 
 - Preset-only, group-wide encouragements reuse verified Journey Group membership and retained RLS-protected rows.
 - One v3 owner normalizes received rows and blocks duplicate sends; the central API alone reads Supabase and invokes the authenticated send action.
 - The trusted function derives the sender; one database trigger assigns the UTC day for every insert. An additive partial unique index prevents direct, legacy and concurrent duplicates without rewriting retained v2 rows.
 - Exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e` passed the complete accumulated architecture, edge and browser/mobile suite in run `34337262620`.
 - Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329` and is frozen as v3.39; draft PR `#89` remains the review surface.
+- #65 survived the later complete #67 functional suite and advanced to Regression-tested.
+
+## #67 Community Bridge — Verified
+
+- One read-only projection composes the verified Session, Congregation Membership, Journey Groups, and Encouragements owners without storage or cloud access of its own.
+- It exposes only minimal congregation/group metadata plus an encouragement count and connects the three verified destinations through the existing Router owner.
+- Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed the complete accumulated suite in functional run `34340063733`.
+- The one-shot branch was reset from trigger `ef62892ead75098928005fe751582c394d8f832c` to the clean candidate after verification.
 
 ## Current bookkeeping
 
@@ -149,16 +157,16 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #62 Couples/family local tools — **Regression-tested**
 - #63 Couples cloud — **Regression-tested**
 - #64 Journey Groups — **Regression-tested**
-- #65 Encouragements — **Verified**
-- #67 Community Bridge — **Implemented**
-- Inventory states — **65 Regression-tested / 1 Verified / 1 Implemented / 33 Not started**
+- #65 Encouragements — **Regression-tested**
+- #67 Community Bridge — **Verified**
+- Inventory states — **66 Regression-tested / 1 Verified / 0 Implemented / 33 Not started**
 - Strict parity — **67/100**
-- Official regression stability — **65/100**
+- Official regression stability — **66/100**
 
 ## Next sequence
 
-1. Run the complete functional workflow against the exact #67 candidate.
-2. Promote #67 only after the browser/mobile gate, then run independent bookkeeping and freeze v3.40.
+1. Run independent bookkeeping against the exact post-promotion #67 candidate and freeze v3.40 only after it passes.
+2. Select the next dependency-safe capability only after the freeze.
 3. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall

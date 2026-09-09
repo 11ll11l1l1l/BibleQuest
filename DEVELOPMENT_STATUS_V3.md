@@ -16,19 +16,19 @@ Updated: 2026-09-09 JST
 
 ## Current progress
 
-Inventory state after #67 Community Bridge implementation, before its browser gate:
+Inventory state after the complete #67 Community Bridge functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 65 |
+| Regression-tested | 66 |
 | Verified | 1 |
-| Implemented | 1 |
+| Implemented | 0 |
 | Not started | 33 |
 | Total | 100 |
 
 Strict implemented-or-better parity is **67/100**.
 
-Official regression stability is **65/100**.
+Official regression stability is **66/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
@@ -36,8 +36,8 @@ Current leading rows:
 - #62 Couples/family local tools — **Regression-tested** after exact v3.36 bookkeeping run `34236023685` and the later complete #63 functional suite.
 - #63 Couples cloud — **Regression-tested** after the exact v3.37 bookkeeping freeze and the later complete #64 functional suite.
 - #64 Journey Groups — **Regression-tested** through the later complete #65 functional suite.
-- #65 Encouragements — **Verified** by exact-candidate functional run `34337262620` against `b2fb1013822891930e017c8da0ea38e3e5c68b9e`.
-- #67 Community Bridge — **Implemented** on the isolated feature branch; accumulated browser verification remains pending.
+- #65 Encouragements — **Regression-tested** through the later complete #67 functional suite.
+- #67 Community Bridge — **Verified** by exact-candidate functional run `34340063733` against `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -151,7 +151,7 @@ Functional verification:
 
 ## Milestone 26 — Encouragements
 
-### #65 — Verified
+### #65 — Regression-tested
 
 - `src/app/encouragements.js` owns the five retained preset definitions, received-row normalization, group-membership projection and same-day duplicate rejection.
 - `src/core/api.js` remains the sole browser Supabase boundary. Reads use retained group-member RLS; sends use the authenticated `bq-journey-group` function.
@@ -162,16 +162,18 @@ Functional verification:
 - Isolated trigger commit `aa765edbfd11112c5d6db710fe4e0e83faba03d3` checked out and asserted that exact candidate; `verify/v3.39-encouragements-dedupe-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`; draft PR: `#89`.
 - Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329`; the isolated bookkeeping branch was reset to that candidate, now frozen as `release/v3.39-encouragements`.
+- #65 survived the later complete #67 functional suite and advanced to Regression-tested.
 
 ## Milestone 27 — Community Bridge
 
-### #67 — Implemented
+### #67 — Verified
 
 - `src/app/community-bridge.js` is the sole read-only cross-feature projection owner. It composes Session, Congregation Membership, Journey Groups, and Encouragements without direct storage, API, or cloud access.
 - The projection exposes only congregation ID/name/role, group ID/name/role/member counts, and an encouragement total. Foreign-scope rows fail closed; signed-out and local-preview states expose no stale cloud data.
 - `src/features/community/index.js` adds one responsive route connecting Membership & role, Journey Groups, and Encouragements through the existing Router owner.
 - The retained storage monkey patch and local point conversion were not copied. Scores, XP, leaderboards, presence, teams, assignments, notifications, ministry controls, identities, and private study/Couples data remain excluded.
-- Architecture, edge, and 390px browser regressions are accumulated in the manual workflow. Browser execution remains pending.
+- Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed all accumulated architecture, edge, and browser/mobile regressions in run `34340063733`.
+- Isolated trigger commit `ef62892ead75098928005fe751582c394d8f832c` checked out and asserted that exact candidate; `verify/v3.40-community-bridge-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
 
 ## Defect / root-cause ledger
@@ -196,7 +198,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Run the complete manual v3 regression workflow against the exact #67 candidate. Promote #67 only after the browser/mobile suite passes; then run independent bookkeeping and freeze v3.40 before selecting the next dependency-safe capability.
+Run independent bookkeeping against the exact post-promotion candidate and freeze v3.40 before selecting the next dependency-safe capability.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
