@@ -63,6 +63,16 @@ No verified P1 release blocker is established. The narrow-mobile/PWA acceptance 
 
 ## Triage history
 
+### 2026-09-09 13:52 JST
+
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
+- **Reports available:** Investigator 1 latest rerun present; Investigator 2 present; Investigator 3 present; Investigator 4 latest rerun present.
+- **Change since prior cycle:** `main` is unchanged. Investigator 4 independently reconfirms the same stale-device cloud overwrite as P0 candidate and the same non-atomic recovery-code rotation as P2 candidate; it reports no new current-main privacy exposure or materially unsafe Scripture behavior.
+- **Independent verification:** re-read current `main` branch metadata and current `account.js`. The existing-device/new-device split and stale-overwrite path remain present on the unchanged implementation SHA. No destructive multi-device or database reproduction was performed because investigator/firewall scope is read-only.
+- **De-duplication / impact gate:** Investigator 4's P0 cloud-sync finding is the same issue already independently identified by Investigator 1 and already present in the actionable queue, so it is not duplicated. Recovery-code atomicity remains deferred P2. Auth lifecycle, doctrinal corpus, Reader/community/live, and mobile/PWA items remain unexecuted evidence gaps rather than demonstrated failures.
+- **Counterfactual:** deferring the cloud overwrite can still silently destroy newer synchronized progress, so it remains the only interrupting P0 STOP. Deferring the recovery-code edge case and unexecuted acceptance gaps through the current milestone does not have equivalently demonstrated immediate harm.
+- **Firewall result:** actionable queue remains 1 P0 item, 0 P1 items, 0 active P2 items. No P3/P4 finding may interrupt primary milestone work.
+
 ### 2026-09-09 12:51 JST
 
 - **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
