@@ -7,11 +7,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after the #71 functional gate:** 70 Regression-tested / 1 Verified / 0 Implemented / 29 Not started
-- **Implemented or better:** 71 / 100 (**71% strict parity completion**)
-- **Official regression stability:** 70 / 100
-- **Latest frozen checkpoint:** `release/v3.43-trusted-score-events` at `80d01efa06f3ff08a0284389cf027d16afd35225`
-- **v3.43 bookkeeping:** `34407984154` — complete accumulated suite green against the frozen SHA
+- **Inventory states after the #72 functional gate:** 71 Regression-tested / 1 Verified / 0 Implemented / 28 Not started
+- **Implemented or better:** 72 / 100 (**72% strict parity completion**)
+- **Official regression stability:** 71 / 100
+- **Latest frozen checkpoint:** `release/v3.44-leaderboards` at `b14415bb9b59c1eed109f02a822a48298844f8d1`
+- **v3.44 bookkeeping:** `34412074523` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
@@ -21,7 +21,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - **#68 Presence:** Regression-tested through the later complete #69 suite; frozen in v3.41
 - **#69 Team Center:** Regression-tested through the later complete #70 suite; frozen in v3.42
 - **#70 Trusted score events:** Regression-tested through the complete #71 suite; frozen in v3.43
-- **#71 Leaderboards:** Verified; exact corrected candidate `08345c522c007679915d9a072db8cbd81fdd4eec`, functional run `34411253995`
+- **#71 Leaderboards:** Regression-tested after surviving the complete #72 suite; frozen in v3.44
+- **#72 Congregation Recognition:** Verified; exact candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27`, functional run `34414579164`
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main`, production Supabase and production Cloudflare remain untouched
 
@@ -59,10 +60,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 28 | Presence | Frozen | v3.41; bookkeeping `34357429102` |
 | 29 | Team Center | Frozen | v3.42; bookkeeping `34372856979`; #69 Regression-tested through #70 |
 | 30 | Trusted score events | Frozen | v3.43; bookkeeping `34407984154`; #70 Regression-tested through #71 |
-| 31 | Leaderboards | Verified; freeze pending | corrected functional `34411253995`; run exact bookkeeping candidate next |
-| 32 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 33 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 34 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 31 | Leaderboards | Frozen | v3.44; functional `34411253995`; bookkeeping `34412074523`; #71 Regression-tested through #72 |
+| 32 | Congregation Recognition | Verified; freeze pending | functional `34414579164`; run exact bookkeeping candidate next |
+| 33 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 34 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 35 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -96,6 +98,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.41-presence` — `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`; functional `34354132909`; bookkeeping `34357429102`
 - `release/v3.42-team-center` — `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`; functional `34367001625`; bookkeeping `34372856979`
 - `release/v3.43-trusted-score-events` — `80d01efa06f3ff08a0284389cf027d16afd35225`; corrected functional `34407306308`; bookkeeping `34407984154`
+- `release/v3.44-leaderboards` — `b14415bb9b59c1eed109f02a822a48298844f8d1`; corrected functional `34411253995`; bookkeeping `34412074523`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -181,17 +184,30 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Exact bookkeeping candidate `80d01efa06f3ff08a0284389cf027d16afd35225` passed run `34407984154` and is frozen as v3.43.
 - #70 survived the complete #71 Leaderboards suite and advanced to Regression-tested.
 
-## #71 Leaderboards — Verified
+## #71 Leaderboards — Regression-tested
 
 - `src/app/leaderboards.js` is the sole period/lane normalization and ranking-projection owner; `src/core/api.js` remains the only browser Supabase boundary.
 - The recovered congregation-local board retains Today / This Week / All Time and eight lanes: Overall, Knowledge, Reading, Wisdom, Mastery, Consistency, Group and Couples.
 - The browser consumes the retained `public.bible_leaderboard(uuid,timestamptz)` trusted aggregate and active congregation directory, keeps zero-point active members visible, and excludes former/out-of-scope identities.
-- Rankings use points descending with deterministic name/user tie-breaking. Overall is only a presentation sum of trusted category aggregates; #71 does not author point values or own XP, badges, awards or #72 Recognition.
+- Rankings use points descending with deterministic name/user tie-breaking. Overall is only a presentation sum of trusted category aggregates; #71 does not author point values or own XP, badges or awards.
 - Initial candidate `4286669555e8a1ce7faf59a9d74f28c920d9ca06` exposed a literal API-export adjacency assumption in the #70 validator before runtime testing; the validator was corrected to check the existing boundaries structurally.
 - Candidate `d44479b4543a4e56f7507c8836245a918e1c3b57` then exposed a real #71 timezone defect: period cutoffs inherited the CI runner's UTC timezone rather than the congregation calendar.
 - The owner now uses the active congregation's existing IANA timezone when present, with browser-local timezone only as fallback; permanent tests cover Asia/Tokyo and America/New_York.
 - Corrected exact candidate `08345c522c007679915d9a072db8cbd81fdd4eec` passed the complete accumulated architecture, edge and browser/mobile suite in run `34411253995`.
-- A separate exact-SHA bookkeeping run is required before freezing v3.44.
+- Exact bookkeeping candidate `b14415bb9b59c1eed109f02a822a48298844f8d1` passed run `34412074523` and is frozen as v3.44.
+- #71 survived the complete #72 Congregation Recognition suite and advanced to Regression-tested.
+
+## #72 Congregation Recognition — Verified
+
+- Retained congregation recognition and the later leader-dashboard role/privacy correction were recovered before implementation.
+- `src/app/congregation-recognition.js` is the sole v3 recognition orchestration owner; `src/core/api.js` remains the sole browser Supabase boundary and `src/features/congregation-recognition/index.js` remains presentation-only.
+- Active congregation members may view visible persisted recognition and earned congregation badges allowed by existing RLS.
+- Persisted special recognition is limited to `leader`, `pastor` and `admin`; `facilitator` remains view-only, and award targets must be active members of the selected congregation.
+- Nine retained award presets are supported with bounded optional custom title/note. Existing Supabase RLS remains the independent final authorization boundary.
+- #72 does not calculate score points, duplicate Leaderboards ownership, mutate local XP, or expose private study/Couple Journey/account data.
+- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed the complete accumulated architecture, edge and browser/mobile suite in run `34414579164`.
+- The isolated functional verification branch was reset to the clean candidate after success.
+- A separate exact-SHA bookkeeping run is required before freezing v3.45.
 
 ## Current bookkeeping
 
@@ -213,20 +229,21 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #68 Presence — **Regression-tested**
 - #69 Team Center — **Regression-tested**
 - #70 Trusted score events — **Regression-tested**
-- #71 Leaderboards — **Verified**
-- Inventory states — **70 Regression-tested / 1 Verified / 0 Implemented / 29 Not started**
-- Strict parity — **71/100**
-- Official regression stability — **70/100**
+- #71 Leaderboards — **Regression-tested**
+- #72 Congregation Recognition — **Verified**
+- Inventory states — **71 Regression-tested / 1 Verified / 0 Implemented / 28 Not started**
+- Strict parity — **72/100**
+- Official regression stability — **71/100**
 
 ## Next sequence
 
-1. Run the exact #71 promotion/bookkeeping candidate through the complete accumulated suite.
-2. Freeze the green exact SHA as `release/v3.44-leaderboards`.
-3. Begin #72 Congregation recognition from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
+1. Run the exact #72 promotion/bookkeeping candidate through the complete accumulated suite.
+2. Freeze the green exact SHA as `release/v3.45-congregation-recognition`.
+3. Begin #73 Assignments from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **29 Not started rows** after #71 verification. Remaining work includes Play Together/Live Rooms, Bible World, congregation recognition/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+Literal old-version parity has **28 Not started rows** after #72 verification. Remaining work includes Play Together/Live Rooms, Bible World, assignments/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 
