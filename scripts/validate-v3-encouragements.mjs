@@ -1,0 +1,24 @@
+import fs from 'node:fs';
+import {workflowInvokesNode} from './v3-workflow-contract.mjs';
+const failures=[],fail=message=>failures.push(message),read=file=>fs.readFileSync(file,'utf8');
+const required=['ENCOURAGEMENTS_V3.md','FEATURE_INVENTORY_V3.md','journey-groups.js','supabase/functions/bq-journey-group/index.ts','supabase/migrations/20260904_journey_groups_daily_loop.sql','supabase/migrations/20260909_encouragement_duplicate_guard.sql','src/core/api.js','src/app/encouragements.js','src/features/encouragements/index.js','src/ui/encouragements.css','src/app/bootstrap.js','src/features/journey-groups/index.js','index.html','tests/v3-encouragements-edge.mjs','tests/v3-encouragements-smoke.mjs','.github/workflows/v3-regression.yml'];
+for(const file of required)if(!fs.existsSync(file))fail(`Missing #65 Encouragements file: ${file}`);
+if(!failures.length){
+  const legacy=read('journey-groups.js'),fn=read('supabase/functions/bq-journey-group/index.ts'),baseMigration=read('supabase/migrations/20260904_journey_groups_daily_loop.sql'),guard=read('supabase/migrations/20260909_encouragement_duplicate_guard.sql'),api=read('src/core/api.js'),owner=read('src/app/encouragements.js'),ui=read('src/features/encouragements/index.js'),bootstrap=read('src/app/bootstrap.js'),groupsUi=read('src/features/journey-groups/index.js'),html=read('index.html'),contract=read('ENCOURAGEMENTS_V3.md'),inventory=read('FEATURE_INVENTORY_V3.md'),workflow=read('.github/workflows/v3-regression.yml');
+  for(const item of['const PRESETS=',"pray:['🙏','Praying for you']","heart:['💛','Glad we’re growing together']","from('bible_group_encouragements')"])if(!legacy.includes(item))fail(`Legacy encouragement evidence missing: ${item}`);
+  for(const item of["action==='encourage'",'Active Journey Group membership required','dedupe_bucket','created.error?.code===\'23505\''])if(!fn.includes(item))fail(`Trusted encouragement send missing: ${item}`);
+  for(const item of['bible_group_encouragements','encouragement group read','encouragement group insert'])if(!baseMigration.includes(item))fail(`Base encouragement RLS evidence missing: ${item}`);
+  for(const item of['add column if not exists dedupe_bucket','create unique index if not exists bible_group_encouragements_daily_unique_idx','where dedupe_bucket is not null'])if(!guard.includes(item))fail(`Duplicate guard missing: ${item}`);
+  for(const item of['const encouragements = Object.freeze',"from('bible_group_encouragements')","action:'encourage'",'encouragements, media'])if(!api.includes(item))fail(`Central API missing #65 contract: ${item}`);
+  for(const item of['createEncouragementsService({api,session,journeyGroups','BQ_ENCOURAGEMENTS_AUTH_REQUIRED','BQ_ENCOURAGEMENTS_REMOTE_DISABLED','BQ_ENCOURAGEMENTS_DUPLICATE','BQ_ENCOURAGEMENTS_PERMISSION','Targeted encouragements are not enabled'])if(!owner.includes(item))fail(`Encouragements owner missing contract: ${item}`);
+  for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','functions.invoke',".from('",'window.','document.'])if(owner.includes(forbidden))fail(`Encouragements owner bypasses its boundary: ${forbidden}`);
+  for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','functions.invoke',".from('"])if(ui.includes(forbidden))fail(`Encouragements UI bypasses owner/API boundaries: ${forbidden}`);
+  for(const item of['createEncouragementsService({api:api.encouragements,session,journeyGroups})','encouragements:()=>encouragementsPage','encouragements.clear()'])if(!bootstrap.includes(item))fail(`Bootstrap missing #65 composition: ${item}`);
+  if(!groupsUi.includes('data-journey-groups-encouragements'))fail('Journey Groups must expose Encouragements.');
+  if(!html.includes('src/ui/encouragements.css'))fail('v3 shell must load Encouragements styles.');
+  for(const item of['preset-only, group-wide','same preset to the same group more than once per UTC day','not rewritten or deleted','does not deploy'])if(!contract.includes(item))fail(`Encouragements contract missing boundary: ${item}`);
+  const rows=['| 65 | Encouragements | Yes | Compatibility | Implemented | send/receive; permission; duplicate prevention |','| 65 | Encouragements | Yes | Compatibility | Verified | send/receive; permission; duplicate prevention |','| 65 | Encouragements | Yes | Compatibility | Regression-tested | send/receive; permission; duplicate prevention |'];if(!rows.some(row=>inventory.includes(row)))fail('#65 must be Implemented or better once clean v3 code exists.');
+  for(const test of['scripts/validate-v3-encouragements.mjs','tests/v3-encouragements-edge.mjs','tests/v3-encouragements-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #65 regression: ${test}`);
+}
+if(failures.length){failures.forEach(item=>console.error(`- ${item}`));process.exit(1)}
+console.log('BibleQuest v3 Encouragements architecture boundary passed.');

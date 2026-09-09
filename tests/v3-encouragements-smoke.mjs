@@ -1,0 +1,17 @@
+import {chromium} from 'playwright';
+const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/',browser=await chromium.launch({headless:true}),assert=(condition,message)=>{if(!condition)throw new Error(message)};
+async function run(){
+  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
+  await page.goto(`${BASE}#/encouragements`,{waitUntil:'networkidle'});await page.locator('[data-encouragements-view]').waitFor();assert(((await page.locator('[data-encouragements-view]').textContent())||'').includes('Encouragements are disabled in local preview'),'Local-preview route must fail safely.');
+  await page.evaluate(async()=>{
+    const {encouragementsPage}=await import('/src/features/encouragements/index.js'),host=document.querySelector('#bq-view'),today=new Date().toISOString();let items=[{id:'e1',groupId:'g1',senderId:'u2',kind:'pray',createdAt:today,day:today.slice(0,10),emoji:'🙏',label:'Praying for you'}];
+    const group={id:'g1',name:'Faith Group',members:[{userId:'u1'},{userId:'u2'}]},presets={pray:{emoji:'🙏',label:'Praying for you'},cheer:{emoji:'👏',label:'Keep going!'},heart:{emoji:'💛',label:'Glad we’re growing together'},word:{emoji:'📖',label:'Keep in the Word'},flame:{emoji:'🔥',label:'Nice consistency!'}};
+    const service={snapshot:()=>({authenticated:true,remoteAvailable:true,userId:'u1',groups:[group],items:items.slice(),presets}),async load(){return this.snapshot()},async send(groupId,kind){if(items.some(item=>item.senderId==='u1'&&item.groupId===groupId&&item.kind===kind)){const error=new Error('You already sent that encouragement to this group today.');error.code='BQ_ENCOURAGEMENTS_DUPLICATE';throw error}items.unshift({id:'e2',groupId,senderId:'u1',kind,createdAt:today,day:today.slice(0,10),...presets[kind]});return this.snapshot()}};
+    const view=encouragementsPage({encouragements:service,onBack:()=>{},onAccount:()=>{}});host.innerHTML=view.html;window.__bqEncouragementCleanup=view.mount(host);
+  });
+  await page.locator('[data-encouragement-group="g1"]').waitFor();assert(((await page.locator('.bq-encouragement-feed').textContent())||'').includes('Praying for you'),'Received encouragement is not visible.');
+  await page.locator('[data-send-encouragement="cheer"]').click();await page.waitForFunction(()=>document.body.textContent.includes('Encouragement sent.'));assert(((await page.locator('.bq-encouragement-feed').textContent())||'').includes('You · Keep going!'),'Sent encouragement is not visible.');assert(await page.locator('[data-send-encouragement="cheer"]').isDisabled(),'Sent preset must be disabled for the UTC day.');
+  const metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-encouragements-view] button')].map(node=>node.getBoundingClientRect().height))}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Encouragements mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Encouragements touch target below 44px: ${metrics.minTarget}px.`);
+  await page.evaluate(()=>window.__bqEncouragementCleanup?.());assert(errors.length===0,`Unexpected Encouragements console/page errors: ${errors.join(' | ')}`);await page.close();
+}
+try{await run();console.log('BibleQuest v3 Encouragements browser regression passed.')}finally{await browser.close()}

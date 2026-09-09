@@ -10,6 +10,7 @@ const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,con
 const COUPLE_SHARED_FIELDS='id,pair_id,author_id,item_type,body,due_on,completed_at,created_at,updated_at';
 const JOURNEY_GROUP_FIELDS='id,owner_id,congregation_id,name,description,schedule_text,max_members,active,created_at,updated_at';
 const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
+const ENCOURAGEMENT_FIELDS='id,group_id,sender_id,recipient_id,kind,created_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -268,6 +269,18 @@ export function createApi() {
     async leave(groupId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId}); }
   });
 
+  const encouragements = Object.freeze({
+    async list(groupIds) {
+      const ids=[...new Set((groupIds||[]).map(String).filter(Boolean))];
+      if(!ids.length)return [];
+      const client=await getClient();
+      const {data,error}=await client.from('bible_group_encouragements').select(ENCOURAGEMENT_FIELDS).in('group_id',ids).order('created_at',{ascending:false}).limit(80);
+      if(error)throw error;
+      return data||[];
+    },
+    async send(groupId,kind) { return invoke('bq-journey-group',{action:'encourage',group_id:groupId,kind}); }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -287,5 +300,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, cloudNotes, couples, journeyGroups, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }

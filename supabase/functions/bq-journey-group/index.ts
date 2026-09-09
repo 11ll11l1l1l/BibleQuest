@@ -33,6 +33,13 @@ Deno.serve(async(req:Request)=>{
       const groupId=cleanText(body.group_id,64),groupRes=await admin.from('bible_groups').select('owner_id').eq('id',groupId).maybeSingle();if(groupRes.error)throw groupRes.error;if(groupRes.data?.owner_id===user.id)return json({error:'The group leader cannot leave until leadership is transferred or the group is archived'},409);
       const up=await admin.from('bible_group_members').update({active:false}).eq('group_id',groupId).eq('user_id',user.id);if(up.error)throw up.error;return json({ok:true});
     }
+    if(action==='encourage'){
+      const groupId=cleanText(body.group_id,64),kind=cleanText(body.kind,16),allowed=new Set(['pray','cheer','heart','word','flame']);if(!allowed.has(kind))return json({error:'Choose a supported encouragement'},400);
+      const group=await admin.from('bible_groups').select('id').eq('id',groupId).eq('active',true).maybeSingle();if(group.error)throw group.error;if(!group.data)return json({error:'Active Journey Group membership required'},403);
+      const membership=await admin.from('bible_group_members').select('active').eq('group_id',groupId).eq('user_id',user.id).eq('active',true).maybeSingle();if(membership.error)throw membership.error;if(!membership.data)return json({error:'Active Journey Group membership required'},403);
+      const dedupeBucket=new Date().toISOString().slice(0,10),created=await admin.from('bible_group_encouragements').insert({group_id:groupId,sender_id:user.id,recipient_id:null,kind,dedupe_bucket:dedupeBucket}).select('id,group_id,sender_id,recipient_id,kind,created_at').single();
+      if(created.error?.code==='23505')return json({error:'You already sent that encouragement to this group today'},409);if(created.error)throw created.error;return json({encouragement:created.data});
+    }
     return json({error:'Unsupported action'},400);
   }catch(err){return asResponse(err)}
 });
