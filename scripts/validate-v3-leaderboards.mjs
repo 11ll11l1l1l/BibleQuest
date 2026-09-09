@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+const read=path=>fs.readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
+const owner=read('src/app/leaderboards.js'),api=read('src/core/api.js'),bootstrap=read('src/app/bootstrap.js'),view=read('src/features/leaderboards/index.js'),community=read('src/features/community/index.js'),workflow=read('.github/workflows/v3-regression.yml');
+const fail=message=>{throw new Error(`Leaderboards architecture: ${message}`)};
+if(/supabase|\.from\(|\.rpc\(/i.test(owner))fail('application owner must not access Supabase directly.');
+if(/localStorage|sessionStorage|authStorage/i.test(owner))fail('application owner must not create persistence ownership.');
+if(/award|badge|recognition|\bxp\b/i.test(owner))fail('Leaderboards must not own awards, badges, recognition or XP.');
+if(!api.includes("client.rpc('bible_leaderboard'")||!api.includes("bible_congregation_members"))fail('central API must own retained leaderboard RPC and congregation directory read.');
+if(!bootstrap.includes("createLeaderboardsService")||!bootstrap.includes("leaderboardsPage"))fail('bootstrap must compose the sole leaderboard owner and view.');
+if(!community.includes('data-community-route="leaderboards"'))fail('Community must expose the verified leaderboard route.');
+if(!view.includes('LOCAL CONGREGATION BOARD')||!view.includes('spiritual worth'))fail('view must retain congregation scope and non-spiritual-ranking copy.');
+if(!workflow.includes('scripts/validate-v3-leaderboards.mjs')||!workflow.includes('tests/v3-leaderboards-edge.mjs')||!workflow.includes('tests/v3-leaderboards-smoke.mjs'))fail('accumulated workflow must retain Leaderboards coverage.');
+console.log('BibleQuest v3 Leaderboards architecture boundary passed.');
