@@ -5,9 +5,9 @@ This file is the authoritative parity ledger for the rebuild.
 ## Current totals
 
 - **Regression-tested:** 66
-- **Verified:** 1
+- **Verified:** 2
 - **Implemented:** 0
-- **Not started:** 33
+- **Not started:** 32
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -88,7 +88,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 65 | Encouragements | Yes | Compatibility | Regression-tested | send/receive; permission; duplicate prevention |
 | 66 | Congregation membership/roles | Yes | Compatibility | Regression-tested | authenticated membership list; trusted invite-code join; role visibility; fail-closed client capabilities; server/RLS authority; signed-out and 390px recovery |
 | 67 | Community bridge | Yes | Compatibility | Verified | cross-feature navigation/data contract |
-| 68 | Presence | Yes | Compatibility | Not started | online/offline update; cleanup; stale timeout |
+| 68 | Presence | Yes | Compatibility | Verified | online/offline update; cleanup; stale timeout |
 | 69 | Team Center | Yes | Compatibility | Not started | team list; member/role workflows |
 | 70 | Trusted score events | Yes | Compatibility | Not started | submit trusted event; reject invalid duplicate |
 | 71 | Leaderboards | Yes | Compatibility | Not started | load; rank; empty/error; account boundaries |
@@ -127,7 +127,3 @@ This file is the authoritative parity ledger for the rebuild.
 BibleQuest v3 reaches feature parity only when every applicable row is **Verified** or **Regression-tested**. A row is not complete because a page renders, an old module still exists, or a compatibility page can be opened.
 
 Rows explicitly deferred by user priority remain visible as **Not started** and are excluded from the active implementation sequence until explicitly reopened. They are not silently counted as complete.
-
-## Regression rule
-
-A feature becomes **Regression-tested** only after a later feature milestone passes the entire v3 suite with that feature still green.
