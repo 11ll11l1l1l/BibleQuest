@@ -11,6 +11,7 @@ const COUPLE_SHARED_FIELDS='id,pair_id,author_id,item_type,body,due_on,completed
 const JOURNEY_GROUP_FIELDS='id,owner_id,congregation_id,name,description,schedule_text,max_members,active,created_at,updated_at';
 const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
 const ENCOURAGEMENT_FIELDS='id,group_id,sender_id,recipient_id,kind,created_at';
+const PRESENCE_FIELDS='congregation_id,user_id,last_seen_at,surface';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -87,9 +88,7 @@ export function createApi() {
   });
 
   const auth = Object.freeze({
-    enabled() {
-      return !localPreview();
-    },
+    enabled() { return !localPreview(); },
     async getSession() {
       if (localPreview()) return { session: null };
       const client = await getClient();
@@ -197,8 +196,27 @@ export function createApi() {
       const byId = new Map((congregations || []).map(row => [String(row.id), row]));
       return rows.map(row => ({ ...row, congregation: byId.get(String(row.congregation_id)) || null })).filter(row => row.congregation);
     },
-    async join(code) {
-      return invoke('bq-join', { code });
+    async join(code) { return invoke('bq-join', { code }); }
+  });
+
+  const presence = Object.freeze({
+    async list(congregationId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_presence').select(PRESENCE_FIELDS).eq('congregation_id',congregationId).order('last_seen_at',{ascending:false});
+      if(error)throw error;
+      return data||[];
+    },
+    async touch(congregationId,userId,surface='BibleQuest') {
+      const client=await getClient();
+      const row={congregation_id:String(congregationId),user_id:String(userId),last_seen_at:new Date().toISOString(),surface:String(surface||'BibleQuest').trim().slice(0,80)||'BibleQuest'};
+      const {data,error}=await client.from('bible_presence').upsert(row,{onConflict:'congregation_id,user_id'}).select(PRESENCE_FIELDS).single();
+      if(error)throw error;
+      return data;
+    },
+    async leave(congregationId,userId) {
+      const client=await getClient();
+      const {error}=await client.from('bible_presence').delete().eq('congregation_id',congregationId).eq('user_id',userId);
+      if(error)throw error;
     }
   });
 
@@ -300,5 +318,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
