@@ -9,7 +9,8 @@ if(!failures.length){
   for(const forbidden of['createClient','@supabase','functions.invoke',".from('",'localStorage','sessionStorage'])if(owner.includes(forbidden))fail(`Presence owner bypasses shared boundaries: ${forbidden}`);
   for(const item of["from('bible_presence').select(PRESENCE_FIELDS)","from('bible_presence').upsert(row", "from('bible_presence').delete()", "onConflict:'congregation_id,user_id'"])if(!api.includes(item))fail(`Presence API boundary missing: ${item}`);
   for(const item of['beforeSignOutListeners','async function signOut()','Promise.allSettled(cleanups)','await auth.signOut()'])if(!session.includes(item))fail(`Session cleanup boundary missing: ${item}`);
-  if(session.indexOf('Promise.allSettled(cleanups)')>session.indexOf('await auth.signOut()'))fail('Session must run registered cleanup before discarding auth.');
+  const signOutBody=session.slice(session.indexOf('async function signOut()'),session.indexOf('function dispose()'));
+  if(signOutBody.indexOf('Promise.allSettled(cleanups)')<0||signOutBody.indexOf('await auth.signOut()')<0||signOutBody.indexOf('Promise.allSettled(cleanups)')>signOutBody.indexOf('await auth.signOut()'))fail('Session must run registered cleanup before discarding auth.');
   for(const item of["import { createPresenceService } from './presence.js'",'createPresenceService({api:api.presence,session,congregation,store})','presence.start()','void presence.dispose()'])if(!bootstrap.includes(item))fail(`Bootstrap missing #68 lifecycle composition: ${item}`);
   for(const item of['existing `public.bible_presence` table','60 seconds','150 seconds','stale timeout','No new table or Supabase migration'])if(!contract.includes(item))fail(`Presence contract missing boundary: ${item}`);
   if(!inventory.includes('| 68 | Presence | Yes | Compatibility |'))fail('Inventory #68 Presence row is missing.');
