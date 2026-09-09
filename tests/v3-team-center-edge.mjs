@@ -23,7 +23,7 @@ const api={
   async add(congregationId,teamId,targetUserId){calls.push(['add',congregationId,teamId,targetUserId]);members.push({team_id:teamId,user_id:targetUserId,joined_at:now});return{ok:true}},
   async remove(congregationId,teamId,targetUserId){calls.push(['remove',congregationId,teamId,targetUserId]);members=members.filter(row=>!(row.team_id===teamId&&row.user_id===targetUserId));return{ok:true}},
   async rename(congregationId,teamId,name){calls.push(['rename',congregationId,teamId,name]);teams=teams.map(row=>row.id===teamId?{...row,name}:row);return{team:{id:teamId,name}}},
-  async archive(congregationId,teamId){calls.push(['archive',congregationId,teamId]);teams=teams.map(row=>row.id===teamId?{...row,active:false}:row);return{ok:true}}
+  async archive(congregationId,teamId){calls.push(['archive',congregationId,teamId]);teams=teams.filter(row=>row.id!==teamId);members=members.filter(row=>row.team_id!==teamId);return{ok:true}}
 };
 const service=createTeamCenterService({api,session,congregation});
 let state=await service.load();
