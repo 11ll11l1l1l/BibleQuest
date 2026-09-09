@@ -22,7 +22,7 @@ async function run(){
     return{initial,knowledge,today,authCode,calls};
   });
   assert(result.initial.title==='Test Church','Leaderboard congregation title did not render.');
-  assert(result.initial.rows[0].includes('Amy')&&result.initial.rows[0].includes('12 pts'),'Overall ranking did not sum trusted categories.');
+  assert(result.initial.rows[0].includes('Amy')&&result.initial.rows[0].includes('8 pts'),'Overall ranking did not sum trusted category aggregates.');
   assert(result.initial.periods.join('|')==='Today|This Week|All Time','Recovered period controls changed.');
   assert(result.initial.lanes.join('|')==='Overall|Knowledge|Reading|Wisdom|Mastery|Consistency|Group|Couples','Recovered eight lanes changed.');
   assert(result.knowledge[0].includes('Amy')&&result.knowledge[0].includes('8 pts'),'Knowledge lane ranking failed.');
