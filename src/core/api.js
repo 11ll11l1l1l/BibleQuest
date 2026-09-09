@@ -15,6 +15,10 @@ const PRESENCE_FIELDS='congregation_id,user_id,last_seen_at,surface';
 const TEAM_FIELDS='id,congregation_id,created_by,team_type,name,active,created_at';
 const TEAM_MEMBER_FIELDS='team_id,user_id,joined_at';
 const TEAM_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,active,joined_at';
+const RECOGNITION_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,avatar,active,joined_at';
+const RECOGNITION_FIELDS='id,congregation_id,user_id,awarded_by,award_code,title,note,icon,visible,created_at';
+const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
+const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -259,6 +263,26 @@ export function createApi() {
     }
   });
 
+  const congregationRecognition = Object.freeze({
+    async load(congregationId) {
+      const client=await getClient();
+      const [directoryResult,recognitionResult,badgeResult,catalogResult]=await Promise.all([
+        client.from('bible_congregation_members').select(RECOGNITION_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).order('joined_at',{ascending:true}),
+        client.from('bible_member_recognitions').select(RECOGNITION_FIELDS).eq('congregation_id',congregationId).eq('visible',true).order('created_at',{ascending:false}).limit(200),
+        client.from('bible_user_badges').select(EARNED_BADGE_FIELDS).eq('congregation_id',congregationId).order('earned_at',{ascending:false}).limit(3000),
+        client.from('bible_badge_catalog').select(BADGE_CATALOG_FIELDS).eq('active',true).limit(500)
+      ]);
+      for(const result of[directoryResult,recognitionResult,badgeResult,catalogResult])if(result.error)throw result.error;
+      return {directory:directoryResult.data||[],recognitions:recognitionResult.data||[],badges:badgeResult.data||[],catalog:catalogResult.data||[]};
+    },
+    async award(row) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_member_recognitions').insert(row).select(RECOGNITION_FIELDS).single();
+      if(error)throw error;
+      return data;
+    }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -357,5 +381,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
