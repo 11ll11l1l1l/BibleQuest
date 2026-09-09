@@ -27,11 +27,13 @@ The #73 API requests only active assignments in the selected congregation. For p
 
 Target scopes retained by the existing backend are `all`, `member`, `team`, and `group`. Future-scheduled assignments remain hidden from ordinary members until the existing RLS policy opens them.
 
+The retained old assignment center made assignment completion controls member-facing. Therefore #73 remains **read-only for ministry roles** (`facilitator`, `leader`, `pastor`, `admin`): they may inspect visible assignment details in this bounded surface, but start/complete is blocked by the application owner and hidden by the UI. Leader creation, feedback, archive, scheduling and management belong to later assignment/ministry rows.
+
 ## Open
 
 Opening a task selects one already-visible assignment and shows its title, instructions, type, Scripture references, due date, trusted completion-point value, and the current user's status. Opening alone does not fabricate a progress write.
 
-A separate Start action invokes the retained trusted function and persists `started`. A task may also be completed directly because the retained server contract permits `complete` without a prior explicit start.
+For a normal member, a separate Start action invokes the retained trusted function and persists `started`. A task may also be completed directly because the retained server contract permits `complete` without a prior explicit start.
 
 ## Complete
 
@@ -55,7 +57,8 @@ Both retained assignment tables are already members of the Supabase realtime pub
 - assignment changes are scoped to the selected congregation;
 - progress changes are scoped to the signed-in user;
 - the application owner reloads server truth after a realtime signal;
-- teardown removes the channel when the surface/congregation is left.
+- teardown removes the channel when the surface/congregation is left;
+- cleanup is idempotent so route teardown cannot remove the same channel twice.
 
 Realtime is a refresh signal only. Payload data is not treated as authoritative application state.
 
@@ -76,8 +79,9 @@ Permanent verification must cover:
 - started and completed status reload from server truth;
 - completion idempotency/result normalization;
 - optional submission bounding;
+- ministry-role read-only behavior;
 - signed-out, local-preview, and no-congregation states;
-- realtime refresh signal plus cleanup;
+- realtime refresh signal plus exactly-once cleanup;
 - 390px browser flow with no horizontal overflow or console/page errors;
 - architecture proof that direct Supabase/Realtime ownership remains in `src/core/api.js` and #74/#75/#79 remain outside #73.
 
