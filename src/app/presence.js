@@ -74,8 +74,12 @@ export function createPresenceService({
 
   async function membershipsFor(userId){
     let memberships=congregation.list();
-    if(!memberships.length)memberships=await congregation.load();
-    return memberships.filter(row=>clean(row?.userId)===userId&&clean(row?.congregationId)).map(row=>clean(row.congregationId));
+    let mine=memberships.filter(row=>clean(row?.userId)===userId&&clean(row?.congregationId));
+    if(!mine.length){
+      memberships=await congregation.load();
+      mine=memberships.filter(row=>clean(row?.userId)===userId&&clean(row?.congregationId));
+    }
+    return mine.map(row=>clean(row.congregationId));
   }
 
   async function heartbeat(expectedGeneration=generation){
