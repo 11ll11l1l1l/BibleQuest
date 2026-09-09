@@ -5,9 +5,9 @@ async function run(){
   await page.goto(BASE,{waitUntil:'networkidle'});
   const result=await page.evaluate(async()=>{
     const [{createAssignmentsService},{assignmentsPage}]=await Promise.all([import(`/src/app/assignments.js?smoke=${Date.now()}`),import(`/src/features/assignments/index.js?smoke=${Date.now()}`)]);
-    let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},progress=[],syncCallback=null,cleaned=0,title='Read John 1';
+    let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},progress=[],syncCallback=null,cleaned=0,title='Read John 1',role='member';
     const session={getState:()=>sessionState};
-    const congregation={load:async()=>[{congregationId:'c1',userId:'u1',role:'member',roleKnown:true,roleLabel:'Member',congregation:{id:'c1',name:'Test Church',timezone:'Asia/Tokyo'}}],assert:()=>true};
+    const congregation={load:async()=>[{congregationId:'c1',userId:'u1',role,roleKnown:true,roleLabel:role==='member'?'Member':'Leader',congregation:{id:'c1',name:'Test Church',timezone:'Asia/Tokyo'}}],assert:()=>true};
     const assignment=()=>({id:'a1',congregation_id:'c1',created_by:'leader1',title,instructions:'Read carefully and write one sentence if you want.',assignment_type:'reading',scripture_refs:['John 1'],target_scope:'all',target_id:null,due_at:'2026-09-12T10:00:00Z',points:5,active:true,created_at:'2026-09-09T00:00:00Z',updated_at:'2026-09-10T00:00:00Z'});
     const api={
       load:async()=>({assignments:[assignment()],progress}),
@@ -22,13 +22,17 @@ async function run(){
     host.querySelector('[data-assignment-start="a1"]')?.click();await new Promise(resolve=>setTimeout(resolve,40));const started=host.querySelector('[data-assignment-detail="a1"]')?.textContent||'';
     const form=host.querySelector('[data-assignment-complete="a1"]');form.querySelector('textarea[name="submission"]').value='I noticed the Word was with God.';form.requestSubmit();await new Promise(resolve=>setTimeout(resolve,60));const completed=host.querySelector('[data-assignment-detail="a1"]')?.textContent||'';
     title='Read John 1 again';syncCallback?.();await new Promise(resolve=>setTimeout(resolve,50));const synced={row:host.querySelector('[data-assignment-row="a1"]')?.textContent||'',message:host.textContent.includes('Assignment status synced.')};
-    dispose?.();host.remove();sessionState={authenticated:false,remoteAvailable:true,user:null};const signedOut=await assignments.load();
-    return{initial,opened,started,completed,synced,cleaned,signedOut:signedOut.status};
+    dispose?.();host.remove();
+
+    role='leader';progress=[];title='Congregation reading';const leaderAssignments=createAssignmentsService({api,session,congregation}),leaderHost=document.createElement('div');leaderHost.innerHTML='<section class="bq-panel" data-assignments-view></section>';document.body.appendChild(leaderHost);const leaderDispose=assignmentsPage({assignments:leaderAssignments,onBack:()=>{},onAccount:()=>{}}).mount(leaderHost);await new Promise(resolve=>setTimeout(resolve,40));leaderHost.querySelector('[data-assignment-open="a1"]')?.click();await new Promise(resolve=>setTimeout(resolve,10));const leader={text:leaderHost.textContent||'',hasStart:Boolean(leaderHost.querySelector('[data-assignment-start]')),hasComplete:Boolean(leaderHost.querySelector('[data-assignment-complete]'))};leaderDispose?.();leaderHost.remove();
+
+    sessionState={authenticated:false,remoteAvailable:true,user:null};const signedOut=await assignments.load();
+    return{initial,opened,started,completed,synced,leader,cleaned,signedOut:signedOut.status};
   });
   assert(result.initial.heading==='Test Church','Assignments congregation heading did not render.');assert(result.initial.row.includes('Read John 1')&&result.initial.row.includes('Assigned'),'Received assignment did not render.');
   assert(result.opened.detail.includes('Read carefully')&&result.opened.detail.includes('John 1'),'Assignment detail/open flow failed.');assert(result.started.includes('Started'),'Assignment started state did not reload.');
   assert(result.completed.includes('Completed')&&result.completed.includes('I noticed the Word was with God.')&&result.completed.includes('Thank you for completing this.'),'Assignment completion/own feedback state did not render.');
-  assert(result.synced.row.includes('Read John 1 again')&&result.synced.message,'Realtime assignment signal did not refresh server truth.');assert(result.cleaned===1,'Assignment realtime channel was not cleaned up exactly once.');assert(result.signedOut==='signed-out','Signed-out Assignments did not fail closed.');
+  assert(result.synced.row.includes('Read John 1 again')&&result.synced.message,'Realtime assignment signal did not refresh server truth.');assert(result.leader.text.includes('read-only for ministry roles')&&!result.leader.hasStart&&!result.leader.hasComplete,'Ministry-role #73 surface must remain read-only.');assert(result.cleaned===2,'Each mounted Assignments realtime channel must be cleaned up exactly once.');assert(result.signedOut==='signed-out','Signed-out Assignments did not fail closed.');
   const metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth}));assert(metrics.innerWidth===390,'Assignments smoke did not execute at 390px.');assert(metrics.scrollWidth<=metrics.innerWidth+1,`Assignments caused horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(errors.length===0,`Unexpected Assignments console/page errors: ${errors.join(' | ')}`);await page.close();
 }
 try{await run();console.log('BibleQuest v3 Assignments mobile browser regression passed.')}finally{await browser.close()}
