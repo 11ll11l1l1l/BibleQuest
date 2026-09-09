@@ -77,13 +77,18 @@ Verified v3 behavior:
 
 Functional verification evidence:
 - Initial exact candidate `502e9fd86b96415d379d65295ba76ec3f117f9fd`, run `34416898681`: all architecture validators and all earlier edge regressions passed, then the new #73 edge fixture failed before browser execution.
-- Root cause `V3-ASSIGNMENTS-EDGE-FIXTURE-001`: the fake API filtered a deliberately foreign-congregation test row before the owner could receive it, so the test expected a rejection from data it never delivered. This was a test-only fixture defect, not an application defect.
 - Corrected exact candidate `33871d45aec7111be95524333fe5210dceed71af` passed the complete accumulated architecture, edge and Playwright/browser-mobile suite in run `34417012845`.
 - The isolated functional verification branch was reset to that exact clean candidate after success.
 
+## Defect / root-cause ledger
+
+- `V3-ASSIGNMENTS-EDGE-FIXTURE-001` — the foreign-congregation edge fixture expected owner rejection while its fake API filtered the foreign row before delivery. The fixture was corrected to actually deliver malformed server data; no application behavior changed.
+- `V3-STATUS-BOOKKEEPING-001` — bookkeeping run `34417496926` proved the compact status rewrite had dropped the architecture validator's required durable `Defect / root-cause ledger` section. The section was restored without changing application behavior or weakening validation.
+- All earlier defect regressions remain in the accumulated suite.
+
 ## Next major milestone
 
-1. Run the exact clean #73 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
+1. Run the corrected exact clean #73 promotion/bookkeeping candidate through the complete accumulated architecture, edge and browser/mobile suite on an isolated one-shot verification branch.
 2. If green, reset the bookkeeping verification branch to the exact clean candidate and freeze `release/v3.46-assignments` at the same SHA.
 3. Only after v3.46 is frozen, create `feature/v3-advanced-assignments` and recover #74 advanced-field/due-state/completion/permission contracts before implementation.
 4. Keep #75 Assignment push and #79 Linked activities separate until their own milestones.
