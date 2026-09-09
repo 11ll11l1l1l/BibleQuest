@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import {workflowInvokesNode}from './v3-workflow-contract.mjs';
+const failures=[],fail=message=>failures.push(message),read=file=>fs.readFileSync(file,'utf8');
+const required=['CONGREGATION_RECOGNITION_V3.md','FEATURE_INVENTORY_V3.md','src/core/api.js','src/app/congregation-recognition.js','src/app/bootstrap.js','src/features/congregation-recognition/index.js','src/features/community/index.js','tests/v3-congregation-recognition-edge.mjs','tests/v3-congregation-recognition-smoke.mjs','.github/workflows/v3-regression.yml'];
+for(const file of required)if(!fs.existsSync(file))fail(`Missing #72 Congregation Recognition file: ${file}`);
+if(!failures.length){
+  const contract=read('CONGREGATION_RECOGNITION_V3.md'),inventory=read('FEATURE_INVENTORY_V3.md'),api=read('src/core/api.js'),owner=read('src/app/congregation-recognition.js'),bootstrap=read('src/app/bootstrap.js'),feature=read('src/features/congregation-recognition/index.js'),community=read('src/features/community/index.js'),workflow=read('.github/workflows/v3-regression.yml');
+  for(const item of["const congregationRecognition = Object.freeze","from('bible_member_recognitions')","from('bible_user_badges')","from('bible_badge_catalog')","async award(row)",'insert(row).select(RECOGNITION_FIELDS).single()'])if(!api.includes(item))fail(`Central API missing #72 boundary: ${item}`);
+  for(const item of['createCongregationRecognitionService({api,session,congregation}',"new Set(['leader','pastor','admin'])",'BQ_RECOGNITION_AUTH_REQUIRED','BQ_RECOGNITION_REMOTE_DISABLED','BQ_RECOGNITION_PERMISSION','BQ_RECOGNITION_TARGET','BQ_RECOGNITION_RESPONSE',"congregation.assert(scope.id,'read')",'api.award(payload)','Former member'])if(!owner.includes(item))fail(`Recognition owner missing recovered contract: ${item}`);
+  for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','functions.invoke',".from('","rpc('bible_leaderboard'",'bible_score_events'])if(owner.includes(forbidden))fail(`Recognition owner bypasses its boundary: ${forbidden}`);
+  if(/AWARD_ROLES[^\n]*facilitator/.test(owner))fail('Facilitator must not be included in persisted recognition award authority.');
+  for(const item of['consistency','scripture-explorer','encourager','journey-finisher','comeback','group-helper','reflection','most-improved','pastor-recognition'])if(!owner.includes(`code:'${item}'`))fail(`Recognition preset missing: ${item}`);
+  for(const item of["import { createCongregationRecognitionService } from './congregation-recognition.js'",'createCongregationRecognitionService({api:api.congregationRecognition,session,congregation})',"recognition:()=>congregationRecognitionPage",'recognition.clear()'])if(!bootstrap.includes(item))fail(`Bootstrap missing #72 composition: ${item}`);
+  if(!feature.includes('Only leaders, pastors and admins can create persisted special recognition.'))fail('Recognition presentation must communicate the recovered award-role boundary.');
+  if(!feature.includes('spiritual worth'))fail('Recognition presentation must retain the non-spiritual-scoring boundary.');
+  if(!community.includes('data-community-route="recognition"'))fail('Community must expose the bounded Recognition destination.');
+  for(const item of['sole v3 client owner','sole browser Supabase boundary','leader`, `pastor` or `admin`','removed `facilitator`','does not own score-event submission','Production v2, `main`, production Supabase and production Cloudflare remain untouched'])if(!contract.includes(item))fail(`Recognition contract missing boundary: ${item}`);
+  const rows=['| 72 | Congregation recognition | Yes | Compatibility | Implemented | load/award/display; permissions |','| 72 | Congregation recognition | Yes | Compatibility | Verified | load/award/display; permissions |','| 72 | Congregation recognition | Yes | Compatibility | Regression-tested | load/award/display; permissions |'];
+  if(!rows.some(row=>inventory.includes(row)))fail('#72 Congregation Recognition must be Implemented or better once owner/regressions are committed.');
+  for(const test of['scripts/validate-v3-congregation-recognition.mjs','tests/v3-congregation-recognition-edge.mjs','tests/v3-congregation-recognition-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #72 regression: ${test}`);
+}
+if(failures.length){failures.forEach(message=>console.error(`- ${message}`));process.exit(1)}console.log('BibleQuest v3 Congregation Recognition architecture boundary passed.');
