@@ -10,8 +10,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - **Inventory states after the #67 functional gate:** 66 Regression-tested / 1 Verified / 0 Implemented / 33 Not started
 - **Implemented or better:** 67 / 100 (**67% strict parity completion**)
 - **Official regression stability:** 66 / 100
-- **Latest frozen checkpoint:** `release/v3.39-encouragements` at `41c42a4030140ac1387612fbdbe3334baa5676a7`
-- **v3.39 bookkeeping:** `34337802329` — complete accumulated suite green against the frozen SHA
+- **Latest frozen checkpoint:** `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2`
+- **v3.40 bookkeeping:** `34340610144` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
@@ -51,7 +51,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
 | 25 | Journey Groups | Frozen | v3.38; #64 Regression-tested through #65 |
 | 26 | Encouragements | Frozen | v3.39; #65 Regression-tested through #67 |
-| 27 | Community Bridge | Verified; bookkeeping pending | #67 functional `34340063733` |
+| 27 | Community Bridge | Frozen | v3.40; #67 Verified; bookkeeping `34340610144` |
 | 28 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
 | 29 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
 | 30 | Production deployment | Not started | only after selected parity/stability acceptance gates |
@@ -84,6 +84,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.37-couples-cloud` — `f706896d8f4e8d2ee19e607a38cc87dada70d671`; functional `34238007365`; bookkeeping `34240373295`
 - `release/v3.38-journey-groups` — `7c06c3380eaac0e20e579ae26453611e63ac564d`; corrected functional `34258746664`; bookkeeping `34259986598`
 - `release/v3.39-encouragements` — `41c42a4030140ac1387612fbdbe3334baa5676a7`; corrected functional `34337262620`; bookkeeping `34337802329`
+- `release/v3.40-community-bridge` — `fca8edd2e18015b246aced2dff6590308ff6bde2`; functional `34340063733`; bookkeeping `34340610144`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -141,6 +142,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - It exposes only minimal congregation/group metadata plus an encouragement count and connects the three verified destinations through the existing Router owner.
 - Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed the complete accumulated suite in functional run `34340063733`.
 - The one-shot branch was reset from trigger `ef62892ead75098928005fe751582c394d8f832c` to the clean candidate after verification.
+- Exact bookkeeping candidate `fca8edd2e18015b246aced2dff6590308ff6bde2` passed run `34340610144` and is frozen as v3.40.
 
 ## Current bookkeeping
 
@@ -165,8 +167,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 
 ## Next sequence
 
-1. Run independent bookkeeping against the exact post-promotion #67 candidate and freeze v3.40 only after it passes.
-2. Select the next dependency-safe capability only after the freeze.
+1. Begin #68 Presence from `release/v3.40-community-bridge` on `feature/v3-presence`.
+2. Recover the retained timeout, cleanup, RLS, and privacy contract before implementation.
 3. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall

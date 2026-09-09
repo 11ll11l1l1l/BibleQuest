@@ -7,10 +7,10 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 ## Repository and immutable checkpoints
 
 - Repository: `11ll11l1l1l/BibleQuest`
-- Frozen base: `release/v3.39-encouragements`
-- Frozen base SHA: `41c42a4030140ac1387612fbdbe3334baa5676a7`
-- v3.39 bookkeeping run: `34337802329` (complete accumulated suite green)
-- Active remote branch: `feature/v3-community-bridge`
+- Frozen base: `release/v3.40-community-bridge`
+- Frozen base SHA: `fca8edd2e18015b246aced2dff6590308ff6bde2`
+- v3.40 bookkeeping run: `34340610144` (complete accumulated suite green)
+- Active remote branch: `feature/v3-presence`
 - Canonical remote #67 code commit: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`
 - Canonical #67 code tree: `3e0f0a5ac4ca324cbf188282bc4c13b5d8903e40`
 - Local equivalent #67 commit: `4917b0ba7733f719e583974681233d303b0bf99e` (same tree; commit metadata differs)
@@ -64,11 +64,12 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
 - Complete #67 functional run `34340063733` passed against asserted code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`; trigger commit `ef62892ead75098928005fe751582c394d8f832c` was reset from the verification branch after success.
 
-## Closed #67 functional gate and exact next sequence
+## Closed #67 milestone and exact next sequence
 
-1. Commit and publish the #67 promotion bookkeeping.
-2. Run an independent exact-SHA bookkeeping workflow against that candidate.
-3. Freeze `release/v3.40-community-bridge` only after the complete suite passes.
+1. Functional run `34340063733` passed exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`; #67 is Verified and #65 is Regression-tested.
+2. Bookkeeping run `34340610144` passed exact candidate `fca8edd2e18015b246aced2dff6590308ff6bde2`.
+3. `release/v3.40-community-bridge` is frozen at that clean candidate; both temporary #67 verification branches were reset.
+4. Continue #68 Presence only on `feature/v3-presence`, beginning with retained timeout/cleanup and RLS contract recovery.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 

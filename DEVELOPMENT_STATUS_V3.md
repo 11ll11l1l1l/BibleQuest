@@ -11,8 +11,8 @@ Updated: 2026-09-09 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.39-encouragements` at `41c42a4030140ac1387612fbdbe3334baa5676a7`.
-- Exact v3.39 bookkeeping run `34337802329` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2`.
+- Exact v3.40 bookkeeping run `34340610144` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
@@ -175,6 +175,7 @@ Functional verification:
 - Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed all accumulated architecture, edge, and browser/mobile regressions in run `34340063733`.
 - Isolated trigger commit `ef62892ead75098928005fe751582c394d8f832c` checked out and asserted that exact candidate; `verify/v3.40-community-bridge-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
+- Exact bookkeeping candidate `fca8edd2e18015b246aced2dff6590308ff6bde2` passed run `34340610144`; the isolated bookkeeping branch was reset to that candidate, now frozen as `release/v3.40-community-bridge`.
 
 ## Defect / root-cause ledger
 
@@ -198,7 +199,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Run independent bookkeeping against the exact post-promotion candidate and freeze v3.40 before selecting the next dependency-safe capability.
+Begin #68 Presence from frozen `release/v3.40-community-bridge` on `feature/v3-presence`. Recover the retained online/offline update, cleanup, stale-timeout, authorization, and privacy contract before implementation.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
