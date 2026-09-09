@@ -172,6 +172,7 @@ Functional verification:
 - `src/features/community/index.js` adds one responsive route connecting Membership & role, Journey Groups, and Encouragements through the existing Router owner.
 - The retained storage monkey patch and local point conversion were not copied. Scores, XP, leaderboards, presence, teams, assignments, notifications, ministry controls, identities, and private study/Couples data remain excluded.
 - Architecture, edge, and 390px browser regressions are accumulated in the manual workflow. Browser execution remains pending.
+- Canonical remote code candidate: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
 
 ## Defect / root-cause ledger
 

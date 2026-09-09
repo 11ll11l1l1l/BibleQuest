@@ -17,7 +17,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
 - **#64 Journey Groups:** Regression-tested through the later complete #65 suite
 - **#65 Encouragements:** Verified; corrected exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e`, functional run `34337262620`
-- **#67 Community Bridge:** Implemented; browser gate pending on the isolated feature branch
+- **#67 Community Bridge:** Implemented; exact remote code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`, browser gate pending
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -51,7 +51,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
 | 25 | Journey Groups | Frozen | v3.38; #64 Regression-tested through #65 |
 | 26 | Encouragements | Frozen | v3.39; #65 Verified; bookkeeping `34337802329` |
-| 27 | Community Bridge | Implemented; functional gate pending | #67 privacy-minimized projection + navigation |
+| 27 | Community Bridge | Implemented; functional gate pending | #67 candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` |
 | 28 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
 | 29 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
 | 30 | Production deployment | Not started | only after selected parity/stability acceptance gates |

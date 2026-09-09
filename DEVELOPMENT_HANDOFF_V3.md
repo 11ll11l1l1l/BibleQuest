@@ -11,6 +11,9 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - Frozen base SHA: `41c42a4030140ac1387612fbdbe3334baa5676a7`
 - v3.39 bookkeeping run: `34337802329` (complete accumulated suite green)
 - Active remote branch: `feature/v3-community-bridge`
+- Canonical remote #67 code commit: `4612f0501e5cd37e82c3d259094a0d91cf804e2d`
+- Canonical #67 code tree: `3e0f0a5ac4ca324cbf188282bc4c13b5d8903e40`
+- Local equivalent #67 commit: `4917b0ba7733f719e583974681233d303b0bf99e` (same tree; commit metadata differs)
 - Canonical remote #65 code commit: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`
 - Canonical code tree: `ec448f88874710b0cb45dc7b127beac44e9e97a1`
 - Local equivalent commit: `bb6944e422510f3e35de8052563172317fa450bd` (same tree; commit metadata differs)
@@ -63,10 +66,9 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 
 ## Open #67 gate and exact next sequence
 
-1. Publish the exact #67 implementation candidate and draft review surface.
-2. Run the complete accumulated architecture, edge, and browser/mobile workflow against that exact candidate.
-3. On green, promote #67 to Verified and #65 to Regression-tested.
-4. Run an independent bookkeeping gate and freeze `release/v3.40-community-bridge` only after the exact candidate passes.
+1. Run the complete accumulated architecture, edge, and browser/mobile workflow against exact candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`.
+2. On green, promote #67 to Verified and #65 to Regression-tested.
+3. Run an independent bookkeeping gate and freeze `release/v3.40-community-bridge` only after the exact candidate passes.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 
