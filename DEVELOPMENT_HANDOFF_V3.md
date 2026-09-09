@@ -11,10 +11,10 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - Frozen base SHA: `7c06c3380eaac0e20e579ae26453611e63ac564d`
 - v3.38 bookkeeping run: `34259986598` (reported complete accumulated suite green)
 - Active remote branch: `feature/v3-encouragements`
-- Canonical remote #65 code commit: `9cc487538624d3609b8c603cf205b8afde354230`
-- Canonical code tree: `0eb470139c8b7a1c428f6b4790526b1cee706578`
-- Local equivalent commit: `289eb5bfc576df67dc9914529e57e6586c03427b` (same tree; commit metadata differs)
-- Initial implementation commit `f6272064192201dd95da6945ce10c4003d9418fc` was superseded by the former-member history fix.
+- Canonical remote #65 code commit: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`
+- Canonical code tree: `ec448f88874710b0cb45dc7b127beac44e9e97a1`
+- Local equivalent commit: `bb6944e422510f3e35de8052563172317fa450bd` (same tree; commit metadata differs)
+- Initial implementation commit `f6272064192201dd95da6945ce10c4003d9418fc` and former-member history fix `9cc487538624d3609b8c603cf205b8afde354230` were superseded by the database-owned duplicate guard.
 - Draft v3 PR: `#89` — `feature/v3-encouragements` into `feature/v3-study-core`
 - Separate production-v2 safety PR: `#88` — stale-device progress conflict protection into `main`; draft, unmerged
 
@@ -43,10 +43,11 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 
 - All v3 JavaScript syntax checks: pass.
 - `scripts/validate-v3-inventory.mjs`: pass.
-- Complete accumulated architecture validator set: pass.
-- Complete accumulated edge regression set: pass.
+- Complete accumulated architecture validator set: 20/20 pass.
+- Complete accumulated edge regression set: 41/41 pass.
 - `git diff --check`: pass.
 - Production Supabase, Cloudflare, v2 and `main`: untouched by #65.
+- Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
 
 ## Open gate and exact next sequence
 

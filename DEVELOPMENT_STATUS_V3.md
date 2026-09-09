@@ -157,7 +157,7 @@ Functional verification:
 - `20260909_encouragement_duplicate_guard.sql` makes a database trigger the sole UTC bucket owner for every new insert and adds a partial unique index. Direct/legacy inserts cannot bypass the guard; retained v2 rows are not rewritten or deleted.
 - The dedicated route is preset-only and group-wide. Free text, direct messages, notifications, presence, completion sharing, assignments, rankings, XP, moderation and private study data remain excluded.
 - All JavaScript syntax checks, accumulated architecture validators and accumulated edge regressions pass locally. The 390px test exists in the manual workflow but Chromium execution remains pending.
-- Canonical remote code candidate: `f6272064192201dd95da6945ce10c4003d9418fc`; draft PR: `#89`.
+- Canonical remote code candidate: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`; draft PR: `#89`.
 
 ## Defect / root-cause ledger
 
