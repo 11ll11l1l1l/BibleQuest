@@ -8,27 +8,27 @@ Updated: 2026-09-09 JST
 
 - Production v2 remains unchanged.
 - `main` and production Cloudflare remain untouched.
-- Development branch: `feature/v3-presence`.
+- Development branch: `feature/v3-team-center`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint remains `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2` until the exact #68 bookkeeping candidate passes its final release gate.
-- Exact v3.40 bookkeeping run `34340610144` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint is `release/v3.41-presence` at `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`.
+- Exact v3.41 bookkeeping run `34357429102` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
-Inventory state after the complete #68 Presence verification gate:
+Inventory state after the complete #69 Team Center functional gate:
 
 | State | Count |
 |---|---:|
-| Regression-tested | 67 |
+| Regression-tested | 68 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 32 |
+| Not started | 31 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **68/100**.
+Strict implemented-or-better parity is **69/100**.
 
-Official regression stability is **67/100**.
+Official regression stability is **68/100**.
 
 Current leading rows:
 - #99 Offline opened Bible packs — **Regression-tested**; frozen in v3.34 and still green.
@@ -38,7 +38,8 @@ Current leading rows:
 - #64 Journey Groups — **Regression-tested** through the later complete #65 functional suite.
 - #65 Encouragements — **Regression-tested** through the later complete #67 functional suite.
 - #67 Community Bridge — **Regression-tested** after surviving the complete #68 Presence suite.
-- #68 Presence — **Verified** by the exact-SHA complete suite against `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` in run `34354132909`.
+- #68 Presence — **Regression-tested** after surviving the complete #69 Team Center suite; frozen in v3.41 after bookkeeping run `34357429102`.
+- #69 Team Center — **Verified** by the exact-SHA complete suite against `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` in run `34367001625`.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
 ## Current architecture boundary
@@ -53,9 +54,10 @@ The rebuild still follows one source of truth per function. Relevant owners now 
 - `src/app/encouragements.js` — sole #65 encouragement normalization, membership projection and duplicate-prevention owner.
 - `src/app/community-bridge.js` — sole #67 privacy-minimized cross-feature projection owner.
 - `src/app/presence.js` — sole #68 online/offline lifecycle, heartbeat, stale-state interpretation and cleanup owner.
+- `src/app/team-center.js` — sole #69 team scope, roster projection and management orchestration owner.
 - `src/content/couples-family.js` — recovered static Couples topic/card content only.
 - `src/features/couples-family/index.js` — Couples local UI only; no cloud/session/progress persistence ownership.
-- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples, Journey Group and Presence remote contracts.
+- `src/core/api.js` — sole Supabase/trusted-function boundary, including Couples, Journey Group, Presence and Team Center remote contracts.
 - `src/core/bible.js` — Bible-source loading and opened-pack persistence.
 - `src/app/offline-shell.js` + `offline-shell-sw.js` — bounded application-shell offline behavior only.
 - Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, congregation and diagnostics owners remain unchanged.
@@ -182,7 +184,7 @@ Functional verification:
 
 ## Milestone 28 — Presence
 
-### #68 — Verified
+### #68 — Regression-tested
 
 - `src/app/presence.js` is the sole Presence lifecycle owner; `src/core/api.js` remains the sole browser Supabase boundary.
 - The retained `public.bible_presence` contract is reused without a production migration: authenticated congregation members may read in-scope presence; a user may only write/delete the user's own row.
@@ -191,7 +193,20 @@ Functional verification:
 - Presence remains privacy-minimized and does not own Team Center, assignments, leaderboards, recognition, chat, XP, private study state, or other community workflows.
 - Permanent protection is retained in `PRESENCE_V3.md`, `scripts/validate-v3-presence.mjs`, `tests/v3-presence-edge.mjs`, and `tests/v3-presence-smoke.mjs`.
 - Exact Presence bookkeeping/verification SHA `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` passed the complete accumulated architecture, edge, and browser/mobile suite in run `34354132909`; the isolated trigger explicitly checked out and asserted that exact SHA.
-- The final documentation-only release candidate created after this record update must still pass the complete accumulated suite before `release/v3.41-presence` can be frozen.
+- Exact bookkeeping candidate `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c` passed run `34357429102` and is frozen at `release/v3.41-presence`.
+- #68 survived the later complete #69 Team Center functional suite and therefore advanced to Regression-tested.
+
+## Milestone 29 — Team Center
+
+### #69 — Verified
+
+- `src/app/team-center.js` is the sole team normalization, congregation scope, roster projection and management orchestration owner; `src/core/api.js` remains the sole browser Supabase and Edge Function boundary.
+- Reads are restricted to active `game_team` rows in the signed-in account's active congregations. Foreign, malformed, inactive and unsupported-team data fail closed.
+- Ministry-capable congregation roles may create, add, remove and rename through the existing authenticated `bq-team` function. Only the creator or congregation admin may archive, and the active creator cannot be removed.
+- Existing congregation roles are displayed; no speculative per-team role schema, scoring, leaderboard, presence, assignment, chat, XP or private-study ownership was introduced.
+- Permanent protection is retained in `TEAM_CENTER_V3.md`, `scripts/validate-v3-team-center.mjs`, `tests/v3-team-center-edge.mjs`, and `tests/v3-team-center-smoke.mjs`.
+- Exact corrected functional candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the complete accumulated architecture, edge, and browser/mobile suite in run `34367001625`; the isolated trigger explicitly checked out and asserted that SHA.
+- The final documentation-only bookkeeping candidate created after this promotion must pass the same complete suite before `release/v3.42-team-center` can be frozen.
 
 ## Defect / root-cause ledger
 
@@ -212,10 +227,11 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-ENCOURAGEMENT-HISTORY-001` — the initial #65 owner treated current sender membership as a read-time invariant, which would reject valid history after a sender left. Current membership is now enforced only when sending; a permanent edge regression retains former-member history.
 - `V3-ENCOURAGEMENT-DEDUPE-001` — the initial partial index covered only callers that supplied a non-null bucket, so direct/legacy inserts could bypass duplicate prevention. A database `BEFORE INSERT` trigger now owns and overwrites the UTC bucket for every new row; the Edge Function no longer competes for that value.
 - `V3-COMMUNITY-VALIDATOR-PATH-001` — the initial #67 validator imported the shared workflow parser from `tests/` instead of its actual `scripts/` owner. The import was corrected before candidate publication; the accumulated architecture run permanently exercises it.
+- `V3-TEAM-CENTER-ARCHIVE-FIXTURE-001` — run `34366738460` exposed an inaccurate edge fixture that returned an archived team even though the production list query filters `active = true`. The mock now removes the archived row and memberships, matching the API contract; corrected run `34367001625` passed the full suite.
 
 ## Next major milestone
 
-After the exact final #68 bookkeeping SHA passes the complete accumulated suite and `release/v3.41-presence` is frozen, begin #69 Team Center from that frozen release. Recover the retained team list, membership/role workflow, authorization, and trusted-server mutation contract before implementation. Do not implement member or role mutations as direct browser table writes where RLS does not authorize them.
+After the exact final #69 bookkeeping SHA passes the complete accumulated suite and `release/v3.42-team-center` is frozen, begin #70 Trusted score events from that frozen release. Recover the retained trusted-event schema, server authority, idempotency key and duplicate-rejection contract before implementation; never allow browser-authored arbitrary score values.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 

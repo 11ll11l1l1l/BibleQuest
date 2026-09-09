@@ -7,17 +7,19 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after the #67 functional gate:** 66 Regression-tested / 1 Verified / 0 Implemented / 33 Not started
-- **Implemented or better:** 67 / 100 (**67% strict parity completion**)
-- **Official regression stability:** 66 / 100
-- **Latest frozen checkpoint:** `release/v3.40-community-bridge` at `fca8edd2e18015b246aced2dff6590308ff6bde2`
-- **v3.40 bookkeeping:** `34340610144` — complete accumulated suite green against the frozen SHA
+- **Inventory states after the #69 functional gate:** 68 Regression-tested / 1 Verified / 0 Implemented / 31 Not started
+- **Implemented or better:** 69 / 100 (**69% strict parity completion**)
+- **Official regression stability:** 68 / 100
+- **Latest frozen checkpoint:** `release/v3.41-presence` at `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`
+- **v3.41 bookkeeping:** `34357429102` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
 - **#64 Journey Groups:** Regression-tested through the later complete #65 suite
 - **#65 Encouragements:** Regression-tested through the later complete #67 suite
-- **#67 Community Bridge:** Verified; exact remote code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d`, functional run `34340063733`
+- **#67 Community Bridge:** Regression-tested through the later complete #68 suite
+- **#68 Presence:** Regression-tested through the later complete #69 suite; frozen in v3.41
+- **#69 Team Center:** Verified; exact remote code candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49`, functional run `34367001625`
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -51,10 +53,12 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
 | 25 | Journey Groups | Frozen | v3.38; #64 Regression-tested through #65 |
 | 26 | Encouragements | Frozen | v3.39; #65 Regression-tested through #67 |
-| 27 | Community Bridge | Frozen | v3.40; #67 Verified; bookkeeping `34340610144` |
-| 28 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 29 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 30 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 27 | Community Bridge | Frozen | v3.40; #67 Regression-tested through later suite |
+| 28 | Presence | Frozen | v3.41; bookkeeping `34357429102` |
+| 29 | Team Center | Verified; freeze pending | functional `34367001625`; run exact bookkeeping candidate next |
+| 30 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 31 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 32 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -85,6 +89,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.38-journey-groups` — `7c06c3380eaac0e20e579ae26453611e63ac564d`; corrected functional `34258746664`; bookkeeping `34259986598`
 - `release/v3.39-encouragements` — `41c42a4030140ac1387612fbdbe3334baa5676a7`; corrected functional `34337262620`; bookkeeping `34337802329`
 - `release/v3.40-community-bridge` — `fca8edd2e18015b246aced2dff6590308ff6bde2`; functional `34340063733`; bookkeeping `34340610144`
+- `release/v3.41-presence` — `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`; functional `34354132909`; bookkeeping `34357429102`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -136,13 +141,29 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329` and is frozen as v3.39; draft PR `#89` remains the review surface.
 - #65 survived the later complete #67 functional suite and advanced to Regression-tested.
 
-## #67 Community Bridge — Verified
+## #67 Community Bridge — Regression-tested
 
 - One read-only projection composes the verified Session, Congregation Membership, Journey Groups, and Encouragements owners without storage or cloud access of its own.
 - It exposes only minimal congregation/group metadata plus an encouragement count and connects the three verified destinations through the existing Router owner.
 - Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed the complete accumulated suite in functional run `34340063733`.
 - The one-shot branch was reset from trigger `ef62892ead75098928005fe751582c394d8f832c` to the clean candidate after verification.
 - Exact bookkeeping candidate `fca8edd2e18015b246aced2dff6590308ff6bde2` passed run `34340610144` and is frozen as v3.40.
+- #67 survived the complete #68 Presence suite and advanced to Regression-tested.
+
+## #68 Presence — Regression-tested
+
+- One lifecycle owner handles authenticated online writes, 60-second heartbeat, 120-second stale interpretation and bounded cleanup through the central API boundary.
+- Exact functional candidate `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` passed run `34354132909`.
+- Exact bookkeeping candidate `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c` passed run `34357429102` and is frozen as v3.41.
+- #68 survived the complete #69 Team Center suite and advanced to Regression-tested.
+
+## #69 Team Center — Verified
+
+- One Team Center owner projects active `game_team` rosters and existing congregation roles; the central API owns reads and invokes the trusted `bq-team` mutation boundary.
+- Ministry-capable roles may create/add/remove/rename; creator/admin archive and creator-member retention fail closed in both client orchestration and the trusted function.
+- Initial run `34366738460` exposed only an inaccurate archive fixture that returned data the production `active = true` query filters out.
+- Corrected exact candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the complete accumulated suite in run `34367001625`.
+- A separate exact-SHA bookkeeping run is required before freezing v3.42.
 
 ## Current bookkeeping
 
@@ -160,20 +181,22 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #63 Couples cloud — **Regression-tested**
 - #64 Journey Groups — **Regression-tested**
 - #65 Encouragements — **Regression-tested**
-- #67 Community Bridge — **Verified**
-- Inventory states — **66 Regression-tested / 1 Verified / 0 Implemented / 33 Not started**
-- Strict parity — **67/100**
-- Official regression stability — **66/100**
+- #67 Community Bridge — **Regression-tested**
+- #68 Presence — **Regression-tested**
+- #69 Team Center — **Verified**
+- Inventory states — **68 Regression-tested / 1 Verified / 0 Implemented / 31 Not started**
+- Strict parity — **69/100**
+- Official regression stability — **68/100**
 
 ## Next sequence
 
-1. Begin #68 Presence from `release/v3.40-community-bridge` on `feature/v3-presence`.
-2. Recover the retained timeout, cleanup, RLS, and privacy contract before implementation.
-3. Keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
+1. Run the exact #69 promotion/bookkeeping candidate through the complete accumulated suite.
+2. Freeze the green exact SHA as `release/v3.42-team-center`.
+3. Begin #70 Trusted score events from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **33 Not started rows** after #67 implementation. Remaining work includes Play Together/Live Rooms, Bible World, presence/teams/rankings/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+Literal old-version parity has **31 Not started rows** after #69 verification. Remaining work includes Play Together/Live Rooms, Bible World, trusted scores/rankings/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 
