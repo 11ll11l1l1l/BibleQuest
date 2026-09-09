@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-team-center-functional-6057813
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 6057813945a3c1d581cfb636733aca2cd559840d
+      - name: Assert exact Team Center candidate
+        run: test "$(git rev-parse HEAD)" = "6057813945a3c1d581cfb636733aca2cd559840d"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
