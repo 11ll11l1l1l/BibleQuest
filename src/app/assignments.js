@@ -1,6 +1,7 @@
 const ASSIGNMENT_TYPES=Object.freeze(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const TARGET_SCOPES=Object.freeze(['all','member','team','group']);
 const PROGRESS_STATES=Object.freeze(['assigned','started','completed']);
+const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin']);
 
 function fail(code,message){const error=new Error(message);error.code=code;throw error}
 const text=(value,max=4000)=>String(value??'').trim().slice(0,max);
@@ -13,15 +14,20 @@ function normalizeAssignment(row,congregationId){
   if(!ASSIGNMENT_TYPES.includes(type))fail('BQ_ASSIGNMENT_RESPONSE','Assignment data used an unsupported type.');
   const targetScope=String(row?.target_scope||'');
   if(!TARGET_SCOPES.includes(targetScope))fail('BQ_ASSIGNMENT_RESPONSE','Assignment data used an unsupported audience.');
+  const targetId=row?.target_id?String(row.target_id):null;
+  if((targetScope==='all'&&targetId)||(targetScope!=='all'&&!targetId))fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid audience target.');
+  if(row?.active===false)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an inactive task.');
   const title=text(row?.title,120);
   if(title.length<2)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data was missing a valid title.');
   const points=Number(row?.points);
   if(!Number.isFinite(points)||points<0||points>25)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned invalid completion points.');
+  const dueAt=validIso(row?.due_at);
+  if(row?.due_at&&!dueAt)fail('BQ_ASSIGNMENT_RESPONSE','Assignment data returned an invalid deadline.');
   const scriptureRefs=(Array.isArray(row?.scripture_refs)?row.scripture_refs:[]).map(value=>text(value,80)).filter(Boolean).slice(0,20);
   return Object.freeze({
     id,congregationId:String(congregationId),createdBy:String(row?.created_by||''),title,
-    instructions:text(row?.instructions,4000),type,scriptureRefs,targetScope,targetId:row?.target_id?String(row.target_id):null,
-    dueAt:validIso(row?.due_at),points:Math.round(points),createdAt:validIso(row?.created_at),updatedAt:validIso(row?.updated_at)
+    instructions:text(row?.instructions,4000),type,scriptureRefs,targetScope,targetId,
+    dueAt,points:Math.round(points),createdAt:validIso(row?.created_at),updatedAt:validIso(row?.updated_at)
   });
 }
 
@@ -50,15 +56,16 @@ export function createAssignmentsService({api,session,congregation}){
   let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});
   let stopRemote=null;
   const snapshot=()=>state;
-  const stopSync=()=>{if(stopRemote){try{stopRemote()}catch{}stopRemote=null}};
+  const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
   const sessionState=()=>session.getState();
+  const assertMemberResponse=()=>{if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
 
   async function load({congregationId,activeId}={}){
     const current=sessionState();
-    if(!current?.remoteAvailable){state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:''});return state}
-    if(!current?.authenticated||!current?.user?.id){state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:''});return state}
+    if(!current?.remoteAvailable){stopSync();state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:''});return state}
+    if(!current?.authenticated||!current?.user?.id){stopSync();state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:''});return state}
     const memberships=await congregation.load();
-    if(!memberships.length){state=Object.freeze({status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});return state}
+    if(!memberships.length){stopSync();state=Object.freeze({status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});return state}
     const selected=memberships.find(row=>row.congregationId===String(congregationId||state.congregationId))||memberships[0];
     congregation.assert(selected.congregationId,'read');
     const payload=await api.load(selected.congregationId,current.user.id);
@@ -82,6 +89,7 @@ export function createAssignmentsService({api,session,congregation}){
   const currentAssignment=id=>{if(state.status!=='ready')fail('BQ_ASSIGNMENT_NOT_READY','Assignments are not ready yet.');const assignment=state.assignments.find(row=>row.id===String(id||state.activeId));if(!assignment)fail('BQ_ASSIGNMENT_NOT_FOUND','This assignment is no longer available.');return assignment};
 
   async function start(assignmentId){
+    assertMemberResponse();
     const assignment=currentAssignment(assignmentId),user=sessionState()?.user;
     const result=normalizeMutation(await api.start(state.congregationId,assignment.id),assignment.id,user?.id);
     if(result.status!=='started'&&result.status!=='completed')fail('BQ_ASSIGNMENT_RESPONSE','Starting the assignment did not return a started state.');
@@ -89,6 +97,7 @@ export function createAssignmentsService({api,session,congregation}){
   }
 
   async function complete(assignmentId,submission=''){
+    assertMemberResponse();
     const assignment=currentAssignment(assignmentId),user=sessionState()?.user,body=text(submission,assignmentsContract.submissionMax);
     const result=normalizeMutation(await api.complete(state.congregationId,assignment.id,body),assignment.id,user?.id);
     if(result.status!=='completed')fail('BQ_ASSIGNMENT_RESPONSE','Completing the assignment did not return a completed state.');
@@ -101,11 +110,12 @@ export function createAssignmentsService({api,session,congregation}){
     if(state.status!=='ready')return()=>{};
     stopSync();
     const cid=state.congregationId,userId=state.userId;
-    let disposed=false,busy=false,pending=false;
+    let disposed=false,busy=false,pending=false,stopped=false;
     const refresh=async()=>{if(disposed)return;if(busy){pending=true;return}busy=true;try{const next=await load({congregationId:cid,activeId:state.activeId});if(!disposed)listener(next)}catch(error){if(!disposed)listener(null,error)}finally{busy=false;if(pending&&!disposed){pending=false;void refresh()}}};
     const cleanup=await api.subscribe(cid,userId,()=>{void refresh()});
-    stopRemote=()=>{disposed=true;if(typeof cleanup==='function')cleanup()};
-    return stopRemote;
+    const stop=()=>{if(stopped)return;stopped=true;disposed=true;if(stopRemote===stop)stopRemote=null;if(typeof cleanup==='function')cleanup()};
+    stopRemote=stop;
+    return stop;
   }
 
   function clear(){stopSync();state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''})}
