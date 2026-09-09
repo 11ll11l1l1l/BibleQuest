@@ -33,7 +33,8 @@ const again=await assignments.complete('a1','second');assert.equal(again.awarded
 progress.push({assignment_id:'a1',user_id:'u2',status:'completed',submission:'peer secret'});state=await assignments.load();assert.equal(state.assignments[0].progress.userId,'u1');assert.notEqual(state.assignments[0].progress.submission,'peer secret','Peer progress must never replace own progress.');
 progress.push({assignment_id:'other',user_id:'u1',status:'completed',submission:'other congregation'});state=await assignments.load();assert.equal(state.assignments.length,1,'Progress for non-visible assignments must be ignored.');
 
-assignmentRows=[{...baseAssignment,congregation_id:'foreign'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_SCOPE');
+const foreignService=createAssignmentsService({api:{...api,load:async()=>({assignments:[{...baseAssignment,congregation_id:'foreign'}],progress:[]})},session,congregation});
+await assert.rejects(()=>foreignService.load(),error=>error.code==='BQ_ASSIGNMENT_SCOPE');
 assignmentRows=[{...baseAssignment,assignment_type:'invented'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
 assignmentRows=[{...baseAssignment,target_id:'u1'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
 assignmentRows=[{...baseAssignment,due_at:'not-a-date'}];await assert.rejects(()=>assignments.load(),error=>error.code==='BQ_ASSIGNMENT_RESPONSE');
