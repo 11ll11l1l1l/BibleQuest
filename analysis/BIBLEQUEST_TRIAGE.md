@@ -40,27 +40,37 @@ If none apply, classify P3/P4 and suppress it from the active queue.
 
 ### 1. P0 STOP — Existing-device cloud progress can overwrite newer cloud state
 
-- **Evidence state:** STATIC FINDING, independently verified against current `main`; current `main` is unchanged from the preceding triage cycle.
+- **Evidence state:** STATIC FINDING, independently re-verified against exact current `main` this cycle.
 - **Affected flow:** signed-in user using two or more previously registered devices/browsers.
 - **Component:** `account.js` — `registerDevice()`, `restoreOrSync()`, `pushProgress()`.
 - **Actual impact:** an already-registered device does not restore/compare the cloud snapshot before sync. It proceeds to `pushProgress()`, which upserts its local `PROGRESS_KEYS` snapshot over the single `bible_progress_snapshots` row. An older local device can therefore replace newer cloud progress.
-- **Evidence:** current `registerDevice()` determines whether the browser/device already exists. In the same current implementation, the existing-device path can reach `restoreOrSync(false)` and then `pushProgress()` without a cloud/local conflict comparison; the prior read-only verification found no last-write comparison, merge, version check, or conflict guard in this path. Because `main` SHA has not changed, that evidence remains applicable this cycle.
-- **Impact-gate reason:** direct data-loss/corruption risk for existing cloud progress. This meets the P0 definition even though browser reproduction was not executed.
+- **Evidence:** current `registerDevice()` returns whether the browser/device is new. `restoreOrSync(isNewDevice)` restores the remote snapshot only when `isNewDevice && cloud`; otherwise it calls `pushProgress()`. `pushProgress()` unconditionally upserts the current local snapshot with a new `updated_at`. No cloud/local freshness comparison, merge, revision check, or conflict guard is present on this path.
+- **Impact-gate reason:** direct data-loss/corruption risk for existing cloud progress. This meets the P0 definition even though destructive browser/database reproduction was intentionally not performed by investigators.
 - **If deferred:** single-device users are largely unaffected, but a normal multi-device sign-in can silently replace newer Journey/Reader/streak/review/saved-passage and other synchronized progress with stale state. Subsequent device restores can propagate the stale snapshot.
 - **Recommended future correction:** introduce deterministic conflict handling before any existing-device push (for example compare cloud/local revision timestamps or maintain per-key/revision metadata and merge only newer state). Preserve existing account/session architecture; do not solve by disabling sync.
 - **Regression evidence needed before closure:** executable two-device sequence demonstrating Device A creates newer progress, Device B with older local state signs in/syncs, newer cloud state is not lost, and Device C/new device restores the correct final state. Include reload/sign-out/sign-in coverage.
 
-No verified P1 release blocker was established this cycle. The narrow-mobile/PWA acceptance work remains **NOT EXECUTED**, which is an evidence gap rather than a demonstrated failure.
+No verified P1 release blocker is established. The narrow-mobile/PWA acceptance work remains **NOT EXECUTED**; current issue #6 explicitly states CSS presence alone is not acceptance evidence and requires browser validation at 320/360/390/412/430 px plus Android/installed-PWA behavior. An unexecuted criterion is an evidence gap, not a demonstrated failure.
 
 ## Deferred / suppressed findings
 
-- **P2 deferred — Recovery-code rotation is non-atomic.** `bq-password-reset` retires existing unused codes before inserting the replacement. During reset, the code is consumed and password changed before the fresh-code insertion completes. A transient DB failure can leave no valid recovery code or return failure after the password actually changed. This passes the auth-integrity impact gate, but is an uncommon partial-failure path and does not outrank the current milestone while the P0 item above is unresolved. Future correction should make retirement/replacement transactional or otherwise recoverable and prove failure-injection behavior.
-- **Acceptance evidence gap — mobile/PWA matrix:** Investigator 3 reports the explicit 320/360/390/412/430 px and installed-PWA/offline acceptance remains NOT EXECUTED. Current source contains narrow-mobile corrections, so this is not promoted to P1 without a demonstrated failure.
-- **Suppressed P3/P4 architecture observations:** dynamic module recovery can re-execute scripts after partial initialization; several global MutationObservers remain active with convergence guards; Reader/translation and Community/cloud ownership are layered. No concrete current user failure was demonstrated, so these do not enter active development.
-- **Suppressed resolved/static areas:** current main structurally guards the former Psychometrics mutation loop and Transform blank-start failure. No new executed regression was shown by Investigator 1.
-- **Content/security:** Investigator 4 found no current shipped unsafe Scripture item and reported live RLS boundaries for core private/server-only tables as inspected. Full doctrinal corpus and complete auth lifecycle were NOT EXECUTED, so no pass is inferred beyond the specific inspected evidence.
+- **P2 deferred — Recovery-code rotation is non-atomic.** Investigator 4 found separate retire/insert operations around recovery-code replacement, with password reset capable of progressing before fresh-code issuance completes. This passes the auth-integrity impact gate, but remains a partial-failure edge case and does not outrank the P0 cloud-progress risk or current milestone. Future correction should make replacement transactional/recoverable and prove failure-injection behavior.
+- **Acceptance evidence gap — core browser flows:** Daily Journey, Reader, games, Transformation, community/live paths and installed-PWA behavior remain partly or wholly NOT EXECUTED on current HEAD. They are not promoted without a reproduced failure.
+- **Suppressed P3/P4 architecture observations:** dynamic module recovery can re-execute scripts after partial initialization; several global MutationObservers remain active with convergence guards; Reader/translation and Community/cloud ownership are layered. No concrete current user failure was demonstrated.
+- **Suppressed resolved/static areas:** current main structurally guards the former Psychometrics mutation loop and Transform blank-start failure. Investigator 1's latest report did not reproduce either regression.
+- **Suppressed stale tracking:** Investigator 1's latest report notes issue #82 describes a recovery-code event exposure already corrected in current `account.js`, and several old PR descriptions reference obsolete SHAs/architecture. These are tracking/documentation observations, not current development work.
+- **Content/security:** Investigator 4 found no specific currently shipped unsafe Scripture item and reported live RLS boundaries for core private/server-only tables as inspected. Full doctrinal corpus and complete production auth lifecycle were NOT EXECUTED, so no broader pass is inferred.
 
 ## Triage history
+
+### 2026-09-09 11:47 JST
+
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
+- **Reports available:** Investigator 1 present and superseded by a newer rerun; Investigator 2 present; Investigator 3 present; Investigator 4 present.
+- **Change since prior cycle:** `main` SHA remains unchanged. Latest Investigator 1 independently reconfirmed the stale-device cloud overwrite and added only P4 stale-issue/old-PR observations; no new P0/P1 candidate emerged.
+- **Independent verification:** read current branch metadata and exact current `account.js`. `restoreOrSync()` still restores cloud state only for a new device and otherwise calls unconditional `pushProgress()`. Read current open issue #6; it still states browser evidence is required before mobile acceptance can close.
+- **De-duplication / impact gate:** cloud overwrite remains the single interrupting finding. Mobile/PWA and core-flow gaps remain NOT EXECUTED, not failed. Transform/Psychometrics findings remain structurally corrected unless re-reproduced. Architecture-only concerns remain theoretical.
+- **Firewall result:** actionable queue remains exactly 1 P0 item, 0 P1 items. P2 recovery-code atomicity remains deferred. No P3/P4 item may interrupt primary milestone work.
 
 ### 2026-09-09 10:52 JST
 
