@@ -40,11 +40,11 @@ If none apply, classify P3/P4 and suppress it from the active queue.
 
 ### 1. P0 STOP — Existing-device cloud progress can overwrite newer cloud state
 
-- **Evidence state:** STATIC FINDING, independently verified against current `main`.
+- **Evidence state:** STATIC FINDING, independently verified against current `main`; current `main` is unchanged from the preceding triage cycle.
 - **Affected flow:** signed-in user using two or more previously registered devices/browsers.
 - **Component:** `account.js` — `registerDevice()`, `restoreOrSync()`, `pushProgress()`.
 - **Actual impact:** an already-registered device does not restore/compare the cloud snapshot before sync. It proceeds to `pushProgress()`, which upserts its local `PROGRESS_KEYS` snapshot over the single `bible_progress_snapshots` row. An older local device can therefore replace newer cloud progress.
-- **Evidence:** current `restoreOrSync(isNewDevice)` restores cloud state only when `isNewDevice && cloud`; all other cases fall through to `await pushProgress()`. `pushProgress()` performs an unconditional upsert with a fresh `updated_at`. There is no last-write comparison, merge, version check, or conflict guard in this path.
+- **Evidence:** current `registerDevice()` determines whether the browser/device already exists. In the same current implementation, the existing-device path can reach `restoreOrSync(false)` and then `pushProgress()` without a cloud/local conflict comparison; the prior read-only verification found no last-write comparison, merge, version check, or conflict guard in this path. Because `main` SHA has not changed, that evidence remains applicable this cycle.
 - **Impact-gate reason:** direct data-loss/corruption risk for existing cloud progress. This meets the P0 definition even though browser reproduction was not executed.
 - **If deferred:** single-device users are largely unaffected, but a normal multi-device sign-in can silently replace newer Journey/Reader/streak/review/saved-passage and other synchronized progress with stale state. Subsequent device restores can propagate the stale snapshot.
 - **Recommended future correction:** introduce deterministic conflict handling before any existing-device push (for example compare cloud/local revision timestamps or maintain per-key/revision metadata and merge only newer state). Preserve existing account/session architecture; do not solve by disabling sync.
@@ -61,6 +61,15 @@ No verified P1 release blocker was established this cycle. The narrow-mobile/PWA
 - **Content/security:** Investigator 4 found no current shipped unsafe Scripture item and reported live RLS boundaries for core private/server-only tables as inspected. Full doctrinal corpus and complete auth lifecycle were NOT EXECUTED, so no pass is inferred beyond the specific inspected evidence.
 
 ## Triage history
+
+### 2026-09-09 10:52 JST
+
+- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`
+- **Reports available:** Investigator 1 present; Investigator 2 present; Investigator 3 present; Investigator 4 present.
+- **Change since prior cycle:** `main` SHA is unchanged. No new investigator report superseded the four reports already in context, so unchanged findings were not treated as new work.
+- **Independent verification:** re-read current `main` branch metadata and current `account.js`; `registerDevice()` still identifies existing devices and the previously verified existing-device sync path remains applicable because the implementation SHA is unchanged. No executable browser/database mutation was performed.
+- **De-duplication / impact gate:** no new P0/P1 candidates emerged. Mobile/PWA remains NOT EXECUTED rather than failed; Transform/Psychometrics concerns remain structurally corrected/static; architecture observations remain theoretical without demonstrated user failure.
+- **Firewall result:** actionable queue unchanged at 1 P0 item. No P1 item. P2 recovery-code atomicity remains deferred. Primary milestone should not be interrupted by any other reported finding.
 
 ### 2026-09-09 09:50 JST
 
