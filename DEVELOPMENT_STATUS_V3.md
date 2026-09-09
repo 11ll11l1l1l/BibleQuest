@@ -175,6 +175,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 - `V3-COUPLES-CLOUD-VALIDATOR-001` — broad substring checks treated harmless source text such as `progress` as forbidden ownership; the validator now checks precise API/global tokens while retaining all storage, Supabase and score-owner boundaries.
 - `V3-COUPLES-CLOUD-FOREIGN-ROW-001` — the initial edge fixture prefiltered shared rows and could not prove the owner rejects foreign-pair data; the fixture now returns mixed rows and permanently exercises owner-side rejection.
 - `V3-WORKFLOW-LOOP-001` — workflow consolidation retained every regression but seven validators required literal `node <path>` text, so run `34244782912` failed before feature tests. A shared invocation parser now recognizes executable direct and looped commands, while `tests/v3-workflow-contract-edge.mjs` rejects comments, non-Node loops, variable mismatches and prefix-only path matches.
+- `V3-ENCOURAGEMENT-HISTORY-001` — the initial #65 owner treated current sender membership as a read-time invariant, which would reject valid history after a sender left. Current membership is now enforced only when sending; a permanent edge regression retains former-member history.
 
 ## Next major milestone
 

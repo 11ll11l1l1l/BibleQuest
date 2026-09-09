@@ -238,7 +238,7 @@ BibleQuest v3 uses rebuild-and-verify, not patch-and-accumulate. Feature parity 
 2. `src/core/api.js` is the only browser Supabase boundary. Reads use the existing group-member RLS policy; sends use the authenticated `bq-journey-group` function.
 3. The trusted function derives `sender_id` and the UTC `dedupe_bucket` from server state, verifies active group membership and accepts only the five retained presets.
 4. `20260909_encouragement_duplicate_guard.sql` adds a partial unique index without rewriting or deleting retained v2 rows. Concurrent identical same-day sends fail with a stable conflict.
-5. Unknown presets, targeted rows, malformed timestamps, foreign groups, non-member senders, signed-out use and local-preview use fail closed.
+5. Unknown presets, targeted rows, malformed timestamps, foreign groups, signed-out use and local-preview use fail closed. Current active membership is mandatory for sending, while a sender leaving later does not invalidate retained history.
 6. #65 is preset-only and group-wide. It does not add free text, direct messages, notifications, presence, completion sharing, assignments, rankings, XP, moderation, or private study data.
 7. `src/features/encouragements/index.js` is presentation/event forwarding only; `src/ui/encouragements.css` owns responsive styling.
 8. Permanent protection includes `ENCOURAGEMENTS_V3.md`, `scripts/validate-v3-encouragements.mjs`, `tests/v3-encouragements-edge.mjs`, `tests/v3-encouragements-smoke.mjs` and the complete accumulated workflow.

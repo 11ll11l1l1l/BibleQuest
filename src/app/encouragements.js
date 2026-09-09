@@ -12,7 +12,7 @@ const utcDay=value=>{const time=Date.parse(value);return Number.isFinite(time)?n
 function normalize(row,groups){
   const id=String(row?.id||''),groupId=String(row?.group_id||''),senderId=String(row?.sender_id||''),kind=String(row?.kind||''),createdAt=String(row?.created_at||'');
   const group=groups.find(item=>item.id===groupId);
-  if(!id||!group||!senderId||!group.members.some(member=>member.userId===senderId)||!PRESETS[kind]||!utcDay(createdAt))throw encouragementError('Encouragements received malformed or unauthorized data.','BQ_ENCOURAGEMENTS_MALFORMED');
+  if(!id||!group||!senderId||!PRESETS[kind]||!utcDay(createdAt))throw encouragementError('Encouragements received malformed or unauthorized data.','BQ_ENCOURAGEMENTS_MALFORMED');
   if(row?.recipient_id!==null&&row?.recipient_id!==undefined)throw encouragementError('Targeted encouragements are not enabled in this milestone.','BQ_ENCOURAGEMENTS_SCOPE');
   return Object.freeze({id,groupId,senderId,kind,createdAt,day:utcDay(createdAt),...PRESETS[kind]});
 }
