@@ -7,11 +7,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after the #69 functional gate:** 68 Regression-tested / 1 Verified / 0 Implemented / 31 Not started
-- **Implemented or better:** 69 / 100 (**69% strict parity completion**)
-- **Official regression stability:** 68 / 100
-- **Latest frozen checkpoint:** `release/v3.41-presence` at `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`
-- **v3.41 bookkeeping:** `34357429102` — complete accumulated suite green against the frozen SHA
+- **Inventory states after the #70 functional gate:** 69 Regression-tested / 1 Verified / 0 Implemented / 30 Not started
+- **Implemented or better:** 70 / 100 (**70% strict parity completion**)
+- **Official regression stability:** 69 / 100
+- **Latest frozen checkpoint:** `release/v3.42-team-center` at `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`
+- **v3.42 bookkeeping:** `34372856979` — complete accumulated suite green against the frozen SHA
 - **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
 - **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
 - **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
@@ -19,7 +19,8 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - **#65 Encouragements:** Regression-tested through the later complete #67 suite
 - **#67 Community Bridge:** Regression-tested through the later complete #68 suite
 - **#68 Presence:** Regression-tested through the later complete #69 suite; frozen in v3.41
-- **#69 Team Center:** Verified; exact remote code candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49`, functional run `34367001625`
+- **#69 Team Center:** Regression-tested through the later complete #70 suite; frozen in v3.42
+- **#70 Trusted score events:** Verified; exact corrected candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b`, functional run `34407306308`
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
 - **Production:** v2 remains live; `main` and production Cloudflare remain untouched
 
@@ -55,10 +56,11 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 | 26 | Encouragements | Frozen | v3.39; #65 Regression-tested through #67 |
 | 27 | Community Bridge | Frozen | v3.40; #67 Regression-tested through later suite |
 | 28 | Presence | Frozen | v3.41; bookkeeping `34357429102` |
-| 29 | Team Center | Verified; freeze pending | functional `34367001625`; run exact bookkeeping candidate next |
-| 30 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 31 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 32 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+| 29 | Team Center | Frozen | v3.42; bookkeeping `34372856979`; #69 Regression-tested through #70 |
+| 30 | Trusted score events | Verified; freeze pending | corrected functional `34407306308`; run exact bookkeeping candidate next |
+| 31 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
+| 32 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
+| 33 | Production deployment | Not started | only after selected parity/stability acceptance gates |
 
 ## Frozen release line
 
@@ -90,6 +92,7 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - `release/v3.39-encouragements` — `41c42a4030140ac1387612fbdbe3334baa5676a7`; corrected functional `34337262620`; bookkeeping `34337802329`
 - `release/v3.40-community-bridge` — `fca8edd2e18015b246aced2dff6590308ff6bde2`; functional `34340063733`; bookkeeping `34340610144`
 - `release/v3.41-presence` — `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`; functional `34354132909`; bookkeeping `34357429102`
+- `release/v3.42-team-center` — `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`; functional `34367001625`; bookkeeping `34372856979`
 
 ## #100 Backup/export/import/reset — Regression-tested
 
@@ -157,13 +160,22 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - Exact bookkeeping candidate `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c` passed run `34357429102` and is frozen as v3.41.
 - #68 survived the complete #69 Team Center suite and advanced to Regression-tested.
 
-## #69 Team Center — Verified
+## #69 Team Center — Regression-tested
 
 - One Team Center owner projects active `game_team` rosters and existing congregation roles; the central API owns reads and invokes the trusted `bq-team` mutation boundary.
 - Ministry-capable roles may create/add/remove/rename; creator/admin archive and creator-member retention fail closed in both client orchestration and the trusted function.
 - Initial run `34366738460` exposed only an inaccurate archive fixture that returned data the production `active = true` query filters out.
 - Corrected exact candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the complete accumulated suite in run `34367001625`.
-- A separate exact-SHA bookkeeping run is required before freezing v3.42.
+- Exact bookkeeping candidate `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4` passed the complete suite in run `34372856979` and is frozen as v3.42.
+- #69 survived the complete #70 Trusted score events suite and advanced to Regression-tested.
+
+## #70 Trusted score events — Verified
+
+- One client owner normalizes authenticated congregation-scoped score claims and canonical event IDs; the central API invokes only the retained authenticated `bq-score` trusted-server boundary.
+- The trusted server owns supported activity sources, point derivation, delegated scoring, membership checks, caps, writes, duplicate handling and badge evaluation; the browser never becomes an arbitrary scoring authority.
+- Initial exact candidate `33c5f9cc446d61bcbda7a15262d41e3172020447` reached the new browser test in run `34406989680`; every earlier architecture, edge and browser regression passed, then the #70 smoke fixture failed to parse because of one missing closing brace.
+- Corrected exact candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` passed the complete accumulated architecture, edge and browser/mobile suite in run `34407306308`.
+- A separate exact-SHA bookkeeping run is required before freezing v3.43.
 
 ## Current bookkeeping
 
@@ -183,20 +195,21 @@ This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory r
 - #65 Encouragements — **Regression-tested**
 - #67 Community Bridge — **Regression-tested**
 - #68 Presence — **Regression-tested**
-- #69 Team Center — **Verified**
-- Inventory states — **68 Regression-tested / 1 Verified / 0 Implemented / 31 Not started**
-- Strict parity — **69/100**
-- Official regression stability — **68/100**
+- #69 Team Center — **Regression-tested**
+- #70 Trusted score events — **Verified**
+- Inventory states — **69 Regression-tested / 1 Verified / 0 Implemented / 30 Not started**
+- Strict parity — **70/100**
+- Official regression stability — **69/100**
 
 ## Next sequence
 
-1. Run the exact #69 promotion/bookkeeping candidate through the complete accumulated suite.
-2. Freeze the green exact SHA as `release/v3.42-team-center`.
-3. Begin #70 Trusted score events from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
+1. Run the exact #70 promotion/bookkeeping candidate through the complete accumulated suite.
+2. Freeze the green exact SHA as `release/v3.43-trusted-score-events`.
+3. Begin #71 Leaderboards from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
 
 ## What remains overall
 
-Literal old-version parity has **31 Not started rows** after #69 verification. Remaining work includes Play Together/Live Rooms, Bible World, trusted scores/rankings/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+Literal old-version parity has **30 Not started rows** after #70 verification. Remaining work includes Play Together/Live Rooms, Bible World, leaderboards/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
 
 ## Release discipline
 
