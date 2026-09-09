@@ -7,10 +7,10 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 ## Repository and immutable checkpoints
 
 - Repository: `11ll11l1l1l/BibleQuest`
-- Frozen base: `release/v3.38-journey-groups`
-- Frozen base SHA: `7c06c3380eaac0e20e579ae26453611e63ac564d`
-- v3.38 bookkeeping run: `34259986598` (reported complete accumulated suite green)
-- Active remote branch: `feature/v3-encouragements`
+- Frozen base: `release/v3.39-encouragements`
+- Frozen base SHA: `41c42a4030140ac1387612fbdbe3334baa5676a7`
+- v3.39 bookkeeping run: `34337802329` (complete accumulated suite green)
+- Active remote branch: `feature/v3-community-bridge`
 - Canonical remote #65 code commit: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`
 - Canonical code tree: `ec448f88874710b0cb45dc7b127beac44e9e97a1`
 - Local equivalent commit: `bb6944e422510f3e35de8052563172317fa450bd` (same tree; commit metadata differs)
@@ -51,12 +51,12 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 - Production Supabase, Cloudflare, v2 and `main`: untouched by #65.
 - Read-only production Supabase inspection confirmed the retained encouragement table, RLS policies, grants and indexes. The #65 column, trigger, unique index and Edge Function change are not deployed, as expected.
 
-## Open gate and exact next sequence
+## Closed #65 gate and exact next sequence
 
-1. Commit the #65 promotion bookkeeping and publish it to `feature/v3-encouragements`.
-2. Run an independent exact-SHA bookkeeping workflow against that candidate.
-3. Freeze `release/v3.39-encouragements` only after that exact candidate passes.
-4. Only after v3.39 freezes, begin #67 Community Bridge on a new isolated branch.
+1. Functional run `34337262620` passed the exact code candidate; #65 is Verified and #64 is Regression-tested.
+2. Bookkeeping run `34337802329` passed exact candidate `41c42a4030140ac1387612fbdbe3334baa5676a7`.
+3. `release/v3.39-encouragements` is frozen at that clean candidate; both temporary verification branches were reset to their asserted candidates.
+4. Continue #67 Community Bridge only on `feature/v3-community-bridge`, starting with retained-contract recovery and an explicit boundary document.
 
 Future deployment order is migration first, then the updated `bq-journey-group` function, then the v3 client. Do not deploy any of them during the rebuild verification stage.
 

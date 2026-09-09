@@ -11,8 +11,8 @@ Updated: 2026-09-09 JST
 - Development branch: `feature/v3-study-core`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are permitted only on isolated one-shot verification branches; the trigger commit is never a release candidate and the branch is reset to the exact clean candidate after the run.
-- Latest frozen checkpoint: `release/v3.38-journey-groups` at `7c06c3380eaac0e20e579ae26453611e63ac564d`.
-- Exact v3.38 bookkeeping run `34259986598` passed the complete accumulated suite against that SHA before freeze.
+- Latest frozen checkpoint: `release/v3.39-encouragements` at `41c42a4030140ac1387612fbdbe3334baa5676a7`.
+- Exact v3.39 bookkeeping run `34337802329` passed the complete accumulated suite against that SHA before freeze.
 
 ## Current progress
 
@@ -159,6 +159,7 @@ Functional verification:
 - Exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e` passed the complete accumulated architecture, edge and browser/mobile suite in run `34337262620`.
 - Isolated trigger commit `aa765edbfd11112c5d6db710fe4e0e83faba03d3` checked out and asserted that exact candidate; `verify/v3.39-encouragements-dedupe-functional` was then reset to the clean candidate.
 - Canonical remote code candidate: `b2fb1013822891930e017c8da0ea38e3e5c68b9e`; draft PR: `#89`.
+- Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329`; the isolated bookkeeping branch was reset to that candidate, now frozen as `release/v3.39-encouragements`.
 
 ## Defect / root-cause ledger
 
@@ -181,7 +182,7 @@ Every real defect remains root-caused and protected by a regression. Important r
 
 ## Next major milestone
 
-Run independent bookkeeping against the exact post-promotion candidate and freeze v3.39 before starting #67 Community Bridge.
+Begin #67 Community Bridge from frozen `release/v3.39-encouragements` on the isolated `feature/v3-community-bridge` branch. Recover the retained cross-feature contract before implementing it.
 
 Kids #38–40 and Japanese furigana #15 remain deferred. Production deployment remains out of scope.
 
