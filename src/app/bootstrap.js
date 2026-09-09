@@ -24,6 +24,7 @@ import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
 import { createPresenceService } from './presence.js';
 import { createTeamCenterService } from './team-center.js';
+import { createTrustedScoreEventsService } from './trusted-score-events.js';
 import { createJourneyGroupsService } from './journey-groups.js';
 import { createEncouragementsService } from './encouragements.js';
 import { createCommunityBridgeService } from './community-bridge.js';
@@ -103,9 +104,11 @@ function start(){
   const congregation=createCongregationMembershipService({api,session});
   const presence=createPresenceService({api:api.presence,session,congregation,store});
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
+  const scoreEvents=createTrustedScoreEventsService({api:api.scoreEvents,session,congregation});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});
+  void scoreEvents;
   let recovery;
   recovery=createOperationalRecoveryService({report:(error,context)=>diagnostics.classify(error,{kind:'module',route:context.route}).then(diagnostic=>{
     if(recovery.getState()?.id===context.id)shell?.updateRecoveryDiagnostic(context.id,diagnostic);
