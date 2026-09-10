@@ -8,7 +8,7 @@ async function run(){
     let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},progress=[],syncCallback=null,cleaned=0,title='Read John 1',role='member';
     const session={getState:()=>sessionState};
     const congregation={load:async()=>[{congregationId:'c1',userId:'u1',role,roleKnown:true,roleLabel:role==='member'?'Member':'Leader',congregation:{id:'c1',name:'Test Church',timezone:'Asia/Tokyo'}}],assert:()=>true};
-    const assignment=()=>({id:'a1',congregation_id:'c1',created_by:'leader1',title,instructions:'Read carefully and write one sentence if you want.',assignment_type:'reading',scripture_refs:['John 1'],target_scope:'all',target_id:null,due_at:'2026-09-12T10:00:00Z',points:5,active:true,created_at:'2026-09-09T00:00:00Z',updated_at:'2026-09-10T00:00:00Z'});
+    const assignment=()=>({id:'a1',congregation_id:'c1',created_by:'leader1',title,instructions:'Read carefully and write one sentence if you want.',assignment_type:'custom',scripture_refs:['John 1'],target_scope:'all',target_id:null,due_at:'2026-09-12T10:00:00Z',points:5,active:true,created_at:'2026-09-09T00:00:00Z',updated_at:'2026-09-10T00:00:00Z'});
     const api={
       load:async()=>({assignments:[assignment()],progress}),
       start:async()=>{progress=[{assignment_id:'a1',user_id:'u1',status:'started',submission:null,leader_feedback:null,completed_at:null,updated_at:new Date().toISOString()}];return{progress:progress[0],awarded:0,alreadyCompleted:false}},
