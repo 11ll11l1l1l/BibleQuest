@@ -2,96 +2,117 @@
 
 Identity: `BQ-A4-QA`
 Date: 2026-09-10 JST
-Disposition: **NOT READY — milestone opened; implementation/execution evidence not present**
+Disposition: **NOT READY — exact bookkeeping suite is green, but current candidate has uncovered persistence/data-integrity failures**
 
 ## STATE / PROVENANCE
 
 ### FACT
 - Active canonical branch: `feature/v3-avatar-vault`.
-- Exact canonical HEAD at final inspection: `7f3a9a81e714fe37ac7d6ec54f9b65752898da39`.
+- Exact canonical/bookkeeping candidate HEAD at final re-read: `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
 - Dedicated `agent/a1-work/082-*` candidate: **not found**.
 - Frozen base: `release/v3.54-psychometrics` at exact `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
-- No `release/v3.55-avatar-vault` was found.
-- Authoritative inventory state for #82: `Not started`.
-- Authoritative #82 acceptance contract: **`browse; select; persist; render fallback`**.
-- #83 Innovation remains `Not started` with contract `inventory-specific workflows documented before migration`.
+- No frozen `release/v3.55-avatar-vault` was established during this audit.
+- Authoritative #82 contract: **`browse; select; persist; render fallback`**.
+- Inventory at the exact current candidate records #81 `Regression-tested`, #82 `Verified`, totals 81 Regression-tested / 1 Verified / 18 Not started.
+- #82 is HIGH-RISK because this lineage changes schema/RLS and cross-feature cloud/API persistence plus existing leaderboard directory behavior.
 
-Primary evidence inspected independently before TRIAGE:
-- live canonical/frozen refs;
-- exact compare from v3.54 frozen SHA to current #82 canonical;
-- `FEATURE_INVENTORY_V3.md` at exact canonical HEAD;
-- `DEVELOPMENT_HANDOFF_V3.md` at exact canonical HEAD;
-- canonical `.github/workflows/v3-regression.yml`;
-- exact #81 functional and bookkeeping workflow/job evidence used to establish the frozen base.
-
-## CURRENT CHANGESET
-
-### FACT
-The exact compare `cc591aac...7f3a9a81` is two commits ahead and changes only milestone handoff/bookkeeping documentation. Primary compare evidence shows no #82 product implementation, validator, edge regression or browser smoke in this current changeset.
-
-The handoff records retained-v2 Avatar Vault behavior as reference-only legacy behavior and identifies existing v3 session/store/router/profile ownership for investigation. That recovered description is context for implementation design, not executable #82 PASS evidence.
-
-### INFERENCE
-At this exact HEAD, #82 is an opened milestone boundary rather than a functional candidate. A4 therefore does not invent a candidate PASS/failure result.
-
-## ACCEPTANCE DEFINITION
-
-The minimum evidence-backed QA contract for a future exact #82 candidate is:
-
-1. **Browse** — the supported/recovered avatar cosmetic inventory is actually reachable and renderable through the intended v3 UI without importing legacy global ownership.
-2. **Select** — a valid selectable avatar/cosmetic can be chosen and the selected state is reflected by the intended rendering owner.
-3. **Persist** — selection survives reopen for the correct owner/session boundary; guest/account state must not leak across owners.
-4. **Render fallback** — missing, invalid, stale or unavailable selection/assets fail safely to a defined fallback without breaking the shell/page.
-5. **Mobile** — because this is an interactive compatibility surface, permanent browser coverage should demonstrate usable selection/rendering on the project's mobile acceptance viewport and reject horizontal overflow/runtime errors.
-6. **Scope** — #83 Innovation behavior must not be absorbed into #82 merely to increase apparent parity.
-
-### RECOMMENDATION
-Permanent coverage should include an architecture/contract validator if ownership/inventory invariants are source-level, a behavior-bearing edge regression for selection/persistence/fallback normalization, and a real browser/mobile smoke for browse/select/reopen/fallback rendering. Exact test names are not prescribed before implementation exists.
-
-## ACCUMULATED WORKFLOW INTEGRITY
-
-### FACT
-At exact current HEAD `7f3a9a81...`, canonical `.github/workflows/v3-regression.yml` remains `workflow_dispatch`-only and retains the accumulated validators, edge/security tests, and browser/mobile tests through #81 Psychometrics.
-
-There are **no #82 permanent tests invoked yet**, consistent with #82 being `Not started` and the current changeset containing no implementation.
-
-No unexplained weakening/removal/bypass of the accumulated through-#81 suite was found in the inspected canonical workflow.
+Primary evidence inspected before reading TRIAGE:
+- exact canonical and frozen refs;
+- `FEATURE_INVENTORY_V3.md`, `AVATAR_VAULT_V3.md`, `DEVELOPMENT_HANDOFF_V3.md` at exact `60100f0...`;
+- exact functional-run workflow and jobs for run `34483151962`;
+- exact failed-bookkeeping jobs for run `34483915685`;
+- exact corrected-bookkeeping workflow and jobs for run `34484163108`;
+- canonical `.github/workflows/v3-regression.yml` at `60100f0...`;
+- `scripts/validate-v3-avatar-vault.mjs`, `tests/v3-avatar-vault-edge.mjs`, `tests/v3-avatar-vault-smoke.mjs`;
+- `src/app/avatar-vault.js`, `src/core/api.js`;
+- `supabase/migrations/20260904_assignments_presence_unlocks.sql`, `20260905_congregation_member_column_hardening.sql`, and `20260910_avatar_vault_visibility.sql`.
 
 ## EXACT RUN EVIDENCE
 
-### FACT
-No exact #82 functional candidate exists at this snapshot, so there is no applicable #82 exact functional run to audit and no PASS can be assigned.
+### FACT — functional run
+Run `34483151962` completed success and its isolated verifier explicitly checked out/asserted exact functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd`. Architecture, edge/security and browser/mobile steps completed green.
 
-The frozen base itself is valid: #81 functional run `34473640903` passed the complete exact accumulated gate for `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`, and bookkeeping run `34474642839` passed all accumulated phases with exact assertion for frozen bookkeeping SHA `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
+However, inspection of that exact verifier workflow shows its browser/mobile loop **did not invoke `tests/v3-avatar-vault-smoke.mjs`**. It invoked the new #82 validator and edge regression, but the permanent 390px Avatar Vault smoke was absent from the executed browser list. Therefore run `34483151962` is not evidence that the new #82 browser smoke itself passed.
 
-## FAILURES / MISSING EVIDENCE
+### FACT — first bookkeeping run
+Run `34483915685` checked/asserted first bookkeeping candidate `dde924f86f83baf78659f303e442930b38749aca` and failed in accumulated architecture validation. All edge/security and browser/mobile phases were skipped. The subsequent commit `b0aa6defc4870813cb337a94fdc5f252d7754199` changed only the inventory summary totals from 80→81 Regression-tested and 19→18 Not started, matching the promoted numbered rows.
 
-There is no reproduced #82 product failure yet because product implementation has not begun at the inspected HEAD.
+### FACT — corrected bookkeeping run
+Run `34484163108` completed success. Its isolated verifier explicitly checked out/asserted exact current candidate `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`. Accumulated architecture validators, edge/security regressions, Playwright/Chromium setup and accumulated browser/mobile regressions all completed green.
 
-Before #82 can become READY, missing evidence includes:
-- an exact functional candidate SHA (preferably under the required `agent/a1-work/082-*` quarantine for autonomous writes);
-- implemented behavior satisfying all four authoritative contract verbs;
-- meaningful permanent #82 regression coverage wired additively into the accumulated workflow;
-- a complete exact-SHA accumulated workflow run proving those new tests actually execute and pass while all preceding accumulated coverage remains intact;
-- if bookkeeping later changes the candidate SHA, a separate complete exact bookkeeping-SHA green before any v3.55 freeze.
+Critically, the exact executed workflow for `34484163108` **does include `tests/v3-avatar-vault-smoke.mjs`** in the browser/mobile loop. Thus the prior 390px execution-evidence gap is resolved for exact `60100f0...` even though it was not resolved by the earlier functional run.
 
-If a future candidate modifies shared/global owners, existing accumulated validators/tests/workflow semantics, schema/security authority, or otherwise meets HIGH-RISK criteria, this report does not satisfy the required exact-candidate HIGH-RISK A4 review; A4 must re-audit that exact SHA after those changes.
+The exact current canonical workflow is restored to `workflow_dispatch`-only and contains the #82 validator, edge regression and browser smoke while retaining the earlier accumulated suites. No unexplained removal/skip/narrowing of prior accumulated coverage was found in this final workflow snapshot.
+
+## ACCEPTANCE / PERMANENT REGRESSIONS
+
+### FACT — covered
+- Catalog retains 15 styles.
+- Five xp/streak-evaluable styles and ten explicitly unavailable/deferred styles are asserted.
+- Exact xp/streak unlock thresholds and malformed metric fail-closed behavior are tested.
+- Locked selection fails closed at the app-service layer.
+- Guest/account private-storage isolation is tested.
+- Local selection survives a simulated cloud save failure and returns `synced:false`.
+- Real #82 presentation renders at 390px, has selection controls, can mark a selected card active, has back navigation, no horizontal overflow and no runtime console/page errors.
+- Exact `60100f0...` accumulated execution includes all these current permanent test files and all prior accumulated coverage.
+
+### FACT — harness weakness discovered
+`scripts/validate-v3-avatar-vault.mjs` validates accumulated invocation of the #82 validator and edge regression but does **not** require accumulated workflow invocation of `tests/v3-avatar-vault-smoke.mjs`. This is why the earlier exact functional verifier could omit the new browser smoke without architecture validation failing. The current bookkeeping workflow does execute the smoke, so this is not a missing-execution blocker for exact `60100f0...`; it remains a permanent harness-integrity weakness that should be corrected before relying on future accumulated runs to guarantee #82 browser retention.
+
+## REPRODUCED / PRIMARY-EVIDENCE DEFECTS
+
+### FAILURE 1 — destructive shared-avatar replacement
+`src/core/api.js` currently constructs `avatar = { cosmetic: selectedStyle }` and performs `bible_congregation_members.update({ avatar }).eq('user_id', userId)`.
+
+The #82 contract says the congregation-member avatar is the cross-user-visible projection, and the existing schema treats `avatar` as JSONB/public-presentation state. Replacing the entire JSON object when only the cosmetic key is being changed is not a merge operation.
+
+Counterfactual QA failure: if an existing member avatar contains any other valid keys, selecting an Avatar Vault cosmetic overwrites the whole JSON value with only `{cosmetic: ...}`. That violates `persist`/data-integrity behavior and can break other avatar-render consumers.
+
+No current #82 permanent regression seeds an existing multi-key avatar object and proves non-cosmetic keys survive selection.
+
+### FAILURE 2 — partial two-write cloud sync has no reopen reconciliation
+`api.avatarVault.save()` performs two independent remote writes: first `bible_avatar_cosmetics.upsert(...)`, then `bible_congregation_members.update({avatar})`. If the first succeeds and second fails, `select()` catches the failure and returns `synced:false` while keeping local device state.
+
+On a later `load()`, `src/app/avatar-vault.js` reads only `api.avatarVault.load()`, which reads `bible_avatar_cosmetics.selected_style`. It does not inspect/reconcile the congregation-visible `avatar` projection and does not retry the second projection write.
+
+Counterfactual QA failure: cosmetics row becomes `crown`, congregation-visible avatar remains the prior cosmetic, reopen loads `crown` locally, but leaderboard/public projection remains stale indefinitely. This contradicts the current UI/contract concept that failed sync is recoverable/retried and violates the authoritative `persist` requirement across the two declared cloud representations.
+
+The current edge regression simulates `save()` failing as one mocked operation; it cannot represent "first remote write succeeded, second failed" and therefore cannot fail on this split-state defect.
+
+### MISSING TRUST-BOUNDARY EVIDENCE
+The current RLS for `bible_avatar_cosmetics` proves own-row SELECT/INSERT/UPDATE, and congregation-member UPDATE privileges are column-limited to `(display_name, avatar)` with the added self-row UPDATE policy. Those are useful ownership constraints.
+
+But the current permanent tests do not execute a faithful Supabase authorization scenario. `tests/v3-avatar-vault-edge.mjs` mocks `api.avatarVault`; `tests/v3-avatar-vault-smoke.mjs` also injects a fake API. Consequently the green exact workflow is not evidence that a signed-in browser below an unlock threshold cannot bypass the app-service unlock check and directly publish a locked `selected_style`/`avatar.cosmetic` value to its own allowed database row.
+
+If the public cosmetic is intended to represent an earned unlock, this is missing authorization evidence/behavior. If it is intentionally untrusted self-presentation, that trust classification must be explicit and downstream score/permission/achievement logic must not treat it as proof of earning.
 
 ## TRIAGE CROSS-CHECK
 
-### FACT
-`automation/TRIAGE.md` was read only after the independent findings above were formed. It is stale: it still describes #81 at `89584f38...` and says v3.54 is not frozen. Live primary evidence now shows v3.54 frozen at `cc591aac...` and #82 active at `7f3a9a81...`. TRIAGE was therefore not used as evidence.
+`automation/TRIAGE.md` was read only after the provisional findings above were formed. Its current exact canonical SHA matches `60100f0...`, but its statement that the current SHA lacks an exact complete bookkeeping PASS is now stale: run `34484163108` is a complete exact green for `60100f0...` and includes the Avatar Vault smoke.
+
+Its two persistence concerns are independently confirmed by direct inspection of current `src/core/api.js` and `src/app/avatar-vault.js`. This report does not adopt TRIAGE's separate live-production-schema claim because repository inspection alone does not establish live production schema state.
 
 ## A4 DISPOSITION
 
-**NOT READY** for #82 at exact canonical `7f3a9a81e714fe37ac7d6ec54f9b65752898da39` because this SHA is only the milestone-opening documentation state; there is no #82 implementation, exact candidate, permanent #82 tests or exact functional execution evidence yet.
+**NOT READY** for HIGH-RISK #82 at exact candidate `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
+
+The reason is no longer missing exact execution: run `34484163108` supplies a complete exact green and executes the permanent #82 browser smoke. The blocker is that the current harness does not exercise two concrete persistence/data-integrity counterfactuals that are visibly incorrect in the current implementation: destructive replacement of existing avatar JSON and unreconciled partial success across the two cloud writes. The exact green therefore does not establish complete `persist` acceptance.
+
+For HIGH-RISK promotion, A4 READY should wait for an exact successor candidate that:
+1. preserves existing non-cosmetic avatar JSON fields when updating cosmetic selection;
+2. defines and tests recovery/reconciliation for first-write-success/second-write-failure;
+3. adds permanent regressions capable of failing on both cases;
+4. clarifies/tests whether cross-user-visible cosmetics are earned-authoritative or untrusted self-presentation, with faithful trusted-boundary evidence if earned status is claimed;
+5. runs the entire accumulated suite against that exact SHA, including the #82 browser smoke and all prior coverage.
+
+Any changed bookkeeping SHA after that still needs its own complete exact green before freeze.
 
 ## STALENESS CONDITIONS
 
 This report becomes candidate-stale immediately if:
-- `feature/v3-avatar-vault` moves from `7f3a9a81e714fe37ac7d6ec54f9b65752898da39`;
-- an `agent/a1-work/082-*` candidate appears or moves;
-- #82's authoritative inventory/contract changes;
-- #82 product/test/workflow implementation appears;
-- an exact #82 workflow run completes;
-- the frozen base changes unexpectedly from `release/v3.54-psychometrics` / `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
+- `feature/v3-avatar-vault` moves from `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`;
+- an `agent/a1-work/082-*` branch appears or moves;
+- `src/core/api.js`, `src/app/avatar-vault.js`, Avatar Vault tests/validator/workflow, schema/RLS/grants, or the #82 contract changes;
+- new exact candidate/workflow evidence appears;
+- #82 freezes into a release;
+- frozen base changes unexpectedly from `release/v3.54-psychometrics` / `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
