@@ -6,12 +6,12 @@ Updated: 2026-09-11 JST
 
 ## Current completion snapshot
 
-- 100 total; **93 Regression-tested / 1 Verified / 0 Implemented / 6 Not started**
-- Strict parity **94/100**; regression stability **93/100**
-- Frozen v3.66 Same-room Play Together: `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`, exact bookkeeping run `34539753714` green
-- #43 Live Rooms functional candidate: `29db077fd134aa9b3b7044e9fda7c86306cd680d`, complete run `34541326308` green
-- #43 focused run `34541198770` green; account-switch stale-membership cache defect reproduced and permanently covered
-- #44 Bible World follows v3.67 freeze; #45 artwork remains separate
+- 100 total; **94 Regression-tested / 1 Verified / 0 Implemented / 5 Not started**
+- Strict parity **95/100**; regression stability **94/100**
+- Frozen v3.67 Live Rooms: `d7b9385ddc814fe0b6587e92626bf6c65aefe5b5`, exact bookkeeping run `34541856135` green
+- #44 Bible World functional candidate: `ce5d29cec689a31fa146400ec9f5f82b46b64bd7`, complete run `34542639569` green
+- #44 focused run `34542469395` green
+- #45 Bible World artwork follows v3.68 freeze; retained assets already confirmed in the current tree
 - #15 and Kids #38–40 remain deferred
 
 ## Recent frozen release line
@@ -21,32 +21,34 @@ Updated: 2026-09-11 JST
 - v3.64 Admin Operations — `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`
 - v3.65 Reset/recovery — `ab3584906b3d017ea555416910f23e9414ed2ef8`
 - v3.66 Same-room Play Together — `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`
-- v3.67 Live Rooms — pending bookkeeping gate
+- v3.67 Live Rooms — `d7b9385ddc814fe0b6587e92626bf6c65aefe5b5`
+- v3.68 Bible World — pending bookkeeping gate
 
 ## Recent milestone sequence
 
 | Capability | State | Evidence |
 |---:|---|---|
-| #42 Same-room Play Together | Regression-tested | survived #43 complete functional run `34541326308` |
-| #43 Live Rooms | Verified | `29db077fd134aa9b3b7044e9fda7c86306cd680d`, focused run `34541198770`, complete run `34541326308`; bookkeeping gate pending |
-| #44 Bible World | Not started | next after v3.67 freeze; retained 60% explored-marker threshold and Read/Review/Characters & Places routing recovered read-only |
-| #45 Bible World artwork | Not started | separate asset/responsive/fallback milestone |
+| #43 Live Rooms | Regression-tested | survived #44 complete functional run `34542639569` |
+| #44 Bible World | Verified | `ce5d29cec689a31fa146400ec9f5f82b46b64bd7`, focused run `34542469395`, complete run `34542639569`; bookkeeping gate pending |
+| #45 Bible World artwork | Not started | retained `world-locked.webp` / `world-revealed.webp`; responsive/fallback implementation next after v3.68 freeze |
 
-## #43 chronology
+## #44 chronology
 
-After v3.66 froze, #43 was branched from exact release SHA `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`. Retained Live Rooms source, Supabase migrations/RLS, Congregation Membership authority, and existing API architecture were recovered before coding. The scope was kept to inventory acceptance: create/join/leave, reconnect, realtime room/participant refresh, host end, and no stale room state; legacy quiz/poll/hunt/discussion scoring was not folded in.
+After v3.67 froze at exact bookkeeping SHA `d7b9385ddc814fe0b6587e92626bf6c65aefe5b5`, #44 branched from that immutable release. Retained Journey Path and Bible World behavior were recovered before coding: nine story regions, Scripture never permanently locked, a 60% explored-marker threshold, the first region below 60% selected as the next marker, and the Genesis split formulas for Creation and Patriarchs.
 
-A clean Live Rooms lifecycle owner, route/UI, API boundary, Community entry, contract document, validator, edge regression, and browser/mobile regression were added. Focused testing reproduced a stale-account condition where congregation membership cache could survive authenticated identity changes. The service was corrected to key membership cache to the current user, and the edge regression now protects that path. The validator was also aligned with the actual teardown ownership boundary instead of requiring duplicate bootstrap disconnect wiring.
+The clean implementation reuses `src/app/adaptive-learning.js` as the sole eight-category mastery/evidence owner. `src/app/bible-world.js` projects that evidence into the nine-region World model and delegates Read to the existing Reader owner and Review to the existing Open Smart Review owner. The route is exposed from Learn, uses isolated responsive CSS, and owns no persistence, scoring, XP, streak, backend access, Bible data loading, or review algorithm.
 
-Focused exact-SHA run `34541198770` passed syntax, #43 architecture, and lifecycle edge checks. Functional candidate `29db077fd134aa9b3b7044e9fda7c86306cd680d` then passed the complete accumulated architecture, edge/security, and browser/mobile gate in run `34541326308`. This promotes #42 to Regression-tested and #43 to Verified. The changed bookkeeping tip must still pass a complete exact-SHA bookkeeping gate before v3.67 freeze.
+Focused exact-SHA run `34542469395` passed syntax, edge formulas/thresholds, the real 390px Bible World route, content handoffs, and shell smoke. Exact functional candidate `ce5d29cec689a31fa146400ec9f5f82b46b64bd7` then passed the complete accumulated architecture, edge/security, and browser/mobile suite in run `34542639569`. This promotes #43 to Regression-tested and #44 to Verified. The changed bookkeeping tip still requires its own complete exact-SHA gate before v3.68 freeze.
 
-## #44 read-only recovery
+## #45 read-only recovery
 
-Retained Journey Path code defines nine biblical-story markers. A marker is considered explored at 60% evidence; the first marker below 60% is the next path marker. Scripture itself is explicitly never locked. Retained Bible World exposes the regions and routes each region into Read, Review, and Characters & Places. The clean Adaptive Learning owner already contains the matching eight-category mastery profile and should be reused instead of creating a second mastery store.
+Historical commit `10cc63101cedbd0e90434068b4434cbc66ac3e9c` supplied the retained artwork pair `assets/world-locked.webp` and `assets/world-revealed.webp`. Both files are already present in the current v3 tree. Historical presentation layered them in a responsive 16:9 frame, revealing the second image according to the rounded average of the eight mastery categories while explicitly keeping Scripture available.
+
+Clean #45 will reuse those assets and the current Bible World/Adaptive owners, add responsive layered art plus explicit missing-image fallback, and avoid the old global media injector, direct localStorage, MutationObserver, and `window.BQMedia` architecture.
 
 ## Next sequence
 
-Finish #43 bookkeeping candidate → complete exact-SHA bookkeeping gate → freeze/verify v3.67 → branch #44 from v3.67 → recover/implement/target/full verify Bible World.
+Finish #44 promotion bookkeeping → complete exact-SHA bookkeeping gate → freeze/verify v3.68 → branch #45 from v3.68 → implement/target/full/bookkeeping verify Bible World artwork.
 
 ## Release discipline
 
