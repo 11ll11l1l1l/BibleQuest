@@ -1,45 +1,47 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST during #42 Same-room Play Together bookkeeping verification.
+Updated: 2026-09-11 JST after #43 Live Rooms functional verification.
 
 `FEATURE_INVENTORY_V3.md` is authoritative. Live GitHub refs and executed Actions evidence supersede stale text.
 
 ## Deployment safety
 
-- Latest frozen release: `release/v3.65-reset-recovery` at `ab3584906b3d017ea555416910f23e9414ed2ef8`; exact bookkeeping verification run `34535332838` passed.
-- Active branch: `feature/v3-same-room-play-together`.
-- #42 green functional candidate: `22d054725ba983c4fe81fbd220688a3c12ee211c`; complete run `34539110697` passed architecture, edge, and browser/mobile regressions.
+- Latest frozen release: `release/v3.66-same-room-play-together` at `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`; exact bookkeeping verification run `34539753714` passed.
+- Active branch: `feature/v3-live-rooms`.
+- #43 green functional candidate: `29db077fd134aa9b3b7044e9fda7c86306cd680d`; complete run `34541326308` passed exact-SHA architecture, edge/security, and browser/mobile regressions.
+- Focused #43 run `34541198770` passed syntax, architecture, and lifecycle edge checks on its exact focused candidate.
 - `main`, production v2, Supabase/data, and Cloudflare remain untouched.
-- Product regression workflow remains `workflow_dispatch` only; temporary push triggers stay isolated.
+- Product regression workflow remains `workflow_dispatch` only; temporary push triggers stay isolated and are reset after use.
 
-## Current bookkeeping candidate state
+## Current promoted state
 
 | State | Count |
 |---|---:|
-| Regression-tested | 92 |
+| Regression-tested | 93 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 7 |
+| Not started | 6 |
 | Total | 100 |
 
-Strict parity is **93/100**; regression stability is **92/100**. #94 is now Regression-tested because it survived the complete #42 functional gate; #42 is Verified. #15 and Kids #38–40 remain deferred. #43 Live Rooms is next; #44–45 Bible World remain unfinished.
+Strict parity is **94/100**; regression stability is **93/100**. #42 Same-room Play Together is now Regression-tested because it survived the complete #43 functional gate; #43 Live Rooms is Verified. #15 and Kids #38–40 remain deferred. #44 Bible World is the next dependency-safe capability; #45 Bible World artwork remains a separate milestone.
 
-## #42 verified functional boundary
+## #43 verified functional boundary
 
-#42 restores same-device pass-and-play for 2–6 players inside the clean Games owner. It provides player-count setup, rotating turns, an in-session scoreboard, explicit finish, and a final winner/tie result. Same-room score state is ephemeral and does not award profile XP or write persistence. #43 Live Rooms remains separate and is not absorbed by this milestone.
+#43 restores the retained account/congregation-backed Live Rooms lifecycle without importing the legacy global runtime: ministry-capable hosts create an unended `live-room` shared session with a short code, members join by code, participant and room changes refresh through the central API realtime boundary, disconnect retains only the in-memory room identity for reconnect, reconnect reloads canonical server state and idempotently rejoins the participant, explicit Leave clears room/participant/channel state, and host End closes the server room then clears local state. Ended or missing rooms cannot be revived from stale client state.
 
-Permanent evidence: `docs/V3_SAME_ROOM_PLAY_TOGETHER_CONTRACT.md`, `src/app/games.js`, `src/features/games/index.js`, `scripts/validate-v3-same-room-play-together.mjs`, `tests/v3-same-room-play-together-edge.mjs`, `tests/v3-same-room-play-together-smoke.mjs`, `.github/workflows/v3-regression.yml`.
+The retained Supabase schema, realtime publication, participant hardening, and Pastor RLS parity already support the capability. No production migration or function deployment was required or performed. Legacy direct `localStorage`, direct Supabase access, `window.BQ*`, and Live Room quiz/poll/hunt/discussion scoring remain out of this milestone.
+
+Permanent evidence: `docs/V3_LIVE_ROOMS_CONTRACT.md`, `src/app/live-rooms.js`, `src/features/live-rooms/index.js`, `src/core/api.js`, `src/app/bootstrap.js`, `src/features/community/index.js`, `scripts/validate-v3-live-rooms.mjs`, `tests/v3-live-rooms-edge.mjs`, `tests/v3-live-rooms-smoke.mjs`, `.github/workflows/v3-regression.yml`.
 
 ## Defect / root-cause ledger
 
-- The first partial #42 feature commit exposed service methods but no reachable Play-page UI or permanent regression wiring, so it was rejected as a promotion candidate.
-- The first isolated writer failed because it assumed `docs/` already existed; after correction, the product patch passed focused architecture/edge checks. Its initial push then hit GitHub App workflow-write restrictions. Product files were pushed separately and the permanent manual regression workflow was updated through the connected GitHub writer.
-- Exact functional candidate `22d054725ba983c4fe81fbd220688a3c12ee211c` passed complete run `34539110697`.
-- Lifecycle audit run `34539369826` found one promotion pin: the new #42 validator required literal `Not started`. It is corrected to accept valid lifecycle states while retaining exact row identity and acceptance text. Because bookkeeping changes the SHA, the resulting candidate requires a fresh complete exact-SHA gate.
+- Focused lifecycle work reproduced a stale-account condition: the Live Rooms service could retain a previous authenticated user's cached congregation memberships after identity changed. Root cause was membership caching without an authenticated-user key. Permanent handling keys membership state to the current user and forces reload on identity change; the edge regression protects the account-switch case.
+- The first Live Rooms architecture validator expected a bootstrap-level `liveRooms.disconnect` token even though route teardown owns disconnect and global page teardown correctly uses `liveRooms.clear`. The validator was corrected to validate the actual ownership boundary rather than force duplicate lifecycle wiring.
+- Exact functional candidate `29db077fd134aa9b3b7044e9fda7c86306cd680d` passed complete run `34541326308`.
 
 ## Next major milestone
 
-Run complete exact-SHA bookkeeping verification. On green, freeze `release/v3.66-same-room-play-together` at that exact successful bookkeeping SHA, verify refs, then recover #43 Live Rooms from retained behavior before implementation.
+Create one bookkeeping candidate with the promotion ledger/handoff/timeline updates. Run a fresh complete exact-SHA bookkeeping gate. On green, freeze `release/v3.67-live-rooms` at that exact bookkeeping SHA, verify refs, then branch #44 Bible World from the frozen release and implement its recovered render/progress/navigation contract. Do not fold #45 artwork into #44 unless the inventory boundary requires only graceful missing-asset behavior.
 
 ## Release rule
 
