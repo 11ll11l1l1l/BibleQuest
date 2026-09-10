@@ -8,86 +8,92 @@ Updated: 2026-09-10 JST
 
 - Production v2 remains unchanged.
 - `main`, production Supabase and production Cloudflare remain untouched.
-- Active development branch: `feature/v3-linked-activities`.
+- Active development branch: `feature/v3-personality-profile`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are allowed only on isolated one-shot verification branches; trigger commits are never release candidates.
-- Latest frozen checkpoint: `release/v3.51-workspace` at `caf9425fcdfef935560e1d65ff13823c60a7f529`.
-- Exact v3.51 bookkeeping verification run: `34465897944`, complete accumulated architecture, edge/security and browser/mobile suite green against the frozen SHA.
+- Latest frozen checkpoint: `release/v3.52-linked-activities` at `38639bd71ffc0fdc2449f9cba3add59a8b88b4b7`.
+- Exact v3.52 bookkeeping verification run: `34469317262`, complete accumulated architecture, edge/security and browser/mobile suite green against that frozen SHA.
 - Safety refs remain untouched.
 
-## Current progress represented by the #79 bookkeeping transaction
+## Current progress represented by the #80 bookkeeping transaction
 
 | State | Count |
 |---|---:|
-| Regression-tested | 78 |
+| Regression-tested | 79 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 21 |
+| Not started | 20 |
 | Total | 100 |
 
-Strict implemented-or-better parity represented by this bookkeeping transaction is **79/100**.
-Official regression stability represented by this bookkeeping transaction is **78/100**.
+Strict implemented-or-better parity represented by this bookkeeping transaction is **80/100**.
+Official regression stability represented by this bookkeeping transaction is **79/100**.
 
-These values are provisional until the exact final #79 bookkeeping SHA passes a new complete accumulated gate and is frozen. No PASS transfers from the functional SHA to a changed bookkeeping SHA.
+These values are provisional until the exact final #80 bookkeeping SHA passes a new complete accumulated gate and is frozen. No PASS transfers from the functional SHA to a changed bookkeeping SHA.
 
 Current leading rows:
-- #77 Notification Center/inbox — Regression-tested.
-- #78 Workspace — Regression-tested because it survived the complete #79 functional suite.
-- #79 Linked activities/challenges — Verified by exact functional candidate `debc386328d4655977681fcb08b7a345346ea3fc` in complete run `34468348888`.
-- #80 Personality profile — next non-deferred inventory row after #79 release closure.
-- #81 Psychometrics suite remains a separate later milestone; #80 must not silently absorb or relabel it.
+- #78 Workspace — Regression-tested.
+- #79 Linked activities/challenges — Regression-tested because it survived the complete #80 functional suite.
+- #80 Personality profile — Verified by exact functional candidate `097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f` in complete run `34470882834`.
+- #81 Psychometrics suite — next non-deferred inventory row after #80 release closure.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
-## #79 Linked Activities / Challenges — functional gate complete
+## #80 Personality Profile — functional gate complete
 
-The milestone is intentionally bounded to the authoritative inventory contract: **launch linked activity; completion handoff**.
+The milestone is intentionally bounded to the authoritative inventory contract: **complete; save; reopen; privacy boundary**.
 
 Recovered and verified behavior:
-- the existing Assignments owner remains authoritative for assignment visibility, start, completion requirements and awarded points;
-- linked launch first passes through the trusted assignment `start` boundary and only then requests navigation to a verified v3 destination;
-- `src/app/linked-activities.js` is a thin orchestration owner and does not call Supabase, Edge Functions, storage or another persistence writer directly;
-- recovered linked kinds are strictly allowlisted rather than treated as arbitrary routes;
-- verified mappings cover Reader, Guided Study, Mission/Journey, Wisdom Situations, Couples Cloud, Journey Groups, Cloud Notes/reflection and Open Review/quiz;
-- Live Rooms remains fail-closed because deferred inventory row #43 is not rebuilt yet;
-- unlinked custom assignments remain instruction-only;
-- linked activity completion is not inferred automatically: the recipient returns to Assignments and submits completion there, preserving reflection/evidence/confirmation/minimum-quiz-score requirements;
-- linked activities cannot self-award assignment points;
-- navigation is owned by the central Router; feature code does not write `location.hash` or History directly;
-- ministry-role recipient views remain read-only;
-- no schema, migration, RLS, grant, RPC, Edge Function or production-system change was introduced.
+- `src/engines/transform.js` remains the sole owner of the current Quick Transform 20-item personality scoring;
+- the saved profile uses explicit assessment identifier `bq_quick_transform_ipip20_v1` rather than the stale retained `ipip_big_five_50_v1` wrapper label;
+- `src/app/personality-profile.js` owns sanitized profile snapshots and presentation-only hints but does not score the assessment;
+- profile snapshots are isolated by local owner (`guest` or the exact signed-in account id), so switching accounts cannot expose another account's saved profile;
+- a guest snapshot is never silently promoted into a signed-in account profile;
+- the profile stays on-device and uses `privateStorage`, which is excluded from the normal portable BibleQuest backup/export set;
+- completing Quick Transform captures the current owner's profile, while resetting personality clears only that owner's profile snapshot;
+- malformed saved profile data fails closed rather than being displayed;
+- presentation hints cannot alter Scripture, doctrine, permissions, scoring, completion rules or content truth;
+- no production schema, migration, RLS, RPC, Edge Function, Cloudflare or other production-system change was introduced;
+- #81 Psychometrics Suite remains a distinct later milestone and was not absorbed into #80.
 
-Permanent #79 coverage:
-- `scripts/validate-v3-linked-activities.mjs` — orchestration ownership, navigation handoff, fail-closed routing and workflow boundary validation;
-- `tests/v3-linked-activities-edge.mjs` — mapping allowlist, malformed/unknown metadata rejection, trusted start delegation and completion delegation;
-- `tests/v3-linked-activities-smoke.mjs` — real 390px Assignment linked-launch/completion-handoff browser coverage;
-- existing `tests/v3-assignments-smoke.mjs` retains the generic unlinked/custom start path;
-- `.github/workflows/v3-regression.yml` invokes all #79 checks while retaining the complete prior accumulated suite and remains manual-only on the product branch.
+Permanent #80 coverage:
+- `PERSONALITY_PROFILE_V3.md` — recovered compatibility, provenance, ownership and privacy contract;
+- `scripts/validate-v3-personality-profile.mjs` — architecture/provenance/privacy and milestone-isolation guard;
+- `tests/v3-personality-profile-edge.mjs` — valid-result capture, malformed data, guest/account isolation, private-backup exclusion and Transform capture/reset behavior;
+- `tests/v3-personality-profile-smoke.mjs` — real 390px profile presentation/navigation/overflow coverage;
+- `.github/workflows/v3-regression.yml` invokes all #80 evidence while retaining the complete prior accumulated suite and remains manual-only on the product branch.
 
-Exact functional candidate `debc386328d4655977681fcb08b7a345346ea3fc` passed run `34468348888`. The isolated verification workflow explicitly checked out and asserted that exact SHA; exact-SHA assertion, accumulated architecture validators, all edge/security regressions and the full browser/mobile regression suite all completed successfully.
+Exact functional candidate `097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f` passed run `34470882834`. The isolated verification workflow explicitly checked out and asserted that exact SHA; accumulated architecture validators, all edge/security regressions and the full browser/mobile regression suite completed successfully.
 
 ## Defect / root-cause ledger
 
-The #79 milestone reproduced and corrected issues without weakening application behavior or regression coverage:
-- Candidate `b446ea26c190905efa6af2f45727f920eb643cb9`, run `34467161828`: global architecture correctly rejected direct `location.hash` navigation from `src/features/assignments/index.js`. Root cause was navigation ownership leakage. The design was corrected so linked launch requests navigation through the central Router owner; the architecture validator was not weakened.
-- Candidate `d6bb001ee6ce29740f61c6f3e40468f2ab5be3c3`, run `34467523354`: architecture and edge phases passed, but the older Assignments browser regression expected the generic Start button for a `reading` fixture. #79 correctly turns Reading into a linked activity, so this was a stale test-fixture contract rather than a product defect. The old generic-start fixture was changed to `custom`; #79's dedicated smoke retains linked-Reading coverage. The full suite then reran green on `debc386328d4655977681fcb08b7a345346ea3fc`.
-- Bookkeeping candidate `270d58a5e34b69b99af87abade3c53099348168e`, run `34468933900`: exact SHA and the global architecture/inventory checks passed, but the older #73 Assignments validator still hard-coded inventory #79 to remain `Not started`. Root cause was a stale future-state assertion that became invalid only after #79 legitimately reached Verified. The #73 validator was narrowed to accept the normal lifecycle states for #79 while #79's dedicated validator remains authoritative for its recovered contract. No runtime code or #79 acceptance test was weakened.
+No #80 runtime defect was reproduced during the exact functional gate. The first #80 functional candidate passed the complete accumulated suite without weakening prior regression coverage.
 
-Two zero-byte verification-preparation artifacts were created accidentally during isolated branch setup and immediately removed. Neither remains in the product candidate or changes runtime behavior. Verification branches remain non-release refs.
+Earlier milestone defect regressions remain retained in the accumulated suite, including #79's central-Router navigation ownership correction and stale Assignments future-state validator correction.
 
-Earlier milestone defect regressions remain retained in the accumulated suite.
+## #81 recovery already established read-only
 
-## Next major milestone
+The retained Psychometrics Lab is a separate comprehensive suite and must not be conflated with the Quick Transform profile. Recovered retained components include:
+- IPIP-NEO-120: five broad domains, 30 facets, four items per facet, reverse-key scoring, raw 1–5 means and response-quality checks;
+- IPIP-VIA-R: 96 items across 24 character-strength constructs, two positive and two negative-keyed items per construct;
+- Rosenberg Self-Esteem Scale: 10 items and 0–30 scoring;
+- local persistence/resume and mobile standalone presentation;
+- explicit warnings that psychological results are not diagnosis, employment selection, moral worth, salvation, doctrine or spiritual maturity.
 
-The immediate release gate is #79 bookkeeping and freeze; #80 must not be treated as verified early.
+Migration risks already identified for #81:
+- historical NEO Openness/Values items include political/relativism wording and must not be presented as political, theological or moral correctness;
+- the VIA Spirituality/Religiousness construct is psychological self-report and must not become a faith or salvation score;
+- Scripture reflection material must remain downstream interpretation, never part of psychometric scoring;
+- legacy global `window.BQ_*` ownership and direct `localStorage` writes should not be copied into v3.
 
-1. Treat the final #79 bookkeeping/status transaction on `feature/v3-linked-activities` as a new exact clean candidate.
+No #81 product write should occur until #80 is frozen.
+
+## Next executable sequence
+
+1. Treat the final #80 bookkeeping/status transaction on `feature/v3-personality-profile` as a new exact clean candidate.
 2. Verify that exact bookkeeping SHA with an isolated one-shot workflow that explicitly checks out/asserts it and executes the complete accumulated architecture, edge/security and browser/mobile suite.
 3. If any phase fails, do not freeze; identify the exact root cause, preserve all prior coverage and rerun a corrected exact SHA.
-4. If fully green, create immutable `release/v3.52-linked-activities` at that exact green bookkeeping SHA and close #79 as completed.
-5. Only after v3.52 is frozen should `feature/v3-personality-profile` be created and #80 write work begin.
-6. #80 Personality Profile must recover the old complete/save/reopen/privacy behavior while preserving the existing Transform owner and account/storage boundaries.
-7. The retained cloud wrapper used assessment version `ipip_big_five_50_v1`, while current v3 Transform currently exposes a 20-item personality reflection. Do not falsely label the 20-item result as the 50-item IPIP assessment. Resolve the retained assessment provenance before implementing cloud/profile synchronization.
-8. Keep #81 Psychometrics Suite separate from #80; any full standalone psychometric assessment belongs to #81 unless retained evidence proves otherwise.
+4. If fully green, create immutable `release/v3.53-personality-profile` at that exact green bookkeeping SHA and close #80 as completed.
+5. Only after v3.53 is frozen, create `feature/v3-psychometrics` from that exact release SHA and begin #81 write work from the recovered standalone evidence.
+6. #81 must satisfy `complete assessment; result; persistence; mobile` without duplicating Quick Transform/Profile ownership or importing legacy globals.
 
 ## Release rule
 
