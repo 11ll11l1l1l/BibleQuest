@@ -1,41 +1,43 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 18:55 JST
+Generated: 2026-09-10 19:58 JST
 
 ## Freshness
-- Active milestone: **#77 Notification Center/inbox — currently treated as NORMAL-RISK while bounded to the existing `src/core/api.js` browser Supabase boundary and existing own-row RLS, with no schema/RLS/grant/RPC/Edge Function/global router-shell/dependency change observed.**
-- Canonical branch: `feature/v3-notification-center` at exact `f911226f2121eb57a2d068ec43b577536328899e`.
-- Dedicated `agent/a1-work/077-...` candidate: **not found**.
-- Frozen base: `release/v3.49-ministry-hub` at exact `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`.
-- #76 release state is therefore newer than `automation/CURRENT.md` / `DEVELOPMENT_HANDOFF_V3.md`, both of which are stale about v3.49 closure.
-- Exact functional evidence for current #77 SHA: retry run `34463380194` explicitly checks out/asserts `f911226f2121eb57a2d068ec43b577536328899e`; architecture validators and accumulated edge regressions are green, browser/mobile regressions are still running. **No complete PASS yet.**
-- Previous run `34463256129` explicitly checked out/asserted `a5d4f0712f2a1962b099e1d4d0b5aa22b440b728` and failed in `validate-v3-notification-center.mjs` because the #77 inventory row wording did not match the validator. That SHA is no longer current.
-- A2 #77 report: **missing**.
-- A3 #77 report: **missing**.
-- A4 #77 report: **stale**; it inspected `a5d4f071...`, while canonical is now `f911226f...`.
-- HIGH-RISK exact-candidate barrier: **not currently applicable** because no HIGH-RISK boundary change has been established; reclassify immediately if schema/RLS/grants/trusted server authority/global owner/dependency/workflow semantics are changed.
+- Active milestone: **#79 Linked activities/challenges — HIGH-RISK**.
+- Canonical branch: `feature/v3-linked-activities` at exact `270d58a5e34b69b99af87abade3c53099348168e`.
+- Dedicated `agent/a1-work/079-linked-activities` candidate: **not found**.
+- Latest frozen base: `release/v3.51-workspace` at exact `caf9425fcdfef935560e1d65ff13823c60a7f529`.
+- `release/v3.52-linked-activities`: **not found**.
+- Exact functional product candidate: `debc386328d4655977681fcb08b7a345346ea3fc`; isolated run `34468348888` completed `success` and explicitly checked out/asserted that exact SHA before the complete accumulated suite.
+- Current bookkeeping candidate: `270d58a5e34b69b99af87abade3c53099348168e`.
+- Exact bookkeeping run `34468933900` explicitly checked out/asserted `270d58a5...` but **failed in accumulated architecture validators**; edge/security and browser/mobile phases were skipped.
+- A2 #79 report: **missing**.
+- A3 #79 report: **stale**; reviewed canonical `b446ea26...`, not `debc3863...` or `270d58a5...`.
+- A4 #79 report: **stale**; reviewed `debc3863...` before run `34468348888` completed and recorded NOT READY because exact execution was then missing.
+- HIGH-RISK barrier: **NOT SATISFIED**.
 
 ## BLOCKER
-- None established from current primary evidence.
+- **Do not promote/freeze current #79 state.** `scripts/validate-v3-assignments.mjs` still hard-requires inventory row #79 to be `Not started`, while bookkeeping at `270d58a5...` advances #79 to Verified. Exact bookkeeping run `34468933900` consequently failed in the architecture phase. Counterfactual: ignoring this would freeze a bookkeeping SHA that has not passed the complete accumulated gate.
+- **Reconcile #79 as HIGH-RISK before further promotion work.** The milestone modified shared Router ownership (`bq:navigation-request`/`requestNavigation`) and also modified the pre-existing accumulated `tests/v3-assignments-smoke.mjs` fixture. Control rules classify global-router ownership as HIGH-RISK and any existing accumulated-test modification as HIGH-RISK. Counterfactual: treating #79 as NORMAL-RISK would bypass mandatory exact-candidate independent review around a global owner and an existing regression change.
+- **Quarantine/promotion-path reconciliation is required.** No `agent/a1-work/079-linked-activities` branch exists although unverified #79 implementation/bookkeeping is on canonical. Counterfactual: continuing autonomous product/test/bookkeeping writes directly on canonical would violate the mandatory quarantine invariant and make unverified history indistinguishable from promotion-ready state.
 
 ## MILESTONE
-- **Finish the exact functional gate for `f911226f2121eb57a2d068ec43b577536328899e` before any bookkeeping/freeze.** Counterfactual: promoting while run `34463380194` is incomplete would freeze #77 without proof that the full accumulated browser/mobile phase passed on the exact current SHA.
-- **Preserve the #77 contract boundary: `load; read/unread; open target; refresh`, with signed-out fail-closed behavior, own-row normalization, explicit action allowlist, and authoritative refresh.** Counterfactual: dropping any of these behaviors would fail the inventory/contract and could expose unsafe navigation or incorrect cross-user inbox state.
+- Preserve authoritative #79 acceptance: **`launch linked activity; completion handoff`** through existing Assignments authority, fixed internal routing, fail-closed unsupported destinations, and explicit completion handoff.
+- Correct the stale #73 Assignments validator only if the root cause is documented as a lifecycle/future-state validator defect and the original #73 ownership/security assertions remain intact. Because this is an existing accumulated-validator change, the resulting exact candidate remains HIGH-RISK and must rerun the complete accumulated suite.
 
 ## DEFER
-- Realtime subscriptions, push/OS notifications, notification preferences, arbitrary notification creation, arbitrary deep links/external URLs, #78 Workspace and #79 Linked Activities remain outside #77 unless stronger primary evidence establishes a dependency.
-- #43 Live Rooms, #15 Japanese furigana and Kids #38–40 remain separate/deferred work.
+- #80 Personality profile, #81 Psychometrics, #43 Live Rooms, #15 Japanese furigana and Kids #38–40 remain outside #79 unless primary evidence establishes a required dependency.
 
 ## IGNORE
-- A4's prior `NOT READY` for `a5d4f071...` is stale after canonical advanced to `f911226f...`; it cannot block or authorize the new SHA.
-- Run `34463256129` is historical failure evidence for the prior SHA only. Its exact failure was a malformed/mismatched #77 inventory-contract assertion, not proof that the current `f911226f...` runtime is defective.
-- Stale `automation/CURRENT.md` and `DEVELOPMENT_HANDOFF_V3.md` must not override live refs proving frozen v3.49 and active #77.
+- A3's prior NORMAL-RISK conclusion for `b446ea26...` is stale and cannot override explicit control-plane HIGH-RISK triggers now evidenced in current lineage.
+- A4's NOT READY conclusion for `debc3863...` was correct at its inspection time but its missing-run premise is now stale because run `34468348888` later completed successfully. A fresh A4 exact-candidate review is still required because #79 is HIGH-RISK.
+- Direct `head_sha` queries returning no run for product SHAs do not invalidate isolated verification runs whose workflow explicitly checks out/asserts those product SHAs.
 
 ## Firewall decision
-**0 BLOCKER; 2 MILESTONE; NO PROMOTION RECOMMENDATION YET.**
+**3 BLOCKER; 2 MILESTONE; NO PROMOTION RECOMMENDATION.**
 
-Primary evidence shows #77 has permanent validator/edge/browser tests wired additively into the accumulated workflow, and the retry workflow pins the exact current SHA. The retry has passed architecture and edge phases but has not yet completed browser/mobile execution, so current evidence is insufficient for promotion. No unexplained accumulated-regression deletion or bypass was observed.
+The product-level functional candidate `debc3863...` now has exact full-suite green evidence, but HIGH-RISK promotion prerequisites were not satisfied before bookkeeping, and the current bookkeeping SHA `270d58a5...` is red. No unexplained deletion or skip of accumulated coverage was found; the present failure is an accumulated validator lifecycle conflict, not permission to weaken coverage.
 
 ## Next safe action
-Let run `34463380194` finish. If every accumulated phase succeeds on exact `f911226f...`, A1 may proceed with the normal-risk bookkeeping transaction and separate exact bookkeeping-SHA complete gate, provided the branch has not moved and no HIGH-RISK boundary change appears. If the run fails, reproduce that exact failure, correct only the proven cause, retain the regression, and verify a new exact SHA. Refresh A4/A5 if the candidate moves or risk tier changes.
+A1 must reconcile the canonical/no-quarantine state under a valid writer lease, establish the proper isolated #79 work/candidate path without rewriting frozen or safety refs, correct only the proven stale future-state validator defect while preserving its semantic protections, and run the complete suite on the resulting exact candidate. Before bookkeeping/promotion, require a fresh A3 trust/architecture review and A4 READY review of that exact HIGH-RISK candidate, then a fresh A5 promotion recommendation. Only after those requirements and a separate exact bookkeeping-SHA complete green may `release/v3.52-linked-activities` be created.
