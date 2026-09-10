@@ -12,7 +12,7 @@ Updated: 2026-09-10 JST
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
 - Temporary `push:` triggers are allowed only on isolated one-shot verification branches; trigger commits are never release candidates.
 - Latest frozen checkpoint: `release/v3.52-linked-activities` at `38639bd71ffc0fdc2449f9cba3add59a8b88b4b7`.
-- Exact v3.52 bookkeeping verification run: `34469317262`, complete accumulated architecture, edge/security and browser/mobile suite green against that frozen SHA.
+- Exact v3.52 bookkeeping verification run: `34469317262`, complete accumulated architecture, edge/security and browser/mobile suite green against the frozen SHA.
 - Safety refs remain untouched.
 
 ## Current progress represented by the #80 bookkeeping transaction
@@ -67,6 +67,8 @@ Exact functional candidate `097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f` passed run
 
 No #80 runtime defect was reproduced during the exact functional gate. The first #80 functional candidate passed the complete accumulated suite without weakening prior regression coverage.
 
+- Bookkeeping candidate `bb5f9d722a3e59c6bc02be985c3614aab76cb330`, run `34471472048`: exact SHA assertion passed, but the global architecture validator rejected a documentation heading rename because `DEVELOPMENT_STATUS_V3.md` must retain the literal `Next major milestone` queue heading. Root cause was bookkeeping wording only. The required heading was restored; runtime code and all #80 acceptance tests remain unchanged.
+
 Earlier milestone defect regressions remain retained in the accumulated suite, including #79's central-Router navigation ownership correction and stale Assignments future-state validator correction.
 
 ## #81 recovery already established read-only
@@ -86,7 +88,7 @@ Migration risks already identified for #81:
 
 No #81 product write should occur until #80 is frozen.
 
-## Next executable sequence
+## Next major milestone
 
 1. Treat the final #80 bookkeeping/status transaction on `feature/v3-personality-profile` as a new exact clean candidate.
 2. Verify that exact bookkeeping SHA with an isolated one-shot workflow that explicitly checks out/asserts it and executes the complete accumulated architecture, edge/security and browser/mobile suite.
