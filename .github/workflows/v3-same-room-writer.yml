@@ -20,12 +20,14 @@ jobs:
         run: test "$(git rev-parse HEAD)" = "ab3584906b3d017ea555416910f23e9414ed2ef8"
       - name: Fetch writer script
         run: git show origin/verify/v3.66-same-room-writer:.github/scripts/v3-same-room-writer.py > /tmp/v3-same-room-writer.py
-      - name: Apply and verify targeted milestone
-        run: |
-          python3 /tmp/v3-same-room-writer.py
-          node scripts/validate-v3-same-room-play-together.mjs
-          node tests/v3-same-room-play-together-edge.mjs
-          git diff --check
+      - name: Apply milestone patch
+        run: python3 /tmp/v3-same-room-writer.py
+      - name: Validate same-room architecture
+        run: node scripts/validate-v3-same-room-play-together.mjs
+      - name: Run same-room edge regression
+        run: node tests/v3-same-room-play-together-edge.mjs
+      - name: Check diff hygiene
+        run: git diff --check
       - name: Commit product candidate
         run: |
           git config user.name "github-actions[bot]"
