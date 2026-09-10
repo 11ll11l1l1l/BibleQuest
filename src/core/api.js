@@ -13,7 +13,7 @@ const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
 const ENCOURAGEMENT_FIELDS='id,group_id,sender_id,recipient_id,kind,created_at';
 const PRESENCE_FIELDS='congregation_id,user_id,last_seen_at,surface';
 const TEAM_FIELDS='id,congregation_id,created_by,team_type,name,active,created_at';
-const TEAM_MEMBER_FIELDS='team_id,user_id,joined_at';
+const TEAM_MEMBER_FIELDS='team_id,user_id,role,active,joined_at';
 const TEAM_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,active,joined_at';
 const RECOGNITION_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,avatar,active,joined_at';
 const LEADERBOARD_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,avatar,active,joined_at';
@@ -497,6 +497,19 @@ export function createApi() {
     }
   });
 
+  const adminConsole=Object.freeze({
+    async status(){return invoke('bq-admin',{action:'status'});},
+    async listUsers({page=1,perPage=200}={}){return invoke('bq-admin',{action:'list_users',page,perPage});},
+    async setRole(targetUserId,role){return invoke('bq-admin',{action:'set_role',targetUserId,role});},
+    async setCongregation(targetUserId,congregationId,{replace=true}={}){return invoke('bq-admin',{action:'set_congregation',targetUserId,congregationId,replace});},
+    async removeCongregation(targetUserId,congregationId){return invoke('bq-admin',{action:'remove_congregation',targetUserId,congregationId});},
+    async setCongregationRole(targetUserId,congregationId,role){return invoke('bq-admin',{action:'set_congregation_role',targetUserId,congregationId,role});},
+    async createCongregation(name){return invoke('bq-create-congregation',{name});},
+    async createSmallGroup(payload){return invoke('bq-admin',{action:'create_small_group',...payload});},
+    async setGroupMembership(payload){return invoke('bq-admin',{action:'set_group_membership',...payload});},
+    async setGroupOwner(targetUserId,groupId){return invoke('bq-admin',{action:'set_group_owner',targetUserId,groupId});}
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -516,5 +529,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, adminConsole, media, diagnostics });
 }
