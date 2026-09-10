@@ -5,110 +5,66 @@ Identity: BQ-A4-QA
 
 ## STATE / PROVENANCE
 - Active milestone: #82 Avatar Vault — HIGH-RISK.
-- Exact canonical/candidate inspected: `feature/v3-avatar-vault` at `589827943ba5467e805d793c001a33a41b9f42b7`.
+- Exact candidate inspected: `feature/v3-avatar-vault` at `37f1dc671804a1bb67ede2e5104002160b24c9dd`.
 - Frozen base: `release/v3.54-psychometrics` at `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
-- No dedicated `agent/a1-work/082-*` branch found.
-- Exact functional workflow: run `34482680612`, completed `success`.
-- Verifier commit `e4ebe2021553020bc3b88e955ae6cbb55524e954` explicitly checked out `589827943ba5467e805d793c001a33a41b9f42b7` and asserted that exact HEAD before tests.
-- This report becomes stale on any #82 candidate/head/test/workflow change.
+- Earlier exact run `34482680612` successfully checked out/asserted `589827943ba5467e805d793c001a33a41b9f42b7`, not current `37f1dc6...`; PASS does not transfer.
+- Since that run, a dedicated Avatar Vault Playwright smoke was added and registered in the browser/mobile loop.
+- Stale on any candidate/test/workflow change.
 
-## EXACT RUN EVIDENCE
+## WHAT IS NOW COVERED IN SOURCE
 FACT:
-Run `34482680612` completed all recorded phases successfully:
-- exact candidate assertion;
-- accumulated architecture validators;
-- accumulated edge/security regressions;
-- Playwright installation;
-- Chromium installation;
-- local server startup;
-- accumulated browser/mobile regressions.
+- `scripts/validate-v3-avatar-vault.mjs` is in the architecture loop.
+- `tests/v3-avatar-vault-edge.mjs` is in the edge loop.
+- `tests/v3-avatar-vault-smoke.mjs` now exists and is in the browser/mobile loop.
+- The new smoke uses a 390x844 mobile/touch viewport and checks the Vault renders, all 15 cards appear, equip interaction works, back callback fires, no horizontal overflow occurs, and no page/console errors occur.
 
-The exact-SHA mechanics for this run are valid. A green run does not establish requirements that the executed harness did not test.
+This resolves the prior missing dedicated #82 browser-smoke source coverage. It has not yet been proven by an exact complete run at current `37f1dc6...`.
 
-## ACCUMULATED HARNESS AUDIT
+## REMAINING TEST-SUFFICIENCY BLOCKERS
 FACT:
-- `scripts/validate-v3-avatar-vault.mjs` is invoked in the architecture loop.
-- `tests/v3-avatar-vault-edge.mjs` is invoked in the edge loop.
-- There is no `tests/v3-avatar-vault-smoke.mjs` in the candidate delta and no Avatar Vault-specific smoke invocation in the browser/mobile loop.
-- `AVATAR_VAULT_V3.md` explicitly requires the real Avatar Vault surface to be usable at 390px with no horizontal overflow.
+- `tests/v3-avatar-vault-edge.mjs` uses a mocked `api.avatarVault` and does not execute/f faithfully simulate current `src/core/api.js` dual-write semantics.
+- Current API replaces the full member avatar with `{cosmetic:selectedStyle}`.
+- Current app `load()` does not retry/reconcile the second cloud representation after a partial save.
+- The new browser smoke is guest/local and does not exercise signed-in Supabase persistence or preservation of an existing structured avatar object.
 
-BLOCKER:
-- The complete run's browser/mobile phase passed without opening/testing Avatar Vault itself. Therefore the run cannot satisfy the candidate's own #82 390px acceptance requirement.
+Counterfactual:
+- The complete current test set can be green while an authenticated user loses existing avatar fields or remains with split cloud state after a partial failure.
 
-## TEST QUALITY AUDIT
+Required regression evidence:
+1. Start from a structured avatar object containing non-cosmetic keys and prove cosmetic selection preserves every unrelated key.
+2. Simulate first cloud write succeeding and second failing, then reopen/retry and prove deterministic convergence or truthful retry state.
+3. Exercise the actual API/data-layer contract or a faithful boundary test rather than an indivisible mocked `save()` throw.
+4. Confirm congregation consumers still receive/render the preserved avatar after cosmetic update.
+
+## VALIDATOR QUALITY
 FACT:
-`tests/v3-avatar-vault-edge.mjs` meaningfully tests:
-- 15-style catalog presence;
-- 5 enabled / 10 unavailable decision;
-- XP/streak threshold boundaries;
-- locked selection rejection;
-- guest no-cloud behavior;
-- owner isolation;
-- local persistence;
-- high-level `synced:false` behavior when a mocked `api.avatarVault.save` throws.
+- `scripts/validate-v3-avatar-vault.mjs` still requires the source token `bible_congregation_members').update({avatar}`. In current code this is the destructive full-object replacement path.
+- It also requires the candidate migration's add-column/self-policy assumptions, even though read-only live schema investigation shows the column and an own-profile UPDATE policy already exist.
 
-MISSING / INSUFFICIENT:
-- It does not execute or faithfully simulate `src/core/api.js` `avatarVault.save` data-layer behavior.
-- It cannot detect that `save()` replaces the whole `bible_congregation_members.avatar` JSON object with `{cosmetic:...}`.
-- It cannot detect first-write-success / second-write-failure divergence because its API mock throws as one indivisible operation.
-- It does not prove reopening actually retries/reconciles a failed congregation-avatar propagation write.
-- It does not test an invalid remote `selected_style` lifecycle end-to-end.
-- It does not test cross-feature compatibility with Congregation Recognition's full avatar object after a cosmetic update.
+QA decision:
+- The validator currently proves structural presence, not safe persistence semantics. It should not be treated as evidence that cloud persistence is correct.
 
-BLOCKER:
-- The current tests can pass while a real user loses existing avatar fields and while cloud state becomes permanently divergent. This is a test gap for observable persistence/data-integrity behavior, not a speculative edge case.
-
-## VALIDATOR AUDIT
+## EXISTING ACCUMULATED VALIDATOR CHANGE
 FACT:
-- `scripts/validate-v3-avatar-vault.mjs` explicitly requires the source token `bible_congregation_members').update({avatar}`.
-- In the current API this is the path that replaces the full structured avatar object.
-- The validator also requires a migration adding the avatar column/self-update policy based on contract claims that conflict with read-only live schema evidence.
+- #82 lineage changes `scripts/validate-v3-psychometrics.mjs` only to permit #82 to advance through defined lifecycle states instead of remaining permanently `Not started` after #81 freeze.
+- That change appears semantically narrow and does not remove #81 Psychometrics runtime assertions.
+- Master guardrails nevertheless classify any existing accumulated validator change as HIGH-RISK; exact current candidate still requires fresh review after a new complete run.
 
-BLOCKER:
-- The new validator is partially coupled to implementation strings that preserve the current data-integrity defect instead of asserting semantic field preservation/reconciliation. Passing it cannot be used as proof of safe cloud persistence.
-
-## EXISTING ACCUMULATED TEST CHANGE
-FACT:
-- Candidate commit `589827943ba5467e805d793c001a33a41b9f42b7` changes `scripts/validate-v3-psychometrics.mjs` from requiring #82 `Not started` forever to requiring #82 use any defined lifecycle state.
-- This is the same class of stale future-state assertion previously encountered: #81 is already frozen at v3.54 and its accumulated validator must remain valid when later milestones legitimately advance.
-
-QA assessment:
-- The one-line change is narrowly scoped and preserves #81 Psychometrics feature assertions while removing only the obsolete future-row freeze. I find no evidence in that line itself of weakened #81 runtime/security coverage.
-- Because an existing accumulated validator changed, master guardrails still require HIGH-RISK exact-candidate review. This report supplies review for `589827...` only; it does not transfer to a corrected later SHA.
-
-## ACCEPTANCE MATRIX
-- Browse/open from Grow: implementation present; no dedicated executable browser proof for #82.
+## ACCEPTANCE MATRIX AT CURRENT HEAD
+- Browse/open/render source: present.
+- 390px dedicated smoke source: present, not yet exact-run at current SHA.
 - Select unlocked style: edge-covered.
 - Reject locked style: edge-covered.
-- Guest persistence/isolation: edge-covered with in-memory storage double.
-- Signed-in cloud persistence: API boundary exists; unsafe semantics and incomplete faithful tests.
-- Preserve existing avatar data: FAIL by source inspection; no regression test.
-- Cloud failure/retry: FAIL/UNPROVEN; UI promise not matched by load reconciliation.
-- Leaderboard cosmetic render: source composition present; dedicated browser behavior not executed.
-- 390px no-overflow/interaction: MISSING EVIDENCE.
-- Accumulated prior features: suite executed green, but shared avatar mutation risk is not exercised by current prior tests.
-
-## CROSS-FEATURE RISK
-FACT:
-- Congregation Recognition passes through the full member `avatar` object.
-- #82's save path currently replaces that shared object with a cosmetic-only object.
-
-Therefore a dedicated regression must verify that existing avatar keys survive #82 selection and that existing congregation surfaces still render correctly.
+- Guest persistence/isolation: edge-covered.
+- Signed-in cloud persistence: implementation exists but unsafe/incompletely tested.
+- Preserve existing avatar fields: **FAIL by source inspection**.
+- Partial cloud failure/reopen recovery: **FAIL/UNPROVEN by source inspection**.
+- Leaderboard cosmetic source rendering: present; preservation compatibility unproven.
+- Full accumulated current-SHA execution: **MISSING**.
 
 ## READY / NOT READY
-**NOT READY** for HIGH-RISK promotion at `589827943ba5467e805d793c001a33a41b9f42b7`.
+**NOT READY** for promotion at `37f1dc671804a1bb67ede2e5104002160b24c9dd`.
 
-Reasons:
-1. Concrete shared-avatar field-loss defect is not covered and is visible in current API semantics.
-2. Partial cloud-write recovery promised by UI is not implemented/proven.
-3. #82-specific browser/mobile smoke is absent despite the milestone's own 390px acceptance requirement.
-4. New architecture validator enforces defective implementation shape instead of safe persistence semantics.
+The dedicated 390px smoke gap is now corrected in source. Promotion remains blocked because the current cloud persistence semantics can destroy shared avatar fields and can leave unreconciled split state, neither of which the present tests can detect. In addition, no complete exact-SHA run has executed the newly added smoke at the current head.
 
-## NEXT REQUIRED QA EVIDENCE
-- Correct the product/data contract first; do not change tests merely to match current behavior.
-- Add a faithful API/data-layer regression that starts with a structured avatar and proves cosmetic selection preserves all unrelated keys.
-- Add first-write-success / second-write-failure recovery coverage and prove reopen/retry convergence.
-- Add a real Playwright Avatar Vault smoke at 390px covering open, select, visible state, return navigation, no horizontal overflow/page error, and leaderboard/consumer rendering where feasible.
-- Keep all prior accumulated coverage.
-- Run a new exact-SHA complete functional gate.
-- Because the corrected SHA will differ, obtain fresh A4 review for that exact HIGH-RISK candidate; no READY transfers from this report.
+After product/data-contract correction, add faithful regressions, run the entire accumulated suite on the new exact SHA, and obtain a fresh A4 review for that exact candidate. No READY transfers across SHAs.
