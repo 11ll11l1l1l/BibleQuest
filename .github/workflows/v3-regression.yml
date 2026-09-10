@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3.53-personality-profile-functional-097f6-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -16,10 +13,6 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f
-      - name: Assert exact Personality Profile functional candidate
-        run: test "$(git rev-parse HEAD)" = "097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
