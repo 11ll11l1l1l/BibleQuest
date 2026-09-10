@@ -15,7 +15,7 @@ for(const code of['BQ_ASSIGNMENT_NOT_OPEN','BQ_ASSIGNMENT_REFLECTION_REQUIRED','
 if(!owner.includes("const EVIDENCE_TYPES=Object.freeze(['none','text','confirmation'])"))fail('Assignments owner must retain the recovered evidence types.');
 if(/linkedActivity|linked_activity/.test(owner))fail('#74 Assignments owner must not ingest linked activity; launching belongs to #79.');
 
-for(const token of['data-assignment-advanced-meta','data-assignment-scheduled','name="quizScore"','name="confirmed"','recurrence is stored'])if(!ui.includes(token))fail(`Assignments UI missing #74 presentation contract: ${token}`);
+for(const token of['data-assignment-advanced-meta','data-assignment-scheduled','name="quizScore"','name="confirmed"','Recurrence is stored'])if(!ui.includes(token))fail(`Assignments UI missing #74 presentation contract: ${token}`);
 if(/linkedActivity|linked_activity|data-assignment-create|action:['"]create/.test(ui))fail('#74 member UI must not implement leader create/publish or #79 linked activity.');
 
 for(const field of['schedule_at','recurrence_rule','reminder_at','required_reflection','min_quiz_score','evidence_type'])if(!api.includes(field))fail(`Central API assignment projection missing #74 field: ${field}`);
