@@ -68,3 +68,11 @@ A #76 candidate requires:
 3. 390 px browser/mobile coverage proving the real `#/ministry-hub` route opens, member/ministry presentation differs correctly, current destinations navigate, deferred destinations stay disabled, and the page does not overflow;
 4. the full accumulated v3 regression workflow with all prior tests retained and the new #76 tests invoked;
 5. exact-SHA verification before inventory promotion or release freeze.
+
+## Functional verification evidence
+
+Exact functional candidate `dfc6440cd7105c73107081dfb4fb16f8bfac2d71` passed complete GitHub Actions run `34460593373` on 2026-09-10. The isolated workflow explicitly checked out and asserted that exact SHA, then passed the accumulated architecture validators, accumulated edge/security regressions and complete Playwright/browser-mobile regression suite.
+
+No application failure was observed in that exact functional gate. The candidate intentionally did not copy the retained v2 hub's direct-client messages/devotionals, polls, calendar or media CRUD because those behaviors exceed the proven #76 contract and would broaden the trust boundary.
+
+The functional contract is therefore complete. Inventory/status/handoff bookkeeping may represent #75 as Regression-tested and #76 as Verified, but the resulting changed bookkeeping SHA must itself pass a new complete exact-SHA accumulated gate before v3.49 is frozen. No PASS transfers from the functional SHA to the bookkeeping SHA.
