@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.52-linked-activities-functional-20260910
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: b446ea26c190905efa6af2f45727f920eb643cb9
+      - name: Assert exact Linked Activities candidate
+        run: test "$(git rev-parse HEAD)" = "b446ea26c190905efa6af2f45727f920eb643cb9"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
