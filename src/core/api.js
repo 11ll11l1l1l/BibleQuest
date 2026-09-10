@@ -296,6 +296,8 @@ export function createApi() {
       if(progressError)throw progressError;
       return {assignments:assignmentRows,progress:progress||[]};
     },
+    async targets(congregationId) { return invoke('bq-assignment',{action:'targets',congregationId}); },
+    async create(congregationId,payload) { return invoke('bq-assignment',{action:'create',congregationId,...payload}); },
     async start(congregationId,assignmentId) { return invoke('bq-assignment',{action:'start',congregationId,assignmentId}); },
     async complete(congregationId,assignmentId,submission,quizScore=null) { return invoke('bq-assignment',{action:'complete',congregationId,assignmentId,submission,quizScore}); },
     async subscribe(congregationId,userId,listener) {
