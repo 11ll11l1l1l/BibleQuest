@@ -1,39 +1,39 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 13:59 JST
+Generated: 2026-09-10 14:58 JST
 
 ## Freshness
 - Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
 - Canonical: `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
 - Quarantine candidate: `agent/a1-work/075-assignment-push` at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
 - Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact functional evidence: run `34438690160` succeeded. Its verification workflow explicitly checked out/asserted `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`, then executed accumulated architecture validators, accumulated edge regressions, and accumulated browser/mobile regressions.
-- A2 report analyzed `1ddc4c8b8fd90f9a3e5a1b0a9788cb6dc1ea57be`: **STALE for candidate promotion**.
-- A3 report analyzed `d13ba6b9729a02021ee5efab961c6c233a0b669e`: **STALE for candidate promotion**, but its authorization finding was independently rechecked against the current candidate and is corrected there.
-- A4 report analyzed `d13ba6b9729a02021ee5efab961c6c233a0b669e`: **STALE for candidate promotion**. It has not issued READY for exact candidate `78fa191f...`.
-- HIGH-RISK independent review requirement is therefore **NOT YET SATISFIED**.
+- Exact functional evidence: run `34438690160` succeeded; its job asserted the intended functional candidate and completed accumulated architecture, edge and browser/mobile phases.
+- A2: **CURRENT**, exact candidate `78fa191f...`; no contract blocker.
+- A3: **CURRENT**, exact candidate `78fa191f...`; architecture/security READY, prior response-authorization defect corrected.
+- A4: **CURRENT**, exact candidate `78fa191f...`; **NOT READY** because trusted `targets/create` authorization and foreign/inactive target rejection lack faithful executable server-boundary coverage.
+- HIGH-RISK independent promotion requirement is **NOT SATISFIED**.
 
 ## BLOCKER
-- **None established on exact candidate `78fa191f...`.** Primary source now separates response eligibility from ministry visibility: `start`/`complete` calls `assignmentRecipient`, which accepts `all`, exact member, team membership, or active group membership rather than ministry role alone. The permanent recipient-authorization regression is present and was invoked by the successful exact-candidate accumulated run.
+- **None established as a current product defect.** Direct source inspection confirms `targets/create` are ministry-gated and member/team/group targets are congregation/active scoped; no contrary runtime result exists. The issue is proof strength, not a reproduced implementation failure.
 
 ## MILESTONE
-- **Fresh A4 exact-candidate READY review is still required before bookkeeping/promotion.** Counterfactual: if A1 proceeds now, a HIGH-RISK trusted-server authorization candidate would be promoted without the independent exact-SHA QA barrier explicitly required by MASTER_CONTROL/guardrails. The previous A4 NOT READY finding targeted `d13ba6b...`; its identified authorization defect is corrected, but its promotion disposition cannot transfer to `78fa191f...`.
-- **Bookkeeping exact-SHA gate remains required after review authorization.** Even after A4 READY and A5 promotion recommendation, A1 must prepare bookkeeping off-canonical and execute the complete accumulated suite against the exact bookkeeping SHA before canonical/release advancement. Functional green does not substitute for this gate.
+- **Add faithful executable trusted-boundary coverage for #75 publish target discovery/create authorization and target rejection.** Current `tests/v3-assignment-push-edge.mjs` exercises a mocked client API and proves the trusted function's critical server checks only with `source.includes(...)`. This does not satisfy the guardrail requiring faithful server/trusted-boundary evidence for HIGH-RISK security/scope behavior when feasible. Counterfactual: if ignored, #75 could be promoted while a regression in executable ministry authorization or same-congregation/active target rejection remains undetected despite source strings still matching. Minimum proof: ordinary member denied `targets/create`; ministry roles allowed; foreign/inactive member/team/group targets rejected before insert. Preserve all existing recipient-auth and accumulated coverage. This test addition necessarily creates a new candidate SHA, requiring a new exact accumulated functional run and fresh A3/A4/A5 candidate review.
+- **Exact bookkeeping-SHA complete gate remains required after functional candidate promotion authorization.** Counterfactual: advancing canonical/release without it would violate the release invariant that bookkeeping itself survives the complete accumulated suite.
 
 ## DEFER
 - #15 Japanese furigana and Kids #38-40 remain deferred by user priority.
 - #77 Notification Center/inbox delivery and #79 linked-activity execution remain outside #75.
 
 ## IGNORE
-- The old target-directory gap is resolved in quarantine through the trusted ministry-scoped server projection; do not broaden general Journey Group RLS.
-- A2's zero-run/missing-evidence conclusion and A3/A4's source-demonstrated ministry-response defect are stale as current-candidate conclusions because candidate HEAD moved and exact run `34438690160` now exists.
-- Run `34438622148` fixture failure is not a current product defect; the fixture-only correction is included in `78fa191f...` and the replacement accumulated run is green.
+- Do not treat A4's evidence gap as proof that the current server implementation is defective; no such defect is presently reproduced.
+- Do not broaden general Journey Group RLS: trusted ministry-scoped target discovery already supplies the required directory.
+- Historical candidate/report conclusions before `78fa191f...`, including the old ministry-response defect and fixture failure, are stale as current defects; both were corrected and exact run `34438690160` is green.
 
 ## Firewall decision
-**0 BLOCKER; 2 MILESTONE; promotion recommendation WITHHELD pending fresh A4 READY on exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.**
+**0 BLOCKER; 2 MILESTONE; promotion recommendation WITHHELD.**
 
-The current candidate has exact functional green and the previously identified trust-boundary defect is corrected with permanent executed coverage. However, #75 is HIGH-RISK and the mandatory exact-SHA A4 review has not yet covered this candidate. A5 cannot convert stale A4 evidence into READY.
+Exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` has functional green and current A3 trust-boundary READY, but current A4 is NOT READY on that same SHA. A5 independently confirms the cited proof gap exists: the permanent publish edge test uses mocked `targets/create` behavior and static source-string assertions for the trusted server authorization/scope checks. Under the HIGH-RISK test-integrity rule, this evidence gap must close before promotion.
 
 ## Next safe action
-Keep `agent/a1-work/075-assignment-push` unchanged at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`. A4 should independently audit exact candidate `78fa191f...`, run `34438690160`, accumulated harness integrity, the recipient-authorization regression, and #75 browser/mobile evidence. If A4 returns READY for this exact unchanged SHA and no new primary-evidence defect appears, A5 may recommend HIGH-RISK promotion; A1 may then perform off-canonical bookkeeping and the separate exact-bookkeeping-SHA complete gate. Do not advance canonical or freeze a release before those steps.
+A1 should remain on `agent/a1-work/075-assignment-push` and add only the narrow permanent faithful trusted-boundary test requested above; do not change product behavior unless that test reproduces a real defect. Then run the complete accumulated suite against the resulting exact candidate. A3/A4 must review that exact SHA; A5 may recommend promotion only if A3 remains satisfied, A4 is READY, the accumulated harness is intact and no new current BLOCKER/MILESTONE remains. Bookkeeping and its separate exact-SHA complete gate follow only afterward.
