@@ -77,7 +77,7 @@ The #73 member/ministry split remains unchanged:
 
 ## Permanent verification
 
-Verification must prove:
+Permanent coverage proves:
 
 - valid advanced fields normalize without creating a second owner;
 - malformed schedule/reminder/evidence/quiz thresholds fail closed;
@@ -91,3 +91,11 @@ Verification must prove:
 - #79 linked activity remains outside the #74 browser projection;
 - 390px rendering includes advanced metadata/requirements with no horizontal overflow or console/page errors;
 - the complete accumulated architecture, edge, and browser/mobile suite passes against the exact candidate SHA.
+
+## Verification evidence
+
+- Targeted run `34432082061` exposed `V3-ADVANCED-ASSIGNMENTS-VALIDATOR-001`: a case-sensitive validator fixture mismatch for the already-correct recurrence disclosure. No application behavior changed.
+- Corrected targeted candidate `2bf160004040f46c9d000ba9e114c51704aefb0d` passed validator + edge run `34432169732`.
+- First complete functional run `34432254170` exposed `V3-ASSIGNMENTS-VALIDATOR-FUTURE-STATE-001`: the older #73 validator incorrectly required #74 to remain permanently Not started. The correction preserves #73 ownership boundaries and still keeps #75/#79 closed until their own milestones.
+- Corrected exact functional candidate `f01df3e72b5413bba7ae7d16552fca55a448b766` passed the complete accumulated architecture, edge and Playwright/browser-mobile suite in run `34432456615`.
+- #74 is therefore Verified; #73 advanced to Regression-tested after surviving that complete suite.
