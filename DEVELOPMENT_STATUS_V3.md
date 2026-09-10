@@ -67,9 +67,10 @@ Exact functional candidate `debc386328d4655977681fcb08b7a345346ea3fc` passed run
 
 ## Defect / root-cause ledger
 
-The #79 functional gate reproduced and corrected two issues without weakening application behavior or regression coverage:
+The #79 milestone reproduced and corrected issues without weakening application behavior or regression coverage:
 - Candidate `b446ea26c190905efa6af2f45727f920eb643cb9`, run `34467161828`: global architecture correctly rejected direct `location.hash` navigation from `src/features/assignments/index.js`. Root cause was navigation ownership leakage. The design was corrected so linked launch requests navigation through the central Router owner; the architecture validator was not weakened.
 - Candidate `d6bb001ee6ce29740f61c6f3e40468f2ab5be3c3`, run `34467523354`: architecture and edge phases passed, but the older Assignments browser regression expected the generic Start button for a `reading` fixture. #79 correctly turns Reading into a linked activity, so this was a stale test-fixture contract rather than a product defect. The old generic-start fixture was changed to `custom`; #79's dedicated smoke retains linked-Reading coverage. The full suite then reran green on `debc386328d4655977681fcb08b7a345346ea3fc`.
+- Bookkeeping candidate `270d58a5e34b69b99af87abade3c53099348168e`, run `34468933900`: exact SHA and the global architecture/inventory checks passed, but the older #73 Assignments validator still hard-coded inventory #79 to remain `Not started`. Root cause was a stale future-state assertion that became invalid only after #79 legitimately reached Verified. The #73 validator was narrowed to accept the normal lifecycle states for #79 while #79's dedicated validator remains authoritative for its recovered contract. No runtime code or #79 acceptance test was weakened.
 
 Two zero-byte verification-preparation artifacts were created accidentally during isolated branch setup and immediately removed. Neither remains in the product candidate or changes runtime behavior. Verification branches remain non-release refs.
 
