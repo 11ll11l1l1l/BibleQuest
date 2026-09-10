@@ -1,77 +1,70 @@
 # Autonomous schedule and interference control
 
-## Cycle
-Five scheduled tasks run every hour, staggered by 10 minutes.
+## Hourly cycle
+- A2 Contract Investigator: :28 JST
+- A3 Architecture/Security: :38
+- A4 QA/Regression: :48
+- A5 Firewall/Triage: :58
+- A1 Release Captain: :08
 
-JST schedule:
-- Agent 2 Contract Investigator: minute 28.
-- Agent 3 Architecture/Security Investigator: minute 38.
-- Agent 4 QA/Regression Investigator: minute 48.
-- Agent 5 Firewall/Triage Controller: minute 58.
-- Agent 1 Release Captain: minute 08 of the following review window.
+The rolling order is A2 -> A3 -> A4 -> A5 -> A1. Investigators prepare independent evidence, A5 filters it, and A1 writes only from current exact state.
 
-The intended pipeline is A2 -> A3 -> A4 -> A5 -> A1. Investigators prepare evidence, A5 filters it, and A1 consumes only fresh current-state conclusions.
+## Productive utilization
+Do not optimize for commits/reports. Use execution time on the active exact state.
 
-## Safety-first utilization
-Agents should use available execution time productively, but must never optimize for number of commits, reports, or milestones.
+- A2: active contract first, then at most next two likely dependencies.
+- A3: active architecture/security first, especially HIGH-RISK trust boundaries, then at most next two.
+- A4: exact candidate audit first; otherwise active acceptance, then at most next two.
+- A5: exact-state reconciliation and concise TRIAGE; no manufactured work.
+- A1: one canonical milestone at a time, but as many safe implementation/test/gate steps as the run permits.
 
-- A2: active milestone first, then at most the next two dependency-likely milestones.
-- A3: active milestone/candidate first, then at most the next two architecture/security contracts.
-- A4: audit any active exact candidate first, then prepare the active/next acceptance contract.
-- A5: reconcile all fresh reports against the current exact state and keep TRIAGE current. Do not invent work when no new evidence exists.
-- A1: one canonical milestone at a time. It may continue multiple safe steps in a run, but unverified implementation stays quarantined off-canonical.
+## Writer serialization
+`automation/WRITE_LEASE.md` serializes A1 product/canonical writes.
 
-Read-only reconnaissance, test planning, branch reconciliation and evidence review are valid productive work. Agents must not manufacture changes merely to stay busy.
+- Acquire by conditional update of the exact lease blob SHA with unique nonce/milestone/base/work branch.
+- Re-check the same nonce before every product/test/workflow/canonical/release write.
+- A conflict means yield.
+- Normal exit releases FREE.
+- Lease expiry is only a takeover threshold; expired work must be reconciled before takeover.
+- Manual development should pause A1 or use a separate manual branch without concurrent promotion.
 
-## Writer lease
-`automation/WRITE_LEASE.md` is the serialization primitive for Agent 1 product/canonical writes.
+## Quarantine branch
+A1 implementation lives under `agent/a1-work/<milestone-id>-<slug>`, never directly on the canonical milestone branch.
 
-- A1 must atomically acquire the lease using the current file/blob SHA before any product/test/workflow/canonical/release write.
-- The lease records a unique run nonce, active milestone, base SHA and work branch.
-- A1 must re-read and verify the same nonce before every later product/canonical write.
-- A conditional update conflict means another writer won; A1 must yield.
-- Normal exit releases the lease to FREE.
-- An unreleased lease may be treated as expired only after 80 minutes. Before taking over an expired lease, reconcile all in-progress branches/evidence left by the prior run.
-- A manual chat should disable A1 before doing canonical BibleQuest development. If not disabled, it must honor the same lease.
+Active #75 work branch: `agent/a1-work/075-assignment-push` from canonical SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
 
-## Autonomous quarantine
-A1 implementation does not land directly on the canonical milestone branch.
+The older `agent/a1/m75-assignment-push-work` is non-canonical and should not receive new work.
 
-1. Reconcile canonical milestone HEAD against the latest frozen release.
-2. Create/resume `agent/a1-work/<milestone>` from the reconciled canonical HEAD.
-3. Implement and test there.
-4. Run the complete exact functional gate on the work candidate.
-5. Allow A4/A5 the next review cycle to inspect that exact candidate.
-6. Prepare bookkeeping off-canonical and run the exact bookkeeping gate.
-7. Only then advance the canonical milestone branch and frozen release to the exact green bookkeeping SHA.
+## Risk-aware review timing
+HIGH-RISK work waits for exact-candidate A4 review plus A5 promotion recommendation after functional green and before bookkeeping/promotion. This includes auth/RLS/trusted-server/migration/global-owner/dependency/workflow changes.
 
-A failed autonomous branch cannot damage the last canonical/frozen verified state unless somebody intentionally promotes it in violation of this protocol.
+NORMAL-RISK bounded work does not wait an extra cycle solely for exact-candidate review. If contract is complete, no current BLOCKER/MILESTONE remains, and exact functional plus bookkeeping gates are green, A1 may promote in the same run. A4/A5 audit it on the next cycle; a genuine regression blocks the next milestone.
 
-## Freshness rule
-Every investigator report must state the exact canonical HEAD and exact candidate SHA it analyzed. A5 must state these exact values at the top of TRIAGE.
+This keeps independent review where a weak writer is most dangerous without forcing an hourly latency tax on every bounded UI/local milestone.
 
-A report is stale when the exact state it analyzed is no longer the state being acted on. A stale report may be contextual evidence but cannot by itself block or promote work. Before promotion, A1 independently verifies all fresh BLOCKER/MILESTONE items against the exact candidate.
+## Freshness
+Every report states exact canonical HEAD, work-candidate SHA when present, frozen base and staleness conditions. TRIAGE states the exact state it covers.
 
-## No cross-role writes
-- A1: work/canonical/release state, CURRENT, WRITE_LEASE.
-- A2: contract reports only.
-- A3: architecture reports only.
-- A4: QA reports only.
-- A5: TRIAGE and triage reports only.
-
-No agent edits another role's report.
+Investigators perform primary-evidence analysis before reading TRIAGE to reduce correlated/anchored mistakes. Stale candidate-specific reports cannot block or authorize current work.
 
 ## Verification interference
-Do not launch a second required verification for the same candidate while the first is running. `cancelled`, `skipped`, `timed_out`, partial, or unexecuted phases are not successful evidence.
+Do not launch duplicate required runs for the same candidate while one is active. Cancelled, partial, timed-out, skipped or unexecuted phases are not green.
 
-Temporary `push:` trigger commits are permitted only on isolated `verify/` branches. The workflow must explicitly checkout/assert the intended clean SHA. Trigger commits are never candidates, canonical branch tips, releases, or safety refs and must be removed/reset after use.
+Temporary `push:` triggers belong only on isolated `verify/` branches and must explicitly checkout/assert the intended clean SHA. Trigger commits are never candidates, canonical tips, releases or safety refs.
+
+## No cross-role writes
+- A1: work/canonical/release state, CURRENT and WRITE_LEASE.
+- A2: contract reports.
+- A3: architecture reports.
+- A4: QA reports.
+- A5: TRIAGE/triage reports.
 
 ## Recovery
-If autonomous work becomes incorrect:
-1. disable all five BibleQuest scheduled agents;
-2. inspect the latest exact frozen verified release and current lease;
-3. compare the bad autonomous work branch with the frozen release and `safety/pre-autonomous-agents-20260910-*` refs;
-4. discard or supersede the autonomous work branch rather than rewriting verified history;
-5. create a fresh recovery/work branch from the appropriate exact checkpoint.
+If autonomous work becomes unsafe:
+1. disable all five agents;
+2. inspect lease, current work branch and exact run evidence;
+3. compare against latest frozen release and safety refs;
+4. discard/supersede unverified work branches rather than rewriting verified history;
+5. resume from a fresh exact known-good checkpoint.
 
-Safety refs and frozen releases are never moved to hide a mistake.
+Safety refs and frozen releases never move to hide mistakes.
