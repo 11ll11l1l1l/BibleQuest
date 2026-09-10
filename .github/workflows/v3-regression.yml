@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3.48-assignment-push-bookkeeping-a1-20260910-1628-fix2
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -16,10 +13,6 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: e725e5dee5a46fcaebf05200301efdb93f868b22
-      - name: Assert exact bookkeeping SHA
-        run: test "$(git rev-parse HEAD)" = "e725e5dee5a46fcaebf05200301efdb93f868b22"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
