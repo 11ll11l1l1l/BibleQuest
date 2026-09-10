@@ -6,8 +6,8 @@ This file is the authoritative parity ledger for the rebuild.
 
 - **Regression-tested:** 92
 - **Verified:** 1
-- **Implemented:** 0
-- **Not started:** 7
+- **Implemented:** 1
+- **Not started:** 6
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -63,7 +63,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Verified | 2–6 players; rotating turns; scoreboard; finish |
-| 43 | Live Rooms | Yes | Compatibility | Not started | create/join/leave; reconnect; no stale room state |
+| 43 | Live Rooms | Yes | Compatibility | Implemented | create/join/leave; reconnect; no stale room state |
 | 44 | Bible World | Yes | Clean | Not started | render path; unlock thresholds; route into content |
 | 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
 | 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
