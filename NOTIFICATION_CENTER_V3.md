@@ -1,6 +1,7 @@
 # BibleQuest v3 Notification Center contract — milestone #77
 
 Recovered: 2026-09-10
+Functional verification: 2026-09-10 JST
 
 ## Authoritative acceptance
 
@@ -71,10 +72,23 @@ Text is rendered through DOM text or escaped HTML only. `action_payload` is reta
 
 ## Permanent acceptance evidence
 
-A #77 candidate requires:
+Permanent #77 evidence is:
 
-1. architecture validator proving one API boundary, no new Supabase/global/realtime owner, exact allowlisted targets, and workflow inclusion;
-2. executable edge tests for signed-out behavior, own-row normalization, cross-user rejection, expiry rejection, read/unread, mark-all, supported/unsupported actions, refresh, and remote failure;
-3. browser/mobile smoke test at 390 px proving the real route loads, unread state changes, refresh works, safe target routing works, unsupported targets do not navigate, and no horizontal overflow occurs;
-4. the complete accumulated v3 architecture, edge/security, and browser/mobile regression suite with all prior coverage retained;
-5. exact-SHA functional verification, then a separate exact-SHA bookkeeping verification before `release/v3.50-notification-center` may be frozen.
+1. `scripts/validate-v3-notification-center.mjs` — architecture/API/RLS/action-allowlist/workflow boundary;
+2. `tests/v3-notification-center-edge.mjs` — signed-out, own-row, malformed timestamp, expiry, read/unread, mark-all, supported/unsupported action, refresh, remote-error and local-preview coverage;
+3. `tests/v3-notification-center-smoke.mjs` — real route plus 390 px browser/mobile unread, refresh, allowlisted navigation, unsupported-target, overflow and touch-target coverage;
+4. accumulated invocation of all three in `.github/workflows/v3-regression.yml` without removing prior coverage.
+
+## Exact functional verification
+
+Exact functional candidate `f911226f2121eb57a2d068ec43b577536328899e` passed GitHub Actions run `34463380194`.
+
+The isolated one-shot verification branch explicitly checked out and asserted that exact candidate SHA before testing. The exact-SHA assertion, complete accumulated architecture validators, complete accumulated edge/security regressions, and complete accumulated browser/mobile regressions all completed successfully.
+
+The earlier functional attempt failed only because the new #77 validator expected the wrong literal inventory row name/classification. The application was not changed to get that run green; the validator was corrected to match the authoritative ledger, and the corrected exact candidate was rerun through the complete gate.
+
+The missing-required-timestamp defect found during manual review was corrected before the successful candidate: normalization now throws `BQ_NOTIFICATION_DATA` immediately rather than returning an Error object that could fail later during sort. Permanent edge coverage retains that root-cause regression.
+
+## Release gate
+
+Functional verification does not transfer to changed bookkeeping commits. Before `release/v3.50-notification-center` may be frozen, the final bookkeeping SHA must pass a separate complete accumulated exact-SHA workflow while normal candidate/release Actions remain `workflow_dispatch` only.
