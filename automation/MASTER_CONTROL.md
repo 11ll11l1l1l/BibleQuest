@@ -20,7 +20,7 @@ Every agent first reads:
 3. its own role file under `automation/agents/`.
 4. `automation/WRITE_LEASE.md` and `automation/SCHEDULE_AND_LOCKING.md` as relevant to the role.
 
-After that, follow the role-specific startup order. In particular, investigators must inspect primary repository evidence before reading TRIAGE, and A1 must inspect live product state before using TRIAGE as an action filter.
+After that, follow the role-specific startup order. Investigators inspect primary repository evidence before reading TRIAGE, and A1 inspects live product state before using TRIAGE as an action filter.
 
 If control text disagrees with live repository state or executed exact-SHA evidence, live evidence wins. Refresh the stale control file rather than following it blindly.
 
@@ -46,7 +46,7 @@ Control-plane ownership:
 No agent edits another role's report.
 
 ## Hard safeguard 1 — writer lease
-Before any product, test, workflow, canonical branch, bookkeeping, handoff, or release write, A1 must hold the lease in `automation/WRITE_LEASE.md`.
+Before any product, test, workflow, canonical branch, bookkeeping, handoff, or release write, A1 must hold `automation/WRITE_LEASE.md`.
 
 Lease protocol:
 1. Re-read the exact current lease file.
@@ -75,7 +75,7 @@ Active #75 work branch: `agent/a1-work/075-assignment-push`, created from canoni
 The older `agent/a1/m75-assignment-push-work` branch is non-canonical and must not receive new autonomous work.
 
 ## Hard safeguard 3 — risk-aware independent review
-A1 must classify the milestone before its first product write.
+A1 classifies the milestone before its first product write.
 
 HIGH-RISK includes auth/session, authorization/RLS/grants, trusted Edge/RPC/server authority, schema/data migrations, production/deployment configuration, global router/shell ownership, package/dependency/workflow changes, replacing a verified owner, or broad cross-feature persistence/sync semantics.
 
@@ -92,28 +92,29 @@ If NORMAL-RISK implementation unexpectedly touches a HIGH-RISK area, reclassify 
 ## Hard safeguard 4 — report independence, provenance, freshness
 A2-A4 independently inspect primary evidence before reading TRIAGE. They must not cite another agent's opinion as proof.
 
-Every A2-A4 report records:
-- milestone;
-- canonical branch and exact HEAD;
-- work candidate SHA when present;
-- frozen base release/SHA;
-- primary evidence inspected;
-- FACT vs INFERENCE/RECOMMENDATION;
-- missing evidence;
-- exact changes that would make the report stale.
+Every A2-A4 report records milestone, canonical branch/exact HEAD, work candidate SHA when present, frozen base release/SHA, primary evidence inspected, FACT vs INFERENCE/RECOMMENDATION, missing evidence and exact staleness conditions.
 
 A5 TRIAGE records exact canonical/candidate/frozen SHAs and source-report freshness. Candidate-specific claims are stale when candidate HEAD changes.
 
-Only fresh, evidence-backed BLOCKER/MILESTONE findings can stop current work or authorize HIGH-RISK promotion. Agreement between agents is not evidence by itself.
+Only fresh evidence-backed BLOCKER/MILESTONE findings can stop current work or authorize HIGH-RISK promotion. Agreement between agents is not evidence by itself.
 
-## Hard safeguard 5 — scope and test integrity
+## Hard safeguard 5 — scope and accumulated test integrity
 One canonical milestone at a time. Work only the recovered current contract plus permanent tests/bookkeeping.
 
 Do not mix later inventory rows, opportunistic cleanup, cosmetic redesign, mass formatting, unrelated refactors, retired parallel owners, or broad architecture changes.
 
 If a fix unexpectedly requires another verified owner, a global shell, dependency/workflow, migration, or unrelated feature, prove the dependency and reclassify scope/risk before continuing.
 
-Tests must be capable of detecting the claimed missing behavior. Never weaken/delete/skip/narrow an existing regression to make green. Existing-test changes require a documented `TEST/FIXTURE DEFECT` explanation that preserves the intended semantic assertion. Runtime/security claims require executable or faithful trusted-boundary evidence, not source-string checks or client mocks alone when stronger evidence is feasible.
+A green workflow counts only if the intended accumulated tests actually ran.
+- A1 may add the current milestone's new validator/tests and wire them into the accumulated suite.
+- A1 must not delete, skip, comment out, narrow, weaken, rename away, shorten past execution, or silently stop invoking an existing regression to obtain green.
+- Any modification to an existing accumulated validator/test, or to `.github/workflows/v3-regression.yml` beyond adding the current milestone's required invocation, is automatically HIGH-RISK and requires a reproduced root cause plus exact-candidate A4/A5 review before promotion.
+- Existing-test changes require a documented `TEST/FIXTURE DEFECT` explanation and must preserve the original semantic assertion.
+- A4 verifies that the exact executed workflow at the candidate SHA actually invokes the new milestone coverage and all prior accumulated coverage.
+- A5 treats unexplained removal/bypass/relaxation of accumulated regression protection as BLOCKER.
+- Test success obtained by changing expected behavior to match an incorrect implementation is invalid.
+- Runtime/security claims require executable or faithful trusted-boundary evidence; source-string checks or client mocks alone are insufficient when stronger evidence is feasible.
+- If a required scenario cannot execute in the available environment, record MISSING EVIDENCE rather than replacing it with a weaker test and calling it equivalent.
 
 ## Canonical milestone lifecycle
 contract recovery -> architecture/security recovery as applicable -> isolated implementation -> permanent tests -> exact complete functional gate -> HIGH-RISK independent review if required -> off-canonical bookkeeping -> exact bookkeeping-SHA complete gate -> canonical fast-forward -> frozen release -> next milestone.
