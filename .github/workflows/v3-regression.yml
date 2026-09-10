@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.56-innovation-suite-functional-08c3b-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,12 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 08c3b8ba430f0440fdae4c9c7aeee09ad036a0e4
+      - name: Assert exact Innovation Suite functional candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "08c3b8ba430f0440fdae4c9c7aeee09ad036a0e4" ]; then echo "SHA mismatch: expected 08c3b8ba430f0440fdae4c9c7aeee09ad036a0e4, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
