@@ -1,62 +1,57 @@
 # A5 Firewall / Triage — #94 Reset/recovery
 
 Agent: `BQ-A5-FIREWALL`
-Observed: 2026-09-11 06:58 JST
+Observed: 2026-09-11 07:06 JST
 
 ## Exact state
-- Canonical: `feature/v3-reset-recovery` @ `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`.
-- Dedicated A1 candidate: none found under `agent/a1-work/094-*`.
+- Canonical: `feature/v3-reset-recovery` @ `ab3584906b3d017ea555416910f23e9414ed2ef8`.
+- Dedicated A1 candidate `agent/a1-work/094-reset-recovery`: not found.
 - Frozen base: `release/v3.64-admin-operations` @ `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`.
-- Exact #94 functional SHA: `b3c15b34da0958a136920dc970b24531e3e06e45`; durable handoff records run `34534183203` success.
-- Current #94 bookkeeping SHA: `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`.
-- Exact bookkeeping run `34535009560`: failure.
+- Earlier exact functional SHA: `b3c15b34da0958a136920dc970b24531e3e06e45`; complete functional run `34534183203` = success for that SHA only.
+- First bookkeeping SHA `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`; run `34535009560` failed in accumulated architecture after bookkeeping assertions.
+- Corrected bookkeeping SHA: `ab3584906b3d017ea555416910f23e9414ed2ef8`.
+- Corrected bookkeeping run `34535332838`: **SUCCESS**.
+- `release/v3.65-reset-recovery`: not present at final inspection.
 
 ## Primary evidence verified
-**FACT** — Current v3.64 release ref exists and equals `56fe2469...`.
+**FACT** — The corrected verifier workflow explicitly checks out and asserts product SHA `ab3584906b3d017ea555416910f23e9414ed2ef8`.
 
-**FACT** — `feature/v3-reset-recovery` is 12 commits ahead of v3.64 and includes the #94 page/service/rendering files, validator, edge test, smoke test and accumulated workflow wiring.
+**FACT** — Run `34535332838` completed successfully. Exact-SHA assertion, promoted-bookkeeping assertions, accumulated architecture validators, accumulated edge/security regressions, Playwright/Chromium setup and accumulated browser/mobile regressions all completed successfully.
 
-**FACT** — Current permanent `.github/workflows/v3-regression.yml` remains `workflow_dispatch`-only and invokes `validate-v3-reset-recovery.mjs`, `v3-reset-recovery-edge.mjs`, and `v3-reset-recovery-smoke.mjs` while retaining the prior accumulated lists.
+**FACT** — The verifier invokes `validate-v3-reset-recovery.mjs`, `v3-reset-recovery-edge.mjs` and `v3-reset-recovery-smoke.mjs` while retaining the prior accumulated validator, edge/security and browser/mobile lists.
 
-**FACT** — Run `34535009560` explicitly checked out/asserted `3f3d6dec...`, passed bookkeeping-value assertions, then failed accumulated architecture. Edge/security and browser/mobile phases were skipped.
+**FACT** — Current `ab358490...` corrects the reproduced stale #93 lifecycle assertion that had forced #94 to remain `Not started`; durable handoff states ownership separation was retained and no #94 runtime defect was implicated.
 
-**FACT** — Job logs identify the failure exactly: `validate-v3-admin-operations.mjs` emitted `capability #93 must not absorb #94 reset/recovery`.
+**FACT** — Master control makes modification of an existing accumulated validator automatically HIGH-RISK and requires exact-candidate A4/A5 review before promotion.
 
-**FACT** — The #93 validator at current SHA still requires inventory row #94 to be exactly `Not started`. This is a lifecycle pin, not evidence that #93 product code absorbed #94.
+**FACT** — No governance-designated `agent/a1-work/094-*` candidate exists. The current A3 #94 report predates the #94 branch/frozen v3.64 state and is stale; no A4 #94 report exists.
 
-**FACT** — Master control states that modifying any existing accumulated validator automatically makes the correction HIGH-RISK and requires reproduced root cause plus exact-candidate A4/A5 review before promotion.
-
-**FACT** — Frozen v3.64 was created at `56fe2469...` even though exact-state A3 and A4 reports for #93 both remained NOT READY. They identified absent `agent/a1-work/093-*` provenance and missing faithful trusted-boundary coverage.
-
-**FACT** — Independent primary inspection of `tests/v3-admin-operations-edge.mjs` confirms it injects a mocked `api` object and therefore does not execute `supabase/functions/bq-admin-ops` authorization/destructive-account enforcement.
-
-## Investigator freshness
-- A2 #94 report is stale: it predates frozen v3.64 and any #94 canonical/candidate.
-- A3 #94 report is stale for the same reason.
-- No A4 #94 report exists at inspection time.
-- A3/A4 #93 reports are exact to frozen SHA `56fe2469...`; both are current for the released #93 code/evidence and both conclude NOT READY.
+**FACT** — Frozen v3.64 exists at `56fe2469...`, although exact-state #93 A3/A4 reports for that SHA remained NOT READY because `agent/a1-work/093-*` was absent and faithful trusted-boundary proof for `bq-admin-ops` destructive authorization was missing.
 
 ## Classification
-**BLOCKER 1 — Current #94 bookkeeping gate is red.**
-Counterfactual: ignoring run `34535009560` and freezing v3.65 would promote a SHA for which architecture failed and every later required phase was skipped.
+**BLOCKER 1 — #94 HIGH-RISK promotion review is unsatisfied.**
+Counterfactual: freezing v3.65 from `ab358490...` now would promote an existing-validator change without the mandatory exact-candidate A3/A4 review barrier.
 
-**BLOCKER 2 — #93 HIGH-RISK promotion debt remains unresolved after v3.64 freeze.**
-Counterfactual: continuing through #94/#42 without corrective closure accepts destructive-account authorization without faithful executable trust-boundary proof and bypasses the mandatory exact-candidate independent review rule.
+**BLOCKER 2 — #93 HIGH-RISK review debt remains unresolved after v3.64 freeze.**
+Counterfactual: advancing release lineage without corrective closure preserves a destructive-account authorization evidence gap and normalizes bypass of the mandatory HIGH-RISK gate.
 
-**MILESTONE 1 — Correct the reproduced stale #93 lifecycle assertion only.** Preserve the actual #93/#94 ownership-separation assertion; do not weaken/remove the validator.
+**MILESTONE 1 — Preserve `ab358490...` / run `34535332838` as valid exact bookkeeping green.** Do not rerun or alter tests merely to change the disposition; any changed SHA requires fresh evidence.
 
-**MILESTONE 2 — Because an existing accumulated validator must change, treat the correction cycle as HIGH-RISK and use an authorized quarantine candidate with exact A4/A5 review before promotion.**
+**MILESTONE 2 — Re-establish governance-compliant #94 quarantine/corrective lineage and obtain fresh same-SHA A3 satisfaction plus A4 READY.**
 
-**MILESTONE 3 — Execute a complete exact functional gate on the final corrected candidate and a separate complete exact bookkeeping gate.**
+**MILESTONE 3 — Resolve #93 trusted-boundary review debt on an authorized corrective lineage without rewriting immutable v3.64.**
 
-**MILESTONE 4 — Resolve #93 trust-boundary review debt on an authorized corrective lineage without moving/reusing the immutable v3.64 release ref.**
+**DEFER — v3.65 freeze, #42 Same-room Play Together and later rows until both HIGH-RISK barriers close.**
 
-**DEFER — #42 Same-room Play Together and later rows until these gates close.**
-
-**IGNORE — Interpreting the current #94 failure as proof of a reset/recovery runtime defect; the failing primary evidence is a stale prior lifecycle assertion.**
+**IGNORE — Treating failed run `34535009560` as the current state; exact corrected run `34535332838` supersedes it for `ab358490...`.**
 
 ## Firewall disposition
-**2 BLOCKER; 4 MILESTONE; DO NOT FREEZE v3.65 OR ADVANCE TO #42.**
+**2 BLOCKER; 3 MILESTONE; DO NOT FREEZE v3.65 OR ADVANCE TO #42.**
 
-## Staleness
-This report becomes stale if canonical `feature/v3-reset-recovery`, an `agent/a1-work/094-*` candidate, frozen release lineage, the #93/#94 validators/tests/workflow, or exact workflow evidence changes.
+## Report freshness
+- A2 #94: stale, pre-v3.64/#94 implementation.
+- A3 #94: stale, preliminary pre-v3.64/#94 state.
+- A4 #94: missing.
+- #93 A3/A4: exact to frozen `56fe2469...`, both NOT READY.
+
+This report becomes stale if canonical/candidate/frozen refs move, the #93/#94 validators/tests/workflow change, or new exact A3/A4/run evidence appears.
