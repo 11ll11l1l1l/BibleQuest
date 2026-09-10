@@ -7,114 +7,111 @@ Updated: 2026-09-10 JST
 
 - Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
 - Canonical `feature/v3-assignment-push`: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Quarantine `agent/a1-work/075-assignment-push`: `a42100452d1b1fff7c146543e8ab5cd67da32193` at final pre-write recheck.
+- Exact quarantine/bookkeeping candidate `agent/a1-work/075-assignment-push`: `e725e5dee5a46fcaebf05200301efdb93f868b22` at final pre-write recheck.
 - Frozen base `release/v3.47-advanced-assignments`: `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact functional evidence: Actions run `34444825916`, job `102767251066`, completed `success`.
-- The run trigger commit was `cb2fa98653dda709f850636b247d25dcf050ba18` on an isolated verification branch, but its workflow explicitly checked out `a42100452d1b1fff7c146543e8ab5cd67da32193` and asserted `git rev-parse HEAD` equals that SHA before executing the accumulated suite.
+- Exact bookkeeping verification: Actions run `34450088492`, job `102783621514`, completed `success`.
+- The run trigger HEAD was `b1aac8df1b6e49715d1d0e0547c77af9987e7447` on isolated verify branch `verify/v3.48-assignment-push-bookkeeping-a1-20260910-1628-fix2`; its workflow explicitly checked out and asserted exact candidate `e725e5dee5a46fcaebf05200301efdb93f868b22` before the accumulated suite.
 
-Candidate-specific conclusions become stale immediately if the quarantine SHA moves, or if `bq-assignment`, assignment RLS/grants/migrations, the central assignment API/owner, #75 security tests, or exact workflow evidence changes. Canonical/frozen provenance becomes stale if those refs move. Bookkeeping will create a different SHA and requires a fresh review appropriate to that state.
+Candidate-specific conclusions become stale if the quarantine SHA moves; if assignment server authority, RLS/grants/schema, central API/owner, security tests, accumulated validator/workflow, or exact run evidence changes; or if canonical/frozen refs move.
 
 ## A3 DISPOSITION
 
-**ARCHITECTURE / SECURITY READY for exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`. No current architecture/security blocker is established.**
+**ARCHITECTURE / SECURITY READY for exact candidate `e725e5dee5a46fcaebf05200301efdb93f868b22`. No current architecture/security blocker is established.**
 
-This is an A3 trust-boundary disposition only. #75 is HIGH-RISK, so promotion still requires a fresh A4 READY review of this exact unchanged candidate and then A5 promotion recommendation. No PASS transfers to a later bookkeeping SHA.
+This does not authorize HIGH-RISK promotion by itself. Because the candidate modifies an existing accumulated validator after the earlier functional review, exact-candidate A4 review and A5 promotion disposition remain mandatory.
 
 ## PRIMARY EVIDENCE INSPECTED BEFORE TRIAGE
 
-A3 independently inspected live canonical/quarantine/frozen refs; candidate-vs-frozen/canonical changes; `ASSIGNMENT_PUSH_V3.md`; `DEVELOPMENT_HANDOFF_V3.md`; `src/core/api.js`; `supabase/functions/bq-assignment/index.ts`; assignment schema/RLS/grant migrations including `20260904_assignments_presence_unlocks.sql`, `20260905181000_linked_activity_assignment_groups.sql`, and `20260905_browser_grant_parity.sql`; permanent #75 authorization regressions; candidate accumulated workflow; exact Actions run/job evidence; and the isolated exact-SHA verification workflow. Provisional findings were formed before reading `automation/TRIAGE.md` or A2/A4 conclusions.
+A3 independently inspected the required control files; live canonical/quarantine/frozen refs; exact candidate handoff; candidate-vs-prior functional state; `supabase/functions/bq-assignment/index.ts`; assignment schema/RLS/grant migrations including `20260904_assignments_presence_unlocks.sql`, `20260905181000_linked_activity_assignment_groups.sql`, and `20260905_browser_grant_parity.sql`; `tests/v3-assignment-publish-auth-edge.mjs`; the modified `scripts/validate-v3-assignments.mjs` commit; candidate normal workflow; exact run `34450088492`, job evidence, and isolated pinned workflow. Provisional findings were formed before reading `automation/TRIAGE.md`.
 
 ## FACT — SAFE TRUST BOUNDARY
 
-1. The browser assignment boundary remains centralized in `src/core/api.js`. Assignment reads use RLS-backed `bible_assignments` / `bible_assignment_progress`; target discovery and `create/start/complete` invoke the trusted `bq-assignment` Edge Function. Realtime subscription ownership is centralized and cleanup is idempotent through a `closed` guard plus `removeChannel`.
-2. `bq-assignment` authenticates the request, requires active membership in the supplied congregation, and then applies action-specific authorization before service-role database mutations.
-3. `targets` and `create` require role `facilitator`, `leader`, `pastor`, or `admin`. Target discovery filters members, teams and Journey Groups to active records in the selected congregation.
-4. `create` independently revalidates every non-`all` target server-side: member through active congregation membership; team through matching id + congregation + active; group through matching id + congregation + active. Invalid, foreign, inactive or missing targets fail before assignment insertion.
-5. `start` and `complete` use recipient eligibility rather than ministry visibility. `all` includes active congregation members; `member` requires exact user id; `team` requires membership; `group` requires active group membership. Ministry status alone does not authorize response/completion.
-6. Assignment/progress browser table privileges remain read-oriented. Their defining RLS policies are SELECT-only, and the later browser-grant normalization first revokes all browser privileges and re-grants only operations backed by RLS policies. Therefore #75 mutations remain on the trusted function/service path rather than direct browser DML.
-7. The later group-visibility migration extends assignment visibility to `group` and adds `pastor` to ministry read visibility without broadening ordinary Journey Group directory access. Ministry-wide read visibility is intentionally distinct from recipient mutation eligibility.
+The required safe path remains:
 
-## FACT — PERMANENT SECURITY EVIDENCE NOW CLOSES THE PRIOR GAP
+`authenticated session + selected congregation` → assignment application owner → central browser API boundary → authenticated `bq-assignment` trusted server → active congregation membership → action-specific authorization/target validation → service-authority persistence → SELECT-only assignment/progress RLS plus Realtime receive path.
 
-`tests/v3-assignment-publish-auth-edge.mjs` loads the production `supabase/functions/bq-assignment/index.ts`, removes only TypeScript/import syntax needed for Node VM execution, captures the production request handler, and executes it with controlled auth/database boundary doubles. It proves:
+- `bq-assignment` requires active membership in the supplied congregation before action handling.
+- `targets` and `create` require `facilitator`, `leader`, `pastor`, or `admin`.
+- Target discovery is server-scoped to active records in the selected congregation.
+- `create` independently revalidates non-`all` targets server-side: active same-congregation member, team, or group; invalid/foreign/inactive targets fail before insert.
+- `start` and `complete` use recipient eligibility, not ministry visibility. `member`, `team`, and `group` recipients are checked specifically.
+- Assignment/progress browser exposure remains SELECT-oriented under RLS. Browser-grant normalization revokes browser table privileges and re-grants only operations backed by RLS policies; #75 mutation authority therefore stays on the trusted server path.
+- Group assignment visibility is handled by the assignment-specific security-definer helper and does not require broadening ordinary Journey Group directory visibility.
 
-- ordinary `member` is denied `targets` and `create`, with no insertion;
-- `facilitator`, `leader`, `pastor`, and `admin` are accepted;
-- discovery returns only active same-congregation members, teams and groups;
-- foreign/inactive member/team/group targets are rejected before insert;
-- valid active same-congregation targets succeed;
-- missing non-`all` target fails closed.
+## FACT — EXECUTABLE SECURITY EVIDENCE
 
-`tests/v3-assignment-response-auth-edge.mjs` executes the production recipient helper and proves non-recipient ministry identities cannot respond to member/team/group-targeted assignments. It also guards against restoring the former ministry-wide response path.
+`tests/v3-assignment-publish-auth-edge.mjs` executes the production `bq-assignment` request handler inside a controlled VM boundary. It proves ordinary-member denial for target discovery/create, ministry-role acceptance, active same-congregation discovery, rejection of foreign/inactive member/team/group targets before insertion, valid-target acceptance, and fail-closed missing-target behavior.
 
-The specific HIGH-RISK proof weakness previously identified for trusted `targets/create` authorization is therefore no longer present on `a4210045...`.
+The exact verification workflow for run `34450088492` invokes this permanent test in the accumulated edge phase together with the separate recipient-response authorization regression and the existing #75 edge/browser coverage.
 
-## FACT — EXACT EXECUTED WORKFLOW EVIDENCE
+## FACT — BOOKKEEPING / VALIDATOR CHANGE
 
-Run `34444825916` completed successfully. Its single regression job shows successful steps for exact candidate SHA assertion, accumulated architecture validators, accumulated edge regressions, Playwright/Chromium installation, local server, and accumulated browser/mobile regressions.
+The only inspected post-functional HIGH-RISK code change is commit `0409ed8648f82ae512289990ca5bbb292d803c2a`, modifying `scripts/validate-v3-assignments.mjs` by replacing the old assertion that both inventory rows #75 and #79 must remain `Not started` with:
 
-The isolated verification workflow explicitly pins checkout to `a42100452d1b1fff7c146543e8ab5cd67da32193` and invokes:
+- #75 must use a valid lifecycle state (`Not started`, `Implemented`, `Verified`, or `Regression-tested`); and
+- #79 must still remain `Not started`.
 
-- `scripts/validate-v3-assignment-push.mjs` in the accumulated architecture phase;
-- `tests/v3-assignment-push-edge.mjs`;
-- `tests/v3-assignment-response-auth-edge.mjs`;
-- `tests/v3-assignment-publish-auth-edge.mjs`;
-- `tests/v3-assignment-push-smoke.mjs` in the accumulated browser/mobile phase.
+This change does **not** alter assignment runtime code, schema, RLS, grants, trusted server authority, recipient authorization, target validation, or browser mutation rights. It preserves the later #79 boundary while allowing the now-active #75 row to advance through its own lifecycle. Architecture/security review therefore finds no trust-boundary broadening caused by this validator correction.
 
-The live candidate workflow is restored to normal `workflow_dispatch`-only operation. Candidate-vs-frozen comparison shows #75 test/validator additions and bounded assignment owner/API/function changes; no unexplained deletion of the accumulated harness was identified.
+Whether the modified accumulated validator preserves all intended QA semantics is an A4/A5 gate; A3 does not transfer prior QA approval across SHAs.
 
-## REQUIRED SERVER / AUTHORIZATION PATH
+## FACT — EXACT RUN EVIDENCE
 
-The safe required path is:
+Run `34450088492` completed successfully. Its single job records successful execution of:
 
-`session + selected congregation` → `src/app/assignments.js` sole application owner → `src/core/api.js` sole browser cloud boundary → authenticated `bq-assignment` → active congregation membership → action-specific role/recipient/target validation → service-role persistence → existing RLS/Realtime read/receive path.
+1. checkout;
+2. exact bookkeeping SHA assertion;
+3. accumulated architecture validators;
+4. accumulated edge regressions;
+5. Playwright/Chromium setup;
+6. local v3 server startup; and
+7. accumulated browser/mobile regressions.
 
-Browser role checks remain UX gating only. Server membership/role/recipient/target checks are authoritative because the Edge Function uses service authority for persistence and can bypass ordinary RLS.
+The isolated workflow explicitly pins `e725e5dee5a46fcaebf05200301efdb93f868b22` and invokes `scripts/validate-v3-assignments.mjs`, `scripts/validate-v3-assignment-push.mjs`, `tests/v3-assignment-push-edge.mjs`, `tests/v3-assignment-response-auth-edge.mjs`, `tests/v3-assignment-publish-auth-edge.mjs`, and `tests/v3-assignment-push-smoke.mjs` inside the accumulated harness.
+
+The candidate's normal `.github/workflows/v3-regression.yml` is restored to `workflow_dispatch` only.
 
 ## WHAT MUST NOT BE BROADENED
 
-- Do not broaden ordinary Journey Group RLS or congregation-wide group directory visibility merely to populate the ministry target selector.
-- Do not grant browser INSERT/UPDATE/DELETE over `bible_assignments`, `bible_assignment_progress`, or score-event tables.
-- Do not treat ministry read visibility as recipient mutation eligibility.
-- Do not trust browser-selected congregation, target lists, or local role state without server revalidation.
-- Do not revive retained `assignment-advanced.js` as a parallel assignment owner.
-- Do not add a second task/inbox system; #75 composes the existing #73/#74 receive/complete path.
-- Do not absorb #77 notification delivery/inbox, recurrence execution, or #79 linked-activity execution into #75.
-- Do not weaken/remove accumulated regressions or move normal Actions away from manual-only operation.
-- Do not modify or deploy production Supabase/Cloudflare/v2 as part of this rebuild gate.
+- Do not grant browser INSERT/UPDATE/DELETE on `bible_assignments`, `bible_assignment_progress`, or score-event tables.
+- Do not broaden ordinary Journey Group RLS/directory visibility to support the ministry target selector.
+- Do not treat ministry-wide read visibility as recipient response/completion authorization.
+- Do not trust browser-selected congregation, target identifiers, or client-side role state without server revalidation.
+- Do not revive a parallel assignment owner or duplicate task/inbox system.
+- Do not absorb #77 notification delivery, recurrence execution, or #79 linked-activity execution into #75.
+- Do not weaken, remove, skip, or bypass accumulated regressions to obtain green.
+- Do not modify/deploy production Supabase, Cloudflare, v2, or `main` for this rebuild gate.
 
 ## FACT / INFERENCE / RECOMMENDATION
 
 ### FACT
 
-- Exact candidate is `a42100452d1b1fff7c146543e8ab5cd67da32193` and remains unchanged at final pre-write recheck.
+- Candidate `e725e5dee5a46fcaebf05200301efdb93f868b22` was unchanged at final recheck.
 - Canonical remains `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`; frozen base remains `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact run `34444825916` is green and executes the accumulated suite against the pinned/asserted candidate.
-- Trusted publish authorization/target scope and recipient response authorization now have meaningful permanent executable coverage against production function logic.
-- Assignment browser DML is not opened by the inspected RLS/grant chain; trusted service code remains the mutation authority.
+- Exact run `34450088492` is fully green against the explicitly pinned/asserted candidate.
+- Trusted assignment publish and recipient authorization remain server-enforced with executable permanent coverage.
+- The post-functional validator correction changes inventory-lifecycle acceptance only and does not alter the inspected trust boundary.
 
 ### INFERENCE
 
-- Given the inspected source, RLS/grant chain, faithful trusted-boundary tests, and exact accumulated run, no unresolved #75 architecture/security defect is evidenced on this SHA.
-- The trusted target directory is the correct narrow mechanism; broadening Journey Group RLS would increase exposure without being required by #75.
+- No architecture/security defect is evidenced on exact candidate `e725e5de...`.
+- The narrow validator correction does not create a security bypass because runtime authorization, RLS/grants, and trusted server code are unchanged.
 
 ### RECOMMENDATION
 
-- Preserve `a4210045...` unchanged while A4/A5 review the same SHA.
-- If A4 becomes READY and A5 recommends promotion, perform bookkeeping separately and re-run the complete accumulated suite on the exact bookkeeping SHA before canonical/release advancement.
-- Re-audit A3 if bookkeeping or later work touches assignment trust boundaries, RLS/grants, API ownership, or authorization predicates.
+- Keep `e725e5de...` unchanged while A4 audits the accumulated-validator semantic preservation and A5 performs the exact-SHA firewall decision.
+- If A4 is READY and A5 recommends promotion for this unchanged SHA, A1 may perform the final non-force canonical/release transaction according to control rules.
+- Re-audit A3 if any subsequent change touches assignment runtime authority, RLS/grants/schema, server/client ownership, authorization predicates, or the exact candidate SHA.
 
 ## MISSING / NON-BLOCKING EVIDENCE
 
-- No deployed production Supabase integration was executed by A3; production is intentionally out of scope and untouched. This is not a functional-candidate blocker because the permanent tests execute production authorization logic and the milestone gate is repository rebuild verification.
-- A4's existing report is stale because it audits `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`, not current `a4210045...`; a fresh A4 exact-SHA disposition is still mandatory.
-- A5 TRIAGE is likewise stale for candidate-specific direction: it targets `78fa191f...` and requests the trusted publish-auth executable evidence that now exists on `a4210045...`.
-- No bookkeeping candidate/evidence exists yet.
+- No deployed production Supabase integration was executed by A3; production is intentionally out of scope and untouched. Repository trusted-boundary execution plus exact accumulated gate is the current rebuild evidence.
+- A3 does not independently certify that the existing-validator modification is QA-equivalent in every historical acceptance dimension; that exact question remains for A4/A5 because modifying an accumulated validator is automatically HIGH-RISK under control policy.
 
-## TRIAGE / REPORT RECONCILIATION
+## TRIAGE RECONCILIATION
 
-After forming the provisional primary-evidence findings, A3 read TRIAGE and advisory reports. A2 is current on `a4210045...` and independently records no contract blocker. A4 and TRIAGE still target older `78fa191f...`; their prior request for faithful `targets/create` proof was valid for that SHA but is satisfied by the current candidate's permanent handler-execution regression. Their old promotion disposition must not be transferred to the new SHA.
+After primary-evidence analysis, A3 read `automation/TRIAGE.md`. TRIAGE still targets prior functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` and is stale for current candidate-specific promotion direction. Its previous trust-boundary restrictions remain consistent with primary evidence, but its promotion recommendation cannot transfer to `e725e5de...`.
 
 ## NEXT DEPENDENCIES
 
-A3 did not broaden into #76/#77 architecture in this run because active HIGH-RISK #75 is not yet promotion-authorized. #77 remains explicitly outside #75. Any later milestone must be independently recovered from its authoritative live contract rather than inferred into this review.
+A3 did not broaden into #76/#77 implementation architecture because #75 is still inside its HIGH-RISK exact-candidate promotion gate. Any later dependency must be recovered independently after #75 closure rather than inferred into this milestone.
