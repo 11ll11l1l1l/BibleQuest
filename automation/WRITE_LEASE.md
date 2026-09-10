@@ -1,8 +1,8 @@
 # BibleQuest autonomous writer lease
 
-STATUS: HELD
-OWNER: BQ-A1-RELEASE-CAPTAIN
-RUN_NONCE: bq-a1-20260910T1309-075-f3a1
+STATUS: REVOKED_FOR_CONTROL_HARDENING
+OWNER: none
+RUN_NONCE: revoked-bq-a1-20260910T1309-075-f3a1
 ACQUIRED_AT_JST: 2026-09-10 13:09 JST
 EXPIRES_AFTER_MINUTES: 80
 MILESTONE: #75 Assignment Push Workflow
@@ -12,14 +12,10 @@ LAST_RELEASED_AT_JST: 2026-09-10
 
 ## Protocol
 
-Only `BQ-A1-RELEASE-CAPTAIN` may acquire this lease for autonomous BibleQuest product/canonical writes.
+This lease was administratively revoked while the scheduled agents were disabled so the control plane could be safely hardened. A1 must treat any OWNER/RUN_NONCE mismatch as loss of lease and stop product/canonical writes.
 
-Acquisition must replace this file using the exact current blob SHA. If the conditional update fails, another writer or controller changed the lease and the run must not perform product/canonical writes.
+Do not acquire a new lease until this file is deliberately returned to STATUS: FREE after reconciliation of the in-flight work branch and live repository state.
 
-While held, Agent 1 must re-read this file before every product/test/workflow/canonical/release write and verify that `OWNER` and `RUN_NONCE` still match its run.
+Normal autonomous protocol after reconciliation: only `BQ-A1-RELEASE-CAPTAIN` may acquire the FREE lease by conditional update using the exact current blob SHA; while held it re-checks the same run nonce before every product/test/workflow/canonical/release write; expired leases require branch/run reconciliation before takeover.
 
-Normal exit replaces the state above with `STATUS: FREE` and clears owner/run/milestone/base/work-branch fields.
-
-An unreleased lease is considered stale only after 80 minutes. Before taking an expired lease, reconcile all live canonical/work/verify branches and exact workflow evidence left by the previous run. Never assume abandoned work is correct.
-
-Manual BibleQuest development should disable A1 before writing. If A1 remains enabled, the manual writer must honor the same lease/reconciliation model.
+Manual BibleQuest development should disable A1 before writing.
