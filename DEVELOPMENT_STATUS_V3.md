@@ -9,90 +9,71 @@ Updated: 2026-09-10 JST
 - Production v2 remains unchanged.
 - `main`, production Supabase and production Cloudflare remain untouched.
 - Active development branch: `feature/v3-assignment-push`.
+- Current quarantine/bookkeeping branch: `agent/a1-work/075-assignment-push`.
 - Normal v3 GitHub Actions remain manual-only (`workflow_dispatch`).
-- Temporary `push:` triggers are allowed only on isolated one-shot verification branches; trigger commits are never release candidates and verification branches are reset to the exact clean candidate after each run.
-- Latest frozen checkpoint observed: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact v3.47 bookkeeping run `34433120915` passed the complete accumulated architecture, edge and Playwright/browser-mobile suite while explicitly checking out and asserting that exact SHA.
-- Previous frozen checkpoint: `release/v3.46-assignments` at `fceb115e763ae729e07325bbb4c9f592206b2c9e`; exact bookkeeping run `34417620848` was green.
-- Safety refs `safety/pre-autonomous-agents-20260910-*` remain untouched.
+- Temporary `push:` triggers are allowed only on isolated one-shot verification branches; trigger commits are never release candidates.
+- Latest frozen checkpoint observed before #75 bookkeeping: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
+- Exact v3.47 bookkeeping run `34433120915` passed the complete accumulated architecture, edge and Playwright/browser-mobile suite.
+- Safety refs remain untouched.
 
-## Current progress
+## Current progress represented by this bookkeeping candidate
 
 | State | Count |
 |---|---:|
-| Regression-tested | 73 |
+| Regression-tested | 74 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 26 |
+| Not started | 25 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **74/100**.
+Strict implemented-or-better parity represented by this bookkeeping candidate is **75/100**.
+Official regression stability represented by this bookkeeping candidate is **74/100**.
 
-Official regression stability is **73/100**.
+These bookkeeping values are not canonical/release truth until this exact bookkeeping SHA passes the complete accumulated gate and is promoted.
 
 Current leading rows:
-- #72 Congregation Recognition — Regression-tested.
-- #73 Assignments — Regression-tested after surviving the complete #74 suite; frozen in v3.46.
-- #74 Advanced assignments — Verified; exact functional candidate `f01df3e72b5413bba7ae7d16552fca55a448b766` passed run `34432456615`, and exact bookkeeping SHA `2523f85d47f59721eae81da10cf1007d29af4139` passed run `34433120915` and is observed frozen as v3.47.
-- #75 Assignment push workflow — Not started at application level; retained contract recovery is complete in `ASSIGNMENT_PUSH_V3.md`.
+- #73 Assignments — Regression-tested.
+- #74 Advanced assignments — Regression-tested because it survived the complete #75 functional suite.
+- #75 Assignment push workflow — Verified in this bookkeeping candidate after exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` passed complete accumulated run `34444825916` and received current HIGH-RISK A3 READY, A4 READY and A5 promotion recommendation.
+- #76 Ministry Hub — Not started and remains the next non-deferred inventory row after #75 closes.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred by user priority.
 
-Freezing #74 does not itself make #74 Regression-tested; that promotion requires survival of a later complete milestone suite.
+## #75 Assignment Push — functional gate complete, bookkeeping gate pending
 
-## Current architecture boundary
+Recovered and verified behavior is bounded to authorized ministry publish → eligible member receive → existing assignment completion.
 
-- `src/core/api.js` — sole browser Supabase/trusted-function/Realtime implementation boundary.
-- `src/app/congregation-membership.js` — congregation membership and role capability boundary.
-- `src/app/assignments.js` — sole #73/#74 assignment owner and required #75 extension point.
-- `src/features/assignments/index.js` — assignment presentation/event forwarding only.
-- Retained `supabase/functions/bq-assignment/index.ts` — trusted server authority for assignment creation/visibility, scheduled opening, progress persistence, completion requirements, idempotent completion and trusted scoring.
-- Existing Router, Session, Reader, Progress, Lesson, Transform, Audio, Recordings, Games, Notes, Couples, Journey Group, Community, Presence, Team Center, Leaderboards, Recognition and diagnostics owners remain unchanged.
-- Retained root compatibility `assignment-advanced.js` is recovery evidence only; it must not become a second active assignment owner.
+- `src/app/assignments.js` remains the sole assignment application owner.
+- `src/core/api.js` remains the sole browser Supabase/trusted-function/Realtime boundary.
+- `src/features/assignments/index.js` remains the assignment presentation/event-forwarding surface.
+- `supabase/functions/bq-assignment/index.ts` remains trusted server authority for target discovery, create and recipient response mutations.
+- Publishing supports `all`, `member`, `team`, and `group` targets and retained advanced assignment metadata while excluding #77 notification delivery and #79 linked-activity execution.
+- Trusted server authorization independently ministry-gates `targets/create`, scopes discovery to active same-congregation entities, rejects invalid/foreign/inactive targets before insertion, and keeps start/complete authorization recipient-specific.
+- Permanent tests include `validate-v3-assignment-push.mjs`, `v3-assignment-push-edge.mjs`, `v3-assignment-response-auth-edge.mjs`, `v3-assignment-publish-auth-edge.mjs`, and `v3-assignment-push-smoke.mjs` in the accumulated workflow.
+- Exact functional run `34444825916` explicitly checked out/asserted `a42100452d1b1fff7c146543e8ab5cd67da32193` and passed accumulated architecture, edge/security and browser/mobile phases.
 
-## #73 Assignments — Regression-tested
+## Review state
 
-- Exact corrected #73 functional candidate `33871d45aec7111be95524333fe5210dceed71af` passed run `34417012845`.
-- Exact v3.46 bookkeeping candidate `fceb115e763ae729e07325bbb4c9f592206b2c9e` passed run `34417620848` and is frozen as `release/v3.46-assignments`.
-- #73 survived the complete #74 functional suite and therefore advanced to Regression-tested.
+For exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`:
+- A2 contract audit: current; no retained-contract blocker.
+- A3 architecture/security: READY.
+- A4 QA/regression: READY.
+- A5 firewall: 0 BLOCKER; promotion recommended.
 
-## #74 Advanced Assignments — Verified and frozen
-
-- Corrected exact functional candidate `f01df3e72b5413bba7ae7d16552fca55a448b766` passed complete run `34432456615`.
-- Bookkeeping candidate `2523f85d47f59721eae81da10cf1007d29af4139` passed complete exact-SHA run `34433120915`.
-- `release/v3.47-advanced-assignments` is observed at that same bookkeeping SHA.
-- `verify/v3.47-advanced-assignments-bookkeeping` was restored to the exact clean candidate after the temporary trigger run.
-- Verified behavior remains: scheduled opening; reminder/recurrence metadata; written reflection/text evidence; explicit confirmation; minimum quiz score; deterministic due state; overdue completion; same #73 owner/API boundary; no #79 linked-activity browser projection; no production deployment change.
-
-## #75 Assignment Push — contract recovered, implementation pending
-
-`ASSIGNMENT_PUSH_V3.md` records the recovered contract from the retained compatibility UI, retained trusted `bq-assignment` create action, current #73/#74 owner, and current congregation/team/Journey Group boundaries.
-
-Required recovered behavior:
-- active facilitator/leader/pastor/admin may author/publish; ordinary member/signed-out/local-preview/no-congregation cannot;
-- retained audience scopes are all/member/team/group and the server independently validates same-congregation targets;
-- publish may carry title, instructions, type, Scripture refs, due/points, schedule, reminder metadata, recurrence metadata, reflection, minimum quiz score and evidence requirement;
-- create must go through the trusted function and reload server truth;
-- member receipt must reuse existing RLS + Realtime assignment flow and existing #73/#74 completion behavior;
-- #77 notification/inbox, #79 linked-activity launch/completion and browser recurrence generation remain outside #75;
-- no second assignment owner and no direct browser assignment/progress/score table mutation.
-
-The next code step is to define the minimum central API read projection for leader target selectors, especially all active Journey Groups in the selected congregation, before extending the assignment owner and presentation. This avoids reviving the old direct-Supabase compatibility module.
+Because #75 is HIGH-RISK, those reviews authorized creation of this separate bookkeeping state only. No PASS transfers to the new bookkeeping SHA.
 
 ## Defect / root-cause ledger
 
-- `V3-ADVANCED-ASSIGNMENTS-VALIDATOR-001` — case-sensitive validator fixture mismatch; corrected without changing application behavior.
-- `V3-ASSIGNMENTS-VALIDATOR-FUTURE-STATE-001` — older #73 validator incorrectly froze #74 at Not started; corrected while retaining #73 ownership and #75/#79 boundaries.
-- `V3-ASSIGNMENTS-EDGE-FIXTURE-001` and `V3-STATUS-BOOKKEEPING-001` remain recorded from v3.46.
-- All earlier defect regressions remain in the accumulated suite.
+- Historical #75 precursor `fc09fa02ea86522b1bdc7ea03f0964f4fd56f2a4` failed because the new VM test fixture did not strip one TypeScript annotation. Classification: `TEST/FIXTURE DEFECT`; application behavior was not changed to obtain green.
+- Fixture-only correction produced exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`; replacement run `34444825916` passed fully.
+- Earlier defect regressions remain retained in the accumulated suite.
 
-## Next major milestone
+## Exact next gate
 
-1. Re-read `feature/v3-assignment-push` before each write and preserve any concurrent/manual changes.
-2. Extend the existing central API boundary with only the audience-directory data required for member/team/group selectors, reusing current congregation/team/Journey Group contracts where possible.
-3. Extend `src/app/assignments.js` with the single leader publish lifecycle and `src/features/assignments/index.js` with ministry-role authoring UI; keep the member completion owner unchanged.
-4. Add permanent #75 architecture validator, edge tests and 390px leader publish → eligible member receive → existing completion browser coverage.
-5. Run targeted checks, then the complete accumulated exact functional gate.
-6. After a green functional candidate, update inventory/status/handoff, run the complete accumulated suite against the exact bookkeeping SHA, and only then freeze the next sequential release.
+1. Finish consistent #75 bookkeeping on the quarantine/bookkeeping branch.
+2. Produce the exact clean bookkeeping SHA.
+3. Run the complete accumulated workflow against that exact SHA with explicit checkout/assertion; no functional-candidate PASS transfers.
+4. Only if every required phase is green, fast-forward `feature/v3-assignment-push` without force and create the next immutable frozen v3 release at that same exact SHA.
+5. Do not begin #76 until #75 release closure is complete.
 
 ## Release rule
 
