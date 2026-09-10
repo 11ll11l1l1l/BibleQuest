@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.49-ministry-hub-functional-manual-20260910
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: dfc6440cd7105c73107081dfb4fb16f8bfac2d71
+      - name: Assert exact Ministry Hub candidate
+        run: test "$(git rev-parse HEAD)" = "dfc6440cd7105c73107081dfb4fb16f8bfac2d71"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
