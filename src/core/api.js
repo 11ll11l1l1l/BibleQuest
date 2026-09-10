@@ -27,6 +27,9 @@ const CONTENT_DECISION_FIELDS='congregation_id,content_key,content_type,origin,d
 const CONTENT_REVIEW_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,content_ref,content_snapshot,rationale,reviewed_by,reviewed_at,updated_at';
 const CONTENT_REVIEW_REPORT_FIELDS='id,congregation_id,reporter_id,content_key,content_type,content_source,content_ref,content_text,content_payload,reason,note,status,reviewed_by,reviewed_at,created_at,updated_at';
 const CONTENT_REVIEW_MEMBER_FIELDS='user_id,display_name,role,avatar,active,joined_at';
+const LIVE_ROOM_FIELDS='id,congregation_id,created_by,session_type,title,room_code,status,state,metadata,updated_at';
+const LIVE_ROOM_PARTICIPANT_FIELDS='session_id,user_id,participation_points,created_at';
+const LIVE_ROOM_DIRECTORY_FIELDS='user_id,display_name,avatar,active';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -425,6 +428,58 @@ export function createApi() {
     async leave(groupId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId}); }
   });
 
+  const liveRooms = Object.freeze({
+    async create(row) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_shared_sessions').insert(row).select(LIVE_ROOM_FIELDS).single();
+      if(error)throw error;
+      return data;
+    },
+    async findByCode(roomCode) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('room_code',roomCode).neq('status','ended').maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async loadRoom(roomId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('id',roomId).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async joinParticipant(roomId,userId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_session_participants').upsert({session_id:roomId,user_id:userId,participation_points:0},{onConflict:'session_id,user_id'}).select(LIVE_ROOM_PARTICIPANT_FIELDS).single();
+      if(error)throw error;
+      return data;
+    },
+    async participants(roomId,congregationId) {
+      const client=await getClient();
+      const {data:participants,error:participantError}=await client.from('bible_session_participants').select(LIVE_ROOM_PARTICIPANT_FIELDS).eq('session_id',roomId).order('created_at',{ascending:true});
+      if(participantError)throw participantError;
+      const rows=participants||[],ids=[...new Set(rows.map(row=>row.user_id).filter(Boolean))];
+      if(!ids.length)return {participants:rows,directory:[]};
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(LIVE_ROOM_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).in('user_id',ids);
+      if(directoryError)throw directoryError;
+      return {participants:rows,directory:directory||[]};
+    },
+    async endRoom(roomId,userId) {
+      const client=await getClient(),now=new Date().toISOString();
+      const {data,error}=await client.from('bible_shared_sessions').update({status:'ended',ended_at:now,updated_at:now}).eq('id',roomId).eq('created_by',userId).select(LIVE_ROOM_FIELDS).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async subscribe(roomId,listener) {
+      const client=await getClient();
+      let closed=false;
+      const channel=client.channel(`bq-v3-live-room-${roomId}`)
+        .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bible_shared_sessions',filter:`id=eq.${roomId}`},payload=>listener?.({type:'room',room:payload.new}))
+        .on('postgres_changes',{event:'*',schema:'public',table:'bible_session_participants',filter:`session_id=eq.${roomId}`},()=>listener?.({type:'participants'}))
+        .subscribe(status=>listener?.({type:'connection',status}));
+      return ()=>{if(closed)return;closed=true;void client.removeChannel(channel)};
+    }
+  });
+
   const encouragements = Object.freeze({
     async list(groupIds) {
       const ids=[...new Set((groupIds||[]).map(String).filter(Boolean))];
@@ -542,5 +597,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }
