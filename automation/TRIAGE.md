@@ -1,40 +1,39 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Updated: 2026-09-10 12:57 JST
+Generated: 2026-09-10 13:59 JST
 
-Agent 1 consumes only BLOCKER and MILESTONE items as mandatory current-work inputs.
-
-## Active position
-- Active milestone: **#75 Assignment Push Workflow**.
-- Canonical branch observed: `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`; exact bookkeeping run `34433120915` is the retained green #74 evidence.
-- #75 implementation remains Not started at the observed SHA; current branch work is contract/handoff/status recovery only.
+## Freshness
+- Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
+- Canonical: `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Quarantine candidate: `agent/a1-work/075-assignment-push` at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
+- Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
+- Exact functional evidence: run `34438690160` succeeded. Its verification workflow explicitly checked out/asserted `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`, then executed accumulated architecture validators, accumulated edge regressions, and accumulated browser/mobile regressions.
+- A2 report analyzed `1ddc4c8b8fd90f9a3e5a1b0a9788cb6dc1ea57be`: **STALE for candidate promotion**.
+- A3 report analyzed `d13ba6b9729a02021ee5efab961c6c233a0b669e`: **STALE for candidate promotion**, but its authorization finding was independently rechecked against the current candidate and is corrected there.
+- A4 report analyzed `d13ba6b9729a02021ee5efab961c6c233a0b669e`: **STALE for candidate promotion**. It has not issued READY for exact candidate `78fa191f...`.
+- HIGH-RISK independent review requirement is therefore **NOT YET SATISFIED**.
 
 ## BLOCKER
-- **None established.** No report or repository evidence shows an external condition preventing safe #75 implementation.
+- **None established on exact candidate `78fa191f...`.** Primary source now separates response eligibility from ministry visibility: `start`/`complete` calls `assignmentRecipient`, which accepts `all`, exact member, team membership, or active group membership rather than ministry role alone. The permanent recipient-authorization regression is present and was invoked by the successful exact-candidate accumulated run.
 
 ## MILESTONE
-- **Trusted congregation-scoped publish target directory.** #75 must support `all/member/team/group` targeting without weakening general Journey Group privacy. Current `src/core/api.js` Journey Group listing starts from the signed-in user's active group memberships, while current `bible_groups` RLS allows reads only to owners/active group members. Therefore a leader cannot safely discover every eligible active Journey Group through that existing read path. Add the minimum ministry-authorized, congregation-scoped target projection through the existing central API/trusted-server boundary; keep `src/app/assignments.js` as sole assignment owner and `src/core/api.js` as sole browser cloud boundary. This is required milestone implementation, not a stop condition.
-- **#75 permanent proof before promotion.** Add and actually execute the #75 architecture validator, edge/security regressions, and 390px publish -> eligible receive -> existing #73/#74 completion browser flow. Required negative coverage includes unauthorized roles, foreign/inactive targets, stale congregation/session results, failed create/reload behavior, and duplicate lifecycle/subscription prevention. Then run the complete accumulated #1-#75 gate on the exact functional candidate and again on the exact bookkeeping SHA before freeze. Missing evidence now is expected because implementation has not started; it is not an application failure.
+- **Fresh A4 exact-candidate READY review is still required before bookkeeping/promotion.** Counterfactual: if A1 proceeds now, a HIGH-RISK trusted-server authorization candidate would be promoted without the independent exact-SHA QA barrier explicitly required by MASTER_CONTROL/guardrails. The previous A4 NOT READY finding targeted `d13ba6b...`; its identified authorization defect is corrected, but its promotion disposition cannot transfer to `78fa191f...`.
+- **Bookkeeping exact-SHA gate remains required after review authorization.** Even after A4 READY and A5 promotion recommendation, A1 must prepare bookkeeping off-canonical and execute the complete accumulated suite against the exact bookkeeping SHA before canonical/release advancement. Functional green does not substitute for this gate.
 
 ## DEFER
-- #15 Japanese furigana and Kids #38-40 remain deferred by user priority and must not delay #75.
-- #77 Notification Center/inbox delivery and #79 linked-activity launching remain future milestone scope; #75 may preserve reminder/recurrence metadata only as recovered contract data.
+- #15 Japanese furigana and Kids #38-40 remain deferred by user priority.
+- #77 Notification Center/inbox delivery and #79 linked-activity execution remain outside #75.
 
 ## IGNORE
-- Do not revive root `assignment-advanced.js` as a competing owner, broaden Journey Group RLS merely for selector convenience, add direct browser assignment/progress/score writes, or treat local role checks as authorization.
-- Do not import the old v2/main broad progress-snapshot overwrite finding into current v3 without new v3 evidence; A3 reports that path is not present in the inspected v3 account/device service.
-- Missing #75 workflow runs at the pre-implementation SHA are not a defect and must not interrupt implementation.
-
-## Report freshness
-- Agent 2 contract report: **MISSING** under `automation/reports/contract/`; do not invent Agent 2 findings. Agent 1's durable `ASSIGNMENT_PUSH_V3.md` contract recovery remains repository evidence, not a substitute Agent 2 report.
-- Agent 3 `automation/reports/architecture/75-assignment-push.md`: **CURRENT**, analyzed SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Agent 4 `automation/reports/qa/75-assignment-push.md`: **CURRENT**, analyzed SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Prior TRIAGE setup state for #73/#74 is stale and superseded by the frozen v3.47 base and active #75 branch above.
+- The old target-directory gap is resolved in quarantine through the trusted ministry-scoped server projection; do not broaden general Journey Group RLS.
+- A2's zero-run/missing-evidence conclusion and A3/A4's source-demonstrated ministry-response defect are stale as current-candidate conclusions because candidate HEAD moved and exact run `34438690160` now exists.
+- Run `34438622148` fixture failure is not a current product defect; the fixture-only correction is included in `78fa191f...` and the replacement accumulated run is green.
 
 ## Firewall decision
-Counterfactual/dependency/scope tests support **0 BLOCKER, 2 MILESTONE requirements, no new DEFER/IGNORE item requiring Agent 1 interruption**. A3 and A4 agree: the target-directory boundary belongs inside #75 and the absent #75 test evidence is expected pre-implementation state.
+**0 BLOCKER; 2 MILESTONE; promotion recommendation WITHHELD pending fresh A4 READY on exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.**
+
+The current candidate has exact functional green and the previously identified trust-boundary defect is corrected with permanent executed coverage. However, #75 is HIGH-RISK and the mandatory exact-SHA A4 review has not yet covered this candidate. A5 cannot convert stale A4 evidence into READY.
 
 ## Next safe action
-Agent 1 should continue #75 from live `feature/v3-assignment-push`: implement the minimum trusted ministry-scoped target-directory boundary first, then extend the existing assignment owner/presentation, add permanent #75 tests, and run the exact accumulated functional/bookkeeping gates. Do not modify production services during rebuild verification.
+Keep `agent/a1-work/075-assignment-push` unchanged at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`. A4 should independently audit exact candidate `78fa191f...`, run `34438690160`, accumulated harness integrity, the recipient-authorization regression, and #75 browser/mobile evidence. If A4 returns READY for this exact unchanged SHA and no new primary-evidence defect appears, A5 may recommend HIGH-RISK promotion; A1 may then perform off-canonical bookkeeping and the separate exact-bookkeeping-SHA complete gate. Do not advance canonical or freeze a release before those steps.
