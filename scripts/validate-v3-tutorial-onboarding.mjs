@@ -36,9 +36,10 @@ if (!failures.length) {
   for (const forbidden of ['localStorage', 'sessionStorage', 'window.BQ', 'MutationObserver', 'createClient', '@supabase', 'document.']) {
     if (service.includes(forbidden)) fail(`Tutorial lifecycle bypasses a verified owner: ${forbidden}`);
   }
-  for (const token of ['createTutorialService', 'offerFirstRun', 'force = false', 'skip()', 'finish()', "storage.write(STORAGE_KEY"]) {
+  for (const token of ['createTutorialService', 'force = false', 'skip()', 'finish()', "storage.write(STORAGE_KEY"]) {
     if (!service.includes(token)) fail(`Tutorial lifecycle missing contract token: ${token}`);
   }
+  if (service.includes('offerFirstRun')) fail('Tutorial lifecycle must not auto-offer on anonymous Home; retained production triggers onboarding after account creation or explicit launcher use.');
 
   for (const forbidden of ['localStorage', 'sessionStorage', 'window.BQ', 'MutationObserver', 'createClient', '@supabase']) {
     if (ui.includes(forbidden)) fail(`Tutorial presenter bypasses a verified owner: ${forbidden}`);
@@ -51,19 +52,21 @@ if (!failures.length) {
   }
 
   for (const token of ['data-open-tutorial', 'Show tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
-  for (const token of ["onTutorial?.()", 'data-code-saved', 'data-code-done']) if (!account.includes(token)) fail(`Account missing recovery-save tutorial handoff: ${token}`);
-  for (const forbidden of ['onTutorial?.(result.recovery_code', 'onTutorial?.(code', 'bq-account-created']) if (account.includes(forbidden)) fail(`Account leaked recovery material into tutorial handoff: ${forbidden}`);
+  for (const token of ['onTutorial?.()', 'data-code-saved', 'data-code-done']) if (!account.includes(token)) fail(`Account missing recovery-save tutorial handoff: ${token}`);
+  for (const forbidden of ['onTutorial?.(result.recovery_code', 'onTutorial?.(code', 'bq-account-created', 'sessionStorage']) if (account.includes(forbidden)) fail(`Account leaked recovery material or legacy trigger state into tutorial handoff: ${forbidden}`);
 
   for (const token of [
-    "createTutorialService({storage})",
+    'createTutorialService({storage})',
     'mountTutorialOverlay({tutorial',
-    "tutorial.open({force:true})",
-    "if(route==='home')queueMicrotask(()=>tutorial.offerFirstRun())",
+    "onTutorial:()=>tutorial.open({force:true})",
+    "onTutorial:()=>tutorial.open({force:true})",
     'tutorialOverlay.dispose()'
   ]) if (!bootstrap.includes(token)) fail(`Bootstrap missing #84 composition contract: ${token}`);
+  if (bootstrap.includes('tutorial.offerFirstRun')) fail('Bootstrap must not auto-open onboarding merely because Home rendered.');
+  if ((bootstrap.match(/onTutorial:\(\)=>tutorial\.open\(\{force:true\}\)/g) || []).length < 2) fail('Both Account completion and the permanent Home launcher must reach the same tutorial owner through explicit callbacks.');
 
   if (!index.includes('src/ui/tutorial.css')) fail('index.html does not load tutorial presentation CSS.');
-  for (const token of ['#85', 'Not started', 'recovery code', 'offline', 'single overlay']) if (!contract.includes(token)) fail(`Tutorial contract missing explicit boundary: ${token}`);
+  for (const token of ['#85', 'Not started', 'recovery code', 'offline', 'anonymous Home']) if (!contract.includes(token)) fail(`Tutorial contract missing explicit boundary: ${token}`);
 
   const row = n => inventory.split('\n').find(line => line.startsWith(`| ${n} |`)) || '';
   if (!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(84))) fail('Inventory #84 Tutorial/onboarding trainer must use a valid lifecycle state.');
