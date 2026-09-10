@@ -45,9 +45,10 @@ export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
       view.querySelector('[data-content-review-filter]')?.addEventListener('change',event=>{filter=event.target.value;render(review.getState())},{once:true});
       view.querySelector('[data-content-review-book]')?.addEventListener('change',async event=>{if(busy)return;busy=true;message='';await review.openQuarantine(event.target.value);busy=false;render(review.getState())},{once:true});
       view.querySelectorAll('[data-content-review-decide]').forEach(button=>button.addEventListener('click',async()=>{
-        if(busy)return;busy=true;message='';render(review.getState());
-        const key=button.dataset.contentKey,note=view.querySelector(`[data-content-review-rationale="${CSS.escape(key)}"]`)?.value||'';
-        try{await review.decide({contentKey:key,decision:button.dataset.contentReviewDecide,rationale:note});message='Decision saved.'}catch(error){message=error?.message||'Content decision could not be saved.'}
+        if(busy)return;
+        const key=button.dataset.contentKey,decision=button.dataset.contentReviewDecide,note=view.querySelector(`[data-content-review-rationale="${CSS.escape(key)}"]`)?.value||'';
+        busy=true;message='';render(review.getState());
+        try{await review.decide({contentKey:key,decision,rationale:note});message='Decision saved.'}catch(error){message=error?.message||'Content decision could not be saved.'}
         busy=false;render(review.getState());
       },{once:true}));
     };
