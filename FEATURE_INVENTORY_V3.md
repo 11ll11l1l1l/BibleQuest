@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 80
+- **Regression-tested:** 81
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 19
+- **Not started:** 18
 - **Total old-version capabilities:** 100
 
 ## Status definitions
