@@ -1,44 +1,45 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 21:04 JST
+Generated: 2026-09-10 21:57 JST
 
 ## Freshness
-- Active milestone: **#81 Psychometrics suite — HIGH-RISK** because the lineage modified accumulated validators.
-- Canonical branch: `feature/v3-psychometrics` at exact `89584f38e97ef9eb097fed8ae1913cce13888d30`.
-- Dedicated `agent/a1-work/081-psychometrics` candidate: **not found**.
-- Frozen base: `release/v3.53-personality-profile` at exact `2c62a63e5bbdedae47834714e65751a57d58b696`.
-- `release/v3.54-psychometrics`: **not found**.
-- Functional candidate `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`: exact run `34473640903` **success** through architecture, edge/security and browser/mobile with explicit checkout/assertion.
-- Bookkeeping candidate `7eb305d0998654aeb3bcdc987f65ebd960b22e20`: exact run `34474359203` **failure** in accumulated architecture; later phases skipped.
-- Current `89584f38...` changes only `scripts/validate-v3-personality-profile.mjs`, replacing the stale #81 `Not started`-only assertion with valid lifecycle states while retaining #80 ownership/privacy assertions. No exact complete run for this SHA is established yet.
-- A2 report: stale; analyzed `1bd77237...`.
-- A3 report: stale; analyzed `e4e126b9...`.
-- A4 report: stale; reviewed `5d344691...` before its green run and did not issue READY.
+- Active milestone: **#82 Avatar Vault — HIGH-RISK**. Current lineage adds a schema/RLS migration and changes shared `src/core/api.js` / leaderboard ownership.
+- Canonical: `feature/v3-avatar-vault` at exact `f097411c395e65494cc383526aa0371bd925ac35`.
+- Dedicated `agent/a1-work/082-*` candidate: **not found**.
+- Frozen base: `release/v3.54-psychometrics` at exact `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
+- Canonical is 8 commits ahead of frozen base. Product delta includes `src/app/avatar-vault.js`, `src/engines/avatar-vault.js`, shared `src/core/api.js`, shared `src/app/leaderboards.js`, and `supabase/migrations/20260910_avatar_vault_visibility.sql`.
+- Exact workflow evidence for current `f097411c...`: **none** (`head_sha` query returned zero runs).
+- A2 #82 report: **missing**.
+- A3 #82 report: **stale**; analyzed `7f3a9a81e714fe37ac7d6ec54f9b65752898da39` before product/schema/API changes. It explicitly required fresh HIGH-RISK review if schema/RLS/API changes appeared.
+- A4 #82 report: **stale**; analyzed `7f3a9a81...` before implementation and exact execution evidence.
 - HIGH-RISK independent promotion barrier: **NOT SATISFIED**.
+- Writer lease currently reads `FREE`; no A1 quarantine branch exists for the current implementation lineage.
 
 ## BLOCKER
-- **No promotion/freeze of current `89584f38...`.** It modifies an existing accumulated validator and has no exact complete accumulated green. Counterfactual: freezing it would promote an unverified regression-harness correction.
-- **HIGH-RISK independent review is still required.** Current A3/A4 reports do not cover exact `89584f38...`, and A4 has not marked it READY. Counterfactual: promotion now would bypass the explicit existing-validator safeguard.
-- **Autonomous quarantine must be reconciled before A1 writes.** No `agent/a1-work/081-psychometrics` branch exists while current state is on canonical. Counterfactual: new autonomous product/test/workflow writes directly on canonical would violate the mandatory quarantine invariant.
+- **Do not promote/freeze `f097411c...`.** There is no exact complete accumulated workflow run for this SHA. Counterfactual: promotion would claim #82 acceptance/regression safety without executed evidence.
+- **Fresh A3 trust-boundary review is required before further HIGH-RISK autonomous product writes/promotion.** Current code introduces a migration/RLS policy and direct browser Supabase writes through `avatarVault.save`; the existing A3 report predates these changes and specifically warned that account-backed persistence must be independently authorized and that schema/RLS/API changes trigger HIGH-RISK review. Counterfactual: continuing without review can broaden client authority over congregation-visible avatar state without proving the intended authorization boundary.
+- **Exact-candidate A4 READY and subsequent A5 promotion recommendation are required after functional green.** Counterfactual: promotion otherwise bypasses the mandatory HIGH-RISK independent barrier.
+- **Autonomous quarantine must be reconciled before A1 writes.** No `agent/a1-work/082-*` branch exists while implementation is already on canonical. Counterfactual: additional autonomous product/test/workflow writes directly on canonical violate the quarantine invariant and erase the separation between unverified work and promotable state.
 
 ## MILESTONE
-- Preserve authoritative #81 acceptance: **`complete assessment; result; persistence; mobile`**, deterministic NEO/VIA/RSE scoring, private guest/account persistence, interpretation boundaries and no unrelated server/cloud/reward authority.
-- Preserve the #80 validator's original privacy/ownership assertions while allowing #81's legitimate lifecycle transition. The current one-line correction is consistent with the demonstrated stale future-state defect; do not broaden it further.
-- Execute the complete accumulated architecture, edge/security and browser/mobile suite against exact `89584f38...` (or an exact reconciled successor) with explicit checkout/assertion. For HIGH-RISK promotion, require fresh A3 trust-boundary satisfaction, A4 READY for that exact candidate and then A5 promotion recommendation.
+- Preserve the authoritative #82 contract only: **browse; select; persist; render fallback**. Do not absorb #83 or invent progression owners.
+- Prove the persistence/visibility trust boundary. Current migration adds `bible_congregation_members.avatar` plus authenticated self-update RLS; current API upserts `bible_avatar_cosmetics` and updates congregation-member avatar by `user_id`. Fresh A3 must determine whether this satisfies recovered persistence requirements without unsafe cross-owner authority.
+- Add meaningful permanent #82 validator/behavior/browser-mobile coverage and wire it additively into the accumulated suite without weakening prior regressions; then execute the complete exact functional gate against the exact reviewed candidate.
 
 ## DEFER
-- #82 Avatar Vault and later inventory rows remain outside #81 until v3.54 is frozen and independently recovered.
+- The 10 retained cosmetic styles whose source metrics do not yet have verified v3 owners remain unavailable/deferred rather than duplicating counting authority, unless A2 primary evidence proves they are required for #82 acceptance now.
+- #83 Innovation remains outside #82.
 
 ## IGNORE
-- The failed `7eb305d0...` bookkeeping SHA is historical evidence after the root-cause correction; it is not promotable.
-- A2/A3 missing-run premises and A4's pre-green NOT READY reason are stale; they remain context only and do not imply READY.
-- `automation/CURRENT.md` remains stale at v3.48 and cannot override live refs/exact workflow evidence.
+- Prior #81 blockers are obsolete: v3.54 is frozen at `cc591aac...` and is the valid #82 base.
+- A3/A4 conclusions from `7f3a9a81...` are context only; they cannot authorize or reject current `f097411c...` except where their explicit staleness conditions identify the need for fresh review.
+- `automation/CURRENT.md` is stale at v3.48 and cannot override live refs, frozen v3.54, handoff or exact run evidence.
 
 ## Firewall decision
-**3 BLOCKER; 3 MILESTONE; NO PROMOTION RECOMMENDATION.**
+**4 BLOCKER; 3 MILESTONE; NO PROMOTION RECOMMENDATION.**
 
-Primary evidence supports the root cause: #81 is legitimately `Verified` in the bookkeeping inventory while the pre-existing #80 validator still demanded #81 remain `Not started`; current `89584f38...` changes only that future-state assertion. No unexplained deletion, skip, workflow narrowing or semantic weakening was found in the inspected correction.
+Primary evidence establishes that #82 has crossed into HIGH-RISK scope: the canonical delta contains schema/RLS and shared API changes, and `avatarVault.save` performs client-side writes to both cosmetic state and congregation-member avatar state. No exact current-SHA run exists, and the existing A3/A4 reports predate these changes.
 
 ## Next safe action
-Before any autonomous A1 write, reconcile into the required #81 quarantine branch. Run the entire exact-SHA accumulated gate on the corrected candidate, then obtain current A3 and exact-candidate A4 READY. If all HIGH-RISK requirements are satisfied, A5 can recommend promotion; immutable `release/v3.54-psychometrics` still requires the exact green bookkeeping SHA.
+Before further autonomous product writes, reconcile the current canonical lineage into the required `agent/a1-work/082-avatar-vault` quarantine and obtain fresh A3 review of the exact schema/RLS/API trust boundary. Complete implementation/permanent tests there, run the entire exact-SHA accumulated functional gate, then require A4 READY for that exact HIGH-RISK candidate and A5 promotion recommendation before bookkeeping. Any bookkeeping SHA still requires its own complete exact gate before immutable v3.55 freeze.
