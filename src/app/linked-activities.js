@@ -37,7 +37,7 @@ export function createLinkedActivitiesService({assignments}){
   function describe(input){
     const row=typeof input==='string'?assignment(input):input;
     if(!row?.id)fail('BQ_LINKED_ACTIVITY_NOT_FOUND','This linked assignment is no longer available.');
-    const explicit=row.linkedActivity?.kind||'';
+    const explicit=normalizeLinkedActivity(row.linkedActivity)?.kind||'';
     const kind=explicit||FALLBACK[row.type]||'';
     if(!kind)return Object.freeze({present:false,available:false,kind:'',route:'',reason:'instruction-only'});
     if(!KNOWN_KINDS.includes(kind))fail('BQ_LINKED_ACTIVITY_KIND','Linked activity used an unsupported destination.');
