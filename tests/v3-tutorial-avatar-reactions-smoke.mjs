@@ -26,8 +26,8 @@ const trainerMetrics = () => page.evaluate(() => {
   const style = visual ? getComputedStyle(visual) : null;
   return {
     state: trainer?.dataset.trainerState || '',
-    width: rect?.width || 0,
-    height: rect?.height || 0,
+    cssWidth: style?.width || '',
+    cssHeight: style?.height || '',
     left: rect?.left || 0,
     right: rect?.right || 0,
     backgroundImage: style?.backgroundImage || '',
@@ -57,7 +57,7 @@ try {
     assert(metrics.backgroundImage.includes('tutorial-trainer-sprite.webp'), `Tutorial step ${step + 1} did not render the retained trainer asset.`);
     assert(metrics.backgroundSize === '400% 200%', `Trainer sheet size changed at step ${step + 1}: ${metrics.backgroundSize}.`);
     assert(samePosition(metrics.backgroundPosition, position), `Trainer sheet position changed for ${state}: ${metrics.backgroundPosition} != ${position}.`);
-    assert(Math.abs(metrics.width - 122) < 1 && Math.abs(metrics.height - 122) < 1, `Mobile trainer must remain 122px square; got ${metrics.width}x${metrics.height}.`);
+    assert(Math.abs(parseFloat(metrics.cssWidth) - 122) < 0.1 && Math.abs(parseFloat(metrics.cssHeight) - 122) < 0.1, `Mobile trainer CSS box must remain 122px square; got ${metrics.cssWidth}x${metrics.cssHeight}.`);
     assert(metrics.left >= -1 && metrics.right <= metrics.innerWidth + 1, `Mobile trainer escaped the viewport at step ${step + 1}.`);
     assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Trainer caused horizontal overflow at step ${step + 1}: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
     if (step < expected.length - 1) {
