@@ -17,7 +17,7 @@ const api={
 
 assert.deepEqual(assignmentsContract.targetScopes,['all','member','team','group']);
 assert.deepEqual(assignmentsContract.ministryRoles,['facilitator','leader','pastor','admin']);
-assert.equal(assignmentsContract.linkedActivityPublishing,false);assert.equal(assignmentsContract.recurrenceGeneration,false);
+assert.equal(assignmentsContract.linkedPublishing,false);assert.equal(assignmentsContract.recurrenceGeneration,false);
 const service=createAssignmentsService({api,session,congregation});
 let state=await service.load();assert.equal(state.role,'leader');assert.equal(state.publishTargets.groups.length,0);
 state=await service.loadPublishTargets();assert.equal(targetCalls.length,1);assert.equal(state.publishTargets.groups[0].id,'g1','Trusted target directory must expose a valid congregation group independent of caller membership.');
@@ -47,7 +47,7 @@ assert.ok(server.includes("if(action==='targets'){if(!leaderRoles.has(member.rol
 assert.ok(server.includes(".from('bible_groups').select('id,name').eq('congregation_id',congregationId).eq('active',true)"),'Trusted group target directory must be congregation-scoped and active-only.');
 assert.ok(server.includes(".from('bible_congregation_members').select('user_id,display_name,role').eq('congregation_id',congregationId).eq('active',true)"),'Trusted member target directory must be congregation-scoped and active-only.');
 assert.ok(server.includes(".from('bible_teams').select('id,name,team_type').eq('congregation_id',congregationId).eq('active',true)"),'Trusted team target directory must be congregation-scoped and active-only.');
-assert.ok(server.includes("targetScope==='member'" )&&server.includes("activeMembership(admin,congregationId,String(targetId))"),'Server must independently reject foreign/inactive member IDs.');
+assert.ok(server.includes("targetScope==='member'")&&server.includes("activeMembership(admin,congregationId,String(targetId))"),'Server must independently reject foreign/inactive member IDs.');
 assert.ok(server.includes("targetScope==='team'")&&server.includes(".eq('congregation_id',congregationId).eq('active',true).maybeSingle()"),'Server must independently reject foreign/inactive team IDs.');
 assert.ok(server.includes("targetScope==='group'")&&server.includes("Journey Group not found in this congregation"),'Server must independently reject foreign/inactive group IDs.');
 console.log('BibleQuest v3 Assignment Push edge regression passed.');
