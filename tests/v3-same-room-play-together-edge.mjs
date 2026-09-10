@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { createGameLauncherService } from '../src/app/games.js';
+const events=[];let writes=0;const progress={record(event){events.push(event);return{applied:true}}};const storage={read(_key,fallback=null){return fallback},write(_key,value){writes+=1;return value}};const recall={async loadManifest(){return{books:[],source:'test',license:'test'}},async loadBook(){throw new Error('unused')}};
+const games=createGameLauncherService({progress,storage,recall,roundIdFactory:(mode,seq)=>`${mode}-${seq}`,clock:()=>new Date('2026-09-11T00:00:00Z')});
+assert.deepEqual(games.sameRoomLimits,{min:2,max:6});assert.throws(()=>games.startSameRoom(1),/2 to 6/);assert.throws(()=>games.startSameRoom(7),/2 to 6/);
+let state=games.getSameRoomState();assert.equal(state.phase,'same-room-setup');state=games.startSameRoom(3);assert.equal(state.players.length,3);assert.equal(state.currentPlayer.name,'Player 1');assert.equal(state.total,10);assert.equal(state.players.every(player=>player.score===0),true);
+state=games.answerSameRoom(state.question.answer);assert.equal(state.locked,true);assert.equal(state.correct,true);assert.equal(state.players[0].score,1);const duplicate=games.answerSameRoom(state.question.answer);assert.equal(duplicate.duplicate,true);assert.equal(duplicate.players[0].score,1);
+state=games.nextSameRoom();assert.equal(state.currentPlayer.name,'Player 2');assert.equal(state.index,1);const wrong=(state.question.answer+1)%state.question.choices.length;state=games.answerSameRoom(wrong);assert.equal(state.correct,false);assert.equal(state.players[1].score,0);state=games.nextSameRoom();assert.equal(state.currentPlayer.name,'Player 3');assert.equal(state.index,2);
+state=games.finishSameRoom();assert.equal(state.phase,'same-room-complete');assert.deepEqual(state.players.map(player=>player.score),[1,0,0]);assert.equal(events.length,0,'Same-room local scores must not award profile XP.');assert.equal(writes,0,'Same-room local session must not persist data.');
+state=games.resetSameRoom();assert.equal(state.phase,'same-room-setup');state=games.startSameRoom(6);assert.equal(state.players.length,6);games.showLauncher();assert.equal(games.getSameRoomState().phase,'same-room-setup');
+console.log('BibleQuest v3 Same-room Play Together edge regression passed');

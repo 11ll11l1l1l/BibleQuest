@@ -15,6 +15,8 @@ const freezeDetective=item=>item?Object.freeze({...item,clues:Object.freeze([...
 const freezeTimeline=item=>item?Object.freeze({...item,items:Object.freeze([...item.items])}):null;
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 const normalizeAnswer=value=>String(value||'').trim().toLocaleLowerCase();
+const SAME_ROOM_MIN=2,SAME_ROOM_MAX=6;
+const emptySameRoom=()=>({phase:'same-room-setup',players:[],bank:[],index:0,currentPlayerIndex:0,locked:false,selected:null,correct:null});
 
 function normalizeResults(input){
   const results={};
@@ -60,6 +62,7 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   let results=normalizeResults(storage.read(RESULTS_KEY,{}));
   let recallState=normalizeRecall(storage.read(RECALL_KEY,{}));
   let state=emptyState();
+  let sameRoom=emptySameRoom();
 
   const snapshot=()=>{
     const mode=state.mode?modeById(state.mode):null;
@@ -74,6 +77,46 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   function validRoundId(mode){sequence+=1;const roundId=String(makeRoundId(mode,sequence)||'').trim();if(!roundId||roundId.length>100)throw new Error('Game round identity is invalid.');return roundId}
   function completionTime(){const raw=clock(),date=raw instanceof Date?raw:new Date(raw);if(!Number.isFinite(date.getTime()))throw new Error('Game completion time is invalid.');return date.toISOString()}
   function persistResult(mode,score,total,gained){const result={score,total,gained,completedAt:completionTime()};results={...results,[mode]:result};storage.write(RESULTS_KEY,results);return result}
+
+  function sameRoomSnapshot(){
+    const question=sameRoom.phase==='same-room-question'?sameRoom.bank[sameRoom.index]||null:null;
+    const players=Object.freeze(sameRoom.players.map((player,index)=>Object.freeze({...player,active:sameRoom.phase==='same-room-question'&&index===sameRoom.currentPlayerIndex})));
+    return Object.freeze({phase:sameRoom.phase,players,index:sameRoom.index,total:sameRoom.bank.length,currentPlayerIndex:sameRoom.currentPlayerIndex,currentPlayer:players[sameRoom.currentPlayerIndex]||null,question:freezeQuestion(question),locked:sameRoom.locked,selected:sameRoom.selected,correct:sameRoom.correct});
+  }
+
+  function startSameRoom(playerCount=2){
+    const count=Number(playerCount);
+    if(!Number.isInteger(count)||count<SAME_ROOM_MIN||count>SAME_ROOM_MAX)throw new Error('Play Together requires 2 to 6 players.');
+    const base=[...buildGameRound('mixed-quest')],bank=moderation?[...moderation.applyCore(base)]:base;
+    if(!bank.length)throw new Error(moderation?'Play Together has no questions available under the current content policy.':'Play Together has no verified questions.');
+    sameRoom={phase:'same-room-question',players:Array.from({length:count},(_,index)=>({id:`player-${index+1}`,name:`Player ${index+1}`,score:0})),bank,index:0,currentPlayerIndex:0,locked:false,selected:null,correct:null};
+    return sameRoomSnapshot();
+  }
+
+  function answerSameRoom(choiceIndex){
+    if(sameRoom.phase!=='same-room-question')throw new Error('Start Play Together before answering.');
+    if(sameRoom.locked)return Object.freeze({applied:false,duplicate:true,...sameRoomSnapshot()});
+    const question=sameRoom.bank[sameRoom.index],choice=Number(choiceIndex);
+    if(!Number.isInteger(choice)||choice<0||choice>=question.choices.length)throw new Error('Choose one of the available answers.');
+    const correct=choice===question.answer,players=sameRoom.players.map((player,index)=>index===sameRoom.currentPlayerIndex?{...player,score:player.score+(correct?1:0)}:player);
+    sameRoom={...sameRoom,players,locked:true,selected:choice,correct};
+    return Object.freeze({applied:true,duplicate:false,...sameRoomSnapshot()});
+  }
+
+  function nextSameRoom(){
+    if(sameRoom.phase!=='same-room-question')throw new Error('There is no active Play Together question.');
+    if(!sameRoom.locked)throw new Error('Answer the current Play Together question before continuing.');
+    if(sameRoom.index+1>=sameRoom.bank.length){sameRoom={...sameRoom,phase:'same-room-complete',index:sameRoom.bank.length,locked:false,selected:null,correct:null};return sameRoomSnapshot()}
+    sameRoom={...sameRoom,index:sameRoom.index+1,currentPlayerIndex:(sameRoom.currentPlayerIndex+1)%sameRoom.players.length,locked:false,selected:null,correct:null};
+    return sameRoomSnapshot();
+  }
+
+  function finishSameRoom(){
+    if(sameRoom.phase==='same-room-complete')return sameRoomSnapshot();
+    if(sameRoom.phase!=='same-room-question')throw new Error('Start Play Together before finishing.');
+    sameRoom={...sameRoom,phase:'same-room-complete',locked:false,selected:null,correct:null};return sameRoomSnapshot();
+  }
+  function resetSameRoom(){sameRoom=emptySameRoom();return sameRoomSnapshot()}
 
   function start(mode){
     const definition=modeById(mode);
@@ -217,8 +260,8 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   async function returnRecallLibrary(){return openRecallLibrary()}
   async function replayRecall(){if(!state.recallBook)throw new Error('Choose a Per-book Recall book before replaying.');return startRecallBook(state.recallBook.code)}
   function lastResult(mode){if(!modeById(mode))throw new Error('Unknown BibleQuest game mode.');return freezeResult(results[mode]||null)}
-  function showLauncher(){state=emptyState();return snapshot()}
+  function showLauncher(){sameRoom=emptySameRoom();state=emptyState();return snapshot()}
   function leave(){return showLauncher()}
 
-  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,xp:XP});
+  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
 }
