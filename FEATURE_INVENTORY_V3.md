@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 90
+- **Regression-tested:** 91
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 9
+- **Not started:** 8
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -113,8 +113,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 90 | Source labels/attribution | Yes | Mixed | Regression-tested | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
 | 91 | Content Review workbench | Yes | Standalone old | Regression-tested | open review item; decision; save; permissions |
 | 92 | Admin console | Yes | Standalone old | Regression-tested | auth guard; read/admin actions; permission denial |
-| 93 | Admin operations | Yes | Standalone old | Verified | operational actions; role guard; error recovery |
-| 94 | Reset/recovery page | Yes | Standalone old | Not started | reset path; cancellation; invalid state |
+| 93 | Admin operations | Yes | Standalone old | Regression-tested | operational actions; role guard; error recovery |
+| 94 | Reset/recovery page | Yes | Standalone old | Verified | reset path; cancellation; invalid state |
 | 95 | Client diagnostics | Yes | Compatibility | Regression-tested | one classifier; offline/host-unreachable/reachable-module/unknown codes; API-owned no-store probe; brief probe cache/forced refresh; safe immutable UI; #96 composition; 390px mobile |
 | 96 | Operational recovery/error boundary | Yes | Clean basic | Regression-tested | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
 | 97 | PWA install/manifest | Yes | Clean | Regression-tested | deployment-relative manifest; explicit any/maskable install icons; single optional prompt owner; accepted/dismissed/installed/cleanup lifecycle; no service-worker ownership; remains compatible with dedicated #98 worker; 390px mobile |

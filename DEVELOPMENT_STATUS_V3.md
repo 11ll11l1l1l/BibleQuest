@@ -1,77 +1,41 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after #93 Admin Operations complete functional verification and bookkeeping correction.
+Updated: 2026-09-11 JST after #94 Reset/recovery functional verification.
 
-`FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. Development continues under rebuild-and-verify with exact-SHA verification and one-owner boundaries.
+`FEATURE_INVENTORY_V3.md` is authoritative. Live GitHub refs and executed Actions evidence supersede stale text.
 
 ## Deployment safety
 
-- Production v2 remains unchanged.
-- `main`, production Supabase, production data, and production Cloudflare remain untouched.
-- Latest frozen checkpoint: `release/v3.63-admin-console` at `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`.
-- v3.63 bookkeeping gate run `34529824942` passed against that exact SHA.
-- Active product milestone branch: `feature/v3-admin-operations`.
-- Exact green #93 functional candidate: `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
-- Bookkeeping is isolated on `work/v3.64-admin-operations-bookkeeping-20260911`.
-- Normal v3 Actions remain `workflow_dispatch` only on product branches.
-- Temporary `push:` triggers are restricted to isolated `verify/...` branches and are never release SHAs.
+- Latest frozen release: `release/v3.64-admin-operations` at `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`; bookkeeping run `34532823188` passed.
+- Active branch: `feature/v3-reset-recovery`.
+- #94 green functional candidate: `b3c15b34da0958a136920dc970b24531e3e06e45`; complete run `34534183203` passed.
+- `main`, production v2, Supabase/data, and Cloudflare remain untouched.
+- Product regression workflow remains `workflow_dispatch` only; temporary push triggers stay isolated.
 
 ## Current bookkeeping candidate state
 
 | State | Count |
 |---|---:|
-| Regression-tested | 90 |
+| Regression-tested | 91 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 9 |
+| Not started | 8 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **91/100**. Regression stability is **90/100**.
+Strict parity is **92/100**; regression stability is **91/100**. #93 is Regression-tested; #94 is Verified. #15 and Kids #38–40 remain deferred. #42 Same-room Play Together is next after v3.65 freeze; #43 Live Rooms and #44–45 Bible World remain unfinished.
 
-- #92 Admin console — **Regression-tested** after surviving #93's complete accumulated functional suite.
-- #93 Admin operations — **Verified** at exact functional candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
-- #94 Reset/recovery page — **Not started** and is the next dependency-safe milestone after v3.64 bookkeeping verification/freeze.
-- #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
+## #94 verified functional boundary
 
-These lifecycle counts are bookkeeping changes and are not frozen until the final bookkeeping SHA passes its own complete accumulated exact-SHA gate. No PASS transfers from the functional candidate after documentation or validator changes.
-
-## #93 verified functional boundary
-
-Admin Operations rebuilds the retained Ministry Operations dashboard and Owner account-deletion control as a separate capability from #92 Admin Console. Retained repository history introduced `bq-admin-ops` and Owner deletion together, so deletion is parity restoration rather than a new feature.
-
-Session remains the only authenticated-user owner. `src/core/api.js` remains the only browser Supabase/network implementation boundary and owns the `adminOperations` facade. `src/app/admin-operations.js` owns fail-closed Owner/Admin authorization, operational dashboard normalization, frontend-health projection, refresh/error state, and Owner-only deletion orchestration. `src/features/admin-operations/index.js` owns standalone rendering/filter interaction. Existing `supabase/functions/bq-admin-ops/index.ts` remains final server authority.
-
-The recovered dashboard covers system health, current online presence, assignment/progress aggregates, devotionals/announcements, persistent poll aggregates, curated media, and live-room aggregates. Privileged client-error user/congregation identifiers are not projected into the UI, and individual poll voter identity is not rendered. Signed-out state performs no privileged request; permission denial is distinct from network/runtime failure.
-
-Owner account deletion is composed into #92's existing user cards but remains owned by #93. Only a verified platform Owner can request deletion; the active Owner cannot delete itself; the destructive request requires the exact `DELETE <email-or-name>` phrase. Server authority additionally rejects another active Owner, refuses deletion while congregation or active small-group ownership remains, ends active rooms created by the target, records an audit event, and performs final Auth deletion.
-
-#94 Reset/recovery remains explicitly outside #93. No production function deployment, migration, production data mutation, Cloudflare change, or `main` change is part of #93.
-
-Permanent #93 evidence includes `ADMIN_OPERATIONS_V3.md`, `admin-operations.html`, `src/app/admin-operations.js`, `src/app/admin-operations-entry.js`, `src/features/admin-operations/index.js`, `src/ui/admin-operations.css`, central `src/core/api.js`, retained `supabase/functions/bq-admin-ops/index.ts`, `scripts/validate-v3-admin-operations.mjs`, `tests/v3-admin-operations-edge.mjs`, `tests/v3-admin-operations-smoke.mjs`, and accumulated invocation in `.github/workflows/v3-regression.yml`.
+#94 restores canonical `/reset` as a standalone Account Recovery page while reusing #9 Account for the password/recovery transaction and central API for network access. Page state/rendering remain separate owners. The flow supports safe retry/cancel, replacement-code acknowledgement, secret non-persistence, and 390px mobile behavior. #100 portable reset, #96 operational recovery, and #93 Owner deletion remain separate.
 
 ## Defect / root-cause ledger
 
-- #92 bookkeeping gate run `34529824942`: **success** against exact SHA `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`; `release/v3.63-admin-console` is frozen at that SHA.
-- Initial #93 targeted run `34531083463`: **failed in the neighboring #92 architecture guard before #93 edge/browser execution**. Root cause was a validator false positive: the old #92 regex scanned from `const adminConsole` through all later API declarations and therefore misclassified the newly separate later `adminOperations` facade as #92 absorption; an exact adjacency assertion in the shared API return list also rejected insertion of any later facade. Runtime ownership was not implicated.
-- The #92 guard was corrected without weakening the boundary: it now extracts only the bounded `adminConsole` facade for the `bq-admin-ops` exclusion and validates required returned facades by name rather than adjacency.
-- Corrected #93 targeted run `34531492122`: **failed only in the #93 contract validator** because `ADMIN_OPERATIONS_V3.md` said the signed-in Owner cannot delete itself but did not contain the validator's exact invariant wording, `active Owner account cannot delete itself`. Backend and service enforcement were already present. The contract wording was aligned; runtime code was unchanged.
-- Final targeted #93 run `34531588788`: **success** against exact candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`; neighboring #92/#93 architecture, edge/security and browser/mobile checks passed.
-- Complete accumulated #93 functional run `34531751123`: **success** against the same exact candidate; exact-SHA assertion, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite passed.
-- Bookkeeping writer run `34532182063`: **success** after first asserting `work/v3.64-admin-operations-bookkeeping-20260911` still equaled exact green functional SHA `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`; it changed inventory lifecycle values only.
-- Initial #93 bookkeeping gate run `34532442314`: **bookkeeping assertions passed, then accumulated architecture failed in the retained #92 validator** because that validator still required inventory #93 to remain `Not started`. That condition was appropriate while #92 was being built but is invalid after #93's verified lifecycle promotion. No runtime failure was reproduced.
-- Permanent correction: #92 continues to validate its own lifecycle state and all #92/#93 ownership boundaries, while inventory #93 is now required to contain any valid lifecycle state instead of being permanently pinned to `Not started`. The corrected bookkeeping SHA must pass the complete accumulated gate before v3.64 freezes.
+The #94 validator found that permanent `.github/workflows/v3-regression.yml` omitted #94 validator/edge/smoke invocation. This was a verification-contract defect, not a reproduced runtime defect. The dispatch-only workflow was corrected. Exact candidate `b3c15b34da0958a136920dc970b24531e3e06e45` then passed full run `34534183203`.
 
 ## Next major milestone
 
-1. Treat the corrected final #93 bookkeeping tip as a new exact candidate; do not transfer run `34531751123` or failed bookkeeping run `34532442314` to the changed SHA.
-2. Confirm `feature/v3-admin-operations` has not moved unexpectedly; fast-forward only when the ancestry is safe.
-3. Create/reset an isolated one-shot bookkeeping verifier with branch-specific `push:` and explicit checkout/assertion of the corrected exact bookkeeping SHA.
-4. Validate inventory/status chronology, then run the complete accumulated architecture, edge/security, and browser/mobile suites.
-5. Correct only reproduced failures; do not weaken or skip accumulated coverage.
-6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.64-admin-operations` exactly there.
-7. Verify release and product refs equal the successful bookkeeping SHA.
-8. Only then create the next feature branch from v3.64 and recover #94 Reset/recovery before implementation.
+Run complete exact-SHA bookkeeping verification. On green, freeze `release/v3.65-reset-recovery` at that bookkeeping SHA, verify refs, then recover #42 from frozen v3.65 before implementation.
 
 ## Release rule
 
-Never freeze a release until the exact clean bookkeeping SHA has passed the complete accumulated regression workflow. Temporary verification trigger commits are never release SHAs. Production v2, `main`, production Supabase/data and production Cloudflare remain unchanged throughout the rebuild.
+Never freeze an untested bookkeeping SHA. Temporary verifier commits are never release SHAs.
