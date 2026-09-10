@@ -15,6 +15,7 @@ import { createDailyMissionService } from './daily-mission.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
 import { createPsychometricsService } from './psychometrics.js';
+import { createAvatarVaultService } from './avatar-vault.js';
 import { createAudioManager } from './audio.js';
 import { createRecordingsService } from './recordings.js';
 import { createMediaLibraryService } from './media-library.js';
@@ -79,6 +80,7 @@ import { dailyMissionPage } from '../features/daily-mission/index.js';
 import { transformPage } from '../features/transform/index.js';
 import { personalityProfilePage } from '../features/personality-profile/index.js';
 import { psychometricsPage } from '../features/psychometrics/index.js';
+import { avatarVaultPage } from '../features/avatar-vault/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
 import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
@@ -111,6 +113,7 @@ function start(){
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
+  const avatarVault=createAvatarVaultService({session,privateStorage,api,progress});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
@@ -168,10 +171,11 @@ function start(){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
+    'avatar-vault':()=>avatarVaultPage({vault:avatarVault,onBack:()=>router.navigate('grow'),onAccount:()=>router.navigate('account')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
     more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
