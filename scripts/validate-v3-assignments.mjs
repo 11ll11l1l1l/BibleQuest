@@ -14,7 +14,8 @@ for(const phrase of['#73 Assignments','bq-assignment','RLS','realtime','read-onl
 const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(73)))fail('Inventory #73 must be Implemented or better once this validator is accumulated.');
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(74))&&!/\| Not started \|/.test(row(74)))fail('Inventory #74 must use a valid lifecycle state while extending the existing Assignments owner.');
-for(const n of[75,79])if(!/\| Not started \|/.test(row(n)))fail(`Inventory #${n} must remain Not started until its own recovered milestone begins.`);
+if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(75))&&!/\| Not started \|/.test(row(75)))fail('Inventory #75 must use a valid lifecycle state while extending the existing Assignments owner.');
+if(!/\| Not started \|/.test(row(79)))fail('Inventory #79 must remain Not started until its own recovered milestone begins.');
 for(const token of['scripts/validate-v3-assignments.mjs','tests/v3-assignments-edge.mjs','tests/v3-assignments-smoke.mjs'])if(!workflow.includes(token))fail(`Accumulated workflow missing Assignments coverage: ${token}`);
 if(failures.length){console.error(`BibleQuest v3 Assignments validation FAILED (${failures.length})`);failures.forEach(message=>console.error(`- ${message}`));process.exit(1)}
 console.log('BibleQuest v3 Assignments architecture validation passed.');
