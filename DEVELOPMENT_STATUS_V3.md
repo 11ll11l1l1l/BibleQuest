@@ -85,7 +85,7 @@ The next code step is to define the minimum central API read projection for lead
 - `V3-ASSIGNMENTS-EDGE-FIXTURE-001` and `V3-STATUS-BOOKKEEPING-001` remain recorded from v3.46.
 - All earlier defect regressions remain in the accumulated suite.
 
-## Exact next milestone sequence
+## Next major milestone
 
 1. Re-read `feature/v3-assignment-push` before each write and preserve any concurrent/manual changes.
 2. Extend the existing central API boundary with only the audience-directory data required for member/team/group selectors, reusing current congregation/team/Journey Group contracts where possible.
