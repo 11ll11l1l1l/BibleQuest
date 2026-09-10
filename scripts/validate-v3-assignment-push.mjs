@@ -11,7 +11,7 @@ const contract=read('ASSIGNMENT_PUSH_V3.md');
 const workflow=read('.github/workflows/v3-regression.yml');
 const rootLegacy=read('assignment-advanced.js');
 
-for(const token of['loadPublishTargets','async function publish','BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','BQ_ASSIGNMENT_TARGET_STALE','linkedActivityPublishing:false'])if(!owner.includes(token))fail(`Assignments owner missing #75 contract token: ${token}`);
+for(const token of['loadPublishTargets','async function publish','BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','BQ_ASSIGNMENT_TARGET_STALE','linkedPublishing:false'])if(!owner.includes(token))fail(`Assignments owner missing #75 contract token: ${token}`);
 if(!owner.includes("const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin'])"))fail('Assignments owner must retain exact ministry publishing roles.');
 if(!owner.includes("const TARGET_SCOPES=Object.freeze(['all','member','team','group'])"))fail('Assignments owner must retain all/member/team/group audience scopes.');
 if(/linkedActivity|linked_activity/.test(owner))fail('#75 browser owner must keep linked activity outside publishing until #79.');
