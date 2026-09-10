@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3.48-assignment-push-functional
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -16,10 +13,6 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: d13ba6b9729a02021ee5efab961c6c233a0b669e
-      - name: Assert exact functional candidate
-        run: test "$(git rev-parse HEAD)" = "d13ba6b9729a02021ee5efab961c6c233a0b669e"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
