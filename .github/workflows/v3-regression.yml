@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.51-workspace-bookkeeping-20260910
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: caf9425fcdfef935560e1d65ff13823c60a7f529
+      - name: Assert exact Workspace bookkeeping candidate
+        run: test "$(git rev-parse HEAD)" = "caf9425fcdfef935560e1d65ff13823c60a7f529"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
