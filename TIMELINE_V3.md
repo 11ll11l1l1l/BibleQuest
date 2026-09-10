@@ -6,13 +6,13 @@ Updated: 2026-09-11 JST
 
 ## Current completion snapshot
 
-- 100 total; **92 Regression-tested / 1 Verified / 0 Implemented / 7 Not started**
-- Strict parity **93/100**; regression stability **92/100**
-- Frozen v3.65 Reset/recovery: `ab3584906b3d017ea555416910f23e9414ed2ef8`, exact bookkeeping run `34535332838` green
-- #42 functional: `22d054725ba983c4fe81fbd220688a3c12ee211c`, complete run `34539110697` green
-- Lifecycle audit `34539369826` found only the #42 validator's pre-promotion `Not started` pin; corrected in the bookkeeping candidate.
-- #43 Live Rooms follows v3.66 freeze.
-- #15 and Kids #38–40 remain deferred.
+- 100 total; **93 Regression-tested / 1 Verified / 0 Implemented / 6 Not started**
+- Strict parity **94/100**; regression stability **93/100**
+- Frozen v3.66 Same-room Play Together: `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`, exact bookkeeping run `34539753714` green
+- #43 Live Rooms functional candidate: `29db077fd134aa9b3b7044e9fda7c86306cd680d`, complete run `34541326308` green
+- #43 focused run `34541198770` green; account-switch stale-membership cache defect reproduced and permanently covered
+- #44 Bible World follows v3.67 freeze; #45 artwork remains separate
+- #15 and Kids #38–40 remain deferred
 
 ## Recent frozen release line
 
@@ -20,29 +20,33 @@ Updated: 2026-09-11 JST
 - v3.63 Admin Console — `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
 - v3.64 Admin Operations — `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`
 - v3.65 Reset/recovery — `ab3584906b3d017ea555416910f23e9414ed2ef8`
-- v3.66 Same-room Play Together — pending bookkeeping gate
+- v3.66 Same-room Play Together — `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`
+- v3.67 Live Rooms — pending bookkeeping gate
 
 ## Recent milestone sequence
 
 | Capability | State | Evidence |
 |---:|---|---|
-| #94 Reset/recovery | Regression-tested | survived #42 complete functional run `34539110697` |
-| #42 Same-room Play Together | Verified | `22d054725ba983c4fe81fbd220688a3c12ee211c`, run `34539110697`; bookkeeping gate pending |
-| #43 Live Rooms | Not started | next after v3.66 freeze |
+| #42 Same-room Play Together | Regression-tested | survived #43 complete functional run `34541326308` |
+| #43 Live Rooms | Verified | `29db077fd134aa9b3b7044e9fda7c86306cd680d`, focused run `34541198770`, complete run `34541326308`; bookkeeping gate pending |
+| #44 Bible World | Not started | next after v3.67 freeze; retained 60% explored-marker threshold and Read/Review/Characters & Places routing recovered read-only |
+| #45 Bible World artwork | Not started | separate asset/responsive/fallback milestone |
 
-## #42 chronology
+## #43 chronology
 
-Recovered the retained same-room contract from the old group-play path and kept #43 networking separate. The first partial feature SHA exposed service methods without a reachable clean Play UI, so it was rejected. The repaired writer generated the service/UI/tests/docs from frozen v3.65, and focused architecture/edge checks passed. GitHub App workflow-write restrictions required permanent regression wiring to be committed separately through the connected GitHub writer.
+After v3.66 froze, #43 was branched from exact release SHA `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`. Retained Live Rooms source, Supabase migrations/RLS, Congregation Membership authority, and existing API architecture were recovered before coding. The scope was kept to inventory acceptance: create/join/leave, reconnect, realtime room/participant refresh, host end, and no stale room state; legacy quiz/poll/hunt/discussion scoring was not folded in.
 
-Exact candidate `22d054725ba983c4fe81fbd220688a3c12ee211c` then passed complete accumulated architecture, edge, and browser/mobile run `34539110697`. Promotion-safety audit `34539369826` found only the new validator's literal `Not started` pin. The bookkeeping candidate corrects that lifecycle assertion and promotes #94→Regression-tested and #42→Verified; because the SHA changes, it requires a fresh complete gate.
+A clean Live Rooms lifecycle owner, route/UI, API boundary, Community entry, contract document, validator, edge regression, and browser/mobile regression were added. Focused testing reproduced a stale-account condition where congregation membership cache could survive authenticated identity changes. The service was corrected to key membership cache to the current user, and the edge regression now protects that path. The validator was also aligned with the actual teardown ownership boundary instead of requiring duplicate bootstrap disconnect wiring.
 
-## #43 read-only boundary reminder
+Focused exact-SHA run `34541198770` passed syntax, #43 architecture, and lifecycle edge checks. Functional candidate `29db077fd134aa9b3b7044e9fda7c86306cd680d` then passed the complete accumulated architecture, edge/security, and browser/mobile gate in run `34541326308`. This promotes #42 to Regression-tested and #43 to Verified. The changed bookkeeping tip must still pass a complete exact-SHA bookkeeping gate before v3.67 freeze.
 
-Acceptance is create/join/leave, reconnect, and no stale room state. Recover retained source/history and ownership before coding; do not extend #42 local pass-and-play into realtime networking.
+## #44 read-only recovery
+
+Retained Journey Path code defines nine biblical-story markers. A marker is considered explored at 60% evidence; the first marker below 60% is the next path marker. Scripture itself is explicitly never locked. Retained Bible World exposes the regions and routes each region into Read, Review, and Characters & Places. The clean Adaptive Learning owner already contains the matching eight-category mastery profile and should be reused instead of creating a second mastery store.
 
 ## Next sequence
 
-Verify #42 bookkeeping SHA → freeze v3.66 → verify refs → branch/recover #43 → implement/targeted/full verification.
+Finish #43 bookkeeping candidate → complete exact-SHA bookkeeping gate → freeze/verify v3.67 → branch #44 from v3.67 → recover/implement/target/full verify Bible World.
 
 ## Release discipline
 
