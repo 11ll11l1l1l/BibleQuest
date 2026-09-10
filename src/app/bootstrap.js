@@ -10,6 +10,7 @@ import { createDeepQuestionsService } from './deep-questions.js';
 import { createStoryJourneyService } from './story-journey.js';
 import { createWisdomSituationsService } from './wisdom-situations.js';
 import { createAdaptiveLearningService } from './adaptive-learning.js';
+import { createBibleWorldService } from './bible-world.js';
 import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createTransformService } from './transform.js';
@@ -69,6 +70,7 @@ import { deepQuestionsPage } from '../features/deep-questions/index.js';
 import { storyJourneyPage } from '../features/story-journey/index.js';
 import { wisdomSituationsPage } from '../features/wisdom-situations/index.js';
 import { adaptiveLearningPage } from '../features/adaptive-learning/index.js';
+import { bibleWorldPage } from '../features/bible-world/index.js';
 import { openReviewPage } from '../features/open-review/index.js';
 import { privateNotesPage } from '../features/private-notes/index.js';
 import { cloudNotesPage } from '../features/cloud-notes/index.js';
@@ -124,6 +126,7 @@ function start(){
   const storyJourney=createStoryJourneyService({lesson,progress,reader});
   const wisdomSituations=createWisdomSituationsService({lesson,progress});
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
+  const bibleWorld=createBibleWorldService({adaptive:adaptiveLearning,reader});
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
@@ -170,12 +173,13 @@ function start(){
   const routes=Object.freeze({
     home:()=>homePage({progress,dailyMission,onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true})}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
+    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
     'wisdom-situations':()=>wisdomSituationsPage({wisdom:wisdomSituations,onLearn:()=>router.navigate('learn')}),
     'adaptive-learning':()=>adaptiveLearningPage({adaptive:adaptiveLearning,onLearn:()=>router.navigate('learn')}),
+    'bible-world':()=>bibleWorldPage({world:bibleWorld,onNavigate:route=>router.navigate(route),onLearn:()=>router.navigate('learn')}),
     'open-review':()=>openReviewPage({review:openReview,onLearn:()=>router.navigate('learn')}),
     'private-notes':()=>privateNotesPage({notes:privateNotes,onLearn:()=>router.navigate('learn')}),
     'cloud-notes':()=>cloudNotesPage({notes:cloudNotes,onLearn:()=>router.navigate('learn'),onAccount:()=>router.navigate('account')}),
