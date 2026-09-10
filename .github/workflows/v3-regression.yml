@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.51-workspace-functional-retry-20260910
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 2d17dce1dbbe129cfd2470408bb7d4dd496918f3
+      - name: Assert exact Workspace retry candidate
+        run: test "$(git rev-parse HEAD)" = "2d17dce1dbbe129cfd2470408bb7d4dd496918f3"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
