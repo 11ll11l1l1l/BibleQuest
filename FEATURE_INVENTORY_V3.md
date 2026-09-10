@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 87
+- **Regression-tested:** 88
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 12
+- **Not started:** 11
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -108,10 +108,10 @@ This file is the authoritative parity ledger for the rebuild.
 | 85 | Tutorial avatar reactions | Yes | Resource retained | Regression-tested | correct reaction/state; mobile positioning |
 | 86 | Accessibility support | Yes | Partial clean | Regression-tested | keyboard nav; focus order; labels; reduced motion/readability |
 | 87 | Content reporting | Yes | Compatibility | Regression-tested | submit report; validation; success/error |
-| 88 | Content moderation | Yes | Compatibility | Verified | congregation-scoped decision load; exempt/remove suppression; explicit include restoration; safe fallback/stale policy; Recall/Games integration |
+| 88 | Content moderation | Yes | Compatibility | Regression-tested | congregation-scoped decision load; exempt/remove suppression; explicit include restoration; safe fallback/stale policy; Recall/Games integration |
 | 89 | Doctrinal safety/context | Yes | Resource retained | Regression-tested | one doctrinal-safety policy owner; imported Recall re-evaluation; passage-context notice revealed separately from source answer/reference/provenance; unsafe universal/disputed claims quarantined; no spiritual scoring; 390px Recall/Open Review verification |
 | 90 | Source labels/attribution | Yes | Mixed | Regression-tested | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
-| 91 | Content Review workbench | Yes | Standalone old | Not started | open review item; decision; save; permissions |
+| 91 | Content Review workbench | Yes | Standalone old | Verified | open review item; decision; save; permissions |
 | 92 | Admin console | Yes | Standalone old | Not started | auth guard; read/admin actions; permission denial |
 | 93 | Admin operations | Yes | Standalone old | Not started | operational actions; role guard; error recovery |
 | 94 | Reset/recovery page | Yes | Standalone old | Not started | reset path; cancellation; invalid state |
