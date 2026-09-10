@@ -1,42 +1,41 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 17:56 JST
+Generated: 2026-09-10 18:55 JST
 
 ## Freshness
-- Active milestone: **#76 Ministry Hub — NORMAL-RISK only while bounded to existing-owner presentation/navigation with no trust-boundary, schema/RLS/grant, dependency/workflow, or global-owner change**.
-- #76 canonical branch: **absent** (`feature/v3-ministry-hub` not present).
-- #76 quarantine candidate: **absent** (`agent/a1-work/076-ministry-hub` not present).
-- Last canonical milestone: `feature/v3-assignment-push` at `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Frozen base: `release/v3.48-assignment-push` at exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Frozen-base exact evidence: run `34450088492` completed `success`; this proves v3.48 only and does not transfer to #76.
-- A2 #76 report: **CURRENT for pre-implementation state**; no candidate existed, contract recovered from primary evidence.
-- A3 #76 report: **CURRENT for pre-implementation state**; no architecture/security blocker for bounded portal/navigation work; reclassify HIGH-RISK if trust-boundary/global-owner areas are touched.
-- A4 #76 report: **CURRENT for pre-implementation state / NOT READY by design** because no candidate or #76 executable evidence exists.
-- HIGH-RISK exact-candidate review: **not applicable yet**; no #76 candidate exists.
+- Active milestone: **#77 Notification Center/inbox — currently treated as NORMAL-RISK while bounded to the existing `src/core/api.js` browser Supabase boundary and existing own-row RLS, with no schema/RLS/grant/RPC/Edge Function/global router-shell/dependency change observed.**
+- Canonical branch: `feature/v3-notification-center` at exact `f911226f2121eb57a2d068ec43b577536328899e`.
+- Dedicated `agent/a1-work/077-...` candidate: **not found**.
+- Frozen base: `release/v3.49-ministry-hub` at exact `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`.
+- #76 release state is therefore newer than `automation/CURRENT.md` / `DEVELOPMENT_HANDOFF_V3.md`, both of which are stale about v3.49 closure.
+- Exact functional evidence for current #77 SHA: retry run `34463380194` explicitly checks out/asserts `f911226f2121eb57a2d068ec43b577536328899e`; architecture validators and accumulated edge regressions are green, browser/mobile regressions are still running. **No complete PASS yet.**
+- Previous run `34463256129` explicitly checked out/asserted `a5d4f0712f2a1962b099e1d4d0b5aa22b440b728` and failed in `validate-v3-notification-center.mjs` because the #77 inventory row wording did not match the validator. That SHA is no longer current.
+- A2 #77 report: **missing**.
+- A3 #77 report: **missing**.
+- A4 #77 report: **stale**; it inspected `a5d4f071...`, while canonical is now `f911226f...`.
+- HIGH-RISK exact-candidate barrier: **not currently applicable** because no HIGH-RISK boundary change has been established; reclassify immediately if schema/RLS/grants/trusted server authority/global owner/dependency/workflow semantics are changed.
 
 ## BLOCKER
-- None.
+- None established from current primary evidence.
 
 ## MILESTONE
-- **Implement and verify the inventory-proven #76 boundary: `open tools; role guard; navigation`.** Use existing router/bootstrap and congregation-membership ownership, add meaningful permanent #76 architecture/runtime/browser-mobile coverage, retain the full accumulated harness, and run the complete exact-SHA gate. Counterfactual: without an executable Ministry Hub open path, fail-closed role-aware presentation, supported navigation and exact accumulated verification, authoritative row #76 remains `Not started` and cannot be safely promoted.
+- **Finish the exact functional gate for `f911226f2121eb57a2d068ec43b577536328899e` before any bookkeeping/freeze.** Counterfactual: promoting while run `34463380194` is incomplete would freeze #77 without proof that the full accumulated browser/mobile phase passed on the exact current SHA.
+- **Preserve the #77 contract boundary: `load; read/unread; open target; refresh`, with signed-out fail-closed behavior, own-row normalization, explicit action allowlist, and authoritative refresh.** Counterfactual: dropping any of these behaviors would fail the inventory/contract and could expose unsafe navigation or incorrect cross-user inbox state.
 
 ## DEFER
-- Retained v2 messages/devotionals, polls, congregation calendar, media upload/signing and legacy direct-client CRUD are not proven by the current #76 inventory contract. Do not absorb them without stronger primary contract evidence; if later required, re-open scope/security review.
-- #43 Live Rooms and #77 Notification Center, #78 Workspace, #79 Linked Activities remain separate unfinished milestones and must not be counted as #76.
-- #15 Japanese furigana and Kids #38–40 remain deferred by user priority.
+- Realtime subscriptions, push/OS notifications, notification preferences, arbitrary notification creation, arbitrary deep links/external URLs, #78 Workspace and #79 Linked Activities remain outside #77 unless stronger primary evidence establishes a dependency.
+- #43 Live Rooms, #15 Japanese furigana and Kids #38–40 remain separate/deferred work.
 
 ## IGNORE
-- Frozen `DEVELOPMENT_HANDOFF_V3.md` text is historically stale about #75 closure; live refs plus control state prove v3.48 is frozen at `e725e5de...`. Do not treat the stale prose as reopening #75.
-- Prior #75 candidate/review findings are historical and do not authorize any future #76 SHA.
-- A4 `NOT READY` is not a defect/blocker at this stage; no implementation candidate exists to review.
+- A4's prior `NOT READY` for `a5d4f071...` is stale after canonical advanced to `f911226f...`; it cannot block or authorize the new SHA.
+- Run `34463256129` is historical failure evidence for the prior SHA only. Its exact failure was a malformed/mismatched #77 inventory-contract assertion, not proof that the current `f911226f...` runtime is defective.
+- Stale `automation/CURRENT.md` and `DEVELOPMENT_HANDOFF_V3.md` must not override live refs proving frozen v3.49 and active #77.
 
 ## Firewall decision
-**0 BLOCKER; 1 MILESTONE; #76 MAY BEGIN as bounded NORMAL-RISK work from frozen v3.48. NO PROMOTION RECOMMENDATION EXISTS because no #76 candidate SHA exists.**
+**0 BLOCKER; 2 MILESTONE; NO PROMOTION RECOMMENDATION YET.**
 
-Primary evidence independently confirms row #76 is `Not started` with required verification `open tools; role guard; navigation`; current role ownership fails closed for unknown membership and grants the `ministry` client capability only to facilitator/leader/pastor/admin; the normal accumulated workflow is `workflow_dispatch`-only and currently contains coverage through #75 but no #76 invocation. A2-A4 conclusions are consistent with that evidence but are not themselves proof.
-
-If implementation changes schema/migrations, RLS/grants, trusted functions/RPCs, browser privileged DML/storage, package/dependency/workflow semantics, or global router/shell ownership, #76 becomes HIGH-RISK before that write. Any unexplained weakening/removal/bypass of accumulated regressions is BLOCKER.
+Primary evidence shows #77 has permanent validator/edge/browser tests wired additively into the accumulated workflow, and the retry workflow pins the exact current SHA. The retry has passed architecture and edge phases but has not yet completed browser/mobile execution, so current evidence is insufficient for promotion. No unexplained accumulated-regression deletion or bypass was observed.
 
 ## Next safe action
-A1 may reconcile frozen v3.48, acquire the writer lease, create the dedicated #76 canonical/quarantine path without force, and implement only the bounded recovered contract on `agent/a1-work/076-ministry-hub`. Add permanent #76 tests and run the complete exact functional gate. NORMAL-RISK work need not wait an artificial extra cycle once exact gates and current requirements are satisfied; if the candidate enters a HIGH-RISK area, fresh exact-candidate A4/A5 review rules apply.
+Let run `34463380194` finish. If every accumulated phase succeeds on exact `f911226f...`, A1 may proceed with the normal-risk bookkeeping transaction and separate exact bookkeeping-SHA complete gate, provided the branch has not moved and no HIGH-RISK boundary change appears. If the run fails, reproduce that exact failure, correct only the proven cause, retain the regression, and verify a new exact SHA. Refresh A4/A5 if the candidate moves or risk tier changes.
