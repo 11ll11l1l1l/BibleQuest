@@ -55,6 +55,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/app/games.js src/features/games/index.js scripts/validate-v3-same-room-play-together.mjs tests/v3-same-room-play-together-edge.mjs tests/v3-same-room-play-together-smoke.mjs docs/V3_SAME_ROOM_PLAY_TOGETHER_CONTRACT.md .github/workflows/v3-regression.yml
+          git restore .github/workflows/v3-regression.yml
+          git add src/app/games.js src/features/games/index.js scripts/validate-v3-same-room-play-together.mjs tests/v3-same-room-play-together-edge.mjs tests/v3-same-room-play-together-smoke.mjs docs/V3_SAME_ROOM_PLAY_TOGETHER_CONTRACT.md
           git commit -m "feat: restore same-room Play Together"
           git push --force-with-lease=refs/heads/feature/v3-same-room-play-together:3d0d3591e10abc45cb24687a6ecd32ca4951bd4d origin HEAD:refs/heads/feature/v3-same-room-play-together
