@@ -4,6 +4,7 @@ const CONTENT_TYPES=new Set(['question','statement','answer','explanation','stor
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 const clean=value=>String(value??'').trim();
 const policyError=(message,code)=>{const error=new Error(message);error.code=code;return error};
+const validQuestionKey=key=>/^question:(?:core|[0-9A-Z]{3}):[^:\s]{1,100}$/.test(key);
 
 export const coreContentKey=id=>`question:core:${clean(id)}`;
 export const recallContentKey=(code,id)=>`question:${String(code||'').toUpperCase()}:${clean(id)}`;
@@ -11,7 +12,7 @@ export const recallContentKey=(code,id)=>`question:${String(code||'').toUpperCas
 function normalizeDecision(row,congregationId){
   if(String(row?.congregation_id||'')!==String(congregationId))return null;
   const contentKey=clean(row?.content_key),contentType=clean(row?.content_type),origin=clean(row?.origin),decision=clean(row?.decision);
-  if(!contentKey||contentKey.length>180||!CONTENT_TYPES.has(contentType)||!ORIGINS.has(origin)||!DECISIONS.has(decision))return null;
+  if(!contentKey||contentKey.length>180||contentType!=='question'||!CONTENT_TYPES.has(contentType)||!validQuestionKey(contentKey)||!ORIGINS.has(origin)||!DECISIONS.has(decision))return null;
   return Object.freeze({
     congregationId:String(congregationId),
     contentKey,
@@ -85,7 +86,7 @@ export function createContentModerationService({api,session,congregation}={}){
       state={status:'ready',congregationId:selected.id,congregationName:selected.name,scopes,decisions,loadedAt:new Date().toISOString(),error:''};
       return snapshot();
     }catch(error){
-      state={status:previous.size?'stale':'unavailable',congregationId:selected.id,congregationName:selected.name,scopes,decisions:previous,loadedAt:previousLoadedAt,error:error?.message||'Content policy could not be refreshed.'};
+      state={status:previousLoadedAt?'stale':'unavailable',congregationId:selected.id,congregationName:selected.name,scopes,decisions:previous,loadedAt:previousLoadedAt,error:error?.message||'Content policy could not be refreshed.'};
       return snapshot();
     }
   }
@@ -93,6 +94,14 @@ export function createContentModerationService({api,session,congregation}={}){
   const select=congregationId=>refresh(congregationId);
   const decisionFor=contentKey=>state.decisions.get(clean(contentKey))||null;
   const decisionValue=contentKey=>decisionFor(contentKey)?.decision||'';
+
+  function hasRecallIncludes(code){
+    const normalized=String(code||'').toUpperCase();
+    if(!validCode(normalized))return false;
+    const prefix=`question:${normalized}:`;
+    for(const [key,row] of state.decisions)if(key.startsWith(prefix)&&row.decision==='include')return true;
+    return false;
+  }
 
   function applyCore(rows){
     const source=Array.isArray(rows)?rows:[];
@@ -128,5 +137,5 @@ export function createContentModerationService({api,session,congregation}={}){
     return snapshot();
   }
 
-  return Object.freeze({refresh,select,snapshot,decisionFor,applyCore,applyRecall,clear});
+  return Object.freeze({refresh,select,snapshot,decisionFor,hasRecallIncludes,applyCore,applyRecall,clear});
 }
