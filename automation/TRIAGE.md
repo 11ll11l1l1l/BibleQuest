@@ -1,45 +1,47 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 JST
+Generated: 2026-09-10 22:58 JST
 
 ## Freshness
 - Active milestone: **#82 Avatar Vault — HIGH-RISK**.
-- Current canonical: `feature/v3-avatar-vault` at exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
-- Frozen base: `release/v3.54-psychometrics` at `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
-- Exact product functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd` passed run `34483151962`, including architecture, edge/security and browser/mobile/Avatar Vault smoke.
-- First bookkeeping candidate `dde924f86f83baf78659f303e442930b38749aca` failed run `34483915685` in accumulated architecture validation because inventory summary counts did not match promoted rows; later phases were skipped. Current lineage contains the bookkeeping-only correction/defect record but requires a new exact complete bookkeeping gate.
-- A2/A3/A4 manual investigation reports were produced during this session. Their core product findings were independently rechecked against current API/app/migration behavior; changes after the functional SHA are bookkeeping/docs, so the product findings remain applicable. Any future product/API/migration/workflow movement makes this triage stale.
-- A1 Release Captain was not run. Writer lease remained outside this investigation; this triage performs no product/canonical/release mutation.
+- Canonical/bookkeeping candidate: `feature/v3-avatar-vault` at exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
+- Dedicated autonomous work branch `agent/a1-work/082-avatar-vault`: **not found**.
+- Frozen base: `release/v3.54-psychometrics` at exact `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
+- Exact corrected bookkeeping run: **34484163108 — SUCCESS**. Its verifier checked out/asserted exact `60100f0...`; accumulated architecture, edge/security and browser/mobile phases all passed, and the executed browser loop included `tests/v3-avatar-vault-smoke.mjs`.
+- Writer lease observed: **FREE**.
+- A2 report is SHA-stale at `589827943...`. A3 and A4 reports are current for exact `60100f0...`; A3 says trust boundary NOT SATISFIED and A4 says NOT READY.
+- This triage is stale on any canonical/work/frozen ref movement, #82 product/API/schema/test/workflow change, new exact run evidence, or new A3/A4 exact-candidate review.
 
 ## BLOCKER
-1. **Shared avatar JSON is destructively replaced.** Current `api.avatarVault.save` constructs `avatar={cosmetic:selectedStyle}` and updates the whole `bible_congregation_members.avatar` value. Live production avatar data is structured and retained legacy behavior merged cosmetic into the existing object. Counterfactual: equipping a cosmetic can erase face/outfit/companion/background or other avatar fields used by congregation surfaces. This violates #82 persistence/data-integrity parity.
+1. **Cosmetic save destructively replaces structured avatar JSON.** `api.avatarVault.save()` writes `{cosmetic:selectedStyle}` as the entire `bible_congregation_members.avatar` object. Read-only live schema inspection shows `avatar` is structured JSONB with default `{face, outfit, companion, background}`, and current production has 3 multi-key avatar rows. Counterfactual: selecting a cosmetic on such a row erases existing presentation fields. This violates #82 `persist`/data integrity.
 
-2. **Cloud save can split into two states with no real reopen retry.** The API writes `bible_avatar_cosmetics` first and congregation avatar second. `load()` reads selected style but does not reconcile the congregation-avatar write, while the UI says failed sync will retry when reopened. Counterfactual: first write succeeds, second fails, and private selection remains newer than congregation-visible avatar indefinitely. #82 persistence/recovery is therefore not proven/correct.
+2. **Two cloud writes can split permanently with no reopen reconciliation.** Save upserts `bible_avatar_cosmetics` first, then updates congregation avatar. `load()` later reads only `bible_avatar_cosmetics.selected_style`; it neither checks nor repairs the public avatar projection. Counterfactual: first write succeeds, second fails, reopen shows the new local/private style while leaderboard/congregation state stays stale indefinitely.
 
-3. **Candidate migration/RLS premise conflicts with live backend authority.** Read-only live inspection shows `bible_congregation_members.avatar` already exists as structured JSONB and an own-public-profile UPDATE policy already exists with congregation-membership qualification. The candidate migration adds an `if not exists` column with a different fresh-environment default and a second self-update policy scoped only by user id. Counterfactual: repository/fresh-install policy semantics diverge from live verified authority and add an unnecessary alternate authorization path. Reconcile migration history/schema rather than deploying this as a missing-column/policy fix.
+3. **Repository migration introduces a broader self-update policy than the live verified policy.** Live `members update own public profile` requires both `auth.uid() = user_id` and active congregation membership. Candidate migration adds a second UPDATE policy requiring only `user_id = auth.uid()`. PostgreSQL permissive policies combine with OR semantics, and authenticated UPDATE is granted on both `display_name` and `avatar`. Counterfactual: an authenticated user with an inactive/stale own membership row can regain UPDATE ability for those public-profile columns through the new policy even when the existing active-membership policy denies it. The migration also assumes a fresh-install `{}` avatar default while live authoritative schema has a structured avatar default. Reconcile to one authorization/schema contract before promotion.
 
-4. **Current bookkeeping state is not exact-gate green.** Run `34483915685` failed at architecture validation and cannot authorize promotion; edge/browser phases were skipped. Current `60100f0...` differs from that candidate and has no transferable PASS. Even if a later bookkeeping gate turns green, BLOCKER 1–3 remain because the current harness does not faithfully exercise those semantics.
+4. **HIGH-RISK promotion barrier is unsatisfied despite exact green execution.** Run `34484163108` proves the exercised suite passed at exact `60100f0...`, but current permanent tests do not fail on BLOCKER 1/2 or faithfully prove the earned-cosmetic authorization boundary; A3 trust-boundary review is NOT SATISFIED and A4 is NOT READY for this exact SHA. Counterfactual: promoting now would freeze known untested persistence/auth semantics merely because the current harness is green.
 
 ## MILESTONE
-- Preserve authoritative #82 boundary: **browse; select; persist; render fallback**. Do not absorb #83 or create duplicate counters.
-- The dedicated 390px Avatar Vault smoke is now present and was successfully executed against functional candidate `37f1dc6...`; the earlier browser-smoke absence is resolved.
-- Add semantic regressions that can actually fail on (a) loss of existing avatar JSON keys and (b) first-write-success/second-write-failure with reopen reconciliation, then run the full exact-SHA suite again after the product correction.
-- Resolve the 10 unavailable legacy unlock rules. Retaining them visibly as unavailable avoids fake counters, but full parity should not silently count missing retained behavior unless an authoritative deferral is explicit.
+- Preserve authoritative #82 scope: **browse; select; persist; render fallback**; do not absorb #83 or invent duplicate progression counters.
+- Correct persistence so cosmetic mutation preserves existing avatar fields and has explicit retry/reconciliation or one authoritative transactional path for split cloud state; add permanent regressions capable of failing on both counterfactuals.
+- Resolve public-cosmetic trust explicitly: either untrusted self-presentation with no score/rank/permission/achievement authority, or a trusted server/RPC/Edge authorization path backed by authoritative progression facts. Do not claim browser-side XP/streak checks are server authorization.
+- Harden `validate-v3-avatar-vault.mjs` so future accumulated workflows are required to invoke `tests/v3-avatar-vault-smoke.mjs`; the exact current run did execute it, so this is retention protection rather than a missing-current-run claim.
+- Before any new autonomous product/test/workflow write, create/resume the required `agent/a1-work/082-*` quarantine branch from the reconciled exact canonical state; do not continue autonomous implementation directly on canonical.
 
 ## DEFER
-- #83 Innovation and later rows remain outside #82.
-- Do not duplicate question/recall/couples/community/assignment/Journey metric ownership merely to unlock the 10 deferred styles.
+- The 10 retained cosmetics whose source metrics have no verified v3 owner remain unavailable/deferred rather than creating duplicate question/Recall/Couples/Community/Assignment/Journey counters.
+- #83 Innovation remains separate until #82 freezes.
 
-## IGNORE / RESOLVED
-- The earlier finding that no Avatar Vault browser/mobile smoke existed is resolved.
-- Functional run `34483151962` is valid evidence that the exercised suite passed at `37f1dc6...`; it is not evidence for untested cloud merge/reconciliation behavior and is not transferable to bookkeeping SHAs.
-- `automation/CURRENT.md` remains stale and does not override live refs/evidence.
+## IGNORE
+- The earlier claim that exact `60100f0...` lacked a complete bookkeeping PASS is obsolete; run `34484163108` is exact green and includes Avatar Vault smoke.
+- Functional run `34483151962` remains historical evidence only; no PASS transfer is needed because a later exact bookkeeping run exists.
+- `automation/CURRENT.md` and parts of `DEVELOPMENT_HANDOFF_V3.md` are stale relative to live #82 refs/evidence and do not override them.
 
 ## Firewall decision
 **4 BLOCKER; NO PROMOTION RECOMMENDATION.**
 
-The most important result of the manual investigation is that #82 currently has a green functional suite that misses two real persistence failures, plus a migration assumption contradicted by the live backend. Those must be corrected before a successful bookkeeping run or a `Verified` ledger label can justify `release/v3.55-avatar-vault`.
+Exact execution is no longer the problem. The current HIGH-RISK candidate has a real destructive persistence path, an unreconciled split-write path, and a migration policy that broadens the live active-membership authorization boundary. A3/A4 exact-candidate promotion requirements are therefore not satisfied.
 
 ## Next safe action
-Manual captain should keep A1 disabled, correct only the reproduced #82 persistence/migration defects, add faithful regressions for them, and rerun the full exact functional gate on the new SHA. A3/A4/A5 must then review that exact HIGH-RISK candidate; only afterward should bookkeeping receive its own complete exact-SHA gate and release promotion be considered.
+Keep #82 active. Work only on a reconciled `agent/a1-work/082-*` quarantine successor: preserve/merge avatar JSON, define/test split-write recovery, reconcile the migration/RLS contract without broadening member UPDATE authority, add faithful permanent regressions, then run the entire accumulated exact-SHA functional gate. After that exact successor is green, require fresh A3 trust-boundary satisfaction and A4 READY before A5 can recommend HIGH-RISK promotion/bookkeeping.
