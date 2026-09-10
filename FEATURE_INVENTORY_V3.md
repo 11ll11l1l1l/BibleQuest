@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 78
+- **Regression-tested:** 79
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 21
+- **Not started:** 20
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -99,8 +99,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 76 | Ministry Hub | Yes | Compatibility | Regression-tested | open tools; role guard; navigation |
 | 77 | Notification Center/inbox | Yes | Compatibility | Regression-tested | load; read/unread; open target; refresh |
 | 78 | Workspace | Yes | Compatibility | Regression-tested | open; save state; role/session boundary |
-| 79 | Linked activities/challenges | Yes | Compatibility | Verified | launch linked activity; completion handoff |
-| 80 | Personality profile | Yes | Compatibility | Not started | complete; save; reopen; privacy boundary |
+| 79 | Linked activities/challenges | Yes | Compatibility | Regression-tested | launch linked activity; completion handoff |
+| 80 | Personality profile | Yes | Compatibility | Verified | complete; save; reopen; privacy boundary |
 | 81 | Psychometrics suite | Yes | Standalone old | Not started | complete assessment; result; persistence; mobile |
 | 82 | Avatar vault | Yes | Compatibility | Not started | browse; select; persist; render fallback |
 | 83 | Innovation suite | Yes | Compatibility | Not started | inventory-specific workflows documented before migration |
