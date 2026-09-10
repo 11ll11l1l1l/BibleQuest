@@ -4,7 +4,7 @@ const MANIFEST_PATH='data/packs/manifest.json';
 const SOURCE='unfoldingWord Translation Questions v90';
 const LICENSE='CC BY-SA 4.0';
 const SOURCE_INFO=Object.freeze({source:SOURCE,license:LICENSE});
-const freezeBook=row=>Object.freeze({code:row.code,name:row.name,questions:row.questions,path:row.path});
+const freezeBook=row=>Object.freeze({code:row.code,name:row.name,questions:row.questions,path:row.path,quarantinedQuestions:row.quarantinedQuestions||0});
 const freezeItem=row=>Object.freeze({id:row.id,reference:row.r||'',question:row.q,answer:row.a,contextNote:row.safety?.action==='context'?String(row.safety?.contextNote||'').trim():'',safety:Object.freeze({...row.safety,topics:Object.freeze([...(row.safety?.topics||[])])})});
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 
@@ -22,10 +22,10 @@ export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
       if(!payload||typeof payload!=='object'||!Array.isArray(payload.question_books))throw new Error('Per-book Recall manifest is malformed.');
       const seen=new Set(),books=[];
       for(const row of payload.question_books){
-        const code=String(row?.code||'').toUpperCase(),name=String(row?.name||'').trim(),questions=Number(row?.questions),path=String(row?.path||'');
+        const code=String(row?.code||'').toUpperCase(),name=String(row?.name||'').trim(),questions=Number(row?.questions),path=String(row?.path||''),quarantinedQuestions=Number(row?.quarantined_questions||0);
         if(!validCode(code)||!name||!Number.isSafeInteger(questions)||questions<1||path!==`data/packs/questions/${code}.json`)continue;
         if(seen.has(code))throw new Error(`Per-book Recall manifest has duplicate book ${code}.`);
-        seen.add(code);books.push(freezeBook({code,name,questions,path}));
+        seen.add(code);books.push(freezeBook({code,name,questions,path,quarantinedQuestions:Number.isSafeInteger(quarantinedQuestions)&&quarantinedQuestions>=0?quarantinedQuestions:0}));
       }
       if(!books.length)throw new Error('Per-book Recall manifest contains no usable books.');
       return Object.freeze({source:SOURCE,license:LICENSE,books:Object.freeze(books)});
