@@ -433,6 +433,15 @@ export function createApi() {
     async send(groupId,kind) { return invoke('bq-journey-group',{action:'encourage',group_id:groupId,kind}); }
   });
 
+  const contentReports = Object.freeze({
+    async submit(row) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_content_reports').insert(row).select('id,congregation_id,reporter_id,content_key,reason,status,created_at').single();
+      if(error)throw error;
+      return data;
+    }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -452,5 +461,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentReports, media, diagnostics });
 }
