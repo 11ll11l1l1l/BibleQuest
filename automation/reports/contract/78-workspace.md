@@ -5,22 +5,21 @@ Date: 2026-09-10 JST
 
 ## STATE / PROVENANCE
 
-- Active milestone: **#78 Workspace**.
+- Milestone: **#78 Workspace — CLOSED / FROZEN**.
 - Canonical branch: `feature/v3-workspace`.
-- Canonical exact HEAD at final pre-write recheck: `caf9425fcdfef935560e1d65ff13823c60a7f529`.
+- Canonical exact HEAD at final live recheck: `caf9425fcdfef935560e1d65ff13823c60a7f529`.
 - Dedicated `agent/a1-work/078-...` branch: **not found** from live matching-ref inspection.
-- Latest frozen v3 release established from live refs: `release/v3.50-notification-center` at `fd2409003443f29408342836ae4186a83ed4180b`.
-- Previous frozen release: `release/v3.49-ministry-hub` at `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`.
+- Latest frozen v3 release at final recheck: `release/v3.51-workspace` at exact `caf9425fcdfef935560e1d65ff13823c60a7f529`.
+- Previous frozen release: `release/v3.50-notification-center` at `fd2409003443f29408342836ae4186a83ed4180b`.
 - Exact Workspace bookkeeping verification workflow: run `34465897944`, completed `success`; its isolated workflow explicitly checks out and asserts `caf9425fcdfef935560e1d65ff13823c60a7f529` before running the accumulated suite.
-- No `release/v3.51-workspace` ref existed at inspection time. Therefore this report does **not** call #78 frozen even though its exact bookkeeping gate is green.
 
-Candidate-specific statements in this report become stale if `feature/v3-workspace` moves from `caf9425fcdfef935560e1d65ff13823c60a7f529`, if a dedicated #78 work branch appears/moves, or if a v3.51 release is created at another SHA. Contract statements become stale if authoritative inventory or `WORKSPACE_V3.md` changes.
+Candidate-specific statements in this report become stale if `feature/v3-workspace` or `release/v3.51-workspace` no longer resolve to `caf9425fcdfef935560e1d65ff13823c60a7f529`, or if a newer frozen release becomes the active baseline. Contract statements become stale if authoritative inventory or `WORKSPACE_V3.md` changes.
 
 ## EVIDENCE INSPECTED
 
 Primary evidence inspected independently before reading TRIAGE:
 
-1. Live Git refs for `feature/v3-workspace`, `release/v3.50-notification-center`, `release/v3.49-ministry-hub`, and matching `agent/a1-work/078...` refs.
+1. Live Git refs for `feature/v3-workspace`, `release/v3.51-workspace`, `release/v3.50-notification-center`, `release/v3.49-ministry-hub`, and matching `agent/a1-work/078...` refs.
 2. `FEATURE_INVENTORY_V3.md` at exact `caf9425...`.
 3. `WORKSPACE_V3.md` at exact `caf9425...`.
 4. Retained root `workspace.js` at exact `caf9425...`.
@@ -28,7 +27,7 @@ Primary evidence inspected independently before reading TRIAGE:
 6. `DEVELOPMENT_HANDOFF_V3.md` at exact `caf9425...` (not authoritative where stale).
 7. Isolated verification workflow `verify/v3.51-workspace-bookkeeping-20260910/.github/workflows/v3-regression.yml`.
 8. Actions run `34465897944` and job `102834279193`.
-9. Only after forming provisional findings: `automation/TRIAGE.md`; it is stale to #77 and does not describe current #78 state.
+9. Only after forming provisional findings: `automation/TRIAGE.md`; it is stale to #77 and does not describe current #78/v3.51 state.
 
 ## FACT — AUTHORITATIVE REQUIRED PARITY
 
@@ -105,7 +104,7 @@ Do not restore as part of #78 without a separately authoritative contract:
 
 The recovered contract states that the tracked retained v2 database blueprint did not establish a corresponding authoritative bookmark/highlight table/RLS/grant contract sufficient to safely reintroduce those writes in #78.
 
-## FACT — EXACT WORKFLOW EVIDENCE
+## FACT — EXACT WORKFLOW / RELEASE EVIDENCE
 
 Run `34465897944` completed successfully. The verification workflow explicitly checks out/asserts exact `caf9425fcdfef935560e1d65ff13823c60a7f529` and includes #78 coverage additively:
 
@@ -115,19 +114,19 @@ Run `34465897944` completed successfully. The verification workflow explicitly c
 
 The job record shows success for exact-SHA assertion, accumulated architecture validators, accumulated edge regressions, Playwright/Chromium setup, local server startup, and accumulated browser/mobile regressions.
 
-This is evidence that the bookkeeping candidate passed the complete configured accumulated gate; it is not evidence that a v3.51 release ref had already been created at inspection time.
+A final live-ref recheck after the run confirmed immutable `release/v3.51-workspace` now exists at that same exact verified SHA `caf9425...`. Therefore #78 is frozen at the exact green bookkeeping SHA.
 
 ## INFERENCE
 
-- The current exact state is at the end of #78's bookkeeping gate rather than early implementation, because `caf9425...` already carries inventory advancement through Workspace and the exact bookkeeping workflow succeeded against that SHA.
+- #78 is complete as a release transaction because canonical and frozen v3.51 resolve to the same exact SHA that passed the complete configured bookkeeping gate.
 - #78's retained bookmark/highlight behavior is intentionally unresolved/deferred rather than silently equivalent to the narrower v3 Workspace contract. The strongest available evidence supports preserving private Workspace intent without inventing unverified database authority.
-- Because no dedicated #78 work branch exists now, the current live repository reflects a manual/canonical implementation path rather than the autonomous quarantine pattern described in current control text. This is provenance only; A2 does not modify branches or retroactively adjudicate process ownership.
+- Because no dedicated #78 work branch exists now, the live repository reflects a manual/canonical implementation path rather than the autonomous quarantine pattern described in current control text. This is provenance only; A2 does not modify branches or retroactively adjudicate process ownership.
 
 ## RECOMMENDATION
 
-- Treat #78's product contract as satisfied only at exact `caf9425...` while the exact green evidence remains applicable.
-- Do not broaden #78 during release closure. If the release transaction proceeds, freeze only the exact verified bookkeeping SHA after live-ref reconciliation.
-- Recover #79 Linked activities/challenges independently from its authoritative inventory and retained source. Do not infer that Workspace owns linked-activity launch/completion handoff merely because Workspace can navigate to existing fixed routes.
+- Use `release/v3.51-workspace` / `caf9425...` as the frozen baseline for the next recovery target.
+- Recover #79 Linked activities/challenges independently from authoritative inventory, retained source and existing launch/completion owners. Do not infer that Workspace owns linked-activity completion merely because Workspace can navigate to fixed routes.
+- Do not reopen/broaden #78 during #79 recovery unless primary evidence proves a real dependency.
 
 ## EXPLICITLY OUT OF SCOPE FOR #78
 
@@ -141,14 +140,14 @@ This is evidence that the bookkeeping candidate passed the complete configured a
 ## NEXT DEPENDENCY-LIKELY MILESTONES
 
 ### #79 Linked activities/challenges
-FACT: authoritative inventory requirement is **launch linked activity; completion handoff** and status remains Not started at `caf9425...`.
+FACT: authoritative inventory requirement is **launch linked activity; completion handoff** and status is Not started at frozen `caf9425...`.
 
 RECOMMENDATION: recover retained launch payload, permitted target/activity kinds, completion return/result contract, persistence/duplicate-award behavior, and existing owner boundaries before implementation. Do not allow stored activity data to become arbitrary routes/URLs without evidence.
 
 MISSING EVIDENCE: no dedicated #79 contract or independently recovered retained source was established in this run; therefore no stronger #79 parity claim is made.
 
 ### #80 Personality profile
-FACT: authoritative inventory requirement is **complete; save; reopen; privacy boundary** and status remains Not started at `caf9425...`.
+FACT: authoritative inventory requirement is **complete; save; reopen; privacy boundary** and status is Not started at frozen `caf9425...`.
 
 RECOMMENDATION: treat its privacy boundary as unresolved until retained source plus persistence/authorization evidence is independently recovered. Do not merge #80 into #79 or #78.
 
@@ -156,16 +155,13 @@ MISSING EVIDENCE: no dedicated #80 contract or retained implementation was estab
 
 ## AMBIGUITIES / BLOCKERS
 
-No product-contract blocker is established for exact #78 SHA `caf9425...` from the evidence inspected.
+No product-contract blocker is established for frozen #78 SHA `caf9425...` from the evidence inspected.
 
-The only live-state ambiguity is release closure: exact bookkeeping verification is green, but `release/v3.51-workspace` did not yet exist when checked. That is release state, not a missing #78 parity requirement.
-
-`automation/TRIAGE.md` is stale because it still describes #77 at `f911226f...` and says #78 is deferred, while live refs/inventory/workflow evidence show #77 frozen at v3.50 and #78 at a green bookkeeping candidate.
+`automation/TRIAGE.md` is stale because it still describes #77 at `f911226f...` and says #78 is deferred, while live refs/inventory/workflow evidence now show #77 frozen at v3.50 and #78 frozen at v3.51.
 
 ## MISSING EVIDENCE
 
 - No dedicated `agent/a1-work/078-...` candidate ref exists to audit.
-- No `release/v3.51-workspace` ref existed at inspection time.
 - This A2 run did not independently recover a dedicated #79 or #80 retained-source contract; only their authoritative inventory rows were used for dependency preview.
 
 ## CONCRETE #78 ACCEPTANCE CHECKLIST
@@ -182,4 +178,4 @@ The only live-state ambiguity is release closure: exact bookkeeping verification
 - [x] No new bookmark/highlight DB authority is invented for #78.
 - [x] Permanent validator, edge and browser/mobile coverage are accumulated.
 - [x] Exact bookkeeping SHA `caf9425...` passed complete configured accumulated workflow in run `34465897944`.
-- [ ] Immutable `release/v3.51-workspace` existence was not yet observed at report time.
+- [x] Immutable `release/v3.51-workspace` exists at the same exact verified SHA.
