@@ -1,0 +1,23 @@
+name: BibleQuest v3.66 lifecycle audit
+
+on:
+  push:
+    branches:
+      - verify/v3.66-lifecycle-audit-22d0547-20260911
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 22d054725ba983c4fe81fbd220688a3c12ee211c
+      - name: Assert exact candidate
+        run: test "$(git rev-parse HEAD)" = "22d054725ba983c4fe81fbd220688a3c12ee211c"
+      - name: Find capability 42 lifecycle assertions
+        run: |
+          echo '=== Same-room references in validators ==='
+          grep -R -n -E 'Same-room Play Together|\| 42 \|' scripts tests || true
