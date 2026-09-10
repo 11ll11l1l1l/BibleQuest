@@ -5,103 +5,101 @@ Date: 2026-09-10 JST
 
 ## STATE / PROVENANCE
 
-- Canonical milestone branch: `feature/v3-assignment-push`
-- Exact canonical HEAD: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`
-- Quarantine work branch: `agent/a1-work/075-assignment-push`
-- Exact candidate HEAD audited: `d13ba6b9729a02021ee5efab961c6c233a0b669e`
-- Frozen base: `release/v3.47-advanced-assignments`
-- Exact frozen SHA: `2523f85d47f59721eae81da10cf1007d29af4139`
-- Retained prior exact green bookkeeping evidence: workflow run `34433120915` for frozen v3.47 only.
-- Exact #75 candidate workflow evidence: **NONE**. GitHub Actions query for `agent/a1-work/075-assignment-push` returned zero workflow runs at this audit.
-- Staleness condition: all candidate-specific findings below become stale immediately if `agent/a1-work/075-assignment-push` moves from `d13ba6b9729a02021ee5efab961c6c233a0b669e`.
+- Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
+- Canonical branch: `feature/v3-assignment-push`.
+- Exact canonical HEAD: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Quarantine branch: `agent/a1-work/075-assignment-push`.
+- Exact functional candidate audited: `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
+- Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
+- Exact functional workflow evidence: run `34438690160` — `success`.
+- Verification trigger commit/run HEAD: `bd3455e1252b77d5a5527e83c52b9e6ccb286be3` on isolated `verify/v3.48-assignment-push-functional-a1-20260910-1349`; its workflow explicitly checked out and asserted exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` before executing tests.
+- Staleness condition: every candidate-specific conclusion in this report is stale immediately if `agent/a1-work/075-assignment-push` moves from `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`, if the relevant workflow/test files change, or if later exact evidence contradicts this audit.
 
-Primary evidence inspected independently before TRIAGE: control/guardrail documents, exact branch refs, frozen ref, `ASSIGNMENT_PUSH_V3.md`, live `DEVELOPMENT_HANDOFF_V3.md`, candidate diff/commit history, `.github/workflows/v3-regression.yml`, `tests/v3-assignment-push-edge.mjs`, `tests/v3-assignment-push-smoke.mjs`, existing `tests/v3-assignments-smoke.mjs` change, and `supabase/functions/bq-assignment/index.ts`.
+Primary evidence inspected independently before TRIAGE: control/guardrail documents; exact canonical/work/frozen refs; `FEATURE_INVENTORY_V3.md`; `ASSIGNMENT_PUSH_V3.md`; `DEVELOPMENT_HANDOFF_V3.md`; frozen→candidate compare; candidate `.github/workflows/v3-regression.yml`; exact verification workflow at `bd3455e...`; run `34438690160` and job/step results; `supabase/functions/bq-assignment/index.ts`; `tests/v3-assignment-push-edge.mjs`; `tests/v3-assignment-response-auth-edge.mjs`; `tests/v3-assignment-push-smoke.mjs`; frozen and candidate `tests/v3-assignments-smoke.mjs`. TRIAGE was read only after provisional QA findings.
 
 ## QA DISPOSITION
 
-**NOT READY FOR HIGH-RISK PROMOTION.**
+**NOT READY FOR HIGH-RISK PROMOTION — functional candidate is exact-green, prior authorization defect is corrected, but one required trusted-boundary evidence gap remains.**
 
-This candidate is materially implemented and has permanent #75 validator/edge/browser coverage wired into the accumulated workflow, but there is no exact-candidate executed functional run. In addition, primary trusted-function inspection exposes one authorization defect that must be corrected and regression-proven before A4 can mark the exact candidate READY.
+There is no current source-demonstrated #75 application defect in the inspected paths. Run `34438690160` is valid exact-candidate functional evidence: its isolated workflow pinned checkout to `78fa191f...`, asserted that SHA, and all accumulated architecture, edge and browser/mobile phases completed successfully. The previously identified ministry-response authorization defect is corrected and has a faithful executable regression that evaluates the production recipient helper.
+
+However, #75's HIGH-RISK surface also includes **server-side publish target authorization/scope**. The permanent #75 edge test currently proves foreign/inactive member/team/group rejection only by source-string inspection of the trusted Edge Function; its actual publish calls use a mocked client API and therefore cannot fail if the trusted server's target validation behaves incorrectly at runtime. Guardrails explicitly require faithful server/trusted-boundary evidence for security/scope behavior when stronger evidence is feasible. A4 therefore withholds READY until a faithful executable trusted-boundary regression exercises `targets`/`create` authorization and target-scope rejection using the production trusted-function logic or an equivalently faithful extracted boundary.
 
 ## FACTS
 
-1. **#75 implementation now exists in quarantine.** Candidate `d13ba6b...` is ahead of canonical `606fa7a...`; canonical itself remains contract/status-only.
-2. **Accumulated workflow wiring exists.** `.github/workflows/v3-regression.yml` remains `workflow_dispatch`-only and now invokes `scripts/validate-v3-assignment-push.mjs`, `tests/v3-assignment-push-edge.mjs`, and `tests/v3-assignment-push-smoke.mjs` while retaining the prior accumulated architecture, edge and browser/mobile lists visible in the workflow.
-3. **Permanent #75 edge coverage exists.** It exercises all/member/team/group payloads, local unauthorized/signed-out/local-preview/no-congregation rejection, target validation, stale congregation target results, post-create refresh failure semantics, exclusion of linked activity, and static checks for trusted congregation-scoped target validation.
-4. **Permanent 390px browser coverage exists.** It exercises ministry publish -> ordinary-member receive -> existing start/complete flow, advanced metadata carry-through, publisher visibility, ordinary-member publisher absence, no horizontal overflow and no page/console errors.
-5. **Existing Assignments browser regression was modified intentionally** so ministry recipient responses remain read-only while the #75 publisher is present. This preserves the prior recipient read-only semantic rather than deleting it.
-6. **No exact #75 workflow run has executed.** Therefore none of the new or accumulated tests can be claimed PASS on candidate `d13ba6b...`.
-
-## APPLICATION / SECURITY FAILURE
-
-### FAIL — ministry role can mutate recipient progress for an assignment not targeted to that user
-
-Primary trusted-function evidence shows `assignmentVisible(admin, assignment, userId, role)` returns `true` immediately for any `facilitator`, `leader`, `pastor`, or `admin`. The same predicate is then used for both `action==='start'` and `action==='complete'`.
-
-Concrete consequence: an active ministry-role user can directly invoke the trusted `bq-assignment` function to start or complete an assignment whose audience is another member/team/group. Completion upserts progress for the caller and can award the caller assignment points. The browser currently hides recipient Start/Complete controls for ministry users, but browser UI gating is not server authorization.
-
-Classification: **APPLICATION / TRUST-BOUNDARY DEFECT**, source-demonstrated; runtime exploit test not yet executed.
-
-Required correction behavior: server read/administrative visibility must be separated from recipient mutation eligibility. `start` and `complete` must require that the caller is actually in the assignment audience (`all`, exact member, team membership, or active group membership), regardless of ministry role. Ministry privilege may remain for legitimate administrative read/feedback/archive functions where separately authorized.
-
-Required regression before closure: faithful trusted-boundary/server-level negative tests proving a ministry user cannot start/complete another user's targeted assignment, cannot receive points from it, and still can complete an assignment when that ministry user is genuinely included in the audience. A client-only mock or source-string assertion is insufficient as the sole proof when a faithful function fixture is feasible.
+1. Candidate `78fa191f...` remains unchanged at final re-read; canonical remains `606fa7ad...`; frozen base remains `2523f85d...`.
+2. Candidate descends from frozen v3.47 and is 22 commits ahead with no behind commits. The candidate changes the existing assignment owner/API/presentation and trusted assignment function, adds #75 validator/edge/browser tests, and modifies the accumulated workflow plus the existing Assignments smoke.
+3. Exact run `34438690160` completed successfully. Job steps for exact candidate assertion, accumulated architecture validators, accumulated edge regressions, Playwright/Chromium setup, local server, and accumulated browser/mobile regressions all completed `success`.
+4. The exact verification workflow pinned checkout to `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` and asserted that SHA before test execution. The run HEAD being the isolated trigger commit therefore does not transfer execution to a different product SHA.
+5. Candidate workflow retains normal `workflow_dispatch` only. The temporary `push:` trigger exists only in the isolated verification commit used for run `34438690160`.
+6. Candidate accumulated workflow adds `validate-v3-assignment-push.mjs`, `v3-assignment-push-edge.mjs`, `v3-assignment-response-auth-edge.mjs`, and `v3-assignment-push-smoke.mjs` while retaining the prior architecture, edge, and browser/mobile lists inspected from frozen v3.47.
+7. The existing `v3-assignments-smoke.mjs` semantic assertion was not weakened: frozen v3.47 required ministry recipient controls to remain read-only; candidate still requires no Start/Complete and additionally requires the #75 publisher for ministry users.
+8. The trusted function now uses `assignmentRecipient()` for `start`/`complete`. That helper checks `all`, exact member target, team membership, or active group membership. Ministry role alone no longer authorizes recipient mutation.
+9. `v3-assignment-response-auth-edge.mjs` faithfully executes the production `assignmentRecipient()` helper against positive/negative all/member/team/group fixtures and explicitly denies a non-recipient ministry identity. This is materially stronger than a source-string-only check for the prior defect.
+10. `v3-assignment-push-smoke.mjs` executes at 390px and covers ministry publisher visibility, selected member targeting, advanced metadata carry-through, ordinary-member publisher absence, receive→start→complete flow, no horizontal overflow, and no page/console errors.
+11. `v3-assignment-push-edge.mjs` covers service-level all/member/team/group normalization, invalid/missing client targets, unauthorized local roles, signed-out/local-preview/no-congregation states, stale congregation target results, post-create refresh failure semantics, linked-activity exclusion, and server-truth reload behavior.
+12. `v3-assignment-push-edge.mjs` does **not** execute the production trusted `targets` or `create` action for ministry-role authorization or foreign/inactive target rejection. Those server assertions are currently static `source.includes(...)` checks.
 
 ## ACCEPTANCE MATRIX
 
-| Area | Candidate state at `d13ba6b...` | Evidence classification |
+| Requirement | Exact candidate result | Evidence |
 |---|---|---|
-| Sole assignment owner / central API boundary | implementation appears to extend existing owners; no second retained owner observed in inspected path | STATIC / requires validator execution |
-| Ministry publish controls | present in candidate browser path | STATIC / browser execution missing |
-| Server publish authorization | trusted `targets` and `create` ministry-role checks present | STATIC / trusted runtime evidence still required |
-| `all/member/team/group` targeting | implemented and edge-covered | STATIC TEST PRESENT, NOT EXECUTED |
-| congregation-scoped target directory | trusted function queries active members/teams/groups by congregation | STATIC; execution missing |
-| foreign/inactive target rejection | server create validation present; static edge checks present | STATIC; execution missing |
-| advanced #74 metadata carry-through | edge + browser assertions present | TEST PRESENT, NOT EXECUTED |
-| linked-activity exclusion | candidate edge test asserts omission | TEST PRESENT, NOT EXECUTED |
-| server-truth reload after create | candidate edge test covers durable reload and refresh-failure case | TEST PRESENT, NOT EXECUTED |
-| eligible member receive/complete | 390px smoke exercises same assignment identity through existing flow | TEST PRESENT, NOT EXECUTED |
-| ministry recipient path read-only in UI | retained Assignments smoke explicitly asserts no Start/Complete while publisher exists | TEST PRESENT, NOT EXECUTED |
-| ministry recipient mutation blocked on server | **FAIL in source**: ministry role bypasses audience predicate for start/complete | APPLICATION / SECURITY FAILURE |
-| stale congregation target result | edge regression present | TEST PRESENT, NOT EXECUTED |
-| signed-out/local-preview/no-congregation/ordinary-member publish | edge assertions present | TEST PRESENT, NOT EXECUTED |
-| 390px layout/errors | smoke assertions present | TEST PRESENT, NOT EXECUTED |
-| accumulated #1-#75 regression | workflow lists prior accumulated coverage plus #75 | WIRED, NOT EXECUTED |
+| Sole existing assignment owner / central API boundary | PASS | candidate source + validator executed green |
+| Ministry-only publish surface | PASS | service edge + 390px browser smoke executed green |
+| Ordinary member/signed-out/local-preview/no-congregation local publish denial | PASS | edge regression executed green |
+| Four scopes `all/member/team/group` normalize correctly | PASS | edge regression executed green |
+| Advanced #74 metadata carried through publish | PASS | edge + browser regression executed green |
+| Linked activity excluded from #75 browser publish | PASS | edge regression executed green |
+| Successful publish reloads server truth | PASS | edge regression executed green |
+| Stale target-load congregation race fails closed | PASS | edge regression executed green |
+| Post-create refresh failure distinguishes created-vs-refresh-failed | PASS | edge regression executed green |
+| Member receive→start→complete at 390px | PASS | browser regression executed green |
+| Ministry recipient UI remains read-only | PASS | modified prior Assignments smoke executed green |
+| Server recipient mutation eligibility | PASS | production helper executed by `v3-assignment-response-auth-edge.mjs`; run green |
+| Server `targets` ministry authorization | **MISSING EXECUTABLE EVIDENCE** | production source inspected; only static assertion in current regression |
+| Server `create` ministry authorization | **MISSING EXECUTABLE EVIDENCE** | production source inspected; browser/service test uses mock API |
+| Server foreign/inactive member/team/group rejection | **MISSING EXECUTABLE EVIDENCE** | production source inspected; current test uses source-string checks rather than executing trusted action |
+| 390px overflow and page/console errors | PASS | browser regression executed green |
+| Accumulated #1–#75 architecture/edge/browser harness | PASS for functional SHA | exact workflow/run execution verified |
+| Exact bookkeeping-SHA gate | NOT APPLICABLE YET | must occur only after HIGH-RISK review authorization |
 
 ## TEST-INTEGRITY AUDIT
 
-- No evidence in the inspected workflow of removing or skipping the existing accumulated architecture, edge or browser phases to make #75 green.
-- #75 invocations were added to all three appropriate accumulated phases.
-- The modified `tests/v3-assignments-smoke.mjs` continues to assert ministry recipient read-only behavior and additionally expects the publisher surface; this is not an unexplained semantic weakening.
-- Candidate #75 browser smoke uses browser-level mocks for API behavior. That is useful for UI flow but cannot establish trusted server authorization or RLS behavior by itself.
-- Candidate edge regression contains several static source-string assertions against the Edge Function. Those checks are useful architecture guards but do not substitute for faithful execution of authorization negatives.
+- **No unexplained accumulated regression removal/bypass found.** Frozen v3.47 and candidate workflows were compared directly. Prior validators/tests remain invoked; #75 coverage is additive.
+- Candidate `.github/workflows/v3-regression.yml` remains `workflow_dispatch`-only. The isolated verification workflow added only the required temporary branch `push:` trigger plus exact SHA checkout/assertion.
+- Existing `tests/v3-assignments-smoke.mjs` changed because the old assertion expected ministry read-only text with no publisher; #75 legitimately adds publisher capability while preserving no Start/Complete. The semantic safety assertion is stricter, not weaker.
+- The earlier failing run `34438622148` is correctly classified as a TEST/FIXTURE defect because the new recipient-auth fixture itself failed to execute; PASS was not inferred from it. Candidate `78fa191f...` contains the fixture-only execution correction and replacement run `34438690160` is green.
+- The new recipient authorization regression is meaningful: changing `assignmentRecipient()` back to ministry-wide response visibility or making non-recipient member/team/group cases true would fail it.
+- The current target-directory/create security checks are not equivalently strong. A source-string test can remain green while query semantics, mock behavior, or the trusted action's executable authorization result is wrong.
 
-## REQUIRED NEGATIVE / FAILURE EVIDENCE BEFORE READY
+## FAILURE CLASSIFICATION
 
-1. Correct and execute a trusted-boundary test proving facilitator/leader/pastor/admin cannot start or complete an assignment unless personally included in its audience.
-2. Prove unauthorized ministry completion cannot create `bible_assignment_progress` for the caller and cannot award a score event.
-3. Retain positive recipient cases for all/member/team/group, including a ministry-role recipient who legitimately belongs to the target audience.
-4. Execute foreign/inactive/missing target rejection through the trusted create boundary, not only client validation.
-5. Execute session/role/congregation change negatives while target load/publish is in flight.
-6. Execute post-create reload failure behavior and confirm retry/reload semantics do not encourage blind duplicate creation.
-7. Execute teardown/realtime cleanup coverage and ensure publisher additions did not introduce a second assignment subscription owner.
+- **APPLICATION DEFECT:** none newly established on exact candidate `78fa191f...`.
+- **FIXTURE DEFECT:** historical run `34438622148`; corrected before `78fa191f...`; not a current blocker by itself.
+- **CI/ENVIRONMENT DEFECT:** none established in run `34438690160`.
+- **MISSING EVIDENCE:** faithful executable trusted-boundary coverage for `targets`/`create` ministry authorization and foreign/inactive member/team/group rejection.
+- **STALE EVIDENCE:** all prior A4 dispositions on `d13ba6b...` are stale for promotion of `78fa191f...`; the old authorization defect itself was independently rechecked and is corrected in current source.
 
-## EXACT FUNCTIONAL GATE REQUIRED
+## EXACT EVIDENCE REQUIRED TO BECOME READY
 
-For a future exact candidate SHA, A4 requires one complete functional workflow whose actual checkout is that SHA and whose executed steps include:
+A new candidate SHA is required if test code is added. Before A4 can mark that new exact SHA READY:
 
-- all accumulated architecture validators including `validate-v3-assignment-push.mjs`;
-- all accumulated edge regressions including `v3-assignment-push-edge.mjs` and a faithful trusted-boundary authorization regression for the ministry-recipient negative above;
-- all accumulated browser/mobile regressions including `v3-assignment-push-smoke.mjs` and the retained `v3-assignments-smoke.mjs`;
-- no cancelled, skipped, timed-out or silently removed prior coverage.
+1. Add a permanent faithful trusted-boundary regression that executes production `bq-assignment` target/create authorization logic (or an extracted production helper used by that function) rather than only source-string checks.
+2. Prove at minimum: ordinary `member` cannot call `targets` or `create`; facilitator/leader/pastor/admin can; `member` target must be an active same-congregation membership; `team` target must exist, be active, and belong to the same congregation; `group` target must exist, be active, and belong to the same congregation; missing/foreign/inactive targets fail closed before insert.
+3. Retain the current recipient-response authorization regression and all current #75 service/browser coverage.
+4. Execute the complete accumulated workflow against the resulting exact candidate SHA, with explicit checkout/assertion of that exact SHA and no skipped/cancelled/timed-out phases.
+5. Re-audit accumulated harness integrity because any SHA movement makes this candidate-specific review stale.
 
-Because #75 is HIGH-RISK, a green run on a later SHA does not inherit this review. A4 must inspect that exact green candidate again before bookkeeping/promotion. Bookkeeping then requires its own exact complete accumulated run.
+If that exact candidate is fully green and no new primary-evidence defect appears, A4 can issue READY for HIGH-RISK promotion review. A5 must then independently recommend promotion. Bookkeeping remains a separate SHA and requires its own complete accumulated exact-SHA gate.
 
 ## TRIAGE RECONCILIATION
 
-The TRIAGE snapshot read after provisional QA findings is stale for the current quarantine candidate: it states #75 implementation has not started and lists the prior A4 report as current at canonical SHA only. That remains true for canonical `606fa7a...` but no longer describes candidate `d13ba6b...`. This report supersedes the old A4 candidate status only; A5 retains final firewall authority.
+TRIAGE correctly identifies canonical `606fa7ad...`, candidate `78fa191f...`, frozen `2523f85d...`, and exact functional run `34438690160`. Its statement that the prior A4 report was stale was accurate when written. This refreshed A4 report now covers exact candidate `78fa191f...`.
+
+A4 does **not** adopt TRIAGE's implied expectation that a fresh review will necessarily become READY. Independent primary-evidence review found the trusted target/create authorization evidence gap above. This is not a manufactured new product requirement: it follows the existing #75 contract's server-side audience validation requirement and the control-plane rule that HIGH-RISK security/scope claims require executable or faithful trusted-boundary evidence when feasible.
 
 ## FINAL QA RESULT
 
-**NOT READY — one source-demonstrated trusted authorization defect plus missing exact-candidate execution evidence.**
+**NOT READY — exact functional run is green and the prior recipient-authorization defect is fixed, but trusted publish-target authorization/scope remains insufficiently proven at the executable server boundary.**
 
-No PASS is transferred from v3.47 or any earlier SHA. The next valid promotion review target must be a new exact candidate containing the server authorization correction and permanent regression protection, followed by a complete exact-SHA accumulated functional run.
+Do not promote or begin bookkeeping from `78fa191f...`. The next safe product-writing action for A1 is a narrowly scoped permanent trusted-boundary test addition on the quarantine branch, followed by a new exact accumulated functional run and fresh A4/A5 review. No implementation change is justified unless that faithful regression reproduces an application defect.
