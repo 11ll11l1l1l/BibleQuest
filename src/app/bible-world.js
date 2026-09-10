@@ -1,4 +1,6 @@
 export const BIBLE_WORLD_EXPLORED_THRESHOLD=60;
+export const BIBLE_WORLD_ARTWORK=Object.freeze({locked:'assets/world-locked.webp',revealed:'assets/world-revealed.webp'});
+const MASTERY_CATEGORIES=Object.freeze(['Genesis','Exodus','History','Wisdom','Prophets','Gospels','Acts','Letters']);
 
 const REGIONS=Object.freeze([
   Object.freeze({key:'creation',icon:'🌍',title:'Creation & Beginnings',category:'Genesis',books:Object.freeze(['Genesis']),ref:Object.freeze({code:'GEN',chapter:1}),progress:mastery=>Math.min(100,(mastery.Genesis||0)*2)}),
@@ -30,7 +32,8 @@ export function createBibleWorldService({adaptive,reader}={}){
       return Object.freeze({key:region.key,icon:region.icon,title:region.title,category:region.category,books:region.books,ref:region.ref,percent,explored:percent>=BIBLE_WORLD_EXPLORED_THRESHOLD,accessible:true});
     });
     const next=rows.find(row=>!row.explored)||rows[rows.length-1];
-    return Object.freeze({threshold:BIBLE_WORLD_EXPLORED_THRESHOLD,nextKey:next.key,allExplored:rows.every(row=>row.explored),regions:Object.freeze(rows.map(row=>Object.freeze({...row,isNext:row.key===next.key})))});
+    const revealPercent=Math.round(MASTERY_CATEGORIES.reduce((sum,key)=>sum+clamp(evidence[key]),0)/MASTERY_CATEGORIES.length);
+    return Object.freeze({threshold:BIBLE_WORLD_EXPLORED_THRESHOLD,nextKey:next.key,allExplored:rows.every(row=>row.explored),artwork:Object.freeze({...BIBLE_WORLD_ARTWORK,revealPercent}),regions:Object.freeze(rows.map(row=>Object.freeze({...row,isNext:row.key===next.key})))});
   }
 
   function region(key){
@@ -50,5 +53,5 @@ export function createBibleWorldService({adaptive,reader}={}){
     return Object.freeze({route:'open-review',region:row});
   }
 
-  return Object.freeze({snapshot:build,region,openRead,openReview,regions:REGIONS,threshold:BIBLE_WORLD_EXPLORED_THRESHOLD});
+  return Object.freeze({snapshot:build,region,openRead,openReview,regions:REGIONS,threshold:BIBLE_WORLD_EXPLORED_THRESHOLD,artwork:BIBLE_WORLD_ARTWORK});
 }
