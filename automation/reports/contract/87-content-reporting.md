@@ -7,168 +7,153 @@ Generated: 2026-09-11 JST
 
 - Active milestone: **#87 Content reporting**.
 - Canonical branch: `feature/v3-content-reporting`.
-- Exact canonical HEAD at final pre-write reconciliation: `fe2e773cc93b4996757f90b262dcaac257096b4c`.
-- Canonical parent / frozen base SHA: `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
+- Exact canonical HEAD at final pre-write reconciliation: `17071432a815ef5cf53f5f4538df982285114bd0`.
 - Latest frozen release: `release/v3.59-accessibility-support` at exact `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
-- Authorized autonomous candidate `agent/a1-work/087-content-reporting`: **not found** at final inspection.
-- Exact run evidence for canonical `fe2e773c...`: **none found** (`actions/runs?head_sha=fe2e773c...` returned 0 runs).
-- Frozen-baseline bookkeeping run: `34503099868` — SUCCESS for v3.59 baseline only; no PASS transfers to `fe2e773c...`.
-- Authoritative inventory at the frozen base records #87 as `Not started`, required verification `submit report; validation; success/error`; #88 Content moderation and #91 Content Review workbench remain separate rows.
+- Canonical is 21 commits ahead of the frozen base.
+- Authorized autonomous candidate `agent/a1-work/087-content-reporting`: **not found**.
+- Durable handoff records exact functional candidate `72ef635a5322e715c293de489bf37a170f05729d`, targeted run `34509850415`, and complete accumulated functional run `34510669714` as green for that SHA only.
+- Exact bookkeeping verification run `34511515241` completed SUCCESS through isolated verifier commit `6a21e8a4d83c8a58b87ec37dcff10f453cb7d6b0`, whose workflow explicitly checked out/asserted exact bookkeeping SHA `17071432a815ef5cf53f5f4538df982285114bd0` and ran accumulated architecture, edge/security, and browser/mobile phases.
+- No `release/v3.60-content-reporting` was established by the inspected evidence.
+- Authoritative inventory at canonical marks #87 **Verified**, with required verification `submit report; validation; success/error`; #88 Content moderation and #91 Content Review remain separate.
 
-**Staleness:** candidate-specific findings are stale if canonical HEAD moves from `fe2e773c...`, if an `agent/a1-work/087-*` branch appears/moves, if #87 schema/RLS/grants/RPC/API/UI/tests/workflow change, or if new exact-SHA run evidence appears. Frozen-base statements are stale if a newer immutable v3 release becomes the valid base.
+**Staleness:** candidate-specific findings are stale if canonical moves from `17071432...`, if an `agent/a1-work/087-*` branch appears/moves, if reporting API/schema/RLS/grants/tests/workflow change, or if a newer exact review/run appears. Frozen-base statements become stale only if a newer immutable v3 release becomes the valid base.
 
 ## EVIDENCE INSPECTED
 
 Primary evidence inspected before TRIAGE:
 
-1. `FEATURE_INVENTORY_V3.md` at frozen/canonical base `5594f980...`.
-2. `classic.html` retained runtime wiring at `5594f980...`, which loads `content-report.css`, `content-moderation-runtime.js`, and `content-report.js`.
-3. Retained `content-report.js` at `5594f980...`.
-4. Current backend blueprint `supabase/schema.sql` at `5594f980...`.
-5. Current retained migration `supabase/migrations/20260905121500_content_report_review_integrity.sql` at `5594f980...`.
-6. Current v3 owner layout under `src/core/` and `src/features/` at `5594f980...`.
-7. `.github/workflows/v3-regression.yml` at `5594f980...`.
-8. Exact v3.59 run `34503099868` and its job steps.
-9. Live canonical commit `fe2e773c...`, whose sole changed file is newly added `src/app/content-reporting.js`.
-10. Live branch/ref and exact Actions-run inspection at final reconciliation.
+1. `automation/MASTER_CONTROL.md`, `automation/AGENT_GUARDRAILS.md`, A2 role file, `automation/CURRENT.md`, `automation/WRITE_LEASE.md`, and `automation/SCHEDULE_AND_LOCKING.md` on `automation/v3-agent-control`.
+2. Live canonical branch/ref and latest frozen release ref.
+3. Frozen-to-canonical compare: 21 commits / #87 product, tests, workflow and bookkeeping delta.
+4. `FEATURE_INVENTORY_V3.md` at `17071432...`.
+5. `CONTENT_REPORTING_V3.md` at `17071432...`.
+6. `src/app/content-reporting.js` and the `src/core/api.js` reporting insert path at `17071432...`.
+7. `supabase/migrations/20260905_content_review_and_reports.sql` at `17071432...`.
+8. Historical review-integrity migration commit `c05dbc939d67295628befb32839383dba41d4e2e`, adding `20260905121500_content_report_review_integrity.sql`.
+9. `DEVELOPMENT_HANDOFF_V3.md` at `17071432...`.
+10. Exact bookkeeping run `34511515241`, job steps, and isolated verifier workflow `6a21e8a4...`.
 
-`automation/TRIAGE.md` was read only after provisional conclusions were formed. TRIAGE described the earlier byte-identical pre-implementation SHA `5594f980...`; it became SHA-stale when canonical advanced to `fe2e773c...` during this A2 run.
+`automation/TRIAGE.md` was read only after the above provisional conclusions were formed.
 
 ## REQUIRED PARITY — FACT
 
 Authoritative minimum contract:
 
-- User can **submit a content report**.
-- Submission has **validation**.
-- User receives explicit **success or error** behavior.
+- user can submit a content report;
+- submission input is validated;
+- user receives explicit success/error behavior.
 
-Recovered retained behavior materially defining that contract:
+The current recovered server contract defines accepted report fields and bounds:
 
-- Reporting is available only to a signed-in user with an active/selected congregation.
-- The retained submission row includes congregation ID, reporter ID, content key/type/source/reference/text/payload, reason, and optional note.
-- Retained content types are `question`, `statement`, `answer`, `explanation`, `story`, `reader`, `other`.
-- Retained reasons are `doctrinal`, `accuracy`, `wording`, `inappropriate`, `duplicate`, `source`, **`technical`**, and `other`.
-- Optional note is bounded to 1200 characters; content key/source/reference/text are bounded before submission.
-- Successful submission returns a report ID and shows a user-visible sent/success state; failure keeps submission recoverable and surfaces an error.
-- The retained UI can report an explicitly supplied entry (`openFor`) or derive reportable context from the visible BibleQuest surface.
+- content types: `question`, `statement`, `answer`, `explanation`, `story`, `reader`, `other`;
+- reasons: `doctrinal`, `accuracy`, `wording`, `inappropriate`, `duplicate`, `source`, `other`;
+- content key 3–180 characters;
+- source up to 120;
+- reference up to 160;
+- content text 1–4000;
+- optional note up to 1200;
+- report submission is congregation-scoped and reporter-scoped.
 
-## CURRENT CANONICAL DELTA — FACT
+The old UI's briefly exposed `technical` reason is **not** a valid current parity requirement because the authoritative retained database constraint does not allow that value. The current v3 service correctly follows the database-accepted reason set rather than preserving a client option that could not satisfy the backend contract.
 
-`fe2e773c...` adds only `src/app/content-reporting.js`; no other file changed in that commit.
+## CURRENT VERIFIED OWNERS — FACT
 
-That new service:
-
-- composes shared `api`, `session`, and `congregation` dependencies rather than directly reading browser globals;
-- requires an authenticated user;
-- loads congregation membership and rejects a non-member congregation;
-- validates content key/type/source/reference/text, reason and optional note;
-- submits a bounded row and requires a returned report ID;
-- preserves the retained content-type set and most retained length limits.
-
-However, as of exact `fe2e773c...`:
-
-- no authorized `agent/a1-work/087-*` candidate exists;
-- the only canonical delta is the service file, so no #87 presentation/route/report trigger, explicit success/error UI, API implementation, schema/RLS change, validator, edge regression, browser/mobile regression, or accumulated-workflow invocation was added by this commit;
-- no exact run exists for this SHA;
-- #87 therefore has no exact executed acceptance evidence.
-
-## CONTRACT GAP FOUND — FACT
-
-The retained reason list includes `technical` (`Technical / display problem`). The new canonical service's `REASONS` list omits `technical` and would reject it as `BQ_CONTENT_REPORT_REASON_INVALID`.
-
-Because #87 is explicitly a retained compatibility capability and the reason selector is user-visible input/validation behavior, omitting `technical` is a recovered parity mismatch unless stronger authoritative evidence explicitly narrows the allowed reason set.
-
-## VERIFIED OWNERS TO COMPOSE — FACT / INFERENCE
-
-**FACT:** Current v3 already has shared owners for API (`src/core/api.js`), session/account state, congregation membership, router/shell presentation patterns, and accumulated regression infrastructure. No `src/features/content-reporting/` owner existed at the frozen base.
-
-**INFERENCE:** The newly added `src/app/content-reporting.js` is directionally consistent with one service owner for #87 because it composes shared API/session/congregation state instead of reviving `window.BQAccount`, `window.BQCloud`, direct `window.BQ_SUPABASE_CLIENT`, MutationObserver-driven global ownership, or direct browser-global state.
-
-**RECOMMENDATION:** Keep one content-reporting service owner for report preparation/submission and one bounded presentation surface that composes it. Do not create a second direct Supabase/report-writing path in the UI.
+- `src/app/content-reporting.js` is the #87 orchestration/validation owner. It composes shared API/session/congregation owners, validates the bounded report context/reason/note, verifies a current user and congregation membership, submits, and requires a returned report ID.
+- `src/core/api.js` remains the single Supabase implementation boundary for #87 and performs the direct `bible_content_reports` insert.
+- Session and congregation membership remain existing owners; #87 does not create competing auth/membership state.
+- `CONTENT_REPORTING_V3.md` records presentation ownership in `src/ui/content-reporting.js`, bounded reportable surfaces, and separation from #88/#91.
 
 ## RETAINED DATA / SERVER CONTRACTS — FACT
 
-- Retained production-compatible reporting writes to `public.bible_content_reports`.
-- Existing migration `20260905121500_content_report_review_integrity.sql` proves the table has submitted fields including `id`, `congregation_id`, `reporter_id`, `content_key`, `content_type`, `content_source`, `content_ref`, `content_text`, `content_payload`, `reason`, `note`, `created_at`, plus later review fields such as `reviewed_by`.
-- That migration deliberately makes submitted report fields immutable during reviewer updates and gates reviewer updates through `private.bible_can_review_content(congregation_id)`.
-- The generic `supabase/schema.sql` blueprint does not currently define `bible_content_reports`; therefore it is not sufficient by itself as #87 server-contract proof.
+`20260905_content_review_and_reports.sql` creates `public.bible_content_reports`, enables RLS, revokes general table access, then grants authenticated `select, insert, update`. Its INSERT policy allows a row when:
 
-**INFERENCE:** #87 submission must compose the existing report table/security boundary without taking ownership of #88 review/moderation fields.
+- `reporter_id = auth.uid()`; and
+- the authenticated user is a member of `congregation_id`.
+
+The same table contains moderation/review columns `status`, `reviewed_by`, and `reviewed_at`. The inspected INSERT policy does not constrain those fields. The later review-integrity migration guards **UPDATE** immutability/reviewer identity and tightens reviewer UPDATE policy; it does not alter the initial INSERT contract.
+
+`src/core/api.js` sends the caller-supplied report row through a direct browser `.from('bible_content_reports').insert(row)` call.
+
+**FACT:** the normal #87 service currently constructs a row containing only submission fields and does not itself add moderation fields.
+
+**FACT:** client payload shaping is not the database authorization boundary; a caller capable of invoking the table INSERT directly is governed by grants/RLS/constraints, not by `src/app/content-reporting.js` alone.
 
 ## UX / STATE — FACT
 
-Retained observable states to preserve at contract level:
+Current recovered contract requires:
 
-- no reportable content -> explicit unavailable/error state;
-- signed out -> explicit sign-in-required error;
-- no active congregation -> explicit join/select-congregation error;
-- valid report -> submit action disabled during write, then explicit success;
-- failed write -> explicit error and submit becomes retryable;
-- successful form is not left looking editable/unsent.
+- signed-out submission fails explicitly;
+- missing/currently invalid congregation membership fails explicitly;
+- invalid type/reason or out-of-bounds fields fail explicitly;
+- success requires the backend to return a report ID before the UI reports success;
+- backend/RLS/network failure remains a recoverable error and is not converted to success;
+- reporting is limited to explicitly reportable content context and must not absorb private form/note/account/community/workspace/couples/admin data.
 
-The retained implementation uses a floating `Report` action and dialog, but exact visual styling, MutationObserver mechanics, and browser-global API names are implementation details rather than parity requirements.
+## EXACT VERIFICATION EVIDENCE — FACT
+
+- Functional candidate `72ef635a5322e715c293de489bf37a170f05729d`: complete accumulated run `34510669714` recorded green in the durable handoff.
+- Bookkeeping SHA `17071432a815ef5cf53f5f4538df982285114bd0`: run `34511515241` completed SUCCESS.
+- Its isolated verifier workflow explicitly checked out and asserted `17071432...` before tests.
+- The run completed accumulated architecture validators, accumulated edge regressions, and accumulated browser/mobile regressions.
+- The isolated workflow visibly invokes `scripts/validate-v3-content-reporting.mjs`, `tests/v3-content-reporting-edge.mjs`, and `tests/v3-content-reporting-smoke.mjs` while retaining the prior accumulated invocation lists.
+- The green bookkeeping run is valid for exact `17071432...`; it does not prove a different SHA.
+
+## CONTRACT / ACCEPTANCE GAP — FACT
+
+The remaining material gap is the trusted reporter INSERT boundary, not the user-facing reason list.
+
+Authenticated users have direct INSERT privilege on `bible_content_reports`; the INSERT RLS rule verifies reporter identity and congregation membership but does not constrain the initial moderation fields `status`, `reviewed_by`, or `reviewed_at`. Because the API uses a direct browser table insert, the current server contract permits a client to bypass the normal service payload and attempt to author those review-state columns on initial INSERT.
+
+This crosses the separation between #87 submission and later #88/#91 moderation/review authority. The existing UPDATE integrity trigger does not close initial INSERT authority.
 
 ## EXPLICITLY OUT OF SCOPE
 
-- #88 Content moderation decisions and blocked/context-sensitive paths.
-- #91 Content Review workbench, reviewer decisions, reviewer identity, moderation status, internal review notes/workflow.
+- #88 moderation-policy application and decisions except the minimum authority separation required to keep #87 submission from authoring moderation state.
+- #91 Content Review workbench/reviewer workflow.
 - #92/#93 admin console/operations.
-- Broad refactors of existing session, congregation, router, shell, API, moderation or admin owners.
-- Reproducing retained direct-global access, direct `client.from(...).insert(...)` from presentation code, MutationObserver scanning as an architectural requirement, or `window.BQContentReport` as a v3 contract.
+- broad auth/congregation/router/API refactors.
+- legacy browser globals, MutationObserver ownership, unrestricted DOM scanning, or duplicated direct-Supabase presentation paths.
 
 ## LEGACY BEHAVIOR NOT TO COPY
 
-- Do not make browser-global `window.BQAccount`, `window.BQCloud`, or `window.BQ_SUPABASE_CLIENT` a new v3 source of truth.
-- Do not place cloud write authority directly in the report dialog/presentation owner if the shared API/backend boundary can own it.
-- Do not copy the retained heuristic DOM scanning implementation merely for visual parity; recover reportable context through verified v3 owners where possible.
-- Do not bundle the retained moderation-decision display into #87 if doing so requires #88 ownership.
+- Do not restore `technical` merely because an old UI exposed it; the retained database contract rejects it.
+- Do not reproduce global `window.BQ*` ownership or unrestricted DOM surveillance.
+- Do not treat client-side payload omission as authorization enforcement.
+- Do not absorb decision editing/review workflow into #87.
 
 ## DEPENDENCIES
 
-Required existing dependencies:
-
-- authenticated session state;
-- current congregation membership/selection;
-- shared API/backend submission boundary;
-- reportable content context supplied by the active v3 feature/presentation;
-- existing content-report table/RLS/grant/server contract.
-
-No evidence requires #88 or #91 implementation to complete #87 submission.
+Required composition remains limited to authenticated session, current congregation membership, shared API/backend submission boundary, reportable content context, and the existing reports table/security contract. No evidence requires implementation of #88 or #91 to deliver #87 submission itself.
 
 ## AMBIGUITIES / MISSING EVIDENCE
 
-1. **MISSING EVIDENCE:** exact current RLS/INSERT policy and grants for `bible_content_reports` were not yet located in the inspected primary files. Existing review-integrity migration proves the table/review boundary exists, but does not by itself prove reporter INSERT authorization.
-2. **MISSING EVIDENCE:** no exact candidate branch exists under the authorized quarantine naming convention.
-3. **MISSING EVIDENCE:** no current #87 API implementation was added by `fe2e773c...`; `src/app/content-reporting.js` expects an injected `api.submit` contract, but this commit alone does not prove the trusted write path.
-4. **MISSING EVIDENCE:** no #87 validator, backend-negative regression, functional edge test, browser/mobile success/error test, or workflow invocation exists in the inspected baseline workflow.
-5. **MISSING EVIDENCE:** no exact Actions run exists for `fe2e773c...`.
-6. **AMBIGUITY:** retained content-source/context discovery is broad and heuristic. The authoritative inventory does not require exact DOM-scanning heuristics, only successful report submission/validation/success-error behavior.
+1. **MISSING EVIDENCE:** no faithful executed backend-negative regression was located proving an ordinary authenticated member cannot forge `status`, `reviewed_by`, or `reviewed_at` on initial INSERT.
+2. **MISSING EVIDENCE:** the required `agent/a1-work/087-content-reporting` quarantine ref is absent; the historical functional candidate is documented by SHA/run but not represented by the required current autonomous work branch.
+3. **MISSING EVIDENCE:** no fresh exact-candidate A3/A4 acceptance for canonical `17071432...` was established in this A2 role; HIGH-RISK review is outside A2 authority but remains relevant lifecycle evidence.
+4. **AMBIGUITY:** the retained UI's broad context discovery changed over time. The authoritative acceptance does not require copying unrestricted legacy DOM scanning; the bounded v3 route/content selection is consistent with the minimum reporting contract unless stronger retained evidence proves a required omitted surface.
 
-## ACCEPTANCE CHECKLIST — RECOMMENDATION BOUNDED TO RECOVERED CONTRACT
+## ACCEPTANCE CHECKLIST — RECOMMENDATION
 
-- [ ] One v3 content-reporting service/presentation path; no parallel direct-Supabase UI writer.
-- [ ] Signed-out submission fails clearly without a cloud write.
-- [ ] Non-member/no-congregation submission fails clearly without a cloud write.
-- [ ] Valid congregation member can submit reportable content.
-- [ ] Reporter identity and congregation scope are enforced by the backend trust boundary, not only client fields.
-- [ ] Supported retained content types are accepted; invalid types rejected.
-- [ ] Retained reasons including `technical` are accepted; unsupported reasons rejected.
-- [ ] Required content key/text and length bounds are enforced; note remains optional and bounded to 1200.
-- [ ] Success returns/records a report ID and produces explicit success UI.
-- [ ] Write failure produces explicit recoverable error UI and permits retry.
-- [ ] #88/#91 reviewer/moderation authority is not introduced into #87 client submission.
-- [ ] Permanent backend-negative tests prove unauthorized/cross-congregation or forged-authority submission cannot bypass the intended boundary.
-- [ ] Permanent functional/browser tests cover success, validation, error and retry behavior.
-- [ ] Accumulated workflow invokes the new #87 tests and retains all prior coverage.
-- [ ] Complete exact functional gate passes on the exact authorized candidate SHA.
-- [ ] Because the work crosses backend authorization/data-write boundaries, exact-candidate architecture/security and QA/firewall review must remain SHA-bound before promotion under the autonomous HIGH-RISK rules.
+- [x] One v3 reporting orchestration owner composes existing session/congregation/API owners.
+- [x] Accepted content types/reasons and field bounds match the retained database contract.
+- [x] Signed-out/current-membership/invalid-input/backend-error/success-ID behavior is represented in the recovered contract and permanent #87 tests.
+- [x] Exact complete functional green exists for `72ef635a...`.
+- [x] Exact complete bookkeeping green exists for `17071432...` through isolated explicit checkout/assertion.
+- [x] Accumulated workflow visibly invokes #87 validator/edge/browser coverage while retaining prior accumulated lists.
+- [ ] Make reporter identity and moderation/review state backend-authoritative on initial INSERT; ordinary members must not be able to author #88/#91 state by bypassing the normal service payload.
+- [ ] Add faithful negative trusted-boundary coverage for forged moderation/reviewer state, reporter identity, and cross-congregation scope.
+- [ ] Reconcile the milestone into the required `agent/a1-work/087-content-reporting` quarantine lifecycle and obtain the exact HIGH-RISK review/provenance required by autonomous guardrails before freeze.
 
-## DISPOSITION
+## FACT / INFERENCE / RECOMMENDATION
 
-**FACT:** #87 is now partially implemented directly on canonical at `fe2e773c...`, one commit beyond frozen v3.59, while the required quarantine branch is absent and there is no exact run evidence.
+**FACT:** #87's current user-facing/service contract matches the authoritative database reason/type constraints; the previous A2 `technical`-reason parity finding is superseded.
 
-**FACT:** The current service omits the retained `technical` reason.
+**FACT:** exact bookkeeping SHA `17071432...` has complete accumulated green run `34511515241` through an isolated workflow that explicitly checks out/asserts that SHA.
 
-**INFERENCE:** The service structure is a plausible clean owner, but the contract is not yet acceptance-complete and its trusted write path is unproven from the exact current SHA.
+**FACT:** the current database INSERT policy does not constrain initial `status`, `reviewed_by`, or `reviewed_at`, while authenticated users have direct INSERT and the browser API uses direct table insertion.
 
-**RECOMMENDATION:** Keep #87 active. Reconcile the live canonical delta into the authorized quarantine lifecycle rather than treating canonical as a verified candidate; recover/prove the exact reporter INSERT authorization contract; preserve the retained `technical` reason unless stronger authoritative evidence narrows it; add permanent success/error/validation/security coverage; then require complete exact-SHA evidence before any bookkeeping/promotion.
+**INFERENCE:** the current clean v3 orchestration/UI design is contract-consistent for #87, but the backend authority separation is incomplete because a direct client can bypass the curated row shape.
+
+**RECOMMENDATION:** keep #87 active and do not freeze v3.60 yet. Repair only the report-submission authority boundary, preserve the existing narrow #87 user-facing contract, add faithful permanent negative security coverage, restore authorized quarantine provenance, and rerun/review the resulting exact candidate under HIGH-RISK rules. Do not broaden into #88/#91 implementation.
+
+TRIAGE was read only after independent findings. It independently identifies the same current canonical SHA and authorization/provenance concerns; that agreement was not used as proof.
