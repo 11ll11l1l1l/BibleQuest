@@ -7,6 +7,7 @@ const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin']);
 function fail(code,message){const error=new Error(message);error.code=code;throw error}
 const text=(value,max=4000)=>String(value??'').trim().slice(0,max);
 const validIso=value=>{if(!value)return null;const date=new Date(value);return Number.isNaN(date.getTime())?null:date.toISOString()};
+const emptyTargets=()=>Object.freeze({members:Object.freeze([]),teams:Object.freeze([]),groups:Object.freeze([])});
 
 function normalizeAssignment(row,congregationId){
   const id=String(row?.id||'');
@@ -62,6 +63,28 @@ function normalizeMutation(payload,assignmentId,userId){
   return Object.freeze({status,awarded,alreadyCompleted:Boolean(payload?.alreadyCompleted)});
 }
 
+function normalizeTargets(payload){
+  const normalize=(rows,kind)=>Object.freeze((Array.isArray(rows)?rows:[]).map(row=>{const id=String(row?.id||''),label=text(row?.label,120);if(!id||!label)fail('BQ_ASSIGNMENT_TARGET_RESPONSE',`Assignment ${kind} directory returned invalid data.`);return Object.freeze({id,label,...(kind==='member'?{role:text(row?.role,40)}:{}),...(kind==='team'?{type:text(row?.type,40)}:{})})}));
+  return Object.freeze({members:normalize(payload?.members,'member'),teams:normalize(payload?.teams,'team'),groups:normalize(payload?.groups,'group')});
+}
+
+function normalizePublish(input={}){
+  const title=text(input.title,120),instructions=text(input.instructions,4000),assignmentType=String(input.assignmentType||'custom'),targetScope=String(input.targetScope||'all'),targetId=input.targetId?String(input.targetId):null;
+  if(title.length<2||!ASSIGNMENT_TYPES.includes(assignmentType))fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Provide a valid assignment title and type.');
+  if(!TARGET_SCOPES.includes(targetScope))fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Choose a valid assignment audience.');
+  if(targetScope!=='all'&&!targetId)fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Choose a member, team, or Journey Group.');
+  const scriptureRefs=(Array.isArray(input.scriptureRefs)?input.scriptureRefs:String(input.scriptureRefs||'').split(/[,\n]/)).map(value=>text(value,80)).filter(Boolean).slice(0,20);
+  const points=Math.min(25,Math.max(0,Math.round(Number(input.points)||5)));
+  const dueAt=validIso(input.dueAt),scheduleAt=validIso(input.scheduleAt),reminderAt=validIso(input.reminderAt);
+  if(input.dueAt&&!dueAt)fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Enter a valid assignment deadline.');
+  if(input.scheduleAt&&!scheduleAt)fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Enter a valid scheduled opening.');
+  if(input.reminderAt&&!reminderAt)fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Enter a valid reminder time.');
+  const recurrenceRule=text(input.recurrenceRule,120)||null,evidenceType=String(input.evidenceType||'none');
+  if(!EVIDENCE_TYPES.includes(evidenceType))fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Choose a valid evidence requirement.');
+  let minQuizScore=null;if(input.minQuizScore!==null&&input.minQuizScore!==undefined&&input.minQuizScore!==''){minQuizScore=Number(input.minQuizScore);if(!Number.isFinite(minQuizScore)||minQuizScore<0||minQuizScore>100)fail('BQ_ASSIGNMENT_PUBLISH_INPUT','Enter a quiz score from 0 to 100.');minQuizScore=Math.round(minQuizScore)}
+  return Object.freeze({title,instructions,assignmentType,scriptureRefs,targetScope,targetId:targetScope==='all'?null:targetId,dueAt,points,scheduleAt,reminderAt,recurrenceRule,requiredReflection:Boolean(input.requiredReflection),minQuizScore,evidenceType});
+}
+
 function dueState(assignment,progress,nowMs){
   if(progress.status==='completed')return'completed';
   if(assignment.scheduleAt&&new Date(assignment.scheduleAt).getTime()>nowMs)return'scheduled';
@@ -69,23 +92,24 @@ function dueState(assignment,progress,nowMs){
   return'open';
 }
 
-export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),submissionMax:4000,recurrenceGeneration:false});
+export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),ministryRoles:[...MINISTRY_ROLES],submissionMax:4000,recurrenceGeneration:false,linkedActivityPublishing:false});
 
 export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
   if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
-  let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});
-  let stopRemote=null;
+  let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets()});
+  let stopRemote=null,targetRequest=0;
   const snapshot=()=>state;
   const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
   const sessionState=()=>session.getState();
   const assertMemberResponse=()=>{if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
+  const assertPublisher=()=>{if(state.status!=='ready'||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','An active ministry role is required to publish assignments.');congregation.assert(state.congregationId,'ministry');};
 
   async function load({congregationId,activeId}={}){
     const current=sessionState();
-    if(!current?.remoteAvailable){stopSync();state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:''});return state}
-    if(!current?.authenticated||!current?.user?.id){stopSync();state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:''});return state}
+    if(!current?.remoteAvailable){stopSync();targetRequest++;state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:'',publishTargets:emptyTargets()});return state}
+    if(!current?.authenticated||!current?.user?.id){stopSync();targetRequest++;state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:'',publishTargets:emptyTargets()});return state}
     const memberships=await congregation.load();
-    if(!memberships.length){stopSync();state=Object.freeze({status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''});return state}
+    if(!memberships.length){stopSync();targetRequest++;state=Object.freeze({status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets()});return state}
     const selected=memberships.find(row=>row.congregationId===String(congregationId||state.congregationId))||memberships[0];
     congregation.assert(selected.congregationId,'read');
     const payload=await api.load(selected.congregationId,current.user.id);
@@ -94,9 +118,30 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     for(const raw of Array.isArray(payload?.progress)?payload.progress:[]){const progress=normalizeProgress(raw,current.user.id,visibleIds);if(progress&&!progressMap.has(progress.assignmentId))progressMap.set(progress.assignmentId,progress)}
     const nowValue=now(),nowMs=nowValue instanceof Date?nowValue.getTime():new Date(nowValue).getTime();
     const rows=assignments.map(assignment=>{const progress=progressMap.get(assignment.id)||Object.freeze({assignmentId:assignment.id,userId:String(current.user.id),status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null});return Object.freeze({...assignment,progress,dueState:dueState(assignment,progress,nowMs)})});
-    const wanted=String(activeId||state.activeId||''),nextActive=rows.some(row=>row.id===wanted)?wanted:'';
-    state=Object.freeze({status:'ready',authenticated:true,remoteAvailable:true,userId:String(current.user.id),congregations:memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel})),congregationId:selected.congregationId,congregationName:selected.congregation.name,role:selected.role,assignments:rows,activeId:nextActive});
+    const wanted=String(activeId||state.activeId||''),nextActive=rows.some(row=>row.id===wanted)?wanted:'',sameCongregation=state.congregationId===selected.congregationId;
+    if(!sameCongregation)targetRequest++;
+    state=Object.freeze({status:'ready',authenticated:true,remoteAvailable:true,userId:String(current.user.id),congregations:memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel})),congregationId:selected.congregationId,congregationName:selected.congregation.name,role:selected.role,assignments:rows,activeId:nextActive,publishTargets:sameCongregation?state.publishTargets:emptyTargets()});
     return state;
+  }
+
+  async function loadPublishTargets(){
+    assertPublisher();if(typeof api.targets!=='function')fail('BQ_ASSIGNMENT_PUBLISH_UNAVAILABLE','Assignment publishing is not available yet.');
+    const request=++targetRequest,cid=state.congregationId,userId=String(sessionState()?.user?.id||'');
+    const targets=normalizeTargets(await api.targets(cid));
+    const current=sessionState();
+    if(request!==targetRequest||state.congregationId!==cid||!current?.authenticated||String(current?.user?.id||'')!==userId||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_TARGET_STALE','The congregation or account changed while publish targets were loading.');
+    state=Object.freeze({...state,publishTargets:targets});return state;
+  }
+
+  async function publish(input){
+    assertPublisher();if(typeof api.create!=='function')fail('BQ_ASSIGNMENT_PUBLISH_UNAVAILABLE','Assignment publishing is not available yet.');
+    const cid=state.congregationId,userId=String(sessionState()?.user?.id||''),payload=normalizePublish(input),targetList=payload.targetScope==='member'?state.publishTargets.members:payload.targetScope==='team'?state.publishTargets.teams:payload.targetScope==='group'?state.publishTargets.groups:null;
+    if(targetList&&!targetList.some(row=>row.id===payload.targetId))fail('BQ_ASSIGNMENT_TARGET_INVALID','Choose an active target from this congregation.');
+    const result=await api.create(cid,payload);
+    if(!result?.assignment?.id||String(result.assignment.congregation_id||'')!==cid)fail('BQ_ASSIGNMENT_PUBLISH_RESPONSE','Assignment publishing returned an invalid server record.');
+    const current=sessionState();
+    if(!current?.authenticated||String(current?.user?.id||'')!==userId||state.congregationId!==cid)fail('BQ_ASSIGNMENT_PUBLISH_CONTEXT_CHANGED','The assignment was created, but the account or congregation changed. Reload Assignments before publishing again.');
+    try{return await load({congregationId:cid})}catch(error){const refreshError=new Error(`Assignment was created, but the assignment list could not refresh. Reload before publishing again. ${error?.message||''}`.trim());refreshError.code='BQ_ASSIGNMENT_CREATED_REFRESH_FAILED';throw refreshError}
   }
 
   function open(assignmentId){
@@ -150,6 +195,6 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     return stop;
   }
 
-  function clear(){stopSync();state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:''})}
-  return Object.freeze({load,open,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
+  function clear(){stopSync();targetRequest++;state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets()})}
+  return Object.freeze({load,loadPublishTargets,publish,open,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
 }
