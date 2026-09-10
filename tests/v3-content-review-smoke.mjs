@@ -47,7 +47,10 @@ try{
   assert((await page.locator('[data-content-review-message]').textContent())==='Decision saved.','Successful reviewer decision did not expose a visible confirmation.');
   const calls=await page.evaluate(()=>window.__reviewCalls);
   assert(calls.length===1&&calls[0].decision==='include'&&calls[0].rationale==='Context checked.','UI did not hand the exact decision/rationale to the Content Review owner.');
-  assert(await page.locator('[data-content-review-item="question:RUT:q1"]').getAttribute('data-content-review-state')==='include','Saved decision state did not rerender without a page reload.');
+  assert(await page.locator('[data-content-review-item="question:RUT:q1"]').count()===0,'Included item must leave the default Pending filter after save.');
+  await page.locator('[data-content-review-filter]').selectOption('include');
+  await page.locator('[data-content-review-item="question:RUT:q1"]').waitFor();
+  assert(await page.locator('[data-content-review-item="question:RUT:q1"]').getAttribute('data-content-review-state')==='include','Included filter did not expose the saved decision state without reload.');
 
   await page.locator('[data-content-review-tab="reports"]').click();
   await page.locator('[data-content-review-item="v3:study:item-1"]').waitFor();
