@@ -108,6 +108,6 @@ export function mountContentReportingRuntime({reporting,getRoute,onAccount,onCon
     if(target.closest('[data-report-congregation]')){close();onCongregation?.()}
   };
   const onKeyDown=event=>{if(event.key==='Escape'&&!layer.hidden)close()};
-  root.addEventListener('click',onClick);root.addEventListener('submit',onSubmit);documentRef.addEventListener('keydown',onKeyDown);globalThis.addEventListener?.('hashchange',refresh);refresh();
-  return Object.freeze({refresh,open,dispose(){if(disposed)return;disposed=true;root.removeEventListener('click',onClick);root.removeEventListener('submit',onSubmit);documentRef.removeEventListener('keydown',onKeyDown);globalThis.removeEventListener?.('hashchange',refresh);root.remove()}});
+  root.addEventListener('click',onClick);root.addEventListener('submit',onSubmit);documentRef.addEventListener('keydown',onKeyDown);refresh();
+  return Object.freeze({refresh,open,dispose(){if(disposed)return;disposed=true;root.removeEventListener('click',onClick);root.removeEventListener('submit',onSubmit);documentRef.removeEventListener('keydown',onKeyDown);root.remove()}});
 }
