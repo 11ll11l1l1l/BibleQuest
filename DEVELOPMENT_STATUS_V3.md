@@ -57,16 +57,17 @@ Permanent evidence:
 - `tests/v3-tutorial-onboarding-smoke.mjs`
 - accumulated invocation in `.github/workflows/v3-regression.yml`
 
-## #84 verification history
+## Defect / root-cause ledger
 
 - Run `34493685748`, candidate `9ed4bc024afff960ebba8614f6a13c8e1f51204c`: shell/account interaction was blocked because an early implementation auto-opened the tutorial on anonymous Home. Retained production evidence showed that trigger was wrong; runtime was corrected to account-created/manual-launch semantics.
 - Run `34494727258`, candidate `ad8dd79a1159dfabf7ddf41d506b608eaf95720f`: exact SHA, architecture, lifecycle and shell tests passed, but the new tutorial smoke had an off-by-one test sequence that reached the final step without clicking `Finish guide`. Runtime was unchanged; the test was corrected.
 - Targeted run `34495068372`, candidate `9f4f018356e48b4f7d7c62887761cffd8278fbd5`: exact SHA, architecture/privacy validator, lifecycle edges, existing shell smoke and strengthened account-handoff/mobile/offline smoke all passed.
 - Full functional run `34495260019`, same exact product SHA: complete accumulated architecture validators, complete accumulated edge/security regressions, and complete browser/mobile regressions all passed.
+- Bookkeeping run `34496075740`, candidate `f26945e0c0f8c00f9def4f5fda5ff610a7d4652e`: exact SHA and inventory validation passed, then the architecture validator rejected renamed status headings. Runtime, inventory counts, edge and browser behavior were not implicated. The required durable headings are retained here.
 
-## Exact next sequence
+## Next major milestone: #84 bookkeeping and v3.57 freeze
 
-1. Treat the live tip of `feature/v3-tutorial-onboarding` containing the #84 bookkeeping updates as a new bookkeeping candidate.
+1. Treat the live tip of `feature/v3-tutorial-onboarding` containing this corrected status bookkeeping as a new candidate.
 2. Verify that exact SHA on an isolated verifier with SHA assertion, inventory validation, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite.
 3. Correct only a reproduced failure; never weaken accumulated coverage.
 4. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.57-tutorial-onboarding` at exactly that SHA.
