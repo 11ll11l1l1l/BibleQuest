@@ -107,6 +107,7 @@ try {
   assert(metrics.layers === 1 && metrics.dialogs === 1, 'Force-open launcher must reuse the single mounted overlay.');
 
   for (let step = 1; step < 6; step += 1) await page.locator('[data-tutorial-next]').click();
+  await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'hidden' });
   const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest.v3.tutorial-onboarding') || 'null'));
   assert(persisted?.completed === true, 'Finishing the tutorial did not persist completion through the shared storage boundary.');
