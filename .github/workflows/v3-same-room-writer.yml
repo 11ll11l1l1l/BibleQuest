@@ -18,20 +18,23 @@ jobs:
           fetch-depth: 0
       - name: Assert frozen v3.65 base
         run: test "$(git rev-parse HEAD)" = "ab3584906b3d017ea555416910f23e9414ed2ef8"
-      - name: Fetch writer script
-        run: git show origin/verify/v3.66-same-room-writer:.github/scripts/v3-same-room-writer.py > /tmp/v3-same-room-writer.py
-      - name: Apply milestone patch
-        run: python3 /tmp/v3-same-room-writer.py
-      - name: Validate same-room architecture
-        run: node scripts/validate-v3-same-room-play-together.mjs
-      - name: Run same-room edge regression
-        run: node tests/v3-same-room-play-together-edge.mjs
-      - name: Check diff hygiene
-        run: git diff --check
-      - name: Commit product candidate
+      - name: Check service constants and state anchors
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/app/games.js src/features/games/index.js scripts/validate-v3-same-room-play-together.mjs tests/v3-same-room-play-together-edge.mjs tests/v3-same-room-play-together-smoke.mjs docs/V3_SAME_ROOM_PLAY_TOGETHER_CONTRACT.md .github/workflows/v3-regression.yml
-          git commit -m "feat: restore same-room Play Together"
-          git push origin HEAD:feature/v3-same-room-play-together
+          grep -Fq "const normalizeAnswer=value=>String(value||'').trim().toLocaleLowerCase();" src/app/games.js
+          grep -Fq "  let state=emptyState();" src/app/games.js
+      - name: Check service method anchors
+        run: |
+          grep -Fq "function persistResult(mode,score,total,gained)" src/app/games.js
+          grep -Fq "function showLauncher(){state=emptyState();return snapshot()}" src/app/games.js
+          grep -Fq "showLauncher,lastResult,leave,xp:XP" src/app/games.js
+      - name: Check UI launcher anchor
+        run: grep -Fq "}).join('')}</section><div class=\"bq-game-footer\"><button type=\"button\" class=\"bq-secondary-button\" data-game-home>Back home</button></div>" src/features/games/index.js
+      - name: Check UI phase and handler anchors
+        run: |
+          grep -Fq "if(state.phase==='detective')" src/features/games/index.js
+          grep -Fq "if(target.closest('[data-detective-replay]'))" src/features/games/index.js
+      - name: Check regression workflow anchors
+        run: |
+          grep -Fq "scripts/validate-v3-reset-recovery.mjs; do" .github/workflows/v3-regression.yml
+          grep -Fq "tests/v3-reset-recovery-edge.mjs tests/v3-progress-edge.mjs" .github/workflows/v3-regression.yml
+          grep -Fq "tests/v3-reset-recovery-smoke.mjs tests/v3-progress-smoke.mjs" .github/workflows/v3-regression.yml
