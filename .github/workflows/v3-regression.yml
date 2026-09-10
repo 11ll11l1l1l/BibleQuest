@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3.55.1-avatar-integrity-functional-464e6-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -16,12 +13,6 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 464e627642675864898642c0abb5b8861731bd34
-          fetch-depth: 1
-      - name: Assert exact Avatar Vault integrity candidate
-        run: |
-          test "$(git rev-parse HEAD)" = "464e627642675864898642c0abb5b8861731bd34" || (echo "Checked-out HEAD is not exact #82 integrity candidate 464e627642675864898642c0abb5b8861731bd34" && exit 1)
       - uses: actions/setup-node@v4
         with:
           node-version: 22
