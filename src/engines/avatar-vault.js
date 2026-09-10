@@ -3,11 +3,11 @@
 // Styles/requirements ported unchanged from legacy avatar-vault.js for parity.
 //
 // v1 scope: only styles whose requirement is sourceable from an existing v3
-// owner today (Progress: xp, streak) are marked available:true. Styles that
+// owner today (Progress: xp, streak) are marked as available. Styles that
 // depended on legacy metrics with no current v3 owner (answered/correct
 // question counts, recall-deck reps, couples conversations, group sessions,
 // assignment completions, Journey region mastery) are retained in the catalog
-// for parity visibility but marked available:false with the owner still
+// for parity visibility but marked as not yet available, with the owner still
 // needed, and can never be evaluated as unlocked until that follow-up
 // integration lands. This is a deliberate, explicitly recorded deferral, not
 // a silent gap.
