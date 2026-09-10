@@ -24,6 +24,9 @@ const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assign
 const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
 const NOTIFICATION_FIELDS='id,user_id,congregation_id,created_by,notification_type,title,body,action_kind,action_payload,read_at,expires_at,created_at';
 const CONTENT_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,updated_at';
+const CONTENT_REVIEW_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,content_ref,content_snapshot,rationale,reviewed_by,reviewed_at,updated_at';
+const CONTENT_REVIEW_REPORT_FIELDS='id,congregation_id,reporter_id,content_key,content_type,content_source,content_ref,content_text,content_payload,reason,note,status,reviewed_by,reviewed_at,created_at,updated_at';
+const CONTENT_REVIEW_MEMBER_FIELDS='user_id,display_name,role,avatar,active,joined_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -455,6 +458,45 @@ export function createApi() {
     }
   });
 
+  const contentReview = Object.freeze({
+    async platformAccess(userId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_app_access').select('role,active').eq('user_id',userId).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async listPlatformCongregations() {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_congregations').select('id,name,timezone,owner_id,active').eq('active',true).order('name',{ascending:true}).limit(500);
+      if(error)throw error;
+      return data||[];
+    },
+    async loadQueue(congregationId) {
+      const id=String(congregationId||'').trim();if(!id)throw new Error('Content Review congregation is required.');
+      const client=await getClient();
+      const request=Promise.all([
+        client.from('bible_content_decisions').select(CONTENT_REVIEW_DECISION_FIELDS).eq('congregation_id',id).order('updated_at',{ascending:false}).limit(4000),
+        client.from('bible_content_reports').select(CONTENT_REVIEW_REPORT_FIELDS).eq('congregation_id',id).order('created_at',{ascending:false}).limit(500),
+        client.from('bible_congregation_members').select(CONTENT_REVIEW_MEMBER_FIELDS).eq('congregation_id',id).eq('active',true).order('joined_at',{ascending:true}).limit(3000)
+      ]);
+      const [decisions,reports,members]=await withTimeout(request,6000,'Content Review queue took too long to load.');
+      for(const result of[decisions,reports,members])if(result.error)throw result.error;
+      return {decisions:decisions.data||[],reports:reports.data||[],members:members.data||[]};
+    },
+    async saveDecision(row) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_content_decisions').upsert(row,{onConflict:'congregation_id,content_key'}).select(CONTENT_REVIEW_DECISION_FIELDS).single();
+      if(error)throw error;
+      return data;
+    },
+    async markReportsReviewed(congregationId,contentKey,reviewedBy,reviewedAt) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_content_reports').update({status:'reviewed',reviewed_by:reviewedBy,reviewed_at:reviewedAt,updated_at:reviewedAt}).eq('congregation_id',congregationId).eq('content_key',contentKey).eq('status','open').select('id');
+      if(error)throw error;
+      return data||[];
+    }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -474,5 +516,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, media, diagnostics });
 }
