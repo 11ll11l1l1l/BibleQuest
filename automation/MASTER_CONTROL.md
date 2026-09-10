@@ -1,136 +1,143 @@
 # BibleQuest v3 autonomous agent control
 
-This branch is the durable control plane for five scheduled agents. GitHub and executed exact-SHA evidence are authoritative; chat memory is not.
+This branch is the durable control plane for five scheduled agents. GitHub state and executed exact-SHA evidence are authoritative; chat memory and agent opinions are not.
 
 ## Absolute boundaries
 - Never modify `main`, production v2, production Cloudflare, or production Supabase unless the user separately and explicitly authorizes it.
 - Rebuild-and-verify only; never patch-and-accumulate.
 - One source of truth per responsibility.
 - No speculative fixes, unrelated refactors, cosmetic churn, or feature additions during parity reconstruction.
-- Never claim tests, browser checks, backend behavior, or deployment state passed unless they actually executed or were directly inspected.
-- Normal Actions must remain `workflow_dispatch`-only. Temporary `push:` triggers may exist only on isolated verification branches and must never enter a candidate, canonical milestone branch, frozen release, or safety ref.
-- Never freeze a release until the exact clean bookkeeping SHA passes the complete accumulated required suite.
-- Never begin canonical implementation of the next feature before the current milestone's functional and bookkeeping/release gates close.
-- Speed is subordinate to correctness. Agents must not optimize for number of commits or milestones per run.
+- Never claim tests, browser checks, backend behavior, deployment state, or security behavior passed unless actually executed/inspected.
+- Normal Actions remain `workflow_dispatch`-only. Temporary `push:` triggers may exist only on isolated `verify/` branches and never enter a candidate, canonical branch, release, or safety ref.
+- Never freeze until the exact clean bookkeeping SHA passes the complete accumulated required suite.
+- Never begin the next canonical feature while the current milestone release gate is incomplete.
+- Do not optimize for commit count or milestone count. Optimize for verified progress.
 
-## Persistent startup state
-Every agent must begin by reading, in this order:
-1. `automation/MASTER_CONTROL.md` on `automation/v3-agent-control`.
-2. Its own role file under `automation/agents/`.
-3. `automation/CURRENT.md` and `automation/TRIAGE.md`.
-4. `automation/WRITE_LEASE.md`.
-5. `automation/SCHEDULE_AND_LOCKING.md`.
-6. `DEVELOPMENT_HANDOFF_V3.md` from the actual currently active canonical v3 milestone branch.
-7. Current remote branches, frozen release refs, open v3 PRs, workflow evidence, inventory, relevant contracts and tests.
+## Mandatory control files
+Every agent first reads:
+1. `automation/MASTER_CONTROL.md`.
+2. `automation/AGENT_GUARDRAILS.md`.
+3. its own role file under `automation/agents/`.
+4. `automation/WRITE_LEASE.md` and `automation/SCHEDULE_AND_LOCKING.md` as relevant to the role.
 
-If control-plane files disagree with the live repository, the live repository plus executed exact-SHA verification evidence wins. A stale control file is advisory only and must be refreshed by its owner; it must never override newer repository evidence.
+After that, follow the role-specific startup order. Investigators inspect primary repository evidence before reading TRIAGE, and A1 inspects live product state before using TRIAGE as an action filter.
 
-## Recovery checkpoints
-Do not modify, repurpose, delete, or force-update these recovery refs:
+If control text disagrees with live repository state or executed exact-SHA evidence, live evidence wins. Refresh stale control text rather than following it blindly.
+
+## Immutable recovery points
+Never move, repurpose, delete, or force-update:
 - `safety/pre-autonomous-agents-20260910-canonical`
 - `safety/pre-autonomous-agents-20260910-advanced`
-They are recovery anchors only. Existing frozen `release/v3.*` refs are also immutable after creation.
+- `safety/pre-agent-control-hardening-20260910`
+- any existing frozen `release/v3.*` ref.
 
-## Concurrency model
-Only Agent 1 may modify autonomous product/release state. Agents 2-4 are read-only with respect to product implementation and each owns a separate report namespace. Agent 5 may modify only triage/control-plane files it owns; it must not patch product code.
+Recovery creates a new branch from an exact known-good checkpoint; it never rewrites verified history.
 
-File ownership:
-- Agent 1: autonomous work branches, verified promotion of canonical feature branches, release bookkeeping, frozen v3 release creation, `DEVELOPMENT_HANDOFF_V3.md` only at verified promotion, `automation/CURRENT.md`, and `automation/WRITE_LEASE.md`.
-- Agent 2: `automation/reports/contract/` only.
-- Agent 3: `automation/reports/architecture/` only.
-- Agent 4: `automation/reports/qa/` only.
-- Agent 5: `automation/TRIAGE.md` and `automation/reports/triage/` only.
+## Concurrency and ownership
+Only A1 may perform autonomous product/release writes. A2-A4 are product-read-only. A5 is product-read-only and owns triage.
 
-Do not overwrite another agent's report. If a shared-state update is needed outside your ownership, record a recommendation in your own report for Agent 5 or Agent 1.
+Control-plane ownership:
+- A1: autonomous work branches, verified promotion of canonical milestone branches, release bookkeeping, release refs, `automation/CURRENT.md`, `automation/WRITE_LEASE.md`, and canonical `DEVELOPMENT_HANDOFF_V3.md` only through verified bookkeeping promotion.
+- A2: `automation/reports/contract/` only.
+- A3: `automation/reports/architecture/` only.
+- A4: `automation/reports/qa/` only.
+- A5: `automation/TRIAGE.md` and `automation/reports/triage/` only.
 
-## HARD SAFEGUARD 1 — writer lease
-Textual 'single writer' authority is not enough. Before Agent 1 performs any product, test, workflow, canonical branch, release, bookkeeping, or canonical handoff write, it must hold the current lease in `automation/WRITE_LEASE.md`.
+No agent edits another role's report.
+
+## Hard safeguard 1 — writer lease
+Before any product, test, workflow, canonical branch, bookkeeping, handoff, or release write, A1 must hold `automation/WRITE_LEASE.md`.
 
 Lease protocol:
-1. Re-read `automation/WRITE_LEASE.md` immediately before acquisition.
-2. If it is `FREE`, or an unreleased lease is older than 80 minutes, acquire it by replacing the file using the exact current blob SHA. Record a unique run nonce, acquisition time, intended milestone, base SHA, and autonomous work branch.
-3. If the conditional update fails because the file changed, another writer won; do not perform canonical/product writes. Re-read and yield.
-4. Before every subsequent product/canonical write, re-read the lease and verify the same run nonce still owns it.
-5. Release the lease to `FREE` before normal run exit.
-6. If inheriting an expired lease, first reconcile all branches and unverified work left by the previous run. Never assume the abandoned work is valid.
+1. Re-read the exact current lease file.
+2. If FREE, acquire it by conditional update using the current blob SHA. Record a unique run nonce, milestone, base SHA and work branch.
+3. If the update conflicts, another writer won; do not perform product/canonical writes.
+4. Re-read and verify the same nonce before every later product/canonical write.
+5. Release to FREE on normal exit.
+6. A lease is stale only after the configured expiry; takeover requires full branch/run reconciliation first.
 
-A manual/normal ChatGPT development instance must not write concurrently with A1. If manual work is intentionally started while automation is active, the safest procedure is to disable A1 first. If it is not disabled, the manual writer must honor the same lease and live-state reconciliation rule.
+Manual/normal-chat development should disable A1 before writing. If not disabled, it must not concurrently edit A1's canonical/work branches.
 
-## HARD SAFEGUARD 2 — autonomous quarantine branch
-Agent 1 must not implement unverified product changes directly on the canonical v3 milestone branch.
+## Hard safeguard 2 — autonomous quarantine
+A1 never implements unverified product changes directly on the canonical milestone branch.
 
-For each milestone:
-1. Confirm the canonical milestone branch descends cleanly from the latest frozen verified v3 release and reconcile any legitimate already-approved contract/docs-only state.
-2. Create or resume a dedicated autonomous work branch named under `agent/a1-work/` from that reconciled canonical milestone HEAD.
-3. All implementation, tests, candidate workflow changes, and defect corrections occur on the autonomous work branch or isolated `verify/` branches — not on the canonical milestone branch.
-4. The exact autonomous work-branch candidate must pass the complete functional gate.
-5. Agent 4 and Agent 5 must have an opportunity to inspect that exact candidate on the next review cycle before autonomous promotion. A1 may continue diagnosis/testing while waiting, but may not promote a candidate that has not had this independent review opportunity unless the user explicitly directs a manual override.
-6. Promotion bookkeeping must also be prepared off-canonical. The exact bookkeeping SHA must pass the complete accumulated gate.
-7. Only after the exact bookkeeping SHA is green may Agent 1 fast-forward/promote the canonical milestone branch to that exact verified SHA and freeze the next sequential release at that same SHA.
-8. Failed, abandoned, or superseded work branches remain non-canonical evidence and may be deleted only when clearly safe; never rewrite canonical or safety history to hide them.
+Per milestone:
+1. reconcile the exact canonical milestone HEAD against the latest frozen release;
+2. create/resume one work branch under `agent/a1-work/<milestone-id>-<slug>` from the reconciled canonical HEAD;
+3. implement, add tests, and fix defects only on that work branch;
+4. run the complete exact functional gate there;
+5. prepare bookkeeping off-canonical and run the exact bookkeeping gate;
+6. only then fast-forward the canonical milestone branch to an authorized exact green SHA;
+7. never force-update canonical, release, or safety refs.
 
-This makes autonomous mistakes disposable until both implementation and bookkeeping have passed exact-SHA gates.
+Active #75 work branch: `agent/a1-work/075-assignment-push`, created from canonical `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
 
-## HARD SAFEGUARD 3 — fresh evidence only
-Every A2/A3/A4 report must identify at minimum:
-- active milestone;
-- analyzed canonical milestone HEAD;
-- analyzed autonomous candidate SHA when one exists;
-- frozen base release and SHA;
-- evidence paths/contracts inspected;
-- FACT vs INFERENCE/RECOMMENDATION;
-- missing evidence;
-- what repository movement would make the report stale.
+The older `agent/a1/m75-assignment-push-work` branch is non-canonical and must not receive new autonomous work.
 
-Agent 5 must write at the top of `automation/TRIAGE.md`:
-- generated-at time;
-- active milestone;
-- observed canonical milestone HEAD;
-- observed autonomous candidate SHA, if any;
-- frozen base SHA;
-- source report filenames and their analyzed SHAs;
-- explicit stale-report warnings.
+## Hard safeguard 3 — risk-aware independent review
+A1 classifies the milestone before its first product write.
 
-A1 may treat BLOCKER/MILESTONE items as mandatory only when TRIAGE is fresh for the exact state being acted on. Stale TRIAGE may be useful context but cannot override direct current evidence. Before promotion, A1 must independently re-check every BLOCKER/MILESTONE claim against the candidate being promoted.
+HIGH-RISK includes auth/session, authorization/RLS/grants, trusted Edge/RPC/server authority, schema/data migrations, production/deployment configuration, global router/shell ownership, package/dependency/workflow changes, replacing a verified owner, or broad cross-feature persistence/sync semantics.
 
-## HARD SAFEGUARD 4 — deterministic scope and review barrier
-- Work only one canonical milestone at a time.
-- Select the next milestone from the authoritative inventory/dependency order and current durable status. Do not reorder merely because another task looks easier or more interesting.
-- Explicit user deferrals remain deferred until their turn is necessary for final 100/100 completion.
-- Investigator reconnaissance should prioritize the active milestone and at most the next two dependency-likely milestones. Deep speculation farther ahead is low value because evidence will stale.
-- A1 may implement after directly recovering the contract even if an investigator report is missing, but it may not lower acceptance standards because a report failed to arrive.
-- Autonomous promotion requires: exact candidate identified; required permanent tests present; complete functional gate green; no unresolved fresh BLOCKER/MILESTONE findings; independent A4/A5 review opportunity; exact bookkeeping SHA complete gate green; canonical branch/release advanced only to that exact green SHA.
+For HIGH-RISK work:
+- before first product write: require a current A3 architecture/security report for the active milestone/frozen base and no A5 BLOCKER;
+- after exact functional green: require A4 to review that exact candidate and A5 to recommend promotion for that exact candidate before bookkeeping/promotion.
 
-## HARD SAFEGUARD 5 — accumulated test-harness integrity
-A green workflow is meaningful only if the intended tests actually ran. Existing regression protection is therefore treated as part of the protected architecture.
+NORMAL-RISK work stays inside already verified owners and does not change a trust boundary. It may complete functional -> bookkeeping -> exact bookkeeping -> promotion in the same A1 execution window when all exact gates pass and no unresolved current BLOCKER/MILESTONE exists. A later A4/A5 audit may stop the next milestone if a real regression is discovered.
 
-- A1 may add new milestone tests/validators and wire them into the accumulated workflow, but must not delete, skip, comment out, narrow, weaken, rename away, or silently stop invoking existing regression tests to obtain a green result.
-- Any modification to an existing accumulated validator/test or to `.github/workflows/v3-regression.yml` beyond adding the current milestone's required coverage must be tied to a reproduced root cause (for example a proven fixture/CI defect), explicitly documented, and independently audited by A4/A5 before promotion.
-- A4 must verify not only that new permanent test files exist, but that the exact executed workflow at the candidate SHA actually invokes them and that prior accumulated tests remain invoked.
-- A5 must treat unexplained removal, bypass, timeout reduction that skips coverage, broad exclusion, or relaxation of an existing regression guard as a BLOCKER.
-- Test success obtained by changing expected behavior to match an incorrect implementation is not valid verification.
-- If a required scenario cannot be executed in the available environment, record MISSING EVIDENCE rather than replacing it with a weaker mock and calling it equivalent.
+If NORMAL-RISK implementation unexpectedly touches a HIGH-RISK area, reclassify before continuing.
 
-## Milestone lifecycle
-The canonical release loop is:
-contract recovery -> architecture/RLS recovery -> isolated implementation -> permanent tests -> complete exact functional gate -> independent QA/triage review -> off-canonical promotion bookkeeping -> exact-bookkeeping-SHA complete gate -> promote canonical branch -> frozen release -> next milestone.
+#75 Assignment Push is HIGH-RISK because it requires trusted server/authorization scope for publish-target discovery/creation.
 
-Agent 1 must remain on a milestone when product tests fail, identify the root cause, correct only verified defects, retain regression protection, and rerun required gates. Ordinary failures are not reasons to ask the user to continue.
+## Hard safeguard 4 — report independence, provenance, freshness
+A2-A4 independently inspect primary evidence before reading TRIAGE. They must not cite another agent's opinion as proof.
 
-Do not start another verification run for the same candidate while a required run is still in progress. A cancelled/incomplete run is not green evidence.
+Every A2-A4 report records milestone, canonical branch/exact HEAD, work candidate SHA when present, frozen base release/SHA, primary evidence inspected, FACT vs INFERENCE/RECOMMENDATION, missing evidence and exact staleness conditions.
+
+A5 TRIAGE records exact canonical/candidate/frozen SHAs and source-report freshness. Candidate-specific claims are stale when candidate HEAD changes.
+
+Only fresh evidence-backed BLOCKER/MILESTONE findings can stop current work or authorize HIGH-RISK promotion. Agreement between agents is not evidence by itself.
+
+## Hard safeguard 5 — scope and accumulated test integrity
+One canonical milestone at a time. Work only the recovered current contract plus permanent tests/bookkeeping.
+
+Do not mix later inventory rows, opportunistic cleanup, cosmetic redesign, mass formatting, unrelated refactors, retired parallel owners, or broad architecture changes.
+
+If a fix unexpectedly requires another verified owner, a global shell, dependency/workflow, migration, or unrelated feature, prove the dependency and reclassify scope/risk before continuing.
+
+A green workflow counts only if the intended accumulated tests actually ran.
+- A1 may add the current milestone's new validator/tests and wire them into the accumulated suite.
+- A1 must not delete, skip, comment out, narrow, weaken, rename away, shorten past execution, or silently stop invoking an existing regression to obtain green.
+- Any modification to an existing accumulated validator/test, or to `.github/workflows/v3-regression.yml` beyond adding the current milestone's required invocation, is automatically HIGH-RISK and requires a reproduced root cause plus exact-candidate A4/A5 review before promotion.
+- Existing-test changes require a documented `TEST/FIXTURE DEFECT` explanation and must preserve the original semantic assertion.
+- A4 verifies that the exact executed workflow at the candidate SHA actually invokes the new milestone coverage and all prior accumulated coverage.
+- A5 treats unexplained removal/bypass/relaxation of accumulated regression protection as BLOCKER.
+- Test success obtained by changing expected behavior to match an incorrect implementation is invalid.
+- Runtime/security claims require executable or faithful trusted-boundary evidence; source-string checks or client mocks alone are insufficient when stronger evidence is feasible.
+- If a required scenario cannot execute in the available environment, record MISSING EVIDENCE rather than replacing it with a weaker test and calling it equivalent.
+
+## Canonical milestone lifecycle
+contract recovery -> architecture/security recovery as applicable -> isolated implementation -> permanent tests -> exact complete functional gate -> HIGH-RISK independent review if required -> off-canonical bookkeeping -> exact bookkeeping-SHA complete gate -> canonical fast-forward -> frozen release -> next milestone.
+
+A product failure keeps A1 on the milestone. Reproduce, identify root cause, fix only verified causes, retain regression protection, rerun.
+
+Do not start duplicate required verification for the same candidate while one is running. Cancelled, partial, timed-out, skipped, or unexecuted phases are not green.
 
 ## Triage classes
-Every finding that could affect canonical implementation must be classified as exactly one of:
-- BLOCKER: cannot safely/correctly proceed.
-- MILESTONE: required for the current milestone parity/stability contract.
-- DEFER: real but unrelated to the current milestone.
-- IGNORE: speculative, duplicate, cosmetic-only, obsolete, already handled, stale, or too low-impact.
-Only fresh BLOCKER and MILESTONE items may interrupt Agent 1's current work.
+Every material finding is exactly one of:
+- BLOCKER — active milestone cannot safely/correctly proceed.
+- MILESTONE — required inside the active milestone contract.
+- DEFER — real but later/unrelated.
+- IGNORE — speculative, stale, duplicate, cosmetic-only, obsolete, already protected, or immaterial.
 
-## Stop conditions
-Agents should not stop simply because one assigned item is complete, but 'continue' means continue useful work within the safety model, not create more changes. Read-only investigation, reconciliation, test planning, or waiting for a required external gate is preferable to speculative implementation.
+A5 may use BLOCKER/MILESTONE only with primary evidence and a concrete counterfactual showing what acceptance, security, ownership, data-integrity or regression failure occurs if not handled now.
 
-Agent 1 may stop early only for a genuine blocker requiring destructive production action, unavailable permissions/credentials, irreconcilable authoritative contract ambiguity, lost writer lease, conflicting manual canonical work that cannot be reconciled safely, or an external verification limitation that prevents a required gate. Before stopping, it must leave an exact durable handoff in the control plane.
+## Stop/yield conditions
+Do not stop merely because one subtask finished. Continue useful work within the safety model.
 
-## Completion definition
-BibleQuest v3 is complete only when all parity inventory items are Regression-tested, strict parity is 100/100, regression stability is 100/100, required accumulated architecture/edge/browser-mobile suites pass, the exact final bookkeeping SHA passes, the final v3 release is frozen at that exact SHA, and production remains untouched until separately authorized.
+A1 may yield for genuine external/destructive production requirements, missing permissions/credentials, irreconcilable authoritative ambiguity, lost lease, conflicting manual branch movement that cannot be reconciled safely, or unavailable required verification. Leave an exact durable handoff before exit.
+
+Read-only investigation/test planning is preferable to speculative code when blocked.
+
+## Completion
+BibleQuest v3 is complete only when the authoritative inventory is 100/100 Regression-tested, strict parity is 100/100, regression stability is 100/100, all required accumulated architecture/edge/browser-mobile suites pass against the exact final bookkeeping SHA, the final v3 release is frozen at that SHA, and production remains untouched until separately authorized.
