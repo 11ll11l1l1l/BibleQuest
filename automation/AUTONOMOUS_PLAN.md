@@ -1,73 +1,80 @@
 # BibleQuest autonomous completion plan
 
-This document defines the current five-agent operating plan. It supplements, but does not override, `MASTER_CONTROL.md` or the live v3 repository evidence.
+This document summarizes the current five-agent operating plan. `MASTER_CONTROL.md`, role files, the live repository, and executed exact-SHA evidence take precedence.
 
 ## Objectives
-1. Preserve a guaranteed rollback point before autonomous work.
-2. Resume canonical development immediately from the exact live state.
-3. Prevent parallel agents from editing the same product ownership area.
-4. Keep research, architecture/security analysis, QA planning and triage ahead of the single canonical implementer.
-5. Remove the need for manual `continue` messages by scheduling repeated autonomous cycles.
-6. Preserve strict rebuild-and-verify and exact-SHA release gates until 100/100 parity and stability.
+1. Preserve rollback points and frozen verified releases.
+2. Continue the v3 rebuild without repeated manual `continue` messages.
+3. Keep weaker autonomous agents away from unreviewed canonical product state.
+4. Serialize all autonomous implementation through one writer and a lease.
+5. Keep contract, architecture/security, QA and triage review ahead of promotion.
+6. Preserve strict rebuild-and-verify until parity and regression stability both reach 100/100.
 
 ## Recovery baseline
-Two do-not-move safety refs were created before orchestration:
+Do-not-move recovery refs:
 - `safety/pre-autonomous-agents-20260910-canonical` -> `fceb115e763ae729e07325bbb4c9f592206b2c9e`.
 - `safety/pre-autonomous-agents-20260910-advanced` -> `f01df3e72b5413bba7ae7d16552fca55a448b766`.
-The first preserves the observed canonical Assignments line; the second preserves the newer Advanced Assignments line. Recovery must use a new branch from one of these refs; never rewrite the safety refs.
+Recovery uses a new branch from an exact checkpoint; safety refs and frozen releases are never rewritten.
 
-## Five autonomous scheduled identities
-Existing five active BibleQuest scheduled slots were repurposed rather than adding a second competing set.
-
-- A1 `BQ-A1-RELEASE-CAPTAIN`: canonical implementation/release writer.
+## Five identities
+- A1 `BQ-A1-RELEASE-CAPTAIN`: sole autonomous implementation/release writer.
 - A2 `BQ-A2-CONTRACT`: retained behavior and parity contract investigator.
 - A3 `BQ-A3-ARCH-SECURITY`: architecture, Supabase/RLS, auth/privacy and lifecycle investigator.
 - A4 `BQ-A4-QA`: acceptance/regression/evidence investigator.
 - A5 `BQ-A5-FIREWALL`: evidence triage and noise firewall.
 
-## Schedule, Asia/Tokyo
-Initial starts on 2026-09-10:
-- A1 12:20, then every 3 hours.
-- A2 12:35, then every 3 hours.
-- A3 12:50, then every 3 hours.
-- A4 13:05, then every 3 hours.
-- A5 13:20, then every 3 hours.
+## Hourly schedule, Asia/Tokyo
+- A2 :28
+- A3 :38
+- A4 :48
+- A5 :58
+- A1 :08
 
-This ordering intentionally lets A1 resume the already-known #73 release work immediately. A2-A5 then prepare/filter #74 and later work before A1's next cycle at 15:20. Future cycles preserve the same 15-minute staggering.
+The review cycle intentionally places A2-A5 before the next A1 writer pass.
 
-## Interference prevention
-Canonical writes are serialized by authority, not by assuming tasks never overlap. Only A1 may change product/release state. A2-A4 write only separate report trees. A5 writes only triage. Every writer must re-read live state immediately before writing and must not force-reset over concurrent/manual changes.
+## Current canonical position at this plan revision
+The latest durable state is recorded in `automation/CURRENT.md` and the live `DEVELOPMENT_HANDOFF_V3.md`. At the time the safety model was hardened, the project was at frozen v3.47 Advanced Assignments, strict parity 74/100, regression stability 73/100, with #75 Assignment Push contract recovery complete and application implementation not yet started. Always re-read live state; these numbers will become stale.
 
-## Canonical milestone algorithm
-For every remaining inventory item A1 repeats:
-1. Reconcile live state and latest frozen release.
-2. Read contract/architecture/QA/triage evidence.
-3. Recover the authoritative retained contract.
-4. Implement on a feature branch derived from the latest verified frozen v3 release.
-5. Add permanent regression protection.
-6. Run complete functional gate against exact candidate SHA.
-7. Fix verified defects and rerun until green; distinguish test-fixture/CI failures.
-8. Update inventory/bookkeeping/handoff, producing a new exact SHA.
-9. Run the complete suite against that exact bookkeeping SHA.
-10. Freeze only that exact green SHA as the next release.
-11. Update durable handoff/current state.
-12. Immediately proceed to the next eligible milestone within the same run if execution remains available.
+## Isolation model
+A1 does not put unverified implementation directly on the canonical milestone branch.
+
+For one milestone at a time:
+1. Reconcile the canonical milestone branch against the latest frozen verified release.
+2. Acquire `automation/WRITE_LEASE.md` using a conditional update and unique run nonce.
+3. Create/resume `agent/a1-work/<milestone>` from the reconciled canonical state.
+4. Recover the contract and implement only that milestone on the work branch.
+5. Add permanent architecture, edge and browser/mobile regression protection.
+6. Run targeted checks and then the complete functional gate against the exact work candidate SHA.
+7. Leave the exact candidate available for the next A4/A5 review cycle; do not promote merely because A1 believes it is correct.
+8. Resolve only evidence-backed defects and rerun until green.
+9. Prepare promotion bookkeeping off-canonical.
+10. Run the complete accumulated suite against the exact bookkeeping SHA.
+11. Only after green, advance the canonical milestone branch to that exact SHA and freeze the next sequential release at the same SHA.
+12. Update durable handoff/current state, release the writer lease, then select the next dependency-safe milestone.
+
+Failed autonomous branches are disposable; verified frozen history is not.
 
 ## Investigator pipeline
-A2-A4 should normally stay two to five milestones ahead. Their work is advisory until A5 filters it. A5 allows only evidence-backed BLOCKER/MILESTONE items to interrupt A1; DEFER/IGNORE findings are prevented from causing scope drift.
+A2-A4 prioritize the active milestone/candidate. They may prepare at most the next two dependency-likely milestones so useful work stays ahead without building a large stale speculative backlog.
 
-## Current first transition
-At setup, the durable handoff reports #73 Assignments functionally green with run `34417012845`, strict parity 73/100 and regression stability 72/100, with final #73 bookkeeping/freeze still required. A newer Advanced Assignments branch also exists. A1 must reconcile these without bypassing the #73 exact bookkeeping gate. #74 becomes canonical only after the v3.46 Assignments release is verified/frozen.
+Reports must record exact canonical/candidate SHAs, frozen base SHA, evidence inspected, facts versus inferences, missing evidence and staleness conditions.
+
+A5 reconciles reports against current repository evidence. TRIAGE must declare the exact state it covers. Only fresh evidence-backed BLOCKER/MILESTONE findings may interrupt A1.
+
+## Independent review barrier
+A1 may implement and run tests in its own cycle, but autonomous promotion waits for the next A4/A5 review opportunity of the exact candidate. This deliberately trades a small amount of latency for a separate check by agents whose roles cannot modify product code.
+
+A missing investigator report does not permit weaker standards. If a report is unavailable, A1 continues safe investigation/testing but does not fabricate independent approval.
 
 ## Failure/recovery policy
-If an autonomous run encounters an ordinary test failure, it continues diagnosis within its role. If it encounters missing permissions, destructive production requirements, unrecoverable contract ambiguity, or unavailable authoritative verification, it records the exact blocker and next action instead of inventing success.
+Ordinary test failures stay inside the current milestone and are root-caused. Missing permissions, destructive production requirements, lost writer lease, irreconcilable authoritative ambiguity, conflicting manual canonical work, or unavailable required verification are legitimate stop conditions.
 
-If the agents produce unsafe or low-quality work:
-1. disable the five scheduled tasks;
-2. inspect the exact latest frozen verified release;
-3. compare against the two safety refs;
-4. create a fresh recovery branch from the appropriate safety/frozen SHA;
-5. do not repair by rewriting history or moving safety refs.
+If autonomous work looks unsafe:
+1. disable all five scheduled agents;
+2. inspect `automation/WRITE_LEASE.md` and the latest autonomous work branch;
+3. compare with the latest frozen verified release and safety refs;
+4. discard/supersede the bad work branch;
+5. resume from a fresh branch based on the exact verified checkpoint.
 
 ## Completion
-Autonomous operation ends only when the authoritative inventory is 100/100 Regression-tested, parity is 100/100, stability is 100/100, required accumulated suites are green against the exact final bookkeeping SHA, the final v3 release is frozen, and the durable handoff records that state.
+Autonomous operation is complete only when the authoritative inventory reaches 100/100 Regression-tested, parity is 100/100, regression stability is 100/100, the required accumulated architecture/edge/browser-mobile suites pass against the exact final bookkeeping SHA, the final v3 release is frozen at that SHA, and production remains untouched until separately authorized.
