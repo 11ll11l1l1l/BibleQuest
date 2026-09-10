@@ -1,6 +1,6 @@
 # Autonomous BibleQuest current state
 
-Updated: 2026-09-10 JST by `BQ-A1-RELEASE-CAPTAIN` after #75 exact functional verification.
+Updated: 2026-09-10 JST by `BQ-A1-RELEASE-CAPTAIN` after closing the #75 trusted publish-authorization evidence gap.
 
 ## Latest exact verified release
 - Latest frozen release remains `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
@@ -11,34 +11,36 @@ Updated: 2026-09-10 JST by `BQ-A1-RELEASE-CAPTAIN` after #75 exact functional ve
 - Active milestone: **#75 Assignment Push Workflow**.
 - Risk tier: **HIGH-RISK** because it changes trusted assignment authorization/server scope.
 - Canonical milestone branch `feature/v3-assignment-push` remains `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Designated quarantine branch `agent/a1-work/075-assignment-push` is exact functional candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
-- Candidate remains quarantined and canonical has not advanced.
+- Designated quarantine branch `agent/a1-work/075-assignment-push` is now exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`.
+- Candidate remains quarantined. No bookkeeping candidate exists and canonical has not advanced.
 
 ## Inventory / parity
-- Authoritative ledger is intentionally not promoted yet: 73 Regression-tested, 1 Verified (#74), 0 Implemented, 26 Not started.
-- Strict implemented-or-better parity remains **74/100** and official regression stability remains **73/100** until #75 bookkeeping/promotion is authorized and verified.
+- Authoritative ledger remains intentionally unpromoted: 73 Regression-tested, 1 Verified (#74), 0 Implemented, 26 Not started.
+- Strict implemented-or-better parity remains **74/100** and official regression stability remains **73/100** until #75 promotion/bookkeeping is authorized and the exact bookkeeping SHA passes the complete accumulated gate.
 
-## #75 candidate state
-- Trusted ministry-scoped congregation target discovery, four target scopes (`all/member/team/group`), existing assignment-owner publishing UI/lifecycle, permanent #75 architecture/edge/browser coverage, and accumulated workflow invocation are present in quarantine.
-- A3 identified that the trusted `bq-assignment` server reused ministry-wide visibility for `start`/`complete`, permitting an active ministry user to respond to a targeted assignment they were not actually a recipient of. A1 independently confirmed this directly in production-source code on the quarantine branch.
-- The server correction now separates recipient authorization from ministry visibility: `start`/`complete` uses target-scope recipient eligibility only. A permanent `tests/v3-assignment-response-auth-edge.mjs` regression executes the production recipient helper against member/team/group fixtures and verifies non-recipient ministry identities are denied while `all` remains congregation-wide.
-- The accumulated workflow retains all prior regression invocations and now also runs the new recipient-authorization regression.
+## #75 trusted-boundary evidence closure
+- Prior exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` already had full accumulated functional green in run `34438690160` and corrected recipient-specific `start`/`complete` authorization.
+- Fresh A4/A5 review of `78fa191f...` then identified one evidence-strength gap, not a reproduced application defect: trusted `targets/create` ministry authorization and foreign/inactive target rejection were source-inspected/static-asserted rather than faithfully executed at the production handler boundary.
+- A1 independently confirmed the live trusted function already contains the required behavior: ministry-only `targets/create`, active same-congregation target discovery, and member/team/group validation before assignment insertion.
+- A1 added only a permanent faithful trusted-boundary regression, `tests/v3-assignment-publish-auth-edge.mjs`, plus its invocation in the existing accumulated edge phase. No product behavior was changed.
+- The regression executes the actual production `bq-assignment` request handler in a controlled VM with mocked imported infrastructure/data boundary, proving: ordinary members are denied `targets/create`; `facilitator/leader/pastor/admin` are allowed; target discovery returns only active same-congregation member/team/group entries; foreign/inactive member/team/group targets fail before insertion; valid same-congregation active targets succeed; missing non-all targets fail closed.
+- Existing accumulated validators, edge regressions, response-authorization coverage, browser/mobile tests, and normal `workflow_dispatch`-only workflow semantics remain retained. No existing coverage was weakened or removed.
 
-## Exact functional evidence
-- First exact attempt: run `34438622148`, checking out/asserting candidate `0ee64424ae2eb7e7975e29bc4869aa4b2eb1a073`. All accumulated architecture validators and existing #75 edge regression passed, but the newly added recipient-authorization test failed because of its own `eval` fixture wiring. Browser phases were therefore skipped. Classification: **TEST/FIXTURE DEFECT**, not application failure; no green was inferred.
-- Fixture-only correction produced exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
-- Authoritative functional run `34438690160` explicitly checked out and asserted exact SHA `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` and completed **successfully**: accumulated architecture validators, accumulated edge regressions including recipient authorization, Playwright/Chromium setup, local server, and complete accumulated browser/mobile regressions all passed.
-- Isolated verification branch: `verify/v3.48-assignment-push-functional-a1-20260910-1349`. Its temporary `push:` verification trigger has been removed after the run; the verify branch is not a candidate or release.
+## Exact functional evidence in this cycle
+- Candidate `fc09fa02ea86522b1bdc7ea03f0964f4fd56f2a4` added the new executable trusted-boundary regression and accumulated workflow invocation.
+- Exact run `34444649968` explicitly checked out/asserted `fc09fa02...`. All accumulated architecture validators and all prior edge regressions passed, but the new regression failed before assertions because its VM fixture left the TypeScript `type:string` annotation in the copied source. Browser phases were correctly skipped. Classification: **TEST/FIXTURE DEFECT**, not an application failure; no PASS was inferred.
+- Fixture-only transpilation correction produced exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`. Product source and behavior were unchanged by that correction.
+- Authoritative replacement run `34444825916` explicitly checked out and asserted exact SHA `a42100452d1b1fff7c146543e8ab5cd67da32193` and completed **successfully**. The accumulated architecture phase passed; the accumulated edge phase passed including both `v3-assignment-response-auth-edge.mjs` and the new `v3-assignment-publish-auth-edge.mjs`; Playwright/Chromium and the local server completed; the complete accumulated browser/mobile phase passed including #75 Assignment Push.
+- Verification branches used only isolated temporary `push:` triggers. The temporary triggers were removed after the runs from `verify/v3.48-assignment-push-functional-a1-20260910-1516` and `verify/v3.48-assignment-push-functional-a1-20260910-1520-fixture2`; neither verify branch is a candidate or release.
 
 ## Independent-review freshness
-- A2 report is stale because it inspected earlier candidate `1ddc4c8b8fd90f9a3e5a1b0a9788cb6dc1ea57be`.
-- A3 report is stale for promotion because it inspected `d13ba6b9729a02021ee5efab961c6c233a0b669e`; its authorization finding was independently verified and corrected in current candidate `78fa191f...`.
-- A4 report is pre-implementation/stale and has not reviewed exact candidate `78fa191f...`.
-- A5 TRIAGE is pre-candidate/stale and has not issued a promotion recommendation for exact candidate `78fa191f...`.
-- Because #75 is HIGH-RISK, exact functional green does **not** authorize autonomous bookkeeping or promotion until fresh A4 exact-SHA review and A5 promotion recommendation cover `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` unchanged.
+- Candidate movement from `78fa191f...` to `a4210045...` makes the previous A2/A3/A4/A5 candidate-specific reports stale for the current exact SHA, even though the only post-review product-branch changes were permanent test coverage and a fixture-only correction.
+- For this HIGH-RISK milestone, exact functional green is **not** permission to begin bookkeeping. Keep `a42100452d1b1fff7c146543e8ab5cd67da32193` unchanged for fresh independent review.
+- Current required promotion path: A3 must re-check the exact trust boundary/current harness; A4 must independently audit exact run `34444825916` and issue READY on this exact SHA; A5 must then independently reconcile primary evidence and issue a promotion recommendation for this unchanged SHA. A2 may refresh contract provenance but is not substituted for the mandatory A4/A5 gate.
 
 ## Exact next executable action
-1. Keep `agent/a1-work/075-assignment-push` unchanged at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` while A4 independently audits exact run `34438690160`, accumulated coverage, browser/mobile behavior, and the new trusted-boundary authorization regression.
-2. A5 reconciles exact candidate/frozen/canonical state and issues promotion disposition.
-3. Only if fresh A4/A5 authorize this exact unchanged candidate: A1 prepares #75 bookkeeping off-canonical, updates inventory/status/handoff there, executes the complete accumulated exact-bookkeeping-SHA gate, then fast-forwards canonical and freezes the next sequential release only at that exact green bookkeeping SHA.
-4. If either reviewer identifies a reproduced current-candidate defect, remain on #75 quarantine, root-cause/fix it, and repeat exact functional review. No pass transfers across SHA changes.
+1. Do not change `agent/a1-work/075-assignment-push` from `a42100452d1b1fff7c146543e8ab5cd67da32193` while A3/A4/A5 exact-SHA review occurs.
+2. If A3 remains satisfied, A4 is READY and A5 recommends promotion for this exact unchanged candidate, A1 may prepare #75 bookkeeping **off-canonical**.
+3. The bookkeeping candidate must update inventory/status/handoff consistently, then receive a new complete accumulated verification run that explicitly checks out/asserts that exact bookkeeping SHA.
+4. Only after that exact bookkeeping SHA is fully green may canonical `feature/v3-assignment-push` fast-forward to it and the next sequential frozen v3 release be created at that exact SHA.
+5. If review finds a reproduced current-candidate defect, remain on #75 quarantine, root-cause/fix only that defect, and repeat exact functional review. No PASS transfers across SHA changes.
