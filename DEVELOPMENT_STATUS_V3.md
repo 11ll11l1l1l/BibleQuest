@@ -96,6 +96,21 @@ Existing v3 owners identified for reuse (no new ownership to be created): `src/a
 3. #82 must satisfy `browse; select; persist; render fallback` without duplicating storage or shell/avatar ownership.
 4. Targeted validators/tests first; full accumulated gate only once targeted checks are green.
 
+## #82 functional gate: confirmed complete
+
+Exact functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd` (tip of `feature/v3-avatar-vault`) passed isolated verifier `verify/v3.55-avatar-vault-functional-58982-20260910`: run `34483151962` (after an earlier reproduced failure on the same branch, run `34482567082`, root-caused and corrected before this candidate). The verifier explicitly checked out and asserted that exact SHA, then the complete accumulated architecture validators, edge/security regressions and browser/mobile Playwright suite (including the new `scripts/validate-v3-avatar-vault.mjs`, `tests/v3-avatar-vault-edge.mjs`, `tests/v3-avatar-vault-smoke.mjs`) all passed. The verifier has been restored to manual-only.
+
+v1 scope, recorded in `AVATAR_VAULT_V3.md`: 5 of 15 legacy styles are unlock-evaluable (xp/streak-gated, sourced from Progress); the remaining 10 are catalogued but `available:false` pending metric owners that don't exist in v3 yet (question-answer/correct counts, recall-deck reps, couples conversations, group sessions, assignment completions, Journey region mastery) — an explicit, documented deferral, not silent breakage.
+
+`FEATURE_INVENTORY_V3.md` now records #82 Verified and #81 Regression-tested (survived #82's accumulated suite). Updated counts: **80 Regression-tested, 1 Verified, 0 Implemented, 18 Not started**; strict parity **82/100**; regression stability **81/100**. These are provisional until the bookkeeping candidate itself passes its own complete accumulated gate — no PASS transfers from this SHA to a different bookkeeping SHA.
+
+## #82 exact next executable sequence
+
+1. Treat this exact #82 bookkeeping/status/handoff transaction as a new clean candidate.
+2. Verify that exact bookkeeping SHA with an isolated one-shot workflow that explicitly checks out/asserts it and executes the complete accumulated suite.
+3. On green, restore the verifier to manual-only and freeze `release/v3.55-avatar-vault` at exactly that SHA.
+4. Only then create `feature/v3-innovation-suite` from v3.55 and begin #83, respecting Kids #38–40 and Japanese furigana #15 as deferred, and the 10 Avatar Vault styles above as an explicit #82 follow-up (not #83 scope).
+
 ## Release rule
 
 Never freeze a release until the exact clean bookkeeping SHA has passed the complete accumulated regression workflow. Temporary verification trigger commits are never release SHAs. Production v2, `main`, production Supabase and production Cloudflare remain unchanged throughout the rebuild.
