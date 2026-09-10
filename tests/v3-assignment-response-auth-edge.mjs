@@ -5,8 +5,7 @@ const source=fs.readFileSync('supabase/functions/bq-assignment/index.ts','utf8')
 const line=source.split('\n').find(item=>item.startsWith('async function assignmentRecipient('));
 assert.ok(line,'Trusted assignment recipient helper must exist.');
 const js=line.replace('admin:ReturnType<typeof adminClient>','admin').replace('assignment:any','assignment').replace('userId:string','userId');
-let assignmentRecipient;
-eval(`${js}; assignmentRecipient = assignmentRecipient;`);
+const assignmentRecipient=eval(`(${js})`);
 assert.equal(typeof assignmentRecipient,'function');
 
 const rows={team:new Set(),group:new Set()};
