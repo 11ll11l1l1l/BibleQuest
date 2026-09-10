@@ -10,81 +10,153 @@ FACT:
 - Exact canonical HEAD at final live re-read: `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
 - Dedicated `agent/a1-work/082-...` candidate: **not found**.
 - Frozen base: `release/v3.54-psychometrics` at exact `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
-- Exact #82 functional candidate recorded in the durable handoff: `37f1dc671804a1bb67ede2e5104002160b24c9dd`; isolated run `34483151962` completed `success`.
-- Current canonical is later bookkeeping/docs lineage and has no Actions run for exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`; no PASS transfers to it.
-- First bookkeeping candidate `dde924f86f83baf78659f303e442930b38749aca` failed run `34483915685` in accumulated architecture validation; current lineage records a bookkeeping-only correction but has no exact complete gate yet.
-- This report becomes stale on any canonical/candidate/frozen SHA change, server/RLS/API/avatar persistence change, or new exact workflow evidence.
+- Exact corrected bookkeeping run `34484163108` completed `success`. Its isolated verifier included an explicit `Assert exact Avatar Vault bookkeeping candidate` step and then completed accumulated architecture validators, edge/security regressions, Playwright/Chromium setup and accumulated browser/mobile regressions.
+- Current canonical `.github/workflows/v3-regression.yml` is back to normal `workflow_dispatch`-only and invokes `scripts/validate-v3-avatar-vault.mjs`, `tests/v3-avatar-vault-edge.mjs` and `tests/v3-avatar-vault-smoke.mjs` while retaining prior accumulated coverage.
+- This report becomes stale on any canonical/candidate/frozen SHA change, Avatar Vault API/persistence/schema/RLS/grant/server change, or new exact workflow evidence.
 
-## PRIMARY EVIDENCE — CURRENT OWNER / TRUST FLOW
+## INSPECTED PRIMARY EVIDENCE
 
 FACT:
-- `src/engines/avatar-vault.js` is the catalog/unlock evaluator. Five styles are currently evaluable from Progress (`starter`, `sakura`, `lantern`, `flame`, `crown`); ten retained styles are explicitly unavailable pending owners.
-- `src/app/avatar-vault.js` obtains `xp`/`streak` from the existing Progress owner, performs the locked-style check in the browser/app layer, persists owner-scoped private device state, and delegates signed-in cloud writes to `api.avatarVault.save`.
-- `src/core/progress.js` is client/device state. The #82 implementation therefore does not possess a server-authoritative XP/streak source from which a backend can presently prove the five unlock thresholds.
-- `src/core/api.js` performs direct browser Supabase writes. `avatarVault.save(userId, selectedStyle)` upserts `bible_avatar_cosmetics(user_id, selected_style)` and then updates `bible_congregation_members.avatar` for `user_id`.
-- Existing `bible_avatar_cosmetics` RLS constrains SELECT/INSERT/UPDATE to `user_id = auth.uid()`.
-- `20260905_congregation_member_column_hardening.sql` revokes table-wide member UPDATE and grants authenticated UPDATE only on `(display_name, avatar)`.
-- `20260910_avatar_vault_visibility.sql` adds `avatar jsonb` if absent and adds an authenticated UPDATE policy whose `using` and `with check` are both `user_id = auth.uid()`.
-- Leaderboards read `bible_congregation_members.avatar`, normalize its `cosmetic` string, and render it through the Avatar Vault engine's fallback helper.
+- Control rules: `automation/MASTER_CONTROL.md`, `automation/AGENT_GUARDRAILS.md`, `automation/agents/A3_ARCHITECTURE_SECURITY.md`, `automation/CURRENT.md`, `automation/WRITE_LEASE.md`, `automation/SCHEDULE_AND_LOCKING.md`.
+- Live refs for canonical `feature/v3-avatar-vault`, missing `agent/a1-work/082-*`, and frozen `release/v3.54-psychometrics`.
+- `DEVELOPMENT_HANDOFF_V3.md` on exact canonical.
+- `src/app/avatar-vault.js`, `src/core/api.js`, `tests/v3-avatar-vault-edge.mjs`, `.github/workflows/v3-regression.yml` at exact canonical.
+- Repository migrations `20260905_congregation_member_column_hardening.sql` and `20260910_avatar_vault_visibility.sql`.
+- GitHub Actions run `34484163108` and its job/step results.
+- Read-only live Supabase catalog queries for policies, table/column grants and relevant functions/RPCs on project `zkfmgezvzugchcwppreq`.
+- `automation/TRIAGE.md` was read only after provisional findings were formed.
+
+## REQUIRED OWNER / COMPOSITION
+
+FACT:
+- `src/app/avatar-vault.js` is the #82 selection/persistence owner and consumes Progress rather than duplicating XP/streak ownership.
+- It performs unlock checks locally before calling `api.avatarVault.save()` for authenticated users.
+- `src/core/api.js` is the browser Supabase boundary for Avatar Vault persistence.
+- Leaderboards read `bible_congregation_members.avatar`; the cosmetic projection is therefore cross-user-visible congregation presentation state.
+
+RECOMMENDATION:
+- Keep Progress as the sole current client progression owner.
+- Do not add duplicate XP/streak/question/assignment/Journey counters to Avatar Vault merely to authorize cosmetics.
+
+## SAFE DATA FLOW
+
+FACT:
+- Current browser save flow is sequential:
+  1. upsert `bible_avatar_cosmetics(user_id, selected_style, updated_at)`;
+  2. update every `bible_congregation_members` row matching `user_id` with `avatar = { cosmetic: selectedStyle }`.
+- `avatarVault.load()` reads only `bible_avatar_cosmetics.selected_style`; it does not read/reconcile congregation avatar projection.
+- Current app service catches cloud failure and leaves device state authoritative with `synced:false`.
 
 INFERENCE:
-- Row ownership is constrained, so the examined RLS prevents this client path from updating another user's cosmetic/member row through ordinary authenticated access.
-- Unlock eligibility is **not** a server trust boundary. An authenticated client can bypass `createAvatarVaultService.select()` and call the Supabase tables/API boundary directly with its own row. The RLS policies validate ownership only; they do not allowlist style IDs or validate XP/streak eligibility. Consequently a cross-user-visible cosmetic cannot safely be interpreted as proof that its unlock requirement was earned.
-- The two cloud writes are separate operations with no atomic server transaction in the examined path. A successful cosmetics upsert followed by a failed member-avatar update can leave private selected state and leaderboard-visible avatar out of sync.
+- A successful cosmetics upsert followed by a failed congregation update can leave private selected state and leaderboard-visible avatar diverged indefinitely because reopen loads only the cosmetics row.
+- Replacing the complete `avatar` JSON with `{cosmetic: ...}` is destructive to any existing non-cosmetic avatar fields.
+
+RECOMMENDATION:
+- Preserve unrelated avatar keys when changing only the cosmetic projection.
+- Use one authoritative persisted selection with deterministic projection, or a trusted transactional/reconciliation path that cannot leave private and public representations permanently split.
+- Add a regression that reproduces first-write-success/second-write-failure and proves reopen convergence/recovery.
+
+## AUTHORIZATION / RLS / GRANTS
+
+FACT:
+- Live `bible_avatar_cosmetics` policies are permissive authenticated own-row SELECT/INSERT/UPDATE policies keyed to `user_id = auth.uid()`.
+- Live `bible_congregation_members` has a permissive authenticated UPDATE policy `members update own public profile` whose USING and WITH CHECK require both `auth.uid() = user_id` and `private.is_bible_congregation_member(congregation_id)`.
+- Live table-wide UPDATE on `bible_congregation_members` is not granted to `authenticated`; column privileges permit UPDATE only on `display_name` and `avatar`.
+- Repository migration `20260910_avatar_vault_visibility.sql` adds a second permissive authenticated UPDATE policy `members self avatar update` with only `user_id = auth.uid()` in USING/WITH CHECK.
+- The migration does not scope that new policy to the `avatar` column; RLS policies operate at row level, while the existing column grant permits both `display_name` and `avatar` updates.
+
+INFERENCE:
+- If the repository migration is applied as written, PostgreSQL permissive UPDATE policies combine additively. The new own-row policy would permit an authenticated user to update an inactive/stale own membership row even when `private.is_bible_congregation_member(congregation_id)` is false, because the new policy omits that membership condition.
+- Because authenticated has UPDATE privilege on both `display_name` and `avatar`, this broadening is not confined to cosmetic state; it also weakens the live authorization condition for `display_name`.
+
+RECOMMENDATION:
+- Do not deploy `members self avatar update` as written.
+- Preserve the existing active-membership requirement. If a new policy is necessary, it must not broaden row eligibility beyond the verified live policy and must account for the fact that RLS cannot by itself restrict which granted column is updated.
+- Do not broaden authenticated UPDATE grants beyond current public-presentation columns.
+
+## SERVER / TRUST BOUNDARY
+
+FACT:
+- Live read-only function inspection found no Avatar Vault-specific trusted RPC/function. `bible_leaderboard(p_congregation uuid, p_since timestamptz)` exists, is SECURITY INVOKER (`security_definer=false`) and executable by authenticated users.
+- Current cosmetic unlock enforcement is browser/app logic. Database policies constrain row ownership but do not allowlist cosmetic IDs or validate XP/streak thresholds.
+- Current Progress facts used by #82 are device/client state, not a server-authoritative progression source.
+
+INFERENCE:
+- A signed-in user can bypass `createAvatarVaultService.select()` and write an arbitrary `selected_style` to their own `bible_avatar_cosmetics` row, subject only to own-row RLS. The database cannot prove that a public cosmetic was earned.
+
+RECOMMENDATION:
+- Choose and document one of two safe trust models:
+  1. **Untrusted self-presentation:** congregation-visible cosmetic is decorative user-controlled state only and must never grant score, rank, permissions, achievement authority, ministry status or other trusted semantics.
+  2. **Earned authoritative cosmetic:** move mutation behind a narrow authenticated trusted RPC/Edge/server path that derives identity server-side, allowlists style IDs, verifies eligibility from authoritative server-side progression facts, and updates the canonical selection/public projection atomically or with explicit reconciliation.
+- Because current Progress is device-local, do not pretend server eligibility verification exists. Establishing trusted progression would be separate architecture work, not something Avatar Vault should synthesize silently.
+
+## PRIVACY / SCOPE
+
+FACT:
+- `bible_avatar_cosmetics` is own-row private state under current RLS.
+- `bible_congregation_members.avatar` is congregation-visible through membership/leaderboard directory reads.
+
+RECOMMENDATION:
+- Public avatar cosmetic state must contain only presentation data intended for congregation peers.
+- Do not expose private progression metrics, psychometrics, assignment content or other private owner data through avatar JSON.
+
+## LIFECYCLE / CLEANUP
+
+FACT:
+- #82 has no subscriptions/timers/channels in the inspected persistence path, so no new Realtime cleanup concern was introduced here.
+- Failure handling currently reports `synced:false` but does not repair a split remote write.
+
+RECOMMENDATION:
+- Treat `synced:false` as insufficient unless there is a deterministic retry/reconciliation path for the public projection.
 
 ## WORKFLOW / TEST EVIDENCE
 
 FACT:
-- Permanent tests exist at `tests/v3-avatar-vault-edge.mjs` and `tests/v3-avatar-vault-smoke.mjs`.
-- The edge test covers catalog parity, thresholds, unavailable styles, malformed metrics, local locked-selection failure, guest/account isolation and cloud-failure reporting at the service level.
-- The current canonical manual workflow does invoke the Avatar Vault validator, edge test, and 390px browser smoke while retaining the accumulated prior suites.
-- However, the exact verifier workflow that produced successful run `34483151962` checked out/asserted `37f1dc671804a1bb67ede2e5104002160b24c9dd` and invoked the #82 validator and edge test, **but its browser/mobile loop did not contain `tests/v3-avatar-vault-smoke.mjs`**. Therefore that run is not evidence that the #82 390px smoke executed, despite the later handoff wording.
-- `scripts/validate-v3-avatar-vault.mjs` requires workflow invocation of the validator and edge test but does not require workflow invocation of `tests/v3-avatar-vault-smoke.mjs`; this allowed the omission above to pass architecture validation.
-- No examined permanent test exercises real Supabase authorization semantics or proves server-side unlock eligibility, because no such server-side eligibility enforcement exists in the current path.
+- Exact run `34484163108` is green for the exact corrected bookkeeping candidate assertion at `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`; all accumulated phases completed successfully.
+- Current canonical workflow includes Avatar Vault validator, edge and browser smoke.
+- `tests/v3-avatar-vault-edge.mjs` covers catalog parity, local unlock thresholds, deferred styles, malformed metrics, guest/account isolation and service-level cloud failure reporting.
+- That edge test mocks `api.avatarVault.save()` as one operation; it does not execute the two real Supabase writes, destructive avatar replacement, partial-write divergence, live RLS semantics, or direct-table bypass of browser unlock logic.
 
-## SAFE TRUST BOUNDARY
-
-RECOMMENDATION:
-- Keep Progress as the sole owner of client progress calculations; Avatar Vault must consume it rather than duplicate counters.
-- Treat browser/device unlock computation as presentation/local-selection logic only unless a trusted backend authority exists.
-- If leaderboard-visible cosmetics are intended merely as user-controlled decoration, explicitly classify `bible_congregation_members.avatar.cosmetic` as untrusted self-presentation. It must not grant score, permissions, rank, ministry status, or serve as evidence that an unlock requirement was earned.
-- If leaderboard-visible cosmetics are intended to represent earned achievements, current direct table writes are insufficient. Use an authenticated trusted server/RPC/Edge path that derives the user from `auth.uid()`/verified JWT, allowlists the requested style, verifies unlock eligibility from server-authoritative progression facts, and writes the public selected cosmetic only after that validation.
-- Do not accept client-supplied XP/streak or an `unlocked=true` flag as authorization evidence.
-- Prefer one authoritative persisted selection source or a trusted transactional/reconciliation path for private selection plus public avatar projection; do not leave two independently writable representations without recovery semantics.
-
-## REQUIRED SERVER / AUTHORIZATION PATH
-
-FACT:
-- Current #82 has **no trusted server function/RPC/Edge Function for cosmetic selection**. Authorization consists of browser-side unlock checks plus table RLS ownership checks.
+INFERENCE:
+- Exact green execution proves the exercised suite passes, but it does not negate architecture/security defects outside the suite's modeled boundary.
 
 RECOMMENDATION:
-- For an earned public cosmetic, introduce a narrow trusted mutation such as `selectAvatarCosmetic(styleId)` behind an authenticated server/RPC/Edge boundary. It must derive caller identity server-side, allowlist `styleId`, validate the corresponding unlock predicate from trusted server-side facts, then update the canonical selection/public projection atomically or with explicit retry/reconciliation.
-- Because current Progress XP/streak is device-local, the server cannot honestly validate those unlocks today. Either keep the public cosmetic explicitly untrusted/self-selected, or first establish an authoritative progression source through a separately reviewed milestone. Do not silently broaden #82 into a new progression authority.
+- Add permanent regressions capable of failing when:
+  - an existing multi-key avatar is reduced to cosmetic-only JSON;
+  - cosmetics upsert succeeds but congregation projection fails and remains stale after reopen/retry;
+  - repository RLS broadens update authority beyond active own membership;
+  - a locked/earned cosmetic is treated as trusted authority without server authorization.
 
 ## WHAT MUST NOT BE BROADENED
 
-- Do not grant broader UPDATE privileges on `bible_congregation_members`; role, active status, congregation identity and other membership authority must remain outside browser self-update.
-- Do not broaden `bible_avatar_cosmetics` RLS beyond own-row access.
-- Do not let Avatar Vault own or synthesize XP/streak, assignments, Journey mastery, couples/community counts or other deferred metrics.
-- Do not make cosmetic state an input to scoring, permissions, spiritual/doctrinal status, or congregation authorization.
-- Do not deploy the migration to production Supabase as part of this review; repository migration presence is not deployment authorization.
+- Do not broaden own-membership UPDATE eligibility beyond the existing active-membership contract.
+- Do not broaden authenticated UPDATE columns beyond the existing presentation-field grant without a separate proven requirement.
+- Do not broaden `bible_avatar_cosmetics` beyond own-row access.
+- Do not make client-submitted cosmetic IDs, XP, streak or `unlocked=true` trusted authorization facts.
+- Do not let Avatar Vault become a parallel Progress/Assignments/Journey/Couples/Community metric owner.
+- Do not make cosmetic state affect scoring, permissions, congregation roles, doctrinal/spiritual status or achievement authority unless a separately verified trusted owner explicitly defines that contract.
+- Do not deploy production Supabase changes from this review.
 
-## MISSING EVIDENCE / BLOCKING CONDITIONS
+## BLOCKING CONDITIONS
 
 FACT:
-1. No exact complete accumulated run exists for current canonical `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
-2. Successful functional run `34483151962` did not execute `tests/v3-avatar-vault-smoke.mjs`; therefore the required real 390px Avatar Vault browser acceptance is not proven for exact functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd`.
-3. No server-side allowlist/unlock authorization protects the cross-user-visible selected cosmetic; current RLS proves own-row authority only.
-4. No test proves the authorization counterfactual: a signed-in user below an unlock threshold must be unable to publish that locked cosmetic by bypassing the app service.
-5. No trusted atomic/reconciliation test proves consistency if the cosmetics write succeeds and the congregation-avatar write fails.
-6. No dedicated `agent/a1-work/082-...` quarantine candidate exists at final inspection.
+1. Repository `avatarVault.save()` destructively replaces the complete congregation avatar JSON rather than preserving unrelated fields.
+2. Two remote writes are non-atomic and `load()` has no public-projection reconciliation path.
+3. Repository migration `members self avatar update` is broader than the live verified `members update own public profile` policy because it omits active congregation membership; if deployed it would also affect `display_name` because both columns are granted for UPDATE.
+4. Browser unlock checks are not a trusted authorization boundary for a cross-user-visible cosmetic; no server-authoritative unlock path exists.
+5. No dedicated `agent/a1-work/082-*` quarantine candidate exists.
+
+MISSING EVIDENCE:
+- A corrected exact successor SHA proving preservation of existing avatar JSON.
+- A deterministic partial-write reconciliation/transaction behavior and regression.
+- A migration/RLS contract that preserves active-membership authorization and does not broaden granted public-profile mutation scope.
+- Explicit product trust classification for public cosmetics, with tests ensuring downstream features do not interpret untrusted decoration as earned authority; or, alternatively, faithful trusted-server eligibility evidence.
+- Fresh complete exact-SHA run for that corrected successor.
 
 ## DISPOSITION
 
-RECOMMENDATION: **A3 HIGH-RISK — TRUST BOUNDARY NOT SATISFIED / NOT READY for promotion at exact canonical `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.**
+RECOMMENDATION: **A3 HIGH-RISK — TRUST BOUNDARY NOT SATISFIED / NOT READY for promotion at exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.**
 
-The decisive security issue is not cross-user row ownership; the examined RLS is correctly self-scoped. The issue is that an earned, congregation-visible cosmetic is authorized only by browser logic, while the database accepts any self-row cosmetic value. If public cosmetics are meant to communicate earned unlocks, move selection behind trusted authorization backed by authoritative progression facts. If they are intentionally untrusted self-expression, document and test that trust classification and ensure no downstream feature treats them as earned authority.
+Run `34484163108` resolves the earlier exact-execution gap, so test execution is no longer the reason to block. The remaining blockers are primary-evidence architecture/data-integrity/security defects: destructive avatar replacement, unreconciled split writes, a repository RLS migration that would broaden the live active-membership authorization boundary, and the absence of trusted earned-cosmetic authorization if public cosmetics are intended to signal earned status.
 
-The exact functional verification record also has a concrete evidence defect: run `34483151962` did not invoke the permanent Avatar Vault browser smoke. A new exact candidate must execute the corrected accumulated workflow, including that smoke, before A3 can treat #82 functional acceptance as complete.
-
-`automation/TRIAGE.md` was read only after the independent findings above were formed. Its conclusions were not used as primary evidence; where it makes additional live-backend claims not established by this repository inspection, this A3 report does not adopt them without separate primary evidence.
+`automation/TRIAGE.md` was read only after these provisional findings were formed. Its current state is consistent with the independently verified primary evidence, but agreement is not used as proof.
