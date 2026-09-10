@@ -193,7 +193,7 @@ function start(){
   router=createRouter({routes,onRoute(route,renderPage){
     const result=recovery.run({
       route,
-      operation:()=>{store.setState(current=>({...current,route}));shell.render(route,renderPage());if(route==='home')queueMicrotask(()=>tutorial.offerFirstRun())},
+      operation:()=>{store.setState(current=>({...current,route}));shell.render(route,renderPage())},
       retry:()=>router.navigate(route),
       home:()=>router.navigate('home')
     });
