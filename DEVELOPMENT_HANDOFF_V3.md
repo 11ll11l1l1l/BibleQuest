@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after #93 Admin Operations complete functional verification.
+Updated: 2026-09-11 JST after #93 Admin Operations complete functional verification and bookkeeping correction.
 
 GitHub live refs and exact executed verification evidence are authoritative. Recover live refs before writing because concurrent chats/agents may move development branches.
 
@@ -23,11 +23,12 @@ GitHub live refs and exact executed verification evidence are authoritative. Rec
 - Final targeted exact-SHA run `34531588788` passed #92/#93 architecture, edge/security and browser/mobile checks.
 - Complete accumulated exact-SHA functional run `34531751123` passed against candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
 - Bookkeeping writer run `34532182063` first confirmed the isolated bookkeeping branch still equaled that functional SHA, then promoted inventory lifecycle values only.
+- Initial bookkeeping gate `34532442314` passed its exact-SHA and bookkeeping assertions, then failed in the retained #92 architecture validator because #92 still permanently required #93 to be `Not started`. That lifecycle assertion has been corrected without relaxing #92/#93 ownership separation.
 - Current bookkeeping promotes #92 Admin Console to **Regression-tested** and #93 Admin Operations to **Verified**.
 - Provisional inventory: **90 Regression-tested / 1 Verified / 0 Implemented / 9 Not started**.
 - Provisional strict implemented-or-better parity: **91/100**.
 - Provisional regression stability: **90/100**.
-- These bookkeeping values require their own complete exact-SHA verification before v3.64 can freeze. Do not transfer the functional PASS to the changed bookkeeping SHA.
+- The corrected bookkeeping tip requires its own complete exact-SHA verification before v3.64 can freeze. Do not transfer the functional PASS or failed bookkeeping result to the changed SHA.
 
 ## #93 verified boundary
 
@@ -66,6 +67,7 @@ Permanent #93 evidence:
 - Run `34531492122` then passed #92 but failed the #93 contract validator because the contract expressed self-delete refusal as “signed-in Owner” while the validator required the explicit invariant “active Owner account cannot delete itself.” The document was aligned to the invariant; backend/service behavior was unchanged.
 - Run `34531588788` passed the corrected targeted gate against exact candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
 - Run `34531751123` passed the complete accumulated architecture, edge/security, and browser/mobile suite against the same exact candidate.
+- Run `34532442314` passed bookkeeping assertions but failed the accumulated #92 validator solely because it pinned #93 to `Not started`. The corrected permanent guard accepts any valid #93 lifecycle state after #92 while preserving all #92 ownership and endpoint-separation assertions.
 
 ## Next capability boundary
 
@@ -73,15 +75,14 @@ Permanent #93 evidence:
 
 ## Exact next executable sequence
 
-1. Finish all #93 bookkeeping files on `work/v3.64-admin-operations-bookkeeping-20260911`.
-2. Treat the final clean bookkeeping tip as the new exact candidate.
-3. Confirm `feature/v3-admin-operations` still equals exact functional candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`; if unchanged, fast-forward it to the final bookkeeping SHA.
-4. Create an isolated verifier with a branch-specific temporary `push:` workflow that explicitly checks out and asserts the exact bookkeeping SHA.
-5. Validate bookkeeping/inventory/status/timeline values plus the complete accumulated architecture, edge/security and browser/mobile suite.
-6. Correct only reproduced failures; never weaken or skip accumulated coverage.
-7. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.64-admin-operations` exactly there.
-8. Verify release and product refs equal the successful bookkeeping SHA.
-9. Create the next feature branch from frozen v3.64 and only then rebuild #94 from recovered evidence.
+1. Treat the corrected final #93 bookkeeping tip as a new exact candidate.
+2. Confirm `feature/v3-admin-operations` has not moved unexpectedly and reconcile only by safe fast-forward.
+3. Create/reset an isolated verifier with a branch-specific temporary `push:` workflow that explicitly checks out and asserts the exact corrected bookkeeping SHA.
+4. Validate bookkeeping/inventory/status/timeline values plus the complete accumulated architecture, edge/security and browser/mobile suite.
+5. Correct only reproduced failures; never weaken or skip accumulated coverage.
+6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.64-admin-operations` exactly there.
+7. Verify release and product refs equal the successful bookkeeping SHA.
+8. Create the next feature branch from frozen v3.64 and only then rebuild #94 from recovered evidence.
 
 ## Non-negotiable safety
 
