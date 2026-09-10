@@ -51,8 +51,9 @@ function normalizeRecall(input){
 
 function emptyState(){return{phase:'launcher',mode:null,roundId:null,bank:[],index:0,score:0,gained:0,locked:false,selected:null,correct:null,recallBooks:[],recallQuery:'',recallBook:null,recallItems:[],revealed:false,remembered:0,reviewAgain:0,source:'',license:'',detectiveItem:null,detectiveAnswer:'',timelineItem:null,timelineCurrent:[],timelineAttempted:false,timelineFeedback:''}}
 
-export function createGameLauncherService({progress,storage,recall,roundIdFactory,clock=()=>new Date()}={}){
+export function createGameLauncherService({progress,storage,recall,moderation=null,roundIdFactory,clock=()=>new Date()}={}){
   if(!progress||!storage||!recall)throw new Error('Game launcher requires verified Progress, Storage, and Recall Pack owners.');
+  if(moderation&&(!moderation.applyCore||!moderation.applyRecall||!moderation.hasRecallIncludes))throw new Error('Game launcher content policy must use the verified Content Moderation owner.');
   let sequence=0,detectiveCursor=-1,timelineCursor=-1;
   const bootNonce=`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`;
   const makeRoundId=typeof roundIdFactory==='function'?roundIdFactory:(mode,roundSequence)=>`${bootNonce}-${mode}-${roundSequence}`;
@@ -80,8 +81,8 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
     if(definition.entry==='recall-library')throw new Error('Open the Per-book Recall library before choosing a book.');
     if(definition.entry==='detective')return startDetective();
     if(definition.entry==='timeline')return startTimeline();
-    const bank=[...buildGameRound(mode)];
-    if(!bank.length)throw new Error('This BibleQuest game has no verified questions.');
+    const base=[...buildGameRound(mode)],bank=moderation?[...moderation.applyCore(base)]:base;
+    if(!bank.length)throw new Error(moderation?'This BibleQuest game has no questions available under the current content policy.':'This BibleQuest game has no verified questions.');
     state={...emptyState(),phase:'question',mode,roundId:validRoundId(mode),bank};
     return snapshot();
   }
@@ -178,11 +179,17 @@ export function createGameLauncherService({progress,storage,recall,roundIdFactor
   function visibleRecallBooks(){if(state.phase!=='recall-library')return Object.freeze([]);const needle=state.recallQuery.toLocaleLowerCase();return Object.freeze(state.recallBooks.filter(book=>!needle||book.name.toLocaleLowerCase().includes(needle)||book.code.toLocaleLowerCase().includes(needle)).map(freezeBook))}
 
   async function startRecallBook(code){
-    const loaded=await recall.loadBook(code),reviewIds=new Set(recallState.review[loaded.book.code]||[]);
-    const reviewItems=loaded.items.filter(item=>reviewIds.has(item.id)).slice(0,5),reviewSet=new Set(reviewItems.map(item=>item.id));
-    const fresh=loaded.items.filter(item=>!reviewIds.has(item.id)&&!reviewSet.has(item.id)).slice(0,Math.max(0,10-reviewItems.length));
+    const loaded=await recall.loadBook(code);
+    let available=[...loaded.items];
+    if(moderation){
+      const quarantined=moderation.hasRecallIncludes(loaded.book.code)&&recall.loadQuarantine?await recall.loadQuarantine(loaded.book.code):[];
+      available=[...moderation.applyRecall(loaded.book.code,loaded.items,quarantined)];
+    }
+    const reviewIds=new Set(recallState.review[loaded.book.code]||[]);
+    const reviewItems=available.filter(item=>reviewIds.has(item.id)).slice(0,5),reviewSet=new Set(reviewItems.map(item=>item.id));
+    const fresh=available.filter(item=>!reviewIds.has(item.id)&&!reviewSet.has(item.id)).slice(0,Math.max(0,10-reviewItems.length));
     const items=[...reviewItems,...fresh];
-    if(!items.length)throw new Error(`${loaded.book.name} has no approved recall questions.`);
+    if(!items.length)throw new Error(moderation?`${loaded.book.name} has no recall questions available under the current content policy.`:`${loaded.book.name} has no approved recall questions.`);
     const books=state.recallBooks.length?state.recallBooks:(await recall.loadManifest()).books;
     state={...emptyState(),phase:'recall-question',mode:'per-book-recall',roundId:validRoundId(`per-book-recall-${loaded.book.code}`),recallBooks:[...books],recallBook:loaded.book,recallItems:items,source:loaded.source,license:loaded.license};
     return snapshot();
