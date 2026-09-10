@@ -18,7 +18,7 @@ if(!failures.length){
 
   for(const token of['data-open-mission','onMission'])if(!more.includes(token))fail(`More page missing Mission entry: ${token}`);
 
-  for(const token of['createMissionService','missionPage',"mission:()=>missionPage","onMission:()=>router.navigate('mission')"])if(!bootstrap.includes(token))fail(`Bootstrap missing Mission composition: ${token}`);
+  for(const token of['createMissionService','missionPage',"'my-mission':()=>missionPage","onMission:()=>router.navigate('my-mission')"])if(!bootstrap.includes(token))fail(`Bootstrap missing Mission composition: ${token}`);
 
   for(const token of['Personal Mission','Bible World','Church Challenges','already owned elsewhere','Deferred','#84'])if(!contract.includes(token))fail(`Innovation suite contract missing recovered scope boundary: ${token}`);
 
