@@ -119,3 +119,13 @@ Psychometric scoring and Scripture/theological interpretation are separate layer
 - #80 Quick Transform/Profile remains a separate owner;
 - #82 Avatar Vault remains Not started during #81;
 - the complete accumulated v3 suite passes on an exact functional candidate and again on the changed exact bookkeeping candidate before `release/v3.54-psychometrics` freezes.
+
+## Exact functional verification evidence
+
+- Exact green functional candidate: `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`.
+- Exact verification run: `34473640903` — completed `success`.
+- The isolated verifier explicitly checked out and asserted the exact candidate SHA before running the suite.
+- Accumulated architecture validators, all edge/security regressions and the complete browser/mobile regression matrix passed.
+- The verifier was restored to `workflow_dispatch` only after completion.
+- The earlier candidate `1bd77237de6b08f18794387bf5c1d9c8098a3e4a` was not promoted: run `34472943815` exposed a new-validator ownership mistake requiring duplicated UI safety text. The validator now verifies centralized `PSYCHOMETRICS_SAFETY` ownership/references instead; runtime behavior was not weakened.
+- This functional PASS does not transfer to the changed bookkeeping SHA. #81 freezes only after a second complete exact-SHA bookkeeping gate.
