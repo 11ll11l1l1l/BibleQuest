@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 74
+- **Regression-tested:** 75
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 25
+- **Not started:** 24
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -77,7 +77,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 54 | Open/weak-area review | Yes | Compatibility | Regression-tested | due/shared/fresh queue; memory→reveal→self-rate; +5/+1 parity; 1/3/7/14/30 spacing; persistence/reload; mobile |
 | 55 | Private local notes | Yes | Clean | Regression-tested | one local Notes owner; create/edit/delete; reload persistence; versioned JSON export; explicit device-only/no-cloud boundary; malformed-state normalization; deterministic IDs; 390px mobile |
 | 56 | Cloud notes | Yes | Compatibility | Regression-tested | separate authenticated remote owner; existing `bible_notes` RLS/user ownership; Scripture-linked CRUD; explicit `updated_at` stale-write conflict rejection; no local cache key; no guest write; local-preview/error recovery; Private Notes never auto-uploaded; 390px mobile |
-| 57 | Audio manager | Yes | Fragmented old | Regression-tested | one player owner; play/pause/seek/stop; teardown |
+| 57 | Audio manager | Yes | Fragmented old | Regression-tested | play/pause/seek/stop; teardown |
 | 58 | Recordings list | Yes | Clean link library only | Regression-tested | list load; empty/error states; reload |
 | 59 | Live Recordings playback | Yes | Missing in clean | Regression-tested | play; pause; switch; leave; return; no freeze; one player instance |
 | 60 | Recording manager | Yes | Fragmented old | Regression-tested | one owner; switch source; cleanup; error recovery |
@@ -95,8 +95,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 72 | Congregation recognition | Yes | Compatibility | Regression-tested | load/award/display; permissions |
 | 73 | Assignments | Yes | Compatibility | Regression-tested | receive; open; complete; status sync |
 | 74 | Advanced assignments | Yes | Compatibility | Regression-tested | advanced fields; due-state; completion; permissions |
-| 75 | Assignment push workflow | Yes | Compatibility | Verified | leader publish→member receive→complete |
-| 76 | Ministry Hub | Yes | Compatibility | Not started | open tools; role guard; navigation |
+| 75 | Assignment push workflow | Yes | Compatibility | Regression-tested | leader publish→member receive→complete |
+| 76 | Ministry Hub | Yes | Compatibility | Verified | open tools; role guard; navigation |
 | 77 | Notification Center/inbox | Yes | Compatibility | Not started | load; read/unread; open target; refresh |
 | 78 | Workspace | Yes | Compatibility | Not started | open; save state; role/session boundary |
 | 79 | Linked activities/challenges | Yes | Compatibility | Not started | launch linked activity; completion handoff |
