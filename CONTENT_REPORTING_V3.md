@@ -1,5 +1,7 @@
 # BibleQuest v3 Content Reporting Contract
 
+Status: functionally verified at exact candidate `72ef635a5322e715c293de489bf37a170f05729d`. Targeted run `34509850415` and complete accumulated functional run `34510669714` passed. Bookkeeping and the v3.60 freeze still require a separate complete exact-SHA gate.
+
 Capability #87 rebuilds the old in-app content report flow without carrying forward legacy runtime ownership.
 
 ## Recovered old behavior
@@ -14,7 +16,7 @@ The retained database contract allows content types `question`, `statement`, `an
 2. `src/core/api.js` remains the only Supabase implementation boundary and owns the single insert into `public.bible_content_reports`.
 3. `src/app/session.js` remains the only auth/session owner. Reporting reads session state through that service and cannot access Supabase auth directly.
 4. `src/app/congregation-membership.js` remains the only congregation membership/role owner. Reporting reloads current memberships and requires the selected congregation to remain present before submission.
-5. `src/ui/content-reporting.js` is presentation/interaction only. It collects a bounded snapshot of explicitly reportable BibleQuest content and forwards it to the reporting owner.
+5. `src/ui/content-reporting.js` is presentation/interaction only. It collects a bounded snapshot of explicitly reportable BibleQuest content and forwards it to the reporting owner. It does not subscribe to browser navigation; route refresh is composed by bootstrap after the Router owns and renders a route.
 6. `src/ui/content-reporting.css` owns responsive presentation. The launcher and dialog controls remain usable on the 390px mobile path.
 
 ## Backend and security contract
@@ -41,8 +43,18 @@ The submitted payload contains only the selected reportable content text, a stab
 - Backend/RLS/network errors remain visible as submission errors; the client does not convert them into success.
 - Repeated reports are not locally deduplicated because no recovered #87 contract established client-side idempotency.
 
+## Verification evidence
+
+Targeted exact-SHA run `34509850415` passed #87 architecture, owner/validation edge coverage, and the 390px browser success/error/privacy flow against candidate `19bd25dadd12ac1981675d5f153cfd018547c04a` before the accumulated architecture gate exposed a navigation-ownership defect.
+
+Complete accumulated run `34510669714` passed all architecture validators, all edge/security regressions, and the complete browser/mobile suite against final functional candidate `72ef635a5322e715c293de489bf37a170f05729d`.
+
+The accumulated gate reproduced and permanently corrected two cross-feature issues before the final green candidate: Content Reporting had subscribed directly to `hashchange`, violating Router-only navigation ownership, so refresh was moved into bootstrap's Router composition; and the retained #65 Encouragements validator incorrectly required `encouragements` and `media` to be adjacent in the API export list, so it now verifies both owners independently without weakening their presence requirement.
+
+Earlier targeted verification also corrected two test-only defects: the #87 validator required a literal `data-content-reporting-root` source token even though the runtime correctly creates the marker through `dataset`, and the browser test selected the report scrim rather than the visible close button. Neither test correction weakened the intended reporting behavior.
+
 ## Explicitly out of scope
 
 Capability #87 does not implement #88 content moderation, leader review decisions, #91 Content Review workbench, admin tooling, report queues, report status editing, notifications, automatic doctrinal judgments, XP, scoring, or production schema deployment.
 
-Legacy `window.BQ*` reporting globals, direct Supabase calls outside `src/core/api.js`, MutationObserver feature injection, unrestricted DOM surveillance, direct local/session storage, and competing session/congregation ownership are forbidden.
+Legacy `window.BQ*` reporting globals, direct Supabase calls outside `src/core/api.js`, MutationObserver feature injection, unrestricted DOM surveillance, direct local/session storage, direct browser navigation listeners, and competing session/congregation ownership are forbidden.
