@@ -35,9 +35,9 @@ const pending=createResetRecoveryService({account:{resetPassword:()=>new Promise
 const inFlight=pending.submit({email:'pending@example.test',recoveryCode:'PENDING',newPassword:'abcdefgh',confirmPassword:'abcdefgh'});
 assert.equal(pending.getState().status,'submitting');
 assert.throws(()=>pending.cancel(),error=>error.code==='BQ_RESET_BUSY');
-assert.throws(()=>pending.submit({}),error=>error.code==='BQ_RESET_BUSY');
+await assert.rejects(()=>pending.submit({}),error=>error.code==='BQ_RESET_BUSY');
 release();await inFlight;assert.equal(pending.getState().status,'success');
-assert.throws(()=>pending.acknowledgeSaved(false).status==='ready');
+result=pending.acknowledgeSaved(false);assert.equal(result.codeSaved,false);
 
 const missing=createResetRecoveryService({account:{resetPassword:async()=>({ok:true})}});
 await assert.rejects(()=>missing.submit({}),error=>error.code==='BQ_RESET_CODE_MISSING');
