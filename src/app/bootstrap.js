@@ -28,6 +28,7 @@ import { createCloudNotesService } from './cloud-notes.js';
 import { createCouplesFamilyService } from './couples-family.js';
 import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
+import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
 import { createNotificationCenterService } from './notification-center.js';
 import { createWorkspaceService } from './workspace.js';
@@ -54,6 +55,7 @@ import { createPsychometricsEngine } from '../engines/psychometrics.js';
 import { storage, privateStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
+import { mountContentReportingRuntime } from '../ui/content-reporting.js';
 import { homePage } from '../features/home/index.js';
 import { accountPage } from '../features/account/index.js';
 import { backupPage } from '../features/backup/index.js';
@@ -135,6 +137,7 @@ function start(){
   const couplesFamily=createCouplesFamilyService({storage});
   const couplesCloud=createCouplesCloudService({api:api.couples,session});
   const congregation=createCongregationMembershipService({api,session});
+  const contentReporting=createContentReportingService({api:api.contentReports,session,congregation});
   const ministryHub=createMinistryHubService({congregation});
   const notifications=createNotificationCenterService({api:api.notifications,session});
   const workspace=createWorkspaceService({session,cloudNotes,congregation,reader,storage});
@@ -153,7 +156,7 @@ function start(){
     if(recovery.getState()?.id===context.id)shell?.updateRecoveryDiagnostic(context.id,diagnostic);
   })});
 
-  let router,shell,tutorialOverlay,accessibilityRuntime;
+  let router,shell,tutorialOverlay,accessibilityRuntime,contentReportingRuntime;
   const reloadAfterLocalDataChange=()=>location.reload();
   const openCouplesScripture=card=>{reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const routes=Object.freeze({
@@ -205,6 +208,7 @@ function start(){
     if(!result.ok)showRecovery(result.failure);
   }});
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
+  contentReportingRuntime=mountContentReportingRuntime({reporting:contentReporting,getRoute:()=>store.getState().route,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')});
   accessibilityRuntime=mountAccessibilityRuntime({accessibility});
   tutorialOverlay=mountTutorialOverlay({tutorial,onNavigate:route=>router.navigate(route)});
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
@@ -213,6 +217,6 @@ function start(){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
