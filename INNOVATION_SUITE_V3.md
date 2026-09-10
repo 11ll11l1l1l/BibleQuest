@@ -19,7 +19,7 @@ This is an explicit, documented reduction of #83 to its cleanly deliverable slic
 - `src/engines/mission.js` — sole owner of the recommendation rule. Pure function; no storage, DOM, or network.
 - `src/app/mission.js` — lifecycle owner. Reuses `src/app/open-review.js`'s `overview()` getter; does not track its own due-count or mastery state.
 - `src/features/mission/index.js` — presentation/event forwarding only.
-- Entry point: More page (`data-open-mission`), matching the pattern of other More-page tools. No new route ownership beyond the `mission` key in `src/app/router.js`'s route map.
+- Entry point: More page (`data-open-mission`), matching the pattern of other More-page tools. No new route ownership beyond the `my-mission` key (renamed from the initially chosen `mission`, which collides with the already-verified #14 Daily Mission route) in `src/app/router.js`'s route map.
 
 ## #84 next boundary
 
