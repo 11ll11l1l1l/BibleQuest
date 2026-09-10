@@ -55,6 +55,8 @@ function reset(role='leader'){
 
 const executable=source
   .replace(/^import .*?;\n/,'')
+  .replace('const categoryFor=(type:string)=>','const categoryFor=(type)=>')
+  .replace('} as Record<string,string>)','})')
   .replace('const text=(v:unknown,max=500)=>','const text=(v,max=500)=>')
   .replace('async function assignmentRecipient(admin:ReturnType<typeof adminClient>,assignment:any,userId:string)','async function assignmentRecipient(admin,assignment,userId)')
   .replace('function iso(v:unknown)','function iso(v)')
