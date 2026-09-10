@@ -39,6 +39,10 @@ rows=[{id:'x1',user_id:'other-user',notification_type:'info',title:'Wrong owner'
 await assert.rejects(()=>inbox.load(),error=>error.code==='BQ_NOTIFICATION_SCOPE','Cross-user rows must be rejected even if a backend mock returns them.');
 rows=[{id:'x2',notification_type:'info',title:'Expired',body:'',action_kind:null,read_at:null,expires_at:'2020-01-01T00:00:00.000Z',created_at:created}];
 await assert.rejects(()=>inbox.load(),error=>error.code==='BQ_NOTIFICATION_EXPIRED','Expired rows must fail closed even if a backend mock returns them.');
+rows=[{id:'x3',notification_type:'info',title:'Missing created timestamp',body:'',action_kind:null,read_at:null,expires_at:future,created_at:null}];
+await assert.rejects(()=>inbox.load(),error=>error.code==='BQ_NOTIFICATION_DATA'&&/required timestamp/i.test(error.message),'Missing required created_at must fail closed with the notification data error, not a later sorting failure.');
+rows=[{id:'x4',notification_type:'info',title:'Invalid read timestamp',body:'',action_kind:null,read_at:'not-a-time',expires_at:future,created_at:created}];
+await assert.rejects(()=>inbox.load(),error=>error.code==='BQ_NOTIFICATION_DATA','Malformed optional timestamps must fail closed.');
 
 failList=true;await assert.rejects(()=>inbox.load(),/remote inbox failure/);assert.equal(inbox.snapshot().status,'error');assert.match(inbox.snapshot().error,/remote inbox failure/);
 failList=false;sessionState={authenticated:true,remoteAvailable:false,user:{id:'u1'}};state=await inbox.load();assert.equal(state.status,'unavailable');
