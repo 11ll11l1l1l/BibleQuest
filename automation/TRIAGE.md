@@ -1,41 +1,41 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 01:02 JST
+Generated: 2026-09-11 01:56 JST
 
 ## Freshness
-- Active milestone: **#85 Tutorial avatar reactions — NORMAL-RISK unless scope broadens**.
-- Canonical: `feature/v3-tutorial-avatar-reactions` at exact `19cde1f613993951c9e0ad406965ba26245eca19`.
-- Dedicated autonomous work branch `agent/a1-work/085-*`: **not found**.
-- Latest valid frozen base: `release/v3.57-tutorial-onboarding` at exact `f19d51826b9d191c221c0fdd96bda78b42e2aa95`.
-- Canonical is two commits ahead of frozen base and already contains #85 product/test/workflow changes.
-- Exact targeted verifier run `34499380103` for `19cde1f...`: **FAILURE**. Exact-product assertion passed; tutorial architecture/edge checks passed; failure occurred in the tutorial browser/mobile step.
-- No complete accumulated exact-SHA #85 run was found at inspection time.
+- Active milestone: **#87 Content reporting — HIGH-RISK before implementation because submission crosses an authenticated backend write/authorization boundary**.
+- Canonical: `feature/v3-content-reporting` at exact `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
+- Dedicated autonomous work branch `agent/a1-work/087-content-reporting`: **not found**.
+- Latest frozen base: `release/v3.59-accessibility-support` at exact `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
+- Canonical is byte-identical to frozen v3.59; #87 has no product delta yet.
+- Baseline bookkeeping verifier run `34503099868`: **SUCCESS**. Its isolated verifier asserted the exact bookkeeping candidate and completed inventory, accumulated architecture, edge/security, and browser/mobile phases. This is frozen-baseline evidence only and does not transfer PASS to #87.
 - Writer lease: **FREE**.
-- A2: no #85 contract report found. A3 #85 report analyzed `f19d518...` before implementation and is stale for candidate-specific conclusions. A4 #85 report also analyzed only `f19d518...` and is stale; it explicitly had no implementation candidate to review.
-- Stale on canonical/frozen/work-branch movement, #85 product/test/workflow change, new exact-run evidence, or refreshed A2/A3/A4 reports.
+- A2: no #87 contract report exists on the control branch; latest relevant A2 report is #86 and is stale for #87 requirements.
+- A3 #87 report is current for canonical/frozen `5594f980...`: **HIGH-RISK PRE-IMPLEMENTATION; trust boundary defined; NOT READY until exact candidate evidence exists**.
+- A4 #87 report is current for canonical/frozen `5594f980...`: **NOT READY — acceptance definition only; no candidate exists**.
+- Stale on canonical/frozen/work-branch movement, #87 implementation/schema/RLS/grant/RPC/Edge/test/workflow change, new exact-run evidence, or refreshed A2/A3/A4 reports.
 
 ## BLOCKER
-1. **Unverified #85 implementation is already on canonical without the required quarantine branch.** Primary compare evidence shows canonical moved from frozen `f19d518...` to `19cde1f...` with #85 implementation/tests, while no `agent/a1-work/085-*` exists. Counterfactual: if A1 treats this canonical tip as promotion-ready, unverified implementation has bypassed the mandatory isolate -> exact-gate -> promotion transaction and canonical can become the source of a release before a clean candidate is proven.
-
-2. **The exact #85 targeted gate failed and no complete accumulated exact-SHA green exists.** Run `34499380103` asserted `19cde1f...`, passed architecture/edge checks, then failed the tutorial browser/mobile checks. Counterfactual: advancing bookkeeping/release now would knowingly freeze a SHA with failed acceptance evidence, while prior accumulated regressions also remain unproven on this SHA.
+- **None at the current pre-implementation SHA.** Absence of a candidate is not a defect; it means no promotion is possible yet.
 
 ## MILESTONE
-- Keep #85 bounded to inventory contract: `correct reaction/state; mobile positioning`.
-- Permanent workflow at `19cde1f...` invokes `validate-v3-tutorial-avatar-reactions.mjs`, `v3-tutorial-avatar-reactions-edge.mjs`, and `v3-tutorial-avatar-reactions-smoke.mjs`, while retaining prior accumulated invocations.
-- Reproduce the browser/mobile failure from run `34499380103`; correct only the demonstrated root cause without weakening the semantic assertion.
-- Reconcile the corrected implementation into the authorized quarantine lifecycle, then obtain targeted and complete accumulated exact-SHA green before bookkeeping/release.
+1. Keep #87 bounded to the authoritative inventory contract: `submit report; validation; success/error`. #88 moderation and #91 review/admin authority are separate milestones.
+2. Before first HIGH-RISK product write, A1 must use the current A3 trust-boundary guidance and create/resume `agent/a1-work/087-content-reporting` from exact frozen/canonical `5594f980...`; do not write implementation directly to canonical.
+3. The report submission path must derive reporter identity from trusted authenticated context and must not let the browser author moderation/reviewer/internal authority. Backend validation/authorization must be enforceable independently of UI validation; do not broaden unrelated grants/RLS.
+4. Permanent tests must cover success/error/invalid-input behavior plus meaningful backend bypass/authorization negatives, and the accumulated workflow must invoke them without weakening prior coverage.
+5. Because #87 is HIGH-RISK, after exact functional green the **same exact candidate SHA** requires current A3 trust-boundary satisfaction, A4 READY review, and A5 promotion recommendation before bookkeeping/promotion. A changed SHA requires fresh review.
 
 ## DEFER
-- #86 Accessibility support and later rows remain separate milestones.
+- #88 Content moderation and #91 Content Review/admin decisions, reviewer state, internal notes, moderation workflow and broader admin authority.
 
 ## IGNORE
-- Prior #82 Avatar Vault blockers in old TRIAGE are obsolete for the current live lineage; repository state has progressed through frozen v3.57.
-- Stale A3/A4 preimplementation `NOT READY` wording from `f19d518...` is not a current rejection of a future corrected #85 candidate.
-- Absence of exact-candidate A4 review is not by itself an extra-cycle blocker for NORMAL-RISK #85; exact gates and current concrete blockers govern. Any backend/auth/global-owner or semantic workflow broadening would reclassify HIGH-RISK.
+- Old #85 TRIAGE blockers are stale/obsolete for the live lineage; #85 is now Regression-tested in the authoritative inventory.
+- Run `34503099868` is valid v3.59 baseline evidence but must not be treated as #87 functional acceptance.
+- Missing A2 #87 report is a freshness warning, not proof of a blocker; A3/A4 plus primary inventory/live-ref evidence are sufficient to define the safe pre-write boundary for this HIGH-RISK milestone.
 
 ## Firewall decision
-**2 BLOCKER; NO PROMOTION/RELEASE RECOMMENDATION FOR `19cde1f...`.**
+**0 BLOCKER; 5 MILESTONE; NO PROMOTION RECOMMENDATION YET because no #87 candidate exists.**
 
 ## Next safe action
-Do not release from the current canonical tip. Reproduce the exact tutorial browser/mobile failure, reconcile corrected work into `agent/a1-work/085-*`, preserve accumulated coverage, and run the complete workflow against the exact clean candidate. If that NORMAL-RISK candidate becomes exact green and no new material blocker appears, bookkeeping/promotion need not wait an unnecessary extra review cycle.
+A1 may begin #87 only through the authorized quarantine lifecycle from exact `5594f980...`, keeping submission authority narrow and adding faithful permanent security/functional coverage. Once an exact candidate is functionally green, stop before bookkeeping until fresh exact-candidate A3/A4/A5 HIGH-RISK review is satisfied.
