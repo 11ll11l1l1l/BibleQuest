@@ -10,6 +10,8 @@ const expected = [
   ['thoughtful', '100% 100%'],
   ['thumbs', '33.333% 100%']
 ];
+const normalizePosition = value => String(value || '').trim().split(/\s+/).map(token => /^0(?:px|%)?$/.test(token) ? '0' : token).join(' ');
+const samePosition = (actual, retained) => normalizePosition(actual) === normalizePosition(retained);
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: 'allow' });
 const page = await context.newPage();
@@ -54,7 +56,7 @@ try {
     assert(metrics.state === state, `Tutorial step ${step + 1} rendered ${metrics.state} instead of ${state}.`);
     assert(metrics.backgroundImage.includes('tutorial-trainer-sprite.webp'), `Tutorial step ${step + 1} did not render the retained trainer asset.`);
     assert(metrics.backgroundSize === '400% 200%', `Trainer sheet size changed at step ${step + 1}: ${metrics.backgroundSize}.`);
-    assert(metrics.backgroundPosition === position, `Trainer sheet position changed for ${state}: ${metrics.backgroundPosition} != ${position}.`);
+    assert(samePosition(metrics.backgroundPosition, position), `Trainer sheet position changed for ${state}: ${metrics.backgroundPosition} != ${position}.`);
     assert(Math.abs(metrics.width - 122) < 1 && Math.abs(metrics.height - 122) < 1, `Mobile trainer must remain 122px square; got ${metrics.width}x${metrics.height}.`);
     assert(metrics.left >= -1 && metrics.right <= metrics.innerWidth + 1, `Mobile trainer escaped the viewport at step ${step + 1}.`);
     assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Trainer caused horizontal overflow at step ${step + 1}: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
