@@ -16,6 +16,7 @@ const TEAM_FIELDS='id,congregation_id,created_by,team_type,name,active,created_a
 const TEAM_MEMBER_FIELDS='team_id,user_id,joined_at';
 const TEAM_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,active,joined_at';
 const RECOGNITION_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,avatar,active,joined_at';
+const LEADERBOARD_DIRECTORY_FIELDS='congregation_id,user_id,role,display_name,avatar,active,joined_at';
 const RECOGNITION_FIELDS='id,congregation_id,user_id,awarded_by,award_code,title,note,icon,visible,created_at';
 const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
 const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
@@ -260,9 +261,28 @@ export function createApi() {
       const client=await getClient();
       const {data:scores,error:scoreError}=await client.rpc('bible_leaderboard',{p_congregation:congregationId,p_since:since});
       if(scoreError)throw scoreError;
-      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(TEAM_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).order('joined_at',{ascending:true});
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(LEADERBOARD_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).order('joined_at',{ascending:true});
       if(directoryError)throw directoryError;
       return {scores:scores||[],directory:directory||[]};
+    }
+  });
+
+  const avatarVault = Object.freeze({
+    async load(userId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_avatar_cosmetics').select('user_id,selected_style,updated_at').eq('user_id',userId).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async save(userId,selectedStyle) {
+      const client=await getClient();
+      const avatar={cosmetic:selectedStyle};
+      const updatedAt=new Date().toISOString();
+      const cosmeticRes=await client.from('bible_avatar_cosmetics').upsert({user_id:userId,selected_style:selectedStyle,updated_at:updatedAt},{onConflict:'user_id'});
+      if(cosmeticRes?.error)throw cosmeticRes.error;
+      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId);
+      if(memberRes?.error)throw memberRes.error;
+      return {selected_style:selectedStyle,avatar};
     }
   });
 
@@ -432,5 +452,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
