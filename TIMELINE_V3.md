@@ -6,12 +6,12 @@ Updated: 2026-09-11 JST
 
 ## Current completion snapshot
 
-- 100 total; **91 Regression-tested / 1 Verified / 0 Implemented / 8 Not started**
-- Strict parity **92/100**; regression stability **91/100**
-- Frozen v3.64: `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`, run `34532823188`
-- #94 functional: `b3c15b34da0958a136920dc970b24531e3e06e45`, full run `34534183203` green
-- First #94 bookkeeping candidate: `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`; run `34535009560` failed in architecture validation because #93's validator pinned #94 to obsolete `Not started` lifecycle state.
-- #42 Same-room Play Together follows v3.65 freeze.
+- 100 total; **92 Regression-tested / 1 Verified / 0 Implemented / 7 Not started**
+- Strict parity **93/100**; regression stability **92/100**
+- Frozen v3.65 Reset/recovery: `ab3584906b3d017ea555416910f23e9414ed2ef8`, exact bookkeeping run `34535332838` green
+- #42 functional: `22d054725ba983c4fe81fbd220688a3c12ee211c`, complete run `34539110697` green
+- Lifecycle audit `34539369826` found only the #42 validator's pre-promotion `Not started` pin; corrected in the bookkeeping candidate.
+- #43 Live Rooms follows v3.66 freeze.
 - #15 and Kids #38–40 remain deferred.
 
 ## Recent frozen release line
@@ -19,29 +19,30 @@ Updated: 2026-09-11 JST
 - v3.62 Content Review — `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`
 - v3.63 Admin Console — `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
 - v3.64 Admin Operations — `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`
-- v3.65 Reset/recovery — pending corrected bookkeeping gate
+- v3.65 Reset/recovery — `ab3584906b3d017ea555416910f23e9414ed2ef8`
+- v3.66 Same-room Play Together — pending bookkeeping gate
 
 ## Recent milestone sequence
 
 | Capability | State | Evidence |
 |---:|---|---|
-| #93 Admin operations | Regression-tested | survived #94 full functional run |
-| #94 Reset/recovery | Verified | `b3c15b34...`, run `34534183203`; corrected bookkeeping gate pending |
-| #42 Same-room Play Together | Not started | next after freeze |
+| #94 Reset/recovery | Regression-tested | survived #42 complete functional run `34539110697` |
+| #42 Same-room Play Together | Verified | `22d054725ba983c4fe81fbd220688a3c12ee211c`, run `34539110697`; bookkeeping gate pending |
+| #43 Live Rooms | Not started | next after v3.66 freeze |
 
-## #94 chronology
+## #42 chronology
 
-Recovered standalone `/reset`, reused #9 Account/API ownership, preserved separation from #100/#96/#93, and added permanent architecture/edge/browser coverage. The #94 validator first exposed missing #94 invocation in the accumulated workflow; wiring was corrected without runtime acceptance changes. Candidate `b3c15b34da0958a136920dc970b24531e3e06e45` then passed complete functional run `34534183203`.
+Recovered the retained same-room contract from the old group-play path and kept #43 networking separate. The first partial feature SHA exposed service methods without a reachable clean Play UI, so it was rejected. The repaired writer generated the service/UI/tests/docs from frozen v3.65, and focused architecture/edge checks passed. GitHub App workflow-write restrictions required permanent regression wiring to be committed separately through the connected GitHub writer.
 
-Bookkeeping candidate `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55` passed exact-SHA and promoted-ledger assertions in run `34535009560`, then failed the architecture suite because `scripts/validate-v3-admin-operations.mjs` still required #94 to be literally `Not started`. That pre-milestone lifecycle pin was stale after legitimate #94 promotion. The validator is corrected to preserve #94 row identity and valid lifecycle-state checking without forcing the obsolete state. No #94 runtime defect was reproduced. The corrected bookkeeping SHA requires a fresh full gate.
+Exact candidate `22d054725ba983c4fe81fbd220688a3c12ee211c` then passed complete accumulated architecture, edge, and browser/mobile run `34539110697`. Promotion-safety audit `34539369826` found only the new validator's literal `Not started` pin. The bookkeeping candidate corrects that lifecycle assertion and promotes #94→Regression-tested and #42→Verified; because the SHA changes, it requires a fresh complete gate.
 
-## #42 read-only boundary reminder
+## #43 read-only boundary reminder
 
-Acceptance is 2–6 players, rotating turns, scoreboard, finish. Recover retained source/history and Games ownership before coding; #43 Live Rooms stays separate.
+Acceptance is create/join/leave, reconnect, and no stale room state. Recover retained source/history and ownership before coding; do not extend #42 local pass-and-play into realtime networking.
 
 ## Next sequence
 
-Verify corrected #94 bookkeeping SHA → freeze v3.65 → verify refs → branch/recover #42 → implement/targeted/full verification.
+Verify #42 bookkeeping SHA → freeze v3.66 → verify refs → branch/recover #43 → implement/targeted/full verification.
 
 ## Release discipline
 

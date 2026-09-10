@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 91
+- **Regression-tested:** 92
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 8
+- **Not started:** 7
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -62,7 +62,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
-| 42 | Same-room Play Together | Yes | Clean | Not started | 2–6 players; rotating turns; scoreboard; finish |
+| 42 | Same-room Play Together | Yes | Clean | Verified | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Not started | create/join/leave; reconnect; no stale room state |
 | 44 | Bible World | Yes | Clean | Not started | render path; unlock thresholds; route into content |
 | 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
@@ -114,7 +114,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 91 | Content Review workbench | Yes | Standalone old | Regression-tested | open review item; decision; save; permissions |
 | 92 | Admin console | Yes | Standalone old | Regression-tested | auth guard; read/admin actions; permission denial |
 | 93 | Admin operations | Yes | Standalone old | Regression-tested | operational actions; role guard; error recovery |
-| 94 | Reset/recovery page | Yes | Standalone old | Verified | reset path; cancellation; invalid state |
+| 94 | Reset/recovery page | Yes | Standalone old | Regression-tested | reset path; cancellation; invalid state |
 | 95 | Client diagnostics | Yes | Compatibility | Regression-tested | one classifier; offline/host-unreachable/reachable-module/unknown codes; API-owned no-store probe; brief probe cache/forced refresh; safe immutable UI; #96 composition; 390px mobile |
 | 96 | Operational recovery/error boundary | Yes | Clean basic | Regression-tested | one recovery owner; render/mount/cleanup containment; shell/navigation survival; Retry/Home through router; safe public copy; repeated-failure recovery; 390px mobile |
 | 97 | PWA install/manifest | Yes | Clean | Regression-tested | deployment-relative manifest; explicit any/maskable install icons; single optional prompt owner; accepted/dismissed/installed/cleanup lifecycle; no service-worker ownership; remains compatible with dedicated #98 worker; 390px mobile |

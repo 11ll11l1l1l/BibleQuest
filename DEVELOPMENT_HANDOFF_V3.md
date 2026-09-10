@@ -1,49 +1,49 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST during #94 Reset/recovery bookkeeping verification.
+Updated: 2026-09-11 JST during #42 Same-room Play Together bookkeeping verification.
 
 Live GitHub refs and exact executed evidence are authoritative; recover them first.
 
 ## Frozen baseline
 
 - Repo: `11ll11l1l1l/BibleQuest`.
-- Latest frozen: `release/v3.64-admin-operations` at `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`.
-- v3.64 bookkeeping run `34532823188`: success.
+- Latest frozen: `release/v3.65-reset-recovery` at `ab3584906b3d017ea555416910f23e9414ed2ef8`.
+- v3.65 exact bookkeeping verification run `34535332838`: **success**.
 - `main`, production v2, Cloudflare, data and Supabase untouched.
 - Normal v3 Actions are dispatch-only; temporary push triggers stay isolated.
 
-## Current #94 state
+## Current #42 state
 
-- Active branch: `feature/v3-reset-recovery`.
-- Green functional SHA: `b3c15b34da0958a136920dc970b24531e3e06e45`.
-- Complete functional run `34534183203`: **success** across exact-SHA assertion, architecture, edge/security and browser/mobile suites.
-- First bookkeeping SHA `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`; run `34535009560`: **failed** in architecture validation after exact-SHA and ledger assertions passed. Edge/browser stages did not execute.
-- Root cause is a stale lifecycle assertion in `scripts/validate-v3-admin-operations.mjs` that forced #94 to remain `Not started`; the corrected validator accepts the valid #94 lifecycle states while retaining row identity/ownership checks.
-- Bookkeeping state remains **91 Regression-tested / 1 Verified / 0 Implemented / 8 Not started**; strict parity **92/100**, regression stability **91/100**.
-- #93 is Regression-tested; #94 is Verified. The corrected bookkeeping tip requires a fresh complete exact-SHA gate before v3.65 freeze.
+- Active branch: `feature/v3-same-room-play-together`.
+- Green functional SHA: `22d054725ba983c4fe81fbd220688a3c12ee211c`.
+- Complete functional run `34539110697`: **success** across accumulated architecture, edge and browser/mobile suites, including the dedicated #42 smoke path.
+- Bookkeeping state after promotion: **92 Regression-tested / 1 Verified / 0 Implemented / 7 Not started**; strict parity **93/100**, regression stability **92/100**.
+- #94 is Regression-tested; #42 is Verified. The changed bookkeeping tip requires a fresh complete exact-SHA gate before v3.66 freeze.
 
-## #94 verified boundary
+## #42 verified boundary
 
-Canonical `/reset` composes existing #9 Account/API recovery ownership. #94 owns only standalone page lifecycle/rendering. It preserves pre-submit cancel, submit-time cancel guard, retryable errors, rotated replacement-code acknowledgement, safe return, and secret non-persistence. #100 portable reset, #96 operational recovery, and #93 Owner deletion remain separate.
+Same-room Play Together is local pass-and-play only: 2–6 players, rotating turns, visible in-session scoreboard, explicit finish, and winner/tie summary. Games remains the single service owner and the Play page delegates to it. Same-room score state is ephemeral; it does not award profile XP or persist its scoreboard. #43 Live Rooms remains a separate networking/reconnect capability.
 
-Permanent evidence: `RESET_RECOVERY_V3.md`, `reset.html`, `_redirects`, `src/app/reset-entry.js`, `src/app/reset-recovery.js`, `src/features/reset-recovery/index.js`, `src/ui/reset-recovery.css`, `scripts/validate-v3-reset-recovery.mjs`, `tests/v3-reset-recovery-edge.mjs`, `tests/v3-reset-recovery-smoke.mjs`, `.github/workflows/v3-regression.yml`.
+Permanent evidence: `docs/V3_SAME_ROOM_PLAY_TOGETHER_CONTRACT.md`, `src/app/games.js`, `src/features/games/index.js`, `scripts/validate-v3-same-room-play-together.mjs`, `tests/v3-same-room-play-together-edge.mjs`, `tests/v3-same-room-play-together-smoke.mjs`, `.github/workflows/v3-regression.yml`.
 
 ## Reproduced defects and permanent handling
 
-- The accumulated workflow initially omitted #94 validator/edge/smoke invocation. Root cause: incomplete verification wiring; no runtime defect reproduced. Workflow wiring was corrected and candidate `b3c15b34da0958a136920dc970b24531e3e06e45` passed run `34534183203`.
-- Bookkeeping run `34535009560` then exposed a stale #93 architecture-validator assertion that required #94's inventory row to remain `Not started`. Exact candidate and promoted bookkeeping assertions had passed before the architecture stage failed. This is a validator lifecycle defect, not a #94 runtime regression. The assertion is corrected without weakening #93/#94 ownership or lifecycle validity checks; the resulting new bookkeeping SHA must be reverified from scratch.
+- Partial SHA `3d0d3591e10abc45cb24687a6ecd32ca4951bd4d` added service state without a reachable clean UI and was not promoted.
+- Writer verification initially failed on a missing `docs/` directory and later on GitHub App workflow-write permission; neither was counted as product verification. The repaired writer produced the clean product patch, focused architecture/edge checks passed, and workflow wiring was committed through the connected GitHub writer.
+- Candidate `22d054725ba983c4fe81fbd220688a3c12ee211c` then passed complete functional run `34539110697`.
+- Lifecycle audit `34539369826` found no other #42 lifecycle pins; only the new same-room validator pinned `Not started`. That assertion is made lifecycle-tolerant for legitimate promotion without weakening capability identity or acceptance checks. The bookkeeping SHA must now pass the entire suite from scratch.
 
 ## Next capability boundary
 
-#42 Same-room Play Together is next after v3.65 freeze. Acceptance: **2–6 players; rotating turns; scoreboard; finish**. Recover retained behavior and current Games ownership before coding. Do not absorb #43 Live Rooms. #15 and Kids #38–40 remain deferred.
+#43 Live Rooms is next after v3.66 freeze. Recover retained create/join/leave, reconnect, and stale-room-state behavior before coding. Do not fold Live Rooms into #42. #15 and Kids #38–40 remain deferred.
 
 ## Exact next executable sequence
 
-1. Resolve the corrected live `feature/v3-reset-recovery` tip after the stale validator fix and use that exact SHA as a new bookkeeping candidate.
-2. Run isolated exact-SHA complete bookkeeping gate; do not transfer any PASS from `3f3d6dec...`.
-3. On green, reset/remove temporary verifier state and freeze `release/v3.65-reset-recovery` at that exact successful bookkeeping SHA.
+1. Use the promoted live `feature/v3-same-room-play-together` tip as the bookkeeping candidate.
+2. Run isolated exact-SHA complete bookkeeping gate; do not transfer PASS from functional SHA `22d0547...`.
+3. On green, freeze `release/v3.66-same-room-play-together` at that exact successful bookkeeping SHA.
 4. Verify release/product refs equal it.
-5. Branch #42 from frozen v3.65; recover retained contract/owners/tests, then implement and verify.
+5. Branch #43 from frozen v3.66; recover retained Live Rooms contract/owners/tests, then implement and verify.
 
 ## Non-negotiable safety
 
