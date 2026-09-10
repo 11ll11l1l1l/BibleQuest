@@ -1,0 +1,38 @@
+name: BibleQuest v3.66 bookkeeping exact-SHA verification
+
+on:
+  push:
+    branches:
+      - verify/v3.66-same-room-bookkeeping-4a5f4b4-20260911
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  verify-and-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 4a5f4b428d637dc5552bcd8a66d99d9c669ae4db
+      - name: Assert exact bookkeeping candidate SHA
+        run: test "$(git rev-parse HEAD)" = "4a5f4b428d637dc5552bcd8a66d99d9c669ae4db"
+      - name: Assert promoted bookkeeping values
+        run: |
+          grep -F -- '- **Regression-tested:** 92' FEATURE_INVENTORY_V3.md
+          grep -F -- '- **Verified:** 1' FEATURE_INVENTORY_V3.md
+          grep -F -- '- **Not started:** 7' FEATURE_INVENTORY_V3.md
+          grep -F -- '| 94 | Reset/recovery page | Yes | Standalone old | Regression-tested |' FEATURE_INVENTORY_V3.md
+          grep -F -- '| 42 | Same-room Play Together | Yes | Clean | Verified |' FEATURE_INVENTORY_V3.md
+          grep -F -- 'Strict parity is **93/100**' DEVELOPMENT_STATUS_V3.md
+          grep -F -- 'regression stability is **92/100**' DEVELOPMENT_STATUS_V3.md
+          grep -F -- '#43 Live Rooms is next' DEVELOPMENT_HANDOFF_V3.md
+      - name: Assert unchanged feature target and dispatch canonical regression
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: 4a5f4b428d637dc5552bcd8a66d99d9c669ae4db
+        run: |
+          actual="$(gh api repos/${{ github.repository }}/git/ref/heads/feature/v3-same-room-play-together --jq '.object.sha')"
+          test "$actual" = "$EXPECTED_SHA"
+          gh workflow run v3-regression.yml --repo "${{ github.repository }}" --ref feature/v3-same-room-play-together
