@@ -21,6 +21,7 @@ const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
 const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
 const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at,schedule_at,recurrence_rule,reminder_at,required_reflection,min_quiz_score,evidence_type';
 const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
+const NOTIFICATION_FIELDS='id,user_id,congregation_id,created_by,notification_type,title,body,action_kind,action_payload,read_at,expires_at,created_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -311,6 +312,28 @@ export function createApi() {
     }
   });
 
+  const notifications = Object.freeze({
+    async list(userId,nowIso=new Date().toISOString()) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notifications').select(NOTIFICATION_FIELDS).eq('user_id',userId).or(`expires_at.is.null,expires_at.gt.${nowIso}`).order('created_at',{ascending:false}).limit(100);
+      if(error)throw error;
+      return data||[];
+    },
+    async setReadState(userId,id,readAt) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notifications').update({read_at:readAt??null}).eq('id',id).eq('user_id',userId).select(NOTIFICATION_FIELDS).maybeSingle();
+      if(error)throw error;
+      if(!data)throw new Error('Notification was not found for this account.');
+      return data;
+    },
+    async markAllRead(userId,readAt=new Date().toISOString()) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notifications').update({read_at:readAt}).eq('user_id',userId).is('read_at',null).select('id');
+      if(error)throw error;
+      return data||[];
+    }
+  });
+
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
@@ -409,5 +432,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, assignments, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, media, diagnostics });
 }
