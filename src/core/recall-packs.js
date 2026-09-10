@@ -11,7 +11,7 @@ const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
   if(typeof fetcher!=='function')throw new Error('Recall Pack service requires a fetch function.');
   let manifestPromise=null;
-  const bookCache=new Map();
+  const bookCache=new Map(),quarantineCache=new Map();
 
   async function loadManifest(){
     if(manifestPromise)return manifestPromise;
@@ -61,5 +61,30 @@ export function createRecallPackService({fetcher=(...args)=>fetch(...args)}={}){
     try{return await pending}catch(error){bookCache.delete(normalized);throw error}
   }
 
-  return Object.freeze({sourceInfo(){return SOURCE_INFO},loadManifest,loadBook,clearCache(){manifestPromise=null;bookCache.clear()},cacheSize(){return bookCache.size}});
+  async function loadQuarantine(code){
+    const normalized=String(code||'').toUpperCase();
+    if(!validCode(normalized))throw new Error('Choose a valid Per-book Recall book.');
+    if(quarantineCache.has(normalized))return quarantineCache.get(normalized);
+    const pending=(async()=>{
+      const manifest=await loadManifest();
+      if(!manifest.books.some(row=>row.code===normalized))throw new Error('That Bible book has no Per-book Recall pack.');
+      let response;
+      try{response=await fetcher(`data/quarantine/questions/${normalized}.json`,{cache:'no-store'})}catch{return Object.freeze([])}
+      if(!response?.ok)return Object.freeze([]);
+      let payload;
+      try{payload=await response.json()}catch{return Object.freeze([])}
+      if(!Array.isArray(payload))return Object.freeze([]);
+      const seen=new Set(),items=[];
+      for(const row of payload){
+        const id=String(row?.id||'').trim(),question=String(row?.q||'').trim(),answer=String(row?.a||'').trim(),reference=String(row?.r||'').trim();
+        if(!id||id.length>100||!question||!answer||row?.safety?.action!=='quarantine'||seen.has(id))continue;
+        seen.add(id);items.push(freezeItem({id,q:question,a:answer,r:reference,safety:row.safety}));
+      }
+      return Object.freeze(items);
+    })();
+    quarantineCache.set(normalized,pending);
+    try{return await pending}catch(error){quarantineCache.delete(normalized);throw error}
+  }
+
+  return Object.freeze({sourceInfo(){return SOURCE_INFO},loadManifest,loadBook,loadQuarantine,clearCache(){manifestPromise=null;bookCache.clear();quarantineCache.clear()},cacheSize(){return bookCache.size+quarantineCache.size}});
 }
