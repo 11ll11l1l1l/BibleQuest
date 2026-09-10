@@ -1,76 +1,44 @@
 # Autonomous BibleQuest current state
 
-Updated: 2026-09-10 JST after autonomous-safety hardening and reconciliation of the interrupted A1 #75 startup.
-
-## Control / recovery
-- Live control branch after rollout: `automation/v3-agent-control`.
-- Control-plane pre-hardening recovery: `safety/pre-agent-control-hardening-20260910` at `d2de4cf57be4e9ab6b7476698b7ca77e8aca526a`.
-- Product recovery anchors remain `safety/pre-autonomous-agents-20260910-canonical` and `safety/pre-autonomous-agents-20260910-advanced`.
-- The #75 A1 run that acquired nonce `bq-a1-20260910T1309-075-f3a1` was administratively revoked during hardening before its first product/test write. A1 re-read the lease, detected the mismatch, stopped, and recorded the handoff.
-- Reconciliation confirmed both canonical `feature/v3-assignment-push` and designated work branch `agent/a1-work/075-assignment-push` remain exactly at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`; the interrupted run made no #75 product, test, workflow, bookkeeping, canonical, handoff, release, production, or safety-ref change beyond its control-plane lease/handoff records.
-- The hardened control plane deliberately returns `automation/WRITE_LEASE.md` to `STATUS: FREE`; future A1 runs must conditionally acquire a new lease before any product/test/workflow/canonical/release write.
-- Unverified autonomous implementation uses `agent/a1-work/...` quarantine branches.
+Updated: 2026-09-10 JST by `BQ-A1-RELEASE-CAPTAIN` after #75 exact functional verification.
 
 ## Latest exact verified release
-- Latest frozen release: `release/v3.47-advanced-assignments`.
-- Frozen/bookkeeping SHA: `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact bookkeeping run: `34433120915`, complete accumulated architecture + edge + browser/mobile suite green with exact checkout/assertion.
-- Previous frozen release: `release/v3.46-assignments` at `fceb115e763ae729e07325bbb4c9f592206b2c9e`, exact bookkeeping run `34417620848` green.
-- Frozen release refs are immutable.
+- Latest frozen release remains `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
+- Exact v3.47 bookkeeping run `34433120915` remains the frozen baseline evidence.
+- No frozen release, safety ref, `main`, production v2, production Supabase, or production Cloudflare state changed in this cycle.
 
 ## Current canonical / quarantine position
 - Active milestone: **#75 Assignment Push Workflow**.
-- Risk tier: **HIGH-RISK** because implementation requires trusted server/authorization scope for publishing target discovery/creation.
-- Canonical milestone branch: `feature/v3-assignment-push`.
-- Canonical HEAD after reconciliation: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Canonical state contains #75 contract/status/handoff recovery only; application implementation is Not started at this SHA.
-- Designated A1 quarantine branch: `agent/a1-work/075-assignment-push`, also exactly `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c` after reconciliation.
-- Older `agent/a1/m75-assignment-push-work` is non-canonical and must not receive new autonomous work.
-- A1 must not put unverified #75 product code directly on `feature/v3-assignment-push`.
+- Risk tier: **HIGH-RISK** because it changes trusted assignment authorization/server scope.
+- Canonical milestone branch `feature/v3-assignment-push` remains `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Designated quarantine branch `agent/a1-work/075-assignment-push` is exact functional candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
+- Candidate remains quarantined and canonical has not advanced.
 
 ## Inventory / parity
-- Regression-tested: 73.
-- Verified: 1 (#74 Advanced Assignments).
-- Implemented: 0.
-- Not started: 26.
-- Strict implemented-or-better parity: **74/100**.
-- Official regression stability: **73/100**.
-- #74 remains Verified until it survives a later complete milestone suite.
-- Deferred by user priority: #15 Japanese furigana and Kids #38-40.
+- Authoritative ledger is intentionally not promoted yet: 73 Regression-tested, 1 Verified (#74), 0 Implemented, 26 Not started.
+- Strict implemented-or-better parity remains **74/100** and official regression stability remains **73/100** until #75 bookkeeping/promotion is authorized and verified.
 
-## #75 authoritative contract summary
-- Authorized ministry publisher -> eligible member receives through existing assignment RLS/Realtime -> member completes through existing #73/#74 owner.
-- `src/app/assignments.js` remains sole assignment application owner.
-- `src/core/api.js` remains sole browser cloud/trusted-function boundary.
-- Retained `bq-assignment action:create` remains server mutation authority; allowed active roles: facilitator/leader/pastor/admin.
-- Target scopes: all/member/team/group with server-side same-congregation validation.
-- Retained fields include title/instructions/type/Scripture refs/due/points/schedule/reminder/recurrence/reflection/minimum quiz/evidence.
-- #77 notification/inbox and #79 linked-activity launch/completion remain outside #75. Recurrence is metadata only.
-- Do not revive retained root `assignment-advanced.js` as a competing runtime owner.
+## #75 candidate state
+- Trusted ministry-scoped congregation target discovery, four target scopes (`all/member/team/group`), existing assignment-owner publishing UI/lifecycle, permanent #75 architecture/edge/browser coverage, and accumulated workflow invocation are present in quarantine.
+- A3 identified that the trusted `bq-assignment` server reused ministry-wide visibility for `start`/`complete`, permitting an active ministry user to respond to a targeted assignment they were not actually a recipient of. A1 independently confirmed this directly in production-source code on the quarantine branch.
+- The server correction now separates recipient authorization from ministry visibility: `start`/`complete` uses target-scope recipient eligibility only. A permanent `tests/v3-assignment-response-auth-edge.mjs` regression executes the production recipient helper against member/team/group fixtures and verifies non-recipient ministry identities are denied while `all` remains congregation-wide.
+- The accumulated workflow retains all prior regression invocations and now also runs the new recipient-authorization regression.
 
-## Current #75 architecture finding
-Existing Team Center reads can provide active teams/member directory, but current Journey Groups listing is membership-based and cannot safely provide every eligible active congregation Journey Group to a ministry publisher.
+## Exact functional evidence
+- First exact attempt: run `34438622148`, checking out/asserting candidate `0ee64424ae2eb7e7975e29bc4869aa4b2eb1a073`. All accumulated architecture validators and existing #75 edge regression passed, but the newly added recipient-authorization test failed because of its own `eval` fixture wiring. Browser phases were therefore skipped. Classification: **TEST/FIXTURE DEFECT**, not application failure; no green was inferred.
+- Fixture-only correction produced exact candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
+- Authoritative functional run `34438690160` explicitly checked out and asserted exact SHA `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` and completed **successfully**: accumulated architecture validators, accumulated edge regressions including recipient authorization, Playwright/Chromium setup, local server, and complete accumulated browser/mobile regressions all passed.
+- Isolated verification branch: `verify/v3.48-assignment-push-functional-a1-20260910-1349`. Its temporary `push:` verification trigger has been removed after the run; the verify branch is not a candidate or release.
 
-#75 therefore requires the minimum ministry-authorized, congregation-scoped publish-target projection through the existing central API/trusted-server boundary. Do not broaden general Journey Group RLS merely for selector convenience.
-
-## High-risk review state
-- A3 architecture report for #75 exists and identifies the trusted target-directory requirement with no external blocker.
-- A4 pre-implementation QA contract exists and reports NOT READY only because implementation/evidence is not yet present.
-- A5 TRIAGE was refreshed to #75 at canonical SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c` with no established BLOCKER.
-- These pre-implementation reports allow bounded high-risk implementation under the guardrails, but do not authorize future candidate promotion.
-- After exact #75 functional green, A4 must review that exact candidate SHA and A5 must issue a fresh promotion recommendation before bookkeeping/promotion.
+## Independent-review freshness
+- A2 report is stale because it inspected earlier candidate `1ddc4c8b8fd90f9a3e5a1b0a9788cb6dc1ea57be`.
+- A3 report is stale for promotion because it inspected `d13ba6b9729a02021ee5efab961c6c233a0b669e`; its authorization finding was independently verified and corrected in current candidate `78fa191f...`.
+- A4 report is pre-implementation/stale and has not reviewed exact candidate `78fa191f...`.
+- A5 TRIAGE is pre-candidate/stale and has not issued a promotion recommendation for exact candidate `78fa191f...`.
+- Because #75 is HIGH-RISK, exact functional green does **not** authorize autonomous bookkeeping or promotion until fresh A4 exact-SHA review and A5 promotion recommendation cover `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` unchanged.
 
 ## Exact next executable action
-1. A1 reads the hardened control files, independently reconciles live repository state, then conditionally acquires the FREE writer lease with a new nonce for milestone #75 and work branch `agent/a1-work/075-assignment-push`.
-2. Re-read canonical, quarantine branch and frozen v3.47; reconcile any unexpected movement without force.
-3. Implement #75 only on the quarantine branch.
-4. Add the minimum trusted congregation-scoped publish-target projection while preserving assignment/API owners and server authorization.
-5. Extend `src/app/assignments.js` with one fail-closed leader-publish lifecycle and `src/features/assignments/index.js` with ministry authoring UI only.
-6. Use trusted `bq-assignment action:create`; no direct assignment/progress/score table writes.
-7. Add meaningful permanent #75 validator, edge/security regressions and 390px publish -> receive -> existing completion browser coverage while preserving all accumulated prior regression invocations.
-8. Run targeted checks, then complete accumulated functional gate against exact clean quarantine candidate.
-9. Because #75 is HIGH-RISK, hold exact green candidate for fresh A4 exact-SHA review and A5 promotion recommendation.
-10. Prepare bookkeeping off-canonical, run complete exact bookkeeping gate, then fast-forward canonical and freeze next release only at exact green SHA.
-
-## Production boundary
-No `main`, production v2, production Supabase or production Cloudflare change is authorized during this rebuild.
+1. Keep `agent/a1-work/075-assignment-push` unchanged at `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` while A4 independently audits exact run `34438690160`, accumulated coverage, browser/mobile behavior, and the new trusted-boundary authorization regression.
+2. A5 reconciles exact candidate/frozen/canonical state and issues promotion disposition.
+3. Only if fresh A4/A5 authorize this exact unchanged candidate: A1 prepares #75 bookkeeping off-canonical, updates inventory/status/handoff there, executes the complete accumulated exact-bookkeeping-SHA gate, then fast-forwards canonical and freezes the next sequential release only at that exact green bookkeeping SHA.
+4. If either reviewer identifies a reproduced current-candidate defect, remain on #75 quarantine, root-cause/fix it, and repeat exact functional review. No pass transfers across SHA changes.
