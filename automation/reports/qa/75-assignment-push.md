@@ -8,96 +8,100 @@ Date: 2026-09-10 JST
 - Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
 - Canonical branch: `feature/v3-assignment-push`.
 - Exact canonical HEAD: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Quarantine branch: `agent/a1-work/075-assignment-push`.
-- Exact functional candidate audited: `a42100452d1b1fff7c146543e8ab5cd67da32193`.
+- Quarantine/bookkeeping branch: `agent/a1-work/075-assignment-push`.
+- Exact bookkeeping candidate audited: `e725e5dee5a46fcaebf05200301efdb93f868b22`.
+- Previous exact functional candidate: `a42100452d1b1fff7c146543e8ab5cd67da32193`; its PASS/reviews are baseline only and are not transferred to the bookkeeping SHA.
 - Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact functional workflow evidence: run `34444825916` — `success`.
-- Verification trigger/run HEAD: `cb2fa98653dda709f850636b247d25dcf050ba18` on isolated `verify/v3.48-assignment-push-functional-a1-20260910-1520-fixture2`; the executed workflow explicitly checked out and asserted exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` before executing tests.
-- Historical failed run: `34444649968` against precursor `fc09fa02ea86522b1bdc7ea03f0964f4fd56f2a4`; failure occurred in the newly added trusted-boundary test fixture before application assertions because a TypeScript annotation remained in the VM-transpiled copy. No PASS is transferred from that SHA/run.
-- Final re-read confirmed the quarantine branch still points to exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`.
-- Staleness condition: this report is stale immediately if the quarantine candidate moves, if relevant #75 test/workflow/security files change, or if later exact evidence contradicts this audit. This functional READY does not transfer to any bookkeeping SHA.
+- Exact bookkeeping workflow evidence: run `34450088492` — `success`.
+- Verification trigger/run HEAD: `b1aac8df1b6e49715d1d0e0547c77af9987e7447` on isolated `verify/v3.48-assignment-push-bookkeeping-a1-20260910-1628-fix2`; the executed workflow explicitly checked out and asserted exact candidate `e725e5dee5a46fcaebf05200301efdb93f868b22` before test execution.
+- Normal candidate workflow is restored to `workflow_dispatch` only.
+- Staleness: this report becomes stale immediately if canonical, quarantine candidate, relevant #75 product/test/workflow files, the modified accumulated Assignments validator, or exact contradictory run evidence changes.
 
-Primary evidence inspected independently before TRIAGE: autonomous control/guardrails; exact canonical/work/frozen refs; `FEATURE_INVENTORY_V3.md`; `ASSIGNMENT_PUSH_V3.md`; `DEVELOPMENT_HANDOFF_V3.md`; frozen→candidate ancestry/compare; frozen and candidate `.github/workflows/v3-regression.yml`; exact verification workflow at `cb2fa986...`; run `34444825916` and job-step results; `scripts/validate-v3-assignment-push.mjs`; `tests/v3-assignment-push-edge.mjs`; `tests/v3-assignment-publish-auth-edge.mjs`; `tests/v3-assignment-push-smoke.mjs`. TRIAGE was read only after provisional QA findings were formed.
+Primary evidence inspected independently before TRIAGE: autonomous control/guardrails/role/schedule/lease; live canonical/work/frozen refs; `ASSIGNMENT_PUSH_V3.md`; `FEATURE_INVENTORY_V3.md`; `DEVELOPMENT_HANDOFF_V3.md`; exact run `34450088492` and job steps; workflow file at exact run trigger SHA; current candidate and frozen accumulated workflows; frozen/current `scripts/validate-v3-assignments.mjs`; permanent trusted-boundary regression `tests/v3-assignment-publish-auth-edge.mjs`; functional→bookkeeping ancestry. TRIAGE was read only after provisional QA findings were formed.
 
 ## QA DISPOSITION
 
-**READY FOR HIGH-RISK FUNCTIONAL-CANDIDATE PROMOTION REVIEW.**
+**READY — EXACT BOOKKEEPING CANDIDATE `e725e5dee5a46fcaebf05200301efdb93f868b22`.**
 
-The exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` has a valid exact-SHA accumulated green run, the prior trusted publish-authorization proof gap is now closed by a permanent faithful executable boundary regression, and no unexplained weakening/removal/bypass of the frozen accumulated regression harness was found.
+A4 finds no current application defect, test/fixture defect, CI/environment defect, unexplained accumulated-regression weakening, or material missing evidence that requires withholding HIGH-RISK bookkeeping promotion review for this exact SHA.
 
-A4 found no current application defect, fixture defect, CI/environment defect, or missing functional evidence that requires withholding READY on this exact SHA. This does **not** authorize canonical/release promotion by itself: #75 remains HIGH-RISK, so A5 must independently issue the promotion recommendation for this unchanged candidate before A1 may prepare bookkeeping. The later bookkeeping SHA must then pass its own complete exact-SHA accumulated gate.
+The modified pre-existing Assignments validator is a justified stale-future-state correction rather than regression weakening: all existing #73 owner/boundary assertions remain, #74 still accepts only valid lifecycle states, #75 now accepts only valid lifecycle states because #75 is the active milestone, and #79 remains explicitly required to stay `Not started`. The complete accumulated workflow then executed successfully against the exact bookkeeping SHA.
+
+This A4 READY is SHA-bound and does not alone authorize canonical/release movement. A5 must independently reconcile this exact candidate and recommend or withhold promotion before A1 performs the final canonical/release transaction.
 
 ## FACTS
 
-1. Canonical remains `606fa7ad...`; candidate remains `a4210045...`; frozen base remains `2523f85d...` at final re-read.
-2. Candidate is descended from frozen v3.47; no PASS is being borrowed from a different product SHA.
-3. Run `34444825916` completed `success`. Its single regression job completed the exact-candidate assertion, accumulated architecture validators, accumulated edge regressions, Playwright installation, Chromium installation, local server startup, and accumulated browser/mobile regressions successfully.
-4. The run's trigger HEAD is not the product candidate, but the executed isolated workflow explicitly pins checkout to `a42100452d1b1fff7c146543e8ab5cd67da32193` and asserts `git rev-parse HEAD` equals that exact SHA before the test phases.
-5. The live candidate workflow is restored to normal `workflow_dispatch`-only behavior. The temporary `push:` trigger existed only on the isolated verification branch.
-6. Compared with frozen v3.47, the accumulated workflow retains the prior architecture, edge, and browser/mobile lists and adds #75 coverage. No prior invocation was found removed, skipped, narrowed, or renamed away.
-7. The exact executed workflow invokes `scripts/validate-v3-assignment-push.mjs`, `tests/v3-assignment-push-edge.mjs`, `tests/v3-assignment-response-auth-edge.mjs`, `tests/v3-assignment-publish-auth-edge.mjs`, and `tests/v3-assignment-push-smoke.mjs` while retaining accumulated prior coverage.
-8. `tests/v3-assignment-publish-auth-edge.mjs` captures and executes the production `bq-assignment` request handler in a controlled VM. It proves ordinary members are denied trusted `targets` and `create`, all four retained ministry roles are allowed, target discovery is active/same-congregation scoped, foreign/inactive member/team/group targets fail before insertion, valid active same-congregation targets succeed, and missing non-all targets fail closed.
-9. The trusted-boundary regression is materially capable of failing for the security behavior it claims; it is not merely a source-string check or browser/client mock.
-10. `tests/v3-assignment-push-edge.mjs` covers the application/service contract: all/member/team/group normalization, advanced metadata carry-through, linked-activity exclusion, server-truth reload, signed-out/local-preview/no-congregation and non-ministry local denial, stale target-directory races, and post-create refresh-failure semantics.
-11. `tests/v3-assignment-push-smoke.mjs` executes at 390px with touch/mobile settings and covers ministry publisher visibility, target-directory loading, member targeting, advanced metadata, ordinary-member publisher absence, published assignment receipt, existing start/complete flow, horizontal-overflow protection, and console/page-error absence.
-12. The authoritative inventory remains intentionally unpromoted at #75 `Not started`; that bookkeeping state is expected before the separate promotion/bookkeeping transaction and is not a functional-candidate failure.
+1. Live canonical remains `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`; candidate remains `e725e5dee5a46fcaebf05200301efdb93f868b22`; frozen v3.47 remains `2523f85d47f59721eae81da10cf1007d29af4139` at this audit.
+2. Candidate bookkeeping represents #74 as `Regression-tested`, #75 as `Verified`, and #76–#79 as `Not started`; the represented totals are 74 Regression-tested, 1 Verified, 25 Not started.
+3. Run `34450088492` completed successfully. Its regression job completed exact-bookkeeping-SHA assertion, accumulated architecture validators, accumulated edge regressions, Playwright/Chromium setup, local server startup, and accumulated browser/mobile regressions.
+4. The run's GitHub trigger HEAD is not the bookkeeping candidate, but its executed isolated workflow explicitly used `actions/checkout@v4` with `ref: e725e5dee5a46fcaebf05200301efdb93f868b22` and immediately asserted `git rev-parse HEAD` equals that SHA.
+5. The exact executed workflow invokes `scripts/validate-v3-assignment-push.mjs`, `tests/v3-assignment-push-edge.mjs`, `tests/v3-assignment-response-auth-edge.mjs`, `tests/v3-assignment-publish-auth-edge.mjs`, and `tests/v3-assignment-push-smoke.mjs` in addition to prior accumulated coverage.
+6. Comparing frozen v3.47's accumulated workflow to the current #75 workflow shows the prior architecture, edge and browser/mobile lists retained, with #75 tests added. No prior invocation is visibly removed, skipped or renamed away and the 12-minute job / 240-second per-browser-test limits are retained.
+7. Frozen `scripts/validate-v3-assignments.mjs` required #75 and #79 both to remain `Not started`, because both were future rows when #73 was frozen.
+8. Candidate `scripts/validate-v3-assignments.mjs` changes only that future-state lifecycle section: #75 may be `Not started`, `Implemented`, `Verified`, or `Regression-tested`; #79 must still remain `Not started`. Existing #73 ownership/API/bootstrap/community/contract/workflow assertions remain unchanged, and #74 continues to require a valid lifecycle state.
+9. This change is semantically necessary for an accumulated #73 validator to remain runnable after #75 legitimately enters its own lifecycle. Retaining the old #75 `Not started` assertion would make correct #75 bookkeeping impossible rather than protecting a #73 invariant.
+10. The permanent trusted publish-authorization test still captures and executes the production `bq-assignment` request handler. It rejects ordinary publishers; accepts facilitator/leader/pastor/admin; scopes target discovery to active same-congregation entities; rejects foreign/inactive member/team/group targets before insertion; accepts valid active same-congregation targets; and rejects missing targeted IDs.
+11. The exact executed edge phase includes that trusted-boundary test and the exact browser phase includes #75's 390px publish→receive→complete smoke.
+12. No PASS from `a42100452d...` is used as the bookkeeping result; run `34450088492` is the exact evidence for `e725e5dee5...`.
 
 ## ACCEPTANCE MATRIX
 
-| Requirement | Exact candidate result | Primary evidence |
+| Requirement | Result on exact bookkeeping SHA | Evidence |
 |---|---|---|
-| Existing assignment owner / central API boundary retained | PASS | #75 validator executed in exact run |
-| Ministry-only publish surface | PASS | service/browser coverage |
-| Trusted server ministry authorization for `targets/create` | PASS | production handler executed by `v3-assignment-publish-auth-edge.mjs` |
-| Four scopes `all/member/team/group` normalize correctly | PASS | service edge + trusted-boundary regression |
-| Foreign/inactive member/team/group fail closed before insert | PASS | production handler executed by trusted-boundary regression |
-| Missing non-all target fails closed | PASS | trusted-boundary regression |
-| Advanced #74 metadata carried through publish | PASS | service edge + browser smoke |
-| Linked activity excluded from #75 | PASS | validator/service regression |
-| Successful publish reloads server truth | PASS | service edge regression |
-| Stale congregation target-load result rejected | PASS | service edge regression |
-| Post-create refresh failure distinguishes created vs refresh failure | PASS | service edge regression |
-| Ordinary member/signed-out/local-preview/no-congregation cannot locally publish | PASS | service edge/browser coverage |
-| Recipient authorization remains bounded | PASS | retained `v3-assignment-response-auth-edge.mjs`, executed in accumulated edge phase |
-| Member publish→receive→start→complete at 390px | PASS | `v3-assignment-push-smoke.mjs` |
-| 390px no horizontal overflow / console or page errors | PASS | browser smoke |
-| Accumulated architecture/edge/browser harness | PASS for functional SHA | exact workflow + successful job steps |
-| Exact bookkeeping-SHA complete gate | NOT YET APPLICABLE | required after A5 promotion recommendation and bookkeeping creation |
+| Exact SHA pinned/asserted | PASS | run workflow + successful assertion step |
+| Accumulated architecture validators | PASS | run `34450088492` |
+| Modified #73 Assignments validator preserves original semantic owner/boundary assertions | PASS | frozen/current validator comparison |
+| #75 lifecycle correction is bounded to stale future-state assertion | PASS | frozen/current validator comparison |
+| #79 future linked-activity guard remains `Not started` | PASS | current validator |
+| Accumulated edge/security regressions | PASS | run `34450088492` |
+| Trusted publish authorization executes production handler | PASS | permanent test + accumulated edge invocation |
+| Prior frozen architecture/edge/browser invocations retained | PASS | frozen/current workflow comparison |
+| #75 architecture validator invoked | PASS | exact executed workflow |
+| #75 service edge invoked | PASS | exact executed workflow |
+| #75 recipient auth invoked | PASS | exact executed workflow |
+| #75 publish auth invoked | PASS | exact executed workflow |
+| #75 390px publish→receive→complete invoked | PASS | exact executed workflow |
+| Playwright/Chromium/local server setup | PASS | run job steps |
+| Accumulated browser/mobile regressions | PASS | run `34450088492` |
+| Normal candidate workflow manual-only | PASS | current candidate workflow |
+| Canonical/release promotion | NOT YET | requires fresh A5 decision and A1 final transaction |
 
 ## TEST-INTEGRITY AUDIT
 
-- Frozen v3.47 and candidate workflows were directly inspected. Existing accumulated architecture validators, edge regressions, and browser/mobile regressions remain present; #75 coverage is additive.
-- The candidate workflow remains `workflow_dispatch` only. The exact verification run used an isolated temporary `push:` workflow that pinned/asserted the product candidate.
-- No unexplained timeout reduction, skipped phase, conditional bypass, expected-behavior relaxation, or removed prior test invocation was found.
-- The new trusted publish-authorization regression is meaningful executable evidence at the production handler boundary. Regressions that make ordinary members eligible publishers, broaden congregation target scope, permit inactive/foreign targets, or allow missing targeted IDs to reach insertion would fail the permanent test.
-- Historical run `34444649968` does not count as green. Its precursor candidate's new VM fixture failed before behavioral assertions; the fixture-only correction changed the candidate SHA, and A4 relies only on replacement exact run `34444825916` for functional PASS.
+- The exact run workflow was inspected at trigger SHA `b1aac8df...`, not inferred from the current cleaned verification branch.
+- It pins/asserts `e725e5dee5...`, so the successful result is valid exact-SHA evidence despite the verification branch having a different trigger HEAD.
+- Frozen v3.47 and current candidate accumulated workflows were inspected directly. #75 additions are additive; prior visible architecture, edge and browser/mobile invocations remain present.
+- No unexplained workflow conditional, skipped phase, reduced timeout, removed prior test, or renamed-away prior invocation was found.
+- The one modified prior validator was inspected directly against frozen source. The original semantic assertions about #73's owner/API/UI/bootstrap/community/contract/workflow remain untouched. Only the obsolete assumption that row #75 must forever remain pre-milestone was generalized to the repository's finite lifecycle states, while #79's future-state boundary remains strict.
+- Counterfactual: if the validator correction had instead removed #73 ownership checks, allowed arbitrary #75 text, or also released #79's future-state guard, A4 would classify it as coverage weakening and mark NOT READY. None of those conditions is present.
 
 ## FAILURE / EVIDENCE CLASSIFICATION
 
-- **APPLICATION DEFECT:** none established on exact candidate `a4210045...`.
-- **CURRENT FIXTURE DEFECT:** none established. Historical precursor `fc09fa02...` fixture failure was corrected before the audited candidate; PASS was not transferred.
-- **CI/ENVIRONMENT DEFECT:** none established in run `34444825916`.
-- **MISSING FUNCTIONAL EVIDENCE:** none material to #75 functional READY after the new trusted-boundary regression.
-- **STALE EVIDENCE:** all candidate-specific A2/A3/A4/A5 reports or TRIAGE entries targeting `78fa191f...` are stale for `a4210045...`; they cannot authorize or block this exact candidate without refresh. Prior frozen-release evidence remains baseline only.
+- **APPLICATION DEFECT:** none established on exact candidate `e725e5dee5...`.
+- **CURRENT TEST/FIXTURE DEFECT:** none established after the bounded validator correction; exact replacement candidate is green.
+- **CI/ENVIRONMENT DEFECT:** none established in run `34450088492`.
+- **MISSING REQUIRED QA EVIDENCE:** none material for A4's exact bookkeeping gate.
+- **HISTORICAL FAILED EVIDENCE:** earlier bookkeeping candidates/runs that failed before this exact candidate do not count as PASS and are not transferred.
+- **STALE TRIAGE:** TRIAGE still targets functional candidate `a42100452d...`, so its promotion recommendation is stale for current bookkeeping SHA `e725e5dee5...` and cannot authorize final promotion.
 
 ## FACT / INFERENCE / RECOMMENDATION
 
-**FACT:** Exact candidate `a4210045...` is unchanged at final re-read; run `34444825916` explicitly executed that SHA and completed the full accumulated phases successfully; the permanent workflow includes the new trusted-boundary test and preserves frozen prior coverage.
+**FACT:** Exact candidate `e725e5dee5a46fcaebf05200301efdb93f868b22` has a successful complete accumulated run `34450088492` whose executed workflow explicitly checked out/asserted that SHA.
 
-**FACT:** The previously missing trusted `targets/create` proof now exists as executable production-handler coverage and passed inside the exact accumulated edge phase.
+**FACT:** The existing Assignments validator change preserves its original #73 architecture/ownership assertions and #79 future-state guard; it changes only #75 from a fixed future-state assertion to a bounded valid lifecycle assertion now that #75 is active.
 
-**INFERENCE:** Given the inspected contract, test semantics, harness integrity and exact run evidence, no remaining functional QA gap is established that would reasonably allow a #75 acceptance/security regression to pass unnoticed within the required current scope.
+**FACT:** The exact executed workflow includes all visible frozen v3.47 accumulated invocations plus #75 validator/security/browser additions, and its phases all completed successfully.
 
-**RECOMMENDATION:** A5 may now perform its independent firewall review of exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` and run `34444825916`. If A5 finds no current BLOCKER/MILESTONE and recommends promotion, A1 may prepare #75 bookkeeping off-canonical. Do not change the candidate before that review; any SHA movement makes this READY stale.
+**INFERENCE:** The validator correction is a genuine stale-test-state repair, not a means of making incorrect #75 product behavior pass. The old assertion's counterfactual behavior would reject every legitimate #75 bookkeeping state other than `Not started`, including the authoritative `Verified` state.
+
+**RECOMMENDATION:** A5 should independently review exact bookkeeping candidate `e725e5dee5a46fcaebf05200301efdb93f868b22`, run `34450088492`, and the Assignments-validator semantic correction. If A5 finds no BLOCKER/MILESTONE and recommends promotion, A1 may recheck live refs/lease/workflow state and perform the final non-force canonical fast-forward and immutable v3.48 release creation at this unchanged exact SHA.
 
 ## TRIAGE RECONCILIATION
 
-TRIAGE currently targets older candidate `78fa191f...` and correctly requested the faithful trusted-boundary coverage that was missing at that time. It is now stale for current candidate `a4210045...`. The requested evidence exists in `tests/v3-assignment-publish-auth-edge.mjs` and was executed successfully in exact run `34444825916`; therefore the old TRIAGE MILESTONE cannot be carried forward as an unresolved current-candidate gap without new contrary primary evidence.
-
-The bookkeeping-gate requirement remains valid but is a later transaction, not a reason to mark the functional candidate NOT READY.
+TRIAGE was read only after the provisional audit. It targets previous functional candidate `a42100452d...` and therefore is stale for the current bookkeeping candidate. Its requirement for a separate exact bookkeeping-SHA complete gate has now been satisfied by run `34450088492`, but its earlier functional-candidate promotion recommendation does not transfer across the SHA change. Fresh A5 reconciliation is required.
 
 ## FINAL QA RESULT
 
-**READY — exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193` satisfies A4's HIGH-RISK functional-candidate QA gate based on current primary evidence and exact run `34444825916`.**
+**READY — exact HIGH-RISK bookkeeping candidate `e725e5dee5a46fcaebf05200301efdb93f868b22` satisfies A4's QA/regression gate based on exact run `34450088492`.**
 
-Keep this SHA unchanged for A5 promotion review. No product/workflow/canonical/inventory/release/handoff/lease/CURRENT/TRIAGE/`main`/production state was modified by A4.
+No product/workflow/canonical/work-branch/inventory/release/handoff/lease/CURRENT/TRIAGE/`main`/production state was modified by A4. Only this QA report was updated on the control branch.
