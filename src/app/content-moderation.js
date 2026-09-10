@@ -54,25 +54,26 @@ export function createContentModerationService({api,session,congregation}={}){
     error:state.error
   });
   const sessionState=()=>session.getState()||{};
-  const clear=(status='inactive')=>{
+  const resetStatus=(status='inactive')=>{
     state={status,congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error:''};
     return snapshot();
   };
 
   async function refresh(preferredCongregationId=null){
     const account=sessionState();
-    if(!account.authenticated||!account.user?.id)return clear('inactive');
-    if(account.remoteAvailable===false)return clear('local-preview');
+    if(!account.authenticated||!account.user?.id)return resetStatus('inactive');
+    if(account.remoteAvailable===false)return resetStatus('local-preview');
 
     const memberships=await congregation.load();
     const scopes=freezeScopes(Array.isArray(memberships)?memberships:[]);
-    if(!scopes.length)return clear('no-membership');
+    if(!scopes.length)return resetStatus('no-membership');
 
     const requested=clean(preferredCongregationId);
     if(requested&&!scopes.some(row=>row.id===requested))throw policyError('Choose one of your current congregations for content policy.','BQ_CONTENT_MODERATION_SCOPE_DENIED');
     const currentStillValid=state.congregationId&&scopes.some(row=>row.id===state.congregationId);
     const selected=scopes.find(row=>row.id===(requested||(currentStillValid?state.congregationId:scopes[0].id)))||scopes[0];
     const previous=selected.id===state.congregationId?new Map(state.decisions):new Map();
+    const previousLoadedAt=selected.id===state.congregationId?state.loadedAt:null;
 
     try{
       const rows=await api.list(selected.id);
@@ -84,7 +85,7 @@ export function createContentModerationService({api,session,congregation}={}){
       state={status:'ready',congregationId:selected.id,congregationName:selected.name,scopes,decisions,loadedAt:new Date().toISOString(),error:''};
       return snapshot();
     }catch(error){
-      state={status:previous.size?'stale':'unavailable',congregationId:selected.id,congregationName:selected.name,scopes,decisions:previous,loadedAt:state.loadedAt,error:error?.message||'Content policy could not be refreshed.'};
+      state={status:previous.size?'stale':'unavailable',congregationId:selected.id,congregationName:selected.name,scopes,decisions:previous,loadedAt:previousLoadedAt,error:error?.message||'Content policy could not be refreshed.'};
       return snapshot();
     }
   }
@@ -122,11 +123,10 @@ export function createContentModerationService({api,session,congregation}={}){
     return Object.freeze(next);
   }
 
-  function clear(){return clearState()}
-  function clearState(){
+  function clear(){
     state={status:'idle',congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error:''};
     return snapshot();
   }
 
-  return Object.freeze({refresh,select,snapshot,decisionFor,applyCore,applyRecall,clear:clearState});
+  return Object.freeze({refresh,select,snapshot,decisionFor,applyCore,applyRecall,clear});
 }
