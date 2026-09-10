@@ -1,0 +1,68 @@
+const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const label=value=>({owner:'Owner',admin:'Admin',pastor:'Pastor',leader:'Leader',facilitator:'Facilitator',member:'Member'}[value]||String(value||'Member'));
+const activeRows=rows=>(Array.isArray(rows)?rows:[]).filter(row=>row?.active!==false);
+
+function intro(role=''){
+  return `<section class="bq-panel"><p class="bq-eyebrow">PLATFORM ADMINISTRATION${role?` · ${esc(label(role).toUpperCase())}`:''}</p><h1>Admin Console</h1><p>Manage BibleQuest platform access, congregation memberships and small groups. Server permissions remain authoritative.</p><button type="button" class="bq-secondary-button" data-admin-console-back>Back to More</button></section>`;
+}
+function platformRoleControl(user,state){
+  const owner=state.role==='owner';
+  return `<label>Platform access<select data-admin-platform-role="${esc(user.id)}">${['member','admin','owner'].map(role=>`<option value="${role}" ${user.role===role?'selected':''} ${!owner&&role!=='member'?'disabled':''}>${label(role)}</option>`).join('')}</select></label>`;
+}
+function membershipRow(user,membership,state){
+  const elevated=!['member','facilitator','leader','pastor'].includes(membership.role);
+  return `<div class="bq-community-row" data-admin-membership="${esc(user.id)}:${esc(membership.congregationId)}"><div><b>${esc(membership.congregationName)}</b><p>${esc(label(membership.role))}</p></div><label>Ministry role<select data-admin-congregation-role="${esc(user.id)}" data-congregation-id="${esc(membership.congregationId)}">${['member','facilitator','leader','pastor','admin'].map(role=>`<option value="${role}" ${membership.role===role?'selected':''} ${state.role!=='owner'&&role==='admin'?'disabled':''}>${label(role)}</option>`).join('')}</select></label><button type="button" class="bq-secondary-button" data-admin-remove-congregation="${esc(user.id)}" data-congregation-id="${esc(membership.congregationId)}" ${state.role!=='owner'&&elevated?'disabled':''}>Remove</button></div>`;
+}
+function groupRow(user,membership,state){
+  const option=state.options.groups.find(row=>row.id===membership.groupId)||{};
+  const owns=option.ownerId===user.id;
+  return `<div class="bq-community-row" data-admin-group-membership="${esc(user.id)}:${esc(membership.groupId)}"><div><b>${esc(membership.groupName)}</b><p>${esc(label(membership.role))}${owns?' · owner':''}</p></div><label>Group role<select data-admin-group-role="${esc(user.id)}" data-group-id="${esc(membership.groupId)}"><option value="member" ${membership.role==='member'?'selected':''}>Member</option><option value="leader" ${membership.role==='leader'?'selected':''}>Leader</option></select></label>${owns?'':`<button type="button" class="bq-secondary-button" data-admin-group-owner="${esc(user.id)}" data-group-id="${esc(membership.groupId)}">Make owner</button>`}<button type="button" class="bq-secondary-button" data-admin-remove-group="${esc(user.id)}" data-group-id="${esc(membership.groupId)}" ${owns?'disabled':''}>Remove</button></div>`;
+}
+function userCard(user,state){
+  const memberships=activeRows(user.memberships),groups=activeRows(user.groupMemberships);
+  const congregationChoices=state.options.congregations.filter(c=>!memberships.some(m=>m.congregationId===c.id));
+  const groupChoices=state.options.groups.filter(g=>!groups.some(m=>m.groupId===g.id)&&memberships.some(m=>m.congregationId===g.congregationId));
+  return `<article class="bq-panel" data-admin-user="${esc(user.id)}"><p class="bq-eyebrow">${esc(label(user.role).toUpperCase())}</p><h2>${esc(user.name)}</h2><p class="bq-muted">${esc(user.email||'No email shown')}</p><div class="bq-form-grid">${platformRoleControl(user,state)}</div><h3>Congregations</h3>${memberships.map(m=>membershipRow(user,m,state)).join('')||'<p class="bq-muted">No active congregation membership.</p>'}${congregationChoices.length?`<div class="bq-form-grid"><label>Add / move to congregation<select data-admin-add-congregation-select="${esc(user.id)}">${congregationChoices.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select></label><button type="button" class="bq-secondary-button" data-admin-add-congregation="${esc(user.id)}">Set as main congregation</button></div>`:''}<h3>Small groups</h3>${groups.map(g=>groupRow(user,g,state)).join('')||'<p class="bq-muted">No active small-group membership.</p>'}${groupChoices.length?`<div class="bq-form-grid"><label>Assign small group<select data-admin-add-group-select="${esc(user.id)}">${groupChoices.map(g=>`<option value="${esc(g.id)}">${esc(g.name)} · ${Number(g.memberCount)||0}/${Number(g.maxMembers)||6}</option>`).join('')}</select></label><button type="button" class="bq-secondary-button" data-admin-add-group="${esc(user.id)}">Assign</button></div>`:''}</article>`;
+}
+
+export function adminConsolePage({admin,onBack,onAccount}={}){
+  return {title:'Admin Console',html:'<section data-admin-console-view></section>',mount(root){
+    const view=root.querySelector('[data-admin-console-view]');let disposed=false,busy=false,query='',message='';
+    const bindBase=()=>{
+      view.querySelector('[data-admin-console-back]')?.addEventListener('click',()=>onBack?.(),{once:true});
+      view.querySelector('[data-admin-console-account]')?.addEventListener('click',()=>onAccount?.(),{once:true});
+      view.querySelector('[data-admin-console-retry]')?.addEventListener('click',load,{once:true});
+    };
+    const perform=async(fn,success)=>{if(busy)return;busy=true;message='';render(admin.getState());try{await fn();message=success}catch(error){message=error?.message||'Admin action failed.'}busy=false;render(admin.getState())};
+    const confirmAction=(text,fn,success)=>{if(typeof confirm==='function'&&!confirm(text))return;void perform(fn,success)};
+    const bindReady=state=>{
+      bindBase();
+      view.querySelector('[data-admin-console-refresh]')?.addEventListener('click',load,{once:true});
+      view.querySelector('[data-admin-console-search]')?.addEventListener('input',event=>{query=event.target.value.slice(0,100);render(admin.getState())},{once:true});
+      view.querySelector('[data-admin-create-congregation]')?.addEventListener('submit',event=>{event.preventDefault();const name=new FormData(event.currentTarget).get('name');void perform(()=>admin.createCongregation(name),'Congregation created.')},{once:true});
+      view.querySelector('[data-admin-create-group]')?.addEventListener('submit',event=>{event.preventDefault();const data=new FormData(event.currentTarget);void perform(()=>admin.createSmallGroup({congregationId:data.get('congregation_id'),name:data.get('name'),maxMembers:data.get('max_members')}),'Small group created.')},{once:true});
+      view.querySelectorAll('[data-admin-platform-role]').forEach(control=>control.addEventListener('change',event=>{const user=state.users.find(row=>row.id===event.currentTarget.dataset.adminPlatformRole),next=event.currentTarget.value;if(!user||next===user.role)return;confirmAction(`Change ${user.name}'s platform access from ${label(user.role)} to ${label(next)}?`,()=>admin.setRole(user.id,next),`${user.name} platform access updated.`)},{once:true}));
+      view.querySelectorAll('[data-admin-congregation-role]').forEach(control=>control.addEventListener('change',event=>{const userId=event.currentTarget.dataset.adminCongregationRole,congregationId=event.currentTarget.dataset.congregationId,next=event.currentTarget.value;void perform(()=>admin.setCongregationRole(userId,congregationId,next),'Congregation role updated.')},{once:true}));
+      view.querySelectorAll('[data-admin-remove-congregation]').forEach(button=>button.addEventListener('click',event=>{const user=state.users.find(row=>row.id===event.currentTarget.dataset.adminRemoveCongregation),congregationId=event.currentTarget.dataset.congregationId;if(!user)return;confirmAction(`Remove ${user.name} from this congregation? Related small-group memberships may also be deactivated.`,()=>admin.removeCongregation(user.id,congregationId),`${user.name} removed from congregation.`)},{once:true}));
+      view.querySelectorAll('[data-admin-add-congregation]').forEach(button=>button.addEventListener('click',event=>{const userId=event.currentTarget.dataset.adminAddCongregation,select=view.querySelector(`[data-admin-add-congregation-select="${CSS.escape(userId)}"]`);if(select?.value)confirmAction('Set this as the member’s main congregation? Other active congregation memberships may be deactivated.',()=>admin.setCongregation(userId,select.value,{replace:true}),'Main congregation updated.')},{once:true}));
+      view.querySelectorAll('[data-admin-group-role]').forEach(control=>control.addEventListener('change',event=>{void perform(()=>admin.setGroupMembership({targetUserId:event.currentTarget.dataset.adminGroupRole,groupId:event.currentTarget.dataset.groupId,role:event.currentTarget.value,active:true}),'Small-group role updated.')},{once:true}));
+      view.querySelectorAll('[data-admin-group-owner]').forEach(button=>button.addEventListener('click',event=>{const user=state.users.find(row=>row.id===event.currentTarget.dataset.adminGroupOwner);if(!user)return;confirmAction(`Transfer this small group to ${user.name}?`,()=>admin.setGroupOwner(user.id,event.currentTarget.dataset.groupId),'Small-group ownership transferred.')},{once:true}));
+      view.querySelectorAll('[data-admin-remove-group]').forEach(button=>button.addEventListener('click',event=>{const userId=event.currentTarget.dataset.adminRemoveGroup,groupId=event.currentTarget.dataset.groupId;confirmAction('Remove this member from the small group?',()=>admin.setGroupMembership({targetUserId:userId,groupId,role:'member',active:false}),'Small-group membership removed.')},{once:true}));
+      view.querySelectorAll('[data-admin-add-group]').forEach(button=>button.addEventListener('click',event=>{const userId=event.currentTarget.dataset.adminAddGroup,select=view.querySelector(`[data-admin-add-group-select="${CSS.escape(userId)}"]`);if(select?.value)void perform(()=>admin.setGroupMembership({targetUserId:userId,groupId:select.value,role:'member',active:true}),'Small-group member assigned.')},{once:true}));
+    };
+    const render=state=>{
+      if(disposed)return;
+      if(state.status==='signed-out'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Sign in required</h2><p>Admin Console has no guest authority.</p><button type="button" class="bq-primary-button" data-admin-console-account>Open account</button></section>`;bindBase();return}
+      if(state.status==='unauthorized'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Owner/Admin access required</h2><p>This account does not have active BibleQuest platform administration access.</p></section>`;bindBase();return}
+      if(state.status==='error'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Admin Console could not load</h2><p class="bq-form-message" role="alert">${esc(state.error||'Try again.')}</p><button type="button" class="bq-secondary-button" data-admin-console-retry>Try again</button></section>`;bindBase();return}
+      if(state.status!=='ready'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Verifying admin access…</h2></section>`;bindBase();return}
+      const needle=query.trim().toLocaleLowerCase();
+      const users=state.users.filter(user=>!needle||[user.name,user.email,user.role,...user.memberships.map(m=>`${m.congregationName} ${m.role}`),...user.groupMemberships.map(g=>`${g.groupName} ${g.role}`)].join(' ').toLocaleLowerCase().includes(needle));
+      const congregationOptions=state.options.congregations.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+      view.innerHTML=`${intro(state.role)}<section class="bq-panel"><div class="bq-form-grid"><label>Search members<input type="search" value="${esc(query)}" placeholder="Name, email, role, congregation or group" data-admin-console-search></label><button type="button" class="bq-secondary-button" data-admin-console-refresh>Refresh</button></div>${message?`<p class="bq-form-message" role="status">${esc(message)}</p>`:''}</section><section class="bq-panel"><p class="bq-eyebrow">STRUCTURE</p><h2>Create congregation</h2><form data-admin-create-congregation class="bq-form-grid"><label>Name<input name="name" minlength="2" maxlength="80" required></label><button type="submit" class="bq-primary-button">Create</button></form><h2>Create small group</h2><form data-admin-create-group class="bq-form-grid"><label>Congregation<select name="congregation_id" required>${congregationOptions}</select></label><label>Name<input name="name" minlength="2" maxlength="60" required></label><label>Maximum members<input name="max_members" type="number" min="2" max="6" value="6"></label><button type="submit" class="bq-primary-button" ${state.options.congregations.length?'':'disabled'}>Create group</button></form></section><section data-admin-user-list>${users.map(user=>userCard(user,state)).join('')||'<div class="bq-panel"><p>No members match this search.</p></div>'}</section>`;
+      view.querySelectorAll('button,select,input').forEach(control=>{if(busy||state.busy)control.disabled=true});bindReady(state);
+    };
+    async function load(){if(busy||disposed)return;busy=true;message='';view.innerHTML=`${intro()}<section class="bq-panel"><h2>Verifying admin access…</h2></section>`;bindBase();await admin.refresh();busy=false;render(admin.getState())}
+    void load();return()=>{disposed=true;admin.clear()};
+  }};
+}
