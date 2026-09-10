@@ -1,0 +1,23 @@
+name: BibleQuest v3.66 one-shot full regression dispatch
+
+on:
+  push:
+    branches:
+      - verify/v3.66-same-room-functional-22d0547-20260911
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assert exact candidate and dispatch canonical regression
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA: 22d054725ba983c4fe81fbd220688a3c12ee211c
+        run: |
+          actual="$(gh api repos/${{ github.repository }}/git/ref/heads/feature/v3-same-room-play-together --jq '.object.sha')"
+          test "$actual" = "$EXPECTED_SHA"
+          gh workflow run v3-regression.yml --repo "${{ github.repository }}" --ref feature/v3-same-room-play-together
