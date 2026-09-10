@@ -6,7 +6,7 @@ Status: implementation candidate; not promoted until exact-SHA verification.
 
 Retained production `onboarding-tutorial.js`, `tutorial-launcher.js`, and historical tutorial commits establish the #84 behavior boundary:
 
-- offer a trainer-led multi-step guide on first use;
+- provide a trainer-led multi-step first-run onboarding flow after account creation;
 - persist completion only when the guide is finished;
 - support Next, Back, temporary Close/Skip, Finish, and actionable handoffs into real BibleQuest destinations;
 - never mount duplicate tutorial overlays;
@@ -15,6 +15,8 @@ Retained production `onboarding-tutorial.js`, `tutorial-launcher.js`, and histor
 - keep recovery-code material private and out of tutorial state, global events, logs, analytics, URLs, and browser-session scratch storage;
 - remain usable on mobile and through the existing installed/offline shell after assets have been warmed;
 - keep the tutorial surface in English where the retained account/onboarding contract requires it.
+
+Retained production does **not** auto-open the full tutorial merely because an anonymous guest lands on Home. Its automatic trigger is account-created/pending-recovery onboarding; `tutorial-launcher.js` supplies the permanently available manual launcher. v3 preserves that trigger boundary so ordinary guest navigation remains usable.
 
 ## v3 ownership
 
@@ -28,9 +30,11 @@ Retained production `onboarding-tutorial.js`, `tutorial-launcher.js`, and histor
 
 `src/app/bootstrap.js` composes these owners. The existing Router remains navigation/history owner, `src/core/storage.js` remains browser-persistence owner, and `src/app/offline-shell.js` remains PWA/offline owner.
 
-## First-run semantics
+## First-run and reopen semantics
 
-A fresh completion state offers the guide once per page session when Home is rendered. Closing the guide is temporary: it does not mark completion and does not immediately reopen during the same page session. Reloading before completion makes it eligible for first-run offering again. Finishing persists completion. The Home launcher always uses force-open semantics and therefore works after completion.
+On a newly created account, the existing Account flow first requires the user to save the one-time recovery code. Only after that confirmation does Account invoke the no-payload tutorial callback. Closing the guide is temporary and does not mark completion. Finishing persists completion. A normal future onboarding open respects the completed state, while the permanent Home launcher uses force-open semantics and therefore works after completion.
+
+An anonymous Home load remains unobstructed, matching retained production behavior. The tutorial layer is mounted once at bootstrap but remains hidden until Account onboarding or the Home launcher opens it.
 
 ## Account and recovery-code safety
 
@@ -46,8 +50,8 @@ The tutorial does not receive a recovery code. Account creation continues to ren
 
 ## Acceptance evidence required before promotion
 
-1. Service edge tests: first-run offer, Next/Back, temporary Skip, Finish persistence, force-open after completion, invalid persisted-state fallback.
-2. Browser/mobile smoke: exactly one overlay layer, first-run display, navigation controls, temporary close, permanent launcher, no duplicate layer, finish persistence across reload, force-open after completion, real route handoff, mobile overflow/touch-target checks.
+1. Service edge tests: normal fresh open, Next/Back, temporary Skip, Finish persistence, completed-state guard, force-open after completion, invalid persisted-state fallback.
+2. Browser/mobile smoke: guest Home remains unobstructed, exactly one hidden overlay layer is mounted, permanent launcher opens it, controls work, no duplicate layer appears, finish persists across reload, force-open still works after completion, real route handoff works, and mobile/offline behavior remains usable.
 3. Architecture validator: one-owner boundaries, no direct browser storage/global BQ/MutationObserver/Supabase in #84 owners, recovery-code isolation, #85 remains Not started, workflow contains permanent #84 evidence.
 4. Complete accumulated exact-SHA functional regression gate.
 5. Separate exact-SHA bookkeeping gate before release freeze.
