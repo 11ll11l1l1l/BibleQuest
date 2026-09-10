@@ -510,6 +510,19 @@ export function createApi() {
     async setGroupOwner(targetUserId,groupId){return invoke('bq-admin',{action:'set_group_owner',targetUserId,groupId});}
   });
 
+  const adminOperations=Object.freeze({
+    async status(){return invoke('bq-admin-ops',{action:'status'});},
+    async health(){return invoke('bq-admin-ops',{action:'health'});},
+    async dashboard(){return invoke('bq-admin-ops',{action:'dashboard'});},
+    async deleteUser(targetUserId){return invoke('bq-admin-ops',{action:'delete_user',targetUserId});},
+    async frontendHealth(){
+      const loadText=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.text()};
+      const loadJson=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.json()};
+      const [sw,pack,policy,build]=await Promise.all([loadText('./sw.js'),loadJson('./data/packs/manifest.json'),loadText('./data/doctrinal-safety.js'),loadJson('./build-info.json').catch(()=>({}))]);
+      return Object.freeze({pwa:sw.match(/const CACHE=['"]biblequest-v(\d+)['"]/)?.[1]||'?',packPolicy:String(pack?.doctrinal_safety_version??'?'),runtimePolicy:policy.match(/const VERSION=(\d+)/)?.[1]||'?',build:String(build?.commit||build?.version||'main')});
+    }
+  });
+
   const media = Object.freeze({
     async listLiveRecordings() {
       const client = await getClient();
@@ -529,5 +542,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, adminConsole, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }
