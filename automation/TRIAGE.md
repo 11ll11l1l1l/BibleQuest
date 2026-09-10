@@ -1,48 +1,40 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 23:58 JST
+Generated: 2026-09-11 01:00 JST
 
 ## Freshness
-- Active milestone: **#82 Avatar Vault — HIGH-RISK**.
-- Canonical: `feature/v3-avatar-vault` at exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
-- Dedicated autonomous work branch `agent/a1-work/082-*`: **not found**.
-- Valid frozen base for #82: `release/v3.54-psychometrics` at exact `cc591aac786a91183eb5a7a5ad958ae7314a9577`.
-- A `release/v3.55-avatar-vault` branch now exists at exact `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`; it was created despite current A3 NOT SATISFIED and A4 NOT READY, so it is **not an acceptable known-good recovery checkpoint**. Per immutable-release rules, do not move/delete/repurpose it.
-- Exact run `34484163108`: **SUCCESS** for checkout/assertion of `60100f0...`, with accumulated architecture, edge/security and browser/mobile phases including Avatar Vault smoke.
+- Active milestone: **#85 Tutorial avatar reactions — NORMAL-RISK unless scope broadens**.
+- Canonical: `feature/v3-tutorial-avatar-reactions` at exact `19cde1f613993951c9e0ad406965ba26245eca19`.
+- Dedicated autonomous work branch `agent/a1-work/085-*`: **not found**.
+- Latest valid frozen base: `release/v3.57-tutorial-onboarding` at exact `f19d51826b9d191c221c0fdd96bda78b42e2aa95`.
+- Canonical is two commits ahead of frozen base and already contains #85 product/test/workflow changes.
+- Exact targeted verifier run `34499380103` for `19cde1f...`: **IN PROGRESS** at inspection time; not PASS evidence.
+- No complete accumulated exact-SHA #85 run was found at inspection time.
 - Writer lease: **FREE**.
-- A2/A3/A4 reports are all current for exact `60100f0...`. A3: trust boundary NOT SATISFIED. A4: NOT READY.
-- A manual branch `manual/v3.55-avatar-vault-integrity-fix` exists at `619b8031491e67f5997da263822715172164fa71`, eight commits ahead of canonical. It is not the required `agent/a1-work/082-*` candidate and has no current exact-candidate A3/A4 promotion review in the inspected control reports.
-- Stale on canonical/work/release movement, #82 product/API/schema/test/workflow change, new exact run evidence, or new exact-candidate A3/A4 review.
+- A2: no #85 contract report found. A3 #85 report analyzed `f19d518...` before implementation and is now stale for candidate-specific conclusions. A4 #85 report also analyzed only `f19d518...` and is stale; it explicitly had no implementation candidate to review.
+- Stale on canonical/frozen/work-branch movement, #85 product/test/workflow change, new exact-run evidence, or refreshed A2/A3/A4 reports.
 
 ## BLOCKER
-1. **Known destructive persistence remains on canonical/release SHA.** `api.avatarVault.save()` replaces the complete congregation avatar JSON with `{cosmetic:selectedStyle}`. Counterfactual: selecting a cosmetic erases unrelated avatar presentation fields, violating #82 `persist`/data integrity.
+1. **Unverified #85 implementation is already on canonical without the required quarantine branch.** Primary compare evidence shows canonical moved from frozen `f19d518...` to `19cde1f...` with #85 implementation/tests, while no `agent/a1-work/085-*` exists. Counterfactual: if A1 treats this canonical tip as promotion-ready, unverified implementation has bypassed the mandatory isolate -> exact-gate -> promotion transaction and canonical can become the source of a release before a clean candidate is proven.
 
-2. **Split cloud persistence has no demonstrated convergence.** Cosmetics selection is written before congregation avatar projection, while reopen reads only the cosmetics selection. Counterfactual: first write succeeds and second fails, leaving private/local selection newer than leaderboard-visible state indefinitely.
-
-3. **Repository RLS migration broadens verified member-update authority.** The candidate adds a permissive self-row UPDATE policy without the existing active-congregation-membership condition. Counterfactual: an inactive/stale own membership row can satisfy the new policy even when the verified active-membership policy denies it; authenticated column grants include both `display_name` and `avatar`.
-
-4. **HIGH-RISK promotion/release barrier was bypassed.** Exact run `34484163108` is green, but A3 remains NOT SATISFIED and A4 remains NOT READY for the same exact SHA. A `release/v3.55-avatar-vault` ref nevertheless now points to that SHA. Counterfactual: treating that ref as frozen-known-good would permit #83 to start from a checkpoint containing known persistence/authorization defects. Do not advance to #83 from v3.55.
+2. **Exact functional evidence is incomplete.** Run `34499380103` is still in progress and is targeted-only; no complete accumulated exact-SHA run for `19cde1f...` was found. Counterfactual: advancing bookkeeping/release now can freeze a SHA whose new #85 behavior or prior accumulated regressions have not completed the required gate.
 
 ## MILESTONE
-- Preserve #82 scope: **browse; select; persist; render fallback**.
-- Produce a corrected isolated successor that preserves avatar JSON, defines/tests partial-write convergence, and reconciles RLS without broadening active-membership authority.
-- Explicitly classify public cosmetics as untrusted self-presentation, or provide a narrow trusted server authorization path backed by authoritative progression facts if earned status is claimed.
-- Retain permanent regressions capable of failing on the destructive-write and split-write counterfactuals; keep Avatar Vault smoke mandatory in accumulated execution.
-- Because #82 is HIGH-RISK, require complete exact-SHA green plus fresh A3 trust-boundary satisfaction and exact-candidate A4 READY before A5 can recommend promotion.
-- The existing v3.55 ref must remain immutable; after a corrected exact candidate clears all gates, create a **new** release ref/version rather than moving v3.55.
+- Keep #85 bounded to inventory contract: `correct reaction/state; mobile positioning`.
+- Permanent workflow at `19cde1f...` does invoke `validate-v3-tutorial-avatar-reactions.mjs`, `v3-tutorial-avatar-reactions-edge.mjs`, and `v3-tutorial-avatar-reactions-smoke.mjs`, while retaining prior accumulated invocations.
+- Reconcile the existing canonical delta into the authorized quarantine lifecycle without rewriting frozen/release refs, then obtain complete accumulated exact-SHA green before bookkeeping/release.
 
 ## DEFER
-- The 10 retained cosmetics without verified v3 metric owners remain unavailable rather than duplicating progression ownership.
-- `manual/v3.55-avatar-vault-integrity-fix` may contain relevant corrective work, but it is not promotion evidence until reconciled into the authorized quarantine lifecycle and reviewed at its exact candidate SHA.
-- #83 Innovation remains blocked behind corrected #82 closure.
+- #86 Accessibility support and later rows remain separate milestones.
 
 ## IGNORE
-- Earlier missing-exact-run concerns are obsolete; `34484163108` is exact green for `60100f0...` and executed Avatar Vault smoke.
-- `automation/CURRENT.md` and canonical handoff are stale relative to live #82 release/ref state and do not override primary evidence.
+- Prior #82 Avatar Vault blockers in old TRIAGE are obsolete for the current live lineage; live repository state has progressed through frozen v3.57.
+- Stale A3/A4 `NOT READY` wording from `f19d518...` is not a current #85 rejection. Their reports simply do not review the changed `19cde1f...` state.
+- Absence of exact-candidate A4 review is not by itself an extra-cycle blocker for NORMAL-RISK #85; exact gates and current concrete blockers govern. Any backend/auth/global-owner/workflow-semantic broadening would reclassify HIGH-RISK.
 
 ## Firewall decision
-**4 BLOCKER; NO PROMOTION RECOMMENDATION; v3.55 MUST NOT BE USED AS A KNOWN-GOOD BASE.**
+**2 BLOCKER; NO PROMOTION/RELEASE RECOMMENDATION FOR `19cde1f...` YET.**
 
 ## Next safe action
-Keep #82 active. Reconcile the manual integrity-fix lineage without modifying the immutable v3.55 ref, create/resume the required `agent/a1-work/082-*` quarantine successor, verify the corrected persistence/RLS/trust behavior with meaningful permanent tests, run the complete accumulated suite on that exact SHA, then obtain fresh A3 satisfaction and A4 READY. Only after those gates may A5 recommend a new corrected release checkpoint and allow #83 to begin.
+Do not release from the current canonical tip. Reconcile #85 into `agent/a1-work/085-*`, preserve the current accumulated test surface, finish targeted verification as useful evidence, then run the complete accumulated workflow against the exact clean candidate. If that exact NORMAL-RISK candidate is green and no new material blocker appears, bookkeeping and promotion need not wait an unnecessary extra review cycle.
