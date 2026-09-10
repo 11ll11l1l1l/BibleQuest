@@ -23,6 +23,7 @@ const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,c
 const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at,schedule_at,recurrence_rule,reminder_at,required_reflection,min_quiz_score,evidence_type';
 const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
 const NOTIFICATION_FIELDS='id,user_id,congregation_id,created_by,notification_type,title,body,action_kind,action_payload,read_at,expires_at,created_at';
+const CONTENT_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,updated_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -433,6 +434,18 @@ export function createApi() {
     async send(groupId,kind) { return invoke('bq-journey-group',{action:'encourage',group_id:groupId,kind}); }
   });
 
+  const contentDecisions = Object.freeze({
+    async list(congregationId) {
+      const id=String(congregationId||'').trim();
+      if(!id)throw new Error('Content moderation congregation is required.');
+      const client=await getClient();
+      const request=client.from('bible_content_decisions').select(CONTENT_DECISION_FIELDS).eq('congregation_id',id).order('updated_at',{ascending:false}).limit(4000);
+      const {data,error}=await withTimeout(request,1400,'Content moderation policy took too long to load.');
+      if(error)throw error;
+      return data||[];
+    }
+  });
+
   const contentReports = Object.freeze({
     async submit(row) {
       const client=await getClient();
@@ -461,5 +474,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentReports, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, encouragements, contentDecisions, contentReports, media, diagnostics });
 }
