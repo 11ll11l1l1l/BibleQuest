@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.48-assignment-push-functional-a1-20260910-1520-fixture2
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: a42100452d1b1fff7c146543e8ab5cd67da32193
+      - name: Assert exact candidate SHA
+        run: test "$(git rev-parse HEAD)" = "a42100452d1b1fff7c146543e8ab5cd67da32193"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
