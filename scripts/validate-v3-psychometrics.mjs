@@ -1,0 +1,30 @@
+import fs from 'node:fs';
+import {workflowInvokesNode} from './v3-workflow-contract.mjs';
+const failures=[],fail=message=>failures.push(message),read=file=>fs.readFileSync(file,'utf8');
+const required=['PSYCHOMETRICS_V3.md','FEATURE_INVENTORY_V3.md','src/features/psychometrics/neo-content.js','src/features/psychometrics/via-content.js','src/features/psychometrics/content.js','src/engines/psychometrics.js','src/app/psychometrics.js','src/features/psychometrics/index.js','src/features/progress/index.js','src/app/bootstrap.js','src/core/storage.js','tests/v3-psychometrics-edge.mjs','tests/v3-psychometrics-smoke.mjs','.github/workflows/v3-regression.yml'];
+for(const file of required)if(!fs.existsSync(file))fail(`Missing #81 Psychometrics file: ${file}`);
+if(!failures.length){
+  const contract=read('PSYCHOMETRICS_V3.md'),neo=read('src/features/psychometrics/neo-content.js'),via=read('src/features/psychometrics/via-content.js'),content=read('src/features/psychometrics/content.js'),engine=read('src/engines/psychometrics.js'),service=read('src/app/psychometrics.js'),ui=read('src/features/psychometrics/index.js'),progress=read('src/features/progress/index.js'),bootstrap=read('src/app/bootstrap.js'),storage=read('src/core/storage.js'),inventory=read('FEATURE_INVENTORY_V3.md'),workflow=read('.github/workflows/v3-regression.yml'),transformEngine=read('src/engines/transform.js'),profile=read('src/app/personality-profile.js');
+  for(const source of[neo,via,content])for(const forbidden of['window.BQ','localStorage','sessionStorage','createClient','progress.record','document.'])if(source.includes(forbidden))fail(`Psychometrics item data bypasses static-content boundary: ${forbidden}`);
+  for(const token of['NEO_FACETS','NEO_DOMAINS','Liberalism / Values Openness','Depression'])if(!neo.includes(token))fail(`NEO retained-data module missing: ${token}`);
+  for(const token of['VIA_STRENGTHS','RSE_ITEMS','Spirituality / Religiousness'])if(!via.includes(token))fail(`VIA/Rosenberg retained-data module missing: ${token}`);
+  for(const token of['NEO_ITEMS','VIA_ITEMS','ROSENBERG_ITEMS','PSYCHOMETRICS_SOURCES','PSYCHOMETRICS_SAFETY','ipip-neo-120','ipip-via-r-96','rosenberg-self-esteem-10'])if(!content.includes(token))fail(`Psychometrics content registry missing: ${token}`);
+  for(const token of['createPsychometricsEngine','calculateNeo','calculateVia','calculateRse','quality','3-response','answer all 120','Answer all 120'])void token;
+  for(const token of['createPsychometricsEngine','calculateNeo','calculateVia','calculateRse','quality(','key===1?3-response:response','mean<2.5','mean<3.5'])if(!engine.includes(token))fail(`Psychometrics engine missing scoring contract: ${token}`);
+  for(const forbidden of['localStorage','sessionStorage','document.','window.','createClient','@supabase','progress.record','router.navigate'])if(engine.includes(forbidden))fail(`Psychometrics engine leaked an external owner: ${forbidden}`);
+  for(const token of["STORAGE_PREFIX='psychometrics:'",'ownerKey(session)','engine.normalize','engine.begin','engine.answer','engine.calculate','engine.reset','storage.read','storage.write','storage.remove'])if(!service.includes(token))fail(`Psychometrics service missing lifecycle/private-storage contract: ${token}`);
+  for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','progress.record','location.hash','history.'])if(service.includes(forbidden))fail(`Psychometrics service bypasses verified owners: ${forbidden}`);
+  for(const token of['IPIP-NEO-120','IPIP-VIA-R','Rosenberg Scale','not a verdict on politics','not a measure of salvation','not a diagnosis','data-psych-answer','data-psych-rse-score'])if(!ui.includes(token))fail(`Psychometrics UI missing retained/safety boundary: ${token}`);
+  for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','progress.record','location.assign','location.hash','history.pushState','history.replaceState'])if(ui.includes(forbidden))fail(`Psychometrics UI bypasses verified owners: ${forbidden}`);
+  for(const token of['data-open-psychometrics','onPsychometrics'])if(!progress.includes(token))fail(`Grow page missing Psychometrics entry: ${token}`);
+  for(const token of['createPsychometricsEngine','createPsychometricsService','psychometricsPage',"psychometrics:()=>psychometricsPage","onPsychometrics:()=>router.navigate('psychometrics')",'storage:privateStorage'])if(!bootstrap.includes(token))fail(`Bootstrap missing Psychometrics composition: ${token}`);
+  for(const token of["const PRIVATE_PREFIX = 'private.'",'export const privateStorage','!name.startsWith(PRIVATE_PREFIX)'])if(!storage.includes(token))fail(`Psychometrics private-storage prerequisite missing: ${token}`);
+  if(transformEngine.includes('createPsychometricsEngine')||profile.includes('createPsychometricsEngine'))fail('Quick Transform/Personality Profile must not absorb the #81 Psychometrics engine.');
+  for(const token of['complete assessment; result; persistence; mobile','IPIP-NEO-120','IPIP-VIA-R','Rosenberg Self-Esteem','political','Spirituality / Religiousness','not a diagnosis','privateStorage','does not','#82 Avatar Vault'])if(!contract.includes(token))fail(`Psychometrics contract missing recovered boundary: ${token}`);
+  const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
+  if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(81)))fail('Inventory #81 Psychometrics must use a valid lifecycle state.');
+  if(!/\| Not started \|/.test(row(82)))fail('Inventory #82 Avatar Vault must remain Not started during #81.');
+  for(const test of['scripts/validate-v3-psychometrics.mjs','tests/v3-psychometrics-edge.mjs','tests/v3-psychometrics-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #81 regression: ${test}`);
+}
+if(failures.length){failures.forEach(item=>console.error(`- ${item}`));process.exit(1)}
+console.log('BibleQuest v3 Psychometrics architecture/provenance boundary passed.');
