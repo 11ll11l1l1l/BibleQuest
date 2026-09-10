@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.55-avatar-vault-functional-58982-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,9 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - name: Assert exact Avatar Vault functional candidate
+        run: |
+          test "$(git rev-parse HEAD~1)" = "589827943ba5467e805d793c001a33a41b9f42b7" || (echo "HEAD~1 is not the exact #82 functional candidate 589827943ba5467e805d793c001a33a41b9f42b7" && exit 1)
       - uses: actions/setup-node@v4
         with:
           node-version: 22
