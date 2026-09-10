@@ -18,7 +18,7 @@ try{
   await page.locator('[data-report-layer]').waitFor({state:'visible',timeout:5000});
   await page.getByText('Sign in to BibleQuest before submitting a report.').waitFor({timeout:5000});
   assert(await page.locator('[data-report-account]').isVisible(),'Signed-out reporting did not expose the explicit account recovery action.');
-  await page.locator('[data-report-close]').first().click();
+  await page.locator('.bq-report-close').click();
 
   await page.locator('[data-route-link="learn"]').click();
   await launcher.waitFor({state:'visible',timeout:5000});
@@ -56,7 +56,7 @@ try{
   assert(sent.note==='Please review this wording.','Report UI did not forward the bounded optional note.');
   assert(sent.context?.contentText&&!JSON.stringify(sent.context).includes('Please review this wording.'),'Report snapshot must be independent from the user-entered report note.');
 
-  await page.locator('[data-report-close]').first().click();
+  await page.locator('.bq-report-close').click();
   await page.locator('[data-report-open]').click();
   await page.locator('[data-report-form]').waitFor({timeout:5000});
   await page.locator('select[name="reason"]').selectOption('accuracy');
