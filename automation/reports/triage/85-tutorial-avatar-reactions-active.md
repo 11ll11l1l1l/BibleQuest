@@ -1,6 +1,6 @@
 # BQ-A5-FIREWALL — #85 Tutorial avatar reactions
 
-Generated: 2026-09-11 01:00 JST
+Generated: 2026-09-11 01:02 JST
 
 ## Exact state
 - Active milestone: #85 Tutorial avatar reactions.
@@ -9,7 +9,7 @@ Generated: 2026-09-11 01:00 JST
 - Dedicated `agent/a1-work/085-*`: none found.
 - Frozen base: `release/v3.57-tutorial-onboarding` at `f19d51826b9d191c221c0fdd96bda78b42e2aa95`.
 - Compare: canonical is 2 commits ahead of frozen base.
-- Exact targeted run `34499380103`: IN PROGRESS at inspection time.
+- Exact targeted run `34499380103`: FAILURE. Exact product assertion passed; tutorial architecture/edge checks passed; tutorial browser/mobile checks failed.
 - Complete accumulated exact-SHA #85 run: none found at inspection time.
 - Lease: FREE.
 
@@ -18,13 +18,13 @@ Generated: 2026-09-11 01:00 JST
 
 **FACT:** Canonical moved from frozen `f19d518...` to `19cde1f...`. The first new commit is `feat(v3): rebuild tutorial trainer reactions`; the second changes `tests/v3-tutorial-avatar-reactions-smoke.mjs` to normalize browser zero-position formatting.
 
-**FACT:** Current product code derives trainer state from a static Tutorial-owned map in `src/features/tutorial/trainer.js` and renders it from `src/features/tutorial/index.js`. The inspected delta is consistent with a presentation-local design; no backend/auth evidence was identified in this inspection.
+**FACT:** Current product code derives trainer state from a static Tutorial-owned map in `src/features/tutorial/trainer.js` and renders it from `src/features/tutorial/index.js`. The inspected design remains presentation-local; no backend/auth scope was identified.
 
-**FACT:** The authoritative inventory still records #85 as `Not started` with contract `correct reaction/state; mobile positioning` at canonical `19cde1f...`; bookkeeping has not yet promoted it.
+**FACT:** The authoritative inventory still records #85 as `Not started` with contract `correct reaction/state; mobile positioning` at canonical `19cde1f...`; bookkeeping has not promoted it.
 
 **FACT:** Permanent `.github/workflows/v3-regression.yml` at `19cde1f...` invokes the #85 validator, edge test and browser smoke and retains the accumulated prior lists.
 
-**FACT:** The targeted verifier run `34499380103` was still `in_progress` and cannot be counted as green. No complete accumulated exact-SHA run for product SHA `19cde1f...` was found.
+**FACT:** Run `34499380103` completed with `failure`. Its job asserted the exact product SHA successfully, passed tutorial architecture/edge checks, installed and started the browser environment, then failed `Run tutorial browser and mobile checks`. Therefore `19cde1f...` has direct failed acceptance evidence, not merely missing evidence.
 
 ## Report freshness
 - A2: no #85 contract report found on control branch; missing, not adverse evidence.
@@ -33,24 +33,24 @@ Generated: 2026-09-11 01:00 JST
 
 ## Classifications
 ### BLOCKER — quarantine transaction bypass
-Counterfactual: if canonical `19cde1f...` is treated as the candidate/release source without reconciliation, autonomous implementation has bypassed the mandatory isolation and exact-gate transaction, allowing unverified state to become a release lineage.
+Counterfactual: if canonical `19cde1f...` is treated as the candidate/release source without reconciliation, autonomous implementation has bypassed mandatory isolation and exact-gate sequencing, allowing unverified state into release lineage.
 
-### BLOCKER — complete exact functional gate missing
-Counterfactual: if bookkeeping/release proceeds while only an in-progress targeted run exists, #85 or a prior accumulated regression can still fail after the release decision. PASS cannot be inferred from workflow wiring or from frozen v3.57 evidence.
+### BLOCKER — exact targeted acceptance failure
+Counterfactual: if bookkeeping/release proceeds despite run `34499380103`, the release knowingly includes a SHA whose tutorial browser/mobile acceptance failed; additionally, no complete accumulated exact-SHA run proves prior regressions on this SHA.
 
-### MILESTONE — retain bounded permanent coverage
-The current permanent workflow includes the new #85 validator/edge/browser tests and prior accumulated coverage. This coverage must survive reconciliation and the complete exact-SHA gate.
+### MILESTONE — reproduce/fix without weakening coverage
+Reproduce the run-34499380103 browser/mobile failure, identify the demonstrated root cause, preserve the intended retained reaction/mobile-position semantic assertion, keep the #85 validator/edge/browser tests permanently wired, and rerun exact targeted plus complete accumulated verification after correction.
 
 ### DEFER
 #86 Accessibility support and later inventory rows remain separate.
 
 ### IGNORE
-Old #82 TRIAGE blockers are stale for current lineage. Stale A3/A4 preimplementation dispositions are not blockers for NORMAL-RISK #85. A fresh A4 cycle is not mandatory solely to create latency if the eventual exact candidate remains NORMAL-RISK and all exact gates/current requirements pass.
+Old #82 TRIAGE blockers are stale for current lineage. Stale A3/A4 preimplementation dispositions are not candidate blockers for NORMAL-RISK #85. Fresh A4 is not required solely to add an artificial cycle if the future exact candidate remains NORMAL-RISK and all current gates pass.
 
 ## Decision
 **2 BLOCKER; NO PROMOTION/RELEASE RECOMMENDATION for `19cde1f613993951c9e0ad406965ba26245eca19`.**
 
-Next safe action: reconcile the current delta into an authorized `agent/a1-work/085-*` branch without rewriting immutable refs, preserve accumulated coverage, obtain complete exact-SHA green, then proceed under NORMAL-RISK same-run rules if no new material blocker or scope escalation appears.
+Next safe action: reproduce the failed browser/mobile check, correct only its verified root cause, reconcile the work into `agent/a1-work/085-*` without rewriting immutable refs, preserve accumulated coverage, and obtain complete exact-SHA green before bookkeeping/promotion.
 
 ## Staleness
-This report is stale immediately if canonical/frozen/work refs move, targeted or complete run evidence changes, #85 product/test/workflow scope changes, or new A2/A3/A4 reports analyze a different exact SHA.
+This report is stale immediately if canonical/frozen/work refs move, new targeted or complete run evidence appears, #85 product/test/workflow scope changes, or new A2/A3/A4 reports analyze a different exact SHA.
