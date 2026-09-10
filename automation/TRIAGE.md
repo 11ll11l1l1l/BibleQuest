@@ -1,43 +1,44 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 19:58 JST
+Generated: 2026-09-10 20:02 JST
 
 ## Freshness
 - Active milestone: **#79 Linked activities/challenges — HIGH-RISK**.
-- Canonical branch: `feature/v3-linked-activities` at exact `270d58a5e34b69b99af87abade3c53099348168e`.
+- Canonical branch: `feature/v3-linked-activities` at exact `1b963b8c69b2951b46b457f2564d2a40c7c12266`.
 - Dedicated `agent/a1-work/079-linked-activities` candidate: **not found**.
-- Latest frozen base: `release/v3.51-workspace` at exact `caf9425fcdfef935560e1d65ff13823c60a7f529`.
+- Frozen base: `release/v3.51-workspace` at exact `caf9425fcdfef935560e1d65ff13823c60a7f529`.
 - `release/v3.52-linked-activities`: **not found**.
-- Exact functional product candidate: `debc386328d4655977681fcb08b7a345346ea3fc`; isolated run `34468348888` completed `success` and explicitly checked out/asserted that exact SHA before the complete accumulated suite.
-- Current bookkeeping candidate: `270d58a5e34b69b99af87abade3c53099348168e`.
-- Exact bookkeeping run `34468933900` explicitly checked out/asserted `270d58a5...` but **failed in accumulated architecture validators**; edge/security and browser/mobile phases were skipped.
+- Prior functional product candidate `debc386328d4655977681fcb08b7a345346ea3fc` passed complete exact run `34468348888`.
+- Prior bookkeeping candidate `270d58a5e34b69b99af87abade3c53099348168e` failed exact run `34468933900` in accumulated architecture validators; later phases were skipped.
+- Current `1b963b8c...` changes only the stale #73 Assignments validator lifecycle assertion for #79 from `Not started`-only to valid lifecycle states; no exact complete run for this SHA is yet established.
 - A2 #79 report: **missing**.
-- A3 #79 report: **stale**; reviewed canonical `b446ea26...`, not `debc3863...` or `270d58a5...`.
-- A4 #79 report: **stale**; reviewed `debc3863...` before run `34468348888` completed and recorded NOT READY because exact execution was then missing.
+- A3 #79 report: **stale**; reviewed `b446ea26...`.
+- A4 #79 report: **stale**; reviewed `debc3863...` before its exact green completed and has not reviewed current `1b963b8c...`.
 - HIGH-RISK barrier: **NOT SATISFIED**.
 
 ## BLOCKER
-- **Do not promote/freeze current #79 state.** `scripts/validate-v3-assignments.mjs` still hard-requires inventory row #79 to be `Not started`, while bookkeeping at `270d58a5...` advances #79 to Verified. Exact bookkeeping run `34468933900` consequently failed in the architecture phase. Counterfactual: ignoring this would freeze a bookkeeping SHA that has not passed the complete accumulated gate.
-- **Reconcile #79 as HIGH-RISK before further promotion work.** The milestone modified shared Router ownership (`bq:navigation-request`/`requestNavigation`) and also modified the pre-existing accumulated `tests/v3-assignments-smoke.mjs` fixture. Control rules classify global-router ownership as HIGH-RISK and any existing accumulated-test modification as HIGH-RISK. Counterfactual: treating #79 as NORMAL-RISK would bypass mandatory exact-candidate independent review around a global owner and an existing regression change.
-- **Quarantine/promotion-path reconciliation is required.** No `agent/a1-work/079-linked-activities` branch exists although unverified #79 implementation/bookkeeping is on canonical. Counterfactual: continuing autonomous product/test/bookkeeping writes directly on canonical would violate the mandatory quarantine invariant and make unverified history indistinguishable from promotion-ready state.
+- **No promotion/freeze of `1b963b8c...`.** It has no complete exact-SHA accumulated green, and the change modifies an existing accumulated validator. Counterfactual: promoting it now would freeze an unverified bookkeeping/test correction.
+- **HIGH-RISK independent review is mandatory.** #79 lineage changes shared Router ownership and pre-existing accumulated regression coverage, and current SHA additionally changes an existing accumulated validator. Counterfactual: treating this as NORMAL-RISK would bypass explicit control-plane review requirements for global-owner and existing-test/validator changes.
+- **Quarantine/promotion-path reconciliation remains required.** No `agent/a1-work/079-linked-activities` branch exists while unverified #79 changes are on canonical. Counterfactual: further autonomous unverified writes directly on canonical would violate the mandatory quarantine invariant.
 
 ## MILESTONE
-- Preserve authoritative #79 acceptance: **`launch linked activity; completion handoff`** through existing Assignments authority, fixed internal routing, fail-closed unsupported destinations, and explicit completion handoff.
-- Correct the stale #73 Assignments validator only if the root cause is documented as a lifecycle/future-state validator defect and the original #73 ownership/security assertions remain intact. Because this is an existing accumulated-validator change, the resulting exact candidate remains HIGH-RISK and must rerun the complete accumulated suite.
+- Execute the complete accumulated architecture, edge/security and browser/mobile suite against exact `1b963b8c69b2951b46b457f2564d2a40c7c12266` (or a later exact corrected candidate) with explicit checkout/assertion. The prior `270d58a5...` failure cannot transfer, and the `debc3863...` PASS cannot transfer forward.
+- Preserve authoritative #79 acceptance: **`launch linked activity; completion handoff`**, existing Assignments authority, fixed internal routing, fail-closed unsupported destinations, and explicit completion handoff.
+- Preserve the original #73 Assignments validator ownership/security assertions while allowing #79's legitimate lifecycle transition. The current two-line validator change appears narrowly lifecycle-scoped, but HIGH-RISK exact execution/review is still required.
 
 ## DEFER
-- #80 Personality profile, #81 Psychometrics, #43 Live Rooms, #15 Japanese furigana and Kids #38–40 remain outside #79 unless primary evidence establishes a required dependency.
+- #80 Personality profile, #81 Psychometrics, #43 Live Rooms, #15 Japanese furigana and Kids #38–40 remain outside #79 unless primary evidence proves a required dependency.
 
 ## IGNORE
-- A3's prior NORMAL-RISK conclusion for `b446ea26...` is stale and cannot override explicit control-plane HIGH-RISK triggers now evidenced in current lineage.
-- A4's NOT READY conclusion for `debc3863...` was correct at its inspection time but its missing-run premise is now stale because run `34468348888` later completed successfully. A fresh A4 exact-candidate review is still required because #79 is HIGH-RISK.
-- Direct `head_sha` queries returning no run for product SHAs do not invalidate isolated verification runs whose workflow explicitly checks out/asserts those product SHAs.
+- The resolved `270d58a5...` stale-future-state assertion is historical failure evidence, not a current runtime defect.
+- A3's NORMAL-RISK disposition on `b446ea26...` is stale and cannot override explicit HIGH-RISK triggers in later lineage.
+- A4's old missing-run premise for `debc3863...` became stale when `34468348888` completed, but no READY review exists for current SHA.
 
 ## Firewall decision
-**3 BLOCKER; 2 MILESTONE; NO PROMOTION RECOMMENDATION.**
+**3 BLOCKER; 3 MILESTONE; NO PROMOTION RECOMMENDATION.**
 
-The product-level functional candidate `debc3863...` now has exact full-suite green evidence, but HIGH-RISK promotion prerequisites were not satisfied before bookkeeping, and the current bookkeeping SHA `270d58a5...` is red. No unexplained deletion or skip of accumulated coverage was found; the present failure is an accumulated validator lifecycle conflict, not permission to weaken coverage.
+The prior product candidate has full-suite green evidence, and the exact cause of the first bookkeeping failure has now been narrowly corrected. That does not authorize promotion: current exact SHA changed an accumulated validator and remains HIGH-RISK without current full-suite green, fresh A3, fresh exact-candidate A4 READY, or A5 promotion recommendation.
 
 ## Next safe action
-A1 must reconcile the canonical/no-quarantine state under a valid writer lease, establish the proper isolated #79 work/candidate path without rewriting frozen or safety refs, correct only the proven stale future-state validator defect while preserving its semantic protections, and run the complete suite on the resulting exact candidate. Before bookkeeping/promotion, require a fresh A3 trust/architecture review and A4 READY review of that exact HIGH-RISK candidate, then a fresh A5 promotion recommendation. Only after those requirements and a separate exact bookkeeping-SHA complete green may `release/v3.52-linked-activities` be created.
+Under a valid A1 writer lease, reconcile the no-quarantine canonical state into the required isolated #79 candidate path without rewriting frozen/safety refs; run the complete suite against the exact corrected SHA; obtain fresh A3 architecture/trust review and A4 READY for that same exact HIGH-RISK candidate; then return to A5 for promotion recommendation. Only afterward may bookkeeping/promotion proceed, followed by a separate exact bookkeeping-SHA complete gate before immutable `release/v3.52-linked-activities` creation.
