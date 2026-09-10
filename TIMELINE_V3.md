@@ -7,14 +7,14 @@ Updated: 2026-09-11 JST
 ## Current completion snapshot
 
 - Total capabilities: 100
-- Current bookkeeping candidate: 89 Regression-tested / 1 Verified / 0 Implemented / 10 Not started
-- Implemented or better: **90/100**
-- Regression stability: **89/100**
-- Latest frozen checkpoint: `release/v3.62-content-review` at `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`
-- #92 exact functional candidate: `298ebcdd9b34a9582cbe24c856ec256292acb7a8`
-- #92 focused run: `34528237689` — green
-- #92 complete functional run: `34528950642` — green
-- #93 Admin Operations is next only after v3.63 bookkeeping verification/freeze.
+- Current bookkeeping candidate: 90 Regression-tested / 1 Verified / 0 Implemented / 9 Not started
+- Implemented or better: **91/100**
+- Regression stability: **90/100**
+- Latest frozen checkpoint: `release/v3.63-admin-console` at `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
+- #93 exact functional candidate: `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`
+- #93 final targeted run: `34531588788` — green
+- #93 complete functional run: `34531751123` — green
+- #94 Reset/recovery is next only after v3.64 bookkeeping verification/freeze.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
 
 ## Recent frozen release line
@@ -22,47 +22,52 @@ Updated: 2026-09-11 JST
 - `release/v3.60-content-reporting` — `17071432a815ef5cf53f5f4538df982285114bd0`
 - `release/v3.61-content-moderation` — `dfbbb690c814a514714967f240262eec39b6e3ee`
 - `release/v3.62-content-review` — `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`
-- `release/v3.63-admin-console` — pending exact bookkeeping verification/freeze
+- `release/v3.63-admin-console` — `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
+- `release/v3.64-admin-operations` — pending exact bookkeeping verification/freeze
 
 ## Recent milestone sequence
 
 | Capability | State in current bookkeeping | Evidence |
 |---:|---|---|
-| #88 Content moderation | Regression-tested | frozen v3.61; survived #91/#92 complete suites |
-| #91 Content Review workbench | Regression-tested | frozen v3.62; survived #92 complete suite |
-| #92 Admin console | Verified | exact candidate `298ebcdd...`; full run `34528950642` |
-| #93 Admin operations | Not started | waits for v3.63 freeze; retained contract recovered read-only |
+| #88 Content moderation | Regression-tested | frozen v3.61; survived later complete suites |
+| #91 Content Review workbench | Regression-tested | frozen v3.62; survived #92/#93 complete suites |
+| #92 Admin console | Regression-tested | frozen v3.63; survived #93 complete suite `34531751123` |
+| #93 Admin operations | Verified | exact candidate `2e93349e...`; full run `34531751123` |
+| #94 Reset/recovery page | Not started | waits for v3.64 freeze and retained-boundary recovery |
 
-## #91 closeout chronology
+## #92 closeout chronology
 
-1. #91 functional candidate `68516bdbdb651dd144270bd5bc615909967130a8` passed complete functional run `34522265269`.
-2. Bookkeeping candidate `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c` passed complete exact-SHA bookkeeping run `34523117239`.
-3. `release/v3.62-content-review` and the clean Content Review product tip were reconciled to that exact bookkeeping SHA.
+1. #92 functional candidate `298ebcdd9b34a9582cbe24c856ec256292acb7a8` passed complete functional run `34528950642`.
+2. Initial bookkeeping run `34529629974` failed because required durable status headings were renamed; runtime and inventory values were not implicated.
+3. Corrected bookkeeping candidate `8a759218edbd1c7f9f71591a9e6aa6cca70dc465` passed complete exact-SHA bookkeeping run `34529824942`.
+4. `release/v3.63-admin-console` and the clean Admin Console product tip were reconciled to that exact bookkeeping SHA.
 
-## #92 functional chronology
+## #93 functional chronology
 
-1. Started from frozen v3.62 at `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
-2. Recovered retained Admin Console behavior from the old standalone admin surface and existing `bq-admin` backend contract while keeping #93 Admin Operations and password/reset recovery out of scope.
-3. Reused Session and the central API boundary; added one Admin Console state/orchestration owner and one rendering owner rather than retaining legacy direct-client/global ownership.
-4. Added platform user access, congregation membership/role, congregation creation, small-group creation, group membership/role and ownership-transfer workflows with fail-closed Owner/Admin readiness.
-5. Added permanent Admin Console architecture, edge/security and browser/mobile regressions, then accumulated them into the dispatch-only product regression workflow.
-6. Initial full verifier run `34528132854` failed before product regressions because the verifier had temporarily added `push:` to product `.github/workflows/v3-regression.yml`. This was a verifier-infrastructure defect; the product validator correctly rejected it.
-7. Focused isolated Admin Console run `34528237689` passed.
-8. The verifier was corrected to use a separate verifier-only branch-trigger workflow that explicitly checked out and asserted exact product candidate `298ebcdd9b34a9582cbe24c856ec256292acb7a8` while leaving product CI manual-only.
-9. Complete accumulated run `34528950642` passed exact-SHA assertion, all architecture validators, all edge/security regressions, and the complete browser/mobile suite.
-10. Current bookkeeping promotes #91 to Regression-tested and #92 to Verified; this changed bookkeeping still requires its own complete exact-SHA gate before release.
+1. Started `feature/v3-admin-operations` from frozen v3.63 at `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`.
+2. Recovered retained Ministry Operations behavior from `admin-operations.html`, `admin-operations.js`, repository history and existing `bq-admin-ops` server authority. Repository history established that Owner account deletion was introduced with Admin Operations and belongs to #93 parity.
+3. Rebuilt the standalone dashboard against Session plus the central API boundary, with a dedicated Admin Operations authorization/data owner and rendering owner rather than retained direct Supabase globals.
+4. Preserved system health, online presence, assignment/progress aggregates, devotionals/announcements, poll aggregates, curated media and live-room aggregates. Privileged client-error identifiers and individual voter identity are not rendered.
+5. Rebuilt Owner-only account deletion through the #93 service and composed it into #92's existing user cards without giving #92 direct `bq-admin-ops` ownership. Self-delete refusal and exact typed confirmation are retained; server-side ownership/audit/Auth-delete guards remain authoritative.
+6. Added permanent #93 architecture, edge/security and browser/mobile regressions and accumulated them into the dispatch-only product regression workflow.
+7. Initial targeted run `34531083463` failed in the neighboring #92 guard because its old regex scanned beyond the bounded Admin Console facade and its API-export assertion depended on adjacency. The validator was corrected to preserve the same ownership prohibition while allowing later independent facades.
+8. Corrected targeted run `34531492122` then failed only because the #93 contract document did not use the exact self-delete invariant wording required by its validator. Documentation was aligned; runtime behavior was unchanged.
+9. Final targeted run `34531588788` passed against exact candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
+10. Complete accumulated functional run `34531751123` passed exact-SHA assertion, all accumulated architecture validators, all edge/security regressions and the complete browser/mobile suite against that same candidate.
+11. Bookkeeping writer run `34532182063` first asserted the bookkeeping branch still equaled the green functional candidate, then promoted #92 to Regression-tested and #93 to Verified in the authoritative inventory.
+12. Current changed bookkeeping still requires its own complete exact-SHA gate before v3.64 can freeze.
 
-## #93 read-only preparation
+## #94 read-only boundary reminder
 
-Retained `admin-operations.html` and `admin-operations.js` define a separate Owner/Admin Ministry Operations dashboard for system health, online presence, assignments, messages, polls, curated media and live rooms. Existing `supabase/functions/bq-admin-ops/index.ts` remains the server-authoritative access/data contract. No #93 implementation is allowed until v3.63 freezes.
+#94 is the retained standalone Reset/recovery page and remains separate from #100 Backup/export/import/reset and from account password/recovery-code flows. No #94 implementation is allowed until v3.64 freezes; retained behavior and clean ownership must be recovered first.
 
 ## Next sequence
 
-1. Finish #92 bookkeeping on `work/v3.63-admin-console-bookkeeping-20260911`.
-2. Fast-forward `feature/v3-admin-console` only if it still equals exact green functional candidate `298ebcdd9b34a9582cbe24c856ec256292acb7a8`.
-3. Run full exact-SHA bookkeeping verification including inventory/status validation and the accumulated architecture/edge/browser suites.
-4. Freeze `release/v3.63-admin-console` only if the exact bookkeeping SHA is green.
-5. Verify refs, then create `feature/v3-admin-operations` from frozen v3.63 and begin #93 from the recovered retained contract.
+1. Finish #93 bookkeeping on `work/v3.64-admin-operations-bookkeeping-20260911`.
+2. Treat its final clean tip as a new exact candidate and fast-forward `feature/v3-admin-operations` only if that feature branch still equals exact green functional SHA `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
+3. Run full exact-SHA bookkeeping verification including inventory/status/timeline validation and the accumulated architecture/edge/browser suites.
+4. Freeze `release/v3.64-admin-operations` only if the exact bookkeeping SHA is green.
+5. Verify refs, then create the next feature branch from frozen v3.64 and recover #94 before implementation.
 
 ## Release discipline
 
