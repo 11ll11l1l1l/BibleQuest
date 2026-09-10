@@ -1,0 +1,35 @@
+name: BibleQuest v3 Admin Console one-shot
+
+on:
+  push:
+    branches:
+      - verify/v3-admin-console-298ebc
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Admin Console architecture
+        run: node scripts/validate-v3-admin-console.mjs
+      - name: Run Admin Console edge regression
+        run: node tests/v3-admin-console-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest v3 locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v3-admin-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v3-admin-http.log
+          exit 1
+      - name: Run Admin Console browser/mobile regression
+        run: node tests/v3-admin-console-smoke.mjs
