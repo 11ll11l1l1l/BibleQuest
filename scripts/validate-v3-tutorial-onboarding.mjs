@@ -47,9 +47,6 @@ if (!failures.length) {
   for (const token of ['data-bq-tutorial-layer', 'role="dialog"', 'data-tutorial-back', 'data-tutorial-next', 'data-tutorial-skip', 'data-tutorial-action']) {
     if (!ui.includes(token)) fail(`Tutorial presenter missing interaction contract: ${token}`);
   }
-  for (const forbidden of ['sprite', 'reaction', 'emotionState', 'answerReaction']) {
-    if (ui.toLowerCase().includes(forbidden.toLowerCase())) fail(`Tutorial presenter leaked #85 avatar-reaction scope: ${forbidden}`);
-  }
 
   for (const token of ['data-open-tutorial', 'Show tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
   for (const token of ['onTutorial?.()', 'data-code-saved', 'data-code-done']) if (!account.includes(token)) fail(`Account missing recovery-save tutorial handoff: ${token}`);
@@ -70,7 +67,7 @@ if (!failures.length) {
 
   const row = n => inventory.split('\n').find(line => line.startsWith(`| ${n} |`)) || '';
   if (!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(84))) fail('Inventory #84 Tutorial/onboarding trainer must use a valid lifecycle state.');
-  if (!/\| Not started \|/.test(row(85))) fail('Inventory #85 Tutorial avatar reactions must remain Not started during #84.');
+  if (!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(85))) fail('Inventory #85 Tutorial avatar reactions must use a valid lifecycle state after #84 verification.');
 
   for (const test of ['scripts/validate-v3-tutorial-onboarding.mjs', 'tests/v3-tutorial-onboarding-edge.mjs', 'tests/v3-tutorial-onboarding-smoke.mjs']) {
     if (!workflowInvokesNode(workflow, test)) fail(`Accumulated workflow missing #84 regression: ${test}`);

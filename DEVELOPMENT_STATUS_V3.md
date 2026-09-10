@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after #84 functional verification.
+Updated: 2026-09-11 JST after #85 functional verification.
 
 `FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. Development continues under rebuild-and-verify with exact-SHA verification and one-owner boundaries.
 
@@ -8,8 +8,8 @@ Updated: 2026-09-11 JST after #84 functional verification.
 
 - Production v2 remains unchanged.
 - `main`, production Supabase, production data, and production Cloudflare remain untouched.
-- Latest frozen checkpoint: `release/v3.56-innovation-suite` at `f04af346f651150a6726f2ae4ebd740e40cdd604`.
-- Active branch: `feature/v3-tutorial-onboarding`.
+- Latest frozen checkpoint: `release/v3.57-tutorial-onboarding` at `f19d51826b9d191c221c0fdd96bda78b42e2aa95`.
+- Active branch: `feature/v3-tutorial-avatar-reactions`.
 - Normal v3 Actions remain `workflow_dispatch` only on product branches.
 - Temporary `push:` triggers are restricted to isolated `verify/...` branches and are reset away after each run.
 
@@ -17,63 +17,54 @@ Updated: 2026-09-11 JST after #84 functional verification.
 
 | State | Count |
 |---|---:|
-| Regression-tested | 83 |
+| Regression-tested | 84 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 16 |
+| Not started | 15 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **84/100**. Regression stability is **83/100**.
+Strict implemented-or-better parity is **85/100**. Regression stability is **84/100**.
 
-- #83 Innovation suite — **Regression-tested** after surviving #84's complete accumulated functional suite.
-- #84 Tutorial/onboarding trainer — **Verified** by exact functional candidate `9f4f018356e48b4f7d7c62887761cffd8278fbd5` in run `34495260019`.
-- #85 Tutorial avatar reactions — **Not started** and explicitly separate from #84.
+- #84 Tutorial/onboarding trainer — **Regression-tested** after surviving #85's complete accumulated functional suite.
+- #85 Tutorial avatar reactions — **Verified** by exact functional candidate `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c` in run `34499796826`.
+- #86 Accessibility support — **Not started** and explicitly separate from #85.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
 
-These lifecycle counts are now represented by the #84 bookkeeping transaction, but they are not frozen until the exact bookkeeping SHA itself passes a new complete accumulated gate. No PASS transfers from `9f4f018356e48b4f7d7c62887761cffd8278fbd5` after documentation changes.
+These lifecycle counts are represented by this #85 bookkeeping transaction, but they are not frozen until this exact bookkeeping SHA itself passes a new complete accumulated gate. No PASS transfers from `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c` after documentation/validator changes.
 
 ## #84 verified functional boundary
 
-Retained production behavior was recovered from `onboarding-tutorial.js`, `tutorial-launcher.js`, and historical tutorial commits. The clean v3 implementation preserves these semantics:
+#84 remains unchanged: tutorial lifecycle/completion persistence is owned by `src/app/tutorial.js`; `src/features/tutorial/index.js` remains the single overlay presenter; Home owns only the persistent launcher; Account invokes onboarding only after recovery-code save confirmation; Router remains navigation/history owner; the offline-shell service remains the only cache/PWA owner.
 
-- anonymous Home remains unobstructed; the full tutorial does not auto-open merely because a guest lands on Home;
-- the Home `Show tutorial` launcher permanently force-opens the guide, including after completion;
-- account-created onboarding starts only after the existing Account surface displays the one-time recovery code and the user confirms it was saved;
-- the recovery code never enters tutorial state, callback arguments, global events, URLs, logs, analytics, or browser-session scratch state;
-- tutorial lifecycle owns open/Next/Back/Skip/Finish/completion persistence through the shared storage boundary;
-- exactly one overlay presenter is mounted and all route changes are delegated to the existing Router;
-- mobile and existing offline/PWA behavior are retained without creating another service-worker/cache owner;
-- #85 reaction/sprite behavior is not included.
+#85 adds presentation only: `src/features/tutorial/trainer.js` contains deterministic retained trainer-state mapping; the existing tutorial presenter renders that state; `src/ui/tutorial.css` owns the retained sprite cells, mobile positioning, bob animation, and reduced-motion behavior. #85 adds no persistence, account state, routing, Progress mutation, API/backend state, or second tutorial lifecycle owner.
 
-Permanent evidence:
-- `TUTORIAL_ONBOARDING_V3.md`
-- `src/app/tutorial.js`
+Permanent #85 evidence:
+- `TUTORIAL_AVATAR_REACTIONS_V3.md`
+- `src/features/tutorial/trainer.js`
 - `src/features/tutorial/index.js`
-- `src/features/home/index.js`
-- `src/features/account/index.js`
 - `src/ui/tutorial.css`
-- `scripts/validate-v3-tutorial-onboarding.mjs`
-- `tests/v3-tutorial-onboarding-edge.mjs`
-- `tests/v3-tutorial-onboarding-smoke.mjs`
-- accumulated invocation in `.github/workflows/v3-regression.yml`
+- `assets/tutorial-trainer-sprite.webp`
+- `scripts/validate-v3-tutorial-avatar-reactions.mjs`
+- `tests/v3-tutorial-avatar-reactions-edge.mjs`
+- `tests/v3-tutorial-avatar-reactions-smoke.mjs`
+- accumulated invocation in `.github/workflows/v3-regression.yml`.
 
 ## Defect / root-cause ledger
 
-- Run `34493685748`, candidate `9ed4bc024afff960ebba8614f6a13c8e1f51204c`: shell/account interaction was blocked because an early implementation auto-opened the tutorial on anonymous Home. Retained production evidence showed that trigger was wrong; runtime was corrected to account-created/manual-launch semantics.
-- Run `34494727258`, candidate `ad8dd79a1159dfabf7ddf41d506b608eaf95720f`: exact SHA, architecture, lifecycle and shell tests passed, but the new tutorial smoke had an off-by-one test sequence that reached the final step without clicking `Finish guide`. Runtime was unchanged; the test was corrected.
-- Targeted run `34495068372`, candidate `9f4f018356e48b4f7d7c62887761cffd8278fbd5`: exact SHA, architecture/privacy validator, lifecycle edges, existing shell smoke and strengthened account-handoff/mobile/offline smoke all passed.
-- Full functional run `34495260019`, same exact product SHA: complete accumulated architecture validators, complete accumulated edge/security regressions, and complete browser/mobile regressions all passed.
-- Bookkeeping run `34496075740`, candidate `f26945e0c0f8c00f9def4f5fda5ff610a7d4652e`: exact SHA and inventory validation passed, then the architecture validator rejected renamed status headings. Runtime, inventory counts, edge and browser behavior were not implicated. The required durable headings are retained here.
-- Bookkeeping run `34496347631`, candidate `20413b839d7ac007c20b7cd2bc9ba326591eb010`: exact SHA, inventory validation, the global architecture validator and all validators through Avatar Vault passed; the older #83 Innovation validator still hard-coded #84 to remain `Not started`. That future-state assertion was narrowed only to require a valid #84 lifecycle state. Dedicated #84 validation remains authoritative; runtime behavior and #84 acceptance coverage were unchanged.
+- #84 history remains retained in Git history and its permanent regressions.
+- Targeted run `34498989910`, candidate `2644dad902bef17ad72477a91db61ad5e54b3399`: runtime and architecture/edge checks passed, but Chromium normalized CSS `0% 0%` to `0px 0px`. This was a browser-test serialization defect; runtime was unchanged. The smoke now normalizes zero positions semantically.
+- Targeted run `34499380103`, candidate `19cde1f613993951c9e0ad406965ba26245eca19`: runtime and architecture/edge checks again passed, but `getBoundingClientRect()` measured the retained ±1° trainer bob transform, yielding ~124.1px around a CSS 122px square. This was a test measurement defect; runtime was unchanged. CSS width/height now verify size while the transformed rectangle remains the viewport-overflow check.
+- Targeted run `34499623045`, candidate `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c`: exact SHA, #84/#85 architecture, lifecycle/edge, browser/mobile, reduced-motion and offline checks all passed.
+- Full functional run `34499796826`, same exact product SHA: complete accumulated architecture validators, complete accumulated edge/security regressions, and complete browser/mobile regressions all passed.
 
-## Next major milestone: #84 bookkeeping and v3.57 freeze
+## Next major milestone: #85 bookkeeping and v3.58 freeze
 
-1. Treat the live tip of `feature/v3-tutorial-onboarding` containing the corrected validator and this defect record as a new candidate.
+1. Treat this bookkeeping transaction's exact live tip as a new candidate; reconcile any concurrent movement before verifying.
 2. Verify that exact SHA on an isolated verifier with SHA assertion, inventory validation, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite.
 3. Correct only a reproduced failure; never weaken accumulated coverage.
-4. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.57-tutorial-onboarding` at exactly that SHA.
+4. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.58-tutorial-avatar-reactions` at exactly that SHA.
 5. Verify the release ref points to that exact SHA.
-6. Only then create the next feature branch and open #85 Tutorial avatar reactions.
+6. Only then create the next feature branch and begin #86 Accessibility support from v3.58.
 
 ## Release rule
 

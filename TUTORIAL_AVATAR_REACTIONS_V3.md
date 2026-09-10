@@ -1,6 +1,6 @@
 # BibleQuest v3 Tutorial Avatar Reactions (#85)
 
-Status: implementation candidate; promotion requires targeted verification followed by the complete exact-SHA accumulated regression gate.
+Status: functionally verified at exact candidate `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c`; targeted run `34499623045` and complete accumulated run `34499796826` passed. Bookkeeping/freeze still require a separate exact-SHA gate.
 
 ## Recovered contract
 
@@ -17,6 +17,12 @@ The retained presentation uses `assets/tutorial-trainer-sprite.webp`, a 400% x 2
 `src/features/tutorial/index.js` remains the single #84 overlay presenter. It consumes the trainer mapping and renders the state into the already-owned trainer slot. `src/ui/tutorial.css` owns sprite presentation, responsive sizing/positioning, and reduced-motion behavior. `src/app/tutorial.js` remains the sole tutorial lifecycle/completion owner.
 
 No legacy `window.BQ*`, MutationObserver, direct browser storage, Supabase, fetch, scoring, or second tutorial state owner is introduced.
+
+## Verification evidence
+
+Targeted run `34498989910` reproduced only a CSS zero-unit serialization issue in the new test; product runtime was unchanged. Targeted run `34499380103` reproduced only a transformed bounding-box measurement issue caused by the retained trainer bob rotation; runtime was unchanged. Both test defects retain corrected regression coverage.
+
+Exact candidate `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c` then passed targeted run `34499623045` and complete accumulated functional run `34499796826`, including architecture, edge/security, browser/mobile, reduced-motion and offline behavior.
 
 ## Scope boundaries
 
