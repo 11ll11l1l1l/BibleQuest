@@ -101,6 +101,16 @@ A1 may treat BLOCKER/MILESTONE items as mandatory only when TRIAGE is fresh for 
 - A1 may implement after directly recovering the contract even if an investigator report is missing, but it may not lower acceptance standards because a report failed to arrive.
 - Autonomous promotion requires: exact candidate identified; required permanent tests present; complete functional gate green; no unresolved fresh BLOCKER/MILESTONE findings; independent A4/A5 review opportunity; exact bookkeeping SHA complete gate green; canonical branch/release advanced only to that exact green SHA.
 
+## HARD SAFEGUARD 5 — accumulated test-harness integrity
+A green workflow is meaningful only if the intended tests actually ran. Existing regression protection is therefore treated as part of the protected architecture.
+
+- A1 may add new milestone tests/validators and wire them into the accumulated workflow, but must not delete, skip, comment out, narrow, weaken, rename away, or silently stop invoking existing regression tests to obtain a green result.
+- Any modification to an existing accumulated validator/test or to `.github/workflows/v3-regression.yml` beyond adding the current milestone's required coverage must be tied to a reproduced root cause (for example a proven fixture/CI defect), explicitly documented, and independently audited by A4/A5 before promotion.
+- A4 must verify not only that new permanent test files exist, but that the exact executed workflow at the candidate SHA actually invokes them and that prior accumulated tests remain invoked.
+- A5 must treat unexplained removal, bypass, timeout reduction that skips coverage, broad exclusion, or relaxation of an existing regression guard as a BLOCKER.
+- Test success obtained by changing expected behavior to match an incorrect implementation is not valid verification.
+- If a required scenario cannot be executed in the available environment, record MISSING EVIDENCE rather than replacing it with a weaker mock and calling it equivalent.
+
 ## Milestone lifecycle
 The canonical release loop is:
 contract recovery -> architecture/RLS recovery -> isolated implementation -> permanent tests -> complete exact functional gate -> independent QA/triage review -> off-canonical promotion bookkeeping -> exact-bookkeeping-SHA complete gate -> promote canonical branch -> frozen release -> next milestone.
