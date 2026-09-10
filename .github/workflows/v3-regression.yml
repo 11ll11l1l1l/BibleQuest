@@ -17,11 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 589827943ba5467e805d793c001a33a41b9f42b7
+          ref: 37f1dc671804a1bb67ede2e5104002160b24c9dd
           fetch-depth: 1
       - name: Assert exact Avatar Vault functional candidate
         run: |
-          test "$(git rev-parse HEAD)" = "589827943ba5467e805d793c001a33a41b9f42b7" || (echo "Checked-out HEAD is not the exact #82 functional candidate 589827943ba5467e805d793c001a33a41b9f42b7" && exit 1)
+          test "$(git rev-parse HEAD)" = "37f1dc671804a1bb67ede2e5104002160b24c9dd" || (echo "Checked-out HEAD is not the exact #82 functional candidate 37f1dc671804a1bb67ede2e5104002160b24c9dd" && exit 1)
       - uses: actions/setup-node@v4
         with:
           node-version: 22
