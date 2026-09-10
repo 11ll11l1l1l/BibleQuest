@@ -1,0 +1,9 @@
+html[data-bq-text="large"]{font-size:112.5%}
+html[data-bq-text="xlarge"]{font-size:125%}
+html[data-bq-contrast="strong"]{--muted:#4f5f55;--line:rgba(31,54,40,.22)}
+html[data-bq-contrast="strong"] body{color:#17291f}
+html[data-bq-contrast="strong"] .bq-panel p,html[data-bq-contrast="strong"] .bq-brand small,html[data-bq-contrast="strong"] .bq-nav a{color:#4f5f55}
+html[data-bq-effective-motion="reduce"] *,html[data-bq-effective-motion="reduce"] *::before,html[data-bq-effective-motion="reduce"] *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+:focus-visible{outline:3px solid currentColor!important;outline-offset:3px!important}
+.bq-accessibility-page{display:grid;gap:12px}.bq-accessibility-page .bq-secondary-button{justify-self:start;width:auto}.bq-accessibility-controls{display:grid;gap:9px}.bq-accessibility-controls h2{margin-bottom:4px}.bq-accessibility-controls label{font-size:12px;font-weight:850;color:#435249}.bq-accessibility-controls select{width:100%;min-height:46px;padding:10px 12px;border:1px solid rgba(39,61,47,.16);border-radius:12px;background:#fbfcf9;color:#223229;font:inherit;font-size:16px}.bq-accessibility-controls select:focus-visible{border-color:#4f8161}.bq-accessibility-controls [data-accessibility-reset]{margin-top:7px}.bq-accessibility-status{min-height:20px!important;font-size:12px!important}
+@media(max-width:430px){html[data-bq-text="xlarge"]{font-size:118.75%}.bq-accessibility-page .bq-secondary-button{width:100%}}
