@@ -19,7 +19,6 @@ export function createTutorialService({ storage, now = () => new Date().toISOStr
   let persisted = normalizeStored(storage.read(STORAGE_KEY, null));
   let active = false;
   let step = 0;
-  let offeredThisSession = false;
 
   const snapshot = () => Object.freeze({
     active,
@@ -41,15 +40,6 @@ export function createTutorialService({ storage, now = () => new Date().toISOStr
     if (persisted.completed && !force) return snapshot();
     active = true;
     step = clampStep(requestedStep);
-    offeredThisSession = true;
-    return publish();
-  }
-
-  function offerFirstRun() {
-    if (persisted.completed || offeredThisSession || active) return snapshot();
-    offeredThisSession = true;
-    active = true;
-    step = 0;
     return publish();
   }
 
@@ -88,7 +78,6 @@ export function createTutorialService({ storage, now = () => new Date().toISOStr
       return () => subscribers.delete(subscriber);
     },
     open,
-    offerFirstRun,
     back,
     next,
     skip,
