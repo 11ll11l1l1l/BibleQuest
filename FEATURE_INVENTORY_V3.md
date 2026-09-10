@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 88
+- **Regression-tested:** 89
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 11
+- **Not started:** 10
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -111,8 +111,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 88 | Content moderation | Yes | Compatibility | Regression-tested | congregation-scoped decision load; exempt/remove suppression; explicit include restoration; safe fallback/stale policy; Recall/Games integration |
 | 89 | Doctrinal safety/context | Yes | Resource retained | Regression-tested | one doctrinal-safety policy owner; imported Recall re-evaluation; passage-context notice revealed separately from source answer/reference/provenance; unsafe universal/disputed claims quarantined; no spiritual scoring; 390px Recall/Open Review verification |
 | 90 | Source labels/attribution | Yes | Mixed | Regression-tested | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
-| 91 | Content Review workbench | Yes | Standalone old | Verified | open review item; decision; save; permissions |
-| 92 | Admin console | Yes | Standalone old | Not started | auth guard; read/admin actions; permission denial |
+| 91 | Content Review workbench | Yes | Standalone old | Regression-tested | open review item; decision; save; permissions |
+| 92 | Admin console | Yes | Standalone old | Verified | auth guard; read/admin actions; permission denial |
 | 93 | Admin operations | Yes | Standalone old | Not started | operational actions; role guard; error recovery |
 | 94 | Reset/recovery page | Yes | Standalone old | Not started | reset path; cancellation; invalid state |
 | 95 | Client diagnostics | Yes | Compatibility | Regression-tested | one classifier; offline/host-unreachable/reachable-module/unknown codes; API-owned no-store probe; brief probe cache/forced refresh; safe immutable UI; #96 composition; 390px mobile |
