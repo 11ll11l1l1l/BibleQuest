@@ -1,45 +1,41 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 07:06 JST
+Generated: 2026-09-11 07:07 JST
 
 ## Freshness
-- Active milestone: **#94 Reset/recovery — HIGH-RISK correction cycle** because an existing accumulated #93 validator was modified.
-- Canonical: `feature/v3-reset-recovery` @ `ab3584906b3d017ea555416910f23e9414ed2ef8`.
-- Dedicated autonomous candidate `agent/a1-work/094-reset-recovery`: **not found**.
-- Frozen base: `release/v3.64-admin-operations` @ `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`.
-- #94 functional SHA: `b3c15b34da0958a136920dc970b24531e3e06e45`; run `34534183203` = SUCCESS for that SHA only.
-- Corrected bookkeeping SHA: `ab3584906b3d017ea555416910f23e9414ed2ef8`.
-- Exact bookkeeping run `34535332838` = **SUCCESS**. Its isolated verifier explicitly checked out/asserted `ab358490...`, validated promoted bookkeeping values, then passed accumulated architecture, edge/security and browser/mobile phases.
-- `release/v3.65-reset-recovery`: **not present** at final inspection.
-- Permanent verifier lists include #94 validator/edge/smoke while retaining prior accumulated coverage.
-- Writer lease observed: **FREE**.
-- A2 #94 report: stale; predates frozen v3.64/#94 implementation.
-- A3 #94 report: stale; preliminary pre-#94 state only.
+- #94 Reset/recovery canonical: `feature/v3-reset-recovery` @ `ab3584906b3d017ea555416910f23e9414ed2ef8`.
+- Frozen release now exists: `release/v3.65-reset-recovery` @ the same exact `ab3584906b3d017ea555416910f23e9414ed2ef8`.
+- No `feature/v3-same*` next-milestone branch was found at final refresh.
+- Dedicated `agent/a1-work/094-*` candidate: **not found**.
+- Exact #94 bookkeeping run `34535332838` = SUCCESS; verifier explicitly checked out/asserted `ab358490...` and passed bookkeeping assertions plus accumulated architecture, edge/security and browser/mobile phases.
+- A2 #94 report: stale; pre-v3.64/#94 implementation.
+- A3 #94 report: stale; preliminary pre-v3.64/#94 state.
 - A4 #94 report: **missing**.
-- Prior #93 A3/A4 reports are exact to frozen `56fe2469...` and both remain NOT READY on trust-boundary/quarantine evidence.
-- Stale immediately on canonical/candidate/frozen movement, #93/#94 validator/test/workflow change, or new A3/A4/run evidence.
+- #93 A3/A4 reports are exact to frozen v3.64 SHA `56fe2469...` and both remain NOT READY on quarantine/trusted-boundary evidence.
+- Writer lease observed FREE during this A5 inspection; no claim is made about lease state at the exact instant the release ref was created.
+- Stale immediately on next canonical/candidate/release movement or new A3/A4 evidence.
 
 ## BLOCKER
-1. **#94 HIGH-RISK independent promotion barrier is not satisfied.** No `agent/a1-work/094-*` candidate exists, current A3 #94 evidence is stale, and no A4 #94 exact-candidate READY review exists. Counterfactual: freezing v3.65 now would promote a HIGH-RISK existing-validator change without the mandatory same-candidate independent review required by control policy.
-2. **Frozen v3.64 retains unresolved #93 HIGH-RISK review debt.** Exact-state A3/A4 for `56fe2469...` were NOT READY because the quarantine candidate was absent and the privileged `bq-admin-ops` boundary lacked faithful executable authorization/destructive-account coverage. Counterfactual: continuing release progression without corrective closure normalizes bypass of a mandatory HIGH-RISK security gate and leaves destructive-account authorization evidence incomplete.
+1. **v3.65 was frozen without the mandatory HIGH-RISK #94 independent promotion barrier.** The correction changed an existing accumulated #93 validator, which control policy classifies HIGH-RISK; no `agent/a1-work/094-*` candidate exists, A3 #94 is stale, and A4 #94 READY is absent. Counterfactual: starting #42 now would accept a release transition that bypassed the required independent review gate and make the control policy non-enforcing.
+2. **v3.64 still carries unresolved #93 HIGH-RISK review debt.** Exact-state A3/A4 for `56fe2469...` were NOT READY because the quarantine candidate was absent and the privileged `bq-admin-ops` destructive-account boundary lacked faithful executable authorization coverage. Counterfactual: further milestone progression preserves an unresolved security-evidence gap across successive frozen releases.
 
 ## MILESTONE
-1. Treat `ab358490...` as exact green bookkeeping evidence only; do not rerun merely to manufacture a different result and do not transfer it to a changed SHA.
-2. Establish an authorized #94 quarantine/corrective candidate lineage and obtain fresh same-SHA A3 trust-boundary satisfaction plus A4 READY. Because the existing #93 validator changed, this review is mandatory before promotion.
-3. Close #93 trusted-boundary review debt on an authorized corrective lineage without moving or rewriting immutable `release/v3.64-admin-operations`.
+1. Preserve `ab358490...` / run `34535332838` as valid exact complete-gate evidence; do not rewrite or move immutable v3.65.
+2. Perform corrective governance closure for #94 on an authorized lineage with fresh same-SHA A3 trust-boundary satisfaction and A4 READY; do not weaken the corrected validator or accumulated suite.
+3. Close #93 trusted-boundary review debt on an authorized corrective lineage without rewriting immutable v3.64.
 
 ## DEFER
-- `release/v3.65-reset-recovery` freeze and #42 Same-room Play Together until the HIGH-RISK review barriers above are satisfied.
+- #42 Same-room Play Together and all later product milestones until both HIGH-RISK review debts are explicitly closed.
 
 ## IGNORE
-- The earlier `3f3d6dec...` bookkeeping failure as a current blocker: its stale lifecycle assertion was corrected and exact `ab358490...` run `34535332838` is fully green.
-- Any claim that green exact-run evidence substitutes for required HIGH-RISK A3/A4 candidate review.
-- Stale `CURRENT.md`/#75-era control state as live repository truth.
-- Investigator agreement by itself as evidence.
+- Treating the earlier `3f3d6dec...` failure as current product evidence; exact `ab358490...` run `34535332838` supersedes it and is fully green.
+- Treating exact green workflow evidence as a substitute for mandatory HIGH-RISK independent review.
+- Stale `CURRENT.md`/#75-era state as live repository truth.
+- Investigator agreement by itself as proof.
 
 ## Firewall decision
-**2 BLOCKER; 3 MILESTONE; DO NOT FREEZE v3.65 OR ADVANCE TO #42.** The exact #94 bookkeeping suite is now green, but the mandatory HIGH-RISK independent-review barrier is still unsatisfied and #93 security-review debt remains open.
+**2 BLOCKER; 3 MILESTONE; DO NOT BEGIN #42.** v3.65 is already immutable and exact-green, but it was frozen without required HIGH-RISK A3/A4 promotion review. The correct response is corrective review closure, not rewriting the release.
 
 ## Next safe action
-Keep v3.64 immutable. Reconcile #94 onto a governance-compliant authorized candidate, obtain fresh same-SHA A3 and A4 READY without weakening accumulated coverage, and resolve the #93 trusted-boundary evidence debt before further release progression.
+Keep v3.64/v3.65 immutable. Do not start #42. Establish authorized corrective review lineage for #94 and #93, obtain fresh evidence-backed A3/A4 satisfaction, then let A5 reassess whether normal milestone progression may resume.
