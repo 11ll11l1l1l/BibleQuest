@@ -201,7 +201,7 @@ function start(){
   router=createRouter({routes,onRoute(route,renderPage){
     const result=recovery.run({
       route,
-      operation:()=>{store.setState(current=>({...current,route}));shell.render(route,renderPage())},
+      operation:()=>{store.setState(current=>({...current,route}));shell.render(route,renderPage());contentReportingRuntime?.refresh()},
       retry:()=>router.navigate(route),
       home:()=>router.navigate('home')
     });
