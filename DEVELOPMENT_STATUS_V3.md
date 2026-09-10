@@ -65,15 +65,17 @@ Because #75 is HIGH-RISK, those reviews authorized creation of this separate boo
 
 - Historical #75 precursor `fc09fa02ea86522b1bdc7ea03f0964f4fd56f2a4` failed because the new VM test fixture did not strip one TypeScript annotation. Classification: `TEST/FIXTURE DEFECT`; application behavior was not changed to obtain green.
 - Fixture-only correction produced exact functional candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`; replacement run `34444825916` passed fully.
+- `V3-STATUS-BOOKKEEPING-075-001` — the first #75 bookkeeping draft renamed the validator-required `Next major milestone` heading to `Exact next gate`; exact bookkeeping run `34449669830` correctly failed in `validate-v3-architecture.mjs` before later phases. The bookkeeping document was corrected without changing product behavior or weakening the validator.
 - Earlier defect regressions remain retained in the accumulated suite.
 
-## Exact next gate
+## Next major milestone
 
-1. Finish consistent #75 bookkeeping on the quarantine/bookkeeping branch.
-2. Produce the exact clean bookkeeping SHA.
-3. Run the complete accumulated workflow against that exact SHA with explicit checkout/assertion; no functional-candidate PASS transfers.
-4. Only if every required phase is green, fast-forward `feature/v3-assignment-push` without force and create the next immutable frozen v3 release at that same exact SHA.
-5. Do not begin #76 until #75 release closure is complete.
+The immediate release gate is still #75 bookkeeping closure; #76 must not start early.
+
+1. Treat the current final tip of `agent/a1-work/075-assignment-push` as the new exact bookkeeping candidate after this bookkeeping-document correction.
+2. Run the complete accumulated workflow against that exact SHA with explicit checkout/assertion; no PASS transfers from either the functional candidate or failed bookkeeping candidate.
+3. Only if every architecture, edge/security and browser/mobile phase is green, fast-forward `feature/v3-assignment-push` without force and create immutable `release/v3.48-assignment-push` at that same SHA.
+4. After #75 release closure, independently recover #76 Ministry Hub from authoritative retained/inventory evidence before implementation.
 
 ## Release rule
 
