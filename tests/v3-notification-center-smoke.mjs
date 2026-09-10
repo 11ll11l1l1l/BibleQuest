@@ -4,7 +4,7 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/',browser=await chrom
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),errors=[];
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(`${BASE}#/notifications`,{waitUntil:'networkidle'});await page.locator('h1').filter({hasText:'Notification Center'}).waitFor();
+  await page.goto(`${BASE}#/notification-center`,{waitUntil:'networkidle'});await page.locator('h1').filter({hasText:'Notification Center'}).waitFor();
   assert(((await page.locator('#bq-view').textContent())||'').includes('Sign in to load your private BibleQuest inbox.'),'Real Notification Center route must open and fail safely while signed out.');
 
   await page.evaluate(async()=>{
@@ -20,7 +20,7 @@ async function run(){
     const api={
       list:async()=>{window.__bqNotificationListCalls++;return rows.map(row=>({...row}))},
       setReadState:async(userId,id,readAt)=>{rows=rows.map(row=>row.id===id?{...row,user_id:userId,read_at:readAt}:row);return {...rows.find(row=>row.id===id)}},
-      markAllRead:async(userId,readAt)=>{window.__bqNotificationMarkCalls++;rows=rows.map(row=>row.user_id===userId&& !row.read_at?{...row,read_at:readAt}:row);return rows.filter(row=>row.user_id===userId).map(row=>({id:row.id}))}
+      markAllRead:async(userId,readAt)=>{window.__bqNotificationMarkCalls++;rows=rows.map(row=>row.user_id===userId&&!row.read_at?{...row,read_at:readAt}:row);return rows.filter(row=>row.user_id===userId).map(row=>({id:row.id}))}
     };
     const notifications=createNotificationCenterService({api,session}),host=document.querySelector('#bq-view');
     const view=notificationCenterPage({notifications,onNavigate:route=>window.__bqNotificationRoutes.push(route),onBack:()=>window.__bqNotificationRoutes.push('more'),onAccount:()=>window.__bqNotificationRoutes.push('account')});
