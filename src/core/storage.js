@@ -1,5 +1,6 @@
 const PREFIX = 'biblequest.v3.';
 const AUTH_PREFIX = 'auth.';
+const PRIVATE_PREFIX = 'private.';
 const DEVICE_ID = 'device-id';
 const NAME_RE = /^[a-z0-9._-]+$/i;
 
@@ -12,13 +13,19 @@ function authKey(name) {
   return `${PREFIX}${AUTH_PREFIX}${encodeURIComponent(String(name))}`;
 }
 
+function privateKey(name) {
+  const normalized = String(name || '').trim();
+  if (!normalized) throw new Error('Private storage key is required.');
+  return `${PREFIX}${PRIVATE_PREFIX}${encodeURIComponent(normalized)}`;
+}
+
 function backing() {
   if (typeof localStorage === 'undefined') throw new Error('Local device storage is unavailable.');
   return localStorage;
 }
 
 function isPortableName(name) {
-  return NAME_RE.test(name) && name !== DEVICE_ID && !name.startsWith(AUTH_PREFIX);
+  return NAME_RE.test(name) && name !== DEVICE_ID && !name.startsWith(AUTH_PREFIX) && !name.startsWith(PRIVATE_PREFIX);
 }
 
 function portableEntries(store = backing()) {
@@ -108,6 +115,25 @@ export const storage = Object.freeze({
   },
   resetPortableEntries() {
     return replacePortableEntries([]);
+  }
+});
+
+export const privateStorage = Object.freeze({
+  read(name, fallback = null) {
+    try {
+      const raw = backing().getItem(privateKey(name));
+      return raw === null ? fallback : JSON.parse(raw);
+    } catch {
+      return fallback;
+    }
+  },
+  write(name, value) {
+    backing().setItem(privateKey(name), JSON.stringify(value));
+    return value;
+  },
+  remove(name) {
+    try { backing().removeItem(privateKey(name)); }
+    catch {}
   }
 });
 
