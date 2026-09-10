@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { STYLES, findStyle, unlockedIds, isUnlocked, progressFor, normalizeMetrics, iconFor } from '../src/engines/avatar-vault.js';
 import { createAvatarVaultService } from '../src/app/avatar-vault.js';
 
@@ -75,6 +76,34 @@ const failedSync = await acctVault.select('crown');
 assert.equal(failedSync.selected.id, 'crown', 'Device state stays authoritative even when cloud sync fails.');
 assert.equal(failedSync.synced, false, 'A failed cloud sync must be visibly reported, not silently swallowed.');
 
+// --- corrective regression: reopening retries the idempotent cloud save ---
+let retryAttempts = 0;
+const retryApi = { avatarVault: {
+  load: async () => ({ selected_style: 'crown' }),
+  save: async (userId, styleId) => {
+    assert.equal(userId, 'user-1');
+    assert.equal(styleId, 'crown');
+    retryAttempts++;
+    if (retryAttempts === 1) throw new Error('projection response lost');
+  }
+} };
+const retryVault = createAvatarVaultService({ session: acctSession, privateStorage: fakeStorage(), api: retryApi, progress: richProgress });
+const retryFirst = await retryVault.load();
+assert.equal(retryFirst.selected.id, 'crown', 'A failed reopen reconciliation must not discard the selected device style.');
+await retryVault.load();
+assert.equal(retryAttempts, 2, 'Reopening the Vault must retry cloud projection after a previous partial/uncertain save.');
+
+// --- corrective regression: a cloud-stored locked/unknown style cannot bypass local unlock UX ---
+let repairedStyle = '';
+const tamperedApi = { avatarVault: {
+  load: async () => ({ selected_style: 'crown' }),
+  save: async (_userId, styleId) => { repairedStyle = styleId; }
+} };
+const poorAcctVault = createAvatarVaultService({ session: acctSession, privateStorage: fakeStorage(), api: tamperedApi, progress: guestProgress });
+const repaired = await poorAcctVault.load();
+assert.equal(repaired.selected.id, 'starter', 'A remote style not unlocked by the current local Progress owner must fail closed to an earned local selection.');
+assert.equal(repairedStyle, 'starter', 'Reopen reconciliation must project the normalized earned selection, not a bypassed remote style.');
+
 // --- app owner: account and guest owners are isolated ---
 const sharedStorage = fakeStorage();
 const okApi = { avatarVault: { load: async () => null, save: async () => {} } };
@@ -83,5 +112,21 @@ const acctIso = createAvatarVaultService({ session: acctSession, privateStorage:
 await guestIso.load(); await guestIso.select('crown');
 await acctIso.load();
 assert.equal(acctIso.getState().selected.id, 'starter', 'Guest selection must not leak into a signed-in account owner sharing the same device storage.');
+
+// --- database-boundary integrity contract ---
+// Production deployment is deliberately not performed by this test. The permanent
+// migration must nevertheless encode the two invariants found by the investigation:
+// merge cosmetic into the existing avatar object, and project from the cosmetics
+// upsert in the same DB transaction so a private/public split cannot commit.
+const integritySql = fs.readFileSync('supabase/migrations/20260910_avatar_vault_integrity_reconcile.sql', 'utf8');
+for (const token of [
+  'bible_preserve_member_avatar_cosmetic',
+  "coalesce(old.avatar, '{}'::jsonb) || new.avatar",
+  'bible_avatar_cosmetic_projection',
+  "coalesce(avatar, '{}'::jsonb)",
+  "jsonb_build_object('cosmetic', new.selected_style)",
+  'private.is_bible_congregation_member(congregation_id)',
+  'drop policy if exists "members self avatar update"'
+]) assert.ok(integritySql.includes(token), `Avatar integrity migration missing required invariant: ${token}`);
 
 console.log('BibleQuest v3 Avatar Vault edge suite passed.');
