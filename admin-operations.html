@@ -1,4 +1,21 @@
 <!doctype html>
-<html lang="en-PH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><link rel="icon" href="app-icon.svg" type="image/svg+xml"><link rel="stylesheet" href="admin-operations.css"><title>BibleQuest · Ministry Operations</title></head><body>
-<main class="ops-shell"><header class="ops-top"><a href="admin">← Admin</a><div><b>Ministry Operations</b><small>Online presence · assignments · messages · polls · live rooms</small></div><span id="opsRole">Checking…</span></header><section id="opsApp" class="ops-loading"><div>🐑</div><h1>Loading ministry status…</h1></section></main>
-<script src="cloud-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script><script src="admin-operations.js"></script></body></html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f2">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="BibleQuest v3 Ministry Operations for authorized platform owners and administrators.">
+  <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="src/ui/app.css">
+  <link rel="stylesheet" href="src/ui/admin-operations.css">
+  <title>Ministry Operations · BibleQuest</title>
+</head>
+<body>
+  <main id="admin-operations-app" class="bq-main" tabindex="-1">
+    <section class="bq-panel"><p class="bq-eyebrow">MINISTRY OPERATIONS</p><h1>Operational status</h1><p>Checking signed-in account and operations access…</p></section>
+  </main>
+  <noscript>BibleQuest Ministry Operations requires JavaScript.</noscript>
+  <script type="module" src="src/app/admin-operations-entry.js"></script>
+</body>
+</html>
