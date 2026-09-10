@@ -41,20 +41,26 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     privateStorage.write(key(current), { schema: SCHEMA, owner: current, selected, earned: [...earnedSet] });
   }
 
+  function validLocalSelection(local, earned) {
+    const selected = findStyle(local?.selected).id;
+    return earned.has(selected) ? selected : 'starter';
+  }
+
   function present() {
     const current = owner();
     const m = metrics();
     const local = readLocal(current);
     const earned = unlockedIds(m, local.earned);
-    writeLocal(current, local.selected, earned);
+    const selected = validLocalSelection(local, earned);
+    writeLocal(current, selected, earned);
     return Object.freeze({
       owner: current,
       scope: current.startsWith('account:') ? 'account-cloud' : 'guest-device',
-      selected: findStyle(local.selected),
+      selected: findStyle(selected),
       styles: Object.freeze(STYLES.map(style => Object.freeze({
         ...style,
         unlocked: earned.has(style.id),
-        active: style.id === local.selected,
+        active: style.id === selected,
         progressLabel: progressFor(style, m, earned)
       })))
     });
@@ -66,11 +72,17 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const current = owner();
     try {
       const remote = await api.avatarVault.load(s.user.id);
-      if (remote?.selected_style) {
-        const local = readLocal(current);
-        const earned = unlockedIds(metrics(), local.earned);
-        writeLocal(current, remote.selected_style, earned);
-      }
+      const local = readLocal(current);
+      const earned = unlockedIds(metrics(), local.earned);
+      const remoteStyle = remote?.selected_style ? findStyle(remote.selected_style).id : '';
+      const selected = remoteStyle && earned.has(remoteStyle) ? remoteStyle : validLocalSelection(local, earned);
+      writeLocal(current, selected, earned);
+
+      // Re-run the idempotent cloud save whenever the Vault opens. This repairs a
+      // previous partial/uncertain sync and re-projects the selected cosmetic into
+      // congregation-visible avatar state without making cloud failure fatal locally.
+      try { await api.avatarVault.save(s.user.id, selected); }
+      catch { /* device state remains authoritative until a later retry succeeds */ }
     } catch { /* device state remains authoritative until cloud reachable */ }
     return present();
   }
