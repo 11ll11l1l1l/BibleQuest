@@ -1,16 +1,27 @@
 # Autonomous schedule and interference control
 
 ## Cycle
-Five scheduled tasks run on a staggered three-hour cycle. Agent 1 runs first so current canonical work resumes immediately; Agents 2-5 then prepare the next cycle's research/QA/triage. The following Agent 1 run consumes those outputs.
+Five scheduled tasks run every hour, staggered by 10 minutes. This is intentionally aggressive: each role should use its full execution window and continue to additional useful work rather than stopping after one small task.
 
-Planned JST offsets per cycle:
-- Agent 1 Release Captain: minute 00 of its cycle anchor.
-- Agent 2 Contract: +15 minutes.
-- Agent 3 Architecture/Security: +30 minutes.
-- Agent 4 QA/Regression: +45 minutes.
-- Agent 5 Firewall/Triage: +60 minutes.
+JST schedule:
+- Agent 2 Contract Investigator: minute 28 of every hour.
+- Agent 3 Architecture/Security Investigator: minute 38 of every hour.
+- Agent 4 QA/Regression Investigator: minute 48 of every hour.
+- Agent 5 Firewall/Triage Controller: minute 58 of every hour.
+- Agent 1 Release Captain: minute 08 of every hour.
 
-Each task repeats every 3 hours from its own first start.
+This ordering creates a rolling pipeline. A2-A4 prepare evidence, A5 filters it, and A1 consumes the newest safe conclusions on the following :08 pass. Because Agent 1 is the only canonical writer, the research agents can overlap without creating competing product implementations.
+
+## Full-utilization rule
+Every agent should continue doing useful work for its role until its execution window is exhausted or no safe work remains.
+
+- A2 should investigate the active milestone when needed, then continue several milestones ahead.
+- A3 should inspect active and upcoming ownership/data/security contracts and continue ahead when complete.
+- A4 should audit current candidate evidence and prepare acceptance/regression contracts for upcoming milestones.
+- A5 should process all new reports, mark stale evidence, resolve conflicts, and keep TRIAGE current; when no new findings exist it should verify the current decision basis rather than invent work.
+- A1 should continue through as many safe canonical rebuild-and-verify steps and milestones as the execution permits. Completing one milestone is not a reason to stop if the next milestone can safely begin under the release-gate rules.
+
+Agents must not manufacture changes simply to remain busy. Useful read-only reconnaissance and verification are preferred to unnecessary edits.
 
 ## Why overlap is safe
 Only Agent 1 may write canonical product/release state. Agents 2-4 write different report directories. Agent 5 writes only TRIAGE/triage reports. Shared product implementation is therefore serialized even if scheduled runs overlap in wall-clock time.
