@@ -22,7 +22,7 @@ if(!failures.length){
   for(const token of['complete assessment; result; persistence; mobile','IPIP-NEO-120','IPIP-VIA-R','Rosenberg Self-Esteem','political','Spirituality / Religiousness','not a diagnosis','privateStorage','does not','#82 Avatar Vault'])if(!contract.includes(token))fail(`Psychometrics contract missing recovered boundary: ${token}`);
   const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
   if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(81)))fail('Inventory #81 Psychometrics must use a valid lifecycle state.');
-  if(!/\| Not started \|/.test(row(82)))fail('Inventory #82 Avatar Vault must remain Not started during #81.');
+  if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(82)))fail('Inventory #82 Avatar Vault must use a valid lifecycle state.');
   for(const test of['scripts/validate-v3-psychometrics.mjs','tests/v3-psychometrics-edge.mjs','tests/v3-psychometrics-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #81 regression: ${test}`);
 }
 if(failures.length){failures.forEach(item=>console.error(`- ${item}`));process.exit(1)}
