@@ -1,115 +1,73 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-10 JST during manual #81 development.
+Updated: 2026-09-10 JST after #83 functional verification.
 
-GitHub live refs and exact executed verification evidence are authoritative.
+GitHub live refs and exact executed verification evidence are authoritative. Recover the live refs before writing because concurrent chats/agents may have moved development branches.
 
-## Immutable / frozen baseline
+## Frozen baseline
 
 - Repository: `11ll11l1l1l/BibleQuest`.
-- Latest frozen release: `release/v3.53-personality-profile` at `2c62a63e5bbdedae47834714e65751a57d58b696`.
-- Exact v3.53 bookkeeping verification run: `34471685908` — complete accumulated architecture, edge/security and browser/mobile suite green against that exact SHA.
-- Production v2, `main`, production Supabase and production Cloudflare remain untouched.
-- BibleQuest autonomous A1–A5 scheduled agents remain paused; current work is manual.
-- Normal v3 Actions remain `workflow_dispatch` only. Temporary `push:` triggers belong only to isolated verification branches and are restored afterward.
+- Latest frozen release before the current bookkeeping gate: `release/v3.55-avatar-vault`.
+- Exact frozen SHA: `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`.
+- Production v2, `main`, production Cloudflare, production data and production Supabase remain untouched.
+- Normal v3 Actions are `workflow_dispatch` only. Temporary `push:` triggers belong only on isolated one-shot verifier branches and must be reset away after use.
 
-## #81 Psychometrics exact functional state
+## Current #83 state
 
-- Active branch: `feature/v3-psychometrics`.
-- Frozen base: `release/v3.53-personality-profile` at `2c62a63e5bbdedae47834714e65751a57d58b696`.
-- Exact green functional candidate: `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`.
-- Exact functional verification run: `34473640903` — completed `success`.
-- The isolated verifier explicitly checked out and asserted the exact candidate before executing the complete suite.
-- Accumulated architecture validators, edge/security regressions and complete Playwright/browser-mobile regressions were green.
-- The isolated functional verification workflow was restored to manual-only.
+- Active feature branch: `feature/v3-innovation-suite`.
+- Functional candidate: `daafbd442e666b9dc075c87f5f39e1999bce7adf`.
+- Functional run: `34490525261` — complete `success`.
+- Targeted post-fix run: `34490094401` — `success`.
+- Earlier failed/rejected runs retained for root-cause history: `34485325897`, `34489335450`.
+- #83 is promoted to **Verified** in this bookkeeping transaction; #82 becomes **Regression-tested**.
+- Inventory represented here: **82 Regression-tested / 1 Verified / 0 Implemented / 17 Not started**.
+- Strict implemented-or-better parity: **83/100**.
+- Regression stability: **82/100**.
+- This bookkeeping commit itself still requires its own full exact-SHA verification before release freeze; do not transfer the functional PASS to it.
 
-## #81 verified functional boundary
+## #83 verified boundary
 
-The recovered contract is exactly **complete assessment; result; persistence; mobile**.
+Personal Mission is the only new #83 runtime slice. It reuses Open Review's existing overview/due/mastery information and adds no parallel review/progress/store/backend owner. The route is `my-mission`; `mission` remains Daily Mission's route. Bible World and Church Challenges remain outside this slice and are not silently counted complete.
 
-- static Psychometrics item/source/safety data owns no storage, DOM, backend or progress behavior;
-- `src/engines/psychometrics.js` is the sole #81 scoring/normalization owner;
-- `src/app/psychometrics.js` owns assessment lifecycle and owner-scoped persistence through `privateStorage`;
-- `src/features/psychometrics/index.js` is presentation/event forwarding only;
-- `src/app/router.js` remains navigation/history owner;
-- Quick Transform and Personality Profile retain separate existing owners;
-- NEO-120, VIA-R-96 and Rosenberg-10 retain deterministic reverse-keyed scoring and exact item-count contracts;
-- guest/account states are isolated and private/non-portable;
-- political/relativism wording, Spirituality/Religiousness and Depression facet names cannot become political, doctrinal, salvation, morality or diagnostic scores;
-- no XP, progress, leaderboard, assignment, congregation, Scripture or permission authority is derived from psychometric results;
-- no schema, migration, RLS, RPC, Edge Function, production Supabase or production Cloudflare change was introduced.
+Files/evidence central to #83:
+- `INNOVATION_SUITE_V3.md`
+- `src/engines/mission.js`
+- `src/app/mission.js`
+- `src/features/mission/index.js`
+- `src/features/more/index.js`
+- `src/app/bootstrap.js`
+- `scripts/validate-v3-innovation-suite.mjs`
+- `tests/v3-innovation-suite-edge.mjs`
+- `tests/v3-innovation-suite-smoke.mjs`
 
-Permanent #81 evidence:
-- `PSYCHOMETRICS_V3.md`;
-- `scripts/validate-v3-psychometrics.mjs`;
-- `tests/v3-psychometrics-edge.mjs`;
-- `tests/v3-psychometrics-smoke.mjs`;
-- accumulated invocation in `.github/workflows/v3-regression.yml`.
+## Reproduced defects and permanent protection
 
-## Defect / root-cause record
+- Earlier #83 flow used a route already owned by Daily Mission; Personal Mission was moved to `my-mission`.
+- After that change, targeted run `34489335450` still reproduced a shell-mount failure.
+- Root cause: `src/app/bootstrap.js` created Personal Mission with `openReview` before the lexical `const openReview` initialization, causing a Temporal Dead Zone exception before `mountShell`.
+- Fix at `daafbd442e666b9dc075c87f5f39e1999bce7adf`: initialize the existing Open Review owner first, then create Personal Mission.
+- Targeted run `34490094401` passed; full run `34490525261` passed all accumulated architecture, edge/security and browser/mobile tests. `tests/v3-shell-smoke.mjs` remains permanent regression protection.
 
-- Candidate `1bd77237de6b08f18794387bf5c1d9c8098a3e4a`, run `34472943815`: the new #81 validator incorrectly required duplicated UI safety sentences despite centralized `PSYCHOMETRICS_SAFETY` ownership. The validator was corrected to verify the centralized safety reference; runtime behavior and earlier coverage were not weakened.
-- Candidate `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`, run `34473640903`: complete accumulated functional suite green.
-- First bookkeeping candidate `7eb305d0998654aeb3bcdc987f65ebd960b22e20`, run `34474359203`: exact SHA assertion passed, but the older #80 Personality Profile validator still hard-coded #81 to remain `Not started`. This stale future-state assertion was reproduced only after #81 legitimately became Verified. The #80 validator now accepts #81's normal lifecycle states; the dedicated #81 validator remains authoritative. Runtime code and #81 acceptance coverage were unchanged. The failed verifier was restored to manual-only.
+## #84 recovered next boundary
 
-## Bookkeeping transaction: confirmed final
+#84 Tutorial/onboarding trainer remains **Not started** until v3.56 freezes. Retained production evidence establishes a trainer-led multi-step guide with completion persistence, Next/Back/skip/finish, no duplicate overlay, a persistent force-open launcher, optional recovery-code safeguarding after account creation, action buttons into real app destinations, and offline/PWA availability. #85 Tutorial avatar reactions is separate and must remain Not started while #84 is implemented unless its own milestone is explicitly opened.
 
-Bookkeeping candidate `cc591aac786a91183eb5a7a5ad958ae7314a9577` (tip of `feature/v3-psychometrics`) passed isolated verifier `verify/v3.54-psychometrics-bookkeeping-cc591-20260910`, run `34474642839` — exact-SHA assertion, complete accumulated architecture validators, edge/security regressions and browser/mobile regressions all green. Verifier restored to manual-only.
+Key retained references already identified:
+- production `onboarding-tutorial.js`;
+- production `tutorial-launcher.js`;
+- commit `77052e4a1d691fbc9f7d55d313d451f0268e67cb` (`Build trainer-led BibleQuest feature tutorial`);
+- commit `0a282336191b8c5b3250b99a55f7f9ba44f2549d` (`Make tutorial permanently easy to reopen`);
+- commit `c01df845d519b1055ceca3260a80961b072a44a1` (production boot, privacy and offline/PWA onboarding guards).
 
-- #80 Personality profile — **Regression-tested**;
-- #81 Psychometrics suite — **Verified**;
-- **80 Regression-tested, 1 Verified, 0 Implemented, 19 Not started**;
-- strict implemented-or-better parity **81/100**;
-- regression stability **80/100**.
+## Exact next action
 
-`release/v3.54-psychometrics` is frozen at exactly `cc591aac786a91183eb5a7a5ad958ae7314a9577`. This is now final.
+1. Treat the live head of `feature/v3-innovation-suite` containing this bookkeeping transaction as the #83 bookkeeping candidate.
+2. Run an isolated exact-SHA complete bookkeeping verifier: SHA assertion + all accumulated architecture + all edge/security + all browser/mobile regressions.
+3. On failure, correct only the reproduced root cause and create a new bookkeeping candidate.
+4. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.56-innovation-suite` at exactly that SHA.
+5. Verify the release branch points to exactly that SHA.
+6. Create `feature/v3-tutorial-onboarding` from v3.56 and continue #84 automatically from the recovered references above.
 
-## #82 next boundary
+## Non-negotiable safety
 
-#82 Avatar Vault: Not started, now the active milestone. `feature/v3-avatar-vault` created from `release/v3.54-psychometrics` (currently identical, no #82 commits yet). Its authoritative contract is **browse; select; persist; render fallback**.
-
-Legacy contract recovered from `avatar-vault.js` (main, reference only — legacy `window.BQ*`, not valid v3 shape): 15 metric-gated cosmetic styles; selection in `localStorage` with optional Supabase sync to `bible_avatar_cosmetics` / `bible_congregation_members`; avatar-render patch overlay for the cosmetic glyph.
-
-Existing v3 owners to reuse: `src/app/session.js`, `src/app/store.js` (owner-scoped `privateStorage`), `src/app/router.js`; `src/app/personality-profile.js` + `src/features/personality-profile/` is the closest existing select/persist/render pattern.
-
-## #82 bookkeeping transaction prepared
-
-Exact functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd` passed isolated verifier `verify/v3.55-avatar-vault-functional-58982-20260910`, run `34483151962` (exact-SHA assertion + complete accumulated architecture/edge/browser-mobile suite, including the new `AVATAR_VAULT_V3.md`, `scripts/validate-v3-avatar-vault.mjs`, `tests/v3-avatar-vault-edge.mjs`, `tests/v3-avatar-vault-smoke.mjs`). Verifier restored to manual-only.
-
-Committed for #82: `supabase/migrations/20260910_avatar_vault_visibility.sql` (completes a pre-existing gap: the `avatar` column on `bible_congregation_members` was granted column privileges in an earlier migration but never created, and had no RLS UPDATE policy), `src/engines/avatar-vault.js`, `src/app/avatar-vault.js`, `src/features/avatar-vault/index.js`, `src/core/api.js` (`avatarVault.load/save`, leaderboard directory now selects `avatar`), `src/app/leaderboards.js` (renders equipped cosmetic on ranked rows), `src/app/bootstrap.js` + Grow page wiring, plus the #81 validator's stale #82-must-stay-Not-started assertion was narrowed (same defect class already documented for #80/#81).
-
-v1 scope decision (recorded in `AVATAR_VAULT_V3.md`, not silent): only 5 of 15 legacy styles are unlock-evaluable in v1 (xp/streak-gated via Progress); the other 10 are catalogued with `available:false` and a `needsOwner` tag pending metric owners (question counts, recall reps, couples, community, assignments, Journey mastery) that don't exist in v3 yet. Follow-up sub-milestone, not #83 scope.
-
-- #80 Personality profile — **Regression-tested**;
-- #81 Psychometrics suite — **Regression-tested** (survived #82's accumulated suite);
-- #82 Avatar Vault — **Verified**;
-- **80 Regression-tested, 1 Verified, 0 Implemented, 18 Not started**;
-- strict implemented-or-better parity **82/100**;
-- regression stability **81/100**.
-
-These values are not final until the corrected exact bookkeeping tip passes its own complete accumulated workflow. No PASS transfers from an earlier SHA.
-
-## #83 next boundary
-
-#83 Innovation suite remains Not started. Its authoritative contract is **inventory-specific workflows documented before migration**. No #83 product write belongs before v3.55 freezes.
-
-## Exact next executable sequence
-
-1. Confirm the live tip of `feature/v3-avatar-vault` after this bookkeeping transaction; reconcile concurrent movement before further writes.
-2. Treat that exact tip as a new #82 bookkeeping candidate.
-3. Create an isolated verifier from that exact SHA with only a temporary push trigger plus exact checkout/assertion.
-4. Execute the complete accumulated architecture, edge/security and browser/mobile suite.
-5. On any failure, correct only the reproduced cause and verify another exact SHA without weakening coverage.
-6. On full green, restore the verifier to manual-only and freeze `release/v3.55-avatar-vault` at exactly the green bookkeeping SHA.
-7. Only then create `feature/v3-innovation-suite` from v3.55 and begin #83.
-
-## Non-negotiable continuation rules
-
-- Rebuild-and-verify; never patch-and-accumulate.
-- One source of truth per responsibility.
-- Never claim a test passed unless it actually executed against the claimed SHA.
-- No PASS transfer between changed SHAs.
-- Normal Actions remain manual-only; temporary `push:` belongs only on isolated verification branches.
-- Never weaken/delete/skip accumulated regression coverage to get green.
-- Never modify `main`, production v2, production Cloudflare or production Supabase without separate explicit authorization.
-- Never move an existing frozen `release/v3.*` or safety ref.
+Never modify `main`, production v2, production Cloudflare, production data, or production Supabase without separate explicit authorization. Never freeze an untested SHA or use a temporary trigger commit as a release SHA.

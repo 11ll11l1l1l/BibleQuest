@@ -2,253 +2,80 @@
 
 Updated: 2026-09-10 JST
 
-This timeline is a progress view over `FEATURE_INVENTORY_V3.md`; the inventory remains authoritative. BibleQuest v3 uses rebuild-and-verify rather than patch-and-accumulate.
+This is the current progress view over `FEATURE_INVENTORY_V3.md`, which remains authoritative. Detailed older milestone history remains preserved in Git history; this working timeline is intentionally kept focused on the current frozen line and active gates.
 
 ## Current completion snapshot
 
 - **Total old-version capabilities:** 100
-- **Inventory states after the #72 functional gate:** 71 Regression-tested / 1 Verified / 0 Implemented / 28 Not started
-- **Implemented or better:** 72 / 100 (**72% strict parity completion**)
-- **Official regression stability:** 71 / 100
-- **Latest frozen checkpoint:** `release/v3.44-leaderboards` at `b14415bb9b59c1eed109f02a822a48298844f8d1`
-- **v3.44 bookkeeping:** `34412074523` — complete accumulated suite green against the frozen SHA
-- **#100 Backup/export/import/reset:** Regression-tested after surviving #62; frozen in v3.35
-- **#62 Couples/family local tools:** Regression-tested; frozen in v3.36 and green in the later #63 suite
-- **#63 Couples cloud:** Regression-tested; frozen in v3.37 and green in the later #64 suite
-- **#64 Journey Groups:** Regression-tested through the later complete #65 suite
-- **#65 Encouragements:** Regression-tested through the later complete #67 suite
-- **#67 Community Bridge:** Regression-tested through the later complete #68 suite
-- **#68 Presence:** Regression-tested through the later complete #69 suite; frozen in v3.41
-- **#69 Team Center:** Regression-tested through the later complete #70 suite; frozen in v3.42
-- **#70 Trusted score events:** Regression-tested through the complete #71 suite; frozen in v3.43
-- **#71 Leaderboards:** Regression-tested after surviving the complete #72 suite; frozen in v3.44
-- **#72 Congregation Recognition:** Verified; exact candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27`, functional run `34414579164`
+- **Inventory after #83 functional verification/bookkeeping promotion:** 82 Regression-tested / 1 Verified / 0 Implemented / 17 Not started
+- **Implemented or better:** 83 / 100 (**83% strict parity completion**)
+- **Official regression stability:** 82 / 100
+- **Latest frozen checkpoint before #83 bookkeeping:** `release/v3.55-avatar-vault` at `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`
+- **#83 functional candidate:** `daafbd442e666b9dc075c87f5f39e1999bce7adf`
+- **#83 targeted verification:** run `34490094401` — green
+- **#83 complete functional verification:** run `34490525261` — green
+- **#84 Tutorial/onboarding trainer:** next, but no product write until #83 bookkeeping passes and v3.56 freezes
 - **#15 Japanese furigana and Kids #38–40:** intentionally deferred
-- **Production:** v2 remains live; `main`, production Supabase and production Cloudflare remain untouched
+- **Production:** v2 remains live; `main`, production Supabase/data and production Cloudflare remain untouched
 
-## Rebuild sequence
+## Recent frozen release line
 
-| Milestone | Scope | State | Evidence / next action |
-|---:|---|---|---|
-| 1 | Shell / navigation | Complete | #1–5 Regression-tested |
-| 2 | Authentication / session | Complete | #6–10 Regression-tested |
-| 3 | Bible data / Reader language/source | Frozen except deferred furigana | #11–14, #16–23 Regression-tested; #15 deferred |
-| 4 | User progress / state | Complete | #24–27 Regression-tested |
-| 5 | Lesson engine | Complete | #31 Regression-tested |
-| 6 | Daily Mission | Complete | #28–30 Regression-tested |
-| 7 | Transform | Frozen complete | #46–48 Regression-tested |
-| 8 | Audio / Live Recordings / Media | Frozen complete | #57–61 Regression-tested |
-| 9 | Games core | Frozen core | #32–37 and #41 Regression-tested; Kids #38–40 deferred |
-| 10 | Bible-study core | Frozen | #49–54 plus #20 Regression-tested |
-| 11 | Reader/source completion | Frozen through NLT | v3.24; #15 deferred |
-| 12 | Source provenance | Frozen | v3.25; #90 Regression-tested |
-| 13 | Doctrinal safety/context | Frozen | v3.26; #89 Regression-tested |
-| 14 | Private local notes | Frozen | v3.27; #55 Regression-tested |
-| 15 | Cloud Notes | Frozen | v3.28; #56 Regression-tested |
-| 16 | Congregation membership/roles | Frozen | v3.29; #66 Regression-tested |
-| 17 | Operational recovery/error boundary | Frozen | v3.30; #96 Regression-tested |
-| 18 | Client diagnostics | Frozen | v3.31; #95 Regression-tested |
-| 19 | PWA install/manifest | Frozen | v3.32; #97 Regression-tested |
-| 20 | Offline Shell | Frozen | v3.33; #98 Regression-tested |
-| 21 | Offline opened Bible packs | Frozen | v3.34; #99 Regression-tested |
-| 22 | Backup/export/import/reset | Frozen | v3.35; #100 Regression-tested after #62 suite |
-| 23 | Couples/family local tools | Frozen | v3.36; #62 Regression-tested after #63 suite |
-| 24 | Couples cloud | Frozen | v3.37; #63 Regression-tested after #64 suite |
-| 25 | Journey Groups | Frozen | v3.38; #64 Regression-tested through #65 |
-| 26 | Encouragements | Frozen | v3.39; #65 Regression-tested through #67 |
-| 27 | Community Bridge | Frozen | v3.40; #67 Regression-tested through later suite |
-| 28 | Presence | Frozen | v3.41; bookkeeping `34357429102` |
-| 29 | Team Center | Frozen | v3.42; bookkeeping `34372856979`; #69 Regression-tested through #70 |
-| 30 | Trusted score events | Frozen | v3.43; bookkeeping `34407984154`; #70 Regression-tested through #71 |
-| 31 | Leaderboards | Frozen | v3.44; functional `34411253995`; bookkeeping `34412074523`; #71 Regression-tested through #72 |
-| 32 | Congregation Recognition | Verified; freeze pending | functional `34414579164`; run exact bookkeeping candidate next |
-| 33 | Full old-vs-new audit | Later gate | reconcile all 100 rows before final parity declaration |
-| 34 | Accumulated mobile regression | Ongoing | every milestone carries browser/mobile coverage |
-| 35 | Production deployment | Not started | only after selected parity/stability acceptance gates |
+- `release/v3.53-personality-profile` — `2c62a63e5bbdedae47834714e65751a57d58b696`
+- `release/v3.54-psychometrics` — `cc591aac786a91183eb5a7a5ad958ae7314a9577`
+- `release/v3.55-avatar-vault` — `60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712`
+- `release/v3.56-innovation-suite` — pending exact bookkeeping verification/freeze
 
-## Frozen release line
+## Recent milestone sequence
 
-- `release/v3.14-timeline` — `ddc40d54125185bfd47f96765182e76d89cb37c3`
-- `release/v3.15-guided-study` — `cf8740e623460f062c321d01d903267e79885c4c`; bookkeeping `34081724365`
-- `release/v3.16-deep-questions` — `e287fb6179bddece7d9cb31e5496924e524f83fd`; functional `34082339971`; bookkeeping `34082727818`
-- `release/v3.17-story-journey` — `7690cc18b723fda1bed7802d2a56f49648f7f6b0`; functional `34083462882`; bookkeeping `34083885682`
-- `release/v3.18-wisdom-situations` — `fd344208e12942d911f05d02b4e99d5b735a7c29`; functional `34084573320`; bookkeeping `34084926656`
-- `release/v3.19-adaptive-learning` — `39ab8269e4fd83a09138404bd9466df0c70ee30e`; functional `34105551106`; bookkeeping `34106252587`
-- `release/v3.20-open-review` — `2da79e9ab04cb05d63005b6cda7eb4471c149e92`; functional `34108734009`; bookkeeping `34109591650`
-- `release/v3.21-step-context` — `55f4e5551d73830174eadd2d6dbfaac2a6cb0bcd`; functional `34114885252`; bookkeeping `34118918425`
-- `release/v3.22-japanese-kougo` — `06eda2948db3a4c5462bc24a2b79596fa7d275f0`; repaired functional `34120997990`; bookkeeping `34122128228`
-- `release/v3.23-japanese-vocabulary` — `7f83415b7d61d8fbc615b8261fca9dc28e2595e7`; functional `34123075200`; bookkeeping `34123607629`
-- `release/v3.24-nlt-licensed` — `37ff989dac122f31a53f9bc771639e3ca59b4b03`; functional `34126567141`; bookkeeping `34127324969`
-- `release/v3.25-source-provenance` — `04f20094a03cd0b189d1626ef4f372917ce599e3`; functional `34130447654`; bookkeeping `34160651319`
-- `release/v3.26-doctrinal-safety` — `e223ac5e5022db2dc609e8fe15df9f9d020d4e75`; functional `34166910207`; bookkeeping `34168229627`
-- `release/v3.27-private-local-notes` — `e8b58b1bd9c9053243bb5d394c2d2afae44c9f59`; bookkeeping `34169778300`
-- `release/v3.28-cloud-notes` — `1b8cb0a4847b1fc633ce23412982c91c38825148`; bookkeeping `34184699391`
-- `release/v3.29-congregation-membership` — `7bf024ba4f2b6501f6fb9e87ddc010c84426c7d1`; bookkeeping `34200768014`
-- `release/v3.30-operational-recovery` — `7ec0290a50086112210c4c301db3288b970a2cc0`; bookkeeping `34203169381`
-- `release/v3.31-client-diagnostics` — `61af8aaee121356d6ef0388130df2b545ff943d9`; bookkeeping `34208493773`
-- `release/v3.32-pwa-install` — `200d69ec37b9aba48e8b926dfef7f2a8203d4855`; bookkeeping `34213223642`
-- `release/v3.33-offline-shell` — `6c7e2e93d07def6e104e48c606dbbb3a7d3e48f7`; bookkeeping `34216091431`
-- `release/v3.34-offline-bible-packs` — `bfba29fdb500c2f8ea3f466e941f043dae908f26`; functional `34217190770`; bookkeeping `34218225949`
-- `release/v3.35-backup-export-import-reset` — `cb72905992b2549d727b4e74f5887bfc53210a06`; functional `34219329591`; bookkeeping `34220313765`
-- `release/v3.36-couples-family-local` — `488fea911cc432c9843a2af39480b6f2cc67711e`; corrected functional `34229105566`; bookkeeping `34236023685`
-- `release/v3.37-couples-cloud` — `f706896d8f4e8d2ee19e607a38cc87dada70d671`; functional `34238007365`; bookkeeping `34240373295`
-- `release/v3.38-journey-groups` — `7c06c3380eaac0e20e579ae26453611e63ac564d`; corrected functional `34258746664`; bookkeeping `34259986598`
-- `release/v3.39-encouragements` — `41c42a4030140ac1387612fbdbe3334baa5676a7`; corrected functional `34337262620`; bookkeeping `34337802329`
-- `release/v3.40-community-bridge` — `fca8edd2e18015b246aced2dff6590308ff6bde2`; functional `34340063733`; bookkeeping `34340610144`
-- `release/v3.41-presence` — `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c`; functional `34354132909`; bookkeeping `34357429102`
-- `release/v3.42-team-center` — `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4`; functional `34367001625`; bookkeeping `34372856979`
-- `release/v3.43-trusted-score-events` — `80d01efa06f3ff08a0284389cf027d16afd35225`; corrected functional `34407306308`; bookkeeping `34407984154`
-- `release/v3.44-leaderboards` — `b14415bb9b59c1eed109f02a822a48298844f8d1`; corrected functional `34411253995`; bookkeeping `34412074523`
+| Inventory capability | State now | Evidence / boundary |
+|---:|---|---|
+| #79 Linked activities/challenges | Regression-tested | retained by later full suites |
+| #80 Personality profile | Regression-tested | frozen v3.53 and retained by later suites |
+| #81 Psychometrics suite | Regression-tested | frozen v3.54 and retained by later suites |
+| #82 Avatar Vault | Regression-tested | frozen v3.55; survived #83 full suite |
+| #83 Innovation suite | Verified | exact functional candidate `daafbd442e666b9dc075c87f5f39e1999bce7adf`; run `34490525261` |
+| #84 Tutorial/onboarding trainer | Not started | recovered next boundary; waits for v3.56 freeze |
+| #85 Tutorial avatar reactions | Not started | separate capability; do not bundle silently with #84 |
 
-## #100 Backup/export/import/reset — Regression-tested
+## #83 functional verification chronology
 
-- Portable local-state ownership remains in `src/core/storage.js`; versioned backup workflow ownership is in `src/app/backup.js`.
-- `device-id`, auth/session keys, cloud/server state, caches and unrelated browser storage are excluded.
-- Import prevalidates the full snapshot and attempts rollback if replacement fails.
-- Corrected functional candidate `f7419897af9d10af92fd2cbe22e7cfb4ddcd6215` passed run `34219329591`.
-- Exact bookkeeping candidate `cb72905992b2549d727b4e74f5887bfc53210a06` passed run `34220313765` and is frozen as v3.35.
-- #100 survived the complete #62 functional suite and advanced to Regression-tested.
+1. Earlier #83 verification run `34485325897` reached browser smoke but the shell did not mount.
+2. Personal Mission route ownership was corrected to `my-mission` because `mission` is already owned by Daily Mission.
+3. Candidate `f6f29370ebc7e151e3e5b447899a82dbe65ddeb7`, targeted run `34489335450`, still reproduced the shell-mount failure after #83 architecture/edge checks passed.
+4. Root cause was isolated to `src/app/bootstrap.js`: `createMissionService({openReview})` executed before lexical `const openReview` initialization, throwing before shell mount.
+5. Candidate `daafbd442e666b9dc075c87f5f39e1999bce7adf` reorders initialization only: existing Open Review owner first, Personal Mission second.
+6. Exact-SHA targeted run `34490094401` passed shell + #83 smoke.
+7. Exact-SHA full run `34490525261` passed the complete accumulated architecture, edge/security and browser/mobile suite.
+8. #83 is therefore promoted to Verified in bookkeeping; #82 advances to Regression-tested.
 
-## #62 Couples/family local tools — Regression-tested
+## #84 recovered next boundary
 
-- Retained `couples.js` proved eight categories, 32 cards, favorites/discussed state, 7-day practices, listening drills, pass-the-phone check-in, Repair Room, Us & God and Date Night.
-- Retained `couple-cloud.js` proves the local/cloud split; #62 does not own Supabase/session/cloud behavior.
-- `src/content/couples-family.js` owns recovered static content; `src/app/couples-family.js` owns local state through shared storage; `src/features/couples-family/index.js` owns view behavior.
-- BSB references hand off through the existing Reader owner.
-- Initial candidate `500d5e86bec2b8a16cfad485d5f3869e9277668b` exposed only an ambiguous strict Playwright selector in the new check-in result.
-- Corrected exact candidate `964fde5ad3381e4fe4d571c15591040c4e55fecb` passed complete run `34229105566`.
-- Exact bookkeeping candidate `488fea911cc432c9843a2af39480b6f2cc67711e` passed run `34236023685` and is frozen as v3.36.
-- #62 survived the later complete #63 functional suite and advanced to Regression-tested.
+Retained production history establishes a trainer-led onboarding/tutorial with:
+- first-run completion persistence;
+- Next/Back, skip/temporary close and finish;
+- no duplicate tutorial overlay;
+- a permanent launcher that can force-reopen the guide;
+- an optional post-registration recovery-code step with confirmation before dismissal;
+- privacy guards preventing recovery-code logging/tracking;
+- action buttons into real BibleQuest destinations;
+- offline/PWA availability;
+- visual trainer reactions tracked separately as inventory #85.
 
-## #63 Couples cloud — Regression-tested
-
-- `src/app/couples-cloud.js` owns authenticated pairing, normalized shared state and fail-closed cloud orchestration; `src/core/api.js` remains the sole Supabase boundary.
-- Existing `bq-couple` and RLS-protected `bible_couple_shared` contracts are reused without a new production migration.
-- Shared history is append-only and limited to journey completions, commitments and read-only challenge history; local/private/Transform/account data is excluded.
-- Exact functional candidate `a7fdf3354efb688163d35fec8e2df3a93b4e9294` passed complete run `34238007365`.
-- The one-shot functional branch was reset from trigger `936cf0755abcd50ef438761c8bfb91dd019d260d` to the clean candidate after verification.
-- Exact bookkeeping candidate `f706896d8f4e8d2ee19e607a38cc87dada70d671` passed run `34240373295` and is frozen as v3.37.
-- #63 survived the later complete #64 functional suite and advanced to Regression-tested.
-
-## #64 Journey Groups — Regression-tested
-
-- `src/app/journey-groups.js` owns group normalization, authenticated membership orchestration and fail-closed permissions; `src/core/api.js` remains the sole Supabase boundary.
-- Existing `bq-journey-group`, `bible_groups` and `bible_group_members` contracts are reused without a production migration.
-- The recovered lifecycle covers create, join, view, invite-code rotation and non-owner leave for 2–6-member groups; owning-leader leave fails closed.
-- Initial run `34244782912` exposed only the workflow/validator command-shape mismatch recorded as `V3-WORKFLOW-LOOP-001`.
-- Corrected exact candidate `c49ce887bd28323292b6f1b60f7689a1aa194615` passed the complete accumulated architecture, edge and browser/mobile suite in run `34258746664`.
-- The one-shot branch was reset from trigger `9f9590b624c1957d31c6d3a4b8c6d65130b27db9` to the clean candidate after verification.
-- Exact bookkeeping candidate `7c06c3380eaac0e20e579ae26453611e63ac564d` passed run `34259986598` and is frozen as v3.38.
-- #64 survived the later complete #65 functional suite and advanced to Regression-tested.
-
-## #65 Encouragements — Regression-tested
-
-- Preset-only, group-wide encouragements reuse verified Journey Group membership and retained RLS-protected rows.
-- One v3 owner normalizes received rows and blocks duplicate sends; the central API alone reads Supabase and invokes the authenticated send action.
-- The trusted function derives the sender; one database trigger assigns the UTC day for every insert. An additive partial unique index prevents direct, legacy and concurrent duplicates without rewriting retained v2 rows.
-- Exact code candidate `b2fb1013822891930e017c8da0ea38e3e5c68b9e` passed the complete accumulated architecture, edge and browser/mobile suite in run `34337262620`.
-- Exact bookkeeping candidate `41c42a4030140ac1387612fbdbe3334baa5676a7` passed run `34337802329` and is frozen as v3.39; draft PR `#89` remains the review surface.
-- #65 survived the later complete #67 functional suite and advanced to Regression-tested.
-
-## #67 Community Bridge — Regression-tested
-
-- One read-only projection composes the verified Session, Congregation Membership, Journey Groups, and Encouragements owners without storage or cloud access of its own.
-- It exposes only minimal congregation/group metadata plus an encouragement count and connects the three verified destinations through the existing Router owner.
-- Exact code candidate `4612f0501e5cd37e82c3d259094a0d91cf804e2d` passed the complete accumulated suite in functional run `34340063733`.
-- The one-shot branch was reset from trigger `ef62892ead75098928005fe751582c394d8f832c` to the clean candidate after verification.
-- Exact bookkeeping candidate `fca8edd2e18015b246aced2dff6590308ff6bde2` passed run `34340610144` and is frozen as v3.40.
-- #67 survived the complete #68 Presence suite and advanced to Regression-tested.
-
-## #68 Presence — Regression-tested
-
-- One lifecycle owner handles authenticated online writes, 60-second heartbeat, 120-second stale interpretation and bounded cleanup through the central API boundary.
-- Exact functional candidate `7e5c6fb8938ef8ef95fbdc7275bb00060ca76334` passed run `34354132909`.
-- Exact bookkeeping candidate `f8c576c3285a6a27e1b8e3cc2f6ee487d519650c` passed run `34357429102` and is frozen as v3.41.
-- #68 survived the complete #69 Team Center suite and advanced to Regression-tested.
-
-## #69 Team Center — Regression-tested
-
-- One Team Center owner projects active `game_team` rosters and existing congregation roles; the central API owns reads and invokes the trusted `bq-team` mutation boundary.
-- Ministry-capable roles may create/add/remove/rename; creator/admin archive and creator-member retention fail closed in both client orchestration and the trusted function.
-- Initial run `34366738460` exposed only an inaccurate archive fixture that returned data the production `active = true` query filters out.
-- Corrected exact candidate `fa6f6546ccf41b8c83621bd10fe3b92b5ca75f49` passed the complete accumulated suite in run `34367001625`.
-- Exact bookkeeping candidate `b90bc7646f0a5464d3efa2c1f201ae3ba1827cf4` passed the complete suite in run `34372856979` and is frozen as v3.42.
-- #69 survived the complete #70 Trusted score events suite and advanced to Regression-tested.
-
-## #70 Trusted score events — Regression-tested
-
-- One client owner normalizes authenticated congregation-scoped score claims and canonical event IDs; the central API invokes only the retained authenticated `bq-score` trusted-server boundary.
-- The trusted server owns supported activity sources, point derivation, delegated scoring, membership checks, caps, writes, duplicate handling and badge evaluation; the browser never becomes an arbitrary scoring authority.
-- Initial exact candidate `33c5f9cc446d61bcbda7a15262d41e3172020447` reached the new browser test in run `34406989680`; every earlier architecture, edge and browser regression passed, then the #70 smoke fixture failed to parse because of one missing closing brace.
-- Corrected exact candidate `7d3cc6354ac5ff2b40004f6d66b32c5740c20b3b` passed the complete accumulated architecture, edge and browser/mobile suite in run `34407306308`.
-- Exact bookkeeping candidate `80d01efa06f3ff08a0284389cf027d16afd35225` passed run `34407984154` and is frozen as v3.43.
-- #70 survived the complete #71 Leaderboards suite and advanced to Regression-tested.
-
-## #71 Leaderboards — Regression-tested
-
-- `src/app/leaderboards.js` is the sole period/lane normalization and ranking-projection owner; `src/core/api.js` remains the only browser Supabase boundary.
-- The recovered congregation-local board retains Today / This Week / All Time and eight lanes: Overall, Knowledge, Reading, Wisdom, Mastery, Consistency, Group and Couples.
-- The browser consumes the retained `public.bible_leaderboard(uuid,timestamptz)` trusted aggregate and active congregation directory, keeps zero-point active members visible, and excludes former/out-of-scope identities.
-- Rankings use points descending with deterministic name/user tie-breaking. Overall is only a presentation sum of trusted category aggregates; #71 does not author point values or own XP, badges or awards.
-- Initial candidate `4286669555e8a1ce7faf59a9d74f28c920d9ca06` exposed a literal API-export adjacency assumption in the #70 validator before runtime testing; the validator was corrected to check the existing boundaries structurally.
-- Candidate `d44479b4543a4e56f7507c8836245a918e1c3b57` then exposed a real #71 timezone defect: period cutoffs inherited the CI runner's UTC timezone rather than the congregation calendar.
-- The owner now uses the active congregation's existing IANA timezone when present, with browser-local timezone only as fallback; permanent tests cover Asia/Tokyo and America/New_York.
-- Corrected exact candidate `08345c522c007679915d9a072db8cbd81fdd4eec` passed the complete accumulated architecture, edge and browser/mobile suite in run `34411253995`.
-- Exact bookkeeping candidate `b14415bb9b59c1eed109f02a822a48298844f8d1` passed run `34412074523` and is frozen as v3.44.
-- #71 survived the complete #72 Congregation Recognition suite and advanced to Regression-tested.
-
-## #72 Congregation Recognition — Verified
-
-- Retained congregation recognition and the later leader-dashboard role/privacy correction were recovered before implementation.
-- `src/app/congregation-recognition.js` is the sole v3 recognition orchestration owner; `src/core/api.js` remains the sole browser Supabase boundary and `src/features/congregation-recognition/index.js` remains presentation-only.
-- Active congregation members may view visible persisted recognition and earned congregation badges allowed by existing RLS.
-- Persisted special recognition is limited to `leader`, `pastor` and `admin`; `facilitator` remains view-only, and award targets must be active members of the selected congregation.
-- Nine retained award presets are supported with bounded optional custom title/note. Existing Supabase RLS remains the independent final authorization boundary.
-- #72 does not calculate score points, duplicate Leaderboards ownership, mutate local XP, or expose private study/Couple Journey/account data.
-- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed the complete accumulated architecture, edge and browser/mobile suite in run `34414579164`.
-- The isolated functional verification branch was reset to the clean candidate after success.
-- A separate exact-SHA bookkeeping run is required before freezing v3.45.
-
-## Current bookkeeping
-
-- #15 Japanese furigana — **Not started / intentionally deferred**
-- Kids #38–40 — **Not started / intentionally deferred**
-- #89 Doctrinal safety/context — **Regression-tested**
-- #90 Source labels/attribution — **Regression-tested**
-- #95 Client diagnostics — **Regression-tested**
-- #96 Operational recovery/error boundary — **Regression-tested**
-- #97 PWA install/manifest — **Regression-tested**
-- #98 Offline Shell — **Regression-tested**
-- #99 Offline opened Bible packs — **Regression-tested**
-- #100 Backup/export/import/reset — **Regression-tested**
-- #62 Couples/family local tools — **Regression-tested**
-- #63 Couples cloud — **Regression-tested**
-- #64 Journey Groups — **Regression-tested**
-- #65 Encouragements — **Regression-tested**
-- #67 Community Bridge — **Regression-tested**
-- #68 Presence — **Regression-tested**
-- #69 Team Center — **Regression-tested**
-- #70 Trusted score events — **Regression-tested**
-- #71 Leaderboards — **Regression-tested**
-- #72 Congregation Recognition — **Verified**
-- Inventory states — **71 Regression-tested / 1 Verified / 0 Implemented / 28 Not started**
-- Strict parity — **72/100**
-- Official regression stability — **71/100**
+Primary retained evidence: `onboarding-tutorial.js`, `tutorial-launcher.js`, commits `77052e4a...`, `0a282336...`, and `c01df845...`.
 
 ## Next sequence
 
-1. Run the exact #72 promotion/bookkeeping candidate through the complete accumulated suite.
-2. Freeze the green exact SHA as `release/v3.45-congregation-recognition`.
-3. Begin #73 Assignments from that frozen release; keep Kids #38–40 and Japanese furigana #15 deferred and production deployment out of scope.
-
-## What remains overall
-
-Literal old-version parity has **28 Not started rows** after #72 verification. Remaining work includes Play Together/Live Rooms, Bible World, assignments/ministry/admin capabilities, accessibility, reporting/moderation, onboarding/avatar/personality/psychometrics and other inventory-defined workflows, plus the intentionally deferred Japanese/Kids capabilities.
+1. Run this exact #83 bookkeeping candidate through the complete accumulated exact-SHA bookkeeping gate.
+2. On green, reset the isolated verifier to the clean bookkeeping SHA.
+3. Freeze `release/v3.56-innovation-suite` at that exact green SHA and verify the ref.
+4. Create `feature/v3-tutorial-onboarding` from v3.56.
+5. Finish #84 contract recovery, implement cleanly, run targeted checks, then the full accumulated gate.
+6. Continue milestone-to-milestone without modifying production surfaces.
 
 ## Release discipline
 
-- Do not modify `main`, production Supabase or production Cloudflare during rebuild.
+- Do not modify `main`, production Supabase/data or production Cloudflare during rebuild.
 - Do not replace production v2 with incomplete v3.
 - Freeze only after the exact bookkeeping state passes the complete accumulated suite.
-- Every real bug fix records root cause and retains a regression test.
-- Normal v3 CI remains manual-only; temporary push triggers are isolated to verification branches and removed afterward.
+- Every reproduced bug records its root cause and retains regression protection.
+- Normal v3 CI remains manual-only; temporary push triggers are isolated to verifier branches and removed afterward.
