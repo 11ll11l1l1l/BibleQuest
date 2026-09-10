@@ -41,7 +41,7 @@ The clean dashboard retains:
 
 ## Owner account deletion parity
 
-Account deletion is available only when #93 has independently verified platform `owner` access. `admin` cannot delete accounts. The signed-in Owner cannot delete itself. The user must type the exact confirmation phrase `DELETE <email-or-name>` before the destructive request is sent. After a successful deletion, the #92 Admin Console list refreshes.
+Account deletion is available only when #93 has independently verified platform `owner` access. `admin` cannot delete accounts. The active Owner account cannot delete itself. The user must type the exact confirmation phrase `DELETE <email-or-name>` before the destructive request is sent. After a successful deletion, the #92 Admin Console list refreshes.
 
 The existing backend additionally refuses deletion of another active Owner, refuses deletion while congregation or active small-group ownership remains, ends active rooms created by the target, records an audit event, and finally deletes the Auth account. These server guards are retained as authority and are not duplicated as competing browser business logic.
 
