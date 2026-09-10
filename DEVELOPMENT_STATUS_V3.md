@@ -33,11 +33,12 @@ Selecting a region opens a bounded region-detail path. Read hands the recovered 
 
 Permanent evidence: `docs/V3_BIBLE_WORLD_CONTRACT.md`, `src/app/bible-world.js`, `src/features/bible-world/index.js`, `src/ui/bible-world.css`, `src/app/bootstrap.js`, `src/features/learn/index.js`, `scripts/validate-v3-bible-world.mjs`, `tests/v3-bible-world-edge.mjs`, `tests/v3-bible-world-smoke.mjs`, `.github/workflows/v3-regression.yml`.
 
-## Verification chronology
+## Defect / root-cause ledger
 
 - Frozen v3.67 was created only after exact bookkeeping SHA `d7b9385ddc814fe0b6587e92626bf6c65aefe5b5` passed full run `34541856135`; release and product refs were verified identical before #44 branched.
 - Focused exact-SHA run `34542469395` passed modified-file syntax, the recovered 60%/Genesis-split edge contract, the real 390px Bible World browser route, Reader/Open Review handoffs, and the existing shell smoke test.
 - Exact functional candidate `ce5d29cec689a31fa146400ec9f5f82b46b64bd7` passed complete accumulated run `34542639569`, including every prior architecture validator, edge/security regression, and browser/mobile regression plus permanent #44 coverage.
+- First promoted bookkeeping candidate `0cd5107833ca191aa8807c584187538dd1c9a4d0` was rejected by bookkeeping run `34543134020` during the core architecture validator. Diagnostic runs `34543218822` and `34543291493` isolated the cause: the promotion rewrite had renamed the durable `Defect / root-cause ledger` heading to `Verification chronology`, violating an existing architecture-document invariant. No product/browser failure was implicated. This file restores the required ledger heading; the resulting new bookkeeping SHA must pass the complete suite from scratch.
 
 ## #45 recovered boundary
 
@@ -47,7 +48,7 @@ The retained artwork assets already exist in the current tree: `assets/world-loc
 
 ## Next major milestone
 
-Create one #44 bookkeeping candidate with the promoted inventory/status/handoff/timeline. Run a fresh complete exact-SHA bookkeeping gate. On green, freeze `release/v3.68-bible-world` at that exact bookkeeping SHA, verify refs, then branch #45 Bible World artwork from the frozen release and implement/verify its retained asset, responsive, and fallback contract.
+Run a fresh complete exact-SHA bookkeeping gate on the corrected #44 promotion candidate. On green, freeze `release/v3.68-bible-world` at that exact bookkeeping SHA, verify refs, then branch #45 Bible World artwork from the frozen release and implement/verify its retained asset, responsive, and fallback contract.
 
 ## Release rule
 
