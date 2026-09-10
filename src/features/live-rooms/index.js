@@ -1,0 +1,34 @@
+const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const roomStatus=state=>state.connected?'Connected':state.connectionStatus==='ended'?'Room ended':'Disconnected';
+function landing(state,message){
+  const hostRows=state.memberships.filter(row=>row.canHost),membershipText=state.memberships.length?`${state.memberships.length} congregation membership${state.memberships.length===1?'':'s'} available.`:'Join a congregation before creating or joining a room.';
+  return `<div class="bq-community-head"><div><p class="bq-eyebrow">LIVE ROOMS</p><h1>One room, many phones.</h1><p>Create or join a congregation-backed Live Room with a short code.</p></div><button type="button" class="bq-secondary-button" data-live-rooms-back>Back to Community</button></div>${message?`<p class="bq-form-message" role="status">${esc(message)}</p>`:''}<section class="bq-panel"><h2>Join a Live Room</h2><p>${esc(membershipText)}</p><form class="bq-account-form" data-live-room-join><label>Room code<input name="code" maxlength="8" minlength="4" autocomplete="off" autocapitalize="characters" required></label><button type="submit" class="bq-primary-button" ${state.memberships.length?'':'disabled'}>Join room</button></form></section>${hostRows.length?`<section class="bq-panel"><h2>Host a Live Room</h2><form class="bq-account-form" data-live-room-create><label>Congregation<select name="congregation_id" required>${hostRows.map(row=>`<option value="${esc(row.congregationId)}">${esc(row.congregation?.name||'Congregation')} · ${esc(row.roleLabel||row.role||'Leader')}</option>`).join('')}</select></label><label>Room title<input name="title" maxlength="80" value="BibleQuest Live" required></label><button type="submit" class="bq-primary-button">Create room</button></form></section>`:'<section class="bq-panel"><h2>Hosting</h2><p>A facilitator, leader, pastor, or admin role is required to create a Live Room.</p></section>'}`;
+}
+function activeRoom(state,message){
+  const room=state.room,ended=room.status==='ended';
+  const people=state.participants.length?state.participants.map(person=>`<li data-live-room-participant="${esc(person.userId)}"><b>${esc(person.displayName)}</b></li>`).join(''):'<li>Waiting for participants…</li>';
+  return `<div class="bq-community-head"><div><p class="bq-eyebrow">LIVE ROOM · ${esc(room.status.toUpperCase())}</p><h1>${esc(room.title)}</h1><p data-live-room-connection>${esc(roomStatus(state))}</p></div><button type="button" class="bq-secondary-button" data-live-rooms-back>Back to Community</button></div>${message?`<p class="bq-form-message" role="status">${esc(message)}</p>`:''}<section class="bq-panel" data-live-room-active><p class="bq-eyebrow">ROOM CODE</p><p><code data-live-room-code>${esc(room.roomCode)}</code></p><p>${state.isHost?'You are the host.':'You joined this room.'} ${ended?'The host has ended this room.':'Keep this page open for live membership updates.'}</p><h2>Participants</h2><ul data-live-room-participants>${people}</ul><div class="bq-account-actions">${ended?'':`<button type="button" class="bq-secondary-button" data-live-room-reconnect>Reconnect</button>`}<button type="button" class="bq-secondary-button" data-live-room-leave>Leave room</button>${state.isHost&&!ended?'<button type="button" class="bq-secondary-button" data-live-room-end>End room</button>':''}</div></section>`;
+}
+export function liveRoomsPage({liveRooms,onBack,onAccount}={}){
+  return{title:'Live Rooms',html:'<section class="bq-community" data-live-rooms-view></section>',mount(root){
+    const view=root.querySelector('[data-live-rooms-view]');let disposed=false,busy=false,message='';
+    const bind=()=>{
+      view.querySelector('[data-live-rooms-back]')?.addEventListener('click',()=>onBack?.(),{once:true});
+      view.querySelector('[data-live-rooms-account]')?.addEventListener('click',()=>onAccount?.(),{once:true});
+      view.querySelector('[data-live-room-create]')?.addEventListener('submit',create,{once:true});
+      view.querySelector('[data-live-room-join]')?.addEventListener('submit',join,{once:true});
+      view.querySelector('[data-live-room-reconnect]')?.addEventListener('click',reconnect,{once:true});
+      view.querySelector('[data-live-room-leave]')?.addEventListener('click',leave,{once:true});
+      view.querySelector('[data-live-room-end]')?.addEventListener('click',end,{once:true});
+    };
+    const render=state=>{if(disposed)return;if(!state.authenticated){view.innerHTML=`<p class="bq-eyebrow">LIVE ROOMS</p><h1>Sign in to use Live Rooms.</h1><p>Room identity and congregation membership are account-backed.</p><button type="button" class="bq-primary-button" data-live-rooms-account>Open account</button><button type="button" class="bq-secondary-button" data-live-rooms-back>Back to Community</button>`}else if(!state.remoteAvailable){view.innerHTML='<p class="bq-eyebrow">LIVE ROOMS</p><h1>Live Rooms are disabled in local preview.</h1><p>Local preview does not invent congregation or room data.</p><button type="button" class="bq-secondary-button" data-live-rooms-back>Back to Community</button>'}else view.innerHTML=state.room?activeRoom(state,message):landing(state,message);bind()};
+    const subscription=liveRooms.subscribe(render);
+    async function load(){if(busy||disposed)return;busy=true;try{await liveRooms.load();message=''}catch(error){if(!['BQ_LIVE_ROOMS_AUTH_REQUIRED','BQ_LIVE_ROOMS_REMOTE_DISABLED'].includes(error?.code)){message=error?.message||'Live Rooms could not load.';render(liveRooms.snapshot())}}finally{busy=false}}
+    async function create(event){event.preventDefault();if(busy)return;busy=true;const data=new FormData(event.currentTarget);try{message='';await liveRooms.create({congregationId:data.get('congregation_id'),title:data.get('title')})}catch(error){message=error?.message||'Could not create Live Room.';render(liveRooms.snapshot())}finally{busy=false}}
+    async function join(event){event.preventDefault();if(busy)return;busy=true;try{message='';await liveRooms.join(new FormData(event.currentTarget).get('code'))}catch(error){message=error?.message||'Could not join Live Room.';render(liveRooms.snapshot())}finally{busy=false}}
+    async function reconnect(){if(busy)return;busy=true;try{await liveRooms.reconnect();message='Reconnected to the latest room state.';render(liveRooms.snapshot())}catch(error){message=error?.message||'Could not reconnect.';render(liveRooms.snapshot())}finally{busy=false}}
+    function leave(){message='You left the Live Room.';liveRooms.leave();render(liveRooms.snapshot())}
+    async function end(){if(busy)return;busy=true;try{await liveRooms.end();message='Live Room ended.';render(liveRooms.snapshot())}catch(error){message=error?.message||'Could not end Live Room.';render(liveRooms.snapshot())}finally{busy=false}}
+    void load();return()=>{disposed=true;subscription();liveRooms.disconnect()};
+  }};
+}
