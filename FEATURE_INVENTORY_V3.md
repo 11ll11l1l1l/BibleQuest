@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 75
+- **Regression-tested:** 76
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 24
+- **Not started:** 23
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -96,8 +96,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 73 | Assignments | Yes | Compatibility | Regression-tested | receive; open; complete; status sync |
 | 74 | Advanced assignments | Yes | Compatibility | Regression-tested | advanced fields; due-state; completion; permissions |
 | 75 | Assignment push workflow | Yes | Compatibility | Regression-tested | leader publish→member receive→complete |
-| 76 | Ministry Hub | Yes | Compatibility | Verified | open tools; role guard; navigation |
-| 77 | Notification Center/inbox | Yes | Compatibility | Not started | load; read/unread; open target; refresh |
+| 76 | Ministry Hub | Yes | Compatibility | Regression-tested | open tools; role guard; navigation |
+| 77 | Notification Center/inbox | Yes | Compatibility | Verified | load; read/unread; open target; refresh |
 | 78 | Workspace | Yes | Compatibility | Not started | open; save state; role/session boundary |
 | 79 | Linked activities/challenges | Yes | Compatibility | Not started | launch linked activity; completion handoff |
 | 80 | Personality profile | Yes | Compatibility | Not started | complete; save; reopen; privacy boundary |
