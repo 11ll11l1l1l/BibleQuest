@@ -1,58 +1,80 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after #86 complete functional verification.
+Updated: 2026-09-11 JST after #87 Content Reporting complete functional verification.
 
 GitHub live refs and exact executed verification evidence are authoritative. Recover live refs before writing because concurrent chats/agents may move development branches.
 
 ## Frozen baseline
 
 - Repository: `11ll11l1l1l/BibleQuest`.
-- Latest frozen release: `release/v3.58-tutorial-avatar-reactions`.
-- Exact frozen SHA: `c71db1502618a0a5679bf880fbd830762f9f5ef4`.
+- Latest frozen release: `release/v3.59-accessibility-support`.
+- Exact frozen SHA: `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
 - Production v2, `main`, production Cloudflare, production data and production Supabase remain untouched.
-- Normal v3 Actions are `workflow_dispatch` only. Temporary `push:` triggers belong only on isolated one-shot verifier branches and must be reset away after use.
+- Normal v3 Actions are `workflow_dispatch` only. Temporary `push:` triggers belong only on isolated one-shot verifier branches and are never release SHAs.
 
-## Current #86 state
+## Current #87 state
 
-- Active feature branch: `feature/v3-accessibility-support`.
-- Exact green functional candidate: `168a2b32d96d9c999cd6e93879d3215bebfe25da`.
-- Targeted exact-SHA run: `34501867982` — `success`.
-- Complete accumulated functional run: `34502063494` — `success`.
-- The bookkeeping transaction now represents #85 as **Regression-tested** and #86 as **Verified**.
-- Provisional inventory: **85 Regression-tested / 1 Verified / 0 Implemented / 14 Not started**.
-- Provisional strict implemented-or-better parity: **86/100**.
-- Provisional regression stability: **85/100**.
-- These bookkeeping values require their own complete exact-SHA verification before v3.59 can freeze. Do not transfer the functional PASS to the changed bookkeeping SHA.
+- Active feature branch: `feature/v3-content-reporting`.
+- Exact green functional candidate: `72ef635a5322e715c293de489bf37a170f05729d`.
+- Targeted exact-SHA green run: `34509850415`.
+- Complete accumulated functional green run: `34510669714`.
+- The current bookkeeping transaction represents #86 as **Regression-tested** and #87 as **Verified**.
+- Provisional inventory: **86 Regression-tested / 1 Verified / 0 Implemented / 13 Not started**.
+- Provisional strict implemented-or-better parity: **87/100**.
+- Provisional regression stability: **86/100**.
+- These bookkeeping values require their own complete exact-SHA verification before v3.60 can freeze. Do not transfer the functional PASS to the changed bookkeeping SHA.
 
-## #86 verified boundary
+## #87 verified boundary
 
-- `src/app/accessibility.js` is the only accessibility preference owner; it persists normalized text/motion/contrast state only through shared `storage`.
-- `src/ui/accessibility.js` is the single global accessibility presentation runtime; it applies root data attributes and keeps Tab focus inside the visible modal dialog.
-- `src/features/accessibility/index.js` owns the explicit Accessibility page reached from More.
-- Text options are normal/large/xlarge; motion options are system/reduce/full; contrast options are normal/strong.
-- System motion follows live `prefers-reduced-motion`; explicit full/reduce choices remain deterministic.
-- Visible keyboard focus, 390px readability/no overflow, preference reload persistence and tutorial reduced-motion integration are regression tested.
-- Existing shell route focus and feature-specific Escape/dialog lifecycle remain owned by their existing modules.
-- No direct browser storage, `window.BQAccessibility`, MutationObserver, Progress mutation, new API/backend state or new Router owner was introduced.
+- `src/app/content-reporting.js` is the single reporting orchestration owner; it validates content context, bounded reason/note, authenticated user, and current congregation membership.
+- `src/core/api.js` remains the sole Supabase browser implementation boundary and owns the single `bible_content_reports` insert.
+- Session and Congregation Membership remain authoritative; #87 does not create competing auth/membership state.
+- `src/ui/content-reporting.js` is presentation only and snapshots explicitly reportable authored/curated content while excluding form values, response/note containers, user-content markers, private/admin/community/workspace/couples/congregation surfaces, Reader, Transform, and Psychometrics.
+- Router remains the only navigation/history owner. Reporting does not listen to `hashchange`; bootstrap refreshes its launcher after Router-owned route rendering.
+- Existing RLS remains authoritative. #87 adds no migration, review permissions, moderation decisions, XP/scoring, or production deployment.
 
-## Verification evidence
+Permanent #87 evidence:
+- `CONTENT_REPORTING_V3.md`
+- `src/app/content-reporting.js`
+- `src/ui/content-reporting.js`
+- `src/ui/content-reporting.css`
+- `src/core/api.js`
+- `scripts/validate-v3-content-reporting.mjs`
+- `tests/v3-content-reporting-edge.mjs`
+- `tests/v3-content-reporting-smoke.mjs`
+- accumulated invocation in `.github/workflows/v3-regression.yml`.
 
-- Targeted run `34501867982`: all exact-SHA targeted architecture/edge/browser integration checks passed.
-- Full functional run `34502063494`: complete accumulated architecture, edge/security and browser/mobile suite passed against the same exact product candidate.
+## Reproduced defects and permanent protection
 
-## #87 next boundary
+- Targeted `34509524070`: validator representation defect around the root marker; corrected without weakening behavior.
+- Targeted `34509633853`: Playwright close selector chose the scrim; corrected to the visible close button.
+- Targeted `34509850415`: targeted #87 exact-SHA suite green.
+- Full `34510145224`: real navigation-ownership defect found; direct `hashchange` subscription removed and refresh moved into bootstrap Router composition.
+- Full `34510492091`: retained #65 validator was brittle to API export adjacency; corrected to require `encouragements` and `media` independently.
+- Full `34510669714`: complete accumulated architecture, edge/security, and browser/mobile suite green against `72ef635a5322e715c293de489bf37a170f05729d`.
 
-#87 Content reporting remains **Not started** until v3.59 freezes. Recover retained reporting behavior and backend/RLS contracts read-only first. Define a single report submission owner, validation and success/error states without bundling #88 moderation or admin review scope into #87.
+## #88 recovered next boundary
+
+#88 Content moderation remains **Not started** until v3.60 freezes. Read-only recovery establishes:
+
+- `bible_content_decisions` is congregation-scoped with primary key `(congregation_id, content_key)`.
+- Decisions are `include`, `exempt`, or `remove`; origins are `quarantine`, `user_report`, or `review`.
+- Existing RLS allows congregation members/reviewers to read policy and only authorized reviewers to insert/update decisions.
+- Retained legacy behavior applied policy to question content: `exempt`/`remove` suppress content, while explicit `include` can restore quarantined content.
+- Legacy `window.fetch` interception, direct localStorage caching, `window.BQ*` registries, unrestricted global listeners, and duplicate ownership must not be ported.
+- #88 owns moderation-policy application only. Decision editing/reviewer workflow belongs to #91 Content Review workbench; admin console/operations remain #92/#93.
 
 ## Exact next executable sequence
 
-1. Confirm the live tip of `feature/v3-accessibility-support` after this bookkeeping transaction.
-2. Verify that exact bookkeeping SHA with `scripts/validate-v3-inventory.mjs`, all accumulated architecture validators, all edge/security regressions and the complete browser/mobile suite.
-3. Correct only a reproduced failure; do not weaken coverage.
-4. On green, reset the verifier and freeze `release/v3.59-accessibility-support` at exactly the green bookkeeping SHA.
-5. Verify the release ref.
-6. Only then create the #87 feature branch and perform retained-contract recovery before product writes.
+1. Confirm the live tip of `feature/v3-content-reporting` after all #87 bookkeeping document changes.
+2. Treat that exact live tip as the #87 bookkeeping candidate.
+3. Create an isolated verifier from that exact SHA with only a temporary branch-specific `push:` trigger plus exact checkout/assertion.
+4. Run the complete accumulated architecture validators, edge/security regressions, and browser/mobile suite on that exact bookkeeping SHA.
+5. Correct only reproduced failures; never weaken or skip accumulated coverage.
+6. On green, reset the verifier ref to the clean bookkeeping SHA and freeze `release/v3.60-content-reporting` at exactly that SHA.
+7. Verify the release ref equals the green bookkeeping SHA.
+8. Only then create `feature/v3-content-moderation` from v3.60 and implement #88 from the recovered contract.
 
 ## Non-negotiable safety
 
-Rebuild-and-verify; one source of truth per responsibility; no PASS transfer between changed SHAs; normal Actions remain manual-only; never weaken/delete/skip accumulated regression coverage to get green; never modify `main`, production v2, production Cloudflare, production data or production Supabase without separate explicit authorization.
+Rebuild-and-verify; one source of truth per responsibility; no PASS transfer between changed SHAs; normal Actions remain manual-only; temporary push triggers stay isolated; never modify `main`, production v2, production Cloudflare, production data or production Supabase without separate explicit authorization.
