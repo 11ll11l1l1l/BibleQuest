@@ -23,7 +23,7 @@ if(!failures.length){
   if(service.includes("'technical'"))fail('Content Reporting owner must not expose the database-incompatible legacy technical reason.');
 
   for(const forbidden of ['window.BQ','MutationObserver','localStorage','sessionStorage','createClient','@supabase'])if(runtime.includes(forbidden))fail(`Content Reporting UI bypasses a verified owner: ${forbidden}`);
-  for(const token of ['REPORTABLE_ROUTES','EXCLUDED_SELECTOR','[data-private-note]','[data-cloud-note]','[data-user-content]','snapshotReportableContent','mountContentReportingRuntime','data-content-reporting-root','role="dialog"','aria-modal="true"','maxlength="1200"','reporting.prepare()','reporting.submit('])if(!runtime.includes(token))fail(`Content Reporting UI missing contract token: ${token}`);
+  for(const token of ['REPORTABLE_ROUTES','EXCLUDED_SELECTOR','[data-private-note]','[data-cloud-note]','[data-user-content]','snapshotReportableContent','mountContentReportingRuntime','contentReportingRoot','role="dialog"','aria-modal="true"','maxlength="1200"','reporting.prepare()','reporting.submit('])if(!runtime.includes(token))fail(`Content Reporting UI missing contract token: ${token}`);
   for(const privateRoute of ["'account'","'private-notes'","'cloud-notes'","'couples-family'","'couples-cloud'","'community'","'workspace'","'congregation'","'psychometrics'","'transform'","'reader'"]){
     const routeLine=runtime.split('\n').find(line=>line.includes('REPORTABLE_ROUTES'))||'';
     if(routeLine.includes(privateRoute))fail(`Private/excluded route leaked into Content Reporting allowlist: ${privateRoute}`);
