@@ -1,75 +1,57 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after #85 complete functional verification.
+Updated: 2026-09-11 JST after #86 complete functional verification.
 
 GitHub live refs and exact executed verification evidence are authoritative. Recover live refs before writing because concurrent chats/agents may move development branches.
 
 ## Frozen baseline
 
 - Repository: `11ll11l1l1l/BibleQuest`.
-- Latest frozen release: `release/v3.57-tutorial-onboarding`.
-- Exact frozen SHA: `f19d51826b9d191c221c0fdd96bda78b42e2aa95`.
+- Latest frozen release: `release/v3.58-tutorial-avatar-reactions`.
+- Exact frozen SHA: `c71db1502618a0a5679bf880fbd830762f9f5ef4`.
 - Production v2, `main`, production Cloudflare, production data and production Supabase remain untouched.
 - Normal v3 Actions are `workflow_dispatch` only. Temporary `push:` triggers belong only on isolated one-shot verifier branches and must be reset away after use.
 
-## Current #85 state
+## Current #86 state
 
-- Active feature branch: `feature/v3-tutorial-avatar-reactions`.
-- Exact green functional candidate: `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c`.
-- Targeted exact-SHA run: `34499623045` — `success`.
-- Complete accumulated functional run: `34499796826` — `success`.
-- Earlier rejected targeted runs retained for root-cause history: `34498989910`, `34499380103`.
-- The bookkeeping transaction now represents #84 as **Regression-tested** and #85 as **Verified**.
-- Provisional inventory: **84 Regression-tested / 1 Verified / 0 Implemented / 15 Not started**.
-- Provisional strict implemented-or-better parity: **85/100**.
-- Provisional regression stability: **84/100**.
-- These bookkeeping values require their own full exact-SHA verification before v3.58 can freeze. Do not transfer the functional PASS to the changed bookkeeping SHA.
+- Active feature branch: `feature/v3-accessibility-support`.
+- Exact green functional candidate: `168a2b32d96d9c999cd6e93879d3215bebfe25da`.
+- Targeted exact-SHA run: `34501867982` — `success`.
+- Complete accumulated functional run: `34502063494` — `success`.
+- The bookkeeping transaction now represents #85 as **Regression-tested** and #86 as **Verified**.
+- Provisional inventory: **85 Regression-tested / 1 Verified / 0 Implemented / 14 Not started**.
+- Provisional strict implemented-or-better parity: **86/100**.
+- Provisional regression stability: **85/100**.
+- These bookkeeping values require their own complete exact-SHA verification before v3.59 can freeze. Do not transfer the functional PASS to the changed bookkeeping SHA.
 
-## #85 verified boundary
+## #86 verified boundary
 
-Tutorial avatar reactions remain presentation-only and compose with the already verified #84 tutorial owner:
+- `src/app/accessibility.js` is the only accessibility preference owner; it persists normalized text/motion/contrast state only through shared `storage`.
+- `src/ui/accessibility.js` is the single global accessibility presentation runtime; it applies root data attributes and keeps Tab focus inside the visible modal dialog.
+- `src/features/accessibility/index.js` owns the explicit Accessibility page reached from More.
+- Text options are normal/large/xlarge; motion options are system/reduce/full; contrast options are normal/strong.
+- System motion follows live `prefers-reduced-motion`; explicit full/reduce choices remain deterministic.
+- Visible keyboard focus, 390px readability/no overflow, preference reload persistence and tutorial reduced-motion integration are regression tested.
+- Existing shell route focus and feature-specific Escape/dialog lifecycle remain owned by their existing modules.
+- No direct browser storage, `window.BQAccessibility`, MutationObserver, Progress mutation, new API/backend state or new Router owner was introduced.
 
-- `src/features/tutorial/trainer.js` is static presentation configuration and deterministically maps the six #84 tutorial steps to retained trainer states;
-- retained sprite states are `welcome`, `right`, `left`, `up`, `down`, `thumbs`, `surprise`, and `thoughtful` from `assets/tutorial-trainer-sprite.webp`;
-- the active six-step mapping is `welcome → down → up → thumbs → thoughtful → thumbs`;
-- `src/features/tutorial/index.js` remains the single tutorial overlay presenter and consumes the trainer mapping without owning lifecycle/persistence;
-- `src/ui/tutorial.css` owns the retained 4×2 sprite, 122px mobile size/positioning, gentle bob animation and reduced-motion behavior;
-- `src/app/tutorial.js` remains the sole tutorial lifecycle/completion owner;
-- no new storage, API/backend, account, router, Progress, scoring, or second tutorial-state owner was introduced;
-- existing offline-shell ownership is reused and the sprite remains available offline after normal first load.
+## Verification evidence
 
-Permanent #85 evidence:
-- `TUTORIAL_AVATAR_REACTIONS_V3.md`
-- `src/features/tutorial/trainer.js`
-- `src/features/tutorial/index.js`
-- `src/ui/tutorial.css`
-- `assets/tutorial-trainer-sprite.webp`
-- `scripts/validate-v3-tutorial-avatar-reactions.mjs`
-- `tests/v3-tutorial-avatar-reactions-edge.mjs`
-- `tests/v3-tutorial-avatar-reactions-smoke.mjs`
-- accumulated invocation in `.github/workflows/v3-regression.yml`.
+- Targeted run `34501867982`: all exact-SHA targeted architecture/edge/browser integration checks passed.
+- Full functional run `34502063494`: complete accumulated architecture, edge/security and browser/mobile suite passed against the same exact product candidate.
 
-## Reproduced defects and permanent protection
+## #87 next boundary
 
-- Run `34498989910`: browser CSS serialization produced `0px 0px` for retained zero-percent sprite position. Product behavior was correct; only the smoke assertion was representation-sensitive. The regression now treats equivalent zero units as equal.
-- Run `34499380103`: transformed bounding-box size included the retained trainer bob rotation, so a CSS 122px square measured ~124.1px. Product behavior was correct; size validation now reads computed CSS width/height, while the transformed bounding box still protects against viewport overflow.
-- Run `34499623045`: targeted exact-SHA architecture, lifecycle/edge, mobile, reduced-motion and offline checks all green against `51dcc042ca8af6f321474ea3a3bd3c67cdf1650c`.
-- Run `34499796826`: complete accumulated architecture, edge/security and browser/mobile suite all green against the same exact functional SHA.
-
-## #86 next boundary
-
-#86 Accessibility support remains **Not started** until v3.58 freezes. Read-only recovery from retained `accessibility-runtime.js`, `accessibility-runtime.css`, and `journey-accessibility.js` establishes persistent text-size/motion/contrast preferences, visible keyboard focus, dialog semantics, keyboard focus containment/restoration, Escape handling, and reduced-motion behavior. The legacy implementation uses direct browser storage, `window.BQAccessibility`, and MutationObserver; those mechanisms must not be ported into clean v3. #86 needs one clean v3 accessibility owner composed through existing storage/UI owners.
+#87 Content reporting remains **Not started** until v3.59 freezes. Recover retained reporting behavior and backend/RLS contracts read-only first. Define a single report submission owner, validation and success/error states without bundling #88 moderation or admin review scope into #87.
 
 ## Exact next executable sequence
 
-1. Confirm the live tip of `feature/v3-tutorial-avatar-reactions` after this bookkeeping transaction; reconcile any concurrent movement.
-2. Treat that exact live tip as the #85 bookkeeping candidate.
-3. Create an isolated verifier from that exact SHA with only a temporary `push:` trigger plus exact checkout/assertion.
-4. Run `scripts/validate-v3-inventory.mjs`, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite.
-5. On failure, correct only the reproduced cause and verify a new exact bookkeeping SHA without weakening coverage.
-6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.58-tutorial-avatar-reactions` at exactly that SHA.
-7. Verify the release ref points exactly to the green bookkeeping SHA.
-8. Only then create `feature/v3-accessibility-support` from v3.58 and begin #86 implementation from the retained contract.
+1. Confirm the live tip of `feature/v3-accessibility-support` after this bookkeeping transaction.
+2. Verify that exact bookkeeping SHA with `scripts/validate-v3-inventory.mjs`, all accumulated architecture validators, all edge/security regressions and the complete browser/mobile suite.
+3. Correct only a reproduced failure; do not weaken coverage.
+4. On green, reset the verifier and freeze `release/v3.59-accessibility-support` at exactly the green bookkeeping SHA.
+5. Verify the release ref.
+6. Only then create the #87 feature branch and perform retained-contract recovery before product writes.
 
 ## Non-negotiable safety
 

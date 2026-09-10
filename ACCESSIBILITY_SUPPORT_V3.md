@@ -1,6 +1,6 @@
 # BibleQuest v3 Accessibility Support (#86)
 
-Status: implementation candidate. Promotion requires targeted verification followed by the complete exact-SHA accumulated regression gate.
+Status: functionally verified at exact candidate `168a2b32d96d9c999cd6e93879d3215bebfe25da`; targeted run `34501867982` and complete accumulated run `34502063494` passed. Bookkeeping/freeze still require a separate exact-SHA gate.
 
 ## Recovered contract
 
@@ -27,6 +27,14 @@ The legacy runtime directly used browser storage, exposed `window.BQAccessibilit
 - Visible modal dialogs retain focus while tabbing; dialog-specific Escape/close semantics remain owned by the feature dialog rather than duplicated by Accessibility.
 - No accessibility preference writes account/cloud data, awards Progress, changes Router ownership, or creates a second dialog lifecycle.
 
-## Verification boundary
+## Verification evidence
 
-Required verification covers malformed stored preference normalization, option validation, persistence, device reduced-motion changes, cleanup, More → Accessibility routing, labeled controls, keyboard focus visibility/order, modal focus containment, 390px readability/no horizontal overflow, preference persistence across reload, and reduced-motion presentation.
+Targeted run `34501867982` passed the exact product candidate, #86 architecture/edge checks, #85 regression checks, shell integration, and Accessibility browser/mobile behavior. Complete accumulated run `34502063494` passed all architecture validators, all edge/security regressions, and all browser/mobile regressions against the same exact candidate.
+
+The browser acceptance covers More → Accessibility routing, labeled controls, keyboard-visible focus, 390px readability/no horizontal overflow, persisted preferences across reload, live system reduced-motion changes, explicit reduced motion, and modal Tab/Shift+Tab containment.
+
+## Scope boundaries
+
+In scope: retained readability preferences, persistent device settings, visible focus, modal keyboard containment, motion preference handling and mobile readability.
+
+Out of scope: content reporting (#87), content moderation (#88), feature-specific dialog lifecycle redesign, new cloud preferences, new analytics, or production deployment.
