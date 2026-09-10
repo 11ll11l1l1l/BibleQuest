@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 651ad992681490bfae74178c99c2f8cf6aa15bb4
+          ref: d13ba6b9729a02021ee5efab961c6c233a0b669e
       - name: Assert exact functional candidate
-        run: test "$(git rev-parse HEAD)" = "651ad992681490bfae74178c99c2f8cf6aa15bb4"
+        run: test "$(git rev-parse HEAD)" = "d13ba6b9729a02021ee5efab961c6c233a0b669e"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
