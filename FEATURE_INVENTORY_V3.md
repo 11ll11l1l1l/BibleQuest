@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 82
+- **Regression-tested:** 83
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 17
+- **Not started:** 16
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -103,8 +103,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 80 | Personality profile | Yes | Compatibility | Regression-tested | complete; save; reopen; privacy boundary |
 | 81 | Psychometrics suite | Yes | Standalone old | Regression-tested | complete assessment; result; persistence; mobile |
 | 82 | Avatar vault | Yes | Compatibility | Regression-tested | browse; select; persist; render fallback (v1: xp/streak-gated styles only, 10 styles explicitly deferred pending metric owners) |
-| 83 | Innovation suite | Yes | Compatibility | Verified | inventory-specific workflows documented before migration |
-| 84 | Tutorial/onboarding trainer | Yes | Compatibility | Not started | first run; next/back; skip; finish; never duplicate |
+| 83 | Innovation suite | Yes | Compatibility | Regression-tested | inventory-specific workflows documented before migration |
+| 84 | Tutorial/onboarding trainer | Yes | Compatibility | Verified | account-created onboarding after recovery-code save confirmation; next/back/skip/finish; persistent launcher; never duplicate; mobile/offline |
 | 85 | Tutorial avatar reactions | Yes | Resource retained | Not started | correct reaction/state; mobile positioning |
 | 86 | Accessibility support | Yes | Partial clean | Not started | keyboard nav; focus order; labels; reduced motion/readability |
 | 87 | Content reporting | Yes | Compatibility | Not started | submit report; validation; success/error |
