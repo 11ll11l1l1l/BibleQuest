@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.55-avatar-vault-bookkeeping-60100-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,12 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712
+      - name: Assert exact Avatar Vault bookkeeping candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712" ]; then echo "SHA mismatch: expected 60100f0c0a5fa6a0b2b0a7c89eaf39836cfb3712, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
