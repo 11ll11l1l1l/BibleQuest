@@ -1,76 +1,93 @@
 # A3 Architecture/Security — #87 Content reporting
 
 Agent: BQ-A3-ARCH-SECURITY  
-Disposition: **HIGH-RISK PRE-IMPLEMENTATION — TRUST BOUNDARY DEFINED; NOT READY**
+Disposition: **HIGH-RISK ACTIVE — TRUST BOUNDARY NOT SATISFIED; DO NOT PROMOTE**
 
 ## Exact state
 
 - Canonical milestone branch: `feature/v3-content-reporting`
-- Canonical SHA at inspection: `5594f9802e40b25c6df9b6331668c0bbfcedacc7`
+- Canonical SHA at final primary inspection: `19bd25dadd12ac1981675d5f153cfd018547c04a`
 - Autonomous candidate `agent/a1-work/087-*`: **none found**
-- Latest live frozen release: `release/v3.59-accessibility-support`
+- Latest frozen release: `release/v3.59-accessibility-support`
 - Frozen SHA: `5594f9802e40b25c6df9b6331668c0bbfcedacc7`
-- Therefore #87 canonical is currently byte-identical to the frozen v3.59 base and contains no #87 product delta.
-- Baseline bookkeeping verifier: Actions run `34503099868`, **success**. Its verifier branch asserted the exact v3.59 bookkeeping candidate and passed inventory, accumulated architecture, edge/security, and browser/mobile phases. This is baseline evidence only; it is **not** #87 acceptance evidence.
+- Exact Actions runs for canonical `19bd25d...`: **none found** at inspection time.
+- Canonical has advanced beyond frozen v3.59 and now contains #87 implementation/tests. No PASS from another SHA is transferable.
 
-## Authoritative milestone boundary
+## Authoritative scope and owners
 
-**FACT:** `FEATURE_INVENTORY_V3.md` row 87 is `Content reporting`, source class `Compatibility`, status `Not started`, bounded contract: `submit report; validation; success/error`.
+**FACT:** `FEATURE_INVENTORY_V3.md` row 87 remains `Content reporting`, status `Not started`, required verification `submit report; validation; success/error`. #88 Content moderation and #91 Content Review remain separate capabilities.
 
-**FACT:** Durable handoff says #87 remains Not started until v3.59 freezes, requires read-only recovery of retained reporting behavior and backend/RLS contracts first, and must use a single report-submission owner without bundling #88 moderation/admin review into #87.
+**FACT:** `CONTENT_REPORTING_V3.md` defines `src/app/content-reporting.js` as orchestration owner, `src/core/api.js` as the Supabase implementation boundary, session/congregation services as existing identity/membership owners, and `src/ui/content-reporting.js` as presentation only.
 
-**FACT:** The live `release/v3.59-accessibility-support` ref now exists at `5594f980...`; therefore the handoff sentence naming v3.58 as the latest frozen baseline is stale, while its #87 scope guidance remains materially consistent with the live inventory.
+**FACT:** Current `src/core/api.js` performs a direct authenticated browser insert with `client.from('bible_content_reports').insert(row)`; there is no #87 trusted RPC/Edge/server submission path.
 
-## Current backend/security evidence
+## Primary backend evidence
 
-**FACT:** Current `supabase/schema.sql` has no #87 reporting table, reporting RLS policy, reporting grant, or reporting trusted function/RPC in the inspected frozen/canonical baseline. Existing backend design already distinguishes browser-writable user-owned state from trusted-only authority; e.g. score events and earned badges deliberately have no browser write policy.
+**FACT:** `supabase/migrations/20260905_content_review_and_reports.sql` revokes table access and then grants authenticated users table-level `select, insert, update` on `public.bible_content_reports`.
 
-**FACT:** The current schema uses RLS plus explicit grants, with authenticated identity derived through `auth.uid()` in user-owned policies, and uses a narrowly scoped `SECURITY DEFINER` membership helper with restricted EXECUTE where recursive authorization requires it.
+**FACT:** Its INSERT RLS policy permits a row when only these authority conditions hold: `reporter_id = auth.uid()` and `private.is_bible_congregation_member(congregation_id)`. It does **not** constrain `status`, `reviewed_by`, `reviewed_at`, `updated_at`, or other report columns on INSERT.
 
-**FACT:** No `agent/a1-work/087-*` candidate exists, so there is no new schema/migration/RLS/grant/API implementation or exact candidate test/run evidence to audit yet.
+**FACT:** The same table defines client-addressable review columns: `status` (`open|reviewed|closed`), `reviewed_by`, and `reviewed_at`.
 
-## Risk classification
+**FACT:** The later `20260905121500_content_report_review_integrity.sql` adds a BEFORE UPDATE trigger and strengthens reviewer UPDATE policy. It protects submitted fields and requires `reviewed_by` to match the authenticated reviewer during UPDATE. It does **not** add an INSERT trigger, column-level INSERT privileges, forced INSERT defaults, or an INSERT policy check for review-state columns.
 
-**INFERENCE:** #87 is **HIGH-RISK** once implementation begins because `submit report` necessarily crosses a client-to-backend write boundary and feeds a later moderation surface (#88/#91). A permissive client-owned report row can become an authority-escalation or privacy leak if the browser can choose reporter identity, moderation state, internal fields, or read/update reports outside the minimum submission contract.
+**FACT:** The migration inventory inspected through current canonical contains no later content-report migration that closes this initial-INSERT authority gap. Later unrelated migrations do not replace the #87 INSERT path.
 
-The HIGH-RISK classification is about the required trust boundary, not a finding of a defect in the current SHA; #87 has not been implemented at this SHA.
+## Security finding
+
+**FACT:** Application code normally constructs a curated report row and does not intentionally send moderation fields. That is client behavior, not a database authorization boundary.
+
+**INFERENCE:** The current direct-table design permits an authenticated congregation member to bypass the UI/API wrapper and submit a raw Supabase INSERT containing the member's valid `reporter_id` and `congregation_id` while also supplying privileged review-state values such as `status='closed'`, `reviewed_by=<uuid>`, and `reviewed_at=<timestamp>`. The current INSERT `WITH CHECK` does not reject those values, and table-level INSERT is not column-restricted. This allows reporter-controlled data to enter the moderation/review state as if it had server/reviewer authority.
+
+**DISPOSITION:** **TRUST BOUNDARY NOT SATISFIED.** This is a HIGH-RISK authorization defect and must block #87 promotion regardless of UI/service correctness or green non-security tests.
+
+## Existing tests and workflow
+
+**FACT:** `tests/v3-content-reporting-edge.mjs` covers service-level auth/membership checks, reason/input bounds, successful submission shape, and propagation of simulated RLS errors. It uses a mocked API and does not attempt a direct authenticated database INSERT with forged moderation fields.
+
+**FACT:** `tests/v3-content-reporting-smoke.mjs` covers 390px UI success/error/retry, signed-out recovery, excluded routes, and private-input snapshot filtering. Its submission backend is mocked for the functional UI path; it does not exercise the database authorization boundary.
+
+**FACT:** `scripts/validate-v3-content-reporting.mjs` requires the table/RLS migration and checks that the accumulated workflow invokes the #87 validator, edge test, and browser smoke. It checks for the existing `content reports submit own` policy but does not prove that INSERT-time review authority is server-controlled.
+
+**FACT:** `.github/workflows/v3-regression.yml` retains accumulated architecture, edge/security, and browser/mobile lists and invokes the three #87 checks. No unexplained deletion/weakening was observed in that workflow snapshot. However, no exact workflow run exists for canonical `19bd25d...` at inspection time.
 
 ## Safe trust boundary
 
-**RECOMMENDATION:** Keep #87 as one narrow submission owner. The client may choose only contract-level submission input: the report target/reference, an allowed reason/category, and any bounded user-supplied explanatory text that retained behavior actually requires. Do not invent extra report metadata merely because a table can store it.
+**RECOMMENDATION:** Ordinary reporters may control only the bounded report content/reference/reason/note and selected congregation supported by the recovered #87 contract. Reporter identity and all moderation/review authority must be independently enforced by the backend.
 
-**RECOMMENDATION:** Reporter identity must be derived from authenticated server/database context (`auth.uid()` or equivalent trusted context), never accepted as an authoritative client-supplied user ID.
+**RECOMMENDATION:** `status`, `reviewed_by`, `reviewed_at`, resolution/internal moderation metadata, and any future #88/#91 authority must not be caller-authoritative during initial submission.
 
-**RECOMMENDATION:** Validation that affects stored authority must be enforced at the backend boundary as well as in UI. At minimum, accepted target shape/type, allowed reason values, text bounds, required fields, and immutable/default moderation fields must be constrained server-side/database-side. Browser validation alone is presentation, not authorization.
+**RECOMMENDATION:** Use one of these bounded server-enforceable designs, without broadening unrelated access:
 
-**RECOMMENDATION:** Ordinary authenticated reporters must not gain authority to set or mutate moderation status, resolution, reviewer/moderator identity, internal notes, trust/safety flags, or other #88/#91 administrative fields. They also must not receive broad SELECT/UPDATE/DELETE access to other users' reports merely to make submission convenient.
+1. Keep direct INSERT only if authenticated INSERT is reduced to an explicit safe column set and database defaults/constraints/triggers make privileged review fields impossible for the reporter to author; or
+2. Use a narrowly parameterized trusted RPC/Edge/server submission operation that derives `reporter_id` from `auth.uid()`, verifies congregation membership, validates bounded fields, fixes moderation defaults internally, and removes direct reporter INSERT authority on the table.
 
-**RECOMMENDATION:** Prefer the least privileged server path that can enforce the recovered contract. Direct table INSERT is acceptable only if column privileges/RLS `WITH CHECK`/constraints and server defaults make all authoritative fields non-client-controlled and prevent cross-user visibility/mutation. If those guarantees cannot be expressed safely and testably, use a narrow trusted RPC/Edge/server submission path. Do **not** introduce `SECURITY DEFINER` merely as convenience; if used, pin search_path, validate all inputs, derive identity internally, minimize grants, and expose only the submission operation.
+If a `SECURITY DEFINER` function is used, pin `search_path`, derive identity internally, validate every caller-controlled parameter, grant EXECUTE narrowly, and expose no moderation operation through #87.
 
-**RECOMMENDATION:** Do not broaden existing grants or RLS on profiles, congregation membership, questions/content, moderation/admin, or other unrelated tables for #87. #88 Content moderation and #91 Content Review workbench remain separate authority owners.
+**RECOMMENDATION:** Do not grant reporters broad report UPDATE/DELETE, reviewer role, other users' report visibility, moderation queues, decisions, or admin actions. Those remain #88/#91 boundaries.
 
 ## Required evidence before A3 satisfaction
 
-1. Exact `agent/a1-work/087-*` candidate SHA and compare against frozen `5594f980...`.
-2. Recovered retained/v2 reporting behavior sufficient to prove the actual target/reason/message contract without inventing parity.
-3. Exact schema/migration, RLS, grants, constraints and any trusted RPC/Edge/server implementation for report submission.
-4. Evidence that unauthenticated submission fails unless retained contract explicitly permits it; authenticated identity cannot be forged; authoritative moderation/admin fields cannot be set by the reporter; other users' reports cannot be read/updated/deleted through the reporter path.
-5. Permanent negative security tests for direct-backend bypass, not only UI validation; plus functional success/error validation for the bounded #87 contract.
-6. Permanent accumulated workflow invocation of those tests without weakening/removing prior coverage.
-7. Complete accumulated green run on that exact candidate SHA. No PASS may transfer from v3.59 or from any changed SHA.
+1. Exact authorized `agent/a1-work/087-*` candidate SHA (or explicitly reconciled authorized candidate lifecycle) compared with frozen `5594f980...`.
+2. Backend-enforced repair of initial INSERT authority.
+3. Permanent database/security negative tests proving an ordinary authenticated member cannot forge `status`, `reviewed_by`, `reviewed_at` or equivalent review authority; cannot spoof reporter identity; cannot submit cross-congregation without membership; and cannot gain unauthorized report mutation/visibility.
+4. Functional #87 success/error/validation tests retained.
+5. Accumulated workflow must invoke the new security regression without weakening prior coverage.
+6. Complete exact-candidate functional/accumulated green evidence.
+7. Because #87 is HIGH-RISK, fresh A3 satisfaction and A4 READY must refer to the same exact candidate SHA before A5 can recommend promotion.
 
 ## Missing evidence / limitations
 
-**FACT:** No #87 implementation/candidate exists yet, so no current failure can be asserted beyond absence of the required implementation evidence.
+**FACT:** There is no `agent/a1-work/087-*` candidate at inspection time even though implementation exists directly on canonical.
 
-**FACT:** Repository-level inspection established the current v3 schema and inventory boundary. Production Supabase was intentionally not inspected or modified under A3 product-read-only rules; any future candidate that depends on deployed-policy state requires exact non-mutating evidence through the authorized verification path.
+**FACT:** There is no exact Actions run for canonical `19bd25d...` at inspection time.
 
-**FACT:** Retained/v2 detailed reporting source behavior was not established strongly enough in this run to add fields, reason enums, target types, duplicate/rate semantics, or moderator workflow requirements. Those remain missing evidence and must not be guessed.
+**FACT:** Production Supabase was intentionally neither inspected nor modified. This review is against repository-defined schema/migrations and current application implementation; promotion still requires the authorized exact verification path.
 
-## TRIAGE comparison — read only after provisional A3 findings
+## TRIAGE comparison — read only after provisional findings
 
-**FACT:** `automation/TRIAGE.md` is materially stale. It still identifies #85 at `19cde1f...` / frozen v3.57 as active and blocks its promotion. Live repository evidence has progressed through #85, verified #86, frozen v3.59, and active pre-implementation #87 at `5594f980...`. TRIAGE was not used as primary evidence for this report.
+**FACT:** `automation/TRIAGE.md` is now SHA-stale. It describes #87 as pre-implementation with canonical/frozen both at `5594f980...` and no blocker. Live canonical is `19bd25d...` and contains a HIGH-RISK implementation plus the INSERT-time review-authority defect above. TRIAGE was read only after this independent finding was established.
 
 ## Staleness conditions
 
-This report becomes candidate-specific stale immediately if `feature/v3-content-reporting`, any `agent/a1-work/087-*`, or the latest frozen release moves; if #87 product/schema/RLS/grant/RPC/Edge/tests/workflow change; if retained reporting behavior is recovered with materially different requirements; or if new exact workflow evidence appears. Re-run A3 against the exact new SHA before treating trust-boundary satisfaction or readiness as current.
+This report becomes stale immediately if canonical `feature/v3-content-reporting`, any `agent/a1-work/087-*` candidate, or latest frozen release moves; if #87 schema/RLS/grants/triggers/RPC/Edge/API/tests/workflow change; or if new exact run evidence appears. Any repaired SHA requires a fresh A3 review; satisfaction does not transfer across SHAs.
