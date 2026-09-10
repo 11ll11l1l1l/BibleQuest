@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.53-personality-profile-bookkeeping-bb5f9-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: bb5f9d722a3e59c6bc02be985c3614aab76cb330
+      - name: Assert exact Personality Profile bookkeeping candidate
+        run: test "$(git rev-parse HEAD)" = "bb5f9d722a3e59c6bc02be985c3614aab76cb330"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
