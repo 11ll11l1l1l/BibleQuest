@@ -5,149 +5,109 @@ Observed: 2026-09-10 JST
 
 ## STATE / PROVENANCE
 - Active milestone: **#75 Assignment Push Workflow**.
-- Canonical branch `feature/v3-assignment-push`: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Quarantine candidate `agent/a1-work/075-assignment-push`: `a42100452d1b1fff7c146543e8ab5cd67da32193`.
+- Canonical `feature/v3-assignment-push`: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Current quarantine/bookkeeping candidate `agent/a1-work/075-assignment-push`: `e725e5dee5a46fcaebf05200301efdb93f868b22`.
 - Frozen base `release/v3.47-advanced-assignments`: `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact functional verification run inspected: `34444825916` (job `102767251066`).
-- This report supersedes the prior A2 audit bound to candidate `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4`.
+- Prior exact functional candidate: `a42100452d1b1fff7c146543e8ab5cd67da32193`, complete accumulated run `34444825916` green.
+- Failed bookkeeping runs inspected: `34449669830` and `34449808528`.
+- Current exact candidate verification observed: run `34450088492`, explicitly targeting `e725e5dee5a46fcaebf05200301efdb93f868b22`; it was still in progress at report write, so no PASS is claimed.
 
 ## EVIDENCE INSPECTED — PRIMARY
 Before reading TRIAGE, A2 independently inspected:
 - live canonical, quarantine and frozen refs;
-- `FEATURE_INVENTORY_V3.md` at exact candidate;
-- `ASSIGNMENT_PUSH_V3.md` at exact candidate;
-- `DEVELOPMENT_HANDOFF_V3.md` at exact candidate;
-- retained `assignment-advanced.js` from frozen v3.47;
-- candidate `src/app/assignments.js`;
-- candidate `supabase/functions/bq-assignment/index.ts`;
-- candidate `tests/v3-assignment-publish-auth-edge.mjs`;
-- exact Actions run `34444825916`, job steps and decoded job log, including exact checkout/assertion and the actual accumulated architecture/edge/browser invocations.
+- `FEATURE_INVENTORY_V3.md`, `ASSIGNMENT_PUSH_V3.md`, `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md` on the live bookkeeping line;
+- retained/frozen `assignment-advanced.js`;
+- verified assignment ownership/trust boundary represented by `src/app/assignments.js`, `src/core/api.js`, `src/features/assignments/index.js`, and `supabase/functions/bq-assignment/index.ts`;
+- accumulated `scripts/validate-v3-assignments.mjs` before and after the current correction;
+- exact workflow evidence for bookkeeping runs `34449669830`, `34449808528`, and current run `34450088492`.
 
-`automation/TRIAGE.md` was read only after this provisional primary-evidence pass.
+`automation/TRIAGE.md` was read only after provisional findings were formed.
 
-## FACT — AUTHORITATIVE PARITY BOUNDARY
-The authoritative inventory still defines row #75 narrowly as `leader publish→member receive→complete`. It intentionally still records #75 as Not started and #74 Advanced assignments as Verified because bookkeeping/promotion has not occurred. That ledger is authoritative for official status but is not evidence that the current quarantine candidate lacks implementation.
+## FACT — REQUIRED PARITY
+Authoritative row #75 remains narrowly **leader publish → eligible member receive → existing #73/#74 complete**. Required audiences remain `all`, `member`, `team`, and `group`; trusted server authorization remains authoritative; successful create reloads server truth; #76 Ministry Hub, #77 Notification Center/push delivery, #78 Workspace and #79 linked-activity execution remain outside #75.
 
-Required #75 parity remains:
-1. ministry-role publishing for active `facilitator`, `leader`, `pastor`, and `admin`, with trusted server authorization authoritative;
-2. retained audiences `all`, `member`, `team`, and `group`, independently congregation/active scoped by the server;
-3. retained publish data: title, instructions, assignment type, Scripture refs, target scope/id, due date, points, scheduled opening, reminder metadata, recurrence metadata, required reflection, minimum quiz score, and evidence type;
-4. successful create reloads server truth and feeds the existing #73/#74 assignment identity/read/realtime/start/complete path;
-5. `src/app/assignments.js` remains the sole assignment application owner and `src/core/api.js` the sole browser trusted-function/Realtime boundary; no browser direct writes to assignment/progress/score tables;
-6. #76 Ministry Hub, #77 Notification Center/push delivery, #78 Workspace, #79 linked-activity execution, and browser recurrence generation remain outside #75.
+The current bookkeeping ledger represents #74 as `Regression-tested` and #75 as `Verified`; #76 and later dependency rows remain `Not started`. These are bookkeeping values until an exact final bookkeeping SHA passes the complete gate and applicable review.
 
-## FACT — RETAINED SOURCE CONTRACT
-Frozen retained `assignment-advanced.js` proves the compatibility authoring flow used the existing assignment form and `bq-assignment` create invocation, supported group targeting plus schedule/reminder/recurrence/reflection/quiz/evidence metadata, refreshed assignment truth after create, and exposed a linked-activity selector. The selector is evidence of later retained capability, not permission to absorb #79 into #75. Recurrence was stored/displayed with scheduler-disabled messaging, not generated in the browser.
+## FACT — RETAINED / OWNER CONTRACT
+Frozen retained `assignment-advanced.js` proves compatibility support for existing assignment creation plus group target, schedule/reminder/recurrence/reflection/quiz/evidence metadata. Recurrence is metadata only; linked activity is retained evidence for later #79 and is not a #75 requirement.
 
-## FACT — CURRENT CANDIDATE CONTRACT IMPLEMENTATION
-Candidate `src/app/assignments.js` composes the existing assignment owner, normalizes four target scopes and advanced metadata, requires local ministry capability for authoring, loads trusted publish targets through the API owner, validates the selected target against the loaded directory, publishes through the API owner, checks returned congregation identity, detects account/congregation changes, and reloads server truth after creation. It does not introduce a local assignment shadow owner.
+Verified v3 ownership remains:
+- `src/app/assignments.js` — sole assignment application owner;
+- `src/core/api.js` — sole browser trusted-function/Realtime boundary;
+- `src/features/assignments/index.js` — presentation/event forwarding;
+- Session/Congregation Membership — signed-in identity, selected congregation and fail-closed local capability inputs;
+- `supabase/functions/bq-assignment/index.ts` — trusted target discovery/create/response authority.
 
-Candidate trusted function `supabase/functions/bq-assignment/index.ts` contains:
-- ministry-gated `targets`, returning active same-congregation member/team/group directories;
-- ministry-gated `create`, four retained target scopes, required non-`all` target IDs, and independent validation of member/team/group targets before assignment insertion;
-- bounded advanced metadata and server-owned assignment insertion;
-- recipient-specific `start`/`complete` authorization through `assignmentRecipient`, not ministry-wide response authority.
+No primary evidence justifies a second assignment owner, broader Journey Group RLS, direct browser assignment DML, notification delivery, recurrence generation, Workspace, Ministry Hub aggregation, or linked-activity execution inside #75.
 
-No contract evidence requires broader Journey Group RLS or a second assignment service.
+## FACT — BOOKKEEPING FAILURES AND ROOT CAUSE
+Run `34449669830` failed the accumulated architecture phase because bookkeeping renamed validator-required `DEVELOPMENT_STATUS_V3.md` heading `Next major milestone`. The document was corrected without weakening that validator.
 
-## FACT — TRUSTED PUBLISH-AUTH EVIDENCE
-The new permanent `tests/v3-assignment-publish-auth-edge.mjs` is materially stronger than the earlier source-string/client-mock evidence. It loads the production `bq-assignment` source, strips only TypeScript syntax/import wiring needed for Node VM execution, captures and executes the actual production request handler, and supplies controlled infrastructure/data-boundary doubles.
+Run `34449808528` explicitly checked out/asserted exact candidate `e960f5904d1353352e1c94a1c816156d899b3eff`. Its architecture run reached `scripts/validate-v3-assignments.mjs` and failed only because that older accumulated validator hard-coded inventory #75 to remain `Not started`.
 
-It executable-checks that:
-- an ordinary member is denied trusted `targets` and `create` and cannot reach insertion;
-- `facilitator`, `leader`, `pastor`, and `admin` can use trusted target discovery/create;
-- target discovery returns only active same-congregation members, teams and groups;
-- foreign/inactive member/team/group targets are rejected before insertion;
-- valid same-congregation active targets succeed;
-- missing non-`all` targets fail closed.
+Primary source confirms that assertion was a future-state guard from #73, not a permanent requirement: the same validator already allowed #74 lifecycle movement while reserving future rows, and #75 is now the active functionally verified milestone. Current correction changes only #75 from `must be Not started` to `must be a valid lifecycle state`, while retaining the #73 owner assertions and keeping #79 strictly `Not started`.
 
-This closes the specific contract-evidence gap identified on candidate `78fa191f...`; A2 found no remaining retained-contract ambiguity behind that gap.
+A2 classifies this as **FACT: stale accumulated-validator future-state assertion**, not a retained-contract or product defect. Because an existing accumulated validator changed, the repository guardrails independently make the resulting candidate HIGH-RISK for exact-SHA review; A2 does not waive that requirement.
 
-## FACT — EXACT FUNCTIONAL EVIDENCE
-Actions run `34444825916` completed successfully. Its job explicitly checked out `a42100452d1b1fff7c146543e8ab5cd67da32193`, then asserted `git rev-parse HEAD` equals that exact candidate before tests ran.
+## FACT — CURRENT EXACT CANDIDATE
+Live candidate at the final pre-write recheck is `e725e5dee5a46fcaebf05200301efdb93f868b22`. Its validator correction preserves the original semantic protection that future linked-activity row #79 cannot be promoted early, while permitting active row #75 to occupy `Not started|Implemented|Verified|Regression-tested` as appropriate.
 
-The executed job then passed:
-- accumulated architecture validators, including `validate-v3-assignment-push.mjs`;
-- accumulated edge regressions, including `v3-assignment-push-edge.mjs`, `v3-assignment-response-auth-edge.mjs`, and the new `v3-assignment-publish-auth-edge.mjs`;
-- Playwright/Chromium setup and local server;
-- the accumulated browser/mobile suite, including `v3-assignment-push-smoke.mjs`.
-
-The log explicitly reports `BibleQuest v3 assignment publish authorization trusted-boundary regression passed.` and `BibleQuest v3 Assignment Push mobile browser regression passed.` No PASS is transferred from an earlier SHA.
-
-## VERIFIED OWNERS TO COMPOSE
-- `src/app/assignments.js` — sole assignment application owner.
-- `src/core/api.js` — sole browser cloud/trusted-function/Realtime boundary.
-- `src/features/assignments/index.js` — assignment presentation/event forwarding surface.
-- Session and Congregation Membership — identity, selected-congregation and fail-closed local capability inputs; browser role gating is not server authorization.
-- `supabase/functions/bq-assignment/index.ts` — trusted authority for target discovery, create and assignment response mutations.
-
-## UX / STATE — FACT
-- Ordinary members, signed-out, local-preview and no-congregation states cannot publish.
-- Authoring is congregation-scoped and fail-closed.
-- Successful publish reloads server truth.
-- Eligible members receive through the existing assignment read/Realtime path and complete through verified #73/#74 semantics.
-- #75 does not require a separate inbox, task store, scheduler, linked-activity executor or Ministry Hub.
-
-## LEGACY BEHAVIOR NOT TO COPY
-- Do not revive retained `assignment-advanced.js` DOM enhancement/query logic as a parallel runtime owner.
-- Do not carry its linked-activity selector into #75 browser publishing.
-- Do not infer recurrence execution from recurrence metadata.
+Current Actions run `34450088492` was observed in progress and explicitly configured to verify the exact current candidate. Therefore A2 records **MISSING EVIDENCE: final conclusion of run `34450088492`** and does not transfer PASS from `a4210045...` or either failed bookkeeping SHA.
 
 ## FACT / INFERENCE / RECOMMENDATION
 ### FACT
-- Exact live candidate at report-write recheck: `a42100452d1b1fff7c146543e8ab5cd67da32193`.
-- Exact canonical at report-write recheck: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Exact frozen base at report-write recheck: `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact run `34444825916` is green and executed the intended accumulated architecture, edge and browser/mobile phases against the exact candidate.
-- The previously missing trusted publish authorization/target-rejection scenarios now have faithful executable handler-boundary coverage.
+- Canonical remains `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Current candidate is `e725e5dee5a46fcaebf05200301efdb93f868b22`.
+- Frozen base remains `2523f85d47f59721eae81da10cf1007d29af4139`.
+- #75 functional contract evidence remains complete on ancestor `a4210045...`.
+- Two bookkeeping candidates failed exact architecture validation; neither failure established a #75 product behavior defect.
+- The current existing-test correction is contract-consistent: #75 may now advance lifecycle while #79 remains deferred.
 
 ### INFERENCE
-- Current candidate is contract-complete at source/evidence level for the recovered #75 boundary.
-- No additional #75 product behavior is justified by retained/inventory evidence merely because later Ministry Hub, notification or linked-activity capabilities exist.
+- No new product behavior is needed to resolve the two observed bookkeeping failures.
+- If the current exact candidate passes the complete accumulated gate, the remaining question is review/promotion procedure caused by the existing accumulated-validator modification, not retained-contract recovery.
 
 ### RECOMMENDATION
-- Keep `a42100452d...` unchanged while mandatory HIGH-RISK A3/A4/A5 exact-SHA review completes.
-- If those roles authorize promotion, prepare bookkeeping off-canonical and run the complete accumulated suite again against the exact bookkeeping SHA before canonical/release advancement.
-- Do not add later-row behavior while closing #75.
+- Do not alter product behavior in response to either bookkeeping failure.
+- Preserve the narrow validator correction: allow active #75 lifecycle state; keep #79 `Not started`; retain all #73 assignment ownership assertions.
+- Require the complete exact-SHA result for `e725e5de...` before any PASS claim.
+- Because an existing accumulated validator changed, follow the current HIGH-RISK exact-candidate A4/A5 review requirement before canonical/release promotion.
 
 ## AMBIGUITIES / BLOCKERS
-A2 found **no unresolved retained-contract ambiguity and no primary-evidence contract blocker** for exact candidate `a42100452d1b1fff7c146543e8ab5cd67da32193`.
+A2 finds **no unresolved retained-contract ambiguity and no primary-evidence product contract blocker** for #75.
 
-Promotion authorization remains outside A2 ownership. #75 is HIGH-RISK, so fresh A3/A4/A5 exact-candidate review remains procedural evidence required before bookkeeping/promotion.
+The currently unresolved gate is verification/review evidence, not contract definition: exact candidate `e725e5de...` had no completed full-gate result at report write.
 
 ## MISSING EVIDENCE
-- A2 did not launch a new test run; it independently audited the exact executed Actions evidence already available for this candidate.
-- No bookkeeping candidate exists yet, so no exact bookkeeping-SHA accumulated verification exists yet.
-- Production Supabase/Cloudflare/v2 behavior was intentionally neither modified nor tested by this role.
+- Final status and executed phase results for run `34450088492`.
+- Fresh exact-candidate A4/A5 review if `e725e5de...` remains the candidate and the run finishes green.
+- Exact canonical/release state after any later A1 promotion; canonical and frozen refs had not advanced at this report write.
+- Production Supabase/Cloudflare/v2 were intentionally neither modified nor tested by A2.
 
 ## CONCRETE ACCEPTANCE CHECKLIST
-- [x] #75 retained contract recovered without broadening later rows.
-- [x] Ministry publisher roles recovered; trusted server remains authoritative.
-- [x] `all/member/team/group` audience semantics recovered.
-- [x] Trusted target discovery is active/same-congregation scoped.
-- [x] Trusted create independently rejects foreign/inactive/missing targets before insertion.
-- [x] Existing assignment owner/API boundary retained.
-- [x] Retained advanced publish metadata carried while #79 linked activity remains excluded.
-- [x] Successful create reloads server truth and composes #73/#74 receive/complete path.
-- [x] Recipient response authorization remains recipient-specific.
-- [x] Permanent #75 architecture, edge, trusted publish-auth and browser/mobile coverage is invoked by the accumulated workflow.
-- [x] Exact functional candidate `a42100452d...` has complete accumulated green run `34444825916`.
-- [ ] Fresh mandatory HIGH-RISK A3/A4/A5 promotion authorization on this exact unchanged candidate.
-- [ ] Off-canonical bookkeeping candidate and exact bookkeeping-SHA complete accumulated green gate.
+- [x] #75 retained contract remains bounded to publish → receive → existing complete.
+- [x] Ministry/trusted-server authority and `all/member/team/group` audiences remain the recovered contract.
+- [x] Existing assignment/API/server ownership remains the required composition.
+- [x] Later #76/#77/#78/#79 behavior remains outside #75.
+- [x] Functional ancestor `a4210045...` has exact complete accumulated green evidence.
+- [x] First bookkeeping heading failure identified as bookkeeping-document/validator mismatch, not product failure.
+- [x] Second bookkeeping failure identified as stale #73 future-state assertion for row #75.
+- [x] Current validator correction preserves #73 ownership assertions and #79 deferral rather than weakening accumulated assignment semantics.
+- [ ] Exact complete accumulated green result for current candidate `e725e5de...`.
+- [ ] Fresh exact-SHA review/promotion evidence required because an existing accumulated validator changed.
 
 ## DEPENDENCY-LIKELY NEXT MILESTONES
-A2 did not broaden this run beyond the active milestone because #75 is not yet promoted. Inventory evidence remains sufficient to preserve the boundary: #76 owns Ministry Hub (`open tools; role guard; navigation`), #77 owns Notification Center/inbox (`load; read/unread; open target; refresh`), and #79 owns linked-activity launch/completion handoff. These later rows must be independently recovered when they become active; they are not #75 requirements.
+A2 does not expand implementation scope while #75 remains unclosed. Inventory establishes the nearest boundaries only: #76 Ministry Hub owns `open tools; role guard; navigation`; #77 Notification Center/inbox owns `load; read/unread; open target; refresh`; #79 owns linked-activity launch/completion handoff. These require independent recovery when active.
 
 ## TRIAGE RECONCILIATION
-After the independent pass, TRIAGE was read. Its 14:58 JST snapshot is stale for candidate-specific direction because it is bound to `78fa191f1bc8505b020d8548abd0bb48bbf6a8e4` and still requests the trusted publish-auth evidence that now exists and passed on `a42100452d...` in run `34444825916`. That staleness does not itself authorize promotion; it only means current A3/A4/A5 reviews must judge the new exact candidate.
+TRIAGE was correct for functional candidate `a42100452d...` but is now stale for candidate-specific authorization because the quarantine branch moved through bookkeeping and then an existing accumulated-validator correction to `e725e5dee5a46fcaebf05200301efdb93f868b22`. Its functional scope conclusion remains consistent with primary evidence; its promotion recommendation cannot transfer to the changed exact SHA.
 
 ## STALENESS CONDITIONS
-This report becomes stale for candidate-specific conclusions immediately if:
-- `agent/a1-work/075-assignment-push` moves from `a42100452d1b1fff7c146543e8ab5cd67da32193`;
-- canonical `feature/v3-assignment-push` moves from `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`;
-- frozen base moves from `2523f85d47f59721eae81da10cf1007d29af4139`;
-- a later exact run supersedes or contradicts run `34444825916`;
-- authoritative #75 inventory/contract changes;
-- bookkeeping creates a new candidate SHA.
+This report becomes stale for candidate-specific conclusions if:
+- `agent/a1-work/075-assignment-push` moves from `e725e5dee5a46fcaebf05200301efdb93f868b22`;
+- canonical moves from `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`;
+- frozen base changes from `2523f85d47f59721eae81da10cf1007d29af4139`;
+- run `34450088492` finishes or is superseded by another exact-candidate run;
+- authoritative #75 contract/inventory changes.
 
 Reinspect primary evidence before using this report against any changed state.
