@@ -68,6 +68,7 @@ Exact functional candidate `5d3446916b8aa809f8a419e3cffa88a312c4bbc5` passed run
 
 - First #81 exact candidate `1bd77237de6b08f18794387bf5c1d9c8098a3e4a`, run `34472943815`: the exact SHA assertion and all earlier accumulated architecture validators passed, but the new Psychometrics validator required two safety sentences to be duplicated literally inside the UI source even though the UI consumed the centralized `PSYCHOMETRICS_SAFETY` policy owner. Root cause was a validator ownership mistake, not runtime behavior. The validator was corrected to require the centralized safety references instead of duplicated policy text. No runtime behavior or prior acceptance coverage was weakened.
 - Corrected exact functional candidate `5d3446916b8aa809f8a419e3cffa88a312c4bbc5`, run `34473640903`: complete accumulated suite green.
+- First #81 bookkeeping candidate `7eb305d0998654aeb3bcdc987f65ebd960b22e20`, run `34474359203`: exact SHA assertion and all architecture checks through #79 passed, then the older #80 Personality Profile validator rejected #81 because it still hard-coded the future row to remain `Not started`. Root cause was a stale future-state assertion that became invalid only after #81 legitimately advanced to Verified. The #80 validator was narrowed to accept #81's normal lifecycle states while the dedicated #81 validator remains authoritative. No runtime code or #81 acceptance coverage was weakened.
 - #80 bookkeeping heading failure remains retained in history: candidate `bb5f9d722a3e59c6bc02be985c3614aab76cb330`, run `34471472048`, was rejected because the global architecture guard requires the literal `Next major milestone` heading. The heading was restored without runtime changes.
 
 Earlier milestone defect regressions remain retained in the accumulated suite.
@@ -78,7 +79,7 @@ Earlier milestone defect regressions remain retained in the accumulated suite.
 
 ## Next major milestone
 
-1. Treat the final #81 bookkeeping/status/handoff transaction on `feature/v3-psychometrics` as a new exact clean candidate.
+1. Treat the corrected final #81 bookkeeping/status/handoff transaction on `feature/v3-psychometrics` as a new exact clean candidate.
 2. Verify that exact bookkeeping SHA with an isolated one-shot workflow that explicitly checks out/asserts it and executes the complete accumulated architecture, edge/security and browser/mobile suite.
 3. If any phase fails, do not freeze; identify the exact root cause, preserve all prior coverage and rerun a corrected exact SHA.
 4. If fully green, restore the isolated verifier to manual-only and create immutable `release/v3.54-psychometrics` at exactly the verified bookkeeping SHA.
