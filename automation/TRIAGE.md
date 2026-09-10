@@ -1,41 +1,42 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-10 16:58 JST
+Generated: 2026-09-10 17:56 JST
 
 ## Freshness
-- Active milestone: **#75 Assignment Push Workflow — HIGH-RISK**.
-- Canonical: `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Quarantine/bookkeeping candidate: `agent/a1-work/075-assignment-push` at `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact bookkeeping evidence: run `34450088492` completed `success`. Its isolated workflow checked out and asserted exact candidate `e725e5dee5...`, then completed accumulated architecture, edge/security, Playwright/Chromium/local-server and browser/mobile phases.
-- A2: candidate SHA matches, but report is **formally stale for run status** because it observed `34450088492` before completion; its no-contract-blocker conclusion is independently consistent with primary evidence.
-- A3: **CURRENT / READY** for exact `e725e5dee5...`; trusted authorization boundary satisfied.
-- A4: **CURRENT / READY** for exact `e725e5dee5...`; accumulated harness retained and validator correction accepted as semantic preservation.
-- HIGH-RISK exact-candidate independent review requirement is **SATISFIED** for this unchanged SHA.
+- Active milestone: **#76 Ministry Hub — NORMAL-RISK only while bounded to existing-owner presentation/navigation with no trust-boundary, schema/RLS/grant, dependency/workflow, or global-owner change**.
+- #76 canonical branch: **absent** (`feature/v3-ministry-hub` not present).
+- #76 quarantine candidate: **absent** (`agent/a1-work/076-ministry-hub` not present).
+- Last canonical milestone: `feature/v3-assignment-push` at `e725e5dee5a46fcaebf05200301efdb93f868b22`.
+- Frozen base: `release/v3.48-assignment-push` at exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
+- Frozen-base exact evidence: run `34450088492` completed `success`; this proves v3.48 only and does not transfer to #76.
+- A2 #76 report: **CURRENT for pre-implementation state**; no candidate existed, contract recovered from primary evidence.
+- A3 #76 report: **CURRENT for pre-implementation state**; no architecture/security blocker for bounded portal/navigation work; reclassify HIGH-RISK if trust-boundary/global-owner areas are touched.
+- A4 #76 report: **CURRENT for pre-implementation state / NOT READY by design** because no candidate or #76 executable evidence exists.
+- HIGH-RISK exact-candidate review: **not applicable yet**; no #76 candidate exists.
 
 ## BLOCKER
 - None.
 
 ## MILESTONE
-- **Final non-force canonical/release closure at the exact authorized green SHA.** Counterfactual: if A1 does not complete the canonical fast-forward and immutable release freeze, #75 remains unclosed and #76 must not begin. No additional product/test/bookkeeping change is required by A5.
+- **Implement and verify the inventory-proven #76 boundary: `open tools; role guard; navigation`.** Use existing router/bootstrap and congregation-membership ownership, add meaningful permanent #76 architecture/runtime/browser-mobile coverage, retain the full accumulated harness, and run the complete exact-SHA gate. Counterfactual: without an executable Ministry Hub open path, fail-closed role-aware presentation, supported navigation and exact accumulated verification, authoritative row #76 remains `Not started` and cannot be safely promoted.
 
 ## DEFER
+- Retained v2 messages/devotionals, polls, congregation calendar, media upload/signing and legacy direct-client CRUD are not proven by the current #76 inventory contract. Do not absorb them without stronger primary contract evidence; if later required, re-open scope/security review.
+- #43 Live Rooms and #77 Notification Center, #78 Workspace, #79 Linked Activities remain separate unfinished milestones and must not be counted as #76.
 - #15 Japanese furigana and Kids #38–40 remain deferred by user priority.
-- #76 Ministry Hub, #77 Notification Center/push delivery, #78 Workspace and #79 linked-activity execution remain outside #75 until release closure.
 
 ## IGNORE
-- Prior A5 promotion approval for `a42100452d...` is stale and does not authorize the changed bookkeeping SHA.
-- Historical failed bookkeeping candidates `bcb678b5...` and `e960f590...` are not current defects; no PASS transfers from them.
-- The `scripts/validate-v3-assignments.mjs` correction is not unexplained weakening: it changes only #75 from an obsolete fixed `Not started` future-state assertion to a bounded valid lifecycle-state assertion while preserving #73 ownership checks and keeping #79 strictly `Not started`.
-- Do not broaden Journey Group RLS, browser assignment DML, trusted authority, or #75 scope.
+- Frozen `DEVELOPMENT_HANDOFF_V3.md` text is historically stale about #75 closure; live refs plus control state prove v3.48 is frozen at `e725e5de...`. Do not treat the stale prose as reopening #75.
+- Prior #75 candidate/review findings are historical and do not authorize any future #76 SHA.
+- A4 `NOT READY` is not a defect/blocker at this stage; no implementation candidate exists to review.
 
 ## Firewall decision
-**0 BLOCKER; 1 MILESTONE; PROMOTION RECOMMENDED for exact bookkeeping candidate `e725e5dee5a46fcaebf05200301efdb93f868b22`.**
+**0 BLOCKER; 1 MILESTONE; #76 MAY BEGIN as bounded NORMAL-RISK work from frozen v3.48. NO PROMOTION RECOMMENDATION EXISTS because no #76 candidate SHA exists.**
 
-A5 independently verified the live canonical/candidate/frozen refs, durable handoff, exact Actions run/job, pinned verification workflow, normal manual-only workflow, permanent trusted-boundary authorization regression, and the exact accumulated-validator patch. Run `34450088492` is valid exact-SHA evidence for `e725e5dee5...`; all required accumulated phases completed successfully. The permanent publish-authorization regression executes the production `bq-assignment` handler and materially protects ministry authorization plus active same-congregation member/team/group targeting. No unexplained regression deletion, bypass, narrowing or skip was found.
+Primary evidence independently confirms row #76 is `Not started` with required verification `open tools; role guard; navigation`; current role ownership fails closed for unknown membership and grants the `ministry` client capability only to facilitator/leader/pastor/admin; the normal accumulated workflow is `workflow_dispatch`-only and currently contains coverage through #75 but no #76 invocation. A2-A4 conclusions are consistent with that evidence but are not themselves proof.
 
-A3 and A4 are current and READY for this exact candidate. A2 is stale only because its run-status observation preceded completion; primary evidence now closes that missing evidence and does not establish any retained-contract blocker. No fresh unresolved BLOCKER remains.
+If implementation changes schema/migrations, RLS/grants, trusted functions/RPCs, browser privileged DML/storage, package/dependency/workflow semantics, or global router/shell ownership, #76 becomes HIGH-RISK before that write. Any unexplained weakening/removal/bypass of accumulated regressions is BLOCKER.
 
 ## Next safe action
-A1 may acquire/recheck the writer lease, re-read live canonical/candidate/frozen/workflow state, and fast-forward `feature/v3-assignment-push` **without force** to exact `e725e5dee5a46fcaebf05200301efdb93f868b22`, then create immutable `release/v3.48-assignment-push` at that same SHA and record durable closure. If the candidate or relevant product/test/workflow state changes before promotion, this recommendation is stale and fresh exact-SHA review is required. Do not begin #76 until #75 release closure is recorded.
+A1 may reconcile frozen v3.48, acquire the writer lease, create the dedicated #76 canonical/quarantine path without force, and implement only the bounded recovered contract on `agent/a1-work/076-ministry-hub`. Add permanent #76 tests and run the complete exact functional gate. NORMAL-RISK work need not wait an artificial extra cycle once exact gates and current requirements are satisfied; if the candidate enters a HIGH-RISK area, fresh exact-candidate A4/A5 review rules apply.
