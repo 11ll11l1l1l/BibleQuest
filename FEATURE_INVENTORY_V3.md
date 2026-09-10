@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 85
+- **Regression-tested:** 86
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 14
+- **Not started:** 13
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -106,8 +106,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 83 | Innovation suite | Yes | Compatibility | Regression-tested | inventory-specific workflows documented before migration |
 | 84 | Tutorial/onboarding trainer | Yes | Compatibility | Regression-tested | account-created onboarding after recovery-code save confirmation; next/back/skip/finish; persistent launcher; never duplicate; mobile/offline |
 | 85 | Tutorial avatar reactions | Yes | Resource retained | Regression-tested | correct reaction/state; mobile positioning |
-| 86 | Accessibility support | Yes | Partial clean | Verified | keyboard nav; focus order; labels; reduced motion/readability |
-| 87 | Content reporting | Yes | Compatibility | Not started | submit report; validation; success/error |
+| 86 | Accessibility support | Yes | Partial clean | Regression-tested | keyboard nav; focus order; labels; reduced motion/readability |
+| 87 | Content reporting | Yes | Compatibility | Verified | submit report; validation; success/error |
 | 88 | Content moderation | Yes | Compatibility | Not started | moderation contract; blocked/context-sensitive paths |
 | 89 | Doctrinal safety/context | Yes | Resource retained | Regression-tested | one doctrinal-safety policy owner; imported Recall re-evaluation; passage-context notice revealed separately from source answer/reference/provenance; unsafe universal/disputed claims quarantined; no spiritual scoring; 390px Recall/Open Review verification |
 | 90 | Source labels/attribution | Yes | Mixed | Regression-tested | one immutable provenance registry; Scripture/source-answer/retelling/authored-study distinctions; owner-supplied translation and recall attribution; labels across active learning surfaces; source guide; no legacy injector; 390px mobile |
