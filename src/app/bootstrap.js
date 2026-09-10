@@ -116,13 +116,13 @@ function start(){
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress});
-  const mission=createMissionService({openReview});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
   const mediaLibrary=createMediaLibraryService({recordings});
   const games=createGameLauncherService({progress,storage,recall});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
+  const mission=createMissionService({openReview});
   const privateNotes=createPrivateNotesService({storage});
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
   const couplesFamily=createCouplesFamilyService({storage});
