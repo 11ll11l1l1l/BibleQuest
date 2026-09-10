@@ -2,7 +2,10 @@ const ACTION_ROUTES=Object.freeze({assignment:'assignments',ministry:'ministry-h
 const cleanText=(value,max)=>String(value??'').replace(/\r\n?/g,'\n').trim().slice(0,max);
 const notificationError=(message,code)=>{const error=new Error(message);error.code=code;return error};
 const validTimestamp=(value,{nullable=false}={})=>{
-  if(value==null||value==='')return nullable?null:notificationError('Notification is missing a required timestamp.','BQ_NOTIFICATION_DATA');
+  if(value==null||value===''){
+    if(nullable)return null;
+    throw notificationError('Notification is missing a required timestamp.','BQ_NOTIFICATION_DATA');
+  }
   const text=String(value),time=Date.parse(text);
   if(!Number.isFinite(time))throw notificationError('Notification contains an invalid timestamp.','BQ_NOTIFICATION_DATA');
   return new Date(time).toISOString();
