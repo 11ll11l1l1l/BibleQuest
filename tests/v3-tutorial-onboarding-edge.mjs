@@ -22,12 +22,12 @@ function fakeStorage(initial = null) {
 
 const store = fakeStorage();
 const tutorial = createTutorialService({ storage: store, now: () => '2026-09-10T15:00:00.000Z' });
-assert.equal(tutorial.getState().active, false, 'Tutorial must start closed before Home offers first run.');
+assert.equal(tutorial.getState().active, false, 'Tutorial must start closed until a retained trigger or launcher opens it.');
 assert.equal(tutorial.getState().completed, false, 'Fresh tutorial state must be incomplete.');
 
-let state = tutorial.offerFirstRun();
-assert.equal(state.active, true, 'First-run offer must open a fresh tutorial.');
-assert.equal(state.step, 0, 'First-run offer must start at step zero.');
+let state = tutorial.open();
+assert.equal(state.active, true, 'A fresh onboarding trigger must open the tutorial.');
+assert.equal(state.step, 0, 'Fresh onboarding must start at step zero.');
 assert.equal(state.totalSteps, TUTORIAL_STEP_COUNT, 'Tutorial must expose its deterministic step count.');
 
 state = tutorial.next();
@@ -41,11 +41,11 @@ state = tutorial.skip();
 assert.equal(state.active, false, 'Skip/Close must close the guide.');
 assert.equal(state.completed, false, 'Skip/Close must not mark onboarding complete.');
 assert.equal(store.writes(), 0, 'Skip/Close must not persist completion.');
-state = tutorial.offerFirstRun();
-assert.equal(state.active, false, 'First-run offer must not repeatedly reopen after a temporary close in the same page session.');
+state = tutorial.open();
+assert.equal(state.active, true, 'An incomplete tutorial must remain reopenable after temporary close.');
 
 state = tutorial.open({ force: true, step: 999 });
-assert.equal(state.active, true, 'Force-open must reopen a temporarily closed tutorial.');
+assert.equal(state.active, true, 'Force-open must reopen an incomplete tutorial.');
 assert.equal(state.step, TUTORIAL_STEP_COUNT - 1, 'Requested step must clamp to the final step.');
 state = tutorial.finish();
 assert.equal(state.active, false, 'Finish must close the guide.');
@@ -55,13 +55,13 @@ assert.equal(store.writes(), 1, 'Finish must persist exactly once.');
 assert.equal(store.value().completed, true, 'Persisted completion flag is missing.');
 
 const completed = createTutorialService({ storage: store });
-assert.equal(completed.offerFirstRun().active, false, 'Completed onboarding must not auto-open on a later page load.');
-assert.equal(completed.open().active, false, 'Normal open must respect completed state.');
+assert.equal(completed.getState().active, false, 'Completed onboarding must start closed on a later page load.');
+assert.equal(completed.open().active, false, 'Normal onboarding trigger must respect completed state.');
 assert.equal(completed.open({ force: true }).active, true, 'Permanent launcher must force-open even after completion.');
 
 const malformed = createTutorialService({ storage: fakeStorage('not-an-object') });
 assert.equal(malformed.getState().completed, false, 'Malformed persisted data must fail closed to incomplete.');
-assert.equal(malformed.offerFirstRun().active, true, 'Malformed persisted data must remain recoverable through first-run onboarding.');
+assert.equal(malformed.open().active, true, 'Malformed persisted data must remain recoverable through onboarding.');
 
 assert.throws(() => createTutorialService({ storage: {} }), /shared storage boundary/, 'Tutorial must fail closed without the shared storage owner.');
 
