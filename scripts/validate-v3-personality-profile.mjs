@@ -16,7 +16,7 @@ if(!failures.length){
   for(const token of['20-item IPIP-based Big Five','Psychometrics Lab','ipip_big_five_50_v1','does **not** reproduce','excluded from normal portable','presentation-only'])if(!contract.includes(token))fail(`Personality Profile contract missing recovered evidence: ${token}`);
   const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
   if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(80)))fail('Inventory #80 must use a valid lifecycle state.');
-  if(!/\| Not started \|/.test(row(81)))fail('Inventory #81 Psychometrics must remain Not started during #80.');
+  if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(81)))fail('Inventory #81 Psychometrics must use a valid lifecycle state after #80.');
   for(const test of['scripts/validate-v3-personality-profile.mjs','tests/v3-personality-profile-edge.mjs','tests/v3-personality-profile-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #80 regression: ${test}`);
 }
 if(failures.length){failures.forEach(item=>console.error(`- ${item}`));process.exit(1)}
