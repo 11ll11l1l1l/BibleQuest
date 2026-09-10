@@ -37,7 +37,7 @@ function deviceRows(devices) {
   return devices.map(device => `<div class="bq-device-row"><div><b>${escapeHtml(device.label || 'Web browser')}</b><small>${escapeHtml(device.platform || 'Web')}${device.last_seen_at ? ` · ${escapeHtml(new Date(device.last_seen_at).toLocaleString())}` : ''}</small></div>${device.current ? '<span class="bq-current-device">THIS DEVICE</span>' : `<button type="button" class="bq-secondary-button" data-device-remove="${escapeHtml(device.id)}">Remove</button>`}</div>`).join('');
 }
 
-export function accountPage({ account, session, onHome }) {
+export function accountPage({ account, session, onHome, onTutorial }) {
   const state = session.getState();
   return {
     title: 'Account',
@@ -46,6 +46,7 @@ export function accountPage({ account, session, onHome }) {
       const body = root.querySelector('[data-account-body]');
       let mode = state.authenticated ? 'center' : 'login';
       let codeNext = 'login';
+      let codeAfterSave = null;
 
       const setMessage = message => {
         const node = root.querySelector('[data-auth-message]');
@@ -73,8 +74,9 @@ export function accountPage({ account, session, onHome }) {
         else if (mode === 'center') { body.innerHTML = centerView(); renderDevices(); }
         root.querySelectorAll('[data-account-mode]').forEach(button => button.classList.toggle('active', button.dataset.accountMode === mode));
       };
-      const showCode = (title, code, detail, nextMode) => {
+      const showCode = (title, code, detail, nextMode, afterSave = null) => {
         codeNext = nextMode;
+        codeAfterSave = typeof afterSave === 'function' ? afterSave : null;
         if (body) body.innerHTML = codeView(title, code, detail);
       };
 
@@ -116,7 +118,13 @@ export function accountPage({ account, session, onHome }) {
           if (done) done.disabled = !target.checked;
           return;
         }
-        if (target.closest('[data-code-done]')) return render(codeNext);
+        if (target.closest('[data-code-done]')) {
+          const afterSave = codeAfterSave;
+          codeAfterSave = null;
+          render(codeNext);
+          afterSave?.();
+          return;
+        }
       };
 
       const onSubmit = async event => {
@@ -141,7 +149,7 @@ export function accountPage({ account, session, onHome }) {
               ? `Your account was created, but automatic sign-in did not finish: ${result.signInWarning} Save this recovery code before signing in manually.`
               : 'Your account is created and signed in. This recovery code is shown once.';
             if (result.deviceWarning) console.warn(result.deviceWarning);
-            showCode('Save your recovery code', result.recovery_code, detail, result.signedIn ? 'center' : 'login');
+            showCode('Save your recovery code', result.recovery_code, detail, result.signedIn ? 'center' : 'login', () => onTutorial?.());
           } catch (error) { setMessage(error?.message || 'Could not create account.'); }
           finally { busy(form, false); }
         } else if (form.matches('[data-account-recovery]')) {
