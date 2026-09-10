@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3.55-avatar-vault-functional-58982-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
