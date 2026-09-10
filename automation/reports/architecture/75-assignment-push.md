@@ -1,120 +1,98 @@
 # Architecture / Security Report — #75 Assignment Push Workflow
 
 Agent: `BQ-A3-ARCH-SECURITY`
-Analyzed canonical branch: `feature/v3-assignment-push`
-Analyzed HEAD: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`
-Date: 2026-09-10 JST
+Updated: 2026-09-10 JST
+
+## Exact inspected state
+
+- Canonical: `feature/v3-assignment-push` at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Live quarantine candidate: `agent/a1-work/075-assignment-push` at `d13ba6b9729a02021ee5efab961c6c233a0b669e` when re-read immediately before this report write.
+- Candidate product/security implementation inspected at parent `651ad992681490bfae74178c99c2f8cf6aa15bb4`; `d13ba6b...` changes only `tests/v3-assignments-smoke.mjs` to preserve the ministry recipient read-only UI contract while exposing the publisher.
+- Frozen base: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
+- Frozen-base exact accumulated evidence retained in handoff: run `34433120915` for `2523f85...`. It is baseline evidence only, not #75 candidate evidence.
+- Exact current candidate `d13ba6b...`: no associated workflow run returned by GitHub during this audit. No candidate PASS is claimed.
+
+Staleness: this report becomes stale if canonical, quarantine candidate, assignment Edge Function, assignment owner/API boundary, assignment migrations/RLS, or #75 verification SHA changes.
 
 ## Verdict
 
-No external BLOCKER established. One MILESTONE architecture requirement must be satisfied before #75 can be considered safely implemented: the browser cannot obtain the retained `group` publish-target directory by directly reusing the current Journey Groups read path, because `bible_groups` RLS exposes only groups the caller owns or has joined. A leader publishing to any active Journey Group in the selected congregation therefore needs a ministry-authorized, congregation-scoped target projection through the existing central API/trusted-server boundary.
+No external architecture/security BLOCKER established. The previously missing trusted congregation publish-target directory is now implemented on quarantine behind the existing assignment server boundary. It should remain there; general Journey Group RLS must not be broadened.
 
-## Inspected architecture/backend evidence
+One authorization-integrity issue requires A5/A1 review before #75 promotion: the trusted server currently reuses `assignmentVisible()` for both read visibility and `start`/`complete` eligibility, and `assignmentVisible()` returns true unconditionally for ministry roles. A ministry user can therefore invoke the server directly to start/complete an assignment targeted to another member/team/group and potentially award points to themself, even though the current browser deliberately keeps ministry recipient controls read-only. This is source-demonstrated authorization behavior; runtime exploitation was NOT EXECUTED.
 
-- `ASSIGNMENT_PUSH_V3.md`: #75 retains `src/app/assignments.js` as sole application owner and `src/core/api.js` as sole browser cloud/trusted-function boundary; audiences are `all/member/team/group`; server must independently validate same-congregation targets.
-- `src/app/assignments.js`: current owner already centralizes normalization, member start/complete, state and Realtime cleanup; ministry roles are `facilitator/leader/pastor/admin`.
-- `src/core/api.js`: assignment reads/start/complete/subscription already live under one API owner. Team Center can read active teams and congregation-member directory. Journey Groups `list(userId)` first loads the caller's memberships, then only those group IDs.
-- `supabase/functions/bq-assignment/index.ts`: `action:create` is trusted server authority, authenticates the user, requires active congregation membership, permits only `facilitator/leader/pastor/admin`, validates member/team/group targets against the supplied congregation, bounds/normalizes assignment inputs, and performs the assignment insert with the service-role client.
-- `20260904_journey_groups_daily_loop.sql`: `journey groups member read` allows `bible_groups` select only when the caller is owner or an active group member; there is no congregation-leader directory policy.
-- `20260905181000_linked_activity_assignment_groups.sql`: adds `group` assignment scope and updates `private.bible_assignment_visible` so normal members see group assignments only when they are active members of an active group in the same congregation; ministry roles can read congregation assignments.
-- `20260905132000_pastor_community_rls_parity.sql`: later migration aligns assignment-progress leadership read with `facilitator/leader/pastor/admin`.
-- `src/app/congregation-membership.js`: browser capability checks are fail-closed for unknown roles and distinguish normal read from ministry capability; these are UI/application guards, not server authorization.
+## Primary evidence and FACT findings
 
-## REQUIRED OWNER / COMPOSITION
+### FACT — publish target discovery now uses a narrow trusted boundary
 
-- Keep `src/app/assignments.js` as the only assignment application owner. Add publish state/lifecycle there rather than reviving retained root `assignment-advanced.js`.
-- Keep `src/core/api.js` as the only browser Supabase/Edge/Realtime boundary.
-- Presentation must forward events/data only; it must not instantiate another Supabase client or directly mutate assignment tables.
-- Reuse the existing congregation/session owners for selected congregation and local ministry-capability visibility.
+Candidate `supabase/functions/bq-assignment/index.ts`:
+- re-authenticates the bearer token and requires active congregation membership;
+- gates `action:targets` to `facilitator/leader/pastor/admin`;
+- queries only active members, active teams and active groups scoped to the supplied congregation;
+- returns selector metadata only (`id`, display label, role/team type where applicable);
+- `action:create` repeats server-side ministry-role authorization and independently validates member/team/group target IDs against the selected congregation before insert.
 
-## SAFE DATA FLOW
+This satisfies the safe direction identified in the prior report without widening the browser's general Journey Group read model.
 
-1. Signed-in application selects an active congregation through existing membership state.
-2. Local UI exposes authoring only when `congregation.assert(congregationId, 'ministry')` succeeds.
-3. Target directory is loaded through the central API boundary.
-4. For `member/team/group`, the browser sends only the selected target ID plus normalized publish fields.
-5. `bq-assignment` re-authenticates the caller, resolves active membership and role server-side, and independently validates target scope and congregation.
-6. Server creates the row. Browser does not synthesize a durable local assignment.
-7. Application reloads server truth through the existing RLS-protected assignment read path; eligible members receive via the existing Realtime-refresh path and complete through #73/#74.
+### FACT — database visibility remains scoped
 
-## AUTHORIZATION / RLS CONTRACT
+Ordered migrations show:
+- `20260904_assignments_presence_unlocks.sql` originally grants authenticated SELECT only through `private.bible_assignment_visible` and does not grant browser assignment/progress mutation.
+- `20260905181000_linked_activity_assignment_groups.sql` adds `group` scope and group visibility only for active group members of an active group in the same congregation; ministry roles retain congregation assignment visibility.
+- The target-directory implementation uses the trusted service-role Edge Function rather than broadening that RLS policy.
 
-- Browser ministry-role gating is usability only; authorization remains server-side.
-- `action:create` must continue to require an active membership role in `facilitator/leader/pastor/admin`.
-- Member target: target must be an active member of the same congregation.
-- Team target: team must belong to the same congregation. Preserve any active/type constraint expected by the recovered contract when producing selectable targets.
-- Group target: group must be active and belong to the same congregation.
-- Member receipt remains RLS-defined. Do not compute audience visibility in browser code.
-- Do not add browser INSERT/UPDATE/DELETE grants or policies for `bible_assignments`, `bible_assignment_progress`, or `bible_score_events`.
+Do not assess the earliest assignment migration in isolation; later ordered migration state is authoritative.
 
-## SERVER / TRUST BOUNDARY
+### FACT — application ownership/lifecycle contract remains single-owner
 
-Current `bq-assignment action:create` is suitable as mutation authority. The missing piece is read-side target discovery for Journey Groups.
+Candidate evidence retains `src/app/assignments.js` as assignment application/state owner and `src/core/api.js` as browser cloud/trusted-function/Realtime boundary. The #75 edge regression exercises ministry target loading, all four target scopes, stale congregation target rejection, create-then-reload failure handling, signed-out/local-preview/no-congregation fail-closed states, and server source assertions for ministry/same-congregation target checks.
 
-Recommended minimum boundary: extend the existing trusted assignment function/API with a read-only target-directory action (for example `action:targets`) that:
-- requires authenticated active membership in the selected congregation;
-- requires a ministry role before returning publishing targets;
-- returns only fields needed by the selector (IDs plus display labels; no private study/progress data);
-- filters members to active same-congregation members;
-- filters teams to same-congregation active publishable teams;
-- filters groups to same-congregation active Journey Groups;
-- never trusts browser-supplied role or congregation membership claims.
+The latest candidate test commit explicitly preserves the recipient side as read-only for ministry roles while requiring the publisher UI to exist. This is useful primary evidence that publisher privilege and recipient completion are intended to be distinct capabilities.
 
-This avoids weakening the general `bible_groups` RLS policy merely to support a leader selector. If Agent 1 instead composes existing RLS-visible member/team reads with a new trusted group-only projection, that is acceptable if all three remain under `src/core/api.js` and the resulting directory is explicitly congregation-scoped and ministry-gated.
+### FACT — server currently conflates visibility with response eligibility
 
-## LIFECYCLE / CLEANUP CONTRACT
+In candidate `bq-assignment/index.ts`, `assignmentVisible(...)` begins with `if(leaderRoles.has(role)) return true`. The `start`/`complete` branch authorizes by `if(!(await assignmentVisible(...))) ... 403`. Consequently any active ministry-role caller in that congregation passes the response authorization for any assignment row in the congregation, regardless of its target scope/target ID. On first completion the function can write that caller's `bible_assignment_progress` row and insert an idempotent `bible_score_events` award for that caller.
 
-- Preserve the existing single assignment Realtime subscription and `stopSync()`/returned cleanup semantics.
-- Publishing must not create a second Realtime channel or independent polling timer.
-- A create success should trigger/reuse the existing reload path; do not append an optimistic durable record that can diverge from RLS/server truth.
-- Switching congregation, signing out, local-preview transition, feature teardown, or re-entering Assignments must not leave stale target-directory data or duplicate subscriptions.
-- Target-directory requests should fail closed on session/congregation changes; stale results from a previously selected congregation must not populate the next congregation's selector.
+Current browser tests deliberately hide Start/Complete from ministry users, but browser hiding is not an authorization boundary. No exact server-negative test proving a ministry caller cannot complete somebody else's targeted assignment was found/executed in this audit.
 
-## PRIVACY / SCOPE REQUIREMENTS
+Impact: integrity of assignment completion and congregation scoring for ministry accounts. Scope is limited to already-privileged active ministry members; this is not evidence of ordinary-member or cross-congregation access.
 
-- Target discovery must expose only congregation directory metadata required to select an audience. Do not attach Private Notes, Cloud Notes, Transform answers, Couple Journey data, assignment submissions, credentials, presence detail, or unrelated study state.
-- Do not broaden `bible_groups` select policy to every congregation member. That would change the privacy model for Journey Groups beyond #75's need.
-- A ministry target-directory response must never include users/teams/groups from another congregation, even if the caller knows their UUIDs.
-- Ordinary members, signed-out users, local preview, unknown roles and no-congregation states must receive no publish-target directory suitable for authoring.
+## INFERENCE / RECOMMENDATION
 
-## UNSAFE APPROACHES TO FORBID
+- Treat read visibility and response eligibility as separate server concepts. Ministry visibility for review/feedback can remain broad, while `start`/`complete` should authorize against the assignment audience unless an explicit authoritative contract says ministry users are also recipients.
+- Because the browser now explicitly treats ministry recipient actions as read-only, the safer contract is for the server to enforce the same separation rather than relying on UI controls.
+- A5 should classify final priority. This is not an external stop condition; it is a candidate authorization-integrity finding that is cheapest to settle before #75 promotion.
 
-- Direct browser insert/update into assignment/progress/score tables.
-- Reusing `journeyGroups.list(userId)` as the authoritative `group` target selector and silently restricting leaders to groups they personally joined.
-- Broadening general Journey Group RLS to all congregation members just to make the selector work.
-- Trusting browser role checks as authorization.
-- Accepting arbitrary target IDs without server same-congregation validation.
-- Reviving `assignment-advanced.js` as a second runtime assignment owner.
-- Implementing recurrence generation, Notification Center behavior, or linked-activity launch in #75.
+## Safe trust boundary for #75
 
-## MIGRATION / FUNCTION CHANGES THAT MAY BE COMMITTED BUT NOT DEPLOYED
+1. Browser session/congregation owner selects an active congregation.
+2. Presentation exposes publisher controls only as local usability gating.
+3. `src/app/assignments.js` owns target-directory state, normalization, stale-request protection and publish lifecycle.
+4. `src/core/api.js` is the only browser path to `bq-assignment` and assignment Realtime.
+5. `bq-assignment` independently authenticates, resolves active membership/role, returns congregation-scoped target metadata, validates target UUIDs and creates the assignment.
+6. Browser reloads server truth; members receive through existing RLS/Realtime and complete through the trusted server path.
 
-- No schema migration is required if the missing target directory is supplied by a new read-only action on the existing `bq-assignment` Edge Function.
-- Such an Edge Function change may be committed to the v3 rebuild branch and tested without deployment to production.
-- If a new RPC/view/policy is chosen instead, it must be committed as an ordered migration with explicit authenticated/ministry/congregation scope and without widening unrelated reads. This is less minimal than extending the existing trusted assignment function.
-- Eventual production rollout ordering, outside this rebuild run: deploy/verify the trusted target-directory backend first, then deploy the browser client that depends on it. Do not ship a client that assumes the new directory contract before the backend exists.
+## Must not be broadened
 
-## BLOCKERS
+- Do not grant congregation-wide Journey Group SELECT merely to populate the publisher selector.
+- Do not add direct browser INSERT/UPDATE/DELETE paths for `bible_assignments`, `bible_assignment_progress` or `bible_score_events`.
+- Do not trust browser role checks, target lists or congregation IDs without server revalidation.
+- Do not revive retained `assignment-advanced.js` as a second assignment owner.
+- Do not add #77 notification delivery, recurrence generation, or #79 linked-activity execution to #75.
+- Do not deploy production Supabase/Cloudflare changes as part of rebuild verification.
 
-None external. The current absence of an all-active-group publish directory is a #75 MILESTONE implementation requirement, not a reason to stop canonical work.
+## Exact missing evidence before promotion
 
-## NON-BLOCKING OBSERVATIONS
+- Exact-SHA executed #75 architecture validator on the final candidate.
+- Exact-SHA executed edge/security regression, including unauthorized ordinary role, inactive/foreign member/team/group targets, stale congregation/session result, create/reload failure, and a server-level negative proving non-recipient ministry users cannot start/complete/score a targeted assignment unless an authoritative contract explicitly permits it.
+- Exact-SHA 390px publisher -> eligible member receive -> complete browser evidence, plus subscription cleanup/no duplicate lifecycle evidence.
+- Complete accumulated #1-#75 functional gate against the exact clean functional candidate.
+- A4/A5 review of that exact functional SHA before autonomous promotion.
+- Complete accumulated gate again against the exact bookkeeping SHA before canonical/release advance.
 
-- The migration history initially excluded `group` and `pastor` in older assignment policies, but later committed migrations explicitly add `group` visibility and pastor leadership parity. Agent 1 must assess the final ordered migration state, not the earliest migration in isolation.
-- Existing assignment Realtime handlers ignore event payload data and use events only to reload RLS-filtered server truth, which is a safer ownership pattern for #75.
-- Current v3 account/device service does not contain the broad local-progress snapshot synchronization path previously identified in old v2/main analysis; do not import that older finding into #75 without new v3 evidence.
+## TRIAGE comparison
 
-## Architecture acceptance checks
+`automation/TRIAGE.md` was read only after the provisional repository findings above were formed. Its prior target-directory MILESTONE is now stale for the quarantine candidate because the trusted directory exists there; canonical remains pre-implementation. Its missing-proof requirement remains valid. The server response-eligibility issue above is new primary-evidence information for firewall review.
 
-1. Static validator proves `src/app/assignments.js` remains the sole assignment application owner and `src/core/api.js` the sole browser cloud boundary.
-2. Ordinary member/signed-out/local-preview/no-congregation/unknown-role attempts cannot load authoring targets or publish.
-3. Ministry target directory returns only active same-congregation member/team/group targets and includes an active Journey Group the leader has not personally joined.
-4. Cross-congregation member/team/group UUIDs are rejected by server create even if manually supplied.
-5. Browser source contains no direct assignment/progress/score table mutation path.
-6. Successful publish reloads server truth; eligible member receives through existing RLS/Realtime flow and completes through existing #73/#74 path.
-7. Congregation/session switch cannot reuse stale target-directory results; teardown leaves no duplicate Realtime subscription/timer.
-8. Permanent tests cover all four audience scopes and preserve #1-#74 accumulated regression suite.
+## Next milestones
 
-## Triage recommendation
-
-`MILESTONE`: add a trusted congregation-scoped publish-target directory before implementing the #75 group selector. No BLOCKER or unrelated DEFER item established in this pass.
+No speculative architecture requirement is promoted for #76/#77 in this run. #77 remains explicitly out of #75 scope; detailed future analysis should wait for its live contract/candidate so this report does not invent requirements ahead of authoritative evidence.
