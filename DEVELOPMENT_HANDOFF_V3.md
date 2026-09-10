@@ -72,32 +72,36 @@ Legacy contract recovered from `avatar-vault.js` (main, reference only — legac
 
 Existing v3 owners to reuse: `src/app/session.js`, `src/app/store.js` (owner-scoped `privateStorage`), `src/app/router.js`; `src/app/personality-profile.js` + `src/features/personality-profile/` is the closest existing select/persist/render pattern.
 
-## #82 progress: backend + leaderboard wiring committed (in progress, not yet Implemented)
+## #82 bookkeeping transaction prepared
 
-Committed on `feature/v3-avatar-vault` (not yet gated, not yet wired into the running app):
-- `supabase/migrations/20260910_avatar_vault_visibility.sql` — adds the `avatar` jsonb column on `bible_congregation_members` that `20260905_congregation_member_column_hardening.sql` granted column privileges for but never created, plus the missing self-update RLS policy (the grant alone was insufficient with RLS enabled and no matching policy — a real pre-existing gap, not introduced by #82).
-- `src/engines/avatar-vault.js` — pure unlock/scoring owner. All 15 legacy styles retained for catalog parity; only xp/streak-gated styles (`starter`,`sakura`,`lantern`,`flame`,`crown`) are `available:true` in v1 because Progress (`src/core/progress.js`) only exposes xp/streak today. The other 10 styles (answered/correct question counts, recall-deck reps, couples conversations, group sessions, assignment completions, Journey region mastery) are retained with `available:false` and a `needsOwner` tag — explicitly deferred, not silently broken.
-- `src/app/avatar-vault.js` — lifecycle/persistence owner reusing Session (owner identity) and Progress (metrics); persists locally via `privateStorage` and syncs authenticated selections through the API boundary only.
-- `src/core/api.js` — new `avatarVault.load/save`; `save` upserts `bible_avatar_cosmetics` and updates `bible_congregation_members.avatar` in one flow. Leaderboards' congregation directory query now selects `avatar` (`LEADERBOARD_DIRECTORY_FIELDS`) instead of the no-avatar `TEAM_DIRECTORY_FIELDS`.
-- `src/app/leaderboards.js` — `normalizeDirectory` now sanitizes and carries `avatar.cosmetic` through into ranked rows.
+Exact functional candidate `37f1dc671804a1bb67ede2e5104002160b24c9dd` passed isolated verifier `verify/v3.55-avatar-vault-functional-58982-20260910`, run `34483151962` (exact-SHA assertion + complete accumulated architecture/edge/browser-mobile suite, including the new `AVATAR_VAULT_V3.md`, `scripts/validate-v3-avatar-vault.mjs`, `tests/v3-avatar-vault-edge.mjs`, `tests/v3-avatar-vault-smoke.mjs`). Verifier restored to manual-only.
 
-Not yet done, and explicitly the next steps (in order):
-1. Wire `createAvatarVaultService` into `src/app/bootstrap.js` (not yet touched).
-2. Build `src/features/avatar-vault/` presentation (browse/select UI) and register it in the router/more-menu; render the cosmetic icon (`iconFor` from the engine) next to leaderboard rows in `src/features/leaderboards/`.
-3. Author `scripts/validate-v3-avatar-vault.mjs` and edge/unit tests, following the #81 pattern, including a check that undeployed-metrics styles stay `available:false`.
-4. Targeted checks green, then the full isolated functional gate (checkout + exact-SHA assertion + complete accumulated suite) before any Verified/bookkeeping claim.
-5. Revisit the 10 deferred styles as a follow-up sub-milestone once their source owners (reader/recall, couples, community, assignments, Journey mastery) exist or expose the needed counts — do not backfill by duplicating counting logic in Avatar Vault.
+Committed for #82: `supabase/migrations/20260910_avatar_vault_visibility.sql` (completes a pre-existing gap: the `avatar` column on `bible_congregation_members` was granted column privileges in an earlier migration but never created, and had no RLS UPDATE policy), `src/engines/avatar-vault.js`, `src/app/avatar-vault.js`, `src/features/avatar-vault/index.js`, `src/core/api.js` (`avatarVault.load/save`, leaderboard directory now selects `avatar`), `src/app/leaderboards.js` (renders equipped cosmetic on ranked rows), `src/app/bootstrap.js` + Grow page wiring, plus the #81 validator's stale #82-must-stay-Not-started assertion was narrowed (same defect class already documented for #80/#81).
 
-No test has been executed against this candidate yet; do not treat any of the above as Verified or even complete "Implemented" until targeted + full gates actually run.
+v1 scope decision (recorded in `AVATAR_VAULT_V3.md`, not silent): only 5 of 15 legacy styles are unlock-evaluable in v1 (xp/streak-gated via Progress); the other 10 are catalogued with `available:false` and a `needsOwner` tag pending metric owners (question counts, recall reps, couples, community, assignments, Journey mastery) that don't exist in v3 yet. Follow-up sub-milestone, not #83 scope.
+
+- #80 Personality profile — **Regression-tested**;
+- #81 Psychometrics suite — **Regression-tested** (survived #82's accumulated suite);
+- #82 Avatar Vault — **Verified**;
+- **80 Regression-tested, 1 Verified, 0 Implemented, 18 Not started**;
+- strict implemented-or-better parity **82/100**;
+- regression stability **81/100**.
+
+These values are not final until the corrected exact bookkeeping tip passes its own complete accumulated workflow. No PASS transfers from an earlier SHA.
+
+## #83 next boundary
+
+#83 Innovation suite remains Not started. Its authoritative contract is **inventory-specific workflows documented before migration**. No #83 product write belongs before v3.55 freezes.
 
 ## Exact next executable sequence
 
-1. Recover exact old-version #82 contract detail (unlock conditions incl. mastery/region logic, cloud sync retry/failure behavior, guest-vs-account boundary, mobile rendering) from `avatar-vault.js`, the `bible_avatar_cosmetics` schema, and any related tests.
-2. Build the smallest clean implementation on `feature/v3-avatar-vault`: single scoring/unlock owner, single lifecycle/persistence owner reusing `session.js`/`store.js`, presentation-only `src/features/avatar-vault/`, reusing `router.js` for navigation — no duplicate storage/shell/avatar ownership.
-3. Targeted architecture validator + edge/unit regression + focused browser/mobile regression first.
-4. Full functional gate on an isolated `verify/...` branch (checkout + exact-SHA assertion + complete accumulated suite) once targeted checks are green.
-5. On green, promote #82 to Verified, do bookkeeping, gate the bookkeeping candidate, then freeze `release/v3.55-avatar-vault`.
-6. Only then create the next feature branch and begin #83 Innovation suite.
+1. Confirm the live tip of `feature/v3-avatar-vault` after this bookkeeping transaction; reconcile concurrent movement before further writes.
+2. Treat that exact tip as a new #82 bookkeeping candidate.
+3. Create an isolated verifier from that exact SHA with only a temporary push trigger plus exact checkout/assertion.
+4. Execute the complete accumulated architecture, edge/security and browser/mobile suite.
+5. On any failure, correct only the reproduced cause and verify another exact SHA without weakening coverage.
+6. On full green, restore the verifier to manual-only and freeze `release/v3.55-avatar-vault` at exactly the green bookkeeping SHA.
+7. Only then create `feature/v3-innovation-suite` from v3.55 and begin #83.
 
 ## Non-negotiable continuation rules
 
