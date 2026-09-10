@@ -1,44 +1,44 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 06:02 JST
+Generated: 2026-09-11 06:58 JST
 
 ## Freshness
-- Active milestone: **#92 Admin Console — HIGH-RISK**.
-- Canonical: `feature/v3-admin-console` @ `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`.
-- Dedicated autonomous candidate `agent/a1-work/092-admin-console`: **not found**.
-- Frozen base: `release/v3.62-content-review` @ `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
-- Exact complete functional run `34528950642` = **SUCCESS** for product SHA `298ebcdd9b34a9582cbe24c856ec256292acb7a8`; all accumulated architecture, edge/security and browser/mobile phases passed for that SHA only.
-- Prior bookkeeping SHA `e81a9c7563f5e1b6a90493fac340e22408628324`: run `34529629974` = **FAILURE** after exact SHA assertion and bookkeeping validation; accumulated architecture failed and all later phases were skipped.
-- Current canonical `8a759218...` is one commit beyond that failed SHA (`docs(v3): retain required status ledger headings`); no complete exact bookkeeping green for `8a759218...` was found.
+- Active milestone: **#94 Reset/recovery — HIGH-RISK for the current correction cycle** because the exact bookkeeping gate requires changing an existing accumulated #93 validator.
+- Canonical: `feature/v3-reset-recovery` @ `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`.
+- Dedicated autonomous candidate `agent/a1-work/094-*`: **not found**.
+- Frozen base: `release/v3.64-admin-operations` @ `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`.
+- #94 exact functional SHA `b3c15b34da0958a136920dc970b24531e3e06e45`; complete run `34534183203` is recorded in durable handoff as SUCCESS for that SHA only.
+- Current bookkeeping SHA `3f3d6dec...`; exact run `34535009560` = **FAILURE** after exact-SHA/bookkeeping assertions because accumulated `validate-v3-admin-operations.mjs` rejected #94 leaving `Not started`; all edge/browser phases were skipped.
+- Permanent workflow at current SHA includes #94 validator/edge/smoke and retains prior accumulated lists.
 - Writer lease observed: **FREE**.
-- A2 #92 report: **missing**.
-- A3 report: analyzed `2d3d1b5467e24120f79dedfef762c1ebd6de9b06`; **stale / NOT READY**.
-- A4 report: analyzed `298ebcdd9b34a9582cbe24c856ec256292acb7a8`; **stale / NOT READY**.
-- HIGH-RISK same-candidate A3 trust-boundary satisfaction + A4 READY: **not satisfied**.
-- Stale immediately on canonical/candidate/frozen movement, #92 server/RLS/grants/test/workflow change, or new exact run/review evidence.
+- A2 #94 report: analyzed pre-#94 state; **stale**.
+- A3 #94 report: analyzed pre-#94 state; **stale**.
+- A4 #94 report: **missing**.
+- Prior #93 A3/A4 reports are exact `56fe2469...` and both state **NOT READY** because the required quarantine candidate/trusted-boundary evidence was absent; nevertheless v3.64 is now frozen at that SHA.
+- Stale immediately on canonical/candidate/frozen movement, #93/#94 validator/test/workflow change, or new exact run/review evidence.
 
 ## BLOCKER
-1. **Current #92 bookkeeping SHA has no complete exact green.** The prior exact bookkeeping run `34529629974` failed at `e81a9c7...`; canonical then moved to `8a759218...`, for which no complete exact bookkeeping run was found. Counterfactual: freezing v3.63 or starting #93 now would promote an unverified bookkeeping SHA and violate the no-PASS-transfer rule.
-2. **HIGH-RISK promotion barrier remains unsatisfied.** No authorized `agent/a1-work/092-admin-console` candidate exists; no current same-candidate A3 satisfaction or A4 READY exists; permanent #92 service tests still mock the Admin Console API rather than execute the real `bq-admin` JWT/platform-role/service-role boundary. Counterfactual: a privilege/authorization defect could survive the mocked suite while promotion bypasses mandatory independent review.
+1. **Current #94 bookkeeping SHA is not green.** Run `34535009560` failed in accumulated architecture and skipped every later phase. Counterfactual: freezing v3.65 or starting #42 would promote a SHA that never passed the mandatory complete bookkeeping gate.
+2. **Frozen v3.64 bypassed the mandatory HIGH-RISK #93 independent promotion barrier.** `release/v3.64-admin-operations` equals `56fe2469...`, but no `agent/a1-work/093-*` candidate existed and exact-SHA A3/A4 both remained NOT READY; the permanent #93 edge regression still uses a mocked API rather than executing the real privileged server boundary. Counterfactual: continuing release progression accepts an unresolved destructive-account authorization evidence gap and normalizes bypass of a mandatory HIGH-RISK gate.
 
 ## MILESTONE
-1. Verify the `e81a9c7...` architecture failure was a bookkeeping/validator-state defect and retain the corrective heading change without weakening any accumulated assertion.
-2. Reconcile #92 into the required quarantine candidate lineage rather than using canonical bookkeeping state as an unreviewed autonomous candidate.
-3. Add faithful permanent trusted-boundary evidence for unauthenticated/non-admin/inactive-admin denial, active admin/owner allowance, owner-only transitions/self-demotion protection, and direct-browser denial for privileged access/audit mutations.
-4. Run the complete exact functional gate on the final candidate, obtain fresh same-SHA A3 satisfaction and A4 READY, then run the complete exact bookkeeping gate on the final bookkeeping SHA before any v3.63 freeze.
+1. Reproduce and narrowly correct the stale #93 lifecycle assertion that hard-pins #94 to `Not started`; preserve the #93/#94 ownership-separation assertion. Because this modifies an existing accumulated validator, treat the correction as HIGH-RISK and require exact-candidate A4/A5 review before promotion.
+2. Re-establish governance-compliant quarantine provenance for the active #94 correction candidate; do not use the canonical bookkeeping tip itself as an unreviewed autonomous work branch.
+3. Re-run the complete accumulated gate on the exact corrected #94 candidate, then the separate exact bookkeeping-SHA complete gate. No PASS transfer from `b3c15b34...` or failed `3f3d6dec...`.
+4. Before any further release progression, close the #93 HIGH-RISK review debt with faithful trusted-boundary evidence and fresh exact-state A3/A4 review on an authorized corrective lineage; do not rewrite the immutable v3.64 ref.
 
 ## DEFER
-- #93 Admin Operations and all later milestones until #92 HIGH-RISK closure is complete.
+- #42 Same-room Play Together and all later milestones until #94 exact bookkeeping closure and #93 HIGH-RISK review debt are resolved.
 
 ## IGNORE
-- PASS transfer from functional SHA `298ebcdd...` or failed bookkeeping SHA `e81a9c7...` to current `8a759218...`.
-- Focused run `34528237689` as a substitute for a complete accumulated gate.
-- Stale `CURRENT.md`/#91-era control text as repository truth; live refs and executed exact-SHA evidence supersede it.
-- A2/A3/A4 agreement or prior conclusions as proof without current exact-state primary evidence.
+- Treating the #94 bookkeeping failure as a product reset/recovery defect: primary logs show the failure is the retained #93 validator lifecycle assertion.
+- Any claim that exact run `34532823188` or #94 functional run `34534183203` transfers to current `3f3d6dec...`.
+- Stale `CURRENT.md`/#75-era control state as repository truth; live refs and exact executed evidence supersede it.
+- Investigator agreement by itself as evidence.
 
 ## Firewall decision
-**2 BLOCKER; 4 MILESTONE; DO NOT FREEZE v3.63 OR ADVANCE TO #93.** #92 has complete functional green at `298ebcdd...`, but current bookkeeping SHA `8a759218...` lacks complete exact green and the HIGH-RISK trust-boundary/independent-review barrier remains unsatisfied.
+**2 BLOCKER; 4 MILESTONE; DO NOT FREEZE v3.65 OR ADVANCE TO #42.** #94 functional evidence exists, but current bookkeeping is red, the required validator correction is itself HIGH-RISK, and the preceding v3.64 release still carries unresolved HIGH-RISK review debt.
 
 ## Next safe action
-Keep `release/v3.62-content-review` immutable. Stay on #92, verify the bookkeeping correction, restore governance-compliant quarantine provenance, add faithful authorization coverage, obtain complete exact candidate green plus fresh same-SHA A3/A4 approval, then rerun exact bookkeeping verification before promotion.
+Keep frozen v3.64 immutable. Stay on #94/corrective closure: create an authorized quarantine candidate, correct only the reproduced stale #93 lifecycle assertion without weakening ownership protection, run the exact complete suite, obtain required current A3/A4 review, then rerun exact bookkeeping verification. Resolve #93 trusted-boundary review debt before starting #42.
