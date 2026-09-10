@@ -13,6 +13,7 @@ import { createAdaptiveLearningService } from './adaptive-learning.js';
 import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createTransformService } from './transform.js';
+import { createPersonalityProfileService } from './personality-profile.js';
 import { createAudioManager } from './audio.js';
 import { createRecordingsService } from './recordings.js';
 import { createMediaLibraryService } from './media-library.js';
@@ -44,7 +45,7 @@ import { createProgressService } from '../core/progress.js';
 import { createRecallPackService } from '../core/recall-packs.js';
 import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
-import { storage } from '../core/storage.js';
+import { storage, privateStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { homePage } from '../features/home/index.js';
 import { accountPage } from '../features/account/index.js';
@@ -74,6 +75,7 @@ import { readerPage } from '../features/reader/index.js';
 import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
 import { transformPage } from '../features/transform/index.js';
+import { personalityProfilePage } from '../features/personality-profile/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
 import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
@@ -103,7 +105,8 @@ function start(){
   const wisdomSituations=createWisdomSituationsService({lesson,progress});
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
   const dailyMission=createDailyMissionService({lesson,progress,reader});
-  const transform=createTransformService({engine:transformEngine,progress});
+  const personalityProfile=createPersonalityProfileService({session,privateStorage});
+  const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
   const mediaLibrary=createMediaLibraryService({recordings});
@@ -160,7 +163,9 @@ function start(){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile')}),
+    transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
+    'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
     more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
