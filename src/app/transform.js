@@ -1,7 +1,7 @@
 const BASIC_PROGRESS_EVENT = 'transform:spiritual:v1:complete';
 const FULL_PROGRESS_EVENT = 'transform:full:v1:complete';
 
-export function createTransformService({ engine, progress }) {
+export function createTransformService({ engine, progress, personalityProfile = null }) {
   if (!engine || !progress) throw new Error('Transform service requires Transform engine and progress owners.');
 
   function reconcileBasic(state = engine.getState()) {
@@ -54,8 +54,14 @@ export function createTransformService({ engine, progress }) {
 
   function completePersonalityAssessment() {
     const state = engine.calculatePersonality();
+    let profileSaved = false;
+    let profileError = '';
+    if (personalityProfile?.capture && state.personality.result) {
+      try { personalityProfile.capture(state.personality.result); profileSaved = true; }
+      catch (error) { profileError = error?.message || 'Private personality profile could not be saved.'; }
+    }
     const progressResult = reconcileFull(state);
-    return Object.freeze({ state, progressResult, recommendations: engine.recommendations() });
+    return Object.freeze({ state, progressResult, recommendations: engine.recommendations(), profileSaved, profileError });
   }
 
   function setBiasAnswer(id, value) {
@@ -78,7 +84,9 @@ export function createTransformService({ engine, progress }) {
   }
 
   function resetPersonality() {
-    return engine.resetPersonality();
+    const state = engine.resetPersonality();
+    personalityProfile?.clear?.();
+    return state;
   }
 
   function resetBias() {
