@@ -28,6 +28,7 @@ import { createCloudNotesService } from './cloud-notes.js';
 import { createCouplesFamilyService } from './couples-family.js';
 import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
+import { createContentModerationService } from './content-moderation.js';
 import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
 import { createNotificationCenterService } from './notification-center.js';
@@ -127,7 +128,9 @@ function start(){
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
   const mediaLibrary=createMediaLibraryService({recordings});
-  const games=createGameLauncherService({progress,storage,recall});
+  const congregation=createCongregationMembershipService({api,session});
+  const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
+  const games=createGameLauncherService({progress,storage,recall,moderation:contentModeration});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const mission=createMissionService({openReview});
   const tutorial=createTutorialService({storage});
@@ -136,7 +139,6 @@ function start(){
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
   const couplesFamily=createCouplesFamilyService({storage});
   const couplesCloud=createCouplesCloudService({api:api.couples,session});
-  const congregation=createCongregationMembershipService({api,session});
   const contentReporting=createContentReportingService({api:api.contentReports,session,congregation});
   const ministryHub=createMinistryHubService({congregation});
   const notifications=createNotificationCenterService({api:api.notifications,session});
@@ -211,12 +213,20 @@ function start(){
   contentReportingRuntime=mountContentReportingRuntime({reporting:contentReporting,getRoute:()=>store.getState().route,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')});
   accessibilityRuntime=mountAccessibilityRuntime({accessibility});
   tutorialOverlay=mountTutorialOverlay({tutorial,onNavigate:route=>router.navigate(route)});
-  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell);syncShell(store.getState());router.start();
+  let moderationSessionKey='';
+  const syncModeration=current=>{
+    const sessionState=current?.session||{},key=`${sessionState.authenticated===true?'1':'0'}:${sessionState.user?.id||''}:${sessionState.remoteAvailable===false?'local':'remote'}`;
+    if(key===moderationSessionKey)return;
+    moderationSessionKey=key;
+    if(!sessionState.authenticated){contentModeration.clear();return}
+    void contentModeration.refresh().catch(error=>console.warn('Content moderation unavailable',error));
+  };
+  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration);syncShell(store.getState());syncModeration(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
