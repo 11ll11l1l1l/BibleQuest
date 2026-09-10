@@ -14,6 +14,7 @@ import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
+import { createPsychometricsService } from './psychometrics.js';
 import { createAudioManager } from './audio.js';
 import { createRecordingsService } from './recordings.js';
 import { createMediaLibraryService } from './media-library.js';
@@ -45,6 +46,7 @@ import { createProgressService } from '../core/progress.js';
 import { createRecallPackService } from '../core/recall-packs.js';
 import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
+import { createPsychometricsEngine } from '../engines/psychometrics.js';
 import { storage, privateStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { homePage } from '../features/home/index.js';
@@ -76,6 +78,7 @@ import { progressPage } from '../features/progress/index.js';
 import { dailyMissionPage } from '../features/daily-mission/index.js';
 import { transformPage } from '../features/transform/index.js';
 import { personalityProfilePage } from '../features/personality-profile/index.js';
+import { psychometricsPage } from '../features/psychometrics/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
 import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
@@ -94,6 +97,7 @@ function start(){
   const recall=createRecallPackService();
   const lesson=createLessonEngine({storage});
   const transformEngine=createTransformEngine({storage});
+  const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
@@ -106,6 +110,7 @@ function start(){
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
+  const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
@@ -163,9 +168,10 @@ function start(){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
+    psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
     more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
