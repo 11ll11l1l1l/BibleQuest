@@ -77,14 +77,24 @@ Earlier milestone defect regressions remain retained in the accumulated suite.
 
 #82 Avatar Vault remains Not started until #81 freezes. Its authoritative inventory contract is **browse; select; persist; render fallback**. Retained compatibility evidence must be recovered before product implementation. No Avatar Vault write belongs in the #81 bookkeeping candidate.
 
-## Next major milestone
+## #81 bookkeeping gate: confirmed complete
 
-1. Treat the corrected final #81 bookkeeping/status/handoff transaction on `feature/v3-psychometrics` as a new exact clean candidate.
-2. Verify that exact bookkeeping SHA with an isolated one-shot workflow that explicitly checks out/asserts it and executes the complete accumulated architecture, edge/security and browser/mobile suite.
-3. If any phase fails, do not freeze; identify the exact root cause, preserve all prior coverage and rerun a corrected exact SHA.
-4. If fully green, restore the isolated verifier to manual-only and create immutable `release/v3.54-psychometrics` at exactly the verified bookkeeping SHA.
-5. Only after v3.54 is frozen, create `feature/v3-avatar-vault` from that exact release and begin #82 from recovered evidence.
-6. #82 must satisfy `browse; select; persist; render fallback` without duplicating storage or shell/avatar ownership.
+Exact bookkeeping candidate `cc591aac786a91183eb5a7a5ad958ae7314a9577`'s isolated verifier (`verify/v3.54-psychometrics-bookkeeping-cc591-20260910`, run `34474642839`) explicitly checked out and asserted that exact SHA, then completed the full accumulated architecture, edge/security and browser/mobile regression suite successfully. The isolated verifier has been restored to manual-only (`workflow_dispatch` only, temporary `push:` trigger removed). `release/v3.54-psychometrics` is frozen at exactly that verified SHA.
+
+Final #81/#82 counts: **80 Regression-tested, 1 Verified (Psychometrics, #81), 0 Implemented, 19 Not started**. Strict implemented-or-better parity **81/100**. Regression stability **80/100**.
+
+`feature/v3-avatar-vault` has been created from `release/v3.54-psychometrics` (currently identical to the frozen SHA; no #82 product commits yet).
+
+## Next major milestone: #82 Avatar Vault
+
+Recovered legacy contract from `avatar-vault.js` (main, reference-only): 15 cosmetic styles gated by metrics (streak/XP/answers/correct/deck/couples/group/assignments/region mastery), selection persisted to `localStorage` plus optional Supabase sync (`bible_avatar_cosmetics`, `bible_congregation_members`), and avatar-render patching for a cosmetic glyph overlay. This is legacy `window.BQ*` reference material only, not a valid v3 implementation shape.
+
+Existing v3 owners identified for reuse (no new ownership to be created): `src/app/session.js` (Session/Auth), `src/app/store.js` (owner-scoped persistence / `privateStorage`), `src/app/router.js` (navigation), with `src/app/personality-profile.js` + `src/features/personality-profile/` as the closest existing select/persist/render pattern to follow.
+
+1. Recover exact old-version contract detail (unlock conditions, cloud sync failure/retry behavior, guest-vs-account boundary, mobile rendering) from `avatar-vault.js`, `bible_avatar_cosmetics` schema, and any related tests before writing code.
+2. Build the smallest clean `src/engines/avatar-vault.js` (or equivalent single scoring/unlock owner) plus `src/app/avatar-vault.js` (lifecycle/persistence owner) and `src/features/avatar-vault/` (presentation only), reusing `session.js`/`store.js`/`router.js` — no duplicate storage, shell, or avatar-render ownership.
+3. #82 must satisfy `browse; select; persist; render fallback` without duplicating storage or shell/avatar ownership.
+4. Targeted validators/tests first; full accumulated gate only once targeted checks are green.
 
 ## Release rule
 
