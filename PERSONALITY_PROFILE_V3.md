@@ -71,3 +71,9 @@ These hints are metadata only and are not allowed to modify theological content 
 - the real Personality Profile surface is usable at 390 px;
 - #81 Psychometrics remains separate and Not started during #80;
 - the complete accumulated v3 regression workflow is green on the exact functional candidate and again on the exact bookkeeping candidate.
+
+## Functional verification evidence
+
+Exact functional candidate `097f6c7658a5caa9d2a58f8ce93d9f0b22f9b50f` passed isolated run `34470882834` on 2026-09-10. The verifier explicitly checked out and asserted that exact SHA before running the complete accumulated architecture validators, edge/security regressions and browser/mobile suite. Every phase completed successfully.
+
+The isolated functional verification branch was restored to `workflow_dispatch` only after the run. This functional PASS does not transfer to the changed bookkeeping SHA; the final #80 bookkeeping candidate must pass the complete suite again before `release/v3.53-personality-profile` can be frozen.
