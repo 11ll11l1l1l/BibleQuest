@@ -1,55 +1,54 @@
 # A5 Firewall Triage — #87 Content reporting
 
-Generated: 2026-09-11 01:56 JST
+Generated: 2026-09-11 03:00 JST
 Agent: `BQ-A5-FIREWALL`
 
 ## Exact state
-- Canonical: `feature/v3-content-reporting` @ `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
+- Canonical: `feature/v3-content-reporting` @ `17071432a815ef5cf53f5f4538df982285114bd0`.
 - Candidate: no `agent/a1-work/087-content-reporting` ref found.
 - Frozen base: `release/v3.59-accessibility-support` @ `5594f9802e40b25c6df9b6331668c0bbfcedacc7`.
+- Durable handoff identifies exact functional candidate `72ef635a5322e715c293de489bf37a170f05729d` with targeted run `34509850415` and complete accumulated functional run `34510669714` green.
+- Current canonical is later bookkeeping lineage; current exact bookkeeping verifier run `34511515241` is in progress at inspection time.
 - Writer lease observed: FREE.
-- Baseline exact-bookkeeping verifier: run `34503099868`, success; isolated verifier job explicitly completed exact bookkeeping assertion, inventory, accumulated architecture, edge/security, and browser/mobile phases. It is baseline-only evidence.
 
 ## Primary evidence verified
-**FACT:** Authoritative inventory row #87 is `Content reporting`, `Not started`, bounded to `submit report; validation; success/error`. #88 Content moderation and #91 Content Review workbench are distinct later rows.
+**FACT:** #87 remains bounded to report submission, validation and explicit success/error behavior; moderation/reviewer workflow remains later scope.
 
-**FACT:** Canonical and frozen v3.59 resolve to the same SHA, so there is no #87 implementation delta to accept or reject yet.
+**FACT:** Current `src/core/api.js` still submits directly from the browser through `client.from('bible_content_reports').insert(row)`.
 
-**FACT:** No authorized #87 A1 quarantine candidate exists at inspection time.
+**FACT:** Current `20260905_content_review_and_reports.sql` revokes table access and then grants authenticated `select, insert, update` on `bible_content_reports`. INSERT RLS requires only reporter identity equal to `auth.uid()` and congregation membership. The insertable row contains `status`, `reviewed_by`, and `reviewed_at`; that policy does not constrain those fields.
 
-**FACT:** Current A3 #87 report analyzed this exact canonical/frozen SHA and defines a HIGH-RISK backend trust boundary; current A4 #87 report analyzed this exact SHA and has acceptance-definition-only status because no candidate exists. No #87 A2 report is present on the control branch.
+**FACT:** No dedicated `agent/a1-work/087-content-reporting` ref exists.
 
-**FACT:** Durable handoff on canonical is partly stale because it still calls v3.58 the latest frozen release, but its #87 instruction remains consistent with live state: recover reporting/backend contracts and do not bundle #88 moderation.
+**FACT:** A2 (`fe2e773...`), A3 (`19bd25d...`) and A4 (`2d9341a...`) reports are SHA-stale for current canonical `17071432...`. A4 is NOT READY. No current exact-candidate A4 READY or current A3 satisfaction exists.
+
+**FACT:** Functional run `34510669714` is green for exact product candidate `72ef635...`; it cannot transfer to `17071432...`. Current bookkeeping verification is run `34511515241`, still in progress when this report was written.
 
 ## Classification
 ### BLOCKER
-None at the pre-implementation state. Counterfactual test: doing nothing leaves #87 Not started but does not corrupt or weaken a verified product SHA. Candidate absence therefore is not a blocker by itself.
+1. **Unclosed report INSERT authority boundary.** Counterfactual: if ignored, an authenticated congregation member can bypass UI payload shaping and attempt an INSERT containing privileged initial review state because the database boundary does not restrict `status`, `reviewed_by`, or `reviewed_at`. This crosses the #88/#91 trust boundary.
+2. **HIGH-RISK exact-candidate review/provenance barrier not satisfied.** Counterfactual: if current bookkeeping is promoted/frozen without an authorized exact candidate plus same-SHA A3 satisfaction and A4 READY, a HIGH-RISK authorization change can ship without the mandatory independent barrier. A green bookkeeping run cannot substitute for that review.
 
 ### MILESTONE
-1. Use only the #87 submission contract; do not absorb moderation/review authority.
-2. Because implementation necessarily crosses a client-to-backend report write boundary, treat #87 as HIGH-RISK. Reporter identity and authoritative moderation fields must not be client-controlled; backend validation/authorization must survive direct-backend bypass.
-3. Implement only on `agent/a1-work/087-content-reporting` from the exact frozen/canonical base. Direct unverified canonical writes would violate quarantine.
-4. Add permanent functional and backend negative/security regressions and preserve all accumulated prior coverage.
-5. After exact functional green, require fresh A3 trust-boundary satisfaction, A4 READY, and A5 promotion recommendation for that exact candidate SHA before bookkeeping/promotion.
+1. Keep #87 limited to submission/validation/success-error behavior.
+2. Make reporter identity and moderation state backend-authoritative without broadening unrelated grants or moderation scope.
+3. Add faithful negative security regressions for forged review state, reporter identity and cross-congregation submission while retaining all accumulated coverage.
+4. Reconcile onto an authorized `agent/a1-work/087-content-reporting` exact candidate and rerun the complete functional gate.
+5. Require fresh exact-candidate A3 satisfaction, A4 READY and A5 recommendation before bookkeeping/promotion; then separately require exact bookkeeping-SHA complete green.
 
 ### DEFER
-#88 moderation decisions/workflows and #91 review/admin authority, unless primary evidence later proves a minimal hard dependency required merely to submit a report.
+#88 moderation policy/decisions and #91 reviewer workbench/admin workflow beyond the minimum backend authority needed for safe #87 submission.
 
 ### IGNORE
-- Old #85 blockers and stale lineage descriptions.
-- Treating v3.59 run `34503099868` as #87 PASS.
-- Treating missing A2 #87 report as proof of a defect. It is a report-freshness gap, not primary product evidence.
+- PASS transfer from `72ef635...` to later bookkeeping SHAs.
+- Stale investigator conclusions as standalone proof.
+- Corrected bookkeeping heading defects as evidence that the security boundary is safe.
 
 ## Firewall decision
-**0 BLOCKER; 5 MILESTONE; NO PROMOTION RECOMMENDATION.** There is no #87 candidate to promote.
+**2 BLOCKER; 5 MILESTONE; NO PROMOTION / NO v3.60 FREEZE RECOMMENDATION.**
 
-## Exact missing evidence for future promotion
-- Exact `agent/a1-work/087-content-reporting` candidate SHA and frozen-base compare.
-- Recovered retained reporting contract sufficient to avoid invented parity.
-- Exact schema/RLS/grants/constraints and any RPC/Edge/server path introduced.
-- Permanent tests proving invalid-input rejection, success/error behavior, reporter-identity non-forgeability, non-client-controlled moderation authority, and cross-user/report access restrictions relevant to the implementation.
-- Exact accumulated functional green for the candidate, with all new and prior required tests actually invoked.
-- Fresh exact-candidate A3 satisfaction and A4 READY.
+## Report freshness
+A2 is stale from `fe2e773...`; A3 is stale from `19bd25d...`; A4 is stale from `2d9341a...`. The A3 authorization concern was independently reverified against current primary migration/API evidence. This report becomes stale on canonical/work/frozen movement, security-path/schema/RLS/API/test/workflow change, fresh A3/A4 exact-candidate review, or completion/change of bookkeeping run `34511515241`.
 
-## Staleness
-This report becomes stale immediately if canonical, frozen release, #87 work branch, implementation/schema/security path, tests/workflow, inventory contract/status, or exact run evidence changes.
+## Next safe action
+Close the current INSERT-authority defect with faithful permanent tests, reconcile the work into the required quarantine candidate lifecycle, obtain complete exact functional green, then obtain fresh same-SHA A3/A4 HIGH-RISK review and A5 promotion approval before any bookkeeping/release freeze.
