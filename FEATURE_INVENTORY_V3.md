@@ -101,8 +101,8 @@ This file is the authoritative parity ledger for the rebuild.
 | 78 | Workspace | Yes | Compatibility | Regression-tested | open; save state; role/session boundary |
 | 79 | Linked activities/challenges | Yes | Compatibility | Regression-tested | launch linked activity; completion handoff |
 | 80 | Personality profile | Yes | Compatibility | Regression-tested | complete; save; reopen; privacy boundary |
-| 81 | Psychometrics suite | Yes | Standalone old | Verified | complete assessment; result; persistence; mobile |
-| 82 | Avatar vault | Yes | Compatibility | Not started | browse; select; persist; render fallback |
+| 81 | Psychometrics suite | Yes | Standalone old | Regression-tested | complete assessment; result; persistence; mobile |
+| 82 | Avatar vault | Yes | Compatibility | Verified | browse; select; persist; render fallback (v1: xp/streak-gated styles only, 10 styles explicitly deferred pending metric owners) |
 | 83 | Innovation suite | Yes | Compatibility | Not started | inventory-specific workflows documented before migration |
 | 84 | Tutorial/onboarding trainer | Yes | Compatibility | Not started | first run; next/back; skip; finish; never duplicate |
 | 85 | Tutorial avatar reactions | Yes | Resource retained | Not started | correct reaction/state; mobile positioning |
