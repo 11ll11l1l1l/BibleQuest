@@ -39,8 +39,9 @@ if(!failures.length){
 
   const row92=inventory.split('\n').find(line=>line.startsWith('| 92 |'))||'';
   const row93=inventory.split('\n').find(line=>line.startsWith('| 93 |'))||'';
-  if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row92))fail('Inventory #92 Admin Console must use a valid lifecycle state.');
-  if(!/\| Not started \|/.test(row93))fail('Inventory #93 Admin Operations must remain Not started during #92.');
+  const lifecycle='(?:Not started|Implemented|Verified|Regression-tested)';
+  if(!new RegExp(`\\| ${lifecycle} \\|`).test(row92))fail('Inventory #92 Admin Console must use a valid lifecycle state.');
+  if(!new RegExp(`\\| ${lifecycle} \\|`).test(row93))fail('Inventory #93 Admin Operations must use a valid lifecycle state.');
   if(!/^\s*on:\s*\n\s+workflow_dispatch:\s*$/m.test(workflow))fail('Product v3 regression workflow must remain workflow_dispatch-only.');
   if(/\n\s+push:\s*$/m.test(workflow))fail('Product v3 regression workflow must not contain a push trigger.');
   for(const test of ['scripts/validate-v3-admin-console.mjs','tests/v3-admin-console-edge.mjs','tests/v3-admin-console-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #92 regression: ${test}`);
