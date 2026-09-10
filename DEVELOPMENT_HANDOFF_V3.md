@@ -7,60 +7,74 @@ This file is the durable restart point if a chat or usage window ends. GitHub is
 ## Repository and immutable checkpoints
 
 - Repository: `11ll11l1l1l/BibleQuest`
-- Latest frozen base: `release/v3.45-congregation-recognition`
-- Frozen base SHA: `483662cbad75ee98f0914ee66517b9eeb57f7f61`
-- Exact v3.45 bookkeeping run: `34415308296` (complete accumulated suite green against the frozen SHA)
-- Active remote branch: `feature/v3-assignments`
-- Corrected exact #73 functional candidate: `33871d45aec7111be95524333fe5210dceed71af`
-- Exact #73 functional run: `34417012845` (architecture, edge and browser/mobile all green against that exact SHA)
-- Initial #73 run `34416898681` failed only because of test fixture defect `V3-ASSIGNMENTS-EDGE-FIXTURE-001`; it was not an application defect.
+- Latest frozen base: `release/v3.46-assignments`
+- Frozen base SHA: `fceb115e763ae729e07325bbb4c9f592206b2c9e`
+- Exact v3.46 bookkeeping run: `34417620848` (complete accumulated suite green against the frozen SHA)
+- Active remote branch: `feature/v3-advanced-assignments`
+- Corrected exact #74 functional candidate: `f01df3e72b5413bba7ae7d16552fca55a448b766`
+- Exact #74 functional run: `34432456615` (architecture, edge and browser/mobile all green against that exact SHA)
 - Separate production-v2 safety PR `#88` remains draft/unmerged.
 
 ## Current authoritative inventory
 
-- Regression-tested: 72, including #72 Congregation Recognition after surviving the complete #73 suite.
-- Verified: 1 (#73 Assignments).
+- Regression-tested: 73, including #73 Assignments after surviving the complete #74 suite.
+- Verified: 1 (#74 Advanced assignments).
 - Implemented: 0.
-- Not started: 27.
-- Strict implemented-or-better parity: 73/100.
-- Official regression stability: 72/100.
+- Not started: 26.
+- Strict implemented-or-better parity: 74/100.
+- Official regression stability: 73/100.
 - Deferred by user priority: #15 Japanese furigana and Kids #38–40.
-
-## #72 Congregation Recognition checkpoint
-
-- Exact functional candidate `516d2f2da33d73aea076b9cdd35225b8e68c0a27` passed run `34414579164`.
-- Exact bookkeeping candidate `483662cbad75ee98f0914ee66517b9eeb57f7f61` passed run `34415308296` and is frozen as `release/v3.45-congregation-recognition`.
-- #72 is now Regression-tested because it survived the complete #73 functional suite.
 
 ## #73 Assignments checkpoint
 
-- `src/app/assignments.js` is the sole #73 application owner for assignment normalization, selected congregation, current-user progress, open/close, member Start/Complete and Realtime refresh lifecycle.
+- `src/app/assignments.js` remains the sole assignment application owner.
 - `src/core/api.js` remains the sole browser Supabase/trusted-function/Realtime implementation boundary.
-- Assignment reads rely on existing RLS visibility and request only active selected-congregation rows. Progress reads are further restricted to the signed-in user and visible assignment IDs.
-- Start/Complete use only the authenticated retained `bq-assignment` Edge Function. Browser code does not write `bible_assignment_progress` or `bible_score_events` directly and does not calculate trusted assignment points.
-- Realtime listens only for selected-congregation assignment changes and signed-in-user progress changes, then reloads server truth. Payloads do not become application truth; cleanup is idempotent.
-- Normal members may receive/open/start/complete and view only their own submitted response plus leader feedback.
-- Ministry roles (`facilitator`, `leader`, `pastor`, `admin`) are deliberately read-only in #73, matching the retained member-facing assignment center. Leader create/feedback/archive/scheduling/management belongs to later rows.
-- #74 Advanced assignments, #75 Assignment push, #76–78 ministry surfaces and #79 Linked activities remain Not started and outside #73.
-- Permanent coverage is in `scripts/validate-v3-assignments.mjs`, `tests/v3-assignments-edge.mjs`, `tests/v3-assignments-smoke.mjs`, and the accumulated workflow.
-- Initial exact candidate `502e9fd86b96415d379d65295ba76ec3f117f9fd` reached #73 edge coverage in run `34416898681`; the fake API filtered the foreign-row fixture before the owner could inspect it. That test-only defect is recorded as `V3-ASSIGNMENTS-EDGE-FIXTURE-001`.
-- Corrected exact candidate `33871d45aec7111be95524333fe5210dceed71af` passed the complete accumulated architecture, edge and Playwright/mobile suite in run `34417012845`.
-- The isolated functional verification branch was reset to the exact clean corrected candidate after success.
-- No production Supabase schema/function, Cloudflare, v2 or `main` change was made for #73.
+- Exact corrected #73 functional candidate `33871d45aec7111be95524333fe5210dceed71af` passed run `34417012845`.
+- Exact v3.46 bookkeeping candidate `fceb115e763ae729e07325bbb4c9f592206b2c9e` passed run `34417620848` and is frozen as `release/v3.46-assignments`.
+- #73 is now Regression-tested because it survived the complete #74 functional suite.
+
+## #74 Advanced Assignments checkpoint
+
+- The retained old `assignment-advanced.js`, advanced assignment server revision, current retained `bq-assignment`, and #73 owner contract were recovered before implementation.
+- #74 extends `src/app/assignments.js`; it does not create a competing advanced-assignment owner.
+- Advanced assignment reads now include `schedule_at`, `reminder_at`, `recurrence_rule`, `required_reflection`, `min_quiz_score`, and `evidence_type` through `src/core/api.js`.
+- The #74 browser projection deliberately excludes `linked_activity`; launch/completion handoff remains #79.
+- Due state is normalized as `scheduled`, `open`, `overdue`, or `completed` with completed taking precedence.
+- Scheduled assignments cannot be started/completed by the client before opening; the retained server independently enforces the same schedule boundary.
+- Required reflection and text evidence require a bounded written response.
+- Confirmation evidence requires explicit member acknowledgement in the browser; it is not claimed as independent trusted proof.
+- Minimum quiz score requires a valid 0–100 value meeting the assignment threshold, then sends that value through the existing trusted completion action.
+- Reminder and recurrence are metadata in #74. Automatic recurrence generation remains explicitly disabled.
+- Overdue assignments remain completable because the retained backend does not reject late completion.
+- Ministry roles remain read-only in this member-oriented surface. Leader create/publish belongs to #75.
+- No production Supabase schema/function, Cloudflare, v2 or `main` change was made.
+- Permanent coverage is in `scripts/validate-v3-advanced-assignments.mjs`, `tests/v3-advanced-assignments-edge.mjs`, `tests/v3-advanced-assignments-smoke.mjs`, the existing #73 regressions, and the accumulated workflow.
+
+## #74 verification evidence
+
+- Initial targeted candidate `ce8eb881b3c853e10d61467b01d20b77bffbd963`, run `34432082061`: exact SHA passed; the new validator failed only because of case-sensitive fixture defect `V3-ADVANCED-ASSIGNMENTS-VALIDATOR-001`.
+- Corrected targeted candidate `2bf160004040f46c9d000ba9e114c51704aefb0d`, run `34432169732`: #74 validator + edge green.
+- First complete functional run `34432254170`: exact SHA and earlier accumulated validators passed until the existing #73 validator rejected #74's legitimate lifecycle advancement; recorded as `V3-ASSIGNMENTS-VALIDATOR-FUTURE-STATE-001`.
+- Corrected exact functional candidate `f01df3e72b5413bba7ae7d16552fca55a448b766`, run `34432456615`: complete accumulated architecture + edge + Playwright/browser-mobile suite green.
+- Functional verification branch was reset to the exact clean candidate after success.
 
 ## Exact next sequence
 
-1. Finish only #73 promotion/bookkeeping documentation on `feature/v3-assignments`.
-2. Treat the resulting branch head as the clean v3.46 bookkeeping candidate.
-3. Create/reset isolated `verify/v3.46-assignments-bookkeeping` at that exact SHA.
-4. Add only a temporary one-shot trigger that explicitly checks out/asserts the clean candidate.
-5. Require all accumulated architecture, edge and Playwright/browser-mobile regressions to pass.
-6. Reset the bookkeeping verification branch to the exact candidate and freeze `release/v3.46-assignments` at the same SHA.
-7. Only after freeze create `feature/v3-advanced-assignments` from v3.46 and recover #74 advanced fields, due-state, completion and permission contracts before implementation.
+1. Finish only #74 promotion/bookkeeping documentation on `feature/v3-advanced-assignments`.
+2. Treat the resulting branch head as the clean v3.47 bookkeeping candidate.
+3. Create/reset isolated `verify/v3.47-advanced-assignments-bookkeeping` at that exact SHA.
+4. Add only a temporary push trigger that explicitly checks out/asserts the clean candidate.
+5. Require the complete accumulated architecture, edge and Playwright/browser-mobile suite to pass.
+6. Reset the bookkeeping verification branch to the exact candidate and freeze `release/v3.47-advanced-assignments` at that same SHA.
+7. Only after freeze, create a #75 feature branch from exact v3.47 and recover the retained leader publish → member receive → complete workflow before implementation.
 
-## #74 recovery guardrails
+## #75 recovery guardrails
 
-The retained live `bq-assignment` already contains server-side support for advanced fields such as scheduled opening, reminder timestamp, recurrence rule, required reflection, minimum quiz score, evidence type and linked activity metadata. Do not automatically expose all of these in #74; first recover retained old UI/behavior and the inventory acceptance contract. Keep #75 push workflow and #79 linked-activity launching separate.
+- Recover old leader create/publish UI and exact target/audience semantics before coding.
+- Reuse the same assignment identity, `src/app/assignments.js` owner, central API boundary, retained `bq-assignment`, RLS, and server-side authorization rather than building a second task system.
+- Separate leader authoring/publishing from #74 member requirement rendering and from #79 linked-activity launch behavior.
+- Confirm role permissions, target validation, schedule/reminder/advanced-field publish semantics, member receive visibility, completion, error/empty states, privacy, and idempotency from retained sources.
+- Do not deploy or modify production Supabase merely to satisfy parity verification.
 
 ## Non-negotiable continuation rules
 
