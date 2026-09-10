@@ -1,8 +1,9 @@
+import { iconFor } from '../../engines/avatar-vault.js';
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const rankLabel=rank=>rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`#${rank}`;
 function boardRows(state){
   if(!state.rows.length)return '<section class="bq-account-section"><h2>No participants yet</h2><p>No active congregation members are available for this board.</p></section>';
-  return `<section class="bq-account-section" aria-label="Leaderboard rankings"><ol class="bq-team-member-list">${state.rows.map(row=>`<li data-leaderboard-user="${esc(row.userId)}"><span><b>${rankLabel(row.rank)} ${esc(row.displayName)}</b><small>${state.lane==='overall'?'All scored activities':esc(state.lanes.find(lane=>lane.id===state.lane)?.label||state.lane)}</small></span><strong>${esc(row.points)} pts</strong></li>`).join('')}</ol></section>`;
+  return `<section class="bq-account-section" aria-label="Leaderboard rankings"><ol class="bq-team-member-list">${state.rows.map(row=>`<li data-leaderboard-user="${esc(row.userId)}"><span><b>${rankLabel(row.rank)} ${iconFor(row.avatar)} ${esc(row.displayName)}</b><small>${state.lane==='overall'?'All scored activities':esc(state.lanes.find(lane=>lane.id===state.lane)?.label||state.lane)}</small></span><strong>${esc(row.points)} pts</strong></li>`).join('')}</ol></section>`;
 }
 export function leaderboardsPage({leaderboards,onAccount,onBack}={}){
   return{title:'Leaderboards',html:'<section class="bq-panel" data-leaderboards-view></section>',mount(root){
