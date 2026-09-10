@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after #91 Content Review complete functional verification.
+Updated: 2026-09-11 JST after #92 Admin Console complete functional verification.
 
 `FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. Development continues under rebuild-and-verify with exact-SHA verification and one-owner boundaries.
 
@@ -8,8 +8,10 @@ Updated: 2026-09-11 JST after #91 Content Review complete functional verificatio
 
 - Production v2 remains unchanged.
 - `main`, production Supabase, production data, and production Cloudflare remain untouched.
-- Latest frozen checkpoint: `release/v3.61-content-moderation` at `dfbbb690c814a514714967f240262eec39b6e3ee`.
-- Active milestone branch: `feature/v3-content-review`.
+- Latest frozen checkpoint: `release/v3.62-content-review` at `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
+- Active product milestone branch: `feature/v3-admin-console`.
+- Exact green #92 functional candidate: `298ebcdd9b34a9582cbe24c856ec256292acb7a8`.
+- Bookkeeping is isolated on `work/v3.63-admin-console-bookkeeping-20260911`.
 - Normal v3 Actions remain `workflow_dispatch` only on product branches.
 - Temporary `push:` triggers are restricted to isolated `verify/...` branches and are never release SHAs.
 
@@ -17,50 +19,51 @@ Updated: 2026-09-11 JST after #91 Content Review complete functional verificatio
 
 | State | Count |
 |---|---:|
-| Regression-tested | 88 |
+| Regression-tested | 89 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 11 |
+| Not started | 10 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **89/100**. Regression stability is **88/100**.
+Strict implemented-or-better parity is **90/100**. Regression stability is **89/100**.
 
-- #88 Content moderation — **Regression-tested** after surviving #91's complete accumulated functional suite.
-- #91 Content Review workbench — **Verified** at exact functional candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
-- #92 Admin console — **Not started** and is the next dependency-safe milestone after v3.62 freezes.
+- #91 Content Review workbench — **Regression-tested** after surviving #92's complete accumulated functional suite.
+- #92 Admin console — **Verified** at exact functional candidate `298ebcdd9b34a9582cbe24c856ec256292acb7a8`.
+- #93 Admin operations — **Not started** and is the next dependency-safe milestone after v3.63 bookkeeping verification/freeze.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
 
-These lifecycle counts are represented by changed bookkeeping files. They are not frozen until the final bookkeeping SHA passes its own complete accumulated exact-SHA gate. No PASS transfers from the functional candidate after documentation changes.
+These lifecycle counts are bookkeeping changes and are not frozen until the final bookkeeping SHA passes its own complete accumulated exact-SHA gate. No PASS transfers from the functional candidate after documentation changes.
 
-## #91 verified functional boundary
+## #92 verified functional boundary
 
-Content Review is the reviewer workflow over quarantined Recall questions and congregation member reports. Session remains the authenticated-user owner, Congregation Membership remains the membership/role projection owner, `src/core/api.js` remains the sole browser Supabase boundary, Recall remains the quarantine-file owner, Router remains navigation owner, and `src/app/content-review.js` owns review-state orchestration.
+Admin Console is a platform Owner/Admin administration surface rebuilt against retained `admin.html` / `admin.js` behavior and the existing server-authoritative `bq-admin` Edge Function contract.
 
-Authorized reviewers are congregation `leader`, `pastor`, or `admin`, or platform `owner`/`admin`; unknown roles fail closed and database RLS remains final authority. Decisions are exactly `include`, `exempt`, or `remove`; optional rationale is bounded to 1,200 characters. Saving upserts `bible_content_decisions` and then resolves matching open reports. A decision-write failure is hard failure; decision success followed by report-resolution failure is surfaced as partial-save rather than false atomic success.
+Session remains the only authenticated-user owner. `src/core/api.js` remains the only browser Supabase/Edge Function boundary. `src/app/admin-console.js` owns admin state, normalization, validation, fail-closed readiness and mutation orchestration. `src/features/admin-console/index.js` owns rendering/interaction. The existing `bq-admin` backend remains the final authority for authorization and conflict protection.
 
-The UI provides congregation selection, quarantine/report tabs, search, decision-state filtering, explicit review actions, visible success/error states, and 390 px mobile behavior without direct Supabase, storage, global registry, or reload-driven ownership.
+The recovered scope includes platform user access, congregation membership and ministry roles, congregation creation, small-group creation, group membership/roles, and group ownership transfer. Signed-out users make no admin reads. Signed-in non-Owner/Admin users fail closed. Mutations require verified ready Owner/Admin state and refresh normalized console data after success. Network/runtime failures remain distinct from permission denial.
 
-Permanent #91 evidence includes `CONTENT_REVIEW_V3.md`, `src/app/content-review.js`, `src/features/content-review/index.js`, central API/Recall/bootstrap composition, `scripts/validate-v3-content-review.mjs`, `tests/v3-content-review-edge.mjs`, `tests/v3-content-review-smoke.mjs`, and accumulated invocation in `.github/workflows/v3-regression.yml`.
+#93 Admin Operations is explicitly excluded from #92. Its retained `bq-admin-ops` surface covers operational health, online presence, assignments, devotionals/announcements, polls, curated media and live rooms. Password/reset recovery also remains outside #92.
 
-## Defect / root-cause ledger
+Permanent #92 evidence includes `ADMIN_CONSOLE_V3.md`, `src/app/admin-console.js`, `src/app/admin-entry.js`, `src/features/admin-console/index.js`, central `src/core/api.js`, `scripts/validate-v3-admin-console.mjs`, `tests/v3-admin-console-edge.mjs`, `tests/v3-admin-console-smoke.mjs`, and accumulated invocation in `.github/workflows/v3-regression.yml`.
 
-- #88 bookkeeping passed run `34520364924` and froze as `release/v3.61-content-moderation` at `dfbbb690c814a514714967f240262eec39b6e3ee`.
-- #91 targeted run `34521698454` failed only in the 390 px Content Review browser regression. Architecture, edge behavior, Recall, and moderation checks were green. The browser assertion expected a newly included item to remain visible under the default Pending filter, which contradicted the implemented filter contract.
-- The test was corrected without weakening acceptance: after save, the included item must leave Pending; selecting the Include filter must reveal the same saved state without reload.
-- Corrected targeted run `34522099170`: **success** against exact candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
-- Complete accumulated functional run `34522265269`: **success** against the same exact candidate; exact-SHA assertion, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite passed.
-- Functional verifier `verify/v3.62-content-review-functional-68516bd-20260911` was reset to the clean functional candidate after the green run.
+## Verification and defect ledger
 
-## Next major milestone: #91 bookkeeping and v3.62 freeze
+- #91 bookkeeping gate run `34523117239`: **success** against exact SHA `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`; v3.62 is frozen at that SHA.
+- Initial #92 full-gate run `34528132854`: **failed before product regressions**. Root cause was verifier infrastructure: a temporary `push:` trigger had been added to the product `.github/workflows/v3-regression.yml`, correctly rejected by the workflow-contract/Admin Console validator. This was not a runtime defect.
+- Focused isolated #92 run `34528237689`: **success** for Admin Console architecture, edge and browser/mobile checks.
+- The verifier was corrected by keeping product `v3-regression.yml` dispatch-only and putting the temporary push trigger in a separate verifier-only workflow that explicitly checks out the clean product candidate.
+- Complete accumulated #92 functional run `34528950642`: **success** against exact candidate `298ebcdd9b34a9582cbe24c856ec256292acb7a8`; exact-SHA assertion, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite passed.
 
-1. Finish #91 bookkeeping from exact functional candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
+## Current gate and next sequence
+
+1. Finish #92 bookkeeping on `work/v3.63-admin-console-bookkeeping-20260911`.
 2. Treat the final clean bookkeeping tip as a new exact candidate.
-3. Create an isolated one-shot bookkeeping verifier with branch-specific `push:` plus explicit checkout/assertion of that exact candidate.
-4. Run the complete accumulated architecture, edge/security, inventory/status, and browser/mobile suite.
-5. Correct only reproduced failures without weakening accumulated coverage.
-6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.62-content-review` at exactly that SHA.
-7. Verify the release ref.
-8. Only then create the next feature branch from frozen v3.62 and begin #92 Admin console.
+3. If `feature/v3-admin-console` still equals the green functional candidate, fast-forward it to that bookkeeping SHA.
+4. Create an isolated one-shot bookkeeping verifier with branch-specific `push:` and explicit checkout/assertion of the exact bookkeeping SHA.
+5. Run complete inventory/status, architecture, edge/security, and browser/mobile verification.
+6. Correct only reproduced failures; do not weaken accumulated coverage.
+7. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.63-admin-console` exactly there.
+8. Verify the release ref, then create the next feature branch from v3.63 and begin #93 Admin Operations from recovered retained contracts.
 
 ## Release rule
 
