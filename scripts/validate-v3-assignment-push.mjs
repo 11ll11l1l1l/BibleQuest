@@ -30,7 +30,7 @@ for(const token of["action==='targets'","leaderRoles.has(member.role)","bible_co
 if(!server.includes(".eq('active',true).maybeSingle()"))fail('Trusted assignment create must reject inactive scoped targets.');
 if(!server.includes("const leaderRoles=new Set(['facilitator','leader','pastor','admin'])"))fail('Trusted assignment function must enforce exact recovered ministry role set.');
 
-if(!contract.includes('leader **publish → eligible member receive → existing #73/#74 complete**'))fail('Assignment Push contract must retain publish→receive→complete scope.');
+for(const token of['publishes an assignment','eligible member receives','member completes it','existing RLS-protected assignment query','existing #73/#74 behavior'])if(!contract.includes(token))fail(`Assignment Push contract missing publish→receive→complete evidence: ${token}`);
 if(!contract.includes('linked_activity')||!contract.includes('#79'))fail('Assignment Push contract must retain linked-activity deferral.');
 if(!contract.includes('#77'))fail('Assignment Push contract must retain notification deferral.');
 if(rootLegacy.includes("from './src/app/assignments.js'")||rootLegacy.includes('src/features/assignments'))fail('Retained root assignment-advanced.js must remain reference-only, not compose the v3 owner.');
