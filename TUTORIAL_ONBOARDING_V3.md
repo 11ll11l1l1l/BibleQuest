@@ -1,6 +1,6 @@
 # BibleQuest v3 Tutorial / Onboarding Trainer (#84)
 
-Status: implementation candidate; not promoted until exact-SHA verification.
+Status: **Verified functional candidate** at `9f4f018356e48b4f7d7c62887761cffd8278fbd5`; targeted run `34495068372` and complete accumulated functional run `34495260019` passed. Release promotion still requires a separate exact-SHA bookkeeping gate.
 
 ## Recovered contract
 
@@ -46,12 +46,21 @@ The tutorial does not receive a recovery code. Account creation continues to ren
 
 ## PWA/offline boundary
 
-#84 adds no service worker, cache manifest, or PWA owner. `index.html` loads `src/ui/tutorial.css` and bootstrap imports the tutorial modules, so the existing offline-shell resource warmup owns caching of those already-loaded same-origin assets. Offline acceptance must verify behavior rather than create a second cache system.
+#84 adds no service worker, cache manifest, or PWA owner. `index.html` loads `src/ui/tutorial.css` and bootstrap imports the tutorial modules, so the existing offline-shell resource warmup owns caching of those already-loaded same-origin assets. Offline acceptance verifies behavior rather than creating a second cache system.
 
-## Acceptance evidence required before promotion
+## Verification evidence
 
-1. Service edge tests: normal fresh open, Next/Back, temporary Skip, Finish persistence, completed-state guard, force-open after completion, invalid persisted-state fallback.
-2. Browser/mobile smoke: guest Home remains unobstructed, exactly one hidden overlay layer is mounted, permanent launcher opens it, controls work, no duplicate layer appears, finish persists across reload, force-open still works after completion, real route handoff works, and mobile/offline behavior remains usable.
-3. Architecture validator: one-owner boundaries, no direct browser storage/global BQ/MutationObserver/Supabase in #84 owners, recovery-code isolation, #85 remains Not started, workflow contains permanent #84 evidence.
-4. Complete accumulated exact-SHA functional regression gate.
-5. Separate exact-SHA bookkeeping gate before release freeze.
+- Run `34493685748`: rejected. An early candidate auto-opened the tutorial on anonymous Home and intercepted existing shell/account interaction. Retained production behavior proved that trigger was incorrect.
+- Run `34494727258`: rejected. Runtime/shell were green, but the tutorial browser test had an off-by-one finish sequence. Only the test was corrected.
+- Run `34495068372` at exact SHA `9f4f018356e48b4f7d7c62887761cffd8278fbd5`: targeted exact-SHA assertion, architecture/privacy validator, lifecycle edges, shell compatibility, account recovery-save handoff, mobile and offline checks all passed.
+- Run `34495260019` at the same exact product SHA: the complete accumulated architecture validators, edge/security regressions, and browser/mobile suite all passed.
+
+Permanent evidence:
+1. `scripts/validate-v3-tutorial-onboarding.mjs` enforces ownership, trigger, recovery privacy, #85 separation, and accumulated-workflow inclusion.
+2. `tests/v3-tutorial-onboarding-edge.mjs` verifies open/Next/Back/Skip/Finish/persistence/completed guard/force-open/malformed-state handling.
+3. `tests/v3-tutorial-onboarding-smoke.mjs` verifies unobstructed anonymous Home, one overlay, launcher behavior, recovery-code save gating/no-payload handoff, no browser-storage secret leak, mobile controls/overflow, persistence/reload, route action and offline operation.
+4. `.github/workflows/v3-regression.yml` permanently invokes all #84 evidence while remaining `workflow_dispatch` only on the product branch.
+
+## Promotion rule
+
+The functional SHA is not the release SHA once bookkeeping files change. The exact bookkeeping candidate must independently pass inventory validation plus the complete accumulated architecture, edge/security and browser/mobile workflow. Only that exact green bookkeeping SHA may be frozen as `release/v3.57-tutorial-onboarding`.
