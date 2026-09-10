@@ -10,6 +10,7 @@ Updated: 2026-09-11 JST
 - Strict parity **92/100**; regression stability **91/100**
 - Frozen v3.64: `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`, run `34532823188`
 - #94 functional: `b3c15b34da0958a136920dc970b24531e3e06e45`, full run `34534183203` green
+- First #94 bookkeeping candidate: `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55`; run `34535009560` failed in architecture validation because #93's validator pinned #94 to obsolete `Not started` lifecycle state.
 - #42 Same-room Play Together follows v3.65 freeze.
 - #15 and Kids #38–40 remain deferred.
 
@@ -18,19 +19,21 @@ Updated: 2026-09-11 JST
 - v3.62 Content Review — `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`
 - v3.63 Admin Console — `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
 - v3.64 Admin Operations — `56fe2469f9c27e925b92afa9b07d7c12998bb7b7`
-- v3.65 Reset/recovery — pending bookkeeping gate
+- v3.65 Reset/recovery — pending corrected bookkeeping gate
 
 ## Recent milestone sequence
 
 | Capability | State | Evidence |
 |---:|---|---|
-| #93 Admin operations | Regression-tested | survived #94 full run |
-| #94 Reset/recovery | Verified | `b3c15b34...`, run `34534183203` |
+| #93 Admin operations | Regression-tested | survived #94 full functional run |
+| #94 Reset/recovery | Verified | `b3c15b34...`, run `34534183203`; corrected bookkeeping gate pending |
 | #42 Same-room Play Together | Not started | next after freeze |
 
-## #94 functional chronology
+## #94 chronology
 
-Recovered standalone `/reset`, reused #9 Account/API ownership, preserved separation from #100/#96/#93, and added permanent architecture/edge/browser coverage. The validator exposed missing #94 invocation in the accumulated workflow; wiring was corrected without runtime acceptance changes. Candidate `b3c15b34da0958a136920dc970b24531e3e06e45` then passed complete run `34534183203`. Bookkeeping now needs its own exact-SHA gate.
+Recovered standalone `/reset`, reused #9 Account/API ownership, preserved separation from #100/#96/#93, and added permanent architecture/edge/browser coverage. The #94 validator first exposed missing #94 invocation in the accumulated workflow; wiring was corrected without runtime acceptance changes. Candidate `b3c15b34da0958a136920dc970b24531e3e06e45` then passed complete functional run `34534183203`.
+
+Bookkeeping candidate `3f3d6decbb1b3a236c4cbbea3301637f9dfd1c55` passed exact-SHA and promoted-ledger assertions in run `34535009560`, then failed the architecture suite because `scripts/validate-v3-admin-operations.mjs` still required #94 to be literally `Not started`. That pre-milestone lifecycle pin was stale after legitimate #94 promotion. The validator is corrected to preserve #94 row identity and valid lifecycle-state checking without forcing the obsolete state. No #94 runtime defect was reproduced. The corrected bookkeeping SHA requires a fresh full gate.
 
 ## #42 read-only boundary reminder
 
@@ -38,7 +41,7 @@ Acceptance is 2–6 players, rotating turns, scoreboard, finish. Recover retaine
 
 ## Next sequence
 
-Verify #94 bookkeeping SHA → freeze v3.65 → verify refs → branch/recover #42 → implement/targeted/full verification.
+Verify corrected #94 bookkeeping SHA → freeze v3.65 → verify refs → branch/recover #42 → implement/targeted/full verification.
 
 ## Release discipline
 

@@ -9,7 +9,7 @@ const contract=read('ADMIN_OPERATIONS_V3.md'),html=read('admin-operations.html')
 
 for(const phrase of['Owner account-deletion','bq-admin-ops','individual voter identity is not rendered','active owner account cannot delete itself','production'])if(!contract.toLowerCase().includes(phrase.toLowerCase()))fail(`contract missing ${phrase}`);
 if(!html.includes('src/app/admin-operations-entry.js')||!html.includes('src/ui/admin-operations.css'))fail('standalone entry must load v3 module and v3 responsive styles');
-for(const forbidden of['admin-operations.js"></script>','cloud-config.js','cdn.jsdelivr.net/npm/@supabase','window.BQ'])if(html.includes(forbidden))fail(`standalone entry retains legacy runtime: ${forbidden}`);
+for(const forbidden of['admin-operations.js\"></script>','cloud-config.js','cdn.jsdelivr.net/npm/@supabase','window.BQ'])if(html.includes(forbidden))fail(`standalone entry retains legacy runtime: ${forbidden}`);
 if(!entry.includes('createAdminOperationsService')||!entry.includes('api.adminOperations')||!entry.includes('createSessionService'))fail('entry must compose Session, shared API facade and Admin Operations service');
 for(const forbidden of['createClient','supabase.','client.from','client.functions','fetch(','localStorage','sessionStorage','window.BQ','MutationObserver'])if(service.includes(forbidden))fail(`service bypasses owner boundary with ${forbidden}`);
 for(const requiredToken of['status','dashboard','frontendHealth','deleteUser','BQ_ADMIN_OPS_SELF_DELETE','BQ_ADMIN_OPS_OWNER_REQUIRED','clientErrors24h'])if(!service.includes(requiredToken))fail(`service missing ${requiredToken}`);
@@ -26,6 +26,6 @@ if(adminView.includes('bq-admin-ops')||adminView.includes('functions.invoke'))fa
 if(!workflow.includes('validate-v3-admin-operations.mjs')||!workflow.includes('v3-admin-operations-edge.mjs')||!workflow.includes('v3-admin-operations-smoke.mjs'))fail('accumulated workflow must include all #93 permanent checks');
 if(/\npush\s*:/.test(workflow)||/\npush\s*:/.test(workflow.replace(/workflow_dispatch\s*:/g,'')))fail('product v3 regression workflow must remain manual-only');
 if(!/^\| 93 \| Admin operations \| Yes \| Standalone old \| (?:Not started|Implemented|Verified|Regression-tested) \|/m.test(inventory))fail('inventory #93 row is missing or malformed');
-if(!/^\| 94 \| Reset\/recovery page \| Yes \| Standalone old \| Not started \|/m.test(inventory))fail('capability #93 must not absorb #94 reset/recovery');
+if(!/^\| 94 \| Reset\/recovery page \| Yes \| Standalone old \| (?:Not started|Implemented|Verified|Regression-tested) \|/m.test(inventory))fail('inventory #94 row is missing or malformed');
 
 if(!process.exitCode)console.log('BibleQuest v3 Admin Operations architecture validation passed.');
