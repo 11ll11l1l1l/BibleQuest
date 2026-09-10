@@ -24,7 +24,10 @@ if(!failures.length){
 
   const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
   if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(83)))fail('Inventory #83 Innovation suite must use a valid lifecycle state.');
-  if(!/\| Not started \|/.test(row(84)))fail('Inventory #84 Tutorial/onboarding trainer must remain Not started during #83.');
+  // #84 was required to stay Not started while #83 itself was being built. Once #84
+  // legitimately advances, the dedicated #84 validator is authoritative; #83 should
+  // only require that the later row remains a valid inventory lifecycle state.
+  if(!/\| (Not started|Implemented|Verified|Regression-tested) \|/.test(row(84)))fail('Inventory #84 Tutorial/onboarding trainer must use a valid lifecycle state.');
 
   for(const test of['scripts/validate-v3-innovation-suite.mjs','tests/v3-innovation-suite-edge.mjs','tests/v3-innovation-suite-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #83 regression: ${test}`);
 }
