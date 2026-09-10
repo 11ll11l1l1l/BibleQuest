@@ -1,12 +1,14 @@
 # Autonomous BibleQuest current state
 
-Updated: 2026-09-10 JST during autonomous-safety hardening.
+Updated: 2026-09-10 JST after autonomous-safety hardening and reconciliation of the interrupted A1 #75 startup.
 
 ## Control / recovery
 - Live control branch after rollout: `automation/v3-agent-control`.
 - Control-plane pre-hardening recovery: `safety/pre-agent-control-hardening-20260910` at `d2de4cf57be4e9ab6b7476698b7ca77e8aca526a`.
 - Product recovery anchors remain `safety/pre-autonomous-agents-20260910-canonical` and `safety/pre-autonomous-agents-20260910-advanced`.
-- Writer lease must be FREE before scheduled A1 resumes; A1 acquires `automation/WRITE_LEASE.md` before product/test/workflow/canonical/release writes.
+- The #75 A1 run that acquired nonce `bq-a1-20260910T1309-075-f3a1` was administratively revoked during hardening before its first product/test write. A1 re-read the lease, detected the mismatch, stopped, and recorded the handoff.
+- Reconciliation confirmed both canonical `feature/v3-assignment-push` and designated work branch `agent/a1-work/075-assignment-push` remain exactly at `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`; the interrupted run made no #75 product, test, workflow, bookkeeping, canonical, handoff, release, production, or safety-ref change beyond its control-plane lease/handoff records.
+- The hardened control plane deliberately returns `automation/WRITE_LEASE.md` to `STATUS: FREE`; future A1 runs must conditionally acquire a new lease before any product/test/workflow/canonical/release write.
 - Unverified autonomous implementation uses `agent/a1-work/...` quarantine branches.
 
 ## Latest exact verified release
@@ -20,9 +22,9 @@ Updated: 2026-09-10 JST during autonomous-safety hardening.
 - Active milestone: **#75 Assignment Push Workflow**.
 - Risk tier: **HIGH-RISK** because implementation requires trusted server/authorization scope for publishing target discovery/creation.
 - Canonical milestone branch: `feature/v3-assignment-push`.
-- Canonical HEAD at hardening: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
-- Canonical state contains #75 contract/status/handoff recovery only; application implementation was Not started at this SHA.
-- Designated A1 quarantine branch: `agent/a1-work/075-assignment-push`, created from exact canonical SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Canonical HEAD after reconciliation: `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c`.
+- Canonical state contains #75 contract/status/handoff recovery only; application implementation is Not started at this SHA.
+- Designated A1 quarantine branch: `agent/a1-work/075-assignment-push`, also exactly `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c` after reconciliation.
 - Older `agent/a1/m75-assignment-push-work` is non-canonical and must not receive new autonomous work.
 - A1 must not put unverified #75 product code directly on `feature/v3-assignment-push`.
 
@@ -51,7 +53,7 @@ Existing Team Center reads can provide active teams/member directory, but curren
 
 #75 therefore requires the minimum ministry-authorized, congregation-scoped publish-target projection through the existing central API/trusted-server boundary. Do not broaden general Journey Group RLS merely for selector convenience.
 
-## High-risk review state at hardening
+## High-risk review state
 - A3 architecture report for #75 exists and identifies the trusted target-directory requirement with no external blocker.
 - A4 pre-implementation QA contract exists and reports NOT READY only because implementation/evidence is not yet present.
 - A5 TRIAGE was refreshed to #75 at canonical SHA `606fa7adfd0ebf8ba1277aa4a89931f5db77a53c` with no established BLOCKER.
@@ -59,13 +61,13 @@ Existing Team Center reads can provide active teams/member directory, but curren
 - After exact #75 functional green, A4 must review that exact candidate SHA and A5 must issue a fresh promotion recommendation before bookkeeping/promotion.
 
 ## Exact next executable action
-1. A1 acquires writer lease for milestone #75 and work branch `agent/a1-work/075-assignment-push`.
+1. A1 reads the hardened control files, independently reconciles live repository state, then conditionally acquires the FREE writer lease with a new nonce for milestone #75 and work branch `agent/a1-work/075-assignment-push`.
 2. Re-read canonical, quarantine branch and frozen v3.47; reconcile any unexpected movement without force.
 3. Implement #75 only on the quarantine branch.
 4. Add the minimum trusted congregation-scoped publish-target projection while preserving assignment/API owners and server authorization.
 5. Extend `src/app/assignments.js` with one fail-closed leader-publish lifecycle and `src/features/assignments/index.js` with ministry authoring UI only.
 6. Use trusted `bq-assignment action:create`; no direct assignment/progress/score table writes.
-7. Add meaningful permanent #75 validator, edge/security regressions and 390px publish -> receive -> existing completion browser coverage.
+7. Add meaningful permanent #75 validator, edge/security regressions and 390px publish -> receive -> existing completion browser coverage while preserving all accumulated prior regression invocations.
 8. Run targeted checks, then complete accumulated functional gate against exact clean quarantine candidate.
 9. Because #75 is HIGH-RISK, hold exact green candidate for fresh A4 exact-SHA review and A5 promotion recommendation.
 10. Prepare bookkeeping off-canonical, run complete exact bookkeeping gate, then fast-forward canonical and freeze next release only at exact green SHA.
