@@ -64,10 +64,11 @@ Permanent evidence:
 - Targeted run `34495068372`, candidate `9f4f018356e48b4f7d7c62887761cffd8278fbd5`: exact SHA, architecture/privacy validator, lifecycle edges, existing shell smoke and strengthened account-handoff/mobile/offline smoke all passed.
 - Full functional run `34495260019`, same exact product SHA: complete accumulated architecture validators, complete accumulated edge/security regressions, and complete browser/mobile regressions all passed.
 - Bookkeeping run `34496075740`, candidate `f26945e0c0f8c00f9def4f5fda5ff610a7d4652e`: exact SHA and inventory validation passed, then the architecture validator rejected renamed status headings. Runtime, inventory counts, edge and browser behavior were not implicated. The required durable headings are retained here.
+- Bookkeeping run `34496347631`, candidate `20413b839d7ac007c20b7cd2bc9ba326591eb010`: exact SHA, inventory validation, the global architecture validator and all validators through Avatar Vault passed; the older #83 Innovation validator still hard-coded #84 to remain `Not started`. That future-state assertion was narrowed only to require a valid #84 lifecycle state. Dedicated #84 validation remains authoritative; runtime behavior and #84 acceptance coverage were unchanged.
 
 ## Next major milestone: #84 bookkeeping and v3.57 freeze
 
-1. Treat the live tip of `feature/v3-tutorial-onboarding` containing this corrected status bookkeeping as a new candidate.
+1. Treat the live tip of `feature/v3-tutorial-onboarding` containing the corrected validator and this defect record as a new candidate.
 2. Verify that exact SHA on an isolated verifier with SHA assertion, inventory validation, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite.
 3. Correct only a reproduced failure; never weaken accumulated coverage.
 4. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.57-tutorial-onboarding` at exactly that SHA.
