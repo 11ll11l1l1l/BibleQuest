@@ -40,7 +40,7 @@ Reporting is limited to explicitly allowlisted authored/curated surfaces. Form f
 
 Permanent evidence includes `CONTENT_REPORTING_V3.md`, `src/app/content-reporting.js`, `src/ui/content-reporting.js`, `src/ui/content-reporting.css`, the `contentReports` API owner in `src/core/api.js`, `scripts/validate-v3-content-reporting.mjs`, `tests/v3-content-reporting-edge.mjs`, `tests/v3-content-reporting-smoke.mjs`, and permanent accumulated invocation in `.github/workflows/v3-regression.yml`.
 
-## Verification and defect ledger
+## Defect / root-cause ledger
 
 - Targeted run `34509524070`: rejected because the #87 validator demanded a literal `data-content-reporting-root` token while runtime used the equivalent `dataset` marker. Validator corrected without reducing behavioral coverage.
 - Targeted run `34509633853`: rejected because the Playwright test selected the full-screen scrim instead of the visible close button. Selector corrected; product close behavior was unchanged.
@@ -48,6 +48,7 @@ Permanent evidence includes `CONTENT_REPORTING_V3.md`, `src/app/content-reportin
 - Full run `34510145224`: rejected by the accumulated architecture gate because `src/ui/content-reporting.js` directly subscribed to `hashchange`. Root cause was a real Router ownership violation. The listener was removed and reporting refresh moved into bootstrap's Router composition.
 - Full run `34510492091`: Router architecture passed, then retained #65 validation rejected the new API export ordering because it required literal adjacency `encouragements, media`. The validator was corrected to require both exported owners independently.
 - Full run `34510669714`: **success** at exact candidate `72ef635a5322e715c293de489bf37a170f05729d`; all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite passed.
+- Bookkeeping run `34511349919`: exact bookkeeping SHA `454a178e316eba45da0fb445de050f71daa7c14b` was rejected because this status document renamed the validator-required `Defect / root-cause ledger` heading. Runtime/product behavior was not implicated; the durable heading was restored and a new bookkeeping SHA requires a fresh full gate.
 
 ## Next major milestone: #87 bookkeeping and v3.60 freeze
 
