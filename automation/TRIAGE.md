@@ -1,43 +1,43 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 04:57 JST
+Generated: 2026-09-11 06:00 JST
 
 ## Freshness
-- Active corrective milestone: **#91 Content Review workbench — HIGH-RISK**.
-- Canonical: `feature/v3-content-review` @ `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
-- Dedicated autonomous work branch `agent/a1-work/091-content-review`: **not found** in live branch inventory.
-- Frozen base entering #91: `release/v3.61-content-moderation` @ `dfbbb690c814a514714967f240262eec39b6e3ee`.
-- New immutable release: `release/v3.62-content-review` @ `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
-- Exact functional candidate recorded by durable handoff: `68516bdbdb651dd144270bd5bc615909967130a8`; complete accumulated functional run `34522265269` = green for that SHA only.
-- Exact bookkeeping run `34523117239` = **SUCCESS** for product SHA `b4a8826f...`; isolated verifier explicitly checked out/asserted that SHA and completed bookkeeping, accumulated architecture, edge/security and browser/mobile phases.
+- Active milestone: **#92 Admin Console — HIGH-RISK**.
+- Canonical: `feature/v3-admin-console` @ `e81a9c7563f5e1b6a90493fac340e22408628324`.
+- Dedicated autonomous candidate `agent/a1-work/092-admin-console`: **not found**.
+- Frozen base: `release/v3.62-content-review` @ `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`.
+- Latest completed functional evidence: run `34528950642` = **SUCCESS** for exact product SHA `298ebcdd9b34a9582cbe24c856ec256292acb7a8`; all accumulated architecture, edge/security and browser/mobile phases passed there only.
+- Current bookkeeping SHA: canonical `e81a9c7...`; exact bookkeeping run `34529629974` = **FAILURE**. Exact SHA assertion and bookkeeping validation passed, then accumulated architecture validators failed; edge/security and browser/mobile phases were skipped.
 - Writer lease observed: **FREE**.
-- A2 report analyzed `784b77c2...`: **stale** for current canonical/release.
-- A3 report analyzed `68516bdb...`: **stale / NOT READY** for current canonical/release.
-- A4 report analyzed `68516bdb...` while run `34522265269` was still in progress: **stale / NOT READY** for current canonical/release.
-- HIGH-RISK independent QA/security review for exact `b4a8826f...`: **not satisfied**.
-- Stale immediately on canonical/release/corrective-candidate movement, #91 RLS/API/test/workflow change, or fresh exact-state A3/A4 review.
+- A2 #92 report: **missing**.
+- A3 report: analyzed `2d3d1b5467e24120f79dedfef762c1ebd6de9b06`; **stale / NOT READY** after canonical movement.
+- A4 report: analyzed `298ebcdd9b34a9582cbe24c856ec256292acb7a8`; **stale / NOT READY** after canonical movement.
+- HIGH-RISK exact-candidate A3 trust-boundary satisfaction + A4 READY: **not satisfied**.
+- Stale immediately on canonical/candidate/frozen movement, #92 server/RLS/grants/test/workflow change, or new exact run/review evidence.
 
 ## BLOCKER
-1. **#91 was frozen without the required exact-candidate HIGH-RISK review barrier.** No `agent/a1-work/091-content-review` candidate exists; no A3 trust-boundary satisfaction and no A4 READY review exist for exact released SHA `b4a8826f...`. Counterfactual: if development advances to #92 now, the autonomous process treats a HIGH-RISK authorization milestone as closed despite missing mandatory independent security/QA approval, defeating the quarantine/review safeguard.
-2. **Faithful reviewer-authorization regression evidence remains missing.** Primary SQL uses RLS through `private.bible_can_review_content(...)` and `reviewed_by = auth.uid()`, but permanent `tests/v3-content-review-edge.mjs` substitutes a mocked API instead of executing the real policy boundary. Counterfactual: a future or existing RLS/grant defect allowing member/facilitator, forged-reviewer, or cross-congregation writes could still pass the accumulated suite because those denial paths are not exercised against the trusted boundary.
+1. **Exact #92 bookkeeping gate is red.** Run `34529629974` asserted `e81a9c7...` and passed bookkeeping validation, but accumulated architecture failed and all later required phases were skipped. Counterfactual: freezing v3.63 or starting #93 now would promote a SHA that has not passed the mandatory complete exact bookkeeping suite.
+2. **HIGH-RISK promotion barrier is unsatisfied.** No authorized `agent/a1-work/092-admin-console` candidate exists; current A3/A4 reports do not approve exact `e81a9c7...`; permanent #92 service tests still mock the Admin Console API instead of executing the real `bq-admin` JWT/platform-role/service-role boundary. Counterfactual: an authorization defect or privilege-bypass could survive the mocked suite, while promotion would bypass the required same-candidate independent security/QA barrier.
 
 ## MILESTONE
-1. Preserve #91 scope as `open review item; decision; save; permissions`; do not absorb #92 Admin console or #93 Admin operations.
-2. Reconcile a governance-compliant corrective `agent/a1-work/091-content-review` candidate from the immutable v3.62 lineage rather than rewriting `release/v3.62-content-review`.
-3. Add faithful permanent trusted-boundary coverage for unauthorized member/facilitator writes, cross-congregation denial, permitted leader/pastor/admin and platform owner/admin paths, forged `reviewed_by`, and report-content immutability without weakening accumulated regressions.
-4. Run the complete exact functional gate on the corrective candidate, then require fresh same-SHA A3 trust-boundary satisfaction and A4 READY before A5 can recommend corrective bookkeeping/promotion.
+1. Reproduce and correct the exact architecture-validator failure from bookkeeping run `34529629974` without weakening/deleting accumulated coverage.
+2. Reconcile #92 into the required quarantine candidate lineage instead of treating canonical bookkeeping state as an unreviewed autonomous candidate.
+3. Add faithful permanent trusted-boundary evidence for unauthenticated/non-admin/inactive-admin denial, active admin/owner allowance, owner-only transitions/self-demotion protection, and direct browser denial for privileged access/audit mutations.
+4. Run the complete exact functional gate on the final candidate, obtain fresh same-SHA A3 satisfaction and A4 READY, then prepare bookkeeping and run the complete exact bookkeeping gate before any v3.63 freeze.
 
 ## DEFER
-- #92 Admin console and #93 Admin operations until #91 HIGH-RISK corrective closure is independently satisfied.
+- #93 Admin Operations and all later milestones until #92 HIGH-RISK closure is complete.
 
 ## IGNORE
-- PASS transfer from `68516bdb...` or bookkeeping run `34523117239` to any changed corrective SHA.
-- A2/A3/A4 conclusions as current authorization: all three reports are SHA-state stale for released `b4a8826f...`.
-- The green bookkeeping run as proof of authorization behavior that its mocked #91 test does not execute.
+- PASS transfer from functional SHA `298ebcdd...` to bookkeeping SHA `e81a9c7...`.
+- Focused run `34528237689` as a substitute for the complete accumulated gate.
+- Stale `CURRENT.md`/#91-era control text as repository truth; live refs and executed exact-SHA evidence supersede it.
+- A2/A3/A4 agreement or prior conclusions as proof without current exact-state primary evidence.
 
 ## Firewall decision
-**2 BLOCKER; 4 MILESTONE; DO NOT ADVANCE TO #92.** Exact v3.62 bookkeeping verification is valid and the accumulated harness executed successfully, but the required HIGH-RISK exact-candidate review and faithful trusted-boundary evidence are not satisfied for the released SHA.
+**2 BLOCKER; 4 MILESTONE; DO NOT FREEZE v3.63 OR ADVANCE TO #93.** #92 has a complete functional green at `298ebcdd...`, but the live bookkeeping SHA `e81a9c7...` failed its exact accumulated gate and the HIGH-RISK independent trust-boundary/QA barrier remains unsatisfied.
 
 ## Next safe action
-Keep `release/v3.62-content-review` immutable. Perform #91 corrective closure on an authorized quarantine branch from the v3.62 lineage, add faithful authorization regressions, obtain complete exact functional green plus fresh same-SHA A3/A4 approval, then return to A5 before any corrective bookkeeping/release or #92 implementation.
+Keep `release/v3.62-content-review` immutable. Stay on #92, diagnose the bookkeeping architecture failure, restore governance-compliant quarantine provenance, add faithful authorization coverage, and obtain complete exact candidate green plus fresh same-SHA A3/A4 approval before retrying bookkeeping/promotion.
