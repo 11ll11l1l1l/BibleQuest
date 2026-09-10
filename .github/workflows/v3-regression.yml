@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.54-psychometrics-functional-1bd77-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 1bd77237de6b08f18794387bf5c1d9c8098a3e4a
+      - name: Assert exact Psychometrics functional candidate
+        run: test "$(git rev-parse HEAD)" = "1bd77237de6b08f18794387bf5c1d9c8098a3e4a"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
