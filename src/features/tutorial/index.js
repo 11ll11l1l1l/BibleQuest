@@ -1,3 +1,5 @@
+import { trainerStateClass, trainerStateForStep } from './trainer.js';
+
 const STEPS = Object.freeze([
   Object.freeze({
     eyebrow: 'WELCOME TO BIBLEQUEST',
@@ -39,6 +41,7 @@ const STEPS = Object.freeze([
 
 function template(state) {
   const step = STEPS[state.step] || STEPS[0];
+  const trainerState = trainerStateForStep(state.step);
   const progress = STEPS.map((_, index) => `<i class="${index <= state.step ? 'is-on' : ''}" aria-hidden="true"></i>`).join('');
   return `<section class="bq-tutorial-dialog" role="dialog" aria-modal="true" aria-labelledby="bq-tutorial-title" data-bq-english>
     <header class="bq-tutorial-header">
@@ -46,8 +49,8 @@ function template(state) {
       <button type="button" class="bq-tutorial-close" data-tutorial-skip aria-label="Close tutorial">Close guide</button>
     </header>
     <div class="bq-tutorial-stage">
-      <aside class="bq-tutorial-trainer" aria-label="BibleQuest trainer">
-        <span class="bq-tutorial-trainer-mark" aria-hidden="true">BQ</span>
+      <aside class="bq-tutorial-trainer" aria-label="BibleQuest trainer" data-trainer-state="${trainerState}">
+        <span class="bq-tutorial-trainer-visual ${trainerStateClass(state.step)}" aria-hidden="true"></span>
         <b>BibleQuest Trainer</b>
         <small>Step ${state.step + 1} of ${state.totalSteps}</small>
       </aside>
