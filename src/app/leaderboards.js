@@ -38,10 +38,14 @@ function sinceFor(period,now=new Date(),timeZone=browserTimeZone()){
   }
   throw boardError('Choose a supported leaderboard period.','BQ_LEADERBOARD_PERIOD');
 }
+function normalizeAvatar(value){
+  const cosmetic=typeof value?.cosmetic==='string'?value.cosmetic:null;
+  return Object.freeze({cosmetic});
+}
 function normalizeDirectory(row,congregationId){
   const scope=String(row?.congregation_id||''),userId=String(row?.user_id||'');
   if(scope!==congregationId||!userId||row?.active===false)throw boardError('Leaderboard received malformed or out-of-scope member data.','BQ_LEADERBOARD_SCOPE');
-  return Object.freeze({userId,displayName:cleanText(row?.display_name)||'Member'});
+  return Object.freeze({userId,displayName:cleanText(row?.display_name)||'Member',avatar:normalizeAvatar(row?.avatar)});
 }
 function normalizeScore(row){
   const userId=String(row?.user_id||''),category=String(row?.category||'').trim().toLowerCase(),points=Number(row?.points);
