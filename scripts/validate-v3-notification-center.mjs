@@ -19,7 +19,7 @@ if(!failures.length){
   if(!schema.includes('create table if not exists public.bible_notifications'))fail('Retained schema no longer defines bible_notifications.');
   for(const item of['notifications own read','notifications own update','user_id=auth.uid()'])if(!schema.includes(item))fail(`Retained notification own-row RLS evidence missing: ${item}`);
   for(const fn of['bq_notify_assignment()','bq_notify_assignment_feedback()','bq_notify_congregation_members()'])if(!revoke.includes(`revoke execute on function public.${fn} from public, anon, authenticated;`))fail(`Notification trigger function browser execute revocation missing: ${fn}`);
-  const lifecycle=['Not started','Implemented','Verified','Regression-tested'];if(!lifecycle.some(status=>inventory.includes(`| 77 | Notification Center / inbox | Yes | Parity | ${status} | load; read/unread; open target; refresh |`)))fail('#77 inventory row is missing or malformed.');
+  const lifecycle=['Not started','Implemented','Verified','Regression-tested'];if(!lifecycle.some(status=>inventory.includes(`| 77 | Notification Center/inbox | Yes | Compatibility | ${status} | load; read/unread; open target; refresh |`)))fail('#77 inventory row is missing or malformed.');
   for(const test of['scripts/validate-v3-notification-center.mjs','tests/v3-notification-center-edge.mjs','tests/v3-notification-center-smoke.mjs'])if(!workflowInvokesNode(workflow,test))fail(`Accumulated workflow missing #77 regression: ${test}`);
 }
 if(failures.length){failures.forEach(item=>console.error(`- ${item}`));process.exit(1)}
