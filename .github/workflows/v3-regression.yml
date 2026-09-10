@@ -1,6 +1,9 @@
 name: BibleQuest v3 regression
 
 on:
+  push:
+    branches:
+      - verify/v3.50-notification-center-functional-retry-20260910
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: f911226f2121eb57a2d068ec43b577536328899e
+      - name: Assert exact Notification Center candidate
+        run: test "$(git rev-parse HEAD)" = "f911226f2121eb57a2d068ec43b577536328899e"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
