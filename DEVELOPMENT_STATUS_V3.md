@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after #88 Content Moderation complete functional verification.
+Updated: 2026-09-11 JST after #91 Content Review complete functional verification.
 
 `FEATURE_INVENTORY_V3.md` is the authoritative 100-capability parity ledger. Development continues under rebuild-and-verify with exact-SHA verification and one-owner boundaries.
 
@@ -8,8 +8,8 @@ Updated: 2026-09-11 JST after #88 Content Moderation complete functional verific
 
 - Production v2 remains unchanged.
 - `main`, production Supabase, production data, and production Cloudflare remain untouched.
-- Latest frozen checkpoint: `release/v3.60-content-reporting` at `17071432a815ef5cf53f5f4538df982285114bd0`.
-- Active branch: `feature/v3-content-moderation`.
+- Latest frozen checkpoint: `release/v3.61-content-moderation` at `dfbbb690c814a514714967f240262eec39b6e3ee`.
+- Active milestone branch: `feature/v3-content-review`.
 - Normal v3 Actions remain `workflow_dispatch` only on product branches.
 - Temporary `push:` triggers are restricted to isolated `verify/...` branches and are never release SHAs.
 
@@ -17,56 +17,50 @@ Updated: 2026-09-11 JST after #88 Content Moderation complete functional verific
 
 | State | Count |
 |---|---:|
-| Regression-tested | 87 |
+| Regression-tested | 88 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 12 |
+| Not started | 11 |
 | Total | 100 |
 
-Strict implemented-or-better parity is **88/100**. Regression stability is **87/100**.
+Strict implemented-or-better parity is **89/100**. Regression stability is **88/100**.
 
-- #87 Content reporting — **Regression-tested** after surviving #88's complete accumulated functional suite.
-- #88 Content moderation — **Verified** at exact functional candidate `8cd39e48eeb2affc7a4a2b27a319879bdda05b19`.
-- #91 Content Review workbench — **Not started** and is the next dependency-safe milestone after v3.61 freezes.
+- #88 Content moderation — **Regression-tested** after surviving #91's complete accumulated functional suite.
+- #91 Content Review workbench — **Verified** at exact functional candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
+- #92 Admin console — **Not started** and is the next dependency-safe milestone after v3.62 freezes.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
 
-These lifecycle counts are now represented by changed bookkeeping files. They are not frozen until the final bookkeeping SHA passes its own complete accumulated exact-SHA gate. No PASS transfers from the functional candidate after documentation changes.
+These lifecycle counts are represented by changed bookkeeping files. They are not frozen until the final bookkeeping SHA passes its own complete accumulated exact-SHA gate. No PASS transfers from the functional candidate after documentation changes.
 
-## #88 verified functional boundary
+## #91 verified functional boundary
 
-Content Moderation is a congregation-scoped policy application layer only. `src/app/content-moderation.js` owns decision normalization, scope selection, stale/fallback state and application rules. `src/core/api.js` remains the single Supabase browser boundary and owns bounded `bible_content_decisions` reads. `src/core/recall-packs.js` owns quarantine-pack access; Games consumes moderation policy rather than reading Supabase or quarantine files directly. Existing Session and Congregation Membership owners remain authoritative.
+Content Review is the reviewer workflow over quarantined Recall questions and congregation member reports. Session remains the authenticated-user owner, Congregation Membership remains the membership/role projection owner, `src/core/api.js` remains the sole browser Supabase boundary, Recall remains the quarantine-file owner, Router remains navigation owner, and `src/app/content-review.js` owns review-state orchestration.
 
-The retained policy contract is `include`, `exempt`, or `remove`. `exempt` and `remove` suppress approved content; an explicit matching `include` may restore a quarantined Recall item. Decision reads are congregation-scoped, capped at 4,000 rows and bounded by the retained 1.4-second timeout. Policy refresh failures preserve a previously loaded same-congregation decision map as stale; otherwise the feature fails closed/unavailable rather than inventing policy.
+Authorized reviewers are congregation `leader`, `pastor`, or `admin`, or platform `owner`/`admin`; unknown roles fail closed and database RLS remains final authority. Decisions are exactly `include`, `exempt`, or `remove`; optional rationale is bounded to 1,200 characters. Saving upserts `bible_content_decisions` and then resolves matching open reports. A decision-write failure is hard failure; decision success followed by report-resolution failure is surfaced as partial-save rather than false atomic success.
 
-#88 adds no reviewer decision UI, schema migration, admin operation, scoring change or production deployment. Decision editing remains #91.
+The UI provides congregation selection, quarantine/report tabs, search, decision-state filtering, explicit review actions, visible success/error states, and 390 px mobile behavior without direct Supabase, storage, global registry, or reload-driven ownership.
 
-Permanent #88 evidence includes `CONTENT_MODERATION_V3.md`, `src/app/content-moderation.js`, the `contentModeration` API owner in `src/core/api.js`, quarantine loading in `src/core/recall-packs.js`, Games/bootstrap composition, `scripts/validate-v3-content-moderation.mjs`, `tests/v3-content-moderation-edge.mjs`, and accumulated invocation in `.github/workflows/v3-regression.yml`.
+Permanent #91 evidence includes `CONTENT_REVIEW_V3.md`, `src/app/content-review.js`, `src/features/content-review/index.js`, central API/Recall/bootstrap composition, `scripts/validate-v3-content-review.mjs`, `tests/v3-content-review-edge.mjs`, `tests/v3-content-review-smoke.mjs`, and accumulated invocation in `.github/workflows/v3-regression.yml`.
 
 ## Defect / root-cause ledger
 
-- #87 bookkeeping was ultimately verified and frozen as `release/v3.60-content-reporting` at `17071432a815ef5cf53f5f4538df982285114bd0`.
-- During #88 recovery, the clean service initially had no shared `bible_content_decisions` API reader and Recall discarded quarantined rows before policy could explicitly restore them. The architecture was corrected through existing API/Recall owners rather than adding direct Supabase/fetch bypasses.
-- A #88 state-reset defect on congregation/session transitions was reproduced and corrected before the final candidate.
-- Targeted run `34519519936`: **success** against exact functional candidate `8cd39e48eeb2affc7a4a2b27a319879bdda05b19`; #88 architecture, policy edge behavior, affected Recall/Games edge regressions, and 390px Games browser regression all passed.
-- Full run `34519691125`: **success** against the same exact candidate; exact-SHA assertion, all accumulated architecture validators, all accumulated edge/security regressions, and the complete browser/mobile suite passed.
-- The functional verifier `verify/v3.61-content-moderation-functional-8cd39e4-20260911` was reset to the clean candidate after the green run.
+- #88 bookkeeping passed run `34520364924` and froze as `release/v3.61-content-moderation` at `dfbbb690c814a514714967f240262eec39b6e3ee`.
+- #91 targeted run `34521698454` failed only in the 390 px Content Review browser regression. Architecture, edge behavior, Recall, and moderation checks were green. The browser assertion expected a newly included item to remain visible under the default Pending filter, which contradicted the implemented filter contract.
+- The test was corrected without weakening acceptance: after save, the included item must leave Pending; selecting the Include filter must reveal the same saved state without reload.
+- Corrected targeted run `34522099170`: **success** against exact candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
+- Complete accumulated functional run `34522265269`: **success** against the same exact candidate; exact-SHA assertion, all accumulated architecture validators, all edge/security regressions, and the complete browser/mobile suite passed.
+- Functional verifier `verify/v3.62-content-review-functional-68516bd-20260911` was reset to the clean functional candidate after the green run.
 
-## Next major milestone: #88 bookkeeping and v3.61 freeze
+## Next major milestone: #91 bookkeeping and v3.62 freeze
 
-1. Finish all #88 bookkeeping files on `feature/v3-content-moderation`.
-2. Confirm the final live tip and treat that exact changed SHA as the bookkeeping candidate.
-3. Create an isolated one-shot verifier from that exact SHA with branch-specific `push:` plus exact checkout/assertion.
-4. Run the complete accumulated architecture, edge/security and browser/mobile suite, including inventory/status validation.
+1. Finish #91 bookkeeping from exact functional candidate `68516bdbdb651dd144270bd5bc615909967130a8`.
+2. Treat the final clean bookkeeping tip as a new exact candidate.
+3. Create an isolated one-shot bookkeeping verifier with branch-specific `push:` plus explicit checkout/assertion of that exact candidate.
+4. Run the complete accumulated architecture, edge/security, inventory/status, and browser/mobile suite.
 5. Correct only reproduced failures without weakening accumulated coverage.
-6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.61-content-moderation` at exactly that SHA.
+6. On green, reset the verifier to the clean bookkeeping SHA and freeze `release/v3.62-content-review` at exactly that SHA.
 7. Verify the release ref.
-8. Only then create `feature/v3-content-review` from v3.61 and implement #91.
-
-## #91 recovered boundary for the next milestone
-
-Read-only recovery of the retained Content Review workbench establishes a reviewer queue over quarantined questions and member reports, congregation selection, filtering/search, reviewer notes, decisions and report resolution. Existing schema/RLS authorizes platform owner/admin or congregation leader/pastor/admin review actions.
-
-The clean rebuild must not port standalone Supabase clients, direct localStorage congregation ownership, `MutationObserver` enhancement layers, `window.BQ*` registries or reload-driven state management. It must use v3 Session/Congregation/API/Router ownership. The real database contract allows only decision values `include`, `exempt`, and `remove`; a legacy editor path that attempted `delete` is invalid and must not be reproduced. #91 owns reviewer workflow only; broader admin console/operations remain #92/#93.
+8. Only then create the next feature branch from frozen v3.62 and begin #92 Admin console.
 
 ## Release rule
 
