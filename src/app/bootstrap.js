@@ -22,6 +22,7 @@ import { createCloudNotesService } from './cloud-notes.js';
 import { createCouplesFamilyService } from './couples-family.js';
 import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
+import { createMinistryHubService } from './ministry-hub.js';
 import { createPresenceService } from './presence.js';
 import { createTeamCenterService } from './team-center.js';
 import { createTrustedScoreEventsService } from './trusted-score-events.js';
@@ -60,6 +61,7 @@ import { couplesCloudPage } from '../features/couples-cloud/index.js';
 import { journeyGroupsPage } from '../features/journey-groups/index.js';
 import { encouragementsPage } from '../features/encouragements/index.js';
 import { communityPage } from '../features/community/index.js';
+import { ministryHubPage } from '../features/ministry-hub/index.js';
 import { teamCenterPage } from '../features/team-center/index.js';
 import { leaderboardsPage } from '../features/leaderboards/index.js';
 import { congregationRecognitionPage } from '../features/congregation-recognition/index.js';
@@ -108,6 +110,7 @@ function start(){
   const couplesFamily=createCouplesFamilyService({storage});
   const couplesCloud=createCouplesCloudService({api:api.couples,session});
   const congregation=createCongregationMembershipService({api,session});
+  const ministryHub=createMinistryHubService({congregation});
   const presence=createPresenceService({api:api.presence,session,congregation,store});
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
   const scoreEvents=createTrustedScoreEventsService({api:api.scoreEvents,session,congregation});
@@ -143,6 +146,7 @@ function start(){
     'journey-groups':()=>journeyGroupsPage({journeyGroups,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onEncouragements:()=>router.navigate('encouragements')}),
     encouragements:()=>encouragementsPage({encouragements,onBack:()=>router.navigate('journey-groups'),onAccount:()=>router.navigate('account')}),
     community:()=>communityPage({bridge:communityBridge,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
+    'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     leaderboards:()=>leaderboardsPage({leaderboards,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
@@ -150,7 +154,7 @@ function start(){
     reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform')}),transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup')}),
+    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
     congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
     account:()=>accountPage({account,session,onHome:()=>router.navigate('home')}),'not-found':()=>({title:'Not found',html:'<section class="bq-panel"><h1>Page not found</h1><p>Use the navigation below to return to BibleQuest.</p></section>'})
