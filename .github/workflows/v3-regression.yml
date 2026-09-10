@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3.54-psychometrics-bookkeeping-cc591-20260910
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: cc591aac786a91183eb5a7a5ad958ae7314a9577
+      - name: Assert exact Psychometrics bookkeeping candidate
+        run: test "$(git rev-parse HEAD)" = "cc591aac786a91183eb5a7a5ad958ae7314a9577"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
