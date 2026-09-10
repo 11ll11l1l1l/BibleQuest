@@ -14,6 +14,7 @@ Updated: 2026-09-11 JST
 - #93 exact functional candidate: `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`
 - #93 final targeted run: `34531588788` — green
 - #93 complete functional run: `34531751123` — green
+- Initial #93 bookkeeping run: `34532442314` — bookkeeping checks green, then failed a stale #92 lifecycle assertion; corrected candidate pending complete rerun.
 - #94 Reset/recovery is next only after v3.64 bookkeeping verification/freeze.
 - #15 Japanese furigana and Kids #38–40 remain intentionally deferred.
 
@@ -23,7 +24,7 @@ Updated: 2026-09-11 JST
 - `release/v3.61-content-moderation` — `dfbbb690c814a514714967f240262eec39b6e3ee`
 - `release/v3.62-content-review` — `b4a8826f549ec28193a0e1e4f7d71befe3e0a24c`
 - `release/v3.63-admin-console` — `8a759218edbd1c7f9f71591a9e6aa6cca70dc465`
-- `release/v3.64-admin-operations` — pending exact bookkeeping verification/freeze
+- `release/v3.64-admin-operations` — pending corrected exact bookkeeping verification/freeze
 
 ## Recent milestone sequence
 
@@ -32,7 +33,7 @@ Updated: 2026-09-11 JST
 | #88 Content moderation | Regression-tested | frozen v3.61; survived later complete suites |
 | #91 Content Review workbench | Regression-tested | frozen v3.62; survived #92/#93 complete suites |
 | #92 Admin console | Regression-tested | frozen v3.63; survived #93 complete suite `34531751123` |
-| #93 Admin operations | Verified | exact candidate `2e93349e...`; full run `34531751123` |
+| #93 Admin operations | Verified | exact functional candidate `2e93349e...`; full run `34531751123`; corrected bookkeeping gate pending |
 | #94 Reset/recovery page | Not started | waits for v3.64 freeze and retained-boundary recovery |
 
 ## #92 closeout chronology
@@ -55,7 +56,8 @@ Updated: 2026-09-11 JST
 9. Final targeted run `34531588788` passed against exact candidate `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
 10. Complete accumulated functional run `34531751123` passed exact-SHA assertion, all accumulated architecture validators, all edge/security regressions and the complete browser/mobile suite against that same candidate.
 11. Bookkeeping writer run `34532182063` first asserted the bookkeeping branch still equaled the green functional candidate, then promoted #92 to Regression-tested and #93 to Verified in the authoritative inventory.
-12. Current changed bookkeeping still requires its own complete exact-SHA gate before v3.64 can freeze.
+12. Initial bookkeeping gate `34532442314` passed exact-SHA and bookkeeping assertions, then failed because the retained #92 validator still hard-coded #93 as `Not started`. The validator now requires a valid #93 lifecycle state while retaining every #92/#93 ownership boundary.
+13. The corrected changed bookkeeping candidate requires a new complete exact-SHA gate before v3.64 can freeze.
 
 ## #94 read-only boundary reminder
 
@@ -63,11 +65,10 @@ Updated: 2026-09-11 JST
 
 ## Next sequence
 
-1. Finish #93 bookkeeping on `work/v3.64-admin-operations-bookkeeping-20260911`.
-2. Treat its final clean tip as a new exact candidate and fast-forward `feature/v3-admin-operations` only if that feature branch still equals exact green functional SHA `2e93349e686242e2a48d6ca0ee1a60ade8ca85d7`.
-3. Run full exact-SHA bookkeeping verification including inventory/status/timeline validation and the accumulated architecture/edge/browser suites.
-4. Freeze `release/v3.64-admin-operations` only if the exact bookkeeping SHA is green.
-5. Verify refs, then create the next feature branch from frozen v3.64 and recover #94 before implementation.
+1. Treat the corrected #93 bookkeeping tip as a new exact candidate and reconcile `feature/v3-admin-operations` only by safe fast-forward after checking live refs.
+2. Run full exact-SHA bookkeeping verification including inventory/status/timeline validation and the accumulated architecture/edge/browser suites.
+3. Freeze `release/v3.64-admin-operations` only if the corrected exact bookkeeping SHA is green.
+4. Verify refs, then create the next feature branch from frozen v3.64 and recover #94 before implementation.
 
 ## Release discipline
 
