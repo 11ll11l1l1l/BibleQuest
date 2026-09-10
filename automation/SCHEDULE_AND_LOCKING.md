@@ -1,22 +1,24 @@
 # Autonomous schedule and interference control
 
 ## Hourly cycle
-- A2 Contract Investigator: :28 JST
+- A1 Release Captain: :18 JST
+- A2 Contract Investigator: :28
 - A3 Architecture/Security: :38
 - A4 QA/Regression: :48
 - A5 Firewall/Triage: :58
-- A1 Release Captain: :08
 
-The rolling order is A2 -> A3 -> A4 -> A5 -> A1. Investigators prepare independent evidence, A5 filters it, and A1 writes only from current exact state.
+The rolling order is A1 -> A2 -> A3 -> A4 -> A5 -> next A1. A1 creates or advances an isolated candidate; the read-only investigators then inspect the latest exact state; A5 filters it; the following A1 pass consumes the resulting evidence. The 20-minute gap from A5 :58 to the next A1 :18 gives the firewall time to finish while still keeping the writer hourly.
 
 ## Productive utilization
 Do not optimize for commits/reports. Use execution time on the active exact state.
 
-- A2: active contract first, then at most next two likely dependencies.
+- A1: one canonical milestone at a time, but as many safe implementation/test/gate steps as the run permits.
+- A2: active contract/candidate first, then at most next two likely dependencies.
 - A3: active architecture/security first, especially HIGH-RISK trust boundaries, then at most next two.
 - A4: exact candidate audit first; otherwise active acceptance, then at most next two.
 - A5: exact-state reconciliation and concise TRIAGE; no manufactured work.
-- A1: one canonical milestone at a time, but as many safe implementation/test/gate steps as the run permits.
+
+Read-only agents may overlap A1 in wall-clock time. Their reports are SHA-bound and automatically stale if A1 advances the candidate after they inspected it, so overlap cannot authorize promotion of a different state.
 
 ## Writer serialization
 `automation/WRITE_LEASE.md` serializes A1 product/canonical writes.
@@ -26,6 +28,7 @@ Do not optimize for commits/reports. Use execution time on the active exact stat
 - A conflict means yield.
 - Normal exit releases FREE.
 - Lease expiry is only a takeover threshold; expired work must be reconciled before takeover.
+- If a previous A1 execution is still running when the next :18 execution begins, the lease prevents the new run from becoming a second writer.
 - Manual development should pause A1 or use a separate manual branch without concurrent promotion.
 
 ## Quarantine branch
