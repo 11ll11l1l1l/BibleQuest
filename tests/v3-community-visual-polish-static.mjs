@@ -14,9 +14,10 @@ assert(index.includes(polishLink),'Missing Community visual polish stylesheet li
 assert(index.indexOf(baseLink)<index.indexOf(polishLink),'Community visual polish must load after the established Community stylesheet.');
 
 assert(css.includes('Presentation only: no community membership, role, permission, privacy, persistence, backend, route, layout, responsive or accessibility ownership.'),'Community visual layer must declare its presentation-only boundary.');
-for(const selector of ['.bq-community-head h1{','.bq-community-grid button{','.bq-community-summary>div{','.bq-community .bq-panel{','.bq-community-row{','.bq-community-boundary{','.bq-community .bq-form-message[role="alert"]{']){
+for(const selector of ['.bq-community-head h1{','.bq-community-grid button{','.bq-community-summary>div{','.bq-community-summary>div span{','.bq-community .bq-panel{','.bq-community-row{','.bq-community-boundary{','.bq-community .bq-form-message[role="alert"]{']){
   assert(css.includes(selector),`Community visual layer is missing expected decorative surface ${selector}`);
 }
+assert(css.includes('.bq-community-summary>div span{\n  overflow-wrap:anywhere;\n}'),'Community summary labels must wrap inside the existing summary cells without changing grid geometry.');
 
 const forbidden=/\b(?:display|position|grid-template(?:-columns|-rows)?|grid-column|grid-row|flex(?:-direction|-basis|-grow|-shrink)?|width|height|min-width|min-height|max-width|max-height|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?|gap|overflow(?:-[xy])?|aspect-ratio|transform|transition|cursor|pointer-events|z-index|order|font(?:-size|-weight|-family)?|line-height|resize|touch-action|text-align)\s*:/i;
 assert(!forbidden.test(css),'Community visual polish must not introduce layout, typography geometry, motion or interaction declarations.');
