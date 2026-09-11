@@ -1,6 +1,7 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
 const CACHE_NAME=`${CACHE_PREFIX}v1`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
+const WARM_CONCURRENCY=8;
 
 const sameOriginInScope=url=>url.origin===self.location.origin&&url.href.startsWith(self.registration.scope);
 const isNetworkProbe=url=>url.searchParams.has('bq-net-probe');
@@ -11,18 +12,30 @@ async function put(cache,request,response){
   return response;
 }
 
+async function warmOne(cache,raw){
+  let url;
+  try{url=new URL(raw,self.registration.scope)}catch{return}
+  if(!sameOriginInScope(url)||isNetworkProbe(url))return;
+  try{
+    const request=new Request(url.href,{method:'GET',credentials:'same-origin',cache:'reload'});
+    const response=await fetch(request);
+    await put(cache,request,response);
+  }catch{}
+}
+
 async function warmShell(urls){
   const cache=await caches.open(CACHE_NAME);
-  for(const raw of Array.isArray(urls)?urls:[]){
-    let url;
-    try{url=new URL(raw,self.registration.scope)}catch{continue}
-    if(!sameOriginInScope(url)||isNetworkProbe(url))continue;
-    try{
-      const request=new Request(url.href,{method:'GET',credentials:'same-origin',cache:'reload'});
-      const response=await fetch(request);
-      await put(cache,request,response);
-    }catch{}
-  }
+  const queue=Array.isArray(urls)?urls:[];
+  if(!queue.length)return;
+  let cursor=0;
+  const drain=async()=>{
+    while(cursor<queue.length){
+      const raw=queue[cursor++];
+      await warmOne(cache,raw);
+    }
+  };
+  const workers=Array.from({length:Math.min(WARM_CONCURRENCY,queue.length)},()=>drain());
+  await Promise.all(workers);
 }
 
 self.addEventListener('install',event=>{
