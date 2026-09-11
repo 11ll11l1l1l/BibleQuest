@@ -7,19 +7,22 @@ This file is the authoritative parity ledger for the rebuild.
 - **Regression-tested:** 97
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 2
+- **Not started in active release scope:** 0
+- **Retired from v3 release scope:** 2
+- **Applicable v3 release capabilities:** 98
 - **Total old-version capabilities:** 100
 
 ## Status definitions
 
-- **Not started** — no clean v3 implementation exists.
+- **Not started** — no clean v3 implementation exists and the capability remains in the active release scope.
 - **Implemented** — clean v3 code exists behind the defined architecture, but the complete acceptance workflow has not yet passed verification.
 - **Verified** — the feature's acceptance workflow has passed in the v3 browser regression suite.
 - **Regression-tested** — after the feature was verified, at least one later feature milestone ran the entire v3 suite and the feature still passed.
+- **Retired from v3 release scope** — an old-version capability intentionally excluded from the current v3 release by explicit user product decision. It is not claimed implemented or verified and may be reopened later as optional expansion work.
 
 `classic.html`, old standalone pages, or retained old source files are references only. They do **not** satisfy v3 parity.
 
-Priority note (2026-09-11 JST): #15 Japanese furigana is now verified after exact-SHA targeted and complete accumulated gates. #38 Kids Memory Match has rolled forward to Regression-tested. #40 Kids Bible Who Am I remains the next reopened parity item. #39 Hiragana Match remains explicitly deferred.
+Scope decision (2026-09-11 JST): the current verified Kids game set is accepted for the v3 release. #39 Hiragana Match and #40 Kids Bible Who Am I are retired from the active v3 release scope and no longer block release parity. Future Kids/Kana additions must follow `KIDS_GAMES_EXTENSION_V3.md`. #36 Character Detective / Who Am I and #38 Kids Memory Match remain part of the verified current Games set.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
@@ -61,8 +64,8 @@ Priority note (2026-09-11 JST): #15 Japanese furigana is now verified after exac
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
 | 38 | Kids Memory Match | Yes | Clean | Regression-tested | Memory Meadow Games ownership; <420px 6 pairs/3 columns and >=420px 8 pairs/4 columns; 350ms match/650ms mismatch lock; replay/leave cleanup; unique round identity; stars + coins reward through Progress with zero XP; complete accumulated browser/mobile verification |
-| 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
-| 40 | Kids Bible Who Am I | Yes | Clean | Not started | priority reopened; recover exact old-version Kids Bible Who Am I contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
+| 39 | Hiragana Match | Yes | Clean | Retired from v3 release scope | optional future game only; if reopened, use `KIDS_GAMES_EXTENSION_V3.md` and full rebuild-and-verify gates |
+| 40 | Kids Bible Who Am I | Yes | Clean | Retired from v3 release scope | optional future game only; current #36 Character Detective / Who Am I is sufficient for this release; if reopened, recover the desired Kids contract and use `KIDS_GAMES_EXTENSION_V3.md` |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Regression-tested | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Regression-tested | create/join/leave; reconnect; no stale room state |
@@ -126,6 +129,6 @@ Priority note (2026-09-11 JST): #15 Japanese furigana is now verified after exac
 
 ## Parity completion rule
 
-BibleQuest v3 reaches feature parity only when every applicable row is **Verified** or **Regression-tested**. A row is not complete because a page renders, an old module still exists, or a compatibility page can be opened.
+BibleQuest v3 reaches release-scope feature parity when every **applicable** row is **Verified** or **Regression-tested**. Rows explicitly marked **Retired from v3 release scope** are historical inventory only: they are neither counted as complete nor counted as missing from the current release.
 
-Rows explicitly deferred by user priority remain visible as **Not started** and are excluded from the active implementation sequence until explicitly reopened. They are not silently counted as complete.
+By the explicit 2026-09-11 product decision, the applicable v3 release scope is 98 capabilities and is **98/98 complete**. Future reopening of #39, #40, or any new Kids game is post-release expansion work governed by `KIDS_GAMES_EXTENSION_V3.md` and does not retroactively invalidate the verified v3.71 baseline.
