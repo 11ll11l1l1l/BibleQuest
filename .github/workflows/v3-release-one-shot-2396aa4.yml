@@ -1,0 +1,115 @@
+name: BibleQuest v3 release verifier 2396aa4
+
+on:
+  push:
+    branches:
+      - verify/v3-release-20260911-2396aa4
+
+jobs:
+  verify-exact-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact release candidate
+        uses: actions/checkout@v4
+        with:
+          ref: 2396aa4ef2b5166a1de83bae7b4ca72af844b7d0
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm exact candidate identity and static diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "2396aa4ef2b5166a1de83bae7b4ca72af844b7d0"
+          test -z "$(git status --porcelain)"
+          git diff --check c631bea8d5177a9a2ff68139cb104b6fbf26015b 2396aa4ef2b5166a1de83bae7b4ca72af844b7d0
+      - name: Run Cloudflare deployment gate
+        run: bash build.sh
+      - name: Run complete accumulated v3 architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r script; do
+            echo "::group::$script"
+            node "$script"
+            echo "::endgroup::"
+            count=$((count+1))
+          done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Run complete v3 edge and security/static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r testfile; do
+            echo "::group::$testfile"
+            node "$testfile"
+            echo "::endgroup::"
+            count=$((count+1))
+          done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for testfile in \
+            tests/v3-kids-memory-architecture.mjs \
+            tests/v3-kids-memory-ui-contract.mjs \
+            tests/v3-kids-memory-progress-integration.mjs \
+            tests/v3-kids-memory-round-id.mjs \
+            tests/v3-kids-memory-exit.mjs \
+            tests/v3-kids-memory-reward-curve.mjs \
+            tests/v3-kids-memory-api-surface.mjs \
+            tests/v3-kids-memory-invalid-input.mjs \
+            tests/v3-kids-memory-immutability.mjs \
+            tests/v3-kids-memory-no-xp.mjs \
+            tests/v3-kids-memory-width-contract.mjs \
+            tests/v3-kids-memory-delays.mjs; do
+            if [ -f "$testfile" ]; then
+              echo "::group::$testfile"
+              node "$testfile"
+              echo "::endgroup::"
+              count=$((count+1))
+            fi
+          done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start exact candidate locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v3-http.log 2>&1 &
+          echo $! > /tmp/biblequest-v3-http.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v3-http.log
+          exit 1
+      - name: Run complete accumulated Playwright browser/mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r testfile; do
+            echo "::group::$testfile"
+            timeout 240s node "$testfile"
+            echo "::endgroup::"
+            count=$((count+1))
+          done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then
+            echo "::group::tests/v3-kids-memory-browser.mjs"
+            timeout 240s node tests/v3-kids-memory-browser.mjs
+            echo "::endgroup::"
+            count=$((count+1))
+          fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Confirm PWA offline accessibility and core release coverage executed
+        run: |
+          for f in \
+            tests/v3-pwa-install-smoke.mjs \
+            tests/v3-offline-shell-smoke.mjs \
+            tests/v3-offline-bible-packs-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-shell-smoke.mjs \
+            tests/v3-reader-smoke.mjs \
+            tests/v3-games-smoke.mjs \
+            tests/v3-transform-engine-smoke.mjs; do test -f "$f"; done
+          echo "PWA/offline/accessibility/core release smoke files were present in the completed browser/mobile set."
