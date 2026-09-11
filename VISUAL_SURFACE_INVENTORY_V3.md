@@ -1,7 +1,8 @@
 # BibleQuest v3 Visual Surface Inventory
 
-Status: post-release visual-polish planning ledger
+Status: post-release visual-polish planning ledger; classified replacement-level visual phase completed through tranche 16
 Baseline visual branch: `postrelease/v3-visual-polish` at `211852b3efbe052b1f4f63ba849a86aba196d6f1`
+Current exact-green cumulative visual product: `postrelease/v3-visual-shell-tranche16` product SHA `406c34dcdf904b7483bf4381be774a908738e60c`
 Production rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
 This inventory applies `VISUAL_REPLACEMENT_CONTRACT_V3.md`. It classifies visual surfaces so artwork and theme changes remain replacement-level rather than becoming a redesign or behavior change.
@@ -35,7 +36,17 @@ This inventory applies `VISUAL_REPLACEMENT_CONTRACT_V3.md`. It classifies visual
 | PWA/offline/service-worker logic | `offline-shell-sw.js`, `src/app/offline-shell.js`, install owner | D except file-backed icon assets | icon assets only when manifest contract is preserved | cache ownership, registration, offline behavior, routing |
 | Supabase/API/storage/security | `src/core/api.js`, storage/session/backend contracts | D | none | data, RLS, permissions, APIs, persistence |
 
-## Safe tranche order
+## Completed cumulative visual line
+
+The classified replacement-level visual program has been executed cumulatively through tranche 16. `VISUAL_POLISH_PROGRESS_V3.md` is the evidence ledger for exact product SHAs and verifier runs.
+
+Completed presentation families include Home/hero, Games, Reader, Bible World, Progress/Daily Journey, PWA icons, Transform, Study/Deep Questions/Story/Wisdom, Account/Tutorial, Context/Japanese/source presentation, Notes, Couples, Community, Media/Recordings, Adaptive/Open Review, Accessibility, and the global shell/theme.
+
+The current exact-green visual product is `406c34dcdf904b7483bf4381be774a908738e60c`. Its verifier run `34585018541`, job `103217107423`, passed exact-SHA/diff hygiene, the Cloudflare deployment gate, 16 accumulated visual contracts, 53 architecture validators, 86 edge/security/static regressions, 68 browser/mobile regressions plus Kids Memory browser acceptance, and dedicated desktop/mobile shell containment. This visual state has not been promoted to production.
+
+## Historical safe tranche order
+
+The initial planning order was:
 
 1. **Games decorative chrome** — CSS-only shared launcher/question/result surface treatment; preserve all layout and gameplay contracts.
 2. **Reader reading-surface polish** — CSS-only, with Reader/mobile/accessibility verification.
@@ -43,9 +54,13 @@ This inventory applies `VISUAL_REPLACEMENT_CONTRACT_V3.md`. It classifies visual
 4. **Progress/Daily Journey presentation polish** — decorative surfaces only; no reward/state changes.
 5. **PWA/app icon refresh** — direct asset replacement only after confirming manifest dimensions and maskable semantics.
 
+Those items and the later classified A/B presentation families have now been completed on the cumulative post-release visual line.
+
 ## Explicitly out of scope for visual polish
 
 Do not move navigation, change route names, create a new layout system, alter card/grid breakpoints for aesthetic reasons, add/remove controls, change gameplay rules, modify rewards or scoring, change Reader Scripture/source behavior, modify persistence/storage/API/Supabase contracts, or alter PWA/service-worker ownership.
+
+The remaining Class D areas are not visual-polish backlog. Work in those areas requires a separately authorized product-development objective with its own architecture owner, acceptance contract, and rebuild-and-verify evidence.
 
 ## Verification rule
 
