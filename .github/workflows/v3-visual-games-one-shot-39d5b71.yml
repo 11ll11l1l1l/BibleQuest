@@ -1,0 +1,85 @@
+name: BibleQuest v3 Games visual verifier 39d5b71
+on:
+  push:
+    branches: [verify/v3-visual-games-39d5b71]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 39d5b71fc6bd2f54157c121d0e77b988eba73390
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "39d5b71fc6bd2f54157c121d0e77b988eba73390"
+          test -z "$(git status --porcelain)"
+          git diff --check 211852b3efbe052b1f4f63ba849a86aba196d6f1 39d5b71fc6bd2f54157c121d0e77b988eba73390
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Games visual static contract
+        run: node tests/v3-games-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Focused Games browser regressions
+        run: |
+          node tests/v3-shell-smoke.mjs
+          node tests/v3-games-smoke.mjs
+          node tests/v3-kids-memory-browser.mjs
+          node tests/v3-accessibility-smoke.mjs
+      - name: Games visual desktop and mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:800},{width:390,height:844}]){
+              const page=await browser.newPage({viewport});
+              await page.goto('http://127.0.0.1:4173/#/games',{waitUntil:'networkidle'});
+              await page.locator('[data-bq-shell="v3"]').waitFor();
+              await page.locator('.bq-game-launcher').waitFor();
+              const result=await page.evaluate(()=>{
+                const card=document.querySelector('.bq-game-card');
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/games-visual-polish.css');
+                const style=card?getComputedStyle(card):null;
+                return {
+                  polishLoaded:Boolean(polish),
+                  backgroundImage:style?.backgroundImage||'',
+                  boxShadow:style?.boxShadow||'',
+                  viewport:document.documentElement.clientWidth,
+                  scrollWidth:document.documentElement.scrollWidth
+                };
+              });
+              if(!result.polishLoaded)throw new Error(`Games visual stylesheet missing at ${viewport.width}px`);
+              if(!result.backgroundImage||result.backgroundImage==='none')throw new Error(`Games visual background did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+              if(!result.boxShadow||result.boxShadow==='none')throw new Error(`Games visual shadow did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+              if(result.scrollWidth>result.viewport+1)throw new Error(`Horizontal overflow at ${viewport.width}px: ${JSON.stringify(result)}`);
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Games visual desktop/mobile containment passed.');
+          EOF
