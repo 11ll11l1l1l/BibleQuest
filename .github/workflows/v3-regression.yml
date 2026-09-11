@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v3-calendar-functional-d9364-20260911
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
