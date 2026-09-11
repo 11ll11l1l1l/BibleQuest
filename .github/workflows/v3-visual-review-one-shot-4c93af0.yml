@@ -1,0 +1,108 @@
+name: BibleQuest v3 Review visual verifier 4c93af0
+on:
+  push:
+    branches: [verify/v3-visual-review-4c93af0]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 4c93af06ebbf7069b8ae587f77479997f77f2b9b
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "4c93af06ebbf7069b8ae587f77479997f77f2b9b"
+          test -z "$(git status --porcelain)"
+          git diff --check d3e7de3dae25d2958fe76ef7a5d1e8919525c624 4c93af06ebbf7069b8ae587f77479997f77f2b9b
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+          node tests/v3-couples-visual-polish-static.mjs
+          node tests/v3-community-visual-polish-static.mjs
+          node tests/v3-media-visual-polish-static.mjs
+          node tests/v3-review-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Review visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const page=await browser.newPage(viewport.width<=390?{viewport,isMobile:true,hasTouch:true}:{viewport});
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.locator('[data-route-link="learn"]').click();
+              await page.locator('[data-open-adaptive-learning]').waitFor();
+              await page.locator('[data-open-adaptive-learning]').click();
+              await page.locator('[data-adaptive-start]').waitFor();
+              const adaptive=await page.evaluate(()=>{
+                const owner=document.querySelector('[data-adaptive-page]');
+                const card=owner?.querySelector('.bq-adaptive-metrics article');
+                const style=card?getComputedStyle(card):null;
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/review-visual-polish.css');
+                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',client:owner?.clientWidth||0,scroll:owner?.scrollWidth||0};
+              });
+              if(!adaptive.polishLoaded||!adaptive.backgroundImage||adaptive.backgroundImage==='none'||!adaptive.boxShadow||adaptive.boxShadow==='none')throw new Error(`Adaptive visual polish missing at ${viewport.width}px: ${JSON.stringify(adaptive)}`);
+              if(adaptive.scroll>adaptive.client+1)throw new Error(`Adaptive owned-surface overflow at ${viewport.width}px: ${JSON.stringify(adaptive)}`);
+              await page.locator('[data-route-link="learn"]').click();
+              await page.locator('[data-open-open-review]').waitFor();
+              await page.locator('[data-open-open-review]').click();
+              await page.locator('[data-open-review-start]').waitFor();
+              const review=await page.evaluate(()=>{
+                const owner=document.querySelector('[data-open-review-view]');
+                const card=owner?.querySelector('.bq-open-review-metrics>div');
+                const style=card?getComputedStyle(card):null;
+                return {backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',client:owner?.clientWidth||0,scroll:owner?.scrollWidth||0};
+              });
+              if(!review.backgroundImage||review.backgroundImage==='none'||!review.boxShadow||review.boxShadow==='none')throw new Error(`Open Review visual polish missing at ${viewport.width}px: ${JSON.stringify(review)}`);
+              if(review.scroll>review.client+1)throw new Error(`Open Review owned-surface overflow at ${viewport.width}px: ${JSON.stringify(review)}`);
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Adaptive Learning and Open Review visual desktop/mobile containment passed.');
+          EOF
