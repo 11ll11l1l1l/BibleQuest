@@ -70,21 +70,32 @@ jobs:
           node --input-type=module <<'EOF'
           import {chromium} from 'playwright';
           const browser=await chromium.launch({headless:true});
+          const containment=()=>{
+            const owner=document.querySelector('[data-community-view]');
+            if(!owner)return {missing:true};
+            const ownerRect=owner.getBoundingClientRect();
+            const offenders=[...owner.querySelectorAll('*')].map(node=>{
+              const rect=node.getBoundingClientRect();
+              return {tag:node.tagName.toLowerCase(),className:typeof node.className==='string'?node.className:'',left:rect.left,right:rect.right,width:rect.width};
+            }).filter(item=>item.left<ownerRect.left-1||item.right>ownerRect.right+1);
+            return {missing:false,clientWidth:owner.clientWidth,scrollWidth:owner.scrollWidth,left:ownerRect.left,right:ownerRect.right,offenders:offenders.slice(0,10)};
+          };
           try{
             for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
-              const page=await browser.newPage({viewport});
+              const page=await browser.newPage(viewport.width<=390?{viewport,isMobile:true,hasTouch:true}:{viewport});
               await page.goto('http://127.0.0.1:4173/#/community',{waitUntil:'networkidle'});
               await page.locator('[data-community-view]').waitFor();
-              const signedOut=await page.evaluate(()=>{
-                const button=document.querySelector('.bq-community-grid button');
+              const signedOut=await page.evaluate(containmentFn=>{
+                const button=document.querySelector('[data-community-view] .bq-community-grid button');
                 const style=button?getComputedStyle(button):null;
                 const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/community-visual-polish.css');
-                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
-              });
+                const ownerMetrics=(0,eval)(`(${containmentFn})`)();
+                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',ownerMetrics};
+              },containment.toString());
               if(!signedOut.polishLoaded)throw new Error(`Community visual stylesheet missing at ${viewport.width}px`);
               if(!signedOut.backgroundImage||signedOut.backgroundImage==='none')throw new Error(`Community action-card visual background missing at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
               if(!signedOut.boxShadow||signedOut.boxShadow==='none')throw new Error(`Community action-card visual shadow missing at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
-              if(signedOut.scrollWidth>signedOut.viewport+1)throw new Error(`Community signed-out horizontal overflow at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
+              if(signedOut.ownerMetrics.missing||signedOut.ownerMetrics.scrollWidth>signedOut.ownerMetrics.clientWidth+1||signedOut.ownerMetrics.offenders.length)throw new Error(`Community signed-out owned-surface overflow at ${viewport.width}px: ${JSON.stringify(signedOut.ownerMetrics)}`);
 
               await page.evaluate(async()=>{
                 const {communityPage}=await import('/src/features/community/index.js');
@@ -98,17 +109,18 @@ jobs:
               });
               await page.locator('[aria-label="Community connection summary"]').waitFor();
               await page.locator('.bq-community-boundary').waitFor();
-              const ready=await page.evaluate(()=>{
-                const summary=document.querySelector('.bq-community-summary>div');
-                const boundary=document.querySelector('.bq-community-boundary');
+              const ready=await page.evaluate(containmentFn=>{
+                const summary=document.querySelector('[data-community-view] .bq-community-summary>div');
+                const boundary=document.querySelector('[data-community-view] .bq-community-boundary');
                 const summaryStyle=summary?getComputedStyle(summary):null;
                 const boundaryStyle=boundary?getComputedStyle(boundary):null;
-                return {summaryBackground:summaryStyle?.backgroundImage||'',summaryShadow:summaryStyle?.boxShadow||'',boundaryBackground:boundaryStyle?.backgroundImage||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
-              });
+                const ownerMetrics=(0,eval)(`(${containmentFn})`)();
+                return {summaryBackground:summaryStyle?.backgroundImage||'',summaryShadow:summaryStyle?.boxShadow||'',boundaryBackground:boundaryStyle?.backgroundImage||'',ownerMetrics};
+              },containment.toString());
               if(!ready.summaryBackground||ready.summaryBackground==='none')throw new Error(`Community summary visual background missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
               if(!ready.summaryShadow||ready.summaryShadow==='none')throw new Error(`Community summary visual shadow missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
               if(!ready.boundaryBackground||ready.boundaryBackground==='none')throw new Error(`Community privacy-boundary visual treatment missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
-              if(ready.scrollWidth>ready.viewport+1)throw new Error(`Community ready-view horizontal overflow at ${viewport.width}px: ${JSON.stringify(ready)}`);
+              if(ready.ownerMetrics.missing||ready.ownerMetrics.scrollWidth>ready.ownerMetrics.clientWidth+1||ready.ownerMetrics.offenders.length)throw new Error(`Community ready-view owned-surface overflow at ${viewport.width}px: ${JSON.stringify(ready.ownerMetrics)}`);
               await page.evaluate(()=>window.__bqCommunityCleanup?.());
               await page.close();
             }
