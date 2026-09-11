@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-visual-tranche18-functional-524ad-20260911
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,12 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 524adb11cd7e5ad877b5dcdb8f5c28373ad84932
+      - name: Assert exact visual tranche 18 functional candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "524adb11cd7e5ad877b5dcdb8f5c28373ad84932" ]; then echo "SHA mismatch: expected 524adb11cd7e5ad877b5dcdb8f5c28373ad84932, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
