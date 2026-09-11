@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-calendar-functional-d9364-20260911
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,12 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: d9364df5f17de2853beaee6a90be44614ca11c3b
+      - name: Assert exact Calendar functional candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "d9364df5f17de2853beaee6a90be44614ca11c3b" ]; then echo "SHA mismatch: expected d9364df5f17de2853beaee6a90be44614ca11c3b, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
