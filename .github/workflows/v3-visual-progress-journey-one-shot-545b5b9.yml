@@ -1,0 +1,95 @@
+name: BibleQuest v3 Progress Daily visual verifier 545b5b9
+on:
+  push:
+    branches: [verify/v3-visual-progress-journey-545b5b9]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 545b5b98d88ca04001d3675317c37cbcd3306955
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "545b5b98d88ca04001d3675317c37cbcd3306955"
+          test -z "$(git status --porcelain)"
+          git diff --check 4f977bb7e536939cf181f10dae341abbaea3734d 545b5b98d88ca04001d3675317c37cbcd3306955
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Focused accumulated browser regressions
+        run: |
+          node tests/v3-shell-smoke.mjs
+          node tests/v3-reader-smoke.mjs
+          node tests/v3-games-smoke.mjs
+          node tests/v3-kids-memory-browser.mjs
+          node tests/v3-bible-world-smoke.mjs
+          node tests/v3-bible-world-artwork-smoke.mjs
+          node tests/v3-progress-smoke.mjs
+          node tests/v3-daily-mission-smoke.mjs
+          node tests/v3-accessibility-smoke.mjs
+          node tests/v3-pwa-install-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-offline-bible-packs-smoke.mjs
+      - name: Progress and Daily visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              for(const route of ['grow','mission']){
+                const page=await browser.newPage({viewport});
+                await page.goto(`http://127.0.0.1:4173/#/${route}`,{waitUntil:'networkidle'});
+                if(route==='grow')await page.locator('[data-progress-page]').waitFor();
+                else await page.locator('[data-daily-page]').waitFor();
+                const result=await page.evaluate(route=>{
+                  const target=route==='grow'?document.querySelector('.bq-progress-stats>div'):document.querySelector('.bq-daily-card');
+                  const expected=route==='grow'?'src/ui/progress-visual-polish.css':'src/ui/daily-mission-visual-polish.css';
+                  const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')===expected);
+                  const style=target?getComputedStyle(target):null;
+                  return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+                },route);
+                if(!result.polishLoaded)throw new Error(`${route} visual stylesheet missing at ${viewport.width}px`);
+                if(!result.backgroundImage||result.backgroundImage==='none')throw new Error(`${route} visual background did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+                if(!result.boxShadow||result.boxShadow==='none')throw new Error(`${route} visual shadow did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+                if(result.scrollWidth>result.viewport+1)throw new Error(`${route} horizontal overflow at ${viewport.width}px: ${JSON.stringify(result)}`);
+                await page.close();
+              }
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Progress + Daily visual desktop/mobile containment passed.');
+          EOF
