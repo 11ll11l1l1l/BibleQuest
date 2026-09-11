@@ -1,0 +1,70 @@
+/* BibleQuest v3 visual replacement tranche 14.
+   Presentation only: no adaptive scheduling, mastery, scoring, review queue,
+   answer semantics, routing, persistence, responsive or accessibility ownership. */
+
+.bq-adaptive-head h1,
+.bq-adaptive-session>h1,
+.bq-open-review h1{
+  color:#263f34;
+}
+
+.bq-adaptive-metrics article,
+.bq-open-review-metrics>div{
+  border-color:rgba(56,88,70,.13);
+  background:radial-gradient(circle at 88% 12%,rgba(221,235,224,.62) 0%,rgba(221,235,224,0) 42%),linear-gradient(180deg,#fff 0%,#f8fbf7 100%);
+  box-shadow:0 6px 18px rgba(45,69,55,.03),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-adaptive-metrics b,
+.bq-open-review-metrics b{
+  color:#314a3a;
+}
+
+.bq-adaptive-rules>span{
+  background:linear-gradient(180deg,#eef5ec 0%,#e2ede0 100%);
+  color:#315f49;
+  box-shadow:inset 0 0 0 1px rgba(56,88,70,.08);
+}
+
+.bq-adaptive-feedback,
+.bq-open-review-answer{
+  border-color:rgba(56,88,70,.12);
+  background:radial-gradient(circle at 92% 8%,rgba(223,237,226,.5) 0%,rgba(223,237,226,0) 40%),linear-gradient(180deg,#fbfdf9 0%,#f2f7f0 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 5px 16px rgba(45,69,55,.025);
+}
+
+.bq-adaptive-feedback.is-review{
+  background:radial-gradient(circle at 92% 8%,rgba(240,231,209,.48) 0%,rgba(240,231,209,0) 40%),linear-gradient(180deg,#fffdf8 0%,#f8f3e8 100%);
+  border-color:rgba(111,89,55,.12);
+}
+
+.bq-open-review-progress{
+  background:linear-gradient(180deg,#edf0e9 0%,#e4e9e1 100%);
+  box-shadow:inset 0 1px 2px rgba(50,70,56,.08);
+}
+
+.bq-open-review-progress i{
+  color:#35664f;
+}
+
+.bq-open-review-error{
+  border-color:rgba(139,62,54,.24);
+  background:linear-gradient(180deg,#fff9f7 0%,#fff1ed 100%);
+  color:#5d3731;
+  box-shadow:inset 0 0 0 1px rgba(139,62,54,.02);
+}
+
+@media(prefers-contrast:more){
+  .bq-adaptive-metrics article,
+  .bq-open-review-metrics>div,
+  .bq-adaptive-feedback,
+  .bq-open-review-answer{
+    box-shadow:none;
+    border-color:rgba(34,58,43,.4);
+  }
+
+  .bq-open-review-error{
+    border-color:rgba(116,36,31,.48);
+    color:#4b2723;
+  }
+}
