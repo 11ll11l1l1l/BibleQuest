@@ -6,7 +6,7 @@ const ui=fs.readFileSync('src/features/games/index.js','utf8');
 assert.match(ui,/data-kids-bible-card/,'Kids Bible launcher card is missing.');
 assert.match(ui,/data-kids-bible-open/,'Kids Bible launcher action is missing.');
 assert.match(ui,/Kids Bible Who Am I\?/,'Kids context is not visible in the flattened Games launcher.');
-assert.match(ui,/Three clues\. One Bible hero\. Can you guess\?/,'Historical Kids Bible description changed.');
+assert.match(ui,/Easy character clues for family play\./,'Historical Kids Bible description changed.');
 assert.match(ui,/if\(target\.closest\('\[data-kids-bible-open\]'\)\)\{render\(games\.start\('character-detective'\)\);return\}/,'Kids Bible action must enter the existing Character Detective lifecycle.');
 
 const events=[];
