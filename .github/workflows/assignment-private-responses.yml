@@ -1,0 +1,40 @@
+name: Assignment private responses
+
+on:
+  push:
+    branches:
+      - feature/v3-assignment-private-responses
+  pull_request:
+    paths:
+      - 'src/app/assignments.js'
+      - 'src/core/assignment-responses.js'
+      - 'src/features/assignments/index.js'
+      - 'supabase/migrations/*assignment_response_presence.sql'
+      - 'tests/v3-assignment-private-responses.mjs'
+      - 'tests/v3-assignments-edge.mjs'
+      - '.github/workflows/assignment-private-responses.yml'
+
+jobs:
+  assignment-response-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax check assignment owners
+        run: |
+          node --check src/core/assignment-responses.js
+          node --check src/app/assignments.js
+          node --check src/features/assignments/index.js
+          node --check tests/v3-assignment-private-responses.mjs
+      - name: Run existing assignment regression
+        run: node tests/v3-assignments-edge.mjs
+      - name: Run private response privacy regression
+        run: node tests/v3-assignment-private-responses.mjs
+      - name: Run assignment architecture validators
+        run: |
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-advanced-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
