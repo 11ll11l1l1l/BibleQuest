@@ -22,7 +22,6 @@ replace_once('src/app/bootstrap.js','reader:()=>readerPage({reader,vocabulary})'
 
 replace_once('scripts/validate-v3-japanese-vocabulary.mjs',"'readerPage({ reader, vocabulary = null })'","'readerPage({ reader, vocabulary = null, furigana = null })'")
 replace_once('scripts/validate-v3-japanese-vocabulary.mjs',"'readerPage({reader,vocabulary})'","'readerPage({reader,vocabulary,furigana})'")
-replace_once('scripts/validate-v3-japanese-vocabulary.mjs','skipped furigana/tokenizer runtime','furigana tokenizer runtime')
 
 arch=Path('ARCHITECTURE_V3.md').read_text()
 if '## Japanese furigana (#15)' not in arch:
