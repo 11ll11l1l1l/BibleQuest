@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts.
+Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts, including a fresh exact-SHA release verifier rerun completed at 15:34 JST.
 
 For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train; its production success condition has been satisfied.
 
@@ -9,7 +9,7 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - Repo: `11ll11l1l1l/BibleQuest`.
 - Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - Frozen rollback/reference branch: `release/v3-production-20260911-r3` at the same SHA.
-- Exact release verifier: run `34560522189`; fresh attempt 5 job `103167094939` concluded **success** on the exact deployed product SHA.
+- Exact release verifier: run `34560522189`; fresh attempt 6 job `103170687427` concluded **success** on the exact deployed product SHA.
 - Exact-SHA/diff hygiene: passed.
 - Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all production-entry/runtime ownership guards passed.
 - Accumulated v3 architecture validators: 53 executed, all passed.
@@ -21,7 +21,7 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 ## Fresh release revalidation in the current release-control cycle
 
 - The unchanged r3 product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` was re-run through the exact release verifier rather than relying only on older PASS evidence.
-- Run `34560522189`, attempt 5, job `103167094939` passed exact-SHA/diff hygiene, `build.sh` / Cloudflare deployment gate, 53 accumulated architecture validators, 86 edge/security/static regressions, 68 Playwright browser/mobile regressions, and release-critical PWA/offline/accessibility/core-browser coverage.
+- Run `34560522189`, attempt 6, job `103170687427` passed exact-SHA/diff hygiene, `build.sh` / Cloudflare deployment gate, 53 accumulated architecture validators, 86 edge/security/static regressions, 68 Playwright browser/mobile regressions, and release-critical PWA/offline/accessibility/core-browser coverage. The workflow checked out the exact detached SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`; no product branch was changed by the rerun.
 - Production-live run `34560806166`, attempt 4, job `103167519896` re-confirmed that both Cloudflare hosts byte-match the frozen r3 release product files.
 - In that same attempt, the canonical host freshly passed shell/account/navigation, Reader, Games, Transform, Accessibility, and PWA install.
 - Attempt 4 then failed at the legacy Offline Shell test's readiness polling race with `Offline shell cache did not reach late shell modules before offline transition`. Later workflow steps were skipped and were not claimed from that attempt.
@@ -39,6 +39,7 @@ Compatibility host: `https://biblequest-7th.pages.dev/`
 - Both hosts serve the frozen r3 product files used for identity verification; this was freshly re-confirmed by production attempt 4 and corrected production verifier attempt 2.
 - Fresh canonical browser evidence: Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install passed in run `34560806166` attempt 4 / job `103167519896` before the legacy test race interrupted the workflow.
 - Fresh corrected offline evidence: canonical Offline Shell and Offline Bible Packs plus compatibility Offline Shell and basic browser navigation all passed in run `34567697491` attempt 2 / job `103167200525`.
+- Exact deployed-product verification was independently rerun again in run `34560522189` attempt 6 / job `103170687427` and passed the complete accumulated release suite without changing the product SHA.
 - Historical same-product-SHA production-live evidence remains available, but current status should cite the fresh split evidence above rather than pretending the legacy production workflow passed steps it skipped.
 - Production Supabase/data was not changed for the release or the fresh revalidation.
 - No physical Android/PWA result is implied by these automated browser checks.
