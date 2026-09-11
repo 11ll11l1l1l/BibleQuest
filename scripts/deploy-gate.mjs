@@ -44,12 +44,16 @@ for(const entry of entries){
 }
 console.log('✓ Production entry-point assets exist');
 
-const indexRefs=localRefs(read('index.html')).filter(ref=>/\.(?:js|css|webmanifest|svg|webp)$/i.test(ref));
-const sw=read('sw.js');
-for(const ref of indexRefs){
-  if(!sw.includes(`'./${ref}'`)&&!sw.includes(`"./${ref}"`))fail(`PWA shell missing index asset: ${ref}`);
+if(!exists('offline-shell-sw.js')||!exists('src/app/offline-shell.js'))fail('Missing v3 offline-shell owner or worker');
+const offlineShellOwner=read('src/app/offline-shell.js');
+const offlineShellWorker=read('offline-shell-sw.js');
+for(const contract of ["register('offline-shell-sw.js',{scope:'./'})",'BIBLEQUEST_WARM_SHELL',"getEntriesByType?.('resource')"]){
+  if(!offlineShellOwner.includes(contract))fail(`v3 offline-shell owner missing contract: ${contract}`);
 }
-console.log('✓ PWA shell covers Home assets');
+for(const contract of ['BIBLEQUEST_WARM_SHELL',"addEventListener('fetch'","request.mode==='navigate'",'SHELL_DESTINATIONS']){
+  if(!offlineShellWorker.includes(contract))fail(`v3 offline-shell worker missing contract: ${contract}`);
+}
+console.log('✓ PWA shell uses the v3 runtime-warming owner/worker');
 
 const liveRooms=read('live-rooms.js');
 if(!liveRooms.includes('window.BQLiveRooms='))fail('Live Rooms module does not expose window.BQLiveRooms');
