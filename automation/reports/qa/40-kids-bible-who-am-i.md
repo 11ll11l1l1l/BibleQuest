@@ -4,90 +4,129 @@ Identity: `BQ-A4-QA`
 
 ## STATE / PROVENANCE
 
-- Active parity target from authoritative inventory: **#40 Kids Bible Who Am I**.
-- Latest frozen v3 baseline: `release/v3.71-japanese-furigana` @ `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Dedicated canonical product branch for #40: **not found**.
+- Active parity target: **#40 Kids Bible Who Am I**.
+- Frozen base: `release/v3.71-japanese-furigana` @ exact `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
+- Dedicated canonical #40 branch: **not found**.
 - Dedicated `agent/a1-work/040*` candidate: **not found**.
-- The only similarly named branch found is `verify/v3-kids-who-am-i-contract-20260911` @ `ba4394a1c6acaf62a9f24b1883b5ec5ec4d12be9`; this is not a #40 product candidate and predates v3.71.
-- Exact baseline accumulated bookkeeping run: `34550650269` = **SUCCESS**. Its job explicitly asserted the bookkeeping candidate and completed accumulated architecture, edge/security, and browser/mobile phases.
-- No PASS is transferred from the v3.71 baseline to a future #40 SHA.
+- Exact frozen bookkeeping run: `34550650269` = **SUCCESS**.
+- Run `34550650269` explicitly checked out and asserted exact SHA `c631bea8d5177a9a2ff68139cb104b6fbf26015b`, then executed accumulated architecture validators, edge regressions, and browser/mobile regressions.
+- No PASS from v3.71 transfers to any future #40 candidate or bookkeeping SHA.
+- `automation/CURRENT.md` is stale (#75/v3.48 era) and was not used as product-state authority.
 
-## PRIMARY EVIDENCE INSPECTED
+## PRIMARY EVIDENCE INSPECTED BEFORE TRIAGE
 
-1. `FEATURE_INVENTORY_V3.md` at `c631bea8...`: #40 is `Not started`, priority reopened, and requires recovery of the exact old-version Kids Bible Who Am I contract and Games-owner boundary before implementation, followed by focused + accumulated browser/mobile verification.
-2. `src/features/games/` at `c631bea8...`: current verified Games owner contains `content.js`, `detectives.js`, `index.js`, `memory.js`, and `timelines.js`.
-3. `src/features/games/index.js` at `c631bea8...`: current Character Detective is already rendered and controlled inside the Games launcher lifecycle (`state.phase === 'detective'`), with clue presentation, answer input, locked feedback, replay, launcher return, Scripture reference, score and XP display.
-4. GitHub Actions run `34550650269`: complete accumulated baseline gate is green at the v3.71 bookkeeping candidate.
-5. Live branch search: no current `agent/a1-work/040*` and no canonical #40 feature branch.
-6. `automation/TRIAGE.md` was read only after provisional findings. It is stale relative to current product evidence: it still treats #38/v3.70 as active and defers #40, while the authoritative v3.71 inventory explicitly marks #40 as the next reopened parity item.
+1. `FEATURE_INVENTORY_V3.md` at `c631bea8...`: totals 97 Regression-tested / 1 Verified / 2 Not started; #40 is the next reopened parity item; #39 is explicitly deferred.
+2. `DEVELOPMENT_HANDOFF_V3.md` at `c631bea8...`: #40 is the next active parity target after v3.71 and requires historical mapping before implementation.
+3. Live branch searches: no canonical #40 product branch and no `agent/a1-work/040*` work candidate.
+4. Exact Actions run `34550650269`, job `103112654823`, including decoded job logs showing exact checkout/assertion of `c631bea8...` and the actual lists of architecture, edge, and browser/mobile tests executed.
+5. Current accumulated Games/Kids Memory coverage on v3.71, including the exact executed edge list and browser/mobile list.
+6. Commit `918762b11d3487d07880449bb37264da1e33ace3`, which deleted `tests/v3-kids-memory-lazy-progress-capability.mjs`.
+7. `tests/v3-content-moderation-edge.mjs` at v3.71, which exercises Games construction/other moderation behavior but does not launch Memory Meadow without `Progress.getState()`.
+8. `tests/v3-admin-operations-edge.mjs` at v3.71, which injects a mocked privileged API for status/dashboard/deleteUser behavior.
+9. Only after these provisional findings: `automation/TRIAGE.md`.
 
 ## FACTS
 
-- #40 has **no implementation candidate to audit yet**.
-- The existing Character Detective implementation is already owned by the current Games service/UI path; a #40 implementation must therefore be tested for reuse/entry-point behavior rather than assumed to require another game owner.
-- The authoritative inventory does not authorize inventing a second scoring engine, persistence owner, launcher, question engine, or cloud/backend path for #40.
-- Current baseline coverage is green, but that baseline only proves the state before #40 implementation.
+- #40 remains **pre-implementation**. There is no exact product candidate to audit.
+- The authoritative inventory requires exact contract/owner recovery before #40 implementation and focused + accumulated browser/mobile verification afterward.
+- Exact baseline run `34550650269` is genuinely green for `c631bea8...`; however its executed edge list does **not** include `tests/v3-kids-memory-lazy-progress-capability.mjs` because that regression had been deleted before v3.71.
+- Commit `918762b...` deleted two semantic assertions from that test: (1) Memory Meadow child construction with a minimal `Progress.record()` capability and (2) fail-loud launch when required Progress balance state / `Progress.getState()` is unavailable.
+- The retained `v3-content-moderation-edge.mjs` does not execute the second launch/fail-loud scenario. Therefore the successful v3.71 accumulated suite can remain green while that specific launch-time contract regresses.
+- `tests/v3-admin-operations-edge.mjs` exercises the client service with a mocked `api.deleteUser()` and mocked authorization/status responses. It does not execute the production trusted destructive-account authorization boundary. Thus its green result is not faithful server-authority evidence for #93.
+- These are accumulated-harness evidence defects that predate #40; they are not invented #40 product requirements.
 
-## ACCEPTANCE MATRIX FOR THE FIRST #40 CANDIDATE
+## #40 ACCEPTANCE MATRIX FOR FIRST CANDIDATE
 
-A future exact candidate should not be marked READY unless permanent tests prove all applicable items below:
+A future exact #40 candidate must prove all applicable recovered behavior with permanent coverage:
 
-1. **Kids entry exists and launches correctly** — the Kids-facing Bible Who Am I entry is visible/reachable in the recovered intended surface and launches the intended Who Am I experience.
-2. **Single Games owner** — launch, answer, lock, feedback, replay and leave/cleanup remain under the existing Games owner; no second launcher or parallel detective state machine is introduced.
-3. **Recovered contract only** — wording/content/entry behavior follows primary retained/v2 evidence. No Kids-only question bank, reward curve, scoring semantics, persistence behavior or backend behavior may be treated as parity unless primary evidence supports it.
-4. **Full round behavior** — clue display, answer submission, correct/incorrect feedback, Scripture reference, score/reward behavior, replay and return to launcher work through the real UI.
-5. **Duplicate-action protection** — once an answer is locked, repeated submit/tap/Enter cannot double-score or double-award progress.
-6. **Round identity / persistence compatibility** — if the existing Games/Progress owner records a result, #40 must preserve the same single meaningful event semantics and must not create duplicate writes.
-7. **Navigation cleanup** — leaving during an active round and returning does not preserve invalid listeners, timers, stale locks or duplicate handlers.
-8. **Mobile browser acceptance** — real browser test at 390 px: entry reachable, clues readable, text input usable, submit/replay/return targets usable, no horizontal overflow, no browser errors.
-9. **Keyboard acceptance** — text input and submit via keyboard/Enter work once and do not bypass locking.
-10. **Accumulated integrity** — the permanent workflow must invoke #40's new validator/edge/browser tests and retain all prior accumulated architecture, edge/security and browser/mobile coverage. No unexplained deletion, skip, narrowing or replacement of existing regressions is acceptable.
+1. **Kids entry / routing** — the recovered Kids-facing `Bible Who Am I?` entry exists in the intended surface and opens the existing Character Detective experience.
+2. **Single Games owner** — no second launcher, detective state machine, Progress owner, Storage owner, scoring owner, or backend path.
+3. **Recovered contract only** — content/entry/scoring/reward semantics follow retained/v2 primary evidence; no Kids-only bank or behavior is invented without evidence.
+4. **Real full-round behavior** — clue display, text entry, submission, correct/incorrect feedback, Scripture reference, score/reward behavior, replay, and return through the real UI.
+5. **Duplicate-submit protection** — tap/click/Enter after lock cannot double-score or double-award.
+6. **Round identity / result writes** — one meaningful round/result identity and no duplicate Progress/Storage writes.
+7. **Replay/leave cleanup** — no stale listeners, state, locks, timers, or duplicate handlers after replay or launcher/back navigation.
+8. **390 px mobile browser acceptance** — reachable entry, readable clues/reference, usable input/actions, no horizontal overflow, no browser errors.
+9. **Keyboard acceptance** — input and Enter submission behave once and respect locking.
+10. **Accumulated integrity** — the exact executed workflow invokes permanent #40 validator/edge/browser coverage and all prior required accumulated coverage.
+11. **Pre-existing harness repairs retained** — assertion-equivalent #38 fail-loud Progress-capability coverage and faithful #93 trusted-boundary evidence must be present and executed in the candidate accumulated suite if those baseline blockers are corrected before #40 starts.
 
-## NEGATIVE / EDGE CASES REQUIRED
+## NEGATIVE / EDGE CASES
 
-- Blank/whitespace-only answer follows the recovered product contract without corrupting state.
-- Wrong answer locks once and cannot be farmed/re-submitted for extra reward.
+- Blank/whitespace answer follows recovered behavior without corrupting state.
+- Wrong answer locks once and cannot be farmed for reward.
 - Correct answer locks once and cannot double-award.
-- Replay creates a clean new round under the existing owner.
-- Back/launcher navigation followed by relaunch produces one active instance only.
-- Any malformed/unknown game id or unavailable item fails safely through the established Games boundary.
+- Replay creates one clean new round.
+- Leave/relaunch creates one active instance.
+- Unknown/unavailable game entry fails safely through the established Games boundary.
+- Keyboard Enter cannot bypass answer locking.
 
-## EXACT RUN REQUIREMENTS
+## ACCUMULATED HARNESS AUDIT
 
-For a future #40 candidate SHA `X`:
+### Exact v3.71 execution
 
-- focused #40 tests must execute against exact `X`;
-- complete accumulated architecture validators must execute against exact `X`;
-- complete accumulated edge/security regressions must execute against exact `X`;
-- complete accumulated browser/mobile regressions must execute against exact `X`;
-- the executed workflow must visibly invoke #40's permanent tests and retain prior coverage;
-- if bookkeeping changes produce SHA `Y`, `Y` requires its own complete exact-SHA gate. PASS from `X` cannot transfer to `Y`.
+Run `34550650269`, exact product SHA `c631bea8...`, successfully executed:
 
-## FAILURES
+- accumulated architecture validators, including `validate-v3-kids-memory.mjs`;
+- accumulated edge regressions, including the listed Kids Memory tests through `v3-kids-memory-delays.mjs`;
+- accumulated browser/mobile regressions, including `v3-games-smoke.mjs` and `v3-kids-memory-browser.mjs`.
 
-- None observed in a #40 candidate because **no #40 product candidate exists**.
+### Confirmed weakening / missing faithful evidence
+
+**#38:** `v3-kids-memory-lazy-progress-capability.mjs` is absent from v3.71 and absent from the exact executed edge list. The deleted fail-loud launch assertion has no assertion-equivalent permanent test located in the executed suite.
+
+**#93:** `v3-admin-operations-edge.mjs` uses a mocked privileged API. Its PASS does not prove the actual trusted server authorization/delete boundary.
+
+These issues mean the green v3.71 run is valid as evidence of what it actually executed, but it is not sufficient evidence that the complete intended accumulated semantic protection remains intact.
+
+## EXACT RUN REQUIREMENTS FOR FUTURE #40 SHA
+
+For candidate SHA `X`:
+
+- focused #40 tests execute against exact `X`;
+- complete architecture validators execute against exact `X`;
+- complete edge/security suite executes against exact `X`;
+- complete browser/mobile suite executes against exact `X`;
+- logs visibly show #40 permanent tests plus retained/repaired prior coverage;
+- no existing test is deleted, skipped, narrowed, renamed away, or replaced with weaker evidence;
+- if bookkeeping creates SHA `Y`, `Y` receives its own complete exact-SHA gate; PASS from `X` does not transfer.
+
+## FAILURES / BLOCKING QA FINDINGS
+
+1. **Accumulated regression weakening — #38:** the explicit Memory Meadow fail-loud launch regression was deleted and is not assertion-equivalently retained in the exact v3.71 executed suite.
+2. **Missing faithful trusted-boundary evidence — #93:** Admin Operations destructive authorization remains client-mock coverage rather than executable/faithful production-boundary evidence.
+3. **#40 itself:** no candidate exists, so there is no #40 product failure to report.
 
 ## MISSING EVIDENCE
 
-- Exact canonical #40 branch/HEAD.
-- Exact `agent/a1-work/040*` candidate.
-- Exact retained/v2 contract evidence packaged with the implementation candidate.
+- Dedicated canonical #40 branch/HEAD.
+- Exact `agent/a1-work/040*` candidate SHA.
 - Permanent #40 validator/edge/browser tests.
-- Exact functional run ID for a #40 candidate.
-- Exact bookkeeping run ID for a later #40 bookkeeping SHA.
+- Exact #40 functional run ID and logs.
+- Later exact bookkeeping SHA/run.
+- Assertion-equivalent permanent #38 fail-loud Progress-capability regression in the accumulated harness.
+- Faithful executable #93 destructive-account trusted-boundary authorization evidence.
 
 ## QA DISPOSITION
 
-**PRE-IMPLEMENTATION / NOT READY FOR PROMOTION.**
+**PRE-IMPLEMENTATION / NOT READY.**
 
-This is not a product failure. #40 simply has no exact implementation candidate yet. The first candidate should be evaluated as a bounded extension/entry into the existing Games/Character Detective owner unless its actual diff enters a HIGH-RISK area. If it modifies an existing accumulated test/workflow beyond adding #40 invocations, replaces a verified owner, or broadens persistence/sync/security behavior, reclassify HIGH-RISK and require exact-candidate A4/A5 review before promotion.
+#40 has no candidate yet. Independently, the current accumulated harness contains two material evidence debts that can remain green while protected behavior/security authority regresses (#38 fail-loud launch capability and #93 trusted destructive authorization). A future #40 candidate must not be treated as promotion-ready merely because it inherits v3.71 green status.
+
+If #40 remains a bounded entry into the existing Games/Character Detective owner with additive tests only, it is provisionally NORMAL-RISK. Any modification to existing accumulated tests/workflow, verified-owner replacement, global shell/router ownership, persistence/sync semantics, dependencies, schema/RLS, or trusted backend behavior reclassifies it HIGH-RISK and requires exact-candidate A4/A5 review before promotion.
+
+## TRIAGE RECONCILIATION (READ AFTER PROVISIONAL FINDINGS)
+
+Current `automation/TRIAGE.md` (generated 2026-09-11 11:00 JST) is now aligned with the live pre-implementation #40 state: frozen `c631bea8...`, no #40 candidate, provisional NORMAL-RISK, and the same two accumulated-evidence blockers. TRIAGE agreement is corroboration only and was not used to establish the findings above.
 
 ## STALENESS CONDITIONS
 
-This report becomes candidate-stale immediately when any of the following occurs:
-- a canonical #40 branch is created or moved;
+This report becomes stale when any of the following occurs:
+
+- a canonical #40 branch appears or moves;
 - an `agent/a1-work/040*` candidate appears or changes SHA;
-- the latest frozen v3 release moves beyond `c631bea8...`;
-- #40's authoritative inventory/contract changes;
-- #40 permanent tests/workflow invocations are added/changed;
-- a #40 functional or bookkeeping run completes.
+- frozen baseline advances beyond `c631bea8...`;
+- #40 authoritative contract/inventory changes;
+- #40 permanent tests/workflow invocations appear/change;
+- #38 fail-loud coverage or #93 trusted-boundary evidence is repaired/changed;
+- an exact #40 functional or bookkeeping run completes.
