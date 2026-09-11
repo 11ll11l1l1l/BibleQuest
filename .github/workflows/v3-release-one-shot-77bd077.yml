@@ -1,0 +1,57 @@
+name: BibleQuest v3 release verifier 77bd077
+on:
+  push:
+    branches: [verify/v3-release-20260911-77bd077]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac"
+          test -z "$(git status --porcelain)"
+          git diff --check bcaddd1e87e32b336080dec73b723e959b548f8f 77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Playwright browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Release-critical coverage presence
+        run: |
+          for f in tests/v3-pwa-install-smoke.mjs tests/v3-offline-shell-smoke.mjs tests/v3-offline-bible-packs-smoke.mjs tests/v3-accessibility-smoke.mjs tests/v3-shell-smoke.mjs tests/v3-reader-smoke.mjs tests/v3-games-smoke.mjs tests/v3-transform-engine-smoke.mjs; do test -f "$f"; done
+          echo "PWA/offline/accessibility/core browser coverage included."
