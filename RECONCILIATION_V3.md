@@ -1,46 +1,48 @@
 # BibleQuest v3 — Product/Documentation Reconciliation
 
-Status: cumulative release preserved; Avatar Vault Visual Phase B exact candidate verified, frozen and promoted
-Updated: 2026-09-12 JST after Visual Phase B Avatar Vault artwork promotion
+Status: cumulative release preserved; Account Visual Phase B exact candidate verified, frozen and promoted
+Updated: 2026-09-12 JST after Visual Phase B Account artwork promotion
 
 ## Current product/release truth
 
 Current exact-green product:
 
-- exact product: `df2a7051e305474a5ea24912c3f5341f33bc61b8`
-- frozen ref: `release/v3-phase-b-avatar-vault-artwork-20260912`
-- exact accumulated verifier: run `34630985269` — **success**
-- product PR: #108
-- verified base/repository docs HEAD at candidate creation: `42c2e1a23c8b24121de966198187a6bb5b79991a`
-- feature head: `0d08ccf4fe8b1de5774d6bd6e4915f913e30ea48`
+- exact product: `2f04b7150b36d4a14dac953fd08ae2c5a307d0d9`
+- frozen ref: `release/v3-phase-b-account-artwork-20260912`
+- exact accumulated verifier: run `34632158164` — **success**
+- product PR: #109
+- verified base/repository docs HEAD at candidate creation: `bd7f3e1a4a15d725ec647ed1899acad49e8f18ae`
+- feature head: `5becefc41150f5578f88c9f6ac107fe5d2a7ecf2`
 
-GitHub Actions run `34630985269` fetched `df2a7051e305474a5ea24912c3f5341f33bc61b8` directly as `refs/pull/108/merge`, checked out that SHA, and passed the complete accumulated architecture, edge/security/static and browser/mobile suite. After the run passed, the exact candidate was frozen and `main` was advanced to the same SHA. No new unverified product promotion commit was created.
+GitHub Actions run `34632158164` fetched `2f04b7150b36d4a14dac953fd08ae2c5a307d0d9` directly as `refs/pull/109/merge`, checked out that SHA, and passed the complete accumulated architecture, edge/security/static and browser/mobile suite. `tests/v3-account-phase-b-static.mjs` and `tests/v3-account-phase-b-smoke.mjs` both passed inside that accumulated run. After the run passed, the exact candidate was frozen and `main` was advanced to the same SHA. No new unverified product promotion commit was created.
 
-Its immediate exact-green product ancestry remains preserved:
+Immediate exact-green ancestry remains preserved:
 
+- Visual Phase B Avatar Vault: `df2a7051e305474a5ea24912c3f5341f33bc61b8`; frozen ref `release/v3-phase-b-avatar-vault-artwork-20260912`; run `34630985269` success;
 - Visual Phase B Personal Mission: `df1bbd18782bee6430546ee7b444ad4bc48f5116`; frozen ref `release/v3-phase-b-mission-artwork-20260912`; run `34629528297` success;
-- Visual Phase B Calendar: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3`; frozen ref `release/v3-phase-b-calendar-artwork-20260912`; run `34627049878` success;
+- Visual Phase B Calendar: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`; run `34627049878` success;
 - Calendar creator edit/delete: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`; run `34623059639` success;
 - Visual Phase B More: `046e2a85cafe10d722d03d467d3733eddfeb6e65`; run `34618963635` success;
 - Ministry Hub Calendar: `350cb1e583b207e10ba8dc50c3bb683dc50f9494`; run `34616603649` success.
 
-Later documentation-only commits may advance repository HEAD beyond `df2a705...`. Such docs SHAs are bookkeeping, not replacement exact-green product candidates.
+Later documentation-only commits may advance repository HEAD beyond `2f04b715...`. Such docs SHAs are bookkeeping, not replacement exact-green product candidates.
 
 ## What the current product adds
 
-### Visual Phase B Avatar Vault — `df2a705...`
+### Visual Phase B Account — `2f04b715...`
 
-- replaces the Avatar Vault page's rendered catalog/lock emoji with passive same-origin SVG artwork in `assets/avatar-vault-icons.svg`;
-- provides one committed symbol for each of the existing 15 style IDs plus `lock`;
-- preserves `src/engines/avatar-vault.js` as catalog/unlock/progress owner, `src/app/avatar-vault.js` as selected/earned/persistence/API-sync owner, and `src/core/api.js` as browser backend boundary;
-- limits product rendering changes to `src/features/avatar-vault/index.js` and a bounded presentation layer `src/ui/avatar-vault-phase-b.css`;
-- preserves the catalog, unlock requirements, availability flags, progress wording, saved selection, API sync, leaderboard compatibility, fair-play/scoring meaning, Equip action and Back routing;
-- adds permanent `tests/v3-avatar-vault-phase-b-static.mjs` and `tests/v3-avatar-vault-phase-b-smoke.mjs` coverage;
-- 390 px acceptance proves all 15 catalog cards render, unlocked Equip remains functional, locked artwork is distinct, every symbol resolves to the committed sprite, relevant controls remain at least 44 px, legacy emoji are not rendered, and no horizontal overflow or console/page errors are introduced;
-- full accumulated regression passed in run `34630985269` on exact candidate `df2a705...`.
+- adds passive same-origin SVG artwork in `assets/account-feature-icons.svg` for `profile`, `sign-in`, `create-account`, `recovery`, `device` and `security`;
+- preserves `src/app/account.js` as Account transaction/device behavior owner, `src/app/session.js` as session/auth state owner, and `src/core/api.js` as browser backend/Supabase boundary;
+- limits behavior-adjacent product changes to Account page presentation markup in `src/features/account/index.js` and a bounded presentation layer `src/ui/account-phase-b.css`;
+- preserves Sign in/Create account/Recover switching, Continue as guest, login/signup/recovery submits, one-time recovery-code display/copy/save acknowledgement/Continue gate, remembered-device listing/removal, recovery-code regeneration, password change, Return home, sign-out and tutorial handoff;
+- keeps security/device/recovery meaning in visible text and decorative SVGs `aria-hidden`;
+- adds permanent `tests/v3-account-phase-b-static.mjs` and `tests/v3-account-phase-b-smoke.mjs` coverage;
+- 390 px acceptance proves guest states use distinct semantic artwork, signed-in Account renders profile/device/security artwork, relevant action targets remain at least 44 px, callbacks remain functional, the committed sprite loads, and no horizontal overflow or console/page errors are introduced;
+- full accumulated regression passed in run `34632158164` on exact candidate `2f04b715...`.
 
 ### Retained earlier exact-green Visual Phase B checkpoints
 
+- Avatar Vault artwork: `df2a705...`, run `34630985269` success.
 - Personal Mission artwork: `df1bbd...`, run `34629528297` success.
 - Calendar artwork: `c15d1f...`, run `34627049878` success.
 - More semantic icons: `046e2a85...`, run `34618963635` success.
@@ -58,23 +60,27 @@ The earlier cumulative release and production verification remain historical anc
 
 Do not restart historical reconciliation work.
 
+## Priority-firewall reconciliation
+
+PR #88 describes stale-device progress overwrite behavior in legacy root `account.js`. That root runtime is not current v3 entry-path code: v3 `index.html` boots `src/app/bootstrap.js`, Account behavior is under `src/app/account.js`, and v3 progress behavior is owned under `src/core/progress.js`. The old PR therefore does not establish a current v3 P0 by itself. Any related issue must be reproduced through the current v3 runtime before product changes are selected.
+
 ## Deployment evidence for current product
 
-Do not transfer deployment evidence from older product SHAs to current exact product `df2a705...`.
+Do not transfer deployment evidence from older product SHAs to exact product `2f04b715...`.
 
-Current exact product has complete GitHub exact-candidate regression and frozen-ref promotion evidence. Provider deployment identity for `df2a705...` and a fresh independent two-host live byte/browser verification have not yet been canonically recorded. Until that evidence exists, do not claim `df2a705...` is independently production-verified.
+Current exact product has complete GitHub exact-candidate regression and frozen-ref promotion evidence. Provider deployment identity for `2f04b715...` and a fresh independent two-host live byte/browser verification have not yet been canonically recorded. Until that evidence exists, do not claim `2f04b715...` is independently production-verified.
 
 ## Production Supabase truth
 
 Production project: `zkfmgezvzugchcwppreq`.
 
-The release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by the Avatar Vault visual milestone:
+The release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by the Account visual milestone:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-Do not reapply them. PR #108 made no production database mutation.
+Do not reapply them. PR #109 made no production database mutation.
 
 ## Release-process reconciliation
 
@@ -84,7 +90,8 @@ Do not reapply them. PR #108 made no production database mutation.
 - PR #102 completed Calendar creator edit/delete at exact-green `7d28d7c...`; run `34623059639` passed.
 - PR #104 completed Calendar Visual Phase B at exact-green `c15d1f...`; run `34627049878` passed.
 - PR #106 completed Personal Mission Visual Phase B at exact-green `df1bbd...`; run `34629528297` passed.
-- PR #108 completed Avatar Vault Visual Phase B. Run `34630985269` explicitly checked out exact synthetic merge candidate `df2a705...`, passed completely, then that exact candidate was frozen and promoted.
+- PR #108 completed Avatar Vault Visual Phase B at exact-green `df2a705...`; run `34630985269` passed.
+- PR #109 completed Account Visual Phase B. Run `34632158164` explicitly checked out exact synthetic merge candidate `2f04b715...`, passed completely, then that exact candidate was frozen and promoted.
 - Accepted promotion pattern remains: PR synthetic merge candidate → full green accumulated run → freeze exact candidate ref → advance `main` to the same verified SHA when ancestry permits.
 
 ## Document authority
@@ -101,19 +108,22 @@ When documents disagree:
 
 ## Next safe gate
 
-Start new product selection from exact-green `df2a705...` unless newer repository evidence proves a later verified product.
+Start new product selection from exact-green `2f04b715...` unless newer repository evidence proves a later verified product.
 
-First reproduce and priority-classify any newly reported product/security/privacy/data-loss issue. If no credible P0/P1 gap is present, continue the required pre-release Visual Phase B program on the next materially under-designed, placeholder, generic or emoji-like user-facing surface from current source.
+First reproduce and priority-classify any newly reported product/security/privacy/data-loss issue. If no credible P0/P1 gap is present, continue the mandatory pre-release Visual Phase B program on the next materially under-designed, placeholder, generic or emoji-like current v3 surface.
 
 Do not:
 
 - redo historical integration;
 - rebuild Calendar v1/v1.5;
-- redo Ministry Hub Calendar, Calendar creator edit/delete, More, Calendar, Personal Mission or Avatar Vault Phase B milestones;
+- redo Ministry Hub Calendar, Calendar creator edit/delete, More, Calendar, Personal Mission, Avatar Vault or Account Phase B milestones;
 - promote custom non-weekly recurrence into scope without evidence/user direction;
 - reapply the three production migrations;
 - wire absent `assets/icons/v3/` binaries;
 - add a forbidden `push` trigger to the product regression workflow;
-- treat provider deployment or independent live verification as implied by GitHub regression success.
+- treat provider deployment or independent live verification as implied by GitHub regression success;
+- import stale legacy-root fixes into v3 without reproducing the defect in the current runtime.
 
 For the next selected visual surface, use real committed artwork, preserve existing ownership/interactions, add focused permanent acceptance, and require the complete accumulated exact-candidate regression before promotion.
+
+Before final release approval, separately complete the still-required final-candidate evidence: provider deployment identity, explicit 320/360/390/412/430 + installed-PWA acceptance, multi-account linked-activity field validation, and independent two-host production verification.
