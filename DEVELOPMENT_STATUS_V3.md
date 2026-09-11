@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-12 JST after independent current-production two-host verification and fresh field-readiness inspection.
+Updated: 2026-09-12 JST after independent current-production two-host verification, fresh field-readiness inspection, and visual-milestone closeout.
 
 ## Current release truth
 
@@ -54,7 +54,7 @@ This closes the independent two-host production-content/browser verification gap
 
 Accepted exact-green product work includes More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow Phase B; Calendar creator edit/delete; Ministry Hub Calendar; all previously accumulated v3 feature/security regressions.
 
-Do not repeat these milestones. No new visual/product tranche is selected unless current evidence demonstrates a material remaining gap.
+Issue #94 visual-polish milestone is complete and closed. Do not repeat these milestones. No new visual/product tranche is selected unless current field/production evidence demonstrates a material remaining gap.
 
 ## Production Supabase state
 
@@ -86,7 +86,7 @@ Remaining official-release evidence:
 
 Independent two-host production verification is complete and must not be reopened unless the product/runtime changes.
 
-Issue #94 remains the integration tracker, but it does not require another automatic visual tranche in the absence of a demonstrated material gap.
+Issue #94 is closed as completed. It is not a remaining release gate and must not be reopened merely to create another visual tranche; only new material field/production evidence can justify additional visual product work.
 
 ## Next major milestone
 
@@ -104,6 +104,7 @@ Issue #94 remains the integration tracker, but it does not require another autom
 - PR #111 final mobile/build gate: completed, exact validation SHA `d0eab188...`, run `34634460077` success; no product behavior changed.
 - PR #112 release-control reconciliation: docs-only; complete accumulated regression run `34636337038` success.
 - Current-production verifier: run `34637203062`, job `103387887268` success; both hosts byte-match checked current release files and pass hosted browser/mobile acceptance.
+- Issue #94 visual-polish milestone: completed and closed after accepted Phase-B state was regression-verified and independently proven live on both production hosts.
 - Issue #6 old four-tab/nine-node wording: stale implementation detail; current five-tab v3 intent verified automatically and on hosted production, physical-device field proof still missing.
 - Issue #68: implementation complete, field evidence incomplete; fresh aggregate readiness inspection confirms congregation A/B/C topology is available but the only couple-pair row is pending, not active.
 - PR #88 legacy stale-device issue: not reproduced in current v3 runtime.
