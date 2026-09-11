@@ -1,0 +1,88 @@
+name: BibleQuest v3 Account tutorial visual fast verifier 318a963
+on:
+  push:
+    branches: [verify/v3-visual-account-tutorial-fast-318a963]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 318a96367fb7cd106625750445f6009b30aa3271
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "318a96367fb7cd106625750445f6009b30aa3271"
+          test -z "$(git status --porcelain)"
+          git diff --check 910aa3fa613370804ba6c61e902e619cf7d365ac 318a96367fb7cd106625750445f6009b30aa3271
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do node "$f"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          echo "Architecture validators executed: $count"
+          test "$count" -gt 0
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do node "$f"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          echo "Edge/security/static regressions executed: $count"
+          test "$count" -gt 0
+      - run: npm install --no-save playwright
+      - run: npx playwright install chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Focused browser regressions
+        run: |
+          node tests/v3-shell-smoke.mjs
+          node tests/v3-tutorial-onboarding-smoke.mjs
+          node tests/v3-tutorial-avatar-reactions-smoke.mjs
+          node tests/v3-accessibility-smoke.mjs
+          node tests/v3-pwa-install-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-offline-bible-packs-smoke.mjs
+      - name: Account tutorial visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const account=await browser.newPage({viewport});
+              await account.goto('http://127.0.0.1:4173/#/account',{waitUntil:'networkidle'});
+              await account.locator('.bq-account-panel').waitFor();
+              const a=await account.evaluate(()=>{const n=document.querySelector('.bq-account-panel');const s=n?getComputedStyle(n):null;return {bg:s?.backgroundImage||'',shadow:s?.boxShadow||'',v:document.documentElement.clientWidth,w:document.documentElement.scrollWidth,css:[...document.querySelectorAll('link[rel="stylesheet"]')].some(x=>x.getAttribute('href')==='src/ui/account-visual-polish.css')}});
+              if(!a.css||a.bg==='none'||!a.bg||a.shadow==='none'||!a.shadow||a.w>a.v+1)throw new Error(`Account visual containment failed ${viewport.width}px ${JSON.stringify(a)}`);
+              await account.close();
+              const tutorial=await browser.newPage({viewport});
+              await tutorial.goto('http://127.0.0.1:4173/#/home',{waitUntil:'networkidle'});
+              await tutorial.locator('[data-open-tutorial]').click();
+              await tutorial.locator('.bq-tutorial-dialog').waitFor();
+              const t=await tutorial.evaluate(()=>{const n=document.querySelector('.bq-tutorial-dialog');const s=n?getComputedStyle(n):null;return {bg:s?.backgroundImage||'',shadow:s?.boxShadow||'',v:document.documentElement.clientWidth,w:document.documentElement.scrollWidth,css:[...document.querySelectorAll('link[rel="stylesheet"]')].some(x=>x.getAttribute('href')==='src/ui/tutorial-visual-polish.css')}});
+              if(!t.css||t.bg==='none'||!t.bg||t.shadow==='none'||!t.shadow||t.w>t.v+1)throw new Error(`Tutorial visual containment failed ${viewport.width}px ${JSON.stringify(t)}`);
+              await tutorial.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Account/tutorial visual desktop/mobile containment passed.');
+          EOF
