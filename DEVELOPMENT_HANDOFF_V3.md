@@ -1,78 +1,105 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST for the user-mandated 18:00 JST Cloudflare release.
+Updated: 2026-09-11 JST after reconciliation of post-release priorities and document authority.
 
-## FIRST INSTRUCTION — DEADLINE OVERRIDE
+## First instruction
 
-Before any development work, read `RELEASE_6PM_2026-09-11.md`. It is the overriding execution priority until the production release is live. If this handoff, older milestone text, artwork plans, agent prompts, or backlog items conflict with that file, the 6 PM release-control file wins.
+Read `DEVELOPMENT_PRIORITY_V3.md` first. It is the current post-release task-selection authority.
 
-For new chat instances, `CONTINUE_PROMPT_V3.md` contains the generic resume prompt.
+The September 11 18:00 release is complete. `RELEASE_6PM_2026-09-11.md` and `RELEASE_AGENT_READONLY_2026-09-11.md` are historical release evidence and do not override current post-release development.
 
-## Exact verified production candidate
+For new chat instances, use `CONTINUE_PROMPT_V3.md`.
 
-- Repo: `11ll11l1l1l/BibleQuest`.
-- Frozen production release branch: `release/v3-production-20260911`.
-- Exact tested/frozen SHA: `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
-- Exact release verification run: `34558985204`, job `103137606678`, conclusion **success**.
-- Exact-SHA/diff hygiene: passed.
-- Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all deployment-entry/runtime ownership guards passed.
-- Accumulated v3 architecture validators: 53 executed, all passed.
-- Edge/security/static regressions: 86 executed, all passed.
-- Playwright browser/mobile regressions: 68 executed, all passed.
-- The completed browser set explicitly included `v3-pwa-install-smoke.mjs`, `v3-offline-shell-smoke.mjs`, `v3-offline-bible-packs-smoke.mjs`, `v3-accessibility-smoke.mjs`, `v3-shell-smoke.mjs`, `v3-reader-smoke.mjs`, `v3-games-smoke.mjs`, and `v3-transform-engine-smoke.mjs`.
-- Historical baseline remains `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`; its older run evidence must not be substituted for the current production candidate evidence.
+## Authority and evidence rules
 
-## Release defects fixed during final gating
+When documents disagree:
 
-1. Reproduced JavaScript syntax error in `transformation-v2.js`; fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
-2. Cloudflare deployment gate still checked retired legacy `sw.js` precache ownership instead of v3 `offline-shell-sw.js` runtime warming; gate corrected at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
-3. `validate-v3-architecture.mjs` still rejected the explicitly retired rows #39/#40 and required missing release-status bookkeeping sections; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
-4. `validate-v3-inventory.mjs` separately retained the old four-status/100-applicable model; corrected at final green SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53` to validate 98 applicable + 2 retired.
+latest user instruction → `DEVELOPMENT_PRIORITY_V3.md` → this handoff / `DEVELOPMENT_STATUS_V3.md` → milestone contracts and exact-SHA evidence → `FEATURE_INVENTORY_V3.md` release-parity ledger → historical release/visual/agent records.
 
-## Release scope
+Repository refs and actual workflow evidence override stale prose. Never transfer PASS across changed product SHAs, and never treat a documentation-only HEAD as a verified product SHA.
 
-The current Kids game set is accepted for this release. Historical rows #39 Hiragana Match and #40 Kids Bible Who Am I are explicitly user-retired from the active v3 release scope and are not blockers. They remain optional future expansion only under `KIDS_GAMES_EXTENSION_V3.md`.
+## Production state — preserve
 
-Applicable release scope is **98/98 complete**:
+- Repository: `11ll11l1l1l/BibleQuest`.
+- Production/runtime product baseline: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Frozen rollback/reference: `release/v3-production-20260911-r3` at that product SHA.
+- Current `main` is a documentation-ahead descendant of that runtime/product baseline; recover its live HEAD before writing.
+- The 2026-09-11 production release objective is complete.
+- Applicable historical release-parity scope remains 98/98 complete.
+- #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless explicitly reopened.
 
-- Regression-tested: 97
-- Verified: 1 (#15 Japanese Furigana)
-- Implemented: 0
-- Not started in active release scope: 0
-- User-retired legacy rows: 2 (#39, #40)
+Do not repoint production, apply migrations or change production data merely because later post-release development is green.
 
-Existing Kids coverage includes the shared Games page/launcher, #38 Memory Meadow / Kids Memory Match, and #36 Character Detective / Who Am I. Do not build another Kids-specific Who Am I for this release.
+## Newest verified post-release development evidence
 
-## Current mission
+Recover live refs before acting, but the newest known exact-green post-release product checkpoint is:
 
-A verified BibleQuest v3 release must be available on the existing Cloudflare Pages website by **18:00 JST on 2026-09-11**.
+- branch: `postrelease/v3-workspace-notes-schema-compat`;
+- exact product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`;
+- parent exact-green Assignment Private Responses product: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`;
+- verifier run: `34594577664`;
+- verifier job: `103247250487`;
+- conclusion: success.
 
-Canonical production target: `https://mybiblequest.pages.dev/`
-Compatibility target: `https://biblequest-7th.pages.dev/`
+The verifier checked out detached exact SHA `61ee54fac7d352312cef7ffd8010997fa8bc9e51` and passed exact-SHA/milestone-diff hygiene, the Cloudflare deployment gate, focused Workspace Cloud Notes schema compatibility checks, accumulated visual static contracts, accumulated architecture validators, accumulated edge/security/static regressions, accumulated browser/mobile regressions and release-critical coverage presence.
 
-The existing Cloudflare projects deploy repository `main`. `build.sh` calls `scripts/deploy-gate.mjs`. Production promotion of the exact green release candidate is authorized by the user; do not ask again for routine permission.
+Later documentation commits on any branch are evidence only unless product files changed and the changed product SHA earned fresh verification.
 
-## What to work on now
+## Important post-release milestones already reached
 
-1. Do not alter the frozen product SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
-2. Re-check live `main`; preserve its current legacy state on a safety branch.
-3. Promote `main` directly to the exact frozen verified SHA without merging unrelated legacy/main-only commits into v3.
-4. Allow both existing Cloudflare Pages projects to deploy repository `main`.
-5. Confirm both public hosts propagated the v3 release.
-6. Run production checks for Home, Account/sign-in reachability, Reader, Games, Transform, primary navigation, manifest/service-worker and PWA/offline-shell behavior.
-7. Fix only a reproduced production release blocker. Any changed product SHA requires a completely new exact-SHA release suite before redeployment.
+### Visual Phase A
 
-## User task policy
+The classified replacement-level visual tranche program through tranche 16 reached exact-green checkpoint `406c34dcdf904b7483bf4381be774a908738e60c`.
 
-Do everything possible through connected tools. Do not make the user repeat context or perform repository steps that can be automated. The only expected user-side task is a short physical Android/PWA smoke after deployment if available: Home, Reader, one Game, and Account/sign-in surface. If this is not performed, record it honestly; do not imply physical-device acceptance.
+That program is now **Visual Phase A: first-pass presentation polish complete**. It is not the final visual-quality target. The user's newer requirement activates **Visual Phase B** for real polished icon artwork, background illustrations and coherent generated assets where the current product still looks minimal/placeholder.
 
-## Non-negotiable evidence rules
+### Assignment Private Responses
+
+Exact-green product SHA: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`.
+
+Its migration `supabase/migrations/20260911131000_assignment_response_presence.sql` was not applied to production during development. Do not claim the feature production-live without a separate integration/migration/live-authorization step.
+
+### Workspace / Cloud Notes schema compatibility
+
+Exact-green product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`.
+
+The milestone aligned Workspace Cloud Notes behavior with the deployed schema while preserving established API/backend ownership.
+
+## Current Priority 1
+
+Priority 1 has three active streams governed by `DEVELOPMENT_PRIORITY_V3.md`:
+
+1. **Functional completion/correctness** for accepted/currently planned work.
+2. **Visual Phase B** — real polished icons/backgrounds/illustrations; generated visual assets should be created, selected and implemented directly without asking the user for image approval.
+3. **Calendar** — active Priority 1 implementation work; recover existing requirements or define `CALENDAR_V3.md`, then implement through existing architecture when dependencies permit.
+
+Sequence these by dependency and risk. Calendar must not wait for every cosmetic item, and visual work must not be indefinitely postponed behind all functionality.
+
+## Agent findings
+
+Historical agent/triage findings remain evidence only until revalidated against the current exact product checkpoint. In particular, do not automatically stop current development because an old triage file labels a P0 against an older `main` SHA. Reproduce/revalidate high-severity findings on the current exact product line before treating them as current blockers.
+
+## What the next development chat should do
+
+1. Recover live `main`, `release/v3-production-20260911-r3`, newest `postrelease/v3-*` branches, verifier branches and recent workflow evidence.
+2. Distinguish current repository/document HEADs from exact verified product SHAs.
+3. Read `DEVELOPMENT_PRIORITY_V3.md` and this handoff/status before selecting work.
+4. Revalidate any historical P0/P1 against the current exact product checkpoint before interrupting the roadmap.
+5. Select the highest-value dependency-safe Priority 1 milestone.
+6. Implement it on an isolated development branch with explicit owner boundaries and focused regression protection.
+7. If a visual asset is needed, generate and implement it directly; do not create an approval stop for the image.
+8. Run focused checks and exact-SHA accumulated verification appropriate to the changed product.
+9. Preserve/update exact evidence and continue to the next Priority 1 task while safe executable work remains.
+10. Keep production and production Supabase/data unchanged unless an explicit verified integration/release milestone requires change.
+
+## Non-negotiable rules
 
 - Rebuild-and-verify; one owner per responsibility.
-- Fix only reproduced release defects.
-- Never transfer PASS between changed product SHAs.
+- Never transfer PASS across changed product SHAs.
 - Never claim an unexecuted test.
-- Never call the app bug-free.
-- Normal product Actions remain manual-only; temporary push-trigger verifier workflows stay isolated.
-- Do not change production Supabase/data unless a verified release blocker specifically requires it.
-- A GitHub promotion is not proof Cloudflare propagated; verify the deployed site.
+- Documentation-only commits are not product candidates.
+- Preserve the frozen production rollback point.
+- Do not introduce competing backend/Supabase/state owners.
+- Do not revive retired Kids/Kana work without explicit scope change.
+- A GitHub merge/promotion is not proof of Cloudflare propagation.
+- Do not call the app bug-free.
