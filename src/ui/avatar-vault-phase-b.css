@@ -1,0 +1,39 @@
+/* BibleQuest v3 Visual Phase B — Avatar Vault artwork and presentation layer.
+   Presentation only: catalog, unlock rules, selection, persistence, API and leaderboard ownership stay unchanged. */
+
+[data-avatar-vault-page]{--bq-vault-accent:#7c3aed;--bq-vault-soft:rgba(124,58,237,.08);--bq-vault-border:rgba(124,58,237,.17);position:relative;overflow:hidden}
+.bq-vault-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin-bottom:16px}
+.bq-vault-hero h1{margin:.18rem 0 .5rem;line-height:1.08}
+.bq-vault-copy{max-width:46rem;margin:0;color:var(--bq-text-muted,#5f6470)}
+.bq-avatar-art-wrap{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:var(--bq-vault-soft);border:1px solid var(--bq-vault-border);color:var(--bq-vault-accent);flex:0 0 auto}
+.bq-vault-hero .bq-avatar-art-wrap{width:86px;height:86px;border-radius:26px;box-shadow:0 12px 28px rgba(48,35,77,.11)}
+.bq-avatar-art{display:block;width:34px;height:34px}
+.bq-vault-hero .bq-avatar-art{width:52px;height:52px}
+.bq-badge-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.bq-badge-card{position:relative;min-width:0;padding:14px;border:1px solid rgba(44,48,58,.12);background:rgba(255,255,255,.76);box-shadow:0 7px 18px rgba(31,35,45,.06)}
+.bq-badge-card>div{min-width:0;flex:1}
+.bq-badge-card b{display:block;line-height:1.2;margin:1px 0 5px}
+.bq-badge-card p{margin:0 0 8px;color:var(--bq-text-muted,#5f6470);line-height:1.35}
+.bq-badge-card small{display:block;line-height:1.35;margin-bottom:8px}
+.bq-badge-card.is-active{border-color:rgba(124,58,237,.38);background:rgba(124,58,237,.055);box-shadow:0 9px 22px rgba(76,45,135,.1)}
+.bq-badge-card.is-active::after{content:'Equipped';position:absolute;top:9px;right:10px;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bq-vault-accent)}
+.bq-badge-card.is-locked{opacity:1;background:rgba(245,246,248,.78)}
+.bq-badge-card.is-locked .bq-avatar-art-wrap{color:#777c87;background:rgba(90,94,104,.07);border-color:rgba(90,94,104,.15)}
+.bq-badge-card [data-avatar-select]{min-height:44px;margin-top:2px}
+.bq-vault-scope{margin:0 0 12px}
+.bq-vault-note{margin-top:16px}
+.bq-vault-back{width:100%;min-height:44px;margin-top:10px}
+
+@media(max-width:520px){
+  [data-avatar-vault-page]{padding:14px}
+  .bq-vault-hero{grid-template-columns:minmax(0,1fr) 68px;gap:12px;align-items:start}
+  .bq-vault-hero .bq-avatar-art-wrap{width:68px;height:68px;border-radius:20px}
+  .bq-vault-hero .bq-avatar-art{width:42px;height:42px}
+  .bq-badge-grid{grid-template-columns:1fr;gap:10px}
+  .bq-badge-card{padding:12px}
+  .bq-avatar-art-wrap{width:52px;height:52px;border-radius:16px}
+  .bq-avatar-art{width:31px;height:31px}
+}
+
+@media(prefers-reduced-motion:reduce){.bq-badge-card,.bq-avatar-art-wrap{transition:none}}
+@media(prefers-contrast:more){.bq-badge-card,.bq-avatar-art-wrap{background:#fff;border-width:2px;box-shadow:none}.bq-badge-card.is-locked{opacity:1}}
