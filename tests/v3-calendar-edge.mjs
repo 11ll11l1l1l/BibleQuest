@@ -27,14 +27,16 @@ assert.equal(agenda[0].events.length, 2, 'Same-day events must all be grouped to
 assert.equal(agenda[0].events[0].source, 'assignment', 'Assignment items must sort before personal items on the same day.');
 
 // --- engine: congregation source + weekly recurrence ---
-const congEvent = normalizeEvent({ id: 'c1', source: 'congregation', eventDate: '2026-09-11', title: 'Prayer meeting', recurrenceWeeks: 2 });
+const congEvent = normalizeEvent({ id: 'c1', source: 'congregation', user_id: 'leader-1', eventDate: '2026-09-11', title: 'Prayer meeting', recurrenceWeeks: 2 });
 assert.equal(congEvent.recurrenceWeeks, 2);
+assert.equal(congEvent.ownerId, 'leader-1', 'Shared-event creator identity must survive normalization for owner-only controls.');
 const personalRecurrence = normalizeEvent({ id: 'p1', source: 'personal', eventDate: '2026-09-11', title: 'x', recurrenceWeeks: 5 });
 assert.equal(personalRecurrence.recurrenceWeeks, 0, 'Personal events must never carry recurrence; only congregation events can.');
 const occurrences = expandRecurring(congEvent);
 assert.equal(occurrences.length, 3, 'recurrenceWeeks:2 must expand to the original plus 2 weekly occurrences.');
 assert.deepEqual(occurrences.map(o => o.date), ['2026-09-11', '2026-09-18', '2026-09-25']);
 assert.equal(occurrences[1].id, 'c1:occurrence-1');
+assert.equal(occurrences[1].ownerId, 'leader-1', 'Generated recurrence occurrences must preserve creator identity.');
 assert.equal(occurrences[1].recurrenceWeeks, 0, 'An expanded occurrence must not itself carry a recurrence count (no re-expansion).');
 assert.deepEqual(expandRecurring(normalizeEvent({ id: 'n1', eventDate: '2026-09-11', title: 'no repeat' })).map(o => o.id), ['n1'], 'recurrenceWeeks:0 must expand to just the original event.');
 assert.deepEqual(expandRecurring(null), [], 'expandRecurring must fail closed on null input.');
@@ -57,13 +59,16 @@ function memoryPrivateStorage(){
 function fakeApi(){
   const rows=[];
   const congregationRows=[];
+  const calls={updates:0,removals:0};
   return { calendar:{
     async list(){ return rows.slice(); },
     async create(userId,ev){ const row={id:`cloud-${rows.length+1}`,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay}; rows.push(row); return row; },
-    async remove(userId,id){ const i=rows.findIndex(r=>r.id===id); if(i>=0)rows.splice(i,1); return true; },
+    async remove(userId,id){ const i=rows.findIndex(r=>r.id===id&&r.user_id===userId); if(i>=0)rows.splice(i,1); return true; },
     async listCongregation(congregationId){ return congregationRows.filter(r=>r.congregation_id===congregationId); },
-    async createCongregation(userId,congregationId,ev){ const row={id:`cong-${congregationRows.length+1}`,congregation_id:congregationId,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0}; congregationRows.push(row); return row; }
-  }, __rows: rows, __congregationRows: congregationRows };
+    async createCongregation(userId,congregationId,ev){ const row={id:`cong-${congregationRows.length+1}`,congregation_id:congregationId,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0}; congregationRows.push(row); return row; },
+    async updateCongregation(userId,congregationId,id,ev){ calls.updates++; const row=congregationRows.find(r=>r.id===id&&r.user_id===userId&&r.congregation_id===congregationId); if(!row)return null; Object.assign(row,{title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0}); return {...row}; },
+    async removeCongregation(userId,congregationId,id){ calls.removals++; const i=congregationRows.findIndex(r=>r.id===id&&r.user_id===userId&&r.congregation_id===congregationId); if(i<0)return null; const [row]=congregationRows.splice(i,1); return {id:row.id}; }
+  }, __rows: rows, __congregationRows: congregationRows, __calls:calls };
 }
 function fakeCongregation({ role = 'leader', congregationId = 'cong-1', name = 'Riverside' } = {}) {
   const MINISTRY = new Set(['facilitator', 'leader', 'pastor', 'admin']);
@@ -81,6 +86,7 @@ const guestAssignments={snapshot:()=>({assignments:[]})};
 let calendar=createCalendarService({session:guestSession,privateStorage:guestStorage,api:guestApi,assignments:guestAssignments,clock:()=>new Date('2026-09-11T00:00:00.000Z')});
 let state=await calendar.load();
 assert.equal(state.owner,'guest');
+assert.equal(state.accountUserId,'');
 assert.equal(state.scope,'guest-device');
 state=await calendar.addEvent({title:'Read Psalms',eventDate:'2026-09-12'});
 assert.equal(guestApi.__rows.length,0,'Guest events must never reach the API boundary.');
@@ -94,6 +100,7 @@ const acctApi=fakeApi();
 const acctAssignments={snapshot:()=>({assignments:[{id:'a1',title:'Read Mark 1',dueAt:'2026-09-15T00:00:00.000Z',dueState:'assigned'}]})};
 calendar=createCalendarService({session:acctSession,privateStorage:acctStorage,api:acctApi,assignments:acctAssignments,clock:()=>new Date('2026-09-11T00:00:00.000Z')});
 state=await calendar.load();
+assert.equal(state.accountUserId,'edge-user-1');
 assert.equal(state.scope,'account-cloud');
 const withAssignment=state.agenda.find(day=>day.date==='2026-09-15');
 assert.ok(withAssignment,'Assignment due date must appear in the agenda without Calendar writing to Assignments.');
@@ -111,7 +118,7 @@ const failResult=await calendar.addEvent({title:'Offline add',eventDate:'2026-09
 assert.equal(failResult.events.length,1,'Local add must still apply when cloud sync fails.');
 assert.equal(failResult.synced,false,'Failed cloud sync must be reported, not swallowed.');
 
-// --- service: congregation-shared events, leader can share ---
+// --- service: congregation-shared events, leader can share and only the creator can mutate ---
 const leaderSession = { getState: () => ({ authenticated: true, user: { id: 'leader-1' } }) };
 const leaderApi = fakeApi();
 const leaderCongregation = fakeCongregation({ role: 'leader' });
@@ -121,8 +128,21 @@ assert.equal(leaderState.canShareWithCongregation, true, 'A leader-role member m
 leaderState = await leaderCalendar.addEvent({ title: 'Congregation prayer night', eventDate: '2026-09-12', shareWithCongregation: true, recurrenceWeeks: 1 });
 assert.equal(leaderApi.__congregationRows.length, 1, 'Sharing must call createCongregation exactly once.');
 assert.equal(leaderApi.__rows.length, 0, 'A shared event must never be written to the personal events table.');
-const shared = leaderState.agenda.flatMap(day => day.events).filter(e => e.source === 'congregation');
+let shared = leaderState.agenda.flatMap(day => day.events).filter(e => e.source === 'congregation');
 assert.equal(shared.length, 2, 'A shared event with recurrenceWeeks:1 must appear twice in the agenda (original + 1 occurrence).');
+const sharedBase = shared.find(e => !String(e.id).includes(':occurrence-'));
+assert.equal(sharedBase.ownerId, 'leader-1', 'The shared event must expose its creator identity to the presentation layer.');
+leaderState = await leaderCalendar.updateCongregationEvent(sharedBase.id, { title: 'Updated prayer night', eventDate: '2026-09-13', recurrenceWeeks: 2 });
+assert.equal(leaderApi.__calls.updates, 1, 'Owner edit must cross the Calendar API boundary exactly once.');
+assert.equal(leaderApi.__congregationRows[0].title, 'Updated prayer night');
+assert.equal(leaderApi.__congregationRows[0].event_date, '2026-09-13');
+assert.equal(leaderApi.__congregationRows[0].recurrence_weeks, 2);
+shared = leaderState.agenda.flatMap(day => day.events).filter(e => e.source === 'congregation');
+assert.equal(shared.length, 3, 'Editing recurrenceWeeks must refresh the shared agenda from server-authoritative rows.');
+leaderState = await leaderCalendar.removeCongregationEvent(leaderApi.__congregationRows[0].id);
+assert.equal(leaderApi.__calls.removals, 1, 'Owner delete must cross the Calendar API boundary exactly once.');
+assert.equal(leaderApi.__congregationRows.length, 0, 'Owner delete must remove the shared row.');
+assert.equal(leaderState.agenda.flatMap(day => day.events).filter(e => e.source === 'congregation').length, 0, 'Deleted shared events must disappear after server-authoritative reload.');
 
 // --- service: an ordinary member cannot share, fails closed via Congregation Membership's own assert ---
 const memberSession = { getState: () => ({ authenticated: true, user: { id: 'member-1' } }) };
@@ -138,12 +158,25 @@ await assert.rejects(
 );
 assert.equal(memberApi.__congregationRows.length, 0, 'A rejected share must never reach the API boundary.');
 
-// --- service: members read a leader's shared event without being able to write one ---
+// --- service: members read a leader's shared event but cannot edit/delete it ---
 memberApi.__congregationRows.push({ id: 'cong-seed', congregation_id: 'cong-1', user_id: 'leader-1', title: 'Sunday service', notes: '', event_date: '2026-09-13', all_day: true, recurrence_weeks: 0 });
 memberState = await memberCalendar.load();
 const readOnlyShared = memberState.agenda.flatMap(day => day.events).find(e => e.source === 'congregation');
 assert.ok(readOnlyShared, 'A member must see a congregation-shared event created by a leader.');
 assert.equal(readOnlyShared.title, 'Sunday service');
+assert.equal(readOnlyShared.ownerId, 'leader-1');
+await assert.rejects(
+  () => memberCalendar.updateCongregationEvent(readOnlyShared.id, { title: 'Unauthorized edit' }),
+  err => err.code === 'BQ_CALENDAR_NOT_OWNER',
+  'A non-owner must fail closed before attempting to edit a shared event.'
+);
+await assert.rejects(
+  () => memberCalendar.removeCongregationEvent(readOnlyShared.id),
+  err => err.code === 'BQ_CALENDAR_NOT_OWNER',
+  'A non-owner must fail closed before attempting to delete a shared event.'
+);
+assert.deepEqual(memberApi.__calls, { updates: 0, removals: 0 }, 'Non-owner shared-event mutations must never reach the API boundary.');
+assert.equal(memberApi.__congregationRows[0].title, 'Sunday service', 'Rejected owner mutations must not alter shared data.');
 
 // --- service: sharing without a congregation membership fails closed, not silently ---
 const noCongCalendar = createCalendarService({ session: leaderSession, privateStorage: memoryPrivateStorage(), api: fakeApi(), assignments: { snapshot: () => ({ assignments: [] }) }, clock: () => new Date('2026-09-11T00:00:00.000Z') });

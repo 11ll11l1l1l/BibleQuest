@@ -668,6 +668,18 @@ export function createApi() {
       const {data,error}=await client.from('bible_calendar_events').insert({user_id:userId,congregation_id:congregationId,title:event.title,notes:event.notes||'',event_date:event.date,all_day:event.allDay!==false,recurrence_weeks:event.recurrenceWeeks||0}).select(CALENDAR_CONGREGATION_EVENT_FIELDS).single();
       if(error)throw error;
       return data;
+    },
+    async updateCongregation(userId,congregationId,id,event) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_calendar_events').update({title:event.title,notes:event.notes||'',event_date:event.date,all_day:event.allDay!==false,recurrence_weeks:event.recurrenceWeeks||0,updated_at:new Date().toISOString()}).eq('id',id).eq('user_id',userId).eq('congregation_id',congregationId).select(CALENDAR_CONGREGATION_EVENT_FIELDS).maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async removeCongregation(userId,congregationId,id) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_calendar_events').delete().eq('id',id).eq('user_id',userId).eq('congregation_id',congregationId).select('id').maybeSingle();
+      if(error)throw error;
+      return data||null;
     }
   });
 

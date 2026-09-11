@@ -36,6 +36,7 @@ export function normalizeEvent(raw) {
   return Object.freeze({
     id: String(raw?.id ?? ''),
     source,
+    ownerId: String(raw?.ownerId ?? raw?.user_id ?? ''),
     date,
     title,
     notes: String(raw?.notes ?? '').trim().slice(0, 2000),
