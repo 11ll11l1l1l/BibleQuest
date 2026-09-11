@@ -1,43 +1,63 @@
 # BibleQuest Agent Triage
 
-Analysis-only handoff on `agent-analysis`. Current `main` is implementation truth. Only verified P0/P1 may interrupt milestone work; P2 is deferred; P3/P4 are suppressed. No test is PASS unless executed. Actionable queue cap: 3.
+Analysis-only handoff on `agent-analysis`.
 
-## Current actionable queue
+## CURRENTNESS WARNING — REVALIDATION REQUIRED
 
-### 1. P0 STOP — Existing-device cloud progress can overwrite newer cloud state
+The findings below were last evaluated against historical `main` SHA `6d42c5445a582b55c81e8d925e6d2bc1b92659b9` on 2026-09-10. They predate the verified v3 production/post-release line and **must not be treated as current blockers without revalidation against the current exact product checkpoint**.
 
-- **Evidence:** STATIC FINDING, independently re-verified on current `main`.
+Current development task selection is controlled by the user's latest instruction and `DEVELOPMENT_PRIORITY_V3.md`, not by this historical triage file.
+
+A historical finding may interrupt current Priority 1 work only after a current investigator/captain:
+
+1. identifies the exact current product SHA inspected;
+2. confirms the relevant code path still exists in materially equivalent form;
+3. reproduces the defect or produces current concrete evidence;
+4. confirms the user impact/severity still qualifies as P0/P1;
+5. records the new evidence and recommended minimal correction.
+
+Until that happens, the queue below is **HISTORICAL / UNREVALIDATED**, not an active P0 stop.
+
+## Historical actionable queue
+
+### Historical P0 candidate — Existing-device cloud progress can overwrite newer cloud state
+
+- **Original evidence type:** static finding, independently reviewed on historical `main`.
+- **Original inspected SHA:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`.
 - **Flow:** signed-in multi-device persistence/resume.
-- **Files/components:** `account.js` (`PROGRESS_KEYS`, `registerDevice()`, `restoreOrSync()`, `pushProgress()`), `journey-cloud-sync.js`, `bible_progress_snapshots`.
-- **Impact:** a previously registered device with stale local state can overwrite newer cloud progress. Existing devices do not restore/compare the fetched remote snapshot before the broad local snapshot upsert.
-- **Reproduction/evidence:** Device A advances and syncs; previously registered Device B retains older local progress; Device B returns; `restoreOrSync(false)` fetches remote state but proceeds to `pushProgress()`. Journey sync also invokes the same broad progress push. Destructive live reproduction was not executed.
-- **Impact gate:** direct user progress loss/corruption risk in normal multi-device use.
-- **If deferred:** newer progress can be silently rolled back.
-- **Future correction:** add deterministic freshness/revision or safe merge arbitration before broad snapshot writes.
-- **Closure evidence:** executable multi-device regression proving newer state survives stale-device sign-in, Journey activity, periodic/background sync, and sign-out/sign-in.
+- **Historical files/components:** `account.js` (`PROGRESS_KEYS`, `registerDevice()`, `restoreOrSync()`, `pushProgress()`), `journey-cloud-sync.js`, `bible_progress_snapshots`.
+- **Original concern:** a previously registered device with stale local state could overwrite newer cloud progress because the historical flow did not restore/compare the fetched remote snapshot before a broad local snapshot upsert.
+- **Original reproduction model:** Device A advances and syncs; previously registered Device B retains older local progress; Device B returns; historical `restoreOrSync(false)` fetches remote state but proceeds to `pushProgress()`. Journey sync also invoked the same broad progress push.
+- **Destructive live reproduction:** not executed.
+- **Original severity rationale:** potential direct user progress loss/corruption in normal multi-device use.
+- **Original proposed correction:** deterministic freshness/revision or safe merge arbitration before broad snapshot writes.
+- **Required current closure/revalidation evidence:** executable/current-code evidence proving whether newer state can or cannot be overwritten by a stale device across sign-in, Journey activity, periodic/background sync and sign-out/sign-in.
 
-**Verified P1: 0.**
+**Current status of this historical finding: UNREVALIDATED AGAINST CURRENT EXACT PRODUCT SHA.**
 
-## Deferred / suppressed
+## Historical deferred / suppressed items
 
-- **No active P2.** Investigator 1, 2, and 4 persistence findings de-duplicate into the P0 above.
-- **P3 suppressed:** recovery completion has a narrow non-atomic failure edge; no demonstrated normal account lockout or release-blocking failure.
-- **UNKNOWN/P4:** deployed data-access enforcement was not live-verified; no cross-user exposure is demonstrated.
-- **NOT EXECUTED:** exact-SHA core browser flows, 320/360/390/412/430 px mobile matrix, installed-PWA behavior, deployed auth/data-policy lifecycle, exhaustive Scripture/translation corpus integrity, and doctrinal/content audit.
-- **P4 suppressed:** Journey dual persistence beyond the P0 consequence, layered navigation/Reader ownership, guarded DOM observers, test/runtime complexity, and manual-only browser workflow status have no separate demonstrated user/release failure.
+- Recovery completion non-atomic edge: historical P3; no demonstrated normal account lockout.
+- Deployed data-access enforcement: historical UNKNOWN/P4; no cross-user exposure demonstrated.
+- Exact-SHA core browser flows, 320/360/390/412/430 px matrix, installed-PWA behavior, deployed auth/data-policy lifecycle, exhaustive Scripture/translation corpus integrity and doctrinal/content audit were not executed in that historical cycle.
+- Journey dual persistence beyond the stale-device concern, layered navigation/Reader ownership, guarded DOM observers, test/runtime complexity and manual-only browser workflow status were historical P4 observations without separate demonstrated user failure.
 
-## Current cycle — 2026-09-10 11:50 JST
+## Historical cycle — 2026-09-10 11:50 JST
 
-- **Observed `main`:** `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`.
-- **Reports available:** Investigator 1, Investigator 2, Investigator 3, Investigator 4. **Missing: none.**
-- **Investigator 1:** same stale-device broad snapshot overwrite; no additional high-impact functional failure.
-- **Investigator 2:** same persistence mechanism; other architecture observations remain P4 because no separate concrete failure is demonstrated.
-- **Investigator 3:** no demonstrated UI/mobile/PWA/route failure; representative widths and installed-PWA behavior remain NOT EXECUTED.
-- **Investigator 4:** same data-integrity issue; no additional P0/P1 supported.
-- **Independent verification:** current `account.js` restores remote progress only for a newly registered device, otherwise reaches a full local snapshot upsert without freshness/version comparison. Current `journey-cloud-sync.js` invokes the same broad progress push after Journey status sync.
-- **Counterfactual:** deferring the cloud overwrite leaves users exposed to silent rollback; the suppressed items have no comparable demonstrated immediate harm.
-- **Firewall result:** **1 P0 STOP, 0 verified P1, 0 active P2.**
+- Observed `main`: `6d42c5445a582b55c81e8d925e6d2bc1b92659b9`.
+- Investigator reports available: 1, 2, 3 and 4.
+- Investigator 1/2/4 converged on the same stale-device snapshot concern.
+- Investigator 3 found no demonstrated UI/mobile/PWA/route failure in that cycle.
+- Historical firewall result at that time: 1 P0 candidate, 0 verified P1, 0 active P2.
 
-## Historical state
+## Current triage rule
 
-From 2026-09-09 09:50 through 2026-09-10 11:50 JST, triage has observed the same `main` SHA. The active queue has remained one P0 stale-device cloud-progress corruption item; no additional verified P1 has been established.
+For current BibleQuest development:
+
+- inspect the newest exact-green product checkpoint, not this historical SHA;
+- deduplicate and suppress stale/already-fixed/speculative reports;
+- P0/P1 can interrupt Priority 1 only with current evidence;
+- P2 should be scheduled intelligently;
+- P3/P4 must not derail higher-value work;
+- no test is PASS unless actually executed;
+- exact product SHA and evidence must be stated in every current finding.
