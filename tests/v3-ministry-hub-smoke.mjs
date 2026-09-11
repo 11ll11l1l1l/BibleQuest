@@ -18,13 +18,15 @@ async function run(){
 
   await mountForRole('member');
   assert(await page.locator('[data-ministry-tool="assignments"] [data-ministry-route="assignments"]').count()===1,'Member must be able to open Assignments.');
+  assert(await page.locator('[data-ministry-tool="calendar"] [data-ministry-route="calendar"]').count()===1,'Member must be able to open the verified Calendar.');
   assert(await page.locator('[data-ministry-tool="journey-groups"] [data-ministry-route="journey-groups"]').count()===1,'Member must be able to open Journey Groups.');
   assert(await page.locator('[data-ministry-privileged]').count()===0,'Ordinary member must not receive ministry-only controls.');
   assert(await page.locator('[data-ministry-deferred="live-room"]').isDisabled(),'Live Room must remain visibly unavailable.');
-  await page.locator('[data-ministry-route="assignments"]').click();await page.locator('[data-ministry-route="journey-groups"]').click();
-  let routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments,journey-groups','Member tool navigation callbacks drifted.');
+  await page.locator('[data-ministry-route="assignments"]').click();await page.locator('[data-ministry-route="calendar"]').click();await page.locator('[data-ministry-route="journey-groups"]').click();
+  let routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments,calendar,journey-groups','Member tool navigation callbacks drifted.');
 
   await mountForRole('leader');
+  assert(await page.locator('[data-ministry-tool="calendar"] [data-ministry-route="calendar"]').count()===1,'Leader must retain the shared Calendar entry.');
   assert(await page.locator('[data-ministry-privileged]').count()===1,'Leader must receive bounded ministry-role presentation.');
   assert(await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').count()===1,'Leader assignment publishing must delegate to existing Assignments route.');
   assert(await page.locator('[data-ministry-deferred="leader-dashboard"]').isDisabled(),'Leader Dashboard must remain deferred.');
