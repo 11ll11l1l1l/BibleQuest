@@ -107,8 +107,31 @@ import { congregationPage } from '../features/congregation/index.js';
 import { morePage } from '../features/more/index.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
 
+function escapeStartupMessage(value){
+  return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+// Fail-fast startup guard: if service construction/wiring below throws (for
+// example a dependency-ordering ReferenceError), render an actionable
+// diagnostic into #app instead of leaving a blank/frozen screen. This is not
+// a second bootstrap owner - it wraps the same, single start() sequence.
+function renderStartupFailure(root,error){
+  console.error('BibleQuest failed to start.',error);
+  if(!root)return;
+  root.innerHTML=`<section class="bq-panel" data-startup-failure><p class="bq-eyebrow">STARTUP ERROR</p><h1>BibleQuest could not start</h1><p>Something went wrong while preparing the app. Reloading usually fixes this. If it keeps happening, please let us know.</p><button type="button" data-startup-reload class="bq-primary-button">Reload</button>${error?.message?`<p><small data-startup-error-detail>${escapeStartupMessage(error.message)}</small></p>`:''}</section>`;
+  root.querySelector('[data-startup-reload]')?.addEventListener('click',()=>window.location.reload());
+}
+
 function start(){
   const root=document.getElementById('app');
+  try{
+    boot(root);
+  }catch(error){
+    renderStartupFailure(root,error);
+  }
+}
+
+function boot(root){
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const api=createApi();
   const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe});
