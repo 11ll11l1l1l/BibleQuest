@@ -1,0 +1,69 @@
+name: BibleQuest v3 assignment private responses fix5
+on:
+  push:
+    branches: [work/v3-assignment-private-responses-fix4]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: postrelease/v3-assignment-private-responses
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Guard exact source head
+        run: |
+          test "$(git rev-parse HEAD)" = "46160efbe5fe2fdcee75ee0884020268f6679ca6"
+          test -z "$(git status --porcelain)"
+      - name: Restore established assignment copy contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/features/assignments/index.js')
+          text=p.read_text()
+          pairs=[
+            ("if(row.requiredReflection)bits.push('Written response required');","if(row.requiredReflection)bits.push('Written reflection required');"),
+            ("const leaderNote=readOnly?'<p class=\"bq-form-message\">Member answer text is private to authorized ministry roles. The congregation-facing status below exposes only who has responded and when.</p>':'';","const leaderNote=readOnly?'<p class=\"bq-form-message\">Recipient responses remain read-only on the ministry assignment view. Member answer text is private to authorized ministry roles. The congregation-facing status below exposes only who has responded and when.</p>':'';")
+          ]
+          for old,new in pairs:
+              if text.count(old)!=1:
+                  raise SystemExit(f'expected one match, found {text.count(old)} for {old[:80]!r}')
+              text=text.replace(old,new,1)
+          p.write_text(text)
+          PY
+          git diff --check
+      - name: Focused static validation
+        run: |
+          node --check src/features/assignments/index.js
+          node tests/v3-assignment-private-responses.mjs
+          node tests/v3-advanced-assignments-edge.mjs
+          node tests/v3-assignments-edge.mjs
+          node tests/v3-assignment-push-edge.mjs
+          node scripts/validate-v3-advanced-assignments.mjs
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
+          node scripts/validate-v3-architecture.mjs
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact patched tree
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Focused browser validation
+        run: |
+          timeout 240s node tests/v3-advanced-assignments-smoke.mjs
+          timeout 240s node tests/v3-assignments-smoke.mjs
+          timeout 240s node tests/v3-assignment-push-smoke.mjs
+      - name: Commit exact correction to product branch
+        run: |
+          git config user.name "11ll11l1l1l"
+          git config user.email "138889199+11ll11l1l1l@users.noreply.github.com"
+          git add src/features/assignments/index.js
+          git commit -m "fix(assignments): retain recipient copy contracts"
+          git push origin HEAD:postrelease/v3-assignment-private-responses
