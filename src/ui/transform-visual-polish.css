@@ -1,0 +1,81 @@
+/* BibleQuest v3 visual replacement tranche 6 — Transform.
+   Presentation only: no layout, assessment inputs, scoring, state, persistence, privacy, navigation or accessibility ownership. */
+
+.bq-transform-head{
+  border-color:rgba(52,79,60,.14);
+  background:linear-gradient(160deg,#fff 0%,#f5f9f4 100%);
+  box-shadow:0 10px 28px rgba(39,60,45,.045),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-transform-item{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(155deg,#fff 0%,#f8faf6 100%);
+  box-shadow:0 6px 18px rgba(39,60,45,.04),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-transform-scale button{
+  border-color:rgba(52,79,60,.18);
+  background:linear-gradient(155deg,#fff 0%,#f3f7f2 100%);
+  box-shadow:0 3px 10px rgba(39,60,45,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-transform-scale button.is-selected,
+[data-transform-bias-answer].is-selected{
+  border-color:#2f704d;
+  background:linear-gradient(145deg,#2f704d 0%,#4f8460 100%);
+  color:#fff;
+  box-shadow:0 4px 12px rgba(47,112,77,.14),inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+.bq-transform-result,
+[data-transform-personality-result],
+[data-transform-bias-result],
+[data-transform-recommendations],
+[data-transform-reflection],
+[data-transform-history],
+.bq-panel.bq-transform-actions{
+  border-color:rgba(52,79,60,.14);
+  background:linear-gradient(160deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 8px 24px rgba(39,60,45,.04),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-transform-bars span{
+  background:linear-gradient(90deg,#e8eee8 0%,#dde7df 100%);
+}
+
+.bq-transform-bars i{
+  background:linear-gradient(90deg,#2f704d 0%,#5b8d68 100%);
+}
+
+.bq-transform-focus article{
+  border-color:rgba(47,112,77,.18);
+  background:linear-gradient(155deg,#f7fbf7 0%,#edf5ee 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+@media(prefers-contrast:more){
+  .bq-transform-head,
+  .bq-transform-item,
+  .bq-transform-scale button,
+  .bq-transform-result,
+  [data-transform-personality-result],
+  [data-transform-bias-result],
+  [data-transform-recommendations],
+  [data-transform-reflection],
+  [data-transform-history],
+  .bq-panel.bq-transform-actions,
+  .bq-transform-focus article{box-shadow:none}
+  .bq-transform-head,
+  .bq-transform-item,
+  .bq-transform-scale button,
+  .bq-transform-result,
+  [data-transform-personality-result],
+  [data-transform-bias-result],
+  [data-transform-recommendations],
+  [data-transform-reflection],
+  [data-transform-history],
+  .bq-panel.bq-transform-actions,
+  .bq-transform-focus article{border-color:rgba(31,54,39,.36)}
+  .bq-transform-scale button.is-selected,
+  [data-transform-bias-answer].is-selected{border-color:#173d29;background:#245b3e;color:#fff}
+}
