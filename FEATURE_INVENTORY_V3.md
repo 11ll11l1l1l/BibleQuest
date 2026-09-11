@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 95
+- **Regression-tested:** 96
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 4
+- **Not started:** 3
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -19,7 +19,7 @@ This file is the authoritative parity ledger for the rebuild.
 
 `classic.html`, old standalone pages, or retained old source files are references only. They do **not** satisfy v3 parity.
 
-Priority note (2026-09-11 JST): #15 Japanese furigana, #38 Kids Memory Match, and #40 Kids Bible Who Am I are reopened for implementation. #39 Hiragana Match remains explicitly deferred.
+Priority note (2026-09-11 JST): #38 Kids Memory Match is now verified. #15 Japanese furigana and #40 Kids Bible Who Am I remain reopened for implementation. #39 Hiragana Match remains explicitly deferred.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
@@ -60,14 +60,14 @@ Priority note (2026-09-11 JST): #15 Japanese furigana, #38 Kids Memory Match, an
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
-| 38 | Kids Memory Match | Yes | Clean | Not started | priority reopened; recover exact old-version Memory Match contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
+| 38 | Kids Memory Match | Yes | Clean | Verified | Memory Meadow Games ownership; <420px 6 pairs/3 columns and >=420px 8 pairs/4 columns; 350ms match/650ms mismatch lock; replay/leave cleanup; unique round identity; stars + coins reward through Progress with zero XP; complete accumulated browser/mobile verification |
 | 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | priority reopened; recover exact old-version Kids Bible Who Am I contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Regression-tested | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Regression-tested | create/join/leave; reconnect; no stale room state |
 | 44 | Bible World | Yes | Clean | Regression-tested | render path; unlock thresholds; route into content |
-| 45 | Bible World artwork | Yes | Resource retained | Verified | correct assets; responsive layout; missing-asset fallback |
+| 45 | Bible World artwork | Yes | Resource retained | Regression-tested | correct assets; responsive layout; missing-asset fallback |
 | 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
 | 47 | Transformation full | Yes | Standalone old | Regression-tested | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
 | 48 | Transform engine | Yes | Multiple old paths | Regression-tested | one engine; deterministic state transitions; no stale instance |
