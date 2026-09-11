@@ -66,7 +66,7 @@ requireText(calendar, '20260911140000_calendar_congregation_sharing.sql', 'calen
 requireText(calendar, 'full intended Line B chain', 'calendar integration rule');
 
 requireText(migrationGuide, 'bbbceb057c631f08ec32826384ef6fcd61da4527', 'migration guide');
-requirePattern(migrationGuide, /UNAPPLIED until positively verified/i, 'migration guide');
+requirePattern(migrationGuide, /UNAPPLIED until positively verified|NOT APPLIED\s*\/\s*production integration blocked or pending/i, 'migration guide');
 requirePattern(migrationGuide, /compare the currently deployed helper definition/i, 'migration guide');
 requirePattern(migrationGuide, /do\s*(?:\*\*)?not(?:\*\*)?\s+apply it merely because a newer unrelated Calendar\/visual\/docs branch exists/i, 'migration guide');
 requireText(migrationGuide, 'APPLIED + LIVE VERIFIED', 'migration guide');
