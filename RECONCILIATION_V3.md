@@ -1,6 +1,6 @@
 # BibleQuest v3 — Product/Documentation Reconciliation
 
-Status: product exact-green through Progress/Grow; final automated mobile/build validation integrated; field/provider evidence remains
+Status: product exact-green through Progress/Grow; final automated validation and independent two-host production verification complete; field evidence remains
 Updated: 2026-09-12 JST
 
 ## Product truth
@@ -10,7 +10,7 @@ Updated: 2026-09-12 JST
 - product verifier: run `34633247237` — success
 - product PR: #110
 
-This remains the product identity because subsequent PR #111 changed only tests/workflow/release documentation.
+This remains the product identity because subsequent PR #111 and later release-control changes are tests/workflow/documentation only.
 
 ## Release-validation truth
 
@@ -18,20 +18,8 @@ This remains the product identity because subsequent PR #111 changed only tests/
 - validation ref: `release/v3-final-mobile-width-gate-20260912`
 - validation run: `34634460077` — success
 - validation PR: #111
-- PR #111 feature head: `dd0b3b7dad7d59f76f05facb55ccd90bb02fb7f0`
-- PR #111 base: `1f95ce74b55aed45afab5d4d1dd9efaa8d79762a`
 
-Run `34634460077` explicitly fetched and checked out `d0eab188479f20273cbd67cb5b796c74868dc5d4` as `refs/pull/111/merge` and passed the full accumulated release cycle available in CI:
-
-- Cloudflare `bash build.sh` deployment gate;
-- architecture validators;
-- edge/security/static regressions;
-- local app boot;
-- full browser/mobile regressions;
-- explicit 320/360/390/412/430 current-v3 width acceptance;
-- PWA install/offline-shell regressions;
-- accessibility/reduced-motion-sensitive accumulated coverage;
-- accepted Phase B focused regressions.
+Run `34634460077` passed the full accumulated release cycle available in CI: Cloudflare build gate, architecture validators, edge/security/static regressions, local app boot, full browser/mobile regressions, explicit 320/360/390/412/430 current-v3 width acceptance, PWA install/offline-shell regressions, accessibility/reduced-motion-sensitive coverage and accepted Phase B focused regressions.
 
 This SHA is a validated repository/release-gate integration point, not a new product SHA.
 
@@ -46,9 +34,9 @@ This SHA is a validated repository/release-gate integration point, not a new pro
 
 ## Issue #6 reconciliation
 
-Automated final-width intent is now satisfied for the current v3 architecture. The permanent test verifies 320/360/390/412/430 px, the five current nav routes Home/Learn/Play/Grow/More, Daily Journey prominence, header fit, touch targets, text floor, no horizontal overflow and no console/page errors.
+Automated and hosted-headless final-width intent is satisfied for the current v3 architecture. The permanent test verifies 320/360/390/412/430 px, the five current nav routes Home/Learn/Play/Grow/More, Daily Journey prominence, header fit, touch targets, text floor, no horizontal overflow and no console/page errors. Run `34637203062` repeated the current hosted checks directly on both production hosts successfully.
 
-Historical four-tab and Home nine-node wording is obsolete and must not drive a regression. Physical Android Chrome/Brave and genuine installed-PWA acceptance remain separate field evidence and are not claimed by headless Chromium.
+Historical four-tab and Home nine-node wording is obsolete and must not drive a regression. Physical Android Chrome/Brave and genuine installed-PWA device acceptance remain separate field evidence and are not claimed by headless Chromium.
 
 ## Issue #68 reconciliation
 
@@ -74,17 +62,21 @@ Known release migrations remain **APPLIED + LIVE VERIFIED** and unchanged:
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-No production database mutation was made by PR #110, PR #111, or the release-readiness inspection.
+No production database mutation was made by PR #110, PR #111, PR #112 or the production verifier.
 
 ## Deployment truth
 
-Do not transfer historical deployment PASS to product `2c601b3...`.
+Do not transfer the historical `cf17f36...` / `04bd51b...` deployment PASS as proof for later product work. Fresh current evidence now exists.
 
-- GitHub exact product regression: complete.
-- exact validation/build/width regression: complete.
-- provider deployment identity for exact intended product: not canonically recorded.
-- independent verification of canonical `https://mybiblequest.pages.dev/`: not yet recorded for this product.
-- independent verification of compatibility `https://biblequest-7th.pages.dev/`: not yet recorded for this product.
+- GitHub exact product regression: complete on product `2c601b3...`, run `34633247237`.
+- exact validation/build/width regression: complete on validation integration `d0eab188...`, run `34634460077`.
+- repository `main` during current production verification: `452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b`.
+- verification branch: `verify/v3-production-current-452e84c-20260912` at `197056e374f06b59246dcf953405818b89ffde9d`.
+- current production verifier: run `34637203062`, job `103387887268` — success.
+- canonical `https://mybiblequest.pages.dev/`: selected current release files matched byte-for-byte and the hosted current browser/mobile suite passed.
+- compatibility `https://biblequest-7th.pages.dev/`: selected current release files matched byte-for-byte and the same hosted suite passed.
+
+Therefore independent two-host production-content/browser verification is **complete** for the intended current product state. The current repository tooling does not expose a Cloudflare-internal deployment object/ID; that provider-internal identifier is not claimed and its absence is not a deployment failure.
 
 ## Next safe gate
 
@@ -93,9 +85,9 @@ No automatic new product tranche is selected.
 1. preserve product `2c601b3...` and validation `d0eab188...` separately;
 2. execute Issue #68 multi-account field validation when test credentials/sessions/devices are available;
 3. execute physical Android Chrome/Brave + installed-PWA field acceptance when a real device is available;
-4. record exact Cloudflare provider deployment identity for the intended product;
-5. independently verify both production hosts against that exact candidate;
-6. only if field/production evidence exposes a real product defect or material visual gap, fix the true owner and create a new exact candidate with complete regression.
+4. do not repeat independent two-host production verification unless product/runtime bytes change;
+5. obtain Cloudflare-internal deployment metadata only if strictly required and an authorized provider connection exposes it;
+6. only if field/production evidence exposes a real product defect or material visual gap, fix the true owner and create a new exact candidate with complete regression and renewed live proof.
 
 ## Document authority
 
@@ -107,4 +99,4 @@ No automatic new product tranche is selected.
 6. exact workflow/deployment/live evidence;
 7. historical inventory/agent evidence.
 
-Never transfer PASS; docs/validation-only HEAD != product SHA; static CI != real-device/multi-account proof; GitHub validation != provider deployment != independent live proof.
+Never transfer PASS; docs/validation-only HEAD != product SHA; static/headless CI != real-device/multi-account proof; GitHub validation != provider-internal metadata != independent live proof.
