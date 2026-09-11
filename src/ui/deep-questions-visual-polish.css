@@ -1,0 +1,32 @@
+/* BibleQuest v3 visual replacement tranche 7 — Deep Questions.
+   Presentation only: no layout, question flow, references, saved reflection, navigation or accessibility ownership. */
+
+.bq-deep-featured,
+.bq-deep-card,
+.bq-deep-question,
+.bq-deep-reflection,
+.bq-deep-feedback,
+.bq-deep-saved{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(155deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 6px 18px rgba(39,60,45,.04),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-deep-featured{
+  border-color:rgba(47,112,77,.2);
+  background:linear-gradient(155deg,#f9fcf8 0%,#edf6ee 100%);
+}
+
+.bq-deep-feedback{
+  background:linear-gradient(155deg,#f5f9f3 0%,#eaf3e9 100%);
+}
+
+.bq-game-choice.is-selected{
+  border-color:rgba(47,112,77,.34);
+  background:linear-gradient(155deg,#f4f8f2 0%,#eaf3e9 100%);
+  box-shadow:0 3px 10px rgba(47,112,77,.05);
+}
+
+@media(prefers-contrast:more){
+  .bq-deep-featured,.bq-deep-card,.bq-deep-question,.bq-deep-reflection,.bq-deep-feedback,.bq-deep-saved,.bq-game-choice.is-selected{box-shadow:none;border-color:rgba(31,54,39,.36)}
+}
