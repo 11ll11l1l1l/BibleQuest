@@ -1,0 +1,101 @@
+name: BibleQuest v3 Notes visual verifier 2679239
+on:
+  push:
+    branches: [verify/v3-visual-notes-2679239]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2679239895da95ed4968af906890575aac02bb24
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "2679239895da95ed4968af906890575aac02bb24"
+          test -z "$(git status --porcelain)"
+          git diff --check 4df20622b2b484d14436322a59b106c0fa70ba87 2679239895da95ed4968af906890575aac02bb24
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Notes visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const privatePage=await browser.newPage({viewport});
+              await privatePage.goto('http://127.0.0.1:4173/#/private-notes',{waitUntil:'networkidle'});
+              await privatePage.locator('[data-note-new]').waitFor();
+              const privateResult=await privatePage.evaluate(()=>{
+                const node=document.querySelector('.bq-private-notes-empty')||document.querySelector('.bq-private-note-card')||document.querySelector('.bq-private-notes-count');
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/notes-visual-polish.css');
+                const style=node?getComputedStyle(node):null;
+                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!privateResult.polishLoaded)throw new Error(`Notes visual stylesheet missing at ${viewport.width}px`);
+              if(!privateResult.backgroundImage||privateResult.backgroundImage==='none')throw new Error(`Private Notes visual background missing at ${viewport.width}px: ${JSON.stringify(privateResult)}`);
+              if(privateResult.scrollWidth>privateResult.viewport+1)throw new Error(`Private Notes horizontal overflow at ${viewport.width}px: ${JSON.stringify(privateResult)}`);
+              await privatePage.close();
+
+              const cloudPage=await browser.newPage({viewport});
+              await cloudPage.goto('http://127.0.0.1:4173/#/cloud-notes',{waitUntil:'networkidle'});
+              await cloudPage.locator('[data-cloud-auth]').waitFor();
+              const cloudResult=await cloudPage.evaluate(()=>{
+                const node=document.querySelector('.bq-cloud-notes-boundary')||document.querySelector('.bq-cloud-notes-count');
+                const style=node?getComputedStyle(node):null;
+                return {backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!cloudResult.backgroundImage||cloudResult.backgroundImage==='none')throw new Error(`Cloud Notes visual background missing at ${viewport.width}px: ${JSON.stringify(cloudResult)}`);
+              if(cloudResult.scrollWidth>cloudResult.viewport+1)throw new Error(`Cloud Notes horizontal overflow at ${viewport.width}px: ${JSON.stringify(cloudResult)}`);
+              await cloudPage.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Private/Cloud Notes visual desktop/mobile containment passed.');
+          EOF
