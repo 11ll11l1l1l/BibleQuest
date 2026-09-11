@@ -5,6 +5,8 @@ import { createAccountService } from './account.js';
 import { createBackupService } from './backup.js';
 import { createReaderService } from './reader.js';
 import { createJapaneseVocabularyService } from './japanese-vocabulary.js';
+import { createJapaneseFuriganaService } from './japanese-furigana.js';
+import { createJapaneseFuriganaTokenizerRuntime } from './japanese-furigana-tokenizer.js';
 import { createGuidedStudyService } from './study.js';
 import { createDeepQuestionsService } from './deep-questions.js';
 import { createStoryJourneyService } from './story-journey.js';
@@ -121,6 +123,8 @@ function start(){
   const backup=createBackupService({storage});
   const reader=createReaderService({bible,storage,progress});
   const vocabulary=createJapaneseVocabularyService({storage});
+  const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
+  const furigana=createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer});
   const study=createGuidedStudyService({lesson,progress,reader});
   const deepQuestions=createDeepQuestionsService({lesson,reader});
   const storyJourney=createStoryJourneyService({lesson,progress,reader});
@@ -197,7 +201,7 @@ function start(){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
