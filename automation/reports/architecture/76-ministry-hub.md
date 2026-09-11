@@ -1,158 +1,100 @@
 # A3 architecture/security investigation — #76 Ministry Hub
 
 Agent: `BQ-A3-ARCH-SECURITY`
-Inspected: 2026-09-10 JST
+Inspected: 2026-09-11 JST
 
 ## STATE / PROVENANCE
 
-- Active target: **#76 Ministry Hub**.
-- #76 canonical branch: **absent** at inspection (`feature/v3-ministry-hub` not found).
-- #76 A1 quarantine candidate: **absent** at inspection (`agent/a1-work/076-ministry-hub` not found).
-- Last canonical milestone branch: `feature/v3-assignment-push` at exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Residual designated #75 quarantine branch: `agent/a1-work/075-assignment-push` at the same exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Latest frozen release/base: `release/v3.48-assignment-push` at exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
-- Previous frozen release: `release/v3.47-advanced-assignments` at `2523f85d47f59721eae81da10cf1007d29af4139`.
-- Exact frozen-base verification: Actions run `34450088492`, completed `success`; job `102783621514` completed the exact-bookkeeping-SHA assertion plus accumulated architecture, edge/security and browser/mobile phases.
-- Retained behavior reference independently inspected: `release/v2-parity-snapshot`, `ministry-hub.js`.
+- Active milestone: **#76 Ministry Hub**.
+- Canonical: `feature/v3-ministry-hub` @ exact `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`.
+- Dedicated A1 quarantine candidate: `agent/a1-work/076-ministry-hub` **not found** at inspection.
+- Frozen base: `release/v3.48-assignment-push` @ exact `e725e5dee5a46fcaebf05200301efdb93f868b22`.
+- Functional candidate recorded by the milestone contract: `dfc6440cd7105c73107081dfb4fb16f8bfac2d71`.
+- Exact functional verification: Actions run `34460593373` = `success`; isolated verifier head was `6df4d373153950aa8857632c571b8a7d90f623b9` and the milestone contract records that it checked out/asserted exact product SHA `dfc6440c...` before the accumulated suites.
+- Canonical `e17d009...` is eight commits ahead of frozen v3.48. Its tip commit is docs-only: `docs(v3): close Ministry Hub functional contract`.
+- No branch-native Actions runs were found for `feature/v3-ministry-hub`; I did not independently locate an exact complete accumulated gate for current canonical `e17d009...`.
 
-This is a **pre-implementation architecture/security recovery report**, not a #76 candidate PASS. No PASS transfers from v3.48 to a future #76 SHA.
+No PASS is transferred from `dfc6440c...` to `e17d009...`.
 
 ## INSPECTED PRIMARY EVIDENCE — FACT
 
-1. `FEATURE_INVENTORY_V3.md` at frozen v3.48 is authoritative and defines #76 as `Ministry Hub`, `Not started`, with required verification `open tools; role guard; navigation`. #77 Notification Center, #78 Workspace and #79 Linked Activities remain separate later rows; #43 Live Rooms also remains `Not started`.
-
-2. `ARCHITECTURE_V3.md` defines existing single owners including `src/app/bootstrap.js` for composition/one boot, `src/app/router.js` for navigation/history, `src/core/api.js` for Supabase/remote calls, and `src/app/congregation-membership.js` for authenticated congregation membership/role orchestration and fail-closed client capability projection. It forbids competing runtimes, direct backend/storage shortcuts and duplicated ownership.
-
-3. `src/app/congregation-membership.js` at v3.48 recognizes only `member | facilitator | leader | pastor | admin`, treats unknown roles as unsupported, and defines the client-side `ministry` convenience capability only for `facilitator | leader | pastor | admin`. `can()` fails closed for missing/unknown membership.
-
-4. `MINISTRY_ROLES.md` explicitly separates platform authority from congregation ministry authority and states that UI visibility is convenience only. Privileged authorization must be enforced server-side from authenticated identity plus database-backed membership. Existing trusted functions include `bq-assignment`, `bq-invite`, and `bq-score` for ministry-authorized actions.
-
-5. `src/core/api.js` is the sole current browser Supabase/function boundary. Its congregation membership load reads active membership + active congregation records; trusted mutations elsewhere invoke named Edge Functions rather than deriving authority from UI state.
-
-6. `src/app/bootstrap.js` currently composes the verified congregation membership, Assignments and Journey Groups services and routes. It has no native Ministry Hub route/service at v3.48. It also has no native Live Rooms route, consistent with #43 remaining unimplemented.
-
-7. `supabase/schema.sql` already has congregation/member tables, RLS and a `private.is_bible_congregation_member(uuid)` security-definer helper with empty `search_path`; congregation/member reads are scoped to authenticated membership/ownership. Existing comments explicitly reserve role-changing/joining operations for trusted-server paths. This blueprint also demonstrates the architectural principle that sensitive derived writes must not become direct browser DML merely because related rows are readable.
-
-8. The frozen repository contains existing Supabase migrations and trusted functions including `bq-assignment`, `bq-admin`, `bq-invite`, `bq-join`, `bq-journey-group` and others. No #76-specific migration/function was present at the frozen base.
-
-9. Retained v2 `ministry-hub.js` independently shows that the historical hub itself was readable by an active congregation member, while `facilitator | leader | pastor | admin` enabled privileged creation/archive/pin/close UI and Leader Dashboard access. It also used legacy direct browser Supabase/storage operations for ministry messages, polls, calendar and media signing/upload.
-
-10. Exact baseline run `34450088492` and job `102783621514` are green for v3.48. This establishes a known-good frozen starting architecture only.
+1. `MINISTRY_HUB_V3.md` defines #76 narrowly as a portal/navigation migration: existing congregation membership owner for role projection, existing router for destinations, existing Assignments/Journey Groups owners, and deferred/unavailable presentation for unfinished destinations.
+2. `src/app/ministry-hub.js` at canonical `e17d009...` depends on the existing congregation owner, exposes Assignments/Journey Groups to readable members, exposes assignment-publishing presentation only when `congregation.can(id,'ministry')` is true, and keeps Live Room/Leader Dashboard unavailable.
+3. `src/app/congregation-membership.js` recognizes `member | facilitator | leader | pastor | admin`, fails closed for unknown roles, derives `ministry` only for facilitator/leader/pastor/admin, and requires authenticated session state before loading memberships.
+4. The Ministry Hub implementation does not itself perform privileged writes. The contract explicitly retains assignment publishing behind the existing Assignments owner and trusted `bq-assignment` server boundary.
+5. Frozen-to-canonical comparison is ahead by eight commits. The canonical tree includes the dedicated Ministry Hub contract and application surface. Current inspected #76 service code introduces no second router, Supabase client, direct table/storage mutation path, RPC, Edge Function, schema migration, RLS/grant change, or Realtime owner.
+6. Functional run `34460593373` completed successfully. The milestone contract states that accumulated architecture, edge/security and browser/mobile phases passed against exact functional product SHA `dfc6440c...`.
 
 ## REQUIRED OWNER / COMPOSITION
 
-**FACT:** Current ownership already provides the correct reusable boundaries for the inventory-proven #76 path:
+**FACT:** Existing ownership remains the correct boundary:
 - composition/route registration: `src/app/bootstrap.js`;
 - navigation/history: `src/app/router.js`;
-- authenticated congregation role state: `src/app/congregation-membership.js`;
-- remote/trusted calls: `src/core/api.js`;
-- existing destination owners: Assignments and Journey Groups.
+- congregation membership and role capability projection: `src/app/congregation-membership.js`;
+- Ministry Hub read-only portal projection: `src/app/ministry-hub.js`;
+- Ministry Hub UI: `src/features/ministry-hub/index.js`;
+- privileged mutations: existing trusted feature/server owners only.
 
-**RECOMMENDATION:** A bounded #76 implementation should add one Ministry Hub presentation/orchestration surface composed through these owners. It must not create another router, another congregation-role model, another Supabase client, a legacy `window.BQ*` authority object, or direct storage/backend shortcuts.
+**RECOMMENDATION:** Preserve this composition. #76 must not become a second role model, router, backend client, storage owner or generic ministry mutation gateway.
 
-## SAFE DATA FLOW
+## SAFE DATA FLOW / AUTHORIZATION
 
-For the currently proven `open tools; role guard; navigation` contract:
+**FACT:** Browser role visibility is convenience, not authority. `congregation.can(...,'ministry')` may decide whether ministry affordances are shown but must never authorize a privileged mutation.
 
-1. session/auth state loads through the existing session owner;
-2. active congregation membership/role loads through `src/app/congregation-membership.js` using `src/core/api.js`;
-3. Ministry Hub renders role-aware presentation from that normalized membership;
-4. navigation delegates to the existing router and existing clean destination owners;
-5. any privileged action exposed from the hub delegates to the already-authoritative trusted service for that action, which re-authorizes server-side.
+Safe flow:
+1. authenticated session -> existing congregation membership loader;
+2. normalized active membership -> fail-closed `read` / `ministry` projection;
+3. Ministry Hub renders available/deferred destinations;
+4. navigation delegates to the existing router;
+5. any privileged operation delegates to its established trusted owner, which authorizes again server-side.
 
-No new schema, RLS, grant, RPC, Edge Function, storage bucket policy, Realtime contract or direct table mutation is required by the narrow inventory-proven portal/navigation interpretation.
-
-## AUTHORIZATION / RLS
-
-**FACT:** `congregation.can(id, 'ministry')` is a fail-closed **client capability projection**, not an authorization boundary.
-
-**FACT:** Current policy requires server-side authorization for privileged ministry actions.
-
-**FACT:** Retained v2 allowed an ordinary active congregation member to open/read the hub while hiding privileged leader controls. Therefore `role guard` should not automatically be interpreted as `deny all members from opening the hub` without stronger contract evidence.
-
-**RECOMMENDATION:** For a portal-only #76 implementation:
-- authenticated active congregation membership may govern whether congregation-specific hub context is available;
-- ministry-only controls may be visually gated using the existing `ministry` capability;
-- every privileged mutation must remain server-authorized by its existing trusted owner;
-- unknown/missing/unsupported role state must fail closed for ministry-only controls.
+For current #76 scope, **no new server/RPC/RLS path is required**.
 
 ## SERVER / TRUST BOUNDARY
 
-### Safe boundary
-The browser may decide what navigation/control affordances to show from already-loaded normalized membership, but it must never convert that role projection into authority. Trusted mutation remains behind the existing server/Edge path for each capability.
+The safe trust boundary is unchanged from the frozen base. Assignment publishing remains server-authorized by the existing assignment path. The Ministry Hub itself should remain read-only orchestration/navigation.
 
-### Required server/authorization path
-- Assignment publication/feedback: existing `bq-assignment` authority.
-- Invite creation: existing `bq-invite` authority.
-- Trusted score actions: existing `bq-score` authority.
-- Any other privileged mutation must use an already-verified trusted owner or, if genuinely required by the recovered #76 contract, be separately designed/reviewed as HIGH-RISK before implementation.
-
-### Must not be broadened
-- Do **not** grant browser mutation rights merely to reproduce legacy Ministry Hub CRUD.
-- Do **not** broaden congregation-member RLS from read/member scope into generic ministry write authority.
-- Do **not** use `congregation.can(...,'ministry')` as proof of authorization.
-- Do **not** absorb or expose unfinished #43 Live Rooms, #77 Notifications, #78 Workspace or #79 Linked Activities as though they are verified #76 destinations.
-- Do **not** copy legacy direct `client.from(...).insert/update/delete`, storage upload/signing, or `window.BQ*` patterns into v3 without an independently recovered, trusted contract.
-
-## LIFECYCLE / CLEANUP
-
-A portal-only Ministry Hub should own no independent long-lived Realtime subscription, timer, storage cache or media player unless primary evidence proves such behavior is required. If later recovered scope adds subscriptions/uploads/calendar/poll state, lifecycle/cleanup ownership must be explicit and re-reviewed because that materially changes risk.
-
-## PRIVACY / SCOPE
-
-**FACT:** Retained v2 describes ministry content as congregation-scoped and used congregation IDs on message/poll/calendar operations.
-
-**RECOMMENDATION:** Any future congregation content exposed through #76 must remain active-congregation scoped and must not leak directory/content across congregations. Signed/private media URLs, if reintroduced, require a dedicated storage-policy/trusted-path review rather than reuse by assumption.
+Must not be broadened into:
+- direct browser privileged DML or storage writes;
+- generic congregation write grants/RLS expansion;
+- new trusted RPC/Edge authority merely to reproduce legacy hub CRUD;
+- browser-role projection treated as authorization;
+- absorption of #43 Live Rooms, #77 Notification Center, #78 Workspace or #79 Linked Activities;
+- legacy message/poll/calendar/media mutation behavior without a separately recovered HIGH-RISK contract and server authorization design.
 
 ## RISK CLASSIFICATION
 
-**INFERENCE / RECOMMENDATION:** The inventory-proven portal/navigation implementation can remain **NORMAL-RISK** if it only composes verified owners, adds bounded presentation/navigation, and makes no authorization/RLS/grant/schema/trusted-function/global-router ownership changes.
+**INFERENCE / RECOMMENDATION:** Current inspected #76 implementation is **NORMAL-RISK architecturally** because it composes verified owners and does not change schema, RLS/grants, trusted server authority, dependencies or broad persistence/sync semantics.
 
-It becomes **HIGH-RISK immediately** if implementation requires any of the following:
-- schema or migration changes;
-- RLS/grant changes;
-- new/modified trusted Edge Function or RPC authority;
-- direct browser privileged DML or storage writes;
-- global router/shell ownership changes beyond normal additive route composition;
-- reintroduction of retained messages/devotionals, poll creation/closing, calendar mutation or private media upload/signing where a current trusted contract has not already been verified.
-
-A1 must reclassify before making such a change.
+Reclassify to **HIGH-RISK before further product writes** if any of those boundaries change.
 
 ## BLOCKERS
 
-No architecture/security BLOCKER is established for beginning a **bounded portal/navigation #76 implementation** from frozen v3.48.
+No architecture/security blocker is established in the inspected #76 product boundary.
 
-There is, however, a contract/scope ambiguity: retained v2 contains messages/devotionals, polls, calendar and media behavior that exceeds the inventory's narrow `open tools; role guard; navigation` wording. Architecture must not resolve this ambiguity by copying legacy direct-client backend behavior. If those data workflows are later proven required for #76, they need a fresh HIGH-RISK trust-boundary design/review before product writes.
+However, current canonical `e17d009...` does not have independently located exact-SHA accumulated verification in this A3 pass. This is **missing verification evidence**, not an architecture defect. Release/bookkeeping promotion must not rely on the functional PASS from `dfc6440c...`.
 
 ## NON-BLOCKING OBSERVATIONS
 
-- `DEVELOPMENT_HANDOFF_V3.md` at the frozen product SHA is historically stale about #75 closure, but current control state and live refs prove v3.48 closure. This does not change the frozen product architecture.
-- `automation/TRIAGE.md`, read only after the independent primary-evidence pass, is stale: it still treats #75 as active and v3.47 as frozen. It is not evidence for #76 and supplies no current #76 blocker.
+- `automation/CURRENT.md` on the control branch is stale at v3.48/#75 closure even though live product evidence contains an implemented #76 canonical branch.
+- `automation/TRIAGE.md`, read only after the independent primary-evidence pass, is materially stale: it describes #38/v3.70 as active and does not reflect live #76 evidence. It is not evidence for this report.
+- The writer lease was FREE at inspection.
 
 ## MISSING EVIDENCE
 
-- No `feature/v3-ministry-hub` canonical branch/HEAD exists yet.
-- No `agent/a1-work/076-ministry-hub` candidate exists yet.
-- No exact #76 functional or bookkeeping Actions run exists.
-- No permanent #76 architecture validator, edge/security test or browser/mobile smoke exists yet.
-- No dedicated #76 milestone document currently resolves whether retained messages/devotionals, polls, calendar and media are part of #76 or intentionally deferred beyond the inventory-proven portal/navigation contract.
-- No current primary evidence justifies new schema/RLS/grants/functions/storage policies for #76.
+- No dedicated `agent/a1-work/076-ministry-hub` branch was found.
+- No independently located exact complete accumulated workflow run for canonical `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`.
+- No evidence in this pass that a v3.49 frozen release exists at current canonical.
+- If current canonical is intended as bookkeeping/release candidate, exact-SHA accumulated verification remains required before freeze.
 
-## ARCHITECTURE ACCEPTANCE CHECKS FOR FUTURE #76 CANDIDATE
+## ARCHITECTURE ACCEPTANCE
 
-1. Candidate SHA/ancestry is exact and based on frozen v3.48/canonical reconciled state.
-2. Ministry Hub uses existing router/bootstrap composition; no competing navigation owner/global runtime.
-3. Congregation role presentation uses the existing membership owner and fails closed for unknown/missing ministry role state.
-4. Ordinary member behavior matches recovered contract evidence; ministry-only controls are distinct from hub readability unless stronger primary evidence changes the contract.
-5. Privileged operations, if any, route through existing trusted server authority and are independently authorized there.
-6. No new direct browser privileged DML/storage mutation is introduced.
-7. No unexplained RLS/grant/schema/trusted-function broadening occurs.
-8. Navigation opens only verified/current destinations or presents a controlled unavailable state for deferred destinations; #43/#77/#78/#79 are not silently absorbed.
-9. Permanent tests prove role guard and real route/navigation behavior at the candidate SHA; source-string checks alone are insufficient for authorization claims.
-10. Complete accumulated architecture, edge/security and browser/mobile suite passes against the exact candidate/bookkeeping SHA as applicable.
+A3 architecture/security disposition at exact canonical `e17d0096489a5f76a025f4fbb8b52f7d1ec7a3e0`: **BOUNDARY ACCEPTABLE / NORMAL-RISK; exact current-SHA verification still required before release promotion.**
+
+Acceptance remains contingent on: single-owner composition, fail-closed role projection, no client-side authority substitution, no backend/RLS/schema broadening, deferred milestones remaining unavailable, and complete exact-SHA accumulated verification.
 
 ## STALENESS CONDITIONS
 
-This report becomes stale if a #76 canonical/work candidate appears or advances; frozen v3.48 changes; authoritative inventory/contract changes; current router/bootstrap/congregation membership/API ownership changes; any schema/RLS/grant/trusted-function/storage-policy change enters the #76 candidate; retained-source evidence changes; or exact #76 test/workflow evidence appears.
+This report becomes stale if canonical/candidate/frozen SHA changes; a #76 quarantine candidate appears; any schema/RLS/grant/trusted function/dependency/router ownership change enters #76; exact `e17d009...` workflow evidence appears; or #76 scope/contract changes.
 
-A3 made no product, workflow, canonical/work branch, inventory, release, handoff, lease, CURRENT, TRIAGE, `main`, production Supabase or production Cloudflare change.
+A3 made no product/workflow/canonical/work branch/inventory/release/handoff/lease/CURRENT/TRIAGE/`main`/production-system change.
