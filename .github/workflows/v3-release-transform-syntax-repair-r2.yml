@@ -1,0 +1,45 @@
+name: BibleQuest v3 guarded Transform syntax repair r2
+
+on:
+  push:
+    branches:
+      - repair/v3-transform-syntax-20260911-r2
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout live release branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v3-post-parity-closeout
+          fetch-depth: 0
+      - name: Guard expected release HEAD
+        run: test "$(git rev-parse HEAD)" = "d13a8a6292225427193ff1556bf92221d75acd84"
+      - name: Repair reproduced template-expression syntax defect
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('transformation-v2.js')
+          s=p.read_text()
+          old="different response.') )}</span>"
+          new="different response.')}</span>"
+          count=s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one repair target, found {count}')
+          p.write_text(s.replace(old,new,1))
+          PY
+          node --check transformation-v2.js
+          git diff --check
+          git diff -- transformation-v2.js
+      - name: Commit and push minimal repair
+        run: |
+          git config user.name "BibleQuest release executor"
+          git config user.email "138889199+11ll11l1l@users.noreply.github.com"
+          git add transformation-v2.js
+          git commit -m "fix(v3): repair Transform personality result syntax"
+          git push origin HEAD:feature/v3-post-parity-closeout
