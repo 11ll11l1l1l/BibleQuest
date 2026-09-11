@@ -1,0 +1,116 @@
+name: BibleQuest v3 shell visual verifier 406c34d
+on:
+  push:
+    branches: [verify/v3-visual-shell-406c34d]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 406c34dcdf904b7483bf4381be774a908738e60c
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "406c34dcdf904b7483bf4381be774a908738e60c"
+          test -z "$(git status --porcelain)"
+          git diff --check 62cb86cd48bae683d0be37a2a729127156a0093a 406c34dcdf904b7483bf4381be774a908738e60c
+          test "$(git diff --name-only 62cb86cd48bae683d0be37a2a729127156a0093a 406c34dcdf904b7483bf4381be774a908738e60c | sort | tr '\n' ' ')" = "index.html src/ui/shell-visual-polish.css tests/v3-shell-visual-polish-static.mjs "
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+          node tests/v3-couples-visual-polish-static.mjs
+          node tests/v3-community-visual-polish-static.mjs
+          node tests/v3-media-visual-polish-static.mjs
+          node tests/v3-review-visual-polish-static.mjs
+          node tests/v3-accessibility-visual-polish-static.mjs
+          node tests/v3-shell-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Shell visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const context=await browser.newContext(viewport.width<=390?{viewport,isMobile:true,hasTouch:true}:{viewport});
+              const page=await context.newPage();
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.locator('[data-bq-shell="v3"]').waitFor();
+              const normal=await page.evaluate(()=>{
+                const topbar=document.querySelector('.bq-topbar');
+                const brand=document.querySelector('.bq-brand-mark');
+                const nav=document.querySelector('.bq-nav');
+                const active=document.querySelector('.bq-nav a[aria-current]');
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/shell-visual-polish.css');
+                const ts=getComputedStyle(topbar),bs=getComputedStyle(brand),ns=getComputedStyle(nav),as=active?getComputedStyle(active):null;
+                return {polishLoaded:Boolean(polish),topbarPosition:ts.position,topbarBackground:ts.backgroundImage,topbarShadow:ts.boxShadow,brandBackground:bs.backgroundImage,navPosition:ns.position,navHeight:ns.height,navBackground:ns.backgroundImage,navShadow:ns.boxShadow,activeColor:as?.color||'',navLinks:document.querySelectorAll('.bq-nav a').length,innerWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!normal.polishLoaded)throw new Error(`Shell visual stylesheet missing at ${viewport.width}px`);
+              if(normal.topbarPosition!=='sticky'||normal.navPosition!=='fixed'||normal.navHeight!=='72px')throw new Error(`Shell geometry ownership changed at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(!normal.topbarBackground||normal.topbarBackground==='none'||!normal.brandBackground||normal.brandBackground==='none'||!normal.navBackground||normal.navBackground==='none')throw new Error(`Shell visual backgrounds missing at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(!normal.topbarShadow||normal.topbarShadow==='none'||!normal.navShadow||normal.navShadow==='none')throw new Error(`Shell visual shadows missing at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(normal.navLinks!==5)throw new Error(`Primary navigation contract changed at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(normal.scrollWidth>normal.innerWidth+1)throw new Error(`Shell visual overflow at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              await page.locator('[data-route-link="more"]').click();
+              await page.locator('[data-open-accessibility]').waitFor();
+              await page.locator('[data-open-accessibility]').click();
+              await page.locator('[data-accessibility-setting="contrast"]').selectOption('strong');
+              await page.waitForFunction(()=>document.documentElement.dataset.bqContrast==='strong');
+              const strong=await page.evaluate(()=>{
+                const topbar=document.querySelector('.bq-topbar');
+                const nav=document.querySelector('.bq-nav');
+                const chip=document.querySelector('.bq-session-chip');
+                return {topbarShadow:getComputedStyle(topbar).boxShadow,navShadow:getComputedStyle(nav).boxShadow,chipShadow:chip?getComputedStyle(chip).boxShadow:'none',scrollWidth:document.documentElement.scrollWidth,innerWidth};
+              });
+              if(strong.topbarShadow!=='none'||strong.navShadow!=='none'||strong.chipShadow!=='none')throw new Error(`Strong-contrast shell retained decorative shadow at ${viewport.width}px: ${JSON.stringify(strong)}`);
+              if(strong.scrollWidth>strong.innerWidth+1)throw new Error(`Strong-contrast shell overflow at ${viewport.width}px: ${JSON.stringify(strong)}`);
+              await context.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 global shell visual desktop/mobile containment passed.');
+          EOF
