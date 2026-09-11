@@ -125,7 +125,7 @@ html[data-bq-contrast="strong"] .bq-nav a[aria-current]{color:var(--forest-900);
   .bq-brand-mark{width:38px;height:38px;border-radius:11px}
   .bq-brand strong{font-size:17px}
   .bq-brand small{display:none}
-  .bq-progress-chip{display:none}
+  .bq-progress-chip small{display:none}
   .bq-session-chip{max-width:126px}
   .bq-session-chip [data-session-label]{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .bq-main{padding-top:var(--space-2)}
