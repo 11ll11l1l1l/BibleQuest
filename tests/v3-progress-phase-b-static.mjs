@@ -1,0 +1,35 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {workflowInvokesNode} from '../scripts/v3-workflow-contract.mjs';
+
+const root=path.resolve(import.meta.dirname,'..');
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const asset='assets/progress-feature-icons.svg';
+const css='src/ui/progress-phase-b.css';
+const ui='src/features/progress/index.js';
+const owner='src/core/progress.js';
+const contract='VISUAL_PHASE_B_PROGRESS_V3.md';
+const workflowPath='.github/workflows/v3-regression.yml';
+for(const file of[asset,css,ui,owner,contract,'index.html',workflowPath])assert(fs.existsSync(path.join(root,file)),`Missing Progress Phase B file: ${file}`);
+
+const sprite=read(asset),phase=read(css),progressUi=read(ui),progressOwner=read(owner),scope=read(contract),index=read('index.html'),workflow=read(workflowPath);
+for(const id of['progress','xp','streak','activity','chapter','growth','profile','psychometrics','avatar','achievements','badge','badge-locked'])assert(sprite.includes(`id="${id}"`),`Progress sprite missing semantic symbol: ${id}`);
+assert(progressUi.includes("const PROGRESS_ART='assets/progress-feature-icons.svg';"),'Progress UI must use the committed same-origin sprite.');
+assert(progressUi.includes('aria-hidden="true"'),'Progress decorative artwork must stay hidden from assistive technology.');
+for(const marker of['data-progress-page-xp','data-progress-page-streak','data-progress-page-activities','data-progress-page-chapters','data-open-transform','data-open-personality-profile','data-open-psychometrics','data-open-avatar-vault','data-progress-badge'])assert(progressUi.includes(marker),`Progress interaction/state contract marker disappeared: ${marker}`);
+assert(progressUi.includes("earned?'badge':'badge-locked'"),'Progress badge artwork must derive from existing unlocked state.');
+assert(!/[✓○]/u.test(progressUi),'Progress Phase B renderer must not retain generic check/circle badge artwork.');
+assert(progressOwner.includes('function createProgressService')||progressOwner.includes('export function createProgressService'),'Progress owner contract is missing.');
+assert(progressOwner.includes('newlyUnlocked')&&progressOwner.includes('badges'),'Progress owner must still own badge unlock state.');
+assert(index.includes('href="src/ui/progress.css"'),'Progress base stylesheet must remain loaded.');
+assert(index.includes('href="src/ui/progress-visual-polish.css"'),'Progress Phase A stylesheet must remain loaded.');
+assert(index.includes('href="src/ui/progress-phase-b.css"'),'Progress Phase B stylesheet must be loaded.');
+assert(index.indexOf('src/ui/progress-phase-b.css')>index.indexOf('src/ui/progress-visual-polish.css'),'Progress Phase B must load after Phase A.');
+for(const marker of['.bq-progress-hero','.bq-progress-art-wrap','.bq-progress-stat-art','.bq-progress-actions button','.bq-progress-badge-art','@media(max-width:430px)','@media(prefers-contrast:more)'])assert(phase.includes(marker),`Progress Phase B CSS missing contract marker: ${marker}`);
+assert(!/animation\s*:|@keyframes/i.test(phase),'Progress Phase B must not add animation behavior.');
+assert(!/url\s*\(/i.test(phase),'Progress Phase B CSS must not add a second asset loading path.');
+assert(scope.includes('sole XP/streak/counter/reward/badge owner'),'Progress Phase B contract must retain single-owner architecture.');
+assert(scope.includes('No PASS transfers'),'Progress Phase B contract must preserve exact-candidate evidence rules.');
+for(const test of['tests/v3-progress-phase-b-static.mjs','tests/v3-progress-phase-b-smoke.mjs','tests/v3-progress-edge.mjs','tests/v3-progress-smoke.mjs'])assert(workflowInvokesNode(workflow,test),`Accumulated v3 regression must retain ${test}.`);
+console.log('BibleQuest v3 Progress Phase B static asset contract passed.');
