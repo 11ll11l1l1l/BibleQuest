@@ -59,9 +59,10 @@ jobs:
           try{
             for(const viewport of [{width:1280,height:800},{width:390,height:844}]){
               const page=await browser.newPage({viewport});
-              await page.goto('http://127.0.0.1:4173/#/games',{waitUntil:'networkidle'});
-              await page.locator('[data-bq-shell="v3"]').waitFor();
-              await page.locator('.bq-game-launcher').waitFor();
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.locator('[data-route-link="play"]').click();
+              await page.waitForURL(/#\/play$/);
+              await page.locator('[data-game-launch="quick-recall"]').waitFor();
               const result=await page.evaluate(()=>{
                 const card=document.querySelector('.bq-game-card');
                 const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/games-visual-polish.css');
