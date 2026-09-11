@@ -1,0 +1,94 @@
+/* BibleQuest v3 visual replacement tranche 8 — Account.
+   Presentation only: no layout, authentication, signup/recovery/device behavior, persistence, permissions, navigation or accessibility ownership. */
+
+.bq-account-panel{
+  border-color:rgba(52,79,60,.14);
+  background:linear-gradient(160deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 12px 32px rgba(39,60,45,.055),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-account-tabs{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(145deg,#f2f6f1 0%,#f8faf6 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86);
+}
+
+.bq-account-tabs button.active{
+  background:linear-gradient(145deg,#fff 0%,#f1f6f0 100%);
+  color:#285f42;
+  box-shadow:0 4px 12px rgba(39,60,45,.07),inset 0 1px 0 rgba(255,255,255,.96);
+}
+
+.bq-account-form input{
+  border-color:rgba(52,79,60,.18);
+  background:linear-gradient(150deg,#fff 0%,#fafcf8 100%);
+  box-shadow:inset 0 1px 2px rgba(39,60,45,.025);
+}
+
+.bq-account-form input:focus{
+  border-color:#4a7d5b;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(47,112,77,.08),inset 0 1px 2px rgba(39,60,45,.02);
+}
+
+.bq-primary-button{
+  background:linear-gradient(145deg,#2f704d 0%,#4d835e 100%);
+  box-shadow:0 5px 14px rgba(47,112,77,.14),inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.bq-secondary-button{
+  border-color:rgba(52,79,60,.17);
+  background:linear-gradient(145deg,#fff 0%,#f5f8f3 100%);
+  box-shadow:0 3px 10px rgba(39,60,45,.035),inset 0 1px 0 rgba(255,255,255,.94);
+}
+
+.bq-account-footnote{
+  background:linear-gradient(145deg,#f3f7f2 0%,#f8faf6 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.bq-local-note{
+  background:linear-gradient(145deg,#fff9e8 0%,#fff4d8 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.bq-device-row{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(150deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 4px 13px rgba(39,60,45,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-current-device{
+  background:linear-gradient(145deg,#e8f4ea 0%,#dfeee3 100%);
+  color:#285f42;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+.bq-recovery-code{
+  border-color:rgba(47,112,77,.34);
+  background:linear-gradient(150deg,#f6faf5 0%,#edf5ee 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 5px 16px rgba(39,60,45,.035);
+}
+
+@media(prefers-contrast:more){
+  .bq-account-panel,
+  .bq-account-tabs,
+  .bq-account-tabs button.active,
+  .bq-account-form input,
+  .bq-account-form input:focus,
+  .bq-primary-button,
+  .bq-secondary-button,
+  .bq-account-footnote,
+  .bq-local-note,
+  .bq-device-row,
+  .bq-current-device,
+  .bq-recovery-code{box-shadow:none}
+  .bq-account-panel,
+  .bq-account-tabs,
+  .bq-account-form input,
+  .bq-device-row{border-color:rgba(31,54,39,.4)}
+  .bq-recovery-code{border-color:#245b3e}
+  .bq-account-tabs button.active{background:#fff;color:#173d29}
+  .bq-primary-button{background:#245b3e;color:#fff}
+  .bq-secondary-button{background:#fff;color:#1f3829}
+}
