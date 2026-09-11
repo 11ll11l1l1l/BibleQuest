@@ -1,6 +1,6 @@
 # BibleQuest v3 Visual Polish Progress
 
-Updated: 2026-09-11 JST after exact-SHA verification of cumulative visual tranche 10.
+Updated: 2026-09-11 JST after exact-SHA verification of cumulative visual tranche 11.
 
 ## Production reference
 
@@ -17,14 +17,15 @@ Updated: 2026-09-11 JST after exact-SHA verification of cumulative visual tranch
 
 ## Cumulative verified checkpoint
 
-- Branch: `postrelease/v3-visual-notes-tranche10`.
-- Exact product SHA: `2679239895da95ed4968af906890575aac02bb24`.
-- Parent exact-green visual checkpoint: tranche 9 at `4df20622b2b484d14436322a59b106c0fa70ba87`.
-- Delta from the exact-green tranche-9 product consists of the tranche-9 evidence document plus the intentionally narrow Notes presentation delta:
+- Branch: `postrelease/v3-visual-couples-tranche11`.
+- Exact product SHA: `8525232c5a7498d020f044742518139484a96681`.
+- Parent exact-green visual checkpoint: tranche 10 product at `2679239895da95ed4968af906890575aac02bb24`.
+- The cumulative branch also carries the tranche-10 evidence-only commit `4634d27813c2e20dd8091b4c6e5d44252df39a29`.
+- Product delta from the exact-green tranche-10 product consists of that evidence-only progress update plus the intentionally narrow Couples presentation delta:
   - `index.html`: one stylesheet include;
-  - `src/ui/notes-visual-polish.css`: presentation-only overlay;
-  - `tests/v3-notes-visual-polish-static.mjs`: boundary contract.
-- No JavaScript, feature owner, route, storage, backend, service worker, data, or Supabase file changed in tranche 10.
+  - `src/ui/couples-visual-polish.css`: presentation-only overlay;
+  - `tests/v3-couples-visual-polish-static.mjs`: visual replacement boundary contract.
+- No JavaScript, feature owner, route, storage, backend, service worker, data, or Supabase file changed in tranche 11.
 
 ## Tranche 9
 
@@ -53,7 +54,26 @@ Executed and passed:
 
 No PASS was transferred from a different product SHA.
 
-## Cumulative visual surfaces completed through tranche 10
+## Tranche 11
+
+Couples local and Couples cloud received replacement-level presentation polish through surface gradients, border/shadow refinement, relationship-card emphasis, safety-state treatment, and cloud privacy/message presentation. Relationship content, non-competitive framing, safety language, cloud privacy, persistence/sync boundaries, route handoffs, touch targets, feature ownership, and responsive behavior remain unchanged.
+
+Verifier: `verify/v3-visual-couples-8525232`; workflow run `34577583033`, job `103193461208`, **success** while checking out detached exact product SHA `8525232c5a7498d020f044742518139484a96681`.
+
+Executed and passed:
+
+- exact-SHA and diff hygiene against exact-green tranche 10 product SHA `2679239895da95ed4968af906890575aac02bb24`;
+- Cloudflare deployment gate, including syntax over 267 JavaScript files and production-entry/runtime ownership guards;
+- 11 accumulated visual static contracts, including the new Couples local/cloud contract;
+- 53 accumulated v3 architecture validators;
+- 86 edge/security/static regressions;
+- 68 Playwright browser/mobile regressions plus Kids Memory browser acceptance;
+- existing Couples cloud and Couples/family browser regressions as part of the accumulated suite;
+- dedicated computed-style and horizontal-containment acceptance at 1280x900 and 390x844 for both Couples surfaces, including the local safety-state treatment and cloud presentation.
+
+No PASS was transferred from a different product SHA.
+
+## Cumulative visual surfaces completed through tranche 11
 
 - Home hero/presentation.
 - Games decorative chrome.
@@ -65,7 +85,8 @@ No PASS was transferred from a different product SHA.
 - Account and Tutorial presentation.
 - Context Lab / Japanese vocabulary / source-provenance presentation.
 - Private Notes / Cloud Notes presentation.
+- Couples local / Couples cloud presentation.
 
 ## Next work
 
-Continue on a new isolated cumulative branch from the tranche-10 line. The next selected low-risk family is Couples local/cloud presentation, using a presentation-only overlay while preserving all relationship content, non-competitive framing, safety language, cloud privacy, persistence/sync boundaries, route handoffs, touch targets, and responsive behavior. Do not change production `main` or the frozen r3 rollback branch while developing or verifying the next tranche.
+Continue on a new isolated cumulative branch from the verified tranche-11 line. The next selected low-risk family is Community Bridge presentation, using a presentation-only overlay while preserving congregation/member semantics, permissions/privacy, persistence/backend boundaries, route handoffs, touch targets, accessibility semantics, and responsive behavior. Do not change production `main` or the frozen r3 rollback branch while developing or verifying the next tranche.
