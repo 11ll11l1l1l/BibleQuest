@@ -1,0 +1,111 @@
+name: BibleQuest v3 production live verification bcaddd1
+
+on:
+  push:
+    branches:
+      - verify/v3-production-live-20260911-bcaddd1
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact corrected production candidate
+        uses: actions/checkout@v4
+        with:
+          ref: bcaddd1e87e32b336080dec73b723e959b548f8f
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm exact corrected identity
+        run: test "$(git rev-parse HEAD)" = "bcaddd1e87e32b336080dec73b723e959b548f8f"
+      - name: Wait for both Cloudflare Pages hosts to match corrected product files
+        run: |
+          set -euo pipefail
+          files=(index.html offline-shell-sw.js src/app/offline-shell.js src/app/bootstrap.js transformation-v2.js)
+          bases=(https://mybiblequest.pages.dev/ https://biblequest-7th.pages.dev/)
+          for base in "${bases[@]}"; do
+            matched=0
+            for attempt in $(seq 1 60); do
+              ok=1
+              for file in "${files[@]}"; do
+                tmp="$(mktemp)"
+                if ! curl -fsSL --retry 2 --connect-timeout 10 -H 'Cache-Control: no-cache' "${base}${file}?release=bcaddd1&attempt=${attempt}" -o "$tmp"; then
+                  ok=0
+                elif ! cmp -s "$file" "$tmp"; then
+                  ok=0
+                fi
+                rm -f "$tmp"
+              done
+              if [ "$ok" -eq 1 ]; then
+                echo "${base} matches corrected candidate on ${#files[@]} product files."
+                matched=1
+                break
+              fi
+              echo "${base} not propagated yet (attempt ${attempt}/60)."
+              sleep 10
+            done
+            test "$matched" -eq 1
+          done
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Canonical production Home Account and navigation smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-shell-smoke.mjs
+      - name: Canonical production Reader smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-reader-smoke.mjs
+      - name: Canonical production Games smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-games-smoke.mjs
+      - name: Canonical production Transform smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-transform-engine-smoke.mjs
+      - name: Canonical production accessibility smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-accessibility-smoke.mjs
+      - name: Canonical production PWA install smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-pwa-install-smoke.mjs
+      - name: Canonical production offline shell smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-offline-shell-smoke.mjs
+      - name: Canonical production offline Bible packs smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: timeout 240s node tests/v3-offline-bible-packs-smoke.mjs
+      - name: Compatibility host offline shell smoke
+        env:
+          BQ_BASE_URL: https://biblequest-7th.pages.dev/
+        run: timeout 240s node tests/v3-offline-shell-smoke.mjs
+      - name: Compatibility host basic browser smoke
+        run: |
+          node --input-type=module <<'NODE'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
+            const page=await context.newPage();
+            await page.goto('https://biblequest-7th.pages.dev/',{waitUntil:'networkidle',timeout:30000});
+            await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+            const heading=(await page.locator('h1').first().textContent())?.trim();
+            if(heading!=='BibleQuest') throw new Error(`Compatibility host heading mismatch: ${heading}`);
+            await page.locator('[data-route-link="learn"]').click();
+            await page.waitForURL(/#\/learn$/,{timeout:10000});
+            await page.evaluate(()=>navigator.serviceWorker.ready);
+            const sw=await page.evaluate(()=>navigator.serviceWorker.controller?.scriptURL||'');
+            if(sw && !sw.endsWith('/offline-shell-sw.js')) throw new Error(`Unexpected compatibility service worker: ${sw}`);
+            console.log('Compatibility host v3 shell/navigation/service-worker smoke passed.');
+            await context.close();
+          } finally { await browser.close(); }
+          NODE
