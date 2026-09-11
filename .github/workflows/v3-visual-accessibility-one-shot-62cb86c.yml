@@ -1,0 +1,110 @@
+name: BibleQuest v3 Accessibility visual verifier 62cb86c
+on:
+  push:
+    branches: [verify/v3-visual-accessibility-62cb86c]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 62cb86cd48bae683d0be37a2a729127156a0093a
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "62cb86cd48bae683d0be37a2a729127156a0093a"
+          test -z "$(git status --porcelain)"
+          git diff --check 4c93af06ebbf7069b8ae587f77479997f77f2b9b 62cb86cd48bae683d0be37a2a729127156a0093a
+          test "$(git diff --name-only 4c93af06ebbf7069b8ae587f77479997f77f2b9b 62cb86cd48bae683d0be37a2a729127156a0093a | sort | tr '\n' ' ')" = "index.html src/ui/accessibility-visual-polish.css tests/v3-accessibility-visual-polish-static.mjs "
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+          node tests/v3-couples-visual-polish-static.mjs
+          node tests/v3-community-visual-polish-static.mjs
+          node tests/v3-media-visual-polish-static.mjs
+          node tests/v3-review-visual-polish-static.mjs
+          node tests/v3-accessibility-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Accessibility visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const page=await browser.newPage(viewport.width<=390?{viewport,isMobile:true,hasTouch:true}:{viewport});
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              await page.locator('[data-route-link="more"]').click();
+              await page.locator('[data-open-accessibility]').waitFor();
+              await page.locator('[data-open-accessibility]').click();
+              await page.locator('[data-accessibility-page]').waitFor();
+              const normal=await page.evaluate(()=>{
+                const owner=document.querySelector('[data-accessibility-page]');
+                const controls=document.querySelector('.bq-accessibility-controls');
+                const ownerStyle=owner?getComputedStyle(owner):null;
+                const controlsStyle=controls?getComputedStyle(controls):null;
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/accessibility-visual-polish.css');
+                return {polishLoaded:Boolean(polish),ownerBackground:ownerStyle?.backgroundImage||'',ownerShadow:ownerStyle?.boxShadow||'',controlsBackground:controlsStyle?.backgroundImage||'',innerWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!normal.polishLoaded)throw new Error(`Accessibility visual stylesheet missing at ${viewport.width}px`);
+              if(!normal.ownerBackground||normal.ownerBackground==='none'||!normal.controlsBackground||normal.controlsBackground==='none')throw new Error(`Accessibility visual backgrounds missing at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(!normal.ownerShadow||normal.ownerShadow==='none')throw new Error(`Accessibility visual shadow missing at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              if(normal.scrollWidth>normal.innerWidth+1)throw new Error(`Accessibility visual overflow at ${viewport.width}px: ${JSON.stringify(normal)}`);
+              await page.locator('[data-accessibility-setting="contrast"]').selectOption('strong');
+              await page.waitForFunction(()=>document.documentElement.dataset.bqContrast==='strong');
+              const strong=await page.evaluate(()=>{
+                const owner=document.querySelector('[data-accessibility-page]');
+                const select=document.querySelector('[data-accessibility-setting="text"]');
+                return {ownerShadow:getComputedStyle(owner).boxShadow,ownerBackground:getComputedStyle(owner).backgroundColor,selectShadow:getComputedStyle(select).boxShadow,scrollWidth:document.documentElement.scrollWidth,innerWidth};
+              });
+              if(strong.ownerShadow!=='none'||strong.selectShadow!=='none')throw new Error(`Strong-contrast Accessibility visual layer retained decorative shadow at ${viewport.width}px: ${JSON.stringify(strong)}`);
+              if(strong.scrollWidth>strong.innerWidth+1)throw new Error(`Strong-contrast Accessibility visual overflow at ${viewport.width}px: ${JSON.stringify(strong)}`);
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Accessibility visual desktop/mobile containment passed.');
+          EOF
