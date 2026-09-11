@@ -1,0 +1,13 @@
+import { createKidsMemoryGame } from '../src/app/kids-memory.js';
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+const progress={getState:()=>({xp:0,stars:0,coins:0}),record:()=>({state:{xp:0,stars:0,coins:0}})};
+const game=createKidsMemoryGame({progress,roundIdFactory:()=>`exit-${Math.random()}`,random:()=>0});
+let state=game.start(390);
+const first=0,second=state.cards.findIndex((card,index)=>index>0&&card.icon!==state.cards[first].icon);
+game.flip(first);const pending=game.flip(second).pending;
+assert(game.getState().locked,'Pending mismatch must lock the game.');
+game.leave();
+assert(game.getState().phase==='memory-idle'&&!game.getState().locked,'Leaving Memory Meadow must clear pending lock state.');
+const stale=game.resolve(pending.token);
+assert(!stale.applied&&stale.stale,'Pending callback after exit must not mutate idle state.');
+console.log('BibleQuest v3 Kids Memory exit regression passed.');
