@@ -1,1 +1,0 @@
-Release gate execution is tracked by RELEASE_6PM_2026-09-11.md. This marker exists only to make the deadline state explicit for concurrent chat instances.
