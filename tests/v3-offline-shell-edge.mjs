@@ -34,4 +34,27 @@ unsubscribe();service.dispose();assert((await service.start()).status==='dispose
 const unsupported=createOfflineShellService({serviceWorker:null,performanceRef:null,locationRef,MessageChannelCtor:null});
 assert((await unsupported.start()).status==='unsupported','Unsupported browsers must fail soft.');unsupported.dispose();
 assert(states.includes('registering')&&states.includes('ready'),'Subscribers must receive offline-shell lifecycle changes.');
+
+posted=null;
+let loadHandler=null;
+const documentRef={readyState:'loading'};
+const loadTarget={
+  addEventListener(type,handler){assert(type==='load','Offline warm timing must wait only for page load.');loadHandler=handler},
+  removeEventListener(type,handler){if(type==='load'&&handler===loadHandler)loadHandler=null}
+};
+const delayedEntries=[{name:'https://example.test/app/src/app/bootstrap.js',initiatorType:'script'}];
+const delayedPerformance={getEntriesByType(type){assert(type==='resource','Delayed warm must inspect resource timing only.');return delayedEntries}};
+const delayed=createOfflineShellService({serviceWorker,performanceRef:delayedPerformance,locationRef,MessageChannelCtor:FakeMessageChannel,documentRef,loadTarget,timeoutMs:100});
+const delayedStart=delayed.start();
+for(let attempt=0;attempt<5&&!loadHandler;attempt++)await Promise.resolve();
+assert(typeof loadHandler==='function','First-load warmup must wait for the page load boundary.');
+assert(posted===null,'Offline shell must not snapshot resources before page load completes.');
+delayedEntries.push({name:'https://example.test/app/src/features/games/index.js',initiatorType:'script'});
+documentRef.readyState='complete';
+const fireLoad=loadHandler;fireLoad();
+const delayedReady=await delayedStart;
+assert(delayedReady.ready,'Delayed first-load warmup must become ready after page load.');
+assert(posted?.urls.includes('https://example.test/app/src/features/games/index.js'),'Warm snapshot must include shell modules that finished loading after DOMContentLoaded.');
+delayed.dispose();
+
 console.log('BibleQuest v3 offline shell edge regression passed.');
