@@ -170,11 +170,23 @@ async function journeyGroupAssignmentScenario(sessions) {
   await join.locator('button[type="submit"]').click();
   await B.getByRole('heading', { name: groupName, exact: true }).waitFor();
   record('B', 'A1+A2 Journey Group assignment', 'joined Journey Group through production UI', true);
+  await B.reload({ waitUntil: 'domcontentloaded' });
+  await B.waitForSelector('[data-journey-groups-view]');
+  await B.getByRole('heading', { name: groupName, exact: true }).waitFor();
+  record('B', 'A1+A2 Journey Group assignment', 'Journey Group membership persisted after reload', true);
 
   await visit(C, 'journey-groups', '[data-journey-groups-view]');
   await C.waitForTimeout(500);
   assert.equal(await C.getByRole('heading', { name: groupName, exact: true }).count(), 0, 'Unrelated Account C must not see the private Journey Group');
   record('C', 'A1+A2 Journey Group assignment', 'private group hidden from unrelated account', true);
+  const cJoin = C.locator('[data-journey-groups-join]');
+  if (await cJoin.count()) {
+    await cJoin.locator('input[name="code"]').fill(code);
+    await cJoin.locator('button[type="submit"]').click();
+    await C.waitForTimeout(700);
+    assert.equal(await C.getByRole('heading', { name: groupName, exact: true }).count(), 0, 'Unrelated Account C must not join a congregation-scoped group');
+    record('C', 'A1+A2 Journey Group assignment', 'valid-code cross-congregation join denied', true);
+  }
 
   await publishTargetedAssignment(A, { scope: 'group', targetLabel: groupName, title, scenario: 'A1+A2 Journey Group assignment' });
   await completeAndVerifyAssignment(sessions, { title, scenario: 'A1+A2 Journey Group assignment' });
@@ -221,7 +233,16 @@ async function teamAssignmentScenario(sessions) {
 
   await visit(B, 'team-center', '[data-team-center-view]');
   await B.getByRole('heading', { name: teamName, exact: true }).waitFor();
-  record('B', 'A3 Cloud Team assignment', 'team visible to intended member', true);
+  let memberCard = B.locator('[data-team-card]').filter({ has: B.getByRole('heading', { name: teamName, exact: true }) });
+  await memberCard.waitFor();
+  assert.equal(await memberCard.locator('[data-team-add], [data-team-rename], [data-team-archive]').count(), 0, 'Ordinary Account B must not receive team-management controls');
+  record('B', 'A3 Cloud Team assignment', 'team visible without unauthorized management controls', true);
+  await B.reload({ waitUntil: 'domcontentloaded' });
+  await B.waitForSelector('[data-team-center-view]');
+  await B.getByRole('heading', { name: teamName, exact: true }).waitFor();
+  memberCard = B.locator('[data-team-card]').filter({ has: B.getByRole('heading', { name: teamName, exact: true }) });
+  assert.equal(await memberCard.locator('[data-team-add], [data-team-rename], [data-team-archive]').count(), 0, 'Unauthorized team-management controls must remain absent after reload');
+  record('B', 'A3 Cloud Team assignment', 'team membership and permission boundary persisted after reload', true);
 
   await visit(C, 'team-center', '[data-team-center-view]');
   await C.waitForTimeout(500);
