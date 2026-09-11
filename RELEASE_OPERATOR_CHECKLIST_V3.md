@@ -1,13 +1,13 @@
 # BibleQuest v3 release operator checklist — current
 
-Updated: 2026-09-12 JST after independent current-production two-host verification.
+Updated: 2026-09-12 JST after independent current-production two-host verification and field-validation protocol formalization.
 
 This checklist is subordinate to the latest explicit user instruction, `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, and `DEVELOPMENT_STATUS_V3.md`. The date-specific sequencing in `RELEASE_6PM_2026-09-11.md` is historical release-control context; do not revive expired clock deadlines or old development branches when current repository evidence has advanced.
 
 ## Recover truth before writing
 
 - Recover live `main`, recent commits, open PRs, frozen release refs and exact workflow evidence.
-- Read `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, `DEVELOPMENT_STATUS_V3.md`, and `RELEASE_ACCEPTANCE_MATRIX_V3.md`.
+- Read `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, `DEVELOPMENT_STATUS_V3.md`, `RELEASE_ACCEPTANCE_MATRIX_V3.md`, and `RELEASE_FIELD_VALIDATION_V3.md`.
 - Treat `FEATURE_INVENTORY_V3.md` and `RELEASE_CLOSEOUT_V3.md` as historical evidence where newer authority documents supersede them.
 - Repository evidence and the latest explicit user instruction override stale prose.
 - Do not repeat a completed milestone merely because an older branch, issue body, prompt or checklist calls it pending.
@@ -68,6 +68,8 @@ Run `34637203062` provides fresh production proof for the intended current produ
 Do **not** repeat this production-host gate unless product/runtime bytes change or new evidence invalidates it.
 
 ## Remaining official-release evidence
+
+Execute the remaining field gates using `RELEASE_FIELD_VALIDATION_V3.md` so account roles, evidence capture, privacy boundaries, negative-isolation checks, failure handling, and release consequences are consistent. The protocol does not replace the acceptance matrix; it operationalizes the field-only evidence already required there.
 
 ### Issue #68 — multi-account field validation
 
