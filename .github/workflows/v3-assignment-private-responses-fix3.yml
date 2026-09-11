@@ -1,0 +1,50 @@
+name: BibleQuest v3 assignment private responses fix3
+on:
+  push:
+    branches: [work/v3-assignment-private-responses-fix2]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: postrelease/v3-assignment-private-responses
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Guard exact source head
+        run: |
+          test "$(git rev-parse HEAD)" = "05913f6f39fca9bbf4fdec8fc976818cfedc15c6"
+          test -z "$(git status --porcelain)"
+      - name: Restore assignment-push notification recurrence boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/features/assignments/index.js')
+          text=p.read_text()
+          old='<small>Choose “Require a written response / reflection” when members must answer in text. Submitted text is private to ministry; responder names/status are visible to other assigned members.</small>'
+          new='<small>Reminder and recurrence values are stored metadata only. This form does not send notifications or generate recurring copies. Choose “Require a written response / reflection” when members must answer in text. Submitted text is private to ministry; responder names/status are visible to other assigned members.</small>'
+          if text.count(old)!=1:
+              raise SystemExit(f'expected one publisher boundary string, found {text.count(old)}')
+          p.write_text(text.replace(old,new,1))
+          PY
+          git diff --check
+      - name: Focused validation before commit
+        run: |
+          node --check src/features/assignments/index.js
+          node tests/v3-assignment-private-responses.mjs
+          node tests/v3-assignment-push-edge.mjs
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
+          node scripts/validate-v3-architecture.mjs
+      - name: Commit exact correction to product branch
+        run: |
+          git config user.name "11ll11l1l1l"
+          git config user.email "138889199+11ll11l1l1l@users.noreply.github.com"
+          git add src/features/assignments/index.js
+          git commit -m "fix(assignments): retain push notification recurrence boundary"
+          git push origin HEAD:postrelease/v3-assignment-private-responses
