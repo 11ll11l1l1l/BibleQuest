@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-12 JST after Visual Phase B Calendar artwork promotion.
+Updated: 2026-09-12 JST after Visual Phase B Personal Mission artwork promotion.
 
 ## Read first
 
@@ -17,46 +17,49 @@ Repository evidence and the latest explicit user instruction override stale pros
 ## Current product state
 
 - repository: `11ll11l1l1l/BibleQuest`
-- current exact-green product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`
-- current frozen release ref: `release/v3-phase-b-calendar-artwork-20260912`
-- current accumulated regression run: `34627049878` — **success**
-- current product PR: #104 — merged by fast-forwarding `main` to the exact tested synthetic merge candidate
-- parent exact-green product: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`
-- parent frozen ref: `release/v3-calendar-owner-edit-delete-20260912`
-- parent accumulated run: `34623059639` — **success**
+- current exact-green product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`
+- current frozen release ref: `release/v3-phase-b-mission-artwork-20260912`
+- current accumulated regression run: `34629528297` — **success**
+- current product PR: #106 — merged by fast-forwarding `main` to the exact tested synthetic merge candidate
+- parent exact-green product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`
+- parent frozen ref: `release/v3-phase-b-calendar-artwork-20260912`
+- parent accumulated run: `34627049878` — **success**
+- prior Calendar creator edit/delete checkpoint: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` success
 - prior Visual Phase B More checkpoint: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` success
-- prior Ministry Hub Calendar checkpoint: `350cb1e583b207e10ba8dc50c3bb683dc50f9494`, run `34616603649` success
 - previous rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-Run `34627049878` explicitly fetched and checked out `c15d1f...` as `refs/pull/104/merge`. It passed the complete accumulated suite. The exact candidate was frozen before `main` was fast-forwarded to the same SHA. No additional unverified product merge SHA was created.
+Run `34629528297` explicitly fetched and checked out `df1bbd...` as `refs/pull/106/merge`. It passed the complete accumulated suite. The exact candidate was frozen before `main` was fast-forwarded to the same SHA. No additional unverified product merge SHA was created.
 
-If this handoff is later updated by a docs-only merge, start new product work from exact-green `c15d1f...`, not from an assumed docs HEAD product identity.
+If this handoff is later updated by a docs-only merge, that docs SHA is bookkeeping only and does not replace exact-green product `df1bbd...`.
 
 ## Deployment evidence
 
-Do not transfer older Cloudflare or independent production PASS evidence to `c15d1f...`.
+Do not transfer older Cloudflare or independent production PASS evidence to `df1bbd...`.
 
 The latest previously recorded Cloudflare Pages provider checks were for older exact-green product `046e2a85...`. The last independent two-host byte/browser verifier remains run `34612873935` for an earlier cumulative release.
 
-For current exact product `c15d1f...`, GitHub product regression is green. Provider deployment identity and independent live-host verification remain separate evidence until explicitly recorded for this exact product.
+For current exact product `df1bbd...`, GitHub product regression is green. Provider deployment identity and independent live-host verification remain separate evidence until explicitly recorded for this exact product.
 
 ## Newly completed work
 
-### Visual Phase B — Calendar artwork
+### Visual Phase B — Personal Mission artwork
 
-- literal Calendar event emoji were removed from the Calendar renderer;
-- real passive SVG artwork is committed in `assets/calendar-feature-icons.svg` for planner, personal, assignment, congregation and empty states;
-- `src/ui/calendar-phase-b.css` is loaded after `src/ui/calendar.css` and is presentation-only;
-- agenda event source styling and mobile form containment were improved without changing Calendar behavior;
-- decorative SVGs remain `aria-hidden`; existing labels/buttons remain authoritative;
-- Calendar routes, service methods, personal/shared events, creator-only edit/delete, assignments, fixed-weekly recurrence, storage, API/Supabase, scoring and navigation ownership are unchanged;
-- `tests/v3-calendar-phase-b-static.mjs` and `tests/v3-calendar-phase-b-smoke.mjs` are permanent accumulated checks;
-- existing `tests/v3-calendar-smoke.mjs` remains the functional browser regression.
+- the Mission renderer no longer displays `rec.icon` emoji as artwork;
+- real passive SVG artwork is committed in `assets/mission-feature-icons.svg` for Review and Study states;
+- artwork selection is derived only from the existing recommendation action and does not change recommendation rules;
+- `src/engines/mission.js` remains the recommendation owner and `src/app/mission.js` continues to use Open Review evidence without new state/storage;
+- `src/ui/mission-phase-b.css` loads after `src/ui/mission.css` and is presentation-only;
+- Mission hierarchy, instruction-card presentation and mobile action containment were improved without changing Mission text or navigation semantics;
+- decorative SVGs remain `aria-hidden`; existing text remains authoritative;
+- primary action still routes `review` -> `onReview`, otherwise -> `onStudy`; Back still calls `onBack`;
+- `tests/v3-mission-phase-b-static.mjs` and `tests/v3-mission-phase-b-smoke.mjs` are permanent accumulated checks;
+- existing Innovation Suite engine/service and mobile browser regressions remain active.
 
-Run `34627049878` passed all architecture, edge/security/static and browser/mobile gates on exact candidate `c15d1f...`, including both existing Calendar functional acceptance and the new 390 px Calendar artwork acceptance.
+Run `34629528297` passed all architecture, edge/security/static and browser/mobile gates on exact candidate `df1bbd...`, including existing Mission functional acceptance and the new 390 px Mission artwork acceptance.
 
 ### Retained prior checkpoints
 
+- Visual Phase B Calendar artwork: exact-green `c15d1f...`, run `34627049878` success.
 - Calendar creator edit/delete: exact-green `7d28d7c...`, run `34623059639` success.
 - Visual Phase B More semantic icons: exact-green `046e2a85...`, run `34618963635` success.
 - Ministry Hub Calendar surface: exact-green `350cb1e...`, run `34616603649` success.
@@ -67,21 +70,21 @@ Do not repeat these milestones.
 
 Project: `zkfmgezvzugchcwppreq`.
 
-Existing release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by PR #104:
+Existing release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by PR #106:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-Do not reapply them. The Calendar artwork milestone required no migration and made no production database mutation.
+Do not reapply them. The Mission artwork milestone required no migration and made no production database mutation.
 
 ## Immediate next development route
 
-Start product work from exact-green `c15d1f...` even if a later docs-only bookkeeping commit becomes repository HEAD.
+Start new product selection from exact-green `df1bbd...`, while using current `main` to read later docs-only bookkeeping if present.
 
 1. refresh `main`, active branches/actions and current investigator/production evidence before coding;
 2. first reproduce and priority-classify any newly reported functionality/correctness issue; do not invent a blocker;
-3. do not rebuild Calendar artwork, Calendar creator edit/delete, Ministry Hub Calendar, or More semantic icons;
+3. do not rebuild Personal Mission artwork, Calendar artwork, Calendar creator edit/delete, Ministry Hub Calendar, or More semantic icons;
 4. fixed-weekly congregation recurrence is complete; custom non-weekly recurrence remains deferred unless current evidence/user direction makes it release-required;
 5. absent a reproduced P0/P1 functionality gap, continue Visual Phase B on the next materially minimal/placeholder/generic/emoji-like surface;
 6. verify any proposed artwork binary exists or deliberately generate/import a real replacement; never wire nonexistent `assets/icons/v3/` paths;
@@ -96,7 +99,8 @@ Start product work from exact-green `c15d1f...` even if a later docs-only bookke
 - PR #98 restored the validator-owned development-status ledger headings; run `34616114505` fully passed.
 - PR #99 attempted a `push` trigger but the permanent workflow contract correctly rejected it; it was closed without merge.
 - PR #102 completed Calendar creator edit/delete at exact-green `7d28d7c...`; run `34623059639` passed.
-- PR #104 completed Calendar Visual Phase B artwork. Run `34627049878` checked out exact synthetic merge candidate `c15d1f...` and passed; frozen ref `release/v3-phase-b-calendar-artwork-20260912` was created and `main` fast-forwarded to the same SHA.
+- PR #104 completed Calendar Visual Phase B artwork at exact-green `c15d1f...`; run `34627049878` passed.
+- PR #106 completed Personal Mission Visual Phase B artwork. Run `34629528297` checked out exact synthetic merge candidate `df1bbd...` and passed; frozen ref `release/v3-phase-b-mission-artwork-20260912` was created and `main` fast-forwarded to the same SHA.
 - Accepted exact-SHA pattern remains: PR synthetic merge candidate → full green accumulated run → freeze exact candidate ref → fast-forward `main` to that exact green commit when ancestry permits.
 
 ## Visual/artwork instruction
