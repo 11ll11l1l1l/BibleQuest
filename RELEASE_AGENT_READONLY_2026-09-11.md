@@ -1,152 +1,171 @@
-# BibleQuest v3 — read-only release agent instructions
+# BibleQuest v3 — read-only final-release investigator instructions
 
 Date: 2026-09-11
-Deadline: **18:00 JST**
 Repository: `11ll11l1l1l/BibleQuest`
-Primary control: `RELEASE_6PM_2026-09-11.md`
+Primary final-release control: `FINAL_RELEASE_VISUAL_INTEGRATION_CONTROL_V3.md`
+Release tracker: Issue #94
+Functional rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
+Exact-green visual product checkpoint: `406c34dcdf904b7483bf4381be774a908738e60c`
 
-These instructions override older agent missions until the production release is complete.
+These instructions supersede the older release-agent mission that treated visual findings as post-release/cosmetic work. The final official BibleQuest v3 release is not complete until the accepted visual program and required functionality are integrated into one exact verified production candidate.
 
-## Non-negotiable agent permissions
+## Permissions
 
-All five agents are **READ-ONLY INVESTIGATORS**.
+All five agents remain **READ-ONLY INVESTIGATORS**.
 
-They may inspect repository files, branches, commits, diffs, workflow runs/logs, existing deployment configuration, and publicly reachable production behavior when their tools allow it.
+They may inspect repository files, branches, commits, diffs, workflows/logs, test evidence, deployment configuration, and public production behavior when tools permit.
 
 They MUST NOT:
 
 - edit code or documentation;
-- create/update/delete repository files;
-- create or move branches/tags/refs;
-- create commits, pull requests, issues, comments, or reviews;
-- trigger, edit, rerun, or cancel workflows;
-- modify `main` or any release branch;
-- change Cloudflare, Supabase, DNS, secrets, data, schema, Auth settings, or production configuration;
+- create/update/delete files, branches, commits, PRs, issues, comments or reviews;
+- trigger/rerun/cancel workflows;
+- modify `main`, release branches, Cloudflare, Supabase, DNS, secrets, schema, Auth, data or production configuration;
 - deploy anything;
-- apply a suggested fix themselves;
-- revive retired Kids/Kana work;
-- investigate unrelated backlog or future roadmap items.
+- apply fixes themselves;
+- weaken tests or recommend bypassing architecture merely to get green;
+- revive retired Kids/Kana work unless the user explicitly reopens it.
 
-Their only deliverable is a **finding/report in chat** for the captain/release executor.
+Their job is to give the captain precise evidence and owner-level recommendations so the work can be developed correctly rather than patched.
 
-## Common operating rules
+## Mandatory reading before investigation
 
-Before investigating, every agent must read:
+Every agent must read:
 
-1. `RELEASE_6PM_2026-09-11.md`
-2. `DEVELOPMENT_HANDOFF_V3.md`
-3. `DEVELOPMENT_STATUS_V3.md`
-4. this file
+1. `FINAL_RELEASE_VISUAL_INTEGRATION_CONTROL_V3.md`
+2. Issue #94 and its latest release-status comment
+3. `DEVELOPMENT_HANDOFF_V3.md`
+4. `DEVELOPMENT_STATUS_V3.md`
+5. `VISUAL_REPLACEMENT_CONTRACT_V3.md`
+6. `VISUAL_SURFACE_INVENTORY_V3.md`
+7. `VISUAL_POLISH_PROGRESS_V3.md`
+8. this file
 
-Then recover the latest live HEAD of `feature/v3-post-parity-closeout` and state the exact SHA inspected. Never assume an old SHA remains current.
+Then recover live refs for `main`, `release/v3-production-20260911-r3`, `postrelease/v3-visual-shell-tranche16`, and any newer final-integration branch. State the exact product SHA inspected. Never treat later documentation-only HEADs as verified product SHAs unless product files changed and were reverified.
 
-Only report issues that can materially affect today's production release or provide release evidence. Do not flood the captain with cosmetic/minor findings.
+## Engineering-quality filter
 
-Severity:
+Agents must explicitly reject recommendations that amount to a patch-around rather than a correct fix. Flag as **ARCHITECTURE RISK** any proposal that relies on:
 
-- **P0** — blocks deployment, startup, authentication, core data integrity/security, or makes production unusable.
-- **P1** — serious breakage in a core release path with no reasonable workaround; should be fixed before release.
-- **P2** — nonblocking defect; record for post-release unless a trivial, proven-safe correction exists.
-- **INFO** — useful release evidence, not a defect.
+- speculative global CSS overrides or uncontrolled `!important` layering;
+- duplicated DOM/features/owners;
+- one-off JavaScript shims in the wrong owner;
+- hidden controls or catch-all error swallowing;
+- bypassing state/storage/API ownership;
+- weakening or skipping tests;
+- copying legacy implementation into a parallel path;
+- modifying tests solely to fit current broken behavior.
 
-A suspected bug is not a P0/P1 until supported by reproducible evidence, a failing executed test/log, or a concrete code/configuration contradiction. Clearly label hypotheses as hypotheses.
+A valid recommendation should identify the correct component/file/owner, explain the intended contract, and name the focused + accumulated verification needed afterward.
 
-Each report must include:
+## Agent 1 — visual system / asset integrity investigator
+
+Mission: determine whether the final candidate actually contains the accepted visual/artwork program and whether it is coherent, intentional, performant and architecture-preserving.
+
+Inspect Home/hero, global shell, Reader, Games, Bible World, Progress/Daily Journey, PWA icon treatment, Transform, Study/Deep Questions/Story/Wisdom, Account/Tutorial, Context/Japanese/source presentation, Notes, Couples, Community, Media/Recordings, Adaptive/Open Review and accessibility-related presentation.
+
+Focus on:
+
+- inconsistent/missing visual tranches;
+- generic placeholders or stale assets;
+- broken/missing icons, illustrations, backgrounds and fallbacks;
+- inconsistent BibleQuest adventure/game identity;
+- asset provenance/licensing concerns;
+- CSS/load-order conflicts;
+- visual changes that silently alter layout/DOM behavior;
+- decorative payload patterns that could damage first-load/PWA behavior.
+
+Deliver a surface matrix: PASS / GAP / BLOCKER, exact files/classes/assets, and correct owner-level captain action.
+
+## Agent 2 — responsive / accessibility / browser / PWA investigator
+
+Mission: prove that the integrated visual candidate remains usable and correct across the required viewport/accessibility/runtime matrix.
+
+Focus on:
+
+- 320/360/390/412/430 px plus representative desktop behavior;
+- overflow, clipping, hidden controls, blocked touch targets, unreadable labels;
+- keyboard/focus/contrast/semantic regressions;
+- reduced-motion violations;
+- asset and stylesheet load-order errors;
+- browser console/page errors caused by integration;
+- PWA install/offline/service-worker/cache upgrade behavior;
+- stale workflow/test evidence from another SHA.
+
+Report exact route, viewport, evidence, likely owner and exact tests the captain must execute or repair.
+
+## Agent 3 — functional surface / UX integrity investigator
+
+Mission: verify the full release surface still works after visual integration. Do not limit inspection to whether a page renders.
+
+Check intended controls, state transitions and return paths across:
+
+- Home/primary navigation;
+- Account/sign-in/recovery;
+- Reader/translation switching/recovery;
+- Games launcher + representative game + clean return;
+- Progress/Daily Journey;
+- Transform/Psychometrics;
+- Study/Deep Questions/Story/Wisdom;
+- Notes/Couples/Community/Media where included;
+- Ministry/Assignments/Notifications/Workspace where included;
+- PWA/offline entry and recovery.
+
+Identify real regressions caused by visual or final-integration work and distinguish them from unrelated future enhancements.
+
+## Agent 4 — architecture / security / backend-boundary investigator
+
+Mission: compare functional r3, exact-green visual checkpoint and proposed final candidate to ensure the release was developed in the correct owners.
+
+Focus on:
+
+- duplicate/parallel feature owners;
+- auth/permission/storage/API/Supabase/privacy boundary changes;
+- secrets or privileged calls exposed to clients;
+- frontend assumptions requiring an undeployed backend/schema change;
+- service-worker/offline ownership;
+- accidental persistence/gameplay/feature behavior changes hidden inside visual work;
+- broad refactors not required for release.
+
+Any legitimate functional change must be explicit, correctly owned, regression-protected and fully verified.
+
+## Agent 5 — release firewall / captain action compiler
+
+Mission: combine the other four reports with repository/workflow evidence into one ordered captain execution plan.
+
+The firewall must:
+
+- deduplicate findings;
+- reject speculative/no-evidence work;
+- reject hacks, owner bypasses and test weakening;
+- separate release-required integration gaps from optional future improvements;
+- identify the correct owner/file/symbol for each accepted item;
+- order fixes by dependency/risk;
+- state required focused verification after each class of change;
+- state the complete exact-SHA release gate required before promotion;
+- preserve r3 as rollback without allowing it to be mislabeled as the final visual release.
+
+## Report contract
+
+Every finding must include:
 
 - agent role;
 - exact branch/SHA inspected;
-- severity;
-- concise finding;
-- evidence (file/path, workflow run/job/step, reproducible behavior, or exact configuration);
-- user impact;
+- exact surface/route/viewport where relevant;
+- category: VISUAL / FUNCTIONAL / RESPONSIVE / ACCESSIBILITY / PWA / SECURITY / ARCHITECTURE / RELEASE-EVIDENCE;
+- severity: BLOCKER / REQUIRED / NONBLOCKING / INFO;
+- evidence;
+- root-cause hypothesis, explicitly labeled if not proven;
+- correct owner/file/symbol;
 - recommended captain action;
-- whether it is a **release blocker: YES/NO**.
+- verification required after the correction;
+- release blocker: YES/NO;
+- architecture-risk flag: YES/NO.
 
-Do not provide broad rewrites. If a likely correction is obvious, describe the minimal proposed change in prose and identify the exact file/symbol; the captain decides and executes it.
-
-## Agent 1 — Cloudflare / deployment investigator
-
-Mission: find anything that could prevent the verified v3 candidate from being deployed correctly through the existing Cloudflare Pages setup.
-
-Focus on:
-
-- `build.sh` and `scripts/deploy-gate.mjs` compatibility with v3;
-- production entrypoint/static asset paths;
-- Cloudflare clean routes/redirects/headers;
-- service-worker/manifest/cache behavior relevant to deployment;
-- `main` → Cloudflare project assumptions;
-- canonical `mybiblequest.pages.dev` and compatibility `biblequest-7th.pages.dev` deployment identity risks;
-- differences between current v3 candidate and legacy `main` that could make the existing Cloudflare build gate reject or mis-serve v3.
-
-Do not evaluate general application features unless they directly affect deployment/runtime boot.
-
-## Agent 2 — regression / browser / mobile / PWA investigator
-
-Mission: inspect executed verification evidence and identify release-critical gaps or failures.
-
-Focus on:
-
-- latest accumulated v3 architecture/edge/browser regression evidence;
-- Playwright/browser/mobile failures or missing critical coverage;
-- PWA install/offline/service-worker/cache upgrade behavior;
-- 320/360/390/412/430-width risks where supported by existing tests/evidence;
-- accessibility failures that make a core path unusable;
-- stale verifier evidence that belongs to a different SHA.
-
-Do not change tests or workflows. Report the exact test/run that should be executed or rerun by the captain if evidence is missing.
-
-## Agent 3 — core product smoke investigator
-
-Mission: inspect the v3 candidate for blockers in the small set of user-visible flows that must work at release.
-
-Focus on:
-
-- Home/app boot/navigation;
-- account/sign-in/recovery surface integration;
-- Bible Reader and translation switching/recovery;
-- Games launcher plus one representative game and clean return;
-- Transform/Psychometrics route boot where part of the v3 release;
-- obvious permanent loaders, blank states, dead navigation, missing assets, or severe mobile overflow supported by evidence.
-
-Do not perform broad feature-parity review. Retired Kids/Kana rows are explicitly out of scope.
-
-## Agent 4 — security / backend-boundary investigator
-
-Mission: look only for release-critical security, auth, or backend-contract contradictions introduced or exposed by v3 promotion.
-
-Focus on:
-
-- accidental secret/private-key exposure;
-- guest/auth boundary regressions;
-- obvious production-origin/redirect mismatch;
-- client use of prohibited privileged APIs;
-- v3 assumptions that require a Supabase schema/data/config change not actually present;
-- destructive or incompatible data writes;
-- security-sensitive differences between v3 and the currently deployed environment.
-
-Do not modify Supabase or propose unrelated security hardening. Existing known nonblocking platform limitations remain post-release unless they create a new release blocker.
-
-## Agent 5 — release firewall / triage investigator
-
-Mission: act as the read-only filter for findings from all investigators and current repository evidence.
-
-This agent must NOT fix anything. It should:
-
-- deduplicate findings;
-- reject speculative, minor, historical, already-fixed, or out-of-scope reports;
-- distinguish P0/P1 blockers from P2/post-release items;
-- detect findings based on stale SHAs;
-- identify the smallest ordered list of captain actions needed to reach a green release candidate;
-- state when evidence supports **NO NEW BLOCKER FOUND**.
-
-Triage priority is: deployment blockers → security/data integrity → startup/auth/core navigation → Reader/Games/core flows → PWA/mobile → cosmetic issues.
-
-## Reporting cadence
-
-Agents should report immediately when a credible P0/P1 is found. Otherwise provide one concise consolidated report after completing their assigned inspection. Do not repeatedly send unchanged status.
-
-If no blocker is found, say so explicitly and list the evidence inspected. Absence of a finding is not permission to claim the product is bug-free.
+Vague findings such as "improve UI" or "fix CSS" are not acceptable. Reports must be actionable enough that a later captain can implement the correct solution without repeating the investigation.
 
 ## Captain boundary
 
-The user/captain and designated release-execution chat are the only writers. Agent findings are advisory evidence. The release executor decides whether a finding is valid, makes any code/configuration change, runs verification, freezes the exact candidate SHA, promotes it to `main`, and verifies Cloudflare production.
+Investigators remain advisory. The user/captain or designated release-execution chat is the only writer. The captain must follow `FINAL_RELEASE_VISUAL_INTEGRATION_CONTROL_V3.md`, implement accepted findings in the correct owners, add/retain regression protection, freeze one exact candidate SHA, run the complete accumulated release suite, promote only the exact green state, and verify both Cloudflare hosts.
+
+The official release must not be marked complete until the required visual program and required functionality coexist in the exact production-verified candidate.
