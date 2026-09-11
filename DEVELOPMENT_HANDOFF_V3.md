@@ -8,13 +8,26 @@ Before any development work, read `RELEASE_6PM_2026-09-11.md`. It is the overrid
 
 For new chat instances, `CONTINUE_PROMPT_V3.md` contains the generic resume prompt.
 
-## Frozen verified baseline
+## Exact verified production candidate
 
 - Repo: `11ll11l1l1l/BibleQuest`.
-- Latest frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Exact bookkeeping run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
-- Earlier exact functional candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed targeted run `34549872861` and complete functional run `34550018009`.
-- Current release-control branch: `feature/v3-post-parity-closeout`, branched from frozen v3.71. Always recover its live HEAD before acting.
+- Frozen production release branch: `release/v3-production-20260911`.
+- Exact tested/frozen SHA: `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
+- Exact release verification run: `34558985204`, job `103137606678`, conclusion **success**.
+- Exact-SHA/diff hygiene: passed.
+- Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all deployment-entry/runtime ownership guards passed.
+- Accumulated v3 architecture validators: 53 executed, all passed.
+- Edge/security/static regressions: 86 executed, all passed.
+- Playwright browser/mobile regressions: 68 executed, all passed.
+- The completed browser set explicitly included `v3-pwa-install-smoke.mjs`, `v3-offline-shell-smoke.mjs`, `v3-offline-bible-packs-smoke.mjs`, `v3-accessibility-smoke.mjs`, `v3-shell-smoke.mjs`, `v3-reader-smoke.mjs`, `v3-games-smoke.mjs`, and `v3-transform-engine-smoke.mjs`.
+- Historical baseline remains `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`; its older run evidence must not be substituted for the current production candidate evidence.
+
+## Release defects fixed during final gating
+
+1. Reproduced JavaScript syntax error in `transformation-v2.js`; fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
+2. Cloudflare deployment gate still checked retired legacy `sw.js` precache ownership instead of v3 `offline-shell-sw.js` runtime warming; gate corrected at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
+3. `validate-v3-architecture.mjs` still rejected the explicitly retired rows #39/#40 and required missing release-status bookkeeping sections; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
+4. `validate-v3-inventory.mjs` separately retained the old four-status/100-applicable model; corrected at final green SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53` to validate 98 applicable + 2 retired.
 
 ## Release scope
 
@@ -37,19 +50,17 @@ A verified BibleQuest v3 release must be available on the existing Cloudflare Pa
 Canonical production target: `https://mybiblequest.pages.dev/`
 Compatibility target: `https://biblequest-7th.pages.dev/`
 
-The existing Cloudflare projects deploy repository `main`. `build.sh` calls `scripts/deploy-gate.mjs`. Production promotion of the exact green release candidate is authorized by the user; do not ask again for routine permission once all release gates pass.
+The existing Cloudflare projects deploy repository `main`. `build.sh` calls `scripts/deploy-gate.mjs`. Production promotion of the exact green release candidate is authorized by the user; do not ask again for routine permission.
 
 ## What to work on now
 
-1. Recover live release-control HEAD and current test/deployment evidence.
-2. Audit Cloudflare compatibility and only real P0/P1 release blockers.
-3. No new features. No retired Kids/Kana work. No broad refactors.
-4. Low-risk artwork/icon/color replacement is allowed only if it cannot threaten the validation window; discretionary polish stops at 14:30 JST.
-5. Run Cloudflare deployment gate plus complete accumulated exact-SHA v3 architecture, edge/security, browser/mobile, PWA/offline, and relevant accessibility checks.
-6. Freeze only the exact green SHA.
-7. Record final evidence.
-8. Promote that verified v3 state to `main` without mixing unrelated legacy/main work.
-9. Verify Cloudflare propagation and production runtime on both hosts.
+1. Do not alter the frozen product SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
+2. Re-check live `main`; preserve its current legacy state on a safety branch.
+3. Promote `main` directly to the exact frozen verified SHA without merging unrelated legacy/main-only commits into v3.
+4. Allow both existing Cloudflare Pages projects to deploy repository `main`.
+5. Confirm both public hosts propagated the v3 release.
+6. Run production checks for Home, Account/sign-in reachability, Reader, Games, Transform, primary navigation, manifest/service-worker and PWA/offline-shell behavior.
+7. Fix only a reproduced production release blocker. Any changed product SHA requires a completely new exact-SHA release suite before redeployment.
 
 ## User task policy
 
