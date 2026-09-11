@@ -1,0 +1,103 @@
+name: BibleQuest v3 green gold theme verifier b64d448
+on:
+  push:
+    branches: [verify/v3-theme-green-gold-b64d448]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b64d4485f20d65ca116b39739dd61fc109b9faa2
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "b64d4485f20d65ca116b39739dd61fc109b9faa2"
+          test -z "$(git status --porcelain)"
+          git diff --check 545b5b98d88ca04001d3675317c37cbcd3306955 b64d4485f20d65ca116b39739dd61fc109b9faa2
+          changed="$(git diff --name-only 545b5b98d88ca04001d3675317c37cbcd3306955 b64d4485f20d65ca116b39739dd61fc109b9faa2 | sort)"
+          expected="$(printf '%s\n' index.html src/ui/theme-green-gold.css tests/v3-green-gold-theme-static.mjs | sort)"
+          test "$changed" = "$expected"
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Accumulated visual contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-green-gold-theme-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Full Playwright browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Green gold theme real-app containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              for(const route of ['', 'reader','games','grow','mission','bible-world','transform','more']){
+                const page=await browser.newPage({viewport,isMobile:viewport.width<500,hasTouch:viewport.width<500});
+                const url=route?`http://127.0.0.1:4173/#/${route}`:'http://127.0.0.1:4173/';
+                await page.goto(url,{waitUntil:'networkidle'});
+                await page.locator('[data-bq-shell="v3"]').waitFor();
+                const state=await page.evaluate(()=>{
+                  const root=getComputedStyle(document.documentElement);
+                  const mark=document.querySelector('.bq-brand-mark');
+                  const markStyle=mark?getComputedStyle(mark):null;
+                  const primary=document.querySelector('.bq-primary-button');
+                  const primaryStyle=primary?getComputedStyle(primary):null;
+                  return {
+                    themeLoaded:[...document.querySelectorAll('link[rel="stylesheet"]')].some(link=>link.getAttribute('href')==='src/ui/theme-green-gold.css'),
+                    green:root.getPropertyValue('--bq-theme-green-900').trim(),
+                    gold:root.getPropertyValue('--bq-theme-gold-600').trim(),
+                    markBackground:markStyle?.backgroundImage||'',
+                    primaryBackground:primaryStyle?.backgroundImage||'',
+                    innerWidth:document.documentElement.clientWidth,
+                    scrollWidth:document.documentElement.scrollWidth
+                  };
+                });
+                if(!state.themeLoaded)throw new Error(`Theme stylesheet missing on ${route||'home'} at ${viewport.width}px`);
+                if(state.green!=='#1f5138'||state.gold!=='#b78222')throw new Error(`Theme tokens not applied on ${route||'home'}: ${JSON.stringify(state)}`);
+                if(!state.markBackground||state.markBackground==='none')throw new Error(`Brand theme not visibly applied on ${route||'home'}`);
+                if(state.primaryBackground&&state.primaryBackground==='none')throw new Error(`Primary-button theme missing on ${route||'home'}`);
+                if(state.scrollWidth>state.innerWidth+1)throw new Error(`Theme horizontal overflow on ${route||'home'} at ${viewport.width}px: ${JSON.stringify(state)}`);
+                await page.close();
+              }
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 green-and-gold real-app desktop/mobile containment passed.');
+          EOF
