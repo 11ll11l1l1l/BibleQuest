@@ -13,43 +13,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unpack retained Kids bundle
+        with:
+          fetch-depth: 0
+      - name: Trace historical Kids Bible contract
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/kids-contract
-          cat kids-games/bundle-*.txt | tr -d '\n\r ' | base64 --decode | gzip --decompress > /tmp/kids-contract/bundle.json
+          mkdir -p /tmp/kids-history
+          REGEX='(who[ _-]*am[ _-]*i|kids.{0,40}bible|bible.{0,40}kids|character.{0,40}guess|guess.{0,40}character)'
+          git log --all --full-history --date=iso -i -G"$REGEX" \
+            --pretty='format:@@@ %H %ad %s' --name-status -- \
+            '*.js' '*.html' '*.json' '*.md' '*.txt' \
+            > /tmp/kids-history/candidate-commits.txt || true
+          git log --all --full-history --date=iso -i -G"$REGEX" -p -- \
+            '*.js' '*.html' '*.json' '*.md' '*.txt' \
+            > /tmp/kids-history/history-patches.txt || true
           python3 - <<'PY'
-          import json, pathlib, re
-          root = pathlib.Path('/tmp/kids-contract')
-          data = json.loads((root/'bundle.json').read_text())
-          out = root/'extracted'
-          out.mkdir()
-          lines = ['BUNDLE KEYS']
-          for key, value in sorted(data.items()):
-              p = out/key
-              p.parent.mkdir(parents=True, exist_ok=True)
-              p.write_text(value, encoding='utf-8')
-              lines.append(f'{key}\t{len(value)} chars')
-          patterns = [
-              r'who\s*am\s*i', r'whoami', r'guess', r'bible', r'character',
-              r'person', r'memory', r'japanese', r'coding', r'arcade', r'game'
-          ]
-          rx = re.compile('|'.join(patterns), re.I)
-          lines += ['', 'MATCHING SOURCE LINES']
-          for key, value in sorted(data.items()):
-              for n, line in enumerate(value.splitlines(), 1):
-                  if rx.search(line):
-                      lines.append(f'{key}:{n}: {line[:1000]}')
-          (root/'contract-probe.txt').write_text('\n'.join(lines), encoding='utf-8')
+          import pathlib, re, subprocess
+          out=pathlib.Path('/tmp/kids-history')
+          rx=re.compile(r'(who[ _-]*am[ _-]*i|kids.{0,40}bible|bible.{0,40}kids|character.{0,40}guess|guess.{0,40}character)',re.I)
+          commits=subprocess.check_output(['git','rev-list','--all'],text=True).splitlines()
+          seen=set(); hits=[]; candidates=[]
+          for commit in commits:
+              p=subprocess.run(['git','grep','-n','-I','-i','-E',r'who[ _-]*am[ _-]*i|kids.{0,40}bible|bible.{0,40}kids|character.{0,40}guess|guess.{0,40}character',commit,'--','*.js','*.html','*.json','*.md','*.txt'],text=True,capture_output=True)
+              for line in p.stdout.splitlines():
+                  # commit:path:line:text
+                  rest=line.split(':',1)[1] if ':' in line else line
+                  if rest in seen: continue
+                  seen.add(rest); hits.append(line)
+                  parts=line.split(':',3)
+                  if len(parts)>=4:
+                      candidates.append((parts[0],parts[1]))
+              if len(hits)>=4000: break
+          (out/'unique-history-hits.txt').write_text('\n'.join(hits),encoding='utf-8')
+          src=out/'candidate-source'
+          src.mkdir(exist_ok=True)
+          emitted=set()
+          for commit,path in candidates:
+              key=(commit,path)
+              if key in emitted or len(emitted)>=80: continue
+              emitted.add(key)
+              q=subprocess.run(['git','show',f'{commit}:{path}'],text=True,capture_output=True)
+              if q.returncode: continue
+              safe=re.sub(r'[^A-Za-z0-9._-]+','_',path)
+              (src/f'{commit[:12]}__{safe}').write_text(q.stdout,encoding='utf-8')
+          print(f'commits scanned={len(commits)} unique hits={len(hits)} candidate files={len(emitted)}')
           PY
-          cat /tmp/kids-contract/contract-probe.txt
-      - name: Upload recovered source
+          echo '--- candidate commits ---'
+          sed -n '1,240p' /tmp/kids-history/candidate-commits.txt
+          echo '--- unique hits ---'
+          sed -n '1,320p' /tmp/kids-history/unique-history-hits.txt
+      - name: Upload historical evidence
         uses: actions/upload-artifact@v4
         with:
-          name: v3-kids-retained-source
-          path: |
-            /tmp/kids-contract/extracted
-            /tmp/kids-contract/contract-probe.txt
+          name: v3-kids-history-evidence
+          path: /tmp/kids-history
           if-no-files-found: error
           retention-days: 1
