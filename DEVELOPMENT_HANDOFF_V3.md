@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after final captain revalidation of the exact production SHA and both Cloudflare production hosts, including fresh exact-SHA attempt 7 and live-host attempts 5/4.
+Updated: 2026-09-11 JST after final captain revalidation of the exact production SHA and both Cloudflare production hosts, including exact-SHA attempt 7 and fresh corrected live-host attempt 5 completed at 18:52 JST.
 
 For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train; its production success condition has been satisfied.
 
@@ -9,7 +9,7 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - Repo: `11ll11l1l1l/BibleQuest`.
 - Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - Frozen rollback/reference branch: `release/v3-production-20260911-r3` at the same SHA.
-- Exact release verifier: run `34560522189`; fresh attempt 7 job `103187059070` concluded **success** on the exact deployed product SHA.
+- Exact release verifier: run `34560522189`; attempt 7 job `103187059070` concluded **success** on the exact deployed product SHA.
 - Exact-SHA/diff hygiene: passed.
 - Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all production-entry/runtime ownership guards passed.
 - Accumulated v3 architecture validators: 53 executed, all passed.
@@ -26,8 +26,8 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - In that same attempt, the canonical host freshly passed shell/account/navigation, Reader, Games, Transform, Accessibility, and PWA install.
 - Attempt 5 then failed at the legacy Offline Shell test's readiness polling race with `Offline shell cache did not reach late shell modules before offline transition`. Later workflow steps were skipped and were not claimed from that attempt.
 - The readiness race was already isolated by test-only commit `952271aaf00e1a6f11280d8926b28399eebe8e4e`, changing only `tests/v3-offline-shell-smoke.mjs` relative to r3. It replaces the fragile `waitForFunction` plus immediate second cache read with bounded explicit polling and diagnostics.
-- Fresh rerun attempt 4 of gap-closing run `34567697491`, job `103187115968`, concluded **success** after proving the verifier-only delta from r3 is only `tests/v3-offline-shell-smoke.mjs`, re-confirming both Cloudflare hosts byte-match the frozen product files, and passing canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation.
-- Therefore no runtime P0/P1 release defect was reproduced from the attempt-5 red result; no product SHA, `main`, release branch, Cloudflare runtime asset, or production Supabase/data change was made.
+- Corrected gap-closing run `34567697491` now has a fresh **attempt 5**, job `103221360895`, completed successfully at 18:52 JST. It re-confirmed the verifier-only delta from r3, re-confirmed both Cloudflare hosts still match the frozen release product files, and passed canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation.
+- Therefore no runtime P0/P1 release defect was reproduced from the legacy attempt-5 red result; no product SHA, `main`, release branch, Cloudflare runtime asset, or production Supabase/data change was made.
 - A release-control audit also reviewed draft PR #88's legacy root `account.js` progress-sync concern. Current v3 `index.html` loads only `src/app/bootstrap.js`; the legacy root `account.js` is not a v3 production entry point, so that draft legacy path was not treated as a reproduced r3 release blocker and no product change was made.
 - Current P0/P1/release-blocker issue search returned no open matching issue.
 
@@ -36,10 +36,10 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 Canonical host: `https://mybiblequest.pages.dev/`
 Compatibility host: `https://biblequest-7th.pages.dev/`
 
-- Both hosts serve the frozen r3 product files used for identity verification; this was freshly re-confirmed by production attempt 5 and corrected production verifier attempt 4.
-- Fresh canonical browser evidence: Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install passed in run `34560806166` attempt 5 / job `103187486119` before the legacy test race interrupted the workflow.
-- Fresh corrected offline evidence: canonical Offline Shell and Offline Bible Packs plus compatibility Offline Shell and basic browser navigation all passed in run `34567697491` attempt 4 / job `103187115968`.
-- Exact deployed-product verification was independently rerun again in run `34560522189` attempt 7 / job `103187059070` and passed the complete accumulated release suite without changing the product SHA.
+- Both hosts serve the frozen r3 product files used for identity verification; this was re-confirmed again by corrected production verifier run `34567697491` attempt 5 / job `103221360895` at 18:52 JST.
+- Canonical browser evidence: Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install passed in run `34560806166` attempt 5 / job `103187486119` before the legacy test race interrupted the workflow.
+- Fresh corrected offline evidence: canonical Offline Shell and Offline Bible Packs plus compatibility Offline Shell and basic browser navigation all passed in run `34567697491` attempt 5 / job `103221360895`.
+- Exact deployed-product verification was independently rerun in run `34560522189` attempt 7 / job `103187059070` and passed the complete accumulated release suite without changing the product SHA.
 - Historical same-product-SHA production-live evidence remains available, but current status should cite the fresh split evidence above rather than pretending the legacy production workflow passed steps it skipped.
 - Production Supabase/data was not changed for the release or the fresh revalidation.
 - No physical Android/PWA result is implied by these automated browser checks.
@@ -51,7 +51,7 @@ Compatibility host: `https://biblequest-7th.pages.dev/`
 3. Architecture validator rejected explicitly retired rows #39/#40 and stale release bookkeeping; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
 4. Inventory validator retained the old 100-applicable assumption; corrected at `adb9bef5bd7751fa15d78737e94d25b183f08a53` for 98 applicable + 2 retired.
 5. Production Offline Shell first-load readiness was too slow because roughly 166 shell resources were warmed sequentially under a 4-second owner timeout. Diagnostics proved the cache eventually reached 166/166 and then offline reload succeeded. r3 introduced bounded 8-way warm concurrency, waits until page load before snapshotting shell resources, and uses a 15-second bounded owner completion window. The changed product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` then passed the complete exact-SHA suite and canonical production offline verification.
-6. A separate browser-test readiness race could report a false Offline Shell failure before network cutoff. The correction is test-only at `952271aaf00e1a6f11280d8926b28399eebe8e4e`; it changes no product/runtime file and has now passed fresh live checks on both hosts.
+6. A separate browser-test readiness race could report a false Offline Shell failure before network cutoff. The correction is test-only at `952271aaf00e1a6f11280d8926b28399eebe8e4e`; it changes no product/runtime file and has now passed repeated fresh live checks on both hosts.
 
 ## Release scope
 
