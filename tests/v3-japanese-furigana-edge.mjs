@@ -6,8 +6,8 @@ const tokenizer={async tokenize(text){tokenizerCalls++;return [{surface_form:'�
 const service=createJapaneseFuriganaService({storage:local,tokenizer});
 assert(service.getState().mode==='support','Furigana should default to recovered support mode.');
 let rendered=await service.render('神は愛');
-assert(rendered.html.includes('<ruby>神<rt>')&&rendered.html.includes('かみ'),'Support mode must add 神 reading.');
-assert(rendered.html.includes('<ruby>愛<rt>')&&rendered.html.includes('あい'),'Support mode must add 愛 reading.');
+assert(!rendered.html.includes('<ruby>神<rt>'),'Support mode must not invent a reading for an uncurated standalone term.');
+assert(rendered.html.includes('<ruby>愛<rt>あい</rt></ruby>'),'Support mode must add the recovered curated 愛 reading.');
 assert(tokenizerCalls===0,'Support mode must not load tokenizer.');
 service.setMode('off');rendered=await service.render('<神>');
 assert(rendered.html==='&lt;神&gt;'&&!rendered.html.includes('<ruby>'),'OFF mode must preserve escaped Scripture text.');
@@ -18,7 +18,9 @@ assert(rendered.html.includes('<ruby>神<rt>かみ</rt></ruby>'),'All mode must 
 assert(rendered.fallback===false,'Successful tokenizer rendering must not be fallback.');
 const failing=createJapaneseFuriganaService({storage:storage({'japanese-furigana':{version:1,mode:'all'}}),tokenizer:{async tokenize(){throw new Error('offline')}}});
 rendered=await failing.render('神は愛');
-assert(rendered.fallback===true&&rendered.html.includes('<ruby>神<rt>かみ</rt></ruby>'),'All mode failure must fall back to support readings.');
+assert(rendered.fallback===true,'All mode tokenizer failure must be identified as fallback.');
+assert(!rendered.html.includes('<ruby>神<rt>'),'Fallback must not invent an uncurated standalone 神 reading.');
+assert(rendered.html.includes('<ruby>愛<rt>あい</rt></ruby>'),'All mode failure must fall back to recovered curated support readings.');
 const malformed=createJapaneseFuriganaService({storage:storage({'japanese-furigana':{version:99,mode:'invalid'}})});
 assert(malformed.getState().mode==='support','Malformed stored mode must normalize to support.');
 let rejected=false;try{malformed.setMode('invented')}catch{rejected=true}assert(rejected,'Unknown modes must be rejected.');
