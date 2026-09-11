@@ -1,0 +1,71 @@
+name: BibleQuest v3 production offline diagnostic
+
+on:
+  push:
+    branches:
+      - verify/v3-production-offline-diag-20260911
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: adb9bef5bd7751fa15d78737e94d25b183f08a53
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Diagnose live offline shell
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: |
+          node --input-type=module <<'NODE'
+          import {chromium} from 'playwright';
+          const base=process.env.BQ_BASE_URL;
+          const browser=await chromium.launch({headless:true});
+          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
+          const page=await context.newPage();
+          const pageErrors=[]; const consoleErrors=[]; const failed=[];
+          page.on('pageerror',e=>pageErrors.push(e.message));
+          page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
+          page.on('requestfailed',r=>failed.push({url:r.url(),failure:r.failure()}));
+          try {
+            await page.goto(base,{waitUntil:'networkidle',timeout:30000});
+            await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+            await page.evaluate(()=>navigator.serviceWorker.ready);
+            await page.waitForFunction(async()=>{
+              const name=(await caches.keys()).find(v=>v.startsWith('biblequest-v3-offline-shell-'));
+              if(!name)return false;
+              const urls=(await (await caches.open(name)).keys()).map(r=>r.url);
+              return urls.some(u=>u.includes('/src/app/bootstrap.js'))&&urls.some(u=>u.includes('/src/ui/app.css'));
+            },null,{timeout:15000});
+            await page.waitForTimeout(1000);
+            const before=await page.evaluate(async()=>{
+              const names=await caches.keys();
+              const name=names.find(v=>v.startsWith('biblequest-v3-offline-shell-'));
+              const cache=await caches.open(name);
+              const keys=await cache.keys();
+              const rootReq=keys.find(r=>new URL(r.url).pathname==='/');
+              const indexReq=keys.find(r=>new URL(r.url).pathname==='/index.html');
+              const resources=performance.getEntriesByType('resource').map(e=>({name:e.name,initiatorType:e.initiatorType}));
+              return {href:location.href,controller:navigator.serviceWorker.controller?.scriptURL||'',name,urls:keys.map(r=>r.url).sort(),rootCached:Boolean(rootReq),indexCached:Boolean(indexReq),resources};
+            });
+            console.log('BEFORE='+JSON.stringify(before,null,2));
+            await context.setOffline(true);
+            let reloadError='';
+            try{await page.reload({waitUntil:'domcontentloaded',timeout:15000})}catch(e){reloadError=e.message}
+            await page.waitForTimeout(3000);
+            const after=await page.evaluate(async()=>({href:location.href,html:document.documentElement.outerHTML.slice(0,3000),text:document.body?.innerText?.slice(0,1500)||'',controller:navigator.serviceWorker.controller?.scriptURL||'',caches:await caches.keys()})).catch(e=>({evalError:e.message}));
+            console.log('RELOAD_ERROR='+reloadError);
+            console.log('AFTER='+JSON.stringify(after,null,2));
+            console.log('PAGE_ERRORS='+JSON.stringify(pageErrors));
+            console.log('CONSOLE_ERRORS='+JSON.stringify(consoleErrors));
+            console.log('FAILED='+JSON.stringify(failed,null,2));
+          } finally {
+            await context.setOffline(false).catch(()=>{});
+            await browser.close();
+          }
+          NODE
