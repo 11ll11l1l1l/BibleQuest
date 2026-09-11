@@ -1,0 +1,74 @@
+/* BibleQuest v3 visual replacement tranche 16.
+   Presentation only: no shell sizing, positioning, navigation, responsive geometry,
+   focus behavior, hit targets, routing, session state or interaction ownership. */
+
+html,body{
+  background:radial-gradient(circle at 50% -18%,rgba(214,232,219,.52) 0%,rgba(214,232,219,0) 42%),linear-gradient(180deg,#f8faf6 0%,#f2f5f0 100%);
+}
+
+.bq-topbar{
+  background:linear-gradient(180deg,rgba(250,252,248,.96) 0%,rgba(247,249,245,.9) 100%);
+  box-shadow:0 8px 20px rgba(37,60,46,.035);
+}
+
+.bq-brand-mark{
+  background:linear-gradient(135deg,#2d6b49 0%,#5d956f 100%);
+  box-shadow:0 5px 14px rgba(47,112,77,.16),inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.bq-build-chip,
+.bq-session-chip{
+  border-color:rgba(47,83,61,.13);
+  background:linear-gradient(180deg,#fff 0%,#f8faf7 100%);
+  box-shadow:0 3px 10px rgba(35,56,43,.035),inset 0 1px 0 rgba(255,255,255,.92);
+}
+
+.bq-nav{
+  border-top-color:rgba(47,83,61,.12);
+  background:linear-gradient(180deg,rgba(255,255,255,.98) 0%,rgba(248,250,247,.97) 100%);
+  box-shadow:0 -8px 24px rgba(35,56,43,.055),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-nav a{
+  color:#68776e;
+}
+
+.bq-nav a[aria-current]{
+  color:#2d6b49;
+}
+
+html[data-bq-contrast="strong"] .bq-topbar,
+html[data-bq-contrast="strong"] .bq-build-chip,
+html[data-bq-contrast="strong"] .bq-session-chip,
+html[data-bq-contrast="strong"] .bq-nav{
+  background:#fff;
+  box-shadow:none;
+}
+
+html[data-bq-contrast="strong"] .bq-build-chip,
+html[data-bq-contrast="strong"] .bq-session-chip,
+html[data-bq-contrast="strong"] .bq-nav{
+  border-color:rgba(31,54,40,.38);
+}
+
+html[data-bq-contrast="strong"] .bq-nav a{
+  color:#3d5045;
+}
+
+html[data-bq-contrast="strong"] .bq-nav a[aria-current]{
+  color:#1f5c3c;
+}
+
+@media(prefers-contrast:more){
+  .bq-topbar,
+  .bq-build-chip,
+  .bq-session-chip,
+  .bq-nav{
+    box-shadow:none;
+  }
+  .bq-build-chip,
+  .bq-session-chip,
+  .bq-nav{
+    border-color:rgba(31,54,40,.42);
+  }
+}
