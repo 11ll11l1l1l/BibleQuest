@@ -257,6 +257,7 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   }
 
   function recallSummary(code){const normalized=String(code||'').toUpperCase();if(!validCode(normalized))throw new Error('Unknown Per-book Recall book.');const stats=recallState.stats[normalized]||{seen:0,got:0,again:0},last=recallState.results[normalized]||null;return Object.freeze({review:(recallState.review[normalized]||[]).length,seen:stats.seen,got:stats.got,again:stats.again,last:freezeResult(last)})}
+  function recallDeckReps(){return Object.values(recallState.stats).reduce((total,row)=>total+(Number(row?.seen)||0),0)}
   function recallReviewQueue(){const out={};for(const [code,ids] of Object.entries(recallState.review))out[code]=Object.freeze([...ids]);return Object.freeze(out)}
   function syncRecallReviewItem(code,id,needsReview){const normalized=String(code||'').toUpperCase(),itemId=String(id||'').trim();if(!validCode(normalized)||!itemId||itemId.length>100)throw new Error('Recall review item identity is invalid.');const current=recallState.review[normalized]||[],next=needsReview?[...new Set([...current,itemId])]:current.filter(value=>value!==itemId);recallState={...recallState,review:{...recallState.review,[normalized]:next}};persistRecall();return Object.freeze([...next])}
   async function returnRecallLibrary(){return openRecallLibrary()}
@@ -265,5 +266,5 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   function showLauncher(){kidsMemory.leave();sameRoom=emptySameRoom();state=emptyState();return snapshot()}
   function leave(){return showLauncher()}
 
-  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),kidsMemory,start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
+  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),kidsMemory,start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallDeckReps,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
 }
