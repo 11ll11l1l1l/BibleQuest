@@ -1,0 +1,23 @@
+name: BibleQuest v3 release docs verifier c586db5
+on:
+  push:
+    branches: [verify/v3-release-docs-c586db5]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c586db5ce70581f226f5224ebfeece9fd63746f8
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact bookkeeping candidate
+        run: |
+          test "$(git rev-parse HEAD)" = "c586db5ce70581f226f5224ebfeece9fd63746f8"
+          git diff --check 952271aaf00e1a6f11280d8926b28399eebe8e4e c586db5ce70581f226f5224ebfeece9fd63746f8
+          node scripts/validate-v3-architecture.mjs
+          node scripts/validate-v3-inventory.mjs
+          node scripts/validate-v3-offline-shell.mjs
