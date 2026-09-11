@@ -20,8 +20,8 @@ jobs:
       - name: Confirm docs-only closeout delta
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "04bd51bfc4ff16a3b42d13e47e95e637999b4880"
-          allowed='^(.github/workflows/v3-release-closeout-docs.yml|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|CONTINUE_PROMPT_V3.md|DEVELOPMENT_HANDOFF_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_STATUS_V3.md|RECONCILIATION_V3.md|RELEASE_CLOSEOUT_V3.md|tests/v3-release-closeout-docs-contract.mjs)$'
+          git merge-base --is-ancestor 04bd51bfc4ff16a3b42d13e47e95e637999b4880 HEAD
+          allowed='^(.github/workflows/v3-release-closeout-docs.yml|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|CONTINUE_PROMPT_V3.md|DEVELOPMENT_HANDOFF_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_STATUS_V3.md|RECONCILIATION_V3.md|RELEASE_CLOSEOUT_V3.md|VISUAL_PHASE_B_V3.md|tests/v3-release-closeout-docs-contract.mjs)$'
           changed="$(git diff --name-only 04bd51bfc4ff16a3b42d13e47e95e637999b4880...HEAD)"
           test -n "$changed"
           while IFS= read -r file; do

@@ -9,7 +9,8 @@ const files = {
   reconciliation: read('RECONCILIATION_V3.md'),
   prompt: read('CONTINUE_PROMPT_V3.md'),
   assignment: read('ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md'),
-  closeout: read('RELEASE_CLOSEOUT_V3.md')
+  closeout: read('RELEASE_CLOSEOUT_V3.md'),
+  visual: read('VISUAL_PHASE_B_V3.md')
 };
 
 const RELEASE = '04bd51bfc4ff16a3b42d13e47e95e637999b4880';
@@ -40,10 +41,12 @@ for (const key of ['status','handoff','reconciliation','prompt','closeout']) {
 
 assert(files.assignment.includes('APPLIED + LIVE VERIFIED'), 'Assignment migration guide did not close the migration state.');
 assert(files.status.includes('No credible P0/P1 release blocker'), 'Status must record the executed release-gate outcome without claiming bug-free status.');
-assert(files.priority.includes('production-integration gate are complete'), 'Priority still treats the completed release gate as unfinished.');
+assert(files.priority.includes('production-release gate are complete'), 'Priority still treats the completed release gate as unfinished.');
 assert(files.handoff.includes('Do not reapply these migrations'), 'Handoff must protect against replaying the release migrations.');
 assert(files.prompt.includes('Do **not** reapply them'), 'Continuation prompt must protect against replaying the release migrations.');
 assert(files.reconciliation.includes('integrated, promoted and live verified'), 'Reconciliation status is stale.');
 assert(files.closeout.includes('released and live verified'), 'Release closeout does not state its final status.');
+assert(files.visual.includes('Visual Phase B is the active artwork-quality program'), 'Active Visual Phase B contract was not preserved.');
+assert(files.visual.includes('do **not** contain `assets/icons/v3/` binaries'), 'Visual Phase B must record the verified missing mapped-binary state.');
 
 console.log('BibleQuest v3 release-closeout documentation contract passed.');
