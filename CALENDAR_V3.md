@@ -35,3 +35,8 @@ Building any of the above now would mean inventing authorization or notification
 ## Non-negotiable boundary
 
 Calendar never modifies Assignments, Progress, Notification Center, or any other owner. It has no authority over scoring, leaderboards, or ministry roles.
+
+## Defect / root-cause ledger
+
+- `normalizeEvent` was not idempotent: it read `raw.eventDate`/`raw.event_date` on input but its own output shape used `date`, so re-normalizing a stored event on the next load silently dropped it. Caught by the local edge-test run before any gate; fixed by accepting `raw.date` as a fallback input field.
+- First functional candidate crashed app boot entirely (`tests/v3-shell-smoke.mjs` timed out waiting for the shell to render): `calendar` was instantiated in `bootstrap.js` referencing `assignments` before `assignments`'s own `const` declaration (temporal-dead-zone `ReferenceError`), which aborted `start()` before anything rendered. Root cause was purely instantiation order; no runtime/product logic was at fault. Fixed by moving `calendar`'s instantiation after `assignments`'s declaration. Corrected candidate `d9364df5f17de2853beaee6a90be44614ca11c3b` passed the complete accumulated suite (run `34600387403`) and is frozen as `release/v3-calendar`.
