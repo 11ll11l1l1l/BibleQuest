@@ -1,41 +1,41 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 11:58 JST
+Generated: 2026-09-11 13:58 JST
 
 ## Freshness
-- Active milestone: **#40 Kids Bible Who Am I — pre-implementation**.
-- Risk tier: **provisional NORMAL-RISK** only if bounded to a Kids-facing entry into the existing Games/Character Detective owner with additive milestone coverage. Existing-test/workflow modification, verified-owner replacement, dependency/persistence/security/backend expansion, schema/RLS/grant change, or global-shell/router ownership change reclassifies HIGH-RISK.
-- Canonical `feature/v3-kids-bible-who-am-i`: **not found**.
-- Dedicated `agent/a1-work/040*` candidate: **not found**.
-- Frozen release: `release/v3.71-japanese-furigana` @ `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Exact frozen bookkeeping run `34550650269` = **SUCCESS**. Verifier `9f6bbffc61b13af2a7ca1f0762119586bf08c029` explicitly checks out/asserts `c631bea8...` before accumulated architecture, edge/security and browser/mobile phases. Baseline evidence only; never transferable to future #40 SHAs.
-- A2 #40 report: **fresh** for frozen `c631bea8...`, no candidate.
-- A3 #40 report: **fresh** for frozen `c631bea8...`, no candidate; bounded path needs no new server/RLS/RPC/Edge authorization boundary.
-- A4 #40 report: **fresh pre-implementation** for frozen `c631bea8...`, no candidate PASS.
-- HIGH-RISK exact-candidate barrier: **not applicable yet**; mandatory if eventual #40 diff crosses a HIGH-RISK boundary.
+- Current phase: **post-release visual/artwork polish planning**; the v3 production release mission is complete.
+- Release-control line: `feature/v3-post-parity-closeout` @ `c586db5ce70581f226f5224ebfeece9fd63746f8`.
+- Dedicated visual-polish canonical branch: **not found**.
+- Dedicated visual-polish `agent/a1-work/...` candidate: **not found**.
+- Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Frozen production release: `release/v3-production-20260911-r3` @ `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Historical baseline `release/v3.71-japanese-furigana` @ `c631bea8d5177a9a2ff68139cb104b6fbf26015b` is ancestry/reference evidence only.
+- Exact r3 verifier: run `34560522189`, attempt 2, **SUCCESS**. The isolated workflow explicitly checks out/asserts `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` and passed Cloudflare gate, accumulated architecture validators, edge/security/static regressions, Playwright browser/mobile regressions, and release-critical coverage presence.
+- Durable handoff records r3 production verification complete and authorizes visual/artwork polish next while preserving current architecture/interface contracts.
 - Writer lease: **FREE**.
-- `automation/CURRENT.md` remains materially stale (#75/v3.48 era).
-- Stale immediately if #40 canonical/candidate appears or moves, frozen baseline advances, #38/#93 permanent evidence changes, workflow coverage changes, or exact #40 run evidence appears.
+- `automation/CURRENT.md` and all #40 A2/A3/A4 reports are **stale** relative to the production-r3 handoff and cannot create current BLOCKER/MILESTONE/READY findings.
+- Stale immediately if a visual-polish canonical/work branch appears or moves, `main`/r3 changes, or exact candidate workflow evidence appears.
 
 ## BLOCKER
-1. **#38 accumulated-regression weakening remains unresolved.** `tests/v3-kids-memory-lazy-progress-capability.mjs` is absent and the exact accumulated workflow does not invoke assertion-equivalent coverage for fail-loud Memory Meadow launch when `Progress.getState()` is unavailable. Counterfactual: this launch-time capability contract can regress while the suite stays green.
-2. **#93 trusted-boundary evidence remains insufficient.** `tests/v3-admin-operations-edge.mjs` still injects mocked privileged APIs rather than executing the real JWT/platform-role/Owner-only destructive-account server boundary. Counterfactual: trusted authorization/delete protections can regress while client-level tests remain green.
+None.
 
 ## MILESTONE
-1. **#40 narrow Games-owner implementation after blocker repair.** Primary evidence supports a Kids-facing `Bible Who Am I?` entry into the existing Character Detective lifecycle only. Do not invent a Kids-only data bank, scoring/reward owner, persistence/backend path or second state machine. Permanent coverage must prove launch, full round, answer/reference feedback, duplicate-submit protection, replay/leave cleanup, keyboard behavior, 390px browser/mobile behavior, single-owner reuse and complete accumulated-suite retention.
+1. **Start post-release visual/artwork polish as a new isolated phase, not as continuation of #40.** Establish the written visual-replacement contract and dedicated isolated branch before product writes. Counterfactual: following the stale #40 control state could revive retired release scope or mix new visual work into obsolete milestone ownership.
 
 ## DEFER
-- **#39 Hiragana Match** remains explicitly deferred.
+- Physical Android/PWA smoke remains optional evidence; automated production verification is recorded and no physical-device PASS is implied.
+- #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from the completed release scope; any future return is new optional post-release scope.
 
 ## IGNORE
-- Historical A3 #76 conclusions as current #40 evidence.
-- PASS transfer from frozen v3.71 to any future #40 SHA.
-- Moving/rewriting frozen `release/v3.71-japanese-furigana`.
+- Previous #40 `2 BLOCKER; 1 MILESTONE` disposition as current work control.
+- Historical #40 A2/A3/A4 reports as authorization/blocking evidence for a future visual-polish SHA.
+- PASS transfer from r3 or v3.71 to a changed future product SHA.
+- Historical `agent/a1-work/075-assignment-push` as an active candidate.
 - Stale `automation/CURRENT.md` as product-state authority.
 
 ## Firewall decision
-**2 BLOCKER; 1 MILESTONE. #40 PRODUCT WRITES SHOULD NOT START FROM THE CURRENT ACCUMULATED-HARNESS STATE.**
+**0 BLOCKER; 1 MILESTONE. No candidate exists to promote.** Preserve production r3 and do not revive #40. When a visual-polish candidate appears, classify its actual diff and apply exact-SHA functional/bookkeeping gates plus HIGH-RISK review requirements only if that candidate crosses a HIGH-RISK boundary.
 
 ## Next safe action
-Keep frozen v3.71 immutable. Use a corrective lineage to restore/replace the missing #38 fail-loud Progress-capability regression with assertion-equivalent permanent coverage and add faithful #93 trusted-boundary authorization/delete evidence without weakening prior regressions. Run the complete accumulated suite on the exact corrective SHA. Then create the dedicated #40 canonical/work lineage from that verified corrected baseline and execute the narrow Games-owner contract.
+Create the post-release visual-polish contract and isolated branch from the preserved release-control/r3 lineage. Keep `main` and `release/v3-production-20260911-r3` immutable during development. Review the actual candidate rather than inheriting stale milestone conclusions.
