@@ -17,24 +17,30 @@ try{
   await page.goto(BASE,{waitUntil:'networkidle'});
   await page.locator('[data-bq-shell="v3"]').waitFor();
   await page.evaluate(()=>navigator.serviceWorker.ready);
-  await page.waitForFunction(sentinels=>{
-    return (async()=>{
-      const names=await caches.keys();
-      const name=names.find(value=>value.startsWith('biblequest-v3-offline-shell-'));
-      if(!name)return false;
-      const cache=await caches.open(name),requests=await cache.keys(),urls=requests.map(request=>request.url);
-      return sentinels.every(sentinel=>urls.some(url=>url.includes(sentinel)));
-    })();
-  },warmSentinels,{timeout:20000});
-  const before=await page.evaluate(async sentinels=>{
-    const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
-    const cache=await caches.open(name),requests=await cache.keys(),urls=requests.map(request=>request.url);
-    return {name,count:requests.length,probe:urls.some(url=>url.includes('bq-net-probe')),packs:urls.some(url=>url.includes('/data/packs/')),sentinels:sentinels.filter(sentinel=>urls.some(url=>url.includes(sentinel)))};
-  },warmSentinels);
-  assert(before.count>=warmSentinels.length,'Offline shell cache did not warm the required shell graph.');
-  assert(before.sentinels.length===warmSentinels.length,'Offline shell cache did not reach late shell modules before offline transition.');
-  assert(!before.probe,'Client Diagnostics network probe must never enter the offline shell cache.');
-  assert(!before.packs,'#98 shell cache must not contain Bible packs reserved for #99.');
+  let readiness=null;
+  for(let attempt=1;attempt<=80;attempt++){
+    readiness=await page.evaluate(async sentinels=>{
+      const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
+      if(!name)return {ready:false,name:'',count:0,probe:false,packs:false,found:[]};
+      const urls=(await (await caches.open(name)).keys()).map(request=>request.url);
+      const found=sentinels.filter(sentinel=>urls.some(url=>url.includes(sentinel)));
+      return {
+        ready:found.length===sentinels.length,
+        name,
+        count:urls.length,
+        probe:urls.some(url=>url.includes('bq-net-probe')),
+        packs:urls.some(url=>url.includes('/data/packs/')),
+        found
+      };
+    },warmSentinels);
+    if(readiness.ready)break;
+    await page.waitForTimeout(250);
+  }
+  assert(readiness?.ready,`Offline shell cache did not reach late shell modules before offline transition: ${JSON.stringify(readiness)}`);
+  assert(readiness.count>=warmSentinels.length,'Offline shell cache did not warm the required shell graph.');
+  assert(readiness.found.length===warmSentinels.length,'Offline shell cache did not retain all late shell sentinels.');
+  assert(!readiness.probe,'Client Diagnostics network probe must never enter the offline shell cache.');
+  assert(!readiness.packs,'#98 shell cache must not contain Bible packs reserved for #99.');
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded',timeout:15000});
   await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
