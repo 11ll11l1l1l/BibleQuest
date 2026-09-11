@@ -12,12 +12,12 @@ async function run(){
   await page.waitForURL(/#\/play$/);
   const kids=page.locator('[data-kids-bible-card]');await kids.waitFor();
   assert((await kids.locator('h2').textContent())==='Kids Bible Who Am I?','Kids Bible launcher title changed.');
-  assert((await kids.locator('p').textContent())==='Three clues. One Bible hero. Can you guess?','Kids Bible launcher description changed.');
+  assert((await kids.locator('p').textContent())==='Easy character clues for family play.','Kids Bible launcher description changed.');
   const open=page.locator('[data-kids-bible-open]');assert((await open.textContent())==='Play Bible Who Am I?','Kids Bible launcher CTA changed.');
   assert((await open.evaluate(node=>node.getBoundingClientRect().height))>=44,'Kids Bible launcher touch target is below 44px.');
   await open.click();await page.locator('[data-detective="d1"]').waitFor();
   assert((await page.locator('[data-detective] h1').textContent())==='Who am I?','Kids Bible did not enter the shared detective UI.');
-  assert(await page.locator('.bq-detective-clues > div').count()===3,'Kids Bible must preserve the three-clue detective contract.');
+  assert(await page.locator('.bq-detective-clues > div').count()===3,'Kids Bible must reuse the verified three-clue v3 detective presentation.');
   await page.locator('[data-detective-answer]').fill('DAVID');await page.locator('[data-detective-submit]').click();await page.locator('[data-detective-feedback]').waitFor();
   assert((await page.locator('[data-detective-feedback]').textContent())?.includes('Correct'),'Kids Bible shared detective answer failed.');
   assert((await page.locator('[data-detective-score]').textContent())?.includes('+12'),'Kids Bible alias changed detective XP semantics.');
