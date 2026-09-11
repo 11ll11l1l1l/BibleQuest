@@ -6,15 +6,24 @@ Milestone #82 is bounded to the authoritative inventory requirement: **browse; s
 
 The retained standalone `avatar-vault.js` contains 15 cosmetic avatar styles unlocked by account-wide metrics (streak, XP, question counts, recall-deck repetitions, couples conversations, group sessions, leader assignments, Journey region mastery), persisted to `localStorage` plus an optional Supabase sync (`bible_avatar_cosmetics`, `bible_congregation_members.avatar`), and an avatar-render patch overlay for a cosmetic glyph.
 
-## v1 scope decision (recorded, not silent)
+## v1 scope decision (recorded, not silent) — superseded in part by v2 below
 
-The v3 Progress owner (`src/core/progress.js`) exposes only `xp` and `streak` today. The other legacy metrics (question answer/correct counts, recall-deck repetitions, couples conversation count, community group-session count, assignment completions, Journey region mastery) have no v3 owner that exposes a simple count yet.
+The v3 Progress owner (`src/core/progress.js`) exposed only `xp` and `streak` at #82's original freeze. The other legacy metrics had no v3 owner that exposed a simple count yet, so v1 shipped with 5 of 15 styles `available:true` and the remaining 10 explicitly `available:false` with a `needsOwner` tag, per rebuild-and-verify discipline (recover behavior, do not invent it, do not duplicate counting ownership).
 
-Per rebuild-and-verify discipline (recover behavior, do not invent it, do not duplicate counting ownership), #82 v1 therefore:
-- retains **all 15 styles** in `src/engines/avatar-vault.js` for catalog parity;
-- marks 5 styles `available:true` and evaluable now: `starter`, `sakura` (7-day streak), `lantern` (500 XP), `flame` (30-day streak), `crown` (2,500 XP);
-- marks the remaining 10 styles `available:false` with a `needsOwner` tag identifying the missing v3 metric owner; they render as "Coming soon" and can never evaluate as unlocked until that follow-up integration lands;
-- this is an explicit, recorded deferral consistent with "respect explicitly deferred capabilities in the inventory/handoff."
+## v2: 6 more styles un-deferred (Priority 1A functional completion)
+
+By the time this v2 pass ran, four more v3 owners already existed with clean, reusable read-only getters — recovered and reused rather than reinvented:
+- **Bible World** (`src/app/bible-world.js`, `bibleWorld.snapshot().regions`) — each region already exposes `percent`/`explored`. Unlocks `world` (every region explored) and `fuji` (any region at 100%).
+- **Couples Family** (`src/app/couples-family.js`, `couplesFamily.snapshot().history`) — conversation history array length. Unlocks `couple` (10 conversations).
+- **Games** (`src/app/games.js`) — recall-pack stats (`seen` count per book) already existed internally but had no public aggregate getter; added one new read-only method, `recallDeckReps()`, summing `seen` across all books. Unlocks `scroll` (100 reps) and `moon` (250 reps).
+- **Assignments** (`src/app/assignments.js`, `assignments.snapshot().assignments`) — each row already carries `progress.status`. Unlocks `tea` (10 rows with `status==='completed'`).
+
+Avatar Vault's app owner now takes `bibleWorld`, `couplesFamily`, `games`, and `assignments` as additional optional dependencies (all guarded with `?.`/try-catch so the service still works, failing closed, if any are omitted — see edge test "Without Games injected, scroll must stay locked, not throw"). It reads each owner's existing getter; it never writes to any of them and never duplicates their counting.
+
+Current state:
+- **11 of 15** styles `available:true`: the original 5 plus `scroll`, `couple`, `world`, `moon`, `fuji`, `tea`.
+- **4 of 15** remain `available:false`/`needsOwner`: `scholar`, `kitsune` (question-answer count — no v3 owner tracks a cumulative lifetime count across quiz modes; `games.js` only persists the *latest* result per mode, not a running total), `shepherd` (question-correct count — same gap), `community` (group-session count — no owner exposes this yet). Building these would mean adding new cumulative counters to Games/Community ownership, which is a distinct follow-up milestone, not squeezed into this pass.
+- this remains an explicit, recorded deferral consistent with "respect explicitly deferred capabilities in the inventory/handoff."
 
 ## v3 ownership
 
