@@ -72,7 +72,7 @@ Remaining official-release evidence:
 
 Issue #94 remains the integration tracker, but it does not require another automatic visual tranche in the absence of a demonstrated material gap.
 
-## Correct next route
+## Next major milestone
 
 - preserve product `2c601b3...` and validation `d0eab188...` separately;
 - stop feature/visual churn unless field/production evidence exposes a real defect or material gap;
@@ -81,13 +81,14 @@ Issue #94 remains the integration tracker, but it does not require another autom
 - obtain provider deployment evidence and independent host verification;
 - if any product correction is required, create a new candidate and repeat build + architecture + edge/security + full browser/mobile + explicit widths + PWA/offline + relevant field proof before promotion.
 
-## Defect / milestone ledger
+## Defect / root-cause ledger
 
 - PR #110 Progress/Grow Phase B: completed, exact product `2c601b3...`, run `34633247237` success.
 - PR #111 final mobile/build gate: completed, exact validation SHA `d0eab188...`, run `34634460077` success; no product behavior changed.
 - Issue #6 old four-tab/nine-node wording: stale implementation detail; current five-tab v3 intent verified automatically.
 - Issue #68: implementation complete, field evidence incomplete.
 - PR #88 legacy stale-device issue: not reproduced in current v3 runtime.
+- Release-control validator regression: detected by PR #112 because this file had renamed required contract headings after run `34634460077`; corrected by restoring the validator-required defect ledger and next-work queue headings without changing product behavior.
 
 ## Evidence rules
 
