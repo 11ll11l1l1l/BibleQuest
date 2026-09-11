@@ -14,11 +14,21 @@ This is the central captain-readable status file for the BibleQuest V4 design an
 
 ## Current active gate
 
-**Infrastructure Safety Net — mandatory before broader V4 page migration.**
+**Infrastructure Safety Net — CERTIFIED.** Checkpoint: `release/v4-infra-safety-net` @ `0a4b7f6873c1955f2c65b5044c81f0180524670b`.
 
-The revised master plan places the known bootstrap dependency/wiring-order failure class ahead of additional visual expansion. The next runtime tranche must add fail-fast validation/diagnostics and regression coverage for invalid startup dependency ordering without restructuring otherwise working services.
+`src/app/bootstrap.js`'s `start()` was split into `start()` (fail-fast wrapper) + `boot(root)` (unchanged original sequence). A startup failure now renders an actionable diagnostic into `#app` instead of a blank/frozen screen. This is the same single bootstrap owner — no second bootstrap path was created.
 
-Existing V4 presentation work remains in the branch and is **implemented but not yet fully certified under the revised verification contract**.
+New regression coverage: `tests/v4-bootstrap-order-edge.mjs` statically parses `bootstrap.js` and asserts no service references a dependency declared later in the file. This was verified to actually catch the known failure class by deliberately reintroducing the historical bug in a scratch copy and confirming the test failed with the exact line/dependency pair, then restoring the correct file before commit. `tests/v4-bootstrap-safety-net-smoke.mjs` confirms normal boot is unaffected.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (including 320/375/768/1024px checks via `tests/v3-final-mobile-widths-smoke.mjs`). Run: `34656466994`.
+
+**Two pre-existing regressions in the previously-uncertified Foundation A/B work were found and fixed while closing this gate** (this was the first real CI run this branch has ever had):
+1. `v4-foundation.css` hid the entire `.bq-progress-chip` under 640px width (`display:none`), breaking the existing width contract expecting it visible. Fixed to match the established pattern of hiding only the small streak sublabel.
+2. Bottom-nav labels (`.bq-nav a small`) were 9px, below the 10px minimum-readable-text contract. Fixed to 10px.
+
+Both fixes are minimal, scoped only to the specific failing rule, and did not touch anything else in Foundation A/B. They do not constitute Foundation certification — Foundation B's remaining form/control primitives and full responsive/accessibility evidence are still pending per the queue below.
+
+**Next gate: V4 Foundation certification** — finish and certify remaining Foundation B form/control primitives, then run the same full verification contract against Foundation's own exact candidate SHA before calling it certified.
 
 ## Existing V4 work retained
 
@@ -60,8 +70,8 @@ All families share one icon language, type scale, spacing system, motion languag
 
 | Order | Tranche/family | State |
 | ---: | --- | --- |
-| 1 | Infrastructure safety net | **NEXT / mandatory gate** |
-| 2 | V4 foundation certification | Implemented in part; controls + full evidence pending |
+| 1 | Infrastructure safety net | **CERTIFIED** — `release/v4-infra-safety-net` @ `0a4b7f6873c1955f2c65b5044c81f0180524670b` |
+| 2 | V4 foundation certification | **NEXT / mandatory gate.** Implemented in part (tokens/primitives, Home migration, icon system); 2 pre-existing regressions fixed during infra-safety-net gating (progress chip visibility, nav label size); controls + full evidence still pending |
 | 3 | Global shell/navigation | Implemented in part; full evidence pending |
 | 4 | Home | Implemented in part; full evidence pending |
 | 5 | Learn hub + Reader | Pending |
