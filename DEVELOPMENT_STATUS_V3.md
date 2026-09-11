@@ -1,8 +1,8 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after completion and exact-SHA verification of the classified post-release visual-polish program through tranche 16.
+Updated: 2026-09-11 JST after exact-SHA verification of the post-release Assignment Private Responses milestone.
 
-`FEATURE_INVENTORY_V3.md` remains the release-parity ledger. `KIDS_GAMES_EXTENSION_V3.md` governs any future Kids-game expansion. `VISUAL_REPLACEMENT_CONTRACT_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, and `VISUAL_POLISH_PROGRESS_V3.md` govern and record the completed replacement-level visual program.
+`FEATURE_INVENTORY_V3.md` remains the release-parity ledger. `KIDS_GAMES_EXTENSION_V3.md` governs any future Kids-game expansion. `VISUAL_REPLACEMENT_CONTRACT_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, and `VISUAL_POLISH_PROGRESS_V3.md` record the completed replacement-level visual program. `ASSIGNMENT_PRIVATE_RESPONSES_V3.md` is the focused contract/evidence record for the current post-release product milestone.
 
 ## Production baseline — unchanged
 
@@ -11,97 +11,100 @@ Updated: 2026-09-11 JST after completion and exact-SHA verification of the class
 - Production release objective: complete.
 - Applicable release scope: **98/98 complete**.
 - Historical #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from this release scope and are not release debt.
-- Production Supabase/data was not changed by the release or by post-release visual development.
-- Do not describe automated production verification as physical-device acceptance.
+- Production Supabase/data was not changed by post-release visual development or by Assignment Private Responses development.
+- Assignment Private Responses is **not production-live**. Its migration is committed in the repository but has not been applied to production Supabase.
+- Do not describe automated browser verification as physical-device acceptance.
 
-The production release and post-release visual line are intentionally separate. No visual tranche has been promoted to `main` in this development cycle.
+The production release and post-release development line are intentionally separate. Do not repoint `main` or apply the new database migration merely because the post-release product is verified.
 
 ## Current exact-green post-release product
 
-- Development branch: `postrelease/v3-visual-shell-tranche16`.
-- Exact verified product SHA: `406c34dcdf904b7483bf4381be774a908738e60c`.
-- Parent exact-green product SHA: tranche 15 at `62cb86cd48bae683d0be37a2a729127156a0093a`.
-- Exact verifier branch: `verify/v3-visual-shell-406c34d`.
-- Workflow run: `34585018541`.
-- Job: `103217107423`.
+- Development branch: `postrelease/v3-assignment-private-responses`.
+- Exact verified product SHA: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`.
+- Parent visual-program evidence head: `ef78bbbed7115ef65853159edf21dac454d5ee99`.
+- Previous exact-green visual product checkpoint: `406c34dcdf904b7483bf4381be774a908738e60c`.
+- Exact verifier branch: `verify/v3-assignment-private-responses-73d39ce`.
+- Workflow run: `34588223163`.
+- Job: `103227244295`.
 - Conclusion: **success**.
 
-The verifier checked out detached exact product SHA `406c34dcdf904b7483bf4381be774a908738e60c` and executed successfully:
+The verifier checked out detached exact product SHA `73d39ce6fe0f9db20db62e25fd497a8711f921b0` and passed:
 
-- exact-SHA and exact three-file diff hygiene;
-- Cloudflare deployment gate, including syntax checks over 267 JavaScript files and production-entry/runtime ownership guards;
-- 16 accumulated visual static contracts;
-- 53 accumulated v3 architecture validators;
-- 86 edge/security/static regressions;
-- 68 Playwright browser/mobile regressions plus Kids Memory browser acceptance;
-- dedicated global-shell computed-style, strong-contrast, navigation-contract, and horizontal-containment checks at 1280x900 and 390x844.
+- exact-SHA and exact milestone-diff hygiene;
+- Cloudflare deployment gate with syntax checks over **267 JavaScript files** and all production-entry/runtime ownership guards;
+- focused Assignment Private Responses privacy regression plus Assignments, Advanced Assignments, and Assignment Push edge/architecture checks;
+- **16** accumulated visual static contracts;
+- **53** accumulated v3 architecture validators;
+- **86** accumulated edge/security/static regressions;
+- **68** accumulated Playwright browser/mobile regressions plus Kids Memory browser acceptance;
+- release-critical PWA/offline/accessibility, shell/account/navigation, Reader, Games, Transform, Assignments, Advanced Assignments, and Assignment Push coverage;
+- final privacy/release-critical coverage-presence gate.
 
-The exact tranche-16 product delta from tranche 15 consists only of:
+No PASS was transferred from a changed product SHA.
 
-- `index.html`: one stylesheet include;
-- `src/ui/shell-visual-polish.css`: shell presentation overlay;
-- `tests/v3-shell-visual-polish-static.mjs`: shell visual-boundary regression contract.
+## Assignment Private Responses milestone
 
-No JavaScript, feature owner, route, storage, backend, service worker, data, or Supabase file changed in tranche 16.
+The verified milestone extends the existing Assignments system rather than creating a second task or backend owner.
 
-## Tranche-16 failure/root-cause record
+- Ministry authors can use the existing assignment prompt/activity/question flow and can require a written response/reflection.
+- Assigned members can see which authorized peers have completed/responded.
+- Ordinary members cannot see another member's submitted answer text.
+- Authorized ministry roles can review completed answer text for the active assignment.
+- `bible_assignment_progress` remains the protected answer/feedback source.
+- `bible_assignment_response_presence` is the peer-visible projection and contains only assignment/congregation/member identity, display name, and completion timestamp.
+- `src/core/api.js` remains the single browser Supabase/API owner for both safe-presence and ministry-private response reads.
+- `src/app/assignments.js` owns normalization, role gating, stale-request protection, and review state.
+- `src/features/assignments/index.js` owns presentation.
+- Existing Advanced Assignments and Assignment Push behavior/presentation contracts are preserved.
 
-The first shell candidate `b0f2620ef0e0792db0c50a533a438837bbf3b297` was not accepted. Run `34584870801` passed exact-SHA hygiene and the Cloudflare gate but failed the accumulated visual static-contract step because the new shell stylesheet had been inserted between `app.css` and `account-visual-polish.css`, violating the established Account visual load-order contract.
+The exact product milestone delta from the parent post-visual evidence head is limited to:
 
-The root cause was corrected by preserving Account directly after `app.css` and loading the shell overlay immediately afterward. Because the product SHA changed, the partial PASS from the failed candidate was discarded and the complete accumulated verifier was rerun from the beginning on `406c34dcdf904b7483bf4381be774a908738e60c`.
+- `DEVELOPMENT_STATUS_V3.md` — status-contract correction present in the verified SHA;
+- `src/app/assignments.js`;
+- `src/core/api.js`;
+- `src/features/assignments/index.js`;
+- `supabase/migrations/20260911131000_assignment_response_presence.sql`;
+- `tests/v3-assignment-private-responses.mjs`.
+
+The migration is source-controlled evidence only at this stage. It has not been executed against production.
 
 ## Completed visual program
 
-The cumulative visual line now covers the replacement-level A/B surfaces defined by the visual inventory, including:
+The classified replacement-level A/B visual phase remains complete through tranche 16. The prior exact-green visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` remains a preserved checkpoint and the visual evidence is retained in `VISUAL_POLISH_PROGRESS_V3.md`.
 
-- Home/hero;
-- global shell/theme;
-- Games and Memory Meadow decorative chrome;
-- Reader;
-- Bible World;
-- Progress/Daily Journey;
-- PWA/app icons within the existing manifest/install contract;
-- Transform;
-- Study, Deep Questions, Story Journey, Wisdom Situations;
-- Account/Tutorial;
-- Context/Japanese/source presentation;
-- Private/Cloud Notes;
-- Couples;
-- Community Bridge;
-- Media/Recordings;
-- Adaptive Learning/Open Review;
-- Accessibility presentation.
+Assignment Private Responses is a separate behavior/data milestone built after that visual program; its exact-green SHA is now the newest verified post-release product checkpoint.
 
-`VISUAL_POLISH_PROGRESS_V3.md` is the detailed exact-SHA evidence ledger.
+## Evidence-only branch head
 
-## Post-release boundary now reached
+After exact product SHA `73d39ce6fe0f9db20db62e25fd497a8711f921b0` passed, documentation-only bookkeeping began on `postrelease/v3-assignment-private-responses`.
 
-The classified replacement-level visual phase is complete. The remaining inventory areas are Class D architecture/behavior owners, including router/bootstrap/core services, PWA/offline/service-worker behavior, and Supabase/API/storage/security. They are not unfinished visual polish and must not be modified merely to continue development.
-
-The next product phase must therefore be a separately scoped post-release milestone with a concrete objective, isolated branch, defined owner boundaries, acceptance criteria, focused regression protection, and exact-SHA accumulated verification.
+Therefore the live branch HEAD may be later than the verified product SHA. A later documentation-only HEAD must not be called the verified product SHA unless product files change and a fresh exact-SHA product verification is executed.
 
 ## Standing rules
 
-- Preserve `main` and `release/v3-production-20260911-r3` until a later promotion is explicitly part of the selected milestone.
-- Preserve exact-green visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` as the current post-release product checkpoint.
-- Documentation-only commits after that SHA do not become verified product SHAs.
+- Preserve `main` and `release/v3-production-20260911-r3` until a later promotion is explicitly selected.
+- Preserve exact-green product SHA `73d39ce6fe0f9db20db62e25fd497a8711f921b0` as the current post-release product checkpoint.
+- Preserve exact-green visual checkpoint `406c34dcdf904b7483bf4381be774a908738e60c` as an earlier rollback/reference point.
+- Documentation-only commits after a verified product SHA are evidence/bookkeeping only.
 - Never transfer PASS across changed product SHAs.
 - Never claim unexecuted tests.
 - Reproduce defects before product fixes.
 - Do not revive retired Kids/Kana scope without a new explicit product decision.
-- Do not modify production Supabase/data without a reproduced defect requiring it.
+- Do not modify production Supabase/data without an explicit integration/release decision or a reproduced production defect requiring it.
 - A GitHub promotion is not proof of Cloudflare propagation; any future production release needs separate deployed-identity and browser verification.
-
-## Next milestone gate
-
-Do not invent another visual tranche or enter Class-D owners by default. The next executable product milestone is the next explicitly selected post-release product objective. Once selected, branch from the appropriate exact-green checkpoint and define the acceptance contract before implementation.
-
 
 ## Defect / root-cause ledger
 
-- Post-release Assignment Private Responses candidate `8a97b1f9dea8451fe35ecb73b710f86481f7d582` passed its focused privacy contract and deployment gate but was rejected by the accumulated architecture validator because it opened a second Supabase client in `src/core/assignment-responses.js`. The correction keeps backend queries under the established `src/core/api.js` owner and removes that competing client.
-- The same candidate exposed a documentation-contract regression inherited from the post-visual handoff: this status file had replaced the required `Defect / root-cause ledger` and `Next major milestone` headings. Those canonical ledger headings are restored here without changing the completed visual evidence.
+- Candidate `8a97b1f9dea8451fe35ecb73b710f86481f7d582` passed its focused privacy contract and deployment gate but was rejected by the accumulated architecture validator because it opened a second Supabase client in `src/core/assignment-responses.js`. Root cause: competing backend ownership. The verified design removes that module and routes the new reads through established `src/core/api.js`.
+- The same candidate exposed a documentation-contract regression inherited from the post-visual handoff because this status file no longer retained the canonical `Defect / root-cause ledger` and `Next major milestone` headings. Those headings were restored before acceptance.
+- Candidate `05913f6f39fca9bbf4fdec8fc976818cfedc15c6` was rejected because the reconciled UI dropped the established Assignment Push reminder/recurrence boundary copy. That contract was restored; reminder/recurrence values remain metadata only and this UI does not send notifications or generate recurring copies.
+- Candidate `46160efbe5fe2fdcee75ee0884020268f6679ca6` passed static gates but was rejected by accumulated browser acceptance because established Advanced Assignments/ministry read-only presentation copy changed. The exact `Written reflection required` metadata label and ministry `Recipient responses remain read-only` contract were restored.
+- Final product SHA `73d39ce6fe0f9db20db62e25fd497a8711f921b0` preserved those existing contracts while retaining the new privacy model and earned the complete exact-SHA PASS in run `34588223163` / job `103227244295`.
 
 ## Next major milestone
 
-Complete exact-SHA verification of the isolated Assignment Private Responses milestone. Do not promote it or apply its Supabase migration to production until the full accumulated suite is green and a separate production-migration/release decision is made.
+Assignment Private Responses implementation and exact-SHA development verification are complete.
+
+The next gate for **this feature** is a separately selected integration/release milestone that includes: review/deployment of `20260911131000_assignment_response_presence.sql`, integration of the exact verified product state without unrelated history, fresh verification of any changed promoted SHA, Cloudflare propagation confirmation, and live authorization/privacy smoke checks. Until that integration/release is explicitly selected, do not apply the migration and do not claim the feature production-live.
+
+If development continues on another objective instead, select a concrete isolated post-release milestone from the current verified checkpoint and define its architecture owner, acceptance criteria, regression protection, and exact-SHA verification before implementation.
