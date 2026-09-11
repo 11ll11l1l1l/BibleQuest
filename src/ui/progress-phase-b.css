@@ -1,0 +1,150 @@
+/* BibleQuest v3 Visual Phase B — Progress/Grow artwork layer.
+   Presentation only: XP, streaks, counters, rewards, badges, persistence and navigation ownership stay unchanged. */
+
+.bq-progress-hero,
+.bq-progress-section-heading{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.bq-progress-hero{
+  margin-top:2px;
+}
+
+.bq-progress-hero-copy{
+  min-width:0;
+  flex:1;
+}
+
+.bq-progress-hero-copy h1,
+.bq-progress-section-heading h2{
+  margin:0;
+}
+
+.bq-progress-art-wrap{
+  width:64px;
+  height:64px;
+  flex:0 0 64px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  color:#356f4d;
+  background:linear-gradient(145deg,#edf6ed,#fff5d6);
+  border:1px solid rgba(47,112,77,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 18px rgba(39,60,45,.055);
+}
+
+.bq-progress-art-wrap.is-small{
+  width:42px;
+  height:42px;
+  flex-basis:42px;
+  border-radius:13px;
+}
+
+.bq-progress-art{
+  width:38px;
+  height:38px;
+  display:block;
+}
+
+.bq-progress-art-wrap.is-small .bq-progress-art{
+  width:25px;
+  height:25px;
+}
+
+.bq-progress-stats>div{
+  text-align:left;
+  display:grid;
+  grid-template-columns:32px 1fr;
+  grid-template-areas:"icon value" "icon label";
+  align-items:center;
+  column-gap:9px;
+}
+
+.bq-progress-stat-art{
+  grid-area:icon;
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  color:#356f4d;
+  background:rgba(47,112,77,.08);
+}
+
+.bq-progress-stat-art .bq-progress-art{
+  width:20px;
+  height:20px;
+}
+
+.bq-progress-stats b{grid-area:value}
+.bq-progress-stats span:not(.bq-progress-stat-art){grid-area:label}
+
+.bq-progress-section-heading{
+  margin-bottom:7px;
+}
+
+.bq-progress-section-heading+.bq-section-copy{
+  margin-top:0;
+}
+
+.bq-progress-actions button{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+
+.bq-progress-action-art{
+  width:20px;
+  height:20px;
+  display:block;
+  flex:0 0 20px;
+}
+
+.bq-progress-title .bq-progress-section-heading{
+  gap:10px;
+}
+
+.bq-badge-card>span.bq-progress-badge-art{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+}
+
+.bq-progress-badge-art .bq-progress-art{
+  width:24px;
+  height:24px;
+}
+
+.bq-badge-card.is-unlocked>span.bq-progress-badge-art{
+  color:#fff;
+}
+
+.bq-badge-card.is-locked>span.bq-progress-badge-art{
+  color:#68766e;
+}
+
+@media(max-width:430px){
+  .bq-progress-hero{align-items:flex-start}
+  .bq-progress-art-wrap{width:56px;height:56px;flex-basis:56px;border-radius:16px}
+  .bq-progress-art{width:33px;height:33px}
+}
+
+@media(max-width:340px){
+  .bq-progress-hero{gap:10px}
+  .bq-progress-art-wrap{width:48px;height:48px;flex-basis:48px}
+  .bq-progress-art{width:29px;height:29px}
+  .bq-progress-stats>div{grid-template-columns:28px 1fr;column-gap:7px}
+  .bq-progress-stat-art{width:28px;height:28px}
+  .bq-progress-stat-art .bq-progress-art{width:18px;height:18px}
+}
+
+@media(prefers-contrast:more){
+  .bq-progress-art-wrap,.bq-progress-stat-art,.bq-progress-badge-art{box-shadow:none;border:1px solid #31583d}
+}
