@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="864" height="96" viewBox="0 0 864 96" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="8" y1="8" x2="88" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#2F704D"/><stop offset="1" stop-color="#6A9B68"/></linearGradient>
+    <linearGradient id="g2" x1="104" y1="8" x2="184" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#315E8C"/><stop offset="1" stop-color="#6B8FBD"/></linearGradient>
+    <linearGradient id="g3" x1="200" y1="8" x2="280" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#6C4E92"/><stop offset="1" stop-color="#9B78B8"/></linearGradient>
+    <linearGradient id="g4" x1="296" y1="8" x2="376" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#A16207"/><stop offset="1" stop-color="#D39B38"/></linearGradient>
+    <linearGradient id="g5" x1="392" y1="8" x2="472" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#B94E7E"/><stop offset="1" stop-color="#E28AAF"/></linearGradient>
+    <linearGradient id="g6" x1="488" y1="8" x2="568" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#0E7490"/><stop offset="1" stop-color="#58A8BB"/></linearGradient>
+    <linearGradient id="g7" x1="584" y1="8" x2="664" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#475569"/><stop offset="1" stop-color="#7C8CA0"/></linearGradient>
+    <linearGradient id="g8" x1="680" y1="8" x2="760" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#B45309"/><stop offset="1" stop-color="#E49A45"/></linearGradient>
+    <linearGradient id="g9" x1="776" y1="8" x2="856" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#A16207"/><stop offset="1" stop-color="#E4B54A"/></linearGradient>
+  </defs>
+
+  <!-- 0 Quick Recall: open Bible + recall spark -->
+  <g transform="translate(0 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g1)"/>
+    <path d="M26 31c9-3 16-1 22 4v32c-6-5-13-7-22-4V31Zm44 0c-9-3-16-1-22 4v32c6-5 13-7 22-4V31Z" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M48 35v32M68 22v8M64 26h8" stroke="#F8E7A7" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- 1 Context Challenge: passage + magnifier -->
+  <g transform="translate(96 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g2)"/>
+    <rect x="24" y="24" width="38" height="45" rx="8" stroke="white" stroke-width="4"/>
+    <path d="M32 36h20M32 45h15" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="61" cy="58" r="12" fill="#315E8C" stroke="#F8E7A7" stroke-width="4"/>
+    <path d="m70 67 9 9" stroke="#F8E7A7" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- 2 Mixed Quest: compass -->
+  <g transform="translate(192 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g3)"/>
+    <circle cx="48" cy="48" r="25" stroke="white" stroke-width="4"/>
+    <path d="m57 35-6 16-16 6 6-16 16-6Z" fill="#F8E7A7" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M48 19v6M48 71v6M19 48h6M71 48h6" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- 3 Per-book Recall: stacked books -->
+  <g transform="translate(288 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g4)"/>
+    <path d="M25 29h42a6 6 0 0 1 6 6v10H31a6 6 0 0 1-6-6V29Z" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M29 48h40a6 6 0 0 1 6 6v12H35a6 6 0 0 1-6-6V48Z" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M39 29v16M59 48v18" stroke="#F8E7A7" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- 4 Memory Meadow: paired cards + fox -->
+  <g transform="translate(384 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g5)"/>
+    <rect x="20" y="24" width="24" height="34" rx="8" fill="white" fill-opacity=".18" stroke="white" stroke-width="3"/>
+    <rect x="52" y="38" width="24" height="34" rx="8" fill="white" fill-opacity=".18" stroke="white" stroke-width="3"/>
+    <path d="m31 35 5 6-5 7-5-7 5-6Zm33 14 5 6-5 7-5-7 5-6Z" fill="#F8E7A7"/>
+    <path d="m42 20 6 8 6-8 5 14H37l5-14Z" fill="white"/>
+  </g>
+
+  <!-- 5 Play Together: two players around one device -->
+  <g transform="translate(480 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g6)"/>
+    <circle cx="31" cy="34" r="9" stroke="white" stroke-width="4"/>
+    <circle cx="65" cy="34" r="9" stroke="white" stroke-width="4"/>
+    <path d="M18 66c1-12 7-18 13-18 5 0 9 3 12 8M78 66c-1-12-7-18-13-18-5 0-9 3-12 8" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <rect x="39" y="53" width="18" height="22" rx="4" fill="#F8E7A7" stroke="white" stroke-width="3"/>
+  </g>
+
+  <!-- 6 Bible Detective: hat + magnifier -->
+  <g transform="translate(576 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g7)"/>
+    <path d="M29 42c3-11 9-17 19-17s16 6 19 17H29Z" fill="white" fill-opacity=".18" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M22 44h52" stroke="white" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="56" cy="58" r="12" fill="#475569" stroke="#F8E7A7" stroke-width="4"/>
+    <path d="m65 67 9 9" stroke="#F8E7A7" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- 7 Timeline: connected events -->
+  <g transform="translate(672 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g8)"/>
+    <path d="M28 30h33M35 48h33M28 66h33" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="24" cy="30" r="6" fill="#F8E7A7" stroke="white" stroke-width="2"/>
+    <circle cx="72" cy="48" r="6" fill="#F8E7A7" stroke="white" stroke-width="2"/>
+    <circle cx="24" cy="66" r="6" fill="#F8E7A7" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- 8 Award: trophy + star -->
+  <g transform="translate(768 0)">
+    <rect x="8" y="8" width="80" height="80" rx="24" fill="url(#g9)"/>
+    <path d="M34 26h28v11c0 12-6 21-14 21s-14-9-14-21V26Z" fill="white" fill-opacity=".18" stroke="white" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M34 31H22c0 13 5 20 16 20M62 31h12c0 13-5 20-16 20M48 58v10M36 72h24" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="m48 32 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6Z" fill="#F8E7A7"/>
+  </g>
+</svg>
