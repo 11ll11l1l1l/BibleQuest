@@ -1,0 +1,57 @@
+name: BibleQuest v3 r3 compatibility offline verification
+on:
+  push:
+    branches: [verify/v3-compat-offline-r3]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Compatibility host explicit offline readiness and reload
+        run: |
+          node --input-type=module <<'NODE'
+          import {chromium} from 'playwright';
+          const base='https://biblequest-7th.pages.dev/';
+          const sentinels=['/src/app/bootstrap.js','/src/app/offline-shell.js','/src/features/more/index.js','/src/features/games/memory.js','/src/features/psychometrics/via-content.js','/src/ui/content-reporting.css'];
+          const browser=await chromium.launch({headless:true});
+          const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
+          const page=await context.newPage();
+          try{
+            await page.goto(base,{waitUntil:'networkidle',timeout:30000});
+            await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+            await page.evaluate(()=>navigator.serviceWorker.ready);
+            let readiness=null;
+            for(let attempt=1;attempt<=80;attempt++){
+              readiness=await page.evaluate(async sentinels=>{
+                const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
+                if(!name)return {ready:false,count:0,found:[]};
+                const urls=(await (await caches.open(name)).keys()).map(request=>request.url);
+                const found=sentinels.filter(sentinel=>urls.some(url=>url.includes(sentinel)));
+                return {ready:found.length===sentinels.length,count:urls.length,found};
+              },sentinels);
+              if(readiness.ready)break;
+              await page.waitForTimeout(250);
+            }
+            console.log('READINESS='+JSON.stringify(readiness));
+            if(!readiness?.ready)throw new Error(`Compatibility cache never reached sentinels: ${JSON.stringify(readiness)}`);
+            await context.setOffline(true);
+            await page.reload({waitUntil:'domcontentloaded',timeout:15000});
+            await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+            await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor({timeout:15000});
+            const result=await page.evaluate(()=>({heading:document.querySelector('h1')?.textContent?.trim(),shells:document.querySelectorAll('[data-bq-shell="v3"]').length,scrollWidth:document.documentElement.scrollWidth,innerWidth,controller:navigator.serviceWorker.controller?.scriptURL||''}));
+            console.log('OFFLINE='+JSON.stringify(result));
+            if(result.heading!=='BibleQuest'||result.shells!==1||result.scrollWidth>result.innerWidth+1)throw new Error(`Compatibility offline reload failed: ${JSON.stringify(result)}`);
+            console.log('Compatibility host explicit offline verification passed.');
+          }finally{
+            await context.setOffline(false).catch(()=>{});
+            await browser.close();
+          }
+          NODE
