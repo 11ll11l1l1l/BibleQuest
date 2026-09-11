@@ -1,0 +1,50 @@
+name: BibleQuest v3 docs-closeout live drift verifier 57fcee
+
+on:
+  push:
+    branches: [verify/v3-docs-closeout-live-57fcee-20260911]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 57fcee00c14510f49981a9f74bbbf8c73a67c063
+          fetch-depth: 0
+
+      - name: Assert docs-only main closeout
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "57fcee00c14510f49981a9f74bbbf8c73a67c063"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "57fcee00c14510f49981a9f74bbbf8c73a67c063"
+          allowed='^(.github/workflows/v3-release-closeout-docs.yml|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|CONTINUE_PROMPT_V3.md|DEVELOPMENT_HANDOFF_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_STATUS_V3.md|RECONCILIATION_V3.md|RELEASE_CLOSEOUT_V3.md|VISUAL_PHASE_B_V3.md|tests/v3-release-closeout-docs-contract.mjs)$'
+          unexpected="$(git diff --name-only 04bd51bfc4ff16a3b42d13e47e95e637999b4880...HEAD | grep -Ev "$allowed" || true)"
+          test -z "$unexpected" || { echo "$unexpected"; exit 1; }
+
+      - name: Confirm both Cloudflare hosts retain exact product bytes
+        run: |
+          set -euo pipefail
+          files=(index.html src/core/api.js src/app/bootstrap.js src/app/assignments.js src/app/cloud-notes.js src/app/calendar.js src/features/calendar/index.js src/ui/theme-green-gold.css src/ui/calendar.css offline-shell-sw.js)
+          bases=(https://mybiblequest.pages.dev/ https://biblequest-7th.pages.dev/)
+          for base in "${bases[@]}"; do
+            matched=0
+            for attempt in {1..30}; do
+              ok=1
+              for file in "${files[@]}"; do
+                tmp="$(mktemp)"
+                if ! curl -fsSL --retry 2 --connect-timeout 10 -H 'Cache-Control: no-cache' "${base}${file}?docscloseout=57fcee&attempt=${attempt}" -o "$tmp"; then
+                  ok=0
+                elif ! cmp -s "$file" "$tmp"; then
+                  ok=0
+                fi
+                rm -f "$tmp"
+                test "$ok" = 1 || break
+              done
+              if test "$ok" = 1; then matched=1; break; fi
+              sleep 5
+            done
+            test "$matched" = 1
+            echo "${base} retained exact product bytes after docs closeout."
+          done
