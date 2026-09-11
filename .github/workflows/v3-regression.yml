@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v4-home-17ed0-20260912
   pull_request:
     branches:
       - main
