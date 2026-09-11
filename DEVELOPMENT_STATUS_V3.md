@@ -1,57 +1,55 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-12 JST after Visual Phase B Personal Mission artwork promotion.
+Updated: 2026-09-12 JST after Visual Phase B Avatar Vault artwork promotion.
 
 ## Current release truth
 
-- current exact-green product SHA: `df1bbd18782bee6430546ee7b444ad4bc48f5116`
-- current product release ref: `release/v3-phase-b-mission-artwork-20260912`
-- current accumulated verifier: run `34629528297` — **success** on exact PR #106 synthetic merge candidate `df1bbd18782bee6430546ee7b444ad4bc48f5116`
-- current product PR: #106 — merged by fast-forwarding `main` to the exact green synthetic merge candidate
-- parent exact-green product: Visual Phase B Calendar artwork `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`
-- parent release ref: `release/v3-phase-b-calendar-artwork-20260912`
-- parent accumulated verifier: run `34627049878` — **success**
-- prior Calendar creator edit/delete checkpoint: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` — **success**
-- prior Visual Phase B More checkpoint: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` — **success**
+- current exact-green product SHA: `df2a7051e305474a5ea24912c3f5341f33bc61b8`
+- current product release ref: `release/v3-phase-b-avatar-vault-artwork-20260912`
+- current accumulated verifier: run `34630985269` — **success** on exact PR #108 synthetic merge candidate `df2a7051e305474a5ea24912c3f5341f33bc61b8`
+- current product PR: #108 — merged after exact-candidate accumulated verification
+- parent exact-green product: Visual Phase B Personal Mission `df1bbd18782bee6430546ee7b444ad4bc48f5116`, run `34629528297` — success
+- prior Visual Phase B Calendar: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3`, run `34627049878` — success
+- prior Calendar creator edit/delete: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` — success
+- prior Visual Phase B More: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` — success
 - previous production rollback/reference remains `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-Run `34629528297` explicitly fetched `df1bbd18782bee6430546ee7b444ad4bc48f5116` as `refs/pull/106/merge`, checked it out, and passed the complete accumulated suite. The exact candidate was frozen before `main` was fast-forwarded to the same SHA. No unverified product promotion SHA was created.
+Run `34630985269` explicitly fetched `df2a7051e305474a5ea24912c3f5341f33bc61b8` as `refs/pull/108/merge`, checked it out, and passed the complete accumulated suite. The exact candidate was frozen before `main` was advanced to the same SHA. No unverified product promotion SHA was created.
 
-A later docs-only bookkeeping commit may become repository HEAD. That does not replace `df1bbd...` as the exact-green product checkpoint until another changed product candidate earns its own complete verification.
+Later docs-only bookkeeping commits may advance repository HEAD. They do not replace `df2a705...` as the exact-green product checkpoint until another changed product candidate earns its own complete verification.
 
 ## Deployment state
 
-No deployment-provider or independent live-host evidence has been transferred to exact product `df1bbd...` in this record.
+No provider-deployment or independent live-host evidence has been transferred to exact product `df2a705...`.
 
-The latest previously recorded Cloudflare Pages provider checks were for older exact-green product `046e2a85...`, where both configured projects reported success. The last fully independent two-host production verifier remains run `34612873935` for an earlier cumulative release.
-
-GitHub regression success and promotion do not prove that either production hostname serves the new exact product. Provider deployment identity and independent byte/browser live-host verification remain separate release evidence and must be recorded separately when available.
+GitHub regression success and promotion do not prove either production hostname serves the new exact product. Provider deployment identity and independent byte/browser live-host verification remain separate release evidence and must be recorded separately when available.
 
 ## Newly completed product work
 
-### Visual Phase B — Personal Mission artwork
+### Visual Phase B — Avatar Vault artwork
 
-Exact-green `df1bbd...` upgrades the Personal Mission surface without reopening Mission recommendation behavior:
+Exact-green `df2a705...` upgrades the existing Avatar Vault presentation without reopening Vault behavior:
 
-- stops rendering the engine compatibility emoji as Mission artwork;
-- adds committed same-origin passive SVG artwork in `assets/mission-feature-icons.svg` with distinct `review` and `study` symbols;
-- selects artwork only from the already-produced `rec.action`, leaving recommendation selection owned by `src/engines/mission.js`;
-- leaves Open Review evidence/state ownership in `src/app/mission.js` unchanged;
-- adds `src/ui/mission-phase-b.css` after the existing `src/ui/mission.css` base layer;
-- improves Mission hierarchy, instruction-card presentation and mobile action containment without changing text or navigation meaning;
-- keeps decorative artwork `aria-hidden` while recommendation text remains authoritative;
-- preserves the existing primary callback rule (`review` -> `onReview`, otherwise `onStudy`) and Back -> `onBack`;
-- adds permanent `tests/v3-mission-phase-b-static.mjs` and `tests/v3-mission-phase-b-smoke.mjs` coverage while retaining existing Innovation Suite engine/service and browser regressions;
-- keeps the product workflow trigger contract unchanged (`workflow_dispatch` + `pull_request`; no forbidden `push` trigger).
+- stops rendering the legacy catalog/lock emoji as Vault-page artwork;
+- adds committed same-origin passive SVG artwork in `assets/avatar-vault-icons.svg` for all 15 existing style IDs plus `lock`;
+- leaves `src/engines/avatar-vault.js` as the catalog/unlock/progress owner;
+- leaves `src/app/avatar-vault.js` as selected/earned state, persistence, metrics and API-sync owner;
+- leaves `src/core/api.js` as the browser backend/Supabase boundary;
+- limits rendering changes to `src/features/avatar-vault/index.js` and a presentation-only `src/ui/avatar-vault-phase-b.css` layer;
+- preserves catalog membership, unlock requirements, availability flags, progress text, cloud/device scope, selected-style persistence, leaderboard compatibility, cosmetic-only fair-play meaning, Equip behavior and Back routing;
+- keeps decorative SVGs `aria-hidden` and text authoritative;
+- adds permanent static ownership/asset coverage and 390 px browser acceptance;
+- the browser acceptance verifies all 15 styles, locked/unlocked artwork, selected hero synchronization, 44 px relevant controls, no rendered legacy emoji, no horizontal overflow and no console/page errors.
 
-Run `34629528297` passed all accumulated architecture validators, all accumulated edge/security/static regressions, local app boot, and the full browser/mobile suite. The completed job log explicitly records `BibleQuest v3 Mission Phase B static asset contract passed`, existing `BibleQuest v3 Innovation Suite mobile browser regression passed`, and `BibleQuest v3 Mission Phase B mobile browser acceptance passed` on exact candidate `df1bbd...`.
+Run `34630985269` passed all accumulated architecture validators, all accumulated edge/security/static regressions, local app boot, and the complete browser/mobile suite, including both existing Avatar Vault functional acceptance and new Avatar Vault Phase B acceptance.
 
 ### Prior completed checkpoints retained
 
-- Visual Phase B Calendar artwork: exact-green `c15d1f...`, run `34627049878` success.
+- Visual Phase B Personal Mission: exact-green `df1bbd...`, run `34629528297` success.
+- Visual Phase B Calendar: exact-green `c15d1f...`, run `34627049878` success.
 - Calendar creator edit/delete: exact-green `7d28d7c...`, run `34623059639` success.
-- Visual Phase B More semantic icons: exact-green `046e2a85...`, run `34618963635` success.
-- Ministry Hub Calendar surface: exact-green `350cb1e...`, run `34616603649` success.
+- Visual Phase B More: exact-green `046e2a85...`, run `34618963635` success.
+- Ministry Hub Calendar: exact-green `350cb1e...`, run `34616603649` success.
 
 Do not repeat these milestones.
 
@@ -59,32 +57,37 @@ Do not repeat these milestones.
 
 Production project: `zkfmgezvzugchcwppreq`.
 
-The existing release migrations remain **APPLIED + LIVE VERIFIED** and were not changed by PR #106:
+The existing release migrations remain **APPLIED + LIVE VERIFIED** and were not changed by PR #108:
 
 - `20260911144939` — `assignment_response_presence`
 - `20260911144950` — `calendar_events`
 - `20260911145003` — `calendar_congregation_sharing`
 
-Do not reapply them. PR #106 is presentation/test integration only and made no production database mutation.
+Do not reapply them. PR #108 made no production database mutation.
 
-## Current blockers
+## Current blockers and release gates
 
-No credible P0/P1 product, security, privacy or data-loss blocker is recorded by accumulated run `34629528297`. Do not describe the application as bug-free.
+No newly reproduced P0/P1 product, security, privacy or data-loss defect was identified during the Avatar Vault promotion. Do not describe the application as bug-free.
 
-The Personal Mission artwork milestone is closed. Existing Mission engine/service and functional browser coverage remained green together with the new visual acceptance.
+The following remain release/acceptance work rather than evidence that the exact-green product failed regression:
 
-Independent production/live-host verification for exact product `df1bbd...` remains a separate release-evidence gap and must not be inferred from GitHub regression success.
+- required pre-release Visual Phase B/visual-polish program remains active under Issue #94 until the accepted final visual state is complete and the exact final candidate passes its release gates;
+- provider deployment identity and fresh independent two-host verification for exact product `df2a705...` are not yet canonically recorded;
+- Issue #6 retains the real/mobile-width acceptance requirement for 320/360/390/412/430 px and installed-PWA behavior until that evidence is completed;
+- Issue #68 retains multi-account field validation for linked congregation/Journey Group/couple activity integration.
+
+These evidence/acceptance gates must not be converted into speculative product rewrites. Reproduce an actual defect before changing established functionality.
 
 ## Correct next route
 
 Priority 1 remains coordinated functionality/correctness plus Visual Phase B quality.
 
-1. preserve `df1bbd...` and `release/v3-phase-b-mission-artwork-20260912` as the current exact-green product checkpoint;
-2. do not repeat Personal Mission artwork, Calendar artwork, Calendar creator edit/delete, Ministry Hub Calendar, or More-icon work;
-3. refresh repository, active PR/action, agent/investigator and production evidence before the next product write;
-4. reproduce and priority-classify any newly reported functionality/correctness issue before modifying product code; a credible P0/P1 interrupts visual work;
-5. fixed-weekly congregation recurrence is complete; custom non-weekly recurrence remains explicitly deferred unless current evidence/user direction makes it release-required;
-6. absent a reproduced P0/P1 gap, continue Visual Phase B on the next materially minimal, placeholder, generic or emoji-like surface using real committed assets;
+1. preserve `df2a705...` and `release/v3-phase-b-avatar-vault-artwork-20260912` as the current exact-green checkpoint;
+2. do not repeat Avatar Vault, Personal Mission, Calendar, More, Calendar creator edit/delete or Ministry Hub Calendar work;
+3. refresh repository, active PR/action, open issue/investigator and production evidence before the next product write;
+4. reproduce and priority-classify any newly reported functionality/correctness issue first; a credible P0/P1 interrupts visual work;
+5. fixed-weekly congregation recurrence is complete; custom non-weekly recurrence remains deferred unless current evidence/user direction makes it release-required;
+6. absent a reproduced P0/P1 gap, continue Visual Phase B on the next materially minimal, placeholder, generic or emoji-like user-facing surface using real committed assets;
 7. preserve route, feature/state, persistence, API/Supabase, gameplay/scoring, accessibility and PWA ownership unless a separately selected milestone explicitly changes it;
 8. add focused permanent regression coverage for the selected surface;
 9. require the complete accumulated regression on the exact synthetic merge candidate before promotion;
@@ -95,18 +98,18 @@ Priority 1 remains coordinated functionality/correctness plus Visual Phase B qua
 - **Status-contract regression — closed.** PR #98 restored validator-owned canonical headings; run `34616114505` passed completely.
 - **Invalid push-trigger hardening attempt — rejected/closed.** PR #99 attempted a `push` trigger; permanent workflow contract rejected it and it was not merged.
 - **Ministry Hub Calendar surface — completed.** Exact-green `350cb1e...`; run `34616603649` success.
-- **Visual Phase B More semantic icons — completed.** Exact-green `046e2a85...`; run `34618963635` success.
+- **Visual Phase B More — completed.** Exact-green `046e2a85...`; run `34618963635` success.
 - **Calendar creator edit/delete — completed.** Exact-green `7d28d7c...`; run `34623059639` success.
-- **Visual Phase B Calendar artwork — completed.** Exact-green `c15d1f...`; run `34627049878` success.
-- **Visual Phase B Personal Mission artwork — completed.** Exact-green `df1bbd...`; run `34629528297` success; frozen release ref created and `main` fast-forwarded to the exact tested synthetic merge candidate.
-- **API full-file write syntax slip — contained before prior gate.** A prior Calendar API branch briefly lost one unrelated closing brace; diff inspection caught and corrected it before gating. The final promoted product did not contain that defect.
-- No reproduced P0/P1 product defect is currently open in this ledger. New findings must be reproduced and priority-classified before modification.
+- **Visual Phase B Calendar — completed.** Exact-green `c15d1f...`; run `34627049878` success.
+- **Visual Phase B Personal Mission — completed.** Exact-green `df1bbd...`; run `34629528297` success.
+- **Visual Phase B Avatar Vault — completed.** Exact-green `df2a705...`; run `34630985269` success; frozen release ref created and `main` advanced to the exact tested synthetic merge candidate.
+- No newly reproduced P0/P1 product defect is recorded here. New findings must be reproduced and priority-classified before modification.
 
 ## Next major milestone
 
-Investigate the next materially under-designed Visual Phase B surface from exact-green `df1bbd...`, while first checking current repository/investigator evidence for any newly reproduced release-blocking functionality/correctness issue. Do not invent feature work merely because optional expansion is possible. If no P0/P1 functionality gap is reproduced, select the smallest high-value user-facing surface whose presentation is still materially placeholder, generic or emoji-like, implement real committed artwork under `VISUAL_PHASE_B_V3.md`, preserve existing interaction ownership, and require a new exact-SHA accumulated regression before promotion.
+Inspect the current exact-green tree for the next materially under-designed Visual Phase B surface while checking current open work for any newly reproduced release-blocking functionality/correctness issue. Do not invent feature work merely because optional expansion is possible. If no P0/P1 defect is reproduced, select the smallest high-value user-facing surface whose presentation is still materially placeholder, generic or emoji-like, implement real committed artwork under `VISUAL_PHASE_B_V3.md`, preserve existing interaction ownership, and require a new exact-SHA accumulated regression before promotion.
 
-Release hardening may proceed in parallel only as evidence work: record Cloudflare/provider deployment identity when available and independently verify both production hostnames for the exact deployed product before claiming production verification.
+Release hardening may proceed as evidence work without modifying product behavior: record provider deployment identity when available, complete the required mobile-width/installed-PWA evidence, complete multi-account field validation, and independently verify both production hostnames for the exact deployed product before final release approval.
 
 ## Evidence rules
 
