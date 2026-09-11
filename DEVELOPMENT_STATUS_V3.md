@@ -1,117 +1,94 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-12 JST after Visual Phase B Progress/Grow promotion.
+Updated: 2026-09-12 JST after final automated mobile/build release gate integration.
 
 ## Current release truth
 
-- current exact-green product SHA: `2c601b3289dba891f349801219f49804f85f63cc`
-- current product release ref: `release/v3-phase-b-progress-artwork-20260912`
-- current accumulated verifier: run `34633247237` — **success** on exact PR #110 synthetic merge candidate `2c601b3289dba891f349801219f49804f85f63cc`
-- current product PR: #110 — merged after exact-candidate accumulated verification
-- parent exact-green product: Account Phase B `2f04b7150b36d4a14dac953fd08ae2c5a307d0d9`, run `34632158164` — success
-- prior Avatar Vault: `df2a7051e305474a5ea24912c3f5341f33bc61b8`, run `34630985269` — success
-- prior Personal Mission: `df1bbd18782bee6430546ee7b444ad4bc48f5116`, run `34629528297` — success
-- prior Calendar: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`, run `34627049878` — success
-- previous production rollback/reference remains `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
+- exact-green product SHA: `2c601b3289dba891f349801219f49804f85f63cc`
+- product ref: `release/v3-phase-b-progress-artwork-20260912`
+- product run: `34633247237` — success
+- product PR: #110
+- exact-green validation SHA: `d0eab188479f20273cbd67cb5b796c74868dc5d4`
+- validation ref: `release/v3-final-mobile-width-gate-20260912`
+- validation run: `34634460077` — success
+- validation PR: #111
+- rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-Run `34633247237` explicitly fetched and checked out `2c601b3289dba891f349801219f49804f85f63cc` as `refs/pull/110/merge`. All accumulated architecture validators, edge/security/static regressions, local boot and browser/mobile regressions passed, including existing Progress regression and the new Progress Phase B static/mobile acceptance. The exact candidate was frozen before `main` advanced to it.
+PR #111 is validation/workflow/docs only. The product remains `2c601b3...`. Later docs commits do not change product identity.
 
-Later docs/validation-only commits may advance repository HEAD. They do not replace `2c601b3...` as the exact-green product checkpoint unless product code changes and earns its own full verification.
+## Automated final-release evidence now complete
 
-## Deployment state
+Run `34634460077` checked out exact PR synthetic merge SHA `d0eab188...` and passed:
 
-No provider-deployment or independent live-host evidence has been transferred to exact product `2c601b3...`.
+- `bash build.sh` Cloudflare deployment gate;
+- all accumulated architecture validators;
+- all accumulated edge/security/static regressions;
+- local app boot;
+- complete accumulated browser/mobile suite;
+- explicit 320/360/390/412/430 px current-v3 acceptance;
+- five-tab Home/Learn/Play/Grow/More fit and usability;
+- Daily Journey discoverability;
+- header fit, practical touch targets, text-size floor, no horizontal overflow and no console/page errors;
+- PWA install and offline-shell regression;
+- accessibility/reduced-motion-sensitive accumulated checks;
+- all accepted Phase B focused checks through Progress/Grow.
 
-GitHub regression success and promotion do not prove either production hostname serves this exact product. Provider deployment identity and independent live-host verification remain separate release evidence.
+This closes the missing automated mobile/build evidence. It does not substitute for physical-device, multi-account or provider/live-production proof.
 
-## Newly completed product work
+## Product work retained
 
-### Visual Phase B — Progress/Grow artwork
+Accepted exact-green product work includes More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow Phase B; Calendar creator edit/delete; Ministry Hub Calendar; all previously accumulated v3 feature/security regressions.
 
-Exact-green `2c601b3...` upgrades Grow/Progress presentation without reopening progress behavior:
-
-- adds committed same-origin passive SVG artwork for Progress, XP, streak, activity, chapter, growth, profile, psychometrics, avatar, achievements and badge states;
-- replaces generic badge `✓/○` presentation with locked/unlocked artwork derived strictly from existing Progress-owner state;
-- leaves `src/core/progress.js` unchanged as sole XP/streak/counter/reward/badge owner;
-- preserves existing metric values/data attributes and Transformation/Profile/Psychometrics/Avatar callbacks;
-- adds `src/ui/progress-phase-b.css` as a presentation-only layer after prior Progress styling;
-- changes no XP, streak, star, coin, badge-unlock, event-idempotency, persistence, scoring, API, Supabase or route-owner behavior;
-- adds permanent static ownership/asset coverage and 390 px mobile acceptance.
-
-Run `34633247237` passed the complete accumulated suite with this exact candidate.
-
-### Prior completed checkpoints retained
-
-- Account Phase B: exact-green `2f04b715...`, run `34632158164` success.
-- Avatar Vault Phase B: exact-green `df2a705...`, run `34630985269` success.
-- Personal Mission Phase B: exact-green `df1bbd...`, run `34629528297` success.
-- Calendar Phase B: exact-green `c15d1f...`, run `34627049878` success.
-- Calendar creator edit/delete: exact-green `7d28d7c...`, run `34623059639` success.
-- More Phase B: exact-green `046e2a85...`, run `34618963635` success.
-- Ministry Hub Calendar: exact-green `350cb1e...`, run `34616603649` success.
-
-Do not repeat these milestones.
-
-## Priority-firewall note
-
-Old PR #88 remains tied to legacy root `account.js`, not the current v3 runtime. Do not classify it as a current-v3 P0 without reproducing the behavior through current v3 owners.
-
-Issue #6 also contains historical structural wording from an older shell. Current v3 intentionally has five primary bottom-nav destinations (`Home`, `Learn`, `Play`, `Grow`, `More`) and a separate Bible World route. Final mobile acceptance must prove the current shell at the required widths rather than regress v3 to obsolete four-tab/nine-node structure.
+Do not repeat these milestones. No new visual/product tranche is selected unless current evidence demonstrates a material remaining gap.
 
 ## Production Supabase state
 
-Production project: `zkfmgezvzugchcwppreq`.
+Project `zkfmgezvzugchcwppreq` is `ACTIVE_HEALTHY`.
 
-Known release migrations remain **APPLIED + LIVE VERIFIED** and were unchanged by PR #110:
+Known release migrations remain **APPLIED + LIVE VERIFIED** and unchanged:
 
-- `20260911144939` — `assignment_response_presence`
-- `20260911144950` — `calendar_events`
-- `20260911145003` — `calendar_congregation_sharing`
+- `20260911144939 assignment_response_presence`
+- `20260911144950 calendar_events`
+- `20260911145003 calendar_congregation_sharing`
 
-Do not reapply them. PR #110 made no production database mutation.
+Read-only release inspection confirms relevant linked-activity functions/tables exist and checked relationship tables have RLS enabled. Current production has 10 auth users, 4 congregation membership rows across admin/member roles and 1 couple pair, but no Journey Groups, Cloud Teams, group/team membership rows or room-response rows. No production data/schema/RLS/Edge Function changes were made.
 
-## Current blockers and release gates
+## Security triage status
 
-No newly reproduced current-v3 P0/P1 product/security/privacy/data-loss defect is recorded. Do not describe the app as bug-free.
+- poll aggregate `SECURITY DEFINER` advisor warnings were reviewed; both functions explicitly authorize congregation membership, and aggregate-v2 also enforces result visibility. No release blocker reproduced.
+- BibleQuest server-only RLS/no-policy tables checked have anon/authenticated DML closed. No permissive policy change is warranted.
+- leaked-password protection remains disabled and is recommended platform hardening, not a reproduced product regression.
 
-Remaining release work is now more evidence-driven:
+## Current blockers / remaining gates
 
-- Issue #94 remains the mandatory final visual/integration release tracker; accepted Phase B work is integrated through Progress/Grow, but final visual acceptance must be based on current evidence rather than automatic new tranches;
-- Issue #6 requires explicit final-candidate mobile acceptance at 320/360/390/412/430 px plus PWA/mobile behavior; its stale four-tab/nine-node wording must be reconciled to the current v3 architecture;
-- Issue #68 requires actual multi-account field validation across congregation/Journey Group/Cloud Team/couple/challenge/Live Room workflows and isolation boundaries;
-- provider deployment identity for the exact intended final product remains required;
-- fresh independent verification of both production hosts remains required.
+No current-v3 P0/P1 product/security/privacy/data-loss defect is reproduced. Do not call the app bug-free.
+
+Remaining official-release evidence:
+
+1. **Issue #68 multi-account field validation** — actual multiple accounts/sessions/devices must create/exercise congregation, Journey Group, Cloud Team, couple/challenge and Live Room workflows plus negative isolation and reconnect/re-login behavior.
+2. **Issue #6 physical-device/PWA field validation** — Android Chrome/Brave at 100% zoom and a genuinely installed-PWA session. Headless width/PWA regression is green but does not prove this field step.
+3. **Cloudflare provider identity** — record the provider deployment identity/SHA for the exact intended product.
+4. **Independent two-host production verification** — prove `mybiblequest.pages.dev` and `biblequest-7th.pages.dev` serve the exact expected candidate and accepted visual/functional state.
+
+Issue #94 remains the integration tracker, but it does not require another automatic visual tranche in the absence of a demonstrated material gap.
 
 ## Correct next route
 
-1. preserve `2c601b3...` and `release/v3-phase-b-progress-artwork-20260912` as the exact-green product checkpoint;
-2. add and execute a permanent 320/360/390/412/430 release acceptance test against the current five-tab v3 shell, Home/Daily Journey, header fit, support-text legibility, touch targets, no overflow and console/page errors;
-3. keep existing PWA install/offline-shell/update/cache regressions accumulated and prove them on the final exact candidate;
-4. inspect current investigator/firewall evidence before selecting any further visual product change;
-5. reproduce any new current-v3 functionality/security/privacy issue before modification;
-6. perform or prepare Issue #68 multi-account field validation without bypassing auth/RLS or confusing static tests with field proof;
-7. if evidence shows a material remaining visual gap, fix the true presentation owner and run a new exact-product accumulated regression;
-8. for official release, establish one exact final candidate, run the full release cycle, deploy that exact candidate, record provider identity and independently verify both production hosts.
+- preserve product `2c601b3...` and validation `d0eab188...` separately;
+- stop feature/visual churn unless field/production evidence exposes a real defect or material gap;
+- perform Issue #68 using real/test account credentials and actual product paths, never direct table mutations to manufacture PASS;
+- perform physical Android/installed-PWA acceptance when a device/session is available;
+- obtain provider deployment evidence and independent host verification;
+- if any product correction is required, create a new candidate and repeat build + architecture + edge/security + full browser/mobile + explicit widths + PWA/offline + relevant field proof before promotion.
 
-## Defect / root-cause ledger
+## Defect / milestone ledger
 
-- **Status-contract regression — closed.** PR #98 / run `34616114505`.
-- **Invalid push-trigger hardening attempt — rejected/closed.** PR #99.
-- **Ministry Hub Calendar — completed.** `350cb1e...` / run `34616603649`.
-- **Visual Phase B More — completed.** `046e2a85...` / run `34618963635`.
-- **Calendar creator edit/delete — completed.** `7d28d7c...` / run `34623059639`.
-- **Visual Phase B Calendar — completed.** `c15d1f...` / run `34627049878`.
-- **Visual Phase B Personal Mission — completed.** `df1bbd...` / run `34629528297`.
-- **Visual Phase B Avatar Vault — completed.** `df2a705...` / run `34630985269`.
-- **Visual Phase B Account — completed.** `2f04b715...` / run `34632158164`.
-- **Visual Phase B Progress/Grow — completed.** `2c601b3...` / run `34633247237`; frozen ref created and `main` advanced to the exact tested synthetic merge candidate.
-- **Legacy PR #88 stale-device overwrite — not reproduced in current v3 runtime.** Do not import without current-v3 evidence.
-- **Issue #6 structural wording — partially stale.** Preserve mobile acceptance intent, not obsolete four-tab/nine-node implementation details.
-
-## Next major milestone
-
-Release-hardening evidence is the next major milestone: make the five required phone widths a permanent current-v3 final-candidate gate, then use investigator/current-tree evidence to decide whether any additional visual product change is truly required. In parallel, the remaining non-automatable production-readiness gate is Issue #68 multi-account field validation.
+- PR #110 Progress/Grow Phase B: completed, exact product `2c601b3...`, run `34633247237` success.
+- PR #111 final mobile/build gate: completed, exact validation SHA `d0eab188...`, run `34634460077` success; no product behavior changed.
+- Issue #6 old four-tab/nine-node wording: stale implementation detail; current five-tab v3 intent verified automatically.
+- Issue #68: implementation complete, field evidence incomplete.
+- PR #88 legacy stale-device issue: not reproduced in current v3 runtime.
 
 ## Evidence rules
 
-Repository evidence overrides stale prose. Docs/validation-only HEAD != product SHA. Never transfer PASS across changed product SHAs. Never claim unexecuted tests. GitHub promotion != provider deployment proof != independent live-host proof. Static regression != real multi-account field proof. A committed migration != applied migration unless production evidence proves it. Do not call the application bug-free.
+Repository evidence overrides stale prose. Product SHA != validation/docs SHA. Never transfer PASS across product changes. Never claim physical-device/multi-account/provider/live evidence from CI. GitHub validation != Cloudflare deployment identity != independent production verification. Do not weaken auth/RLS/tests to make evidence easier.
