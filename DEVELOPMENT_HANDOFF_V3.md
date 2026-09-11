@@ -1,96 +1,129 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after exact-SHA completion of the classified post-release visual-polish program through tranche 16.
+Updated: 2026-09-11 JST for mandatory final visual + functional integration release.
 
-For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. Repository evidence overrides stale chat context.
+## FIRST INSTRUCTION — FINAL RELEASE OVERRIDE
 
-## Production state — preserve
+Before any new development work, read `FINAL_RELEASE_VISUAL_INTEGRATION_CONTROL_V3.md` and Issue #94. They override older wording that treated the visual program as post-release or that considered r3 the final official release.
+
+The official final BibleQuest v3 release is **NOT complete** until the accepted visual/artwork program and required functionality are integrated into one exact candidate SHA, the complete accumulated verification cycle passes on that exact SHA, and both Cloudflare production hosts are confirmed to serve that verified state.
+
+For investigator work, read the updated `RELEASE_AGENT_READONLY_2026-09-11.md` on this visual line. All five investigators remain read-only and are now tasked to produce actionable visual, responsive, functional, architecture/security and release-firewall evidence for the captain.
+
+## Preserved rollback / functional baseline
 
 - Repo: `11ll11l1l1l/BibleQuest`.
-- Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
-- Frozen rollback/reference: `release/v3-production-20260911-r3` at the same SHA.
-- The 2026-09-11 production release objective is complete.
-- Applicable v3 release scope remains **98/98 complete**.
-- Historical #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from the release scope. Do not revive them as backlog by default.
-- Production Supabase/data was not changed by post-release visual work.
+- Production functional r3 baseline: `main` / `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` at the time this visual program began.
+- Preserve r3 as rollback/reference. Do not destroy or repoint it while integrating the final visual release.
+- Applicable functional release scope remains **98/98 complete**.
+- Historical #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from release scope unless explicitly reopened by the user.
 
-Do not modify or repoint production merely because later post-release visual branches exist. A future production promotion requires a separately selected milestone, exact-SHA accumulated verification, promotion, Cloudflare propagation confirmation, and live production smoke evidence.
+r3 is a verified functional safety point, not the final official visual release acceptance.
 
-## Current exact-green post-release product checkpoint
+## Exact-green visual product checkpoint
 
-- Branch: `postrelease/v3-visual-shell-tranche16`.
-- Exact verified product SHA: `406c34dcdf904b7483bf4381be774a908738e60c`.
+- Branch lineage: `postrelease/v3-visual-shell-tranche16`.
+- Exact verified visual product SHA: `406c34dcdf904b7483bf4381be774a908738e60c`.
 - Parent exact-green visual product: tranche 15 SHA `62cb86cd48bae683d0be37a2a729127156a0093a`.
 - Verifier: `verify/v3-visual-shell-406c34d`.
 - Workflow run `34585018541`, job `103217107423`: **success**.
 
 The verifier checked out detached exact product SHA `406c34dcdf904b7483bf4381be774a908738e60c` and passed:
 
-- exact-SHA and exact three-file diff hygiene;
-- Cloudflare deployment gate with 267 JavaScript syntax checks and production-entry/runtime ownership guards;
-- 16 accumulated visual static contracts;
+- exact-SHA and exact diff hygiene;
+- Cloudflare deployment gate with JavaScript syntax and production-entry/runtime ownership guards;
+- accumulated visual static contracts;
 - 53 accumulated v3 architecture validators;
 - 86 edge/security/static regressions;
 - 68 Playwright browser/mobile regressions plus Kids Memory browser acceptance;
-- dedicated 1280x900 and 390x844 global-shell visual containment checks;
-- strong-contrast checks confirming decorative shell shadows are removed while shell geometry and horizontal containment remain intact.
+- dedicated desktop/mobile global-shell visual containment checks;
+- strong-contrast checks.
 
-Exact tranche-16 product delta from tranche 15:
+Additional explicit 320/360/390/412/430 core-surface width acceptance later passed in workflow run `34591777463` without a reproduced visual/CSS blocker. That run is supporting evidence; final release must still re-run required verification on the exact integrated candidate SHA.
 
-1. `index.html` — one shell visual stylesheet include.
-2. `src/ui/shell-visual-polish.css` — replacement-level page/topbar/brand/chip/bottom-nav presentation.
-3. `tests/v3-shell-visual-polish-static.mjs` — guard preventing layout, navigation, responsive, focus, typography-geometry, motion, interaction, token-owner, or generic-feature-panel takeover.
+## Visual/artwork program status
 
-No JavaScript, route, feature owner, storage, backend, service worker, data, or Supabase file changed in tranche 16.
+The architecture-preserving visual program is implemented through tranche 16. Covered presentation families include:
 
-## Tranche-16 verification history
+- Home/hero;
+- global shell;
+- Games;
+- Reader;
+- Bible World;
+- Progress/Daily Journey;
+- PWA icons;
+- Transform;
+- Study/Deep Questions/Story/Wisdom;
+- Account/Tutorial;
+- Context/Japanese/source presentation;
+- Notes;
+- Couples;
+- Community;
+- Media/Recordings;
+- Adaptive/Open Review;
+- Accessibility-related presentation.
 
-Do not mistake the first candidate for the verified checkpoint.
+Read `VISUAL_REPLACEMENT_CONTRACT_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md` and `VISUAL_POLISH_PROGRESS_V3.md` before changing presentation work.
 
-- Rejected candidate: `b0f2620ef0e0792db0c50a533a438837bbf3b297`.
-- Run `34584870801` passed exact-SHA hygiene and the deployment gate, then failed an existing Account visual load-order contract because the shell stylesheet had been inserted between `app.css` and `account-visual-polish.css`.
-- Root cause was corrected by preserving Account directly after `app.css` and loading shell polish immediately afterward.
-- The changed product SHA `406c34dcdf904b7483bf4381be774a908738e60c` then earned a fresh complete PASS in run `34585018541`; no PASS was transferred from the failed SHA.
+The desired visual identity is professional but clearly BibleQuest: Bible + quest/adventure + learning/game progression. Keep Games/Kids surfaces playful, while Reader/Study/Account/Ministry/privacy-sensitive surfaces remain calm, readable and trustworthy.
 
-## Visual/artwork phase status
+## Correct-development requirement — no patching around defects
 
-The replacement-level visual phase defined by `VISUAL_REPLACEMENT_CONTRACT_V3.md` and `VISUAL_SURFACE_INVENTORY_V3.md` is complete through tranche 16.
+The captain must not rush the final release by layering brittle fixes. Every accepted change must be made in the correct architectural owner and proven by regression evidence.
 
-Completed cumulative presentation families include Home/hero, global shell, Games, Reader, Bible World, Progress/Daily Journey, PWA icons, Transform, Study/Deep Questions/Story/Wisdom, Account/Tutorial, Context/Japanese/source presentation, Notes, Couples, Community, Media/Recordings, Adaptive/Open Review, and Accessibility.
+Do not use speculative global CSS overrides, duplicate DOM/feature implementations, wrong-owner JavaScript shims, hidden-control workarounds, catch-all error swallowing, test weakening, copied legacy parallel paths or undocumented backend assumptions merely to make a screen/test appear green.
 
-`VISUAL_POLISH_PROGRESS_V3.md` contains the cumulative evidence ledger. `VISUAL_SURFACE_INVENTORY_V3.md` now records that the classified replacement-level A/B inventory has been covered.
+For each change:
 
-## Evidence-only branch head
+1. reproduce/establish the requirement;
+2. identify the true owner and contract;
+3. implement in that owner;
+4. add/retain focused regression protection;
+5. run focused checks;
+6. if product SHA changed, run the required accumulated exact-SHA verification before promotion.
 
-After the exact product SHA passed, documentation-only bookkeeping was added to the tranche-16 branch. Therefore the live branch HEAD may be later than `406c34dcdf904b7483bf4381be774a908738e60c`.
+A small correct change is preferred to a broad refactor, but a quick workaround is not an acceptable substitute for correct development.
 
-Do not call a later documentation commit the verified product SHA. Recover the live branch ref first, then distinguish:
+## Investigator structure
 
-- exact verified product: `406c34dcdf904b7483bf4381be774a908738e60c`;
-- later documentation-only HEAD: evidence/bookkeeping only unless product files changed and were reverified.
+The five read-only agents are now separated as follows:
 
-## Current development boundary
+1. **Visual system / asset integrity** — surface matrix, missing/inconsistent art, assets, load order, provenance, performance risk, architecture preservation.
+2. **Responsive / accessibility / browser / PWA** — required widths, overflow/clipping/touch/focus/contrast/reduced motion, console errors, PWA/offline evidence.
+3. **Functional surface / UX integrity** — Home, Account, Reader, Games, Progress, Transform, Study, Community/Media/Notes/Couples/Ministry/Assignments/Notifications/Workspace where included, plus state transitions and return paths.
+4. **Architecture / security / backend boundary** — compare r3, visual checkpoint and candidate; detect duplicate owners, auth/storage/API/Supabase/privacy/PWA ownership changes or hidden functional changes.
+5. **Release firewall / captain action compiler** — deduplicate, reject speculation/hacks/test weakening, identify correct owner for each accepted item, order the captain work and define exact verification.
 
-The visual inventory's remaining areas are Class D architecture/behavior owners: router/bootstrap/core services, PWA/offline/service-worker behavior, Supabase/API/storage/security, and equivalent behavior-coupled responsibilities. They are not unfinished visual polish.
+Agents do not write. Their report contract and engineering-quality filters are defined in `RELEASE_AGENT_READONLY_2026-09-11.md` and `FINAL_RELEASE_VISUAL_INTEGRATION_CONTROL_V3.md`.
 
-Do **not** continue by making speculative Class-D changes, broad refactors, navigation redesigns, or new features simply to keep development moving.
+## What the next captain must do
 
-## What the next development chat should do
-
-1. Recover live refs for `main`, `release/v3-production-20260911-r3`, `postrelease/v3-visual-shell-tranche16`, and any newer post-release branches before writing.
-2. Preserve production and the exact-green visual product checkpoint.
-3. Read `DEVELOPMENT_STATUS_V3.md`, `VISUAL_POLISH_PROGRESS_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, and `VISUAL_REPLACEMENT_CONTRACT_V3.md`.
-4. Check for concurrent branch ownership before creating a new product branch.
-5. Begin new product work only when there is a concrete post-release objective; give it an isolated branch, explicit architecture owner, acceptance criteria, regression protection, and exact-SHA accumulated verification.
-6. Keep retired Kids/Kana items retired unless explicitly reopened as new scope under `KIDS_GAMES_EXTENSION_V3.md`.
-7. Do not modify production Supabase/data without a reproduced defect that requires it.
+1. Recover current live refs and concurrent branches before writing; repository evidence overrides this handoff.
+2. Preserve the frozen r3 rollback/reference.
+3. Recover exact visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` separately from later documentation-only branch HEADs.
+4. Read the final release control, Issue #94, visual contract/inventory/progress and all investigator reports.
+5. Establish the intended final integration branch from the correct verified product lineage; do not merge unrelated experimental/post-release features.
+6. Compile a surface-by-surface acceptance matrix covering both visuals and functionality.
+7. Implement only accepted release gaps, in the correct architectural owner. Do not patch around root causes.
+8. Run focused tests after each correction.
+9. Freeze one exact final candidate SHA.
+10. Run the complete final exact-SHA release gate: Cloudflare build/deploy gate, architecture/static, edge/security, browser/mobile, visual contracts/assets/fallbacks, accessibility/reduced motion, PWA/offline/cache behavior, core functional smoke, 320/360/390/412/430 widths and exact-SHA/diff hygiene.
+11. If any product file changes after a PASS, create a new candidate and reverify. Never transfer PASS.
+12. Promote only the exact green integrated state to production.
+13. Verify both `mybiblequest.pages.dev` and `biblequest-7th.pages.dev`, including visual identity and core behavior.
+14. Update status/handoff with the actual final product SHA and workflow evidence. Explicitly record any unexecuted physical-device acceptance.
 
 ## Non-negotiable evidence rules
 
 - Rebuild-and-verify; one owner per responsibility.
 - Never transfer PASS across changed product SHAs.
 - Never claim an unexecuted test.
-- Documentation-only commits are not automatically product candidates.
-- Preserve the frozen r3 production rollback point.
-- A later GitHub merge/promotion is not proof of Cloudflare propagation.
+- Documentation-only commits are not product candidates.
+- Preserve r3 as rollback/reference.
+- A GitHub merge/promotion is not proof of Cloudflare propagation.
+- Do not weaken tests to obtain green.
 - Do not call the app bug-free.
+
+## Success condition
+
+The final official BibleQuest v3 release is complete only when one exact production SHA contains the accepted functionality and accepted visual program, passes the complete final verification cycle, and both Cloudflare hosts are confirmed to serve that verified state.
