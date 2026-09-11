@@ -1,112 +1,112 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after post-release document reconciliation.
+Updated: 2026-09-11 JST after verified branch/document reconciliation.
 
-`DEVELOPMENT_PRIORITY_V3.md` is the current post-release task-selection authority. `FEATURE_INVENTORY_V3.md` remains the historical/release-parity ledger. Historical release-control documents no longer override active post-release development.
+Read `RECONCILIATION_V3.md` for the authoritative branch graph and integration gates. `DEVELOPMENT_PRIORITY_V3.md` remains the cross-feature task-selection authority. Feature contracts govern only their feature behavior.
 
 ## Production/runtime baseline
 
-- Production/runtime product baseline: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
-- Frozen rollback/reference: `release/v3-production-20260911-r3` at that product SHA.
-- Current `main` is a documentation-ahead descendant of that runtime product state; recover the live `main` HEAD before writing.
-- The September 11 production release objective is complete.
-- Historical applicable release-parity scope remains **98/98 complete**.
-- #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless explicitly reopened.
-- Production Supabase/data must not be changed merely because post-release development is green.
+- production/runtime product SHA: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
+- frozen rollback/reference: `release/v3-production-20260911-r3`
+- documentation-ahead `main` recovered before this reconciliation: `8cd27be5da37ae64ee6db69c0f69ec2014cd43d5`
+- September 11 production release objective: complete
+- historical applicable release-parity scope: **98/98 complete**
+- #39 Hiragana Match and #40 Kids Bible Who Am I: retired unless explicitly reopened
 
-## Current exact-green post-release product
+Production Supabase/data must not be changed merely because a development branch is green.
 
-Recover live refs before acting. The newest known exact-green product checkpoint is:
+## Critical state: no single cumulative latest post-release product SHA
 
-- branch: `postrelease/v3-workspace-notes-schema-compat`;
-- exact verified product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`;
-- parent exact-green product: Assignment Private Responses SHA `73d39ce6fe0f9db20db62e25fd497a8711f921b0`;
-- verifier run `34594577664`;
-- job `103247250487`;
-- conclusion: **success**.
+The previous status incorrectly described Workspace SHA `61ee54f...` as the globally newest exact-green product. Repository ancestry now proves that later Calendar v1.5 work is on a divergent exact-green line.
 
-That verifier checked out detached exact product SHA `61ee54fac7d352312cef7ffd8010997fa8bc9e51` and passed:
+Therefore:
 
-- exact-SHA and milestone-diff hygiene;
-- Cloudflare deployment gate;
-- focused Workspace Cloud Notes deployed-schema compatibility checks;
-- accumulated visual static contracts;
-- accumulated architecture validators;
-- accumulated edge/security/static regressions;
-- accumulated browser/mobile regressions;
-- release-critical coverage-presence checks.
+**There is currently no single cumulative latest exact-green post-release product SHA.**
 
-No PASS may be transferred to a changed product SHA.
+Chronological recency is not cumulative product truth. Whole-product status requires intentional integration plus fresh exact-SHA accumulated verification.
 
-## Completed/verified post-release checkpoints
+## Verified post-release feature lines
 
 ### Visual Phase A
 
-The replacement-level visual tranche program through tranche 16 reached exact-green SHA `406c34dcdf904b7483bf4381be774a908738e60c`.
-
-This is now classified as **Visual Phase A: first-pass presentation polish complete**. It does not mean the user's desired final artwork quality is complete.
+- exact-green SHA: `406c34dcdf904b7483bf4381be774a908738e60c`
+- classification: first-pass presentation polish complete; not final artwork quality
 
 ### Assignment Private Responses
 
-Exact-green product SHA: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`.
+- exact-green product SHA: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`
+- verifier run: `34588223163`
+- migration: `supabase/migrations/20260911131000_assignment_response_presence.sql`
+- migration blob on verified Assignment line: `bbbceb057c631f08ec32826384ef6fcd61da4527`
+- production migration state: **NOT RECORDED AS APPLIED; treat as UNAPPLIED until positively verified**
 
-The source-controlled migration `supabase/migrations/20260911131000_assignment_response_presence.sql` was not applied to production during that development milestone. A later production integration requires migration review/deployment plus live authorization/privacy verification.
+The peer-visible presence projection must remain physically separated from private answer/feedback text. See `ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md`.
 
 ### Workspace / Cloud Notes schema compatibility
 
-Exact-green product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`.
+- exact-green product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`
+- parent includes Assignment exact-green SHA `73d39ce...`
+- verifier run: `34594577664`
+- this is the cumulative Assignment → Workspace line
 
-This is the newest known exact-green post-release product checkpoint at the time of this update.
+### Calendar v1.5
 
-## Active Priority 1
+- exact-green product SHA: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`
+- release branch: `release/v3-calendar-v1-5`
+- verifier branch: `verify/v3-calendar-v1-5-functional-01ba1-20260911`
+- verifier run: `34604370963`
+- verifier conclusion: success
+- this is a divergent Calendar line, not a cumulative successor of Assignment → Workspace
 
-Priority 1 now has three coordinated streams:
+`CALENDAR_V3.md` is the Calendar feature contract and must preserve the implemented v1/v1.5 behavior recovered from the verified Calendar line.
 
-### 1A — Functional completion/correctness
+## Current blocker to main product promotion
 
-Complete/correct accepted/currently planned functionality that remains unfinished, while preserving established owners and contracts.
+Main product promotion is blocked by **integration divergence**, not by a known P0/P1 product failure:
 
-### 1B — Visual Phase B
+1. Assignment → Workspace and Calendar v1.5 exact-green lines must be intentionally reconciled into one cumulative candidate.
+2. Conflicting planning/status/feature-contract documentation must be reconciled by authority and feature ownership, not by timestamp.
+3. The cumulative candidate must earn its own complete exact-SHA accumulated verification.
+4. Required production migrations must be reviewed against that exact candidate.
 
-The user requires a further artwork-quality upgrade beyond the completed Phase A tranches:
+A docs-only reconciliation commit is not a product candidate.
 
-- real polished icon artwork where current visuals remain generic/minimal/placeholder;
-- background illustrations/decorative scene assets where useful;
-- coherent art direction across major surfaces;
-- actual implemented SVG/PNG/WebP or equivalent assets, not CSS/button decoration alone.
+## Correct next development route
 
-If an AI-generated visual asset is needed, generate it, select the best result, implement it directly, and verify it in the actual UI. Do **not** ask the user to approve the generated image first.
+1. preserve production and rollback;
+2. use the verified cumulative Assignment → Workspace line as the dependency-preserving integration base unless newer evidence proves a better cumulative successor;
+3. diff/replay the verified Calendar v1.5 changes onto that line, resolving conflicts by established ownership/contracts;
+4. create one cumulative product candidate;
+5. run focused Assignment/Workspace/Calendar checks plus complete accumulated exact-SHA verification;
+6. only then consider `main` product promotion;
+7. for a selected production release containing Assignment Private Responses, verify/apply the response-presence migration before or immediately after compatible code and run live authorization/privacy smoke;
+8. separately verify Cloudflare propagation/live product behavior.
 
-### 1C — Calendar
+## Active Priority 1 after reconciliation
 
-Calendar is active Priority 1 work. Recover any existing Calendar requirements/history first; if no authoritative contract exists, define `CALENDAR_V3.md`, then implement through existing architecture. Calendar must not be indefinitely deferred until all visual work is finished.
+### 1A — Reconciliation/integration correctness
 
-## Priority 2 — Integration/regression hardening
+This is the immediate dependency gate. Do not start unrelated feature work while the repository cannot name a cumulative exact-green product state.
 
-Use focused verification for each milestone and accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility verification at exact checkpoints. Fix root causes rather than weakening validators.
+### 1B — Functional completion/correctness
 
-## Priority 3 — Production integration/promotion
+Continue accepted/current functionality after the integration base is coherent, preserving one owner per responsibility.
 
-Development milestones are not automatically production-live. A production integration step must separately handle exact candidate selection, migrations when required, exact-SHA verification, promotion, Cloudflare propagation and live smoke/authorization checks.
+### 1C — Visual Phase B
 
-## Agent / triage status
+Real polished icon/art/background work remains active. Follow `VISUAL_PHASE_B_V3.md` and, where present, `docs/V3_ICON_ASSET_MAP.md`. Generated visual assets selected for an active visual improvement should be generated, chosen, implemented and tested directly without routine user approval.
 
-Historical release-agent and `agent-analysis` findings are evidence only until revalidated against the current exact product checkpoint. A P0/P1 reported against an older SHA is not automatically a current blocker. Revalidate before interrupting Priority 1 work.
+### 1D — Calendar follow-up
+
+Calendar v1.5 itself is verified on its feature line. Preserve its contract during cumulative integration before adding further Calendar work.
 
 ## Evidence rules
 
 - Never transfer PASS across changed product SHAs.
 - Never claim an unexecuted test.
 - Documentation-only commits are not verified product candidates.
-- Distinguish branch HEAD from exact verified product SHA.
-- Do not modify production Supabase/data without an explicit verified integration requirement.
-- A GitHub promotion is not proof of Cloudflare propagation.
+- Distinguish branch HEAD, feature exact-green SHA and cumulative product SHA.
 - Do not call the app bug-free.
-
-## Defect / root-cause ledger
-
-Historical release and milestone defect records remain in their focused evidence documents and commit history. Do not resurrect a historical defect as active unless it reproduces on the current product checkpoint.
-
-## Next major milestone
-
-Recover the live repository and newest exact-green checkpoint, revalidate any credible historical P0/P1 against that exact product state, then continue the highest-value dependency-safe Priority 1 milestone across functional completion, Visual Phase B, or Calendar according to `DEVELOPMENT_PRIORITY_V3.md`.
+- GitHub promotion is not Cloudflare propagation proof.
+- A migration committed in Git is not evidence that production ran it.
+- Do not choose a global “latest” product by commit date when verified branches diverge.

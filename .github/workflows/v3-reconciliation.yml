@@ -1,0 +1,70 @@
+name: BibleQuest v3 reconciliation contract
+
+on:
+  push:
+    branches:
+      - reconcile/v3-product-docs-20260911
+  workflow_dispatch:
+
+concurrency:
+  group: biblequest-v3-reconciliation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enforce reconciliation-branch change hygiene
+        shell: bash
+        run: |
+          set -euo pipefail
+          base=8cd27be5da37ae64ee6db69c0f69ec2014cd43d5
+          git cat-file -e "$base^{commit}"
+          changed="$(git diff --name-only "$base"...HEAD)"
+          printf '%s\n' "$changed"
+          while IFS= read -r path; do
+            [ -z "$path" ] && continue
+            case "$path" in
+              RECONCILIATION_V3.md|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|DEVELOPMENT_STATUS_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_HANDOFF_V3.md|CONTINUE_PROMPT_V3.md|CALENDAR_V3.md|tests/v3-reconciliation-contract.mjs|tests/v3-assignment-response-presence-migration-contract.mjs|.github/workflows/v3-reconciliation.yml)
+                ;;
+              *)
+                echo "Unexpected product/non-reconciliation change: $path" >&2
+                exit 1
+                ;;
+            esac
+          done <<< "$changed"
+
+      - name: Verify reconciled documentation contract
+        run: node tests/v3-reconciliation-contract.mjs
+
+      - name: Verify exact reviewed Assignment response-presence migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          product_sha=73d39ce6fe0f9db20db62e25fd497a8711f921b0
+          migration=supabase/migrations/20260911131000_assignment_response_presence.sql
+          git cat-file -e "$product_sha^{commit}" 2>/dev/null || git fetch --no-tags origin "$product_sha"
+          git show "$product_sha:$migration" > /tmp/assignment_response_presence.sql
+          node tests/v3-assignment-response-presence-migration-contract.mjs /tmp/assignment_response_presence.sql
+
+      - name: Run unchanged-product deployment gate
+        run: bash build.sh
+
+      - name: Run existing Assignment authorization regressions available on reconciliation base
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/v3-assignment-response-auth-edge.mjs tests/v3-assignment-publish-auth-edge.mjs; do
+            if [ -f "$test" ]; then
+              node "$test"
+            fi
+          done

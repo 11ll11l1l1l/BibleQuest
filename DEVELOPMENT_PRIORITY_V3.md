@@ -1,100 +1,126 @@
 # BibleQuest v3 — Current Development Priority
 
-Updated: 2026-09-11 JST
+Updated: 2026-09-11 JST after repository reconciliation.
 
-This is the **current post-release task-selection authority** for BibleQuest v3.
+This is the **cross-feature post-release task-selection authority**. Read `RECONCILIATION_V3.md` immediately after this file for branch ancestry, exact-green lines and promotion/migration gates.
 
-## Document authority order
+## Document authority
 
-When documents disagree, use this order:
+When documents disagree:
 
-1. the user's latest explicit instruction;
-2. this `DEVELOPMENT_PRIORITY_V3.md`;
-3. current `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`;
-4. milestone-specific contracts and current exact-SHA verification evidence;
-5. `FEATURE_INVENTORY_V3.md` as the historical/release-parity ledger;
-6. historical release, visual-tranche, and agent documents as evidence only.
+1. latest explicit user instruction;
+2. this `DEVELOPMENT_PRIORITY_V3.md` for cross-feature priority/task selection;
+3. `RECONCILIATION_V3.md` for branch graph, cumulative-product truth and integration gates;
+4. current `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`;
+5. feature-specific contracts for behavior inside their feature only;
+6. exact-SHA workflow/test evidence;
+7. `FEATURE_INVENTORY_V3.md` as historical/release-parity ledger;
+8. historical release/visual/agent documents as evidence only.
 
-Repository refs, exact SHAs and actually executed workflow results override stale prose. `RELEASE_6PM_2026-09-11.md` is historical release control from the completed September 11 release and no longer overrides post-release development.
+Repository refs, ancestry, changed paths, exact SHAs and actually executed workflow results override stale prose.
 
-## Priority 1 — Functional completion + visual/artwork upgrade + Calendar
+A feature-specific contract cannot become global planning authority merely because it shares a filename with another branch. Diff conflicting files; preserve newer verified feature behavior within that feature and reconcile cross-feature status separately.
 
-All three streams are active Priority 1 work. Sequence them by dependency and risk; do not postpone Calendar until every cosmetic task is finished, and do not postpone meaningful visual work until every functional task is finished.
+## Immediate Priority 1 — restore one cumulative product truth
 
-### 1A. Functional completion and correctness
+There is currently **no single cumulative latest exact-green post-release product SHA**.
 
-- Complete/correct accepted and currently planned BibleQuest functionality that remains unfinished or incomplete.
-- Preserve verified v3 ownership and existing working contracts.
-- Fix reproduced defects encountered in the selected milestone.
-- Do not silently revive #39 Hiragana Match or #40 Kids Bible Who Am I; they remain retired unless the user explicitly reactivates them.
-- Do not create competing implementations or broad speculative rewrites.
+Verified lines include:
 
-### 1B. Visual/artwork Phase B — required product-quality work
+- Assignment Private Responses `73d39ce6fe0f9db20db62e25fd497a8711f921b0`;
+- Workspace schema compatibility `61ee54fac7d352312cef7ffd8010997fa8bc9e51`, cumulative on top of Assignment;
+- Calendar v1.5 `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`, exact-green but divergent from the Assignment → Workspace line.
 
-The earlier replacement-level visual tranche program through tranche 16 is now classified as **Visual Phase A: first-pass presentation polish complete**. It is preserved as verified historical evidence; it does **not** mean all desired visual work is complete.
+Do **not** select a global “latest” SHA by date.
 
-Visual Phase B is active Priority 1 work and targets the remaining minimal/placeholder appearance with real polished assets:
+### Required route
 
-- replace weak/generic/emoji-like/text-like or placeholder visual markers with coherent icon artwork where appropriate;
-- add background illustrations or decorative scene assets where they materially improve identity, atmosphere or section distinction;
-- use real SVG/PNG/WebP assets where appropriate instead of treating CSS/button decoration alone as sufficient;
-- keep the established interface recognizable and preserve navigation, feature ownership, persistence, backend contracts and core interaction flows;
-- maintain readability, contrast, touch usability, responsive behavior, performance and PWA/offline compatibility;
-- use a coherent BibleQuest art direction across major surfaces.
+1. recover live refs and verify the branch graph again;
+2. diff the divergent product lines and conflicting docs;
+3. use `61ee54f...` as the dependency-preserving integration base unless newer evidence provides a verified cumulative successor;
+4. replay/merge only the intended verified Calendar v1.5 product changes from `01ba15e...`;
+5. resolve conflicts by feature ownership, verified contracts and tests, not chronology;
+6. create one cumulative product candidate;
+7. run focused Assignment, Workspace and Calendar verification;
+8. run the complete accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility suite against that exact candidate SHA;
+9. reject regressions and fix root causes rather than weakening validators;
+10. only after exact-green cumulative verification may product promotion to `main` be selected.
 
-If visual work needs an AI-generated image/art asset, **generate it, choose the best result, implement it directly, and verify it in the actual UI. Do not ask the user to approve the generated image first.** A generated asset does not count as completed work until it is wired into the product and tested.
+Do not begin unrelated speculative feature work while this integration gap remains unresolved.
 
-### 1C. BibleQuest Calendar — active implementation work
+## Assignment response presence — production migration gate
 
-Calendar is part of Priority 1, not an indefinite future item.
+The Assignment Private Responses migration is:
 
-Before implementation:
+`supabase/migrations/20260911131000_assignment_response_presence.sql`
 
-- recover any existing Calendar requirement/design/branch/history;
-- if no authoritative contract exists, create a concise `CALENDAR_V3.md` defining owner, persistence, offline/date-time behavior, authorization and integration boundaries;
-- reuse established assignment/journey/notification/event ownership only where contracts genuinely support it;
-- do not introduce duplicate global state or a competing backend owner;
-- design mobile-first and verify desktop/tablet behavior;
-- add focused tests and exact-SHA accumulated verification.
+Canonical verified-line blob: `bbbceb057c631f08ec32826384ef6fcd61da4527`.
 
-If Calendar has a prerequisite, complete that prerequisite first and then continue into Calendar without requiring another routine approval.
+Rules:
 
-## Priority 2 — Cross-feature integration and regression hardening
+- repository presence is not proof of production application;
+- treat production state as UNAPPLIED until positively verified;
+- compare any supplied SQL against the committed reviewed file before use;
+- before applying, compare the production definition of `private.bible_assignment_visible(...)` because the migration replaces that helper;
+- do not apply the migration on an unrelated product line that does not contain/expect Assignment Private Responses;
+- when compatible Assignment code is selected for production, apply the migration before or immediately after compatible code goes live;
+- after application, run live authorization/privacy smoke and record the applied migration/version;
+- do not call Assignment Private Responses fully production-live until the migration and live privacy checks are complete.
 
-After each Priority 1 milestone, run focused checks. At suitable exact-green checkpoints, run the accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility suites. Verify representative mobile widths and touch behavior. Fix root causes rather than weakening validators.
+See `ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md`.
 
-## Priority 3 — Production integration/promotion
+## Main promotion gate
 
-A green development branch is not automatically production-live.
+`main` product promotion is blocked until:
 
-- Preserve production/rollback points until a production integration milestone is selected.
-- Keep development isolated from production until the exact candidate is verified.
-- Review/deploy required migrations only as part of an explicit integration/release step.
-- Update status/handoff with exact evidence.
-- Treat GitHub promotion, Cloudflare propagation and live smoke verification as separate evidence.
+- divergent docs/contracts have been explicitly diffed and reconciled;
+- selected verified feature work exists in one cumulative candidate;
+- that candidate earns fresh exact-SHA accumulated verification;
+- required migrations are reviewed against that exact candidate;
+- production/rollback boundaries remain intact.
 
-## Agent/investigation evidence rule
+A documentation reconciliation branch may be merged as documentation, but that does not itself promote or validate product code.
 
-Historical investigator findings remain evidence, but a finding against an older SHA is **not automatically an active blocker**. Before interrupting current Priority 1 work, revalidate the finding against the current exact product checkpoint. P0/P1 may interrupt the roadmap only when current evidence supports them; stale, speculative, duplicate or already-fixed findings must be suppressed.
+## Priority 1 after cumulative integration
 
-The old `RELEASE_AGENT_READONLY_2026-09-11.md` is historical release-agent guidance. Current development sessions may use agent findings, but task selection follows this file and current exact-SHA evidence.
+### Functional completion/correctness
 
-## Non-negotiable development rules
+Complete accepted/current functionality and reproduced defects while preserving established owners. Do not revive retired #39/#40 without explicit scope change.
+
+### Visual/artwork Phase B
+
+Visual Phase B remains required product-quality work after/alongside dependency-safe functional milestones:
+
+- use real polished icons/backgrounds/illustrations where appropriate;
+- preserve interface architecture, navigation, persistence and backend ownership;
+- consult `docs/V3_ICON_ASSET_MAP.md` when present before generating/replacing icons;
+- never invent a feature merely to use an available asset;
+- if a selected visual improvement requires generated artwork, **generate → choose → optimize → implement → test** without routine image-approval interruption;
+- maintain mobile readability, contrast, accessibility, performance and offline/PWA behavior.
+
+### Calendar
+
+Calendar v1.5 is already implemented and exact-green on its feature line. During cumulative integration, `CALENDAR_V3.md` is authoritative for Calendar behavior/ownership only. Preserve v1/v1.5 behavior before selecting new Calendar follow-ups.
+
+## Production integration
+
+Development green is not production-live. Production release evidence is separate:
+
+1. exact cumulative candidate selected and verified;
+2. required migrations reviewed/applied at the release boundary;
+3. code promotion/deployment performed;
+4. Cloudflare propagation confirmed independently;
+5. live smoke + authorization/privacy checks passed;
+6. handoff/status updated with exact evidence.
+
+## Non-negotiable rules
 
 - Rebuild-and-verify.
-- One owner per responsibility.
+- One owner/source of truth per responsibility.
 - Never transfer PASS across changed product SHAs.
-- Never claim tests that were not executed.
-- Documentation-only commits are not verified product SHAs.
+- Never claim tests not executed.
+- Documentation-only commits are not product SHAs.
+- Chronological recency does not override branch ancestry.
+- Do not mutate production Supabase/data outside an explicitly selected verified integration/release step.
+- Do not weaken tests to make a candidate green.
 - Do not call the app bug-free.
-- Do not mutate production Supabase/data without a verified integration requirement.
-- Avoid broad architecture rewrites when targeted implementation can achieve the objective.
-- New visual assets must be implemented into the product, not merely generated or shown.
-
-## Short priority summary
-
-1. **Priority 1A:** finish/correct accepted functionality.
-2. **Priority 1B:** continue the required real artwork/icon/background Visual Phase B.
-3. **Priority 1C:** implement and integrate Calendar when dependencies permit.
-4. **Priority 2:** accumulated integration/regression hardening.
-5. **Priority 3:** exact-SHA production integration/promotion when explicitly selected.

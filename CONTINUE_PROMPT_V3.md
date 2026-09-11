@@ -8,81 +8,161 @@ Continue development of my BibleQuest v3 project from the **exact current reposi
 
 Repository: `11ll11l1l1l/BibleQuest`
 
-Before writing anything:
+## FIRST — recover truth before writing
 
-1. Read `DEVELOPMENT_PRIORITY_V3.md` first. It is the current post-release task-selection authority.
-2. Read `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`.
+1. Read `DEVELOPMENT_PRIORITY_V3.md` first.
+2. Read `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`.
 3. Read `FEATURE_INVENTORY_V3.md` only as the release-parity ledger, not as the complete post-release roadmap.
 4. Read `ARCHITECTURE_V3.md` and milestone-specific contracts as needed.
-5. Recover live `main`, active `postrelease/v3-*` branches, exact product SHAs, documentation-only HEADs, recent commits and actual GitHub Actions evidence.
-6. Recover the newest agent/investigator findings, but revalidate any blocker reported against an older SHA before acting.
-7. Repository evidence and the user's latest explicit instruction override stale documentation.
+5. Recover live `main`, frozen production/release refs, all relevant `postrelease/v3-*` and `release/v3-*` feature refs, verifier refs, exact product SHAs, documentation-only HEADs, recent commits and actual GitHub Actions evidence.
+6. Recover agent/investigator findings, but revalidate any blocker reported against an older SHA before acting.
+7. Recover unapplied/unknown migrations separately from committed migrations.
+8. Repository evidence and my latest explicit instruction override stale prose.
 
-DOCUMENT AUTHORITY
+## DO NOT CONFUSE RECENCY WITH CUMULATIVE PRODUCT TRUTH
 
-When instructions conflict, use:
+A newer commit timestamp does **not** make a divergent feature branch the global latest product.
 
-latest user instruction → `DEVELOPMENT_PRIORITY_V3.md` → current handoff/status → milestone contracts/exact-SHA evidence → release-parity ledger → historical release/visual/agent documents.
+If exact-green feature branches diverge, report that there is **no single cumulative latest exact-green product SHA** until the intended work is deliberately integrated and the resulting exact SHA passes the complete accumulated verification suite.
 
-`RELEASE_6PM_2026-09-11.md` and `RELEASE_AGENT_READONLY_2026-09-11.md` are historical evidence from the completed September 11 release. Do not let them stop valid post-release feature, artwork or Calendar development.
+At the known reconciliation checkpoint:
 
-CURRENT PRIORITY
+- production/runtime SHA: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`;
+- Assignment Private Responses exact-green: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`;
+- Workspace schema compatibility exact-green: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`, cumulative on Assignment;
+- Calendar v1.5 exact-green: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`, on a divergent Calendar line;
+- therefore the known state has **no single cumulative post-release product SHA**.
 
-Priority 1 contains three active streams:
+Re-check all of this live before acting; these are reference points, not permission to skip repository recovery.
 
-- **1A Functional completion/correctness** — finish accepted/currently planned functionality and fix reproduced defects while preserving established owners and contracts.
-- **1B Visual/artwork Phase B** — continue the required quality upgrade with real polished icon artwork, illustrations and backgrounds where appropriate. The earlier visual tranche program through tranche 16 is only Visual Phase A/first-pass presentation polish; it does not mean the requested artwork upgrade is finished.
-- **1C Calendar** — Calendar is active Priority 1 work. Recover existing requirements first; if none exist, define `CALENDAR_V3.md`, then implement it through existing architecture. Do not defer Calendar until every cosmetic task is finished.
+## DOCUMENT AUTHORITY / CONFLICT RULE
 
-Sequence Priority 1 work by dependencies and risk. A prerequisite may be completed before Calendar, and functional + visual work may be completed together on one user-facing surface when safe.
+When instructions conflict:
 
-VISUAL-AUTOMATION RULE
+latest user instruction → `DEVELOPMENT_PRIORITY_V3.md` → `RECONCILIATION_V3.md` → current handoff/status → feature contracts within their own feature scope → exact-SHA evidence → release-parity ledger → historical release/visual/agent records.
 
-If an approved visual improvement requires a generated image, icon, illustration, background, texture or similar asset:
+A feature-contract file is authoritative for that feature's behavior/ownership only. It cannot overwrite global planning/status just because another branch used the same filename for planning prose.
 
-**generate → choose → optimize → implement → test**.
+Before product promotion to `main`, **diff the conflicting documents and divergent product lines**. Do not guess which side wins. Preserve newer verified behavior per feature, preserve cross-feature planning authority explicitly, build one cumulative candidate, then verify that exact SHA.
 
-Do **not** stop to ask me whether I like the generated image or whether it should be implemented. Choose the appropriate result yourself and wire it into the real UI. A generated image that is not actually implemented does not count as completed work.
+For Calendar specifically, the implemented v1/v1.5 behavior recovered from the verified Calendar line is the Calendar feature authority. The older generic pre-implementation Calendar prose must not erase implemented behavior. `CALENDAR_V3.md` still does not become global priority authority.
 
-Preserve information architecture, navigation, feature ownership, persistence, backend contracts, accessibility and responsive behavior unless a separately selected product change explicitly requires otherwise.
+## IMMEDIATE DEVELOPMENT ROUTE WHILE DIVERGENCE EXISTS
 
-REBUILD-AND-VERIFY
+Until a newer cumulative exact-green successor is proven:
+
+1. use the cumulative Assignment → Workspace exact-green line (`61ee54f...`) as the dependency-preserving integration base;
+2. diff/replay the intended verified Calendar v1.5 product changes from `01ba15e...` onto that line;
+3. resolve conflicts by established feature ownership, architecture and verified behavior, not commit date;
+4. preserve `src/core/api.js` as the single browser Supabase/backend owner unless an intentional architecture change is separately selected and verified;
+5. create one cumulative candidate SHA;
+6. run focused Assignment + Workspace + Calendar checks;
+7. run the complete accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility suite against that exact SHA;
+8. fix root causes; never weaken tests to force green;
+9. only after a cumulative exact-green SHA exists may product promotion to `main` be selected.
+
+Do not detour into unrelated speculative work while the repository cannot identify a cumulative product checkpoint.
+
+## ASSIGNMENT RESPONSE PRESENCE MIGRATION — REQUIRED RELEASE GATE
+
+Canonical migration:
+
+`supabase/migrations/20260911131000_assignment_response_presence.sql`
+
+Known verified Assignment-line blob: `bbbceb057c631f08ec32826384ef6fcd61da4527`.
+
+Read `ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md` before any production integration involving Assignment Private Responses.
+
+Rules:
+
+- committed migration != production-applied migration;
+- treat production state as `NOT APPLIED / UNKNOWN` until positively verified;
+- if SQL is supplied in a prompt, compare it against the committed reviewed migration before use; do not silently run an ad-hoc variant;
+- the migration replaces `private.bible_assignment_visible(...)`, so compare the deployed helper body/current production schema before applying;
+- do not apply this migration on an unrelated product line that does not contain/expect Assignment Private Responses;
+- when compatible Assignment code is selected for production, apply the migration before the code when possible or immediately after it if necessary;
+- a brief lag is expected mainly to affect the leader/ministry “who completed this?” presence view, but it must be closed and verified promptly;
+- after application, run live authorization/privacy smoke and record the applied migration/version;
+- do not declare Assignment Private Responses fully production-live until the migration is `APPLIED + LIVE VERIFIED`.
+
+Privacy boundary that must remain true:
+
+- private answer/feedback stays in `bible_assignment_progress`/its existing private owner;
+- peer-visible completion presence is physically separated in `bible_assignment_response_presence`;
+- authenticated clients cannot write the presence projection;
+- RLS limits reads to authorized assignment audiences;
+- the private SECURITY DEFINER sync trigger function is not an anon/authenticated callable RPC surface;
+- no answer/feedback text is added to the peer-visible projection.
+
+## REBUILD-AND-VERIFY
 
 - one owner/source of truth per responsibility;
 - no competing Supabase/API/state owners;
 - reproduce defects before fixing them;
 - focused tests for changed owners/surfaces;
-- accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility verification at exact checkpoints;
+- complete accumulated verification at exact candidate checkpoints;
 - never transfer PASS across changed product SHAs;
 - never claim an unexecuted test;
 - documentation-only commits are not verified product candidates;
-- do not weaken validators merely to get green;
-- preserve production Supabase/data until an explicit verified integration step requires change;
-- do not call the app bug-free.
+- do not call the app bug-free;
+- GitHub promotion is not proof of Cloudflare propagation.
 
-AGENT FINDINGS
+## VISUAL / ARTWORK RULE
 
-Use investigator results as evidence, not automatic orders. Reject stale, speculative, duplicate, already-fixed or low-impact findings. A historical P0/P1 must be revalidated against the current exact product checkpoint before it interrupts current work.
+Visual Phase B remains required product-quality work once dependency-safe integration permits it.
 
-EXECUTE, DO NOT ONLY REPORT
+Before replacing/generating icons, consult `docs/V3_ICON_ASSET_MAP.md` if present. Use its canonical assignments; do not invent new features merely to consume an icon. If the asset map is only on another visual branch, reconcile it deliberately before relying on it as global repository truth.
 
-In this chat:
+For a selected visual improvement that requires a generated image, icon, illustration, background, texture or similar asset:
 
-1. recover the actual current checkpoint and newest exact-green post-release product SHA;
-2. distinguish product SHA from later documentation/verifier commits;
-3. identify the highest-value dependency-safe unfinished Priority 1 milestone;
-4. execute it immediately when safe;
-5. implement required artwork directly rather than asking for image approval;
-6. run focused verification and exact-SHA accumulated verification as appropriate;
-7. preserve/update evidence;
-8. reassess Priority 1 and continue to the next dependency-safe task while safe executable work remains.
+**generate → choose → optimize → implement → test**.
+
+Do **not** ask me whether I like the generated image, whether to implement it, or which routine option to choose. Pick the best result based on established art direction, readability, mobile behavior, consistency, performance, accessibility and purpose; wire it into the real UI; verify it. Ask only when the decision would materially change information architecture, product behavior, core theme direction, ownership or another major product decision.
+
+Preserve navigation, information architecture, feature ownership, persistence, backend contracts and responsive/accessibility behavior unless a separately selected product change explicitly requires otherwise.
+
+## AGENT FINDINGS / PRIORITY FIREWALL
+
+Use investigator results as evidence, not automatic orders. Validate the inspected SHA, reproduction and user impact. Reject stale, speculative, duplicate, already-fixed or low-impact findings.
+
+- P0: production unusable, severe security/privacy/data-loss/core availability issue;
+- P1: major user-facing capability broken with no reasonable workaround;
+- P2: real defect/usability issue but not a primary-use blocker;
+- P3: cosmetic/theoretical/speculative/low impact.
+
+Only current credible P0/P1 may interrupt the selected integration route.
+
+## EXECUTE, DO NOT ONLY REPORT
+
+In each development run:
+
+1. recover live refs and branch ancestry;
+2. report production SHA, relevant feature exact-green SHAs, and cumulative exact-green SHA or explicitly `NONE`;
+3. identify the highest-value dependency-safe unfinished gate;
+4. execute safe work immediately rather than stopping at a plan;
+5. run focused and accumulated verification appropriate to the changed SHA;
+6. preserve exact evidence and update docs when product truth changes;
+7. continue to the next dependency-safe task while safe executable work remains.
 
 Do not repeatedly ask me to type “continue.” Do not ask me to repeat repository context already available. Do not ask for routine approval already authorized by these instructions.
 
-Keep production and development separate. A green post-release branch is not automatically production-live; migrations, promotion, Cloudflare propagation and live smoke require a separately selected integration/release step.
+Keep production and development separate. Production database migration, product promotion, Cloudflare propagation and live authorization/privacy smoke are separate evidence gates.
 
-Retired #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless I explicitly reopen them.
+Retired #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless explicitly reopened.
 
-At the end of each response, state factual status only: production/main HEAD, active development branch, newest exact-green product SHA, what was actually completed, verification actually run, credible unresolved blockers, next Priority 1 step, whether production/Supabase were touched, and anything that truly requires my action.
+At the end of each response, state factual status only:
+
+- production SHA;
+- live `main` HEAD;
+- active branch;
+- relevant feature exact-green SHAs;
+- cumulative exact-green SHA or `NONE`;
+- work actually completed;
+- tests/workflows actually executed;
+- credible unresolved blocker;
+- migration state;
+- next gate;
+- whether production/Supabase were touched;
+- anything that truly requires user action.
 
 ---
