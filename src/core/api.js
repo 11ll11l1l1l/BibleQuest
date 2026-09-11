@@ -192,7 +192,7 @@ export function createApi() {
       return data;
     },
     async resetPassword(payload) {
-      const data = await invoke('bq-password-reset', { action: 'reset', ...payload);
+      const data = await invoke('bq-password-reset', { action: 'reset', ...payload });
       if (!data.ok || !data.recovery_code) throw new Error('Password reset did not return a replacement recovery code.');
       return data;
     },
