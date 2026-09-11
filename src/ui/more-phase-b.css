@@ -1,0 +1,39 @@
+/* BibleQuest v3 Visual Phase B — More hub icon layer.
+   Presentation only: existing routes, callbacks, button semantics, state and ownership stay unchanged. */
+
+[data-more-workspace],[data-more-notifications],[data-more-community],[data-more-ministry-hub],
+[data-more-content-review],[data-more-couples],[data-more-couples-cloud],[data-more-journey-groups],
+[data-more-team-center],[data-more-accessibility],[data-more-install],[data-more-backup],
+[data-more-mission],[data-more-calendar],[data-more-congregation]{position:relative;overflow:hidden}
+
+.bq-more-icon-wrap{display:grid;place-items:center;width:48px;height:48px;margin:0 0 12px;border:1px solid color-mix(in srgb,var(--bq-more-accent,#2f704d) 24%,transparent);border-radius:16px;background:color-mix(in srgb,var(--bq-more-accent,#2f704d) 11%,#fff);color:var(--bq-more-accent,#2f704d);box-shadow:0 8px 18px color-mix(in srgb,var(--bq-more-accent,#2f704d) 14%,transparent)}
+.bq-more-icon{display:block;width:27px;height:27px;fill:currentColor}
+
+[data-more-workspace]{--bq-more-accent:#2563eb}
+[data-more-notifications]{--bq-more-accent:#7c3aed}
+[data-more-community]{--bq-more-accent:#0f766e}
+[data-more-ministry-hub]{--bq-more-accent:#4f46e5}
+[data-more-content-review]{--bq-more-accent:#b45309}
+[data-more-couples]{--bq-more-accent:#be185d}
+[data-more-couples-cloud]{--bq-more-accent:#be123c}
+[data-more-journey-groups]{--bq-more-accent:#0e7490}
+[data-more-team-center]{--bq-more-accent:#c2410c}
+[data-more-accessibility]{--bq-more-accent:#0369a1}
+[data-more-install]{--bq-more-accent:#047857}
+[data-more-backup]{--bq-more-accent:#475569}
+[data-more-mission]{--bq-more-accent:#a16207}
+[data-more-calendar]{--bq-more-accent:#6d28d9}
+[data-more-congregation]{--bq-more-accent:#047857}
+
+[data-more-workspace]::after,[data-more-notifications]::after,[data-more-community]::after,[data-more-ministry-hub]::after,
+[data-more-content-review]::after,[data-more-couples]::after,[data-more-couples-cloud]::after,[data-more-journey-groups]::after,
+[data-more-team-center]::after,[data-more-accessibility]::after,[data-more-install]::after,[data-more-backup]::after,
+[data-more-mission]::after,[data-more-calendar]::after,[data-more-congregation]::after{content:"";position:absolute;right:-28px;top:-34px;width:112px;height:112px;border-radius:50%;background:color-mix(in srgb,var(--bq-more-accent) 9%,transparent);pointer-events:none}
+
+[data-more-workspace]>* ,[data-more-notifications]>* ,[data-more-community]>* ,[data-more-ministry-hub]>* ,
+[data-more-content-review]>* ,[data-more-couples]>* ,[data-more-couples-cloud]>* ,[data-more-journey-groups]>* ,
+[data-more-team-center]>* ,[data-more-accessibility]>* ,[data-more-install]>* ,[data-more-backup]>* ,
+[data-more-mission]>* ,[data-more-calendar]>* ,[data-more-congregation]>*{position:relative;z-index:1}
+
+@media(max-width:480px){.bq-more-icon-wrap{width:44px;height:44px;border-radius:14px}.bq-more-icon{width:25px;height:25px}}
+@media(prefers-contrast:more){.bq-more-icon-wrap{background:#fff;border-width:2px;box-shadow:none}[data-more-workspace]::after,[data-more-notifications]::after,[data-more-community]::after,[data-more-ministry-hub]::after,[data-more-content-review]::after,[data-more-couples]::after,[data-more-couples-cloud]::after,[data-more-journey-groups]::after,[data-more-team-center]::after,[data-more-accessibility]::after,[data-more-install]::after,[data-more-backup]::after,[data-more-mission]::after,[data-more-calendar]::after,[data-more-congregation]::after{display:none}}
