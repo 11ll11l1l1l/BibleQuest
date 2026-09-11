@@ -1,9 +1,11 @@
-# BibleQuest v3 — Cumulative Release Closeout
+# BibleQuest v3 — Historical Cumulative Release Closeout
 
 Date: 2026-09-11 JST
-Status: **released and live verified**
+Status: **historical released/live-verified checkpoint; superseded as current final-release truth**
 
-## Release identity
+This document records a valid earlier cumulative production checkpoint. It must not be used as the current final-release identity after later v3 product work. Current release authority is `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_STATUS_V3.md`, and `RELEASE_ACCEPTANCE_MATRIX_V3.md`.
+
+## Historical release identity
 
 - exact-green cumulative product SHA: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
 - product verifier: `34610903807` — success
@@ -14,11 +16,11 @@ Status: **released and live verified**
 - production verifier: `34612873935` — success
 - previous rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-The promoted release preserves both the cumulative verified line and the prior `main` documentation history. Its runtime/product tree comes from the cumulative verified product state; the exact product PASS remains attached to `cf17f36...`.
+That checkpoint's runtime/product tree came from its cumulative verified product state. Its PASS remains valid **for that historical state only** and must not be transferred to later product changes.
 
-## Released scope
+## Historical released scope
 
-The cumulative product reconciles and releases:
+The cumulative checkpoint reconciled and released:
 
 - Assignment Private Responses;
 - Workspace/Cloud Notes deployed-schema compatibility;
@@ -26,33 +28,52 @@ The cumulative product reconciles and releases:
 - Avatar Vault v2;
 - Calendar v1.5.
 
-The former Line A / Line B divergence is closed.
+The former Line A / Line B divergence was closed at that checkpoint.
 
-## Production hosts
+## Historical production hosts
 
-Production verifier `34612873935` independently confirmed byte-for-byte promoted product files plus browser/mobile smoke on:
+Production verifier `34612873935` independently confirmed byte-for-byte promoted product files plus browser/mobile smoke at that time on:
 
 - `https://mybiblequest.pages.dev/`
 - `https://biblequest-7th.pages.dev/`
 
-Covered live smoke: shell, Assignments, Workspace, Avatar Vault, Calendar, accessibility and offline shell.
+Covered live smoke included shell, Assignments, Workspace, Avatar Vault, Calendar, accessibility and offline shell.
 
-## Supabase release closeout
+## Current superseding release truth
+
+Later accepted work advanced the exact-green product beyond this historical checkpoint.
+
+Current authoritative identities as of 2026-09-12:
+
+- exact-green product: `2c601b3289dba891f349801219f49804f85f63cc`, run `34633247237` success;
+- exact-green validation integration: `d0eab188479f20273cbd67cb5b796c74868dc5d4`, run `34634460077` success;
+- repository `main` during fresh live verification: `452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b`;
+- fresh production verifier: run `34637203062`, job `103387887268` success.
+
+Run `34637203062` independently proved selected current release files byte-for-byte on both Cloudflare Pages hosts and successfully ran the current hosted browser/mobile suite on both, including explicit 320/360/390/412/430 widths and accepted current Phase-B surfaces.
+
+Therefore the historical `cf17f36...` / `04bd51b...` live PASS is not needed as transferred evidence for the later product: fresh current-production evidence now exists.
+
+## Supabase release closeout retained
 
 Production project: `zkfmgezvzugchcwppreq`.
 
-Applied + live verified migrations:
+Applied + live verified migrations remain:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-Assignment verification included safe projection shape, grants/RLS, backfill parity, all/member/team/group visibility, ministry visibility and sync lifecycle. Calendar verification included ministry creation, congregation-member shared visibility, private isolation and notification-trigger privilege boundaries. Synthetic release smoke data was rollback-only.
+Do not reapply them. Later product/validation/live-verification work did not mutate these production migrations merely to refresh release evidence.
 
-The post-migration security advisor showed no new migration-introduced finding. Existing advisor warnings remain independent follow-up work.
+## Current remaining release evidence
 
-## Release conclusion
+This historical document no longer declares the **current final release gate** closed.
 
-No credible P0/P1 release blocker was found by the executed cumulative, production, migration and live authorization gates. This statement does not claim the application is bug-free.
+Current unclosed evidence is tracked by the authority documents and consists of:
 
-The release gate is closed. Subsequent work resumes as normal Priority 1 development from the current cumulative production base and must earn fresh exact-SHA verification for each product change.
+1. Issue #68 real multi-account field validation.
+2. Issue #6 physical Android Chrome/Brave + genuinely installed-PWA device validation.
+3. Cloudflare-internal deployment metadata only if release policy strictly requires the provider's internal deployment object/ID beyond the already-proven live product content identity.
+
+No current-v3 P0/P1 product/security/privacy/data-loss defect is presently reproduced. This does not claim the application is bug-free.

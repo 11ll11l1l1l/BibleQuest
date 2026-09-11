@@ -13,7 +13,7 @@ Repository: `11ll11l1l1l/BibleQuest`
 1. Read `DEVELOPMENT_PRIORITY_V3.md`.
 2. Read `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, and `DEVELOPMENT_STATUS_V3.md`.
 3. Read `RELEASE_ACCEPTANCE_MATRIX_V3.md` and `RELEASE_OPERATOR_CHECKLIST_V3.md`.
-4. Read `FEATURE_INVENTORY_V3.md` only as the historical release-parity ledger.
+4. Read `FEATURE_INVENTORY_V3.md` and `RELEASE_CLOSEOUT_V3.md` only as historical ledgers where newer authority documents supersede them.
 5. Read `ARCHITECTURE_V3.md` and the relevant feature contract only as needed for ownership/boundary decisions.
 6. Recover live `main`, recent commits, open PRs, frozen product/validation/rollback refs, exact workflow runs, current Supabase migration state, and current issue/investigator evidence.
 7. Repository evidence and my latest explicit instruction override stale prose, old issue wording and older continuation prompts.
@@ -30,9 +30,13 @@ At the time this prompt was updated:
 - exact-green release-validation integration SHA: `d0eab188479f20273cbd67cb5b796c74868dc5d4`;
 - frozen validation ref: `release/v3-final-mobile-width-gate-20260912`;
 - validation run: `34634460077` — success;
+- repository `main` during fresh live-production verification: `452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b`;
+- current-production verifier branch: `verify/v3-production-current-452e84c-20260912`;
+- verifier commit: `197056e374f06b59246dcf953405818b89ffde9d`;
+- production verifier run `34637203062`, job `103387887268` — success;
 - rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 
-PR #111 changed tests/workflow/release documentation only. A later documentation-only HEAD is not a new product SHA.
+PR #111 and later release-control commits changed validation/workflow/documentation, not the exact-green product identity. A later documentation-only HEAD is not a new product SHA.
 
 Current `main` contains the exact-green product ancestry. Re-check with repository evidence rather than assuming any hard-coded `main` SHA remains current.
 
@@ -50,7 +54,9 @@ The accepted product already contains the required current v3 feature scope plus
 - Ministry Hub Calendar;
 - accumulated v3 architecture/security/browser/PWA regressions.
 
-The permanent final mobile/build release gate also exists and has passed for the current product/validation state, including 320/360/390/412/430 px acceptance against the current five-tab shell (`Home`, `Learn`, `Play`, `Grow`, `More`). Do not restore obsolete four-tab/nine-node behavior from historical Issue #6 wording.
+The permanent final mobile/build release gate has passed, including 320/360/390/412/430 px acceptance against the current five-tab shell (`Home`, `Learn`, `Play`, `Grow`, `More`). Do not restore obsolete four-tab/nine-node behavior from historical Issue #6 wording.
+
+Independent current-production proof is also complete: run `34637203062` byte-matched selected current release files on both Cloudflare Pages hosts and ran the current hosted browser/mobile suite successfully on both. Do not repeat this gate merely because an older document says production verification is pending; rerun it only if product/runtime bytes change or new evidence invalidates it.
 
 Issue #94 remains the visual integration tracker, but it does **not** authorize endless cosmetic tranches. Select another visual product change only if current evidence demonstrates a material placeholder, broken/generic asset, or inconsistent surface that still fails the approved BibleQuest visual direction.
 
@@ -66,21 +72,21 @@ The following release migrations are already applied and live verified and must 
 
 Do not mutate production schema/data/RLS/Edge Functions merely to close release evidence. Any backend change must follow a reproduced current-v3 defect and its own exact verification.
 
-## Current Priority 1 — finish release evidence, not feature churn
+## Current Priority 1 — finish field evidence, not feature churn
 
 Unless my latest instruction changes it, the next route is:
 
 1. preserve the current exact-green product and validation identities separately;
 2. interrupt only for a credible reproduced current-v3 P0/P1 or material release-blocking visual defect;
 3. complete Issue #68 multi-account field validation using real/test accounts, multiple sessions/devices and actual product UI/API/auth/RLS paths;
-4. complete Issue #6 physical Android Chrome/Brave at 100% zoom plus genuinely installed-PWA field acceptance;
-5. record the Cloudflare provider deployment identity/SHA for the intended exact product;
-6. independently verify both `https://mybiblequest.pages.dev/` and `https://biblequest-7th.pages.dev/` serve the expected candidate and accepted visual/functional state;
-7. if field/provider evidence exposes a real product defect, fix the true architectural owner, create a new exact product candidate and rerun the complete release cycle. Never transfer PASS.
+4. complete Issue #6 physical Android Chrome/Brave at 100% zoom plus genuinely installed-PWA **device** acceptance;
+5. do not rerun independent two-host production verification unless product/runtime bytes change;
+6. if strict release policy additionally requires the Cloudflare-internal deployment object/ID, obtain it only through an authorized provider connection that exposes it; do not infer or invent it;
+7. if field/provider evidence exposes a real product defect, fix the true architectural owner, create a new exact product candidate and rerun the complete release cycle and renewed live proof. Never transfer PASS.
 
-Do not manufacture Issue #68 PASS by direct database inserts or by weakening auth/RLS. Static CI is not multi-account field proof.
+Do not manufacture Issue #68 PASS by direct database inserts or by weakening auth/RLS. Static/headless CI is not multi-account field proof.
 
-If the current runtime cannot access a physical device, authenticated multi-account sessions, or Cloudflare provider identity, complete all safe evidence/reconciliation work available, record those gates as **unverified**, and do not pretend they passed or failed.
+If the current runtime cannot access a physical device, authenticated multi-account sessions, or provider-internal metadata, complete all safe evidence/reconciliation work available, record those gates accurately, and do not pretend they passed or failed.
 
 ## Visual/artwork rule
 
@@ -103,8 +109,8 @@ Use the smallest correct presentation owner. Do not patch around visual defects 
 - never claim unexecuted tests;
 - docs/validation-only commits are not new product candidates;
 - never weaken validators, auth or RLS merely to obtain green;
-- GitHub validation, provider deployment identity and independent live-production proof are separate evidence classes;
-- static/browser CI is not real multi-account/device field proof;
+- GitHub validation, provider-internal metadata and independent live-production proof are separate evidence classes;
+- static/headless browser CI is not real multi-account/device field proof;
 - preserve frozen refs and rollback points;
 - do not call the app bug-free.
 
@@ -131,7 +137,7 @@ Report separately:
 - tests/workflows actually executed;
 - production migration state;
 - credible unresolved P0/P1 blockers;
-- remaining field/provider release gates;
+- remaining field/provider-internal release gates;
 - whether product code, production Supabase or Cloudflare were touched;
 - anything that genuinely requires user/device/account action.
 
