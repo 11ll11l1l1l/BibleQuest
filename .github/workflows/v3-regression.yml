@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-avatar-vault-v2-functional-7ce66-20260911
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +16,12 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 7ce6685a7383102f29797869a77eabcf7ab9c0c2
+      - name: Assert exact Avatar Vault v2 functional candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "7ce6685a7383102f29797869a77eabcf7ab9c0c2" ]; then echo "SHA mismatch: expected 7ce6685a7383102f29797869a77eabcf7ab9c0c2, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
