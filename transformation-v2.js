@@ -124,7 +124,7 @@
       const f=FACTORS[key];
       const pct=Math.max(0,Math.min(100,((s.mean-1)/4)*100));
       const description=s.band==='Higher expression'?f.high:s.band==='Lower expression'?f.low:`Your responses are relatively mixed or moderate on ${f.name.toLowerCase()}, so context may matter more than a single strong tendency.`;
-      return `<article class="bq-t2-trait"><div class="bq-t2-trait-head"><span>${f.icon}</span><div><h2>${esc(f.name)}</h2><small>${esc(s.band)} · ${s.mean.toFixed(2)}/5</small></div></div><div class="bq-t2-meter"><i style="width:${pct}%"></i></div><p>${esc(description)}</p><div class="bq-t2-practice"><b>Growth experiment</b><span>${esc(s.band==='Higher expression'?f.highPractice:s.band==='Lower expression'?f.lowPractice:'Notice when this trait helps and when the situation asks for a different response.') )}</span></div></article>`
+      return `<article class="bq-t2-trait"><div class="bq-t2-trait-head"><span>${f.icon}</span><div><h2>${esc(f.name)}</h2><small>${esc(s.band)} · ${s.mean.toFixed(2)}/5</small></div></div><div class="bq-t2-meter"><i style="width:${pct}%"></i></div><p>${esc(description)}</p><div class="bq-t2-practice"><b>Growth experiment</b><span>${esc(s.band==='Higher expression'?f.highPractice:s.band==='Lower expression'?f.lowPractice:'Notice when this trait helps and when the situation asks for a different response.')}</span></div></article>`
     }).join('');
     setView(shell('Your personality snapshot',`Completed ${todayLabel()}. Scores describe this questionnaire response pattern, not population percentiles.`,`
       <section class="bq-t2-results">${rows}</section>
