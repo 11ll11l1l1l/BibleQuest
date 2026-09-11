@@ -1,6 +1,7 @@
 const STORAGE_KEY = 'progress-state';
 const VERSION = 1;
 const COUNTER_KEYS = Object.freeze(['chaptersRead', 'quizCorrect', 'reflections', 'assessments', 'situations']);
+const REWARD_KEYS = Object.freeze(['stars', 'coins']);
 
 export const PROGRESS_BADGES = Object.freeze([
   Object.freeze({ id: 'first-step', label: 'First Step', description: 'Complete one meaningful BibleQuest activity.' }),
@@ -24,6 +25,8 @@ function defaultState() {
   return {
     version: VERSION,
     xp: 0,
+    stars: 0,
+    coins: 0,
     streak: 0,
     lastActivityDate: null,
     totalActivities: 0,
@@ -44,6 +47,12 @@ function normalizeMetrics(input) {
   return metrics;
 }
 
+function normalizeRewards(input) {
+  const rewards = {};
+  for (const key of REWARD_KEYS) rewards[key] = integer(input?.[key], 0);
+  return rewards;
+}
+
 function validateEventMetrics(input) {
   if (input == null) return normalizeMetrics(null);
   if (typeof input !== 'object' || Array.isArray(input)) throw new Error('Progress metrics must be an object.');
@@ -56,6 +65,20 @@ function validateEventMetrics(input) {
     metrics[key] = value;
   }
   return metrics;
+}
+
+function validateEventRewards(input) {
+  if (input == null) return normalizeRewards(null);
+  if (typeof input !== 'object' || Array.isArray(input)) throw new Error('Progress rewards must be an object.');
+  for (const key of Object.keys(input)) if (!REWARD_KEYS.includes(key)) throw new Error(`Unknown progress reward: ${key}`);
+  const rewards = {};
+  for (const key of REWARD_KEYS) {
+    if (!(key in input)) { rewards[key] = 0; continue; }
+    const value = input[key];
+    if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0 || value > 1000000) throw new Error(`Progress reward ${key} must be an integer from 0 to 1000000.`);
+    rewards[key] = value;
+  }
+  return rewards;
 }
 
 function validDateKey(value) {
@@ -85,13 +108,15 @@ function normalize(input) {
     for (const [id, row] of Object.entries(input.events)) {
       const date = validDateKey(row?.date);
       if (!validToken(id) || !row || typeof row !== 'object' || !validToken(row.type, 100) || !date) continue;
-      events[id] = { type: row.type, date, at: typeof row.at === 'string' ? row.at : '', xp: integer(row.xp, 0), meaningful: row.meaningful !== false, metrics: normalizeMetrics(row.metrics) };
+      events[id] = { type: row.type, date, at: typeof row.at === 'string' ? row.at : '', xp: integer(row.xp, 0), meaningful: row.meaningful !== false, metrics: normalizeMetrics(row.metrics), rewards: normalizeRewards(row.rewards) };
     }
   }
   const badges = Array.isArray(input.badges) ? input.badges.filter(id => PROGRESS_BADGES.some(item => item.id === id)) : [];
   return applyBadgeRules({
     version: VERSION,
     xp: integer(input.xp, 0),
+    stars: integer(input.stars, 0),
+    coins: integer(input.coins, 0),
     streak: integer(input.streak, 0),
     lastActivityDate: validDateKey(input.lastActivityDate),
     totalActivities: integer(input.totalActivities, 0),
@@ -103,7 +128,7 @@ function normalize(input) {
 
 function freezeState(state) {
   const events = {};
-  for (const [id, row] of Object.entries(state.events)) events[id] = Object.freeze({ ...row, metrics: Object.freeze({ ...row.metrics }) });
+  for (const [id, row] of Object.entries(state.events)) events[id] = Object.freeze({ ...row, metrics: Object.freeze({ ...row.metrics }), rewards: Object.freeze({ ...row.rewards }) });
   return Object.freeze({ ...state, counters: Object.freeze({ ...state.counters }), badges: Object.freeze([...state.badges]), events: Object.freeze(events) });
 }
 
@@ -132,6 +157,10 @@ function sameMetrics(a, b) {
   return COUNTER_KEYS.every(key => integer(a?.[key], 0) === integer(b?.[key], 0));
 }
 
+function sameRewards(a, b) {
+  return REWARD_KEYS.every(key => integer(a?.[key], 0) === integer(b?.[key], 0));
+}
+
 function addSafe(left, right, label) {
   const value = left + right;
   if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${label} exceeded the supported progress range.`);
@@ -157,10 +186,11 @@ export function createProgressService({ storage, store, clock = () => new Date()
     const meaningful = input?.meaningful ?? true;
     if (typeof meaningful !== 'boolean') throw new Error('Progress meaningful flag must be boolean.');
     const metrics = validateEventMetrics(input?.metrics);
+    const rewards = validateEventRewards(input?.rewards);
     const existing = state.events[id];
     if (existing) {
-      if (existing.type !== type || existing.xp !== xp || existing.meaningful !== meaningful || !sameMetrics(existing.metrics, metrics)) throw new Error(`Progress event identity conflict: ${id}`);
-      return Object.freeze({ applied: false, duplicate: true, date: existing.date, awardedXp: 0, newlyUnlocked: Object.freeze([]), state: getState() });
+      if (existing.type !== type || existing.xp !== xp || existing.meaningful !== meaningful || !sameMetrics(existing.metrics, metrics) || !sameRewards(existing.rewards, rewards)) throw new Error(`Progress event identity conflict: ${id}`);
+      return Object.freeze({ applied: false, duplicate: true, date: existing.date, awardedXp: 0, awardedRewards: Object.freeze({ stars: 0, coins: 0 }), newlyUnlocked: Object.freeze([]), state: getState() });
     }
 
     const rawTime = clock();
@@ -185,18 +215,20 @@ export function createProgressService({ storage, store, clock = () => new Date()
     const next = applyBadgeRules({
       ...state,
       xp: addSafe(state.xp, xp, 'XP'),
+      stars: addSafe(state.stars, rewards.stars, 'Stars'),
+      coins: addSafe(state.coins, rewards.coins, 'Coins'),
       streak,
       lastActivityDate,
       totalActivities: meaningful ? addSafe(state.totalActivities, 1, 'Activity count') : state.totalActivities,
       counters,
-      events: { ...state.events, [id]: { type, date, at: occurredAt.toISOString(), xp, meaningful, metrics } }
+      events: { ...state.events, [id]: { type, date, at: occurredAt.toISOString(), xp, meaningful, metrics, rewards } }
     });
     const newlyUnlocked = next.badges.filter(idValue => !beforeBadges.has(idValue));
 
     storage.write(STORAGE_KEY, next);
     state = next;
     publish();
-    return Object.freeze({ applied: true, duplicate: false, date, awardedXp: xp, newlyUnlocked: Object.freeze(newlyUnlocked), state: getState() });
+    return Object.freeze({ applied: true, duplicate: false, date, awardedXp: xp, awardedRewards: Object.freeze({ ...rewards }), newlyUnlocked: Object.freeze(newlyUnlocked), state: getState() });
   }
 
   return Object.freeze({ getState, record, hasEvent(id) { return Boolean(state.events[String(id || '')]); }, getDateKey(value = clock()) { return civilDateKey(value, timeZone); }, badges: PROGRESS_BADGES, timeZone });
