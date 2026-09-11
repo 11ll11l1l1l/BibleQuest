@@ -1,0 +1,60 @@
+name: BibleQuest v3 Community overflow diagnostic db2881d
+on:
+  push:
+    branches: [verify/v3-visual-community-overflow-diag-db2881d]
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: db2881deba6500f20c2a3b205e8bda74f8a81d38
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Diagnose Community ready-view overflow
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const scenario of [
+              {name:'desktop-narrow',options:{viewport:{width:390,height:844}}},
+              {name:'mobile',options:{viewport:{width:390,height:844},isMobile:true,hasTouch:true}}
+            ]){
+              const page=await browser.newPage(scenario.options);
+              await page.goto('http://127.0.0.1:4173/#/community',{waitUntil:'networkidle'});
+              await page.locator('[data-community-view]').waitFor();
+              await page.evaluate(async()=>{
+                const {communityPage}=await import('/src/features/community/index.js');
+                const host=document.querySelector('#bq-view');
+                const state={status:'ready',authenticated:true,remoteAvailable:true,congregations:[{id:'c1',name:'Grace Church',role:'leader',roleLabel:'Leader',canMinistry:true}],groups:[{id:'g1',congregationId:'c1',name:'Faith Group',role:'leader',memberCount:2,maxMembers:6}],encouragementCount:3};
+                const bridge={async load(){return state}};
+                const view=communityPage({bridge,onNavigate:()=>{},onBack:()=>{},onAccount:()=>{}});
+                host.innerHTML=view.html;
+                window.__bqCommunityCleanup=view.mount(host);
+              });
+              await page.locator('[aria-label="Community connection summary"]').waitFor();
+              const result=await page.evaluate(()=>{
+                const viewport=document.documentElement.clientWidth;
+                const offenders=[...document.querySelectorAll('body *')].map(node=>{
+                  const rect=node.getBoundingClientRect();
+                  const style=getComputedStyle(node);
+                  return {tag:node.tagName.toLowerCase(),id:node.id||'',className:typeof node.className==='string'?node.className:'',text:(node.textContent||'').trim().replace(/\s+/g,' ').slice(0,120),left:Math.round(rect.left*10)/10,right:Math.round(rect.right*10)/10,width:Math.round(rect.width*10)/10,scrollWidth:node.scrollWidth,clientWidth:node.clientWidth,whiteSpace:style.whiteSpace,overflowWrap:style.overflowWrap,minWidth:style.minWidth,paddingLeft:style.paddingLeft,paddingRight:style.paddingRight,boxSizing:style.boxSizing};
+                }).filter(item=>item.right>viewport+1||item.left<-1).sort((a,b)=>b.right-a.right).slice(0,20);
+                return {viewport,documentScrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,offenders};
+              });
+              console.log(`SCENARIO ${scenario.name}: ${JSON.stringify(result,null,2)}`);
+              await page.evaluate(()=>window.__bqCommunityCleanup?.());
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          EOF
