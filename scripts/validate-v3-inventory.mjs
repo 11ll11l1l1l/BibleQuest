@@ -11,12 +11,13 @@ if(!fs.existsSync(inventoryPath))fail('Missing FEATURE_INVENTORY_V3.md.');
 if(!failures.length){
   const inventory=fs.readFileSync(inventoryPath,'utf8');
   const rows=inventory.split('\n').filter(line=>/^\|\s*\d+\s*\|/.test(line));
-  const allowed=new Set(['Not started','Implemented','Verified','Regression-tested']);
+  const allowed=new Set(['Not started','Implemented','Verified','Regression-tested','Retired from v3 release scope']);
   const counts={
     'Regression-tested':0,
     'Verified':0,
     'Implemented':0,
-    'Not started':0
+    'Not started':0,
+    'Retired from v3 release scope':0
   };
 
   if(rows.length!==100)fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${rows.length}.`);
@@ -34,7 +35,8 @@ if(!failures.length){
     'Regression-tested':counts['Regression-tested'],
     'Verified':counts.Verified,
     'Implemented':counts.Implemented,
-    'Not started':counts['Not started']
+    'Not started in active release scope':counts['Not started'],
+    'Retired from v3 release scope':counts['Retired from v3 release scope']
   };
 
   for(const [label,count] of Object.entries(expectedHeaders)){
@@ -42,6 +44,11 @@ if(!failures.length){
     if(!match)fail(`Inventory summary is missing ${label}.`);
     else if(Number(match[1])!==count)fail(`Inventory summary ${label}=${match[1]} but numbered rows compute ${count}.`);
   }
+
+  const applicable=rows.length-counts['Retired from v3 release scope'];
+  const applicableMatch=inventory.match(/- \*\*Applicable v3 release capabilities:\*\* (\d+)/);
+  if(!applicableMatch)fail('Inventory summary is missing Applicable v3 release capabilities.');
+  else if(Number(applicableMatch[1])!==applicable)fail(`Inventory summary applicable=${applicableMatch[1]} but numbered rows compute ${applicable}.`);
 
   const totalMatch=inventory.match(/- \*\*Total old-version capabilities:\*\* (\d+)/);
   if(!totalMatch)fail('Inventory summary is missing Total old-version capabilities.');
@@ -54,7 +61,7 @@ if(!failures.length){
   for(const entry of fs.readdirSync(scriptsDir,{withFileTypes:true})){
     if(!entry.isFile()||!/^validate-v3-.*\.mjs$/.test(entry.name)||entry.name==='validate-v3-inventory.mjs')continue;
     const text=fs.readFileSync(path.join(scriptsDir,entry.name),'utf8');
-    if(/\*\*Regression-tested:\*\*|\*\*Verified:\*\*|\*\*Not started:\*\*/.test(text))fail(`Global inventory totals must be owned only by validate-v3-inventory.mjs; duplicate guard found in ${entry.name}.`);
+    if(/\*\*Regression-tested:\*\*|\*\*Verified:\*\*|\*\*Not started in active release scope:\*\*|\*\*Retired from v3 release scope:\*\*|\*\*Applicable v3 release capabilities:\*\*/.test(text))fail(`Global inventory totals must be owned only by validate-v3-inventory.mjs; duplicate guard found in ${entry.name}.`);
   }
 }
 
