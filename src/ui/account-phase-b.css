@@ -1,0 +1,129 @@
+/* BibleQuest v3 Visual Phase B — Account artwork layer.
+   Presentation only: authentication, recovery, device state, storage, API ownership and navigation remain unchanged. */
+
+.bq-account-intro,
+.bq-account-signed-hero,
+.bq-account-section-heading{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.bq-account-intro,
+.bq-account-signed-hero{
+  margin:2px 0 16px;
+  padding:14px;
+  border:1px solid rgba(52,79,60,.12);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(246,250,244,.94),rgba(255,255,255,.98));
+}
+
+.bq-account-intro>div,
+.bq-account-signed-hero>div{
+  min-width:0;
+  flex:1;
+}
+
+.bq-account-intro h1,
+.bq-account-signed-hero h1{
+  margin:0 0 5px;
+}
+
+.bq-account-intro p,
+.bq-account-signed-hero p{
+  margin:0;
+}
+
+.bq-account-art-wrap{
+  width:64px;
+  height:64px;
+  flex:0 0 64px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  color:#2f704d;
+  background:linear-gradient(145deg,#edf6ed,#fff7dd);
+  border:1px solid rgba(47,112,77,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 7px 18px rgba(39,60,45,.06);
+}
+
+.bq-account-art-wrap.is-small{
+  width:42px;
+  height:42px;
+  flex-basis:42px;
+  border-radius:13px;
+}
+
+.bq-account-art{
+  width:38px;
+  height:38px;
+  display:block;
+}
+
+.bq-account-art-wrap.is-small .bq-account-art{
+  width:25px;
+  height:25px;
+}
+
+.bq-account-tabs button{
+  min-height:44px;
+}
+
+.bq-account-section-heading{
+  margin-bottom:7px;
+}
+
+.bq-account-section-heading h2{
+  margin:0;
+}
+
+.bq-account-section-heading+.bq-section-copy{
+  margin-top:0;
+}
+
+.bq-recovery-result>.bq-account-intro{
+  margin-top:0;
+}
+
+@media(max-width:430px){
+  .bq-account-intro,
+  .bq-account-signed-hero{
+    align-items:flex-start;
+    padding:12px;
+  }
+  .bq-account-art-wrap{
+    width:56px;
+    height:56px;
+    flex-basis:56px;
+    border-radius:16px;
+  }
+  .bq-account-art{
+    width:33px;
+    height:33px;
+  }
+}
+
+@media(max-width:340px){
+  .bq-account-intro,
+  .bq-account-signed-hero{
+    gap:10px;
+  }
+  .bq-account-art-wrap{
+    width:48px;
+    height:48px;
+    flex-basis:48px;
+  }
+  .bq-account-art{
+    width:29px;
+    height:29px;
+  }
+}
+
+@media(prefers-contrast:more){
+  .bq-account-intro,
+  .bq-account-signed-hero,
+  .bq-account-art-wrap{
+    box-shadow:none;
+    border-color:#31583d;
+  }
+}
