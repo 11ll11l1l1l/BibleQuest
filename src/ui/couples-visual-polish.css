@@ -1,0 +1,111 @@
+/* BibleQuest v3 visual replacement tranche 11.
+   Presentation only: no couples content, scoring/framing, safety, privacy, persistence, cloud sync, route, layout, responsive or accessibility ownership. */
+
+.bq-couples-hero{
+  border-color:rgba(126,71,91,.14);
+  background:radial-gradient(circle at 92% 8%,rgba(237,219,225,.58) 0%,rgba(237,219,225,0) 38%),linear-gradient(150deg,#fcf7f9 0%,#f7f1f4 100%);
+  box-shadow:0 8px 24px rgba(89,53,66,.04),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-couples-active,
+.bq-couples-mode-grid button,
+.bq-couples-categories button,
+.bq-couples-question,
+.bq-couples-practice,
+.bq-couples-stats div,
+.bq-couples-highlight{
+  border-color:rgba(75,83,73,.13);
+  background:linear-gradient(180deg,#fff 0%,#fafbf8 100%);
+  box-shadow:0 5px 16px rgba(54,63,56,.032),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-couples-active{
+  border-color:rgba(126,71,91,.18);
+  background:linear-gradient(180deg,#fffafb 0%,#fbf4f7 100%);
+  color:#51313d;
+}
+
+.bq-couples-mode-grid button:hover,
+.bq-couples-mode-grid button:focus-visible,
+.bq-couples-categories button:hover,
+.bq-couples-categories button:focus-visible,
+.bq-couples-active:hover,
+.bq-couples-active:focus-visible{
+  border-color:rgba(126,71,91,.28);
+  background:linear-gradient(180deg,#fffdfd 0%,#f8f1f4 100%);
+}
+
+.bq-couples-principles{
+  border-color:rgba(54,82,62,.12);
+  background:linear-gradient(180deg,#fafcf8 0%,#f4f8f2 100%);
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.02);
+}
+
+.bq-couples-safety{
+  border-color:rgba(139,62,54,.2);
+  background:linear-gradient(180deg,#fff9f7 0%,#fff3ef 100%);
+  color:#5b3631;
+  box-shadow:inset 0 0 0 1px rgba(139,62,54,.025);
+}
+
+.bq-couples-listen-note{
+  border-left-color:#8c6a77;
+  background:linear-gradient(90deg,#fbf5f7 0%,#fdf9fa 100%);
+}
+
+.bq-couples-scripture{
+  border-color:rgba(47,112,77,.13);
+  background:linear-gradient(180deg,#f7faf5 0%,#f0f6ef 100%);
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.02);
+}
+
+.bq-couples-highlight.good{
+  background:linear-gradient(180deg,#f5faf3 0%,#edf6eb 100%);
+}
+
+.bq-couples-cloud-count{
+  background:radial-gradient(circle at 36% 28%,#fff 0%,#f6efe8 42%,#eee4da 100%);
+  color:#644b3b;
+  box-shadow:inset 0 0 0 1px rgba(104,77,58,.08),0 5px 14px rgba(72,53,41,.04);
+}
+
+.bq-couples-cloud-message,
+.bq-couples-cloud-privacy,
+.bq-couples-cloud-rule,
+.bq-couples-cloud-note,
+.bq-couples-cloud-empty{
+  background:linear-gradient(180deg,#f8f4ed 0%,#f2ece3 100%);
+  color:#55483d;
+  box-shadow:inset 0 0 0 1px rgba(93,75,57,.045);
+}
+
+.bq-couples-cloud-pair-grid>button,
+.bq-couples-cloud-pair-grid>form,
+.bq-couples-cloud-journey>button,
+.bq-couples-cloud-history article{
+  border-color:rgba(93,75,57,.14);
+  background:linear-gradient(180deg,#fff 0%,#fcfaf7 100%);
+  box-shadow:0 5px 16px rgba(72,57,43,.03),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-couples-cloud-pair-grid>button:hover,
+.bq-couples-cloud-pair-grid>button:focus-visible,
+.bq-couples-cloud-journey>button:hover,
+.bq-couples-cloud-journey>button:focus-visible{
+  border-color:rgba(126,91,67,.27);
+  background:linear-gradient(180deg,#fffdfa 0%,#f7f1e9 100%);
+}
+
+.bq-couple-code,
+.bq-couples-cloud-journey>button>span{
+  background:linear-gradient(180deg,#f5efe7 0%,#ece2d8 100%);
+  color:#624c3c;
+  box-shadow:inset 0 0 0 1px rgba(95,72,54,.05);
+}
+
+@media(prefers-contrast:more){
+  .bq-couples-hero,.bq-couples-active,.bq-couples-mode-grid button,.bq-couples-categories button,.bq-couples-question,.bq-couples-practice,.bq-couples-stats div,.bq-couples-highlight,.bq-couples-cloud-count,.bq-couples-cloud-pair-grid>button,.bq-couples-cloud-pair-grid>form,.bq-couples-cloud-journey>button,.bq-couples-cloud-history article{box-shadow:none}
+  .bq-couples-active,.bq-couples-mode-grid button,.bq-couples-categories button,.bq-couples-question,.bq-couples-practice,.bq-couples-stats div,.bq-couples-highlight{border-color:rgba(55,49,53,.34)}
+  .bq-couples-cloud-pair-grid>button,.bq-couples-cloud-pair-grid>form,.bq-couples-cloud-journey>button,.bq-couples-cloud-history article{border-color:rgba(70,55,43,.36)}
+  .bq-couples-safety{border-color:rgba(126,42,36,.44);color:#4e2925}
+}
