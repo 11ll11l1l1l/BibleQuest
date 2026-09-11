@@ -58,7 +58,7 @@ The permanent final mobile/build release gate has passed, including 320/360/390/
 
 Independent current-production proof is also complete: run `34637203062` byte-matched selected current release files on both Cloudflare Pages hosts and ran the current hosted browser/mobile suite successfully on both. Do not repeat this gate merely because an older document says production verification is pending; rerun it only if product/runtime bytes change or new evidence invalidates it.
 
-Issue #94 remains the visual integration tracker, but it does **not** authorize endless cosmetic tranches. Select another visual product change only if current evidence demonstrates a material placeholder, broken/generic asset, or inconsistent surface that still fails the approved BibleQuest visual direction.
+Issue #94 visual integration/polish milestone is **complete and closed**. Do not reopen it or create another cosmetic tranche unless new current field/production evidence demonstrates a material placeholder, broken/generic asset, or inconsistent surface that fails the approved BibleQuest visual direction.
 
 ## Production Supabase state — re-check before any schema work
 
@@ -77,7 +77,7 @@ Do not mutate production schema/data/RLS/Edge Functions merely to close release 
 Unless my latest instruction changes it, the next route is:
 
 1. preserve the current exact-green product and validation identities separately;
-2. interrupt only for a credible reproduced current-v3 P0/P1 or material release-blocking visual defect;
+2. interrupt only for a credible reproduced current-v3 P0/P1 or material release-blocking defect demonstrated by field/production evidence;
 3. complete Issue #68 multi-account field validation using real/test accounts, multiple sessions/devices and actual product UI/API/auth/RLS paths;
 4. complete Issue #6 physical Android Chrome/Brave at 100% zoom plus genuinely installed-PWA **device** acceptance;
 5. do not rerun independent two-host production verification unless product/runtime bytes change;
@@ -90,7 +90,7 @@ If the current runtime cannot access a physical device, authenticated multi-acco
 
 ## Visual/artwork rule
 
-For any genuinely selected visual correction, preserve the existing interface, navigation, feature ownership and behavior. Presentation-level artwork/icons/backgrounds/theme assets may be replaced or improved without asking me for routine image approval.
+Issue #94 is closed, so visual work is no longer an automatic release tranche. For any genuinely selected visual correction triggered by new current evidence, preserve the existing interface, navigation, feature ownership and behavior. Presentation-level artwork/icons/backgrounds/theme assets may be replaced or improved without asking me for routine image approval.
 
 If artwork is generated as part of an approved visual correction, use the selected asset directly when it meets the requirement; do not stop merely to ask me to approve the image. Ask only when the decision materially changes scope, information architecture, fundamental interaction behavior, privacy/security policy, ownership or another major unresolved product decision.
 

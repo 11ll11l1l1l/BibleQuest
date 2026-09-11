@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-12 JST after independent current-production two-host verification and fresh field-readiness inspection.
+Updated: 2026-09-12 JST after independent current-production two-host verification, fresh field-readiness inspection, and visual-milestone closeout.
 
 ## Read first
 
@@ -8,7 +8,7 @@ Updated: 2026-09-12 JST after independent current-production two-host verificati
 2. `RECONCILIATION_V3.md`
 3. `DEVELOPMENT_STATUS_V3.md`
 4. `RELEASE_ACCEPTANCE_MATRIX_V3.md`
-5. `VISUAL_PHASE_B_V3.md` only if current evidence selects another visual correction
+5. `VISUAL_PHASE_B_V3.md` only if current field/production evidence selects another visual correction
 6. the selected feature/release-gate contract
 7. `CONTINUE_PROMPT_V3.md`
 
@@ -51,7 +51,7 @@ This closes the previously missing independent two-host production-content/brows
 
 Do not repeat: More, Calendar, Personal Mission, Avatar Vault, Account, Progress/Grow, Calendar creator edit/delete, Ministry Hub Calendar.
 
-Current Phase B product checkpoint `2c601b3...` already contains the accepted artwork state through Progress/Grow, and run `34637203062` proves the checked current assets/styles are live on both production hosts. Additional visual work is allowed only when current source/investigator evidence demonstrates a material remaining gap; Issue #94 does not authorize endless tranche creation.
+Current Phase B product checkpoint `2c601b3...` already contains the accepted artwork state through Progress/Grow, and run `34637203062` proves the checked current assets/styles are live on both production hosts. Issue #94 is closed as completed. Additional visual work is allowed only when current field/production evidence demonstrates a material remaining gap.
 
 ## Issue #6 mobile/PWA state
 
@@ -97,13 +97,14 @@ No production database mutation was made by PR #110, PR #111, PR #112, the curre
 ## Immediate next route
 
 1. preserve product `2c601b3...` and validation SHA `d0eab188...` separately;
-2. do not add product code unless a current-v3 P0/P1, material visual gap, or required field validation exposes a real defect;
-3. complete Issue #68 multi-account field validation using real/test accounts and multiple sessions/devices without bypassing auth/RLS;
-4. use the existing congregation admin/member topology plus an unrelated account for A/B/C isolation checks, and complete a legitimate linked test couple through the product UI before couples-field scenarios;
-5. execute physical Android Chrome/Brave + installed-PWA acceptance for Issue #6 when a real device/session is available;
-6. do not rerun the independent two-host hosted verification unless product/runtime bytes change;
-7. if strict Cloudflare-internal deployment metadata is required, obtain it only through an authorized provider connection; do not infer or invent it;
-8. if any product correction is required by field/production evidence, create a new exact candidate and rerun the complete release cycle. Never transfer PASS.
+2. treat Issue #94 visual polish as complete/closed; do not resume visual product work unless field/production evidence demonstrates a material release gap;
+3. do not add product code unless a current-v3 P0/P1 or required field validation exposes a real defect;
+4. complete Issue #68 multi-account field validation using real/test accounts and multiple sessions/devices without bypassing auth/RLS;
+5. use the existing congregation admin/member topology plus an unrelated account for A/B/C isolation checks, and complete a legitimate linked test couple through the product UI before couples-field scenarios;
+6. execute physical Android Chrome/Brave + installed-PWA acceptance for Issue #6 when a real device/session is available;
+7. do not rerun the independent two-host hosted verification unless product/runtime bytes change;
+8. if strict Cloudflare-internal deployment metadata is required, obtain it only through an authorized provider connection; do not infer or invent it;
+9. if any product correction is required by field/production evidence, create a new exact candidate and rerun the complete release cycle. Never transfer PASS.
 
 ## Non-negotiable rules
 
