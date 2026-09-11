@@ -5,19 +5,58 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           ref: 952271aaf00e1a6f11280d8926b28399eebe8e4e
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Confirm verifier-only delta from frozen release
+        run: |
+          test "$(git rev-parse HEAD)" = "952271aaf00e1a6f11280d8926b28399eebe8e4e"
+          test "$(git diff --name-only 77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac...952271aaf00e1a6f11280d8926b28399eebe8e4e)" = "tests/v3-offline-shell-smoke.mjs"
+      - name: Confirm both Cloudflare hosts still match frozen release product files
+        run: |
+          set -euo pipefail
+          files=(index.html offline-shell-sw.js src/app/offline-shell.js src/app/bootstrap.js transformation-v2.js)
+          bases=(https://mybiblequest.pages.dev/ https://biblequest-7th.pages.dev/)
+          for base in "${bases[@]}"; do
+            for file in "${files[@]}"; do
+              tmp="$(mktemp)"
+              curl -fsSL --retry 3 --connect-timeout 10 -H 'Cache-Control: no-cache' "${base}${file}?release=77bd077&verify=corrected-offline" -o "$tmp"
+              cmp -s "$file" "$tmp"
+              rm -f "$tmp"
+            done
+            echo "${base} matches frozen release product files."
+          done
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
-      - name: Canonical offline regression
+      - name: Canonical offline regression with corrected readiness polling
         env: {BQ_BASE_URL: https://mybiblequest.pages.dev/}
         run: timeout 240s node tests/v3-offline-shell-smoke.mjs
-      - name: Compatibility offline regression
+      - name: Canonical offline Bible packs
+        env: {BQ_BASE_URL: https://mybiblequest.pages.dev/}
+        run: timeout 240s node tests/v3-offline-bible-packs-smoke.mjs
+      - name: Compatibility offline regression with corrected readiness polling
         env: {BQ_BASE_URL: https://biblequest-7th.pages.dev/}
         run: timeout 240s node tests/v3-offline-shell-smoke.mjs
+      - name: Compatibility basic browser
+        run: |
+          node --input-type=module <<'NODE'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
+            const page=await context.newPage();
+            await page.goto('https://biblequest-7th.pages.dev/',{waitUntil:'networkidle',timeout:30000});
+            await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+            if((await page.locator('h1').first().textContent())?.trim()!=='BibleQuest')throw new Error('Compatibility host heading mismatch.');
+            await page.locator('[data-route-link="learn"]').click();
+            await page.waitForURL(/#\/learn$/,{timeout:10000});
+            console.log('Compatibility browser smoke passed.');
+            await context.close();
+          }finally{await browser.close()}
+          NODE
