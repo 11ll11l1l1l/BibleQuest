@@ -1,0 +1,23 @@
+name: BibleQuest v3 offline test readiness verifier 952271a
+on:
+  push:
+    branches: [verify/v3-offline-test-race-952271a]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 952271aaf00e1a6f11280d8926b28399eebe8e4e
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Canonical offline regression
+        env: {BQ_BASE_URL: https://mybiblequest.pages.dev/}
+        run: timeout 240s node tests/v3-offline-shell-smoke.mjs
+      - name: Compatibility offline regression
+        env: {BQ_BASE_URL: https://biblequest-7th.pages.dev/}
+        run: timeout 240s node tests/v3-offline-shell-smoke.mjs
