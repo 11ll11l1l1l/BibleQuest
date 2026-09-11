@@ -1,0 +1,83 @@
+/* BibleQuest v3 visual replacement tranche 10.
+   Presentation only: no note privacy, persistence, sync, account, form behavior, layout, responsive or accessibility ownership. */
+
+.bq-private-notes-count{
+  background:linear-gradient(180deg,#f1f7f1 0%,#e9f2ea 100%);
+  color:#2f6848;
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.06);
+}
+
+.bq-private-note-card{
+  border-color:rgba(51,80,59,.13);
+  background:linear-gradient(180deg,#fff 0%,#f8faf6 100%);
+  box-shadow:0 5px 16px rgba(40,61,46,.035),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-private-note-card:hover,
+.bq-private-note-card:focus-visible{
+  border-color:rgba(47,112,77,.3);
+  background:linear-gradient(180deg,#fbfefb 0%,#f0f6ef 100%);
+}
+
+.bq-private-notes-empty{
+  border-color:rgba(47,112,77,.2);
+  background:radial-gradient(circle at 92% 8%,rgba(224,238,220,.56) 0%,rgba(224,238,220,0) 37%),linear-gradient(155deg,#fbfdfa 0%,#f4f8f2 100%);
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.025);
+}
+
+.bq-private-note-form input,
+.bq-private-note-form textarea{
+  border-color:rgba(49,78,58,.16);
+  background:linear-gradient(180deg,#fff 0%,#fbfcf9 100%);
+  box-shadow:inset 0 1px 2px rgba(34,52,40,.035);
+}
+
+.bq-private-notes-message{
+  background:linear-gradient(180deg,#f4f8f2 0%,#edf4ed 100%);
+  color:#3f5e49!important;
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.04);
+}
+
+.bq-cloud-notes-count{
+  background:linear-gradient(180deg,#f1f5fa 0%,#e8eff6 100%);
+  color:#315b7d;
+  box-shadow:inset 0 0 0 1px rgba(53,93,130,.06);
+}
+
+.bq-cloud-notes-boundary,
+.bq-cloud-notes-message{
+  background:linear-gradient(180deg,#f4f7fa 0%,#edf3f7 100%);
+  color:#405f74!important;
+  box-shadow:inset 0 0 0 1px rgba(53,93,130,.045);
+}
+
+.bq-cloud-note-card{
+  border-color:rgba(52,78,101,.14);
+  background:linear-gradient(180deg,#fff 0%,#f7f9fb 100%);
+  box-shadow:0 5px 16px rgba(42,61,78,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-cloud-note-card:hover,
+.bq-cloud-note-card:focus-visible{
+  border-color:rgba(53,93,130,.3);
+  background:linear-gradient(180deg,#fbfdff 0%,#eef4f8 100%);
+}
+
+.bq-cloud-notes-empty{
+  border-color:rgba(53,93,130,.22);
+  background:radial-gradient(circle at 92% 8%,rgba(218,230,241,.62) 0%,rgba(218,230,241,0) 38%),linear-gradient(155deg,#fbfdff 0%,#f3f7fa 100%);
+  box-shadow:inset 0 0 0 1px rgba(53,93,130,.025);
+}
+
+.bq-cloud-note-form input,
+.bq-cloud-note-form textarea{
+  border-color:rgba(51,74,94,.17);
+  background:linear-gradient(180deg,#fff 0%,#fafcfd 100%);
+  box-shadow:inset 0 1px 2px rgba(34,48,61,.035);
+}
+
+@media(prefers-contrast:more){
+  .bq-private-note-card,.bq-private-notes-empty,.bq-private-note-form input,.bq-private-note-form textarea,.bq-cloud-note-card,.bq-cloud-notes-empty,.bq-cloud-note-form input,.bq-cloud-note-form textarea{box-shadow:none}
+  .bq-private-note-card,.bq-private-notes-empty,.bq-private-note-form input,.bq-private-note-form textarea{border-color:rgba(31,54,39,.34)}
+  .bq-cloud-note-card,.bq-cloud-notes-empty,.bq-cloud-note-form input,.bq-cloud-note-form textarea{border-color:rgba(35,57,76,.36)}
+}
