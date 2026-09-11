@@ -1,0 +1,35 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {workflowInvokesNode} from '../scripts/v3-workflow-contract.mjs';
+
+const root=path.resolve(import.meta.dirname,'..');
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const asset='assets/calendar-feature-icons.svg';
+const css='src/ui/calendar-phase-b.css';
+const ui='src/features/calendar/index.js';
+const contract='VISUAL_PHASE_B_CALENDAR_V3.md';
+const workflowPath='.github/workflows/v3-regression.yml';
+for(const file of[asset,css,ui,contract,'index.html',workflowPath])assert(fs.existsSync(path.join(root,file)),`Missing Calendar Phase B file: ${file}`);
+
+const symbols=['planner','personal','assignment','congregation','empty'];
+const sprite=read(asset),calendar=read(ui),phase=read(css),index=read('index.html'),scope=read(contract),workflow=read(workflowPath);
+for(const id of symbols)assert(sprite.includes(`id="${id}"`),`Calendar icon sprite missing symbol: ${id}`);
+assert(sprite.startsWith('<svg'),'Calendar icon asset must be SVG.');
+assert(!/<script\b|onload=|javascript:/i.test(sprite),'Calendar icon asset must remain passive SVG artwork.');
+assert(!/https?:\/\//i.test(sprite.replace('http://www.w3.org/2000/svg','')),'Calendar icon asset must not load remote resources.');
+assert(calendar.includes('assets/calendar-feature-icons.svg#'),'Calendar UI must use the committed same-origin sprite.');
+assert(calendar.includes('aria-hidden="true"'),'Calendar decorative artwork must stay hidden from assistive technology.');
+for(const glyph of['📌','⛪','🗓️'])assert(!calendar.includes(glyph),`Calendar UI must not retain emoji event artwork: ${glyph}`);
+assert(calendar.includes('data-calendar-event-source="${esc(event.source)}"'),'Calendar UI must retain the event-source styling hook.');
+assert(index.includes('href="src/ui/calendar.css"'),'Calendar base stylesheet must remain loaded.');
+assert(index.includes('href="src/ui/calendar-phase-b.css"'),'Calendar Phase B stylesheet must be loaded.');
+assert(index.indexOf('src/ui/calendar-phase-b.css')>index.indexOf('src/ui/calendar.css'),'Calendar Phase B layer must load after the base Calendar stylesheet.');
+for(const marker of['.bq-calendar-intro','.bq-calendar-event','.bq-calendar-icon-wrap','@media(prefers-contrast:more)'])assert(phase.includes(marker),`Calendar Phase B CSS missing contract marker: ${marker}`);
+assert(!/animation\s*:|@keyframes/i.test(phase),'Calendar Phase B must not add animation behavior.');
+assert(!/url\s*\(/i.test(phase),'Calendar Phase B CSS must not add a second asset loading path.');
+assert(scope.includes('Every existing button, route callback'),'Calendar Phase B contract must retain interaction ownership.');
+assert(scope.includes('No PASS transfers'),'Calendar Phase B contract must preserve exact-candidate evidence rules.');
+for(const test of['tests/v3-calendar-phase-b-static.mjs','tests/v3-calendar-phase-b-smoke.mjs'])assert(workflowInvokesNode(workflow,test),`Accumulated v3 regression must retain ${test}.`);
+assert(workflowInvokesNode(workflow,'tests/v3-calendar-smoke.mjs'),'Accumulated v3 regression must retain existing Calendar functional browser coverage.');
+console.log('BibleQuest v3 Calendar Phase B static asset contract passed.');

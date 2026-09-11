@@ -1,0 +1,48 @@
+/* BibleQuest v3 Visual Phase B — Calendar artwork and presentation layer.
+   Presentation only: Calendar routes, state, persistence, API ownership, recurrence and mutation behavior stay unchanged. */
+
+[data-calendar-page]{--bq-calendar-accent:#6d28d9;position:relative;overflow:hidden}
+[data-calendar-page]::before{content:"";position:absolute;right:-90px;top:-95px;width:220px;height:220px;border-radius:50%;background:color-mix(in srgb,var(--bq-calendar-accent) 8%,transparent);pointer-events:none}
+[data-calendar-page]>*{position:relative;z-index:1}
+
+.bq-calendar-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin-bottom:14px}
+.bq-calendar-intro h1{margin-bottom:6px}
+.bq-calendar-icon-wrap{display:grid;place-items:center;flex:0 0 auto;border:1px solid color-mix(in srgb,var(--bq-calendar-source,#6d28d9) 24%,transparent);background:color-mix(in srgb,var(--bq-calendar-source,#6d28d9) 10%,#fff);color:var(--bq-calendar-source,#6d28d9);box-shadow:0 8px 18px color-mix(in srgb,var(--bq-calendar-source,#6d28d9) 12%,transparent)}
+.bq-calendar-icon{display:block;fill:none}
+.bq-calendar-icon-wrap--hero{width:72px;height:72px;border-radius:22px;--bq-calendar-source:var(--bq-calendar-accent)}
+.bq-calendar-icon--hero{width:40px;height:40px}
+.bq-calendar-icon-wrap--event{width:42px;height:42px;border-radius:14px}
+.bq-calendar-icon--event{width:24px;height:24px}
+.bq-calendar-icon-wrap--empty{width:58px;height:58px;border-radius:18px;--bq-calendar-source:#64748b}
+.bq-calendar-icon--empty{width:32px;height:32px}
+
+[data-calendar-add]{border:1px solid color-mix(in srgb,var(--bq-calendar-accent) 18%,#d7ddd4);background:color-mix(in srgb,var(--bq-calendar-accent) 4%,#fff);box-shadow:0 8px 24px rgba(40,52,45,.06)}
+[data-calendar-add] input[type="text"],[data-calendar-add] input[type="date"],[data-calendar-add] input[type="number"]{min-height:44px;min-width:0;border-radius:10px}
+[data-calendar-add] input[type="text"]{flex:2 1 210px}
+[data-calendar-add] input[type="date"]{flex:1 1 160px}
+[data-calendar-add] label{display:flex;align-items:center;gap:8px;flex:1 1 220px;min-height:44px;line-height:1.35}
+
+.bq-calendar-day{border:1px solid rgba(93,111,99,.13);box-shadow:0 8px 22px rgba(40,52,45,.045)}
+.bq-calendar-event{display:grid;grid-template-columns:42px minmax(0,1fr);gap:11px;align-items:start;padding:10px 0;border-top:1px solid rgba(93,111,99,.10)}
+.bq-calendar-day>.bq-eyebrow+.bq-calendar-event{border-top:0;padding-top:4px}
+.bq-calendar-event[data-calendar-event-source="personal"]{--bq-calendar-source:#047857}
+.bq-calendar-event[data-calendar-event-source="assignment"]{--bq-calendar-source:#b45309}
+.bq-calendar-event[data-calendar-event-source="congregation"]{--bq-calendar-source:#6d28d9}
+.bq-calendar-event-content{min-width:0}
+.bq-calendar-event-title{margin:2px 0 8px;font-weight:750;line-height:1.35;overflow-wrap:anywhere}
+.bq-calendar-event-actions{display:flex;gap:8px;flex-wrap:wrap}
+.bq-calendar-event-actions:empty{display:none}
+.bq-calendar-empty{display:grid;place-items:center;gap:10px;padding:24px 12px;text-align:center;color:#5d6b62}
+.bq-calendar-empty p{margin:0}
+
+@media(max-width:480px){
+  .bq-calendar-intro{grid-template-columns:minmax(0,1fr) 58px;gap:12px}
+  .bq-calendar-icon-wrap--hero{width:58px;height:58px;border-radius:18px}
+  .bq-calendar-icon--hero{width:33px;height:33px}
+  [data-calendar-add]{padding:12px}
+  [data-calendar-add]>*{flex-basis:100%}
+}
+@media(prefers-contrast:more){
+  [data-calendar-page]::before{display:none}
+  .bq-calendar-icon-wrap,[data-calendar-add],.bq-calendar-day{background:#fff;border-width:2px;box-shadow:none}
+}
