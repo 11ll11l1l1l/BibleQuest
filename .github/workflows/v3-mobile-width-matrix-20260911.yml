@@ -1,0 +1,42 @@
+name: BibleQuest v3 mobile width matrix
+
+on:
+  push:
+    branches:
+      - verify/v3-mobile-width-matrix-20260911
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 474e5bcd5c96182258353f6c47863dec2f801fc1
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm test-only delta
+        run: |
+          test "$(git rev-parse HEAD)" = "474e5bcd5c96182258353f6c47863dec2f801fc1"
+          test -z "$(git status --porcelain)"
+          test "$(git diff --name-only 73d39ce6fe0f9db20db62e25fd497a8711f921b0 474e5bcd5c96182258353f6c47863dec2f801fc1)" = "tests/v3-mobile-width-matrix-smoke.mjs"
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start exact product/test tree
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-http.log
+          exit 1
+      - name: Run 320-430 mobile width matrix
+        run: node tests/v3-mobile-width-matrix-smoke.mjs
