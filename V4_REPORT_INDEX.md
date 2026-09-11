@@ -72,8 +72,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | ---: | --- | --- |
 | 1 | Infrastructure safety net | **CERTIFIED** — `release/v4-infra-safety-net` @ `0a4b7f6873c1955f2c65b5044c81f0180524670b` |
 | 2 | V4 foundation certification | **CERTIFIED** — `release/v4-foundation` @ `a008919fe9e7db1fcd2a03cac8b71fd7110afc0d` |
-| 3 | Global shell/navigation | **NEXT / mandatory gate.** Icon system + core chrome already in Foundation; remaining scope: session/progress chrome polish, remove any residual internal-rebuild language, full targeted evidence |
-| 4 | Home | Implemented in part; full evidence pending |
+| 3 | Global shell/navigation | **CERTIFIED** — `release/v4-shell` @ `2e11dce90efd13c18fe7b8921e3f2e54b00e6d99` |
+| 4 | Home | **NEXT / mandatory gate.** First migration already in Foundation A; needs dashboard-composition review (dominant continuation card, de-emphasize tutorial/media) + full targeted evidence |
 | 5 | Learn hub + Reader | Pending |
 | 6 | Games + Avatar Vault | Pending |
 | 7 | More hub | Pending |
@@ -99,6 +99,18 @@ New static contract: `tests/v4-foundation-static.mjs` — asserts required token
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34657733612`.
 
 Typography remains fallback/local-first (no remote font CDN) — this is an intentional, already-recorded offline/PWA/privacy decision, not an open item.
+
+## Shell/Navigation certification evidence (this cycle)
+
+Checkpoint: `release/v4-shell` @ `2e11dce90efd13c18fe7b8921e3f2e54b00e6d99`.
+
+On inspection, `src/ui/shell.js` already satisfied nearly all of A1-V4-001's findings from Foundation A/B: real BibleQuest brand mark and tagline (no bare "BQ" text mark, no "Rebuild v3" subtitle), real SVG icons via `icons.js` for brand + all 5 nav routes (no Unicode placeholder glyphs), three distinguishable session states (authenticated/guest/busy, each with its own text label, not color-only), an updatable progress chip, and a recovery panel with both retry and home actions. No code change was needed to close this gate — it needed verification evidence, which was the actual gap.
+
+New coverage added:
+- `tests/v4-shell-static.mjs` — locks in the above as an explicit contract (bans rebuild/dev language and the specific placeholder glyphs by name, confirms all 5 routes + icons + session states + recovery actions exist, confirms exactly one shell mount point).
+- `tests/v4-shell-keyboard-motion-smoke.mjs` — new browser evidence: Tab reaches all 5 primary nav links in correct visual order with a visible focus ring (using Foundation's new `:focus-visible` token), and `prefers-reduced-motion: reduce` collapses shell transition durations to effectively zero.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px, plus the new keyboard/motion checks). Run: `34658715156`.
 
 ## Change-class rules
 
