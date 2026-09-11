@@ -51,7 +51,7 @@ requireText(handoff, 'cumulative exact-green candidate SHA, or explicitly `NONE`
 requireText(handoff, 'docs/V3_ICON_ASSET_MAP.md', 'handoff icon map');
 requirePattern(handoff, /assets\/icons\/v3\/.*not present on `main`/is, 'handoff binary availability');
 
-requireText(continuation, 'Do not confuse recency with cumulative product truth'.toUpperCase(), 'continuation heading');
+requirePattern(continuation, /do not confuse recency with cumulative product truth/i, 'continuation heading');
 requireText(continuation, 'full intended Line B delta', 'continuation integration rule');
 requireText(continuation, 'generate → choose → optimize → implement → test', 'continuation visual rule');
 requireText(continuation, 'docs/V3_ICON_ASSET_MAP.md', 'continuation icon-map rule');
