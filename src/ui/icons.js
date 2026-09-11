@@ -26,6 +26,20 @@ const ICONS = Object.freeze({
     <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/>
     <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>
     <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/>
+  `,
+  guide: `
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M9.5 9.3a2.5 2.5 0 0 1 4.8 1c0 1.6-2.3 1.8-2.3 3.4"/>
+    <circle cx="12" cy="16.6" r="0.15" fill="currentColor" stroke="currentColor" stroke-width="1.6"/>
+  `,
+  video: `
+    <rect x="3" y="6" width="13" height="12" rx="2.5"/>
+    <path d="m16.5 10.2 4-2.4v8.4l-4-2.4"/>
+  `,
+  library: `
+    <rect x="3.5" y="4" width="7.5" height="16" rx="1.6"/>
+    <rect x="13" y="4" width="7.5" height="16" rx="1.6"/>
+    <path d="M7.25 8h0M16.75 8h0"/>
   `
 });
 
