@@ -23,6 +23,7 @@ let badReference='';try{await notes.create({book:'Romans',chapter:8,verseEnd:39,
 const created=await notes.create({book:' Romans ',chapter:'8',verseStart:'38',verseEnd:'39',title:'  No separation  ',content:' Nothing can separate us.\r\n ',tags:'hope, study, hope',isPinned:true});
 assert(created.userId===USER&&created.book==='Romans'&&created.chapter===8&&created.verseStart===38&&created.verseEnd===39,'Cloud Notes did not normalize the Scripture reference.');
 assert(created.title==='No separation'&&created.content==='Nothing can separate us.'&&created.tags.join(',')==='hope,study'&&created.isPinned===true,'Cloud Notes did not normalize note metadata.');
+assert(created.noteType==='study','Cloud Notes must default to deployed study note_type.');
 assert(notes.list().length===1&&notes.get(created.id).id===created.id,'Cloud Notes cache did not accept the created remote row.');
 assert(![...remote.values()].some(row=>row.user_id===OTHER),'Cloud Notes fake backend unexpectedly crossed account ownership.');
 

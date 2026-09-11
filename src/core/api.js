@@ -6,7 +6,32 @@ const CONFIG = Object.freeze({
   publishableKey: 'sb_publishable_mJyieT7WZT1vAZX7XFdsrg_lRgDxcsq'
 });
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
-const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,content,tags,note_type,is_pinned,created_at,updated_at';
+const CLOUD_NOTE_DB_FIELDS='id,user_id,title,book_code,book_name,chapter,verse_start,verse_end,body,note_type,tags,pinned,created_at,updated_at';
+const CLOUD_NOTE_TYPES=new Set(['study','prayer','question','reflection','sermon','other']);
+function cloudNoteFromDb(row){
+  if(!row)return row;
+  const {book_code:bookCode,book_name:bookName,body,pinned,...rest}=row;
+  return {...rest,book:bookCode||bookName||'',content:String(body??''),is_pinned:pinned===true};
+}
+function cloudNoteToDb(payload={}){
+  const book=String(payload.book??'').trim();
+  const bookCode=/^[A-Z0-9]{3}$/.test(book)?book:null;
+  const noteType=String(payload.note_type??'study').trim();
+  const next={
+    title:payload.title??null,
+    book_code:bookCode,
+    book_name:bookCode?null:(book||null),
+    chapter:payload.chapter??null,
+    verse_start:payload.verse_start??null,
+    verse_end:payload.verse_end??null,
+    body:String(payload.content??''),
+    note_type:CLOUD_NOTE_TYPES.has(noteType)?noteType:'study',
+    tags:Array.isArray(payload.tags)?payload.tags:[],
+    pinned:payload.is_pinned===true
+  };
+  if(Object.prototype.hasOwnProperty.call(payload,'updated_at'))next.updated_at=payload.updated_at;
+  return next;
+}
 const COUPLE_SHARED_FIELDS='id,pair_id,author_id,item_type,body,due_on,completed_at,created_at,updated_at';
 const JOURNEY_GROUP_FIELDS='id,owner_id,congregation_id,name,description,schedule_text,max_members,active,created_at,updated_at';
 const JOURNEY_GROUP_MEMBER_FIELDS='group_id,user_id,role,active,joined_at';
@@ -378,21 +403,21 @@ export function createApi() {
   const cloudNotes = Object.freeze({
     async list(userId) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_notes').select(CLOUD_NOTE_FIELDS).eq('user_id',userId).order('is_pinned',{ascending:false}).order('updated_at',{ascending:false});
+      const {data,error}=await client.from('bible_notes').select(CLOUD_NOTE_DB_FIELDS).eq('user_id',userId).order('pinned',{ascending:false}).order('updated_at',{ascending:false});
       if(error)throw error;
-      return data||[];
+      return (data||[]).map(cloudNoteFromDb);
     },
     async create(userId,payload) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_notes').insert({...payload,user_id:userId}).select(CLOUD_NOTE_FIELDS).single();
+      const {data,error}=await client.from('bible_notes').insert({...cloudNoteToDb(payload),user_id:userId}).select(CLOUD_NOTE_DB_FIELDS).single();
       if(error)throw error;
-      return data;
+      return cloudNoteFromDb(data);
     },
     async update(userId,id,expectedUpdatedAt,payload) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_notes').update(payload).eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select(CLOUD_NOTE_FIELDS).maybeSingle();
+      const {data,error}=await client.from('bible_notes').update(cloudNoteToDb(payload)).eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select(CLOUD_NOTE_DB_FIELDS).maybeSingle();
       if(error)throw error;
-      return data||null;
+      return cloudNoteFromDb(data||null);
     },
     async remove(userId,id,expectedUpdatedAt) {
       const client=await getClient();

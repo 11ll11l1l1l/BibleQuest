@@ -13,7 +13,7 @@ function cleanPayload(input={}){
   if(verseEnd!==null&&verseStart===null)throw new Error('Add a starting verse before an ending verse.');
   if(verseStart!==null&&verseEnd!==null&&verseEnd<verseStart)throw new Error('Ending verse cannot come before the starting verse.');
   const title=text(input.title,MAX_TITLE),content=text(input.content,MAX_CONTENT);if(!content)throw new Error('Write a note before saving.');
-  return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType:text(input.noteType||'general',40)||'general',isPinned:input.isPinned===true});
+  const requestedType=text(input.noteType||'study',40)||'study',noteType=requestedType==='general'?'study':requestedType;if(!['study','prayer','question','reflection','sermon','other'].includes(noteType))throw new Error('Choose a supported cloud note type.');return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType,isPinned:input.isPinned===true});
 }
 
 function normalize(row){

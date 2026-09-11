@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const api=fs.readFileSync(new URL('../src/core/api.js',import.meta.url),'utf8');
+const app=fs.readFileSync(new URL('../src/app/cloud-notes.js',import.meta.url),'utf8');
+const feature=fs.readFileSync(new URL('../src/features/cloud-notes/index.js',import.meta.url),'utf8');
+for(const field of ['book_code','book_name','body','pinned'])assert(api.includes(field),`Cloud Notes API is missing deployed bible_notes field ${field}.`);
+assert(api.includes("order('pinned'"),'Cloud Notes list must order by deployed pinned field.');
+assert(api.includes('cloudNoteFromDb')&&api.includes('cloudNoteToDb'),'Cloud Notes must keep schema adaptation inside shared API owner.');
+assert(api.includes("book:bookCode||bookName||''")&&api.includes("content:String(body??'')")&&api.includes('is_pinned:pinned===true'),'DB rows are not adapted to canonical model.');
+assert(api.includes('book_code:bookCode')&&api.includes("body:String(payload.content??'')")&&api.includes('pinned:payload.is_pinned===true'),'Canonical writes are not adapted to deployed schema.');
+assert(!api.includes("order('is_pinned'"),'Stale is_pinned DB ordering remains.');
+assert(!api.includes("select(CLOUD_NOTE_FIELDS)"),'Stale Cloud Notes DB projection remains.');
+assert(app.includes("input.noteType||'study'")&&app.includes("requestedType==='general'?'study':requestedType"),'Service must normalize retired general note type.');
+assert(feature.includes("noteType:'study'")&&!feature.includes("noteType:'general'"),'UI must submit deployed note_type.');
+console.log('BibleQuest v3 Workspace/Cloud Notes deployed-schema compatibility regression passed.');
