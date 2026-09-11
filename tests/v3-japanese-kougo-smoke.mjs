@@ -7,6 +7,11 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMo
 const failures = [];
 page.on('pageerror', error => failures.push(`pageerror: ${error.message}`));
 page.on('console', message => { if (message.type() === 'error') failures.push(`console: ${message.text()}`); });
+const scriptureBaseText = locator => locator.evaluate(node => {
+  const clone = node.cloneNode(true);
+  clone.querySelectorAll('rt').forEach(annotation => annotation.remove());
+  return clone.textContent || '';
+});
 
 let breakGenesis = false;
 let japaneseRequests = 0;
@@ -39,7 +44,7 @@ try {
   await page.locator('[data-verse="16"]').waitFor();
 
   assert(await page.locator('[data-reader-translation]').inputValue() === 'jko', 'Japanese Kougo did not become the active Reader translation.');
-  assert((await page.locator('[data-verse="16"]').textContent()).includes('神はそのひとり子を賜わったほどに、この世を愛して下さった。'), 'Japanese Kougo verse text did not render from the live source.');
+  assert((await scriptureBaseText(page.locator('[data-verse="16"]'))).includes('神はそのひとり子を賜わったほどに、この世を愛して下さった。'), 'Japanese Kougo canonical verse text did not render unchanged from the live source.');
   const sourceText = await page.locator('.bq-reader-source').textContent();
   assert(sourceText.includes('口語訳聖書 (1954/1955)') && sourceText.includes('GetBible') && sourceText.includes('moral rights remain') && sourceText.includes('without modification'), 'Japanese source/license/unchanged-text notice is incomplete.');
   assert(japaneseRequests === 1, `Expected one Japanese chapter request after first load, got ${japaneseRequests}.`);
