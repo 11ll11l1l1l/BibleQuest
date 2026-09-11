@@ -178,7 +178,7 @@ On a physical Android device using current Chrome:
 
 ### B2 — Android Brave at 100% zoom
 
-Repeat B1 in current Brave on the same or equivalent physical Android device. This is a distinct field check; Chrome PASS must not be transferred.
+Repeat B1 in current Brave on the same or equivalent physical Android device. This is a distinct field check; Chrome PASS must not be transferred to Brave.
 
 ### B3 — genuinely installed PWA device session
 
