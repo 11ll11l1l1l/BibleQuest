@@ -1,5 +1,3 @@
-import {createAssignmentResponsesApi} from '../core/assignment-responses.js';
-
 const ASSIGNMENT_TYPES=Object.freeze(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const TARGET_SCOPES=Object.freeze(['all','member','team','group']);
 const PROGRESS_STATES=Object.freeze(['assigned','started','completed']);
@@ -111,8 +109,8 @@ function dueState(assignment,progress,nowMs){
 
 export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),ministryRoles:[...MINISTRY_ROLES],submissionMax:4000,recurrenceGeneration:false,linkedPublishing:false,responsePrivacy:'peer-presence-only'});
 
-export function createAssignmentsService({api,session,congregation,responseApi=createAssignmentResponsesApi(),now=()=>new Date()}){
-  if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!responseApi?.loadPresence||!responseApi?.loadPrivateResponses||!session||!congregation)throw new Error('Assignments require API, response-review, Session and Congregation owners.');
+export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
+  if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
   let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});
   let stopRemote=null,targetRequest=0,reviewRequest=0;
   const snapshot=()=>state;
@@ -175,13 +173,15 @@ export function createAssignmentsService({api,session,congregation,responseApi=c
     const assignment=currentAssignment(assignmentId),request=++reviewRequest,cid=state.congregationId,userId=String(sessionState()?.user?.id||''),role=state.role;
     state=Object.freeze({...state,activeReview:Object.freeze({...emptyReview(assignment.id),status:'loading'})});
     try{
-      const presenceRows=await responseApi.loadPresence(cid,assignment.id);
+      if(typeof api.loadResponsePresence!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Assignment response status is not available yet.');
+      const presenceRows=await api.loadResponsePresence(cid,assignment.id);
       const responders=Object.freeze((Array.isArray(presenceRows)?presenceRows:[]).map(row=>normalizeResponder(row,assignment.id,cid)));
       const names=new Map(responders.map(row=>[row.userId,row.displayName]));
       let responses=Object.freeze([]);
       if(MINISTRY_ROLES.has(role)){
         congregation.assert(cid,'ministry');
-        const privateRows=await responseApi.loadPrivateResponses(assignment.id);
+        if(typeof api.loadPrivateResponses!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Private assignment response review is not available yet.');
+        const privateRows=await api.loadPrivateResponses(assignment.id);
         responses=Object.freeze((Array.isArray(privateRows)?privateRows:[]).map(row=>normalizePrivateResponse(row,assignment.id,names)));
       }
       const current=sessionState();

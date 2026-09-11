@@ -95,3 +95,13 @@ The next product phase must therefore be a separately scoped post-release milest
 ## Next milestone gate
 
 Do not invent another visual tranche or enter Class-D owners by default. The next executable product milestone is the next explicitly selected post-release product objective. Once selected, branch from the appropriate exact-green checkpoint and define the acceptance contract before implementation.
+
+
+## Defect / root-cause ledger
+
+- Post-release Assignment Private Responses candidate `8a97b1f9dea8451fe35ecb73b710f86481f7d582` passed its focused privacy contract and deployment gate but was rejected by the accumulated architecture validator because it opened a second Supabase client in `src/core/assignment-responses.js`. The correction keeps backend queries under the established `src/core/api.js` owner and removes that competing client.
+- The same candidate exposed a documentation-contract regression inherited from the post-visual handoff: this status file had replaced the required `Defect / root-cause ledger` and `Next major milestone` headings. Those canonical ledger headings are restored here without changing the completed visual evidence.
+
+## Next major milestone
+
+Complete exact-SHA verification of the isolated Assignment Private Responses milestone. Do not promote it or apply its Supabase migration to production until the full accumulated suite is green and a separate production-migration/release decision is made.

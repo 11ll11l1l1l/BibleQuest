@@ -17,11 +17,11 @@ function fakeApi(userId){return {
 
 {
   let privateReads=0;
-  const responseApi={
-    loadPresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],
+  const api=Object.assign(fakeApi('member-1'),{
+    loadResponsePresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],
     loadPrivateResponses:async()=>{privateReads++;return[{assignment_id:'a-1',user_id:'member-2',status:'completed',submission:'PRIVATE ANSWER',leader_feedback:null,completed_at:'2026-09-11T03:00:00Z',updated_at:'2026-09-11T03:00:00Z'}]}
-  };
-  const service=createAssignmentsService({api:fakeApi('member-1'),responseApi,session:fakeSession('member-1'),congregation:fakeCongregation('member')});
+  });
+  const service=createAssignmentsService({api,session:fakeSession('member-1'),congregation:fakeCongregation('member')});
   await service.load();
   service.open('a-1');
   const state=await service.loadReview('a-1');
@@ -34,11 +34,11 @@ function fakeApi(userId){return {
 
 {
   let privateReads=0;
-  const responseApi={
-    loadPresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],
+  const api=Object.assign(fakeApi('pastor-1'),{
+    loadResponsePresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],
     loadPrivateResponses:async()=>{privateReads++;return[{assignment_id:'a-1',user_id:'member-2',status:'completed',submission:'PRIVATE ANSWER',leader_feedback:'Thanks',completed_at:'2026-09-11T03:00:00Z',updated_at:'2026-09-11T03:00:00Z'}]}
-  };
-  const service=createAssignmentsService({api:fakeApi('pastor-1'),responseApi,session:fakeSession('pastor-1'),congregation:fakeCongregation('pastor')});
+  });
+  const service=createAssignmentsService({api,session:fakeSession('pastor-1'),congregation:fakeCongregation('pastor')});
   await service.load();
   service.open('a-1');
   const state=await service.loadReview('a-1');

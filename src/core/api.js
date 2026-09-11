@@ -22,6 +22,8 @@ const EARNED_BADGE_FIELDS='congregation_id,user_id,badge_id,metadata,earned_at';
 const BADGE_CATALOG_FIELDS='id,icon,name,category,description,threshold,active,created_at';
 const ASSIGNMENT_FIELDS='id,congregation_id,created_by,title,instructions,assignment_type,scripture_refs,target_scope,target_id,due_at,points,active,created_at,updated_at,schedule_at,recurrence_rule,reminder_at,required_reflection,min_quiz_score,evidence_type';
 const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
+const ASSIGNMENT_RESPONSE_PRESENCE_FIELDS='assignment_id,congregation_id,user_id,display_name,completed_at';
+const ASSIGNMENT_PRIVATE_RESPONSE_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';
 const NOTIFICATION_FIELDS='id,user_id,congregation_id,created_by,notification_type,title,body,action_kind,action_payload,read_at,expires_at,created_at';
 const CONTENT_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,updated_at';
 const CONTENT_REVIEW_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,content_ref,content_snapshot,rationale,reviewed_by,reviewed_at,updated_at';
@@ -323,6 +325,18 @@ export function createApi() {
       const {data:progress,error:progressError}=await client.from('bible_assignment_progress').select(ASSIGNMENT_PROGRESS_FIELDS).eq('user_id',userId).in('assignment_id',ids).order('updated_at',{ascending:false});
       if(progressError)throw progressError;
       return {assignments:assignmentRows,progress:progress||[]};
+    },
+    async loadResponsePresence(congregationId,assignmentId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_assignment_response_presence').select(ASSIGNMENT_RESPONSE_PRESENCE_FIELDS).eq('congregation_id',String(congregationId)).eq('assignment_id',String(assignmentId)).order('completed_at',{ascending:true});
+      if(error)throw error;
+      return data||[];
+    },
+    async loadPrivateResponses(assignmentId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_assignment_progress').select(ASSIGNMENT_PRIVATE_RESPONSE_FIELDS).eq('assignment_id',String(assignmentId)).eq('status','completed').order('completed_at',{ascending:true});
+      if(error)throw error;
+      return data||[];
     },
     async targets(congregationId) { return invoke('bq-assignment',{action:'targets',congregationId}); },
     async create(congregationId,payload) { return invoke('bq-assignment',{action:'create',congregationId,...payload}); },
