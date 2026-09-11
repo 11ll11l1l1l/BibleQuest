@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 const read = (path) => fs.readFileSync(path, 'utf8');
 const requireText = (text, needle, label) => assert.ok(text.includes(needle), `${label}: missing ${needle}`);
+const requirePattern = (text, pattern, label) => assert.match(text, pattern, `${label}: missing required semantic contract`);
 
 const reconciliation = read('RECONCILIATION_V3.md');
 const priority = read('DEVELOPMENT_PRIORITY_V3.md');
@@ -17,7 +18,7 @@ for (const [name, text] of Object.entries({reconciliation, priority, status, han
   requireText(text, '73d39ce6fe0f9db20db62e25fd497a8711f921b0', name);
   requireText(text, '61ee54fac7d352312cef7ffd8010997fa8bc9e51', name);
   requireText(text, '01ba15e7cdc3f224509858fdd98c2f3b17d8a414', name);
-  assert.match(text, /no single cumulative latest exact-green post-release product SHA|no single cumulative latest exact-green product SHA|no single cumulative post-release product SHA/i, `${name}: must explicitly reject a false global latest SHA`);
+  requirePattern(text, /no single cumulative latest exact-green post-release product SHA|no single cumulative latest exact-green product SHA|no single cumulative post-release product SHA/i, name);
 }
 
 requireText(reconciliation, 'main` product promotion is **BLOCKED**', 'reconciliation');
@@ -44,9 +45,9 @@ requireText(calendar, '20260911140000_calendar_congregation_sharing.sql', 'calen
 requireText(calendar, 'divergent line', 'calendar');
 
 requireText(migrationGuide, 'bbbceb057c631f08ec32826384ef6fcd61da4527', 'migration guide');
-requireText(migrationGuide, 'UNAPPLIED until positively verified', 'migration guide');
-requireText(migrationGuide, 'compare the currently deployed helper definition', 'migration guide');
-requireText(migrationGuide, 'do not apply it merely because a newer unrelated Calendar/visual/docs branch exists', 'migration guide');
+requirePattern(migrationGuide, /UNAPPLIED until positively verified/i, 'migration guide');
+requirePattern(migrationGuide, /compare the currently deployed helper definition/i, 'migration guide');
+requirePattern(migrationGuide, /do\s*(?:\*\*)?not(?:\*\*)?\s+apply it merely because a newer unrelated Calendar\/visual\/docs branch exists/i, 'migration guide');
 requireText(migrationGuide, 'APPLIED + LIVE VERIFIED', 'migration guide');
 
 console.log('BibleQuest v3 reconciliation documentation contract: PASS');
