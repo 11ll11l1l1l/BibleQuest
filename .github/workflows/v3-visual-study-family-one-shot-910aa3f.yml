@@ -1,0 +1,102 @@
+name: BibleQuest v3 Study family visual verifier 910aa3f
+on:
+  push:
+    branches: [verify/v3-visual-study-family-910aa3f]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 910aa3fa613370804ba6c61e902e619cf7d365ac
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "910aa3fa613370804ba6c61e902e619cf7d365ac"
+          test -z "$(git status --porcelain)"
+          git diff --check 7bf7c6929ef5ed35b310f74b08ffc069f47ec55e 910aa3fa613370804ba6c61e902e619cf7d365ac
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Focused accumulated browser regressions
+        run: |
+          node tests/v3-shell-smoke.mjs
+          node tests/v3-study-smoke.mjs
+          node tests/v3-deep-questions-smoke.mjs
+          node tests/v3-story-journey-smoke.mjs
+          node tests/v3-wisdom-situations-smoke.mjs
+          node tests/v3-transform-basic-smoke.mjs
+          node tests/v3-transform-engine-smoke.mjs
+          node tests/v3-transform-full-smoke.mjs
+          node tests/v3-accessibility-smoke.mjs
+          node tests/v3-pwa-install-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-offline-bible-packs-smoke.mjs
+      - name: Study family visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const cases=[
+            {route:'study',root:'[data-study-page]',target:'.bq-study-card',css:'src/ui/study-visual-polish.css'},
+            {route:'deep-questions',root:'[data-deep-page]',target:'.bq-deep-featured',css:'src/ui/deep-questions-visual-polish.css'},
+            {route:'story-journey',root:'[data-story-page]',target:'.bq-story-card',css:'src/ui/story-journey-visual-polish.css'},
+            {route:'wisdom-situations',root:'[data-wisdom-page]',target:'.bq-wisdom-scenario',css:'src/ui/wisdom-situations-visual-polish.css'}
+          ];
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              for(const item of cases){
+                const page=await browser.newPage({viewport});
+                await page.goto(`http://127.0.0.1:4173/#/${item.route}`,{waitUntil:'networkidle'});
+                await page.locator(item.root).waitFor();
+                await page.locator(item.target).first().waitFor();
+                const result=await page.evaluate(({target,css})=>{
+                  const node=document.querySelector(target);
+                  const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')===css);
+                  const style=node?getComputedStyle(node):null;
+                  return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+                },item);
+                if(!result.polishLoaded)throw new Error(`${item.route} visual stylesheet missing at ${viewport.width}px`);
+                if(!result.backgroundImage||result.backgroundImage==='none')throw new Error(`${item.route} visual background did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+                if(!result.boxShadow||result.boxShadow==='none')throw new Error(`${item.route} visual shadow did not apply at ${viewport.width}px: ${JSON.stringify(result)}`);
+                if(result.scrollWidth>result.viewport+1)throw new Error(`${item.route} horizontal overflow at ${viewport.width}px: ${JSON.stringify(result)}`);
+                await page.close();
+              }
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Study-family visual desktop/mobile containment passed.');
+          EOF
