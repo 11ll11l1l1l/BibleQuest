@@ -10,31 +10,43 @@ No existing Calendar design, data model, or partial implementation was found any
 
 v1 delivers: **personal reminders; read-only assignment due-date aggregation; 30-day agenda; device+account persistence.**
 
-Explicitly deferred as follow-up sub-milestones, not built here:
+Explicitly deferred at v1 as follow-up sub-milestones, not built then:
 - Congregation-shared/leader-visible calendar entries (needs its own authorization design, comparable to Assignments' target-scope/role model).
 - Recurring events.
 - Notification/reminder delivery integration with Notification Center.
 - Any calendar surface inside Ministry Hub.
 
-Building any of the above now would mean inventing authorization or notification-delivery behavior beyond what v1 needs; they are real product decisions for a later, explicitly scoped milestone.
+## v1.5: congregation-shared entries + weekly recurrence + notifications (Priority 1A follow-up)
+
+Three of the four v1-deferred items are now implemented, reusing existing owners rather than inventing new authorization or notification-delivery mechanisms:
+
+- **Congregation-shared entries** — reuse Congregation Membership's existing `can(congregationId,'ministry')`/`assert(...)` exactly as Assignments does; Calendar adds no new role model. A congregation event is a genuinely separate row (`congregation_id` set, `source:'congregation'`) from personal events — it is never cached in `privateStorage` and is always server-authoritative, since its visibility is shared, not private.
+- **Recurring events** — deliberately narrow: fixed-weekly only (`recurrenceWeeks`, 0–52), owned entirely by the pure engine (`expandRecurring`). No custom RRULE-style patterns. Only congregation events may recur; personal events cannot (`normalizeEvent` forces `recurrenceWeeks:0` for any non-congregation source).
+- **Notification integration** — a new Postgres trigger (`private.bible_calendar_event_notify`, in `20260911140000_calendar_congregation_sharing.sql`) inserts one `bible_notifications` row per active congregation member (excluding the creator) when a congregation event is created. This keeps Notification Center as the sole notification-delivery owner: Calendar's client code never writes to `bible_notifications` itself, and the trigger is the only thing that does.
+
+Still not built, and still explicitly deferred (a genuine follow-up, not silently dropped):
+- Any calendar surface inside Ministry Hub.
+- Editing or deleting a congregation event once created (only creation is implemented; a leader who makes a mistake must ask an admin/direct-DB fix today).
+- Custom (non-weekly) recurrence patterns.
 
 ## Ownership
 
-- `src/engines/calendar.js` — sole owner of date-grouping/agenda logic. Pure functions; no storage, DOM, or network. Never writes to any other owner.
-- `src/app/calendar.js` — lifecycle/persistence owner. Reuses Session (owner identity) and Assignments' existing `dueAt`/`dueState` (read-only aggregation; Calendar never writes to `bible_assignments` or `bible_assignment_progress`). All network access goes through `src/core/api.js` (`calendar.list/create/remove`) — no direct Supabase client calls in the app owner.
+- `src/engines/calendar.js` — sole owner of date-grouping/agenda/recurrence-expansion logic. Pure functions; no storage, DOM, or network. Never writes to any other owner.
+- `src/app/calendar.js` — lifecycle/persistence owner. Reuses Session (owner identity), Assignments' existing `dueAt`/`dueState` (read-only), and Congregation Membership's existing `load()`/`can()`/`assert()` (read-only role check; Calendar never writes membership or role data). All network access goes through `src/core/api.js` (`calendar.list/create/remove/listCongregation/createCongregation`) — no direct Supabase client calls in the app owner.
 - `src/features/calendar/index.js` — presentation/event forwarding only.
-- `src/app/router.js` remains the navigation owner (route: `calendar`, reachable from the More page). `src/app/assignments.js` remains the sole owner of assignment data; Calendar only reads its cached snapshot.
+- `src/app/router.js` remains the navigation owner (route: `calendar`, reachable from the More page). `src/app/assignments.js` remains the sole owner of assignment data; `src/app/congregation-membership.js` remains the sole owner of membership/role data; Calendar only reads their cached snapshots/getters.
+- `private.bible_calendar_event_notify` (database trigger) is the sole owner of calendar-triggered notification delivery; Notification Center (`bible_notifications`, `src/app/notification-center.js`) remains the sole owner of notification storage/read-state, unmodified.
 
 ## Persistence and visibility
 
-- `bible_calendar_events` (new table, own-row RLS only: select/insert/update/delete all scoped to `user_id = auth.uid()`) is the cloud source of truth for a signed-in account's personal events. No other user or congregation role can read another user's calendar events in v1 — there is no shared-visibility surface yet.
-- Guests: `privateStorage` only, device-local, never synced.
-- Signed-in accounts: `privateStorage` local cache plus best-effort cloud sync; if cloud sync fails, the local add/remove still applies and a retry happens next time Calendar opens (matches the Avatar Vault/Personal Mission fail-open-but-retry pattern already established).
-- Assignment due dates are read-only and are never persisted by Calendar; they are recomputed from Assignments' own cache on every load.
+- `bible_calendar_events` — personal rows (`congregation_id` null) keep v1's own-row RLS (select/insert/update/delete scoped to `user_id = auth.uid()`). Congregation rows (`congregation_id` set) add: any active congregation member may `select`; only a ministry role (`facilitator`/`leader`/`pastor`/`admin`, via `private.bible_role_in_congregation`) may `insert`. No new update/delete policy was added for congregation rows in this pass (see deferred list above).
+- Guests: `privateStorage` only, device-local, never synced. Guests cannot share with a congregation (no session to authorize against).
+- Signed-in accounts: personal events use `privateStorage` local cache plus best-effort cloud sync (fail-open-but-retry, matching Avatar Vault/Personal Mission). Congregation events are never cached locally and are always fetched fresh from `listCongregation`.
+- Assignment due dates remain read-only and are never persisted by Calendar.
 
 ## Non-negotiable boundary
 
-Calendar never modifies Assignments, Progress, Notification Center, or any other owner. It has no authority over scoring, leaderboards, or ministry roles.
+Calendar never modifies Assignments, Progress, Congregation Membership, or Notification Center. It has no authority over scoring, leaderboards, or ministry roles — it only reads the role check Congregation Membership already computes.
 
 ## Defect / root-cause ledger
 
