@@ -1,0 +1,55 @@
+name: v3 kids contract probe
+
+on:
+  push:
+    branches:
+      - verify/v3-kids-who-am-i-contract-v371
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unpack retained Kids bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/kids-contract
+          cat kids-games/bundle-*.txt | tr -d '\n\r ' | base64 --decode | gzip --decompress > /tmp/kids-contract/bundle.json
+          python3 - <<'PY'
+          import json, pathlib, re
+          root = pathlib.Path('/tmp/kids-contract')
+          data = json.loads((root/'bundle.json').read_text())
+          out = root/'extracted'
+          out.mkdir()
+          lines = ['BUNDLE KEYS']
+          for key, value in sorted(data.items()):
+              p = out/key
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_text(value, encoding='utf-8')
+              lines.append(f'{key}\t{len(value)} chars')
+          patterns = [
+              r'who\s*am\s*i', r'whoami', r'guess', r'bible', r'character',
+              r'person', r'memory', r'japanese', r'coding', r'arcade', r'game'
+          ]
+          rx = re.compile('|'.join(patterns), re.I)
+          lines += ['', 'MATCHING SOURCE LINES']
+          for key, value in sorted(data.items()):
+              for n, line in enumerate(value.splitlines(), 1):
+                  if rx.search(line):
+                      lines.append(f'{key}:{n}: {line[:1000]}')
+          (root/'contract-probe.txt').write_text('\n'.join(lines), encoding='utf-8')
+          PY
+          cat /tmp/kids-contract/contract-probe.txt
+      - name: Upload recovered source
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-kids-retained-source
+          path: |
+            /tmp/kids-contract/extracted
+            /tmp/kids-contract/contract-probe.txt
+          if-no-files-found: error
+          retention-days: 1
