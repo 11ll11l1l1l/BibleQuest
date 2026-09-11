@@ -71,8 +71,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | Order | Tranche/family | State |
 | ---: | --- | --- |
 | 1 | Infrastructure safety net | **CERTIFIED** — `release/v4-infra-safety-net` @ `0a4b7f6873c1955f2c65b5044c81f0180524670b` |
-| 2 | V4 foundation certification | **NEXT / mandatory gate.** Implemented in part (tokens/primitives, Home migration, icon system); 2 pre-existing regressions fixed during infra-safety-net gating (progress chip visibility, nav label size); controls + full evidence still pending |
-| 3 | Global shell/navigation | Implemented in part; full evidence pending |
+| 2 | V4 foundation certification | **CERTIFIED** — `release/v4-foundation` @ `a008919fe9e7db1fcd2a03cac8b71fd7110afc0d` |
+| 3 | Global shell/navigation | **NEXT / mandatory gate.** Icon system + core chrome already in Foundation; remaining scope: session/progress chrome polish, remove any residual internal-rebuild language, full targeted evidence |
 | 4 | Home | Implemented in part; full evidence pending |
 | 5 | Learn hub + Reader | Pending |
 | 6 | Games + Avatar Vault | Pending |
@@ -83,6 +83,22 @@ All families share one icon language, type scale, spacing system, motion languag
 | 11 | Account + Notes + Transform + Psychometrics + Accessibility | Pending |
 | 12 | Community + Couples + Journey Groups + Live Rooms + Media/Recordings + Encouragements | Pending |
 | 13 | Admin + Content Review + Congregation + diagnostics/recovery | Pending |
+
+## Foundation certification evidence (this cycle)
+
+Checkpoint: `release/v4-foundation` @ `a008919fe9e7db1fcd2a03cac8b71fd7110afc0d`.
+
+Foundation B completion added to `src/ui/v4-foundation.css`:
+- a global, token-driven `:focus-visible` treatment (previously absent entirely — the `--focus` token existed but was never applied to any selector);
+- form control primitives (text/date/number/email/tel/search inputs, textarea, select, checkbox, radio, disabled state) scoped to `.bq-panel`/`.bq-surface` containers;
+- a status-badge system (`--success/--warning/--danger/--info`) where every variant carries its own distinct `::before` glyph so meaning never depends on color alone;
+- strong-contrast coverage extended to the new form/status primitives, not just panels/nav.
+
+New static contract: `tests/v4-foundation-static.mjs` — asserts required tokens, the V3 compatibility aliases are retained, focus/motion/contrast rules exist, form-control coverage exists, every status-badge variant has a distinct glyph, and no remote font/asset URLs were introduced.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34657733612`.
+
+Typography remains fallback/local-first (no remote font CDN) — this is an intentional, already-recorded offline/PWA/privacy decision, not an open item.
 
 ## Change-class rules
 
