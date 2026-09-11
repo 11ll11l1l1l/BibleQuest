@@ -1,6 +1,6 @@
 # BibleQuest v3 — Current Development Priority
 
-Updated: 2026-09-12 JST after current-production two-host verification.
+Updated: 2026-09-12 JST after current-production two-host verification and visual-milestone closeout.
 
 ## Current truth
 
@@ -66,11 +66,11 @@ Production implementation is present and healthy, but actual Journey Group / Clo
 
 Do not mutate production tables directly to simulate this acceptance. Use the actual product UI/API/auth/RLS paths.
 
-### 1D — Visual Phase B
+### 1D — Visual Phase B — COMPLETE
 
 Accepted exact-green visual checkpoints include More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow. Do not repeat them.
 
-Run `34637203062` confirmed the checked current Phase-B production files byte-for-byte on both Pages hosts and passed the corresponding hosted browser smokes. Issue #94 remains the release integration tracker, but further product visual work is selected only if current evidence shows a material placeholder, generic, broken or inconsistent surface.
+Run `34637203062` confirmed the checked current Phase-B production files byte-for-byte on both Pages hosts and passed the corresponding hosted browser smokes. Issue #94 is closed as completed. Further product visual work is selected only if current field/production evidence shows a material placeholder, generic, broken or inconsistent surface.
 
 ### 1E — provider/production gate
 
