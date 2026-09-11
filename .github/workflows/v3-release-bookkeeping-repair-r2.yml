@@ -1,0 +1,62 @@
+name: BibleQuest v3 guarded release bookkeeping repair r2
+
+on:
+  push:
+    branches:
+      - repair/v3-release-bookkeeping-20260911-r2
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout live release branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/v3-post-parity-closeout
+          fetch-depth: 0
+      - name: Guard expected release HEAD
+        run: test "$(git rev-parse HEAD)" = "57febae5e4d2c004ace420cd27b4f80907b69ad2"
+      - name: Align validator with approved retired scope and restore status contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          validator=Path('scripts/validate-v3-architecture.mjs')
+          text=validator.read_text()
+          old="allowed=new Set(['Not started','Implemented','Verified','Regression-tested'])"
+          new="allowed=new Set(['Not started','Implemented','Verified','Regression-tested','Retired from v3 release scope'])"
+          if text.count(old)!=1:
+              raise SystemExit(f'Expected one validator status-set target, found {text.count(old)}')
+          validator.write_text(text.replace(old,new,1))
+
+          status=Path('DEVELOPMENT_STATUS_V3.md')
+          s=status.read_text()
+          if 'Defect / root-cause ledger' in s or 'Next major milestone' in s:
+              raise SystemExit('Status contract headings already present unexpectedly')
+          addition='''
+## Defect / root-cause ledger
+
+- `transformation-v2.js` release-blocking template-expression syntax error was reproduced by the exact-SHA Cloudflare deployment gate and fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
+- `scripts/deploy-gate.mjs` still validated the retired legacy `sw.js` precache model instead of the v3 `offline-shell-sw.js` runtime-warming owner/worker. The stale gate was aligned with the verified v3 ownership contract at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
+- The accumulated architecture validator still rejected the explicitly approved `Retired from v3 release scope` inventory state for rows #39/#40 and required these ledger/queue headings. This release-control bookkeeping mismatch is corrected in the current candidate; the complete exact-SHA release suite must be rerun before any freeze or promotion.
+
+## Next major milestone
+
+Run the complete exact-SHA release suite from the beginning on the resulting candidate: Cloudflare deployment gate, accumulated v3 architecture validators, edge/security regressions, Playwright browser/mobile, PWA/offline, accessibility, and diff/static checks. No prior PASS transfers to the changed SHA.
+'''
+          status.write_text(s.rstrip()+'\n'+addition.strip()+'\n')
+          PY
+          node scripts/validate-v3-architecture.mjs
+          git diff --check
+          git diff -- scripts/validate-v3-architecture.mjs DEVELOPMENT_STATUS_V3.md
+      - name: Commit and push minimal release-control repair
+        run: |
+          git config user.name "BibleQuest release executor"
+          git config user.email "138889199+11ll11l1l@users.noreply.github.com"
+          git add scripts/validate-v3-architecture.mjs DEVELOPMENT_STATUS_V3.md
+          git commit -m "fix(v3): align release validator with retired scope"
+          git push origin HEAD:feature/v3-post-parity-closeout
