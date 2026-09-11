@@ -9,9 +9,9 @@ export function homePage({ progress, dailyMission, onMission, onRecordings, onMe
     html: `
       <section class="bq-hero">
         <div>
-          <p class="bq-eyebrow">Rebuild and verify</p>
+          <p class="bq-eyebrow">Explore · Learn · Grow</p>
           <h1>BibleQuest</h1>
-          <p>The clean v3 rebuild restores each old workflow on one stable architecture and keeps every completed milestone under regression.</p>
+          <p>Read Scripture, build steady habits, learn through games and guided study, and keep your journey together in one place.</p>
         </div>
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
