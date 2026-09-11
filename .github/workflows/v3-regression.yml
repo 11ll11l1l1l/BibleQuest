@@ -1,7 +1,9 @@
-name: BibleQuest v3 regression
+name: BibleQuest v3 Kids Memory full verification
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - verify/v3-kids-memory-full-cebcea6-20260911
 
 concurrency:
   group: biblequest-v3-${{ github.ref }}
@@ -13,6 +15,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: cebcea607c1219955583e800f18fa3ab0a18e9cf
+      - name: Assert exact candidate
+        run: test "$(git rev-parse HEAD)" = "cebcea607c1219955583e800f18fa3ab0a18e9cf"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
