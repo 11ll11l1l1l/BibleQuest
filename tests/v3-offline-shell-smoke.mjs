@@ -5,29 +5,40 @@ const browser=await chromium.launch({headless:true});
 const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
 const page=await context.newPage();
 const errors=[];page.on('pageerror',error=>errors.push(error.message));
+const warmSentinels=[
+  '/src/app/bootstrap.js',
+  '/src/app/offline-shell.js',
+  '/src/features/more/index.js',
+  '/src/features/games/memory.js',
+  '/src/features/psychometrics/via-content.js',
+  '/src/ui/content-reporting.css'
+];
 try{
   await page.goto(BASE,{waitUntil:'networkidle'});
   await page.locator('[data-bq-shell="v3"]').waitFor();
   await page.evaluate(()=>navigator.serviceWorker.ready);
-  await page.waitForFunction(async()=>{
-    const names=await caches.keys();
-    const name=names.find(value=>value.startsWith('biblequest-v3-offline-shell-'));
-    if(!name)return false;
-    const cache=await caches.open(name),requests=await cache.keys(),urls=requests.map(request=>request.url);
-    return urls.some(url=>url.includes('/src/app/bootstrap.js'))&&urls.some(url=>url.includes('/src/ui/app.css'));
-  },null,{timeout:10000});
-  const before=await page.evaluate(async()=>{
+  await page.waitForFunction(sentinels=>{
+    return (async()=>{
+      const names=await caches.keys();
+      const name=names.find(value=>value.startsWith('biblequest-v3-offline-shell-'));
+      if(!name)return false;
+      const cache=await caches.open(name),requests=await cache.keys(),urls=requests.map(request=>request.url);
+      return sentinels.every(sentinel=>urls.some(url=>url.includes(sentinel)));
+    })();
+  },warmSentinels,{timeout:20000});
+  const before=await page.evaluate(async sentinels=>{
     const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
-    const cache=await caches.open(name),requests=await cache.keys();
-    return {name,count:requests.length,probe:requests.some(request=>request.url.includes('bq-net-probe')),packs:requests.some(request=>request.url.includes('/data/packs/'))};
-  });
-  assert(before.count>2,'Offline shell cache did not warm enough resources.');
+    const cache=await caches.open(name),requests=await cache.keys(),urls=requests.map(request=>request.url);
+    return {name,count:requests.length,probe:urls.some(url=>url.includes('bq-net-probe')),packs:urls.some(url=>url.includes('/data/packs/')),sentinels:sentinels.filter(sentinel=>urls.some(url=>url.includes(sentinel)))};
+  },warmSentinels);
+  assert(before.count>=warmSentinels.length,'Offline shell cache did not warm the required shell graph.');
+  assert(before.sentinels.length===warmSentinels.length,'Offline shell cache did not reach late shell modules before offline transition.');
   assert(!before.probe,'Client Diagnostics network probe must never enter the offline shell cache.');
   assert(!before.packs,'#98 shell cache must not contain Bible packs reserved for #99.');
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded',timeout:15000});
-  await page.locator('[data-bq-shell="v3"]').waitFor({timeout:10000});
-  await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor({timeout:10000});
+  await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+  await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor({timeout:15000});
   const metrics=await page.evaluate(()=>({shells:document.querySelectorAll('[data-bq-shell="v3"]').length,heading:document.querySelector('h1')?.textContent?.trim(),innerWidth,scrollWidth:document.documentElement.scrollWidth,controller:Boolean(navigator.serviceWorker.controller)}));
   assert(metrics.shells===1,'Offline reload must mount exactly one v3 shell.');
   assert(metrics.heading==='BibleQuest','Offline reload must render the home shell.');
