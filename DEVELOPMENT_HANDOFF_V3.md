@@ -1,57 +1,57 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after #15 Japanese furigana complete functional verification and promotion bookkeeping.
+Updated: 2026-09-11 JST after user-approved Kids/Kana release-scope closeout.
 
 Live GitHub refs and exact executed evidence are authoritative; recover them first.
 
 ## Frozen baseline
 
 - Repo: `11ll11l1l1l/BibleQuest`.
-- Current frozen baseline before the #15 bookkeeping gate: `release/v3.70-kids-memory-match` at `ba4394a1c6acaf62a9f24b1883b5ec5ec4d12be9`.
-- v3.70 exact bookkeeping verification run `34547970159`: **success**.
+- Latest frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
+- Exact bookkeeping run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
+- Earlier exact functional candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed targeted run `34549872861` and complete functional run `34550018009`.
 - `main`, production v2, Cloudflare, data, and Supabase remain untouched.
-- Normal v3 Actions are dispatch-only; temporary push triggers stay isolated on verifier branches.
+- Normal product Actions stay dispatch-only; temporary push-trigger verifier workflows stay isolated.
 
-## Current #15 state
+## Release-scope decision
 
-- Active branch: `feature/v3-japanese-furigana`.
-- Green functional candidate: `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81`.
-- Exact-SHA targeted run `34549872861`: **success**.
-- Exact-SHA complete accumulated functional run `34550018009`: **success** across architecture, edge/security, and browser/mobile suites.
-- Promoted state in this bookkeeping candidate: **97 Regression-tested / 1 Verified / 0 Implemented / 2 Not started**; strict parity **98/100**, regression stability **97/100**.
-- #15 Japanese furigana is Verified. #38 Kids Memory Match has rolled to Regression-tested. #40 Kids Bible Who Am I remains reopened. #39 Hiragana Match remains explicitly deferred.
-- A fresh complete bookkeeping gate is still required on this changed documentation SHA before v3.71 can freeze.
+The current verified Kids game set is accepted for the v3 release. Inventory #39 Hiragana Match and #40 Kids Bible Who Am I are retired from the active v3 release scope by explicit user decision. Do not implement them merely to reach the old 100-row historical inventory.
 
-## #15 verified boundary
+They remain documented as optional future expansion only. Do not mark them implemented or verified. If either is reopened in the future, follow `KIDS_GAMES_EXTENSION_V3.md` and normal rebuild-and-verify discipline.
 
-Furigana remains a Reader presentation aid for Japanese 口語訳 only. One Storage-backed preference supports `off`, `support` (難しい語だけ), and `all` (すべて), with `support` as default. Support mode uses only recovered curated readings. All mode lazily uses the isolated Kuromoji adapter, normalizes Katakana readings to Hiragana, and falls back to curated support output if tokenizer loading/tokenization fails.
+Current applicable release scope: **98 capabilities**.
 
-No furigana path awards XP or mutates Scripture. Canonical verse data remains unchanged beneath ruby presentation. Reader cancels stale asynchronous furigana passes across navigation, translation changes, and teardown. Existing Japanese vocabulary remains a separate owner and is reused as the curated reading source rather than duplicated.
+- Regression-tested: **97**
+- Verified: **1** (#15 Japanese Furigana)
+- Implemented: **0**
+- Not started in active release scope: **0**
+- User-retired legacy rows: **2** (#39, #40)
 
-Permanent evidence: `src/app/japanese-furigana.js`, `src/app/japanese-furigana-tokenizer.js`, `src/features/reader/furigana.js`, `src/features/reader/index.js`, `src/app/bootstrap.js`, `scripts/validate-v3-japanese-furigana.mjs`, `tests/v3-japanese-furigana-edge.mjs`, `tests/v3-japanese-furigana-smoke.mjs`, strengthened Japanese Kougo regression, and `.github/workflows/v3-regression.yml`.
+Active release-scope parity is therefore **98/98 complete**. Regression stability is **97/98** because #15 is still the newest verified product milestone, although its exact v3.71 bookkeeping SHA has already passed the complete suite.
 
-## Verification/root-cause evidence
+## Existing Kids coverage
 
-- `34549469205`: isolated author push was blocked by GitHub Actions workflow-file permission only; feature branch unchanged, no product defect.
-- `34549531647`: corrected isolated author run succeeded after workflow writes were separated.
-- `34549642961`: regression-spec error expected support ruby for uncurated standalone `神`; corrected to enforce curated-only support/fallback and tokenizer-only full reading.
-- `34549744682`: existing Kougo raw-text assertion did not account for `<rt>` annotation text; canonical base Scripture was unchanged. Regression now strips `<rt>` before source-text comparison.
-- `34549872861`: corrected exact-SHA targeted gate passed all #15 and neighboring Japanese/Reader checks.
-- `34550018009`: exact functional SHA `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed the complete accumulated suite.
+The current Games architecture already provides a verified shared Games page and launcher, #38 Kids Memory Match / Memory Meadow, #36 Character Detective / Who Am I, Timeline, Recall and the existing shared game flows. A separate Kids-specific Who Am I duplicate is not required for this release.
 
-## Remaining priority state
+Future Kids games must extend the current Games owner rather than create another launcher/runtime. `KIDS_GAMES_EXTENSION_V3.md` defines registration, ownership, cleanup, reward, mobile/accessibility, content-safety and accumulated-regression requirements.
 
-#40 Kids Bible Who Am I is the next active parity item and requires exact historical mapping before implementation; the retained standalone Kids Games bundle did not expose a literal display label `Who Am I`, so do not guess the contract. #39 Hiragana Match remains explicitly deferred and must not be silently implemented.
+## Current working branch
 
-## Exact next executable sequence
+- Branch: `feature/v3-post-parity-closeout`
+- Base: frozen `release/v3.71-japanese-furigana`
+- Purpose: record scope closeout and the future Kids-game extension contract, then hand development to the pre-release phase.
+- This branch must not be interpreted as production deployment authorization.
 
-1. Recover the exact SHA of the bookkeeping commit containing this promoted handoff/inventory/status.
-2. Create an isolated bookkeeping verifier that checks out and asserts that exact SHA, then run the complete accumulated architecture, edge/security, and browser/mobile suite. Do not transfer PASS from functional SHA `5b3891e3...`.
-3. On green, freeze `release/v3.71-japanese-furigana` at the clean bookkeeping SHA, not at the temporary verifier commit.
-4. Verify the release ref equals the successful bookkeeping SHA.
-5. Branch #40 only from frozen v3.71; perform contract/data/ownership recovery first and implement only what retained evidence supports. Keep #39 deferred.
-6. Continue focused → complete functional → promotion/bookkeeping → complete bookkeeping → freeze until parity is complete.
+## Next executable sequence
 
-## Non-negotiable safety
+1. Reconcile `FEATURE_INVENTORY_V3.md` with the explicit user scope decision: #39/#40 are `Retired from v3 release scope`; applicable parity becomes 98/98.
+2. Keep `KIDS_GAMES_EXTENSION_V3.md` as the permanent rule for adding later Kids/Kana games through the existing Games architecture.
+3. Begin the **artwork/theme polish phase** previously requested by the user. This phase may improve artwork, icons, colors, visual cohesion and presentation quality, but must not redesign the established interface, navigation model, ownership boundaries or feature architecture.
+4. During polish, fix only reproduced defects. Do not add unrelated functionality.
+5. After product/artwork changes, run the full accumulated exact-SHA architecture, edge/security, browser/mobile, PWA/offline and relevant accessibility acceptance suite.
+6. Freeze the release candidate only at the exact clean SHA that passes the final suite.
+7. Production promotion remains a separate explicit step. Do not modify `main`, production v2, production Supabase/data or production Cloudflare without authorization.
 
-Rebuild-and-verify; one owner per responsibility; no PASS transfer across changed SHAs; no production or `main` mutation without explicit authorization. Never freeze an untested SHA.
+## Safety / evidence rule
+
+Do not claim that software is bug-free. The correct statement at this handoff is: frozen v3.71 passed the complete exact-SHA suite and has no known regression blocker in that executed evidence. Any changed SHA must earn its own verification; PASS is never transferred across product changes.
