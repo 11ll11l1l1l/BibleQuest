@@ -1,94 +1,88 @@
 # BibleQuest v3 — Product/Documentation Reconciliation
 
-Status: cumulative product integrated, promoted and live verified
-Updated: 2026-09-11 JST
+Status: cumulative release preserved; post-release Calendar and Visual Phase B milestones exactly verified and promoted
+Updated: 2026-09-12 JST
 
 ## Current product/release truth
 
-The former divergent post-release lines have been reconciled, exactly verified and released.
+Current exact-green product:
 
-- cumulative exact-green product SHA: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
-- cumulative verifier run: `34610903807` — **success**
-- parent Line A: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`
-- parent full Line B: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`
-- docs checkpoint: `675c6181ecc4dc36a47ba410feab142605eba913`; docs contract `34612119469` — success
-- live `main` / promoted release commit: `04bd51bfc4ff16a3b42d13e47e95e637999b4880`
-- release branch: `release/v3-cumulative-20260911-r1`
-- production verifier: `34612873935` — **success**
+- `main`: `046e2a85cafe10d722d03d467d3733eddfeb6e65`
+- frozen ref: `release/v3-phase-b-more-icons-20260912`
+- exact accumulated verifier: run `34618963635` — **success**
+- verified parent: `350cb1e583b207e10ba8dc50c3bb683dc50f9494`
+
+The current product SHA is the exact PR #100 synthetic merge commit checked out by run `34618963635` (`Merge 624b8e53... into 350cb1e...`). After the run passed, that exact commit was frozen and `main` was fast-forwarded to it. No new unverified promotion commit was created.
+
+Its parent `350cb1e...` is likewise an exact-green merge candidate:
+
+- purpose: Ministry Hub Calendar surface;
+- frozen ref: `release/v3-ministry-calendar-surface-20260912`;
+- exact accumulated verifier: run `34616603649` — **success**;
+- verified base: `de609669e7da7364e6969e11420ff599f45f666c`;
+- feature head: `5407c97308df27642b2d8462e5da1e573ea9f08e`.
+
+## Historical cumulative release preserved
+
+The earlier cumulative product remains important ancestry/evidence, but it is no longer current `main`:
+
+- cumulative exact-green product: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
+- cumulative verifier: `34610903807` — success
+- former Line A parent: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`
+- former Line B parent: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`
+- previous promoted release commit: `04bd51bfc4ff16a3b42d13e47e95e637999b4880`
+- previous release ref: `release/v3-cumulative-20260911-r1`
+- previous independent two-host production verifier: `34612873935` — success
 - prior rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-The historical Line A / Line B merge base was `545b5b98d88ca04001d3675317c37cbcd3306955`. That divergence is resolved. Do not restart the merge unless newer ancestry proves a new divergence.
+Do not restart the historical Line A / Line B reconciliation. It is resolved ancestry.
 
-## What the released cumulative product contains
+## What the current product adds after the cumulative release
 
-- Assignment Private Responses;
-- Workspace/Cloud Notes deployed-schema compatibility;
-- Visual tranche 18;
-- Avatar Vault v2;
-- Calendar v1.5.
+### Ministry Hub Calendar surface — `350cb1e...`
 
-## Product verification earned by `cf17f36...`
+- adds the already-verified Calendar route to valid-member Ministry Hub tools;
+- keeps Calendar state/persistence/shared-event behavior owned by `src/app/calendar.js`;
+- keeps congregation-role projection under the existing membership owner;
+- does not add schema/API/RLS/storage/recurrence or authorization behavior;
+- full accumulated architecture, edge/security and browser/mobile suite passed in run `34616603649`.
 
-Run `34610903807` checked out the exact product SHA and passed:
+### Visual Phase B More hub — `046e2a85...`
 
-- exact candidate/two-parent ancestry;
-- cumulative cross-line integration contract;
-- focused Assignment privacy, Workspace schema, Avatar, Calendar and visual regressions;
-- deployment gate;
-- complete accumulated architecture validators;
-- complete accumulated edge regressions;
-- complete accumulated browser/mobile suite.
+- adds real `assets/more-feature-icons.svg` with 15 semantic same-origin symbols;
+- wires decorative icons into existing More cards while preserving text/button semantics and route callbacks;
+- adds `src/ui/more-phase-b.css` after the historical More visual layer;
+- adds permanent static and 390 px browser acceptance tests to the accumulated regression;
+- does not wire nonexistent `assets/icons/v3/` paths;
+- full accumulated architecture, edge/security/static and browser/mobile suite passed in run `34618963635`.
 
-No PASS transfers to a changed product SHA.
+## Deployment evidence for current product
 
-## Promotion and production proof
+Cloudflare Pages provider check runs succeeded for exact `046e2a85...` on both configured projects:
 
-`04bd51b...` is a history-preserving promotion merge with the same cumulative/docs tree. Its parents preserve both the cumulative line and the former `main` documentation line.
+- `mybiblequest` — success;
+- `biblequest` / `biblequest-7th` — success.
 
-Run `34612873935` independently verified:
+This establishes provider deployment success for the exact product SHA. It is not a substitute for a fresh independent two-host byte-for-byte/browser verification. The last such independent production verifier remains `34612873935` for the earlier cumulative release; its PASS does not transfer.
 
-- `main` points to the intended promotion commit;
-- deployment gate passes;
-- key files on both `mybiblequest.pages.dev` and `biblequest-7th.pages.dev` match the promoted release byte-for-byte;
-- both hosts pass shell, Assignments, Workspace, Avatar Vault, Calendar, accessibility and offline browser/mobile smoke.
-
-GitHub promotion and Cloudflare propagation were therefore proven separately for this release.
-
-## Production Supabase migration truth
+## Production Supabase truth
 
 Production project: `zkfmgezvzugchcwppreq`.
 
-All release migrations are **APPLIED + LIVE VERIFIED**:
+The release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by the post-release Calendar-surface and visual milestones:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-### Assignment response presence
+Do not reapply them.
 
-The deployed pre-migration helper `private.bible_assignment_visible(uuid,text,uuid)` matched the reviewed migration contract before application. Post-apply evidence proved:
+## Release-process reconciliation
 
-- safe projection columns only;
-- RLS enabled;
-- anon cannot read;
-- authenticated can SELECT under RLS but cannot mutate;
-- private sync function not executable by anon/authenticated;
-- backfill parity: 1 completed / 1 projected / 0 missing / 0 orphan;
-- rollback authorization matrix: intended member 4/4, unrelated member only `all` 1/4, ministry 4/4;
-- reopen/recomplete/delete trigger behavior synchronized correctly.
-
-### Calendar
-
-Post-apply evidence proved:
-
-- personal own-row RLS;
-- congregation-member shared read and ministry-only shared insert;
-- notification trigger is private/non-callable to anon/authenticated;
-- ministry could create personal and congregation rows in rollback smoke;
-- an ordinary member could read the shared row but not the ministry user's private row;
-- no smoke event/notification data persisted after rollback.
-
-The post-migration security advisor added no new release-migration finding; pre-existing findings remain separate follow-up evidence.
+- PR #97 added `pull_request` execution of the accumulated regression so product candidates receive integration evidence automatically.
+- PR #98 restored validator-owned development-status ledger headings after run `34615866840` exposed a documentation-contract regression; run `34616114505` passed fully.
+- PR #99 attempted a `push` trigger, but the permanent workflow contract correctly failed run `34617187008` with `Product v3 regression workflow must not contain a push trigger.` The PR was closed without merge.
+- Exact-green promotions therefore continue through the established candidate pattern: verify the PR synthetic merge commit, freeze that exact SHA, and fast-forward `main` to the exact verified commit when ancestry permits.
 
 ## Document authority
 
@@ -96,21 +90,24 @@ When documents disagree:
 
 1. latest explicit user instruction;
 2. `DEVELOPMENT_PRIORITY_V3.md` for cross-feature task selection;
-3. this file for cumulative product/release ancestry and release truth;
+3. this file for current product/release ancestry and release truth;
 4. `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`;
 5. feature-specific contract inside that feature only;
-6. exact-SHA/live workflow evidence;
+6. exact-candidate workflow/deployment/live evidence;
 7. historical release/investigator/ledger documents.
 
 ## Next safe gate
 
-The cumulative integration/release gate is closed. Future work must start from the current cumulative production base and select the next dependency-safe Priority 1 functionality/visual milestone.
+Start all new development from exact-green `046e2a85...` unless newer repository evidence proves a later verified product.
 
 Do not:
 
-- repeat Line A/Line B reconciliation;
-- reapply the three release migrations;
+- redo Line A / Line B integration;
 - rebuild Calendar v1/v1.5;
-- reopen completed visual tranches solely to create work.
+- redo the Ministry Hub Calendar surface;
+- redo the More hub Phase B icon milestone;
+- reapply the three production migrations;
+- wire absent `assets/icons/v3/` binaries;
+- add a forbidden `push` trigger to the product regression workflow.
 
-Do refresh live refs, confirm incompleteness, preserve ownership, run focused + accumulated exact-SHA verification, and treat later production promotion as a separate evidence-bearing step.
+Next investigate congregation-shared Calendar event edit/delete as the leading functionality candidate. Confirm the gap from current owner/UI/tests before writing. If already complete, choose the next verified requirement gap or another materially under-designed Visual Phase B surface. Every product change requires focused permanent coverage plus a complete exact-candidate accumulated regression before promotion.
