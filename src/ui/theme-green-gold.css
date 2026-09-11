@@ -1,0 +1,255 @@
+/* BibleQuest v3 post-release green-and-gold theme layer.
+   Presentation only. Do not change layout, routing, interaction, persistence, rewards,
+   feature ownership, accessibility semantics, service workers, APIs, or Supabase behavior. */
+
+:root{
+  --bq-theme-green-950:#173d2b;
+  --bq-theme-green-900:#1f5138;
+  --bq-theme-green-800:#286344;
+  --bq-theme-green-700:#337652;
+  --bq-theme-green-600:#448762;
+  --bq-theme-green-100:#eaf3ec;
+  --bq-theme-green-050:#f4f8f3;
+  --bq-theme-gold-700:#9a6d16;
+  --bq-theme-gold-600:#b78222;
+  --bq-theme-gold-500:#c99a3d;
+  --bq-theme-gold-300:#e5c77f;
+  --bq-theme-gold-100:#f7eed5;
+  --bq-theme-cream:#fffaf0;
+  --bq-theme-ink:#1f3026;
+  --bq-theme-muted:#68756d;
+  --green:var(--bq-theme-green-700);
+  --line:rgba(29,68,47,.13);
+  --paper:#fffefa;
+  --muted:var(--bq-theme-muted);
+  --bq-accent:var(--bq-theme-green-700);
+  --bq-ink:var(--bq-theme-ink);
+  --bq-border:rgba(29,68,47,.13);
+  --bq-surface:#fffefa;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 18% -8%,rgba(229,199,127,.22),transparent 30%),
+    linear-gradient(180deg,#f8faf5 0%,#f5f7f0 55%,#f7f4e9 100%);
+  color:var(--bq-theme-ink);
+}
+
+.bq-topbar{
+  background:rgba(249,250,245,.94);
+  box-shadow:0 1px 0 rgba(31,81,56,.07);
+}
+
+.bq-brand-mark{
+  background:linear-gradient(145deg,var(--bq-theme-green-900) 0%,var(--bq-theme-green-700) 68%,var(--bq-theme-gold-600) 100%);
+  box-shadow:0 5px 16px rgba(31,81,56,.18),inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+.bq-brand strong{
+  color:var(--bq-theme-green-950);
+}
+
+.bq-build-chip,
+.bq-session-chip,
+.bq-progress-chip{
+  border-color:rgba(31,81,56,.14);
+  background:linear-gradient(180deg,#fffefa 0%,#fbfaf3 100%);
+  box-shadow:0 3px 10px rgba(36,63,45,.045);
+}
+
+.bq-session-chip[data-session-state="authenticated"] [data-session-dot]{background:var(--bq-theme-green-700)}
+.bq-session-chip[data-session-state="guest"] [data-session-dot]{background:var(--bq-theme-gold-500)}
+
+.bq-hero{
+  border-color:rgba(31,81,56,.12);
+  background:
+    radial-gradient(circle at 92% 12%,rgba(229,199,127,.34),transparent 34%),
+    linear-gradient(135deg,#edf6ee 0%,#f9f8ee 54%,#fff4d8 100%);
+  box-shadow:0 12px 32px rgba(31,65,43,.09),inset 0 1px 0 rgba(255,255,255,.74);
+}
+
+.bq-hero h1,
+.bq-panel h1,
+.bq-panel h2{
+  color:var(--bq-theme-green-950);
+}
+
+.bq-eyebrow{
+  color:var(--bq-theme-gold-700)!important;
+}
+
+.bq-panel{
+  border-color:rgba(31,81,56,.12);
+  background:linear-gradient(180deg,#fffefa 0%,#fff 100%);
+  box-shadow:0 8px 24px rgba(34,61,43,.055),inset 0 1px 0 rgba(255,255,255,.82);
+}
+
+.bq-primary-button{
+  background:linear-gradient(135deg,var(--bq-theme-green-900),var(--bq-theme-green-700));
+  box-shadow:0 5px 14px rgba(31,81,56,.13),inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.bq-primary-button:hover:not(:disabled),
+.bq-primary-button:focus-visible:not(:disabled){
+  background:linear-gradient(135deg,var(--bq-theme-green-800),var(--bq-theme-green-600));
+}
+
+.bq-secondary-button{
+  border-color:rgba(31,81,56,.17);
+  background:linear-gradient(180deg,#fffefa,#fbfaf3);
+  color:var(--bq-theme-green-900);
+}
+
+.bq-secondary-button:hover:not(:disabled),
+.bq-secondary-button:focus-visible:not(:disabled){
+  border-color:rgba(154,109,22,.42);
+  background:linear-gradient(180deg,#fffdf6,#fbf3dc);
+}
+
+.bq-nav{
+  background:rgba(255,254,250,.97);
+  border-top-color:rgba(31,81,56,.12);
+  box-shadow:0 -8px 26px rgba(34,61,43,.06);
+}
+
+.bq-nav a[aria-current]{
+  color:var(--bq-theme-green-800);
+}
+
+.bq-nav a[aria-current]>span{
+  filter:drop-shadow(0 2px 4px rgba(183,130,34,.14));
+}
+
+.bq-account-tabs,
+.bq-account-footnote,
+.bq-current-device,
+.bq-local-note{
+  border-color:rgba(31,81,56,.10);
+}
+
+.bq-account-tabs{
+  background:linear-gradient(180deg,#f4f7f1,#f8f5e9);
+}
+
+.bq-account-tabs button.active{
+  color:var(--bq-theme-green-800);
+  box-shadow:0 3px 10px rgba(31,81,56,.08);
+}
+
+.bq-account-form input:focus{
+  outline-color:rgba(183,130,34,.18);
+  border-color:var(--bq-theme-green-600);
+}
+
+.bq-current-device{
+  background:var(--bq-theme-green-100);
+  color:var(--bq-theme-green-800);
+}
+
+.bq-local-note{
+  background:var(--bq-theme-gold-100);
+  color:#6f551d!important;
+}
+
+.bq-progress-stats>div,
+.bq-badge-card,
+.bq-daily-steps li,
+.bq-daily-feedback,
+.bq-game-card,
+.bq-game-choice,
+.bq-game-stats>div,
+.bq-timeline-row,
+.bq-scripture-panel,
+.bq-reader-search,
+.bq-world-art,
+.bq-world-region{
+  border-color:rgba(31,81,56,.13);
+}
+
+.bq-progress-stats>div,
+.bq-badge-card,
+.bq-daily-steps li,
+.bq-game-stats>div,
+.bq-timeline-row,
+.bq-world-region{
+  background:linear-gradient(155deg,#fffefa 0%,#f7f8f0 100%);
+}
+
+.bq-progress-stats b,
+.bq-daily-steps li.is-current,
+.bq-game-card>span,
+.bq-game-progress i,
+.bq-world-progress i{
+  color:var(--bq-theme-green-800);
+}
+
+.bq-badge-card.is-unlocked,
+.bq-daily-feedback.is-correct,
+.bq-game-choice.is-correct,
+.bq-memory-card.is-matched{
+  border-color:rgba(51,118,82,.30);
+  background:linear-gradient(155deg,#eff8f0 0%,#e6f2e8 100%);
+}
+
+.bq-badge-card.is-unlocked>span,
+.bq-daily-steps li.is-done span,
+.bq-daily-progress span{
+  background:linear-gradient(135deg,var(--bq-theme-green-900),var(--bq-theme-green-700));
+}
+
+.bq-daily-feedback.is-review{
+  border-color:rgba(183,130,34,.38);
+  background:linear-gradient(155deg,#fffaf0,#f9efd1);
+}
+
+.bq-game-progress{
+  background:linear-gradient(180deg,#edf2ea,#e6eadf);
+}
+
+.bq-game-progress i,
+.bq-world-progress i{
+  background:linear-gradient(90deg,var(--bq-theme-green-800),var(--bq-theme-gold-500));
+}
+
+.bq-memory-card{
+  background:linear-gradient(145deg,#d7b75f 0%,#bf8f2f 100%);
+  border-color:rgba(124,87,18,.24);
+  box-shadow:0 6px 16px rgba(95,70,28,.12),inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+.bq-memory-card.is-open{
+  background:linear-gradient(155deg,#fffefa,#fbf3dc);
+  border-color:var(--bq-theme-gold-300);
+}
+
+.bq-scripture-panel{
+  background:
+    linear-gradient(90deg,rgba(183,130,34,.08),transparent 12%),
+    linear-gradient(180deg,#fffefa,#fff);
+}
+
+.bq-reader-search input:focus,
+.bq-reader-select:focus,
+.bq-reader-chapter:focus{
+  outline-color:rgba(183,130,34,.18);
+  border-color:var(--bq-theme-green-600);
+}
+
+.bq-world-art{
+  background:linear-gradient(155deg,#fffefa,#f6f6ec);
+  box-shadow:0 12px 34px rgba(31,65,43,.075),inset 0 1px 0 rgba(255,255,255,.86);
+}
+
+.bq-world-region.is-next{
+  outline-color:rgba(183,130,34,.48);
+  background:linear-gradient(155deg,#fffaf0,#f2f7ee);
+}
+
+.bq-world-region.is-explored .bq-world-icon{
+  background:linear-gradient(145deg,#e7f3e6,#f4ead0);
+}
+
+@media(prefers-contrast:more){
+  :root{--line:rgba(23,61,43,.32);--bq-border:rgba(23,61,43,.32)}
+  .bq-panel,.bq-hero,.bq-progress-stats>div,.bq-badge-card,.bq-game-card,.bq-game-choice,.bq-world-region{box-shadow:none}
+}
