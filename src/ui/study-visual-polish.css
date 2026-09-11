@@ -1,0 +1,28 @@
+/* BibleQuest v3 visual replacement tranche 7 — Guided Study.
+   Presentation only: no layout, lesson lifecycle, answers, references, persistence, navigation or accessibility ownership. */
+
+.bq-study-card,
+.bq-study-prompt,
+.bq-study-feedback,
+.bq-study-saved-response,
+.bq-study-summary>div{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(155deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 6px 18px rgba(39,60,45,.04),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-study-prompt{
+  background:linear-gradient(155deg,#fbfcf8 0%,#f2f7f1 100%);
+}
+
+.bq-study-feedback{
+  background:linear-gradient(155deg,#f5f9f3 0%,#eaf3e9 100%);
+}
+
+.bq-study-saved-response{
+  background:linear-gradient(155deg,#fafbf8 0%,#f1f5ef 100%);
+}
+
+@media(prefers-contrast:more){
+  .bq-study-card,.bq-study-prompt,.bq-study-feedback,.bq-study-saved-response,.bq-study-summary>div{box-shadow:none;border-color:rgba(31,54,39,.36)}
+}
