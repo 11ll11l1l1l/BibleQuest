@@ -1,0 +1,34 @@
+name: BibleQuest v3 furigana bookkeeping author
+
+on:
+  push:
+    branches:
+      - verify/v3-japanese-furigana-bookkeeping-author-20260911
+
+permissions:
+  contents: write
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply bookkeeping to exact functional candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/v3-japanese-furigana verify/v3-japanese-furigana-bookkeeping-author-20260911
+          git show origin/verify/v3-japanese-furigana-bookkeeping-author-20260911:.github/furigana-bookkeeping.py > /tmp/furigana-bookkeeping.py
+          git checkout -B feature/v3-japanese-furigana origin/feature/v3-japanese-furigana
+          test "$(git rev-parse HEAD)" = "5b3891e3a2c5403c4b88087cd6d6dcbae8412b81"
+          python3 /tmp/furigana-bookkeeping.py
+          git add FEATURE_INVENTORY_V3.md DEVELOPMENT_STATUS_V3.md DEVELOPMENT_HANDOFF_V3.md
+          git diff --cached --check
+          test -n "$(git diff --cached --name-only)"
+          git commit -m "docs(v3): promote Japanese furigana after functional gate"
+          git push origin HEAD:feature/v3-japanese-furigana
