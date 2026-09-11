@@ -56,11 +56,12 @@ function fakeApi(userId){return {
   assert.equal(/submission|leader_feedback/i.test(tableBody),false,'peer-visible projection must never store private response text or feedback');
   assert.match(migration,/revoke insert, update, delete .* from authenticated/i);
   assert.match(migration,/grant select .* to authenticated/i);
-  assert.match(migration,/cm\.role in \('facilitator','leader','pastor','admin'\)/);
-  assert.match(migration,/a\.target_scope = 'all'/);
-  assert.match(migration,/a\.target_scope = 'member'/);
-  assert.match(migration,/a\.target_scope = 'team'/);
-  assert.match(migration,/a\.target_scope = 'group'/);
+  assert.match(migration,/private\.bible_assignment_visible\(a\.congregation_id, a\.target_scope, a\.target_id\)/);
+  assert.match(migration,/create or replace function private\.bible_sync_assignment_response_presence\(\)/i);
+  assert.match(migration,/security definer\s+set search_path = ''/i);
+  assert.match(migration,/revoke all on function private\.bible_sync_assignment_response_presence\(\) from authenticated/i);
+  assert.match(migration,/execute function private\.bible_sync_assignment_response_presence\(\)/i);
+  assert.equal(/create or replace function public\.bible_sync_assignment_response_presence/i.test(migration),false,'SECURITY DEFINER trigger function must not live in the exposed public schema');
 }
 
 console.log('assignment private response contract: ok');
