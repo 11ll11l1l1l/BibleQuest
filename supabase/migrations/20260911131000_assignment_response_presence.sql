@@ -1,6 +1,53 @@
 -- BibleQuest v3 assignment response privacy boundary.
 -- Peer-visible completion presence is physically separated from private response text.
 
+-- Keep assignment audience authority deterministic on migration replay. This mirrors
+-- the deployed helper: ministry roles can inspect congregation assignments; ordinary
+-- members can see only assignments whose all/member/team/group audience contains them.
+create or replace function private.bible_assignment_visible(
+  target_congregation uuid,
+  target_scope text,
+  target_id uuid
+) returns boolean
+language plpgsql stable security definer set search_path=''
+as $$
+declare viewer uuid := (select auth.uid()); viewer_role text;
+begin
+  if viewer is null then return false; end if;
+  select m.role into viewer_role
+  from public.bible_congregation_members m
+  where m.congregation_id=target_congregation
+    and m.user_id=viewer
+    and m.active
+  limit 1;
+  if viewer_role is null then return false; end if;
+  if viewer_role in ('facilitator','leader','pastor','admin') then return true; end if;
+  if target_scope='all' then return true; end if;
+  if target_scope='member' then return target_id=viewer; end if;
+  if target_scope='team' then
+    return exists(
+      select 1 from public.bible_team_members tm
+      where tm.team_id=target_id and tm.user_id=viewer
+    );
+  end if;
+  if target_scope='group' then
+    return exists(
+      select 1
+      from public.bible_group_members gm
+      join public.bible_groups g on g.id=gm.group_id
+      where gm.group_id=target_id
+        and gm.user_id=viewer
+        and gm.active
+        and g.active
+        and g.congregation_id=target_congregation
+    );
+  end if;
+  return false;
+end;
+$$;
+revoke all on function private.bible_assignment_visible(uuid,text,uuid) from public;
+grant execute on function private.bible_assignment_visible(uuid,text,uuid) to authenticated;
+
 create table if not exists public.bible_assignment_response_presence (
   assignment_id uuid not null references public.bible_assignments(id) on delete cascade,
   congregation_id uuid not null references public.bible_congregations(id) on delete cascade,
