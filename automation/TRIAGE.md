@@ -1,45 +1,44 @@
 # BibleQuest autonomous triage
 
 Owner: Agent 5 (`BQ-A5-FIREWALL`)
-Generated: 2026-09-11 08:00 JST
+Generated: 2026-09-11 09:04 JST
 
 ## Freshness
-- Active milestone: **#43 Live Rooms**. Current branch exists but has no product delta yet: `feature/v3-live-rooms` @ `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`.
-- Risk tier before any #43 product write: **HIGH-RISK**. Primary retained evidence crosses authenticated congregation membership, shared-session/participant/response writes, Realtime subscriptions, `bq-room-poll`, and trusted `bq-score`; current A3 #43 trust-boundary review is missing.
-- Dedicated `agent/a1-work/043-*` candidate: **not found**.
-- Latest frozen release: `release/v3.66-same-room-play-together` @ exact `4a5f4b428d637dc5552bcd8a66d99d9c669ae4db`.
-- Exact #42 bookkeeping run `34539753714` = **SUCCESS** at `head_sha=4a5f4b428...`; accumulated architecture, edge/security and browser/mobile phases all completed successfully.
-- Permanent workflow at `4a5f4b428...` is dispatch-only, invokes the #42 validator/edge/smoke, and retains prior accumulated entries. No current evidence of regression deletion/skip/narrowing was found.
-- A2 #42 report analyzed `3d0d3591...`: stale for current SHA.
-- A3 #42 report analyzed `3d0d3591...`: stale for current SHA.
-- A4 #42 report analyzed functional SHA `22d054725...`: stale for current bookkeeping SHA, but its product QA PASS remains valid only for that earlier exact SHA. Current run `34539753714` independently verifies `4a5f4b428...`; no PASS transfer is used.
-- #93 A3/A4 reports analyze frozen v3.64 SHA `56fe2469...` and were NOT READY. Their material trust-boundary concern remains present in current lineage: `bq-admin-ops` is privileged server authority while the permanent `v3-admin-operations-edge.mjs` uses a mocked API rather than faithfully executing JWT/platform-role/destructive-delete authorization.
-- #94 A4 READY review remains missing; v3.65 changed an existing accumulated #93 validator, which control policy automatically classifies HIGH-RISK.
-- Writer lease observed **FREE** during this inspection.
-- Stale immediately on canonical/candidate/release movement or fresh #43/#93/#94 review evidence.
+- Active milestone: **#45 Bible World artwork**, assessed **NORMAL-RISK** on the current bounded delta.
+- Canonical/bookkeeping candidate: `feature/v3-bible-world-artwork` @ `368b4e905c94ede38e733585d151891c7bdca96b`.
+- Dedicated `agent/a1-work/045-*`: **not found**. Current evidence does not establish whether this lineage was autonomous A1 work or manual work; do not infer either.
+- Frozen base: `release/v3.68-bible-world` @ `e8753e8694eb4e7ab690829b1a497dae92776d64`.
+- Functional candidate: `4e0c80a9c86d5118bf2982b3b1240ae4e0899678`; complete functional run `34544135975` is recorded green in the durable handoff.
+- Exact bookkeeping run `34544649744` = **SUCCESS**. Its isolated workflow checked out/asserted exact product SHA `368b4e905c94ede38e733585d151891c7bdca96b`; architecture, edge/security and browser/mobile phases all completed successfully.
+- Permanent workflow change is additive for #45: `validate-v3-bible-world-artwork.mjs`, `v3-bible-world-artwork-edge.mjs`, and `v3-bible-world-artwork-smoke.mjs`; observed prior accumulated invocations remain present. No unexplained weakening/removal/bypass found in the current #45 delta.
+- A4 #45 report analyzed pre-product SHA `e8753e869...`: stale for current implementation, but NORMAL-RISK policy does not require a new exact-candidate A4 cycle solely for promotion when exact gates are green.
+- Current A3 #45 exact-state report: missing. Not mandatory for the bounded NORMAL-RISK delta; required if scope enters a HIGH-RISK category.
+- A2 #45 current report: missing.
+- Writer lease observed **FREE**.
+- `automation/CURRENT.md` remains stale (#75/v3.48 era).
+- Stale immediately if canonical/candidate/frozen SHA, workflow/test set, or #93/#94 corrective evidence changes.
 
 ## BLOCKER
-1. **#93 trusted-boundary evidence debt remains unresolved in the current frozen lineage.** Primary backend code performs JWT authentication, active platform-role authorization and Owner-only destructive deletion, but the permanent #93 edge test mocks the API and does not execute that trusted boundary. Exact-state A3/A4 at `56fe2469...` were NOT READY and no later faithful replacement evidence was found. Counterfactual: an authorization or destructive-account guard regression can remain undetected while later releases continue to pass the client-mock suite.
-2. **#94 HIGH-RISK review bypass remains unclosed.** v3.65 modified existing accumulated `validate-v3-admin-operations.mjs`; no `agent/a1-work/094-*` quarantine candidate and no exact-candidate A4 READY review exist. Counterfactual: ignoring this normalizes promotion after existing-regression modification without the mandatory independent barrier, so a future weakening disguised as a fixture/lifecycle correction could be accepted without required review.
+1. **#93 trusted-boundary coverage debt remains present in the current lineage.** Current `tests/v3-admin-operations-edge.mjs` still injects a mocked Admin Operations API; the accumulated workflow has no separate faithful `bq-admin-ops` authorization/destructive-delete regression. Counterfactual: JWT/platform-role/Owner-only destructive-account authorization could regress while the client-mock suite remains green.
+2. **#94 mandatory HIGH-RISK review debt remains unclosed.** The control-plane still has no A4 #94 exact-candidate READY report after the v3.65 correction modified an existing accumulated #93 validator. Counterfactual: accepting the lineage as fully review-clean would normalize an existing-regression modification without the required independent barrier and could hide semantic weakening.
 
 ## MILESTONE
-1. Preserve immutable v3.66 at `4a5f4b428...` and exact run `34539753714`; do not rewrite or move the release.
-2. Close #93 on an authorized corrective lineage with faithful permanent trusted-boundary authorization/destructive-delete tests, exact complete green, current same-SHA A3 satisfaction, A4 READY and A5 recommendation.
-3. Close #94 governance debt on an authorized corrective lineage with fresh required A3/A4 review; preserve the corrected validator semantics and accumulated suite.
-4. Before the first #43 product write, obtain current #43 contract plus A3 trust-boundary review, then use `agent/a1-work/043-*`. The design must define server authorization/Realtime ownership and permanent executable coverage for create/join/leave, reconnect and stale-room cleanup without trusting browser role/state as authority.
+1. #45 itself has now satisfied its exact functional and exact bookkeeping execution gates at the recorded SHAs. Preserve `368b4e905...` unchanged; if release closure is otherwise authorized, the release ref must point exactly to this successful bookkeeping SHA.
+2. Preserve the #45 bounded owner boundary: retained artwork + responsive presentation + missing-asset fallback only; no second mastery/media/backend owner.
+3. Close #93 with faithful permanent trusted-boundary coverage plus exact green and fresh required review.
+4. Close #94 governance/review debt with fresh required exact-state A3/A4 evidence without weakening the corrected accumulated validator.
 
 ## DEFER
-- #43 implementation/promotion and later milestones until the two current BLOCKERs are closed and #43 HIGH-RISK pre-write requirements are satisfied.
+- Beginning any newly reopened row (#15, #38, #40) until current release/governance blockers are reconciled. #39 remains explicitly deferred by the durable handoff.
 
 ## IGNORE
-- Treating A4's lack of review at bookkeeping SHA `4a5f4b428...` as a new #42 blocker by itself. #42 is NORMAL-RISK; current exact complete gate is green, so control policy does not require an artificial extra A4 cycle solely because bookkeeping moved the SHA.
-- Treating stale A2/A3 #42 reports at `3d0d3591...` as evidence that current #42 tests are absent; permanent #42 coverage exists and executed successfully at `4a5f4b428...`.
-- Treating functional PASS `34539110697` at `22d054725...` as the current bookkeeping PASS; run `34539753714` is the current exact evidence.
-- Stale `CURRENT.md`/#75-era state as live repository truth.
-- Investigator agreement by itself as proof.
+- Requiring an extra exact-SHA A4 cycle for #45 solely because A4 last inspected the frozen pre-product state: #45 is NORMAL-RISK and both exact gates are now green.
+- Treating absence of `agent/a1-work/045-*` alone as proof of a product defect or autonomous-write violation; writer provenance is not established by current primary evidence.
+- Stale #43/#76/#79-era TRIAGE/report conclusions as current #45 evidence.
+- Investigator agreement without primary evidence.
 
 ## Firewall decision
-**2 BLOCKER; 4 MILESTONE; DO NOT WRITE #43 PRODUCT YET.** v3.66 is exact-green and immutable; #42 itself does not need another NORMAL-RISK QA wait. Progress is blocked by unresolved #93 trusted-boundary evidence, #94 mandatory HIGH-RISK review debt, and #43's own HIGH-RISK pre-write gate.
+**2 BLOCKER; 4 MILESTONE. #45 PRODUCT/BOOKKEEPING GATES ARE GREEN, BUT DO NOT AUTHORIZE AUTONOMOUS NEXT-MILESTONE PROGRESSION WHILE #93/#94 BLOCKERS REMAIN.**
 
 ## Next safe action
-Keep v3.64-v3.66 immutable. Perform corrective #93/#94 review closure. In parallel, A2/A3 may recover #43 read-only contract/security evidence. Only after the BLOCKERs clear should A1 create the authorized #43 quarantine candidate and begin implementation.
+Keep frozen refs immutable and preserve exact #45 bookkeeping SHA `368b4e905...`. Resolve #93 faithful trusted-boundary coverage and #94 required independent review debt. After those blockers clear, release closure may use only the exact-green #45 bookkeeping SHA, then recover the next selected reopened milestone from its own primary contract evidence before product writes.
