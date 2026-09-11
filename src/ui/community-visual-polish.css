@@ -1,0 +1,80 @@
+/* BibleQuest v3 visual replacement tranche 12.
+   Presentation only: no community membership, role, permission, privacy, persistence, backend, route, layout, responsive or accessibility ownership. */
+
+.bq-community-head h1{
+  color:#263f34;
+}
+
+.bq-community-grid button{
+  border-color:rgba(56,88,70,.14);
+  background:radial-gradient(circle at 90% 10%,rgba(220,235,224,.58) 0%,rgba(220,235,224,0) 40%),linear-gradient(180deg,#fff 0%,#f8fbf7 100%);
+  box-shadow:0 6px 18px rgba(45,69,55,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-community-grid button:hover,
+.bq-community-grid button:focus-visible{
+  border-color:rgba(47,112,77,.3);
+  background:radial-gradient(circle at 90% 10%,rgba(211,232,217,.72) 0%,rgba(211,232,217,0) 42%),linear-gradient(180deg,#fff 0%,#f3f8f2 100%);
+}
+
+.bq-community-grid button:disabled{
+  background:linear-gradient(180deg,#fafbf9 0%,#f2f4f0 100%);
+  color:#687168;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+}
+
+.bq-community-summary>div{
+  background:radial-gradient(circle at 50% 18%,#fff 0%,#f4f8f1 55%,#ecf2e8 100%);
+  color:#314b3c;
+  box-shadow:inset 0 0 0 1px rgba(54,91,69,.06),0 4px 14px rgba(51,76,61,.025);
+}
+
+.bq-community-summary>div:nth-child(2){
+  background:radial-gradient(circle at 50% 18%,#fff 0%,#f7f6ef 55%,#efeee3 100%);
+  color:#504d36;
+}
+
+.bq-community-summary>div:nth-child(3){
+  background:radial-gradient(circle at 50% 18%,#fff 0%,#fbf6ec 55%,#f4ecdd 100%);
+  color:#5b4932;
+}
+
+.bq-community .bq-panel{
+  border-color:rgba(62,82,68,.11);
+  background:linear-gradient(180deg,#fff 0%,#fbfcf9 100%);
+  box-shadow:0 6px 20px rgba(51,67,56,.028),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-community-row{
+  border-top-color:rgba(62,82,68,.11);
+}
+
+.bq-community-row h3{
+  color:#314739;
+}
+
+.bq-community-boundary{
+  border-color:rgba(89,78,58,.13)!important;
+  background:radial-gradient(circle at 94% 8%,rgba(238,229,210,.5) 0%,rgba(238,229,210,0) 38%),linear-gradient(180deg,#fcfaf5 0%,#f7f3e9 100%)!important;
+  color:#514a3d;
+  box-shadow:inset 0 0 0 1px rgba(89,78,58,.025)!important;
+}
+
+.bq-community-boundary p{
+  color:#655d50;
+}
+
+.bq-community .bq-form-message[role="alert"]{
+  border-color:rgba(139,62,54,.2);
+  background:linear-gradient(180deg,#fff8f6 0%,#fff1ed 100%);
+  color:#5d3731;
+  box-shadow:inset 0 0 0 1px rgba(139,62,54,.025);
+}
+
+@media(prefers-contrast:more){
+  .bq-community-grid button,.bq-community .bq-panel,.bq-community-summary>div{box-shadow:none}
+  .bq-community-grid button,.bq-community .bq-panel{border-color:rgba(34,58,43,.4)}
+  .bq-community-row{border-top-color:rgba(34,58,43,.34)}
+  .bq-community-boundary{border-color:rgba(72,61,43,.42)!important;color:#373126}
+  .bq-community .bq-form-message[role="alert"]{border-color:rgba(116,36,31,.46);color:#4b2723}
+}
