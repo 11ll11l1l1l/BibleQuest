@@ -136,7 +136,6 @@ function start(){
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
-  const avatarVault=createAvatarVaultService({session,privateStorage,api,progress});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
   const recordings=createRecordingsService({media:api.media,audio,session});
@@ -164,6 +163,7 @@ function start(){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
+  const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
