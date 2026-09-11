@@ -4,8 +4,8 @@ import { createAvatarVaultService } from '../src/app/avatar-vault.js';
 
 // --- engine: catalog parity ---
 assert.equal(STYLES.length, 15, 'Avatar Vault must retain all 15 legacy styles for catalog parity.');
-assert.equal(STYLES.filter(s => s.available).length, 5, 'Exactly 5 styles are sourceable from v3 Progress in v1.');
-assert.equal(STYLES.filter(s => !s.available).length, 10, '10 legacy styles must be explicitly deferred, not silently dropped.');
+assert.equal(STYLES.filter(s => s.available).length, 11, '11 styles are now sourceable from existing v3 owners (Progress, Bible World, Couples Family, Games recall, Assignments).');
+assert.equal(STYLES.filter(s => !s.available).length, 4, '4 legacy styles remain explicitly deferred (no cumulative answer/correct/group-session counter exists yet), not silently dropped.');
 for (const style of STYLES.filter(s => !s.available)) assert.ok(style.needsOwner, `Deferred style ${style.id} must record which owner it needs.`);
 assert.equal(findStyle('nope').id, 'starter', 'Unknown style id must fall back to starter.');
 
@@ -19,15 +19,30 @@ assert.ok(!isUnlocked('flame', { xp: 0, streak: 29 }), 'flame must not unlock on
 assert.ok(isUnlocked('flame', { xp: 0, streak: 30 }), 'flame must unlock exactly at 30-day streak.');
 assert.ok(isUnlocked('crown', { xp: 2500, streak: 0 }), 'crown must unlock exactly at 2500 XP.');
 
+// --- engine: newly un-deferred styles, exact boundaries ---
+assert.ok(!isUnlocked('scroll', { recallReps: 99 }), 'scroll must not unlock one rep early.');
+assert.ok(isUnlocked('scroll', { recallReps: 100 }), 'scroll must unlock exactly at 100 recall reps.');
+assert.ok(!isUnlocked('moon', { recallReps: 249 }), 'moon must not unlock one rep early.');
+assert.ok(isUnlocked('moon', { recallReps: 250 }), 'moon must unlock exactly at 250 recall reps.');
+assert.ok(!isUnlocked('couple', { couplesHistory: 9 }), 'couple must not unlock one conversation early.');
+assert.ok(isUnlocked('couple', { couplesHistory: 10 }), 'couple must unlock exactly at 10 couples conversations.');
+assert.ok(!isUnlocked('tea', { assignmentsCompleted: 9 }), 'tea must not unlock one assignment early.');
+assert.ok(isUnlocked('tea', { assignmentsCompleted: 10 }), 'tea must unlock exactly at 10 completed assignments.');
+assert.ok(!isUnlocked('world', { regionsExplored: false }), 'world must not unlock unless every region is explored.');
+assert.ok(isUnlocked('world', { regionsExplored: true }), 'world must unlock once every region is explored.');
+assert.ok(!isUnlocked('fuji', { maxRegionPercent: 99 }), 'fuji must not unlock below 100% in every region.');
+assert.ok(isUnlocked('fuji', { maxRegionPercent: 100 }), 'fuji must unlock once any region reaches 100%.');
+
 // --- engine: deferred styles never unlock regardless of metrics ---
-const generousMetrics = { xp: 999999, streak: 999999, answered: 999999, correct: 999999, deck: 999999, couples: 999999, group: 999999, assignments: 999999, mastery: [100, 100, 100, 100, 100, 100, 100, 100] };
+const generousMetrics = { xp: 999999, streak: 999999, recallReps: 999999, couplesHistory: 999999, assignmentsCompleted: 999999, regionsExplored: true, maxRegionPercent: 100 };
 for (const style of STYLES.filter(s => !s.available)) {
   assert.ok(!isUnlocked(style.id, generousMetrics), `Deferred style ${style.id} must never unlock until its owner exists, regardless of metrics.`);
 }
 
 // --- engine: normalizeMetrics fails closed on malformed input ---
-assert.deepEqual(normalizeMetrics({}), { xp: 0, streak: 0 }, 'Missing metrics must fail closed to zero.');
-assert.deepEqual(normalizeMetrics({ xp: -5, streak: 'nope' }), { xp: 0, streak: 0 }, 'Negative/non-numeric metrics must fail closed to zero.');
+const emptyMetrics = { xp: 0, streak: 0, recallReps: 0, couplesHistory: 0, assignmentsCompleted: 0, regionsExplored: false, regionsExploredCount: 0, regionsTotal: 0, maxRegionPercent: 0 };
+assert.deepEqual(normalizeMetrics({}), emptyMetrics, 'Missing metrics must fail closed to zero/false.');
+assert.deepEqual(normalizeMetrics({ xp: -5, streak: 'nope', recallReps: -1, couplesHistory: 'x', maxRegionPercent: 250 }), { ...emptyMetrics, maxRegionPercent: 100 }, 'Negative/non-numeric metrics must fail closed to zero; an out-of-range percent must clamp to its natural maximum of 100, not fail closed to 0.');
 
 // --- engine: progress labels ---
 assert.equal(progressFor(findStyle('sakura'), { xp: 0, streak: 3 }, ['starter']), '3/7 streak days');
@@ -83,5 +98,33 @@ const acctIso = createAvatarVaultService({ session: acctSession, privateStorage:
 await guestIso.load(); await guestIso.select('crown');
 await acctIso.load();
 assert.equal(acctIso.getState().selected.id, 'starter', 'Guest selection must not leak into a signed-in account owner sharing the same device storage.');
+
+// --- app owner: reuses Bible World/Couples Family/Games/Assignments read-only, never duplicates their counting ---
+const fakeBibleWorld = { snapshot: () => ({ regions: [{ percent: 100, explored: true }, { percent: 40, explored: false }] }) };
+const fakeCouplesFamily = { snapshot: () => ({ history: Array.from({ length: 12 }, (_, i) => ({ cardId: `c${i}` })) }) };
+const fakeGames = { recallDeckReps: () => 150 };
+const fakeAssignments = { snapshot: () => ({ assignments: [
+  { id: 'a1', progress: { status: 'completed' } },
+  { id: 'a2', progress: { status: 'completed' } },
+  { id: 'a3', progress: { status: 'assigned' } }
+] }) };
+const composedVault = createAvatarVaultService({
+  session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress,
+  bibleWorld: fakeBibleWorld, couplesFamily: fakeCouplesFamily, games: fakeGames, assignments: fakeAssignments
+});
+const composedState = await composedVault.load();
+const scroll = composedState.styles.find(s => s.id === 'scroll');
+assert.ok(scroll.unlocked, 'scroll must unlock from Games recallDeckReps (150 >= 100) without Avatar Vault tracking its own reps.');
+const couple = composedState.styles.find(s => s.id === 'couple');
+assert.ok(couple.unlocked, 'couple must unlock from Couples Family history length (12 >= 10) without Avatar Vault tracking its own history.');
+const world = composedState.styles.find(s => s.id === 'world');
+assert.ok(!world.unlocked, 'world must stay locked when Bible World reports fewer explored regions than total.');
+const tea = composedState.styles.find(s => s.id === 'tea');
+assert.ok(!tea.unlocked, 'tea must reflect only completed assignments (2 of 3), not the total row count.');
+
+// --- app owner: missing new owners must fail closed, not crash ---
+const bareVault = createAvatarVaultService({ session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress });
+const bareState = await bareVault.load();
+assert.ok(!bareState.styles.find(s => s.id === 'scroll').unlocked, 'Without Games injected, scroll must stay locked, not throw.');
 
 console.log('BibleQuest v3 Avatar Vault edge suite passed.');
