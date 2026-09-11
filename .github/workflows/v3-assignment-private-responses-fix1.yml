@@ -1,0 +1,102 @@
+name: BibleQuest v3 assignment private responses fix1
+on:
+  push:
+    branches: [work/v3-assignment-private-responses-fix1]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: postrelease/v3-assignment-private-responses
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Guard exact source head
+        run: |
+          test "$(git rev-parse HEAD)" = "8a97b1f9dea8451fe35ecb73b710f86481f7d582"
+          test -z "$(git status --porcelain)"
+      - name: Reconcile backend ownership and status contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p=Path(path)
+              text=p.read_text()
+              if text.count(old)!=1:
+                  raise SystemExit(f'{path}: expected exactly one match, found {text.count(old)} for {old[:80]!r}')
+              p.write_text(text.replace(old,new,1))
+
+          api='src/core/api.js'
+          replace_once(api,
+              "const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';",
+              "const ASSIGNMENT_PROGRESS_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';\nconst ASSIGNMENT_RESPONSE_PRESENCE_FIELDS='assignment_id,congregation_id,user_id,display_name,completed_at';\nconst ASSIGNMENT_PRIVATE_RESPONSE_FIELDS='assignment_id,user_id,status,submission,leader_feedback,completed_at,updated_at';")
+          replace_once(api,
+              "      return {assignments:assignmentRows,progress:progress||[]};\n    },\n    async targets(congregationId) { return invoke('bq-assignment',{action:'targets',congregationId}); },",
+              "      return {assignments:assignmentRows,progress:progress||[]};\n    },\n    async loadResponsePresence(congregationId,assignmentId) {\n      const client=await getClient();\n      const {data,error}=await client.from('bible_assignment_response_presence').select(ASSIGNMENT_RESPONSE_PRESENCE_FIELDS).eq('congregation_id',String(congregationId)).eq('assignment_id',String(assignmentId)).order('completed_at',{ascending:true});\n      if(error)throw error;\n      return data||[];\n    },\n    async loadPrivateResponses(assignmentId) {\n      const client=await getClient();\n      const {data,error}=await client.from('bible_assignment_progress').select(ASSIGNMENT_PRIVATE_RESPONSE_FIELDS).eq('assignment_id',String(assignmentId)).eq('status','completed').order('completed_at',{ascending:true});\n      if(error)throw error;\n      return data||[];\n    },\n    async targets(congregationId) { return invoke('bq-assignment',{action:'targets',congregationId}); },")
+
+          assignments='src/app/assignments.js'
+          replace_once(assignments,"import {createAssignmentResponsesApi} from '../core/assignment-responses.js';\n\n","")
+          replace_once(assignments,
+              "export function createAssignmentsService({api,session,congregation,responseApi=createAssignmentResponsesApi(),now=()=>new Date()}){",
+              "export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){")
+          replace_once(assignments,
+              "  if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!responseApi?.loadPresence||!responseApi?.loadPrivateResponses||!session||!congregation)throw new Error('Assignments require API, response-review, Session and Congregation owners.');",
+              "  if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');")
+          replace_once(assignments,
+              "      const presenceRows=await responseApi.loadPresence(cid,assignment.id);",
+              "      if(typeof api.loadResponsePresence!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Assignment response status is not available yet.');\n      const presenceRows=await api.loadResponsePresence(cid,assignment.id);")
+          replace_once(assignments,
+              "        const privateRows=await responseApi.loadPrivateResponses(assignment.id);",
+              "        if(typeof api.loadPrivateResponses!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Private assignment response review is not available yet.');\n        const privateRows=await api.loadPrivateResponses(assignment.id);")
+
+          test='tests/v3-assignment-private-responses.mjs'
+          replace_once(test,
+              "  const responseApi={\n    loadPresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],",
+              "  const api=Object.assign(fakeApi('member-1'),{\n    loadResponsePresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],")
+          replace_once(test,
+              "  };\n  const service=createAssignmentsService({api:fakeApi('member-1'),responseApi,session:fakeSession('member-1'),congregation:fakeCongregation('member')});",
+              "  });\n  const service=createAssignmentsService({api,session:fakeSession('member-1'),congregation:fakeCongregation('member')});")
+          replace_once(test,
+              "  const responseApi={\n    loadPresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],",
+              "  const api=Object.assign(fakeApi('pastor-1'),{\n    loadResponsePresence:async()=>[{assignment_id:'a-1',congregation_id:'c-1',user_id:'member-2',display_name:'Ana',completed_at:'2026-09-11T03:00:00Z'}],")
+          replace_once(test,
+              "  };\n  const service=createAssignmentsService({api:fakeApi('pastor-1'),responseApi,session:fakeSession('pastor-1'),congregation:fakeCongregation('pastor')});",
+              "  });\n  const service=createAssignmentsService({api,session:fakeSession('pastor-1'),congregation:fakeCongregation('pastor')});")
+
+          legacy=Path('src/core/assignment-responses.js')
+          if not legacy.exists():
+              raise SystemExit('expected src/core/assignment-responses.js before ownership reconciliation')
+          legacy.unlink()
+
+          status=Path('DEVELOPMENT_STATUS_V3.md')
+          text=status.read_text()
+          if '## Defect / root-cause ledger' not in text:
+              text += "\n\n## Defect / root-cause ledger\n\n- Post-release Assignment Private Responses candidate `8a97b1f9dea8451fe35ecb73b710f86481f7d582` passed its focused privacy contract and deployment gate but was rejected by the accumulated architecture validator because it opened a second Supabase client in `src/core/assignment-responses.js`. The correction keeps backend queries under the established `src/core/api.js` owner and removes that competing client.\n- The same candidate exposed a documentation-contract regression inherited from the post-visual handoff: this status file had replaced the required `Defect / root-cause ledger` and `Next major milestone` headings. Those canonical ledger headings are restored here without changing the completed visual evidence.\n"
+          if '## Next major milestone' not in text:
+              text += "\n## Next major milestone\n\nComplete exact-SHA verification of the isolated Assignment Private Responses milestone. Do not promote it or apply its Supabase migration to production until the full accumulated suite is green and a separate production-migration/release decision is made.\n"
+          status.write_text(text)
+          PY
+          git diff --check
+      - name: Focused validation before commit
+        run: |
+          node --check src/core/api.js
+          node --check src/app/assignments.js
+          node --check src/features/assignments/index.js
+          node --check tests/v3-assignment-private-responses.mjs
+          node tests/v3-assignment-private-responses.mjs
+          node tests/v3-assignments-edge.mjs
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-architecture.mjs
+      - name: Commit exact correction to product branch
+        run: |
+          git config user.name "11ll11l1l1l"
+          git config user.email "138889199+11ll11l1l1l@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(assignments): preserve API ownership for private responses"
+          git push origin HEAD:postrelease/v3-assignment-private-responses
