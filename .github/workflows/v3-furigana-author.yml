@@ -1,0 +1,35 @@
+name: BibleQuest v3 furigana isolated author
+
+on:
+  push:
+    branches:
+      - verify/v3-japanese-furigana-author2-20260911
+
+permissions:
+  contents: write
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply helper to feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin feature/v3-japanese-furigana verify/v3-japanese-furigana-author2-20260911
+          git show origin/verify/v3-japanese-furigana-author2-20260911:.github/furigana-author.py > /tmp/furigana-author.py
+          git checkout -B feature/v3-japanese-furigana origin/feature/v3-japanese-furigana
+          python3 /tmp/furigana-author.py
+          git add src/app/bootstrap.js src/features/reader/index.js scripts/validate-v3-japanese-vocabulary.mjs ARCHITECTURE_V3.md .github/workflows/v3-regression.yml
+          if git diff --cached --quiet; then
+            echo "No integration changes produced"
+            exit 1
+          fi
+          git commit -m "feat(v3): integrate Japanese furigana into Reader"
+          git push origin HEAD:feature/v3-japanese-furigana
