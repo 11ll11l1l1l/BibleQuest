@@ -1,13 +1,13 @@
 # BibleQuest v3 Ministry Hub contract — milestone #76
 
 Recovered: 2026-09-10
-Updated: 2026-09-12 for the post-release Calendar surface follow-up.
+Updated: 2026-09-12 after completion of the post-release Calendar surface follow-up.
 
 ## Authoritative acceptance
 
 `FEATURE_INVENTORY_V3.md` defines #76 Ministry Hub with required verification: **open tools; role guard; navigation**.
 
-Retained v2 evidence shows the Ministry Hub was a distinct congregation surface. An ordinary active congregation member could open the hub, while facilitator, leader, pastor and admin roles received ministry-only convenience controls. Current v3 `src/app/congregation-membership.js` already owns role normalization and fail-closed `read` / `ministry` capability projection.
+Retained v2 evidence shows the Ministry Hub was a distinct congregation surface. An ordinary active congregation member could open the hub, while facilitator, leader, pastor and admin roles received ministry-only convenience controls. Current v3 `src/app/congregation-membership.js` owns role normalization and fail-closed `read` / `ministry` capability projection.
 
 ## Bounded v3 scope
 
@@ -62,36 +62,50 @@ UI visibility is convenience only. A ministry role projected in the browser is n
 
 Available destinations call the existing router. Deferred destinations are rendered as disabled/unavailable and do not navigate. #76 must not absorb another unfinished milestone merely to make a legacy button appear active.
 
-## Post-release Calendar surface follow-up
+## Post-release Calendar surface follow-up — completed
 
-Calendar v1/v1.5 was completed and production-verified after the original #76 Ministry Hub milestone. The post-release Ministry Hub follow-up may therefore expose `route:'calendar'` as a valid member tool without recreating any legacy calendar CRUD inside Ministry Hub.
+Calendar v1/v1.5 was completed and production-verified after the original #76 milestone. The later Ministry Hub follow-up therefore exposes `route:'calendar'` as a valid member tool without recreating any legacy calendar CRUD inside Ministry Hub.
 
-This follow-up is deliberately narrow:
+The follow-up is deliberately narrow:
 
 - Ministry Hub only advertises and navigates to the verified `calendar` route;
 - `src/app/calendar.js` remains the single Calendar lifecycle/persistence owner;
 - personal events, assignment due-date aggregation, congregation-shared events, recurrence and authorization semantics remain unchanged;
-- valid congregation members may see the Calendar entry because the destination itself already applies its own guest/account/congregation behavior;
+- valid congregation members see the Calendar entry through the existing readable-membership projection;
 - unsupported roles still fail closed at the Ministry Hub membership boundary;
-- no schema, migration, API, RLS, storage or Calendar-state change is introduced by this surface wiring;
-- Live Rooms, Notification Center, Workspace, Linked Activities, legacy polls/media operations and Leader Dashboard remain separate milestones.
+- no schema, migration, API, RLS, storage or Calendar-state change was introduced;
+- Live Rooms, Notification Center, Workspace, Linked Activities, legacy polls/media operations and Leader Dashboard remain separate concerns.
 
-The permanent Ministry Hub edge and 390 px browser tests must assert the Calendar tool is present for valid members, delegates exactly to `calendar`, remains absent for unsupported roles, preserves >=44 px touch targets and introduces no horizontal overflow.
+Permanent Ministry Hub edge and 390 px browser tests assert the Calendar tool is present for valid members, delegates exactly to `calendar`, remains absent for unsupported roles, preserves >=44 px touch targets and introduces no horizontal overflow.
 
 ## Permanent acceptance evidence
 
-A #76 or post-release Ministry Hub candidate requires:
+A #76 or later Ministry Hub candidate requires:
 
 1. architecture validation proving single-owner composition and no direct backend/storage shortcut;
 2. executable role-boundary coverage proving signed-out, member, ministry-role and unsupported-role behavior;
 3. 390 px browser/mobile coverage proving the real `#/ministry-hub` route opens, member/ministry presentation differs correctly, current destinations navigate, deferred destinations stay disabled, and the page does not overflow;
-4. the full accumulated v3 regression workflow with all prior tests retained and the Ministry Hub tests invoked;
-5. exact-SHA verification before promotion or release freeze.
+4. the full accumulated v3 regression workflow with all prior tests retained and Ministry Hub tests invoked;
+5. exact-candidate verification before promotion or release freeze.
 
 ## Functional verification evidence
 
-Exact original #76 functional candidate `dfc6440cd7105c73107081dfb4fb16f8bfac2d71` passed complete GitHub Actions run `34460593373` on 2026-09-10. The isolated workflow explicitly checked out and asserted that exact SHA, then passed the accumulated architecture validators, accumulated edge/security regressions and complete Playwright/browser-mobile regression suite.
+Original #76 functional candidate `dfc6440cd7105c73107081dfb4fb16f8bfac2d71` passed complete GitHub Actions run `34460593373` on 2026-09-10.
 
-No application failure was observed in that exact original functional gate. The candidate intentionally did not copy the retained v2 hub's direct-client messages/devotionals, polls, calendar or media CRUD because those behaviors exceeded the proven #76 contract and would have broadened the trust boundary.
+The post-release Calendar-surface candidate was verified as exact synthetic merge commit:
 
-That historical PASS remains evidence for the original #76 SHA only. The post-release Calendar surface follow-up changes product code and therefore requires its own exact-SHA regression evidence; no previous PASS transfers to the new candidate.
+`350cb1e583b207e10ba8dc50c3bb683dc50f9494`
+
+with parents:
+
+- corrected base `de609669e7da7364e6969e11420ff599f45f666c`;
+- feature head `5407c97308df27642b2d8462e5da1e573ea9f08e`.
+
+GitHub Actions run `34616603649` checked out exact `350cb1e...` and passed the complete accumulated architecture, edge/security and browser/mobile suite, including updated Ministry Hub role-boundary and mobile Calendar navigation tests.
+
+After that complete PASS:
+
+- exact `350cb1e...` was frozen at `release/v3-ministry-calendar-surface-20260912`;
+- `main` was fast-forwarded directly to that verified commit before the subsequent More-hub visual milestone.
+
+No historical PASS transfers to later changed product SHAs.
