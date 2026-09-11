@@ -1,0 +1,104 @@
+name: BibleQuest v3 Media visual verifier d3e7de3
+on:
+  push:
+    branches: [verify/v3-visual-media-d3e7de3]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: d3e7de3dae25d2958fe76ef7a5d1e8919525c624
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "d3e7de3dae25d2958fe76ef7a5d1e8919525c624"
+          test -z "$(git status --porcelain)"
+          git diff --check 81c0f350e3081224d6f9e3ee535eada00d913cb8 d3e7de3dae25d2958fe76ef7a5d1e8919525c624
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+          node tests/v3-couples-visual-polish-static.mjs
+          node tests/v3-community-visual-polish-static.mjs
+          node tests/v3-media-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Media visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const page=await browser.newPage(viewport.width<=390?{viewport,isMobile:true,hasTouch:true}:{viewport});
+              await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              const result=await page.evaluate(async()=>{
+                const [{createAudioManager},{createRecordingsService},{createMediaLibraryService},{mediaLibraryPage}]=await Promise.all([
+                  import('/src/app/audio.js'),import('/src/app/recordings.js'),import('/src/app/media-library.js'),import('/src/features/media-library/index.js')
+                ]);
+                const audio=createAudioManager();
+                const media={async listLiveRecordings(){return[{id:'m1',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Replay',featured:true}]}};
+                const session={isAuthenticated:()=>true};
+                const recordings=createRecordingsService({media,audio,session});
+                const library=createMediaLibraryService({recordings});
+                const root=document.createElement('div');root.id='media-visual-test-root';document.body.append(root);
+                const definition=mediaLibraryPage({library,onHome:()=>{},onAccount:()=>{}});root.innerHTML=definition.html;const cleanup=definition.mount(root);
+                await new Promise(resolve=>setTimeout(resolve,100));
+                const card=root.querySelector('.bq-media-card');
+                const cardStyle=card?getComputedStyle(card):null;
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/media-visual-polish.css');
+                const data={polishLoaded:Boolean(polish),backgroundImage:cardStyle?.backgroundImage||'',boxShadow:cardStyle?.boxShadow||'',rootClient:root.clientWidth,rootScroll:root.scrollWidth};
+                cleanup?.();recordings.dispose();root.remove();return data;
+              });
+              if(!result.polishLoaded)throw new Error(`Media visual stylesheet missing at ${viewport.width}px`);
+              if(!result.backgroundImage||result.backgroundImage==='none')throw new Error(`Media card visual background missing at ${viewport.width}px: ${JSON.stringify(result)}`);
+              if(!result.boxShadow||result.boxShadow==='none')throw new Error(`Media card visual shadow missing at ${viewport.width}px: ${JSON.stringify(result)}`);
+              if(result.rootScroll>result.rootClient+1)throw new Error(`Media visual owned-surface overflow at ${viewport.width}px: ${JSON.stringify(result)}`);
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Media visual desktop/mobile containment passed.');
+          EOF
