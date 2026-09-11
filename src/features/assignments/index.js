@@ -16,7 +16,7 @@ function advancedMeta(row){
   if(row.scheduleAt)bits.push(`Opens ${formatDate(row.scheduleAt)}`);
   if(row.reminderAt)bits.push(`Reminder ${formatDate(row.reminderAt)}`);
   if(row.recurrenceRule)bits.push(`${recurrenceLabel(row.recurrenceRule)} recurrence rule`);
-  if(row.requiredReflection)bits.push('Written response required');
+  if(row.requiredReflection)bits.push('Written reflection required');
   if(row.evidenceType==='text'&&!row.requiredReflection)bits.push('Written evidence required');
   if(row.evidenceType==='confirmation')bits.push('Completion confirmation required');
   if(row.minQuizScore!==null)bits.push(`Quiz score ≥ ${row.minQuizScore}%`);
@@ -55,7 +55,7 @@ function detailView(state,linkedActivities){
   const quiz=row.minQuizScore!==null?`<label>Quiz score (%)<input name="quizScore" type="number" min="0" max="100" required placeholder="Minimum ${esc(String(row.minQuizScore))}%"></label>`:'';
   const confirmation=row.evidenceType==='confirmation'?'<label><input name="confirmed" type="checkbox" required> I confirm I completed the assigned activity.</label>':'';
   const completion=!readOnly&&progress.status!=='completed'?(scheduled?`<p class="bq-form-message" data-assignment-scheduled>This task opens ${esc(formatDate(row.scheduleAt))}. Start and completion are unavailable until then.</p>`:`<form class="bq-account-form" data-assignment-complete="${esc(row.id)}"><label>${esc(responseLabel)}<textarea name="submission" maxlength="4000" rows="4" ${reflectionRequired?'required':''} placeholder="${esc(responsePlaceholder)}"></textarea></label>${quiz}${confirmation}<small>Your submitted text is private to authorized ministry roles. Other assigned members can see only that you responded, not what you wrote. Private Bible notes, journal, Transform answers and Couple Journey data are never attached.</small><button type="submit" class="bq-primary-button">Mark complete</button></form>`):'';
-  const leaderNote=readOnly?'<p class="bq-form-message">Member answer text is private to authorized ministry roles. The congregation-facing status below exposes only who has responded and when.</p>':'';
+  const leaderNote=readOnly?'<p class="bq-form-message">Recipient responses remain read-only on the ministry assignment view. Member answer text is private to authorized ministry roles. The congregation-facing status below exposes only who has responded and when.</p>':'';
   return `<section class="bq-account-section" data-assignment-detail="${esc(row.id)}"><div class="bq-team-center-head"><div><p class="bq-eyebrow">${esc(labels[row.type]||row.type)} · ${esc(statusLabel(progress.status))} · ${esc(dueLabel(row.dueState))}</p><h2>${esc(row.title)}</h2></div><button type="button" class="bq-secondary-button" data-assignment-close>Close task</button></div>${row.instructions?`<p>${esc(row.instructions)}</p>`:'<p>No additional instructions were provided.</p>'}${refs}<p><b>Due:</b> ${esc(formatDate(row.dueAt))} · <b>Completion points:</b> ${esc(String(row.points))}</p>${advanced}${row.recurrenceRule?'<p><small>Recurrence is stored for the assignment. BibleQuest does not generate recurring copies automatically.</small></p>':''}${leaderNote}<div class="bq-account-actions">${linkedAction}${start}</div>${handoff}${completion}${response}${feedback}</section>${responseReviewView(state,row,readOnly)}`;
 }
 
