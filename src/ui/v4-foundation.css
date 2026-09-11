@@ -108,7 +108,7 @@ a{color:inherit}
 .bq-nav{position:fixed;left:50%;right:auto;bottom:max(10px,env(safe-area-inset-bottom));z-index:40;width:min(calc(100% - 24px),540px);height:70px;padding:5px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid color-mix(in srgb,var(--line-200) 92%,transparent);border-radius:24px;background:color-mix(in srgb,var(--surface-raised) 94%,transparent);backdrop-filter:blur(20px);box-shadow:var(--shadow-2);transform:translateX(-50%)}
 .bq-nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;min-height:var(--tap-target);border-radius:var(--radius-md);color:var(--ink-500);font-weight:800;text-decoration:none;transition:background var(--duration-base) var(--ease-standard),color var(--duration-base) var(--ease-standard),transform var(--duration-fast) var(--ease-standard)}
 .bq-nav a>span{font-size:19px;line-height:1}
-.bq-nav a small{font-size:9px;line-height:1.1;letter-spacing:.01em}
+.bq-nav a small{font-size:10px;line-height:1.1;letter-spacing:.01em}
 .bq-nav a:hover{background:color-mix(in srgb,var(--surface-subtle) 60%,transparent);color:var(--forest-700)}
 .bq-nav a[aria-current]{background:color-mix(in srgb,var(--amber-100) 56%,var(--surface-raised));color:var(--forest-900)}
 .bq-nav a[aria-current]::after{content:"";position:absolute;bottom:4px;width:18px;height:2px;border-radius:var(--radius-pill);background:var(--amber-600)}
