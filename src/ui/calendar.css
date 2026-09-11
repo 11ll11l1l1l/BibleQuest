@@ -1,0 +1,4 @@
+/* BibleQuest v3 Calendar base layout. Layout/geometry ownership for the Calendar feature. */
+[data-calendar-page]{padding:16px}
+[data-calendar-page] form[data-calendar-add]{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;padding:10px;border-radius:12px}
+[data-calendar-page] section.bq-panel{border-radius:12px;margin-bottom:10px;padding:10px}

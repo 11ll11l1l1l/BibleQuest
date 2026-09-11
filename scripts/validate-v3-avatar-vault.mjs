@@ -9,8 +9,8 @@ if(!failures.length){
   for(const forbidden of['window.BQ','localStorage','sessionStorage','createClient','progress.record','document.'])if(engine.includes(forbidden))fail(`Avatar Vault engine leaked an external owner: ${forbidden}`);
   for(const token of['export const STYLES','starter','sakura','lantern','flame','crown','scholar','scroll','shepherd','couple','community','world','kitsune','moon','fuji','tea','needsOwner','available:','export function findStyle','export function unlockedIds','export function iconFor'])if(!engine.includes(token))fail(`Avatar Vault engine missing catalog/unlock contract: ${token}`);
   const availableTrue=(engine.match(/available:\s*true/g)||[]).length,availableFalse=(engine.match(/available:\s*false/g)||[]).length;
-  if(availableTrue!==5)fail(`Avatar Vault v1 must expose exactly 5 available styles, found ${availableTrue}.`);
-  if(availableFalse!==10)fail(`Avatar Vault v1 must explicitly defer exactly 10 styles, found ${availableFalse}.`);
+  if(availableTrue!==11)fail(`Avatar Vault v2 must expose exactly 11 available styles, found ${availableTrue}.`);
+  if(availableFalse!==4)fail(`Avatar Vault v2 must explicitly defer exactly 4 styles, found ${availableFalse}.`);
 
   for(const forbidden of['localStorage','sessionStorage','createClient','@supabase','document.','router.navigate'])if(service.includes(forbidden))fail(`Avatar Vault service bypasses verified owners: ${forbidden}`);
   for(const token of['avatar-vault:','privateStorage.read','privateStorage.write','api.avatarVault','session.getState','progress?.getState','BQ_AVATAR_VAULT_LOCKED','synced'])if(!service.includes(token))fail(`Avatar Vault service missing lifecycle/persistence contract: ${token}`);

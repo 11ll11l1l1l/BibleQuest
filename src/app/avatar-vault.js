@@ -10,7 +10,7 @@ const SCHEMA = 1;
 
 function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
 
-export function createAvatarVaultService({ session, privateStorage, api, progress }) {
+export function createAvatarVaultService({ session, privateStorage, api, progress, bibleWorld, couplesFamily, games, assignments }) {
   if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault) {
     throw new Error('Avatar Vault requires Session, private storage and the API boundary.');
   }
@@ -22,8 +22,26 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
   const key = current => `avatar-vault:${current}`;
 
   function metrics() {
-    const s = progress?.getState ? progress.getState() : {};
-    return normalizeMetrics(s);
+    const base = progress?.getState ? progress.getState() : {};
+    let world = { regions: [] };
+    try { world = bibleWorld?.snapshot ? bibleWorld.snapshot() : world; } catch { /* Bible World unavailable this session */ }
+    const regions = Array.isArray(world.regions) ? world.regions : [];
+    const regionsExploredCount = regions.filter(r => r.explored).length;
+    const maxRegionPercent = regions.reduce((max, r) => Math.max(max, Number(r.percent) || 0), 0);
+    const couplesHistory = couplesFamily?.snapshot ? (couplesFamily.snapshot().history || []).length : 0;
+    const recallReps = games?.recallDeckReps ? games.recallDeckReps() : 0;
+    const assignmentRows = assignments?.snapshot ? (assignments.snapshot().assignments || []) : [];
+    const assignmentsCompleted = assignmentRows.filter(row => row?.progress?.status === 'completed').length;
+    return normalizeMetrics({
+      ...base,
+      recallReps,
+      couplesHistory,
+      assignmentsCompleted,
+      regionsExplored: regions.length > 0 && regionsExploredCount === regions.length,
+      regionsExploredCount,
+      regionsTotal: regions.length,
+      maxRegionPercent
+    });
   }
 
   function readLocal(current) {

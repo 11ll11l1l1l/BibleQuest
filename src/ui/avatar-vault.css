@@ -1,0 +1,7 @@
+/* BibleQuest v3 Avatar Vault base layout. Layout/geometry ownership for #82. */
+[data-avatar-vault-page]{padding:16px}
+.bq-badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:14px 0}
+.bq-badge-card{border-radius:14px;padding:10px;display:flex;gap:8px;align-items:flex-start}
+.bq-badge-card span{font-size:1.6em;line-height:1}
+.bq-badge-card.is-locked{opacity:.7}
+@media(prefers-reduced-motion:reduce){.bq-badge-card{transition:none}}
