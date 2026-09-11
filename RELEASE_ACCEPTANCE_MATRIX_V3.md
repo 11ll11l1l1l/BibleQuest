@@ -1,6 +1,6 @@
 # BibleQuest v3 — Final Release Acceptance Matrix
 
-Updated: 2026-09-12 JST after independent current-production verification.
+Updated: 2026-09-12 JST after independent current-production verification and visual-milestone closeout.
 
 This matrix separates product verification, independent live-production proof, provider-internal metadata and real field validation. A PASS in one evidence class must not be transferred to another.
 
@@ -90,11 +90,11 @@ Current live content identity is now proven against the intended repository prod
 
 Absence of that internal metadata in the current toolset is not evidence of deployment failure.
 
-## Visual Phase B gate — Issue #94
+## Visual Phase B gate — Issue #94 — PASS / CLOSED
 
 Accepted exact-green bounded checkpoints include More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow. Current checked visual assets/styles are proven live on both production hosts by run `34637203062`.
 
-Additional visual changes are required only when current investigator/tree/field evidence identifies a material remaining placeholder, generic or inconsistent user-facing surface. Do not create visual work simply to extend tranche count.
+Issue #94 is closed as completed. Additional visual changes are not part of the remaining release work unless current field/production evidence identifies a material placeholder, generic, broken or inconsistent user-facing surface.
 
 ## Remaining release evidence
 
