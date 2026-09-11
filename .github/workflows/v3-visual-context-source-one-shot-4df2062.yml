@@ -1,0 +1,103 @@
+name: BibleQuest v3 Context source visual verifier 4df2062
+on:
+  push:
+    branches: [verify/v3-visual-context-source-4df2062]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 4df20622b2b484d14436322a59b106c0fa70ba87
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "4df20622b2b484d14436322a59b106c0fa70ba87"
+          test -z "$(git status --porcelain)"
+          git diff --check 318a96367fb7cd106625750445f6009b30aa3271 4df20622b2b484d14436322a59b106c0fa70ba87
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Context source visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const page=await browser.newPage({viewport});
+              await page.goto('http://127.0.0.1:4173/#/reader',{waitUntil:'networkidle'});
+              await page.locator('[data-reader-book]').selectOption('JHN');
+              await page.locator('[data-reader-chapter]').selectOption('3');
+              await page.locator('[data-reader-context]').click();
+              await page.locator('[data-context-dialog]').waitFor({state:'visible'});
+              const context=await page.evaluate(()=>{
+                const node=document.querySelector('[data-context-dialog]');
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/context-source-visual-polish.css');
+                const style=node?getComputedStyle(node):null;
+                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!context.polishLoaded)throw new Error(`Context/source visual stylesheet missing at ${viewport.width}px`);
+              if(!context.backgroundImage||context.backgroundImage==='none')throw new Error(`Context visual background missing at ${viewport.width}px: ${JSON.stringify(context)}`);
+              if(!context.boxShadow||context.boxShadow==='none')throw new Error(`Context visual shadow missing at ${viewport.width}px: ${JSON.stringify(context)}`);
+              if(context.scrollWidth>context.viewport+1)throw new Error(`Context horizontal overflow at ${viewport.width}px: ${JSON.stringify(context)}`);
+              await page.locator('[data-context-close]').click();
+              await page.goto('http://127.0.0.1:4173/#/learn',{waitUntil:'networkidle'});
+              await page.locator('[data-source-guide]').waitFor();
+              const source=await page.evaluate(()=>{
+                const node=document.querySelector('.bq-source-guide-grid article');
+                const style=node?getComputedStyle(node):null;
+                return {backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!source.backgroundImage||source.backgroundImage==='none')throw new Error(`Source guide visual background missing at ${viewport.width}px: ${JSON.stringify(source)}`);
+              if(!source.boxShadow||source.boxShadow==='none')throw new Error(`Source guide visual shadow missing at ${viewport.width}px: ${JSON.stringify(source)}`);
+              if(source.scrollWidth>source.viewport+1)throw new Error(`Source guide horizontal overflow at ${viewport.width}px: ${JSON.stringify(source)}`);
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Context/source visual desktop/mobile containment passed.');
+          EOF
