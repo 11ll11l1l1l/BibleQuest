@@ -1,0 +1,36 @@
+/* BibleQuest v3 visual replacement tranche: More page game-like polish.
+   Presentation only: no layout, interaction, routing, or ownership changes.
+   Targets only existing data-more-* section hooks and existing bq-panel/
+   bq-primary-button classes already rendered by src/features/more/index.js. */
+
+[data-more-workspace]{border-color:#3b82f6;box-shadow:0 10px 26px rgba(59,130,246,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#f2f7ff 100%)}
+[data-more-notifications]{border-color:#8b5cf6;box-shadow:0 10px 26px rgba(139,92,246,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#f6f2ff 100%)}
+[data-more-community]{border-color:#14b8a6;box-shadow:0 10px 26px rgba(20,184,166,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#effcfa 100%)}
+[data-more-ministry-hub]{border-color:#6366f1;box-shadow:0 10px 26px rgba(99,102,241,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#f1f2ff 100%)}
+[data-more-content-review]{border-color:#f59e0b;box-shadow:0 10px 26px rgba(245,158,11,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#fff8ec 100%)}
+[data-more-couples]{border-color:#ec4899;box-shadow:0 10px 26px rgba(236,72,153,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#fff0f7 100%)}
+[data-more-couples-cloud]{border-color:#f43f5e;box-shadow:0 10px 26px rgba(244,63,94,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#fff1f3 100%)}
+[data-more-journey-groups]{border-color:#06b6d4;box-shadow:0 10px 26px rgba(6,182,212,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#ecfbfe 100%)}
+[data-more-team-center]{border-color:#f97316;box-shadow:0 10px 26px rgba(249,115,22,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#fff5ec 100%)}
+[data-more-mission]{border-color:#eab308;box-shadow:0 10px 26px rgba(234,179,8,.16),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#fffbea 100%)}
+[data-more-calendar]{border-color:#8b5cf6;box-shadow:0 10px 26px rgba(139,92,246,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#f7f2ff 100%)}
+[data-more-accessibility]{border-color:#0ea5e9;box-shadow:0 10px 26px rgba(14,165,233,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#eef9ff 100%)}
+[data-more-congregation]{border-color:#10b981;box-shadow:0 10px 26px rgba(16,185,129,.14),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#eefdf5 100%)}
+[data-more-backup]{border-color:#64748b;box-shadow:0 10px 26px rgba(100,116,139,.12),inset 0 1px 0 rgba(255,255,255,.7);background:linear-gradient(155deg,#fff 0%,#f4f6f9 100%)}
+
+[data-more-workspace] h2,[data-more-notifications] h2,[data-more-community] h2,[data-more-ministry-hub] h2,
+[data-more-content-review] h2,[data-more-couples] h2,[data-more-couples-cloud] h2,[data-more-journey-groups] h2,
+[data-more-team-center] h2,[data-more-mission] h2,[data-more-calendar] h2,[data-more-accessibility] h2,
+[data-more-congregation] h2,[data-more-backup] h2{font-size:1.28em;letter-spacing:-.01em}
+
+[data-more-workspace] button,[data-more-notifications] button,[data-more-community] button,[data-more-ministry-hub] button,
+[data-more-content-review] button,[data-more-couples] button,[data-more-couples-cloud] button,[data-more-journey-groups] button,
+[data-more-team-center] button,[data-more-mission] button,[data-more-calendar] button,[data-more-accessibility] button,
+[data-more-congregation] button,[data-more-backup] button{font-weight:700}
+
+@media(prefers-contrast:more){
+  [data-more-workspace],[data-more-notifications],[data-more-community],[data-more-ministry-hub],
+  [data-more-content-review],[data-more-couples],[data-more-couples-cloud],[data-more-journey-groups],
+  [data-more-team-center],[data-more-mission],[data-more-calendar],[data-more-accessibility],
+  [data-more-congregation],[data-more-backup]{box-shadow:none;background:#fff}
+}
