@@ -1,0 +1,129 @@
+name: BibleQuest v3 current production verifier 452e84c
+
+on:
+  push:
+    branches: [verify/v3-production-current-452e84c-20260912]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b
+          fetch-depth: 0
+
+      - name: Assert current main identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "452e84cdbe1a63dc86d4079ff3bf0f6a9edc8f8b"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Re-run Cloudflare deployment gate locally
+        run: bash build.sh
+
+      - name: Confirm both Cloudflare hosts match current release files
+        run: |
+          set -euo pipefail
+          files=(
+            index.html
+            src/core/api.js
+            src/app/bootstrap.js
+            src/ui/shell.js
+            src/features/account/index.js
+            src/features/avatar-vault/index.js
+            src/features/calendar/index.js
+            src/features/mission/index.js
+            src/features/progress/index.js
+            src/ui/account-phase-b.css
+            src/ui/avatar-vault-phase-b.css
+            src/ui/calendar-phase-b.css
+            src/ui/mission-phase-b.css
+            src/ui/more-phase-b.css
+            src/ui/progress-phase-b.css
+            assets/account-feature-icons.svg
+            assets/avatar-vault-icons.svg
+            assets/calendar-feature-icons.svg
+            assets/mission-feature-icons.svg
+            assets/more-feature-icons.svg
+            assets/progress-feature-icons.svg
+            offline-shell-sw.js
+          )
+          bases=(https://mybiblequest.pages.dev/ https://biblequest-7th.pages.dev/)
+          for base in "${bases[@]}"; do
+            matched=0
+            for attempt in {1..36}; do
+              ok=1
+              for file in "${files[@]}"; do
+                tmp="$(mktemp)"
+                if ! curl -fsSL --retry 2 --connect-timeout 10 -H 'Cache-Control: no-cache' "${base}${file}?release=452e84c&attempt=${attempt}" -o "$tmp"; then
+                  ok=0
+                elif ! cmp -s "$file" "$tmp"; then
+                  ok=0
+                fi
+                rm -f "$tmp"
+                test "$ok" = 1 || break
+              done
+              if test "$ok" = 1; then matched=1; break; fi
+              sleep 5
+            done
+            test "$matched" = 1
+            echo "${base} matches current release files."
+          done
+
+      - name: Install Playwright
+        run: npm install --no-save playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Canonical production browser/mobile smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v3-final-mobile-widths-smoke.mjs \
+            tests/v3-reader-smoke.mjs \
+            tests/v3-account-phase-b-smoke.mjs \
+            tests/v3-avatar-vault-phase-b-smoke.mjs \
+            tests/v3-calendar-phase-b-smoke.mjs \
+            tests/v3-mission-phase-b-smoke.mjs \
+            tests/v3-more-phase-b-smoke.mjs \
+            tests/v3-progress-phase-b-smoke.mjs \
+            tests/v3-assignments-smoke.mjs \
+            tests/v3-ministry-hub-smoke.mjs \
+            tests/v3-workspace-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-offline-shell-smoke.mjs; do
+            timeout 240s node "$test"
+          done
+
+      - name: Compatibility production browser/mobile smoke
+        env:
+          BQ_BASE_URL: https://biblequest-7th.pages.dev/
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v3-final-mobile-widths-smoke.mjs \
+            tests/v3-reader-smoke.mjs \
+            tests/v3-account-phase-b-smoke.mjs \
+            tests/v3-avatar-vault-phase-b-smoke.mjs \
+            tests/v3-calendar-phase-b-smoke.mjs \
+            tests/v3-mission-phase-b-smoke.mjs \
+            tests/v3-more-phase-b-smoke.mjs \
+            tests/v3-progress-phase-b-smoke.mjs \
+            tests/v3-assignments-smoke.mjs \
+            tests/v3-ministry-hub-smoke.mjs \
+            tests/v3-workspace-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-offline-shell-smoke.mjs; do
+            timeout 240s node "$test"
+          done
