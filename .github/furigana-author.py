@@ -27,13 +27,3 @@ arch=Path('ARCHITECTURE_V3.md').read_text()
 if '## Japanese furigana (#15)' not in arch:
  arch += '''\n\n## Japanese furigana (#15)\n\n- `src/app/japanese-furigana.js` owns furigana preference state and safe Scripture-to-ruby transformation through the existing Storage boundary. It reuses the recovered curated Japanese term/readings instead of duplicating vocabulary content.\n- `src/app/japanese-furigana-tokenizer.js` is the isolated lazy Kuromoji adapter for the recovered all-readings mode. It owns only loading/tokenization; if unavailable, rendering falls back to curated support readings.\n- `src/features/reader/furigana.js` renders the JKO-only control; Reader applies returned ruby markup while cancelling stale passes on translation/navigation/teardown.\n- Recovered modes are `off`, `support` (難しい語だけ), and `all` (すべて). Furigana is a reading aid only: canonical Scripture text, Progress, and non-Japanese translations remain unchanged.\n'''
  Path('ARCHITECTURE_V3.md').write_text(arch)
-
-wf=Path('.github/workflows/v3-regression.yml'); text=wf.read_text()
-for old,new in [
- ('scripts/validate-v3-japanese-vocabulary.mjs scripts/validate-v3-nlt-licensed.mjs','scripts/validate-v3-japanese-vocabulary.mjs scripts/validate-v3-japanese-furigana.mjs scripts/validate-v3-nlt-licensed.mjs'),
- ('tests/v3-japanese-vocabulary-edge.mjs tests/v3-nlt-licensed-edge.mjs','tests/v3-japanese-vocabulary-edge.mjs tests/v3-japanese-furigana-edge.mjs tests/v3-nlt-licensed-edge.mjs'),
- ('tests/v3-japanese-vocabulary-smoke.mjs tests/v3-nlt-licensed-smoke.mjs','tests/v3-japanese-vocabulary-smoke.mjs tests/v3-japanese-furigana-smoke.mjs tests/v3-nlt-licensed-smoke.mjs')]:
- if text.count(old)!=1: raise SystemExit(f'workflow expected one match for {old}, got {text.count(old)}')
- text=text.replace(old,new,1)
-if 'workflow_dispatch:' not in text or 'push:' in text.split('jobs:')[0]: raise SystemExit('product workflow trigger contract changed')
-wf.write_text(text)
