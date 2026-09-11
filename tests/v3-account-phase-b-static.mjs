@@ -1,0 +1,32 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {workflowInvokesNode} from '../scripts/v3-workflow-contract.mjs';
+
+const root=path.resolve(import.meta.dirname,'..');
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const asset='assets/account-feature-icons.svg';
+const css='src/ui/account-phase-b.css';
+const ui='src/features/account/index.js';
+const service='src/app/account.js';
+const contract='VISUAL_PHASE_B_ACCOUNT_V3.md';
+const workflowPath='.github/workflows/v3-regression.yml';
+for(const file of[asset,css,ui,service,contract,'index.html',workflowPath])assert(fs.existsSync(path.join(root,file)),`Missing Account Phase B file: ${file}`);
+
+const sprite=read(asset),phase=read(css),account=read(ui),accountService=read(service),scope=read(contract),index=read('index.html'),workflow=read(workflowPath);
+for(const id of['profile','sign-in','create-account','recovery','device','security'])assert(sprite.includes(`id="${id}"`),`Account sprite missing semantic symbol: ${id}`);
+assert(account.includes("const ACCOUNT_ART = 'assets/account-feature-icons.svg';"),'Account UI must use the committed same-origin sprite.');
+assert(account.includes('aria-hidden="true"'),'Account decorative artwork must stay hidden from assistive technology.');
+for(const marker of['data-account-mode="login"','data-account-mode="signup"','data-account-mode="recovery"','data-account-guest','data-account-login','data-account-signup','data-account-recovery','data-copy-recovery','data-code-saved','data-code-done','data-device-remove','data-issue-recovery','data-account-password','data-account-home','data-account-signout'])assert(account.includes(marker),`Account interaction contract marker disappeared: ${marker}`);
+assert(accountService.includes('createAccount')&&accountService.includes('resetPassword')&&accountService.includes('ensureCurrentDevice'),'Account service ownership contract unexpectedly changed.');
+assert(index.includes('href="src/ui/account-visual-polish.css"'),'Account Phase A stylesheet must remain loaded.');
+assert(index.includes('href="src/ui/account-phase-b.css"'),'Account Phase B stylesheet must be loaded.');
+assert(index.indexOf('src/ui/account-phase-b.css')>index.indexOf('src/ui/account-visual-polish.css'),'Account Phase B layer must load after Account Phase A.');
+for(const marker of['.bq-account-intro','.bq-account-signed-hero','.bq-account-art-wrap','.bq-account-section-heading','@media(max-width:430px)','@media(prefers-contrast:more)'])assert(phase.includes(marker),`Account Phase B CSS missing contract marker: ${marker}`);
+assert(!/animation\s*:|@keyframes/i.test(phase),'Account Phase B must not add animation behavior.');
+assert(!/url\s*\(/i.test(phase),'Account Phase B CSS must not add a second asset loading path.');
+assert(scope.includes('Every existing Account action and route callback'),'Account Phase B contract must retain interaction ownership.');
+assert(scope.includes('No PASS transfers'),'Account Phase B contract must preserve exact-candidate evidence rules.');
+for(const test of['tests/v3-account-phase-b-static.mjs','tests/v3-account-phase-b-smoke.mjs'])assert(workflowInvokesNode(workflow,test),`Accumulated v3 regression must retain ${test}.`);
+assert(workflowInvokesNode(workflow,'tests/v3-account-edge.mjs'),'Accumulated v3 regression must retain existing Account transaction coverage.');
+console.log('BibleQuest v3 Account Phase B static asset contract passed.');
