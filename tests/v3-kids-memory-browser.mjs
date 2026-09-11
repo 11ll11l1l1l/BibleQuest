@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
-const widths=[320,360,390,412,430];
+const widths=[320,360,390,412,430,480];
 const browser=await chromium.launch({headless:true});
 try{
   for(const width of widths){
@@ -13,13 +13,15 @@ try{
     await page.locator('[data-route-link="play"]').click();
     await page.waitForURL(/#\/play$/);
     await page.locator('[data-memory-open]').waitFor({state:'visible',timeout:10000});
+    const gameWidth=await page.locator('[data-games-page]').evaluate(el=>Math.round(el.getBoundingClientRect().width));
     await page.locator('[data-memory-open]').click();
     await page.locator('[data-memory-meadow]').waitFor({state:'visible'});
     const cards=page.locator('[data-memory-index]');
-    const expected=width<420?12:16;
-    assert(await cards.count()===expected,`Memory Meadow card count at ${width}px was not ${expected}.`);
+    const expected=gameWidth<420?12:16;
+    const expectedColumns=gameWidth<420?3:4;
+    assert(await cards.count()===expected,`Memory Meadow card count at ${width}px viewport / ${gameWidth}px game width was not ${expected}.`);
     const columns=await page.locator('[data-memory-grid]').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length);
-    assert(columns===(width<420?3:4),`Memory Meadow columns at ${width}px are wrong.`);
+    assert(columns===expectedColumns,`Memory Meadow columns at ${width}px viewport / ${gameWidth}px game width are wrong.`);
     const firstBox=await cards.first().boundingBox();
     assert(firstBox&&firstBox.width>=44&&firstBox.height>=44,`Memory Meadow touch target at ${width}px is below 44px.`);
     const hiddenBefore=await cards.first().getAttribute('aria-label');
