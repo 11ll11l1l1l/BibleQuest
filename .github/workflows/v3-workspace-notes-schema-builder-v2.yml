@@ -26,7 +26,6 @@ jobs:
         run: |
           python3 <<'PY'
           from pathlib import Path
-          import re
 
           api=Path('src/core/api.js')
           text=api.read_text()
@@ -57,9 +56,11 @@ jobs:
             if(Object.prototype.hasOwnProperty.call(payload,'updated_at'))next.updated_at=payload.updated_at;
             return next;
           }"""
-          assert old in text, 'cloud note field contract anchor changed'
+          assert text.count(old)==1, 'cloud note field contract anchor changed'
           text=text.replace(old,new,1)
 
+          start=text.index('  const cloudNotes = Object.freeze({')
+          end=text.index('  const couples = Object.freeze({',start)
           new_block="""  const cloudNotes = Object.freeze({
             async list(userId) {
               const client=await getClient();
@@ -85,24 +86,23 @@ jobs:
               if(error)throw error;
               return data||null;
             }
-          });"""
-          pattern=r"  const cloudNotes = Object\.freeze\(\{\).*?\n  \}\);\n\n  const couples = Object\.freeze"
-          replacement=new_block+"\n\n  const couples = Object.freeze"
-          text,count=re.subn(pattern,replacement,text,count=1,flags=re.S)
-          assert count==1, f'cloud notes API owner replacement count was {count}'
+          });
+
+"""
+          text=text[:start]+new_block+text[end:]
           api.write_text(text)
 
           app=Path('src/app/cloud-notes.js')
           text=app.read_text()
           old="return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType:text(input.noteType||'general',40)||'general',isPinned:input.isPinned===true});"
           new="const requestedType=text(input.noteType||'study',40)||'study',noteType=requestedType==='general'?'study':requestedType;if(!['study','prayer','question','reflection','sermon','other'].includes(noteType))throw new Error('Choose a supported cloud note type.');return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType,isPinned:input.isPinned===true});"
-          assert old in text, 'cloud notes service default anchor changed'
+          assert text.count(old)==1, 'cloud notes service default anchor changed'
           app.write_text(text.replace(old,new,1))
 
           feature=Path('src/features/cloud-notes/index.js')
           text=feature.read_text()
           old="noteType:'general'"
-          assert old in text, 'cloud notes UI note type anchor changed'
+          assert text.count(old)==1, 'cloud notes UI note type anchor changed'
           feature.write_text(text.replace(old,"noteType:'study'",1))
 
           test=Path('tests/v3-workspace-notes-schema-compat.mjs')
@@ -112,8 +112,7 @@ jobs:
           const api=fs.readFileSync(new URL('../src/core/api.js',import.meta.url),'utf8');
           const app=fs.readFileSync(new URL('../src/app/cloud-notes.js',import.meta.url),'utf8');
           const feature=fs.readFileSync(new URL('../src/features/cloud-notes/index.js',import.meta.url),'utf8');
-          const expected=['book_code','book_name','body','pinned'];
-          for(const field of expected)assert(api.includes(field),`Cloud Notes API is missing deployed bible_notes field ${field}.`);
+          for(const field of ['book_code','book_name','body','pinned'])assert(api.includes(field),`Cloud Notes API is missing deployed bible_notes field ${field}.`);
           assert(api.includes("order('pinned'"),'Cloud Notes list must order by deployed pinned field.');
           assert(api.includes('cloudNoteFromDb')&&api.includes('cloudNoteToDb'),'Cloud Notes must keep schema adaptation inside the shared API owner.');
           assert(api.includes("book:bookCode||bookName||''")&&api.includes("content:String(body??'')")&&api.includes('is_pinned:pinned===true'),'Database rows are not adapted back to the canonical Cloud Notes model.');
@@ -128,7 +127,7 @@ jobs:
           edge=Path('tests/v3-cloud-notes-edge.mjs')
           text=edge.read_text()
           anchor="assert(created.title==='No separation'&&created.content==='Nothing can separate us.'&&created.tags.join(',')==='hope,study'&&created.isPinned===true,'Cloud Notes did not normalize note metadata.');"
-          assert anchor in text, 'cloud notes edge anchor changed'
+          assert text.count(anchor)==1, 'cloud notes edge anchor changed'
           edge.write_text(text.replace(anchor,anchor+"\nassert(created.noteType==='study','Cloud Notes must default to the deployed study note_type.');",1))
           PY
       - name: Focused Cloud Notes and Workspace regressions
