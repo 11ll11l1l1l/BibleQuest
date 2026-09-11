@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-12 JST after Visual Phase B Personal Mission artwork promotion.
+Updated: 2026-09-12 JST after exact-green Visual Phase B Avatar Vault promotion.
 
 ## Read first
 
@@ -8,7 +8,7 @@ Updated: 2026-09-12 JST after Visual Phase B Personal Mission artwork promotion.
 2. `RECONCILIATION_V3.md`
 3. `DEVELOPMENT_STATUS_V3.md`
 4. `VISUAL_PHASE_B_V3.md` for visual/artwork work
-5. relevant feature contract inside the selected feature
+5. the selected feature contract
 6. `docs/V3_ICON_ASSET_MAP.md` only as a semantic guide; verify binaries before wiring
 7. `CONTINUE_PROMPT_V3.md` for reusable continuation
 
@@ -17,91 +17,72 @@ Repository evidence and the latest explicit user instruction override stale pros
 ## Current product state
 
 - repository: `11ll11l1l1l/BibleQuest`
-- current exact-green product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`
-- current frozen release ref: `release/v3-phase-b-mission-artwork-20260912`
-- current accumulated regression run: `34629528297` — **success**
-- current product PR: #106 — merged by fast-forwarding `main` to the exact tested synthetic merge candidate
-- parent exact-green product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`
-- parent frozen ref: `release/v3-phase-b-calendar-artwork-20260912`
-- parent accumulated run: `34627049878` — **success**
-- prior Calendar creator edit/delete checkpoint: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` success
-- prior Visual Phase B More checkpoint: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` success
+- current exact-green product: `df2a7051e305474a5ea24912c3f5341f33bc61b8`
+- current frozen release ref: `release/v3-phase-b-avatar-vault-artwork-20260912`
+- current accumulated regression run: `34630985269` — **success**
+- current product PR: #108 — merged after the exact synthetic merge candidate passed
+- parent exact-green product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`
+- parent frozen ref: `release/v3-phase-b-mission-artwork-20260912`
+- parent run: `34629528297` — **success**
 - previous rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-Run `34629528297` explicitly fetched and checked out `df1bbd...` as `refs/pull/106/merge`. It passed the complete accumulated suite. The exact candidate was frozen before `main` was fast-forwarded to the same SHA. No additional unverified product merge SHA was created.
-
-If this handoff is later updated by a docs-only merge, that docs SHA is bookkeeping only and does not replace exact-green product `df1bbd...`.
-
-## Deployment evidence
-
-Do not transfer older Cloudflare or independent production PASS evidence to `df1bbd...`.
-
-The latest previously recorded Cloudflare Pages provider checks were for older exact-green product `046e2a85...`. The last independent two-host byte/browser verifier remains run `34612873935` for an earlier cumulative release.
-
-For current exact product `df1bbd...`, GitHub product regression is green. Provider deployment identity and independent live-host verification remain separate evidence until explicitly recorded for this exact product.
+Run `34630985269` fetched and checked out `df2a7051e305474a5ea24912c3f5341f33bc61b8` as `refs/pull/108/merge`. It passed the complete accumulated architecture, edge/security/static and browser/mobile suite. The exact candidate was frozen before `main` was advanced to the same SHA. A later docs-only HEAD is bookkeeping only and does not replace this exact-green product.
 
 ## Newly completed work
 
-### Visual Phase B — Personal Mission artwork
+### Visual Phase B — Avatar Vault artwork
 
-- the Mission renderer no longer displays `rec.icon` emoji as artwork;
-- real passive SVG artwork is committed in `assets/mission-feature-icons.svg` for Review and Study states;
-- artwork selection is derived only from the existing recommendation action and does not change recommendation rules;
-- `src/engines/mission.js` remains the recommendation owner and `src/app/mission.js` continues to use Open Review evidence without new state/storage;
-- `src/ui/mission-phase-b.css` loads after `src/ui/mission.css` and is presentation-only;
-- Mission hierarchy, instruction-card presentation and mobile action containment were improved without changing Mission text or navigation semantics;
-- decorative SVGs remain `aria-hidden`; existing text remains authoritative;
-- primary action still routes `review` -> `onReview`, otherwise -> `onStudy`; Back still calls `onBack`;
-- `tests/v3-mission-phase-b-static.mjs` and `tests/v3-mission-phase-b-smoke.mjs` are permanent accumulated checks;
-- existing Innovation Suite engine/service and mobile browser regressions remain active.
+- PR #108 replaced rendered catalog/lock emoji on the Vault page with committed same-origin passive SVG artwork in `assets/avatar-vault-icons.svg`;
+- all 15 existing style IDs plus `lock` have committed symbols;
+- `src/engines/avatar-vault.js`, `src/app/avatar-vault.js` and `src/core/api.js` remain the behavior/state/backend owners and were not changed;
+- `src/features/avatar-vault/index.js` only changed page rendering/callback presentation;
+- `src/ui/avatar-vault-phase-b.css` loads as a bounded presentation layer after the base Vault stylesheet;
+- catalog, unlock requirements, availability flags, progress text, selected-style persistence, cloud sync, leaderboard compatibility, scoring/fair-play meaning, Equip behavior and Back routing are preserved;
+- new permanent static and 390 px browser/mobile acceptance is retained in the accumulated workflow;
+- the exact synthetic merge candidate passed the existing Avatar Vault functional regressions plus the new Phase B checks.
 
-Run `34629528297` passed all architecture, edge/security/static and browser/mobile gates on exact candidate `df1bbd...`, including existing Mission functional acceptance and the new 390 px Mission artwork acceptance.
+### Retained prior exact-green checkpoints
 
-### Retained prior checkpoints
-
-- Visual Phase B Calendar artwork: exact-green `c15d1f...`, run `34627049878` success.
-- Calendar creator edit/delete: exact-green `7d28d7c...`, run `34623059639` success.
-- Visual Phase B More semantic icons: exact-green `046e2a85...`, run `34618963635` success.
-- Ministry Hub Calendar surface: exact-green `350cb1e...`, run `34616603649` success.
+- Personal Mission Phase B: `df1bbd18782bee6430546ee7b444ad4bc48f5116`, run `34629528297` success.
+- Calendar Phase B: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`, run `34627049878` success.
+- Calendar creator edit/delete: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` success.
+- More Phase B: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` success.
+- Ministry Hub Calendar: `350cb1e583b207e10ba8dc50c3bb683dc50f9494`, run `34616603649` success.
 
 Do not repeat these milestones.
+
+## Deployment evidence
+
+Do not transfer older Cloudflare/provider or independent production PASS evidence to current exact product `df2a705...`.
+
+GitHub exact-candidate regression and frozen-ref evidence are complete. Provider deployment identity for `df2a705...` and fresh independent two-host live byte/browser verification remain separate evidence gaps until explicitly recorded.
 
 ## Supabase production state
 
 Project: `zkfmgezvzugchcwppreq`.
 
-Existing release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by PR #106:
+These release migrations remain **APPLIED + LIVE VERIFIED** and were untouched by PR #108:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-Do not reapply them. The Mission artwork milestone required no migration and made no production database mutation.
+Do not reapply them. Avatar Vault Phase B required no migration and made no production database mutation.
 
 ## Immediate next development route
 
-Start new product selection from exact-green `df1bbd...`, while using current `main` to read later docs-only bookkeeping if present.
+Start new product selection from exact-green `df2a705...`, while using current `main` to read later docs-only bookkeeping if present.
 
-1. refresh `main`, active branches/actions and current investigator/production evidence before coding;
-2. first reproduce and priority-classify any newly reported functionality/correctness issue; do not invent a blocker;
-3. do not rebuild Personal Mission artwork, Calendar artwork, Calendar creator edit/delete, Ministry Hub Calendar, or More semantic icons;
+1. refresh `main`, active branches/actions, open issues and current investigator/production evidence before coding;
+2. first reproduce and priority-classify any newly reported functionality/correctness/security/privacy/data-loss issue; do not invent a blocker;
+3. do not rebuild Avatar Vault, Personal Mission, Calendar, More or other completed Phase B checkpoints;
 4. fixed-weekly congregation recurrence is complete; custom non-weekly recurrence remains deferred unless current evidence/user direction makes it release-required;
-5. absent a reproduced P0/P1 functionality gap, continue Visual Phase B on the next materially minimal/placeholder/generic/emoji-like surface;
-6. verify any proposed artwork binary exists or deliberately generate/import a real replacement; never wire nonexistent `assets/icons/v3/` paths;
-7. preserve route, feature/state, persistence, API/Supabase, gameplay/scoring, accessibility and PWA ownership unless a separately selected milestone explicitly changes it;
+5. absent a reproduced P0/P1 gap, continue Visual Phase B on the next materially minimal, placeholder, generic or emoji-like user-facing surface;
+6. verify a real asset exists or deliberately generate/import a replacement; never wire nonexistent `assets/icons/v3/` paths;
+7. preserve route, state, persistence, API/Supabase, gameplay/scoring, accessibility and PWA ownership unless a separately selected milestone explicitly changes it;
 8. add focused permanent regression coverage for the selected surface;
 9. require the complete accumulated exact-candidate regression before promotion;
-10. freeze the exact tested candidate before advancing `main` and keep deployment/live verification as separate evidence.
-
-## Release-process notes
-
-- PR #97 added the PR-triggered accumulated regression gate.
-- PR #98 restored the validator-owned development-status ledger headings; run `34616114505` fully passed.
-- PR #99 attempted a `push` trigger but the permanent workflow contract correctly rejected it; it was closed without merge.
-- PR #102 completed Calendar creator edit/delete at exact-green `7d28d7c...`; run `34623059639` passed.
-- PR #104 completed Calendar Visual Phase B artwork at exact-green `c15d1f...`; run `34627049878` passed.
-- PR #106 completed Personal Mission Visual Phase B artwork. Run `34629528297` checked out exact synthetic merge candidate `df1bbd...` and passed; frozen ref `release/v3-phase-b-mission-artwork-20260912` was created and `main` fast-forwarded to the same SHA.
-- Accepted exact-SHA pattern remains: PR synthetic merge candidate → full green accumulated run → freeze exact candidate ref → fast-forward `main` to that exact green commit when ancestry permits.
+10. freeze the exact tested candidate before advancing `main`; provider deployment and independent live proof remain separate evidence.
 
 ## Visual/artwork instruction
 
@@ -114,10 +95,10 @@ Report separately:
 - current exact-green product SHA;
 - frozen release/reference SHA;
 - repository/docs HEAD if different;
-- active development or docs branch/HEAD;
+- active development/docs branch and HEAD;
 - work actually completed;
 - exact tests/workflows executed;
-- Cloudflare deployment-check state vs independent live verification;
+- provider deployment-check state vs independent live verification;
 - Supabase migration state;
 - current credible P0/P1 blockers;
 - next dependency-safe milestone;
@@ -125,4 +106,4 @@ Report separately:
 
 ## Non-negotiable rules
 
-Rebuild-and-verify; one owner per responsibility; `src/core/api.js` remains the browser backend owner unless intentionally redesigned; never transfer PASS; never claim unexecuted tests; docs-only commits are not product candidates; do not weaken validators; preserve rollback; GitHub promotion, provider deployment and independent live proof remain separate; do not call the app bug-free.
+Rebuild-and-verify; one owner per responsibility; `src/core/api.js` remains the browser backend owner unless intentionally redesigned; never transfer PASS; never claim unexecuted tests; docs-only commits are not product candidates; do not weaken validators; preserve rollback; product regression remains `workflow_dispatch` + `pull_request` with no forbidden `push` trigger; GitHub promotion, provider deployment and independent live proof remain separate; do not call the app bug-free.
