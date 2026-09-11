@@ -1,96 +1,79 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after exact-SHA completion of the classified post-release visual-polish program through tranche 16.
+Updated: 2026-09-11 JST after reconciliation of the Workspace schema milestone and current post-release priorities.
 
-For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. Repository evidence overrides stale chat context.
+Read `DEVELOPMENT_PRIORITY_V3.md` first. It is the current task-selection authority. `RELEASE_6PM_2026-09-11.md` and the release-agent instructions are historical evidence from the completed production release.
 
 ## Production state — preserve
 
-- Repo: `11ll11l1l1l/BibleQuest`.
-- Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
-- Frozen rollback/reference: `release/v3-production-20260911-r3` at the same SHA.
-- The 2026-09-11 production release objective is complete.
-- Applicable v3 release scope remains **98/98 complete**.
-- Historical #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from the release scope. Do not revive them as backlog by default.
-- Production Supabase/data was not changed by post-release visual work.
+- Repository: `11ll11l1l1l/BibleQuest`.
+- Production/runtime product baseline: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Frozen rollback/reference: `release/v3-production-20260911-r3` at that product SHA.
+- Current `main` may contain later documentation-only descendants; recover its live HEAD before writing.
+- Historical release parity remains 98/98 applicable capabilities.
+- #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless explicitly reopened.
 
-Do not modify or repoint production merely because later post-release visual branches exist. A future production promotion requires a separately selected milestone, exact-SHA accumulated verification, promotion, Cloudflare propagation confirmation, and live production smoke evidence.
+Do not modify production, apply migrations or change production data merely because a post-release branch is green.
 
-## Current exact-green post-release product checkpoint
+## Current exact-green post-release product
 
-- Branch: `postrelease/v3-visual-shell-tranche16`.
-- Exact verified product SHA: `406c34dcdf904b7483bf4381be774a908738e60c`.
-- Parent exact-green visual product: tranche 15 SHA `62cb86cd48bae683d0be37a2a729127156a0093a`.
-- Verifier: `verify/v3-visual-shell-406c34d`.
-- Workflow run `34585018541`, job `103217107423`: **success**.
+- Development branch: `postrelease/v3-workspace-notes-schema-compat`.
+- Exact verified product SHA: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`.
+- Parent exact-green Assignment Private Responses product: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`.
+- Verifier run: `34594577664`.
+- Job: `103247250487`.
+- Conclusion: **success**.
 
-The verifier checked out detached exact product SHA `406c34dcdf904b7483bf4381be774a908738e60c` and passed:
+The verifier checked out detached exact product SHA `61ee54fac7d352312cef7ffd8010997fa8bc9e51` and passed exact-SHA/milestone-diff hygiene, the Cloudflare deployment gate, the focused Workspace Cloud Notes deployed-schema compatibility gate, accumulated visual static contracts, accumulated architecture validators, accumulated edge/security/static regressions, accumulated browser/mobile regressions and release-critical coverage presence.
 
-- exact-SHA and exact three-file diff hygiene;
-- Cloudflare deployment gate with 267 JavaScript syntax checks and production-entry/runtime ownership guards;
-- 16 accumulated visual static contracts;
-- 53 accumulated v3 architecture validators;
-- 86 edge/security/static regressions;
-- 68 Playwright browser/mobile regressions plus Kids Memory browser acceptance;
-- dedicated 1280x900 and 390x844 global-shell visual containment checks;
-- strong-contrast checks confirming decorative shell shadows are removed while shell geometry and horizontal containment remain intact.
+The live branch HEAD is now expected to be later than `61ee54f...` because reconciliation documentation was added after the product verification. Those later documentation commits do not change the verified product SHA.
 
-Exact tranche-16 product delta from tranche 15:
+## Prior verified checkpoints
 
-1. `index.html` — one shell visual stylesheet include.
-2. `src/ui/shell-visual-polish.css` — replacement-level page/topbar/brand/chip/bottom-nav presentation.
-3. `tests/v3-shell-visual-polish-static.mjs` — guard preventing layout, navigation, responsive, focus, typography-geometry, motion, interaction, token-owner, or generic-feature-panel takeover.
+- Visual Phase A / tranche-16 checkpoint: `406c34dcdf904b7483bf4381be774a908738e60c`.
+- Assignment Private Responses checkpoint: `73d39ce6fe0f9db20db62e25fd497a8711f921b0`.
+- Workspace schema compatibility checkpoint: `61ee54fac7d352312cef7ffd8010997fa8bc9e51`.
 
-No JavaScript, route, feature owner, storage, backend, service worker, data, or Supabase file changed in tranche 16.
+The old visual tranche program is now classified as **Visual Phase A: first-pass presentation polish complete**, not final visual completion.
 
-## Tranche-16 verification history
+## Assignment Private Responses production boundary
 
-Do not mistake the first candidate for the verified checkpoint.
+Migration `supabase/migrations/20260911131000_assignment_response_presence.sql` was not applied to production during development. Do not claim the feature production-live without a separately selected production integration/migration/live-authorization step.
 
-- Rejected candidate: `b0f2620ef0e0792db0c50a533a438837bbf3b297`.
-- Run `34584870801` passed exact-SHA hygiene and the deployment gate, then failed an existing Account visual load-order contract because the shell stylesheet had been inserted between `app.css` and `account-visual-polish.css`.
-- Root cause was corrected by preserving Account directly after `app.css` and loading shell polish immediately afterward.
-- The changed product SHA `406c34dcdf904b7483bf4381be774a908738e60c` then earned a fresh complete PASS in run `34585018541`; no PASS was transferred from the failed SHA.
+## Current Priority 1
 
-## Visual/artwork phase status
+Priority 1 has three active streams:
 
-The replacement-level visual phase defined by `VISUAL_REPLACEMENT_CONTRACT_V3.md` and `VISUAL_SURFACE_INVENTORY_V3.md` is complete through tranche 16.
+1. functional completion/correctness for accepted/currently planned work;
+2. Visual Phase B with real polished icons, backgrounds and illustrations where the UI remains minimal/placeholder;
+3. Calendar implementation when dependencies permit.
 
-Completed cumulative presentation families include Home/hero, global shell, Games, Reader, Bible World, Progress/Daily Journey, PWA icons, Transform, Study/Deep Questions/Story/Wisdom, Account/Tutorial, Context/Japanese/source presentation, Notes, Couples, Community, Media/Recordings, Adaptive/Open Review, and Accessibility.
+Calendar is not deferred behind completion of every cosmetic task. Visual work is not deferred behind all functionality. Sequence by dependency and risk.
 
-`VISUAL_POLISH_PROGRESS_V3.md` contains the cumulative evidence ledger. `VISUAL_SURFACE_INVENTORY_V3.md` now records that the classified replacement-level A/B inventory has been covered.
+If a visual milestone needs generated artwork, generate it, choose the best result, implement it directly and test it. Do not stop to request image approval.
 
-## Evidence-only branch head
+## Agent findings
 
-After the exact product SHA passed, documentation-only bookkeeping was added to the tranche-16 branch. Therefore the live branch HEAD may be later than `406c34dcdf904b7483bf4381be774a908738e60c`.
+Historical agent/triage findings are evidence only until revalidated against the current exact product checkpoint. Do not treat an old P0/P1 against an older `main` SHA as a current blocker without fresh evidence.
 
-Do not call a later documentation commit the verified product SHA. Recover the live branch ref first, then distinguish:
+## Next development steps
 
-- exact verified product: `406c34dcdf904b7483bf4381be774a908738e60c`;
-- later documentation-only HEAD: evidence/bookkeeping only unless product files changed and were reverified.
-
-## Current development boundary
-
-The visual inventory's remaining areas are Class D architecture/behavior owners: router/bootstrap/core services, PWA/offline/service-worker behavior, Supabase/API/storage/security, and equivalent behavior-coupled responsibilities. They are not unfinished visual polish.
-
-Do **not** continue by making speculative Class-D changes, broad refactors, navigation redesigns, or new features simply to keep development moving.
-
-## What the next development chat should do
-
-1. Recover live refs for `main`, `release/v3-production-20260911-r3`, `postrelease/v3-visual-shell-tranche16`, and any newer post-release branches before writing.
-2. Preserve production and the exact-green visual product checkpoint.
-3. Read `DEVELOPMENT_STATUS_V3.md`, `VISUAL_POLISH_PROGRESS_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, and `VISUAL_REPLACEMENT_CONTRACT_V3.md`.
-4. Check for concurrent branch ownership before creating a new product branch.
-5. Begin new product work only when there is a concrete post-release objective; give it an isolated branch, explicit architecture owner, acceptance criteria, regression protection, and exact-SHA accumulated verification.
-6. Keep retired Kids/Kana items retired unless explicitly reopened as new scope under `KIDS_GAMES_EXTENSION_V3.md`.
-7. Do not modify production Supabase/data without a reproduced defect that requires it.
+1. Recover live refs and newer exact-SHA evidence before writing.
+2. Preserve `61ee54f...` as the current exact-green product checkpoint unless newer verified product evidence exists.
+3. Read `DEVELOPMENT_PRIORITY_V3.md` and select the highest-value dependency-safe Priority 1 milestone.
+4. Revalidate credible historical P0/P1 before interrupting the roadmap.
+5. Use an isolated branch and explicit owner/acceptance contract for the selected milestone.
+6. Run focused checks and exact-SHA accumulated verification.
+7. Update evidence and continue to the next Priority 1 task while safe executable work remains.
+8. Keep production and production Supabase/data unchanged until an explicit verified integration/release milestone requires change.
 
 ## Non-negotiable evidence rules
 
 - Rebuild-and-verify; one owner per responsibility.
 - Never transfer PASS across changed product SHAs.
 - Never claim an unexecuted test.
-- Documentation-only commits are not automatically product candidates.
-- Preserve the frozen r3 production rollback point.
-- A later GitHub merge/promotion is not proof of Cloudflare propagation.
+- Documentation-only commits are not product candidates.
+- Do not introduce competing API/Supabase/state owners.
+- Preserve production rollback points.
+- A GitHub promotion is not proof of Cloudflare propagation.
 - Do not call the app bug-free.
