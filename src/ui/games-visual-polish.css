@@ -1,5 +1,5 @@
-/* BibleQuest v3 visual replacement tranche 2.
-   Presentation only: no layout, interaction, scoring, timing, reward or persistence ownership. */
+/* BibleQuest v3 visual replacement tranche 2 + Visual Phase B artwork.
+   Presentation only: no layout ownership, interaction, scoring, timing, reward or persistence ownership. */
 
 .bq-game-card{
   background:linear-gradient(155deg,rgba(255,255,255,.98) 0%,rgba(247,250,245,.98) 68%,rgba(239,246,239,.96) 100%);
@@ -94,7 +94,92 @@
   border-color:#86bea0;
 }
 
+/* Visual Phase B: one reusable vector sprite supplies recognizable artwork without changing Games markup or handlers. */
+.bq-game-card{
+  position:relative;
+  overflow:hidden;
+}
+
+.bq-game-card::before,
+.bq-memory-mark,
+.bq-detective-mark,
+.bq-recall-icon,
+.bq-recall-mark,
+.bq-game-medal,
+.bq-timeline-card::before{
+  background-image:url('../../assets/games-feature-icons.svg');
+  background-repeat:no-repeat;
+  background-size:900% 100%;
+}
+
+.bq-game-card::before{
+  content:"";
+  display:block;
+  width:64px;
+  height:64px;
+  flex:0 0 64px;
+  margin:-2px 0 10px -4px;
+  background-position:var(--bq-game-art-position,0%) center;
+  filter:drop-shadow(0 8px 14px rgba(35,58,43,.12));
+}
+
+.bq-game-launcher>.bq-game-card:nth-child(1){--bq-game-art-position:0%}
+.bq-game-launcher>.bq-game-card:nth-child(2){--bq-game-art-position:12.5%}
+.bq-game-launcher>.bq-game-card:nth-child(3){--bq-game-art-position:25%}
+.bq-game-launcher>.bq-game-card:nth-child(4){--bq-game-art-position:37.5%}
+.bq-game-launcher>.bq-game-card:nth-child(5){--bq-game-art-position:75%}
+.bq-game-launcher>.bq-game-card:nth-child(6){--bq-game-art-position:87.5%}
+.bq-game-launcher>[data-memory-launch-card]{--bq-game-art-position:50%}
+.bq-game-launcher>[data-same-room-card]{--bq-game-art-position:62.5%}
+
+.bq-memory-mark,
+.bq-detective-mark,
+.bq-recall-mark,
+.bq-game-medal{
+  display:block;
+  width:72px;
+  height:72px;
+  margin:2px auto 8px;
+  font-size:0;
+  line-height:0;
+  filter:drop-shadow(0 8px 15px rgba(35,58,43,.12));
+}
+
+.bq-memory-mark{background-position:50% center}
+.bq-detective-mark{background-position:75% center}
+.bq-recall-mark{background-position:37.5% center}
+.bq-game-medal{background-position:100% center}
+
+.bq-recall-icon{
+  font-size:0;
+  color:transparent;
+  background-position:37.5% center;
+  background-color:transparent;
+  box-shadow:none;
+}
+
+.bq-timeline-card::before{
+  content:"";
+  display:block;
+  width:58px;
+  height:58px;
+  margin:0 0 8px -3px;
+  background-position:87.5% center;
+  filter:drop-shadow(0 7px 12px rgba(35,58,43,.1));
+}
+
+@media(max-width:520px){
+  .bq-game-card::before{width:58px;height:58px;flex-basis:58px;margin-bottom:8px}
+  .bq-memory-mark,.bq-detective-mark,.bq-recall-mark,.bq-game-medal{width:64px;height:64px}
+  .bq-timeline-card::before{width:54px;height:54px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-game-card::before,.bq-memory-mark,.bq-detective-mark,.bq-recall-mark,.bq-game-medal,.bq-timeline-card::before{filter:none}
+}
+
 @media(prefers-contrast:more){
   .bq-game-card,.bq-game-choice,.bq-game-stats>div,.bq-timeline-row{box-shadow:none}
   .bq-game-choice{border-color:rgba(35,57,42,.32)}
+  .bq-game-card::before,.bq-memory-mark,.bq-detective-mark,.bq-recall-mark,.bq-game-medal,.bq-timeline-card::before{filter:none}
 }
