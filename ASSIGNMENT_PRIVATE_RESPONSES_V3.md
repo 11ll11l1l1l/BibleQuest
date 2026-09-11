@@ -28,7 +28,8 @@ This extends the existing Assignments owner; it does not create a second task sy
   - display name
   - completion timestamp
 - A database trigger derives the safe presence projection from completed progress rows.
-- RLS permits presence reads only to an active ministry role or a member who is actually in the assignment audience (`all`, `member`, `team`, or `group`).
+- RLS delegates assignment-audience authorization to `private.bible_assignment_visible`, including `all`, `member`, `team`, and `group` targets plus the established ministry roles.
+- The trigger writer is a private-schema `SECURITY DEFINER` with an empty `search_path`; anon/authenticated roles receive no execute privilege on it.
 - Authenticated browser clients have no INSERT/UPDATE/DELETE grants on the presence projection.
 - `src/core/assignment-responses.js` owns response-review reads.
 - `src/app/assignments.js` owns normalization, role gating, stale-request protection, and review state.
@@ -51,6 +52,8 @@ It must pass:
 - JavaScript syntax checks for the response boundary, Assignments owner, and Assignments presentation.
 - Existing `tests/v3-assignments-edge.mjs` regression.
 - New `tests/v3-assignment-private-responses.mjs` privacy regression.
-- Existing Assignments architecture validators.
+- Current `scripts/validate-v3-assignments.mjs` architecture validator.
+
+The broader v3 regression workflow remains a separate release gate; this focused workflow does not redefine older milestone validators whose deferred-feature assumptions are already obsolete in the v3.71 baseline.
 
 Database migration must also be reviewed/deployed in the normal Supabase release process before the feature is considered production-live. The frozen release branch and current production deployment are not modified by this feature branch.
