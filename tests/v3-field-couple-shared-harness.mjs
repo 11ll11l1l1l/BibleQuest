@@ -163,10 +163,10 @@ async function sharedJourneyScenario(sessions) {
   assert.ok((await D.locator(`[data-couple-cloud-step="${stepIndex}"]`).getAttribute('class') || '').includes('done'), 'Partner must observe the same completed Journey step');
   record('D', 'partner observed the same shared commitment and Journey completion', true, `step=${stepIndex + 1}`);
 
-  await visit(C, 'couples-cloud', '[data-couples-cloud-view]');
-  await C.waitForTimeout(600);
+  const cState = await coupleState(C);
+  assert.notEqual(cState, 'unavailable', 'Unrelated Account C must reach a valid Couple Journey state before isolation can PASS');
   assert.equal(await C.getByText(commitment, { exact: true }).count(), 0, 'Unrelated Account C must not see the pair-shared commitment');
-  record('C', 'unrelated account could not read pair-shared commitment', true);
+  record('C', 'unrelated account could not read pair-shared commitment', true, `pairState=${cState}`);
 
   for (const [alias, page] of [['A', A], ['D', D]]) {
     await visit(page, 'couples-cloud', '[data-couples-cloud-view]');
