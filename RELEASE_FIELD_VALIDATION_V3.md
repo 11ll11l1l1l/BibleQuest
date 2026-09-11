@@ -125,18 +125,21 @@ PASS requires one pair-shared day plus correct individual progression semantics,
 
 ### A6 — Live Room cross-session/device
 
+The authoritative current v3 Live Room contract is Feature Inventory #43: `create/join/leave; reconnect; no stale room state`. The shipped Live Rooms UI/service does **not** expose a room question/answer/scoring loop. Do not invent room gameplay, scoring, ranking, response rounds, or progression merely to satisfy older release wording. `LIVE_ROOM_FIELD_HARNESS_V3.md` documents the guarded supplemental harness for this exact contract.
+
 1. Account A hosts a Live Room through the production UI.
 2. Account B joins through the supported room-code/join flow from a separate session/device.
-3. Verify both participants enter the same intended room/session and receive current room state.
-4. Exercise the normal room question/interaction cycle sufficiently to prove repeated state propagation rather than a single lucky event; use the issue/current product's supported session length and do not invent a different game contract.
-5. Verify B's responses/actions are visible only as allowed by the current room/privacy contract and that scoring/ranking/progression, where applicable, remains coherent across repeated rounds.
-6. Refresh B mid-session; verify safe recovery/rejoin behavior.
-7. Disconnect/reconnect network or close/reopen the browser/PWA as practical; verify the supported reconnect path does not duplicate membership/responses or corrupt room state.
-8. Re-login if the current room flow supports retaining/rejoining an active session and verify behavior matches the product contract.
-9. Attempt an invalid/expired room code and verify rejection without leaking private room data.
-10. Verify unrelated Account C cannot access a private/unauthorized room state or mutate it except through the legitimate join path.
+3. Verify both participants enter the same intended room/session and participant state propagates through realtime.
+4. Navigate B away and back; verify the retained active room reconnects without duplicate or stale participant state.
+5. Hard-refresh B and use the supported room-code rejoin path; verify the same account is not duplicated in room membership.
+6. Verify ordinary Account B does not receive host-only room-ending controls.
+7. Using a genuinely unrelated/different-congregation Account C, verify a valid room code does not bypass congregation eligibility or expose private active-room state.
+8. Have A end the room through the supported UI; verify the ended state propagates to B and reconnect is no longer offered.
+9. After leaving/refreshing as applicable, verify the ended room code cannot restore active room state.
+10. Attempt an unknown syntactically valid room code and verify safe rejection without leaking room state.
+11. Exercise close/reopen or real network disconnect/reconnect on the physical/session setup where practical and verify behavior remains within the supported reconnect contract without duplicate membership or stale state.
 
-PASS requires cross-session/device realtime behavior, repeated interactions, correct reconnect semantics, and privacy/isolation.
+PASS requires current-contract cross-session/device create/join/leave behavior, realtime participant/end propagation, reconnect/rejoin without duplication, ended/unknown-code rejection, and privacy/isolation. It does not require nonexistent room question/scoring gameplay.
 
 ### A7 — supporting read-only production confirmation
 
@@ -146,7 +149,9 @@ Only after the genuine UI flows above, read-only inspection may confirm expected
 - `bible_teams` / `bible_team_members`;
 - assignment targeting/response-presence owners under the current schema;
 - active couple/pair challenge history owners;
-- `bible_shared_sessions` / `bible_session_participants` / `bible_room_responses`.
+- `bible_shared_sessions` / `bible_session_participants` for the current Live Room contract.
+
+Do not require `bible_room_responses` activity for the current #43 Live Room release contract because the shipped UI/service has no room question/answer loop. If a future scoped product change adds room gameplay, its response-storage acceptance must be specified and verified separately.
 
 Confirm only the rows/counts/timestamps/relationship IDs needed to prove the UI-created activity reached the intended owner. Do not expose response text, private content, tokens, emails, or secrets in release evidence.
 
@@ -173,7 +178,7 @@ On a physical Android device using current Chrome:
 
 ### B2 — Android Brave at 100% zoom
 
-Repeat B1 in current Brave on the same or equivalent physical Android device. This is a distinct field check; Chrome PASS must not be transferred to Brave.
+Repeat B1 in current Brave on the same or equivalent physical Android device. This is a distinct field check; Chrome PASS must not be transferred.
 
 ### B3 — genuinely installed PWA device session
 
