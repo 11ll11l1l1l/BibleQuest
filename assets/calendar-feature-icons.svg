@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="planner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="15" rx="3"/>
+    <path d="M7.5 3.5v3M16.5 3.5v3M3.5 9h17M8 13h3M13 13h3M8 16.5h3"/>
+  </symbol>
+  <symbol id="personal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="5" width="16" height="15" rx="3"/>
+    <path d="M8 3.5v3M16 3.5v3M4 9h16"/>
+    <circle cx="9" cy="14" r="1.6"/>
+    <path d="M12.5 14h4M12.5 17h3"/>
+  </symbol>
+  <symbol id="assignment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 5.5H6.5A2.5 2.5 0 0 0 4 8v10a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18V8a2.5 2.5 0 0 0-2.5-2.5H16"/>
+    <rect x="8" y="3.5" width="8" height="4" rx="2"/>
+    <path d="m8 14 2.2 2.2L16 10.5"/>
+  </symbol>
+  <symbol id="congregation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 20h16M6 20V10.5L12 6l6 4.5V20"/>
+    <path d="M12 3v5M9.8 5.2h4.4M10 20v-5h4v5M8.5 12.5h1M14.5 12.5h1"/>
+  </symbol>
+  <symbol id="empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="14.5" height="15" rx="3"/>
+    <path d="M7 3.5v3M14.5 3.5v3M3.5 9h14.5M8 13h5"/>
+    <path d="m19 12 .7 1.8L21.5 14.5l-1.8.7L19 17l-.7-1.8-1.8-.7 1.8-.7L19 12Z"/>
+  </symbol>
+</svg>
