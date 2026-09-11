@@ -1,0 +1,51 @@
+/* BibleQuest v3 visual replacement tranche 15.
+   Presentation only: no text sizing, focus behavior, reduced-motion logic,
+   preference persistence, responsive geometry or accessibility semantics. */
+
+.bq-accessibility-page,
+.bq-accessibility-controls{
+  border-color:rgba(56,88,70,.13);
+  background:radial-gradient(circle at 90% 10%,rgba(222,236,225,.58) 0%,rgba(222,236,225,0) 42%),linear-gradient(180deg,#fff 0%,#f8fbf7 100%);
+  box-shadow:0 7px 20px rgba(45,69,55,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-accessibility-page h1,
+.bq-accessibility-controls h2{
+  color:#294437;
+}
+
+.bq-accessibility-controls select{
+  border-color:rgba(56,88,70,.18);
+  background:linear-gradient(180deg,#fff 0%,#f7faf6 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 3px 10px rgba(45,69,55,.025);
+}
+
+.bq-accessibility-status{
+  color:#496154;
+}
+
+html[data-bq-contrast="strong"] .bq-accessibility-page,
+html[data-bq-contrast="strong"] .bq-accessibility-controls{
+  border-color:rgba(31,54,40,.34);
+  background:#fff;
+  box-shadow:none;
+}
+
+html[data-bq-contrast="strong"] .bq-accessibility-controls select{
+  border-color:rgba(31,54,40,.4);
+  background:#fff;
+  box-shadow:none;
+}
+
+html[data-bq-contrast="strong"] .bq-accessibility-status{
+  color:#34483d;
+}
+
+@media(prefers-contrast:more){
+  .bq-accessibility-page,
+  .bq-accessibility-controls,
+  .bq-accessibility-controls select{
+    box-shadow:none;
+    border-color:rgba(31,54,40,.42);
+  }
+}
