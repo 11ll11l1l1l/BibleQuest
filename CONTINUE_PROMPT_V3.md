@@ -15,11 +15,12 @@ A production BibleQuest v3 release must be available on the existing Cloudflare 
 Before doing anything else:
 
 1. Read `RELEASE_6PM_2026-09-11.md` from the current active v3 branch. It is the overriding priority until the release is live.
-2. Read `DEVELOPMENT_HANDOFF_V3.md`.
-3. Read `DEVELOPMENT_STATUS_V3.md`.
-4. Read `FEATURE_INVENTORY_V3.md`.
-5. Read `ARCHITECTURE_V3.md` as needed for ownership boundaries.
-6. Recover live GitHub refs, exact SHAs, recent commits, and actual workflow evidence. Do not rely on stale chat text when repository evidence differs.
+2. Read `RELEASE_AGENT_READONLY_2026-09-11.md` so you understand the five support agents are investigators only and may not write or deploy.
+3. Read `DEVELOPMENT_HANDOFF_V3.md`.
+4. Read `DEVELOPMENT_STATUS_V3.md`.
+5. Read `FEATURE_INVENTORY_V3.md`.
+6. Read `ARCHITECTURE_V3.md` as needed for ownership boundaries.
+7. Recover live GitHub refs, exact SHAs, recent commits, and actual workflow evidence. Do not rely on stale chat text when repository evidence differs.
 
 CURRENT BASELINE TO RECOVER/VERIFY
 
@@ -30,6 +31,20 @@ CURRENT BASELINE TO RECOVER/VERIFY
 - Historical #39 Hiragana Match and #40 Kids Bible Who Am I are user-retired from this v3 release. They are not blockers and must not be rebuilt now.
 - Active release-scope parity is 98/98 applicable capabilities.
 - Future Kids games are governed by `KIDS_GAMES_EXTENSION_V3.md`, but no new Kids/Kana games are allowed before today's release.
+
+READ-ONLY SUPPORT AGENTS
+
+Five support agents may investigate in parallel, but they are not allowed to change anything. They follow `RELEASE_AGENT_READONLY_2026-09-11.md`.
+
+Their roles are:
+
+1. Cloudflare/deployment investigator.
+2. Regression/browser/mobile/PWA investigator.
+3. Core product smoke investigator.
+4. Security/backend-boundary investigator.
+5. Release firewall/triage investigator.
+
+They may inspect and report evidence only. They must not create or update code, docs, branches, commits, PRs, issues, comments, workflows, Cloudflare, Supabase, DNS, secrets, data, schema, or production configuration. They do not deploy. The captain/release-execution chat is the only writer and must independently validate agent findings before acting.
 
 RELEASE PRIORITY
 
@@ -67,16 +82,17 @@ In this chat instance, make concrete progress immediately. Inspect the live bran
 Priority sequence:
 
 1. Recover the live release-control HEAD and current evidence.
-2. Audit Cloudflare/deployment compatibility and remaining P0/P1 blockers.
-3. Apply only required release fixes or low-risk permitted polish while time allows.
-4. Run the Cloudflare deployment gate and complete exact-SHA accumulated regression suite.
-5. Freeze the exact green release candidate.
-6. Update status/handoff evidence.
-7. Promote the verified v3 product state to `main` when gates are green.
-8. Confirm Cloudflare propagation and production behavior on `mybiblequest.pages.dev` and the compatibility host.
-9. Keep a clear list of any task that specifically requires the user; otherwise perform it directly.
+2. Review any read-only agent findings, but independently verify credible P0/P1 reports before changing code.
+3. Audit Cloudflare/deployment compatibility and remaining P0/P1 blockers.
+4. Apply only required release fixes or low-risk permitted polish while time allows.
+5. Run the Cloudflare deployment gate and complete exact-SHA accumulated regression suite.
+6. Freeze the exact green release candidate.
+7. Update status/handoff evidence.
+8. Promote the verified v3 product state to `main` when gates are green.
+9. Confirm Cloudflare propagation and production behavior on `mybiblequest.pages.dev` and the compatibility host.
+10. Keep a clear list of any task that specifically requires the user; otherwise perform it directly.
 
-If another chat/agent is concurrently modifying the same release branch, do not create competing product changes. First inspect live HEAD and coordinate through the repository evidence. Prefer read-only investigation when ownership is unclear.
+If another writer chat is concurrently modifying the same release branch, do not create competing product changes. First inspect live HEAD and coordinate through repository evidence. The five support agents are read-only and therefore should not create write conflicts.
 
 At the end of every response, state only factual current status: exact branch/SHA when known, what was actually completed, what gate is next, and any action the user personally must perform before 18:00 JST.
 
