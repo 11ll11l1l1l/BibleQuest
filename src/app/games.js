@@ -1,6 +1,7 @@
 import { GAME_MODES, buildGameRound } from '../features/games/content.js';
 import { DETECTIVE_MODE, DETECTIVES } from '../features/games/detectives.js';
 import { TIMELINE_MODE, TIMELINES } from '../features/games/timelines.js';
+import { createKidsMemoryGame } from './kids-memory.js';
 
 const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE,TIMELINE_MODE]);
 const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3,timelineCorrect:20,timelineIncorrect:4});
@@ -63,6 +64,7 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   let recallState=normalizeRecall(storage.read(RECALL_KEY,{}));
   let state=emptyState();
   let sameRoom=emptySameRoom();
+  const kidsMemory=createKidsMemoryGame({progress,roundIdFactory:makeRoundId});
 
   const snapshot=()=>{
     const mode=state.mode?modeById(state.mode):null;
@@ -260,8 +262,8 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   async function returnRecallLibrary(){return openRecallLibrary()}
   async function replayRecall(){if(!state.recallBook)throw new Error('Choose a Per-book Recall book before replaying.');return startRecallBook(state.recallBook.code)}
   function lastResult(mode){if(!modeById(mode))throw new Error('Unknown BibleQuest game mode.');return freezeResult(results[mode]||null)}
-  function showLauncher(){sameRoom=emptySameRoom();state=emptyState();return snapshot()}
+  function showLauncher(){kidsMemory.leave();sameRoom=emptySameRoom();state=emptyState();return snapshot()}
   function leave(){return showLauncher()}
 
-  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
+  return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),kidsMemory,start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
 }
