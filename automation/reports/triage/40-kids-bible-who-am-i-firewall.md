@@ -1,62 +1,61 @@
 # A5 Firewall / Triage — #40 Kids Bible Who Am I
 
 Agent: `BQ-A5-FIREWALL`
-Generated: 2026-09-11 11:00 JST
+Generated: 2026-09-11 11:58 JST
 
 ## Exact live state
-- Active parity target: **#40 Kids Bible Who Am I** — pre-implementation.
-- Risk tier: **provisional NORMAL-RISK** only if implementation stays a Kids-facing entry into the already verified Games/Character Detective owner and merely adds milestone-specific tests/invocations. Any existing-test/workflow modification, owner replacement, persistence/security/backend expansion, or global-shell change reclassifies HIGH-RISK.
-- Dedicated canonical #40 branch: **not found**.
+- Active parity target: **#40 Kids Bible Who Am I — pre-implementation**.
+- Risk tier: **provisional NORMAL-RISK** only if implementation stays a Kids-facing entry into the already verified Games/Character Detective owner and adds milestone-specific coverage without altering existing accumulated tests/workflows. Existing-test/workflow modification, verified-owner replacement, broad persistence/security/backend expansion, dependency change, schema/RLS/grant change, or global-shell/router ownership change reclassifies HIGH-RISK.
+- Dedicated canonical `feature/v3-kids-bible-who-am-i`: **not found**.
 - Dedicated `agent/a1-work/040*` candidate: **not found**.
 - Frozen release: `release/v3.71-japanese-furigana` @ `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Exact frozen bookkeeping run: `34550650269` = **SUCCESS**. This is baseline evidence only and does not transfer to a future #40 SHA.
-- Writer lease: **FREE** at inspection.
+- Exact frozen bookkeeping run: `34550650269` = **SUCCESS**. Its isolated verifier at `9f6bbffc61b13af2a7ca1f0762119586bf08c029` explicitly checks out/asserts `c631bea8d5177a9a2ff68139cb104b6fbf26015b` before the accumulated architecture, edge/security and browser/mobile phases. This PASS is baseline-only and does not transfer to a future #40 SHA.
+- Writer lease: **FREE**.
 
-## Primary evidence independently checked
-- `FEATURE_INVENTORY_V3.md` at exact frozen v3.71: 97 Regression-tested / 1 Verified / 0 Implemented / 2 Not started; #40 is the next reopened parity item and #39 remains explicitly deferred.
-- `DEVELOPMENT_HANDOFF_V3.md` at v3.71: #40 is the next active parity item after frozen #15; exact historical mapping is required before implementation.
-- Live branch inventory: no #40 canonical branch and no `agent/a1-work/040*` candidate.
-- `tests/v3-kids-memory-lazy-progress-capability.mjs` remains absent at frozen v3.71.
-- Current `tests/v3-admin-operations-edge.mjs` still injects a mocked privileged API; its destructive-account path does not execute the trusted JWT/platform-role/Owner-only server authorization boundary.
-- A2 #40 report is fresh for frozen `c631bea...` and supports only a Kids-facing entry into the existing Character Detective lifecycle.
-- A4 #40 report is fresh for frozen `c631bea...`; it is pre-implementation and correctly transfers no PASS to a future candidate.
-- There is no current A3 #40 report. The latest inspected A3 report targets historical #76 and is irrelevant to #40 authorization.
-- `automation/TRIAGE.md` before this run was stale at #38/v3.70 and therefore was not used as evidence.
+## Primary evidence independently checked before judging reports
+- `FEATURE_INVENTORY_V3.md` at exact frozen v3.71: **97 Regression-tested / 1 Verified / 0 Implemented / 2 Not started**; #40 is the next reopened parity item and #39 remains explicitly deferred.
+- `DEVELOPMENT_HANDOFF_V3.md` at v3.71: #40 is the next parity target and requires historical mapping before implementation.
+- Live ref queries found neither the #40 canonical branch nor any `agent/a1-work/040*` candidate.
+- `.github/workflows/v3-regression.yml` at v3.71 still omits `tests/v3-kids-memory-lazy-progress-capability.mjs`; the exact v3.71 bookkeeping verifier omits it too.
+- `tests/v3-content-moderation-edge.mjs` constructs Games with a minimal `{ record(){} }` Progress stub for unrelated moderation/Recall checks but never launches Memory Meadow, so it does not assertion-equivalently cover the missing `Progress.getState()` fail-loud launch contract.
+- `tests/v3-admin-operations-edge.mjs` uses mocked `status`, `dashboard`, `frontendHealth`, and `deleteUser` APIs. The real `supabase/functions/bq-admin-ops/index.ts` separately enforces JWT identity, active platform `owner|admin`, Owner-only account deletion, self-delete/other-owner/ownership-transfer protections, and server-side admin deletion. The current edge regression does not execute that production trusted boundary.
+- Exact run `34550650269` is successful and its workflow pins/asserts frozen SHA `c631bea8...`; it therefore validates only the tests actually invoked.
 
-## Independent contract/risk judgment
-
-**FACT:** Clean retained/v2 evidence recovered by A2 maps the Kids `Bible Who Am I?` tile to the same shared `detective()` path used by ordinary Character Detective.
-
-**RECOMMENDATION:** The safe #40 implementation is therefore a narrow Kids-facing entry/presentation path under the existing Games owner, with the existing Character Detective lifecycle/data/Progress/Storage owners reused. Do not invent a Kids-only question bank, scoring engine, persistence owner, backend path, or second state machine without new primary evidence.
+## Report freshness / verification
+- **A2 #40:** fresh for frozen `c631bea8...`, no candidate. Its retained-v2 contract conclusion is consistent with the authoritative inventory/current Games owner, but A5 does not use A2 agreement as proof.
+- **A3 #40:** now **fresh** for frozen `c631bea8...`, no candidate. It independently identifies the bounded #40 safe path as local Games-owner reuse with no new schema/RLS/RPC/Edge/server authorization path. It also records the same #38/#93 baseline evidence debts.
+- **A4 #40:** fresh pre-implementation review for frozen `c631bea8...`, no candidate. It transfers no PASS and identifies the same two accumulated-harness gaps.
+- Candidate-specific readiness: **not applicable** because no #40 candidate exists.
+- HIGH-RISK independent barrier: **not triggered yet** for bounded pre-write #40. If the eventual diff crosses a HIGH-RISK boundary, current exact-candidate A3/A4/A5 review becomes mandatory before promotion.
 
 ## BLOCKER
 
-1. **Accumulated #38 regression weakening remains unresolved in the live v3.71 lineage.** The dedicated lazy-Progress capability regression is still absent, and no assertion-equivalent permanent test was found proving that Memory Meadow launch fails loudly when `Progress.getState()` is unavailable.
-   - Counterfactual: the launch-time Progress capability contract can regress while the accumulated suite stays green.
-   - Policy impact: unexplained deletion/weakening of accumulated regression protection is a firewall BLOCKER regardless of later green runs.
+1. **#38 accumulated-regression weakening remains unresolved in v3.71.** The dedicated lazy-Progress capability regression is absent from both repository state and the executed accumulated workflow, and no assertion-equivalent permanent test was found proving fail-loud Memory Meadow launch when `Progress.getState()` is unavailable.
+   - **Counterfactual:** launch-time Progress capability behavior can silently regress while the accumulated suite remains green.
+   - **Firewall basis:** unexplained deletion/weakening of accumulated regression protection is a BLOCKER.
 
-2. **#93 trusted-boundary evidence debt remains unresolved.** `tests/v3-admin-operations-edge.mjs` continues to exercise a mocked Admin Operations API rather than the real privileged server authorization/delete boundary.
-   - Counterfactual: JWT/platform-role/Owner-only destructive-account authorization can regress while the client-level regression remains green.
-   - Policy impact: runtime/security claims require faithful trusted-boundary evidence when feasible; client mocks alone are insufficient.
+2. **#93 trusted-boundary evidence remains insufficient.** The current Admin Operations edge regression exercises a mocked privileged API rather than the real destructive-account authorization/server boundary.
+   - **Counterfactual:** JWT/platform-role/Owner-only authorization or destructive-delete protections in the production server function can regress while the mocked client test remains green.
+   - **Firewall basis:** runtime/security claims require executable or faithful trusted-boundary evidence when feasible; a client mock alone is insufficient.
 
 ## MILESTONE
 
-1. **#40 implementation/verification contract.** After the two accumulated-evidence blockers are repaired, create the dedicated #40 canonical/work lineage from exact frozen v3.71 and implement only the recovered Kids-facing Character Detective entry. Permanent focused coverage must prove launcher entry, full round, answer/reference feedback, duplicate-submit/double-award prevention, replay/leave cleanup, keyboard/Enter behavior, 390px browser/mobile behavior, single-owner reuse, and accumulated-suite retention. Exact functional and later bookkeeping SHAs each require their own complete gates.
+1. **#40 implementation/verification contract after blocker repair.** Primary retained/current evidence supports only a Kids-facing `Bible Who Am I?` entry into the existing Games-owned Character Detective lifecycle. Do not create a Kids-only detective bank, separate scoring/reward owner, new Progress/Storage path, backend path, or second state machine. Permanent coverage must prove Kids entry, full round, answer/reference feedback, duplicate-submit/double-award protection, replay/leave cleanup, keyboard/Enter behavior, 390px browser/mobile behavior, single-owner reuse, and complete accumulated-suite retention. Functional and later bookkeeping SHAs each require their own exact complete gate.
 
 ## DEFER
-- #39 Hiragana Match remains explicitly deferred.
+- **#39 Hiragana Match** remains explicitly deferred.
 
 ## IGNORE
-- The absence of an A3 #40 report is not itself a blocker while #40 remains pre-write and provisional NORMAL-RISK. If the eventual diff crosses a HIGH-RISK boundary, obtain a fresh exact-state A3 review before continuing.
-- The A3 #76 Ministry Hub report is stale/irrelevant for current #40 decisions.
-- `automation/CURRENT.md` remains stale at the old #75/v3.48 control-plane snapshot; live refs, frozen v3.71, inventory, handoff and executed evidence supersede it.
-- Do not transfer v3.71 baseline PASS to any future #40 candidate.
+- Historical A3 #76 conclusions as current #40 evidence.
+- PASS transfer from frozen v3.71 to any future #40 candidate.
+- Moving/rewriting frozen `release/v3.71-japanese-furigana`.
+- Stale `automation/CURRENT.md` (#75/v3.48 era) as product-state authority; live refs/frozen release/inventory/handoff/executed evidence supersede it.
 
 ## Firewall decision
-**2 BLOCKER; 1 MILESTONE; #40 NOT READY TO START PRODUCT WRITES under the current accumulated-harness state.**
+**2 BLOCKER; 1 MILESTONE. #40 PRODUCT WRITES SHOULD NOT START FROM THE CURRENT ACCUMULATED-HARNESS STATE.**
 
 ## Next safe action
-Repair the missing #38 fail-loud Progress-capability regression with assertion-equivalent permanent coverage and add faithful #93 trusted-boundary authorization/delete evidence without weakening existing regressions. Run the complete accumulated suite on the exact corrective SHA and preserve frozen v3.71. Then start #40 from the verified corrected baseline using the narrow Games-owner contract above.
+Keep frozen v3.71 immutable. Create a corrective lineage that restores or replaces the missing #38 fail-loud Progress-capability regression with assertion-equivalent permanent coverage and adds faithful #93 trusted-boundary authorization/delete evidence without weakening prior protection. Run the complete accumulated suite on the exact corrective SHA. After that exact corrected baseline is verified, create the dedicated #40 canonical/work lineage and implement only the narrow Games-owner contract.
 
 ## Staleness conditions
-This report is stale if a #40 canonical/work candidate appears or changes; frozen release advances beyond `c631bea8...`; #38/#93 permanent evidence changes; the accumulated workflow changes; #40 contract/inventory changes; or exact #40 functional/bookkeeping evidence appears.
+This report becomes stale immediately if a #40 canonical/work candidate appears or moves; frozen baseline advances beyond `c631bea8...`; #38/#93 permanent evidence changes; accumulated workflow coverage changes; #40 contract/inventory changes; or exact #40 functional/bookkeeping evidence appears.
