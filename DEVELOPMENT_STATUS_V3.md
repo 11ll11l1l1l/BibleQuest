@@ -77,3 +77,13 @@ A visible blank screen, permanent loader, impossible navigation/login, game laun
 ## Evidence rule
 
 Never transfer PASS across changed product SHAs. Never claim an unexecuted test. Temporary verifier commits are not release candidates. Do not modify production Supabase/data unless a reproduced blocker requires it. The exact clean SHA that passes the complete release gate is the only product state eligible for production promotion.
+
+## Defect / root-cause ledger
+
+- `transformation-v2.js` release-blocking template-expression syntax error was reproduced by the exact-SHA Cloudflare deployment gate and fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
+- `scripts/deploy-gate.mjs` still validated the retired legacy `sw.js` precache model instead of the v3 `offline-shell-sw.js` runtime-warming owner/worker. The stale gate was aligned with the verified v3 ownership contract at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
+- The accumulated architecture validator still rejected the explicitly approved `Retired from v3 release scope` inventory state for rows #39/#40 and required these ledger/queue headings. This release-control bookkeeping mismatch is corrected in the current candidate; the complete exact-SHA release suite must be rerun before any freeze or promotion.
+
+## Next major milestone
+
+Run the complete exact-SHA release suite from the beginning on the resulting candidate: Cloudflare deployment gate, accumulated v3 architecture validators, edge/security regressions, Playwright browser/mobile, PWA/offline, accessibility, and diff/static checks. No prior PASS transfers to the changed SHA.

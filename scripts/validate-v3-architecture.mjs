@@ -113,7 +113,7 @@ const mediaUi=read('src/features/media-library/index.js');if(/createElement\(['"
 const games=read('src/app/games.js');for(const contract of['buildGameRound','progress.record','storage.read','storage.write','recall.loadManifest','recall.loadBook','recallReviewQueue','syncRecallReviewItem'])if(!games.includes(contract))fail(`Game Launcher owner missing required contract: ${contract}`);if(/document\.|window\.|localStorage|sessionStorage|createClient|fetch\s*\(/.test(games))fail('Game Launcher owner must remain DOM/storage-implementation/backend/pack-fetch independent.');
 const gamesUi=read('src/features/games/index.js');if(/localStorage|sessionStorage|createClient|progress\.record|storage\.|fetch\s*\(/.test(gamesUi))fail('Games UI bypasses Game Launcher/progress/storage/content ownership.');
 
-const inventory=read('FEATURE_INVENTORY_V3.md'),allowed=new Set(['Not started','Implemented','Verified','Regression-tested']),rows=inventory.split('\n').filter(line=>/^\|\s*\d+\s*\|/.test(line));
+const inventory=read('FEATURE_INVENTORY_V3.md'),allowed=new Set(['Not started','Implemented','Verified','Regression-tested','Retired from v3 release scope']),rows=inventory.split('\n').filter(line=>/^\|\s*\d+\s*\|/.test(line));
 if(rows.length!==100)fail(`Feature inventory must contain exactly 100 numbered capability rows; found ${rows.length}.`);
 rows.forEach((line,index)=>{const columns=line.split('|').slice(1,-1).map(value=>value.trim());if(Number(columns[0])!==index+1)fail(`Feature inventory row sequence error at ${index+1}.`);if(!allowed.has(columns[4]))fail(`Invalid v3 status on row ${columns[0]}.`)});
 
