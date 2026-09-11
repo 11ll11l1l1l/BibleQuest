@@ -17,6 +17,7 @@ A docs/validation-only HEAD is not automatically a new product SHA.
 
 | Gate | Required final-candidate evidence | Current status |
 |---|---|---|
+| Cloudflare deployment build gate | `bash build.sh` / `scripts/deploy-gate.mjs` validates JS syntax, production entry assets and deployment/runtime guards | Registered in accumulated PR workflow by this release-hardening milestone; must pass exact candidate |
 | Architecture / ownership | Complete accumulated architecture validators | Existing accumulated gate; rerun on every changed final candidate |
 | Edge / security / privacy | Complete accumulated edge/security/static suite | Existing accumulated gate; rerun on every changed final candidate |
 | Browser / functional | Complete accumulated browser/mobile suite | Existing accumulated gate; rerun on every changed final candidate |
@@ -70,11 +71,11 @@ Static regressions do not close this gate.
 Before official release approval:
 
 1. establish one exact intended final product SHA;
-2. complete all automated gates above on that exact candidate;
+2. complete all automated gates above on that exact candidate, including `bash build.sh`;
 3. complete Issue #68 field validation;
 4. deploy that exact candidate through the approved provider path;
 5. record provider deployment identity/SHA;
-6. independently verify both production hostnames serve the expected bytes/assets and critical browser flows;
+6. independently verify canonical `https://mybiblequest.pages.dev/` and compatibility `https://biblequest-7th.pages.dev/` serve the expected bytes/assets and critical browser flows;
 7. confirm production visual state matches the verified candidate;
 8. if any product correction is required, create a new exact candidate and repeat the required gates. Never transfer PASS.
 
