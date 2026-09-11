@@ -1,0 +1,107 @@
+name: BibleQuest v3 production cumulative verifier 04bd51b
+
+on:
+  push:
+    branches: [verify/v3-production-cumulative-04bd51b-20260911]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 04bd51bfc4ff16a3b42d13e47e95e637999b4880
+          fetch-depth: 0
+
+      - name: Assert promoted release identity
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "04bd51bfc4ff16a3b42d13e47e95e637999b4880"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "04bd51bfc4ff16a3b42d13e47e95e637999b4880"
+          test "$(git rev-parse 04bd51b^1)" = "675c6181ecc4dc36a47ba410feab142605eba913"
+          test "$(git rev-parse 04bd51b^2)" = "8cd27be5da37ae64ee6db69c0f69ec2014cd43d5"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Re-run Cloudflare deployment gate locally
+        run: bash build.sh
+
+      - name: Confirm both Cloudflare hosts match promoted release files
+        run: |
+          set -euo pipefail
+          files=(
+            index.html
+            src/core/api.js
+            src/app/bootstrap.js
+            src/app/assignments.js
+            src/app/cloud-notes.js
+            src/app/calendar.js
+            src/features/assignments/index.js
+            src/features/cloud-notes/index.js
+            src/features/calendar/index.js
+            src/ui/theme-green-gold.css
+            src/ui/calendar.css
+            offline-shell-sw.js
+          )
+          bases=(https://mybiblequest.pages.dev/ https://biblequest-7th.pages.dev/)
+          for base in "${bases[@]}"; do
+            matched=0
+            for attempt in {1..30}; do
+              ok=1
+              for file in "${files[@]}"; do
+                tmp="$(mktemp)"
+                if ! curl -fsSL --retry 2 --connect-timeout 10 -H 'Cache-Control: no-cache' "${base}${file}?release=04bd51b&attempt=${attempt}" -o "$tmp"; then
+                  ok=0
+                elif ! cmp -s "$file" "$tmp"; then
+                  ok=0
+                fi
+                rm -f "$tmp"
+                test "$ok" = 1 || break
+              done
+              if test "$ok" = 1; then matched=1; break; fi
+              sleep 5
+            done
+            test "$matched" = 1
+            echo "${base} matches promoted cumulative release files."
+          done
+
+      - name: Install Playwright
+        run: npm install --no-save playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Canonical production browser/mobile smoke
+        env:
+          BQ_BASE_URL: https://mybiblequest.pages.dev/
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v3-assignments-smoke.mjs \
+            tests/v3-workspace-smoke.mjs \
+            tests/v3-avatar-vault-smoke.mjs \
+            tests/v3-calendar-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-offline-shell-smoke.mjs; do
+            timeout 240s node "$test"
+          done
+
+      - name: Compatibility production browser/mobile smoke
+        env:
+          BQ_BASE_URL: https://biblequest-7th.pages.dev/
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v3-assignments-smoke.mjs \
+            tests/v3-workspace-smoke.mjs \
+            tests/v3-avatar-vault-smoke.mjs \
+            tests/v3-calendar-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-offline-shell-smoke.mjs; do
+            timeout 240s node "$test"
+          done
