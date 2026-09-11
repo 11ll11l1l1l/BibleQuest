@@ -133,6 +133,60 @@ html[data-bq-contrast="strong"] .bq-nav a[aria-current]{color:var(--forest-900);
   .bq-nav{bottom:max(6px,env(safe-area-inset-bottom));width:calc(100% - 16px);height:66px;border-radius:22px}
 }
 
+/* Foundation B completion: focus, form controls, status/badge system. */
+
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:var(--radius-xs)}
+.bq-nav a:focus-visible{outline-offset:-2px}
+.bq-primary-button:focus-visible,.bq-secondary-button:focus-visible,.bq-button:focus-visible{outline-offset:3px}
+
+.bq-panel input[type="text"],.bq-panel input[type="date"],.bq-panel input[type="number"],
+.bq-panel input[type="email"],.bq-panel input[type="tel"],.bq-panel input[type="search"],
+.bq-panel textarea,.bq-panel select,
+.bq-surface input[type="text"],.bq-surface input[type="date"],.bq-surface input[type="number"],
+.bq-surface input[type="email"],.bq-surface input[type="tel"],.bq-surface input[type="search"],
+.bq-surface textarea,.bq-surface select{
+  min-height:var(--tap-target);width:100%;padding:9px 12px;border:1px solid var(--line-200);
+  border-radius:var(--radius-sm);background:var(--surface-raised);color:var(--ink-900);
+  font-family:var(--font-ui);font-size:14px;line-height:1.3;
+  transition:border-color var(--duration-base) var(--ease-standard),box-shadow var(--duration-base) var(--ease-standard);
+}
+.bq-panel textarea,.bq-surface textarea{min-height:calc(var(--tap-target) * 2);resize:vertical}
+.bq-panel input:hover,.bq-panel select:hover,.bq-panel textarea:hover,
+.bq-surface input:hover,.bq-surface select:hover,.bq-surface textarea:hover{
+  border-color:color-mix(in srgb,var(--forest-700) 30%,var(--line-200));
+}
+.bq-panel input:disabled,.bq-panel select:disabled,.bq-panel textarea:disabled,
+.bq-surface input:disabled,.bq-surface select:disabled,.bq-surface textarea:disabled{
+  background:var(--surface-subtle);color:var(--ink-500);cursor:not-allowed;
+}
+.bq-panel input[type="checkbox"],.bq-panel input[type="radio"],
+.bq-surface input[type="checkbox"],.bq-surface input[type="radio"]{
+  width:20px;height:20px;min-height:0;accent-color:var(--forest-700);
+}
+.bq-panel label,.bq-surface label{display:inline-flex;align-items:center;gap:var(--space-2);font-size:13px;color:var(--ink-700);min-height:var(--tap-target)}
+
+/* Status badges never rely on color alone: each variant carries its own text-visible
+   symbol so meaning survives grayscale/high-contrast/color-blind viewing. */
+.bq-status-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--radius-pill);
+  font-size:11px;font-weight:800;letter-spacing:.01em;border:1px solid var(--line-200);
+  background:var(--surface-subtle);color:var(--ink-700);
+}
+.bq-status-badge::before{content:"\2022";font-size:14px;line-height:1}
+.bq-status-badge--success{border-color:color-mix(in srgb,var(--success) 40%,var(--line-200));background:color-mix(in srgb,var(--success) 12%,var(--surface-raised));color:var(--success)}
+.bq-status-badge--success::before{content:"\2713"}
+.bq-status-badge--warning{border-color:color-mix(in srgb,var(--warning) 40%,var(--line-200));background:color-mix(in srgb,var(--warning) 12%,var(--surface-raised));color:var(--warning)}
+.bq-status-badge--warning::before{content:"\26A0"}
+.bq-status-badge--danger{border-color:color-mix(in srgb,var(--danger) 40%,var(--line-200));background:color-mix(in srgb,var(--danger) 12%,var(--surface-raised));color:var(--danger)}
+.bq-status-badge--danger::before{content:"\2715"}
+.bq-status-badge--info{border-color:color-mix(in srgb,var(--focus) 40%,var(--line-200));background:color-mix(in srgb,var(--focus) 12%,var(--surface-raised));color:var(--focus)}
+.bq-status-badge--info::before{content:"\2139"}
+
+html[data-bq-contrast="strong"] .bq-panel input,html[data-bq-contrast="strong"] .bq-panel select,
+html[data-bq-contrast="strong"] .bq-panel textarea,html[data-bq-contrast="strong"] .bq-status-badge{
+  border-color:var(--ink-700);
+}
+
 @media(prefers-contrast:more){
   .bq-panel,.bq-surface,.bq-progress-chip,.bq-session-chip,.bq-nav{border-color:var(--ink-700);box-shadow:none}
 }
