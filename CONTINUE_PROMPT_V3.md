@@ -46,6 +46,23 @@ Do **not** stop to ask me whether I like the generated image or whether it shoul
 
 Preserve information architecture, navigation, feature ownership, persistence, backend contracts, accessibility and responsive behavior unless a separately selected product change explicitly requires otherwise.
 
+ICON-ASSET-MAP RULE
+
+For future visual rebuild work, `docs/V3_ICON_ASSET_MAP.md` is the canonical semantic map for the generated PNG icon family stored under `assets/icons/v3/`.
+
+Before generating or assigning an icon:
+
+1. read `docs/V3_ICON_ASSET_MAP.md`;
+2. reuse the mapped PNG when it correctly matches the existing feature/action/state;
+3. respect `CORE`, `ACTION`, `STATE`, `CONTENT`, and `RESERVE` classifications in that guide;
+4. do not invent a feature, route, state, reward, or control merely to use an available PNG;
+5. do not change navigation or architecture to force an icon into the product;
+6. if a mapped asset is replaced, preserve its semantic role and update the map in the same milestone;
+7. implement mapped visual assets directly during a selected visual milestone without asking for routine per-image approval;
+8. verify responsive layout, touch targets, accessible names, state accuracy, and focused/accumulated regressions after wiring the asset.
+
+The asset map is a planning contract for the rebuild, not an instruction to install every icon into the live UI at once.
+
 REBUILD-AND-VERIFY
 
 - one owner/source of truth per responsibility;
