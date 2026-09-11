@@ -1,0 +1,91 @@
+name: BibleQuest v3 assignment private responses verifier 73d39ce
+on:
+  push:
+    branches: [verify/v3-assignment-private-responses-73d39ce]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 73d39ce6fe0f9db20db62e25fd497a8711f921b0
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and milestone diff hygiene
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "73d39ce6fe0f9db20db62e25fd497a8711f921b0"
+          test -z "$(git status --porcelain)"
+          git diff --check ef78bbbed7115ef65853159edf21dac454d5ee99 73d39ce6fe0f9db20db62e25fd497a8711f921b0
+          actual="$(git diff --name-only ef78bbbed7115ef65853159edf21dac454d5ee99 73d39ce6fe0f9db20db62e25fd497a8711f921b0 | sort | tr '\n' ' ')"
+          expected="DEVELOPMENT_STATUS_V3.md src/app/assignments.js src/core/api.js src/features/assignments/index.js supabase/migrations/20260911131000_assignment_response_presence.sql tests/v3-assignment-private-responses.mjs "
+          test "$actual" = "$expected"
+          test ! -e src/core/assignment-responses.js
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Assignment private-response focused gate
+        run: |
+          set -euo pipefail
+          node --check src/core/api.js
+          node --check src/app/assignments.js
+          node --check src/features/assignments/index.js
+          node --check tests/v3-assignment-private-responses.mjs
+          node tests/v3-assignment-private-responses.mjs
+          node tests/v3-assignments-edge.mjs
+          node tests/v3-advanced-assignments-edge.mjs
+          node tests/v3-assignment-push-edge.mjs
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-advanced-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
+          grep -q "bible_assignment_response_presence" src/core/api.js
+          grep -q "data-assignment-private-responses" src/features/assignments/index.js
+          grep -q "Written reflection required" src/features/assignments/index.js
+          grep -q "Recipient responses remain read-only" src/features/assignments/index.js
+          grep -q "does not send notifications or generate recurring copies" src/features/assignments/index.js
+          grep -q "Defect / root-cause ledger" DEVELOPMENT_STATUS_V3.md
+          grep -q "Next major milestone" DEVELOPMENT_STATUS_V3.md
+      - name: Accumulated visual static contracts
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-visual-polish-static.mjs' | sort)
+          test "$count" -eq 16
+          echo "Visual static contracts executed: $count"
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Privacy and release-critical coverage presence
+        run: |
+          set -euo pipefail
+          for f in tests/v3-assignment-private-responses.mjs tests/v3-assignments-smoke.mjs tests/v3-advanced-assignments-smoke.mjs tests/v3-assignment-push-smoke.mjs tests/v3-pwa-install-smoke.mjs tests/v3-offline-shell-smoke.mjs tests/v3-offline-bible-packs-smoke.mjs tests/v3-accessibility-smoke.mjs tests/v3-shell-smoke.mjs tests/v3-reader-smoke.mjs tests/v3-games-smoke.mjs tests/v3-transform-engine-smoke.mjs; do test -f "$f"; done
+          echo "Assignment privacy and release-critical coverage included."
