@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-12 JST after independent current-production two-host verification.
+Updated: 2026-09-12 JST after independent current-production two-host verification and fresh field-readiness inspection.
 
 ## Current release truth
 
@@ -66,7 +66,7 @@ Known release migrations remain **APPLIED + LIVE VERIFIED** and unchanged:
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-Read-only release inspection confirms relevant linked-activity functions/tables exist and checked relationship tables have RLS enabled. Current production has 10 auth users, 4 congregation membership rows across admin/member roles and 1 couple pair, but no Journey Groups, Cloud Teams, group/team membership rows or room-response rows. No production data/schema/RLS/Edge Function changes were made.
+Read-only release inspection confirms relevant linked-activity functions/tables exist and checked relationship tables have RLS enabled. Fresh aggregate field-readiness inspection shows 10 auth users; one congregation with 4 members total (1 admin + 3 members); 6 auth users outside congregation membership; and one couple-pair row that is **pending**, with **no active linked couple**. There are still no Journey Groups, Cloud Teams, group/team membership rows, shared Live Room sessions/participants, or room-response rows. This means the A/B/C congregation/isolation account topology exists, but the couple scenario still requires completing a legitimate link through the product UI. No production data/schema/RLS/Edge Function changes were made.
 
 ## Security triage status
 
@@ -80,7 +80,7 @@ No current-v3 P0/P1 product/security/privacy/data-loss defect is reproduced. Do 
 
 Remaining official-release evidence:
 
-1. **Issue #68 multi-account field validation** — actual multiple accounts/sessions/devices must create/exercise congregation, Journey Group, Cloud Team, couple/challenge and Live Room workflows plus negative isolation and reconnect/re-login behavior.
+1. **Issue #68 multi-account field validation** — actual multiple accounts/sessions/devices must create/exercise congregation, Journey Group, Cloud Team, couple/challenge and Live Room workflows plus negative isolation and reconnect/re-login behavior. Current aggregate account topology can support congregation A/B/C isolation, but no active linked couple exists yet.
 2. **Issue #6 physical-device/PWA field validation** — Android Chrome/Brave at 100% zoom and a genuinely installed-PWA session. Automated and hosted headless width/PWA regression is green but does not prove this field step.
 3. **Cloudflare internal provider metadata, only if strictly required** — exact production content identity is now proven to the current main product files, but the Cloudflare-internal deployment object/ID is not exposed by the currently connected repository tooling.
 
@@ -93,6 +93,7 @@ Issue #94 remains the integration tracker, but it does not require another autom
 - preserve product `2c601b3...` and validation `d0eab188...` separately;
 - stop feature/visual churn unless field/production evidence exposes a real defect or material gap;
 - perform Issue #68 using real/test account credentials and actual product paths, never direct table mutations to manufacture PASS;
+- complete/accept a test couple link through the product UI before claiming the couples field scenarios;
 - perform physical Android/installed-PWA acceptance when a real device/session is available;
 - do not repeat two-host hosted verification unless product/runtime bytes change;
 - if any product correction is required, create a new candidate and repeat build + architecture + edge/security + full browser/mobile + explicit widths + PWA/offline + relevant field/live proof before promotion.
@@ -104,7 +105,7 @@ Issue #94 remains the integration tracker, but it does not require another autom
 - PR #112 release-control reconciliation: docs-only; complete accumulated regression run `34636337038` success.
 - Current-production verifier: run `34637203062`, job `103387887268` success; both hosts byte-match checked current release files and pass hosted browser/mobile acceptance.
 - Issue #6 old four-tab/nine-node wording: stale implementation detail; current five-tab v3 intent verified automatically and on hosted production, physical-device field proof still missing.
-- Issue #68: implementation complete, field evidence incomplete.
+- Issue #68: implementation complete, field evidence incomplete; fresh aggregate readiness inspection confirms congregation A/B/C topology is available but the only couple-pair row is pending, not active.
 - PR #88 legacy stale-device issue: not reproduced in current v3 runtime.
 - Release-control validator regression: detected by PR #112 because this file had renamed required contract headings after run `34634460077`; corrected without weakening the validator or changing product behavior.
 
