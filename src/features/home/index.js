@@ -1,3 +1,5 @@
+import { iconSvg } from '../../ui/icons.js';
+
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 export function homePage({ progress, dailyMission, onMission, onRecordings, onMedia, onTutorial }) {
@@ -16,16 +18,6 @@ export function homePage({ progress, dailyMission, onMission, onRecordings, onMe
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
       ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">TODAY · ${escapeHtml(daily.dateKey)}</p><h2>Continue My Journey — 4 min</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>Retrieve → Context → Learn → Apply → Reflect.</p><button type="button" class="bq-primary-button" data-open-daily>Open Daily Journey</button></section>` : ''}
-      <section class="bq-panel" data-home-tutorial>
-        <p class="bq-eyebrow">GUIDE</p>
-        <button type="button" class="bq-secondary-button bq-home-tutorial" data-open-tutorial aria-label="Show BibleQuest tutorial">
-          <span class="bq-home-tutorial-icon" aria-hidden="true">?</span>
-          <span><b>Show tutorial</b><small>Learn where the main tools are and how to use them.</small></span>
-          <span class="bq-home-tutorial-arrow" aria-hidden="true">›</span>
-        </button>
-      </section>
-      <section class="bq-panel" data-home-recordings><p class="bq-eyebrow">CONGREGATION</p><h2>Live Recordings</h2><p>Watch published worship and Bible-study livestream replays through one controlled player.</p><button type="button" class="bq-secondary-button" data-open-recordings>View recordings</button></section>
-      <section class="bq-panel" data-home-media><p class="bq-eyebrow">CONGREGATION</p><h2>Media Library</h2><p>Browse, filter, and open published congregation media without creating another player runtime.</p><button type="button" class="bq-secondary-button" data-open-media>Browse media</button></section>
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">YOUR PROGRESS</p>
         <div class="bq-progress-stats">
@@ -34,7 +26,27 @@ export function homePage({ progress, dailyMission, onMission, onRecordings, onMe
           <div><b data-home-activities>${state.totalActivities}</b><span>Activities</span></div>
           <div><b data-home-badges>${state.badges.length}</b><span>Badges</span></div>
         </div>
-      </section>`,
+      </section>
+      <div class="bq-home-secondary">
+        <section class="bq-panel bq-home-tile" data-home-tutorial>
+          <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="Show BibleQuest tutorial">
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-text"><b>Show tutorial</b><small>Learn where the main tools are.</small></span>
+          </button>
+        </section>
+        <section class="bq-panel bq-home-tile" data-home-recordings>
+          <button type="button" class="bq-home-tile-button" data-open-recordings aria-label="View live recordings">
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('video', { size: 20 })}</span>
+            <span class="bq-home-tile-text"><b>Live Recordings</b><small>Worship and study replays.</small></span>
+          </button>
+        </section>
+        <section class="bq-panel bq-home-tile" data-home-media>
+          <button type="button" class="bq-home-tile-button" data-open-media aria-label="Browse media library">
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('library', { size: 20 })}</span>
+            <span class="bq-home-tile-text"><b>Media Library</b><small>Browse congregation media.</small></span>
+          </button>
+        </section>
+      </div>`,
     mount(root) {
       const dailyButton = root.querySelector('[data-open-daily]');
       const tutorialButton = root.querySelector('[data-open-tutorial]');
