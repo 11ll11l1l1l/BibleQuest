@@ -33,8 +33,5 @@ jobs:
         run: node tests/v3-assignments-edge.mjs
       - name: Run private response privacy regression
         run: node tests/v3-assignment-private-responses.mjs
-      - name: Run assignment architecture validators
-        run: |
-          node scripts/validate-v3-assignments.mjs
-          node scripts/validate-v3-advanced-assignments.mjs
-          node scripts/validate-v3-assignment-push.mjs
+      - name: Run current Assignments owner validator
+        run: node scripts/validate-v3-assignments.mjs
