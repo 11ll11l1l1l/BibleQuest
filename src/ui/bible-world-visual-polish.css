@@ -1,0 +1,77 @@
+/* BibleQuest v3 visual replacement tranche 4.
+   Presentation only: no layout, reveal mechanics, navigation, progress, reward, persistence or accessibility ownership. */
+
+.bq-world-art{
+  border-color:rgba(57,82,63,.14);
+  background:linear-gradient(155deg,#fff 0%,#f8faf5 100%);
+  box-shadow:0 14px 36px rgba(40,62,46,.065),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-world-art-frame{
+  background:linear-gradient(145deg,#e8eee5 0%,#dde7dd 100%);
+  box-shadow:inset 0 0 0 1px rgba(43,70,51,.06);
+}
+
+.bq-world-art-copy b{
+  color:#2f523b;
+}
+
+.bq-world-region{
+  border-color:rgba(53,80,60,.14);
+  background:linear-gradient(155deg,#fff 0%,#f8faf6 100%);
+  box-shadow:0 6px 18px rgba(39,60,45,.045),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-world-region:hover,
+.bq-world-region:focus-visible{
+  border-color:rgba(47,112,77,.42);
+  background:linear-gradient(155deg,#fbfefb 0%,#f0f7f0 100%);
+  box-shadow:0 8px 22px rgba(47,112,77,.075),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-world-region.is-next{
+  border-color:rgba(169,117,38,.34);
+  background:linear-gradient(155deg,#fffdf8 0%,#fff8e9 100%);
+  box-shadow:0 8px 24px rgba(132,93,33,.07),inset 0 0 0 1px rgba(186,132,46,.04);
+}
+
+.bq-world-region.is-explored{
+  background:linear-gradient(155deg,#fbfefb 0%,#f0f8f1 100%);
+}
+
+.bq-world-icon{
+  background:linear-gradient(145deg,#f5f0e5 0%,#ebe4d5 100%);
+  box-shadow:inset 0 0 0 1px rgba(105,83,47,.055);
+}
+
+.bq-world-region.is-explored .bq-world-icon{
+  background:linear-gradient(145deg,#ebf6ea 0%,#dff0df 100%);
+  box-shadow:inset 0 0 0 1px rgba(50,102,63,.055);
+}
+
+.bq-world-progress{
+  background:linear-gradient(180deg,#ecece4 0%,#e4e7df 100%);
+  box-shadow:inset 0 1px 3px rgba(42,60,47,.08);
+}
+
+.bq-world-progress i{
+  background:linear-gradient(90deg,#477758 0%,#78a06f 100%);
+  box-shadow:0 0 9px rgba(71,119,88,.13);
+}
+
+.bq-world-note,
+.bq-world-detail{
+  border-color:rgba(54,80,61,.13);
+  background:linear-gradient(155deg,#fff 0%,#f7faf5 100%);
+  box-shadow:0 8px 24px rgba(39,60,45,.045),inset 0 1px 0 rgba(255,255,255,.88);
+}
+
+.bq-world-art-fallback{
+  background:linear-gradient(155deg,#fffaf1 0%,#f8f4e9 100%);
+}
+
+@media(prefers-contrast:more){
+  .bq-world-art,.bq-world-region,.bq-world-note,.bq-world-detail{box-shadow:none}
+  .bq-world-art,.bq-world-region,.bq-world-note,.bq-world-detail{border-color:rgba(31,54,39,.34)}
+  .bq-world-region.is-next{border-color:#805819}
+}
