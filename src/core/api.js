@@ -31,6 +31,7 @@ const LIVE_ROOM_FIELDS='id,congregation_id,created_by,session_type,title,room_co
 const LIVE_ROOM_PARTICIPANT_FIELDS='session_id,user_id,participation_points,created_at';
 const LIVE_ROOM_DIRECTORY_FIELDS='user_id,display_name,avatar,active';
 const CALENDAR_EVENT_FIELDS='id,user_id,title,notes,event_date,all_day,created_at,updated_at';
+const CALENDAR_CONGREGATION_EVENT_FIELDS='id,congregation_id,user_id,title,notes,event_date,all_day,recurrence_weeks,created_at,updated_at';
 
 function localPreview() {
   return LOCAL_HOSTS.has(location.hostname);
@@ -616,6 +617,18 @@ export function createApi() {
       const {error}=await client.from('bible_calendar_events').delete().eq('user_id',userId).eq('id',id);
       if(error)throw error;
       return true;
+    },
+    async listCongregation(congregationId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_calendar_events').select(CALENDAR_CONGREGATION_EVENT_FIELDS).eq('congregation_id',congregationId).order('event_date',{ascending:true});
+      if(error)throw error;
+      return data||[];
+    },
+    async createCongregation(userId,congregationId,event) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_calendar_events').insert({user_id:userId,congregation_id:congregationId,title:event.title,notes:event.notes||'',event_date:event.date,all_day:event.allDay!==false,recurrence_weeks:event.recurrenceWeeks||0}).select(CALENDAR_CONGREGATION_EVENT_FIELDS).single();
+      if(error)throw error;
+      return data;
     }
   });
 
