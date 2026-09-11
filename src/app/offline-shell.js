@@ -34,7 +34,7 @@ export function createOfflineShellService({
   MessageChannelCtor=globalThis.MessageChannel,
   documentRef=globalThis.document,
   loadTarget=globalThis,
-  timeoutMs=4000
+  timeoutMs=15000
 }={}){
   const subscribers=new Set();
   let state={status:'idle'},registration=null,startPromise=null,disposed=false;
