@@ -1,0 +1,21 @@
+/* V4 shell icon presentation. Icons inherit currentColor and remain decorative. */
+
+.bq-icon{display:block;flex:0 0 auto}
+.bq-brand-mark .bq-icon{width:24px;height:24px;stroke-width:1.65}
+.bq-nav-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:11px;color:inherit;transition:background var(--duration-base) var(--ease-standard),color var(--duration-base) var(--ease-standard),transform var(--duration-fast) var(--ease-standard)}
+.bq-nav-icon .bq-icon{width:21px;height:21px}
+.bq-nav a:hover .bq-nav-icon{background:color-mix(in srgb,var(--surface-subtle) 72%,transparent)}
+.bq-nav a[aria-current] .bq-nav-icon{background:var(--forest-900);color:var(--surface-raised);box-shadow:0 5px 14px color-mix(in srgb,var(--forest-900) 16%,transparent)}
+.bq-nav a[aria-current]::after{display:none}
+.bq-nav a:active .bq-nav-icon{transform:scale(.96)}
+
+html[data-bq-contrast="strong"] .bq-nav a[aria-current] .bq-nav-icon{background:var(--forest-900);color:var(--surface-raised);outline:2px solid var(--surface-raised);outline-offset:-4px}
+
+@media(max-width:390px){
+  .bq-nav-icon{width:29px;height:29px}
+  .bq-nav-icon .bq-icon{width:19px;height:19px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-nav-icon{transition:none}
+}

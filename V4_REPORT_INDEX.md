@@ -16,7 +16,7 @@ This is the central captain-readable status file for the BibleQuest V4 design an
 
 **Phase 1 — Design System Foundation: in progress.**
 
-Foundation tranche A establishes:
+Foundation tranche A established:
 
 1. the V4 semantic color, typography, spacing, radius, motion, focus and elevation tokens;
 2. shared surface and button behavior with V3 compatibility aliases;
@@ -24,14 +24,21 @@ Foundation tranche A establishes:
 4. reduced-motion, stronger-focus and stronger-contrast behavior;
 5. the first route composition migration on Home, using only shared V4 tokens and existing feature actions.
 
-The Home tranche is presentation-only. It does not modify Daily Journey, tutorial, recording, media or progress service behavior.
+Foundation tranche B has now started with the reusable shell icon system:
+
+- `src/ui/icons.js` owns small trusted presentation-only SVG fragments for the shell;
+- primary navigation keeps the same five route IDs and labels but no longer depends on placeholder Unicode symbols;
+- the shell keeps `data-bq-shell="v3"` for architectural/regression compatibility and adds `data-ui-version="4"` to distinguish the V4 presentation layer;
+- no remote font CDN was introduced. The display stack remains local/fallback-first until a self-hosted font asset is deliberately reviewed for PWA/offline/privacy compatibility.
+
+The Home and shell tranches do not modify Daily Journey, tutorial, recording, media, progress, routing, storage, scoring, auth, Bible data, or backend service behavior.
 
 ## Phase gates
 
 | Phase | State | Gate before advancing |
 | --- | --- | --- |
 | 0. Inventory / governance | Active baseline | Keep this index current; reconcile useful agent findings before implementation decisions. |
-| 1. Design system foundation | **In progress** | Shared system must render at least one route with no page-specific color fork; verify mobile, focus, contrast and reduced motion. |
+| 1. Design system foundation | **In progress** | Finish shared form/control refinements and browser evidence; verify mobile, focus, contrast and reduced motion. |
 | 2. Home / navigation | Not started | Foundation stable; shell and Home interaction inventory verified. |
 | 3. Quiz / learning flows | Not started | Phase 2 stable; no regression to scoring, question retrieval or progress. |
 | 4. Dashboard / progress | Not started | Shared data-display components established. |
@@ -55,10 +62,17 @@ Agent reports are inputs, not implementation authority. Placeholder or scaffold 
 
 | Tranche | Scope | Architecture risk | Status |
 | --- | --- | --- | --- |
-| Foundation A | `src/ui/v4-foundation.css`, `src/ui/home-v4.css`, V4 CSS load order | Low: presentation only | Implemented in current V4 branch history |
-| Foundation B | V4 icon system, typography asset decision, shared form/control refinements | Low–medium | Next |
+| Foundation A | `src/ui/v4-foundation.css`, `src/ui/home-v4.css`, V4 CSS load order | Low: presentation only | Implemented |
+| Foundation B | Reusable icon system, typography asset decision, shared form/control refinements | Low–medium | **In progress — icons complete; controls/evidence next** |
 | Home / Nav A | Intentional information hierarchy, navigation polish, responsive evidence | Medium | Pending |
 | Quiz shell | Question/answer/result interaction redesign | Medium–high | Pending |
+
+## Verification evidence
+
+- The Foundation B `icons.js` and modified `shell.js` were syntax-checked with `node --check` before repository write.
+- Navigation route IDs remain `home`, `learn`, `play`, `grow`, `more`; only icon presentation and visible brand subtitle changed.
+- GitHub Actions currently reports no workflow runs for `v4/modern-ui-overhaul`; do not claim browser/regression CI from the push.
+- The execution container cannot resolve `github.com`, so a network clone/browser checkout was not available in this session. Browser evidence remains an explicit open gate.
 
 ## Non-negotiable verification
 
@@ -75,4 +89,4 @@ For every V4 implementation tranche:
 
 ## Next captain action
 
-Complete Foundation B and browser evidence for the shared foundation before broad route-by-route restyling. Do not merge agent branches wholesale; cherry-pick or reimplement only reconciled, source-backed findings.
+Finish Foundation B shared form/control primitives, then obtain real browser evidence for Home/shell before broad route-by-route restyling. Do not merge agent branches wholesale; cherry-pick or reimplement only reconciled, source-backed findings.

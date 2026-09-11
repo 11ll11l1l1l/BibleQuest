@@ -1,9 +1,11 @@
+import { iconSvg } from './icons.js';
+
 const NAV = [
-  ['home','Home','⌂'],
-  ['learn','Learn','▤'],
-  ['play','Play','◆'],
-  ['grow','Grow','◌'],
-  ['more','More','⋯']
+  ['home','Home','home'],
+  ['learn','Learn','learn'],
+  ['play','Play','play'],
+  ['grow','Grow','grow'],
+  ['more','More','more']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -13,11 +15,11 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   if (root.querySelector('[data-bq-shell="v3"]')) throw new Error('BibleQuest shell is already mounted.');
 
   root.innerHTML = `
-    <div class="bq-shell" data-bq-shell="v3">
+    <div class="bq-shell" data-bq-shell="v3" data-ui-version="4">
       <header class="bq-topbar">
         <a class="bq-brand" href="#/home" data-brand-home aria-label="BibleQuest home">
-          <span class="bq-brand-mark">BQ</span>
-          <span><strong>BibleQuest</strong><small>Rebuild v3</small></span>
+          <span class="bq-brand-mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
+          <span><strong>BibleQuest</strong><small>Read · Learn · Grow</small></span>
         </a>
         <div class="bq-top-actions">
           <span class="bq-progress-chip" data-progress-chip aria-label="BibleQuest progress"><b data-progress-xp>0 XP</b><small data-progress-streak>0 day streak</small></span>
@@ -29,7 +31,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       </header>
       <main class="bq-main" id="bq-view" tabindex="-1"></main>
       <nav class="bq-nav" aria-label="Primary navigation">
-        ${NAV.map(([id,label,icon]) => `<a href="#/${id}" data-route-link="${id}"><span aria-hidden="true">${icon}</span><small>${label}</small></a>`).join('')}
+        ${NAV.map(([id,label,icon]) => `<a href="#/${id}" data-route-link="${id}"><span class="bq-nav-icon" aria-hidden="true">${iconSvg(icon)}</span><small>${label}</small></a>`).join('')}
       </nav>
     </div>`;
 
