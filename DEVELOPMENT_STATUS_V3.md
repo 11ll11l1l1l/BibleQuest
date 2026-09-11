@@ -91,3 +91,15 @@ Never transfer PASS across changed product SHAs. Never claim an unexecuted test.
 ## Next major milestone
 
 Promote the frozen exact verified SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53` to repository `main` without mixing unrelated legacy/main-only changes, allow both Cloudflare Pages projects to deploy, then run production verification for Home, Account/sign-in reachability, Reader, Games, Transform, navigation, and PWA/service-worker behavior.
+
+## Next-release development gates — added 2026-09-11
+
+These are new user-requested post-release gates. They do not change the historical 98/98 status of the 2026-09-11 release; they must be resolved and verified before the next production promotion.
+
+- [ ] **Bible Workspace / Notes schema defect** — reproduce and fix `column bible_notes.book does not exist`. Reconcile every Bible Workspace notes query/field with the deployed Supabase schema and migrations; verify notes create/read/update/delete and confirm no missing-column errors remain.
+- [ ] **Live Room** — run a full feature, role, realtime, and mobile regression covering open/create/join/leave/reconnect, presence, messages/sync, pastor/host controls, congregation scoping, and authorization boundaries. Fix every reproduced defect rather than assuming prior release coverage is sufficient.
+- [ ] **Pastor assignment discoverability on Home/front page** — a new or pending pastor assignment for a member must be conspicuous on the Home/front page through a clear assignment card/banner/badge or pending-task state with a direct link. Members must not have to discover a hidden assignments screen to notice assigned work.
+- [ ] **Assignment answer review and privacy** — pastors and authorized admins must be able to review the submitted answer bodies of all members inside their authorized congregation/scope. Ordinary members must not be able to read another member's answer body. Responder/completion identity/status may be exposed separately only according to the approved authorization model.
+- [ ] **Admin account controls and management** — verify or provide a dedicated admin-only control page for account management, with strict admin authorization, account list/search, supported role/account management actions, explicit non-admin denial, and safe/auditable behavior.
+
+The private-assignment-answer work currently exists separately as draft PR #93 (`feature/v3-assignment-private-responses`) from the older v3.71 baseline. It must be rebuilt/rebased onto the current approved production baseline and reverified before integration; do not blindly merge the old-base draft. The new explicit admin-answer-review requirement must also be verified against the final authorization model before release.
