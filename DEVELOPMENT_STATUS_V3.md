@@ -1,49 +1,49 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after #38 Kids Memory Match complete functional verification.
+Updated: 2026-09-11 JST after #15 Japanese furigana complete functional verification and promotion bookkeeping.
 
 `FEATURE_INVENTORY_V3.md` is authoritative. Live GitHub refs and executed Actions evidence supersede stale text.
 
 ## Deployment safety
 
-- Latest frozen release: `release/v3.69-bible-world-artwork` at `368b4e905c94ede38e733585d151891c7bdca96b`; exact bookkeeping verification run `34544649744` passed the complete accumulated suite.
-- Active branch: `feature/v3-kids-memory-match`.
-- #38 green functional candidate: `918762b11d3487d07880449bb37264da1e33ace3`.
-- First complete #38 candidate `cebcea607c1219955583e800f18fa3ab0a18e9cf` failed run `34546689660` in the accumulated edge suite and was not promoted.
-- Complete #38 functional run `34546962603`: **success** for exact SHA `918762b11d3487d07880449bb37264da1e33ace3` across accumulated architecture, edge/security, and browser/mobile suites.
+- Current frozen baseline before this bookkeeping gate: `release/v3.70-kids-memory-match` at `ba4394a1c6acaf62a9f24b1883b5ec5ec4d12be9`; exact bookkeeping verification run `34547970159` passed the complete accumulated suite.
+- Active branch: `feature/v3-japanese-furigana`.
+- #15 clean functional candidate: `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81`.
+- Targeted exact-SHA run `34549872861`: **success** across #15 architecture/edge plus Japanese furigana, vocabulary, Kougo, and Reader browser/mobile checks.
+- Complete exact-SHA functional run `34550018009`: **success** across the entire accumulated architecture, edge/security, and browser/mobile suites.
 - `main`, production v2, Supabase/data, and Cloudflare remain untouched.
-- Product regression workflow remains `workflow_dispatch` only; temporary push triggers stay isolated on verifier branches and are reset after use.
+- Product regression workflow remains `workflow_dispatch` only; temporary push triggers stay isolated on verifier branches.
 
 ## Current promoted state
 
 | State | Count |
 |---|---:|
-| Regression-tested | 96 |
+| Regression-tested | 97 |
 | Verified | 1 |
 | Implemented | 0 |
-| Not started | 3 |
+| Not started | 2 |
 | Total | 100 |
 
-Strict parity is **97/100**; regression stability is **96/100**. #45 Bible World artwork is now Regression-tested because it survived the complete #38 functional gate; #38 Kids Memory Match is Verified. #15 Japanese furigana and #40 Kids Bible Who Am I remain reopened. #39 Hiragana Match remains explicitly deferred.
+Strict parity is **98/100**; regression stability is **97/100**. #15 Japanese furigana is the current Verified frontier. #38 Kids Memory Match and #45 Bible World artwork are Regression-tested. #40 Kids Bible Who Am I is the next reopened parity item. #39 Hiragana Match remains explicitly deferred.
 
-## #38 verified functional boundary
+## #15 verified functional boundary
 
-#38 restores the retained kids Memory Meadow under the existing Games owner without adding a second game, score, or persistence owner. The clean mode uses 6 pairs / 12 cards / 3 columns below 420px and 8 pairs / 16 cards / 4 columns at 420px and above. A first flip remains open; the second flip locks the board until resolution. Matching pairs resolve after 350 ms and mismatches after 650 ms. Duplicate/open-card flips are ignored safely, stale resolution tokens cannot mutate a later state, replay creates a new round identity, and leave resets the game.
+#15 restores the retained Japanese Reader furigana contract without creating a second Reader, vocabulary, storage, or progress owner. Furigana is exposed only for Japanese 口語訳 and persists one preference through the Storage boundary: `off`, `support` (難しい語だけ), or `all` (すべて), defaulting to `support`.
 
-The reward curve is deterministic: `stars = clamp(6 - floor(moves / 4), 2, 5)` and coins are `stars * 4`. Completion is recorded through the existing Progress owner with `xp: 0`; Memory Meadow does not award XP. Current star/coin balances are read from Progress at launch/completion, and the game does not create separate reward persistence.
+Support mode reuses the already-recovered curated Japanese vocabulary/readings. It does not invent readings for uncurated terms. All mode lazily uses the isolated Kuromoji adapter, normalizes Katakana readings to Hiragana, and falls back to the curated support rendering if tokenizer loading/tokenization fails. Furigana never awards XP and never changes canonical Scripture data; Reader applies ruby as presentation only and cancels stale async rendering across navigation/translation changes/teardown.
 
-Permanent evidence: `src/features/games/memory.js`, `src/app/kids-memory.js`, `src/app/games.js`, `src/core/progress.js`, `src/features/games/index.js`, `src/ui/games.css`, `scripts/validate-v3-kids-memory.mjs`, the `tests/v3-kids-memory-*` regressions, `tests/v3-progress-edge.mjs`, and `.github/workflows/v3-regression.yml`.
+Permanent evidence: `src/app/japanese-furigana.js`, `src/app/japanese-furigana-tokenizer.js`, `src/features/reader/furigana.js`, `src/features/reader/index.js`, `src/app/bootstrap.js`, `scripts/validate-v3-japanese-furigana.mjs`, `tests/v3-japanese-furigana-edge.mjs`, `tests/v3-japanese-furigana-smoke.mjs`, the strengthened Japanese Kougo regression, and `.github/workflows/v3-regression.yml`.
 
 ## Defect / root-cause ledger
 
-- #45 bookkeeping candidate `368b4e905c94ede38e733585d151891c7bdca96b` passed exact-SHA complete run `34544649744`; `release/v3.69-bible-world-artwork` was frozen at that clean SHA.
-- #38 first complete candidate `cebcea607c1219955583e800f18fa3ab0a18e9cf` failed exact-SHA run `34546689660`. Root cause: `createKidsMemoryGame` required both Progress recording and balance-state capability during `createGameLauncherService` construction. Existing Content Moderation regression legitimately constructs the Games owner with only the Progress capability needed by that path, so the new eager `getState` requirement broke an already verified owner boundary before Memory Meadow was launched.
-- Runtime correction `b29e1166a84f4609a818724f62afaa51ec49de25` kept Progress recording required for Memory Meadow but deferred balance-state validation/read until `start()`. This restores constructor compatibility without weakening Memory Meadow's launch requirements. The accumulated Content Moderation regression is retained as permanent cross-feature protection.
-- Final clean candidate `918762b11d3487d07880449bb37264da1e33ace3` passed complete functional run `34546962603`. Temporary verifier commits are not candidates and are not release SHAs.
+- Isolated author run `34549469205` reached the intended integration commit but GitHub rejected the push solely because the Actions token was not permitted to modify `.github/workflows/v3-regression.yml`; the feature branch was not changed and no product defect was established. Corrected author run `34549531647` separated product writes from workflow writes and succeeded.
+- First targeted exact-SHA run `34549642961` rejected the regression expectation that support mode should annotate standalone `神`. Root cause: `神` is not in the recovered curated support list. The test was corrected to require curated `愛`, leave uncurated `神` plain in support/fallback, and still require `神 → かみ` in tokenizer-backed all mode.
+- Second targeted exact-SHA run `34549744682` passed #15/#16 behavior but exposed an existing Kougo smoke assertion that compared raw DOM `textContent`. Ruby `<rt>` readings are included in DOM textContent even when the canonical base Scripture is unchanged. The regression now removes `<rt>` annotations before asserting exact live-source base text, preserving the original no-modification guarantee.
+- Final clean candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed targeted run `34549872861` and complete accumulated functional run `34550018009`. Temporary verifier commits are not candidates and are not release SHAs.
 
 ## Next major milestone
 
-Create one #38 bookkeeping candidate from this promoted ledger, run a fresh complete exact-SHA bookkeeping gate, and on green freeze `release/v3.70-kids-memory-match` at that exact bookkeeping SHA. During the gate, read-only recover the remaining #40/#15 contracts and select the next dependency-safe capability from the frozen v3.70 baseline. #39 stays deferred.
+Treat the commit containing this promoted inventory/status/handoff as the #15 bookkeeping candidate. Run a fresh complete exact-SHA bookkeeping gate; do not transfer PASS from functional SHA `5b3891e3...`. On green, freeze `release/v3.71-japanese-furigana` at that exact clean bookkeeping SHA. Then recover/map the exact retained #40 Kids Bible Who Am I contract from the frozen v3.71 baseline and continue focused → complete functional → promotion/bookkeeping → complete bookkeeping → freeze. #39 stays deferred.
 
 ## Release rule
 

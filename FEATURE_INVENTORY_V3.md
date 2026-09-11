@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 96
+- **Regression-tested:** 97
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 3
+- **Not started:** 2
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -19,7 +19,7 @@ This file is the authoritative parity ledger for the rebuild.
 
 `classic.html`, old standalone pages, or retained old source files are references only. They do **not** satisfy v3 parity.
 
-Priority note (2026-09-11 JST): #38 Kids Memory Match is now verified. #15 Japanese furigana and #40 Kids Bible Who Am I remain reopened for implementation. #39 Hiragana Match remains explicitly deferred.
+Priority note (2026-09-11 JST): #15 Japanese furigana is now verified after exact-SHA targeted and complete accumulated gates. #38 Kids Memory Match has rolled forward to Regression-tested. #40 Kids Bible Who Am I remains the next reopened parity item. #39 Hiragana Match remains explicitly deferred.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
@@ -37,7 +37,7 @@ Priority note (2026-09-11 JST): #38 Kids Memory Match is now verified. #15 Japan
 | 12 | English BSB Bible | Yes | Clean | Regression-tested | open multiple OT/NT books; chapters; attribution |
 | 13 | Tagalog Bible | Yes | Clean | Regression-tested | translation switch; book/chapter; persistence |
 | 14 | Japanese 口語訳 | Yes | Compatibility | Regression-tested | live GetBible japkougo chapter load; canonical book mapping; translation persistence; exact text; explicit Retry/Use BSB fallback; invalid-response cache eviction; 390px recovery controls |
-| 15 | Japanese furigana | Yes | Compatibility | Not started | priority reopened; recover exact old-version furigana contract and owner boundary before implementation; then focused + accumulated browser/mobile verification |
+| 15 | Japanese furigana | Yes | Compatibility | Verified | JKO-only OFF/support/all modes; support uses recovered curated readings; all lazily uses Kuromoji with hiragana normalization and safe curated fallback; Storage persistence; no XP; canonical Scripture preserved beneath ruby presentation; exact-SHA targeted + complete accumulated browser/mobile verification |
 | 16 | Japanese vocabulary learning | Yes | Compatibility | Regression-tested | Japanese-only ON/OFF control; select verse through Verse Peek; up to three recovered curated notes; persistence/reload; safe no-note state; learning-aid disclaimer; no XP; no furigana/tokenizer runtime; 390px mobile |
 | 17 | NLT live path | Yes | Compatibility | Regression-tested | selectable/persisted licensed-link mode; exact book/chapter handoff; no redistributed NLT text or hidden fetch; no in-app NLT search/read credit; safe external return; source/license attribution; 390px mobile |
 | 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
@@ -60,7 +60,7 @@ Priority note (2026-09-11 JST): #38 Kids Memory Match is now verified. #15 Japan
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
-| 38 | Kids Memory Match | Yes | Clean | Verified | Memory Meadow Games ownership; <420px 6 pairs/3 columns and >=420px 8 pairs/4 columns; 350ms match/650ms mismatch lock; replay/leave cleanup; unique round identity; stars + coins reward through Progress with zero XP; complete accumulated browser/mobile verification |
+| 38 | Kids Memory Match | Yes | Clean | Regression-tested | Memory Meadow Games ownership; <420px 6 pairs/3 columns and >=420px 8 pairs/4 columns; 350ms match/650ms mismatch lock; replay/leave cleanup; unique round identity; stars + coins reward through Progress with zero XP; complete accumulated browser/mobile verification |
 | 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
 | 40 | Kids Bible Who Am I | Yes | Clean | Not started | priority reopened; recover exact old-version Kids Bible Who Am I contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
