@@ -6,13 +6,17 @@ Functional rollback baseline: `release/v3-production-20260911-r3` / `77bd0772cb0
 Visual exact-green checkpoint: `postrelease/v3-visual-shell-tranche16` product SHA `406c34dcdf904b7483bf4381be774a908738e60c`
 Release tracker: Issue #94
 
+## Operating model
+
+There is **NO autonomous agent captain**. The five BibleQuest automations are read-only investigators only. They gather evidence and produce actionable owner-level findings. A separate single release-execution chat may later implement accepted findings and perform integration/promotion. Investigators never write product changes or deploy.
+
 ## Objective
 
 The final official BibleQuest v3 release must include the accepted visual/artwork work and the verified functional behavior together. Functional parity alone is not sufficient. A visually polished branch that is not integrated, or a functional production build that omits the required visual program, is not the final release.
 
 The required result is one exact final candidate SHA that contains:
 
-1. the complete accepted BibleQuest v3 functionality;
+1. complete accepted BibleQuest v3 functionality;
 2. the completed architecture-preserving visual/artwork program;
 3. correct mobile/responsive behavior;
 4. correct accessibility, PWA/offline, security, auth, storage and backend boundaries;
@@ -23,17 +27,17 @@ The required result is one exact final candidate SHA that contains:
 
 This release must not be assembled through speculative CSS overrides, emergency DOM hacks, duplicated feature owners, one-off JavaScript shims, hidden exceptions, test weakening, skipped validators, copied legacy implementations, or changes that merely mask a root cause.
 
-Every captain change must follow rebuild-and-verify discipline:
+Every release change must follow rebuild-and-verify discipline:
 
 - reproduce or establish the requirement;
 - identify the true owning component/file;
-- understand the existing architecture and contracts before editing;
+- understand existing architecture/contracts before editing;
 - make the change in the correct owner rather than layering a parallel implementation;
 - preserve one owner per responsibility;
 - update focused regression protection when behavior or a required visual contract changes;
 - run focused checks first, then the required accumulated suite;
-- if the product SHA changes, the changed SHA must earn its own verification;
-- reject any fix whose only justification is "it makes the test pass" without preserving the intended product contract.
+- if the product SHA changes, that changed SHA must earn its own verification;
+- reject fixes whose only justification is "it makes the test pass" without preserving the intended product contract.
 
 A smaller correct change is preferred to a broad refactor, but "minimal" must never mean a brittle workaround.
 
@@ -41,7 +45,7 @@ A smaller correct change is preferred to a broad refactor, but "minimal" must ne
 
 The final app must clearly read as **Bible Quest**: Bible + journey/adventure + learning/game progression.
 
-Preserve the established interface and routes while improving presentation through the accepted visual system:
+Preserve established interface/routes while improving presentation through the accepted visual system:
 
 - coherent color and theme tokens;
 - intentional typography treatment and spacing;
@@ -56,135 +60,73 @@ Preserve the established interface and routes while improving presentation throu
 - reduced-motion-safe decoration and animation;
 - no visual dependence that makes controls or meaning disappear if an asset fails.
 
-Do not convert the app into a generic corporate dashboard or a sterile minimalist shell. Do not make serious study/ministry surfaces excessively childish.
+Do not convert the app into a generic corporate dashboard or sterile minimalist shell. Do not make serious study/ministry surfaces excessively childish.
 
 ## Hard architectural boundaries
 
-Visual integration must not silently change:
+Visual integration must not silently change router/routes, information architecture, primary navigation, feature ownership, Supabase/RLS/Auth/API/storage ownership, persistence semantics, gameplay rules, service-worker/PWA ownership, privacy boundaries, or established mobile/desktop interaction contracts.
 
-- router or route names;
-- information architecture or primary navigation model;
-- feature ownership or duplicate feature implementations;
-- Supabase schema/RLS/Auth/Edge Function/API/storage ownership;
-- persistence semantics or storage keys;
-- gameplay rules or core feature behavior;
-- service-worker/PWA/offline ownership;
-- privacy boundaries;
-- established mobile/desktop interaction contracts.
+If a legitimate requirement needs one of those changes, the release executor must treat it as an explicit functional change with its own owner, rationale, regression protection and full verification. It may not be smuggled in as "visual polish."
 
-If a legitimate requirement needs one of those changes, the captain must treat it as an explicit functional change with its own owner, rationale, regression protection and full verification. It may not be smuggled in as "visual polish."
+## Five read-only investigators
 
-## Release investigators — five read-only roles
+### Agent 1 — visual system / asset integrity
 
-The five investigators remain read-only. Their job is to make the captain faster and more accurate by producing evidence, concrete gaps, exact file/owner references and ordered recommendations. They do not write fixes.
+Inspect all release surfaces for missing/inconsistent visual treatment, stale/generic assets, broken icons/illustrations/backgrounds/fallbacks, inconsistent BibleQuest identity, asset provenance/licensing, load-order conflicts, first-load asset cost, and accidental DOM/layout behavior changes. Deliver PASS / GAP / BLOCKER per surface with exact owning files/assets and durable owner-level recommendations.
 
-### Agent 1 — visual system / asset integrity investigator
+### Agent 2 — responsive / accessibility / browser / PWA
 
-Inspect the completed visual tranches and final integration candidate for:
+Inspect 320/360/390/412/430 px plus representative desktop. Check overflow, clipping, hidden/blocked controls, labels, touch targets, focus/keyboard/contrast/semantics, reduced motion, asset/style load order, console/page errors, PWA install/offline/update/cache behavior, service-worker ownership, deployment/browser implications, and stale exact-SHA evidence.
 
-- missing or inconsistent theme/application of the accepted visual system;
-- generic placeholders or stale assets that undermine the BibleQuest identity;
-- broken/missing icons, illustrations, backgrounds or fallbacks;
-- inconsistent treatment between Home, shell, Reader, Games, Progress, Transform, Study, Account, Community, Media and other classified visual surfaces;
-- accidental architecture/DOM/layout behavior changes introduced by visual work;
-- asset provenance/licensing risk;
-- first-load payload or asset patterns that could materially damage performance/PWA behavior.
+### Agent 3 — architecture / security / backend boundary
 
-Deliver a surface-by-surface matrix: PASS / GAP / BLOCKER, with exact files/classes/assets and recommended owner-level captain action.
+Compare functional r3, exact-green visual checkpoint and proposed final candidate. Confirm no duplicate owners, auth/permission/storage/API/Supabase/privacy boundary regressions, secret exposure, privileged client calls, undeployed schema assumptions, service-worker ownership errors, hidden persistence/gameplay changes, or broad unrelated refactors.
 
-### Agent 2 — responsive / accessibility / browser investigator
+### Agent 4 — functional UX integrity
 
-Inspect the exact candidate at 320/360/390/412/430 widths plus representative desktop coverage. Look for:
+Verify actual controls, state transitions, persistence, navigation, back/return paths, recovery/error states and cross-surface flows across Home, Account, Reader, Games, Progress/Daily Journey, Bible World, Transform, Study/Deep Questions/Story/Wisdom, Notes, Couples, Community, Media, Adaptive/Open Review, Ministry/Assignments/Notifications/Workspace, PWA/offline, and other authoritative release surfaces.
 
-- overflow, clipping, hidden controls, blocked touch targets or unreadable labels;
-- focus, keyboard, contrast and semantic regressions;
-- reduced-motion violations;
-- visual loading/order problems;
-- browser console/page errors caused by presentation integration;
-- stale verification evidence that belongs to another SHA.
+### Agent 5 — release firewall / action compiler
 
-Report exact routes, widths, evidence and tests the captain must execute or correct.
-
-### Agent 3 — functional surface / UX integrity investigator
-
-Verify that visual integration did not degrade functionality across the actual release surface, including:
-
-- Home/navigation;
-- Account/sign-in/recovery;
-- Reader/translation flows;
-- Games and representative game return flow;
-- Progress/Daily Journey;
-- Transform/Psychometrics;
-- Study/Deep Questions/Story/Wisdom;
-- Notes/Couples/Community/Media where included;
-- Ministry/Assignments/Notifications/Workspace surfaces where included;
-- PWA/offline entry and recovery.
-
-Do not merely check that pages render. Check that the intended controls, state transitions and return paths still work.
-
-### Agent 4 — architecture / security / backend boundary investigator
-
-Inspect diffs between the functional r3 baseline, completed visual checkpoint and proposed final integration candidate. Confirm:
-
-- no duplicate owners or parallel implementations;
-- no visual changes have altered auth, permissions, storage, APIs, Supabase or privacy boundaries;
-- no secrets or privileged calls are exposed;
-- no frontend assumption now requires an undeployed backend/schema change;
-- service-worker/offline ownership remains correct;
-- any legitimate functional change is explicitly owned and tested rather than hidden in presentation files.
-
-### Agent 5 — release firewall / captain action compiler
-
-Aggregate the other four agents plus workflow/repository evidence. Produce one ordered captain execution list.
-
-The firewall must:
-
-- deduplicate findings;
-- reject speculative/no-evidence changes;
-- reject quick hacks and owner-bypassing fixes;
-- flag recommendations that would weaken tests or architecture to get green;
-- distinguish required release integration gaps from optional future enhancements;
-- identify the correct owner/file for each accepted gap;
-- state the exact verification needed after each class of change;
-- preserve r3 as rollback while ensuring the final official release includes the mandatory visual milestone.
+Aggregate A1-A4 plus primary repository/workflow evidence. Deduplicate findings; reject stale-SHA conclusions, speculation, hacks, owner bypasses and test weakening; distinguish required release gaps from optional future enhancements; identify the true owner/file/symbol; order accepted actions by dependency/risk; and compile the exact verification required after each change and before final promotion.
 
 ## Investigator report contract
 
-Every finding must include:
+Every GAP/BLOCKER finding must include:
 
 - agent role;
 - exact branch/SHA inspected;
-- exact surface/route/width where relevant;
+- exact surface/route/viewport where relevant;
 - category: VISUAL / FUNCTIONAL / RESPONSIVE / ACCESSIBILITY / PWA / SECURITY / ARCHITECTURE / RELEASE-EVIDENCE;
 - severity: BLOCKER / REQUIRED / NONBLOCKING / INFO;
-- evidence;
-- root-cause hypothesis, clearly labeled if not proven;
-- correct architectural owner/file/symbol;
-- recommended captain action;
-- tests/validators that must prove the correction;
-- release blocker: YES/NO.
+- concrete evidence;
+- proven root cause or explicitly labeled hypothesis;
+- correct architectural owner/file/symbol/asset;
+- durable recommended release-executor action;
+- tests/validators/browser checks required afterward;
+- release blocker: YES/NO;
+- architecture risk: YES/NO.
 
-Agents should not send vague requests such as "improve UI" or "fix CSS." Findings must be actionable enough that a later captain can make the correct owner-level change without rediscovering the entire problem.
+Vague findings such as "improve UI" or "fix CSS" are not acceptable.
 
-## Captain integration sequence
+## Final integration sequence for the later release-execution chat
 
-1. Recover live refs and concurrent work; never assume chat context is current.
+1. Recover live refs/concurrent work; never trust stale chat state.
 2. Preserve `release/v3-production-20260911-r3` as rollback/reference.
-3. Recover exact-green visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` and all later evidence-only/docs commits separately.
-4. Read Issue #94, `VISUAL_REPLACEMENT_CONTRACT_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, `VISUAL_POLISH_PROGRESS_V3.md`, current handoff/status and investigator reports.
-5. Establish the intended integration branch from the correct verified product lineage. Do not merge unrelated experimental/post-release feature work.
-6. Reconcile any functional work that is explicitly required for final release; use the correct architectural owner and add regression protection.
-7. Integrate the accepted visual state without reverting working functional fixes.
-8. Run focused checks after each owned correction.
-9. Freeze one exact candidate SHA.
-10. Run the complete final exact-SHA verification cycle.
-11. Promote only that exact green state to production.
-12. Verify both Cloudflare hosts and confirm production visually/functionally matches the verified candidate.
-13. Update status/handoff with the exact final product SHA, workflow evidence and any unexecuted physical-device acceptance.
+3. Recover exact-green visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` separately from later docs-only commits.
+4. Read Issue #94, visual contracts/inventory/progress, current handoff/status, and all five investigator outputs.
+5. Establish one integration branch from the correct verified product lineage; do not merge unrelated experimental/post-release work.
+6. Accept only evidence-backed release gaps and implement them in the true owners.
+7. Add/retain focused regression protection and run focused checks after each owned correction.
+8. Freeze one exact candidate SHA.
+9. Run the complete final exact-SHA verification cycle.
+10. Promote only that exact green state to production.
+11. Verify both Cloudflare hosts visually and functionally against the exact verified candidate.
+12. Update durable handoff/status with final SHA, evidence and any unexecuted physical-device acceptance.
 
 ## Mandatory final verification
 
-The final candidate must pass, on the exact SHA promoted:
+The exact promoted SHA must pass:
 
 - Cloudflare deployment gate / production build entry;
 - complete accumulated architecture/static validators;
@@ -194,24 +136,16 @@ The final candidate must pass, on the exact SHA promoted:
 - explicit 320/360/390/412/430 mobile width acceptance;
 - accessibility and reduced-motion checks;
 - PWA install/offline/service-worker/cache-upgrade checks;
-- core functional smoke across Home, Account, Reader, Games, Transform and the other included release surfaces;
-- no console/page errors attributable to integration;
+- core functional smoke across all included release surfaces;
+- no integration-caused console/page errors;
 - exact-SHA/diff hygiene;
 - production propagation/smoke on both Cloudflare hosts.
 
-No PASS may be transferred from r3 or from tranche 16 after the final product SHA changes.
+No PASS may be transferred from r3 or tranche 16 after the final product SHA changes.
 
 ## Stop rules
 
-Do not:
-
-- declare final release complete while required visual work remains isolated from production;
-- paper over regressions with `!important`, duplicated DOM, hidden controls, catch-all exception swallowing or test exclusions unless that is genuinely the correct owned design and is justified/tested;
-- disable or weaken failing tests merely to obtain green;
-- merge unrelated roadmap features into the release candidate;
-- revive retired Kids/Kana rows unless the user explicitly reopens them;
-- change production Supabase/data without a reproduced requirement and correct migration/rollback plan;
-- call the app bug-free.
+Do not declare the final release complete while required visual work remains isolated from production. Do not paper over regressions with `!important`, duplicated DOM, hidden controls, catch-all exception swallowing, test exclusions, parallel legacy copies, auth/storage bypasses or validator weakening. Do not merge unrelated roadmap features, revive retired Kids/Kana rows unless explicitly reopened, or change production Supabase/data without a reproduced requirement and correct migration/rollback plan.
 
 ## Success condition
 
