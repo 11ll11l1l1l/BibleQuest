@@ -8,7 +8,7 @@ let storeState = {};
 const store = { setState(patch) { storeState = typeof patch === 'function' ? patch(storeState) : { ...storeState, ...patch }; return storeState; } };
 let now = new Date('2026-09-06T14:50:00Z');
 const progress = createProgressService({ storage, store, clock: () => new Date(now), timeZone: 'Asia/Tokyo' });
-assert(progress.getState().xp === 0 && storeState.progress?.xp === 0, 'Progress service must publish normalized initial state to the global store.');
+assert(progress.getState().xp === 0 && progress.getState().stars === 0 && progress.getState().coins === 0 && storeState.progress?.xp === 0, 'Progress service must publish normalized initial state and reward balances.');
 assert(civilDateKey(new Date('2026-09-06T14:59:59Z'), 'Asia/Tokyo') === '2026-09-06', 'Japan civil-date boundary before midnight is wrong.');
 assert(civilDateKey(new Date('2026-09-06T15:00:00Z'), 'Asia/Tokyo') === '2026-09-07', 'Japan civil-date boundary at midnight is wrong.');
 const first = progress.record({ id: 'test:first', type: 'test.activity', xp: 10 });
@@ -22,9 +22,24 @@ assert(/identity conflict/i.test(conflict), 'Reusing an event ID with conflictin
 let unknownMetric = '';
 try { progress.record({ id: 'test:bad-metric', type: 'test.activity', metrics: { chapterRead: 1 } }); } catch (error) { unknownMetric = error.message; }
 assert(/unknown progress metric/i.test(unknownMetric) && !progress.hasEvent('test:bad-metric'), 'Unknown event metric must fail before any progress mutation.');
+const beforeKidsReward = progress.getState();
+const kidsReward = progress.record({ id: 'kids:memory:round-1', type: 'game.memory.complete', xp: 0, meaningful: true, rewards: { stars: 4, coins: 16 } });
+assert(kidsReward.applied && kidsReward.awardedXp === 0 && kidsReward.awardedRewards.stars === 4 && kidsReward.awardedRewards.coins === 16, 'Kids reward event must report stars/coins without XP.');
+assert(progress.getState().xp === beforeKidsReward.xp && progress.getState().stars === 4 && progress.getState().coins === 16, 'Kids reward event must change only progress-owned reward balances, not XP.');
+const kidsRewardDuplicate = progress.record({ id: 'kids:memory:round-1', type: 'game.memory.complete', xp: 0, meaningful: true, rewards: { stars: 4, coins: 16 } });
+assert(kidsRewardDuplicate.duplicate && kidsRewardDuplicate.awardedRewards.stars === 0 && progress.getState().stars === 4 && progress.getState().coins === 16, 'Duplicate kids reward must not pay twice.');
+let rewardConflict = '';
+try { progress.record({ id: 'kids:memory:round-1', type: 'game.memory.complete', xp: 0, meaningful: true, rewards: { stars: 5, coins: 20 } }); } catch (error) { rewardConflict = error.message; }
+assert(/identity conflict/i.test(rewardConflict), 'Changing reward semantics under a reused progress event id must fail.');
+let unknownReward = '';
+try { progress.record({ id: 'kids:bad-reward', type: 'game.memory.complete', rewards: { gems: 1 } }); } catch (error) { unknownReward = error.message; }
+assert(/unknown progress reward/i.test(unknownReward) && !progress.hasEvent('kids:bad-reward'), 'Unknown reward keys must fail before progress mutation.');
+let invalidReward = '';
+try { progress.record({ id: 'kids:negative-reward', type: 'game.memory.complete', rewards: { stars: -1 } }); } catch (error) { invalidReward = error.message; }
+assert(/progress reward stars/i.test(invalidReward) && !progress.hasEvent('kids:negative-reward'), 'Negative reward values must fail before progress mutation.');
 now = new Date('2026-09-06T14:55:00Z');
 progress.record({ id: 'test:same-day', type: 'test.activity', xp: 5 });
-assert(progress.getState().xp === 15 && progress.getState().streak === 1 && progress.getState().totalActivities === 2, 'Same-day activity must add XP/activity without increasing streak.');
+assert(progress.getState().xp === 15 && progress.getState().streak === 1 && progress.getState().totalActivities === 3, 'Same-day activity must add XP/activity without increasing streak.');
 now = new Date('2026-09-06T15:05:00Z');
 progress.record({ id: 'test:next-day', type: 'test.activity', xp: 1 });
 assert(progress.getState().streak === 2 && progress.getState().lastActivityDate === '2026-09-07', 'Next local day must continue streak.');
@@ -55,16 +70,23 @@ const reloaded = createProgressService({ storage, store: reloadedStore, clock: (
 const beforeReloadDuplicate = reloaded.getState().xp;
 const reloadDuplicate = reloaded.record({ id: 'test:first', type: 'test.activity', xp: 10 });
 assert(reloadDuplicate.duplicate && reloaded.getState().xp === beforeReloadDuplicate, 'Idempotency must survive service recreation/reload.');
+const reloadKidsDuplicate = reloaded.record({ id: 'kids:memory:round-1', type: 'game.memory.complete', xp: 0, meaningful: true, rewards: { stars: 4, coins: 16 } });
+assert(reloadKidsDuplicate.duplicate && reloaded.getState().stars === 4 && reloaded.getState().coins === 16, 'Reward idempotency and balances must survive service recreation/reload.');
 assert(reloaded.getState().counters.assessments === 1, 'Assessment counter must survive service recreation/reload.');
 assert(reloaded.getState().counters.situations === 1, 'Wisdom situations counter must survive service recreation/reload.');
-assert(Object.isFrozen(reloaded.getState()) && Object.isFrozen(reloaded.getState().counters) && Object.isFrozen(reloaded.getState().events), 'Progress snapshots must be immutable.');
+assert(Object.isFrozen(reloaded.getState()) && Object.isFrozen(reloaded.getState().counters) && Object.isFrozen(reloaded.getState().events) && Object.isFrozen(reloaded.getState().events['kids:memory:round-1'].rewards), 'Progress snapshots including rewards must be immutable.');
+const legacyMemory = new Map([['progress-state', { version: 1, xp: 7, streak: 1, lastActivityDate: '2026-09-06', totalActivities: 1, counters: { chaptersRead: 0, quizCorrect: 0, reflections: 0, assessments: 0, situations: 0 }, badges: ['first-step'], events: { legacy: { type: 'test.activity', date: '2026-09-06', at: '2026-09-06T00:00:00.000Z', xp: 7, meaningful: true, metrics: {} } } }]]);
+const legacyStorage = { read(key, fallback) { return legacyMemory.has(key) ? clone(legacyMemory.get(key)) : clone(fallback); }, write(key, value) { legacyMemory.set(key, clone(value)); return value; } };
+const legacyProgress = createProgressService({ storage: legacyStorage, store: { setState(value) { return typeof value === 'function' ? value({}) : value; } }, clock: () => new Date('2026-09-06T12:00:00Z'), timeZone: 'UTC' });
+assert(legacyProgress.getState().xp === 7 && legacyProgress.getState().stars === 0 && legacyProgress.getState().coins === 0, 'Pre-reward v1 progress must remain readable with zero reward balances.');
+assert(legacyProgress.record({ id: 'legacy', type: 'test.activity', xp: 7 }).duplicate, 'Pre-reward events must remain idempotent when rewards are omitted.');
 const stringClockMemory = new Map();
 const stringClockStorage = { read(key, fallback) { return stringClockMemory.has(key) ? clone(stringClockMemory.get(key)) : clone(fallback); }, write(key, value) { stringClockMemory.set(key, clone(value)); return value; } };
 const stringClock = createProgressService({ storage: stringClockStorage, store: { setState(value) { return typeof value === 'function' ? value({}) : value; } }, clock: () => '2026-09-06T15:00:00Z', timeZone: 'Asia/Tokyo' });
 assert(stringClock.record({ id: 'clock:string', type: 'test.activity' }).date === '2026-09-07', 'Parseable non-Date clock values should normalize safely.');
-const brokenMemory = new Map([['progress-state', { version: 1, xp: -20, streak: 'bad', lastActivityDate: '2026-99-99', counters: [], badges: ['unknown'], events: { bad: { type: 'x', date: '2026-99-99' } } }]]);
+const brokenMemory = new Map([['progress-state', { version: 1, xp: -20, stars: -5, coins: 'bad', streak: 'bad', lastActivityDate: '2026-99-99', counters: [], badges: ['unknown'], events: { bad: { type: 'x', date: '2026-99-99' } } }]]);
 const brokenStorage = { read(key, fallback) { return brokenMemory.has(key) ? clone(brokenMemory.get(key)) : clone(fallback); }, write(key, value) { brokenMemory.set(key, clone(value)); return value; } };
 const brokenStore = { state: {}, setState(patch) { this.state = typeof patch === 'function' ? patch(this.state) : patch; return this.state; } };
 const normalized = createProgressService({ storage: brokenStorage, store: brokenStore, timeZone: 'UTC' }).getState();
-assert(normalized.xp === 0 && normalized.streak === 0 && normalized.lastActivityDate === null && normalized.badges.length === 0 && normalized.counters.assessments === 0 && normalized.counters.situations === 0 && Object.keys(normalized.events).length === 0, 'Malformed persisted progress must normalize safely.');
+assert(normalized.xp === 0 && normalized.stars === 0 && normalized.coins === 0 && normalized.streak === 0 && normalized.lastActivityDate === null && normalized.badges.length === 0 && normalized.counters.assessments === 0 && normalized.counters.situations === 0 && Object.keys(normalized.events).length === 0, 'Malformed persisted progress and reward balances must normalize safely.');
 console.log('BibleQuest v3 progress edge regression passed.');
