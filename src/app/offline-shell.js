@@ -16,11 +16,24 @@ function collectShellUrls({performanceRef,locationRef}){
   return [...urls];
 }
 
+function waitForPageLoad({documentRef,loadTarget}){
+  if(!documentRef||documentRef.readyState==='complete'||typeof loadTarget?.addEventListener!=='function')return Promise.resolve();
+  return new Promise(resolve=>{
+    const finish=()=>{
+      try{loadTarget.removeEventListener?.('load',finish)}catch{}
+      resolve();
+    };
+    loadTarget.addEventListener('load',finish,{once:true});
+  });
+}
+
 export function createOfflineShellService({
   serviceWorker=globalThis.navigator?.serviceWorker,
   performanceRef=globalThis.performance,
   locationRef=globalThis.location,
   MessageChannelCtor=globalThis.MessageChannel,
+  documentRef=globalThis.document,
+  loadTarget=globalThis,
   timeoutMs=4000
 }={}){
   const subscribers=new Set();
@@ -73,6 +86,7 @@ export function createOfflineShellService({
         registration=await serviceWorker.register('offline-shell-sw.js',{scope:'./'});
         const ready=serviceWorker.ready?await serviceWorker.ready:registration;
         const worker=ready?.active||registration?.active||registration?.waiting||registration?.installing;
+        await waitForPageLoad({documentRef,loadTarget});
         await warm(worker);
         return publish('ready');
       })().catch(()=>publish('error'));
