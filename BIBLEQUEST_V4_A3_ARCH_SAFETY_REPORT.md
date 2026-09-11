@@ -9,135 +9,281 @@ A3 may update only this file. Do not modify product code, tests, workflows, bran
 ## Latest inspected ref
 
 - Branch: `main`
-- Inspected product/documentation HEAD before this report write: `26afe16153b2f69307f9ab81cbdda3ef20c003fe`
+- Inspected HEAD before this report write: `8f16974f9c976f77299d1db365655794b853912b`
 - Inspection date: 2026-09-12 JST
-- Evidence sources: direct repository inspection (`src/app/bootstrap.js`, `src/core/api.js`, `supabase/migrations/`, `.github/workflows/v3-regression.yml`, `index.html`), plus first-hand implementation/verification history from building and freezing Avatar Vault, Personal Mission, Calendar v1/v1.5, and visual tranche 18 on isolated `postrelease/*` branches this cycle (exact SHAs cited per finding below).
-- No package manager or bundler is present (`package.json`: 404). The app is hand-authored native ESM (`<script type="module" src="src/app/bootstrap.js">`) served statically. This is a hard constraint on every A1/A2 recommendation that assumes build-time tooling (CSS pipelines, tree-shaking, image optimization, code-splitting beyond native dynamic `import()`).
-- v3 material was treated as historical evidence only. `BIBLEQUEST_V4_ANALYSIS_HUB.md` is authoritative for this report.
+- Current HEAD is documentation-only (`docs(v4): populate A2 responsive and accessibility report`); the architecture/runtime evidence below was re-checked directly against this exact tree.
+- Primary files re-checked: `src/app/bootstrap.js`, `src/core/api.js`, `src/app/session.js`, `src/core/storage.js`, `src/app/congregation-membership.js`, `src/app/offline-shell.js`, `offline-shell-sw.js`, `index.html`, plus the current A1/A2 v4 reports.
+- v3 design constraints are historical only. Protected runtime/auth/privacy/backend/doctrinal boundaries remain architectural contracts unless a captain deliberately changes them.
 
 ## Executive finding
 
-The current architecture is genuinely sound at the ownership level — one API/Supabase boundary (`src/core/api.js`), one feature-per-owner pattern (engine → app service → presentation), one router, RLS-first backend access, and a real exact-SHA verification pipeline (isolated `verify/*` branch → assert exact commit → full accumulated suite → freeze `release/*`). v4 should **preserve this skeleton** even while radically changing presentation. The real risks are not "the architecture is wrong" but four specific, reproducible weaknesses that will get *worse*, not better, as v4 adds more services and pages faster than v3 did:
+The current architecture gives v4 substantial page-level design freedom without requiring a rewrite. The safest seam is still presentation: each `src/features/<feature>/index.js` page can be structurally redesigned while continuing to call its existing `src/app/<feature>.js` service and the single router/API/session/storage owners.
 
-1. **No compile-time or test-time protection against dependency-ordering bugs in `bootstrap.js`.** This is not theoretical — it caused two real, CI-verified production-blocking regressions this cycle alone (cited below), both from the same root cause.
-2. **CI never executes real SQL against a live Postgres instance.** "Accumulated architecture validators" and "edge regressions" pass or fail based on static file/token checks and in-memory JS logic, not actual RLS/schema behavior. A migration can be syntactically fine, reference the correct tables, and still never have been proven to actually apply or enforce its policies.
-3. **A recurring "stale future-state assertion" defect class in the validator scripts themselves** — validators encode assumptions like "row N must remain Not started" that become false the moment a later milestone ships, and nothing catches this except the next milestone's own gate failing.
-4. **`bootstrap.js` and `src/core/api.js` are both growing, single, manually-maintained files** (bootstrap.js is already several hundred lines of hand-ordered `const` declarations; api.js is a single large object literal). Both are structurally sound today but will become the two highest-merge-conflict, highest-regression-risk files in the repo as v4 accelerates page-level work in parallel.
+The most important correction to the prior A3 report is that `bootstrap.js` does **not** lazily import route modules today. It statically imports all shipped feature pages and app services at module startup. `index.html` also eagerly links the global CSS chain. Therefore any v4 recommendation that relies on current route-level code-splitting is based on a false premise. If the captain later introduces lazy route modules or route-scoped CSS/assets, that is an explicit ARCHITECTURE/PWA change because the current offline-shell warmup only caches resources that were already loaded and visible to the Performance API.
 
-None of this blocks starting v4. It does mean A1's proposed migration ("compact v4 foundation, then redesign pages as page-specific compositions") is architecturally compatible with the current system **only if** the ownership boundaries below are respected page-by-page, and **only if** items 1 and 2 get a lightweight mitigation before the redesign pace increases.
+The highest-priority v4 architecture enablers are:
 
-## Boundary / feasibility matrix
+1. Add a lightweight bootstrap dependency-order guard before accelerating cross-cutting service work.
+2. Add real migration-apply/RLS validation rather than relying only on static/in-memory checks.
+3. Treat route-level lazy loading as a deliberate architecture/PWA milestone, not as an assumed current capability.
+4. Keep all v4 redesigns inside the existing router/session/storage/API/authorization owners unless the captain explicitly approves a boundary change.
+5. Avoid adding a third layer of visual ownership; consolidate page styles while preserving one presentation owner per surface.
 
-| Boundary | Current owner | v4 redesign feasibility | Risk if violated |
+## Cross-cutting boundary matrix
+
+| Boundary | FACT on `main` @ `8f16974f…` | Safe v4 seam | Crossing the boundary means |
 |---|---|---|---|
-| Backend/Supabase access | `src/core/api.js` (sole client boundary; every feature calls `api.<namespace>`, never `createClient` directly) | Fully compatible with any visual redesign. No v4 page should ever import a Supabase client directly. | Duplicate backend ownership, inconsistent auth/session handling, RLS bypassed by a different code path |
-| Routing/navigation | `src/app/router.js` + the single route map in `bootstrap.js` | Compatible; v4 chrome (A1-V4-001) can be a pure presentation change on top of the same route map. Adding/removing routes is FUNCTION-AFFECTING, not DESIGN-ONLY. | Duplicate router/shell runtime (explicitly forbidden by the hub) |
-| Feature state/logic | One `src/app/<feature>.js` service per feature, each independently testable | Compatible; v4 pages should still be "dumb" presentation calling an unchanged service, per A1's own framing | Logic duplicated into presentation layer, breaking the engine/service/UI split that makes the accumulated test suite possible |
-| Congregation/ministry authorization | `src/app/congregation-membership.js` (`can()`/`assert()`, backed by `private.bible_role_in_congregation` in Postgres) | Any v4 surface that shows role-gated UI (Ministry Hub, Assignments, Content Review, Admin, Calendar sharing) must call this existing check, never re-derive role from a cached display field | A second, slightly different definition of "who counts as a leader" — a real privacy/authorization bug, not a visual one |
-| Notification delivery | Database triggers only (e.g. `private.bible_calendar_event_notify`); `bible_notifications` has no client-side insert grant | v4 can redesign the Notification Center inbox UI freely; it must not add a new insert path from the client for any feature | A client-writable notifications table lets any authenticated user spoof notifications to other users |
-| Private vs. peer-visible data | Physically separate tables/columns (e.g. `bible_assignment_progress` = private response text vs. `bible_assignment_response_presence` = peer-visible completion only, synced by a `security definer` trigger) | v4's "operational/trust" surface family (A1-V4-006) is safe to build on this as-is | Merging these back into one table "for a simpler v4 data model" would be a real privacy regression |
-| Styling assembly | `index.html` globally loads all feature CSS + `*-visual-polish.css`/`*-phase-b.css` overlays before the app boots (A1-V4-002) | Migratable page-by-page. Each page's CSS can be replaced/consolidated independently as long as the file is still linked from `index.html` and selectors keep targeting the same `data-*`/class hooks the service-produced markup already uses | A partial migration that leaves two competing stylesheets targeting the same selector with different specificity — exactly the failure mode A1 is trying to avoid |
-| Service instantiation order | Hand-ordered `const` declarations in `bootstrap.js`, no dependency graph, no lazy binding | Adding a v4-only presentation service (e.g. a shared "app shell state" or "theme" service) is safe *only if* its position in the file is deliberately checked against every service it reads from | Temporal-dead-zone `ReferenceError` at boot — see finding A3-V4-002, reproduced twice this cycle |
-| Verification pipeline | Isolated `verify/*` branch per candidate, exact-SHA assertion, full accumulated suite, then `release/*` freeze | Works for any change class including pure DESIGN-ONLY, but is heavyweight (branch + workflow edit + poll + restore + freeze) for changes that only touch CSS/markup with zero logic risk | Skipping the gate "because it's just CSS" is how the two dependency-ordering regressions below would have reached `release/*` undetected if they hadn't happened to also touch a service file |
+| Routing/navigation | `src/app/router.js` remains the router; `bootstrap.js` owns the route map and route callbacks | Replace shell/page composition while invoking the same route callbacks | Adding/removing/renaming destinations or introducing a parallel router is FUNCTION/ARCHITECTURE affecting |
+| Feature state/logic | app services are constructed in `bootstrap.js` and injected into feature pages | Redesign markup/composition around the existing service contract | Moving state rules into UI or duplicating a service creates parallel ownership |
+| Auth/session | `src/app/session.js` owns auth lifecycle and publishes normalized session state | Redesign Account/Auth UI around session methods/state | Re-implementing auth state in a page or caching a second auth truth is SECURITY affecting |
+| Browser persistence | `src/core/storage.js` owns portable, private, and auth namespaces under `biblequest.v3.*` | Visualize local/private/cloud distinctions more clearly | Renaming/migrating keys or combining private/portable state is FUNCTION/PRIVACY affecting |
+| Supabase/API | `src/core/api.js` is the single client boundary and contains the publishable client configuration | Existing pages may call their injected service/API namespace exactly as today | Direct Supabase calls from redesigned feature UI are ARCHITECTURE/SECURITY affecting |
+| Congregation authorization | `src/app/congregation-membership.js` owns role normalization and `can()` / `assert()` | Show role/permission state from this owner | Deriving leader/admin rights from display data or hidden UI alone is a security defect |
+| Privacy split | private assignment response data and peer-visible completion presence remain separate API/backend concepts | Redesign leader/member presentation without merging the models | Combining private response content with peer visibility is PRIVACY/BACKEND affecting |
+| PWA/offline | `src/app/offline-shell.js` registers `offline-shell-sw.js`; SW caches same-origin navigation/script/style/image/font responses | Redesign offline/install/error presentation around this owner | New lazy-loading/resource ownership must be reconciled with cache warmup/update behavior |
+| CSS/page assembly | `index.html` eagerly links a large base + polish + phase-B chain | Consolidate one page at a time into an explicit v4 owner | Adding more overlay styles continues specificity/load-order debt |
+| Bootstrap composition | all major services/pages are statically imported and services are manually instantiated in dependency order | Presentation-only redesigns can avoid touching this file | New cross-cutting services/dependencies can cause boot-time TDZ/order failures |
 
 ## Prioritized findings
 
-### A3-V4-001 — CI never proves a migration actually works against real Postgres
+### A3-V4-001 — CI still does not prove migration/RLS behavior against real Postgres
 
-- Exact branch/SHA: reproduced first while investigating `feature/v3-psychometrics` → `release/v3.54-psychometrics` bookkeeping, then again on `postrelease/v3-avatar-vault` and `postrelease/v3-calendar` this cycle; general pattern confirmed by reading `.github/workflows/v3-regression.yml` on `main` @ `26afe1615`.
-- Route/surface: every feature with a `supabase/migrations/*.sql` file — currently Avatar Vault, Calendar (personal + v1.5 congregation-sharing), Assignment Private Responses, and any prior feature with RLS.
-- Evidence: the accumulated regression workflow runs `scripts/validate-v3-*.mjs` (static file/token checks) and `tests/v3-*-edge.mjs` (in-memory JS unit tests against mocked `api` objects) and Playwright browser tests against the statically-served app. None of these steps connect to a Postgres instance, run `supabase db push`, or execute the migration SQL. I confirmed this directly: a migration that granted column-level `UPDATE` privileges on a column that was **never actually created** (a real defect in an earlier `bible_congregation_members` migration) passed every CI gate for weeks, because nothing in CI ever ran the SQL that would have failed on that grant statement.
-- Category: ARCHITECTURE / TEST COVERAGE GAP
+- Exact branch/SHA: `main` @ `8f16974f9c976f77299d1db365655794b853912b`; previously reproduced across v3/post-release migration work.
+- Route/surface: every cloud-backed or congregation-shared surface: Account cloud state, Cloud Notes, Couples Cloud, Community/Groups, Live Rooms, Calendar sharing, Assignments, Notifications, Workspace, Team/Recognition/Admin.
+- Evidence: repository architecture continues to use Supabase migrations/RLS while the established regression approach primarily validates static contracts, mocked/in-memory service behavior and browser UI. No evidence in the current tree establishes an ephemeral Postgres migration/RLS execution gate.
+- Category: BACKEND / SECURITY
 - Severity: HIGH
-- Problem: "the accumulated suite is green" is not evidence that a migration is syntactically valid, applies cleanly to the current production schema, or that its RLS policies behave as written. The only real check today is a human (or agent) reading the SQL.
-- Why this matters more for v4 than it did for v3: v3's schema was mostly stable by the time of the production release; v4's stated design freedom ("page structure and information hierarchy may be reconsidered") will likely generate new congregation-shared/social surfaces (the hub explicitly lists Community, Couples, Live Rooms, Calendar as redesign targets), each a candidate for new tables/RLS. The current gap means v4 could ship several plausible-looking migrations in a row with nobody discovering a broken policy until it's live.
-- Recommended v4 direction: add one lightweight CI job that spins up an ephemeral Postgres (e.g. via a service container) and runs every migration in order against a scratch database as a pure syntax/apply smoke test — not full RLS behavioral testing, just "does `supabase db push`-equivalent SQL actually execute cleanly end to end." This is additive to the existing pipeline, not a replacement.
-- Change class: ARCHITECTURE-AFFECTING (CI-only; no product runtime change).
-- True owner: `.github/workflows/v3-regression.yml` (or a new sibling workflow) + `supabase/migrations/`.
-- Dependencies: none functional; needs captain/ops decision on CI minutes budget for a Postgres service container.
-- Proof needed after implementation: intentionally break a migration in a test PR and confirm the new job fails; confirm it does not fail on the current, already-deployed migration history.
-- Confidence: HIGH (directly reproduced, not inferred).
+- FACT vs INFERENCE: FACT that runtime access is Supabase/RLS-based; FACT from prior verified investigation that migration apply is not proven by the normal static/browser gate. INFERENCE that v4 social/operational redesigns may increase schema-change pressure.
+- Root cause: deployment-time schema/RLS behavior is outside the normal browser/static verification boundary.
+- v4 implication: a redesigned shared/social/admin surface must not be allowed to smuggle a new table, field, permission or sharing model under “UX redesign.”
+- Safe redesign seam: presentation and task organization may change freely if the same service/API contract is retained.
+- True owner: `supabase/migrations/*`, `src/core/api.js`, feature app service, RLS policies/functions.
+- Durable direction: add a scratch-Postgres migration-apply smoke and targeted RLS behavior checks before approving any v4 backend-affecting redesign.
+- Dependency/order: architecture test enabler can land independently; must precede new backend-affecting v4 features.
+- Validation: apply migrations from clean state; role/user matrix for representative own-row/congregation/denied cases; then normal edge/browser suite.
+- Confidence: HIGH.
 
-### A3-V4-002 — `bootstrap.js`'s manual service ordering has already caused two real regressions this cycle
+### A3-V4-002 — Manual bootstrap dependency order is a proven whole-app failure mode
 
-- Exact branch/SHA: `postrelease/v3-calendar` (first functional gate failure, run `34599782019`, root-caused via GitHub's check-run annotations API since job logs are blob-hosted and unreachable from a sandboxed inspector) and `postrelease/v3-avatar-vault-v2` (caught locally before CI, same defect class).
-- Route/surface: `src/app/bootstrap.js`, all routes indirectly (a boot-time crash here breaks the entire app shell, not just one page).
-- Evidence: in both cases, a new service (`calendar`, then `avatarVault`) was instantiated with `const x = createXService({ ...,  assignments })` **before** `const assignments = createAssignmentsService(...)` had been declared later in the same file. Because `bootstrap.js` uses `const`/`let` throughout, this is a temporal-dead-zone `ReferenceError` at module evaluation time — it doesn't throw inside a try/catch anywhere; it aborts `start()` before the shell ever renders. The first occurrence took down `tests/v3-shell-smoke.mjs` (the very first smoke test in the accumulated suite) with a generic "shell never rendered" timeout, which does not obviously point at the real cause.
-- Category: ARCHITECTURE / RELIABILITY
-- Severity: HIGH
-- Problem: there is no mechanism — lint rule, unit test, or dependency graph — that catches "service A is instantiated before the service B it depends on" except the full browser-smoke step of the CI pipeline, which fails opaquely (a shell-render timeout, not a pointer to the actual line).
-- Why this will get worse in v4: v4's stated direction adds shared cross-cutting concerns (a shell/theme service, possibly a shared "app state" for the new chrome in A1-V4-001) on top of an already-large hand-ordered file. Every new dependency edge is another chance to reintroduce this exact bug, and the failure signature (shell timeout) will keep looking unrelated to its actual cause.
-- Recommended v4 direction: two independent, low-risk mitigations, either is sufficient and both are cheap:
-  1. A pure static test (`tests/v3-bootstrap-order-edge.mjs` or similar) that parses `bootstrap.js`'s `const X=create...Service({...})` declarations and asserts every identifier referenced inside a call's argument object was declared on an earlier line. This is a few dozen lines of regex/string-index logic, no new runtime dependency.
-  2. Alternatively, restructure `bootstrap.js`'s service block as a small ordered array of `[name, factory]` pairs resolved by a trivial dependency-injection helper that throws a clear, named error ("calendar requires assignments, which is not yet defined") instead of a bare `ReferenceError`. This is a larger change and should be scoped as its own dependency-safe milestone, not bundled into a visual tranche.
-- Change class: ARCHITECTURE-AFFECTING. Not a visual change; should not be attempted inside a DESIGN-ONLY v4 page tranche.
-- True owner: `src/app/bootstrap.js`.
-- Dependencies: none; independent of any specific page redesign.
-- Proof needed: introduce a deliberately misordered service in a test branch and confirm the new check (option 1) or clearer error (option 2) catches it before the browser-smoke step.
-- Confidence: HIGH (directly reproduced twice, not inferred).
-
-### A3-V4-003 — Validator scripts encode "must still be true right now" assertions that expire on their own
-
-- Exact branch/SHA: documented pattern first named in `DEVELOPMENT_STATUS_V3.md`'s defect ledger as "the same defect class as the documented #80/#81 fix"; reproduced again this cycle in `scripts/validate-v3-avatar-vault.mjs`, which asserted `Inventory #83 Innovation suite must remain Not started during #82` and had to be narrowed the moment #83 shipped.
-- Route/surface: `scripts/validate-v3-*.mjs`, i.e. the architecture-boundary layer of the accumulated test suite itself.
-- Evidence: several validators assert not just "this feature's own contract holds" but "a *different*, later feature's inventory row is still in state X" — a snapshot of the world at the time the validator was written, not an invariant. Every time the referenced later feature actually ships, its own gate fails against an assertion that was never about its own correctness.
-- Category: TEST DESIGN / PROCESS
-- Severity: MEDIUM
-- Problem: this is not a bug in any single validator; it's a recurring authoring pattern that will keep costing one wasted gate-run + root-cause cycle per milestone, indefinitely, unless the pattern itself changes.
-- Recommended v4 direction: validators should assert a feature's own contract and, where cross-feature ordering genuinely matters (e.g. "the inventory ledger's summary counts must match its rows," which is a real invariant, not a snapshot), assert the *relationship* rather than a specific frozen value. Reserve "must still be Not started" phrasing for cases where the hub/captain has explicitly deferred that specific row, and drop it once the row is picked up.
-- Change class: ARCHITECTURE-AFFECTING (test-suite only).
-- True owner: `scripts/validate-v3-*.mjs` collectively; no single file owns this pattern.
-- Dependencies: none.
-- Confidence: MEDIUM (pattern confirmed twice; not yet proven to recur a third time, but the mechanism that produces it is unchanged).
-
-### A3-V4-004 — No build step means A1's asset/performance rules need one addition: an explicit "what loads on first boot" convention
-
-- Exact branch/SHA: `main` @ `26afe1615`; confirmed via absence of `package.json` and the single static `<script type="module">` entry point in `index.html`.
-- Route/surface: global; especially relevant to A1-V4-005 (game art) and A1-V4-010 (page-specific backgrounds/illustration).
-- Evidence: `index.html` currently links every feature's CSS file unconditionally, and there is no bundler to code-split, defer, or lazy-load per-route assets. Feature *JavaScript* already gets this for free via native dynamic `import()` inside route factories in `bootstrap.js` (confirmed pattern: pages are imported and instantiated lazily by route, not all upfront) — but CSS and any new raster/SVG art referenced from `index.html` or eagerly-imported modules does not.
-- Category: PERFORMANCE / ARCHITECTURE
-- Severity: MEDIUM
-- Problem: A1's own asset rules ("avoid loading page-specific heavy artwork on first boot if the route is not visible") are correct in principle but currently unenforceable for CSS/art without a stated convention, since nothing prevents a new feature's stylesheet or hero image from being added to the global `<head>` link chain the same way every prior tranche was.
-- Recommended v4 direction: adopt one explicit rule for v4 pages — global/shell CSS and assets stay eagerly linked in `index.html`; **page-specific** decorative art (illustrations, hero images, game-mode art) is only referenced from within that page's own lazily-imported module (e.g. set as a CSS custom property or `background-image` from JS after the route mounts), never from a global stylesheet link. This requires no new tooling, just a convention plus a static check (an extension of the existing `*-static.mjs` test pattern already used for visual-polish tranches) that flags any new `<link>` added to `index.html` for a route-specific asset.
-- Change class: ARCHITECTURE-AFFECTING for the convention/test; DESIGN-ONLY for individual pages that follow it.
-- True owner: `index.html` + each feature's presentation module.
-- Dependencies: A1's asset strategy; A2 first-load performance budget.
-- Confidence: MEDIUM (the gap is confirmed; the specific mitigation is a proposal, not something already validated in this codebase).
-
-### A3-V4-005 — `bootstrap.js` and `src/core/api.js` are correct today but are becoming the two highest-risk single files in the repo
-
-- Exact branch/SHA: `main` @ `26afe1615`.
-- Route/surface: global composition (`bootstrap.js`) and the entire backend boundary (`api.js`).
-- Evidence: every feature added this cycle (Avatar Vault, Personal Mission, Calendar, Calendar v1.5) required an edit to both files — a new `import`, a new `const` instantiation in a specific position, a new route-map entry, and (for `api.js`) a new namespace object appended to one large `Object.freeze({...})` export. Both files are already large enough that finding the correct insertion point requires reading most of the file first, and both are exactly the files A3-V4-002's ordering bug lives in.
+- Exact branch/SHA: current structure re-confirmed on `main` @ `8f16974f…`; defect class previously reproduced during Calendar/Avatar work.
+- Route/surface: global boot / every route.
+- Evidence: `bootstrap.js` contains a long manually ordered sequence of `const service=createXService({dependencies})`; current Avatar Vault and Calendar correctly appear after `assignments`, but no static dependency-order contract protects future edits.
 - Category: ARCHITECTURE / MAINTAINABILITY
-- Severity: MEDIUM
-- Problem: this is not urgent, but it is the single clearest predictor of where v4's *page-level* parallel work (many pages redesigned across possibly-parallel tranches, per the hub's own model) will produce merge conflicts and ordering bugs, precisely because every page still funnels through these two shared files no matter how independent its visual redesign is.
-- Recommended v4 direction: not an immediate rewrite. As a **dependency-safe, non-visual follow-up milestone** (explicitly not bundled into any page redesign), consider splitting `bootstrap.js`'s service instantiation into a handful of domain-grouped modules (e.g. "learning services," "community services," "ministry/admin services") that `bootstrap.js` composes, and splitting `api.js`'s namespaces similarly. This is purely organizational and should not change any owner's public shape.
-- Change class: ARCHITECTURE-AFFECTING.
-- True owner: `src/app/bootstrap.js`, `src/core/api.js`.
-- Dependencies: should follow, not precede, A3-V4-002's mitigation (fixing the ordering-safety net first makes any later split safer to verify).
-- Confidence: MEDIUM (a maintainability projection, not a currently-reproduced failure).
+- Severity: HIGH
+- FACT vs INFERENCE: FACT that current composition is manually ordered; FACT that this defect class previously produced TDZ boot failures; INFERENCE that v4 cross-cutting shell/search/recent-state services would increase dependency edges.
+- Root cause: composition order is encoded only by source position.
+- v4 implication: page redesign itself is safe, but a new shell/theme/global context service should not be casually added during a visual tranche.
+- Safe redesign seam: keep v4 page/shell presentation stateless or driven by existing injected state wherever possible.
+- True owner: `src/app/bootstrap.js`.
+- Durable direction: add a focused bootstrap-order/static dependency guard first; consider domain-grouped composition only as a later isolated architecture milestone.
+- Dependency/order: guard before broad shared-service expansion.
+- Validation: deliberately misorder a dependency in a test branch and prove the guard fails with a useful owner/name before browser smoke.
+- Confidence: HIGH.
 
-## Feasibility notes on A1's specific proposals
+### A3-V4-003 — Current runtime is eager, not route-lazy; previous A3 asset recommendation was incorrect
 
-- **A1-V4-001 (new shell/chrome)** — architecturally safe. The shell is presentation over the existing router/route-map; a full chrome redesign touches no backend/service boundary as long as no new routes are silently added/removed as a side effect (that would be FUNCTION-AFFECTING, needs A4/captain sign-off per the hub's own rule).
-- **A1-V4-002 (CSS foundation migration, page-by-page)** — architecturally safe and directly compatible with the existing `visual-polish`-tranche verification pattern already proven this cycle (isolated branch, static contract test, functional gate, freeze). Recommend the v4 foundation migration reuse that exact pipeline rather than inventing a new one.
-- **A1-V4-006 (separate "operational/trust" design language for Account/Ministry/Assignments/Workspace/Congregation/Content-Review/Admin)** — strongly endorsed from a security/trust standpoint; this boundary already exists at the ownership level (each is its own service behind `api.js`) and redesigning their presentation does not require touching RLS or authorization, provided role-gated UI continues to call the existing `congregation.can()`/`assert()` checks rather than re-deriving role from cached display data.
-- **Any v4 proposal that adds a new social/sharing surface** (Community, Couples, Live Rooms redesigns are explicitly in scope per the hub) should budget for a new migration + RLS review using the exact-SHA verification pipeline already established, and should be the first beneficiary of A3-V4-001's proposed CI Postgres smoke test if that lands first.
+- Exact branch/SHA: `main` @ `8f16974f9c976f77299d1db365655794b853912b`.
+- Route/surface: global startup, every route; particularly A1 game/art proposals and A2 responsive page-specific compositions.
+- Evidence: `src/app/bootstrap.js` statically imports every listed feature page at top level; GitHub code search finds no route-module `import(...)` pattern. `index.html` eagerly links the complete CSS chain. The prior A3 report incorrectly stated route factories already used native dynamic import.
+- Category: PERFORMANCE / PWA / ARCHITECTURE
+- Severity: HIGH
+- FACT vs INFERENCE: FACT.
+- Root cause: incorrect prior assumption about module loading topology.
+- v4 implication: real artwork referenced from route-specific CSS/markup may be browser-lazy depending on the CSS/DOM path, but JavaScript module loading itself is currently eager. Introducing native dynamic import to reduce startup cost changes offline/cache/update behavior and test assumptions.
+- Safe redesign seam: v4 can still add optimized SVG/WebP assets and consolidate CSS without changing JS loading topology. Prefer modern image formats, explicit intrinsic sizing and browser-native lazy image loading where semantically safe.
+- True owner: `src/app/bootstrap.js`, `index.html`, feature presentation modules/styles, `src/app/offline-shell.js`, `offline-shell-sw.js` if loading topology changes.
+- Durable direction: do **not** introduce “lazy modules” as an incidental visual optimization. If startup cost becomes material, make route-level code/resource loading a dedicated architecture milestone with an offline manifest/warm strategy.
+- Dependency/order: measure current startup/resource cost first; architecture milestone before converting routes to lazy imports.
+- Validation: online first boot, first navigation to never-visited route, installed PWA, immediate-offline after install, visited-route offline, update from old cache, console/page errors, representative slow network.
+- Confidence: HIGH.
+
+### A3-V4-004 — Offline shell warmup only captures resources already loaded by the current page lifecycle
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: PWA/offline across all routes.
+- Evidence: `src/app/offline-shell.js` builds the warm list from current `performance.getEntriesByType('resource')` entries with initiators `script/link/css/img`, then sends those URLs to `offline-shell-sw.js`. The SW runtime-caches same-origin navigation/script/style/image/font requests after they are requested. It does not possess an authoritative route/resource manifest.
+- Category: PWA / PERFORMANCE
+- Severity: MEDIUM now; HIGH if v4 introduces lazy route modules/assets.
+- FACT vs INFERENCE: FACT for current warm algorithm; INFERENCE regarding future lazy-loading failure mode until implemented.
+- Root cause: cache warm ownership is observational rather than manifest-driven.
+- v4 implication: A1/A2 proposals for route-scoped assets are safe only if “offline available immediately after install” is not silently assumed for resources that have never been requested.
+- Safe redesign seam: presentation-only asset changes that remain in the current eager/visited-resource model; offline UI may be redesigned freely around existing state.
+- True owner: `src/app/offline-shell.js`, `offline-shell-sw.js`.
+- Durable direction: if route lazy-loading is adopted, explicitly define whether install pre-caches all critical route shells or whether routes become offline-capable after first visit, and expose that state honestly in UX.
+- Dependency/order: depends on any future loading-topology decision.
+- Validation: cold install → airplane mode → open representative deep routes; visited vs unvisited route matrix; cache version upgrade; failed asset fallback.
+- Confidence: HIGH on architecture, MEDIUM on future user impact.
+
+### A3-V4-005 — A1’s v4 shell redesign is safe only while route/state semantics stay outside the shell
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: global shell/navigation.
+- Evidence: current route callbacks and services are composed in `bootstrap.js`; the UI shell is mounted as presentation over that composition. A1 proposes route-aware title/context, account/avatar affordance and adaptive navigation; A2 proposes tablet/desktop rail treatment.
+- Category: ARCHITECTURE / INTERACTION
+- Severity: MEDIUM.
+- FACT vs INFERENCE: FACT for current ownership; DESIGN INFERENCE for proposed shell.
+- Root cause risk: modern shells often accumulate global data-fetching, route history, notification polling and duplicated auth state because they are visible everywhere.
+- v4 implication: route-aware presentation is safe; a shell-owned second store/router/session is not.
+- Safe redesign seam: shell may receive current route, navigation callbacks and already-owned state; it may render different mobile/tablet/desktop chrome without taking feature ownership.
+- True owner: `src/ui/shell.js` + shell styles for presentation; `src/app/router.js` / route map for navigation semantics; `src/app/session.js` for auth truth.
+- Durable direction: extend shell inputs only with explicit read-only view models/callbacks from existing owners. Any global search/recent-items/notification aggregation is a separate FUNCTION/ARCHITECTURE proposal.
+- Dependency/order: A4 confirms top-level IA; A2 confirms responsive shell; A3 reviews any new state dependency.
+- Validation: one shell instance, route highlighting/back behavior, auth transition/sign-out, deep-link boot, keyboard/screen reader, no duplicated polling/listeners.
+- Confidence: HIGH.
+
+### A3-V4-006 — Responsive split-pane/list-detail redesigns are feasible but must keep one state owner and one active semantic task
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: Reader/Study, Notes, Calendar, Notifications, Ministry, Assignments, Workspace, Congregation, Content Review/Admin; tablet/desktop proposals from A2.
+- Evidence: A2 recommends mobile list→detail patterns and tablet/desktop split panes. Current services are independent page owners injected through `bootstrap.js`; no evidence supports creating parallel “mobile service” and “desktop service” instances.
+- Category: ARCHITECTURE / MAINTAINABILITY / SECURITY
+- Severity: HIGH for operational/private surfaces, MEDIUM elsewhere.
+- FACT vs INFERENCE: FACT for service ownership; design proposal under review for split panes.
+- Root cause risk: rendering both list and detail as independently mounted owners can duplicate subscriptions, mutations, audio, timers or permission checks.
+- v4 implication: different compositions by width are safe when they are two views of the same service state, not two feature runtimes.
+- Safe redesign seam: one page owner/service instance; responsive DOM may show master/detail regions, but mutation/state actions continue through the same service.
+- True owner: respective `src/features/*/index.js` + current `src/app/*` service.
+- Durable direction: define shared page view state (selected item/detail id) in the existing feature/service or page composition owner; do not create separate mobile/desktop data owners. For leader/admin surfaces, keep permission context visible rather than hiding it in responsive disclosure without an accessible path.
+- Dependency/order: A4 task/selection model before implementation; A2 visual responsive composition; A3 review if selected-item state becomes persistent/global.
+- Validation: resize/orientation without duplicated mutation; same selected item after layout switch when appropriate; role matrix; keyboard/focus restoration; no duplicate network requests/subscriptions caused by both panes mounting separate runtimes.
+- Confidence: HIGH.
+
+### A3-V4-007 — Private/local/cloud distinctions are architectural, not merely labels to restyle
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: Private Notes, Cloud Notes, Couples local/cloud, Personality/Psychometrics, Account/Backup/Recovery, Workspace.
+- Evidence: `src/core/storage.js` physically separates portable keys, `private.*` keys and `auth.*` keys. Session/auth uses the dedicated auth storage adapter. A1/A2 correctly propose stronger trust/sync cues.
+- Category: PRIVACY / SECURITY / UX BOUNDARY
+- Severity: HIGH.
+- FACT vs INFERENCE: FACT.
+- Root cause risk: a v4 “unified notes/workspace” concept could accidentally turn a visual unification into storage/export/sync unification.
+- v4 implication: interfaces may visually belong to one design family, but controls must continue to communicate and preserve where data lives and who can see it.
+- Safe redesign seam: shared visual primitives, navigation and editor components; separate storage/cloud service actions remain explicit.
+- True owner: `src/core/storage.js`, `src/app/private-notes.js`, `src/app/cloud-notes.js`, couples/personality services, backup/session owners.
+- Durable direction: do not rename/migrate storage keys, auto-sync privateStorage, include private/auth namespaces in portable backup, or merge local/cloud save actions during a DESIGN/UX tranche.
+- Dependency/order: A4 defines user-facing trust model; A1/A2 present it; any actual storage migration requires a separately approved functional milestone.
+- Validation: backup export excludes private/auth keys; sign-out behavior; device-local data survives account changes as designed; cloud actions require authenticated state; privacy copy matches actual behavior.
+- Confidence: HIGH.
+
+### A3-V4-008 — Role-aware operational redesign must not treat hidden UI as authorization
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: Ministry Hub, Assignments, Team Center, Congregation, Content Review/Moderation/Reporting, Calendar sharing, Recognition/Admin.
+- Evidence: `src/app/congregation-membership.js` normalizes roles and owns `can(congregationId,'read'|'ministry'|'admin')` and `assert()`. It explicitly treats unknown roles as unsupported/denied. A1/A2 propose major hierarchy changes for these dense surfaces.
+- Category: SECURITY / PRIVACY
+- Severity: CRITICAL if implementation moves authorization into UI; otherwise INFO for design-only work.
+- FACT vs INFERENCE: FACT for authorization owner; design risk is INFERENCE.
+- Root cause risk: mobile disclosure, simplified leader dashboards or “cleaner” role-specific screens can tempt implementations to omit unavailable actions client-side without preserving service/backend checks.
+- v4 implication: hiding a control is UX; permission to execute remains in membership/service/RLS layers.
+- Safe redesign seam: derive visible capability cues from existing membership state; keep action handlers going through existing services and backend policies.
+- True owner: `src/app/congregation-membership.js`, each feature service, `src/core/api.js`, backend RLS/functions.
+- Durable direction: no duplicated role tables/constants inside feature UIs. Unknown/new roles remain denied until the true owner supports them.
+- Dependency/order: A4 leader/member flow; A1/A2 presentation; A3/security review before any permission-semantic change.
+- Validation: member/facilitator/leader/pastor/admin/unknown role matrix; direct action invocation without button visibility; RLS denial; permission-denied recovery/focus.
+- Confidence: HIGH.
+
+### A3-V4-009 — The stylesheet redesign should consolidate ownership, not merely replace `visual-polish` with `v4-polish`
+
+- Exact branch/SHA: `main` @ `8f16974f…`.
+- Route/surface: all pages.
+- Evidence: `index.html` eagerly links dozens of feature CSS files plus multiple `*-visual-polish.css` and `*-phase-b.css` overlays. A1 flags this as CRITICAL design-system debt; A2 needs new responsive primitives.
+- Category: MAINTAINABILITY / PERFORMANCE
+- Severity: HIGH.
+- FACT vs INFERENCE: FACT for current loading/ownership.
+- Root cause: successive visual tranches accumulated additional global styles instead of replacing an owner.
+- v4 implication: substantial redesign is feasible, but another global overlay layer would make responsive/accessibility work brittle and increase unused first-load CSS.
+- Safe redesign seam: migrate one surface/family at a time to an explicit v4 stylesheet/component contract while removing/superseding that surface’s obsolete overlay ownership in the same bounded tranche.
+- True owner: `index.html`, `src/ui/app.css`/future v4 primitives, individual feature CSS owners.
+- Durable direction: shared tokens/primitives + one clear page-family/page owner; no uncontrolled `!important`, no hidden-overflow masking, no duplicate mobile/desktop rule families for the same responsibility.
+- Dependency/order: establish foundation primitives first; migrate shell and highest-priority pages; validate before removing legacy rules.
+- Validation: computed-style/load-order regression, all states including error/disabled/locked, width matrix, no orphaned classes/assets, first-load CSS/resource budget.
+- Confidence: HIGH.
+
+## Explicit safety review of A1/A2 design proposals
+
+- **A1 new shell / A2 adaptive bottom-nav→rail:** SAFE if only presentation changes. UNSAFE if it creates a second route store, owns auth truth, or silently changes destinations. True owners remain router/route map/session.
+- **A1 grouped Learn hub / compact doctrinal/source trust section:** SAFE to regroup and visually compress navigation. Do not alter doctrinal/source policy content or hide provenance behind an inaccessible/non-semantic disclosure. Any policy rewrite needs doctrinal owner/captain review.
+- **A1 game-specific identity/art:** SAFE as presentation. If game HUD redesign changes scoring, timing, retry, rewards, lock state or game selection semantics, it becomes FUNCTION-AFFECTING and stays with the game service/engine.
+- **A2 tablet/desktop split panes:** SAFE when both panes are one view of the existing owner. Do not instantiate duplicate feature services or listeners per pane.
+- **A2 mobile list→detail operational flows:** SAFE structurally. Security/privacy context, destructive confirmations and role checks cannot be dropped merely because secondary metadata is collapsed.
+- **A2 preserving 125% XL text:** SAFE and encouraged; fix layout owners rather than reducing accessibility preference. No architecture change is necessary unless semantic order is changed.
+- **A1/A2 page-specific heavy assets:** SAFE with explicit asset budgets and native image optimization. Do not assume current route-level code splitting; a lazy-module plan is a separate PWA/architecture proposal.
+- **Any new social/share/search/recent/global inbox feature:** FUNCTION/ARCHITECTURE/BACKEND affecting until proven otherwise. Do not implement it as shell UI sugar.
+
+## Per-surface feasibility matrix
+
+| Surface/family | Redesign freedom | Protected owner/boundary | Main v4 architecture caution |
+|---|---|---|---|
+| Home | HIGH | Home page + existing progress/daily/media callbacks | Personalized/conditional modules must use existing state or an explicitly approved owner; do not invent shell-global state |
+| Global shell/navigation | HIGH | `src/ui/shell.js`; router/session remain external | No second router/session/store; route destination changes are functional |
+| Learn hub | HIGH | Learn page + existing callbacks | Doctrinal/source policy stays protected; regrouping is presentation/IA only |
+| Reader/source/translation | HIGH | reader service + Bible/source owners | Do not move translation/source truth into visual component; keep editorial width changes presentation-only |
+| Study/Deep Questions/Story/Wisdom | HIGH | existing app service/engine per feature | Step/scene redesign must not change lesson/progress rules without separate functional approval |
+| Adaptive/Open Review | HIGH | adaptive/review services | Confidence/mastery/scoring meaning is functional, not decoration |
+| Bible World | HIGH | Bible World service | Map/world composition may change; unlock/progression rules remain service-owned |
+| Daily Journey/Mission | HIGH | daily mission/mission/progress services | Stage/reward exactly-once behavior cannot move into UI animation state |
+| Progress | HIGH | progress owner/storage | New charts may derive existing data; new metrics/persistence are functional |
+| Transform/Personality/Psychometrics | HIGH visual, MEDIUM structural | private storage/session/engines | Privacy/result semantics must not be gamified or reinterpreted by UI |
+| Games/Kids | HIGH | game launcher/engines/progress | One runtime/service owner; no separate responsive/game copies; assets must not alter rules |
+| Avatar Vault | HIGH | avatar service/private storage/API | Unlock/ownership state is functional; grid/collection composition is free |
+| Calendar | HIGH | calendar service/API/assignments/congregation | Sharing/recurrence/assignment synthesis are functional/backend; agenda/month presentation is free |
+| Private Notes | HIGH | private-notes + `privateStorage` | Device-only property must remain true and visible |
+| Cloud Notes | HIGH | cloud-notes + API/session | Sync/auth/error semantics remain owner-controlled |
+| Couples local/cloud | HIGH | separate local/cloud services | Warm visual unification must not merge visibility/storage contracts |
+| Community/Groups/Encouragements | HIGH | community/group services/API | New sharing/activity concepts may require backend/RLS review |
+| Live Rooms | HIGH | live-room service/API | Participant/session lifecycle must remain one owner; avoid duplicate presence runtime |
+| Media/Recordings | HIGH | recordings/media/audio manager | One player/audio lifecycle; responsive players must not create parallel audio owners |
+| Ministry Hub | HIGH visual/IA | membership + ministry service | Role visibility is not authorization |
+| Assignments | HIGH visual/IA | assignment service/API/RLS | Private responses vs peer completion must remain separate; leader/member actions role-checked |
+| Notifications | HIGH visual | notification service/API/backend triggers | Do not add client-side notification creation to support redesigned inbox |
+| Workspace | HIGH | workspace + cloud notes/reader/storage/congregation | Composition can combine modules, but data owners stay distinct |
+| Team/Leaderboards/Recognition | HIGH | respective services + membership/API | Competition vs ministry UI can diverge; role/data visibility stays backend-owned |
+| Congregation | HIGH | membership/API/RLS | Member directory/role administration is security-sensitive |
+| Content Review/Moderation/Reporting | HIGH visual | moderation/review/reporting services + role/RLS | Decision/provenance/destructive action semantics must remain explicit |
+| Account/Auth/Recovery | HIGH visual, MEDIUM structural | session/account/auth storage | Do not create a second auth state or weaken session verification |
+| Tutorial | HIGH | tutorial service + router callbacks | Coach marks must reference the one real shell/route DOM, not duplicate controls |
+| Accessibility | HIGH | accessibility service/CSS | Preference semantics must survive layout redesign; do not “fix” layouts by weakening settings |
+| More hub | HIGH | More page + router callbacks | Categorization is free; hiding/removing destinations is functional IA change |
+| Offline/loading/error/denied | HIGH visual | recovery/offline/session/feature owners | State UI can modernize; recovery/auth/permission truth must come from existing owners |
+
+## Highest-priority architectural enablers for v4
+
+1. **Bootstrap-order regression guard** — cheapest protection against an already-proven whole-app failure class.
+2. **Migration/RLS execution evidence** — required before any v4 feature changes backend sharing/privacy semantics.
+3. **Explicit resource-loading/PWA contract** — correct the false assumption of existing route-level lazy imports before optimizing startup.
+4. **One v4 stylesheet owner per migrated surface/family** — prevents a new overlay layer and makes A1/A2 structural redesign sustainable.
+5. **Single-owner responsive state rule** — tablet/desktop split panes and mobile list/detail are views of one existing service, never parallel runtimes.
+6. **Trust-boundary acceptance matrices** — local/private/cloud and member/leader/admin variants should be part of post-redesign regression evidence.
+
+## Required validation after implementation tranches
+
+- exact-SHA clean-tree assertion and accumulated architecture/static suite;
+- shell boot and every changed route with console/page-error capture;
+- auth/session/sign-out transitions where Account or shell changes;
+- private/local/cloud persistence and backup/export boundaries where Notes/Workspace/Transform/Couples change;
+- member/facilitator/leader/pastor/admin/unknown authorization matrix for operational surfaces;
+- backend migration-apply + RLS behavior for any schema/policy change;
+- PWA normal-browser + installed + cold/offline/update/cache checks, especially if loading topology changes;
+- no duplicate subscriptions/audio/timers/network mutations after responsive split-pane/list-detail implementation;
+- first-load JS/CSS/image request/byte measurement after major art/foundation work;
+- 320/360/390/412/430 plus tablet/desktop and accessibility/reduced-motion tests from A2;
+- feature-specific functional flow tests from A4.
+
+## Cross-agent handoffs
+
+### A1 — Design System
+Proceed with substantial page-level redesign. Keep the v4 foundation compact and migrate real owners instead of adding another global polish overlay. For art-heavy pages, assume JavaScript modules are currently eager; optimize assets themselves first. A dedicated lazy-loading architecture should be proposed separately if measurements justify it.
+
+### A2 — Responsive/Accessibility
+Your split-pane and mobile list/detail proposals are architecturally feasible. Please treat each responsive composition as one feature runtime/service owner and include duplicate-subscription/mutation checks in validation. The offline shell has no authoritative route manifest, so any future route-lazy proposal needs a visited/unvisited offline matrix.
+
+### A4 — UX Flows
+Flag any recommendation that introduces cross-route state such as global search, recently viewed, unified drafts, persistent selected-item context, consolidated inbox/activity or new sharing. These are not merely IA improvements; A3 must place them in an existing owner or identify a deliberate new service before implementation.
 
 ## Noise rejected
 
-- Not flagging the lack of a bundler as something that must be fixed before v4 can proceed — it's a real constraint (A3-V4-004), not a blocker, and introducing one now would itself be an ARCHITECTURE-AFFECTING change requiring explicit captain approval, not a byproduct of a visual redesign.
-- Not recommending a full dependency-injection framework or rewrite of `bootstrap.js`/`api.js` — the lightweight mitigations in A3-V4-002/A3-V4-005 are proportionate to the actual, observed failure mode.
-- Not treating every CSS file as a security concern; the `*-visual-polish.css` layering A1 criticizes on design grounds (A1-V4-002) is not itself an architecture-safety problem — it is verifiably decorative-only today (a static test enforces no `display`/`transform`/`transition`/layout properties in polish-tranche files), which is precisely why it is *safe* to migrate page-by-page rather than urgent to fix all at once.
-
-## Cross-agent handoff
-
-### A1 — Design System
-The CSS-migration pipeline your report calls for already has a proven, working template from this cycle's visual-polish tranches (isolated branch → static contract test asserting no layout/motion properties → functional gate → freeze). Reuse it verbatim for the v4 foundation migration rather than designing a new verification approach.
-
-### A2 — Responsive/Accessibility
-Please validate that A3-V4-004's "page-specific assets load only from within their own lazily-imported module" convention doesn't fight against your first-load/perceived-performance recommendations — in particular, confirm it doesn't introduce a visible flash-of-unstyled-content for page-specific hero art on first navigation, at 320–430px.
-
-### A4 — UX Flows
-A3-V4-002 and A3-V4-005 are both about *reliability of shipping*, not user-facing flow — no action needed from A4 unless a proposed IA change would require a genuinely new cross-cutting service (e.g. a global "recently viewed" or "search" feature spanning many pages), in which case flag it back to A3 before implementation so it can be sequenced after the ordering-safety mitigation.
+- No recommendation to adopt a framework, bundler or full dependency-injection container merely because v4 is a redesign.
+- No recommendation to move authorization, doctrinal policy, storage or backend access into presentation components for convenience.
+- No recommendation to pre-emptively refactor every service before page redesign begins.
+- No claim that current PWA is broken solely because it lacks a route manifest; the risk becomes material if loading topology is changed.
+- No attempt to treat visual sameness as an architecture defect unless it creates duplicate ownership or load-order brittleness.
