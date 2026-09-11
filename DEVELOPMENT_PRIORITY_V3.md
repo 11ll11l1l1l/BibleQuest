@@ -1,89 +1,94 @@
 # BibleQuest v3 — Current Development Priority
 
-Updated: 2026-09-12 JST after exact-green Visual Phase B Progress/Grow promotion.
+Updated: 2026-09-12 JST after final mobile/build validation gate integration.
 
-This is the cross-feature task-selection authority. Read `RECONCILIATION_V3.md` next for exact product/release ancestry and evidence.
+## Current truth
 
-## Current product truth
+- exact-green product: `2c601b3289dba891f349801219f49804f85f63cc`
+- product ref: `release/v3-phase-b-progress-artwork-20260912`
+- product run: `34633247237` — success
+- exact-green release-validation SHA: `d0eab188479f20273cbd67cb5b796c74868dc5d4`
+- validation ref: `release/v3-final-mobile-width-gate-20260912`
+- validation run: `34634460077` — success
+- rollback/reference: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-- current exact-green product: `2c601b3289dba891f349801219f49804f85f63cc`
-- current frozen product ref: `release/v3-phase-b-progress-artwork-20260912`
-- current accumulated verifier: run `34633247237` — **success**
-- current product PR: #110
-- parent exact-green Account product: `2f04b7150b36d4a14dac953fd08ae2c5a307d0d9`, run `34632158164` — success
-- prior Avatar Vault product: `df2a7051e305474a5ea24912c3f5341f33bc61b8`, run `34630985269` — success
-- prior Personal Mission product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`, run `34629528297` — success
-- prior Calendar product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`, run `34627049878` — success
-- production Supabase release migrations: **APPLIED + LIVE VERIFIED** and unchanged
-- previous rollback: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
-
-Run `34633247237` explicitly checked out exact PR synthetic merge candidate `2c601b3...`; the complete accumulated architecture, edge/security/static and browser/mobile suite passed. The exact candidate was frozen before `main` moved to the same SHA.
-
-Provider deployment identity and fresh independent two-host verification are not yet recorded for this exact product and must not be inferred from older PASS evidence.
+PR #111 is validation/docs/workflow only. Do not relabel `d0eab188...` as a new product candidate. The product remains `2c601b3...` until product code changes and earns its own complete verification.
 
 ## Authority order
 
 1. latest explicit user instruction;
 2. this file for cross-feature priority;
-3. `RECONCILIATION_V3.md` for product/release ancestry and integration truth;
-4. current handoff/status;
-5. selected feature/release-gate contract;
-6. exact-candidate workflow/deployment/live evidence;
-7. historical inventory/release/agent evidence.
+3. `RECONCILIATION_V3.md` for product/release ancestry;
+4. `DEVELOPMENT_HANDOFF_V3.md` / `DEVELOPMENT_STATUS_V3.md`;
+5. `RELEASE_ACCEPTANCE_MATRIX_V3.md` for final evidence classes;
+6. exact workflow/deployment/live evidence;
+7. historical inventory/agent evidence.
 
-## Priority 1 now — release hardening plus evidence-driven visual completion
+## Priority 1 — finish release evidence, not feature churn
 
-Resume from exact-green `2c601b3...`. Do not create additional product work merely because historical issues remain open.
+### 1A — current-v3 correctness firewall
 
-### 1A — functionality/correctness firewall
+No current-v3 P0/P1 product/security/privacy/data-loss defect is presently reproduced. Any new credible P0/P1 interrupts release evidence work. Stale issue labels, old root-runtime bugs or advisor warnings without exploitable impact do not.
 
-A credible current-v3 P0/P1 reproduced through the current runtime interrupts all other work. Stale labels or legacy-root bugs do not.
+Do not import PR #88 legacy-root behavior into v3 unless reproduced through current owners.
 
-Old PR #88 remains non-actionable for current v3 unless reproduced through the current v3 runtime: v3 boots through `src/app/bootstrap.js`; Account behavior lives under `src/app/account.js`; Progress behavior lives under `src/core/progress.js`.
+### 1B — mobile/PWA gate
 
-Completed and not automatic work anymore include Calendar v1/v1.5, Ministry Hub Calendar, Calendar creator edit/delete, existing Calendar migrations/security state and fixed-weekly congregation recurrence. Custom non-weekly recurrence remains deferred absent explicit release need.
+Automated exact-candidate acceptance is complete:
 
-### 1B — required release evidence
+- `bash build.sh` passed;
+- 320/360/390/412/430 current-v3 width matrix passed;
+- five current primary routes `Home`, `Learn`, `Play`, `Grow`, `More` fit and remain usable;
+- Daily Journey remains discoverable;
+- topbar/header fit, touch targets, support/body text floor, no horizontal overflow and no console/page errors passed;
+- accumulated PWA install/offline-shell regressions passed.
 
-The immediate dependency-safe milestone is a permanent final-candidate mobile/PWA acceptance gate.
+Issue #6 remains open only for field proof not provided by headless CI: physical Android Chrome/Brave at 100% zoom and a genuinely installed-PWA session. Do not regress the product to obsolete four-tab/nine-node structure.
 
-Verify 320/360/390/412/430 CSS px against the **current v3 architecture**:
+### 1C — multi-account field gate
 
-- no page horizontal overflow / no zoom-out requirement;
-- Home and Daily Journey remain immediately usable;
-- topbar/header does not crowd or clip;
-- five current primary nav destinations (`Home`, `Learn`, `Play`, `Grow`, `More`) remain equal, readable and usable;
-- relevant controls retain practical ~44 px targets;
-- critical supporting text does not collapse to tiny unreadable sizes;
-- PWA manifest/install/offline-shell/update/cache contracts remain green;
-- console/page errors remain absent.
+Issue #68 is now the largest functional release-evidence gap.
 
-Issue #6 contains stale historical structural wording about four tabs and a squeezed nine-node path. Do not regress current v3 back to obsolete structure. Preserve the acceptance intent instead.
+Production implementation is present and healthy, but actual Journey Group / Cloud Team / Live Room field relationships are not currently populated. Required next evidence uses multiple real/test accounts and sessions to exercise:
 
-Issue #68 remains a separate multi-account field-validation gate; it cannot be closed by static tests alone.
+- congregation and Journey Group create/join;
+- Cloud Team create/add/remove + assignment targeting;
+- Journey Group assignment isolation;
+- linked couple assignment and couples challenge shared-day semantics;
+- Live Room host/join across sessions/devices;
+- reconnect/reload/re-login behavior;
+- expected rows/realtime behavior;
+- unrelated-account/group/couple read/write denial;
+- expired/invalid invite behavior.
 
-### 1C — Visual Phase B
+Do not mutate production tables directly to simulate this acceptance. Use the actual product UI/API/auth/RLS paths.
 
-Completed bounded checkpoints now include More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow. Do not repeat them.
+### 1D — Visual Phase B
 
-Issue #94 remains mandatory for final release, but further visual product changes must be evidence-driven. Inspect current investigator/firewall findings and the current tree before selecting another surface. If a material placeholder/generic/emoji-like current-v3 surface remains, use real committed same-origin artwork, preserve behavior/ownership, add focused acceptance, then require a complete exact-candidate regression.
+Accepted exact-green visual checkpoints include More, Calendar, Personal Mission, Avatar Vault, Account and Progress/Grow. Do not repeat them.
 
-The historical `assets/icons/v3/` mapped binary family remains absent. `docs/V3_ICON_ASSET_MAP.md` is semantic guidance, not proof that binaries exist.
+Issue #94 remains mandatory, but further product visual work is selected only if current evidence shows a material placeholder, generic, broken or inconsistent surface. No automatic new tranche is required merely because #94 is open.
 
-### 1D — final production gate
+### 1E — provider/production gate
 
-Before official public release:
+Before official release approval:
 
-- establish one exact intended final candidate;
-- run complete architecture/static, edge/security, browser/mobile, visual, accessibility, reduced-motion, PWA/offline/cache, core functional, explicit-width and console/page-error verification on that exact SHA;
-- complete Issue #68 multi-account field validation;
-- record exact provider deployment identity;
-- independently verify both production hosts match the exact candidate;
-- promote no unverified follow-up product commit.
+1. retain one exact intended product candidate;
+2. complete remaining field evidence;
+3. record Cloudflare provider deployment identity/SHA for that exact product;
+4. independently verify both `mybiblequest.pages.dev` and `biblequest-7th.pages.dev` serve the expected product/assets and critical flows;
+5. confirm production visually matches the accepted candidate;
+6. if a product correction is required, create a new candidate and rerun all required gates.
 
-## Production migration state
+## Security hardening status
 
-Known release migrations remain `APPLIED + LIVE VERIFIED`; do not reapply:
+- checked poll aggregate `SECURITY DEFINER` RPCs authorize congregation membership; no blocker reproduced;
+- checked BibleQuest no-policy server-only tables have anon/authenticated DML closed; do not add permissive RLS policies to silence INFO;
+- leaked-password protection is disabled; treat as recommended platform hardening rather than evidence of a current product regression.
+
+## Production migrations
+
+Remain **APPLIED + LIVE VERIFIED** and must not be reapplied:
 
 - `20260911144939 assignment_response_presence`
 - `20260911144950 calendar_events`
@@ -91,13 +96,11 @@ Known release migrations remain `APPLIED + LIVE VERIFIED`; do not reapply:
 
 ## Priority firewall
 
-- P0 — severe current production/security/privacy/data-loss/core outage reproduced through current v3.
-- P1 — major user-facing release capability broken without reasonable workaround, or an explicitly required release-gate correction.
-- P2 — real defect/usability issue but not primary-use blocker.
-- P3 — cosmetic/speculative/low-impact issue outside the approved visual program.
-
-Approved Visual Phase B work is not automatically P3, but visual work without evidence of a remaining material gap is not automatically P1 either.
+- P0 — severe reproduced current production/security/privacy/data-loss/core outage.
+- P1 — major current user-facing release capability broken without reasonable workaround, or a mandatory release correction proven by field/production evidence.
+- P2 — real but nonblocking defect/usability issue.
+- P3 — speculative/cosmetic/low-impact work outside the accepted visual plan.
 
 ## Non-negotiable rules
 
-Rebuild-and-verify; one owner/source of truth per responsibility; preserve `src/core/api.js` as the single browser backend/Supabase owner unless intentionally redesigned; every changed product candidate earns its own complete verification; never transfer PASS; never claim unexecuted tests; docs/validation-only commits are not product SHAs; do not weaken tests; workflow remains `workflow_dispatch` + `pull_request` with no forbidden `push`; preserve frozen refs/rollback; GitHub promotion, provider deployment and independent live proof remain separate; do not call the app bug-free.
+Rebuild-and-verify; one source of truth per responsibility; preserve `src/core/api.js` ownership; every product change earns complete verification; never transfer PASS; docs/validation SHA != product SHA; static CI != field proof; do not weaken tests/RLS/auth to obtain green; workflow remains `workflow_dispatch` + `pull_request`; preserve frozen refs and rollback; GitHub verification, provider identity and independent production proof stay separate; do not call the app bug-free.
