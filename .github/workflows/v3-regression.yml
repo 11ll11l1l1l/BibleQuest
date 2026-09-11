@@ -31,6 +31,7 @@ jobs:
         run: |
           node --check tests/v3-field-validation-harness.mjs
           node --check tests/v3-field-linked-assignment-harness.mjs
+          node --check tests/v3-field-live-room-harness.mjs
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
