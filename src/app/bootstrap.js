@@ -148,7 +148,6 @@ function start(){
   const games=createGameLauncherService({progress,storage,recall,moderation:contentModeration});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const mission=createMissionService({openReview});
-  const calendar=createCalendarService({session,privateStorage,api,assignments});
   const tutorial=createTutorialService({storage});
   const accessibility=createAccessibilityService({storage});
   const privateNotes=createPrivateNotesService({storage});
@@ -165,6 +164,7 @@ function start(){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
+  const calendar=createCalendarService({session,privateStorage,api,assignments});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});
