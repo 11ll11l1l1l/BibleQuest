@@ -1,0 +1,82 @@
+name: v3 Kids Bible implementation gate v2
+
+on:
+  push:
+    branches:
+      - feature/v3-kids-bible-who-am-i
+
+permissions:
+  contents: write
+
+jobs:
+  implement-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/v3-kids-bible-who-am-i
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply recovered Kids Bible launcher seam
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          ui=Path('src/features/games/index.js')
+          text=ui.read_text()
+          if 'data-kids-bible-card' not in text:
+              memory=text.index('<article class="bq-panel bq-game-card" data-memory-launch-card>')
+              same=text.index('<article class="bq-panel bq-game-card" data-same-room-card>', memory)
+              card='<article class="bq-panel bq-game-card" data-kids-bible-card><span>KIDS · BIBLE</span><h2>Kids Bible Who Am I?</h2><p>Easy character clues for family play.</p><button type="button" class="bq-primary-button" data-kids-bible-open>Play Bible Who Am I?</button></article>'
+              text=text[:same]+card+text[same:]
+          handler="if(target.closest('[data-kids-bible-open]')){render(games.start('character-detective'));return}"
+          if handler not in text:
+              anchor="const launch=target.closest('[data-game-launch]');"
+              if anchor not in text: raise SystemExit('Games launch-handler anchor not found')
+              text=text.replace(anchor,handler+'\n          '+anchor,1)
+          ui.write_text(text)
+          regression=Path('.github/workflows/v3-regression.yml')
+          text=regression.read_text()
+          replacements={
+            'scripts/validate-v3-kids-memory.mjs; do':'scripts/validate-v3-kids-memory.mjs scripts/validate-v3-kids-bible-who-am-i.mjs; do',
+            'tests/v3-kids-memory-delays.mjs; do':'tests/v3-kids-memory-delays.mjs tests/v3-kids-bible-who-am-i-edge.mjs; do',
+            'tests/v3-kids-memory-browser.mjs; do':'tests/v3-kids-memory-browser.mjs tests/v3-kids-bible-who-am-i-smoke.mjs; do'
+          }
+          for old,new in replacements.items():
+              if new in text: continue
+              if old not in text: raise SystemExit(f'Regression anchor not found: {old}')
+              text=text.replace(old,new,1)
+          regression.write_text(text)
+          PY
+      - name: Run focused architecture and edge gates
+        run: |
+          node scripts/validate-v3-kids-bible-who-am-i.mjs
+          node tests/v3-kids-bible-who-am-i-edge.mjs
+          node tests/v3-games-edge.mjs
+          node tests/v3-kids-memory-edge.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-http.log 2>&1 &
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log
+          exit 1
+      - name: Run focused browser and mobile gates
+        run: |
+          timeout 240s node tests/v3-kids-bible-who-am-i-smoke.mjs
+          timeout 240s node tests/v3-games-smoke.mjs
+          timeout 240s node tests/v3-kids-memory-browser.mjs
+      - name: Commit verified implementation and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/v3-kids-bible-implement-v2.yml
+          git add src/features/games/index.js .github/workflows/v3-regression.yml scripts/validate-v3-kids-bible-who-am-i.mjs tests/v3-kids-bible-who-am-i-edge.mjs tests/v3-kids-bible-who-am-i-smoke.mjs
+          git commit -m 'feat(v3): restore Kids Bible Who Am I launcher'
+          git push origin HEAD:feature/v3-kids-bible-who-am-i
