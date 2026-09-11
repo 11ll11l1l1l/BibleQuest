@@ -1,0 +1,100 @@
+from pathlib import Path
+
+api=Path('src/core/api.js')
+text=api.read_text()
+old="const CLOUD_NOTE_FIELDS='id,user_id,book,chapter,verse_start,verse_end,title,content,tags,note_type,is_pinned,created_at,updated_at';"
+new="""const CLOUD_NOTE_DB_FIELDS='id,user_id,title,book_code,book_name,chapter,verse_start,verse_end,body,note_type,tags,pinned,created_at,updated_at';
+const CLOUD_NOTE_TYPES=new Set(['study','prayer','question','reflection','sermon','other']);
+function cloudNoteFromDb(row){
+  if(!row)return row;
+  const {book_code:bookCode,book_name:bookName,body,pinned,...rest}=row;
+  return {...rest,book:bookCode||bookName||'',content:String(body??''),is_pinned:pinned===true};
+}
+function cloudNoteToDb(payload={}){
+  const book=String(payload.book??'').trim();
+  const bookCode=/^[A-Z0-9]{3}$/.test(book)?book:null;
+  const noteType=String(payload.note_type??'study').trim();
+  const next={
+    title:payload.title??null,
+    book_code:bookCode,
+    book_name:bookCode?null:(book||null),
+    chapter:payload.chapter??null,
+    verse_start:payload.verse_start??null,
+    verse_end:payload.verse_end??null,
+    body:String(payload.content??''),
+    note_type:CLOUD_NOTE_TYPES.has(noteType)?noteType:'study',
+    tags:Array.isArray(payload.tags)?payload.tags:[],
+    pinned:payload.is_pinned===true
+  };
+  if(Object.prototype.hasOwnProperty.call(payload,'updated_at'))next.updated_at=payload.updated_at;
+  return next;
+}"""
+assert text.count(old)==1, 'cloud note field contract anchor changed'
+text=text.replace(old,new,1)
+start=text.index('  const cloudNotes = Object.freeze({')
+end=text.index('  const couples = Object.freeze({',start)
+new_block="""  const cloudNotes = Object.freeze({
+    async list(userId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').select(CLOUD_NOTE_DB_FIELDS).eq('user_id',userId).order('pinned',{ascending:false}).order('updated_at',{ascending:false});
+      if(error)throw error;
+      return (data||[]).map(cloudNoteFromDb);
+    },
+    async create(userId,payload) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').insert({...cloudNoteToDb(payload),user_id:userId}).select(CLOUD_NOTE_DB_FIELDS).single();
+      if(error)throw error;
+      return cloudNoteFromDb(data);
+    },
+    async update(userId,id,expectedUpdatedAt,payload) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').update(cloudNoteToDb(payload)).eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select(CLOUD_NOTE_DB_FIELDS).maybeSingle();
+      if(error)throw error;
+      return cloudNoteFromDb(data||null);
+    },
+    async remove(userId,id,expectedUpdatedAt) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_notes').delete().eq('id',id).eq('user_id',userId).eq('updated_at',expectedUpdatedAt).select('id').maybeSingle();
+      if(error)throw error;
+      return data||null;
+    }
+  });
+
+"""
+api.write_text(text[:start]+new_block+text[end:])
+
+app=Path('src/app/cloud-notes.js')
+text=app.read_text()
+old="return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType:text(input.noteType||'general',40)||'general',isPinned:input.isPinned===true});"
+new="const requestedType=text(input.noteType||'study',40)||'study',noteType=requestedType==='general'?'study':requestedType;if(!['study','prayer','question','reflection','sermon','other'].includes(noteType))throw new Error('Choose a supported cloud note type.');return Object.freeze({book,chapter,verseStart,verseEnd,title,content,tags:tags(input.tags),noteType,isPinned:input.isPinned===true});"
+assert text.count(old)==1, 'cloud notes service default anchor changed'
+app.write_text(text.replace(old,new,1))
+
+feature=Path('src/features/cloud-notes/index.js')
+text=feature.read_text()
+assert text.count("noteType:'general'")==1, 'cloud notes UI note type anchor changed'
+feature.write_text(text.replace("noteType:'general'","noteType:'study'",1))
+
+test=Path('tests/v3-workspace-notes-schema-compat.mjs')
+test.write_text("""import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const api=fs.readFileSync(new URL('../src/core/api.js',import.meta.url),'utf8');
+const app=fs.readFileSync(new URL('../src/app/cloud-notes.js',import.meta.url),'utf8');
+const feature=fs.readFileSync(new URL('../src/features/cloud-notes/index.js',import.meta.url),'utf8');
+for(const field of ['book_code','book_name','body','pinned'])assert(api.includes(field),`Cloud Notes API is missing deployed bible_notes field ${field}.`);
+assert(api.includes("order('pinned'"),'Cloud Notes list must order by deployed pinned field.');
+assert(api.includes('cloudNoteFromDb')&&api.includes('cloudNoteToDb'),'Cloud Notes must keep schema adaptation inside shared API owner.');
+assert(api.includes("book:bookCode||bookName||''")&&api.includes("content:String(body??'')")&&api.includes('is_pinned:pinned===true'),'DB rows are not adapted to canonical model.');
+assert(api.includes('book_code:bookCode')&&api.includes("body:String(payload.content??'')")&&api.includes('pinned:payload.is_pinned===true'),'Canonical writes are not adapted to deployed schema.');
+assert(!api.includes("order('is_pinned'"),'Stale is_pinned DB ordering remains.');
+assert(!api.includes("select(CLOUD_NOTE_FIELDS)"),'Stale Cloud Notes DB projection remains.');
+assert(app.includes("input.noteType||'study'")&&app.includes("requestedType==='general'?'study':requestedType"),'Service must normalize retired general note type.');
+assert(feature.includes("noteType:'study'")&&!feature.includes("noteType:'general'"),'UI must submit deployed note_type.');
+console.log('BibleQuest v3 Workspace/Cloud Notes deployed-schema compatibility regression passed.');
+""")
+
+edge=Path('tests/v3-cloud-notes-edge.mjs')
+text=edge.read_text()
+anchor="assert(created.title==='No separation'&&created.content==='Nothing can separate us.'&&created.tags.join(',')==='hope,study'&&created.isPinned===true,'Cloud Notes did not normalize note metadata.');"
+assert text.count(anchor)==1, 'cloud notes edge anchor changed'
+edge.write_text(text.replace(anchor,anchor+"\nassert(created.noteType==='study','Cloud Notes must default to deployed study note_type.');",1))
