@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts, including a fresh exact-SHA release verifier rerun completed at 15:34 JST.
+Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts, including fresh exact-SHA and live-host reruns.
 
 For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train; its production success condition has been satisfied.
 
@@ -26,7 +26,7 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - In that same attempt, the canonical host freshly passed shell/account/navigation, Reader, Games, Transform, Accessibility, and PWA install.
 - Attempt 4 then failed at the legacy Offline Shell test's readiness polling race with `Offline shell cache did not reach late shell modules before offline transition`. Later workflow steps were skipped and were not claimed from that attempt.
 - The readiness race was already isolated by test-only commit `952271aaf00e1a6f11280d8926b28399eebe8e4e`, changing only `tests/v3-offline-shell-smoke.mjs` relative to r3. It replaces the fragile `waitForFunction` plus immediate second cache read with bounded explicit polling and diagnostics.
-- Fresh rerun attempt 2 of gap-closing run `34567697491`, job `103167200525`, concluded **success** after proving the verifier-only delta from r3 is only `tests/v3-offline-shell-smoke.mjs`, re-confirming both Cloudflare hosts byte-match the frozen product files, and passing canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation.
+- Fresh rerun attempt 3 of gap-closing run `34567697491`, job `103171916229`, concluded **success** after proving the verifier-only delta from r3 is only `tests/v3-offline-shell-smoke.mjs`, re-confirming both Cloudflare hosts byte-match the frozen product files, and passing canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation.
 - Therefore no runtime P0/P1 release defect was reproduced from the attempt-4 red result; no product SHA, `main`, release branch, Cloudflare runtime asset, or production Supabase/data change was made.
 - A release-control audit also reviewed draft PR #88's legacy root `account.js` progress-sync concern. Current v3 `index.html` loads only `src/app/bootstrap.js`; the legacy root `account.js` is not a v3 production entry point, so that draft legacy path was not treated as a reproduced r3 release blocker and no product change was made.
 - Current P0/P1/release-blocker issue search returned no open matching issue.
@@ -36,9 +36,9 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 Canonical host: `https://mybiblequest.pages.dev/`
 Compatibility host: `https://biblequest-7th.pages.dev/`
 
-- Both hosts serve the frozen r3 product files used for identity verification; this was freshly re-confirmed by production attempt 4 and corrected production verifier attempt 2.
+- Both hosts serve the frozen r3 product files used for identity verification; this was freshly re-confirmed by production attempt 4 and corrected production verifier attempt 3.
 - Fresh canonical browser evidence: Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install passed in run `34560806166` attempt 4 / job `103167519896` before the legacy test race interrupted the workflow.
-- Fresh corrected offline evidence: canonical Offline Shell and Offline Bible Packs plus compatibility Offline Shell and basic browser navigation all passed in run `34567697491` attempt 2 / job `103167200525`.
+- Fresh corrected offline evidence: canonical Offline Shell and Offline Bible Packs plus compatibility Offline Shell and basic browser navigation all passed in run `34567697491` attempt 3 / job `103171916229`.
 - Exact deployed-product verification was independently rerun again in run `34560522189` attempt 6 / job `103170687427` and passed the complete accumulated release suite without changing the product SHA.
 - Historical same-product-SHA production-live evidence remains available, but current status should cite the fresh split evidence above rather than pretending the legacy production workflow passed steps it skipped.
 - Production Supabase/data was not changed for the release or the fresh revalidation.
