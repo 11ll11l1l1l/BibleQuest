@@ -6,11 +6,13 @@ Updated: 2026-09-11 JST for the 18:00 JST production-release deadline.
 
 ## Current verified baseline
 
-- Frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Exact v3.71 bookkeeping run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
-- Earlier functional candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed targeted run `34549872861` and complete functional run `34550018009`.
-- Active release-control branch: `feature/v3-post-parity-closeout`; recover live HEAD before acting.
-- Frozen v3.71 has no known regression blocker in the executed evidence. Do not call it bug-free.
+- Historical frozen baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
+- Historical exact v3.71 bookkeeping run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
+- Current exact production candidate and freeze: `release/v3-production-20260911` at `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
+- Exact release verification run `34558985204`, job `103137606678`: **success** on that exact SHA.
+- Executed evidence on `adb9bef5bd7751fa15d78737e94d25b183f08a53`: clean exact-SHA/diff hygiene; Cloudflare deployment gate; 53 accumulated v3 architecture validators; 86 edge/security/static regressions; 68 Playwright browser/mobile regressions; explicit PWA/offline/accessibility/core-smoke coverage confirmation.
+- The deployment gate checked JavaScript syntax across 267 files and passed the production-entry, v3 offline-shell owner/worker, Live Rooms, Transform ownership, and runtime-feature-injection guards.
+- Do not call the app bug-free; this is the exact tested release state.
 
 ## Release scope
 
@@ -54,12 +56,13 @@ The user's deadline instruction authorizes production promotion of the exact ver
 
 ## Release train
 
-1. **Preparation/blocker audit — now:** recover live branch/evidence and verify Cloudflare compatibility.
-2. **Hardening/limited polish — finish by 14:30:** only reproduced blockers and low-risk replacement-level polish.
-3. **Exact candidate validation — 14:30–16:15:** Cloudflare deployment gate; complete accumulated architecture; edge/security; Playwright browser/mobile; PWA/offline; relevant accessibility; syntax/static/diff checks.
-4. **Freeze/promotion — 16:15–17:00:** freeze exact green SHA, record evidence, promote verified v3 product state to `main` without mixing unrelated legacy work.
-5. **Cloudflare verification — 17:00–17:40:** confirm both Pages projects and production smoke on canonical host.
-6. **Deadline buffer — 17:40–18:00:** only deployment blockers; prefer the last verified candidate over risky late changes.
+1. **Preparation/blocker audit:** complete.
+2. **Release fixes:** complete for reproduced blockers found by the release suite.
+3. **Exact candidate validation:** complete on `adb9bef5bd7751fa15d78737e94d25b183f08a53`, run `34558985204`.
+4. **Freeze:** complete at `release/v3-production-20260911`, exact SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
+5. **Promotion:** next — preserve current legacy `main`, then move `main` to the exact verified v3 SHA without merging unrelated main-only legacy changes.
+6. **Cloudflare verification:** after promotion — confirm both Pages deployments and production smoke on the canonical host.
+7. **Deadline buffer:** only deployment/release blockers; prefer the verified candidate over risky late changes.
 
 ## User-required action
 
@@ -81,9 +84,10 @@ Never transfer PASS across changed product SHAs. Never claim an unexecuted test.
 ## Defect / root-cause ledger
 
 - `transformation-v2.js` release-blocking template-expression syntax error was reproduced by the exact-SHA Cloudflare deployment gate and fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
-- `scripts/deploy-gate.mjs` still validated the retired legacy `sw.js` precache model instead of the v3 `offline-shell-sw.js` runtime-warming owner/worker. The stale gate was aligned with the verified v3 ownership contract at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
-- The accumulated architecture validator still rejected the explicitly approved `Retired from v3 release scope` inventory state for rows #39/#40 and required these ledger/queue headings. This release-control bookkeeping mismatch is corrected in the current candidate; the complete exact-SHA release suite must be rerun before any freeze or promotion.
+- `scripts/deploy-gate.mjs` still validated the retired legacy `sw.js` precache model instead of the v3 `offline-shell-sw.js` runtime-warming owner/worker. The stale gate was aligned with the v3 ownership contract at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
+- `scripts/validate-v3-architecture.mjs` rejected the explicitly approved `Retired from v3 release scope` status and required release-control status headings; that stale bookkeeping contract was corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
+- `scripts/validate-v3-inventory.mjs` independently retained the old four-status/100-applicable assumption. It was aligned with 98 applicable + 2 retired at `adb9bef5bd7751fa15d78737e94d25b183f08a53`, after which the complete exact-SHA release suite passed.
 
 ## Next major milestone
 
-Run the complete exact-SHA release suite from the beginning on the resulting candidate: Cloudflare deployment gate, accumulated v3 architecture validators, edge/security regressions, Playwright browser/mobile, PWA/offline, accessibility, and diff/static checks. No prior PASS transfers to the changed SHA.
+Promote the frozen exact verified SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53` to repository `main` without mixing unrelated legacy/main-only changes, allow both Cloudflare Pages projects to deploy, then run production verification for Home, Account/sign-in reachability, Reader, Games, Transform, navigation, and PWA/service-worker behavior.
