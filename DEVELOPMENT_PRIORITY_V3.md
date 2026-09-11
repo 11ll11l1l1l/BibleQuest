@@ -1,21 +1,22 @@
 # BibleQuest v3 — Current Development Priority
 
-Updated: 2026-09-12 JST after exact-green Visual Phase B Personal Mission artwork promotion.
+Updated: 2026-09-12 JST after exact-green Visual Phase B Avatar Vault promotion.
 
 This is the cross-feature task-selection authority. Read `RECONCILIATION_V3.md` next for exact product/release ancestry and evidence.
 
 ## Current product truth
 
-- current exact-green product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`
-- current frozen product ref: `release/v3-phase-b-mission-artwork-20260912`
-- current accumulated verifier: run `34629528297` — **success**
-- parent exact-green Visual Phase B Calendar product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3e`, run `34627049878` — success
+- current exact-green product: `df2a7051e305474a5ea24912c3f5341f33bc61b8`
+- current frozen product ref: `release/v3-phase-b-avatar-vault-artwork-20260912`
+- current accumulated verifier: run `34630985269` — **success**
+- parent exact-green Personal Mission product: `df1bbd18782bee6430546ee7b444ad4bc48f5116`, run `34629528297` — success
+- prior Calendar Phase B product: `c15d1fceddce537fa8a31a6b2b5c909d197b1b3`, run `34627049878` — success
 - prior Calendar creator edit/delete product: `7d28d7ced00450f6c1abd93cb31ea78d51c5c876`, run `34623059639` — success
-- prior Visual Phase B More product: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` — success
+- prior More Phase B product: `046e2a85cafe10d722d03d467d3733eddfeb6e65`, run `34618963635` — success
 - production Supabase release migrations: **APPLIED + LIVE VERIFIED** and unchanged
 - previous rollback: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-Current product `df1bbd...` has exact-candidate GitHub regression evidence. Provider deployment identity and fresh independent two-host production verification have not been recorded for this exact product in the canonical status and must not be inferred from older PASS evidence.
+Current exact product `df2a705...` has exact-candidate GitHub regression evidence. Provider deployment identity and fresh independent two-host production verification have not been recorded for this exact product and must not be inferred from older PASS evidence.
 
 ## Authority order
 
@@ -23,13 +24,13 @@ Current product `df1bbd...` has exact-candidate GitHub regression evidence. Prov
 2. this file for cross-feature priority;
 3. `RECONCILIATION_V3.md` for product/release ancestry and integration truth;
 4. current handoff/status;
-5. feature contract inside that feature;
+5. feature contract inside the selected feature;
 6. exact-candidate workflow/deployment/live evidence;
 7. historical inventory/release/agent evidence.
 
 ## Priority 1 now — coordinated functionality and artwork completion
 
-Resume product selection from exact-green `df1bbd...`. Select by dependency, user value and verifiability rather than historical inventory order.
+Resume product selection from exact-green `df2a705...`. Select by dependency, user value and verifiability rather than historical inventory order.
 
 ### 1A — functionality/correctness
 
@@ -54,8 +55,9 @@ Completed Phase B checkpoints:
 - More hub semantic feature icons at exact `046e2a85...`;
 - Calendar semantic event/planner artwork at exact `c15d1f...`;
 - Personal Mission semantic Review/Study artwork at exact `df1bbd...`;
+- Avatar Vault semantic artwork for all 15 existing catalog styles plus locked state at exact `df2a705...`;
 - real committed same-origin passive SVG assets;
-- permanent static and 390 px browser acceptance in the accumulated suite.
+- permanent focused static and 390 px browser acceptance retained in the accumulated suite.
 
 Do not repeat those surfaces. Select the next materially minimal, placeholder, generic or emoji-like user-facing surface only after inspecting current source and current assets.
 
@@ -75,11 +77,11 @@ For selected visual work needing generated/replacement artwork: **generate/impor
 
 Release hardening means reproduced post-release defects, current security/privacy regressions or evidence gaps—not repeating green work.
 
-Current release-evidence gap for exact `df1bbd...`:
+Current release-evidence gap for exact `df2a705...`:
 
 - GitHub exact-candidate regression: complete/green;
 - frozen exact-green product ref: complete;
-- `main` fast-forward to exact tested candidate: complete;
+- `main` advanced to exact tested candidate: complete;
 - provider deployment identity for the exact product: not yet canonically recorded;
 - independent two-host live byte/browser verification for the exact product: not yet canonically recorded.
 
