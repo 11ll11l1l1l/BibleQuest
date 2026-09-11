@@ -1,0 +1,43 @@
+name: BibleQuest v3 Japanese furigana targeted
+
+on:
+  push:
+    branches:
+      - verify/v3-japanese-furigana-targeted-13efc90-20260911
+
+jobs:
+  targeted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 13efc90837f50d6838c8d59aaa69b78ea61a79ca
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Assert exact candidate
+        run: test "$(git rev-parse HEAD)" = "13efc90837f50d6838c8d59aaa69b78ea61a79ca"
+      - name: Run furigana architecture and edge checks
+        run: |
+          node scripts/validate-v3-japanese-furigana.mjs
+          node scripts/validate-v3-japanese-vocabulary.mjs
+          node tests/v3-japanese-furigana-edge.mjs
+          node tests/v3-japanese-vocabulary-edge.mjs
+          node tests/v3-reader-edge.mjs
+      - name: Install browser runtime
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start app
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq.log 2>&1 &
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq.log
+          exit 1
+      - name: Run furigana and neighboring browser regressions
+        run: |
+          timeout 240s node tests/v3-japanese-furigana-smoke.mjs
+          timeout 240s node tests/v3-japanese-vocabulary-smoke.mjs
+          timeout 240s node tests/v3-japanese-kougo-smoke.mjs
+          timeout 240s node tests/v3-reader-smoke.mjs
