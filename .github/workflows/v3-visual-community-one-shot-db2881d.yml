@@ -1,0 +1,117 @@
+name: BibleQuest v3 Community visual verifier db2881d
+on:
+  push:
+    branches: [verify/v3-visual-community-db2881d]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: db2881deba6500f20c2a3b205e8bda74f8a81d38
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact SHA and diff hygiene
+        run: |
+          test "$(git rev-parse HEAD)" = "db2881deba6500f20c2a3b205e8bda74f8a81d38"
+          test -z "$(git status --porcelain)"
+          git diff --check 8525232c5a7498d020f044742518139484a96681 db2881deba6500f20c2a3b205e8bda74f8a81d38
+      - name: Cloudflare deployment gate
+        run: bash build.sh
+      - name: Visual static contracts
+        run: |
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v3-games-visual-polish-static.mjs
+          node tests/v3-reader-visual-polish-static.mjs
+          node tests/v3-bible-world-visual-polish-static.mjs
+          node tests/v3-progress-daily-visual-polish-static.mjs
+          node tests/v3-transform-visual-polish-static.mjs
+          node tests/v3-study-family-visual-polish-static.mjs
+          node tests/v3-account-tutorial-visual-polish-static.mjs
+          node tests/v3-context-source-visual-polish-static.mjs
+          node tests/v3-notes-visual-polish-static.mjs
+          node tests/v3-couples-visual-polish-static.mjs
+          node tests/v3-community-visual-polish-static.mjs
+      - name: Accumulated architecture validators
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find scripts -maxdepth 1 -type f -name 'validate-v3-*.mjs' | sort)
+          test "$count" -gt 0
+          echo "Architecture validators executed: $count"
+      - name: Accumulated edge security static regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-edge.mjs' | sort)
+          for f in tests/v3-kids-memory-architecture.mjs tests/v3-kids-memory-ui-contract.mjs tests/v3-kids-memory-progress-integration.mjs tests/v3-kids-memory-round-id.mjs tests/v3-kids-memory-exit.mjs tests/v3-kids-memory-reward-curve.mjs tests/v3-kids-memory-api-surface.mjs tests/v3-kids-memory-invalid-input.mjs tests/v3-kids-memory-immutability.mjs tests/v3-kids-memory-no-xp.mjs tests/v3-kids-memory-width-contract.mjs tests/v3-kids-memory-delays.mjs; do if [ -f "$f" ]; then node "$f"; count=$((count+1)); fi; done
+          test "$count" -gt 0
+          echo "Edge/security/static regressions executed: $count"
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Start exact candidate
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/bq-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/bq-http.log; exit 1
+      - name: Accumulated browser mobile regressions
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r f; do echo "::group::$f"; timeout 240s node "$f"; echo "::endgroup::"; count=$((count+1)); done < <(find tests -maxdepth 1 -type f -name 'v3-*-smoke.mjs' | sort)
+          if [ -f tests/v3-kids-memory-browser.mjs ]; then timeout 240s node tests/v3-kids-memory-browser.mjs; count=$((count+1)); fi
+          test "$count" -gt 0
+          echo "Browser/mobile regressions executed: $count"
+      - name: Community visual desktop mobile containment
+        run: |
+          node --input-type=module <<'EOF'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          try{
+            for(const viewport of [{width:1280,height:900},{width:390,height:844}]){
+              const page=await browser.newPage({viewport});
+              await page.goto('http://127.0.0.1:4173/#/community',{waitUntil:'networkidle'});
+              await page.locator('[data-community-view]').waitFor();
+              const signedOut=await page.evaluate(()=>{
+                const button=document.querySelector('.bq-community-grid button');
+                const style=button?getComputedStyle(button):null;
+                const polish=[...document.querySelectorAll('link[rel="stylesheet"]')].find(link=>link.getAttribute('href')==='src/ui/community-visual-polish.css');
+                return {polishLoaded:Boolean(polish),backgroundImage:style?.backgroundImage||'',boxShadow:style?.boxShadow||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!signedOut.polishLoaded)throw new Error(`Community visual stylesheet missing at ${viewport.width}px`);
+              if(!signedOut.backgroundImage||signedOut.backgroundImage==='none')throw new Error(`Community action-card visual background missing at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
+              if(!signedOut.boxShadow||signedOut.boxShadow==='none')throw new Error(`Community action-card visual shadow missing at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
+              if(signedOut.scrollWidth>signedOut.viewport+1)throw new Error(`Community signed-out horizontal overflow at ${viewport.width}px: ${JSON.stringify(signedOut)}`);
+
+              await page.evaluate(async()=>{
+                const {communityPage}=await import('/src/features/community/index.js');
+                const host=document.querySelector('#bq-view');
+                window.__bqCommunityRoutes=[];
+                const state={status:'ready',authenticated:true,remoteAvailable:true,congregations:[{id:'c1',name:'Grace Church',role:'leader',roleLabel:'Leader',canMinistry:true}],groups:[{id:'g1',congregationId:'c1',name:'Faith Group',role:'leader',memberCount:2,maxMembers:6}],encouragementCount:3};
+                const bridge={async load(){return state}};
+                const view=communityPage({bridge,onNavigate:route=>window.__bqCommunityRoutes.push(route),onBack:()=>{},onAccount:()=>{}});
+                host.innerHTML=view.html;
+                window.__bqCommunityCleanup=view.mount(host);
+              });
+              await page.locator('[aria-label="Community connection summary"]').waitFor();
+              await page.locator('.bq-community-boundary').waitFor();
+              const ready=await page.evaluate(()=>{
+                const summary=document.querySelector('.bq-community-summary>div');
+                const boundary=document.querySelector('.bq-community-boundary');
+                const summaryStyle=summary?getComputedStyle(summary):null;
+                const boundaryStyle=boundary?getComputedStyle(boundary):null;
+                return {summaryBackground:summaryStyle?.backgroundImage||'',summaryShadow:summaryStyle?.boxShadow||'',boundaryBackground:boundaryStyle?.backgroundImage||'',viewport:document.documentElement.clientWidth,scrollWidth:document.documentElement.scrollWidth};
+              });
+              if(!ready.summaryBackground||ready.summaryBackground==='none')throw new Error(`Community summary visual background missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
+              if(!ready.summaryShadow||ready.summaryShadow==='none')throw new Error(`Community summary visual shadow missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
+              if(!ready.boundaryBackground||ready.boundaryBackground==='none')throw new Error(`Community privacy-boundary visual treatment missing at ${viewport.width}px: ${JSON.stringify(ready)}`);
+              if(ready.scrollWidth>ready.viewport+1)throw new Error(`Community ready-view horizontal overflow at ${viewport.width}px: ${JSON.stringify(ready)}`);
+              await page.evaluate(()=>window.__bqCommunityCleanup?.());
+              await page.close();
+            }
+          } finally { await browser.close(); }
+          console.log('BibleQuest v3 Community Bridge visual desktop/mobile containment passed.');
+          EOF
