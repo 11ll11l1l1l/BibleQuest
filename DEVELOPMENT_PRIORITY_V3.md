@@ -4,6 +4,13 @@ Updated: 2026-09-11 JST after repository reconciliation.
 
 This is the **cross-feature post-release task-selection authority**. Read `RECONCILIATION_V3.md` immediately after this file for branch ancestry, exact-green lines and promotion/migration gates.
 
+## Recovered production reference
+
+- production/runtime product SHA: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
+- frozen rollback/reference: `release/v3-production-20260911-r3`
+
+Recover these refs live before acting; they are reference anchors, not permission to skip repository recovery.
+
 ## Document authority
 
 When documents disagree:
