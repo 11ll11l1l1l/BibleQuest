@@ -1,0 +1,143 @@
+-- BibleQuest v3 assignment response privacy boundary.
+-- Peer-visible completion presence is physically separated from private response text.
+
+create table if not exists public.bible_assignment_response_presence (
+  assignment_id uuid not null references public.bible_assignments(id) on delete cascade,
+  congregation_id uuid not null references public.bible_congregations(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  display_name text not null default 'Member',
+  completed_at timestamptz not null,
+  primary key (assignment_id, user_id)
+);
+
+create index if not exists bible_assignment_response_presence_congregation_idx
+  on public.bible_assignment_response_presence(congregation_id, assignment_id, completed_at);
+
+alter table public.bible_assignment_response_presence enable row level security;
+
+revoke all on public.bible_assignment_response_presence from anon;
+revoke insert, update, delete on public.bible_assignment_response_presence from authenticated;
+grant select on public.bible_assignment_response_presence to authenticated;
+
+drop policy if exists assignment_response_presence_select on public.bible_assignment_response_presence;
+create policy assignment_response_presence_select
+on public.bible_assignment_response_presence
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.bible_assignments a
+    join public.bible_congregation_members cm
+      on cm.congregation_id = a.congregation_id
+     and cm.user_id = auth.uid()
+     and cm.active = true
+    where a.id = bible_assignment_response_presence.assignment_id
+      and a.congregation_id = bible_assignment_response_presence.congregation_id
+      and a.active = true
+      and (
+        cm.role in ('facilitator','leader','pastor','admin')
+        or a.target_scope = 'all'
+        or (a.target_scope = 'member' and a.target_id = auth.uid())
+        or (
+          a.target_scope = 'team'
+          and exists (
+            select 1 from public.bible_team_members tm
+            where tm.team_id = a.target_id and tm.user_id = auth.uid()
+          )
+        )
+        or (
+          a.target_scope = 'group'
+          and exists (
+            select 1 from public.bible_group_members gm
+            where gm.group_id = a.target_id and gm.user_id = auth.uid() and gm.active = true
+          )
+        )
+      )
+  )
+);
+
+create or replace function public.bible_sync_assignment_response_presence()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_assignment public.bible_assignments%rowtype;
+  v_display_name text;
+begin
+  if tg_op = 'DELETE' then
+    delete from public.bible_assignment_response_presence
+    where assignment_id = old.assignment_id and user_id = old.user_id;
+    return old;
+  end if;
+
+  if new.status <> 'completed' or new.completed_at is null then
+    delete from public.bible_assignment_response_presence
+    where assignment_id = new.assignment_id and user_id = new.user_id;
+    return new;
+  end if;
+
+  select * into v_assignment
+  from public.bible_assignments
+  where id = new.assignment_id;
+
+  if v_assignment.id is null then
+    return new;
+  end if;
+
+  select coalesce(nullif(trim(cm.display_name), ''), 'Member') into v_display_name
+  from public.bible_congregation_members cm
+  where cm.congregation_id = v_assignment.congregation_id
+    and cm.user_id = new.user_id
+    and cm.active = true
+  limit 1;
+
+  insert into public.bible_assignment_response_presence(
+    assignment_id, congregation_id, user_id, display_name, completed_at
+  ) values (
+    new.assignment_id,
+    v_assignment.congregation_id,
+    new.user_id,
+    coalesce(v_display_name, 'Member'),
+    new.completed_at
+  )
+  on conflict (assignment_id, user_id) do update set
+    congregation_id = excluded.congregation_id,
+    display_name = excluded.display_name,
+    completed_at = excluded.completed_at;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.bible_sync_assignment_response_presence() from public;
+
+DROP TRIGGER IF EXISTS bible_assignment_response_presence_sync ON public.bible_assignment_progress;
+create trigger bible_assignment_response_presence_sync
+after insert or update of status, completed_at or delete
+on public.bible_assignment_progress
+for each row execute function public.bible_sync_assignment_response_presence();
+
+insert into public.bible_assignment_response_presence(
+  assignment_id, congregation_id, user_id, display_name, completed_at
+)
+select
+  p.assignment_id,
+  a.congregation_id,
+  p.user_id,
+  coalesce(nullif(trim(cm.display_name), ''), 'Member'),
+  p.completed_at
+from public.bible_assignment_progress p
+join public.bible_assignments a on a.id = p.assignment_id
+left join public.bible_congregation_members cm
+  on cm.congregation_id = a.congregation_id
+ and cm.user_id = p.user_id
+ and cm.active = true
+where p.status = 'completed'
+  and p.completed_at is not null
+on conflict (assignment_id, user_id) do update set
+  congregation_id = excluded.congregation_id,
+  display_name = excluded.display_name,
+  completed_at = excluded.completed_at;
