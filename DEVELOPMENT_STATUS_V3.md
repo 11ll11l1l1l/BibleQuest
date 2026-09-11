@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts, including a fresh exact-SHA verifier rerun completed at 15:34 JST.
+Updated: 2026-09-11 JST after captain revalidation of the exact production SHA and both Cloudflare production hosts, including fresh exact-SHA and live-host reruns.
 
 `FEATURE_INVENTORY_V3.md` remains the parity ledger. `KIDS_GAMES_EXTENSION_V3.md` defines future Kids-game extension rules. `CONTINUE_PROMPT_V3.md` is the generic new-chat resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train and its success condition is now satisfied.
 
@@ -14,8 +14,8 @@ Updated: 2026-09-11 JST after captain revalidation of the exact production SHA a
 - Canonical production host: `https://mybiblequest.pages.dev/`.
 - Compatibility production host: `https://biblequest-7th.pages.dev/`.
 - Fresh production-live attempt 4 on run `34560806166`, job `103167519896`, re-confirmed both hosts byte-matched the frozen r3 product files and passed canonical Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install. It then reproduced the already-known legacy offline-test readiness polling race (`Offline shell cache did not reach late shell modules before offline transition`), so later steps in that attempt were skipped; this is verifier evidence and was not accepted as a reproduced runtime P0/P1 defect.
-- Corrected offline-readiness test commit `952271aaf00e1a6f11280d8926b28399eebe8e4e` changes only `tests/v3-offline-shell-smoke.mjs` relative to r3. Fresh rerun attempt 2 of gap-closing run `34567697491`, job `103167200525`, **success**: verifier-only delta confirmed; both Cloudflare hosts byte-match the frozen release product files; canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation all passed.
-- Historical production-live run `34560806166` attempt 2 / job `103157415628` and prior fresh attempt 3 / job `103162183940` remain same-SHA evidence; the current evidence is attempt 6 exact release verification plus attempt 4 core production smoke and corrected production verifier attempt 2. PASS has not been transferred across a changed product SHA because the product SHA never changed.
+- Corrected offline-readiness test commit `952271aaf00e1a6f11280d8926b28399eebe8e4e` changes only `tests/v3-offline-shell-smoke.mjs` relative to r3. Fresh rerun attempt 3 of gap-closing run `34567697491`, job `103171916229`, **success**: verifier-only delta confirmed; both Cloudflare hosts byte-match the frozen release product files; canonical corrected Offline Shell, canonical Offline Bible Packs, compatibility corrected Offline Shell, and compatibility 390px basic-browser navigation all passed.
+- Historical production-live run `34560806166` attempt 2 / job `103157415628` and prior fresh attempt 3 / job `103162183940` remain same-SHA evidence; the current evidence is attempt 6 exact release verification plus attempt 4 core production smoke and corrected production verifier attempt 3. PASS has not been transferred across a changed product SHA because the product SHA never changed.
 - Compatibility-host explicit offline verification run `34560964242`, job `103143413769`, **success**: 166 cached shell resources were present, the v3 shell rendered offline, and `offline-shell-sw.js` remained the controller.
 - Historical v3.71 baseline remains `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b` for ancestry/reference only.
 - Do not call the app bug-free; this is the exact tested and deployed release state.
@@ -50,10 +50,10 @@ The 2026-09-11 release objective is **complete**.
 
 - `main` points to the exact r3 product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - `release/v3-production-20260911-r3` preserves that exact product state.
-- Both Cloudflare Pages hosts serve the frozen r3 product files; this was freshly re-confirmed during production attempt 4 and corrected production verifier attempt 2.
+- Both Cloudflare Pages hosts serve the frozen r3 product files; this was freshly re-confirmed during production attempt 4 and corrected production verifier attempt 3.
 - Fresh exact release run `34560522189` attempt 6 / job `103170687427` passed the complete release suite on the deployed product SHA: deployment gate, 53 architecture validators, 86 edge/security/static regressions, and 68 Playwright browser/mobile regressions with PWA/offline/accessibility/core-browser coverage included.
 - Fresh canonical production browser checks in run `34560806166` attempt 4 / job `103167519896` passed Home/Account/navigation, Reader, Games, Transform, Accessibility, and PWA install before the legacy offline-test readiness race interrupted that legacy workflow.
-- Fresh corrected production checks in run `34567697491` attempt 2 / job `103167200525` passed canonical Offline Shell, canonical Offline Bible Packs, compatibility Offline Shell, and compatibility basic browser while re-confirming both hosts serve the frozen product files.
+- Fresh corrected production checks in run `34567697491` attempt 3 / job `103171916229` passed canonical Offline Shell, canonical Offline Bible Packs, compatibility Offline Shell, and compatibility basic browser while re-confirming both hosts serve the frozen product files.
 - Production Supabase/data was not modified for this static release or the fresh revalidation.
 - Physical Android/PWA acceptance remains supplemental unless separately recorded; automated/browser production evidence must not be described as physical-device testing.
 
