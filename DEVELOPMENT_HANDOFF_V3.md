@@ -1,78 +1,80 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST for the user-mandated 18:00 JST Cloudflare release.
+Updated: 2026-09-11 JST after verified production release r3.
 
-## FIRST INSTRUCTION — DEADLINE OVERRIDE
+For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train; its production success condition has been satisfied.
 
-Before any development work, read `RELEASE_6PM_2026-09-11.md`. It is the overriding execution priority until the production release is live. If this handoff, older milestone text, artwork plans, agent prompts, or backlog items conflict with that file, the 6 PM release-control file wins.
-
-For new chat instances, `CONTINUE_PROMPT_V3.md` contains the generic resume prompt.
-
-## Exact verified production candidate
+## Exact production release
 
 - Repo: `11ll11l1l1l/BibleQuest`.
-- Frozen production release branch: `release/v3-production-20260911`.
-- Exact tested/frozen SHA: `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
-- Exact release verification run: `34558985204`, job `103137606678`, conclusion **success**.
+- Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Frozen rollback/reference branch: `release/v3-production-20260911-r3` at the same SHA.
+- Exact release verifier: run `34560522189`, job `103142131338`, conclusion **success**.
 - Exact-SHA/diff hygiene: passed.
-- Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all deployment-entry/runtime ownership guards passed.
+- Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all production-entry/runtime ownership guards passed.
 - Accumulated v3 architecture validators: 53 executed, all passed.
 - Edge/security/static regressions: 86 executed, all passed.
 - Playwright browser/mobile regressions: 68 executed, all passed.
-- The completed browser set explicitly included `v3-pwa-install-smoke.mjs`, `v3-offline-shell-smoke.mjs`, `v3-offline-bible-packs-smoke.mjs`, `v3-accessibility-smoke.mjs`, `v3-shell-smoke.mjs`, `v3-reader-smoke.mjs`, `v3-games-smoke.mjs`, and `v3-transform-engine-smoke.mjs`.
-- Historical baseline remains `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`; its older run evidence must not be substituted for the current production candidate evidence.
+- Release-critical browser coverage included PWA install, Offline Shell, Offline Bible Packs, Accessibility, shell/account/navigation, Reader, Games, and Transform.
+- Historical baseline `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b` remains ancestry/reference evidence only and must not replace r3 evidence.
+
+## Production verification
+
+Canonical host: `https://mybiblequest.pages.dev/`
+Compatibility host: `https://biblequest-7th.pages.dev/`
+
+- Both hosts propagated the r3 product files checked by the production identity verifier.
+- Canonical live verifier run `34560806166`, job `103142953274`, passed shell/account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs.
+- Compatibility explicit offline verifier run `34560964242`, job `103143413769`, passed with 166 cached shell resources, one rendered v3 shell, mobile width contained at 390px, and `offline-shell-sw.js` controlling the page.
+- Test-only readiness cleanup at `952271aaf00e1a6f11280d8926b28399eebe8e4e` was verified against both live hosts in run `34561097576`, job `103143811936`, conclusion **success**. This commit is release-control/test evidence, not the deployed product SHA.
+- Production Supabase/data was not changed for the release.
+- No physical Android/PWA result is implied by these automated browser checks.
 
 ## Release defects fixed during final gating
 
-1. Reproduced JavaScript syntax error in `transformation-v2.js`; fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
-2. Cloudflare deployment gate still checked retired legacy `sw.js` precache ownership instead of v3 `offline-shell-sw.js` runtime warming; gate corrected at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
-3. `validate-v3-architecture.mjs` still rejected the explicitly retired rows #39/#40 and required missing release-status bookkeeping sections; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
-4. `validate-v3-inventory.mjs` separately retained the old four-status/100-applicable model; corrected at final green SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53` to validate 98 applicable + 2 retired.
+1. `transformation-v2.js` template-expression syntax failure; fixed at `2396aa4ef2b5166a1de83bae7b4ca72af844b7d0`.
+2. Stale deployment gate still checked legacy `sw.js` precache ownership instead of v3 `offline-shell-sw.js`; corrected at `57febae5e4d2c004ace420cd27b4f80907b69ad2`.
+3. Architecture validator rejected explicitly retired rows #39/#40 and stale release bookkeeping; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
+4. Inventory validator retained the old 100-applicable assumption; corrected at `adb9bef5bd7751fa15d78737e94d25b183f08a53` for 98 applicable + 2 retired.
+5. Production Offline Shell first-load readiness was too slow because roughly 166 shell resources were warmed sequentially under a 4-second owner timeout. Diagnostics proved the cache eventually reached 166/166 and then offline reload succeeded. r3 introduced bounded 8-way warm concurrency, waits until page load before snapshotting shell resources, and uses a 15-second bounded owner completion window. The changed product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` then passed the complete exact-SHA suite and canonical production offline verification.
+6. A later compatibility-host workflow failure was isolated to a browser-test readiness race before network cutoff. Explicit polling verified the deployed product was healthy; `tests/v3-offline-shell-smoke.mjs` was then cleaned up test-only and passed on both production hosts.
 
 ## Release scope
 
-The current Kids game set is accepted for this release. Historical rows #39 Hiragana Match and #40 Kids Bible Who Am I are explicitly user-retired from the active v3 release scope and are not blockers. They remain optional future expansion only under `KIDS_GAMES_EXTENSION_V3.md`.
-
-Applicable release scope is **98/98 complete**:
+Applicable v3 release scope remains **98/98 complete**:
 
 - Regression-tested: 97
 - Verified: 1 (#15 Japanese Furigana)
 - Implemented: 0
 - Not started in active release scope: 0
-- User-retired legacy rows: 2 (#39, #40)
+- User-retired legacy rows: 2 (#39 Hiragana Match, #40 Kids Bible Who Am I)
 
-Existing Kids coverage includes the shared Games page/launcher, #38 Memory Meadow / Kids Memory Match, and #36 Character Detective / Who Am I. Do not build another Kids-specific Who Am I for this release.
+Do not revive #39/#40 as release debt. Any future Kids expansion must be treated as new post-release scope under `KIDS_GAMES_EXTENSION_V3.md`.
 
 ## Current mission
 
-A verified BibleQuest v3 release must be available on the existing Cloudflare Pages website by **18:00 JST on 2026-09-11**.
+The release mission is complete. Preserve r3 production and begin post-release development in isolated branches.
 
-Canonical production target: `https://mybiblequest.pages.dev/`
-Compatibility target: `https://biblequest-7th.pages.dev/`
-
-The existing Cloudflare projects deploy repository `main`. `build.sh` calls `scripts/deploy-gate.mjs`. Production promotion of the exact green release candidate is authorized by the user; do not ask again for routine permission.
+The next authorized phase is **visual/artwork polish without interface redesign**. The goal is to make the v3 experience look more polished through replaceable artwork, icons, colors, textures, decorative assets, and theme presentation while retaining the current architecture and recognizable interface.
 
 ## What to work on now
 
-1. Do not alter the frozen product SHA `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
-2. Re-check live `main`; preserve its current legacy state on a safety branch.
-3. Promote `main` directly to the exact frozen verified SHA without merging unrelated legacy/main-only commits into v3.
-4. Allow both existing Cloudflare Pages projects to deploy repository `main`.
-5. Confirm both public hosts propagated the v3 release.
-6. Run production checks for Home, Account/sign-in reachability, Reader, Games, Transform, primary navigation, manifest/service-worker and PWA/offline-shell behavior.
-7. Fix only a reproduced production release blocker. Any changed product SHA requires a completely new exact-SHA release suite before redeployment.
-
-## User task policy
-
-Do everything possible through connected tools. Do not make the user repeat context or perform repository steps that can be automated. The only expected user-side task is a short physical Android/PWA smoke after deployment if available: Home, Reader, one Game, and Account/sign-in surface. If this is not performed, record it honestly; do not imply physical-device acceptance.
+1. Do not modify `main` or `release/v3-production-20260911-r3` while planning post-release visual work.
+2. Create an isolated post-release visual-polish branch from the current release-control line.
+3. Establish a written visual replacement contract before broad asset changes.
+4. Inventory current visual surfaces and classify each as safely replaceable, CSS/theme-level, structural, or behavior-coupled.
+5. Prioritize replacement-level polish: artwork, icons, illustrations, color tokens, backgrounds, decorative borders/textures, avatar/game imagery, and equivalent assets.
+6. Preserve layout structure, navigation, routes, responsive contracts, feature ownership, storage/data behavior, Supabase/API contracts, and accessibility semantics.
+7. Do not redesign screens or change information architecture merely to improve appearance.
+8. For every tranche, run focused visual/mobile/browser acceptance and the accumulated regressions appropriate to touched files before considering promotion.
+9. Keep visual work reversible so an asset/theme can be replaced again later without rewriting feature architecture.
 
 ## Non-negotiable evidence rules
 
 - Rebuild-and-verify; one owner per responsibility.
-- Fix only reproduced release defects.
+- Preserve the frozen r3 product as rollback/reference.
 - Never transfer PASS between changed product SHAs.
 - Never claim an unexecuted test.
-- Never call the app bug-free.
 - Normal product Actions remain manual-only; temporary push-trigger verifier workflows stay isolated.
-- Do not change production Supabase/data unless a verified release blocker specifically requires it.
-- A GitHub promotion is not proof Cloudflare propagated; verify the deployed site.
+- Do not change production Supabase/data for visual work.
+- A later GitHub promotion is not proof Cloudflare propagated; production identity and browser behavior must be reverified after any future release.
