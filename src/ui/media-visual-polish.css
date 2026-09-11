@@ -1,0 +1,101 @@
+/* BibleQuest v3 visual replacement tranche 13.
+   Presentation only: no playback, media source, routing, persistence, permission,
+   layout, responsive, control-size, focus or accessibility ownership. */
+
+.bq-media-head h1,
+.bq-recordings-head h1{
+  color:#263f34;
+}
+
+.bq-media-toolbar input,
+.bq-media-controls input,
+.bq-recording-controls input{
+  border-color:rgba(56,88,70,.16);
+  background:linear-gradient(180deg,#fff 0%,#fbfcf9 100%);
+  box-shadow:inset 0 1px 2px rgba(43,65,51,.035);
+}
+
+.bq-media-tabs button,
+.bq-media-controls button,
+.bq-recording-controls button{
+  border-color:rgba(56,88,70,.15);
+  background:linear-gradient(180deg,#fff 0%,#f5f8f3 100%);
+  box-shadow:0 4px 12px rgba(45,69,55,.025),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-media-tabs button:hover,
+.bq-media-tabs button:focus-visible,
+.bq-media-controls button:hover,
+.bq-media-controls button:focus-visible,
+.bq-recording-controls button:hover,
+.bq-recording-controls button:focus-visible{
+  border-color:rgba(47,112,77,.3);
+  background:linear-gradient(180deg,#fff 0%,#edf5ed 100%);
+}
+
+.bq-media-tabs button.is-active{
+  border-color:#315f49;
+  background:linear-gradient(180deg,#35664f 0%,#284f3d 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 12px rgba(40,79,61,.12);
+}
+
+.bq-media-card,
+.bq-recording-card{
+  border-color:rgba(56,88,70,.13);
+  background:radial-gradient(circle at 92% 8%,rgba(220,235,224,.6) 0%,rgba(220,235,224,0) 38%),linear-gradient(180deg,#fff 0%,#f8fbf7 100%);
+  box-shadow:0 7px 18px rgba(45,69,55,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-recording-card:hover,
+.bq-recording-card:focus-visible{
+  border-color:rgba(47,112,77,.3);
+  background:radial-gradient(circle at 92% 8%,rgba(210,232,217,.72) 0%,rgba(210,232,217,0) 40%),linear-gradient(180deg,#fff 0%,#f2f8f1 100%);
+}
+
+.bq-media-card h2,
+.bq-recording-card b{
+  color:#30493a;
+}
+
+.bq-media-card>span,
+.bq-recording-card span{
+  color:#607568;
+}
+
+.bq-media-player-shell,
+.bq-recording-player-shell{
+  border-color:rgba(56,88,70,.11);
+  background:linear-gradient(180deg,#fff 0%,#fafcf8 100%);
+  box-shadow:0 8px 24px rgba(45,69,55,.035),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-media-frame,
+.bq-recording-frame{
+  background:radial-gradient(circle at 50% 12%,#26352e 0%,#151d19 56%,#0f1512 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.035),0 7px 18px rgba(18,27,22,.09);
+}
+
+.bq-media-empty,
+.bq-recordings-empty{
+  color:#5a695f;
+}
+
+@media(prefers-contrast:more){
+  .bq-media-card,
+  .bq-recording-card,
+  .bq-media-player-shell,
+  .bq-recording-player-shell,
+  .bq-media-tabs button,
+  .bq-media-controls button,
+  .bq-recording-controls button{
+    box-shadow:none;
+  }
+
+  .bq-media-card,
+  .bq-recording-card,
+  .bq-media-toolbar input,
+  .bq-media-controls input,
+  .bq-recording-controls input{
+    border-color:rgba(34,58,43,.4);
+  }
+}
