@@ -1,99 +1,73 @@
 # BibleQuest v3 generic continue prompt
 
-Use the following prompt verbatim or nearly verbatim in a new ChatGPT/Work chat. It is intentionally self-contained enough to recover the live repository state rather than trusting stale chat memory.
+Use the following prompt in a new ChatGPT/Work development chat.
 
 ---
 
-Continue development and release preparation of my BibleQuest v3 project from the exact current repository state.
+Continue development of my BibleQuest v3 project from the **exact current repository state**.
 
 Repository: `11ll11l1l1l/BibleQuest`
 
-PRIMARY DEADLINE
+Before writing anything:
 
-A production BibleQuest v3 release must be available on the existing Cloudflare website by **18:00 JST on September 11, 2026**.
+1. Read `DEVELOPMENT_PRIORITY_V3.md` first. It is the current post-release task-selection authority.
+2. Read `DEVELOPMENT_HANDOFF_V3.md` and `DEVELOPMENT_STATUS_V3.md`.
+3. Read `FEATURE_INVENTORY_V3.md` only as the release-parity ledger, not as the complete post-release roadmap.
+4. Read `ARCHITECTURE_V3.md` and milestone-specific contracts as needed.
+5. Recover live `main`, active `postrelease/v3-*` branches, exact product SHAs, documentation-only HEADs, recent commits and actual GitHub Actions evidence.
+6. Recover the newest agent/investigator findings, but revalidate any blocker reported against an older SHA before acting.
+7. Repository evidence and the user's latest explicit instruction override stale documentation.
 
-Before doing anything else:
+DOCUMENT AUTHORITY
 
-1. Read `RELEASE_6PM_2026-09-11.md` from the current active v3 branch. It is the overriding priority until the release is live.
-2. Read `RELEASE_AGENT_READONLY_2026-09-11.md` so you understand the five support agents are investigators only and may not write or deploy.
-3. Read `DEVELOPMENT_HANDOFF_V3.md`.
-4. Read `DEVELOPMENT_STATUS_V3.md`.
-5. Read `FEATURE_INVENTORY_V3.md`.
-6. Read `ARCHITECTURE_V3.md` as needed for ownership boundaries.
-7. Recover live GitHub refs, exact SHAs, recent commits, and actual workflow evidence. Do not rely on stale chat text when repository evidence differs.
+latest user instruction → `DEVELOPMENT_PRIORITY_V3.md` → current handoff/status → milestone contracts/exact-SHA evidence → release-parity ledger → historical release/visual/agent documents.
 
-CURRENT BASELINE TO RECOVER/VERIFY
+`RELEASE_6PM_2026-09-11.md` and `RELEASE_AGENT_READONLY_2026-09-11.md` are historical evidence from the completed September 11 release. Do not let them stop valid post-release feature, artwork or Calendar development.
 
-- Frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- Exact v3.71 bookkeeping regression run: `34550650269`, previously successful across accumulated architecture, edge/security, and browser/mobile suites.
-- Current release-control branch was created from that frozen baseline: `feature/v3-post-parity-closeout`.
-- Recover its latest live HEAD before making changes; do not assume the SHA in this prompt is current.
-- Historical #39 Hiragana Match and #40 Kids Bible Who Am I are user-retired from this v3 release. They are not blockers and must not be rebuilt now.
-- Active release-scope parity is 98/98 applicable capabilities.
-- Future Kids games are governed by `KIDS_GAMES_EXTENSION_V3.md`, but no new Kids/Kana games are allowed before today's release.
+CURRENT PRIORITY
 
-READ-ONLY SUPPORT AGENTS
+Priority 1 contains three active streams:
 
-Five support agents may investigate in parallel, but they are not allowed to change anything. They follow `RELEASE_AGENT_READONLY_2026-09-11.md`.
+- **1A Functional completion/correctness** — finish accepted/currently planned functionality and fix reproduced defects while preserving established owners and contracts.
+- **1B Visual/artwork Phase B** — continue the required quality upgrade with real polished icon artwork, illustrations and backgrounds where appropriate. The earlier visual tranche program through tranche 16 is Visual Phase A/first-pass presentation polish, not the final visual target.
+- **1C Calendar** — Calendar is active Priority 1 work. Recover existing requirements first; if none exist, define `CALENDAR_V3.md`, then implement through existing architecture. Do not defer Calendar until every cosmetic task is finished.
 
-Their roles are:
+VISUAL-AUTOMATION RULE
 
-1. Cloudflare/deployment investigator.
-2. Regression/browser/mobile/PWA investigator.
-3. Core product smoke investigator.
-4. Security/backend-boundary investigator.
-5. Release firewall/triage investigator.
+If approved visual work requires a generated image, icon, illustration, background, texture or similar asset: **generate → choose → optimize → implement → test**. Do not stop to ask me to approve the generated image. A generated asset that is not actually wired into the UI does not count as completed work.
 
-They may inspect and report evidence only. They must not create or update code, docs, branches, commits, PRs, issues, comments, workflows, Cloudflare, Supabase, DNS, secrets, data, schema, or production configuration. They do not deploy. The captain/release-execution chat is the only writer and must independently validate agent findings before acting.
+REBUILD-AND-VERIFY
 
-RELEASE PRIORITY
+- one owner/source of truth per responsibility;
+- no competing Supabase/API/state owners;
+- focused tests for changed owners/surfaces;
+- exact-SHA accumulated architecture, edge/security/static, browser/mobile, PWA/offline and accessibility verification at suitable checkpoints;
+- never transfer PASS across changed product SHAs;
+- never claim unexecuted tests;
+- documentation-only commits are not verified product candidates;
+- preserve production Supabase/data until an explicit integration requirement exists;
+- do not weaken validators merely to get green;
+- do not call the app bug-free.
 
-Stop normal feature development. Work only toward a verified Cloudflare production release by 18:00 JST.
+AGENT FINDINGS
 
-No new features. No speculative refactors. No revival of retired parity rows. Artwork/theme polish is allowed only if it is low-risk replacement-level polish and cannot threaten the validation/deployment window. After 14:30 JST, discretionary polish stops; only release blockers may change product code.
+Use investigators as evidence, not automatic orders. Revalidate historical P0/P1 against the current exact product checkpoint before allowing it to interrupt current work. Suppress stale, speculative, duplicate and already-fixed findings.
 
-REBUILD-AND-VERIFY RULES
+EXECUTE, DO NOT ONLY REPORT
 
-- One source of truth per responsibility.
-- Respect the existing v3 architecture and owners.
-- Fix only reproduced defects.
-- Every changed product SHA must earn its own verification; never transfer PASS from another SHA.
-- After a release-affecting fix, run focused checks and then the complete accumulated regression suite before freezing.
-- Do not claim tests that were not actually executed.
-- Do not call the app bug-free.
-- Keep normal product GitHub Actions manual-only. Temporary push-trigger verification workflows may exist only on isolated verifier branches and must never become production behavior.
-- Do not mix unrelated legacy `main` work into the v3 release candidate.
+1. Recover the newest exact-green post-release product SHA and distinguish it from later documentation/verifier HEADs.
+2. Identify the highest-value dependency-safe unfinished Priority 1 milestone.
+3. Execute it immediately when safe.
+4. Implement required artwork directly rather than asking for image approval.
+5. Run focused and exact-SHA accumulated verification as appropriate.
+6. Preserve/update evidence and continue to the next dependency-safe Priority 1 task while safe executable work remains.
 
-CLOUDFLARE TARGET
+Do not repeatedly ask me to type “continue,” repeat repository context, or re-approve routine implementation choices already authorized here.
 
-The original production deployment uses Cloudflare Pages. The existing repository is connected to two Pages projects that deploy `main`:
+Keep production and development separate. A green post-release branch is not automatically production-live; migrations, promotion, Cloudflare propagation and live smoke require a separately selected integration/release step.
 
-- canonical: `https://mybiblequest.pages.dev/`
-- compatibility: `https://biblequest-7th.pages.dev/`
+Retired #39 Hiragana Match and #40 Kids Bible Who Am I remain retired unless explicitly reopened.
 
-The repository has a Cloudflare build gate through `build.sh` -> `scripts/deploy-gate.mjs`.
-
-Production promotion is authorized once the exact release candidate is green. Do not ask me again for permission to promote the verified v3 release to `main`/Cloudflare. Preserve Supabase/data unless a verified release blocker requires a backend change.
-
-EXECUTE, DO NOT JUST PLAN
-
-In this chat instance, make concrete progress immediately. Inspect the live branch and continue the next unfinished release step. Do not stop after giving me a status report or plan when safe executable work remains.
-
-Priority sequence:
-
-1. Recover the live release-control HEAD and current evidence.
-2. Review any read-only agent findings, but independently verify credible P0/P1 reports before changing code.
-3. Audit Cloudflare/deployment compatibility and remaining P0/P1 blockers.
-4. Apply only required release fixes or low-risk permitted polish while time allows.
-5. Run the Cloudflare deployment gate and complete exact-SHA accumulated regression suite.
-6. Freeze the exact green release candidate.
-7. Update status/handoff evidence.
-8. Promote the verified v3 product state to `main` when gates are green.
-9. Confirm Cloudflare propagation and production behavior on `mybiblequest.pages.dev` and the compatibility host.
-10. Keep a clear list of any task that specifically requires the user; otherwise perform it directly.
-
-If another writer chat is concurrently modifying the same release branch, do not create competing product changes. First inspect live HEAD and coordinate through repository evidence. The five support agents are read-only and therefore should not create write conflicts.
-
-At the end of every response, state only factual current status: exact branch/SHA when known, what was actually completed, what gate is next, and any action the user personally must perform before 18:00 JST.
+At the end of each response, state factual status only: production/main HEAD, active development branch, newest exact-green product SHA, what was actually completed, verification actually run, credible unresolved blockers, next Priority 1 step, whether production/Supabase were touched, and anything that truly requires my action.
 
 ---
