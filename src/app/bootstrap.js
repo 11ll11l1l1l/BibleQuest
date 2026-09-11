@@ -20,6 +20,7 @@ import { createPersonalityProfileService } from './personality-profile.js';
 import { createPsychometricsService } from './psychometrics.js';
 import { createAvatarVaultService } from './avatar-vault.js';
 import { createMissionService } from './mission.js';
+import { createCalendarService } from './calendar.js';
 import { createTutorialService } from './tutorial.js';
 import { createAccessibilityService } from './accessibility.js';
 import { createAudioManager } from './audio.js';
@@ -98,6 +99,7 @@ import { personalityProfilePage } from '../features/personality-profile/index.js
 import { psychometricsPage } from '../features/psychometrics/index.js';
 import { avatarVaultPage } from '../features/avatar-vault/index.js';
 import { missionPage } from '../features/mission/index.js';
+import { calendarPage } from '../features/calendar/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
 import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
@@ -146,6 +148,7 @@ function start(){
   const games=createGameLauncherService({progress,storage,recall,moderation:contentModeration});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const mission=createMissionService({openReview});
+  const calendar=createCalendarService({session,privateStorage,api,assignments});
   const tutorial=createTutorialService({storage});
   const accessibility=createAccessibilityService({storage});
   const privateNotes=createPrivateNotesService({storage});
@@ -208,8 +211,9 @@ function start(){
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
     'avatar-vault':()=>avatarVaultPage({vault:avatarVault,onBack:()=>router.navigate('grow'),onAccount:()=>router.navigate('account')}),
     'my-mission':()=>missionPage({mission,onBack:()=>router.navigate('more'),onReview:()=>router.navigate('open-review'),onStudy:()=>router.navigate('study')}),
+    calendar:()=>calendarPage({calendar,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility')}),
+    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar')}),
     accessibility:()=>accessibilityPage({accessibility,onBack:()=>router.navigate('more')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
     congregation:()=>congregationPage({membership:congregation,onAccount:()=>router.navigate('account'),onBack:()=>router.navigate('more')}),
