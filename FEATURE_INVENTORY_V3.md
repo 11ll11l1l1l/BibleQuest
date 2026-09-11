@@ -4,10 +4,10 @@ This file is the authoritative parity ledger for the rebuild.
 
 ## Current totals
 
-- **Regression-tested:** 94
+- **Regression-tested:** 95
 - **Verified:** 1
 - **Implemented:** 0
-- **Not started:** 5
+- **Not started:** 4
 - **Total old-version capabilities:** 100
 
 ## Status definitions
@@ -18,6 +18,8 @@ This file is the authoritative parity ledger for the rebuild.
 - **Regression-tested** — after the feature was verified, at least one later feature milestone ran the entire v3 suite and the feature still passed.
 
 `classic.html`, old standalone pages, or retained old source files are references only. They do **not** satisfy v3 parity.
+
+Priority note (2026-09-11 JST): #15 Japanese furigana, #38 Kids Memory Match, and #40 Kids Bible Who Am I are reopened for implementation. #39 Hiragana Match remains explicitly deferred.
 
 | # | Old-version capability | Old version | v2 availability | v3 status | Required verification |
 |---:|---|:---:|---|---|---|
@@ -35,7 +37,7 @@ This file is the authoritative parity ledger for the rebuild.
 | 12 | English BSB Bible | Yes | Clean | Regression-tested | open multiple OT/NT books; chapters; attribution |
 | 13 | Tagalog Bible | Yes | Clean | Regression-tested | translation switch; book/chapter; persistence |
 | 14 | Japanese 口語訳 | Yes | Compatibility | Regression-tested | live GetBible japkougo chapter load; canonical book mapping; translation persistence; exact text; explicit Retry/Use BSB fallback; invalid-response cache eviction; 390px recovery controls |
-| 15 | Japanese furigana | Yes | Compatibility | Not started | intentionally deferred by current priority decision; do not implement unless priority is explicitly reopened |
+| 15 | Japanese furigana | Yes | Compatibility | Not started | priority reopened; recover exact old-version furigana contract and owner boundary before implementation; then focused + accumulated browser/mobile verification |
 | 16 | Japanese vocabulary learning | Yes | Compatibility | Regression-tested | Japanese-only ON/OFF control; select verse through Verse Peek; up to three recovered curated notes; persistence/reload; safe no-note state; learning-aid disclaimer; no XP; no furigana/tokenizer runtime; 390px mobile |
 | 17 | NLT live path | Yes | Compatibility | Regression-tested | selectable/persisted licensed-link mode; exact book/chapter handoff; no redistributed NLT text or hidden fetch; no in-app NLT search/read credit; safe external return; source/license attribution; 390px mobile |
 | 18 | ESV/NIV/AMP reader links | Yes | Compatibility | Regression-tested | correct external launch; safe return behavior |
@@ -58,14 +60,14 @@ This file is the authoritative parity ledger for the rebuild.
 | 35 | Per-book Recall | Yes | Clean | Regression-tested | load book pack; reveal; rate; next; finish; reload |
 | 36 | Character detective / Who Am I | Yes | Clean | Regression-tested | play full round; score; replay |
 | 37 | Timeline game | Yes | Clean | Regression-tested | order interaction; result; replay |
-| 38 | Kids Memory Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
+| 38 | Kids Memory Match | Yes | Clean | Not started | priority reopened; recover exact old-version Memory Match contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
 | 39 | Hiragana Match | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
-| 40 | Kids Bible Who Am I | Yes | Clean | Not started | intentionally deferred by user priority decision; do not implement unless explicitly reopened |
+| 40 | Kids Bible Who Am I | Yes | Clean | Not started | priority reopened; recover exact old-version Kids Bible Who Am I contract and Games-owner boundary before implementation; then focused + accumulated browser/mobile verification |
 | 41 | Game launcher | Yes | Fragmented | Regression-tested | one launch/teardown owner; switch games; no duplicate listeners |
 | 42 | Same-room Play Together | Yes | Clean | Regression-tested | 2–6 players; rotating turns; scoreboard; finish |
 | 43 | Live Rooms | Yes | Compatibility | Regression-tested | create/join/leave; reconnect; no stale room state |
-| 44 | Bible World | Yes | Clean | Verified | render path; unlock thresholds; route into content |
-| 45 | Bible World artwork | Yes | Resource retained | Not started | correct assets; responsive layout; missing-asset fallback |
+| 44 | Bible World | Yes | Clean | Regression-tested | render path; unlock thresholds; route into content |
+| 45 | Bible World artwork | Yes | Resource retained | Verified | correct assets; responsive layout; missing-asset fallback |
 | 46 | Transformation basic | Yes | Clean | Regression-tested | answer all dimensions; calculate; persist; reopen |
 | 47 | Transformation full | Yes | Standalone old | Regression-tested | personality + thinking-pattern workflow; result/recommendations; private journal; leave/reopen persistence; guest isolation; desktop/mobile |
 | 48 | Transform engine | Yes | Multiple old paths | Regression-tested | one engine; deterministic state transitions; no stale instance |
