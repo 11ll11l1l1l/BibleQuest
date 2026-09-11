@@ -1,0 +1,87 @@
+/* BibleQuest v3 visual replacement tranche 5 — Daily Journey.
+   Presentation only: no layout, mission sequencing, answers, XP, persistence, navigation or accessibility ownership. */
+
+.bq-daily-progress{
+  background:linear-gradient(180deg,#e9eee7 0%,#e1e7df 100%);
+  box-shadow:inset 0 1px 3px rgba(42,60,47,.08);
+}
+
+.bq-daily-progress span{
+  background:linear-gradient(90deg,#3e7452 0%,#78a16f 100%);
+  box-shadow:0 0 10px rgba(62,116,82,.14);
+}
+
+.bq-daily-steps li{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(155deg,#fff 0%,#f7f9f5 100%);
+  box-shadow:0 4px 13px rgba(39,60,45,.035),inset 0 1px 0 rgba(255,255,255,.86);
+}
+
+.bq-daily-steps li span{
+  background:linear-gradient(145deg,#edf1eb 0%,#e3e9e3 100%);
+  box-shadow:inset 0 0 0 1px rgba(50,75,57,.045);
+}
+
+.bq-daily-steps li.is-current{
+  border-color:rgba(47,112,77,.36);
+  color:#234f38;
+  background:linear-gradient(155deg,#f8fcf8 0%,#eaf5ec 100%);
+  box-shadow:0 5px 16px rgba(47,112,77,.05),inset 0 0 0 1px rgba(47,112,77,.035);
+}
+
+.bq-daily-steps li.is-done span{
+  background:linear-gradient(145deg,#356f4d 0%,#568761 100%);
+  box-shadow:0 3px 9px rgba(47,112,77,.12),inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+.bq-daily-card,
+.bq-daily-complete{
+  border-color:rgba(53,80,61,.13);
+  background:linear-gradient(160deg,#fff 0%,#f8faf6 100%);
+  box-shadow:0 10px 28px rgba(39,60,45,.05),inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.bq-daily-choices button{
+  border-color:rgba(51,79,59,.14);
+  background:linear-gradient(180deg,#fff 0%,#fafcf8 100%);
+  box-shadow:0 4px 13px rgba(39,60,45,.035);
+}
+
+.bq-daily-choices button:hover:not(:disabled),
+.bq-daily-choices button:focus-visible{
+  border-color:rgba(47,112,77,.4);
+  background:linear-gradient(180deg,#fbfefb 0%,#f1f7f1 100%);
+}
+
+.bq-daily-choices button.is-selected{
+  border-color:rgba(47,112,77,.42);
+  background:linear-gradient(155deg,#f5fbf6 0%,#e7f3e9 100%);
+  box-shadow:inset 0 0 0 1px rgba(47,112,77,.035);
+}
+
+.bq-daily-feedback{
+  border-color:rgba(52,79,60,.13);
+  background:linear-gradient(155deg,#fff 0%,#f5f8f3 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.84);
+}
+
+.bq-daily-feedback.is-correct{
+  border-color:rgba(47,112,77,.28);
+  background:linear-gradient(155deg,#f5fbf6 0%,#eaf5ec 100%);
+}
+
+.bq-daily-feedback.is-review{
+  border-color:rgba(173,128,49,.32);
+  background:linear-gradient(155deg,#fffdf7 0%,#fff7e6 100%);
+}
+
+.bq-daily-card textarea{
+  border-color:rgba(51,79,59,.15);
+  background:linear-gradient(180deg,#fff 0%,#fbfcf9 100%);
+  box-shadow:inset 0 1px 3px rgba(34,52,40,.04);
+}
+
+@media(prefers-contrast:more){
+  .bq-daily-steps li,.bq-daily-card,.bq-daily-complete,.bq-daily-choices button{box-shadow:none}
+  .bq-daily-steps li,.bq-daily-card,.bq-daily-complete,.bq-daily-choices button,.bq-daily-feedback{border-color:rgba(31,54,39,.34)}
+}
