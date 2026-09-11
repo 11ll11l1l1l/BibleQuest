@@ -13,7 +13,7 @@ concurrency:
 jobs:
   reconcile:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +34,7 @@ jobs:
           while IFS= read -r path; do
             [ -z "$path" ] && continue
             case "$path" in
-              RECONCILIATION_V3.md|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|DEVELOPMENT_STATUS_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_HANDOFF_V3.md|CONTINUE_PROMPT_V3.md|CALENDAR_V3.md|tests/v3-reconciliation-contract.mjs|tests/v3-assignment-response-presence-migration-contract.mjs|.github/workflows/v3-reconciliation.yml)
+              RECONCILIATION_V3.md|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|DEVELOPMENT_STATUS_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_HANDOFF_V3.md|CONTINUE_PROMPT_V3.md|CALENDAR_V3.md|docs/V3_ICON_ASSET_MAP.md|tests/v3-reconciliation-contract.mjs|tests/v3-assignment-response-presence-migration-contract.mjs|.github/workflows/v3-reconciliation.yml)
                 ;;
               *)
                 echo "Unexpected product/non-reconciliation change: $path" >&2
@@ -43,7 +43,35 @@ jobs:
             esac
           done <<< "$changed"
 
-      - name: Verify reconciled documentation contract
+      - name: Verify recovered feature ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          assignment=73d39ce6fe0f9db20db62e25fd497a8711f921b0
+          workspace=61ee54fac7d352312cef7ffd8010997fa8bc9e51
+          visual18=524adb11cd7e5ad877b5dcdb8f5c28373ad84932
+          avatar=7ce6685a7383102f29797869a77eabcf7ab9c0c2
+          calendar=01ba15e7cdc3f224509858fdd98c2f3b17d8a414
+          expected_merge_base=545b5b98d88ca04001d3675317c37cbcd3306955
+          for sha in "$assignment" "$workspace" "$visual18" "$avatar" "$calendar" "$expected_merge_base"; do
+            git cat-file -e "$sha^{commit}" 2>/dev/null || git fetch --no-tags origin "$sha"
+          done
+          git merge-base --is-ancestor "$assignment" "$workspace"
+          git merge-base --is-ancestor "$visual18" "$avatar"
+          git merge-base --is-ancestor "$avatar" "$calendar"
+          if git merge-base --is-ancestor "$workspace" "$calendar"; then
+            echo 'Workspace unexpectedly became ancestor of Calendar; reconciliation docs are stale.' >&2
+            exit 1
+          fi
+          if git merge-base --is-ancestor "$calendar" "$workspace"; then
+            echo 'Calendar unexpectedly became ancestor of Workspace; reconciliation docs are stale.' >&2
+            exit 1
+          fi
+          actual_merge_base="$(git merge-base "$workspace" "$calendar")"
+          test "$actual_merge_base" = "$expected_merge_base"
+          echo "Verified divergent Line A / Line B merge base: $actual_merge_base"
+
+      - name: Verify reconciled documentation and icon-map contract
         run: node tests/v3-reconciliation-contract.mjs
 
       - name: Verify exact reviewed Assignment response-presence migration

@@ -3,21 +3,22 @@
 Status: implemented feature contract through Calendar v1.5 on its verified feature line
 Updated/reconciled: 2026-09-11 JST
 
-> **Scope authority:** This file is authoritative for Calendar behavior, ownership and Calendar-specific deferred scope. It is **not** cross-feature priority/status/integration authority. Use `DEVELOPMENT_PRIORITY_V3.md` and `RECONCILIATION_V3.md` for whole-product decisions. The implemented verified Calendar contract below supersedes the older generic pre-implementation Calendar prose within Calendar scope.
+> **Scope authority:** This file is authoritative for Calendar behavior, ownership and Calendar-specific deferred scope. It is **not** cross-feature priority/status/integration authority. Use `DEVELOPMENT_PRIORITY_V3.md` and `RECONCILIATION_V3.md` for whole-product decisions.
 
-## Verified feature evidence
+## Verified feature evidence and ancestry
 
-- release branch: `release/v3-calendar-v1-5`
-- exact-green Calendar v1.5 product SHA: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`
-- verifier branch: `verify/v3-calendar-v1-5-functional-01ba1-20260911`
-- verifier run: `34604370963`
-- conclusion: success
+- Calendar release branch: `release/v3-calendar-v1-5`
+- Calendar v1.5 exact-green product SHA: `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`
+- Calendar verifier branch: `verify/v3-calendar-v1-5-functional-01ba1-20260911`
+- Calendar verifier run: `34604370963` — success
 
-This Calendar line is currently divergent from the cumulative Assignment → Workspace line. Calendar PASS must not be transferred to a later cumulative integration SHA; the integrated SHA must be verified again.
+Calendar v1.5 is the tip of a verified Line B chain:
 
-## Scope investigation
+- Visual tranche 18 `524adb11cd7e5ad877b5dcdb8f5c28373ad84932` — verifier `34601602518` success;
+- Avatar Vault v2 `7ce6685a7383102f29797869a77eabcf7ab9c0c2` — verifier `34603004871` success; descendant of Visual18;
+- Calendar v1.5 `01ba15e7...` — descendant of Avatar v2.
 
-Calendar is post-parity functionality, not a row in the historical 100-capability legacy ledger. No prior Calendar design/data model/partial implementation was found before its initial implementation milestone.
+This Line B chain diverges from the separate Assignment → Workspace exact-green line ending at `61ee54fac7d352312cef7ffd8010997fa8bc9e51`. Calendar PASS must not be transferred to a future cumulative merge SHA; the integrated SHA must be verified again.
 
 ## v1 scope
 
@@ -37,8 +38,6 @@ Originally deferred from v1:
 
 ## v1.5 implemented scope
 
-Three v1-deferred areas are implemented on the verified Calendar v1.5 line:
-
 ### Congregation-shared entries
 
 - Reuse Congregation Membership's existing ministry authorization (`can(congregationId,'ministry')` / `assert(...)`) rather than defining a second role model.
@@ -47,8 +46,8 @@ Three v1-deferred areas are implemented on the verified Calendar v1.5 line:
 
 ### Weekly recurrence
 
-- Deliberately narrow fixed-weekly recurrence only.
-- `recurrenceWeeks` range is 0–52.
+- Narrow fixed-weekly recurrence only.
+- `recurrenceWeeks` range: 0–52.
 - Recurrence expansion belongs to the pure Calendar engine.
 - Only congregation events may recur; personal events normalize recurrence to zero.
 - No custom RRULE-style patterns in v1.5.
@@ -57,7 +56,7 @@ Three v1-deferred areas are implemented on the verified Calendar v1.5 line:
 
 - `private.bible_calendar_event_notify` is the database-side owner of Calendar-triggered notification creation.
 - Migration: `supabase/migrations/20260911140000_calendar_congregation_sharing.sql` on the Calendar feature line.
-- The trigger inserts `bible_notifications` rows for active congregation members except the creator when a congregation event is created.
+- Trigger inserts `bible_notifications` rows for active congregation members except the creator when a congregation event is created.
 - Calendar client code does not write directly to `bible_notifications`.
 - Notification Center remains the sole notification storage/read-state owner.
 
@@ -76,8 +75,8 @@ These are follow-up scope, not silently missing v1.5 requirements.
 - `src/features/calendar/index.js` — presentation/event forwarding only.
 - `src/app/router.js` — navigation owner; Calendar route is `calendar`, reachable from More.
 - `src/app/assignments.js` — remains Assignment data owner; Calendar reads due-date information only.
-- `src/app/congregation-membership.js` — remains membership/role owner; Calendar only consumes its established authorization surface.
-- `src/core/api.js` — remains the single browser backend/Supabase owner, including Calendar list/create/remove/listCongregation/createCongregation APIs.
+- `src/app/congregation-membership.js` — remains membership/role owner; Calendar consumes its established authorization surface.
+- `src/core/api.js` — remains the single browser backend/Supabase owner.
 - `private.bible_calendar_event_notify` — sole calendar-triggered notification creation owner at the database boundary.
 - Notification Center remains owner of notification storage/read-state.
 
@@ -111,12 +110,12 @@ Calendar never takes ownership of Assignments, Progress, Congregation Membership
 ## Recorded defects / root causes
 
 - `normalizeEvent` initially failed idempotence because stored output used `date` while input normalization only read `eventDate`/`event_date`; fixed by accepting `raw.date` as fallback.
-- The first functional candidate could abort application boot because Calendar was instantiated before the `assignments` `const` declaration, causing a temporal-dead-zone `ReferenceError`; fixed by moving Calendar instantiation after Assignments initialization.
-- Corrected Calendar v1 candidate `d9364df5f17de2853beaee6a90be44614ca11c3b` passed its accumulated verifier run `34600387403` and was frozen as `release/v3-calendar`.
-- Calendar v1.5 later reached exact-green SHA `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`; its smoke coverage explicitly checks congregation sharing and recurrence toggle behavior, and verifier run `34604370963` succeeded.
+- The first functional candidate could abort boot because Calendar was instantiated before the `assignments` `const`, causing a temporal-dead-zone `ReferenceError`; fixed by moving Calendar instantiation after Assignments initialization.
+- Corrected Calendar v1 candidate `d9364df5f17de2853beaee6a90be44614ca11c3b` passed accumulated verifier `34600387403` and was frozen as `release/v3-calendar`.
+- Calendar v1.5 reached exact-green `01ba15e...`; verifier `34604370963` succeeded.
 
 ## Cumulative integration rule
 
-Because Calendar v1.5 is on a divergent line, future integration must not simply promote it by timestamp. Diff/replay its intended Calendar changes onto the chosen cumulative base, preserve this feature contract, resolve architecture conflicts explicitly, then run fresh focused Calendar verification plus the complete accumulated exact-SHA suite on the integrated candidate.
+Future whole-product integration must preserve the **full intended Line B chain**, not cherry-pick only Calendar files. Reconcile Visual18 + Avatar v2 + Calendar v1.5 with the separate Assignment → Workspace line using merge-base/three-way evidence, then run fresh focused Calendar verification plus the complete accumulated exact-SHA suite on the integrated candidate.
 
-Calendar's own database migration state must also be checked during any production integration; a migration committed on the feature line is not evidence that production applied it.
+Calendar's own database migration state must also be checked during production integration; a migration committed on the feature line is not evidence that production applied it.
