@@ -28,43 +28,25 @@ using (
   exists (
     select 1
     from public.bible_assignments a
-    join public.bible_congregation_members cm
-      on cm.congregation_id = a.congregation_id
-     and cm.user_id = auth.uid()
-     and cm.active = true
     where a.id = bible_assignment_response_presence.assignment_id
       and a.congregation_id = bible_assignment_response_presence.congregation_id
       and a.active = true
-      and (
-        cm.role in ('facilitator','leader','pastor','admin')
-        or a.target_scope = 'all'
-        or (a.target_scope = 'member' and a.target_id = auth.uid())
-        or (
-          a.target_scope = 'team'
-          and exists (
-            select 1 from public.bible_team_members tm
-            where tm.team_id = a.target_id and tm.user_id = auth.uid()
-          )
-        )
-        or (
-          a.target_scope = 'group'
-          and exists (
-            select 1 from public.bible_group_members gm
-            where gm.group_id = a.target_id and gm.user_id = auth.uid() and gm.active = true
-          )
-        )
-      )
+      and private.bible_assignment_visible(a.congregation_id, a.target_scope, a.target_id)
   )
 );
 
-create or replace function public.bible_sync_assignment_response_presence()
+-- The trigger needs elevated rights because authenticated clients intentionally have no
+-- write grant on the peer-visible projection. Keep the SECURITY DEFINER function in
+-- the private schema, pin an empty search_path, fully qualify objects, and expose no
+-- callable RPC surface to anon/authenticated roles.
+create or replace function private.bible_sync_assignment_response_presence()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
-  v_assignment public.bible_assignments%rowtype;
+  v_congregation_id uuid;
   v_display_name text;
 begin
   if tg_op = 'DELETE' then
@@ -79,17 +61,17 @@ begin
     return new;
   end if;
 
-  select * into v_assignment
-  from public.bible_assignments
-  where id = new.assignment_id;
+  select a.congregation_id into v_congregation_id
+  from public.bible_assignments a
+  where a.id = new.assignment_id;
 
-  if v_assignment.id is null then
+  if v_congregation_id is null then
     return new;
   end if;
 
   select coalesce(nullif(trim(cm.display_name), ''), 'Member') into v_display_name
   from public.bible_congregation_members cm
-  where cm.congregation_id = v_assignment.congregation_id
+  where cm.congregation_id = v_congregation_id
     and cm.user_id = new.user_id
     and cm.active = true
   limit 1;
@@ -98,7 +80,7 @@ begin
     assignment_id, congregation_id, user_id, display_name, completed_at
   ) values (
     new.assignment_id,
-    v_assignment.congregation_id,
+    v_congregation_id,
     new.user_id,
     coalesce(v_display_name, 'Member'),
     new.completed_at
@@ -112,13 +94,15 @@ begin
 end;
 $$;
 
-revoke all on function public.bible_sync_assignment_response_presence() from public;
+revoke all on function private.bible_sync_assignment_response_presence() from public;
+revoke all on function private.bible_sync_assignment_response_presence() from anon;
+revoke all on function private.bible_sync_assignment_response_presence() from authenticated;
 
-DROP TRIGGER IF EXISTS bible_assignment_response_presence_sync ON public.bible_assignment_progress;
+drop trigger if exists bible_assignment_response_presence_sync on public.bible_assignment_progress;
 create trigger bible_assignment_response_presence_sync
 after insert or update of status, completed_at or delete
 on public.bible_assignment_progress
-for each row execute function public.bible_sync_assignment_response_presence();
+for each row execute function private.bible_sync_assignment_response_presence();
 
 insert into public.bible_assignment_response_presence(
   assignment_id, congregation_id, user_id, display_name, completed_at
