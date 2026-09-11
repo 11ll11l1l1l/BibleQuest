@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-12 JST after independent current-production two-host verification.
+Updated: 2026-09-12 JST after independent current-production two-host verification and fresh field-readiness inspection.
 
 ## Read first
 
@@ -68,10 +68,13 @@ Read-only production inspection on Supabase project `zkfmgezvzugchcwppreq` confi
 - project `ACTIVE_HEALTHY`;
 - relevant Edge Functions active, including `bq-assignment` v6, `bq-team` v1, `bq-journey-group` v2, `bq-couple` v2 and `bq-room-poll` v2;
 - RLS enabled on checked congregation/group/team/assignment/couple/room relationship tables;
-- 10 auth users, 4 congregation-membership rows across admin/member roles and 1 couple pair;
-- currently 0 Journey Groups, 0 Cloud Teams, 0 group/team membership rows and 0 room-response rows.
+- 10 auth users;
+- one congregation containing 4 member accounts total: 1 admin + 3 members;
+- 6 auth users currently outside congregation membership, so an unrelated Account C topology is available;
+- one couple-pair row exists but it is **pending**, with **no active linked couple**;
+- currently 0 Journey Groups, 0 Cloud Teams, 0 group/team membership rows, 0 shared Live Room sessions/participants and 0 room-response rows.
 
-Therefore actual multi-account UI/device activity is still required to create and verify the missing relationship workflows and negative isolation. Static/browser PASS does not close this gate. No production data was mutated during inspection.
+Therefore the congregation A/B/C account topology exists for real isolation testing, but the couples scenarios first require completing/accepting a legitimate test pair through the product UI. Actual multi-account UI/device activity is still required to create and verify all missing relationship workflows and negative isolation. Static/browser PASS does not close this gate. No production data was mutated during inspection.
 
 ## Security triage
 
@@ -89,17 +92,18 @@ Known release migrations remain **APPLIED + LIVE VERIFIED** and must not be reap
 - `20260911144950 calendar_events`
 - `20260911145003 calendar_congregation_sharing`
 
-No production database mutation was made by PR #110, PR #111, PR #112 or the current production verifier.
+No production database mutation was made by PR #110, PR #111, PR #112, the current production verifier, or the fresh field-readiness inspection.
 
 ## Immediate next route
 
 1. preserve product `2c601b3...` and validation SHA `d0eab188...` separately;
 2. do not add product code unless a current-v3 P0/P1, material visual gap, or required field validation exposes a real defect;
 3. complete Issue #68 multi-account field validation using real/test accounts and multiple sessions/devices without bypassing auth/RLS;
-4. execute physical Android Chrome/Brave + installed-PWA acceptance for Issue #6 when a real device/session is available;
-5. do not rerun the independent two-host hosted verification unless product/runtime bytes change;
-6. if strict Cloudflare-internal deployment metadata is required, obtain it only through an authorized provider connection; do not infer or invent it;
-7. if any product correction is required by field/production evidence, create a new exact candidate and rerun the complete release cycle. Never transfer PASS.
+4. use the existing congregation admin/member topology plus an unrelated account for A/B/C isolation checks, and complete a legitimate linked test couple through the product UI before couples-field scenarios;
+5. execute physical Android Chrome/Brave + installed-PWA acceptance for Issue #6 when a real device/session is available;
+6. do not rerun the independent two-host hosted verification unless product/runtime bytes change;
+7. if strict Cloudflare-internal deployment metadata is required, obtain it only through an authorized provider connection; do not infer or invent it;
+8. if any product correction is required by field/production evidence, create a new exact candidate and rerun the complete release cycle. Never transfer PASS.
 
 ## Non-negotiable rules
 
