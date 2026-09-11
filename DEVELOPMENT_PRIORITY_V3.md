@@ -1,86 +1,85 @@
 # BibleQuest v3 — Current Development Priority
 
-Updated: 2026-09-11 JST after cumulative exact-SHA integration verification.
+Updated: 2026-09-11 JST after production release closeout.
 
-This is the cross-feature post-release task-selection authority. Read `RECONCILIATION_V3.md` immediately after this file for cumulative product and promotion/migration truth.
+This is the cross-feature task-selection authority. Read `RECONCILIATION_V3.md` next for exact release/product ancestry and evidence.
 
 ## Current product truth
 
-- production/runtime: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
-- live `main` last recovered: `8cd27be5da37ae64ee6db69c0f69ec2014cd43d5`
-- cumulative exact-green development product: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
-- verifier run: `34610903807` — success
+- live `main` / deployed release commit: `04bd51bfc4ff16a3b42d13e47e95e637999b4880`
+- cumulative exact-green product SHA: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
+- release branch: `release/v3-cumulative-20260911-r1`
+- cumulative verifier `34610903807` — success
+- production verifier `34612873935` — success on both Cloudflare hosts
+- production Supabase release migrations: **APPLIED + LIVE VERIFIED**
+- previous rollback: `release/v3-production-20260911-r3` at `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
 
-The previous Line A / Line B divergence is resolved in `cf17f36...`. Do not repeat that integration merely because historical documents still describe it.
+The former Line A / Line B integration and the production-release gate are complete. Do not redo them because older documents describe them as pending.
 
 ## Authority order
 
 1. latest explicit user instruction;
 2. this file for cross-feature priority;
-3. `RECONCILIATION_V3.md` for cumulative product/integration truth;
+3. `RECONCILIATION_V3.md` for product/release ancestry and integration truth;
 4. current handoff/status;
-5. feature contracts inside their feature;
-6. exact-SHA workflow evidence;
+5. feature contract inside that feature;
+6. exact-SHA workflow/live evidence;
 7. historical inventory/release/agent evidence.
 
-## Immediate Priority 1 gate
+## Priority 1 now — coordinated product completion and polish
 
-The current priority is to preserve the new cumulative truth and close controlled release prerequisites before branching more work from an older state:
-
-1. freeze `cf17f36...` as the current cumulative exact-green checkpoint;
-2. keep docs-only branch HEAD distinct from the product SHA;
-3. refresh live `main` immediately before any selected promotion;
-4. verify production migration state for Assignment response presence and Calendar;
-5. define safe migration/application deployment ordering;
-6. if main/production promotion is selected, use the cumulative candidate rather than either former parent line;
-7. verify Cloudflare propagation and live privacy/authorization behavior independently after deployment.
-
-After that production-integration gate is deliberately completed or deferred, resume the next dependency-safe Priority 1 product milestone from the newest cumulative exact-green base.
-
-## Priority 1 development streams after integration
+Resume development from the current cumulative production base. Priority 1 remains coordinated across three streams, selected by dependency, user value and verifiability rather than old inventory order.
 
 ### 1A — functionality/correctness
 
-Complete legitimate accepted functionality or verified defects. Confirm incompleteness first and do not rebuild already verified work.
+Complete genuinely unfinished accepted functionality and reproduced defects. Confirm incompleteness before coding. Current credible P0/P1 may interrupt other work; stale or minor findings may not.
+
+Calendar v1/v1.5 is already complete. Known Calendar follow-ups remain candidates, not automatic requirements:
+
+- Ministry Hub calendar surface;
+- congregation-event edit/delete UI/owner flow;
+- custom recurrence beyond fixed weekly.
+
+Select one only when it is the highest dependency-safe Priority 1 milestone.
 
 ### 1B — visual/artwork quality
 
-Continue the approved visual/artwork upgrade without changing information architecture merely for aesthetics. Consult `docs/V3_ICON_ASSET_MAP.md` first. Verify/import actual PNG binaries before referencing documented asset paths.
+Continue the approved visual/artwork upgrade while preserving information architecture, navigation, persistence and backend ownership.
 
-For selected visual improvements requiring generated artwork:
+Before icon wiring:
 
-`generate → choose → optimize → implement → test`
+1. inspect `VISUAL_PHASE_B_V3.md` and current visual status;
+2. verify whether the actual `assets/icons/v3/` binary set exists on the current base;
+3. use `docs/V3_ICON_ASSET_MAP.md` for semantic assignments;
+4. do not invent features just to consume assets;
+5. run mobile, accessibility, performance/offline and accumulated regressions.
 
-Do not ask for routine image approval. Do not invent functionality merely to consume artwork.
+For selected visual work needing generated/replacement artwork: **generate → choose → optimize → implement → test**. Routine image approval is not a development gate.
 
-### 1C — Calendar
+### 1C — release hardening
 
-Calendar v1.5 is already implemented and included in `cf17f36...`. `CALENDAR_V3.md` is authoritative for Calendar behavior. Do not redo v1/v1.5. Any later Calendar milestone must be selected from current unmet requirements or verified defects.
+The cumulative release is live. Release hardening now means reproduced post-release defects, current security/privacy regressions or evidence gaps—not repeating green release work.
 
-## Migration gates
+## Production migration state
 
-Assignment response presence:
+Assignment response presence and Calendar migrations are now `APPLIED + LIVE VERIFIED`. Do not apply them again.
 
-- `supabase/migrations/20260911131000_assignment_response_presence.sql`
-- reviewed blob `bbbceb057c631f08ec32826384ef6fcd61da4527`
-- production state: `NOT APPLIED / UNKNOWN` until positively verified.
+Production history includes:
 
-Calendar candidate migrations:
+- `20260911144939 assignment_response_presence`
+- `20260911144950 calendar_events`
+- `20260911145003 calendar_congregation_sharing`
 
-- `supabase/migrations/20260911_calendar_events.sql`
-- `supabase/migrations/20260911140000_calendar_congregation_sharing.sql`
-- production state: unknown until positively verified.
-
-A committed migration is not proof of production execution.
+Read the migration guide for privacy details, but treat its historical pre-apply instructions as completed for this release.
 
 ## Priority firewall
 
-- P0: severe production/security/privacy/data-loss/core outage.
-- P1: major user-facing capability broken without reasonable workaround.
-- P2: real defect/usability issue but not primary-use blocker.
-- P3: cosmetic/speculative/low-impact issue.
+- P0 — severe production/security/privacy/data-loss/core outage.
+- P1 — major user-facing capability broken without reasonable workaround.
+- P2 — real defect/usability issue but not primary-use blocker.
+- P3 — cosmetic/speculative/low-impact issue.
 
-Current credible P0/P1 can interrupt the roadmap. Historical findings must be revalidated against the current product SHA.
+Planned visual quality work is not automatically P3 simply because it is visual. Unplanned tiny cosmetic defects remain low priority.
 
 ## Non-negotiable rules
 
@@ -89,9 +88,9 @@ Current credible P0/P1 can interrupt the roadmap. Historical findings must be re
 - Preserve `src/core/api.js` as the single browser backend/Supabase owner unless an intentional redesign is selected and verified.
 - Every changed product SHA earns its own verification.
 - Never transfer PASS.
-- Never claim tests not executed.
+- Never claim unexecuted tests.
 - Docs-only commits are not product SHAs.
 - Do not weaken tests to force green.
-- Do not mutate production Supabase/data outside a selected release step.
+- Production changes remain separately selected evidence-bearing steps.
 - GitHub promotion is not Cloudflare propagation proof.
 - Do not call the app bug-free.

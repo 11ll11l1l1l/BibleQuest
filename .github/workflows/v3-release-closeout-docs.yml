@@ -1,0 +1,32 @@
+name: BibleQuest v3 release closeout docs contract
+
+on:
+  push:
+    branches: [docs/v3-release-closeout-20260911]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm docs-only closeout delta
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "04bd51bfc4ff16a3b42d13e47e95e637999b4880"
+          allowed='^(.github/workflows/v3-release-closeout-docs.yml|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|CONTINUE_PROMPT_V3.md|DEVELOPMENT_HANDOFF_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_STATUS_V3.md|RECONCILIATION_V3.md|RELEASE_CLOSEOUT_V3.md|tests/v3-release-closeout-docs-contract.mjs)$'
+          changed="$(git diff --name-only 04bd51bfc4ff16a3b42d13e47e95e637999b4880...HEAD)"
+          test -n "$changed"
+          while IFS= read -r file; do
+            echo "$file" | grep -Eq "$allowed" || { echo "Unexpected non-doc closeout path: $file"; exit 1; }
+          done <<< "$changed"
+
+      - name: Verify release-closeout documentation truth
+        run: node tests/v3-release-closeout-docs-contract.mjs
