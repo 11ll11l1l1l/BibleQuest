@@ -1,0 +1,25 @@
+import { createJapaneseFuriganaService } from '../src/app/japanese-furigana.js';
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+function storage(seed={}){const map=new Map(Object.entries(seed));return {read:(key,fallback)=>map.has(key)?map.get(key):fallback,write:(key,value)=>{map.set(key,structuredClone(value));return value},get:key=>map.get(key)}}
+const local=storage();let tokenizerCalls=0;
+const tokenizer={async tokenize(text){tokenizerCalls++;return [{surface_form:'神',reading:'カミ'},{surface_form:text.slice(1),reading:''}]}};
+const service=createJapaneseFuriganaService({storage:local,tokenizer});
+assert(service.getState().mode==='support','Furigana should default to recovered support mode.');
+let rendered=await service.render('神は愛');
+assert(rendered.html.includes('<ruby>神<rt>')&&rendered.html.includes('かみ'),'Support mode must add 神 reading.');
+assert(rendered.html.includes('<ruby>愛<rt>')&&rendered.html.includes('あい'),'Support mode must add 愛 reading.');
+assert(tokenizerCalls===0,'Support mode must not load tokenizer.');
+service.setMode('off');rendered=await service.render('<神>');
+assert(rendered.html==='&lt;神&gt;'&&!rendered.html.includes('<ruby>'),'OFF mode must preserve escaped Scripture text.');
+assert(local.get('japanese-furigana').mode==='off','Mode must persist through Storage.');
+service.setMode('all');rendered=await service.render('神は愛');
+assert(tokenizerCalls===1,'All mode must use tokenizer lazily.');
+assert(rendered.html.includes('<ruby>神<rt>かみ</rt></ruby>'),'All mode must normalize katakana readings to hiragana.');
+assert(rendered.fallback===false,'Successful tokenizer rendering must not be fallback.');
+const failing=createJapaneseFuriganaService({storage:storage({'japanese-furigana':{version:1,mode:'all'}}),tokenizer:{async tokenize(){throw new Error('offline')}}});
+rendered=await failing.render('神は愛');
+assert(rendered.fallback===true&&rendered.html.includes('<ruby>神<rt>かみ</rt></ruby>'),'All mode failure must fall back to support readings.');
+const malformed=createJapaneseFuriganaService({storage:storage({'japanese-furigana':{version:99,mode:'invalid'}})});
+assert(malformed.getState().mode==='support','Malformed stored mode must normalize to support.');
+let rejected=false;try{malformed.setMode('invented')}catch{rejected=true}assert(rejected,'Unknown modes must be rejected.');
+console.log('BibleQuest v3 Japanese furigana edge regression passed.');

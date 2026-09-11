@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root=process.cwd();
+const fail=message=>{console.error(`Japanese furigana architecture validation FAILED: ${message}`);process.exit(1)};
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const owner=read('src/app/japanese-furigana.js');
+const tokenizer=read('src/app/japanese-furigana-tokenizer.js');
+const presentation=read('src/features/reader/furigana.js');
+const readerUi=read('src/features/reader/index.js');
+const bootstrap=read('src/app/bootstrap.js');
+const architecture=read('ARCHITECTURE_V3.md');
+for(const contract of ["STORAGE_KEY='japanese-furigana'","['off','support','all']",'JAPANESE_VOCABULARY_TERMS','storage.read','storage.write','setMode','supportRuby','tokenizer?.tokenize']) if(!owner.includes(contract)) fail(`Furigana owner missing contract: ${contract}`);
+if(/document\.|window\.|localStorage|sessionStorage|fetch\s*\(|MutationObserver|Progress|progress\.|cdn\.jsdelivr/i.test(owner)) fail('Furigana state/transform owner must not own DOM, direct persistence, Progress, or network runtime.');
+for(const contract of ['createJapaneseFuriganaTokenizerRuntime','cdn.jsdelivr.net/npm/kuromoji@0.1.2','DICT_URL','data-bq-jp-kuromoji','tokenize(text)']) if(!tokenizer.includes(contract)) fail(`Tokenizer adapter missing contract: ${contract}`);
+if(/localStorage|sessionStorage|Progress|progress\.|window\.BQ/i.test(tokenizer)) fail('Tokenizer adapter must not own persistence, Progress, or legacy BQ globals.');
+if(/localStorage|sessionStorage|fetch\s*\(|MutationObserver|window\.|kuromoji|cdn\.jsdelivr/i.test(presentation)) fail('Furigana presentation must stay rendering-only.');
+for(const contract of ["import { japaneseFuriganaControl } from './furigana.js'",'readerPage({ reader, vocabulary = null, furigana = null })','japaneseFuriganaControl(furigana.getState())','furigana.render(verse.text)',"target.matches('[data-reader-furigana]')", "state.translation === 'jko'"]) if(!readerUi.includes(contract)) fail(`Reader furigana integration missing contract: ${contract}`);
+if(/kuromoji|cdn\.jsdelivr|window\.BQJapaneseLearning/.test(readerUi)) fail('Reader presentation must not own tokenizer loading or legacy Japanese-learning globals.');
+for(const contract of ["import { createJapaneseFuriganaService } from './japanese-furigana.js'","import { createJapaneseFuriganaTokenizerRuntime } from './japanese-furigana-tokenizer.js'",'createJapaneseFuriganaTokenizerRuntime()','createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer})','readerPage({reader,vocabulary,furigana})']) if(!bootstrap.includes(contract)) fail(`Bootstrap furigana composition missing contract: ${contract}`);
+if(!architecture.includes('src/app/japanese-furigana.js')||!architecture.includes('src/app/japanese-furigana-tokenizer.js')) fail('Architecture contract must list furigana owners.');
+console.log('BibleQuest v3 Japanese furigana architecture validation passed.');
