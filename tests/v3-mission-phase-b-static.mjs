@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {workflowInvokesNode} from '../scripts/v3-workflow-contract.mjs';
+
+const root=path.resolve(import.meta.dirname,'..');
+const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const asset='assets/mission-feature-icons.svg';
+const css='src/ui/mission-phase-b.css';
+const ui='src/features/mission/index.js';
+const engine='src/engines/mission.js';
+const contract='VISUAL_PHASE_B_MISSION_V3.md';
+const workflowPath='.github/workflows/v3-regression.yml';
+for(const file of[asset,css,ui,engine,contract,'index.html',workflowPath])assert(fs.existsSync(path.join(root,file)),`Missing Mission Phase B file: ${file}`);
+
+const sprite=read(asset),phase=read(css),mission=read(ui),missionEngine=read(engine),scope=read(contract),index=read('index.html'),workflow=read(workflowPath);
+for(const id of['review','study'])assert(sprite.includes(`id="${id}"`),`Mission sprite missing semantic symbol: ${id}`);
+assert(mission.includes('assets/mission-feature-icons.svg#${id}'),'Mission UI must use the committed same-origin sprite.');
+assert(mission.includes('aria-hidden="true"'),'Mission decorative artwork must stay hidden from assistive technology.');
+assert(!mission.includes('rec.icon'),'Mission UI must not render the engine compatibility emoji.');
+for(const glyph of['🧠','📘'])assert(!mission.includes(glyph),`Mission UI must not contain recommendation emoji artwork: ${glyph}`);
+assert(mission.includes("const art=rec.action==='review'?'review':'study';"),'Mission artwork must derive only from the existing recommendation action.');
+assert(mission.includes("if(rec.action==='review')onReview?.();else onStudy?.();"),'Mission primary routing contract changed.');
+assert(mission.includes("data-mission-back")&&mission.includes('onBack?.()'),'Mission Back callback contract changed.');
+assert(missionEngine.includes("action: 'review'")&&missionEngine.includes("action: 'study'"),'Mission engine recommendation ownership must remain intact.');
+assert(index.includes('href="src/ui/mission.css"'),'Mission base stylesheet must remain loaded.');
+assert(index.includes('href="src/ui/mission-phase-b.css"'),'Mission Phase B stylesheet must be loaded.');
+assert(index.indexOf('src/ui/mission-phase-b.css')>index.indexOf('src/ui/mission.css'),'Mission Phase B layer must load after base Mission stylesheet.');
+for(const marker of['.bq-mission-intro','.bq-mission-art-wrap','.bq-mission-progress','.bq-mission-actions','@media(prefers-contrast:more)'])assert(phase.includes(marker),`Mission Phase B CSS missing contract marker: ${marker}`);
+assert(!/animation\s*:|@keyframes/i.test(phase),'Mission Phase B must not add animation behavior.');
+assert(!/url\s*\(/i.test(phase),'Mission Phase B CSS must not add a second asset loading path.');
+assert(scope.includes('Every existing button and route callback'),'Mission Phase B contract must retain interaction ownership.');
+assert(scope.includes('No PASS transfers'),'Mission Phase B contract must preserve exact-candidate evidence rules.');
+for(const test of['tests/v3-mission-phase-b-static.mjs','tests/v3-mission-phase-b-smoke.mjs'])assert(workflowInvokesNode(workflow,test),`Accumulated v3 regression must retain ${test}.`);
+assert(workflowInvokesNode(workflow,'tests/v3-innovation-suite-edge.mjs'),'Accumulated v3 regression must retain Mission engine/service coverage.');
+assert(workflowInvokesNode(workflow,'tests/v3-innovation-suite-smoke.mjs'),'Accumulated v3 regression must retain Mission functional browser coverage.');
+console.log('BibleQuest v3 Mission Phase B static asset contract passed.');

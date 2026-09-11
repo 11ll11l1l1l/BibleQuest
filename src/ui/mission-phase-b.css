@@ -1,0 +1,30 @@
+/* BibleQuest v3 Visual Phase B — Personal Mission artwork and presentation layer.
+   Presentation only: recommendation ownership, Open Review state, routes and callbacks stay unchanged. */
+
+[data-mission-page]{--bq-mission-accent:#6d28d9;--bq-mission-soft:rgba(109,40,217,.08);position:relative;overflow:hidden}
+.bq-mission-intro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin-bottom:18px}
+.bq-mission-intro h1{margin:.15rem 0 .45rem;line-height:1.08}
+.bq-mission-copy{max-width:42rem;margin:0;color:var(--bq-text-muted,#5f6470)}
+.bq-mission-art-wrap{display:grid;place-items:center;width:84px;height:84px;border-radius:24px;background:var(--bq-mission-soft);border:1px solid rgba(109,40,217,.16);color:var(--bq-mission-accent);box-shadow:0 12px 26px rgba(44,35,79,.1);flex:0 0 auto}
+.bq-mission-art{width:52px;height:52px;display:block}
+.bq-mission-progress{margin:0 0 18px;padding:16px 18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,247,252,.92));border-color:rgba(109,40,217,.16)}
+.bq-mission-progress p{margin:0;line-height:1.75}
+.bq-mission-progress b{color:var(--bq-mission-accent)}
+.bq-mission-actions{display:grid;gap:10px}
+.bq-mission-actions button{width:100%;min-height:44px}
+
+@media(max-width:520px){
+  [data-mission-page]{padding:14px}
+  .bq-mission-intro{grid-template-columns:minmax(0,1fr) 68px;gap:12px;align-items:start}
+  .bq-mission-art-wrap{width:68px;height:68px;border-radius:20px}
+  .bq-mission-art{width:42px;height:42px}
+  .bq-mission-progress{padding:14px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-mission-art-wrap{scroll-behavior:auto}
+}
+
+@media(prefers-contrast:more){
+  .bq-mission-art-wrap,.bq-mission-progress{background:#fff;border-width:2px;box-shadow:none}
+}
