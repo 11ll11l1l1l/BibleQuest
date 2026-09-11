@@ -2,6 +2,7 @@ const EMPTY=Object.freeze([]);
 
 const MEMBER_TOOLS=Object.freeze([
   Object.freeze({id:'assignments',label:'Assignments',description:'Open, receive and complete congregation assignments.',route:'assignments',available:true}),
+  Object.freeze({id:'calendar',label:'Calendar',description:'Open the verified Calendar for personal events, assignment due dates and congregation-shared events.',route:'calendar',available:true}),
   Object.freeze({id:'journey-groups',label:'Journey Groups',description:'Open your verified small-group workspace.',route:'journey-groups',available:true}),
   Object.freeze({id:'live-room',label:'Live Room',description:'Live Rooms remain a separate unfinished rebuild milestone (#43).',route:null,available:false})
 ]);
