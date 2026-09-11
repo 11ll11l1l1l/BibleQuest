@@ -1,19 +1,18 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after user-approved Kids/Kana scope closeout.
+Updated: 2026-09-11 JST for the 18:00 JST production-release deadline.
 
-`FEATURE_INVENTORY_V3.md` remains the parity ledger. `KIDS_GAMES_EXTENSION_V3.md` defines the extension contract for future Kids games. Live GitHub refs and executed Actions evidence supersede stale text.
+`RELEASE_6PM_2026-09-11.md` is the overriding execution priority until the release is live. `FEATURE_INVENTORY_V3.md` remains the parity ledger. `KIDS_GAMES_EXTENSION_V3.md` defines future Kids-game extension rules. `CONTINUE_PROMPT_V3.md` is the generic new-chat resume prompt.
 
-## Deployment safety
+## Current verified baseline
 
-- Latest frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- v3.71 exact bookkeeping verification run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
-- The preceding functional candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` also passed targeted run `34549872861` and complete accumulated functional run `34550018009`.
-- Current closeout branch: `feature/v3-post-parity-closeout`, branched directly from frozen v3.71.
-- `main`, production v2, Supabase/data, and Cloudflare remain untouched.
-- Normal product regression workflow remains dispatch-only; temporary push triggers stay isolated on verifier branches.
+- Frozen verified baseline: `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
+- Exact v3.71 bookkeeping run `34550650269`: **success** across accumulated architecture, edge/security, and browser/mobile suites.
+- Earlier functional candidate `5b3891e3a2c5403c4b88087cd6d6dcbae8412b81` passed targeted run `34549872861` and complete functional run `34550018009`.
+- Active release-control branch: `feature/v3-post-parity-closeout`; recover live HEAD before acting.
+- Frozen v3.71 has no known regression blocker in the executed evidence. Do not call it bug-free.
 
-## Current release-scope state
+## Release scope
 
 | State | Count |
 |---|---:|
@@ -22,40 +21,59 @@ Updated: 2026-09-11 JST after user-approved Kids/Kana scope closeout.
 | Implemented | 0 |
 | Not started in active release scope | 0 |
 | User-retired from v3 release scope | 2 |
-| Legacy inventory total | 100 |
 | Applicable v3 release scope | 98 |
+| Legacy inventory total | 100 |
 
-Active release-scope parity is **98/98 complete**. Regression stability is **97/98**, because Japanese Furigana is the current Verified frontier and has not yet rolled through a later product milestone. The complete exact-SHA v3.71 bookkeeping suite is green, so there is no known regression blocker in the frozen v3.71 baseline.
+Active release-scope parity is **98/98 complete**.
 
-Rows #39 Hiragana Match and #40 Kids Bible Who Am I are no longer release blockers. The user explicitly accepted the current Kids game set as sufficient for the v3 release. These rows are retained in the historical inventory as **Retired from v3 release scope**, not falsely marked implemented or verified. They may be reopened later as optional expansion work under `KIDS_GAMES_EXTENSION_V3.md`.
+Historical #39 Hiragana Match and #40 Kids Bible Who Am I are user-retired from this release and are no longer blockers. The existing shared Games page, Memory Meadow/Kids Memory Match, Character Detective/Who Am I, Timeline, Recall and shared game infrastructure are sufficient for this release.
 
-The current Games page already contains verified game infrastructure, #38 Kids Memory Match / Memory Meadow, and #36 Character Detective / Who Am I. A second Kids-specific Who Am I implementation is not required for the current release.
+## 18:00 JST production objective
 
-## #15 verified functional boundary
+BibleQuest v3 must be available on the existing Cloudflare Pages production website by **18:00 JST on September 11, 2026**.
 
-#15 restores the Japanese Reader furigana contract without creating a second Reader, vocabulary, storage, or progress owner. Furigana is exposed only for Japanese 口語訳 and persists one preference through the Storage boundary: `off`, `support` (難しい語だけ), or `all` (すべて), defaulting to `support`.
+Production hosts:
 
-Support mode reuses the recovered curated Japanese vocabulary/readings. All mode lazily uses the isolated Kuromoji adapter, normalizes Katakana readings to Hiragana, and falls back to curated support rendering if tokenizer loading/tokenization fails. Furigana never awards XP and never changes canonical Scripture data; Reader applies ruby as presentation only and cancels stale async rendering across navigation, translation changes, and teardown.
+- Canonical: `https://mybiblequest.pages.dev/`
+- Compatibility: `https://biblequest-7th.pages.dev/`
 
-Permanent evidence: `src/app/japanese-furigana.js`, `src/app/japanese-furigana-tokenizer.js`, `src/features/reader/furigana.js`, `src/features/reader/index.js`, `src/app/bootstrap.js`, `scripts/validate-v3-japanese-furigana.mjs`, `tests/v3-japanese-furigana-edge.mjs`, `tests/v3-japanese-furigana-smoke.mjs`, strengthened Japanese Kougo regression, and `.github/workflows/v3-regression.yml`.
+The existing Cloudflare Pages projects deploy repository `main`. The repository Cloudflare build entrypoint is `build.sh`, which runs `scripts/deploy-gate.mjs`.
 
-## Kids game extension decision
+The user's deadline instruction authorizes production promotion of the exact verified v3 release candidate once all required gates are green. No additional routine approval is required at that stage.
 
-Future Kids games must extend the existing Games architecture rather than add a competing page/runtime. The extension rules require stable registration IDs, Games-owned lifecycle/cleanup, Progress-owned rewards, Storage-owned persistence, Router-owned navigation, 390px/touch accessibility, duplicate-reward protection, and focused plus accumulated regression verification.
+## Active release rules
 
-No future Kids/Kana game is part of the current v3 release gate unless explicitly reopened.
+- No new features before release.
+- Do not revive retired Kids/Kana rows.
+- No speculative/broad refactors.
+- Fix only reproduced P0/P1 release defects.
+- Low-risk visual replacement/polish is allowed only while it cannot jeopardize the release; stop discretionary polish at 14:30 JST.
+- After 14:30 JST, product changes are release-blocker fixes only.
+- Every changed product SHA must earn exact-SHA verification.
+- A GitHub merge/promotion is not proof Cloudflare propagated; production host behavior/build identity must be verified.
 
-## Post-parity pre-release stage
+## Release train
 
-BibleQuest v3 may now proceed to the post-parity phase. The order is:
+1. **Preparation/blocker audit — now:** recover live branch/evidence and verify Cloudflare compatibility.
+2. **Hardening/limited polish — finish by 14:30:** only reproduced blockers and low-risk replacement-level polish.
+3. **Exact candidate validation — 14:30–16:15:** Cloudflare deployment gate; complete accumulated architecture; edge/security; Playwright browser/mobile; PWA/offline; relevant accessibility; syntax/static/diff checks.
+4. **Freeze/promotion — 16:15–17:00:** freeze exact green SHA, record evidence, promote verified v3 product state to `main` without mixing unrelated legacy work.
+5. **Cloudflare verification — 17:00–17:40:** confirm both Pages projects and production smoke on canonical host.
+6. **Deadline buffer — 17:40–18:00:** only deployment blockers; prefer the last verified candidate over risky late changes.
 
-1. **Scope closeout** — record #39/#40 as user-retired from the v3 release scope and preserve the future extension contract.
-2. **Artwork/theme polish** — improve artwork, icons, color treatment, visual cohesion, and polish without changing the established information architecture, navigation model, feature ownership, or core interaction layout.
-3. **Regression-only corrections** — fix only reproduced defects found during polish/acceptance; no unrelated feature additions.
-4. **Final acceptance** — run the complete accumulated architecture, edge/security, browser/mobile, PWA/offline, and relevant accessibility suites on the exact release-candidate SHA.
-5. **Release-candidate freeze** — freeze only the exact clean SHA that passed the final suite.
-6. **Deployment/production promotion** — remains separate and requires explicit authorization; do not modify `main`, production v2, production Supabase/data, or production Cloudflare merely because pre-release validation is green.
+## User-required action
 
-## Release rule
+Minimize user involvement. The only expected user-side check, if available after Cloudflare deploys, is a short physical Android/PWA smoke:
 
-Do not claim zero bugs; claim only executed evidence. The frozen v3.71 baseline has a successful complete exact-SHA suite and no known regression blocker. Every later product/artwork change must be reverified before release freeze. Temporary verifier commits are never release SHAs.
+- open `mybiblequest.pages.dev`;
+- hard refresh or close/reopen installed PWA;
+- confirm Home renders;
+- Reader opens;
+- one Game launches and returns;
+- Account/sign-in surface is reachable.
+
+A visible blank screen, permanent loader, impossible navigation/login, game launch failure, or severe mobile overflow is a release blocker. If physical-device smoke cannot be performed before 18:00, record that fact and rely only on the automated/browser and production-web checks actually executed.
+
+## Evidence rule
+
+Never transfer PASS across changed product SHAs. Never claim an unexecuted test. Temporary verifier commits are not release candidates. Do not modify production Supabase/data unless a reproduced blocker requires it. The exact clean SHA that passes the complete release gate is the only product state eligible for production promotion.
