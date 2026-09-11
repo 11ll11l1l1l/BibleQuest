@@ -1,6 +1,6 @@
 # BibleQuest v3 continuation handoff
 
-Updated: 2026-09-11 JST after verified production release r3.
+Updated: 2026-09-11 JST after fresh 14:26 JST production release r3 revalidation.
 
 For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train; its production success condition has been satisfied.
 
@@ -9,7 +9,7 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - Repo: `11ll11l1l1l/BibleQuest`.
 - Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - Frozen rollback/reference branch: `release/v3-production-20260911-r3` at the same SHA.
-- Exact release verifier: run `34560522189`, job `103142131338`, conclusion **success**.
+- Exact release verifier: run `34560522189`; fresh attempt 3 job `103157401585` concluded **success** at 14:26 JST on the exact deployed product SHA.
 - Exact-SHA/diff hygiene: passed.
 - Cloudflare deployment gate: passed; 267 JavaScript files passed syntax and all production-entry/runtime ownership guards passed.
 - Accumulated v3 architecture validators: 53 executed, all passed.
@@ -18,16 +18,26 @@ For new chat instances, `CONTINUE_PROMPT_V3.md` remains the generic resume promp
 - Release-critical browser coverage included PWA install, Offline Shell, Offline Bible Packs, Accessibility, shell/account/navigation, Reader, Games, and Transform.
 - Historical baseline `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b` remains ancestry/reference evidence only and must not replace r3 evidence.
 
+## Fresh 14:23–14:26 JST release revalidation
+
+- The unchanged r3 product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` was re-run through the exact release verifier rather than relying only on older PASS evidence.
+- Run `34560522189`, attempt 3, job `103157401585` passed exact-SHA/diff hygiene, `build.sh` / Cloudflare deployment gate, the complete accumulated architecture validators, edge/security/static regressions, the complete Playwright browser/mobile regressions, and release-critical PWA/offline/accessibility coverage.
+- Production-live run `34560806166`, attempt 2, job `103157415628` concluded **success**. Both Cloudflare hosts byte-matched the r3 release identity probes before browser tests ran.
+- The canonical host passed shell/account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs.
+- The compatibility host passed Offline Shell and the representative 390px basic-browser navigation smoke.
+- A release-control audit also reviewed draft PR #88's legacy root `account.js` progress-sync concern. Current v3 `index.html` loads only `src/app/bootstrap.js`; the legacy root `account.js` is not a v3 production entry point, so that draft legacy path was not treated as a reproduced r3 release blocker and no product change was made.
+
 ## Production verification
 
 Canonical host: `https://mybiblequest.pages.dev/`
 Compatibility host: `https://biblequest-7th.pages.dev/`
 
 - Both hosts propagated the r3 product files checked by the production identity verifier.
-- Canonical live verifier run `34560806166`, job `103142953274`, passed shell/account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs.
+- The original canonical checks in run `34560806166` attempt 1 passed shell/account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs; that first overall attempt failed only at the compatibility offline readiness step.
 - Compatibility explicit offline verifier run `34560964242`, job `103143413769`, passed with 166 cached shell resources, one rendered v3 shell, mobile width contained at 390px, and `offline-shell-sw.js` controlling the page.
 - Test-only readiness cleanup at `952271aaf00e1a6f11280d8926b28399eebe8e4e` was verified against both live hosts in run `34561097576`, job `103143811936`, conclusion **success**. This commit is release-control/test evidence, not the deployed product SHA.
-- Production Supabase/data was not changed for the release.
+- Fresh run `34560806166` attempt 2 / job `103157415628` subsequently passed the full canonical and compatibility production-live workflow end-to-end.
+- Production Supabase/data was not changed for the release or the fresh revalidation.
 - No physical Android/PWA result is implied by these automated browser checks.
 
 ## Release defects fixed during final gating
