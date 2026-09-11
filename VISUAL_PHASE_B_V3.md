@@ -25,6 +25,23 @@ Phase B may introduce real asset files such as SVG, PNG or WebP for:
 
 CSS-only button decoration is not sufficient where the underlying need is recognizable artwork or illustration.
 
+## Canonical v3 icon library and usage map
+
+The generated v3 PNG icon family is stored under `assets/icons/v3/` and its canonical semantic assignment is defined in `docs/V3_ICON_ASSET_MAP.md`.
+
+For any future Phase B icon work:
+
+1. read `docs/V3_ICON_ASSET_MAP.md` before generating or assigning icon artwork;
+2. reuse the mapped asset when it already matches the required semantic role;
+3. do not create a new feature, route, state, reward, or control merely to consume an available icon;
+4. respect icons marked `RESERVE` or conditional/content-only in the map;
+5. keep one canonical meaning per icon and do not reuse artwork for conflicting meanings;
+6. if a mapped icon must be replaced, preserve its semantic contract and update the map in the same milestone;
+7. wire artwork through the existing surface/component owner rather than creating a competing visual or navigation owner;
+8. verify mobile/desktop containment, accessibility, touch-target behavior and exact-state semantics after implementation.
+
+The map is a visual planning contract, not an instruction to install all icons into the UI in one change. Use the icons by selected surface/milestone during the rebuild.
+
 ## Automatic generated-asset authorization
 
 If a selected Phase B improvement requires an AI-generated visual asset:
