@@ -4,7 +4,7 @@ const freezeCard=card=>Object.freeze({...card});
 const emptyState=()=>({phase:'memory-idle',roundId:null,cards:[],flipped:[],moves:0,lock:false,pending:null,columns:3,pairs:6,stars:0,coins:0,totalStars:0,totalCoins:0});
 
 export function createKidsMemoryGame({progress,roundIdFactory,random=Math.random}={}){
-  if(!progress?.record||!progress?.getState)throw new Error('Memory Meadow requires the verified Progress owner.');
+  if(!progress?.record)throw new Error('Memory Meadow requires the verified Progress owner.');
   if(typeof roundIdFactory!=='function')throw new Error('Memory Meadow requires the Games round identity owner.');
   let state=emptyState(),sequence=0;
 
@@ -26,6 +26,12 @@ export function createKidsMemoryGame({progress,roundIdFactory,random=Math.random
     totalCoins:state.totalCoins
   });
 
+  const readBalances=()=>{
+    if(typeof progress.getState!=='function')throw new Error('Memory Meadow requires Progress balance state when launched.');
+    const balances=progress.getState();
+    return {stars:Number.isSafeInteger(balances?.stars)&&balances.stars>=0?balances.stars:0,coins:Number.isSafeInteger(balances?.coins)&&balances.coins>=0?balances.coins:0};
+  };
+
   const newRoundId=()=>{
     sequence+=1;
     const value=String(roundIdFactory(KIDS_MEMORY_MODE.id,sequence)||'').trim();
@@ -34,8 +40,8 @@ export function createKidsMemoryGame({progress,roundIdFactory,random=Math.random
   };
 
   function start(width){
-    const deck=buildMemoryDeck(width,random),balances=progress.getState();
-    state={phase:'memory',roundId:newRoundId(),cards:deck.cards.map(card=>({...card})),flipped:[],moves:0,lock:false,pending:null,columns:deck.columns,pairs:deck.pairs,stars:0,coins:0,totalStars:balances.stars||0,totalCoins:balances.coins||0};
+    const deck=buildMemoryDeck(width,random),balances=readBalances();
+    state={phase:'memory',roundId:newRoundId(),cards:deck.cards.map(card=>({...card})),flipped:[],moves:0,lock:false,pending:null,columns:deck.columns,pairs:deck.pairs,stars:0,coins:0,totalStars:balances.stars,totalCoins:balances.coins};
     return snapshot();
   }
 
@@ -63,8 +69,9 @@ export function createKidsMemoryGame({progress,roundIdFactory,random=Math.random
       cards[first]={...cards[first],open:true,done:true};cards[second]={...cards[second],open:true,done:true};
       if(cards.every(card=>card.done)){
         const reward=memoryReward(state.moves);
-        const result=progress.record({id:`game:${state.roundId}:memory:complete`,type:'game.memory.complete',xp:0,meaningful:true,rewards:reward});
-        state={...state,phase:'memory-complete',cards,flipped:[],lock:false,pending:null,stars:reward.stars,coins:reward.coins,totalStars:result.state.stars,totalCoins:result.state.coins};
+        progress.record({id:`game:${state.roundId}:memory:complete`,type:'game.memory.complete',xp:0,meaningful:true,rewards:reward});
+        const balances=readBalances();
+        state={...state,phase:'memory-complete',cards,flipped:[],lock:false,pending:null,stars:reward.stars,coins:reward.coins,totalStars:balances.stars,totalCoins:balances.coins};
         return Object.freeze({applied:true,completed:true,state:snapshot()});
       }
     }else{
