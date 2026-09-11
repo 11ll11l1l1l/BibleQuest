@@ -21,7 +21,7 @@ for (const [name, text] of Object.entries({reconciliation, priority, status, han
   requirePattern(text, /no single cumulative latest exact-green post-release product SHA|no single cumulative latest exact-green product SHA|no single cumulative post-release product SHA/i, name);
 }
 
-requireText(reconciliation, 'main` product promotion is **BLOCKED**', 'reconciliation');
+requirePattern(reconciliation, /`main`(?:\s+product)?\s+promotion\s+is\s+\*\*BLOCKED\*\*/i, 'reconciliation promotion gate');
 requireText(reconciliation, 'Chronological recency is not cumulative product truth', 'reconciliation');
 requireText(reconciliation, 'ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md', 'reconciliation');
 
