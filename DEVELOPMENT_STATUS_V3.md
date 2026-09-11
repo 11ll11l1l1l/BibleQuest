@@ -1,6 +1,6 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after production release r3 verification.
+Updated: 2026-09-11 JST after fresh 14:26 JST production release r3 revalidation.
 
 `FEATURE_INVENTORY_V3.md` remains the parity ledger. `KIDS_GAMES_EXTENSION_V3.md` defines future Kids-game extension rules. `CONTINUE_PROMPT_V3.md` is the generic new-chat resume prompt. `RELEASE_6PM_2026-09-11.md` governed the release train and its success condition is now satisfied.
 
@@ -8,17 +8,23 @@ Updated: 2026-09-11 JST after production release r3 verification.
 
 - Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - Frozen production release: `release/v3-production-20260911-r3` at the same SHA.
-- Exact release verification: run `34560522189`, job `103142131338`, **success** on exact SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
+- Exact release verification: run `34560522189`, fresh attempt 3 job `103157401585`, **success** on exact SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` at 14:26 JST.
 - Exact release evidence: clean exact-SHA/diff hygiene; Cloudflare deployment gate; 53 accumulated v3 architecture validators; 86 edge/security/static regressions; 68 Playwright browser/mobile regressions; explicit PWA/offline/accessibility/core-browser coverage.
 - Deployment gate: 267 JavaScript files passed syntax plus production-entry, v3 offline-shell owner/worker, Live Rooms, Transform ownership, and runtime-feature-injection guards.
 - Canonical production host: `https://mybiblequest.pages.dev/`.
 - Compatibility production host: `https://biblequest-7th.pages.dev/`.
-- Both hosts propagated files byte-identical to r3 for the release-identity probes used by the production verifier.
-- Canonical live verification run `34560806166`, job `103142953274`, passed Home/Account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs on the deployed r3 product.
+- Fresh production-live verification: run `34560806166`, attempt 2 job `103157415628`, **success**. Both hosts first byte-matched the r3 release identity probes; canonical Home/Account/navigation, Reader, Games, Transform, Accessibility, PWA install, Offline Shell, and Offline Bible Packs passed; compatibility Offline Shell and 390px basic-browser navigation also passed.
 - Compatibility-host explicit offline verification run `34560964242`, job `103143413769`, **success**: 166 cached shell resources were present, the v3 shell rendered offline, and `offline-shell-sw.js` remained the controller.
 - Post-release test-only cleanup `952271aaf00e1a6f11280d8926b28399eebe8e4e` removed a readiness-polling race from `tests/v3-offline-shell-smoke.mjs`. Targeted live-host verification run `34561097576`, job `103143811936`, passed on both canonical and compatibility hosts. This test-only commit is not the production product SHA.
 - Historical v3.71 baseline remains `release/v3.71-japanese-furigana` at `c631bea8d5177a9a2ff68139cb104b6fbf26015b` for ancestry/reference only.
 - Do not call the app bug-free; this is the exact tested and deployed release state.
+
+## Fresh release-blocker audit
+
+- No open GitHub issue matched the current P0/P1/release-blocker audit query.
+- Draft PR #88 describes an older multi-device progress overwrite risk in legacy root `account.js`. Current v3 `index.html` loads `src/app/bootstrap.js` as the production application entry point and does not load that legacy root runtime. The v3 architecture assigns account/session/storage/backend responsibilities to `src/app/account.js`, `src/app/session.js`, `src/core/storage.js`, and `src/core/api.js`.
+- Therefore PR #88's legacy root `account.js` path was not accepted as a reproduced r3 release blocker. No product fix, Supabase mutation, or production change was made from that draft.
+- An isolated investigation branch `fix/v3-p0-progress-sync-20260911` was created at the then-current release-control SHA for safe investigation; no product commit was made on it.
 
 ## Release scope
 
@@ -43,9 +49,8 @@ The 2026-09-11 release objective is **complete**.
 - `main` points to the exact r3 product SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
 - `release/v3-production-20260911-r3` preserves that exact product state.
 - Both Cloudflare Pages hosts serve the r3 product files used for identity verification.
-- The canonical host passed the release-critical live browser/PWA/offline checks.
-- The compatibility host passed an explicit full-cache readiness + offline reload verification.
-- Production Supabase/data was not modified for this static release.
+- Fresh production-live run `34560806166` attempt 2 / job `103157415628` passed the release-critical canonical browser/PWA/offline checks and the compatibility-host offline/basic-browser checks end-to-end.
+- Production Supabase/data was not modified for this static release or the fresh revalidation.
 - Physical Android/PWA acceptance remains supplemental unless separately recorded; automated/browser production evidence must not be described as physical-device testing.
 
 ## Post-release rules
@@ -69,7 +74,7 @@ Never transfer PASS across changed product SHAs. Never claim an unexecuted test.
 - `scripts/validate-v3-architecture.mjs` rejected the approved `Retired from v3 release scope` state and stale release-status bookkeeping; corrected at `954af5287f1472beb923bd5bdf9313cf76f05aab`.
 - `scripts/validate-v3-inventory.mjs` retained the old four-status/100-applicable assumption; aligned with 98 applicable + 2 retired at `adb9bef5bd7751fa15d78737e94d25b183f08a53`.
 - Production Offline Shell first-load readiness exposed a real latency race: roughly 166 same-origin shell resources were being warmed sequentially while the owner allowed only a 4-second completion window. Production diagnostics showed the cache eventually converged to 166/166 and offline reload then worked. r3 fixed the root cause with bounded 8-way worker warm concurrency, page-load-bounded snapshot timing, and a 15-second owner completion bound; exact release SHA `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac` then passed the complete accumulated suite and canonical production offline verification.
-- The compatibility-host live workflow later exposed a test readiness-polling race rather than a product failure. Explicit verification passed at 166 cached resources and successful offline reload; the test-only cleanup at `952271aaf00e1a6f11280d8926b28399eebe8e4e` passed the updated offline regression on both production hosts.
+- The compatibility-host live workflow later exposed a test readiness-polling race rather than a product failure. Explicit verification passed at 166 cached resources and successful offline reload; the test-only cleanup at `952271aaf00e1a6f11280d8926b28399eebe8e4e` passed the updated offline regression on both production hosts. Fresh live attempt 2 then passed the complete canonical + compatibility production verification workflow.
 
 ## Next major milestone
 
