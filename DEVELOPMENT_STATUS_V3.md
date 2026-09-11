@@ -1,107 +1,95 @@
 # BibleQuest v3 Development Status
 
-Updated: 2026-09-11 JST after completion and exact-SHA verification of the classified post-release visual-polish program through tranche 16.
+Updated: 2026-09-11 JST after cumulative Line A + Line B verification.
 
-`FEATURE_INVENTORY_V3.md` remains the release-parity ledger. `KIDS_GAMES_EXTENSION_V3.md` governs any future Kids-game expansion. `VISUAL_REPLACEMENT_CONTRACT_V3.md`, `VISUAL_SURFACE_INVENTORY_V3.md`, and `VISUAL_POLISH_PROGRESS_V3.md` govern and record the completed replacement-level visual program.
+## Current exact product checkpoints
 
-## Production baseline — unchanged
+- production/runtime product SHA: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`
+- frozen rollback/reference: `release/v3-production-20260911-r3`
+- live `main` HEAD recovered after cumulative verification: `8cd27be5da37ae64ee6db69c0f69ec2014cd43d5`
+- cumulative exact-green post-release product SHA: `cf17f36f9f041aee4715271eaebbe8581fc2c067`
+- cumulative verifier run: `34610903807` — **success**
+- cumulative integration branch: `integration/v3-cumulative-line-a-line-b-20260911`
 
-- Production `main`: `77bd0772cb002371cb3ddaa57cf51cd2bea6b7ac`.
-- Frozen production release: `release/v3-production-20260911-r3` at the same SHA.
-- Production release objective: complete.
-- Applicable release scope: **98/98 complete**.
-- Historical #39 Hiragana Match and #40 Kids Bible Who Am I remain retired from this release scope and are not release debt.
-- Production Supabase/data was not changed by the release or by post-release visual development.
-- Do not describe automated production verification as physical-device acceptance.
+A following documentation-only commit does not replace `cf17f36...` as the verified product SHA.
 
-The production release and post-release visual line are intentionally separate. No visual tranche has been promoted to `main` in this development cycle.
+## What `cf17f36...` contains
 
-## Current exact-green post-release product
+### Former Line A
 
-- Development branch: `postrelease/v3-visual-shell-tranche16`.
-- Exact verified product SHA: `406c34dcdf904b7483bf4381be774a908738e60c`.
-- Parent exact-green product SHA: tranche 15 at `62cb86cd48bae683d0be37a2a729127156a0093a`.
-- Exact verifier branch: `verify/v3-visual-shell-406c34d`.
-- Workflow run: `34585018541`.
-- Job: `103217107423`.
-- Conclusion: **success**.
+- Assignment Private Responses `73d39ce6fe0f9db20db62e25fd497a8711f921b0`;
+- Workspace/Cloud Notes deployed-schema compatibility `61ee54fac7d352312cef7ffd8010997fa8bc9e51`.
 
-The verifier checked out detached exact product SHA `406c34dcdf904b7483bf4381be774a908738e60c` and executed successfully:
+### Former Line B
 
-- exact-SHA and exact three-file diff hygiene;
-- Cloudflare deployment gate, including syntax checks over 267 JavaScript files and production-entry/runtime ownership guards;
-- 16 accumulated visual static contracts;
-- 53 accumulated v3 architecture validators;
-- 86 edge/security/static regressions;
-- 68 Playwright browser/mobile regressions plus Kids Memory browser acceptance;
-- dedicated global-shell computed-style, strong-contrast, navigation-contract, and horizontal-containment checks at 1280x900 and 390x844.
+- Visual tranche 18 `524adb11cd7e5ad877b5dcdb8f5c28373ad84932`;
+- Avatar Vault v2 `7ce6685a7383102f29797869a77eabcf7ab9c0c2`;
+- Calendar v1.5 `01ba15e7cdc3f224509858fdd98c2f3b17d8a414`.
 
-The exact tranche-16 product delta from tranche 15 consists only of:
+`cf17f36...` is a two-parent merge with exact parents `61ee54f...` and `01ba15e...`. The previous divergence is resolved for this candidate.
 
-- `index.html`: one stylesheet include;
-- `src/ui/shell-visual-polish.css`: shell presentation overlay;
-- `tests/v3-shell-visual-polish-static.mjs`: shell visual-boundary regression contract.
+## Verification
 
-No JavaScript, feature owner, route, storage, backend, service worker, data, or Supabase file changed in tranche 16.
+Exact-SHA run `34610903807` passed:
 
-## Tranche-16 failure/root-cause record
+- exact-parent/candidate assertions;
+- cumulative integration contract;
+- focused Assignment privacy, Workspace schema, Avatar, Calendar and visual regressions;
+- deployment gate;
+- all accumulated architecture validators;
+- all accumulated edge regressions;
+- all accumulated browser/mobile regressions.
 
-The first shell candidate `b0f2620ef0e0792db0c50a533a438837bbf3b297` was not accepted. Run `34584870801` passed exact-SHA hygiene and the Cloudflare gate but failed the accumulated visual static-contract step because the new shell stylesheet had been inserted between `app.css` and `account-visual-polish.css`, violating the established Account visual load-order contract.
+No PASS may be transferred to a changed product SHA.
 
-The root cause was corrected by preserving Account directly after `app.css` and loading the shell overlay immediately afterward. Because the product SHA changed, the partial PASS from the failed candidate was discarded and the complete accumulated verifier was rerun from the beginning on `406c34dcdf904b7483bf4381be774a908738e60c`.
+## Production state
 
-## Completed visual program
+Production has **not** been changed by this integration work. `main` has **not** been promoted to `cf17f36...`. Cloudflare propagation has not been claimed for this candidate.
 
-The cumulative visual line now covers the replacement-level A/B surfaces defined by the visual inventory, including:
+Production Supabase/data was not changed during this integration/verification work.
 
-- Home/hero;
-- global shell/theme;
-- Games and Memory Meadow decorative chrome;
-- Reader;
-- Bible World;
-- Progress/Daily Journey;
-- PWA/app icons within the existing manifest/install contract;
-- Transform;
-- Study, Deep Questions, Story Journey, Wisdom Situations;
-- Account/Tutorial;
-- Context/Japanese/source presentation;
-- Private/Cloud Notes;
-- Couples;
-- Community Bridge;
-- Media/Recordings;
-- Adaptive Learning/Open Review;
-- Accessibility presentation.
+## Migration state
 
-`VISUAL_POLISH_PROGRESS_V3.md` is the detailed exact-SHA evidence ledger.
+### Assignment response presence
 
-## Post-release boundary now reached
+`supabase/migrations/20260911131000_assignment_response_presence.sql`
 
-The classified replacement-level visual phase is complete. The remaining inventory areas are Class D architecture/behavior owners, including router/bootstrap/core services, PWA/offline/service-worker behavior, and Supabase/API/storage/security. They are not unfinished visual polish and must not be modified merely to continue development.
+Reviewed blob: `bbbceb057c631f08ec32826384ef6fcd61da4527`.
 
-The next product phase must therefore be a separately scoped post-release milestone with a concrete objective, isolated branch, defined owner boundaries, acceptance criteria, focused regression protection, and exact-SHA accumulated verification.
+State: `NOT APPLIED / UNKNOWN` until production is positively checked. Read `ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md` before application. Do not infer application from Git or tests.
 
-## Standing rules
+### Calendar
 
-- Preserve `main` and `release/v3-production-20260911-r3` until a later promotion is explicitly part of the selected milestone.
-- Preserve exact-green visual product SHA `406c34dcdf904b7483bf4381be774a908738e60c` as the current post-release product checkpoint.
-- Documentation-only commits after that SHA do not become verified product SHAs.
-- Never transfer PASS across changed product SHAs.
-- Never claim unexecuted tests.
-- Reproduce defects before product fixes.
-- Do not revive retired Kids/Kana scope without a new explicit product decision.
-- Do not modify production Supabase/data without a reproduced defect requiring it.
-- A GitHub promotion is not proof of Cloudflare propagation; any future production release needs separate deployed-identity and browser verification.
+Candidate contains:
 
-## Next milestone gate
+- `supabase/migrations/20260911_calendar_events.sql`
+- `supabase/migrations/20260911140000_calendar_congregation_sharing.sql`
 
-Do not invent another visual tranche or enter Class-D owners by default. The next executable product milestone is the next explicitly selected post-release product objective. Once selected, branch from the appropriate exact-green checkpoint and define the acceptance contract before implementation.
+Production application state is also unknown until positively checked.
 
+## Calendar status
 
-## Defect / root-cause ledger
+Calendar v1.5 is implemented and included in the cumulative exact-green product. `CALENDAR_V3.md` remains the Calendar feature behavior/ownership authority. Do not rebuild Calendar v1/v1.5 merely because older planning files describe it as incomplete.
 
-- Post-release Assignment Private Responses candidate `8a97b1f9dea8451fe35ecb73b710f86481f7d582` passed its focused privacy contract and deployment gate but was rejected by the accumulated architecture validator because it opened a second Supabase client in `src/core/assignment-responses.js`. The correction keeps backend queries under the established `src/core/api.js` owner and removes that competing client.
-- The same candidate exposed a documentation-contract regression inherited from the post-visual handoff: this status file had replaced the required `Defect / root-cause ledger` and `Next major milestone` headings. Those canonical ledger headings are restored here without changing the completed visual evidence.
+## Visual status
 
-## Next major milestone
+Visual tranche 18 and Avatar Vault v2 are in the cumulative exact-green product. `docs/V3_ICON_ASSET_MAP.md` is the semantic guide for the analyzed 70-PNG family, but the guide alone is not proof that the binary PNG set is committed. Verify/import binaries before wiring them during future Visual Phase B work.
 
-Complete exact-SHA verification of the isolated Assignment Private Responses milestone. Do not promote it or apply its Supabase migration to production until the full accumulated suite is green and a separate production-migration/release decision is made.
+## Correct next route
+
+1. preserve/freeze `cf17f36...` as the current cumulative exact-green product checkpoint;
+2. keep documentation commits separate from the verified product SHA;
+3. refresh live `main` before any promotion;
+4. review Assignment + Calendar production migration state and release sequencing;
+5. only then select controlled `main` promotion/deployment;
+6. after deployment, independently verify Cloudflare propagation plus live Assignment privacy/authorization and Calendar behavior;
+7. once production integration is closed, resume the next dependency-safe Priority 1 functionality/visual milestone from the newest exact-green cumulative base.
+
+## Evidence rules
+
+- repository evidence overrides stale prose;
+- docs-only HEAD != verified product SHA;
+- committed migration != applied migration;
+- GitHub promotion != Cloudflare propagation;
+- never claim unexecuted tests;
+- never call the application bug-free.

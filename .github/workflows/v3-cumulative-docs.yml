@@ -1,0 +1,44 @@
+name: BibleQuest v3 cumulative docs contract
+
+on:
+  push:
+    branches:
+      - integration/v3-cumulative-line-a-line-b-20260911
+    paths:
+      - RECONCILIATION_V3.md
+      - DEVELOPMENT_PRIORITY_V3.md
+      - DEVELOPMENT_STATUS_V3.md
+      - DEVELOPMENT_HANDOFF_V3.md
+      - CONTINUE_PROMPT_V3.md
+      - ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md
+      - docs/V3_ICON_ASSET_MAP.md
+      - tests/v3-cumulative-docs-contract.mjs
+      - .github/workflows/v3-cumulative-docs.yml
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enforce docs-only child of exact-green candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          product=cf17f36f9f041aee4715271eaebbe8581fc2c067
+          test "$(git rev-parse HEAD^)" = "$product"
+          changed="$(git diff --name-only "$product"..HEAD)"
+          printf '%s\n' "$changed"
+          while IFS= read -r path; do
+            [ -z "$path" ] && continue
+            case "$path" in
+              RECONCILIATION_V3.md|DEVELOPMENT_PRIORITY_V3.md|DEVELOPMENT_STATUS_V3.md|DEVELOPMENT_HANDOFF_V3.md|CONTINUE_PROMPT_V3.md|ASSIGNMENT_RESPONSE_PRESENCE_MIGRATION_V3.md|docs/V3_ICON_ASSET_MAP.md|tests/v3-cumulative-docs-contract.mjs|.github/workflows/v3-cumulative-docs.yml) ;;
+              *) echo "Unexpected product change in docs checkpoint: $path" >&2; exit 1 ;;
+            esac
+          done <<< "$changed"
+      - name: Verify cumulative documentation contract
+        run: node tests/v3-cumulative-docs-contract.mjs
