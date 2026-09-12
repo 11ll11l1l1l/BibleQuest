@@ -12,8 +12,10 @@ on:
       - data/packs/ATTRIBUTION.md
       - scripts/import-cebocb-usfm.mjs
       - scripts/validate-v4-cebocb-packs.mjs
+      - scripts/validate-v3-source-labels.mjs
       - tests/v4-cebocb-bridge-edge.mjs
       - tests/v4-cebocb-reader-smoke.mjs
+      - tests/v3-source-labels-edge.mjs
       - .github/workflows/v4-cebocb-verify.yml
   workflow_dispatch:
 
