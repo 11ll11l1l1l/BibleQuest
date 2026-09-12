@@ -1,5 +1,6 @@
 const ROOT='assets/v4';
-const asset=(folder,name)=>`${ROOT}/${folder}/${name}.png`;
+export const v4AssetPath=(folder,name)=>`${ROOT}/${folder}/${name}.png`;
+const asset=v4AssetPath;
 
 export const V4_ART=Object.freeze({
   core:Object.freeze({
@@ -54,6 +55,41 @@ export const V4_ART=Object.freeze({
     map:asset('bible-world','world-map'),
     compass:asset('bible-world','world-compass'),
     badge:asset('bible-world','world-badge')
+  }),
+  community:Object.freeze({
+    hub:asset('community','community-hub'),
+    congregation:asset('community','congregation'),
+    couplesFamily:asset('community','couples-family'),
+    couplesCloud:asset('community','couples-cloud'),
+    journeyGroups:asset('community','journey-groups'),
+    encouragements:asset('community','encouragements'),
+    liveRooms:asset('community','live-rooms'),
+    teamCenter:asset('community','team-center'),
+    leaderboards:asset('community','leaderboards'),
+    recognition:asset('community','recognition'),
+    family:asset('community','family'),
+    friendship:asset('community','friendship'),
+    member:asset('community','member'),
+    leader:asset('community','leader'),
+    pastor:asset('community','pastor')
+  }),
+  ministry:Object.freeze({
+    hub:asset('ministry-more','ministry-hub'),
+    assignments:asset('ministry-more','assignments'),
+    workspace:asset('ministry-more','workspace'),
+    notifications:asset('ministry-more','notification-center'),
+    contentReview:asset('ministry-more','content-review'),
+    moderation:asset('ministry-more','moderation'),
+    report:asset('ministry-more','report-content'),
+    backup:asset('ministry-more','backup'),
+    install:asset('ministry-more','install-app'),
+    accessibility:asset('ministry-more','accessibility'),
+    accountSettings:asset('ministry-more','account-settings'),
+    security:asset('ministry-more','security'),
+    adminConsole:asset('ministry-more','admin-console'),
+    adminOperations:asset('ministry-more','admin-operations'),
+    analytics:asset('ministry-more','analytics'),
+    help:asset('ministry-more','help-support')
   })
 });
 
