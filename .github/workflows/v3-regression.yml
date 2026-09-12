@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v4-custom-art-ca8e6-b-20260912
   pull_request:
     branches:
       - main
@@ -21,11 +18,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ca8e627f0ae8c3db17f17a18105f21a315e67a6d
-      - name: Assert exact v4 custom-art candidate
-        run: |
-          actual=$(git rev-parse HEAD)
-          if [ "$actual" != "ca8e627f0ae8c3db17f17a18105f21a315e67a6d" ]; then echo "SHA mismatch"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
