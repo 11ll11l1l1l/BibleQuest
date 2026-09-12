@@ -1,7 +1,10 @@
 // BibleQuest V4 Community / Relational family presentation contract.
-// The original Community tranche remains byte-exact except the local Couples
-// owner, whose intentional Communication Journey evolution is now governed by
-// the dedicated V4 Couples Journey contracts. Couples Cloud stays byte-locked.
+// The original Community tranche remains byte-exact except: the local
+// Couples owner, whose intentional Communication Journey evolution is now
+// governed by the dedicated V4 Couples Journey contracts (Couples Cloud
+// stays byte-locked); and Congregation Recognition, whose intentional icon
+// restructuring (bare-text emoji -> stable data-award-code/data-badge-id
+// elements) is governed by the V4 whole-app audit contract instead.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -17,7 +20,6 @@ const preserved=[
   'src/features/live-rooms/index.js',
   'src/features/media-library/index.js',
   'src/features/recordings/index.js',
-  'src/features/congregation-recognition/index.js',
   'src/features/leaderboards/index.js',
   'src/features/encouragements/index.js'
 ];
@@ -27,6 +29,9 @@ for(const relative of preserved){
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
   assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the V4 Community presentation tranche.`);
 }
+
+const congregationRecognitionSrc=fs.readFileSync(path.join(root,'src/features/congregation-recognition/index.js'),'utf8');
+assert.ok(congregationRecognitionSrc.includes('bq-recognition-icon'),'Congregation Recognition icon restructuring must be present (governed by the V4 whole-app audit contract, not byte-locked here).');
 
 const css=fs.readFileSync(path.join(root,'src/ui/community-family-v4.css'),'utf8');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
