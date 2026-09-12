@@ -46,10 +46,19 @@ try{
     mounted.dispose();
 
     const rawReview='select * from private_responses where secret=LEAK_ME';
-    mounted=await mount(makeService({initial:ready('member',[assignment]),reviewError:rawReview}));
+    mounted=await mount(makeService({initial:ready('leader',[assignment]),reviewError:rawReview}));
     mounted.host.querySelector('[data-assignment-open="a1"]')?.click();
     await sleep(35);
     texts.reviewError=mounted.host.textContent||'';
+    mounted.dispose();
+
+    // Phase 1: an ordinary member opening the same assignment must see no
+    // review section at all - not even a bounded error message - since the
+    // whole review view is leader-only now.
+    mounted=await mount(makeService({initial:ready('member',[assignment]),reviewError:rawReview}));
+    mounted.host.querySelector('[data-assignment-open="a1"]')?.click();
+    await sleep(35);
+    texts.memberReview=mounted.host.textContent||'';
     mounted.dispose();
 
     const rawAudience='service_role_key=LEAK_ME_AUDIENCE';
@@ -78,6 +87,7 @@ try{
   assert(result.texts.loadError.includes('Assignments could not load.')&&!result.texts.loadError.includes(result.rawLoad),'Load failure leaked raw backend details.');
   assert(result.texts.empty.includes('No active assignments')&&result.texts.empty.includes('Privacy boundary'),'Ready-empty Assignments state or privacy boundary did not render.');
   assert(result.texts.reviewError.includes('Response status could not load.')&&!result.texts.reviewError.includes(result.rawReview),'Response-review failure leaked raw service details.');
+  assert(!result.texts.memberReview.includes('Response status could not load.')&&!result.texts.memberReview.includes('Member Responses')&&!result.texts.memberReview.includes(result.rawReview),'Phase 1: an ordinary member must see nothing about the response-review feature at all, not even a bounded error message.');
   assert(result.texts.audienceError.includes('Audience directory could not load.')&&!result.texts.audienceError.includes(result.rawAudience),'Audience-directory failure leaked raw service details.');
   assert(result.texts.completeError.includes('Task could not be completed.')&&!result.texts.completeError.includes(result.rawComplete),'Completion failure leaked raw service details.');
   assert(result.emptyMetrics.innerWidth===320&&result.emptyMetrics.scrollWidth<=321,'Assignments acceptance must not overflow at 320px.');
