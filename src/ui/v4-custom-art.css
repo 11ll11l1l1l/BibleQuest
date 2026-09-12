@@ -253,3 +253,176 @@
 @media (prefers-reduced-motion: reduce) {
   .bq-nav-art { transition:none; }
 }
+
+/* ============================================================
+   Custom-art wiring, phase 2 (Section F).
+   Technique: CSS background-image keyed off data-* attributes the
+   feature markup already renders. No markup, hook, route, scoring,
+   storage or permission change in any feature file.
+   ============================================================ */
+
+/* --- Avatar Vault: 16 custom style portraits ---------------- */
+.bq-avatar-art-wrap[data-avatar-art] {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+/* The sprite <svg> stays in the DOM as the structural/sizing element and as a
+   graceful fallback if a PNG ever fails to load; the custom portrait is
+   layered over it. */
+.bq-avatar-art-wrap[data-avatar-art] > .bq-avatar-art { opacity:0; }
+@media (forced-colors: active) {
+  .bq-avatar-art-wrap[data-avatar-art] { background-image:none !important; }
+  .bq-avatar-art-wrap[data-avatar-art] > .bq-avatar-art { opacity:1; }
+}
+.bq-avatar-art-wrap[data-avatar-art="starter"]   { background-image:url("../../assets/v4/avatar-vault/starter.png"); }
+.bq-avatar-art-wrap[data-avatar-art="sakura"]    { background-image:url("../../assets/v4/avatar-vault/sakura.png"); }
+.bq-avatar-art-wrap[data-avatar-art="lantern"]   { background-image:url("../../assets/v4/avatar-vault/lantern.png"); }
+.bq-avatar-art-wrap[data-avatar-art="flame"]     { background-image:url("../../assets/v4/avatar-vault/flame.png"); }
+.bq-avatar-art-wrap[data-avatar-art="crown"]     { background-image:url("../../assets/v4/avatar-vault/crown.png"); }
+.bq-avatar-art-wrap[data-avatar-art="scholar"]   { background-image:url("../../assets/v4/avatar-vault/scholar.png"); }
+.bq-avatar-art-wrap[data-avatar-art="scroll"]    { background-image:url("../../assets/v4/avatar-vault/scroll.png"); }
+.bq-avatar-art-wrap[data-avatar-art="shepherd"]  { background-image:url("../../assets/v4/avatar-vault/shepherd.png"); }
+.bq-avatar-art-wrap[data-avatar-art="couple"]    { background-image:url("../../assets/v4/avatar-vault/couple.png"); }
+.bq-avatar-art-wrap[data-avatar-art="community"] { background-image:url("../../assets/v4/avatar-vault/community.png"); }
+.bq-avatar-art-wrap[data-avatar-art="world"]     { background-image:url("../../assets/v4/avatar-vault/world.png"); }
+.bq-avatar-art-wrap[data-avatar-art="kitsune"]   { background-image:url("../../assets/v4/avatar-vault/kitsune.png"); }
+.bq-avatar-art-wrap[data-avatar-art="moon"]      { background-image:url("../../assets/v4/avatar-vault/moon.png"); }
+.bq-avatar-art-wrap[data-avatar-art="fuji"]      { background-image:url("../../assets/v4/avatar-vault/fuji.png"); }
+.bq-avatar-art-wrap[data-avatar-art="tea"]       { background-image:url("../../assets/v4/avatar-vault/tea.png"); }
+.bq-avatar-art-wrap[data-avatar-art="lock"]      { background-image:url("../../assets/v4/avatar-vault/lock.png"); }
+
+/* --- Bible World: 9 region illustrations -------------------- */
+/* --- Bible World region icons: DELIBERATELY NOT wired ------
+   The certified journey-v4.css tranche intentionally replaced the region
+   emoji with a numbered progression step (counter(bq-world-step)) and sets
+   font-size:0 plus its own background/border on .bq-world-icon. Layering a
+   custom illustration here would (a) fight that certified background and
+   (b) render the "01/02/03" step number on top of the artwork. The numbered
+   step is the better fit for a journey/progression metaphor, so Bible World
+   region art is intentionally left unused rather than forced in.
+   Bible World artwork is still used on the Learn hub entry card below. */
+
+/* --- Home shortcut rail: custom art behind each icon -------- */
+.bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:76%;
+}
+.bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon > .bq-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon { background-image:none !important; }
+  .bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon > .bq-icon { opacity:1; }
+}
+.bq-home-rail-item[data-home-rail-item="daily"]       .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/daily-journey.png"); }
+.bq-home-rail-item[data-home-rail-item="reader"]      .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/reader.png"); }
+.bq-home-rail-item[data-home-rail-item="assignments"] .bq-home-rail-icon { background-image:url("../../assets/v4/ministry-more/assignments.png"); }
+.bq-home-rail-item[data-home-rail-item="calendar"]    .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/calendar.png"); }
+.bq-home-rail-item[data-home-rail-item="grow"]        .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/progress.png"); }
+
+/* --- Home secondary tiles ----------------------------------- */
+.bq-home-tile .bq-home-tile-icon {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:76%;
+}
+.bq-home-tile .bq-home-tile-icon > .bq-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-home-tile .bq-home-tile-icon { background-image:none !important; }
+  .bq-home-tile .bq-home-tile-icon > .bq-icon { opacity:1; }
+}
+[data-home-tutorial]   .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/tutorial.png"); }
+[data-home-recordings] .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/recordings.png"); }
+[data-home-media]      .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/media-library.png"); }
+
+/* --- Learn hub: category cards ------------------------------
+   Uses ::after rather than background-image: .bq-learning-card already has
+   `background:linear-gradient(...)` in reader.css, and a background-image
+   longhand here would silently replace that gradient. ::after layers the
+   art over the existing card background instead of competing with it. */
+.bq-learning-card[data-open-study],
+.bq-learning-card[data-open-deep-questions],
+.bq-learning-card[data-open-story-journey],
+.bq-learning-card[data-open-wisdom-situations],
+.bq-learning-card[data-open-bible-world],
+.bq-learning-card[data-open-adaptive-learning],
+.bq-learning-card[data-open-open-review],
+.bq-learning-card[data-open-private-notes],
+.bq-learning-card[data-open-cloud-notes] { position:relative; }
+
+.bq-learning-card[data-open-study]::after,
+.bq-learning-card[data-open-deep-questions]::after,
+.bq-learning-card[data-open-story-journey]::after,
+.bq-learning-card[data-open-wisdom-situations]::after,
+.bq-learning-card[data-open-bible-world]::after,
+.bq-learning-card[data-open-adaptive-learning]::after,
+.bq-learning-card[data-open-open-review]::after,
+.bq-learning-card[data-open-private-notes]::after,
+.bq-learning-card[data-open-cloud-notes]::after {
+  content:"";
+  position:absolute;
+  right:12px;
+  bottom:10px;
+  width:46px;
+  height:46px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  pointer-events:none;
+  opacity:.92;
+}
+@media (forced-colors: active) {
+  .bq-learning-card::after { display:none; }
+}
+.bq-learning-card[data-open-study]::after             { background-image:url("../../assets/v4/home-learn/guided-study.png"); }
+.bq-learning-card[data-open-deep-questions]::after    { background-image:url("../../assets/v4/home-learn/deep-questions.png"); }
+.bq-learning-card[data-open-story-journey]::after     { background-image:url("../../assets/v4/home-learn/story-journey.png"); }
+.bq-learning-card[data-open-wisdom-situations]::after { background-image:url("../../assets/v4/home-learn/wisdom-situations.png"); }
+.bq-learning-card[data-open-bible-world]::after       { background-image:url("../../assets/v4/bible-world/world-map.png"); }
+.bq-learning-card[data-open-adaptive-learning]::after { background-image:url("../../assets/v4/home-learn/adaptive-learning.png"); }
+.bq-learning-card[data-open-open-review]::after       { background-image:url("../../assets/v4/home-learn/open-review.png"); }
+.bq-learning-card[data-open-private-notes]::after     { background-image:url("../../assets/v4/home-learn/notes.png"); }
+.bq-learning-card[data-open-cloud-notes]::after       { background-image:url("../../assets/v4/core/cloud-sync.png"); }
+
+/* --- More hub: custom art inside the existing icon wrapper ---
+   Targets .bq-more-icon-wrap (already rendered by more/index.js), NOT the
+   panel background: more-visual-polish.css sets a certified per-tile
+   `background:linear-gradient(...)` on every [data-more-*], and painting a
+   background-image on the panel here would silently erase those gradients. */
+.bq-more-icon-wrap {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:78%;
+}
+[data-more-workspace] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-notifications] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-community] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-ministry-hub] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-content-review] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-couples] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-couples-cloud] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-journey-groups] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-team-center] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-accessibility] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-backup] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-install] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-calendar] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-congregation] .bq-more-icon-wrap > .bq-more-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-more-icon-wrap { background-image:none !important; }
+  .bq-more-icon-wrap > .bq-more-icon { opacity:1 !important; }
+}
+[data-more-workspace]      .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/workspace.png"); }
+[data-more-notifications]  .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/notification-center.png"); }
+[data-more-community]      .bq-more-icon-wrap { background-image:url("../../assets/v4/community/community-hub.png"); }
+[data-more-ministry-hub]   .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/ministry-hub.png"); }
+[data-more-content-review] .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/content-review.png"); }
+[data-more-couples]        .bq-more-icon-wrap { background-image:url("../../assets/v4/community/couples-family.png"); }
+[data-more-couples-cloud]  .bq-more-icon-wrap { background-image:url("../../assets/v4/community/couples-cloud.png"); }
+[data-more-journey-groups] .bq-more-icon-wrap { background-image:url("../../assets/v4/community/journey-groups.png"); }
+[data-more-team-center]    .bq-more-icon-wrap { background-image:url("../../assets/v4/community/team-center.png"); }
+[data-more-accessibility]  .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/accessibility.png"); }
+[data-more-backup]         .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/backup.png"); }
+[data-more-install]        .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/install-app.png"); }
+[data-more-calendar]       .bq-more-icon-wrap { background-image:url("../../assets/v4/home-learn/calendar.png"); }
+[data-more-congregation]   .bq-more-icon-wrap { background-image:url("../../assets/v4/community/congregation.png"); }
