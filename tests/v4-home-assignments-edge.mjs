@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { homeAssignmentItems } from '../src/features/home/index.js';
+import { homeAssignmentItems, homeAssignmentPanelHtml } from '../src/features/home/index.js';
 
 const NOW = Date.parse('2026-09-12T00:00:00Z');
 const row = (id,{title=id,type='reading',dueAt=null,dueState='open',progressStatus='assigned',submission='',leaderFeedback=''}={}) => ({
@@ -50,4 +50,45 @@ assert.equal(boundary.find(item=>item.id==='at48')?.status.key,'due-soon','Exact
 assert.equal(boundary.find(item=>item.id==='after48')?.status.key,'pending','More than 48 hours away must not count as due soon.');
 assert.equal(boundary.find(item=>item.id==='startedSoon')?.status.key,'due-soon','Urgent due-soon state must take precedence over generic in-progress styling.');
 
-console.log('BibleQuest v4 Home Assignments state/priority edge contract passed.');
+const stateHtml=(value,key)=>{
+  const html=homeAssignmentPanelHtml(value);
+  assert.ok(html.includes(`data-home-assignment-state="${key}"`),`Home assignment panel must expose explicit ${key} state.`);
+  assert.ok(html.includes('data-home-assignments-all'),`${key} state must retain a direct action into the existing Assignments route.`);
+  return html;
+};
+
+stateHtml({status:'loading'},'loading');
+const signedOutHtml=stateHtml({status:'signed-out',assignments:[row('hidden',{title:'SHOULD NOT LEAK'})]},'signed-out');
+assert.equal(signedOutHtml.includes('SHOULD NOT LEAK'),false,'Signed-out Home state must not expose assignment metadata.');
+const offlineHtml=stateHtml({status:'local-preview',assignments:[row('hidden',{title:'OFFLINE SECRET'})]},'offline');
+assert.equal(offlineHtml.includes('OFFLINE SECRET'),false,'Offline/local-preview Home state must not expose cloud assignment metadata.');
+stateHtml({status:'no-congregation',authenticated:true,assignments:[]},'no-congregation');
+const errorHtml=stateHtml({status:'error',error:'PRIVATE SERVER DETAIL'},'error');
+assert.ok(errorHtml.includes('data-home-assignments-retry'),'Error state must offer retry through the existing Assignments owner.');
+assert.equal(errorHtml.includes('PRIVATE SERVER DETAIL'),false,'Home must not echo raw assignment service/API errors.');
+stateHtml({status:'ready',role:'member',assignments:[]},'empty');
+const completedHtml=stateHtml({status:'ready',role:'member',assignments:[row('done',{title:'Finished task',progressStatus:'completed',submission:'PRIVATE COMPLETED RESPONSE',leaderFeedback:'PRIVATE FEEDBACK'})]},'completed');
+assert.equal(completedHtml.includes('PRIVATE COMPLETED RESPONSE'),false,'Completed Home state must never expose private response text.');
+assert.equal(completedHtml.includes('PRIVATE FEEDBACK'),false,'Completed Home state must never expose leader feedback.');
+
+const oneHtml=stateHtml({status:'ready',role:'member',assignments:[row('one',{title:'One open task'})]},'active');
+assert.ok(oneHtml.includes('ASSIGNMENTS · 1'),'One-open-assignment state must display an explicit count.');
+assert.ok(oneHtml.includes('One open task'),'One-open-assignment state must expose safe task metadata.');
+
+const liveDueSoon=new Date(Date.now()+60*60*1000).toISOString();
+const activeHtml=stateHtml({status:'ready',role:'member',assignments:[
+  row('overdue-live',{title:'Overdue live',dueAt:new Date(Date.now()-60*60*1000).toISOString(),dueState:'overdue'}),
+  row('due-soon-live',{title:'Due soon live',dueAt:liveDueSoon}),
+  row('started-live',{title:'Started live',progressStatus:'started'}),
+  row('pending-live',{title:'Pending live'})
+]},'active');
+assert.ok(activeHtml.includes('data-home-assignment-status="overdue"'),'Active Home panel must visibly distinguish overdue work.');
+assert.ok(activeHtml.includes('data-home-assignment-status="due-soon"'),'Active Home panel must visibly distinguish due-soon work.');
+assert.ok(activeHtml.includes('data-home-assignment-status="in-progress"'),'Active Home panel must visibly distinguish started/in-progress work.');
+assert.ok(activeHtml.includes('ASSIGNMENTS · 4'),'Multiple-open-assignment state must preserve total active count even when the Home list is capped.');
+
+const escaped=homeAssignmentPanelHtml({status:'ready',role:'member',assignments:[row('escape',{title:'<script>"unsafe"</script>'})]});
+assert.equal(escaped.includes('<script>'),false,'Home assignment metadata must be HTML-escaped.');
+assert.ok(escaped.includes('&lt;script&gt;'),'Home assignment title escaping must preserve readable safe text.');
+
+console.log('BibleQuest v4 Home Assignments full state/priority/privacy contract passed.');
