@@ -1,0 +1,76 @@
+name: BibleQuest V4 CEBOCB verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/core/bible.js
+      - src/app/reader.js
+      - src/features/reader/index.js
+      - data/packs/cebuano/**
+      - data/packs/ATTRIBUTION.md
+      - scripts/import-cebocb-usfm.mjs
+      - scripts/validate-v4-cebocb-packs.mjs
+      - tests/v4-cebocb-bridge-edge.mjs
+      - tests/v4-cebocb-reader-smoke.mjs
+      - .github/workflows/v4-cebocb-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-cebocb-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cebocb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and CEBOCB canonical contracts
+        run: |
+          bash build.sh
+          node scripts/validate-v4-cebocb-packs.mjs
+          node tests/v4-cebocb-bridge-edge.mjs
+      - name: Existing Bible and Reader architecture regressions
+        run: |
+          node scripts/validate-v3-architecture.mjs
+          node scripts/validate-v3-offline-bible-packs.mjs
+          node scripts/validate-v3-source-labels.mjs
+          node scripts/validate-v3-nlt-licensed.mjs
+          node tests/v3-reader-edge.mjs
+          node tests/v3-offline-bible-packs-edge.mjs
+          node tests/v3-nlt-licensed-edge.mjs
+          node tests/v3-source-labels-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-cebocb-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-cebocb-http.log
+          exit 1
+      - name: CEBOCB and existing Reader browser regressions
+        run: |
+          timeout 240s node tests/v4-cebocb-reader-smoke.mjs
+          timeout 240s node tests/v3-reader-smoke.mjs
+          timeout 240s node tests/v3-offline-bible-packs-smoke.mjs
+          timeout 240s node tests/v3-nlt-licensed-smoke.mjs
+          timeout 240s node tests/v3-source-labels-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul
