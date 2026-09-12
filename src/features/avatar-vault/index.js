@@ -1,8 +1,10 @@
+import { avatarArtPath } from '../../ui/v4-art.js';
+
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const ART_IDS=new Set(['starter','sakura','lantern','flame','crown','scholar','scroll','shepherd','couple','community','world','kitsune','moon','fuji','tea']);
 const avatarArt=(id,{locked=false,hero=false}={})=>{
   const art=locked?'lock':(ART_IDS.has(id)?id:'starter');
-  return `<span class="bq-avatar-art-wrap${hero?' is-hero':''}" data-avatar-art="${art}" aria-hidden="true"><svg class="bq-avatar-art" viewBox="0 0 24 24" focusable="false"><use href="assets/avatar-vault-icons.svg#${art}"></use></svg></span>`;
+  return `<span class="bq-avatar-art-wrap${hero?' is-hero':''}" data-avatar-art="${art}" aria-hidden="true"><img class="bq-avatar-art" src="${avatarArtPath(art)}" alt="" ${hero?'loading="eager"':'loading="lazy"'} decoding="async"></span>`;
 };
 
 function grid(state){
