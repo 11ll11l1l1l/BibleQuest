@@ -1,8 +1,9 @@
 // BibleQuest V4 Calendar acceptance contract.
 // Calendar V4 is a presentation/certification tranche. The existing Calendar
-// service and feature owner remain byte-exact while the accumulated V4 gate
-// proves responsive, accessible presentation and keeps the older browser
-// regressions in force.
+// service remains byte-exact. The feature owner is also byte-exact except for
+// the two repeated accessible-name labels added by the Section H audit to the
+// title/date controls in add/edit forms. The guard below strips exactly those
+// labels before baseline comparison and separately requires the expected count.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -10,21 +11,28 @@ import { execFileSync } from 'node:child_process';
 
 const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='844ba32b00c95c34ad101b18f9195789ae79762a';
-const preserved=[
-  'src/app/calendar.js',
-  'src/features/calendar/index.js'
-];
+const serviceRelative='src/app/calendar.js';
+const featureRelative='src/features/calendar/index.js';
 
-for(const relative of preserved){
-  const current=fs.readFileSync(path.join(root,relative),'utf8');
-  const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
-  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the V4 Calendar certification tranche.`);
-}
+const serviceCurrent=fs.readFileSync(path.join(root,serviceRelative),'utf8');
+const serviceBaseline=execFileSync('git',['show',`${baselineSha}:${serviceRelative}`],{cwd:root,encoding:'utf8'});
+assert.equal(serviceCurrent,serviceBaseline,`${serviceRelative} must remain byte-for-byte unchanged in the V4 Calendar certification tranche.`);
+
+const featureCurrent=fs.readFileSync(path.join(root,featureRelative),'utf8');
+const featureBaseline=execFileSync('git',['show',`${baselineSha}:${featureRelative}`],{cwd:root,encoding:'utf8'});
+const titleLabels=featureCurrent.match(/ aria-label="Event title"/g)||[];
+const dateLabels=featureCurrent.match(/ aria-label="Event date"/g)||[];
+assert.equal(titleLabels.length,2,'Calendar must expose Event title to assistive technology in both add and edit forms.');
+assert.equal(dateLabels.length,2,'Calendar must expose Event date to assistive technology in both add and edit forms.');
+const featureWithoutSectionHLabels=featureCurrent
+  .replaceAll(' aria-label="Event title"','')
+  .replaceAll(' aria-label="Event date"','');
+assert.equal(featureWithoutSectionHLabels,featureBaseline,`${featureRelative} may differ from the certified V4 Calendar baseline only by the Section H accessible-name labels.`);
 
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const css=fs.readFileSync(path.join(root,'src/ui/journey-v4.css'),'utf8');
-const feature=fs.readFileSync(path.join(root,'src/features/calendar/index.js'),'utf8');
-const service=fs.readFileSync(path.join(root,'src/app/calendar.js'),'utf8');
+const feature=featureCurrent;
+const service=serviceCurrent;
 const smoke=fs.readFileSync(path.join(root,'tests/v3-calendar-smoke.mjs'),'utf8');
 const phaseB=fs.readFileSync(path.join(root,'tests/v3-calendar-phase-b-smoke.mjs'),'utf8');
 const workflow=fs.readFileSync(path.join(root,'.github/workflows/v3-regression.yml'),'utf8');
