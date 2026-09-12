@@ -2,66 +2,87 @@
 
 ## Certified candidate
 
-- Branch under test: `v4/modern-ui-overhaul`
-- Exact certified SHA: `d97e04829926aa8ce999101d64c45c539849187a`
+- Active implementation branch: `v4/modern-ui-overhaul`
+- Exact certified SHA: `c676e0ec821ffb1ff2d8ddc0ecdd6168c50a62e7`
 - Rollback checkpoint: `release/v4-home-assignments`
-- Change class: **Class C — behavior/data integration**, isolated from the previously certified Home presentation tranche.
+- Full accumulated regression: `34678365877` — **PASS**
+- Additional same-SHA accumulated run: `34678385543` — **PASS**
+- Change class: controlled Home behavior/presentation integration using the existing singleton Assignments owner.
 
 ## Requirement closed
 
-The V4 release requirement that current congregation Assignments remain visible from the Home page is complete.
+The requested Home assignment/status matrix is complete at this checkpoint. Home still delegates all task loading/opening to the existing `src/app/assignments.js` service and existing `assignments` route; no second assignment store, API owner, realtime owner, or response-data path was introduced.
 
-Home now reuses the existing singleton Assignments service and existing `assignments` route. It does not create a second store, API client, realtime owner, or response-data path.
+Explicit Home states now exist for:
 
-The Home summary:
+- loading;
+- signed out;
+- local-preview/offline cloud-unavailable mode;
+- authenticated with no congregation;
+- API/load failure with generic recovery copy and retry through the same Assignments service;
+- no open assignments;
+- completed/no-pending work;
+- one open assignment;
+- multiple open assignments;
+- started/in-progress assignment;
+- due-soon assignment;
+- overdue assignment.
 
-- shows current assignment metadata prominently on Home when the existing Assignments owner returns a ready state;
-- excludes completed assignments and assignments whose scheduled opening has not arrived;
-- exposes text-visible `Overdue`, `Due soon`, `In progress`, and `Pending` states;
-- prioritizes overdue, then due-soon, then in-progress, then pending work;
-- opens the selected task through `assignments.open(id)` before navigating to the existing Assignments route;
-- provides a `See all` action to the same existing route;
-- fails closed if the cloud-backed assignment load fails;
-- renders only safe task metadata and never projects submission text, leader feedback, private review responses, or peer answer text onto Home.
+Every state keeps a direct action into the existing Assignments route. Active rows continue to prioritize overdue, then due-soon, then in-progress, then pending work. Completed and not-yet-open scheduled tasks are excluded from the active list.
 
-The single-owner architecture remains intact: bootstrap constructs exactly one `createAssignmentsService(...)`, and both Home and the full Assignments page receive that same owner.
+Home projects only safe metadata. Submission text, leader feedback, private review responses, peer answers, and raw API/server error details are not rendered on Home. Signed-out and local-preview states fail closed and do not expose cloud assignment metadata.
 
-## New regression protection
+## Implementation
 
-- `tests/v4-home-assignments-static.mjs`
-  - locks the singleton owner/wiring contract;
-  - protects Home data hooks and direct-route action;
-  - forbids private response-field projection;
-  - protects responsive/reduced-motion/contrast presentation requirements.
-- `tests/v4-home-assignments-edge.mjs`
-  - deterministically verifies active-task filtering and urgency ordering;
-  - checks the exact 48-hour due-soon boundary;
-  - verifies only the approved metadata projection survives;
-  - verifies signed-out/local-preview states expose no assignment metadata.
-- `tests/v4-home-assignments-smoke.mjs`
-  - executes at 390px mobile width;
-  - verifies status text, active-task ordering, direct-open ordering, `See all`, load-failure behavior, no private-data leakage, touch-target sizing, and no horizontal overflow.
-- `.github/workflows/v4-home-assignments-verify.yml`
-  - runs the isolated Home/Assignments gate and dispatches the complete accumulated regression suite only after the focused gate passes.
+- `src/features/home/assignment-summary.js`
+  - pure Home presentation projection;
+  - explicit state renderer;
+  - active-task urgency/order logic;
+  - output limited to approved metadata.
+- `src/features/home/index.js`
+  - retains the existing Home owner;
+  - calls the existing Assignments service;
+  - renders loading/result/error states;
+  - retry calls the same `assignments.load()` owner;
+  - task-open uses the existing `assignments.open(id)` before navigating to the existing Assignments route.
+- `src/ui/home-assignment-states-v4.css`
+  - distinct structural loading/info/error/success states;
+  - responsive mobile layout;
+  - stronger-contrast treatment;
+  - reduced-motion-safe loading presentation.
+
+## Regression protection
+
+`tests/v4-home-assignments-edge.mjs` is now part of the accumulated `.github/workflows/v3-regression.yml` edge gate and verifies:
+
+- urgency ordering and the exact 48-hour due-soon boundary;
+- started versus pending state;
+- completed/scheduled filtering;
+- explicit loading/signed-out/offline/no-congregation/error/empty/completed/active state markup;
+- one-open and multiple-open counts;
+- direct Assignments action on every state;
+- retry presence on load failure;
+- no raw error disclosure;
+- no submission/leader-feedback leakage;
+- exact safe projected field set;
+- HTML escaping of assignment metadata.
+
+Existing Home/dashboard, Assignments, architecture, privacy/security, mobile-width and browser regressions remain unweakened and passed in the same exact-candidate accumulated run.
 
 ## Verification evidence
 
-Targeted Home Assignments workflow:
+Run `34678365877` on exact SHA `c676e0ec821ffb1ff2d8ddc0ecdd6168c50a62e7` passed:
 
-- Run: `34665387872`
-- SHA: `d97e04829926aa8ce999101d64c45c539849187a`
-- Result: **PASS**
-- Passed deployment build, existing Home visual/dashboard contracts, new Home Assignments static and state contracts, single-owner/Assignments architecture validators, Assignments privacy/behavior regressions, new 390px Home privacy/direct-open smoke, existing Assignments browser regressions, and final mobile-width acceptance.
+- Cloudflare/build deployment gate;
+- accumulated architecture/single-owner validators;
+- accumulated edge/security/privacy regressions, including the expanded Home assignment matrix contract;
+- guarded field-harness syntax checks;
+- complete accumulated browser/mobile Playwright suite.
 
-Complete accumulated regression:
-
-- Run: `34665430650`
-- SHA: `d97e04829926aa8ce999101d64c45c539849187a`
-- Result: **PASS**
-- Passed Cloudflare deployment gate, all accumulated architecture validators, all accumulated edge regressions, guarded-harness syntax checks, and the complete accumulated browser/mobile suite.
+The independently dispatched same-SHA accumulated run `34678385543` also completed successfully.
 
 ## Result
 
-**HOME ASSIGNMENTS RELEASE BLOCKER: CERTIFIED / CLOSED.**
+**HOME ASSIGNMENT/STATUS ACCEPTANCE MATRIX: CERTIFIED / CLOSED.**
 
-The next Lane A release blocker is the requested Cebuano/Bisaya Bible translation. It must be implemented as an isolated translation/data tranche using a redistribution-compatible source, existing Bible registry/Reader ownership, offline bundled packs, complete attribution, and full canonical-pack validation.
+The next requested Priority-1 acceptance gate is Calendar, followed by full Assignments page audit, Daily Journey/Mission, and Progress/Grow unless repository evidence shows a dependency that changes that order.
