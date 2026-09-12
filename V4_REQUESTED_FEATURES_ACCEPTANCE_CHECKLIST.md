@@ -96,22 +96,24 @@ Memory Meadow behavior certification: `release/v4-memory-meadow` @ `c7a78d713546
 
 These should not be casually rebuilt if already green; instead preserve them and include them in the whole-app final audit.
 
-- [ ] Design system / shell remains intact and consistent.
-- [ ] Learn V4 composition remains intact.
-- [ ] Reader V4 presentation remains intact.
-- [ ] Play / Games V4 presentation remains intact.
-- [ ] Avatar Vault V4 presentation remains intact.
-- [ ] Account remains intact.
-- [ ] Private/cloud Notes remain intact.
-- [ ] Transform remains intact.
-- [ ] Personality/Psychometrics remain intact.
-- [ ] Accessibility settings remain intact.
-- [ ] Admin Console remains intact.
-- [ ] Admin Operations remains intact.
-- [ ] Content Review remains intact.
-- [ ] Congregation remains intact.
-- [ ] Diagnostics/recovery remain intact.
-- [ ] Ministry Hub / Workspace remains intact and coherent with the V4 family.
+Certified protected-page checkpoint: focused audit run `34688168693` passed deployment/architecture, protected owner validators, static/edge contracts, and the full protected browser matrix. Durable audit gate merged by PR #140 at `061bae2e50f2070544e840ff8ce07cf38c9d17b3`. No runtime/product regression was found and no behavior patch was required. See `V4_PROTECTED_PAGES_CERTIFICATION.md`.
+
+- [x] Design system / shell remains intact and consistent.
+- [x] Learn V4 composition remains intact.
+- [x] Reader V4 presentation remains intact.
+- [x] Play / Games V4 presentation remains intact.
+- [x] Avatar Vault V4 presentation remains intact.
+- [x] Account remains intact.
+- [x] Private/cloud Notes remain intact.
+- [x] Transform remains intact.
+- [x] Personality/Psychometrics remain intact.
+- [x] Accessibility settings remain intact.
+- [x] Admin Console remains intact.
+- [x] Admin Operations remains intact.
+- [x] Content Review remains intact.
+- [x] Congregation remains intact.
+- [x] Diagnostics/recovery remain intact.
+- [x] Ministry Hub / Workspace remains intact and coherent with the V4 family.
 
 ## F. Custom artwork / icon program
 
