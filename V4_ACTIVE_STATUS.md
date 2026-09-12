@@ -13,20 +13,28 @@ Before selecting or evaluating V4 work, read this file first, then `V4_DOCUMENTA
 
 ## Current integration checkpoint
 
-Latest fully accumulated integration checkpoint verified before this documentation-only reconciliation:
+Latest fully accumulated application checkpoint verified before this documentation-only reconciliation:
 
 - official branch: `v4/modern-ui-overhaul`
 - exact application SHA: `4f908ad8b53f3feb00f21ae27dd4707597b5aa14`
-- verification-only PR #162 was closed without merge after checks completed
 - full accumulated regression run `34711333244` — PASS
 - V4 Section I security/privacy run `34711333231` — PASS
 - V4 Section H responsive/accessibility/performance/PWA automation run `34711333240` — PASS
 - V4 whole-app browser audit run `34711333234` — PASS
 - Cloudflare exact-SHA preview check `103600570475` — SUCCESS
 
-PR #162 was only a gate trigger and is not a production promotion path.
+The release-control/CI head later advanced without changing certified application bytes. Verification-only PR #167 exercised the real future `main` target from exact head `60e31b8d68832a40f4db44b26824b1865c539413` and passed all six promotion-path suites:
 
-The branch may advance after this documentation commit. Application-byte certification above remains tied to `4f908ad8...`; documentation-only commits do not invalidate the tested application tree but a later runtime/application change requires new applicable evidence.
+- accumulated regression `34713371772` — PASS;
+- V4 Section H `34713371784` — PASS;
+- V4 Section I `34713371795` — PASS;
+- protected-page audit `34713371801` — PASS;
+- Cloudflare exact-SHA preview smoke `34713371805` — PASS;
+- whole-app browser audit `34713371845` — PASS.
+
+The exact Cloudflare preview used by that deployed smoke was `https://3284208e.mybiblequest.pages.dev`. The deployed run passed the maintained 42-route 320/430 px deep-route audit, whole-app browser-state matrix, PWA install regression, offline shell, and operational recovery. PR #167 was closed without merge after capturing the evidence; it was only a gate exercise and was not a production promotion path.
+
+Application-byte certification remains tied to `4f908ad8...`; documentation/release-control-only commits do not invalidate the tested application tree, but a later runtime/application change requires new applicable evidence.
 
 ## Release-state decision
 
@@ -161,17 +169,21 @@ These gates must not be replaced by headless/emulated browser evidence when the 
 
 Do not freeze RC2 or promote to `main` yet.
 
-Once all Phase 6 blockers above are legitimately closed:
+Release-control enforcement finding (2026-09-13): repository `main` is currently unprotected and the repository has no GitHub ruleset. The six main-target workflow suites have been proven green through verification-only PR #167, but GitHub does not currently require those checks server-side before a direct `main` update. **Before any real V4 production promotion, a repository administrator must enable branch protection or an equivalent repository ruleset for `main` that requires PR-based changes and the applicable promotion checks. Direct `main` updates remain prohibited by the V4 release process until that enforcement is active.** The current development connector does not expose GitHub repository-administration writes, so this setting cannot be closed by application code or by weakening CI.
+
+Once all Phase 6 blockers above are legitimately closed and the `main` enforcement requirement above is active:
 
 1. reconcile this file and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` against the final integration head;
 2. freeze a new exact candidate from `v4/modern-ui-overhaul` (normally `release/v4-rc2` or later);
 3. run build, architecture, complete accumulated static/security/edge/browser/mobile, Section H, Section I, protected-page, whole-app and PWA automation on that exact candidate/application tree;
-4. deploy the exact candidate to Cloudflare preview/staging and verify build identity;
+4. deploy the exact candidate to the authoritative `mybiblequest` Cloudflare preview/staging path and verify build identity;
 5. run critical-route/runtime/offline/reconnect staging smoke;
 6. attach/record the completed real-session and physical-device field evidence;
-7. promote only the exact certified candidate to `main`;
-8. verify Cloudflare production build identity/bytes and production browser behavior;
+7. promote only the exact certified candidate to protected `main` through the required PR path;
+8. verify the authoritative `mybiblequest` Cloudflare production build identity/bytes and production browser behavior;
 9. preserve the known-good V3 rollback reference until post-promotion acceptance is complete.
+
+The repository currently also reports a legacy/secondary Cloudflare Pages check named `Cloudflare Pages: biblequest` on some commits. It is **not** V4 release authority. The V4 promotion workflow and candidate identity gate use `Cloudflare Pages: mybiblequest`; production acceptance must verify that authoritative project explicitly so a successful legacy check cannot be mistaken for release evidence.
 
 ## Current status summary
 
@@ -182,7 +194,7 @@ Once all Phase 6 blockers above are legitimately closed:
 - Phase 5: closed; accumulated exact-head automation green.
 - Phase 6: active; automated/in-database portions substantially closed, but authenticated-session, cross-congregation and physical-device gates remain.
 - New RC freeze: blocked.
-- Production `main`/Cloudflare promotion: blocked.
+- Production `main`/Cloudflare promotion: blocked by Phase 6 and by missing server-side `main` protection/ruleset enforcement.
 - V4 is **not yet production-release-certified**.
 
 ## Supabase security-advisor note
