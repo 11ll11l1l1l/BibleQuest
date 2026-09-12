@@ -25,7 +25,6 @@ import { createTutorialService } from './tutorial.js';
 import { createAccessibilityService } from './accessibility.js';
 import { createAudioManager } from './audio.js';
 import { createRecordingsService } from './recordings.js';
-import { createMediaLibraryService } from './media-library.js';
 import { createGameLauncherService } from './games.js';
 import { createPrivateNotesService } from './private-notes.js';
 import { createCloudNotesService } from './cloud-notes.js';
@@ -101,7 +100,6 @@ import { avatarVaultPage } from '../features/avatar-vault/index.js';
 import { missionPage } from '../features/mission/index.js';
 import { calendarPage } from '../features/calendar/index.js';
 import { recordingsPage } from '../features/recordings/index.js';
-import { mediaLibraryPage } from '../features/media-library/index.js';
 import { gamesPage } from '../features/games/index.js';
 import { congregationPage } from '../features/congregation/index.js';
 import { morePage } from '../features/more/index.js';
@@ -162,9 +160,8 @@ function boot(root){
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const audio=createAudioManager();
-  const recordings=createRecordingsService({media:api.media,audio,session});
-  const mediaLibrary=createMediaLibraryService({recordings});
   const congregation=createCongregationMembershipService({api,session});
+  const recordings=createRecordingsService({media:api.media,audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
   const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
   const contentReview=createContentReviewService({api:api.contentReview,session,congregation,recall});
@@ -236,7 +233,7 @@ function boot(root){
     'avatar-vault':()=>avatarVaultPage({vault:avatarVault,onBack:()=>router.navigate('grow'),onAccount:()=>router.navigate('account')}),
     'my-mission':()=>missionPage({mission,onBack:()=>router.navigate('more'),onReview:()=>router.navigate('open-review'),onStudy:()=>router.navigate('study')}),
     calendar:()=>calendarPage({calendar,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
-    recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>mediaLibraryPage({library:mediaLibrary,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
+    recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
     more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar'),onHelp:()=>router.navigate('help')}),
     help:()=>helpCenterPage({onBack:()=>router.navigate('more'),onTutorial:()=>tutorial.open({force:true})}),
     accessibility:()=>accessibilityPage({accessibility,onBack:()=>router.navigate('more')}),
