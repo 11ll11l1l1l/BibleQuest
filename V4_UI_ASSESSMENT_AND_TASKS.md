@@ -6,6 +6,16 @@ Assessed against: `release/v4-games-avatar` (7 gates certified: Infra Safety Net
 
 ---
 
+## Progress update (this cycle)
+
+**Reconciled with a concurrent development stream** that independently completed almost the entire original 13-stage family queue since this document was written (Ministry, Journey, Study, Trust/Reflection, Admin/Content-Review/Congregation/Recovery families, plus a full Cebuano/Bisaya Bible translation integration) — see `V4_ACTIVE_STATUS.md` for that stream's own record. Only Tranche 12 (Community family) remains from that queue.
+
+**Task 3.1 (Assignments reachable from Home) — already done by that stream, confirmed.** Home now shows up to 3 active assignments directly (sorted overdue → due-soon → in-progress → pending) with a "See all" link and per-item open action, backed by a dedicated single-owner/privacy test (`tests/v4-home-assignments-*`). This is better than the original task called for — assignments are now 0 taps from Home, not just 1.
+
+**Task 3.2 (More hub reorganization) — done.** Checkpoint: `release/v4-more-grouping`. The flat 15-section scroll is now 5 labeled groups (Ministry & Congregation, Personal Planning, Together, Workspace & Inbox, Device & Settings), verified as a pure markup change — all 15 hooks and the entire `mount()` event-wiring function are byte-for-byte unchanged from the pre-tranche baseline. Full accumulated suite green (run `34671791851`).
+
+**Remaining from this document's task list:** 4.1 (per-family accent colors), 4.2 (Games emoji→SVG art), 4.3 (orphaned avatar-webp decision) — none of these were incidentally addressed by the concurrent stream's work. Recommended as the next tranches, in that order, once Tranche 12 (Community family) is reconciled.
+
 ## 1. Assessment — functions, features, design, color, overall feel
 
 **What's genuinely good today:**
