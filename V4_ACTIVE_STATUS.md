@@ -24,6 +24,14 @@ Verification-only PR #167 also exercised the future `main` promotion path and pa
 
 Current integration release-control head before this owner-waiver branch: `cb4286d5b4bb7afdd22a2d3b4f1dc6d0ccffe5db`. Commits after the certified application SHA are release-control/documentation-only unless comparison proves otherwise.
 
+## Ad hoc feature note: Videos merge (Live Recordings + Media Library)
+
+Checkpoint: `release/v4-videos-merge`, exact-SHA verified, full accumulated suite green (including full browser/mobile). This was a user-requested change layered on top of the verified application checkpoint above, done and gated independently.
+
+Live Recordings and Media Library were two routes rendering the exact same underlying data - merged into one Videos page. Leaders/pastors/admins can now curate (add) videos via a new form; the required database RLS already existed (`private.bible_can_review_content`), so no new migration was needed, only client code to use it. A design correction was needed mid-build: the first attempt (every video as its own always-visible iframe) violated the existing Audio owner's strict single-player model, caught by the architecture validator; reverted to click-to-select cards feeding the one shared player. A real bug was also caught and fixed before merge: a rejected curation submission would have shown the user a raw Postgres RLS error string instead of a clean message.
+
+`src/app/media-library.js` / `src/features/media-library/index.js` remain in the codebase as a certified, still-tested architectural owner with no live route using them - a legitimate small cleanup item, not forgotten, not bundled into this change since removing them touches the main architecture validator's required-file list.
+
 ## Product-owner release decision
 
 On 2026-09-13 the product owner explicitly directed that remaining tasks requiring personal/manual field execution be removed as pre-publication blockers so V4 can proceed to publication.
