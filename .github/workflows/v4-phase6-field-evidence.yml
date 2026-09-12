@@ -37,6 +37,9 @@ jobs:
           test "$actual" = "$EXPECTED_SHA"
           echo "Exact candidate SHA: $actual"
 
+      - name: Regression-test field-evidence validator
+        run: node tests/v4-phase6-field-evidence-validator.mjs
+
       - name: Validate field-evidence schema and secret hygiene
         run: node scripts/validate-v4-phase6-field-evidence.mjs
 

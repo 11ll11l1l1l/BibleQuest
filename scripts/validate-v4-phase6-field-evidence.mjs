@@ -2,8 +2,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
-const evidencePath = path.join(root, 'V4_PHASE6_FIELD_EVIDENCE.json');
-const requireComplete = process.argv.includes('--require-complete');
+const args = process.argv.slice(2);
+const requireComplete = args.includes('--require-complete');
+const fileIndex = args.indexOf('--file');
+let evidencePath = path.join(root, 'V4_PHASE6_FIELD_EVIDENCE.json');
+
+if (fileIndex !== -1) {
+  const requestedPath = args[fileIndex + 1];
+  if (!requestedPath || requestedPath.startsWith('--')) {
+    throw new Error('V4 Phase 6 field-evidence gate: --file requires a JSON path');
+  }
+  evidencePath = path.resolve(process.cwd(), requestedPath);
+}
+
+const consumed = new Set(['--require-complete']);
+if (fileIndex !== -1) {
+  consumed.add('--file');
+  consumed.add(args[fileIndex + 1]);
+}
+for (const arg of args) {
+  if (!consumed.has(arg)) throw new Error(`V4 Phase 6 field-evidence gate: unknown argument ${arg}`);
+}
+
 const expectedGates = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const allowedStatus = new Set(['pending', 'pass', 'fail']);
 const emergencyActions = ['authorization', 'force_sign_out', 'suspend_reactivate', 'set_temp_password', 'change_email'];
@@ -34,6 +54,12 @@ function nonEmpty(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function isSafeStructuralKey(trail, key) {
+  const fullPath = [...trail, key].join('.');
+  return fullPath === 'gates.A.actions.set_temp_password'
+    || fullPath === 'gates.A.audit_secret_hygiene_verified';
+}
+
 function walk(value, trail = []) {
   if (typeof value === 'string') {
     if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(value)) fail(`email-like value forbidden at ${trail.join('.') || 'root'}`);
@@ -48,7 +74,7 @@ function walk(value, trail = []) {
   if (!value || typeof value !== 'object') return;
   for (const [key, child] of Object.entries(value)) {
     const lower = key.toLowerCase();
-    if (/(password|token|secret|recovery_code|private_email|auth_header)/.test(lower)) {
+    if (/(password|token|secret|recovery_code|private_email|auth_header)/.test(lower) && !isSafeStructuralKey(trail, key)) {
       fail(`forbidden sensitive evidence key at ${[...trail, key].join('.')}`);
     }
     walk(child, [...trail, key]);
@@ -59,7 +85,7 @@ function requireBoolean(gate, key, gateId) {
   if (gate[key] !== true) fail(`Gate ${gateId} PASS requires ${key}=true`);
 }
 
-if (!fs.existsSync(evidencePath)) fail('missing V4_PHASE6_FIELD_EVIDENCE.json');
+if (!fs.existsSync(evidencePath)) fail(`missing evidence file: ${evidencePath}`);
 const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf8'));
 
 if (evidence.schema !== 'biblequest-v4-phase6-field-evidence/v1') fail('unexpected schema');
@@ -156,4 +182,4 @@ if (requireComplete) {
   if (incomplete.length) fail(`production promotion blocked; field gates not PASS: ${incomplete.join(', ')}`);
 }
 
-console.log(`BibleQuest V4 Phase 6 field evidence validated (${requireComplete ? 'production-complete' : 'schema/readiness'} mode).`);
+console.log(`BibleQuest V4 Phase 6 field evidence validated (${requireComplete ? 'production-complete' : 'schema/readiness'} mode): ${path.relative(root, evidencePath) || path.basename(evidencePath)}.`);
