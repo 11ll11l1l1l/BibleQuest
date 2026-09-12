@@ -14,7 +14,7 @@ function pendingEvidence() {
     schema: 'biblequest-v4-phase6-field-evidence/v1',
     updated_jst: '2026-09-13T05:00:00+09:00',
     certified_application_sha: SHA,
-    promotion_policy: 'All seven gates A-G must be PASS before production promotion.',
+    promotion_policy: 'All seven gates A-G must be PASS or explicitly owner-WAIVED before production promotion.',
     notes: 'Sanitized release evidence only.',
     gates: {
       A: { status: 'pending', title: 'Authenticated emergency-action matrix' },
@@ -163,7 +163,7 @@ try {
   {
     const result = await runFixture('production-still-blocked', pendingEvidence(), ['--require-complete']);
     assert.notEqual(result.status, 0, 'pending field gates must block production mode');
-    assert.match(output(result), /field gates not PASS: A, B, C, D, E, F, G/);
+    assert.match(output(result), /field gates neither PASS nor owner-WAIVED: A, B, C, D, E, F, G/);
   }
 
   console.log('BibleQuest V4 Phase 6 field-evidence validator regression PASS.');

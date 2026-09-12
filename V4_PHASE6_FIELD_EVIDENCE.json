@@ -1,16 +1,23 @@
 {
   "schema": "biblequest-v4-phase6-field-evidence/v1",
-  "updated_jst": "2026-09-13T04:44:00+09:00",
+  "updated_jst": "2026-09-13T05:49:21+09:00",
   "certified_application_sha": "4f908ad8b53f3feb00f21ae27dd4707597b5aa14",
-  "promotion_policy": "All seven gates A-G must be PASS before a production main promotion can pass the field-evidence CI gate.",
+  "promotion_policy": "Production promotion requires every Gate A-G to be either genuinely PASS or explicitly product-owner WAIVED. WAIVED is not field evidence and must never be represented as PASS.",
   "notes": "Release evidence only. Do not store credentials, tokens, private email addresses, recovery codes, or other secrets here.",
+  "owner_release_waiver": {
+    "authorized_by": "product_owner",
+    "authorized_at_jst": "2026-09-13T05:49:21+09:00",
+    "accepted_risk": true,
+    "scope": "Remove remaining product-owner manual Phase 6 field-validation tasks as pre-publication blockers for this V4 release.",
+    "reference": "V4_RELEASE_OWNER_WAIVER.md"
+  },
   "gates": {
-    "A": {"status": "pending", "title": "Authenticated emergency-action matrix"},
-    "B": {"status": "pending", "title": "Account switching and stale-state clearing"},
-    "C": {"status": "pending", "title": "True cross-congregation field isolation"},
-    "D": {"status": "pending", "title": "Physical Android Chrome at 100% zoom"},
-    "E": {"status": "pending", "title": "Physical Android Brave at 100% zoom"},
-    "F": {"status": "pending", "title": "Installed Android PWA acceptance"},
-    "G": {"status": "pending", "title": "Issue #68 linked-activity multi-account field validation"}
+    "A": {"status": "waived", "title": "Authenticated emergency-action matrix", "waiver_reason": "Product owner accepted publication without requiring the remaining manual safe-target action/session matrix before release."},
+    "B": {"status": "waived", "title": "Account switching and stale-state clearing", "waiver_reason": "Product owner accepted publication without additional manual A-B-A account-switch field validation before release."},
+    "C": {"status": "waived", "title": "True cross-congregation field isolation", "waiver_reason": "Product owner accepted publication without waiting for a legitimate second populated congregation topology."},
+    "D": {"status": "waived", "title": "Physical Android Chrome at 100% zoom", "waiver_reason": "Product owner accepted publication without requiring an additional physical-device Chrome field run before release."},
+    "E": {"status": "waived", "title": "Physical Android Brave at 100% zoom", "waiver_reason": "Product owner accepted publication without requiring an additional physical-device Brave field run before release."},
+    "F": {"status": "waived", "title": "Installed Android PWA acceptance", "waiver_reason": "Product owner accepted publication without requiring an additional installed-PWA physical-device field run before release."},
+    "G": {"status": "waived", "title": "Issue #68 linked-activity multi-account field validation", "waiver_reason": "Product owner accepted publication without requiring the remaining linked-activity multi-account manual field matrix before release."}
   }
 }

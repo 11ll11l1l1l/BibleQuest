@@ -25,7 +25,7 @@ for (const arg of args) {
 }
 
 const expectedGates = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const allowedStatus = new Set(['pending', 'pass', 'fail']);
+const allowedStatus = new Set(['pending', 'pass', 'fail', 'waived']);
 const emergencyActions = ['authorization', 'force_sign_out', 'suspend_reactivate', 'set_temp_password', 'change_email'];
 const linkedActivityScenarios = [
   'journey_group_create_join_persistence',
@@ -115,6 +115,10 @@ for (const gateId of expectedGates) {
     }
   }
 
+  if (gate.status === 'waived' && !nonEmpty(gate.waiver_reason)) {
+    fail(`Gate ${gateId} WAIVED requires waiver_reason`);
+  }
+
   if (gate.status === 'fail' && !nonEmpty(gate.failure_summary)) fail(`Gate ${gateId} FAIL requires failure_summary`);
 
   if (gateId === 'A' && gate.status === 'pass') {
@@ -177,9 +181,20 @@ for (const gateId of expectedGates) {
   }
 }
 
+const waivedGates = expectedGates.filter(id => evidence.gates[id].status === 'waived');
+if (waivedGates.length) {
+  const waiver = evidence.owner_release_waiver;
+  if (!waiver || typeof waiver !== 'object' || Array.isArray(waiver)) fail('waived gates require owner_release_waiver metadata');
+  if (waiver.authorized_by !== 'product_owner') fail('owner_release_waiver.authorized_by must be product_owner');
+  if (!isJstTimestamp(waiver.authorized_at_jst)) fail('owner_release_waiver.authorized_at_jst must be an explicit JST timestamp');
+  if (waiver.accepted_risk !== true) fail('owner_release_waiver.accepted_risk must be true');
+  if (!nonEmpty(waiver.reference)) fail('owner_release_waiver.reference is required');
+  if (!nonEmpty(waiver.scope)) fail('owner_release_waiver.scope is required');
+}
+
 if (requireComplete) {
-  const incomplete = expectedGates.filter(id => evidence.gates[id].status !== 'pass');
-  if (incomplete.length) fail(`production promotion blocked; field gates not PASS: ${incomplete.join(', ')}`);
+  const incomplete = expectedGates.filter(id => !['pass', 'waived'].includes(evidence.gates[id].status));
+  if (incomplete.length) fail(`production promotion blocked; field gates neither PASS nor owner-WAIVED: ${incomplete.join(', ')}`);
 }
 
 console.log(`BibleQuest V4 Phase 6 field evidence validated (${requireComplete ? 'production-complete' : 'schema/readiness'} mode): ${path.relative(root, evidencePath) || path.basename(evidencePath)}.`);
