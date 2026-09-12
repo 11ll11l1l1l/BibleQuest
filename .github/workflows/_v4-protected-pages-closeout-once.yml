@@ -51,7 +51,7 @@ jobs:
               'Admin Operations remains intact.',
               'Content Review remains intact.',
               'Congregation remains intact.',
-              'Diagnostics/recovery remains intact.',
+              'Diagnostics/recovery remain intact.',
               'Ministry Hub / Workspace remains intact and coherent with the V4 family.'
           ]
           for item in items:
