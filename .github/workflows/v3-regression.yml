@@ -2,9 +2,6 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - verify/v4-games-avatar-cd5d1-20260912
   pull_request:
     branches:
       - main
@@ -19,13 +16,6 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: cd5d16215236ab0f3541eac7029b10a336e2bdd2
-          fetch-depth: 0
-      - name: Assert exact v4 games/avatar candidate
-        run: |
-          actual=$(git rev-parse HEAD)
-          if [ "$actual" != "cd5d16215236ab0f3541eac7029b10a336e2bdd2" ]; then echo "SHA mismatch: expected cd5d16215236ab0f3541eac7029b10a336e2bdd2, got $actual"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
