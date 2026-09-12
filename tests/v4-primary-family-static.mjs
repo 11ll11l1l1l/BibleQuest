@@ -58,7 +58,7 @@ for(const label of shortcutLabels){
   assert.ok(at>previous,`Home shortcut rail must retain requested order; missing/out-of-order ${label}.`);
   previous=at;
 }
-for(const hook of['data-home-rail','data-home-daily','data-home-assignments','data-open-reader']) assert.ok(home.includes(hook)||bootstrap.includes(hook),`Home family contract lost ${hook}.`);
+for(const hook of['data-home-rail','data-home-daily','data-home-assignments','data-home-rail-action']) assert.ok(home.includes(hook),`Home family contract lost ${hook}.`);
 
 for(const hook of['data-open-reader','data-open-study','data-open-deep-questions','data-open-bible-world','data-open-open-review','data-open-private-notes','data-open-cloud-notes'])
   assert.ok(learn.includes(hook),`Learn hub lost required entry point ${hook}.`);
