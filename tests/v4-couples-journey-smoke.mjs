@@ -54,7 +54,10 @@ async function runMobile(){
   await page.locator('[data-journey-safety-priority]').waitFor({state:'visible'});
   assert(await page.locator('[data-journey-listen]').count()===0&&await page.locator('[data-journey-repair]').count()===0,'Safety-priority result must not make ordinary couple exercises the primary next action.');
   stored=await localState(page);assert(stored.journeyAssessments?.length===2&&stored.journeyAssessments.at(-1)?.safetyPriority===true,'Safety-priority summary did not persist.');
-  await page.locator('[data-couples-go="dashboard"]').click();
+  // The journey summary screen intentionally offers two routes back to the
+  // Couples dashboard ("Done" and "Back to Couples"), so this locator must be
+  // explicit about which one it drives instead of failing strict-mode.
+  await page.locator('[data-couples-go="dashboard"]').first().click();
   await page.locator('.bq-couples-journey-latest').waitFor();
   assert(((await page.locator('.bq-couples-journey-latest').textContent())||'').includes('Safety-first reflection saved'),'Dashboard did not surface the latest journey summary safely.');
   await page.reload({waitUntil:'networkidle'});await page.locator('.bq-couples-journey-latest').waitFor();
