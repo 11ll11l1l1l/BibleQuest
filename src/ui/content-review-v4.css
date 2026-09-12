@@ -1,0 +1,26 @@
+/* BibleQuest V4 — Content Review. Presentation only; reviewer authority and decisions remain V3-owned. */
+[data-content-review-view]{display:grid;gap:var(--space-4)}
+[data-content-review-view]>.bq-panel,[data-content-review-list]>.bq-panel,[data-content-review-item]{margin-top:0}
+[data-content-review-view]>.bq-panel:first-child{position:relative;overflow:hidden;padding:clamp(22px,3.5vw,34px);border-color:color-mix(in srgb,var(--forest-700) 22%,var(--line-200));box-shadow:var(--shadow-2)}
+[data-content-review-view]>.bq-panel:first-child::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--forest-700)}
+[data-content-review-view]>.bq-panel:first-child h1{font-family:var(--font-display);font-size:clamp(28px,5vw,40px);line-height:1.04;color:var(--forest-900)}
+[data-content-review-toolbar]{box-shadow:none;background:color-mix(in srgb,var(--surface-subtle) 32%,var(--surface-raised))}
+[data-content-review-tabs]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-2);padding:4px;border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-subtle)}
+[data-content-review-tabs] button{width:100%}
+[data-content-review-list]{display:grid;gap:var(--space-4)}
+[data-content-review-item]{position:relative;border-color:color-mix(in srgb,var(--ink-500) 22%,var(--line-200));box-shadow:none}
+[data-content-review-item] h3{margin:0 0 var(--space-4);font-size:clamp(17px,2.6vw,21px);line-height:1.35;color:var(--ink-900)}
+[data-content-review-item][data-content-review-state="pending"]{border-left:4px solid var(--warning)}
+[data-content-review-item][data-content-review-state="include"]{border-left:4px solid var(--success)}
+[data-content-review-item][data-content-review-state="exempt"]{border-left:4px solid var(--amber-600)}
+[data-content-review-item][data-content-review-state="remove"]{border-left:4px solid var(--danger)}
+[data-content-review-actions]{margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--line-200)}
+[data-content-review-actions] textarea{margin-top:var(--space-2)}
+[data-content-review-actions] .bq-chip-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2);margin-top:var(--space-3)}
+[data-content-review-actions] button{width:100%;min-height:var(--tap-target)}
+[data-content-review-decide="remove"]{border-color:color-mix(in srgb,var(--danger) 54%,var(--line-200));color:var(--danger)}
+[data-content-review-view] [role="alert"]{padding:var(--space-3);border-left:4px solid var(--danger);background:color-mix(in srgb,var(--danger) 5%,var(--surface-raised))}
+[data-content-review-view] [role="status"]{padding:var(--space-3);border-left:4px solid var(--success);background:color-mix(in srgb,var(--success) 5%,var(--surface-raised))}
+@media(max-width:640px){[data-content-review-tabs],[data-content-review-actions] .bq-chip-row{grid-template-columns:1fr}[data-content-review-view] .bq-form-grid{grid-template-columns:1fr}}
+@media(prefers-contrast:more){[data-content-review-view]>.bq-panel:first-child,[data-content-review-toolbar],[data-content-review-item],[data-content-review-tabs]{border-color:var(--ink-700);background:var(--surface-raised);box-shadow:none}[data-content-review-item]{border-left-width:5px}}
+@media(prefers-reduced-motion:reduce){[data-content-review-view] *,[data-content-review-view] *::before,[data-content-review-view] *::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
