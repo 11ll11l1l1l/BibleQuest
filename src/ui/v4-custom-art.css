@@ -107,6 +107,21 @@
   min-height:116px;
 }
 
+/* Keep the retained v3 More sprite measurable for exact regression contracts
+   while the new v4 PNG is the only visible artwork. */
+.bq-more-icon-wrap {
+  position:relative;
+}
+
+.bq-more-icon-legacy {
+  position:absolute;
+  inset:0 auto auto 0;
+  width:32px;
+  height:32px;
+  opacity:0;
+  pointer-events:none;
+}
+
 @media (max-width:520px) {
   .bq-brand-art { width:40px; height:40px; flex-basis:40px; }
   .bq-nav-art { width:27px; height:27px; }
