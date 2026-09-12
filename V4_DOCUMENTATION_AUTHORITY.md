@@ -1,61 +1,36 @@
-# BibleQuest V4 Documentation Authority
+# BibleQuest V4 Documentation Authority — Frozen
 
 Updated: 2026-09-13 JST
+Status: **HISTORICAL V4 DOCUMENTATION MAP**
 
-This file prevents stale V4 checkpoint/release documents from being mistaken for the current project state.
+V4 development is complete. This file no longer defines an active development branch or future release sequence.
 
-## Mandatory reading order
+For current cross-version work, read:
 
-For any question or action involving current BibleQuest V4 status, remaining work, release readiness, active development, or next steps:
+1. `DOCUMENTATION_INDEX.md` — current documentation authority across versions.
+2. `BACKUP_MANIFEST.md` — canonical release backups and exact SHAs.
+3. `V4_ACTIVE_STATUS.md` — final frozen V4 production/acceptance record.
+4. `docs/archive/v4/README.md` — V4 archive map.
+5. `docs/V5_STARTING_POINT.md` — next-version handoff; V5 is not started until explicitly initialized.
 
-1. **`V4_ACTIVE_STATUS.md` — CURRENT AUTHORITY**
-   - official active branch/current development line;
-   - current phase state;
-   - current blockers and next work;
-   - current release-candidate policy;
-   - determines whether V4 is actively developing, frozen, release-ready, or production-live.
+## How to read historical V4 files
 
-2. **`V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — REQUIREMENTS / RELEASE-BLOCKING INVENTORY**
-   - preserves requested UX/features and acceptance requirements;
-   - unchecked applicable requirements remain release blockers;
-   - current-status interpretation always defers to `V4_ACTIVE_STATUS.md`.
+- `V4_ACTIVE_STATUS.md` is the final V4 release record and wins over earlier V4 checkpoint/status text.
+- `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` preserves requirements and historical acceptance tracking. Earlier unchecked/open wording does not reopen the accepted RC3 release.
+- `DEVELOPMENT_PLAN_V4.md` preserves original modernization architecture and phase planning; its phase sequence is historical.
+- `V4_RC1_*` records certify RC1 only.
+- Phase/checkpoint certification documents remain evidence only for their named scope/SHA.
+- `RELEASE_FIELD_VALIDATION_V4.md` retains field procedures; manual Phase 6 Gates A-G were OWNER-WAIVED for the final V4 release, not PASS.
+- `V4_PHASE6_FIELD_EVIDENCE.json` and `V4_RELEASE_OWNER_WAIVER.md` preserve that waiver disposition.
 
-3. **`DEVELOPMENT_PLAN_V4.md` — ORIGINAL ARCHITECTURE / PROGRAM REFERENCE**
-   - preserves the original modernization plan, architecture boundaries, and historical phase structure;
-   - its older phase numbering must not be used to infer the current post-RC1 phase or release state;
-   - current execution sequencing is controlled by `V4_ACTIVE_STATUS.md`.
+## Final V4 identities
 
-4. **Phase/checkpoint certification files — SCOPE-SPECIFIC EVIDENCE**
-   - Home, Calendar, Assignments, Daily Journey, artwork, Section H, Section I and later phase certifications remain valid for the exact scope/SHA they name;
-   - they do not override the active-status file and do not automatically certify later integration bytes.
+- completed integration line: `v4/modern-ui-overhaul` — historical/frozen, not a V5 baseline
+- final promoted application candidate: `7de1c53ddd33c028498b35bee77be30e56878dec`
+- production merge: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
+- canonical production backup: `archive/v4.0-production-20260913`
+- accepted V4 production: `https://mybiblequest.pages.dev`
 
-5. **RC1 records — HISTORICAL EXACT-SHA EVIDENCE**
-   - `V4_RC1_AUTOMATED_CERTIFICATION.md`, `V4_RC1_FIELD_ACCEPTANCE.md`, PR #151 and RC1 preview records certify RC1 `cf58fa2e467f70f1c4a963b4ca50e33f11da9983` only;
-   - official V4 development continued after RC1;
-   - RC1 is no longer the current release candidate unless the user explicitly orders a return to it;
-   - RC1 green checks must never be presented as certification of post-RC1 application bytes.
+## Rule going forward
 
-6. **Issue #124 / PR comments / chat summaries — COORDINATION CONTEXT**
-   - useful for discussion/history;
-   - repository branch/commit/CI evidence plus the authority chain above wins when discussion text is stale.
-
-## Official current line
-
-The official development line is `v4/modern-ui-overhaul`.
-
-At the documentation rebase snapshot it was at `44728fc4ff543318202f76564606c1f1c4dc7ef6`, with Phase 5 Help/Tutorial stabilization active after post-RC1 Phases 1-3 and the explicit Phase 4 Leader Center skip.
-
-Always inspect the live branch head before quoting a SHA as current.
-
-## Rules for future documentation changes
-
-- Any change that materially alters current phase status, remaining blockers, official scope, or release-candidate identity must update `V4_ACTIVE_STATUS.md` in the same serialized development stream.
-- Do not create a second independent “current release status” narrative in another file. Link/defer to `V4_ACTIVE_STATUS.md` instead.
-- Historical certification files remain historical exact-SHA evidence; do not rewrite them to pretend they certify newer bytes.
-- If a new RC is frozen, update `V4_ACTIVE_STATUS.md` first, then the acceptance checklist and new RC certification records.
-- If the user explicitly changes scope (skip/restore/add/remove a phase), record that decision in `V4_ACTIVE_STATUS.md`.
-- Before answering “What is left?”, “Is V4 done?”, “Is it release-ready?”, “What is being developed?”, or similar questions, read `V4_ACTIVE_STATUS.md` and inspect the live integration branch rather than inferring from RC1 records.
-
-## Current release interpretation
-
-The post-RC1 line is the official V4 program. A new exact candidate (normally RC2 or later) must be frozen and recertified after active post-RC1 work plus live/integrated verification are complete. RC1 is preserved as historical evidence and fallback information, not the default promotion target.
+Do not create or update a V4 document that claims to be the current development authority. New development belongs to a new V5 authority/status structure created from the cleaned `main` baseline. Historical V4 files should only be changed for correction, archival clarification, or security-critical maintenance that explicitly records why the historical record changed.

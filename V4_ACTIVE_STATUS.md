@@ -1,122 +1,89 @@
-# BibleQuest V4 Official Active Status
+# BibleQuest V4 Final Status — Frozen
 
 Updated: 2026-09-13 JST
-Execution model: one serialized development stream
-Official active integration branch: `v4/modern-ui-overhaul`
-Tracking issue: #124
+Status: **PRODUCTION COMPLETE / FROZEN**
 
-## Authority
+> V4 is no longer an active development program. This file is the final V4 release record. For cross-version documentation authority, use `DOCUMENTATION_INDEX.md`. For backups, use `BACKUP_MANIFEST.md`. For the next version handoff, use `docs/V5_STARTING_POINT.md`.
 
-This file is the single authoritative source for current BibleQuest V4 release state. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Historical files certify only their named scope/SHA.
+## Final production release
 
-## Current production release
+BibleQuest V4 RC3 was promoted and accepted in production.
 
-BibleQuest V4 RC3 is **PROMOTED TO PRODUCTION / AUTOMATED POST-PROMOTION ACCEPTANCE GREEN**.
-
-Production promotion identity:
-
-- frozen RC branch: `release/v4-rc3`
-- exact RC application SHA: `7de1c53ddd33c028498b35bee77be30e56878dec`
-- promotion PR: #179 — `release(v4): promote RC3 Videos update to production`
-- production merge SHA: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
+- exact promoted application candidate: `7de1c53ddd33c028498b35bee77be30e56878dec`
+- frozen candidate branch: `release/v4-rc3`
+- production promotion PR: #179
+- exact production merge SHA: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
 - authoritative Cloudflare project: `mybiblequest`
 - canonical production host: `https://mybiblequest.pages.dev`
+- canonical V4 application backup: `archive/v4.0-rc3-app-20260913`
+- canonical V4 production backup: `archive/v4.0-production-20260913`
 
-The exact RC3 candidate passed all applicable automated promotion gates before merge:
+## Automated release evidence
+
+The exact RC3 candidate passed the applicable promotion gates before merge:
 
 - accumulated regression run `34720118393` — PASS
 - V4 Section H responsive/accessibility/performance/PWA run `34720118381` — PASS
 - V4 Section I security/privacy run `34720118364` — PASS
 - V4 protected-page audit run `34720118382` — PASS
 - V4 whole-app browser audit run `34720118387` — PASS
-- V4 Phase 6 field-evidence release validator run `34720118344` — PASS under the recorded owner-waiver semantics
+- V4 Phase 6 release-evidence validator run `34720118344` — PASS under the recorded owner-waiver semantics
 - Cloudflare exact-SHA preview smoke run `34720118302` — PASS
 
 Post-promotion production acceptance also passed:
 
-- authoritative `Cloudflare Pages: mybiblequest` check `103625153154` — SUCCESS for exact production merge SHA `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
+- authoritative `Cloudflare Pages: mybiblequest` deployment check `103625153154` — SUCCESS for production merge SHA `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
 - canonical production smoke run `34720411662` — PASS
-- production smoke covered exact-SHA deployment identity, host readiness, maintained critical/deep routes and browser-state handling, PWA install behavior, offline shell behavior, and operational recovery
+- covered exact-SHA identity, host readiness, critical/deep routes and state handling, PWA/offline behavior, and recovery
 
-The legacy `Cloudflare Pages: biblequest` project is not V4 release authority.
+The legacy `Cloudflare Pages: biblequest` project is not V4 production authority.
 
-## RC3 scope note: Videos consolidation
-
-RC3 includes the post-RC2 Videos consolidation. Live Recordings and Media Library were two routes rendering the same underlying congregation media and are now presented through one Videos experience.
-
-Leaders/pastors/admins can curate videos through the Videos page. Authorization remains server-side: `bible_media_library` RLS requires `created_by = auth.uid()` and `private.bible_can_review_content(congregation_id)` for inserts, while updates are also gated by `private.bible_can_review_content(congregation_id)`. The UI does not treat form visibility as authorization and does not surface raw database/RLS errors to users.
-
-Playback remains under the existing single Audio owner. The implementation uses one selected-player instance rather than one persistent iframe per video.
-
-`src/app/media-library.js` / `src/features/media-library/index.js` remain as a certified, still-tested architectural owner with no current live route using them. Removing that dead owner is a post-release cleanup item only and is not part of the RC3 production acceptance scope.
-
-## Product-owner release decision
-
-On 2026-09-13 the product owner explicitly directed that remaining tasks requiring personal/manual field execution be removed as pre-publication blockers so V4 could proceed to publication. This decision is recorded in `V4_RELEASE_OWNER_WAIVER.md`.
-
-The Phase 6 manual field gates A-G are therefore **OWNER-WAIVED for this release**. `WAIVED` is not `PASS` and must never be represented as field evidence. The detailed field procedures remain available for optional post-release validation and later regression work.
-
-The previously required server-side `main` branch-protection/ruleset setup is also **OWNER-WAIVED as a pre-publication blocker** for this release. Promotion still used the normal PR path and the full available automated release gates.
-
-## Phase state
+## Final V4 phase disposition
 
 - Phase 1 — Assignment privacy tightening: IMPLEMENTED / LIVE RLS VERIFIED.
-- Phase 2 — Admin emergency user management: IMPLEMENTED / DEPLOYED. Admin Console access was manually confirmed working by the product owner; the remaining destructive/recovery/session matrix is owner-waived for this release.
+- Phase 2 — Admin emergency user management: IMPLEMENTED / DEPLOYED; Admin Console access manually confirmed.
 - Phase 3 — Privacy-safe 30-minute presence: IMPLEMENTED / LIVE VERIFIED.
-- Phase 4 — Leader Center: OFFICIALLY SKIPPED by product-owner instruction.
+- Phase 4 — Leader Center expansion: INTENTIONALLY SKIPPED by product-owner instruction.
 - Phase 5 — Tutorial + Help Center: CLOSED / ACCUMULATED GREEN.
-- Phase 6 — Integrated verification: AUTOMATED/LIVE SUPPORTING EVIDENCE GREEN; manual Gates A-G OWNER-WAIVED for this release.
-- Phase 7 — RC convergence and production promotion: COMPLETE / RC3 PROMOTED / AUTOMATED PRODUCTION ACCEPTANCE GREEN.
+- Phase 6 — Integrated verification: automated/live supporting evidence GREEN; manual Gates A-G OWNER-WAIVED for this release.
+- Phase 7 — Production promotion: COMPLETE / RC3 ACCEPTED.
 
-## Phase 6 gate disposition
+## Manual field-gate disposition
 
-`V4_PHASE6_FIELD_EVIDENCE.json` is the machine-readable release manifest. For this owner-directed release:
+The following V4 Phase 6 gates were explicitly **OWNER-WAIVED**, not PASS:
 
-- Gate A — authenticated emergency-action matrix: OWNER-WAIVED
-- Gate B — browser account switching / stale-state clearing: OWNER-WAIVED
-- Gate C — true cross-congregation field isolation: OWNER-WAIVED
-- Gate D — physical Android Chrome at 100% zoom: OWNER-WAIVED
-- Gate E — physical Android Brave at 100% zoom: OWNER-WAIVED
-- Gate F — genuinely installed Android PWA acceptance: OWNER-WAIVED
-- Gate G — linked-activity multi-account field validation: OWNER-WAIVED
+- A — authenticated emergency-action matrix
+- B — account switching / stale-state clearing
+- C — true cross-congregation field isolation
+- D — physical Android Chrome 100% zoom
+- E — physical Android Brave 100% zoom
+- F — installed Android PWA acceptance
+- G — linked-activity multi-account field validation
 
-No waived gate may be retroactively described as field-tested unless it is genuinely executed and the evidence manifest is updated.
+`V4_PHASE6_FIELD_EVIDENCE.json` and `V4_RELEASE_OWNER_WAIVER.md` retain the machine-readable and decision records. Never describe a waived gate as field-tested unless it is genuinely executed later and separately recorded.
 
-## Current release readiness
+## RC3 scope note
 
-V4 is **RELEASED TO PRODUCTION** on the authoritative Cloudflare `mybiblequest` project with automated post-promotion acceptance green.
+RC3 includes the final Videos consolidation: the former Live Recordings and Media Library presentation was unified into one Videos experience, with leader/pastor/admin curation protected by server-side media authorization. Playback continues through the shared single-player ownership model, and raw database/RLS errors are not surfaced to users.
 
-There is no remaining pre-publication blocker for RC3. Any subsequent work is post-release maintenance, cleanup, hardening, or new development and must start from the accepted production state rather than reopening RC3 history.
+The retained `src/app/media-library.js` and `src/features/media-library/index.js` files are tested architectural leftovers with no current live route. Their removal is cleanup debt and must update the relevant architecture/regression contracts in the same reviewed change.
 
-## Security / backend note
+## Historical references
 
-Existing automated and live security/privacy evidence remains mandatory. The owner waiver does not authorize weakening RLS, authentication, authorization, audit-secret hygiene, or automated security checks. Any newly demonstrated privacy/auth/data-isolation defect remains release-blocking for a future candidate until corrected.
+- `docs/archive/v4/README.md` — V4 archive map.
+- `V4_DOCUMENTATION_AUTHORITY.md` — historical V4 documentation authority model.
+- `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — historical acceptance checklist.
+- `RELEASE_FIELD_VALIDATION_V4.md` — retained field procedures.
+- `V4_PHASE6_FIELD_EVIDENCE.json` — final waiver/evidence manifest.
+- `V4_RELEASE_OWNER_WAIVER.md` — explicit owner release decision.
 
-A live post-RC3 check confirmed that `public.bible_media_library` has RLS enabled and that media read/insert/update policies remain scoped through congregation membership and `private.bible_can_review_content(congregation_id)` as expected by the Videos feature.
+Historical V4 documents may describe an earlier phase or blocker. They do not override this final release state.
 
-The Supabase security advisor currently reports leaked-password protection as disabled. This is recorded as a post-release authentication-hardening follow-up; it was not an existing RC3 gate and no production auth behavior was changed during RC3 promotion solely to clear that advisory.
+## V3 rollback reference
 
-## Historical RCs
+- canonical V3 archive: `archive/v3.71-final-20260913`
+- exact SHA: `c631bea8d5177a9a2ff68139cb104b6fbf26015b`
 
-Historical only; do not promote by default:
+## Closeout rule
 
-- RC1 branch: `release/v4-rc1`, SHA `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`
-- RC2 production line is superseded by RC3.
-
-## Rollback reference
-
-Retain as a safety reference after V4 acceptance unless intentionally retired in a later maintenance change:
-
-- branch: `release/v3.71-japanese-furigana`
-- SHA: `c631bea8d5177a9a2ff68139cb104b6fbf26015b`
-
-## Development safety rules
-
-- Keep one serialized integration stream.
-- Repository/CI/live-environment evidence overrides stale summaries.
-- Never fabricate field evidence; use `OWNER-WAIVED` when an explicit product-owner waiver applies.
-- Do not weaken automated security/privacy/authorization checks to obtain green status.
-- Preserve single-owner architecture and privacy/isolation contracts.
-- Historical checkpoint documents certify only their exact scope/SHA.
-- Any later document using `current`, `release-ready`, `final candidate`, or `remaining blockers` must defer to this file.
-- When blockers/scope/RC identity materially change, update this file in the same serialized stream.
+Do not add new V4 feature development to this status file. Any next-version work starts from the cleaned current `main` baseline under a new V5 authority/status file. V3/V4 archive branches are read-only by project policy.

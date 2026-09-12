@@ -1,106 +1,50 @@
-# BibleQuest — parity rebuild
+# BibleQuest
 
-Active rebuild branch: `rebuild-v2-clean`
+BibleQuest is a Bible learning, study, family, community and ministry web application with games, assignments, Bible reading, congregation features, administrative tools, PWA/offline support and related learning experiences.
 
-BibleQuest is being rebuilt on a small explicit runtime while preserving the complete current original application as a resource and compatibility source. The objective is **feature parity without returning to the old all-at-once startup chain**.
+## Current production
 
-## Deployment for this rebuild
+**BibleQuest V4 RC3 is the active production release.**
 
-GitHub is the source of truth for the parity rebuild.
+- production host: `https://mybiblequest.pages.dev`
+- exact promoted V4 application candidate: `7de1c53ddd33c028498b35bee77be30e56878dec`
+- exact production merge: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
+- final V4 production/acceptance status: `V4_ACTIVE_STATUS.md`
 
-GitHub Pages: `https://11ll11l1l1l.github.io/BibleQuest/`
+V4 has completed automated post-production acceptance. Manual Phase 6 Gates A-G were explicitly owner-waived for that release and must not be described as field-test PASS results.
 
-Do not make Cloudflare changes as part of this rebuild. `main` remains separate from the clean/parity branch until the replacement has been validated.
+## Before changing anything
 
-## Architecture
+Read these in order:
 
-Root `index.html` boots only the rebuilt host:
+1. `DOCUMENTATION_INDEX.md` — which documentation is current versus historical.
+2. `BACKUP_MANIFEST.md` — canonical frozen V3/V4 backup branches and exact SHAs.
+3. `V4_ACTIVE_STATUS.md` — final V4 production record.
+4. `docs/V5_STARTING_POINT.md` — clean handoff rules before V5 development begins.
 
-- `bq2.js` — shell, hash routing, local state, Daily Journey
-- `bq2-reader.js` — BSB + Tagalog Bible reader
-- `bq2-games.js` — quizzes, group play, kids games
-- `bq2-bookquiz.js` — large on-demand per-book recall banks
-- `bq2-grow.js` — Bible World, Transformation, profile/backup
-- `bq2-study.js` — stories, wisdom, deep questions, notes, recordings, family tools
-- `bq2-parity.js` — original-style home and complete feature hub
-- `bq2-parity.css` — scoped visual parity layer using original design language/assets
-- `bq2-sw.js` — clean service worker
+## Version archives
 
-The latest original `main` resource tree is also retained on the rebuild branch. It supplies artwork, data, translation/context resources, standalone tools, cloud/community modules, and the complete compatibility application.
+- V3 archive: `docs/archive/v3/README.md`
+- V4 archive: `docs/archive/v4/README.md`
+- archive policy/index: `docs/archive/README.md`
 
-## Complete original compatibility mode
+Historical V3/V4 documents intentionally remain in their existing paths where tests, workflows, architecture validators or old links may reference them. Do not treat their old phase status as current simply because the files remain at repository root.
 
-`classic.html` preserves the latest original BibleQuest feature chain and visual system for capabilities that have not yet been rewritten natively.
+## Development state
 
-It intentionally does **not** load `pwa-runtime.js`, so it cannot replace the clean host service worker. The clean root remains the deployment/runtime authority.
+V4 is frozen as the accepted production baseline. V5 is **not started yet**.
 
-Standalone original tools remain independently accessible, including:
+V5 should begin only after the release/archive cleanup is merged to `main`. Create a dedicated V5 integration branch and new V5 authority/status documentation from that cleaned `main` baseline; do not develop from an archive branch or reactivate a historical V3/V4 status file.
 
-- Transformation full assessment
-- Psychometrics
-- Content Review
-- Admin
-- Admin Operations
-- Reset/recovery tools
+## Safety rules
 
-See `PARITY_MATRIX.md` for the comprehensive original → rebuild mapping.
-
-## Clean native capabilities
-
-Already rewritten on the explicit runtime:
-
-- Daily Journey: Retrieve → Context → Learn → Apply → Reflect
-- XP, streaks, badges, local progress
-- full 66-book BSB reader
-- full 66-book Tagalog reader
-- Quick Recall, Context Challenge, Mixed Quest
-- large per-book Book Recall decks
-- Who Am I and Timeline games
-- Bible World progression
-- Transformation reflection/next-step guidance
-- Play Together pass-and-play
-- kids Memory Match, Hiragana Match, Bible Who Am I
-- Story Journey
-- Wisdom Situations
-- Deep Questions
-- private local notes
-- safe Recordings link library
-- Couples & Family discussion notes
-- local JSON backup/import/reset
-- mobile-first PWA/offline shell
-- professional original-style home using the original Pinoy/Japan artwork
-
-## Preserved original capabilities
-
-Capabilities not yet natively rewritten remain available through `classic.html` or their standalone pages rather than being removed. These include Japanese 口語訳/furigana, translation helpers, Verse Peek, STEPBible context, accounts/recovery/cloud sync, congregation/community, Journey Groups, Live Rooms, leaderboards, assignments, ministry, media, notifications, presence, teams, couples cloud, avatars, personality tools, tutorial/onboarding, reporting/moderation, diagnostics, accessibility, and administrative tools.
-
-This is deliberate transition architecture: **preserve first, rewrite cleanly second, remove compatibility only after equivalent behavior is validated.**
+- Keep one serialized integration stream for runtime changes.
+- Repository, CI and deployed-environment evidence override stale chat or historical documentation.
+- Preserve authentication, RLS, privacy/isolation and server-side authorization boundaries unless a reviewed versioned change intentionally replaces them.
+- Do not weaken valid automated tests merely to make a release green.
+- Preserve exact release backups until a later explicit retention decision.
+- Treat `archive/*` branches listed in `BACKUP_MANIFEST.md` as read-only by project policy.
 
 ## Validation
 
-Run from the repository root:
-
-```bash
-node scripts/validate-rebuild-v2.mjs
-```
-
-The parity validator checks:
-
-- clean root boot does not load legacy runtime scripts
-- parity CSS/JS and compatibility bridge exist
-- original feature resources and visual assets are retained
-- `classic.html` references valid local resources
-- `classic.html` cannot register the legacy service worker
-- standalone original tools remain present
-- clean JavaScript syntax
-- all 66 English BSB packs
-- all 66 Tagalog packs
-- listed per-book recall decks
-- parity service-worker resources
-- core capability entries in `PARITY_MATRIX.md`
-
-## Development rule
-
-Do not restore missing features by adding the original entire script chain back to root `index.html`. Migrate one capability group at a time behind an explicit module/interface, while `classic.html` protects feature availability during the transition.
-
-See `REBUILD_V2.md` and `PARITY_MATRIX.md` for the architecture and parity contracts.
+The repository still contains accumulated V3/V4-named validators and workflows because they protect current behavior. Their names are historical; their coverage remains useful until V5 deliberately migrates or replaces them with equivalent-or-stronger checks.
