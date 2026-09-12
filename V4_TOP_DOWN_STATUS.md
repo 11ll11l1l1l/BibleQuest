@@ -10,8 +10,8 @@
 ## Assigned queue
 
 1. Gate 8 — Ministry + Assignments + Workspace + Notifications — **CERTIFIED**
-2. Gate 9 — Bible World + Progress + Personal Mission + Calendar — **NEXT**
-3. Gate 10 — Study family — pending
+2. Gate 9 — Bible World + Progress + Personal Mission + Calendar — **CERTIFIED**
+3. Gate 10 — Study family — **ACTIVE / NEXT IMPLEMENTATION**
 
 Do not enter Lane B tranches 11–13 unless the captain explicitly reassigns them.
 
@@ -19,31 +19,51 @@ Do not enter Lane B tranches 11–13 unless the captain explicitly reassigns the
 
 ```text
 LANE: A
-TRANCHE: 8 — Ministry + Assignments + Workspace + Notifications
-BASE: 1a0ad250dbceeb33e69f0eeb1f3dec26ff57cceb
-CERTIFIED CANDIDATE: 6be293d00ab419b0543bb6b7827e891097e858f8
-CHECKPOINT: release/v4-ministry-ops @ 6be293d00ab419b0543bb6b7827e891097e858f8
-STATE: CERTIFIED / NEXT GATE 9
-OWNED FILES: src/ui/ministry-ops-v4.css; tests/v4-ministry-ops-static.mjs; .github/workflows/v4-gate8-ministry-verify.yml; index.html (V4 stylesheet registration)
-DELIBERATELY UNTOUCHED: src/features/ministry-hub/index.js; src/features/assignments/index.js; src/features/workspace/index.js; src/features/notification-center/index.js; src/app/**; src/core/**; Lane B runtime files; V4 foundation; shared icons
-TARGETED VERIFICATION: Gate 8 workflow run 34663369219 passed build/static preservation contract, Gate 8 architecture validators, Gate 8 edge regressions, browser smokes and mobile-width regression.
-FULL CERTIFICATION: accumulated regression run 34663418384 passed Cloudflare build, all accumulated architecture validators, all accumulated edge regressions, guarded harness syntax, and the complete accumulated browser/mobile suite on exact SHA 6be293d00ab419b0543bb6b7827e891097e858f8.
+TRANCHE: 9 — Bible World + Progress + Personal Mission + Calendar
+BASE CHECKPOINT: release/v4-ministry-ops @ 6be293d00ab419b0543bb6b7827e891097e858f8
+CERTIFIED CANDIDATE: 31951dc82095bb4b6161913fbd3f427f0c0648ea
+CHECKPOINT: release/v4-journey @ 31951dc82095bb4b6161913fbd3f427f0c0648ea
+STATE: CERTIFIED / NEXT GATE 10
+OWNED FILES: src/ui/journey-v4.css; tests/v4-journey-static.mjs; .github/workflows/v4-gate9-journey-verify.yml; index.html (one V4 stylesheet registration)
+DELIBERATELY UNTOUCHED: src/features/bible-world/index.js; src/features/progress/index.js; src/features/mission/index.js; src/features/calendar/index.js; their service/state/scoring/persistence owners; Lane B runtime files; V4 foundation; shared icons
+TARGETED VERIFICATION: Gate 9 workflow run 34664252703 passed build/static preservation contract, Gate 9 architecture validators, Gate 9 edge/presentation regressions, browser smokes and final mobile-width regression.
+FULL CERTIFICATION: accumulated regression run 34664306245 passed Cloudflare build, all accumulated architecture validators, all accumulated edge regressions, guarded harness syntax, and the complete accumulated browser/mobile suite on exact SHA 31951dc82095bb4b6161913fbd3f427f0c0648ea.
 OPEN FAILURES: none.
 OVERLAP RISK: low. Lane B remains isolated on v4/bottom-up-tranches and owns tranches 13→11.
-NEXT SAFE ACTION: begin Gate 9 — Bible World + Progress + Personal Mission + Calendar — from the current certified Lane A baseline. Keep the Home assignment-notification behavior requirement as a separate Class C release blocker; Gate 8 CSS certification does not satisfy it.
+NEXT SAFE ACTION: Gate 10 — modernize Guided Study, Deep Questions, Story Journey, Wisdom Situations, Adaptive Learning and Open Smart Review as one mature/editorial/calm family while preserving each existing feature/content/session/reward owner byte-for-byte where possible.
 ```
 
-## Gate 8 implementation notes
+## Gate 9 implementation notes
 
-- `src/ui/ministry-ops-v4.css` establishes a restrained, professional, high-trust V4 presentation across Ministry Hub, Assignments, Bible Workspace and Notification Center.
-- Ministry Hub separates member and ministry-role tools, with deferred state retaining a text-visible `Pending` indicator.
-- Assignments receive task-first hierarchy, clearer response/review boundaries, responsive authoring forms and protected private-response presentation without changing assignment behavior.
-- Workspace remains explicitly private and emphasizes existing role/session and legacy-write safety boundaries.
-- Notification Center is presented as a denser inbox while unread state remains text/non-color visible.
-- Touch targets use the certified `var(--tap-target)` baseline; responsive treatment covers narrow phone widths; reduced-motion and increased-contrast modes are included.
-- The four feature-owner JavaScript files were intentionally not edited. `tests/v4-ministry-ops-static.mjs` protects existing hooks and byte-exact ownership against the prior certified checkpoint where available.
-- `.github/workflows/v4-gate8-ministry-verify.yml` is path-scoped so documentation-only commits do not cancel/restart verification. A successful targeted Gate 8 run dispatches the existing complete accumulated regression workflow automatically.
+- `src/ui/journey-v4.css` establishes one warm, aspirational Explore/Journey visual family without adding state or service ownership.
+- Bible World now reads as an intentional progression route: wide layouts use a two-column region map, the next region receives dominant emphasis, and region-card emoji glyphs are visually replaced by deliberate numbered route markers. Existing artwork assets and fallback behavior remain owned by the existing Bible World code.
+- Progress is presented as a growth dashboard with a dominant hero, clearer core metrics, transformation actions and badges without changing XP, streaks, counters, rewards or badge logic.
+- Personal Mission is presented as one focused next step without changing recommendation ownership or action routing.
+- Calendar is presented as a calm agenda/planner while preserving personal/congregation event ownership, recurrence metadata, sharing, edit and remove behavior.
+- Responsive rules cover tablet/narrow and compact phone layouts; certified touch-target, reduced-motion and increased-contrast behavior are retained.
+- `tests/v4-journey-static.mjs` protects critical data hooks and compares all four feature-owner files byte-for-byte with `release/v4-ministry-ops` whenever that checkpoint ref is available.
 
-## Release-blocking follow-on kept separate
+## Regression caught before Gate 9 certification
 
-The previously requested Home-page Assignment notification/integration is not completed by this CSS-only Gate 8 work. It remains a separate Class C release-blocking requirement that must reuse the existing Assignments source of truth and preserve targeting, privacy/RLS, due/overdue calculation, completion state and direct navigation into Assignments.
+The first V4 candidate changed the Bible World artwork frame away from its established 16:9 contract. `tests/v3-bible-world-artwork-smoke.mjs` failed with a measured 354x265.5 frame. The V4 stylesheet was corrected to retain `aspect-ratio:16/9` at all widths. No feature or service behavior was changed to fix it. The corrected candidate then passed both the targeted Gate 9 run and the full accumulated regression suite.
+
+Full evidence: `V4_GATE9_CERTIFICATION.md`.
+
+## Gate 10 scope prepared
+
+Gate 10 keeps six separate existing owners and gives them one compatible V4 editorial presentation layer:
+
+- Guided Study — `src/features/study/index.js`
+- Deep Questions — `src/features/deep-questions/index.js`
+- Story Journey — `src/features/story-journey/index.js`
+- Wisdom Situations — `src/features/wisdom-situations/index.js`
+- Adaptive Learning — `src/features/adaptive-learning/index.js`
+- Open Smart Review — `src/features/open-review/index.js`
+
+Protected behavior includes content provenance and doctrinal notices, lesson/session state, Reader handoffs, private responses, current XP/reward contracts, adaptive scheduling/selection logic, and open-review self-rating behavior.
+
+## Release-blocking follow-ons kept separate
+
+The requested Home-page Assignment notification/integration remains a separate Class C release-blocking requirement. Gate 8/9 presentation certification does not satisfy it.
+
+The requested Cebuano/Bisaya Bible translation remains a separate translation/data/content release requirement and must not be silently folded into Gate 10 presentation work.
