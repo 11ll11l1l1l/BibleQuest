@@ -40,6 +40,12 @@ const ICONS = Object.freeze({
     <rect x="3.5" y="4" width="7.5" height="16" rx="1.6"/>
     <rect x="13" y="4" width="7.5" height="16" rx="1.6"/>
     <path d="M7.25 8h0M16.75 8h0"/>
+  `,
+  calendar: `
+    <rect x="3.5" y="5" width="17" height="15" rx="2"/>
+    <path d="M3.5 9.5h17M8 3v4M16 3v4"/>
+    <circle cx="8" cy="14" r="1" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="14" r="1" fill="currentColor" stroke="none"/>
   `
 });
 
