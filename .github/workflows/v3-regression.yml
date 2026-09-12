@@ -2,6 +2,9 @@ name: BibleQuest v3 regression
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - verify/v4-phase5-help-8ddea-c-20260912
   pull_request:
     branches:
       - main
@@ -18,6 +21,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: 8ddeab8ddda3aa682dad18c3fb15006178d372db
+      - name: Assert exact v4 phase5-help candidate
+        run: |
+          actual=$(git rev-parse HEAD)
+          if [ "$actual" != "8ddeab8ddda3aa682dad18c3fb15006178d372db" ]; then echo "SHA mismatch"; exit 1; fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
