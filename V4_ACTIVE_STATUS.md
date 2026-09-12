@@ -1,3 +1,22 @@
+## Phase 3 — 30-minute presence indicator on Home
+
+Checkpoint: `release/v4-phase3-presence`, exact-SHA verified, full accumulated suite green (including full browser/mobile).
+
+**Real privacy finding, verified before writing code:** the existing `bible_presence` RLS policy let any authenticated congregation member read every raw presence row - other members' `user_id` included - not just a count. Same class of "member list exposed to compute an aggregate in JS" problem the governing plan warned against, confirmed directly from the migration SQL.
+
+**Implemented:**
+- Migration tightens raw `bible_presence` SELECT to ministry roles only (Leader Center); adds `public.bible_presence_active_count(congregation_id, window_minutes=30)`, a `SECURITY DEFINER` function that checks congregation membership server-side and returns only an integer count, window clamped to 1-1440 minutes.
+- `presence.activeCount()` app-service method: fails closed (`null`) for signed-out, missing-congregation, or out-of-scope callers, without ever hitting the API boundary in those cases.
+- Home's existing Congregation card now shows "● N active in the last 30 min" (or "No recent activity." / hidden, per state), reusing `presence`'s already-running heartbeat rather than starting a second presence system.
+
+**Two real bugs my own tests caught:**
+1. Adding the new required `api.activeCount` broke 4 existing presence-edge fixtures and 1 smoke fixture that construct the service without it - found and fixed all 5.
+2. A prior tranche had byte-locked `bootstrap.js` in its entirety. This is the **second time** this exact class of over-broad lock has blocked a legitimate change (first was Congregation Recognition's icon fix). `bootstrap.js` is the shared composition root and *must* change whenever a new service is wired into an existing route - locking it byte-for-byte is fighting the architecture, not protecting it. Replaced with a structural check (the five primary routes must still map to the right page factories) that actually catches what the original lock was trying to prevent (a duplicated/replaced shell) without blocking normal service wiring.
+
+**Same honest limitation as Phases 1-2:** the RLS policy and `SECURITY DEFINER` function have never executed against real Postgres. Static contract test locks in the authorization logic; live deployment verification is still owed.
+
+**Not done from Phase 3's full scope:** the Leader Center's own richer presence view (names + timestamps for ministry roles) - the raw-row RLS now correctly allows this, but no UI consumes it yet. That's naturally Phase 4 (Leader Center) work, not duplicated here.
+
 ## Phase 2 — Admin emergency user management
 
 Checkpoint: `release/v4-phase2-admin-emergency`, exact-SHA verified, full accumulated suite green.
