@@ -1,4 +1,23 @@
-const featureIcon=id=>`<span class="bq-more-icon-wrap" aria-hidden="true"><svg class="bq-more-icon" viewBox="0 0 24 24" focusable="false"><use href="assets/more-feature-icons.svg#${id}"></use></svg></span>`;
+import { V4_ART, decorativeImg } from '../../ui/v4-art.js';
+
+const FEATURE_ART=Object.freeze({
+  workspace:V4_ART.ministry.workspace,
+  notifications:V4_ART.ministry.notifications,
+  community:V4_ART.community.hub,
+  ministry:V4_ART.ministry.hub,
+  review:V4_ART.ministry.contentReview,
+  couples:V4_ART.community.couplesFamily,
+  'couples-cloud':V4_ART.community.couplesCloud,
+  'journey-groups':V4_ART.community.journeyGroups,
+  team:V4_ART.community.teamCenter,
+  accessibility:V4_ART.ministry.accessibility,
+  install:V4_ART.ministry.install,
+  backup:V4_ART.ministry.backup,
+  mission:V4_ART.homeLearn.dailyJourney,
+  calendar:V4_ART.homeLearn.calendar,
+  congregation:V4_ART.community.congregation
+});
+const featureIcon=id=>`<span class="bq-more-icon-wrap" aria-hidden="true">${decorativeImg(FEATURE_ART[id]||V4_ART.core.more,'bq-more-icon bq-v4-card-art')}</span>`;
 
 export function morePage({pwaInstall,onCommunity,onMinistryHub,onNotificationCenter,onWorkspace,onContentReview,onCouplesFamily,onCouplesCloud,onCongregation,onJourneyGroups,onTeamCenter,onBackup,onMission,onAccessibility,onCalendar}){
   return {
