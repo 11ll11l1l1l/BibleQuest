@@ -1,6 +1,7 @@
 // BibleQuest V4 Assignments page acceptance contract.
-// The page may evolve presentation, but the Assignments service, linked-activity
-// owner and trusted server boundary remain byte-exact to the pre-audit baseline.
+// Presentation may evolve. Section I also permits narrowly scoped security/privacy
+// hardening inside the existing Assignments service owner, while linked-activity
+// ownership and the trusted server boundary remain byte-exact.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -9,14 +10,30 @@ import {execFileSync} from 'node:child_process';
 const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='2acdad0d0bf572e2b1bd22b414ef55655521ffdd';
 for(const relative of[
-  'src/app/assignments.js',
   'src/app/linked-activities.js',
   'supabase/functions/bq-assignment/index.ts'
 ]){
   const current=fs.readFileSync(path.join(root,relative),'utf8');
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
-  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged during V4 Assignments page acceptance.`);
+  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged during V4 Assignments acceptance.`);
 }
+
+const service=fs.readFileSync(path.join(root,'src/app/assignments.js'),'utf8');
+const requiredServiceContracts=[
+  "export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),ministryRoles:[...MINISTRY_ROLES],submissionMax:4000,recurrenceGeneration:false,linkedPublishing:false,responsePrivacy:'peer-presence-only'})",
+  'export function createAssignmentsService({api,session,congregation,now=()=>new Date()})',
+  "if(rowUser!==String(userId)||!visibleIds.has(assignmentId))return null",
+  "if(!row||String(row.assignment_id||'')!==String(assignmentId)||String(row.user_id||'')!==String(userId))",
+  "congregation.assert(state.congregationId,'ministry')",
+  'resetAccountState',
+  "userId:String(userId||'')",
+  'state.userId===currentUserId',
+  "String(current?.user?.id||'')!==userId",
+  "return Object.freeze({load,loadPublishTargets,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract})"
+];
+for(const token of requiredServiceContracts)assert.ok(service.includes(token),`Assignments service must retain contract: ${token}`);
+assert.ok(!/\bfetch\s*\(/.test(service),'Assignments service must continue using the shared API owner rather than direct fetch().');
+assert.ok(!/supabase\.co|service[_-]?role|sb_secret_/i.test(service),'Assignments service must not bypass the shared API/RLS boundary or contain privileged credentials.');
 
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const css=fs.readFileSync(path.join(root,'src/ui/ministry-ops-v4.css'),'utf8');

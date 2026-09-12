@@ -1,4 +1,7 @@
 // BibleQuest V4 Couples Communication Journey static acceptance contract.
+// The local Communication Journey remains separate from Couples Cloud. Section I
+// permits narrowly scoped account-isolation hardening inside the existing cloud
+// service owner while the cloud presentation and local journey owners stay fixed.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -8,11 +11,25 @@ const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='c7a78d71354696130efa07e6d7f010deae7795a0';
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
 
-for(const relative of['src/app/couples-cloud.js','src/features/couples-cloud/index.js']){
+for(const relative of['src/features/couples-cloud/index.js']){
   const current=read(relative);
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
   assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged while adding the local Communication Journey.`);
 }
+
+const cloudService=read('src/app/couples-cloud.js');
+for(const token of[
+  'export function createCouplesCloudService({api,session})',
+  "if(userA!==userId&&userB!==userId)throw cloudError('Couples cloud returned a pair that does not belong to this account.'",
+  "if(!id||remotePair!==pairId||!authorId||!SHARED_TYPES.has(itemType)||!body)",
+  "let pair=null,shared=[],inviteCode='',contextUserId=''",
+  "const account=()=>{const userId=identity();if(contextUserId!==userId){pair=null;shared=[];inviteCode='';contextUserId=userId}return userId}",
+  "if(!pair||pair.status!=='active'){shared=[];return []}",
+  "function clear(){pair=null;shared=[];inviteCode='';contextUserId=''}",
+  'return Object.freeze({snapshot,load,createPair,join,refreshShared,completeJourney,leave,clear})'
+]) assert.ok(cloudService.includes(token),`Couples Cloud privacy/service contract disappeared: ${token}`);
+assert.ok(!/\bfetch\s*\(/.test(cloudService),'Couples Cloud must continue using the shared API owner rather than direct fetch().');
+assert.ok(!/supabase\.co|service[_-]?role|sb_secret_/i.test(cloudService),'Couples Cloud must not bypass the shared API/RLS boundary or contain privileged credentials.');
 
 const content=read('src/content/couples-journey.js');
 const service=read('src/app/couples-family.js');
