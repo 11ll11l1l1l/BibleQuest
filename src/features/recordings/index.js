@@ -105,7 +105,13 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
           render(recordings.getState());
           message('Video added.');
         } catch (error) {
-          message(error?.message || 'Could not add that video. Only leaders, pastors, and admins can add videos.');
+          // Raw database/RLS error text (e.g. "new row violates row-level
+          // security policy...") must never reach the user directly - only
+          // this feature's own validation messages (title/link/congregation
+          // checks in recordings.addVideo) are shown as-is.
+          const raw = String(error?.message || '');
+          const isOwnValidation = /title|YouTube|congregation|Sign in/i.test(raw) && !/policy|violates|relation|column|syntax/i.test(raw);
+          message(isOwnValidation ? raw : 'Could not add that video. Only leaders, pastors, and admins can add videos.');
         }
       };
 
