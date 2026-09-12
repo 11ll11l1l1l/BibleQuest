@@ -17,7 +17,7 @@ const FEATURE_ART=Object.freeze({
   calendar:V4_ART.homeLearn.calendar,
   congregation:V4_ART.community.congregation
 });
-const featureIcon=id=>`<span class="bq-more-icon-wrap" aria-hidden="true">${decorativeImg(FEATURE_ART[id]||V4_ART.core.more,'bq-v4-card-art')}<svg class="bq-more-icon" hidden viewBox="0 0 24 24" focusable="false" aria-hidden="true"><use href="assets/more-feature-icons.svg#${id}"></use></svg></span>`;
+const featureIcon=id=>`<span class="bq-more-icon-wrap" aria-hidden="true">${decorativeImg(FEATURE_ART[id]||V4_ART.core.more,'bq-v4-card-art')}<svg class="bq-more-icon bq-more-icon-legacy" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><use href="assets/more-feature-icons.svg#${id}"></use></svg></span>`;
 
 export function morePage({pwaInstall,onCommunity,onMinistryHub,onNotificationCenter,onWorkspace,onContentReview,onCouplesFamily,onCouplesCloud,onCongregation,onJourneyGroups,onTeamCenter,onBackup,onMission,onAccessibility,onCalendar}){
   return {
