@@ -80,7 +80,7 @@ if(!api.includes('@supabase/supabase-js@2.112.4'))fail('Supabase browser depende
 if(!api.includes("signOut({ scope: 'local' })"))fail('Session sign-out must be device-local, not global.');
 for(const contract of["'bq-signup'","'bq-password-reset'","'bible_devices'","'bible_media_library'"])if(!api.includes(contract))fail(`API wrapper missing required account/media contract ${contract}.`);
 if(/service_role|sb_secret_/i.test(api))fail('Privileged Supabase credentials are forbidden in browser code.');
-if(!api.includes('Live Recordings took too long to load'))fail('Media cloud request must remain bounded.');
+if(!api.includes('Videos took too long to load'))fail('Media cloud request must remain bounded.');
 
 const progress=read('src/core/progress.js');if(!progress.includes('Progress event identity conflict'))fail('Progress service must reject conflicting reuse of an event identity.');if(!progress.includes("'situations'"))fail('Progress service must retain the verified Wisdom situations counter.');
 const recallPacks=read('src/core/recall-packs.js');for(const contract of['data/packs/manifest.json','data/packs/questions/${code}.json','reviewImportedRecall',"if(safety.action==='quarantine')continue",'contextNote:','fetcher'])if(!recallPacks.includes(contract))fail(`Recall Pack service missing required reviewed-safety contract: ${contract}`);if(/row\?\.safety\?\.action!==['"]allow['"]/.test(recallPacks))fail('Recall Pack service must not use a raw imported allow tag as the admission decision.');if(/document\.|window\.|localStorage|sessionStorage|progress\.record|createClient/.test(recallPacks))fail('Recall Pack service must remain DOM/storage/progress/backend independent.');
