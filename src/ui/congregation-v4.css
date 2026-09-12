@@ -1,0 +1,18 @@
+/* BibleQuest V4 — Congregation membership. Presentation only; membership/service authority remains unchanged. */
+[data-congregation-view]{position:relative;overflow:hidden;display:grid;gap:var(--space-4);padding:clamp(22px,3.5vw,34px);border-color:color-mix(in srgb,var(--forest-700) 22%,var(--line-200));box-shadow:var(--shadow-2)}
+[data-congregation-view]::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--forest-700)}
+[data-congregation-view]>h1{font-family:var(--font-display);font-size:clamp(28px,5vw,40px);line-height:1.04;color:var(--forest-900)}
+[data-congregation-view]>p:not(.bq-eyebrow){max-width:68ch;color:var(--ink-700)}
+[data-congregation-list]{display:grid;gap:var(--space-3)}
+[data-congregation-row]{margin:0;padding:var(--space-4);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface-subtle) 24%,var(--surface-raised))}
+[data-congregation-row] h2{margin:0 0 var(--space-2);font-size:20px;color:var(--ink-900)}
+[data-congregation-row] p{margin:4px 0;color:var(--ink-700)}
+[data-congregation-role]{display:inline-flex;align-items:center;min-height:26px;padding:3px 9px;border:1px solid color-mix(in srgb,var(--forest-700) 28%,var(--line-200));border-radius:var(--radius-pill);background:var(--surface-raised);font-size:12px;font-weight:850;color:var(--forest-900)}
+[data-congregation-view] .bq-account-section{margin-top:0;padding:var(--space-4);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised)}
+[data-congregation-view] [data-congregation-join]{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);align-items:end}
+[data-congregation-view] [data-congregation-join] label{display:grid;gap:var(--space-2)}
+[data-congregation-view] [data-congregation-message]:not(:empty){padding:var(--space-3);border-left:4px solid var(--success);background:color-mix(in srgb,var(--success) 5%,var(--surface-raised))}
+[data-congregation-view] .bq-account-actions{margin-top:0;padding-top:var(--space-2);border-top:1px solid var(--line-200)}
+@media(max-width:640px){[data-congregation-view] [data-congregation-join]{grid-template-columns:1fr}[data-congregation-view] [data-congregation-join] button{width:100%}}
+@media(prefers-contrast:more){[data-congregation-view],[data-congregation-row],[data-congregation-view] .bq-account-section,[data-congregation-role]{border-color:var(--ink-700);background:var(--surface-raised);box-shadow:none}}
+@media(prefers-reduced-motion:reduce){[data-congregation-view] *,[data-congregation-view] *::before,[data-congregation-view] *::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
