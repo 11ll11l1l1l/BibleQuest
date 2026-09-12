@@ -76,8 +76,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | 4 | Home | **CERTIFIED** — `release/v4-home` @ `17ed040957d6aeb3bc2bc0d1832e1c23f46a6c0f` |
 | 5 | Learn hub | **CERTIFIED** — `release/v4-learn` @ `3f5d433ec16ef2d20a5ec00d5ba388161d2a9689`. Reader itself deferred to its own sub-tranche (see note below). |
 | 6 | Reader | **CERTIFIED** — `release/v4-reader` @ `ece54af4883dfee3613cc7b62abaf0df11aff701`. CSS-only tranche (see note). |
-| 7 | Games + Avatar Vault | **NEXT / mandatory gate.** |
-| 8 | Ministry + Assignments + Workspace + Notifications | Pending |
+| 7 | Games + Avatar Vault | **CERTIFIED** — `release/v4-games-avatar` @ `cd5d16215236ab0f3541eac7029b10a336e2bdd2`. CSS-only (see note). |
+| 8 | Ministry + Assignments + Workspace + Notifications | **NEXT / mandatory gate.** |
 | 9 | Bible World + Progress + Personal Mission + Calendar | Pending |
 | 10 | Study family | Pending |
 | 11 | Account + Notes + Transform + Psychometrics + Accessibility | Pending |
@@ -149,6 +149,18 @@ On inspection, Reader's markup (`src/features/reader/index.js`) is far more tigh
 What changed: `src/ui/reader-v4.css` gives Scripture text (`.bq-verse p`, `.bq-peek-text`) the display/serif typography role at a larger, more readable size (16.5–18px vs. the prior 15–17px), calmer token-driven verse hover/highlight states (replacing hardcoded hex colors), and softer panel elevation using the certified Foundation shadow tokens. The highlighted-verse state keeps its non-color-only `box-shadow: inset` marker.
 
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px), plus the byte-exact markup-preservation check against full git history. Run: `34660991263`.
+
+## Games + Avatar Vault certification evidence (this cycle)
+
+Checkpoint: `release/v4-games-avatar` @ `cd5d16215236ab0f3541eac7029b10a336e2bdd2`.
+
+**Games** (`src/features/games/index.js`) turned out to be the highest-risk markup in the app so far: one 101-line phase-based render function covering ~15 distinct phases (launcher, memory meadow, same-room play-together, detective, timeline, per-book recall, results) with dozens of `data-*` hooks in a single delegated handler. Per the same risk-calculus already applied to Reader, this tranche is **CSS-only** — `games-v4.css` retokenizes the existing surfaces (game cards, question cards, answer-choice states, completion medal, recall book tiles, timeline rows, Memory Meadow) onto the certified V4 foundation (shadows, radii, forest/amber/success/danger colors) without touching any markup, hook, or game logic. Verified byte-exact against `release/v4-reader`, same technique as the Reader gate.
+
+**Avatar Vault** (`src/features/avatar-vault/index.js`) was found to already have a real SVG art system (`assets/avatar-vault-icons.svg`) and its own established purple collectible-accent identity from an earlier "Phase B" pass — it did not need a redesign, only alignment. `avatar-vault-v4.css` layers the certified V4 shadow tokens on top without replacing that identity, also verified byte-exact against `release/v4-reader`.
+
+**Explicitly deferred, not silently dropped:** replacing Games' emoji markers (🦊🕵️🧠🏆🌟🌱📘🗃️) with real SVG game art, as A1 originally recommended. Doing that safely requires editing the same single dense render function that owns all the interaction hooks — a distinct, higher-risk Class A tranche of its own, not bundled into this CSS pass.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px), plus byte-exact markup-preservation checks for both files against full git history. Run: `34661855982`.
 
 ## Change-class rules
 
