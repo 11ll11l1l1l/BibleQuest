@@ -22,7 +22,7 @@ function normalizeDirectory(row,allowedCongregations){
 
 export function createTeamCenterService({api,session,congregation}){
   if(!api||!session||!congregation)throw new Error('Team Center requires shared API, session and congregation owners.');
-  let teams=[],congregations=[],directory=[];
+  let teams=[],congregations=[],directory=[],contextUserId='';
   const sessionState=()=>session.getState?.()||{};
   const identity=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw teamError('Sign in to use Team Center.','BQ_TEAM_CENTER_AUTH_REQUIRED');if(state.remoteAvailable===false)throw teamError('Team Center is unavailable in local preview.','BQ_TEAM_CENTER_REMOTE_DISABLED');return String(state.user.id)};
   const snapshot=()=>Object.freeze({authenticated:sessionState().authenticated===true,remoteAvailable:sessionState().remoteAvailable!==false,teams:teams.slice(),congregations:congregations.slice(),directory:directory.slice()});
@@ -30,7 +30,7 @@ export function createTeamCenterService({api,session,congregation}){
   const requireManage=team=>{if(!team||!team.canManage)throw teamError('Your congregation role does not allow this Team Center action.','BQ_TEAM_CENTER_PERMISSION');congregation.assert(team.congregationId,'ministry');return team};
 
   async function load(){
-    const userId=identity(),memberships=await congregation.load();
+    const userId=identity();if(contextUserId!==userId){teams=[];congregations=[];directory=[];contextUserId=userId}const memberships=await congregation.load();
     congregations=memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel,canManage:congregation.can(row.congregationId,'ministry')}));
     const congregationIds=congregations.map(row=>row.id),allowedCongregations=new Set(congregationIds);
     if(!congregationIds.length){teams=[];directory=[];return snapshot()}
@@ -68,6 +68,6 @@ export function createTeamCenterService({api,session,congregation}){
   async function archive(teamId){
     identity();const team=findTeam(teamId);if(!team?.canArchive)throw teamError('Only the team creator or congregation admin can archive this team.','BQ_TEAM_CENTER_PERMISSION');congregation.assert(team.congregationId,'ministry');await api.archive(team.congregationId,team.id);await load();return snapshot();
   }
-  function clear(){teams=[];congregations=[];directory=[]}
+  function clear(){teams=[];congregations=[];directory=[];contextUserId=''}
   return Object.freeze({snapshot,load,create,addMember,removeMember,rename,archive,clear});
 }
