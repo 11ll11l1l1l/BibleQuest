@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - v4/modern-ui-overhaul
+      - main
   workflow_dispatch:
 
 permissions:
