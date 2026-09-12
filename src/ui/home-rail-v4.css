@@ -1,0 +1,35 @@
+/* V4 Home shortcut rail. Horizontal, swipeable, scroll-snapped icon+label
+   shortcuts, per V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md Section A.
+   Native horizontal scroll (touch/trackpad/mouse-wheel-shift all work for
+   free via the browser) plus explicit keyboard arrow-key navigation wired
+   in home/index.js. No document overflow: the rail scrolls internally,
+   the page itself never grows wider than the viewport. */
+
+.bq-home-rail{margin-top:var(--space-4);width:100%}
+.bq-home-rail-track{
+  display:flex;gap:var(--space-3);margin:0;padding:2px 2px 10px;list-style:none;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.bq-home-rail-track>li{flex:0 0 auto;scroll-snap-align:start}
+.bq-home-rail-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:76px;min-height:var(--tap-target);padding:10px 6px;
+  border:1px solid var(--line-200);border-radius:var(--radius-md);
+  background:var(--surface-raised);box-shadow:var(--shadow-1);
+  color:var(--ink-900);font:inherit;cursor:pointer;
+}
+.bq-home-rail-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--amber-100);color:var(--forest-900)}
+.bq-home-rail-label{font-size:11px;font-weight:700;text-align:center;line-height:1.25;color:var(--ink-700)}
+.bq-home-rail-item:hover{border-color:color-mix(in srgb,var(--forest-700) 35%,var(--line-200))}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-home-rail-track{scroll-behavior:auto}
+}
+
+@media(max-width:340px){
+  .bq-home-rail-item{width:68px}
+  .bq-home-rail-label{font-size:10px}
+}
