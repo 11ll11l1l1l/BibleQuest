@@ -26,9 +26,12 @@ The remaining release-blocking field gates are:
 1. real authenticated emergency-action matrix using a legitimate owner and designated safe target account;
 2. real browser account switching / stale-state clearing using legitimate separate authenticated sessions;
 3. true cross-congregation field isolation using a legitimate second populated congregation;
-4. physical Android installed-PWA acceptance;
-5. physical Android Chrome at 100% zoom;
-6. physical Android Brave at 100% zoom.
+4. physical Android Chrome at 100% zoom;
+5. physical Android Brave at 100% zoom;
+6. physical Android installed-PWA acceptance;
+7. inherited Issue #68 linked-activity field validation using legitimate separate authenticated accounts/sessions for Journey Groups, targeted assignments, Cloud Teams, linked couples, couples challenge semantics, Live Rooms, persistence and isolation.
+
+Gate 7 restores an inherited release requirement that remained explicitly open in Issue #68 before V4 branched. V4 automation and database inspection protect these paths, but the project rules do not allow those forms of evidence to replace the required real multi-account field exercise.
 
 Do not freeze RC2+ or promote to `main` until all applicable gates above are legitimately closed.
 
@@ -219,6 +222,25 @@ On a physical Android device:
 
 PASS requires a genuinely installed PWA session. Browser installability checks or headless `display-mode: standalone` emulation are not substitutes.
 
+## Gate G — inherited Issue #68 linked-activity multi-account field validation
+
+This gate restores the release evidence explicitly left open by Issue #68 before V4 development branched. The existing v3 guarded harnesses and V4 Section I automation are supporting evidence only. Gate G requires actual separate authenticated accounts/sessions through normal product UI/API/RLS/realtime paths.
+
+Use at least three legitimate authenticated account aliases (A/B/C) as needed to prove allowed relationships and unrelated-account denial. Do not record credentials, emails, invite/room secrets, or tokens.
+
+Required scenarios:
+
+1. **Congregation + Journey Group create/join and persistence.** Create/join through the product, verify expected membership state, then reload/re-login and confirm persistence.
+2. **Journey Group-targeted assignment.** Verify intended member visibility/completion plus denial for an unrelated authenticated account.
+3. **Cloud Team lifecycle + assignment.** Exercise supported create/add/remove/re-add operations, team-targeted assignment behavior, and unauthorized-management denial.
+4. **Linked-couple workflow.** Complete/accept a legitimate test couple link through the product, verify linked-couple assignment ownership, and verify unrelated-account isolation.
+5. **Couples congregation challenge semantics.** Verify exactly one pair-shared day while personal progress/points remain correctly individual, including persistence.
+6. **Cross-session/device Live Room.** Verify host/join, participant/end propagation, route/hard-refresh reconnect/rejoin without duplicate membership or stale state, ended/unknown-code rejection, close/reopen or real network reconnect where practical, and privacy/isolation. No room question/scoring loop is required unless the current product actually exposes one.
+7. **Reload/re-login persistence.** Repeat the applicable relationship/workflow state after normal reload and reauthentication.
+8. **Read-only post-run confirmation.** After UI-created activity, use only limited read-only inspection to confirm the minimum row counts/relationship IDs/timestamps needed to prove the intended owners received the activity. Direct database writes never count as field evidence.
+
+Gate G PASS requires all eight scenarios to pass using normal product paths and real authenticated sessions. A partial run is evidence but keeps Gate G open. If topology blocks one scenario, record it as pending rather than manufacturing a PASS.
+
 ## Failure handling
 
 If any field step fails:
@@ -243,9 +265,10 @@ Do not mark Phase 6 closed until the evidence record contains explicit PASS entr
 - [ ] Gate C — true cross-congregation field isolation;
 - [ ] Gate D — Android Chrome 100%;
 - [ ] Gate E — Android Brave 100%;
-- [ ] Gate F — installed Android PWA.
+- [ ] Gate F — installed Android PWA;
+- [ ] Gate G — Issue #68 linked-activity multi-account field validation.
 
-When all six are closed, update `V4_ACTIVE_STATUS.md` and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` in the same serialized stream, then enter Phase 7. Do not infer closure from this protocol itself.
+When all seven are closed, update `V4_ACTIVE_STATUS.md` and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` in the same serialized stream, then enter Phase 7. Do not infer closure from this protocol itself.
 
 ## Phase 7 handoff after field PASS
 

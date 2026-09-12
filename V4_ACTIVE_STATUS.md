@@ -7,218 +7,158 @@ Tracking issue: #124
 
 ## Authority and reading rule
 
-**This file is the single authoritative source for the current BibleQuest V4 development status, current phase state, current release path, and current blockers.**
+**This file is the single authoritative source for current BibleQuest V4 phase state, release readiness, release path, and remaining blockers.**
 
-Before selecting or evaluating V4 work, read this file first, then `V4_DOCUMENTATION_AUTHORITY.md`, then `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` as needed. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Historical certification documents remain evidence only for the exact SHA/scope they certified.
+Read this file first, then `V4_DOCUMENTATION_AUTHORITY.md`, then `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` and `RELEASE_FIELD_VALIDATION_V4.md` as needed. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Historical certification files certify only their named scope/SHA.
 
-## Current integration checkpoint
+## Current verified application checkpoint
 
-Latest fully accumulated application checkpoint verified before this documentation-only reconciliation:
+The latest fully accumulated application tree remains:
 
-- official branch: `v4/modern-ui-overhaul`
-- exact application SHA: `4f908ad8b53f3feb00f21ae27dd4707597b5aa14`
+- official integration line: `v4/modern-ui-overhaul`
+- exact certified application SHA: `4f908ad8b53f3feb00f21ae27dd4707597b5aa14`
 - full accumulated regression run `34711333244` — PASS
 - V4 Section I security/privacy run `34711333231` — PASS
 - V4 Section H responsive/accessibility/performance/PWA automation run `34711333240` — PASS
 - V4 whole-app browser audit run `34711333234` — PASS
 - Cloudflare exact-SHA preview check `103600570475` — SUCCESS
 
-The release-control/CI head later advanced without changing certified application bytes. Verification-only PR #167 exercised the real future `main` target from exact head `60e31b8d68832a40f4db44b26824b1865c539413` and passed all six promotion-path suites:
+Later commits on the integration line are documentation/workflow/release-control only unless repository comparison proves otherwise. These commits do not invalidate the certified application bytes. Any later runtime/application-byte change requires new applicable exact-SHA evidence.
 
-- accumulated regression `34713371772` — PASS;
-- V4 Section H `34713371784` — PASS;
-- V4 Section I `34713371795` — PASS;
-- protected-page audit `34713371801` — PASS;
-- Cloudflare exact-SHA preview smoke `34713371805` — PASS;
-- whole-app browser audit `34713371845` — PASS.
+Verification-only PR #167 previously exercised the real future `main` target from `60e31b8d68832a40f4db44b26824b1865c539413` and passed all six automated promotion-path suites: accumulated regression `34713371772`, Section H `34713371784`, Section I `34713371795`, protected-page audit `34713371801`, Cloudflare exact-SHA preview smoke `34713371805`, and whole-app browser audit `34713371845`. The deployed smoke used `https://3284208e.mybiblequest.pages.dev` and passed the maintained 42-route 320/430 px deep-route audit, whole-app browser-state matrix, PWA install regression, offline shell, and operational recovery. PR #167 was closed without merge after evidence capture.
 
-The exact Cloudflare preview used by that deployed smoke was `https://3284208e.mybiblequest.pages.dev`. The deployed run passed the maintained 42-route 320/430 px deep-route audit, whole-app browser-state matrix, PWA install regression, offline shell, and operational recovery. PR #167 was closed without merge after capturing the evidence; it was only a gate exercise and was not a production promotion path.
-
-Application-byte certification remains tied to `4f908ad8...`; documentation/release-control-only commits do not invalidate the tested application tree, but a later runtime/application change requires new applicable evidence.
+The release-control head later advanced to `844383495d3683e55470c334ad8ea5403a4cec64` through PR #169 without changing certified application bytes. Its authoritative `mybiblequest` branch preview also deployed successfully. A main-target verification PR then demonstrated that the field-evidence workflow fails closed while required field evidence is pending.
 
 ## Release-state decision
 
-Frozen V4 RC1 remains historical only:
+V4 is **not production-release-certified**. Do not freeze a new RC or promote V4 to `main`/Cloudflare production until all Phase 6 field gates are legitimate PASS records and server-side `main` protection/ruleset enforcement is enabled.
+
+Frozen RC1 remains historical exact-SHA evidence only:
 
 - branch: `release/v4-rc1`
 - SHA: `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`
 - PR #151
 
-Do not promote RC1 by default. Official post-RC1 development continued and the next production candidate must be a new exact RC only after the remaining Phase 6 field gates are legitimately closed.
+Do not promote RC1 by default. Official development continued after RC1.
 
-## Post-RC1 development program
+## Post-RC1 phase state
 
 ### Phase 1 — Assignment privacy tightening — IMPLEMENTED / LIVE RLS VERIFIED
-
-Checkpoint: `release/v4-phase1-assignment-privacy`.
 
 Implemented and protected:
 
 - ordinary members see only their own assignment response-presence state;
-- `bible_assignment_response_presence` requires self OR a verified ministry role;
-- ordinary member UI does not expose peer response presence;
+- `bible_assignment_response_presence` requires self OR verified ministry role;
+- ordinary-member UI does not expose peer response presence;
 - ministry review remains available;
 - static/edge coverage protects the boundary.
 
-Live deployed-database verification on 2026-09-13:
+Live deployed-database verification on 2026-09-13 showed two ordinary congregation members each saw only their own response-presence row, while the existing admin/ministry role saw both. No persistent test data was created. Browser account switching and true cross-congregation field isolation remain Phase 6 requirements.
 
-- two different ordinary congregation members each saw exactly one response-presence row and only their own row;
-- the existing admin/ministry role saw both response-presence rows;
-- no persistent test data was created for this verification.
+### Phase 2 — Admin emergency user management — IMPLEMENTED / DEPLOYED / FIELD MATRIX OPEN
 
-Remaining Phase-6 concerns for this family are browser/auth-session account-switching and true cross-congregation field topology; these must not be inferred from RLS inspection alone.
+Implemented: suspend/reactivate, force sign-out, owner-only temporary-password action, owner-only email recovery/change, session-revocation attempts, owner protection, secret-safe audit logging, app-side authorization guards, severity/confirmation UX and dedicated contracts.
 
-### Phase 2 — Admin emergency user management — IMPLEMENTED / DEPLOYED / AUTHENTICATED ACTION FIELD TESTS REMAIN
-
-Checkpoint: `release/v4-phase2-admin-emergency`.
-
-Implemented:
-
-- suspend/reactivate account;
-- force sign-out;
-- owner-only temporary-password action with minimum length and self-target protection;
-- owner-only account email recovery/change;
-- session-revocation attempts after applicable credential/access changes;
-- owner protection rules;
-- audit logging without temporary-password value or old/new email values;
-- app-side authorization/guard behavior;
-- user-management card organization by identity, congregation/group membership, and security/access;
-- safe/elevated/critical severity treatment;
-- typed confirmation for destructive suspension, email-change, and deletion paths;
-- dedicated static/browser contracts.
-
-Live backend state:
-
-- production `bq-admin-ops` is deployed with repository contract `OPS_VERSION = 6` and matches the repository action surface, including `change_email`;
-- the Supabase deployment revision currently reports version 7, but the deployed source still declares `OPS_VERSION = 6`; inspection found no action-surface drift from the official repository implementation;
-- Supabase-side authorization/grant structure has been inspected;
-- repository Section I and accumulated regressions are green;
-- read-only production audit inspection on 2026-09-13 found no recorded `suspend_account`, `reactivate_account`, `force_sign_out`, `set_temp_password`, or `change_email` events, confirming the real authenticated emergency matrix remains unexecuted rather than silently closed.
-
-Release blocker still open: suspend/reactivate/force-sign-out/temp-password/email-change and their resulting session revocation/audit records have **not** all been exercised through legitimate real authenticated owner + target sessions. Static tests, SQL role impersonation, or source inspection do not substitute for this requirement.
+Production `bq-admin-ops` is deployed with repository contract `OPS_VERSION = 6`, including `change_email`; repository Section I and accumulated regressions are green. Read-only audit inspection on 2026-09-13 found no recorded real suspend/reactivate/force-sign-out/temp-password/email-change test events. Therefore the legitimate authenticated Owner + safe-target action/session-revocation/audit matrix remains release-blocking.
 
 ### Phase 3 — Privacy-safe 30-minute presence — IMPLEMENTED / LIVE VERIFIED
 
-Checkpoint: `release/v4-phase3-presence`.
-
-Implemented:
+Implemented and verified:
 
 - raw `bible_presence` SELECT restricted to ministry roles;
-- public signed-in count RPC returns only an aggregate;
-- privileged counting implementation is now in the non-exposed `private` schema;
-- exposed `public.bible_presence_active_count(...)` is `SECURITY INVOKER` and delegates to the private implementation;
-- anon/PUBLIC execution is revoked;
-- membership and bounded-window checks remain enforced;
-- Home uses the privacy-safe recent-active count and reuses the existing heartbeat owner.
+- ordinary signed-in users receive only a scoped aggregate count;
+- privileged counting implementation lives in the non-exposed `private` schema;
+- exposed `public.bible_presence_active_count(...)` is `SECURITY INVOKER`;
+- anon/PUBLIC execution revoked;
+- membership/bounded-window checks enforced;
+- Home reuses the existing heartbeat owner.
 
-Live deployed-database verification on 2026-09-13:
-
-- ordinary member: aggregate callable for own congregation while raw presence rows were hidden;
-- ministry/admin role: intended raw presence rows visible;
-- uncommitted role-demotion test: raw presence visibility dropped from 4 rows to 0 immediately; transaction rollback restored the real admin role;
-- Supabase Security Advisor no longer reports the presence RPC as an exposed-schema `SECURITY DEFINER` function.
-
-Phase 3 database/RLS verification is therefore closed. Real browser stale-session/account-switch behavior remains part of the broader Phase 6 field matrix.
+Live member/ministry behavior and transactional privilege-loss were verified on 2026-09-13 and rolled back safely. Security Advisor no longer reports the V4 presence aggregate as an exposed-schema `SECURITY DEFINER` function.
 
 ### Phase 4 — Leader Center — OFFICIALLY SKIPPED
 
-The Leader Center expansion remains explicitly skipped by user instruction. It is not a V4 release blocker and must not be silently reintroduced.
+Leader Center expansion remains explicitly skipped by user instruction. It is not a V4 release blocker and must not be silently reintroduced.
 
-### Phase 5 — Tutorial + Help Center — CLOSED / ACCUMULATED REGRESSION GREEN
+### Phase 5 — Tutorial + Help Center — CLOSED / ACCUMULATED GREEN
 
-Implemented:
+The 9-step guided onboarding, Reader/Assignments/Play/install/Help coverage, trainer states, Help/Tutorial Center, Help route/visual and dedicated contracts are implemented. Exact application SHA `4f908ad8...` passed full accumulated regression, Sections H/I, whole-app browser audit and Cloudflare preview deployment.
 
-- guided onboarding expanded to 9 steps;
-- Reader, Assignments, Play, installation and Help are covered;
-- trainer states updated for the 9-step flow;
-- `TUTORIAL_STEP_COUNT` is 9;
-- always-available Help and Tutorial Center exists;
-- Help visual/icon and More entry point are wired;
-- Help route is wired;
-- dedicated Phase 5 contract coverage exists;
-- stale old-step smoke assumptions were corrected;
-- Daily Journey tutorial action/navigation is on the correct step.
+### Phase 6 — Integrated field/security/release verification — ACTIVE / PARTIALLY CLOSED
 
-Closure evidence: exact application SHA `4f908ad8...` passed the full accumulated regression, Section H, Section I and whole-app browser audit, and deployed successfully to Cloudflare preview. Phase 5 is no longer an active implementation tranche.
+Completed automated/live supporting evidence includes:
 
-### Phase 6 — Integrated security/backend/role-transition verification — ACTIVE / PARTIALLY CLOSED
-
-Completed evidence:
-
-- Phase 1 live self-vs-ministry assignment response-presence RLS verification;
+- Phase 1 live self-vs-ministry assignment-response RLS verification;
 - Phase 3 live member-vs-ministry presence verification;
-- live role-demotion/privilege-loss database behavior verified transactionally and rolled back safely;
-- production `bq-admin-ops` repository contract `OPS_VERSION = 6` deployed;
-- pre-RC1 Section I isolation regression remains green;
-- exact integrated application SHA `4f908ad8...` passed the complete accumulated static/security/edge/browser/mobile automation;
-- whole-app deep-route/localization/state matrix is green;
-- Cloudflare exact-SHA preview deployment is green;
-- presence and poll privileged aggregate implementations were moved out of the exposed public schema and live Security Advisor warnings for these functions were cleared;
-- transaction-only live poll aggregate test returned correct totals with zero residual test poll/vote rows;
-- production topology rechecked on 2026-09-13: one active congregation, six active congregation memberships, seven active app-access rows and eight Auth users; there is still no legitimate second populated congregation for Gate C.
+- transactional privilege-loss verification with rollback;
+- production `bq-admin-ops` deployment verification;
+- exact application SHA `4f908ad8...` complete accumulated static/security/edge/browser/mobile automation;
+- whole-app deep-route/localization/state matrix;
+- Cloudflare exact-SHA preview deployment;
+- hardened presence/poll aggregate implementation and cleared relevant Security Advisor warnings;
+- transaction-only poll aggregate verification with zero residual test rows.
 
-Phase 6 evidence is tracked in `V4_PHASE6_FIELD_EVIDENCE.json`. The companion validator `scripts/validate-v4-phase6-field-evidence.mjs` rejects malformed/secret-bearing evidence and, in production-complete mode, fails unless Gates A–F are all explicit PASS records tied to the certified application SHA. The `BibleQuest V4 Phase 6 field evidence gate` workflow runs schema/readiness validation on V4 integration PRs and requires full A–F completion on PRs targeting `main`. This workflow is a release-control guard only: it cannot manufacture a field PASS, and pending entries remain release blockers.
+Production topology rechecked on 2026-09-13: one active congregation, six active congregation memberships, seven active app-access rows and eight Auth users. There is no legitimate second populated congregation for Gate C.
 
-Still release-blocking:
+`V4_PHASE6_FIELD_EVIDENCE.json` is the machine-readable evidence manifest. `scripts/validate-v4-phase6-field-evidence.mjs` rejects malformed or secret-bearing evidence and, in production-complete mode, must fail unless every required field gate is explicit PASS tied to the certified application SHA. `.github/workflows/v4-phase6-field-evidence.yml` validates schema/readiness on V4 integration PRs and requires production-complete evidence on PRs targeting `main`.
 
-1. **Real authenticated emergency-action matrix** — owner + safe target account sessions must exercise suspend, reactivate, force sign-out, temporary-password and email-change behavior, including authorization boundaries, real session revocation and audit records without secret leakage.
-2. **Real browser account switching / stale-state clearing** — automated isolation tests are green, but the field requirement for legitimate separate authenticated sessions remains open.
-3. **True cross-congregation field isolation** — the connected production topology currently has only one populated congregation, so a legitimate second-congregation field scenario has not been demonstrated.
-4. **Physical Android installed-PWA acceptance** — required on an actually installed PWA.
-5. **Physical Android Chrome at 100% zoom** — required.
-6. **Physical Android Brave at 100% zoom** — required.
+A release-control reconciliation on 2026-09-13 restored the inherited Issue #68 linked-activity field requirement as **Gate G**. Issue #124 explicitly carried Issue #68 safety forward into V4, while Issue #68 remained open because its real authenticated relationship/workflow scenarios had never been completed. Automated Section I coverage and database inspection remain supporting evidence only and do not replace those user/session paths. This reconciliation changes release control only; it does not change certified application bytes.
 
-These gates must not be replaced by headless/emulated browser evidence when the requirement explicitly calls for real authenticated sessions or a physical device.
+The seven Phase 6 field gates are:
 
-### Phase 7 — New RC convergence and production release — BLOCKED BY PHASE 6 FIELD GATES
+1. **Gate A — authenticated emergency-action matrix:** legitimate Owner + designated safe target sessions must exercise authorization, force sign-out, suspend/reactivate, temporary password and email change, including real session revocation and secret-safe audit evidence.
+2. **Gate B — browser account switching/stale-state clearing:** legitimate separate authenticated sessions must prove private state and privileged controls clear correctly across A→B→A switching, navigation and hard refresh.
+3. **Gate C — true cross-congregation isolation:** requires at least two legitimate populated congregations. Current production has only one, so this gate cannot legitimately pass yet.
+4. **Gate D — physical Android Chrome at 100% zoom.**
+5. **Gate E — physical Android Brave at 100% zoom.**
+6. **Gate F — genuinely installed Android PWA acceptance.**
+7. **Gate G — inherited Issue #68 linked-activity multi-account field validation:** real authenticated product-path verification of Journey Group create/join/persistence; Journey Group-targeted assignment plus unrelated-account denial; Cloud Team lifecycle/assignment/unauthorized denial; legitimate couple linking/assignment/isolation; couples-challenge one shared pair-day plus correct individual progress/points; cross-session/device Live Room realtime/reconnect/isolation; reload/re-login persistence; and limited read-only post-run confirmation.
 
-Do not freeze RC2 or promote to `main` yet.
+No Gate A–G PASS may be manufactured with direct SQL writes, service-role bypass, source inspection, headless emulation where a physical device is required, or fabricated topology. Partial field evidence keeps the applicable gate open.
 
-Release-control enforcement finding (2026-09-13): repository `main` is currently unprotected and the repository has no GitHub ruleset. The six main-target workflow suites have been proven green through verification-only PR #167, but GitHub does not currently require those checks server-side before a direct `main` update. **Before any real V4 production promotion, a repository administrator must enable branch protection or an equivalent repository ruleset for `main` that requires PR-based changes and the applicable promotion checks, including the Phase 6 field-evidence gate. Direct `main` updates remain prohibited by the V4 release process until that enforcement is active.** The current development connector does not expose GitHub repository-administration writes, so this setting cannot be closed by application code or by weakening CI.
+### Phase 7 — New RC convergence and production release — BLOCKED
 
-Once all Phase 6 blockers above are legitimately closed and the `main` enforcement requirement above is active:
+Do not freeze RC2+ or promote to `main` yet.
 
-1. reconcile this file and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` against the final integration head and complete `V4_PHASE6_FIELD_EVIDENCE.json` with sanitized PASS evidence for A–F;
+Repository governance finding: `main` is currently unprotected and the repository has no GitHub ruleset. The promotion workflows are tested, but GitHub does not require them server-side before a direct `main` update. Before any real V4 production promotion, a repository administrator must enable branch protection or an equivalent ruleset for `main` requiring PR-based changes and the applicable promotion checks, including the Phase 6 field-evidence gate. Direct `main` updates remain prohibited by the V4 release process until this enforcement is active. The current development connector does not expose repository-administration writes, so this cannot be closed by application code or by weakening CI.
+
+Only after Gates A–G and `main` enforcement are closed:
+
+1. reconcile this file and the acceptance checklist against the final integration head and complete `V4_PHASE6_FIELD_EVIDENCE.json` with sanitized PASS evidence for A–G;
 2. freeze a new exact candidate from `v4/modern-ui-overhaul` (normally `release/v4-rc2` or later);
-3. run build, architecture, complete accumulated static/security/edge/browser/mobile, Section H, Section I, protected-page, whole-app, PWA and Phase-6 field-evidence automation on that exact candidate/application tree;
-4. deploy the exact candidate to the authoritative `mybiblequest` Cloudflare preview/staging path and verify build identity;
+3. run build, architecture, accumulated static/security/edge/browser/mobile, Section H, Section I, protected-page, whole-app, PWA and field-evidence automation on the exact candidate/application tree;
+4. deploy that exact candidate to the authoritative `mybiblequest` Cloudflare preview/staging path and verify build identity;
 5. run critical-route/runtime/offline/reconnect staging smoke;
-6. attach/record the completed real-session and physical-device field evidence;
-7. promote only the exact certified candidate to protected `main` through the required PR path; the Phase-6 evidence workflow must pass in production-complete mode;
-8. verify the authoritative `mybiblequest` Cloudflare production build identity/bytes and production browser behavior;
-9. preserve the known-good V3 rollback reference until post-promotion acceptance is complete.
+6. bind the completed real-session/topology/physical-device evidence to the candidate;
+7. promote only that exact certified candidate to protected `main` through the required PR path;
+8. verify authoritative `Cloudflare Pages: mybiblequest` production build identity/bytes and production browser behavior;
+9. preserve the V3 rollback reference until post-promotion V4 acceptance is complete.
 
-The repository currently also reports a legacy/secondary Cloudflare Pages check named `Cloudflare Pages: biblequest` on some commits. It is **not** V4 release authority. The V4 promotion workflow and candidate identity gate use `Cloudflare Pages: mybiblequest`; production acceptance must verify that authoritative project explicitly so a successful legacy check cannot be mistaken for release evidence.
+The legacy/secondary `Cloudflare Pages: biblequest` check is not V4 release authority. V4 production acceptance must verify `Cloudflare Pages: mybiblequest` explicitly.
 
 ## Current status summary
 
-- Phase 1: implemented and live RLS-verified; browser account-switch/cross-congregation field cases remain under Phase 6.
-- Phase 2: implemented and deployed; real authenticated destructive/recovery/session-revocation field matrix remains.
-- Phase 3: implemented and live database/RLS verified.
+- Phase 1: implemented/live RLS-verified; session switching/cross-congregation cases remain under Phase 6.
+- Phase 2: implemented/deployed; authenticated destructive/recovery/session-revocation field matrix remains.
+- Phase 3: implemented/live database/RLS verified.
 - Phase 4: intentionally skipped.
-- Phase 5: closed; accumulated exact-head automation green.
-- Phase 6: active; automated/in-database portions substantially closed, but authenticated-session, cross-congregation and physical-device gates remain; the new evidence workflow fails production promotion unless all six field gates are explicit PASS.
+- Phase 5: closed; accumulated exact-application automation green.
+- Phase 6: active; automated/in-database evidence is strong, but seven real-session/topology/physical-device gates A–G are not all PASS.
 - New RC freeze: blocked.
-- Production `main`/Cloudflare promotion: blocked by Phase 6 and by missing server-side `main` protection/ruleset enforcement.
+- Production `main`/Cloudflare promotion: blocked by Phase 6 and missing server-side `main` enforcement.
 - V4 is **not yet production-release-certified**.
 
 ## Supabase security-advisor note
 
-After the V4 aggregate hardening, no exposed-schema `SECURITY DEFINER` warning remains for the V4 presence/poll RPCs. Remaining advisor items observed on 2026-09-13 are:
-
-- informational RLS-enabled tables with no client policies (intentionally inaccessible surfaces require separate scope review before any change);
-- leaked-password protection disabled in Supabase Auth (pre-existing account-hardening setting, not silently changed during this V4 release stream).
-
-Do not broaden release scope by changing unrelated production Auth policy without explicit product/security review.
+After V4 aggregate hardening, no exposed-schema `SECURITY DEFINER` warning remains for the V4 presence/poll RPCs. Remaining items observed on 2026-09-13 include informational RLS-enabled tables with no client policies and leaked-password protection disabled in Supabase Auth. These are not being silently changed as part of this release-control reconciliation; unrelated production Auth policy must not be broadened without explicit product/security review.
 
 ## Historical RC1 evidence — preserved, not current
 
-- full accumulated RC1 regression `34694787827` — PASS;
-- Section I RC1 security/privacy `34694787800` — PASS;
-- Section H RC1 responsive/accessibility/performance/PWA automation `34694787772` — PASS;
-- RC1 whole-app browser audit `34694787823` — PASS;
-- Cloudflare exact-RC1 deployment check `103560676216` — SUCCESS;
-- remote RC1 staging smoke `34697229965` — PASS.
+- accumulated RC1 regression `34694787827` — PASS
+- Section I RC1 `34694787800` — PASS
+- Section H RC1 `34694787772` — PASS
+- RC1 whole-app browser audit `34694787823` — PASS
+- Cloudflare RC1 check `103560676216` — SUCCESS
+- remote RC1 staging smoke `34697229965` — PASS
 
 ## Rollback reference
 
@@ -231,9 +171,9 @@ Preserve until final V4 production acceptance:
 
 - Keep one serialized integration stream; avoid concurrent uncoordinated runtime ownership changes.
 - Repository/CI/live-environment evidence overrides stale chat summaries.
-- Do not weaken a valid test to obtain green status.
+- Do not weaken a valid test or field requirement to obtain green status.
 - Preserve single-owner architecture and privacy/isolation contracts.
 - Do not claim static/emulated evidence satisfies a specifically live/physical gate.
 - Historical checkpoint documents certify only their exact scope/SHA.
-- Any document using “current”, “feature-complete”, “release-ready”, “final candidate”, or “remaining blockers” must defer to this file for current V4 meaning.
+- Any document using “current”, “feature-complete”, “release-ready”, “final candidate”, or “remaining blockers” must defer to this file.
 - When phase status, blockers, scope or RC identity materially changes, update this file in the same serialized development stream.
