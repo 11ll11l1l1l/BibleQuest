@@ -72,6 +72,7 @@
 :is(.bq-community-head,.bq-couples-head,.bq-couples-cloud-head,.bq-journey-groups-head,.bq-team-center-head,.bq-encouragements-head) h1{
   margin:.15em 0 .3em;
   color:var(--bq-community-deep);
+  font-family:var(--font-display);
 }
 
 /* Community bridge — scan-first destination grid instead of repeated flat panels. */
