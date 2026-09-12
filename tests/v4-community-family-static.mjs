@@ -1,6 +1,7 @@
 // BibleQuest V4 Community / Relational family presentation contract.
-// This tranche is presentation-only: community, couples, group/team, realtime,
-// recognition/ranking and media feature owners remain byte-exact.
+// The original Community tranche remains byte-exact except the local Couples
+// owner, whose intentional Communication Journey evolution is now governed by
+// the dedicated V4 Couples Journey contracts. Couples Cloud stays byte-locked.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -10,7 +11,6 @@ const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='7b2abd7507adf5b7363fe068d5038f54d1c7263a';
 const preserved=[
   'src/features/community/index.js',
-  'src/features/couples-family/index.js',
   'src/features/couples-cloud/index.js',
   'src/features/journey-groups/index.js',
   'src/features/team-center/index.js',
@@ -30,7 +30,9 @@ for(const relative of preserved){
 
 const css=fs.readFileSync(path.join(root,'src/ui/community-family-v4.css'),'utf8');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const workflow=fs.readFileSync(path.join(root,'.github/workflows/v3-regression.yml'),'utf8');
 assert.ok(html.includes('src/ui/community-family-v4.css'),'Community V4 stylesheet must be activated from index.html.');
+assert.ok(workflow.includes('tests/v4-couples-journey-static.mjs')&&workflow.includes('tests/v4-couples-journey-edge.mjs')&&workflow.includes('tests/v4-couples-journey-smoke.mjs'),'Intentional local Couples evolution must remain delegated to the dedicated Communication Journey acceptance contracts.');
 
 const routeScopes=[
   '[data-community-view]',
