@@ -1,10 +1,21 @@
+import { V4_ART, decorativeImg } from '../../ui/v4-art.js';
+
 const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const TOOL_ART=Object.freeze({
+  assignments:V4_ART.ministry.assignments,
+  calendar:V4_ART.homeLearn.calendar,
+  'journey-groups':V4_ART.community.journeyGroups,
+  'live-room':V4_ART.community.liveRooms,
+  'assignment-publishing':V4_ART.ministry.assignments,
+  'leader-dashboard':V4_ART.ministry.analytics
+});
 
 function toolCard(tool,{privileged=false}={}){
   const action=tool.available&&tool.route
     ?`<button type="button" class="bq-primary-button" data-ministry-route="${esc(tool.route)}" data-ministry-tool-action="${esc(tool.id)}">Open ${esc(tool.label)}</button>`
     :`<button type="button" class="bq-secondary-button" disabled aria-disabled="true" data-ministry-deferred="${esc(tool.id)}">Not available yet</button>`;
-  return `<article class="bq-panel" data-ministry-tool="${esc(tool.id)}" data-ministry-status="${tool.available?'available':'deferred'}"${privileged?' data-ministry-privileged-tool':''}><p class="bq-eyebrow">${privileged?'MINISTRY ROLE':'CONGREGATION TOOL'}</p><h3>${esc(tool.label)}</h3><p>${esc(tool.description)}</p>${action}</article>`;
+  const art=decorativeImg(TOOL_ART[tool.id]||V4_ART.ministry.hub,'bq-v4-card-art');
+  return `<article class="bq-panel" data-ministry-tool="${esc(tool.id)}" data-ministry-status="${tool.available?'available':'deferred'}"${privileged?' data-ministry-privileged-tool':''}>${art}<p class="bq-eyebrow">${privileged?'MINISTRY ROLE':'CONGREGATION TOOL'}</p><h3>${esc(tool.label)}</h3><p>${esc(tool.description)}</p>${action}</article>`;
 }
 
 function membershipRows(state){
@@ -22,7 +33,7 @@ export function ministryHubPage({hub,onNavigate,onBack,onAccount,onCongregation}
       view.querySelector('[data-ministry-retry]')?.addEventListener('click',load,{once:true});
       view.querySelectorAll('[data-ministry-route]').forEach(button=>button.addEventListener('click',()=>onNavigate?.(button.dataset.ministryRoute),{once:true}));
     };
-    const intro='<div class="bq-community-head"><div><p class="bq-eyebrow">ASSIGNMENTS & MINISTRY</p><h1>Ministry Hub</h1><p>Open verified congregation tools from one role-aware portal. Ministry visibility never replaces server authorization.</p></div><button type="button" class="bq-secondary-button" data-ministry-back>Back to More</button></div>';
+    const intro=`<div class="bq-community-head"><div>${decorativeImg(V4_ART.ministry.hub,'bq-v4-home-art')}<p class="bq-eyebrow">ASSIGNMENTS & MINISTRY</p><h1>Ministry Hub</h1><p>Open verified congregation tools from one role-aware portal. Ministry visibility never replaces server authorization.</p></div><button type="button" class="bq-secondary-button" data-ministry-back>Back to More</button></div>`;
     const render=state=>{
       if(disposed)return;
       if(state.status==='signed-out')view.innerHTML=`${intro}<section class="bq-panel"><h2>Sign in to open congregation tools</h2><p>The Ministry Hub does not invent local membership or ministry authority in guest mode.</p><button type="button" class="bq-primary-button" data-ministry-account>Open account</button></section>`;
