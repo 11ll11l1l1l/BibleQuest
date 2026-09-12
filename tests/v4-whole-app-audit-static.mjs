@@ -59,4 +59,14 @@ for (const kind of ['heart', 'word', 'flame']) {
 // documented so it isn't silently dropped from tracking.
 assert.ok(artCss.includes('Congregation Recognition: intentionally NOT wired'), 'The Congregation Recognition icon deferral must stay documented inline.');
 
+// --- Icon consistency, round 3: Congregation Recognition badges. Fixed by
+// restructuring the icon into its own stable element (data-award-code /
+// data-badge-id), the deferral reason recorded in round 1 no longer applies.
+const recognitionSrc = read('src/features/congregation-recognition/index.js');
+assert.ok(recognitionSrc.includes('bq-recognition-icon') && recognitionSrc.includes('data-award-code='), 'Congregation Recognition award icon must be isolated in its own stable, styleable element.');
+assert.ok(recognitionSrc.includes('data-badge-id='), 'Congregation Recognition badge icon must be isolated in its own stable, styleable element.');
+for (const code of ['consistency', 'scripture-explorer', 'encourager', 'journey-finisher', 'group-helper', 'pastor-recognition']) {
+  assert.ok(artCss.includes(`[data-award-code="${code}"]`), `Congregation Recognition icon for '${code}' must use real custom art.`);
+}
+
 console.log('BibleQuest v4 whole-app polish audit contract passed.');
