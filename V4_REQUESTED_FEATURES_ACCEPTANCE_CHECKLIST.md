@@ -14,21 +14,23 @@ Purpose: persistent user-request checklist so requested features, UX requirement
 
 ## A. Home — release-critical requested behavior
 
-- [ ] Complete the V4 Home assignment/status card using the existing Assignments owner/service.
-- [ ] Explicitly cover signed-out state.
-- [ ] Explicitly cover offline/local-preview state.
-- [ ] Explicitly cover authenticated user with no congregation.
-- [ ] Explicitly cover loading state.
-- [ ] Explicitly cover API failure state.
-- [ ] Explicitly cover no-open-assignments state.
-- [ ] Explicitly cover one open assignment.
-- [ ] Explicitly cover multiple open assignments.
-- [ ] Explicitly cover started assignment.
-- [ ] Explicitly cover due-soon assignment.
-- [ ] Explicitly cover overdue assignment.
-- [ ] Explicitly cover completed assignment.
-- [ ] Keep a clear direct action/link to the existing Assignments route.
-- [ ] Keep Daily Journey prominent on Home.
+Certified assignment/status checkpoint: `release/v4-home-assignments` @ `c676e0ec821ffb1ff2d8ddc0ecdd6168c50a62e7`; accumulated runs `34678365877` and `34678385543` passed. See `V4_HOME_ASSIGNMENTS_CERTIFICATION.md`.
+
+- [x] Complete the V4 Home assignment/status card using the existing Assignments owner/service.
+- [x] Explicitly cover signed-out state.
+- [x] Explicitly cover offline/local-preview state.
+- [x] Explicitly cover authenticated user with no congregation.
+- [x] Explicitly cover loading state.
+- [x] Explicitly cover API failure state.
+- [x] Explicitly cover no-open-assignments state.
+- [x] Explicitly cover one open assignment.
+- [x] Explicitly cover multiple open assignments.
+- [x] Explicitly cover started assignment.
+- [x] Explicitly cover due-soon assignment.
+- [x] Explicitly cover overdue assignment.
+- [x] Explicitly cover completed assignment.
+- [x] Keep a clear direct action/link to the existing Assignments route.
+- [x] Keep Daily Journey prominent on Home. Daily Journey remains the first high-value shortcut in the certified rail and retains its Home entry point.
 - [x] Replace/upgrade the current quick-action treatment to the requested horizontal shortcut/icon rail. **Done:** `release/v4-home-rail` @ exact SHA, run green.
 - [x] Rail must support touch/swipe and normal scrolling. Native horizontal overflow scroll, verified scrollable at 320px.
 - [x] Rail must use scroll snap where appropriate. `scroll-snap-type:x proximity` + per-item `scroll-snap-align:start`.
@@ -38,11 +40,13 @@ Purpose: persistent user-request checklist so requested features, UX requirement
 - [x] Rail must work from 320 px upward without document overflow. Verified: zero document-level horizontal overflow at 320px in browser smoke.
 - [x] Rail must be reduced-motion safe. `prefers-reduced-motion:reduce` override included.
 - [x] Initial high-value shortcuts should normally include Daily Journey, Reader, Assignments, Calendar and Progress/Grow. All 5 present in that order.
-- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix already covered by `tests/v4-home-assignments-edge.mjs`; rail covered by `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
+- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix covered by `tests/v4-home-assignments-edge.mjs`; rail covered by `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
 
 ## B. Priority-1 workflow surfaces
 
-- [ ] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route.
+Calendar certification: `release/v4-calendar` @ `658f202d65481f4486a2f6c010cf0f2248f8b391`; full accumulated run `34679464999` passed. See `V4_CALENDAR_CERTIFICATION.md`.
+
+- [x] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route. Existing runtime/service owners were byte-locked; dedicated V4 presentation plus functional/mobile/security coverage is now part of accumulated CI.
 - [ ] Assignments: final V4 acceptance audit of the full page/workflow while preserving its existing owner/service.
 - [ ] Daily Mission / Daily Journey: final page-level V4 acceptance audit beyond Home integration.
 - [ ] Progress / Grow: final V4 acceptance audit and consistency pass.
@@ -182,10 +186,10 @@ These should not be casually rebuilt if already green; instead preserve them and
 
 ## Current audit conclusion
 
-- The original serialized V4 family queue is now complete through the Community / Relational tranche; the Community checkpoint is exact-SHA certified.
-- V4 is **not yet feature/acceptance complete** because release-blocking requested-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates remain open.
-- The Home shortcut rail is complete; the remaining Home work is explicit reconciliation/proof of the full assignment-state UX matrix and related final acceptance items.
-- Calendar, Assignments, Daily Journey and Progress/Grow still require their requested final page-level acceptance audits.
+- The original serialized V4 family queue is complete through the Community / Relational tranche; the Community checkpoint is exact-SHA certified.
+- Home assignment/status states and the requested shortcut rail are now explicitly closed with exact evidence.
+- Calendar page-level V4 acceptance is closed at `release/v4-calendar`; no Calendar runtime/service owner was changed to obtain certification.
+- V4 is **not yet feature/acceptance complete** because Assignments, Daily Journey/Mission, Progress/Grow and navigation coherence still need Priority-1 closure, followed by named-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates.
 - Custom artwork/icon generation, cutting, canonical naming and integration remain active work.
 - Final whole-app responsive/accessibility/performance/PWA/security/device/release gates remain mandatory.
 
