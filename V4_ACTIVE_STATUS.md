@@ -5,6 +5,10 @@ Execution model: one serialized development stream
 Active branch: `v4/modern-ui-overhaul`
 Coordination: `V4_PARALLEL_COORDINATION.md` (historical filename; serialized model is authoritative)
 
+## Mandatory companion checklist
+
+Before selecting, implementing, certifying, or closing remaining V4 work, read `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`. It is a release-blocking record of the user's requested features, exact acceptance details, custom artwork program, whole-app audit requirements, device/accessibility/PWA gates, and final release gates. A green general regression run does not override unchecked requested acceptance items in that checklist.
+
 ## Last fully verified active baseline
 
 - Exact SHA: `76474d070da75cb8e0a9210642ea9e426b545200`
