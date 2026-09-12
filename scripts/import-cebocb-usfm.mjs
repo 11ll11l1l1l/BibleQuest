@@ -34,9 +34,8 @@ function walk(dir){
 
 function removeNoteBlocks(input){
   let text=input;
-  // Footnotes, cross-references, figures and extended sidebars are packaging metadata,
-  // not verse wording. Remove them before verse extraction so their contents cannot leak
-  // into the reduced browser packs.
+  // Footnotes, cross-references and figures are packaging metadata, not verse wording.
+  // Remove them before verse extraction so their contents cannot leak into delivery packs.
   for(const marker of ['f','fe','ef','x','ex','fig']){
     const pattern=new RegExp(`\\\\${marker}\\b[\\s\\S]*?\\\\${marker}\\*`,'g');
     text=text.replace(pattern,' ');
@@ -70,6 +69,18 @@ function appendVerse(verse,text){
   verse.t=verse.t?`${verse.t} ${cleaned}`:cleaned;
 }
 
+function parseVerseToken(token,file,chapter){
+  const single=String(token).match(/^(\d+)$/);
+  if(single)return{start:Number(single[1]),end:Number(single[1])};
+  const bridge=String(token).match(/^(\d+)-(\d+)$/);
+  if(bridge){
+    const start=Number(bridge[1]),end=Number(bridge[2]);
+    if(end<=start)throw new Error(`${path.basename(file)} contains invalid verse bridge "${token}" in chapter ${chapter}.`);
+    return{start,end};
+  }
+  throw new Error(`${path.basename(file)} uses unsupported verse token "${token}" in chapter ${chapter}; only integer verses and explicit numeric bridges are accepted.`);
+}
+
 function parseUsfm(file){
   const raw=removeNoteBlocks(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));
   const idMatch=raw.match(/^\\id\s+([A-Z0-9]{3})\b/m);
@@ -86,9 +97,8 @@ function parseUsfm(file){
     const verseMatch=line.match(/^\\v\s+(\S+)\s*(.*)$/);
     if(verseMatch){
       if(!chapter)throw new Error(`${path.basename(file)} contains verse ${verseMatch[1]} before a chapter marker.`);
-      const token=verseMatch[1];
-      if(!/^\d+$/.test(token))throw new Error(`${path.basename(file)} uses unsupported verse token "${token}" in chapter ${chapter}; refusing to silently remap a bridge/suffix.`);
-      current={c:chapter,v:Number(token),t:''};
+      const range=parseVerseToken(verseMatch[1],file,chapter);
+      current={c:chapter,v:range.start,...(range.end>range.start?{e:range.end}:{}),t:''};
       appendVerse(current,verseMatch[2]);
       verses.push(current);
       continue;
@@ -107,8 +117,9 @@ function parseUsfm(file){
   }
   for(const verse of verses){
     verse.t=verse.t.trim();
-    if(!verse.t)throw new Error(`${code} ${verse.c}:${verse.v} has no readable verse text after USFM conversion.`);
-    if(verse.t.includes('\\'))throw new Error(`${code} ${verse.c}:${verse.v} still contains a USFM marker after conversion.`);
+    const label=verse.e?`${verse.v}-${verse.e}`:String(verse.v);
+    if(!verse.t)throw new Error(`${code} ${verse.c}:${label} has no readable verse text after USFM conversion.`);
+    if(verse.t.includes('\\'))throw new Error(`${code} ${verse.c}:${label} still contains a USFM marker after conversion.`);
   }
   return {code,verses};
 }
@@ -129,23 +140,29 @@ if(books.size!==BIBLE_BOOKS.length)throw new Error(`Expected ${BIBLE_BOOKS.lengt
 
 fs.rmSync(outputDir,{recursive:true,force:true});
 fs.mkdirSync(outputDir,{recursive:true});
-let totalVerses=0;
+let totalRecords=0,addressedVerses=0,bridgeRecords=0;
 for(const book of BIBLE_BOOKS){
   const parsed=books.get(book.code);
   const seen=new Set();
   let maxChapter=0;
   for(const verse of parsed.verses){
     if(verse.c<1||verse.c>book.chapters)throw new Error(`${book.code} contains invalid chapter ${verse.c}; expected 1-${book.chapters}.`);
-    const key=`${verse.c}:${verse.v}`;
-    if(seen.has(key))throw new Error(`${book.code} contains duplicate verse ${key}.`);
-    seen.add(key);maxChapter=Math.max(maxChapter,verse.c);
+    const end=verse.e||verse.v;
+    if(!Number.isInteger(verse.v)||verse.v<1||!Number.isInteger(end)||end<verse.v)throw new Error(`${book.code} contains invalid verse range ${verse.c}:${verse.v}-${end}.`);
+    for(let number=verse.v;number<=end;number++){
+      const key=`${verse.c}:${number}`;
+      if(seen.has(key))throw new Error(`${book.code} contains overlapping/duplicate verse address ${key}.`);
+      seen.add(key);addressedVerses++;
+    }
+    if(end>verse.v)bridgeRecords++;
+    maxChapter=Math.max(maxChapter,verse.c);
   }
   if(maxChapter!==book.chapters)throw new Error(`${book.code} ends at chapter ${maxChapter}; expected canonical chapter ${book.chapters}.`);
   if(!parsed.verses.length)throw new Error(`${book.code} contains no verses.`);
-  totalVerses+=parsed.verses.length;
+  totalRecords+=parsed.verses.length;
   fs.writeFileSync(path.join(outputDir,`${book.code}.json`),JSON.stringify(parsed.verses)+'\n');
 }
-if(totalVerses<30000)throw new Error(`Parsed only ${totalVerses} verses; expected a complete Bible-sized source.`);
+if(addressedVerses<30000)throw new Error(`Parsed only ${addressedVerses} addressed verses; expected a complete Bible-sized source.`);
 
 const sourceFiles=candidates.filter(file=>/\.(?:usfm|sfm|txt)$/i.test(file)).sort().map(file=>path.relative(sourceDir,file));
 const manifest={
@@ -157,13 +174,15 @@ const manifest={
   sourcePackageSha256:suppliedSha||null,
   sourceFormat:'USFM',
   canonicalBooks:BIBLE_BOOKS.length,
-  verseRecords:totalVerses,
+  verseRecords:totalRecords,
+  addressedVerses,
+  bridgeRecords,
   sourceFiles,
-  conversion:'Reduced BibleQuest browser delivery packs preserve extracted verse wording while omitting non-verse USFM layout, headings, footnotes, cross-references, figures and publication metadata. No translation or doctrinal rewriting is performed by the importer.',
+  conversion:'Reduced BibleQuest browser delivery packs preserve extracted verse wording while omitting non-verse USFM layout, headings, footnotes, cross-references, figures and publication metadata. Source verse bridges are preserved as one text record with numeric start (v) and end (e) addresses; bridge text is never duplicated, split or rewritten.',
   generatedBy:'scripts/import-cebocb-usfm.mjs'
 };
 fs.writeFileSync(path.join(outputDir,'SOURCE.json'),JSON.stringify(manifest,null,2)+'\n');
 
 const outputHash=crypto.createHash('sha256');
 for(const book of BIBLE_BOOKS)outputHash.update(fs.readFileSync(path.join(outputDir,`${book.code}.json`)));
-console.log(`Generated ${BIBLE_BOOKS.length} CEBOCB books / ${totalVerses} verse records. Pack-set SHA-256: ${outputHash.digest('hex')}`);
+console.log(`Generated ${BIBLE_BOOKS.length} CEBOCB books / ${totalRecords} text records / ${addressedVerses} verse addresses / ${bridgeRecords} bridge records. Pack-set SHA-256: ${outputHash.digest('hex')}`);
