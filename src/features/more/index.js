@@ -5,8 +5,29 @@ const featureIcon = id => `
     </svg>
   </span>`;
 
+// Keep route-entry attributes explicit here. These are stable integration hooks used by
+// regression validators and runtime selectors; card composition may change without
+// obscuring or duplicating the underlying destination contract.
+const MORE_HOOKS = Object.freeze({
+  workspace: 'data-more-workspace',
+  notifications: 'data-more-notifications',
+  community: 'data-more-community',
+  'ministry-hub': 'data-more-ministry-hub',
+  'content-review': 'data-more-content-review',
+  couples: 'data-more-couples',
+  'couples-cloud': 'data-more-couples-cloud',
+  'journey-groups': 'data-more-journey-groups',
+  'team-center': 'data-more-team-center',
+  accessibility: 'data-more-accessibility',
+  install: 'data-more-install',
+  backup: 'data-more-backup',
+  mission: 'data-more-mission',
+  calendar: 'data-more-calendar',
+  congregation: 'data-more-congregation'
+});
+
 const moreCard = ({ hook, action, icon, eyebrow, title, description, cta, tone = 'green', hidden = false }) => `
-  <article class="bq-more-card" data-more-${hook} data-tone="${tone}"${hidden ? ' hidden' : ''}>
+  <article class="bq-more-card" ${MORE_HOOKS[hook]} data-tone="${tone}"${hidden ? ' hidden' : ''}>
     <div class="bq-more-card-top">
       ${featureIcon(icon)}
       <span class="bq-more-arrow" aria-hidden="true">↗</span>
