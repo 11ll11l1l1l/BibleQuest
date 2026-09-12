@@ -117,7 +117,8 @@ try {
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Completed tutorial must remain closed after reload.');
   await page.locator('[data-open-tutorial]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'visible' });
-  await page.locator('[data-tutorial-next]').click();
+  // Guided tour order (Phase 5, 9 steps): Welcome(0) -> Home(1) -> Read(2) -> Daily Journey(3, action=mission) -> ...
+  for (let step = 0; step < 3; step += 1) await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-tutorial-action="mission"]').click();
   await page.waitForFunction(() => location.hash === '#/mission');
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Tutorial action handoff must close the overlay before routing.');
