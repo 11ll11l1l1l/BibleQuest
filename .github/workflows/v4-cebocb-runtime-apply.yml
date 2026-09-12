@@ -1,0 +1,46 @@
+name: BibleQuest V4 CEBOCB runtime integration
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - scripts/apply-v4-cebocb-runtime.mjs
+      - .github/workflows/v4-cebocb-runtime-apply.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: biblequest-v4-cebocb-runtime-apply-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apply-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply exact CEBOCB runtime migration
+        run: |
+          set -euo pipefail
+          node scripts/apply-v4-cebocb-runtime.mjs
+          node --check src/core/bible.js
+          node --check src/app/reader.js
+          node --check src/features/reader/index.js
+      - name: Commit runtime integration
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/core/bible.js src/app/reader.js src/features/reader/index.js
+          if git diff --cached --quiet; then
+            echo 'CEBOCB runtime integration already applied.'
+            exit 0
+          fi
+          git commit -m 'feat(v4): integrate CEBOCB with Bible Reader'
+          git push origin HEAD:v4/modern-ui-overhaul
