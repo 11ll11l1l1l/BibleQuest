@@ -39,4 +39,24 @@ assert.ok(primaryRoutesMatch, 'Expected to find PRIMARY_ROUTES in the width-over
 const primaryRoutes = primaryRoutesMatch[1].match(/'([a-z-]+)'/g).map(s => s.replace(/'/g, ''));
 assert.deepEqual(primaryRoutes, ['home', 'learn', 'play', 'grow', 'more'], 'Automated overflow coverage is currently limited to the 5 primary nav routes only - deep-linked feature pages (Community, Couples Journey, Congregation, Admin Console, etc.) are NOT independently overflow-tested. This is a recorded, open audit gap (see V4_UI_WHOLE_APP_AUDIT.md), not something this assertion claims to close.');
 
+// --- Icon consistency, round 2 (Section G priority list): Notification
+// Center, Couples Family, and Journey Group Encouragements category icons.
+for (const type of ['assignment', 'devotional', 'announcement', 'encouragement', 'award']) {
+  assert.ok(artCss.includes(`[data-notification-type="${type}"]`), `Notification Center icon for '${type}' must use real custom art.`);
+}
+assert.ok(read('src/features/notification-center/index.js').includes('data-notification-type="${escapeHtml(item.type)}"'), 'Notification Center must expose item.type as a data attribute so its icon is stylable (additive, no existing hook changed).');
+
+for (const mode of ['journey', 'god', 'date']) {
+  assert.ok(artCss.includes(`[data-couples-mode="${mode}"] > span {`) || new RegExp(`\\[data-couples-mode="${mode}"\\] > span,`).test(artCss), `Couples Family mode icon for '${mode}' must use real custom art.`);
+}
+
+for (const kind of ['heart', 'word', 'flame']) {
+  assert.ok(new RegExp(`\\[data-send-encouragement="${kind}"\\] > span\\s*\\{\\s*background-image:`).test(artCss), `Encouragement preset icon for '${kind}' must use real custom art.`);
+}
+
+// Congregation Recognition is a recorded, honest deferral (bare-text icon
+// concatenation, not an isolated element) - assert the reasoning stays
+// documented so it isn't silently dropped from tracking.
+assert.ok(artCss.includes('Congregation Recognition: intentionally NOT wired'), 'The Congregation Recognition icon deferral must stay documented inline.');
+
 console.log('BibleQuest v4 whole-app polish audit contract passed.');
