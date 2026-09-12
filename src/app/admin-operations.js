@@ -39,7 +39,7 @@ function normalizeDashboard(data={}){
 const emptyDashboard=()=>normalizeDashboard();
 
 export function createAdminOperationsService({api,session}={}){
-  const required=['status','dashboard','frontendHealth','deleteUser','suspendAccount','reactivateAccount','forceSignOut','setTempPassword'];
+  const required=['status','dashboard','frontendHealth','deleteUser','suspendAccount','reactivateAccount','forceSignOut','setTempPassword','changeEmail'];
   if(!api||required.some(name=>typeof api[name]!=='function')||!session?.getState)throw new Error('Admin Operations requires the shared API and Session owners.');
   let state={status:'idle',role:'',currentUserId:'',dashboard:emptyDashboard(),frontend:emptyFrontend(),busy:false,error:'',lastAction:null};
   const snapshot=()=>Object.freeze({...state});
@@ -124,5 +124,16 @@ export function createAdminOperationsService({api,session}={}){
     catch(error){state={...state,busy:false,error:error?.message||'Setting the temporary password failed.',lastAction:'set_temp_password'};throw error}
   }
 
-  return Object.freeze({authorize,refresh,deleteUser,suspendAccount,reactivateAccount,forceSignOut,setTempPassword,getState:snapshot,clear:()=>reset('idle')});
+  async function changeEmail(targetUserId,email){
+  ensureAuthorized();
+  if(state.role!=='owner')throw fail('Only the BibleQuest owner can change an account email.','BQ_ADMIN_OPS_OWNER_REQUIRED');
+  const target=guardTarget(targetUserId,'Use your own Account page for this active owner account.','BQ_ADMIN_OPS_SELF_EMAIL_CHANGE');
+  const value=clean(email).toLowerCase();
+  if(value.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw fail('A valid recovery email is required.','BQ_ADMIN_OPS_EMAIL_INVALID');
+  state={...state,busy:true,error:'',lastAction:'change_email'};
+  try{const result=await api.changeEmail(target,value);if(result?.changed!==true)throw fail('The server did not confirm the email change.','BQ_ADMIN_OPS_EMAIL_UNCONFIRMED');state={...state,busy:false,lastAction:'change_email'};return Object.freeze({ok:true,result,state:snapshot()})}
+  catch(error){state={...state,busy:false,error:error?.message||'Changing the account email failed.',lastAction:'change_email'};throw error}
+}
+
+return Object.freeze({authorize,refresh,deleteUser,suspendAccount,reactivateAccount,forceSignOut,setTempPassword,changeEmail,getState:snapshot,clear:()=>reset('idle')});
 }
