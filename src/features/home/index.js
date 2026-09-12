@@ -18,7 +18,7 @@ function shortcutRailHtml() {
   return `<nav class="bq-home-rail" data-home-rail aria-label="Quick shortcuts"><ul class="bq-home-rail-track" data-home-rail-track>${HOME_SHORTCUTS.map(item => `<li><button type="button" class="bq-home-rail-item" data-home-rail-item="${item.id}" data-home-rail-action="${item.action}"><span class="bq-home-rail-icon" aria-hidden="true">${iconSvg(item.icon, { size: 22 })}</span><span class="bq-home-rail-label">${escapeHtml(item.label)}</span></button></li>`).join('')}</ul></nav>`;
 }
 
-export function homePage({ progress, dailyMission, assignments, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow }) {
+export function homePage({ progress, dailyMission, assignments, presence, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow }) {
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
   const daily = dailyMission?.today?.();
   const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
@@ -45,7 +45,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       </section>
       <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
         <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
-        <span class="bq-home-congregation-copy"><span class="bq-eyebrow">CONGREGATION</span><b>Congregation &amp; Assignments</b><small data-home-congregation-caption>Join or open your congregation.</small></span>
+        <span class="bq-home-congregation-copy"><span class="bq-eyebrow">CONGREGATION</span><b>Congregation &amp; Assignments</b><small data-home-congregation-caption>Join or open your congregation.</small><small data-home-active-count></small></span>
         <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="Open congregation and assignments">Open</button>
       </section>
       <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
@@ -134,6 +134,21 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       railTrack?.addEventListener('keydown', onRailKeydown);
       bindAssignmentActions();
       void loadAssignments();
+      const activeCountHost = root.querySelector('[data-home-active-count]');
+      const renderActiveCount = text => { if (!disposed && activeCountHost) activeCountHost.textContent = text; };
+      if (presence?.activeCount) {
+        renderActiveCount('Checking recent activity…');
+        const congregationId = (presence.getState?.()?.congregationIds || [])[0];
+        if (!congregationId) {
+          renderActiveCount('');
+        } else {
+          presence.activeCount(congregationId, 30).then(result => {
+            if (!result) { renderActiveCount(''); return; }
+            const { count } = result;
+            renderActiveCount(count === 0 ? 'No recent activity.' : count === 1 ? '● 1 active in the last 30 min' : `● ${count} active in the last 30 min`);
+          }).catch(() => renderActiveCount('Activity unavailable offline.'));
+        }
+      }
       return () => {
         disposed = true;
         dailyButton?.removeEventListener('click', openDaily);
