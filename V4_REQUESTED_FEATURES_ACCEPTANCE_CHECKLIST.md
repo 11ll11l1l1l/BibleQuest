@@ -90,7 +90,7 @@ Memory Meadow behavior certification: `release/v4-memory-meadow` @ `c7a78d713546
 - [x] Couples Journey / communication journey must be implemented/audited against the requested husband-wife communication-level system and self-assessment. **Done.** `src/app/couples-family.js` persists `journeyAssessments` (a 12-item rated self-assessment producing a 5-level communication ladder + per-domain scores), with an explicit safety-priority path when abuse/coercion/violence indicators are present that deliberately routes away from ordinary "both sides" communication exercises. Private, local-device-only, capped history (`JOURNEY_LIMIT`). Checkpoint: `release/v4-couples-journey` @ `ca8e627f0ae8c3db17f17a18105f21a315e67a6d`; full accumulated suite (including the dedicated `tests/v4-couples-journey-smoke.mjs` browser acceptance test) passed at that exact SHA, run `34685699294`.
 
   One real bug found and fixed while verifying this: the journey-result screen offers two legitimate routes back to the dashboard ("Done" and "Back to Couples"), both sharing `data-couples-go="dashboard"`, which made the smoke test's locator ambiguous (Playwright strict-mode violation) and was failing this feature's own gate before I picked it up. Fixed the test locator only (`.first()`), left the two-button UX as-is since having both labels is a legitimate design choice, not a bug.
-- [ ] Cebuano/Bisaya CEBOCB Reader integration must remain intact through all later V4 changes.
+- [x] Cebuano/Bisaya CEBOCB Reader integration must remain intact through all later V4 changes. **Certified:** focused preservation workflow run `34686990993` passed the full CEBOCB pack + Reader integration contract (66 books / 30,552 text records / 31,103 verse addresses / 457 preserved bridges); dedicated future-change guard merged as PR #138. See `V4_CEBOCB_READER_CERTIFICATION.md`.
 
 ## E. Existing areas already substantially converted but still protected by final audit
 
@@ -217,8 +217,8 @@ Every overlay that hides an inline SVG restores it under `@media (forced-colors:
 - Home assignment/status states and the requested shortcut rail are explicitly closed with exact evidence.
 - Calendar, full Assignments page, Daily Journey, Progress/Grow and primary Home/Learn/Play/Grow/More coherence are certified.
 - Memory Meadow exact #38 behavior is certified without runtime changes because the implementation and accumulated tests already match the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
-- The next named-flow blocker is Couples Journey communication levels/self-assessment; the current Couples service has useful cards/listening/check-in/repair/practice flows but no persistent communication-level/journey-level model.
-- Custom V4 artwork assets now exist on `main`, including Memory Meadow assets, but artwork integration remains a separate controlled tranche from behavioral certification.
-- V4 is **not yet feature/acceptance complete** because Couples Journey, CEBOCB preservation audit, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, privacy/field gates and final RC/release gates remain.
+- Couples Journey communication levels/self-assessment is certified at `release/v4-couples-journey` and the CEBOCB/Bisaya Reader preservation audit is now also certified; both named-flow acceptance items are closed.
+- The custom V4 artwork program is certified under Section F; remaining unused assets are audit-time choices rather than missing required integrations.
+- V4 is **not yet feature/acceptance complete** because whole-app polish, responsive/accessibility/PWA/device evidence, privacy/field gates and final RC/release gates remain.
 
 This file is release-blocking: V4 should not be declared complete merely because the general regression suite is green while unchecked requested acceptance items remain.
