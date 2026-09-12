@@ -75,7 +75,6 @@ jobs:
           if(!(await page.locator('[data-home-rail]').count())) throw new Error('home shortcut rail missing');
           await page.locator('[data-home-rail-item="grow"]').click();
           await page.waitForSelector('[data-progress-page]',{timeout:10000});
-          if(location?.hash===undefined){}
           console.log('PASS home shortcut rail -> Grow');
 
           await page.goto(`${base}/#/play`,{waitUntil:'domcontentloaded',timeout:45000});
