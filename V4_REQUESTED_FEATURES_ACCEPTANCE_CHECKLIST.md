@@ -87,7 +87,9 @@ Memory Meadow behavior certification: `release/v4-memory-meadow` @ `c7a78d713546
 - [x] Mismatch delay target: 650 ms.
 - [x] Input locking during resolution works correctly, including stale delayed-callback protection.
 - [x] Rewards remain stars + coins, with zero XP.
-- [ ] Couples Journey / communication journey must be implemented/audited against the requested husband-wife communication-level system and self-assessment. Current Couples flows do not yet contain a persistent communication-level/journey-level model.
+- [x] Couples Journey / communication journey must be implemented/audited against the requested husband-wife communication-level system and self-assessment. **Done.** `src/app/couples-family.js` persists `journeyAssessments` (a 12-item rated self-assessment producing a 5-level communication ladder + per-domain scores), with an explicit safety-priority path when abuse/coercion/violence indicators are present that deliberately routes away from ordinary "both sides" communication exercises. Private, local-device-only, capped history (`JOURNEY_LIMIT`). Checkpoint: `release/v4-couples-journey` @ `ca8e627f0ae8c3db17f17a18105f21a315e67a6d`; full accumulated suite (including the dedicated `tests/v4-couples-journey-smoke.mjs` browser acceptance test) passed at that exact SHA, run `34685699294`.
+
+  One real bug found and fixed while verifying this: the journey-result screen offers two legitimate routes back to the dashboard ("Done" and "Back to Couples"), both sharing `data-couples-go="dashboard"`, which made the smoke test's locator ambiguous (Playwright strict-mode violation) and was failing this feature's own gate before I picked it up. Fixed the test locator only (`.first()`), left the two-button UX as-is since having both labels is a legitimate design choice, not a bug.
 - [ ] Cebuano/Bisaya CEBOCB Reader integration must remain intact through all later V4 changes.
 
 ## E. Existing areas already substantially converted but still protected by final audit
