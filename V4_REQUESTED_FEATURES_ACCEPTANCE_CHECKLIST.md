@@ -1,256 +1,268 @@
 # BibleQuest V4 Requested Features & Acceptance Checklist
 
-Updated: 2026-09-12 JST
-Purpose: persistent user-request checklist so requested features, UX requirements, special flows, artwork work, and release gates are not lost between development sessions.
+Updated: 2026-09-13 JST
+Purpose: release-blocking acceptance inventory for the **official post-RC1 V4 development line**.
 
-## Mandatory usage
+## Authority notice
 
-- The manual captain / active development chat must read this file before selecting remaining V4 work.
-- Repository evidence overrides stale chat summaries.
-- Do not mark an item complete merely because an older V3 feature exists. V4 completion requires the requested V4 UX/presentation plus preserved functionality and relevant regression evidence.
-- Update this checklist as evidence changes. Do not delete an unfinished user request to make the status look cleaner.
-- Preserve V3 single-owner architecture, privacy/isolation, auth/RLS, persistence, PWA and backend contracts unless a proven requirement demands a controlled change.
-- Do not modify production/main merely to advance V4.
+Read `V4_ACTIVE_STATUS.md` first. It is the single authority for the current branch, active phase, release readiness, and remaining blockers. Read `V4_DOCUMENTATION_AUTHORITY.md` for the repository-wide documentation hierarchy.
 
-## A. Home — release-critical requested behavior
+This checklist preserves requested behavior and exact acceptance requirements. It must **not** be used to revive an older RC1-era “feature-complete” conclusion when `V4_ACTIVE_STATUS.md` shows newer official development.
 
-Certified assignment/status checkpoint: `release/v4-home-assignments` @ `c676e0ec821ffb1ff2d8ddc0ecdd6168c50a62e7`; accumulated runs `34678365877` and `34678385543` passed. See `V4_HOME_ASSIGNMENTS_CERTIFICATION.md`.
+Repository evidence overrides stale chat summaries. Historical exact-SHA certifications remain valid for the bytes they tested, but later integration bytes require their own applicable verification.
 
-- [x] Complete the V4 Home assignment/status card using the existing Assignments owner/service.
-- [x] Explicitly cover signed-out state.
-- [x] Explicitly cover offline/local-preview state.
-- [x] Explicitly cover authenticated user with no congregation.
-- [x] Explicitly cover loading state.
-- [x] Explicitly cover API failure state.
-- [x] Explicitly cover no-open-assignments state.
-- [x] Explicitly cover one open assignment.
-- [x] Explicitly cover multiple open assignments.
-- [x] Explicitly cover started assignment.
-- [x] Explicitly cover due-soon assignment.
-- [x] Explicitly cover overdue assignment.
-- [x] Explicitly cover completed assignment.
-- [x] Keep a clear direct action/link to the existing Assignments route.
-- [x] Keep Daily Journey prominent on Home. Daily Journey remains the first high-value shortcut in the certified rail and retains its Home entry point.
-- [x] Replace/upgrade the current quick-action treatment to the requested horizontal shortcut/icon rail. **Done:** `release/v4-home-rail` @ exact SHA, run green.
-- [x] Rail must support touch/swipe and normal scrolling. Native horizontal overflow scroll, verified scrollable at 320px.
-- [x] Rail must use scroll snap where appropriate. `scroll-snap-type:x proximity` + per-item `scroll-snap-align:start`.
-- [x] Rail must support mouse/trackpad. Native overflow-x scroll (no custom scroll-hijacking).
-- [x] Rail must be keyboard/focus accessible. Left/Right arrow-key navigation between shortcuts, verified in browser smoke.
-- [x] Rail must show icon + text labels. Real SVG icon (new `calendar` icon added) + visible text label per item.
-- [x] Rail must work from 320 px upward without document overflow. Verified: zero document-level horizontal overflow at 320px in browser smoke.
-- [x] Rail must be reduced-motion safe. `prefers-reduced-motion:reduce` override included.
-- [x] Initial high-value shortcuts should normally include Daily Journey, Reader, Assignments, Calendar and Progress/Grow. All 5 present in that order.
-- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix covered by `tests/v4-home-assignments-edge.mjs`; rail covered by `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
+## A. Core V4 product family — CERTIFIED BASELINE, MUST REMAIN GREEN
 
-## B. Priority-1 workflow surfaces
+The following pre-RC1 V4 work is already certified and becomes regression-protected baseline for the post-RC1 line:
 
-Calendar certification: `release/v4-calendar` @ `658f202d65481f4486a2f6c010cf0f2248f8b391`; full accumulated run `34679464999` passed. See `V4_CALENDAR_CERTIFICATION.md`.
+- [x] Home V4 assignment/status card with signed-out, offline/local preview, no-congregation, loading, failure, empty, one/multiple, started, due-soon, overdue and completed states.
+- [x] Direct Assignments action remains available from Home.
+- [x] Daily Journey remains prominent on Home.
+- [x] Home horizontal shortcut rail supports touch/swipe, normal scrolling, scroll snap, mouse/trackpad, keyboard/focus, icon + text labels and 320 px+ layouts without document overflow.
+- [x] High-value Home shortcuts include Daily Journey, Reader, Assignments, Calendar and Progress/Grow.
+- [x] Dedicated Calendar V4 UX/presentation.
+- [x] Full Assignments page/workflow V4 acceptance.
+- [x] Daily Journey page-level V4 acceptance.
+- [x] Progress/Grow V4 acceptance.
+- [x] Home, Learn, Play, Grow and More remain a coherent modern app family.
+- [x] Community, Couples, Journey Groups, Teams, Live Rooms, Recognition, Leaderboards, Media, Recordings and Encouragements retain certified V4 presentation/functionality.
 
-Assignments certification: `release/v4-assignments-page` @ `65d7ef14b6e1bf5dc8925a88c5838bc233e9fd95`; full accumulated run `34680055519` passed.
+Important historical evidence includes `release/v4-home-assignments`, `release/v4-home-rail`, `release/v4-calendar`, `release/v4-assignments-page`, `release/v4-daily-journey`, `release/v4-progress-grow`, `release/v4-primary-family`, and `release/v4-community-family`.
 
-Daily Journey certification: `release/v4-daily-journey` @ `fbd8b474a3f8f71044b9cae48b47528f2075436a`; full accumulated run `34680442340` passed. See `V4_DAILY_JOURNEY_CERTIFICATION.md`.
+## B. Exact named user-request flows — CERTIFIED BASELINE, MUST REMAIN GREEN
 
-Progress/Grow certification: `release/v4-progress-grow` @ `6c55de27154b9f856faaf80d7cd17b18124c54f3`; full accumulated run `34680840140` passed. See `V4_PROGRESS_GROW_CERTIFICATION.md`.
+### Memory Meadow / Kids Memory Match #38
 
-Primary-family certification: `release/v4-primary-family` @ `c7a78d71354696130efa07e6d7f010deae7795a0`; full accumulated run `34681411008` passed. See `V4_PRIMARY_FAMILY_CERTIFICATION.md`.
-
-- [x] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route.
-- [x] Assignments: final V4 acceptance audit of the full page/workflow while preserving its existing owner/service.
-- [x] Daily Mission / Daily Journey: final page-level V4 acceptance audit beyond Home integration.
-- [x] Progress / Grow: final V4 acceptance audit and consistency pass.
-- [x] Home, Learn, Play, Grow and More remain a coherent modern app family with all required entry points reachable.
-
-## C. Secondary/social/family/media V4 tranche
-
-Certified checkpoint: `release/v4-community-family` @ `e72b6427fdc2c7e742152264c5091d80f9e6ad6d`; full accumulated regression run `34677870938` passed build/deployment gate, architecture validators, edge regressions, guarded harness syntax, and complete browser/mobile suite.
-
-- [x] Community: finish and certify V4 presentation/UX.
-- [x] Couples: finish and certify V4 presentation/UX.
-- [x] Journey Groups: finish and certify V4 presentation/UX.
-- [x] Teams: finish and certify V4 presentation/UX.
-- [x] Live Rooms: finish and certify V4 presentation/UX.
-- [x] Recognition: finish and certify V4 presentation/UX.
-- [x] Leaderboards: finish and certify V4 presentation/UX.
-- [x] Media: finish and certify V4 presentation/UX.
-- [x] Recordings: finish and certify V4 presentation/UX.
-- [x] Encouragements: finish and certify V4 presentation/UX.
-- [x] Add/maintain a unified V4 acceptance/static preservation contract for this tranche instead of assuming CSS presence equals completion. `tests/v4-community-family-static.mjs` byte-locks all 11 existing feature owners to the pre-tranche baseline.
-
-## D. Named user-request flows that require exact acceptance
-
-Memory Meadow behavior certification: `release/v4-memory-meadow` @ `c7a78d71354696130efa07e6d7f010deae7795a0`; full accumulated run `34681411008` passed. See `V4_MEMORY_MEADOW_CERTIFICATION.md`.
-
-- [x] Kids Memory Match / Memory Meadow checked against the requested #38 behavior, not just old feature presence.
-- [x] Mobile Memory Meadow target: 6 pairs / 12 cards / 3 columns.
-- [x] Wide Memory Meadow target: 8 pairs / 16 cards / 4 columns.
-- [x] Correct-match delay target: 350 ms.
-- [x] Mismatch delay target: 650 ms.
-- [x] Input locking during resolution works correctly, including stale delayed-callback protection.
+- [x] Mobile: 6 pairs / 12 cards / 3 columns.
+- [x] Wide: 8 pairs / 16 cards / 4 columns.
+- [x] Correct-match delay: 350 ms.
+- [x] Mismatch delay: 650 ms.
+- [x] Input locks correctly during resolution, including stale delayed-callback protection.
 - [x] Rewards remain stars + coins, with zero XP.
-- [x] Couples Journey / communication journey must be implemented/audited against the requested husband-wife communication-level system and self-assessment. **Done.** `src/app/couples-family.js` persists `journeyAssessments` (a 12-item rated self-assessment producing a 5-level communication ladder + per-domain scores), with an explicit safety-priority path when abuse/coercion/violence indicators are present that deliberately routes away from ordinary "both sides" communication exercises. Private, local-device-only, capped history (`JOURNEY_LIMIT`). Checkpoint: `release/v4-couples-journey` @ `ca8e627f0ae8c3db17f17a18105f21a315e67a6d`; full accumulated suite (including the dedicated `tests/v4-couples-journey-smoke.mjs` browser acceptance test) passed at that exact SHA, run `34685699294`.
 
-  One real bug found and fixed while verifying this: the journey-result screen offers two legitimate routes back to the dashboard ("Done" and "Back to Couples"), both sharing `data-couples-go="dashboard"`, which made the smoke test's locator ambiguous (Playwright strict-mode violation) and was failing this feature's own gate before I picked it up. Fixed the test locator only (`.first()`), left the two-button UX as-is since having both labels is a legitimate design choice, not a bug.
-- [x] Cebuano/Bisaya CEBOCB Reader integration must remain intact through all later V4 changes. **Certified:** focused preservation workflow run `34686990993` passed the full CEBOCB pack + Reader integration contract (66 books / 30,552 text records / 31,103 verse addresses / 457 preserved bridges); dedicated future-change guard merged as PR #138. See `V4_CEBOCB_READER_CERTIFICATION.md`.
+Historical certification: `release/v4-memory-meadow`; see `V4_MEMORY_MEADOW_CERTIFICATION.md`.
 
-## E. Existing areas already substantially converted but still protected by final audit
+### Couples Journey
 
-These should not be casually rebuilt if already green; instead preserve them and include them in the whole-app final audit.
+- [x] Husband-wife communication-level journey and self-assessment are implemented.
+- [x] 12-item self-assessment produces a 5-level communication ladder plus domain scores.
+- [x] Safety-priority routing exists for abuse/coercion/violence indicators rather than forcing ordinary “both sides” exercises.
+- [x] Private local-device history remains capped.
 
-Certified protected-page checkpoint: focused audit run `34688168693` passed deployment/architecture, protected owner validators, static/edge contracts, and the full protected browser matrix. Durable audit gate merged by PR #140 at `061bae2e50f2070544e840ff8ce07cf38c9d17b3`. No runtime/product regression was found and no behavior patch was required. See `V4_PROTECTED_PAGES_CERTIFICATION.md`.
+Historical certification: `release/v4-couples-journey`; see the dedicated smoke coverage and certification records.
 
-- [x] Design system / shell remains intact and consistent.
-- [x] Learn V4 composition remains intact.
-- [x] Reader V4 presentation remains intact.
-- [x] Play / Games V4 presentation remains intact.
-- [x] Avatar Vault V4 presentation remains intact.
-- [x] Account remains intact.
-- [x] Private/cloud Notes remain intact.
-- [x] Transform remains intact.
-- [x] Personality/Psychometrics remain intact.
-- [x] Accessibility settings remains intact.
-- [x] Admin Console remains intact.
-- [x] Admin Operations remains intact.
-- [x] Content Review remains intact.
-- [x] Congregation remains intact.
-- [x] Diagnostics/recovery remain intact.
-- [x] Ministry Hub / Workspace remains intact and coherent with the V4 family.
+### Cebuano/Bisaya Reader
 
-## F. Custom artwork / icon program
+- [x] CEBOCB/Bisaya Reader integration remains protected through later V4 changes.
+- [x] Preservation contract covers 66 books / 30,552 text records / 31,103 verse addresses / 457 preserved bridges.
 
-- [x] Complete the custom BibleQuest artwork/icon inventory. 160 assets exist across 10 themed sheets (avatar-vault, bible-world, community, core, decorative, games, home-learn, memory-meadow, ministry-more, system).
-- [x] Use the planned cute, cohesive Pinoy-in-Japan BibleQuest visual theme where appropriate. Applied across Avatar Vault, Home rail/tiles, Learn cards and the More hub.
-- [x] Generate transparent-background asset sheets efficiently with multiple assets per generated image. 16 assets per sheet x 10 sheets.
-- [x] Maintain deterministic position/order metadata for every generated sheet. Each sheet cut to stable canonical filenames under assets/v4/<sheet>/.
-- [x] Build/use a position-aware Python cutter that extracts each asset automatically. Cut output is present and verified; every referenced file is asserted to exist by tests/v4-custom-art-static.mjs.
-- [x] Save each extracted asset under the exact canonical filename needed by the app. Verified: zero broken references.
-- [x] Replace remaining generic, low-quality or placeholder icons/artwork where the custom asset is ready. **Wired this cycle:** all 16 Avatar Vault portraits, 5 Home shortcut-rail icons, 3 Home secondary tiles, 9 Learn category cards, 14 More hub destination icons. Coverage rose from 22 to 68 referenced assets.
-- [x] Keep visual identity coherent across Home, Learn, Play, Grow, Community and Ministry families. One shared sheet style used for every wired surface.
-- [x] Generated visual improvements may be implemented without waiting for separate user approval, provided they follow V4 rules and do not break functionality. Certified: `release/v4-custom-art`, full accumulated suite green, zero markup/logic/service changes.
+See `V4_CEBOCB_READER_CERTIFICATION.md`.
 
-### Custom artwork wiring notes (this cycle)
+## C. Protected architecture / feature owners — CERTIFIED BASELINE, MUST REMAIN GREEN
 
-Checkpoint: `release/v4-custom-art`. Technique: CSS `background-image` keyed off `data-*` attributes the feature markup already renders, so **no feature file, hook, route, scoring, storage or permission was changed**.
+- [x] Design system and shell.
+- [x] Learn and Reader.
+- [x] Play / Games and Avatar Vault.
+- [x] Account.
+- [x] Private/cloud Notes.
+- [x] Transform.
+- [x] Personality/Psychometrics.
+- [x] Accessibility settings.
+- [x] Admin Console / Admin Operations / Content Review.
+- [x] Congregation.
+- [x] Diagnostics / recovery.
+- [x] Ministry Hub / Workspace.
+- [x] Single-owner architecture and existing service/API ownership remain protected.
 
-Three conflicts were found and handled rather than forced through:
-1. **Bible World region icons: deliberately NOT wired.** The certified `journey-v4.css` tranche intentionally replaced those emoji with a numbered progression step (`counter(bq-world-step)`) plus its own background. Layering art there would have fought that background and rendered "01/02/03" on top of the illustration. The numbered step is the better fit for a journey metaphor, so the region art is intentionally left unused; the exclusion is documented inline in `v4-custom-art.css` so it is not silently reversed.
-2. **More hub panels use gradients.** `more-visual-polish.css` sets a certified per-tile `background:linear-gradient(...)` on every `[data-more-*]`. Painting `background-image` on those panels would have silently erased the gradients, so the art targets the existing `.bq-more-icon-wrap` instead.
-3. **Learn cards use a gradient too** (`reader.css`). Art is layered via `::after` rather than `background-image` for the same reason.
+The protected-page and whole-app certification records remain regression evidence; they do not replace new verification when later changes touch those surfaces.
 
-Every overlay that hides an inline SVG restores it under `@media (forced-colors: active)`.
+## D. Custom artwork / visual system — CERTIFIED BASELINE, MUST REMAIN COHERENT
 
-`tests/v4-custom-art-static.mjs` guards all three failure modes: asset existence, no `background-image` on gradient-backed surfaces, and the Bible World exclusion staying in place.
+- [x] 160 custom assets exist across 10 themed sheets.
+- [x] Transparent-background multi-asset sheets use deterministic ordering/metadata.
+- [x] Position-aware extraction/canonical filenames exist under `assets/v4/...`.
+- [x] Referenced custom files are guarded against broken paths.
+- [x] Custom Pinoy-in-Japan visual identity is applied where it improves the product without overriding better semantic/system presentation.
+- [x] Avatar Vault portraits, Home rail/tiles, Learn cards and More hub destinations have custom-art wiring.
+- [x] Existing gradients/forced-colors behavior and intentional Bible World numbered progression are preserved.
+- [x] Unused generated assets are not automatically release defects; use them only where they improve semantics/quality.
 
-**Still unused: 92 of 160 assets** — chiefly the `core/` nav+brand set, `system/` status/empty/loading badges, and `decorative/` accents. These are not automatically missing requirements: certified scalable SVG/system presentation is retained where it is the better semantic/theming fit, and unused decorative art remains optional rather than release-blocking.
+Historical certification: `release/v4-custom-art`, `release/v4-games-art-final`, and associated artwork tests/certifications.
 
-## G. Whole-app V4 polish audit
+## E. Whole-app polish / responsive / accessibility / PWA automated baseline
 
-Browser-required Section G certification: `release/v4-whole-app-browser-audit` @ exact candidate `65d08e93d4df2629db78f83f52ce3c610ce8bb25`. Focused whole-app run `34690641958`, protected-page run `34690641974`, and full accumulated regression run `34690725670` all passed. See `V4_WHOLE_APP_BROWSER_AUDIT_CERTIFICATION.md`.
+- [x] Loading, empty, error, success/completion, signed-out and offline/recovery states audited.
+- [x] All maintained routes protected against document overflow at certified mobile sizes.
+- [x] 320 / 360 / 390 / 412 / 430 px automated responsive coverage.
+- [x] Tablet and desktop coverage.
+- [x] Orientation and safe-area coverage where applicable.
+- [x] Keyboard operation and focus-state coverage.
+- [x] Browser accessibility-name/landmark/focus semantics coverage.
+- [x] Reduced-motion coverage.
+- [x] Localization/text-expansion resilience for representative English/Japanese/Cebuano surfaces.
+- [x] Offline shell and reconnect recovery automated coverage.
+- [ ] Installed-PWA behavior on a real Android device.
+- [ ] Physical Android Chrome at 100% zoom.
+- [ ] Physical Android Brave at 100% zoom.
 
-- [x] Audit loading states. Browser-rendered loading and loading -> ready/empty transitions are explicitly covered.
-- [x] Audit empty states. Ready-empty and no-congregation/context-empty states are browser verified.
-- [x] Audit error states. Safe rendered API failure state is verified, including no raw service-detail leakage.
-- [x] Audit success/completion states. Successful assignment completion and awarded-points feedback are browser verified; independent Games/Daily Journey regressions cross-check other completion paths.
-- [x] Audit signed-out states. Browser verified.
-- [x] Audit offline/recovery states. Offline/local-preview, Offline Shell, Cloud Notes local preview, and Operational Recovery browser regressions are green.
-- [x] Audit icon consistency. Round 1 + 2, Congregation Recognition, and the final Games artwork tranche are complete. Games was closed by `release/v4-games-art-final` at exact tested candidate `f7d141de7752eeabb628e06f6d0b14f9b67a080b`; focused Games verification, protected-page audit, and full accumulated regression all passed. See `V4_GAMES_ART_FINAL_CERTIFICATION.md`. Icons without an honest semantic asset match remain intentionally textual/emoji rather than being mapped to misleading artwork.
-- [x] Audit typography hierarchy. **Fixed:** Community and Couples Journey were missing the shared display-font h1 rule that the other family CSS files already have. Both corrected.
-- [x] Audit spacing and card/surface consistency. No gaps found in static review.
-- [x] Audit clipping and document overflow. All 42 maintained routes are browser-traversed at 320 px and 430 px. The audit found one real 320 px Backup overflow (320 px viewport expanded to 367 px), traced to the native file picker's intrinsic width; `src/ui/reset-recovery-v4.css` now stacks/constrains only that picker/label, and the complete rerun is green.
-- [x] Audit layout shifts. Maintained routes now check late topbar/navigation geometry drift and material leading-content movement after render; the certified matrix is green.
-- [x] Audit Japanese/English/Cebuano text expansion and localization resilience. Representative high-value routes receive English, Japanese, and Cebuano/Bisaya text-expansion stress at 320 px; no document overflow or viewport escape remains.
-- [x] Audit micro-interactions/transitions. No gaps found in static review.
-- [x] Audit reduced-motion behavior. **Confirmed clean:** all transition/animation usage remains covered by local guards or the certified global reduced-motion catch-all.
-- [x] Audit placeholder/legacy artwork still visible anywhere in maintained routes. The previously recorded Games exception is closed by `release/v4-games-art-final`; remaining textual/emoji symbols are intentional semantic fallbacks where no honest matching custom asset exists.
-- [x] Audit navigation/IA so every maintained feature remains reachable and intuitive. Maintained navigation/3-tap evidence remains green, and the deep-route matrix confirms all 42 maintained routes resolve to real content rather than not-found/recovery surfaces.
+The last three remain physical-device gates and must not be inferred from headless/browser emulation.
 
-### Section G evidence
+## F. Pre-RC1 security/privacy baseline — CERTIFIED, MUST REMAIN GREEN
 
-Static checkpoint: `release/v4-whole-app-audit` @ `b92268b91cc479421bc43a7d86d0725657078282`.
+Historical Section I certification established:
 
-Final browser checkpoint: `release/v4-whole-app-browser-audit` @ `65d08e93d4df2629db78f83f52ce3c610ce8bb25`.
-
-Exact-SHA runs:
-- `34690641958` — focused whole-app browser audit: PASS.
-- `34690641974` — protected-page audit: PASS.
-- `34690725670` — full accumulated build/architecture/edge/browser-mobile regression: PASS.
-
-Real browser defect found and fixed: `#/backup` overflowed at 320 px because the native file picker and its label were laid out horizontally. The presentation-only containment fix changed no Backup behavior, service/data ownership, storage, security logic, or route contract.
-
-Section G is closed by repository evidence.
-
-## H. Responsive / accessibility / performance / PWA release gates
-
-Automated/browser certification: `release/v4-section-h` @ exact tested candidate `d99965db288340d61cebfb3029d807dabb6b8490`; dedicated run `34692818724`, whole-app run `34692818768`, protected-page run `34692818740`, final Games run `34692818742`, and full accumulated run `34692817888` all passed. See `V4_SECTION_H_CERTIFICATION.md`.
-
-- [x] Verify 320 px viewport.
-- [x] Verify 360 px viewport.
-- [x] Verify 390 px viewport.
-- [x] Verify 412 px viewport.
-- [x] Verify 430 px viewport.
-- [x] Verify tablet layouts.
-- [x] Verify desktop layouts.
-- [x] Verify portrait/landscape/orientation behavior where relevant.
-- [x] Verify safe-area behavior.
-- [x] Verify keyboard-only operation.
-- [x] Verify visible/usable focus states.
-- [x] Verify screen-reader semantics on major workflows. Browser accessibility-name/landmark/focus semantics are certified; this does not claim physical TalkBack/VoiceOver field testing.
-- [x] Verify reduced-motion preference.
-- [x] Review asset/performance cost and avoid unnecessary regressions.
-- [ ] Verify installed-PWA behavior on a real device.
-- [x] Verify offline behavior.
-- [x] Verify recovery/reconnect behavior.
-- [ ] Verify physical Android Chrome at 100% zoom.
-- [ ] Verify physical Android Brave at 100% zoom.
-
-The three unchecked items are intentionally physical-device field gates and must not be inferred from headless Chromium or responsive emulation.
-
-## I. Security, privacy and data integrity release gates
-
-Automated/security certification: `release/v4-section-i` @ exact tested candidate `9f8c530668b2d9cbaa0cca226750fe9278f0a24f`; full accumulated run `34693803229`, dedicated Section I run `34693803309`, Section H run `34693803249`, whole-app run `34693803222`, and protected-page run `34693802698` all passed. See `V4_SECTION_I_SECURITY_PRIVACY_CERTIFICATION.md`.
-
-- [x] Preserve authentication boundaries.
-- [x] Preserve RLS/security rules.
-- [x] Preserve account isolation.
-- [x] Verify multi-account isolation for Assignments.
-- [x] Verify multi-account isolation for Groups/Teams.
-- [x] Verify multi-account isolation for Couples.
-- [x] Verify multi-account isolation for Live Rooms.
-- [x] No duplicate state/API owners introduced by V4 presentation work.
+- [x] Authentication boundaries.
+- [x] Existing RLS/security rules at that checkpoint.
+- [x] Account isolation.
+- [x] Multi-account isolation for Assignments.
+- [x] Multi-account isolation for Groups/Teams.
+- [x] Multi-account isolation for Couples.
+- [x] Multi-account isolation for Live Rooms.
+- [x] No duplicate state/API owners introduced by the presentation overhaul.
 - [x] No production database shortcuts or weakened privacy controls.
 
-Section I found and fixed real stale-account in-memory state risks in Assignments, Journey Groups, Team Center, Couples and Live Rooms without changing Supabase schema/RLS/Edge Functions or introducing a new API/state owner.
+Section I also fixed stale-account in-memory state risks in Assignments, Journey Groups, Team Center, Couples and Live Rooms. These protections remain regression requirements for the post-RC1 line.
 
-## J. Final V4 release candidate / deployment gates
+## G. Official post-RC1 Phase 1 — Assignment privacy tightening
 
-- [x] Reconcile this checklist against `DEVELOPMENT_PLAN_V4.md` and issue #124 before declaring feature-complete. Reconciled 2026-09-12 after Section I; no additional product tranche is required before RC convergence.
-- [x] Synchronize `V4_ACTIVE_STATUS.md` with current repository evidence before RC freeze.
-- [x] Freeze one exact V4 release-candidate SHA. RC1 is `release/v4-rc1` @ `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`.
-- [x] Run `bash build.sh` successfully on the exact candidate. Covered by the Cloudflare deployment gate in full accumulated run `34694787827`.
-- [x] Run architecture validation on the exact candidate. Covered by full accumulated run `34694787827`.
-- [x] Run the complete accumulated static/security/edge regression suite on the exact candidate. Full accumulated run `34694787827` passed.
-- [x] Run complete browser/mobile coverage for changed and critical workflows. RC1 runs `34694787827`, `34694787772`, and `34694787823` passed.
-- [x] Run Home assignment-state/shortcut-rail acceptance tests. Included in the accumulated RC1 regression and rechecked on the Cloudflare staging deployment.
-- [x] Run all changed-feature regressions. Complete accumulated RC1 suite passed on the unchanged candidate.
-- [x] Run the multi-account/privacy/isolation matrix. Section I `34694787800` plus the accumulated RC1 suite passed.
-- [x] Perform preview/staging smoke verification. Cloudflare Pages check `103560676216` deployed exact RC1; final remote staging run `34697229965` passed routes, Home rail, More -> Backup, Memory Meadow launch/return, service worker, offline reload and reconnect.
-- [ ] Perform installed-PWA field verification on a real Android device.
-- [x] Preserve a known-good V3 rollback reference until V4 is accepted. `release/v3.71-japanese-furigana` remains at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
-- [ ] Promote only after exact-candidate evidence and the remaining physical-device field gates are green.
-- [ ] After promotion, verify production bytes/build identity and production browser behavior.
+Current-state authority: `V4_ACTIVE_STATUS.md`.
 
-## Current audit conclusion
+- [x] Verify whether actual private answers/leader feedback were peer-readable before changing policy. Finding: actual answer/feedback data were already restricted; peer-visible data were response-presence metadata.
+- [x] Ordinary members see only their own assignment response/presence state.
+- [x] `bible_assignment_response_presence` policy requires self OR verified ministry role.
+- [x] Member-facing response-review UI does not expose other-member response presence.
+- [x] Ministry-role review remains available.
+- [x] Static/edge contracts protect the tightened rule.
+- [ ] Carry account-switching, role-demotion and cross-congregation scenarios into the integrated live verification phase.
 
-- The serialized Priority-1 V4 page/family queue is closed with exact-SHA full-suite evidence through `release/v4-primary-family`.
-- Home assignment/status states and the requested shortcut rail are explicitly closed with exact evidence.
-- Calendar, full Assignments page, Daily Journey, Progress/Grow and primary Home/Learn/Play/Grow/More coherence are certified.
-- Memory Meadow exact #38 behavior is certified against the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
-- Couples Journey communication levels/self-assessment and the CEBOCB/Bisaya Reader preservation requirement are certified.
-- The custom V4 artwork program is certified under Section F, and the final Games artwork/icon tranche is closed by `release/v4-games-art-final`.
-- The whole-app Section G polish/browser audit is closed by `release/v4-whole-app-browser-audit`.
-- Section H automated/browser gates are closed; only the three explicit real-device/installed-PWA field checks remain open.
-- Section I security/privacy/data-integrity gates are closed by `release/v4-section-i` with exact-SHA full-suite evidence.
-- RC1 exact-SHA automated verification is closed at `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`.
-- Exact-RC Cloudflare preview/staging is closed: Cloudflare check `103560676216` and remote staging run `34697229965` passed.
-- V4 is **feature-complete and staging-certified but not yet release-ready**. Remaining blockers are installed-PWA real-device acceptance, physical Android Chrome 100%, physical Android Brave 100%, then exact-RC promotion and post-promotion Cloudflare production verification.
+Checkpoint: `release/v4-phase1-assignment-privacy`.
 
-This file is release-blocking: V4 must not be declared complete while the remaining unchecked Section H/J physical-device, promotion and production-verification items remain.
+## H. Official post-RC1 Phase 2 — Admin emergency user management
+
+- [x] Suspend account.
+- [x] Reactivate account.
+- [x] Force sign-out.
+- [x] Owner-only temporary-password operation with self-target protection and minimum length.
+- [x] Attempt immediate session revocation after applicable actions.
+- [x] Audit emergency operations without logging the temporary password value.
+- [x] Protect another owner from inappropriate suspension and preserve authorization boundaries.
+- [x] App-side guards and static authorization contracts.
+- [ ] Deploy changed `bq-admin-ops` Edge Function behavior to a safe target/test Supabase environment.
+- [ ] Live-verify suspend/reactivate/force-sign-out/temp-password behavior and audit records.
+- [ ] Verify session-revocation behavior against real auth sessions.
+- [ ] Richer user-management/new-user-card presentation, severity tiers, typed destructive confirmation and email-change flow remain open unless explicitly removed from V4 scope.
+
+Checkpoint: `release/v4-phase2-admin-emergency`.
+
+## I. Official post-RC1 Phase 3 — Privacy-safe 30-minute presence
+
+- [x] Confirmed and fixed the prior raw-row privacy weakness for ordinary members.
+- [x] Restrict raw `bible_presence` SELECT to ministry roles.
+- [x] Provide a scope-checked `SECURITY DEFINER` active-count aggregate.
+- [x] `presence.activeCount()` fails closed for signed-out/missing-congregation/out-of-scope callers.
+- [x] Home shows a privacy-safe “active in the last 30 min” aggregate state.
+- [x] Reuse the existing heartbeat rather than create a second presence owner.
+- [x] Repository contracts/fixtures/smokes updated.
+- [ ] Deploy the new RLS/function migration to a safe target/test Supabase/Postgres environment.
+- [ ] Live-verify member vs ministry-role visibility and aggregate behavior.
+
+Checkpoint: `release/v4-phase3-presence`.
+
+## J. Official post-RC1 Phase 4 — Leader Center
+
+- [x] **OFFICIALLY SKIPPED by explicit user instruction.**
+
+The Leader Center expansion is not a forgotten requirement and is not a V4 release blocker. Do not silently re-add it to the required V4 path without a new explicit scope decision.
+
+## K. Official post-RC1 Phase 5 — Tutorial + Help Center
+
+Status at the consolidation snapshot: **ACTIVE / STABILIZATION**.
+
+- [x] Expand guided onboarding to 9 steps.
+- [x] Cover Reader, Assignments, Play, installation and Help in the expanded tour.
+- [x] Extend trainer states for the 9-step flow.
+- [x] Update `TUTORIAL_STEP_COUNT` to 9.
+- [x] Add an always-available Help and Tutorial Center.
+- [x] Add a proper Help visual/icon.
+- [x] Wire Help into More.
+- [x] Wire the Help route.
+- [x] Add dedicated Phase 5 contract coverage.
+- [x] Correct stale smoke references from the old step count/order.
+- [x] Move Daily Journey tutorial action/navigation to the correct new step.
+- [ ] Run/finalize the applicable accumulated verification on the final Phase 5 head and record the exact green checkpoint.
+- [ ] Update `V4_ACTIVE_STATUS.md` when Phase 5 changes from active/stabilization to closed.
+
+Snapshot integration head: `4ba9eac283487b54494cc58b4bcfdda5c1a18ca2`. Its Cloudflare preview deployment succeeded, but preview deployability alone is not release certification.
+
+## L. Integrated post-RC1 security/backend verification — RELEASE BLOCKING
+
+Before a new RC freeze:
+
+- [ ] Live Phase 2 Supabase Edge Function verification.
+- [ ] Live Phase 3 Postgres/RLS/function verification.
+- [ ] Two-account assignment isolation.
+- [ ] Account switching / stale-state clearing.
+- [ ] Role demotion / privilege-loss behavior.
+- [ ] Cross-congregation isolation.
+- [ ] Suspend/reactivate/force-sign-out behavior.
+- [ ] Owner/admin authorization boundaries.
+- [ ] Temporary-password flow with no secret leakage to logs/audit UI.
+- [ ] Member vs ministry-role presence visibility.
+- [ ] Regression of the pre-RC1 Section I isolation protections.
+- [ ] Complete accumulated static/security/edge/browser/mobile suite on the final integrated head.
+
+Static contracts do not count as live verification where the requirement specifically concerns deployed Supabase/Postgres/Edge behavior.
+
+## M. New V4 release candidate / production gates — RELEASE BLOCKING
+
+### RC1 historical record
+
+RC1 remains valid **historical exact-SHA evidence only**:
+
+- `release/v4-rc1`
+- `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`
+- full accumulated run `34694787827` — PASS;
+- Section I run `34694787800` — PASS;
+- Section H run `34694787772` — PASS;
+- whole-app browser audit `34694787823` — PASS;
+- Cloudflare RC1 check `103560676216` — SUCCESS;
+- remote RC1 staging smoke `34697229965` — PASS.
+
+Those checks certify RC1 only. Official development continued after RC1, so PR #151 is **not the default current promotion path**.
+
+### Required new-candidate path
+
+- [ ] Reconcile this checklist and `V4_ACTIVE_STATUS.md` against the final official integration head.
+- [ ] Freeze a new exact candidate from `v4/modern-ui-overhaul` (normally RC2 or later).
+- [ ] Run build/deployment gate on that exact candidate.
+- [ ] Run architecture validation on that exact candidate.
+- [ ] Run complete accumulated static/security/edge regression on that exact candidate.
+- [ ] Run complete browser/mobile/whole-app coverage on that exact candidate.
+- [ ] Run the integrated post-RC1 account/privacy/backend matrix on that exact candidate or immutable equivalent evidence.
+- [ ] Deploy the exact new candidate to Cloudflare preview/staging.
+- [ ] Verify Cloudflare preview build identity matches the frozen candidate.
+- [ ] Run critical-route/runtime/offline/reconnect staging smoke against that exact deployment.
+- [ ] Complete installed-PWA real-device verification.
+- [ ] Complete physical Android Chrome 100% verification.
+- [ ] Complete physical Android Brave 100% verification.
+- [x] Preserve V3 rollback reference `release/v3.71-japanese-furigana` @ `c631bea8d5177a9a2ff68139cb104b6fbf26015b` until final V4 acceptance.
+- [ ] Promote only the exact newly certified candidate to `main`.
+- [ ] Verify Cloudflare production serves the intended new V4 build/bytes.
+- [ ] Run production browser smoke after propagation.
+
+## Official audit conclusion
+
+V4 is **actively developing on the post-RC1 line**. The certified pre-RC1 visual/product work remains protected baseline, while post-RC1 privacy, admin, presence and Help/Tutorial work is now part of the official V4 scope.
+
+Current interpretation must come from `V4_ACTIVE_STATUS.md`. At this consolidation snapshot:
+
+- Phase 1: implemented;
+- Phase 2: implemented, live backend verification still owed;
+- Phase 3: implemented, live database verification still owed;
+- Phase 4: explicitly skipped;
+- Phase 5: active/stabilizing;
+- integrated post-RC1 verification: pending;
+- new RC freeze/certification: pending;
+- production promotion: pending.
+
+Therefore V4 must **not** be described as currently feature-complete, currently RC1-certified, or ready for production merely because the old RC1 exact-SHA gates were green.
