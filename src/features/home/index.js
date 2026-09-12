@@ -75,7 +75,7 @@ export function homePage({ progress, dailyMission, onMission, onRecordings, onMe
               <h2 id="bq-home-explore-title">What would help next?</h2>
             </div>
             <button type="button" class="bq-home-guide-link" data-open-tutorial aria-label="Show BibleQuest tutorial">
-              <span aria-hidden="true">?</span> Guide
+              <span aria-hidden="true">?</span> Show tutorial
             </button>
           </div>
           <div class="bq-home-action-grid">
