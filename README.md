@@ -2,25 +2,33 @@
 
 BibleQuest is a Bible learning, study, family, community and ministry web application with games, assignments, Bible reading, congregation features, administrative tools, PWA/offline support and related learning experiences.
 
-## Current production
+## Production
 
-**BibleQuest V4 RC3 is the active production release.**
+**BibleQuest V4 RC3 remains the active production release.**
 
 - production host: `https://mybiblequest.pages.dev`
 - exact promoted V4 application candidate: `7de1c53ddd33c028498b35bee77be30e56878dec`
 - exact production merge: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`
-- final V4 production/acceptance status: `V4_ACTIVE_STATUS.md`
+- frozen V4 production/acceptance record: `V4_ACTIVE_STATUS.md`
 
-V4 has completed automated post-production acceptance. Manual Phase 6 Gates A-G were explicitly owner-waived for that release and must not be described as field-test PASS results.
+## Current development — V5
+
+V5 architecture planning is active on `v5/architecture-upgrade`, created from cleaned `main` `ef5d46485f9e7138b969777d34de585cfd9ecbd1`.
+
+V5 is a deliberate architecture-level upgrade. Unlike V4, it is not constrained to preserving existing implementation architecture. The plan includes real database/RLS testing, Vite/TypeScript build tooling, Reader/Games decomposition, true offline Bible reading, modern media ownership, Web Push, Leader Center and real multi-congregation operation.
+
+No V5 runtime migration has started yet; current Phase 0 is architecture/governance and baseline acceptance.
 
 ## Before changing anything
 
 Read these in order:
 
-1. `DOCUMENTATION_INDEX.md` — which documentation is current versus historical.
-2. `BACKUP_MANIFEST.md` — canonical frozen V3/V4 backup branches and exact SHAs.
-3. `V4_ACTIVE_STATUS.md` — final V4 production record.
-4. `docs/V5_STARTING_POINT.md` — clean handoff rules before V5 development begins.
+1. `DOCUMENTATION_INDEX.md` — cross-version authority map.
+2. `V5_ACTIVE_STATUS.md` — current V5 authority/status.
+3. `DEVELOPMENT_PLAN_V5.md` — V5 architecture program and phase sequence.
+4. `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — release-blocking V5 inventory.
+5. `docs/v5/adr/README.md` — architecture decision record process.
+6. `BACKUP_MANIFEST.md` — canonical frozen V3/V4 backups.
 
 ## Version archives
 
@@ -28,23 +36,20 @@ Read these in order:
 - V4 archive: `docs/archive/v4/README.md`
 - archive policy/index: `docs/archive/README.md`
 
-Historical V3/V4 documents intentionally remain in their existing paths where tests, workflows, architecture validators or old links may reference them. Do not treat their old phase status as current simply because the files remain at repository root.
+Historical V3/V4 documents intentionally remain in their existing paths where tests, workflows, architecture validators or old links may reference them. Their old phase state is not current V5 status.
 
-## Development state
+## V5 execution rules
 
-V4 is frozen as the accepted production baseline. V5 is **not started yet**.
+- Keep one serialized integration stream for runtime/data changes.
+- V5 may replace implementation architecture, but must preserve or explicitly supersede production data/privacy/authorization outcomes with ADRs and equivalent-or-stronger tests.
+- Real database authorization must be tested against actual Postgres/Supabase behavior; static SQL matching is not sufficient V5 release evidence.
+- Active congregation/tenant context must be explicit for tenant-sensitive operations.
+- Server authorization remains authoritative; client role checks are UX only.
+- Offline behavior must be declared per domain, including conflict/retry rules for writable data.
+- Do not weaken valid tests to obtain green status.
+- Do not fabricate field/device evidence; `WAIVED` is not `PASS`.
+- Preserve V4 production/archive rollback until V5 production acceptance is complete.
 
-V5 should begin only after the release/archive cleanup is merged to `main`. Create a dedicated V5 integration branch and new V5 authority/status documentation from that cleaned `main` baseline; do not develop from an archive branch or reactivate a historical V3/V4 status file.
+## Validation transition
 
-## Safety rules
-
-- Keep one serialized integration stream for runtime changes.
-- Repository, CI and deployed-environment evidence override stale chat or historical documentation.
-- Preserve authentication, RLS, privacy/isolation and server-side authorization boundaries unless a reviewed versioned change intentionally replaces them.
-- Do not weaken valid automated tests merely to make a release green.
-- Preserve exact release backups until a later explicit retention decision.
-- Treat `archive/*` branches listed in `BACKUP_MANIFEST.md` as read-only by project policy.
-
-## Validation
-
-The repository still contains accumulated V3/V4-named validators and workflows because they protect current behavior. Their names are historical; their coverage remains useful until V5 deliberately migrates or replaces them with equivalent-or-stronger checks.
+The repository still contains accumulated V3/V4-named validators/workflows because they protect current behavior. V5 will migrate them to reusable/version-neutral build, database, security, browser, PWA/offline and release gates only when equivalent-or-stronger coverage exists.
