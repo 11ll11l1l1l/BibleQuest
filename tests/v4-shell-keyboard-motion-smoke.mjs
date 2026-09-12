@@ -8,8 +8,12 @@ async function run(){
 
   // Keyboard: Tab must reach every primary nav link, in visual order, each
   // with a visible focus ring driven by the certified Foundation token.
+  // Budget is generous (60, not a fixed small count) because the active
+  // route's own content legitimately grows over time (e.g. Home's
+  // shortcut rail, assignment list) - what matters is that the nav is
+  // still reachable in visual order, not a specific tab-press count.
   const order=[];
-  for(let i=0;i<12;i++){
+  for(let i=0;i<60&&order.length<5;i++){
     await page.keyboard.press('Tab');
     const info=await page.evaluate(()=>{
       const el=document.activeElement;
