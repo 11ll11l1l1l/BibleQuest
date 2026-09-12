@@ -109,7 +109,18 @@ jobs:
           }));
           if(!offline.appText || offline.startupFailure || offline.online) throw new Error(`offline reload failed: ${JSON.stringify(offline)}`);
           console.log('PASS offline reload',offline.appText.length);
+
           await context.setOffline(false);
+          await page.goto(`${base}/#/reader`,{waitUntil:'domcontentloaded',timeout:30000});
+          await page.waitForTimeout(1000);
+          const reconnect=await page.evaluate(()=>({
+            appText:(document.querySelector('#app')?.innerText||'').trim(),
+            startupFailure:!!document.querySelector('[data-startup-failure]'),
+            online:navigator.onLine,
+            route:location.hash
+          }));
+          if(!reconnect.online || !reconnect.appText || reconnect.startupFailure || !reconnect.route.includes('reader')) throw new Error(`reconnect failed: ${JSON.stringify(reconnect)}`);
+          console.log('PASS reconnect -> Reader',reconnect.appText.length);
 
           if(pageErrors.length) throw new Error(`page errors: ${pageErrors.join(' | ')}`);
           await browser.close();
