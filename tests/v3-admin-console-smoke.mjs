@@ -14,7 +14,7 @@ async function mountedConsole(){
     let state={status:'ready',role:'owner',busy:false,error:'',lastAction:null,users:Object.freeze([
       {id:'u1',name:'Mina',email:'mina@example.test',role:'member',accessActive:true,lastSignInAt:'2026-09-12T08:00:00Z',memberships:Object.freeze([{congregationId:'c1',congregationName:'First Church',role:'member',active:true}]),groupMemberships:Object.freeze([])},
       {id:'u2',name:'Noah',email:'noah@example.test',role:'member',accessActive:false,memberships:Object.freeze([{congregationId:'c1',congregationName:'First Church',role:'member',active:true}]),groupMemberships:Object.freeze([])}
-    ],options:Object.freeze({congregations:Object.freeze([{id:'c1',name:'First Church',ownerId:'owner'},{id:'c2',name:'Second Church',ownerId:'owner'}]),groups:Object.freeze([{id:'g1',name:'Family Group',congregationId:'c1',ownerId:'other',maxMembers:6,memberCount:3}])})};
+    ]),options:Object.freeze({congregations:Object.freeze([{id:'c1',name:'First Church',ownerId:'owner'},{id:'c2',name:'Second Church',ownerId:'owner'}]),groups:Object.freeze([{id:'g1',name:'Family Group',congregationId:'c1',ownerId:'other',maxMembers:6,memberCount:3}])})};
     let operationsState={status:'ready',role:'owner',currentUserId:'owner',busy:false,error:''};
     const snapshot=()=>Object.freeze({...state});
     const opSnapshot=()=>Object.freeze({...operationsState});
