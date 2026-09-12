@@ -1,8 +1,8 @@
 {
   "schema": "biblequest-v4-phase6-field-evidence/v1",
-  "updated_jst": "2026-09-13T04:36:23+09:00",
+  "updated_jst": "2026-09-13T04:44:00+09:00",
   "certified_application_sha": "4f908ad8b53f3feb00f21ae27dd4707597b5aa14",
-  "promotion_policy": "All six gates A-F must be PASS before a production main promotion can pass the field-evidence CI gate.",
+  "promotion_policy": "All seven gates A-G must be PASS before a production main promotion can pass the field-evidence CI gate.",
   "notes": "Release evidence only. Do not store credentials, tokens, private email addresses, recovery codes, or other secrets here.",
   "gates": {
     "A": {"status": "pending", "title": "Authenticated emergency-action matrix"},
@@ -10,6 +10,7 @@
     "C": {"status": "pending", "title": "True cross-congregation field isolation"},
     "D": {"status": "pending", "title": "Physical Android Chrome at 100% zoom"},
     "E": {"status": "pending", "title": "Physical Android Brave at 100% zoom"},
-    "F": {"status": "pending", "title": "Installed Android PWA acceptance"}
+    "F": {"status": "pending", "title": "Installed Android PWA acceptance"},
+    "G": {"status": "pending", "title": "Issue #68 linked-activity multi-account field validation"}
   }
 }
