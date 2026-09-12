@@ -611,6 +611,10 @@ export function createApi() {
     async health(){return invoke('bq-admin-ops',{action:'health'});},
     async dashboard(){return invoke('bq-admin-ops',{action:'dashboard'});},
     async deleteUser(targetUserId){return invoke('bq-admin-ops',{action:'delete_user',targetUserId});},
+    async suspendAccount(targetUserId,reason=''){return invoke('bq-admin-ops',{action:'suspend_account',targetUserId,reason});},
+    async reactivateAccount(targetUserId){return invoke('bq-admin-ops',{action:'reactivate_account',targetUserId});},
+    async forceSignOut(targetUserId){return invoke('bq-admin-ops',{action:'force_sign_out',targetUserId});},
+    async setTempPassword(targetUserId,password){return invoke('bq-admin-ops',{action:'set_temp_password',targetUserId,password});},
     async frontendHealth(){
       const loadText=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.text()};
       const loadJson=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.json()};
