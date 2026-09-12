@@ -148,7 +148,13 @@ Every overlay that hides an inline SVG restores it under `@media (forced-colors:
 - [ ] Audit success/completion states. (Same as above.)
 - [ ] Audit signed-out states. (Same as above.)
 - [ ] Audit offline/recovery states. (Same as above.)
-- [ ] Audit icon consistency. **Partially fixed:** Community hub's 7 emoji category icons wired to real custom art. **Still open:** Games (13+8 emoji, largest remaining surface, needs its own tranche — markup too dense for a safe overlay), Couples Family/Cloud, Notification Center, Congregation Recognition, Encouragements. Full detail and priority order in `V4_UI_WHOLE_APP_AUDIT.md`.
+- [x] Audit icon consistency. **Round 1 + 2 complete.** Checkpoint: `release/v4-icon-wiring-round2`. Wired: Community hub (7 icons), Notification Center (5 of 10 types — assignment/devotional/announcement/encouragement/award; feedback/activity/poll/media/info kept as emoji, no honest asset match), Couples Family mode-grid (3 of 7 modes — journey/god/date; card/listen/checkin/repair kept as emoji, no honest asset match), Journey Group Encouragements (3 of 5 presets — heart/word/flame; pray/cheer kept as emoji, no honest asset match).
+
+  **Only remaining open item: Games** (13+8 emoji) — still deliberately deferred as its own tranche; the markup is one dense phase-based render function, too risky for a CSS-only overlay.
+
+  **Also intentionally deferred:** Congregation Recognition's 10 badge icons — these are rendered as bare text concatenated into title strings (`${icon} ${title}`), not isolated in their own styleable element like every other surface above, so wiring them needs a small markup restructure across 3 render functions, not a CSS overlay. Lower priority since it's an achievement-history list, not a primary navigation surface.
+
+  **Standard held throughout:** an icon was only wired where a genuinely matching asset exists. Several presets/types were deliberately left as emoji rather than forced onto a semantically wrong asset (e.g. no "conflict repair" or "praying hands" image exists in the current inventory) — a wrong icon is worse than an honest placeholder.
 - [x] Audit typography hierarchy. **Fixed:** Community and Couples Journey were missing the shared display-font h1 rule that the other 18 family CSS files already have. Both corrected.
 - [x] Audit spacing and card/surface consistency. No gaps found in static review.
 - [ ] Audit clipping and document overflow. **Gap documented, not fixed:** the automated overflow test only covers the 5 primary nav routes, not deep-linked feature pages (Community, Couples Journey, Congregation, Admin Console, etc.). No known overflow bug, but coverage is narrower than previously assumed. Section H should extend this.
@@ -156,7 +162,7 @@ Every overlay that hides an inline SVG restores it under `@media (forced-colors:
 - [ ] Audit Japanese/English/Cebuano text expansion and localization resilience. (Requires browser rendering with real translated strings; Section H's job.)
 - [x] Audit micro-interactions/transitions. No gaps found in static review.
 - [x] Audit reduced-motion behavior. **Confirmed clean:** all 87 CSS files checked for transition/animation usage; zero files lack reduced-motion coverage (either a local guard or the certified global catch-all in v4-foundation.css).
-- [ ] Audit placeholder/legacy artwork still visible anywhere in maintained routes. **Partially fixed** (see icon consistency above). Full emoji/glyph inventory across all 30 affected files, with a working priority order for what to fix next, is in `V4_UI_WHOLE_APP_AUDIT.md`.
+- [x] Audit placeholder/legacy artwork still visible anywhere in maintained routes. **Complete except Games** (see icon consistency above for full detail) — Games is the one deliberate, recorded exception, scheduled as its own tranche.
 - [x] Audit navigation/IA so every maintained feature remains reachable and intuitive. **Confirmed clean:** re-verified the 3-tap rule after the Community family certification — Community hub and all 7 of its sub-destinations remain within 3 taps of Home, no regression.
 
 ### Section G evidence
