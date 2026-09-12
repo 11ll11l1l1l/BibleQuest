@@ -113,27 +113,18 @@ jobs:
           await assert.rejects(()=>service.changeEmail('member-2','not-an-email'),/valid recovery email/);
           console.log('V4 admin email recovery smoke: PASS');
           ''')
-
-          sec=Path('.github/workflows/v4-section-i-security-privacy.yml')
-          text=sec.read_text()
-          # Head branch still has the pre-helper workflow. Add the permanent feature regression only.
-          old='          node tests/v4-section-i-security-static.mjs'
-          if text.count(old)!=1: raise SystemExit('Section I test anchor mismatch')
-          sec.write_text(text.replace(old,old+'\n          node tests/v4-admin-email-recovery-smoke.mjs'))
-          Path('.github/v4-admin-email-recovery.trigger').unlink(missing_ok=True)
-          Path('.github/workflows/v4-admin-email-recovery-patch.yml').unlink(missing_ok=True)
           PY
           node --check src/core/api.js
           node --check src/app/admin-operations.js
           node --check src/features/admin-console/index.js
           node tests/v4-admin-email-recovery-smoke.mjs
           git diff --check
-      - name: Commit isolated patch
+      - name: Commit isolated product/test patch
         shell: bash
         run: |
           git config user.name "BibleQuest release automation"
           git config user.email "actions@users.noreply.github.com"
-          git add -A
+          git add supabase/functions/bq-admin-ops/index.ts src/core/api.js src/app/admin-operations.js src/features/admin-console/index.js tests/v4-admin-email-recovery-smoke.mjs
           git commit -m "feat(v4): add owner email recovery flow"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
 
