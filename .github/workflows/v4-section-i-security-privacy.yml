@@ -27,6 +27,7 @@ jobs:
           bash build.sh
           node scripts/validate-v3-architecture.mjs
           node tests/v4-section-i-security-static.mjs
+          node tests/v4-admin-email-recovery-smoke.mjs
       - name: Run explicit multi-account isolation matrix
         run: node tests/v4-section-i-multi-account-edge.mjs
       - name: Cross-check existing authentication scope and privacy regressions
