@@ -1,0 +1,88 @@
+name: BibleQuest V4 Home Assignments verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/features/home/index.js
+      - src/ui/home-v4.css
+      - src/app/bootstrap.js
+      - src/app/assignments.js
+      - src/features/assignments/**
+      - tests/v4-home-assignments-static.mjs
+      - tests/v4-home-assignments-edge.mjs
+      - tests/v4-home-assignments-smoke.mjs
+      - tests/v4-home-dashboard-static.mjs
+      - tests/v3-home-visual-polish-static.mjs
+      - tests/v3-assignments-edge.mjs
+      - tests/v3-assignments-smoke.mjs
+      - tests/v3-advanced-assignments-edge.mjs
+      - tests/v3-advanced-assignments-smoke.mjs
+      - tests/v3-assignment-response-auth-edge.mjs
+      - scripts/validate-v3-architecture.mjs
+      - scripts/validate-v3-assignments.mjs
+      - scripts/validate-v3-advanced-assignments.mjs
+      - scripts/validate-v3-assignment-push.mjs
+      - tests/v3-final-mobile-widths-smoke.mjs
+      - .github/workflows/v4-home-assignments-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-home-assignments-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  home-assignments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and Home Assignments contracts
+        run: |
+          bash build.sh
+          node tests/v3-home-visual-polish-static.mjs
+          node tests/v4-home-dashboard-static.mjs
+          node tests/v4-home-assignments-static.mjs
+          node tests/v4-home-assignments-edge.mjs
+      - name: Single-owner and Assignments architecture validators
+        run: |
+          node scripts/validate-v3-architecture.mjs
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-advanced-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
+      - name: Assignment privacy and behavior regressions
+        run: |
+          node tests/v3-assignments-edge.mjs
+          node tests/v3-advanced-assignments-edge.mjs
+          node tests/v3-assignment-response-auth-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-home-assignments-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-home-assignments-http.log
+          exit 1
+      - name: Home Assignments browser and mobile regressions
+        run: |
+          timeout 240s node tests/v4-home-assignments-smoke.mjs
+          timeout 240s node tests/v3-assignments-smoke.mjs
+          timeout 240s node tests/v3-advanced-assignments-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul
