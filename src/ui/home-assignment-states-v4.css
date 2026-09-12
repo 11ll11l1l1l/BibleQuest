@@ -1,0 +1,72 @@
+/* BibleQuest V4 Home assignment state matrix.
+   Presentation only: src/app/assignments.js remains the sole assignment owner. */
+
+.bq-home-assignment-state{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:var(--space-4);
+  min-height:86px;
+}
+.bq-home-assignment-state h2{
+  margin:2px 0 4px;
+  color:var(--forest-900);
+  font-family:var(--font-display);
+  font-size:clamp(20px,2.7vw,26px);
+  letter-spacing:-.02em;
+}
+.bq-home-assignment-state p:not(.bq-eyebrow){margin:0;max-width:760px;color:var(--ink-500);font-size:12px;line-height:1.5}
+.bq-home-assignment-state-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.bq-home-assignment-state-actions .bq-secondary-button{margin:0;white-space:nowrap}
+.bq-home-assignment-state[data-home-assignment-state="loading"]{opacity:.86}
+.bq-home-assignment-state[data-home-assignment-state="loading"]::before{
+  content:"";
+  width:10px;
+  height:10px;
+  margin-top:8px;
+  flex:0 0 auto;
+  border:2px solid color-mix(in srgb,var(--forest-700) 25%,var(--line-200));
+  border-top-color:var(--forest-700);
+  border-radius:50%;
+  animation:bq-home-assignment-spin .8s linear infinite;
+}
+.bq-home-assignment-state[data-home-assignment-state="signed-out"],
+.bq-home-assignment-state[data-home-assignment-state="offline"],
+.bq-home-assignment-state[data-home-assignment-state="no-congregation"]{
+  padding-left:12px;
+  border-left:4px solid var(--info);
+}
+.bq-home-assignment-state[data-home-assignment-state="error"]{
+  padding-left:12px;
+  border-left:4px solid var(--danger);
+  background:color-mix(in srgb,var(--danger) 3%,transparent);
+}
+.bq-home-assignment-state[data-home-assignment-state="empty"],
+.bq-home-assignment-state[data-home-assignment-state="completed"]{
+  padding-left:12px;
+  border-left:4px solid var(--success);
+}
+.bq-home-assignment-state[data-home-assignment-state="completed"] h2{color:color-mix(in srgb,var(--success) 76%,var(--ink-900))}
+
+@keyframes bq-home-assignment-spin{to{transform:rotate(360deg)}}
+
+@media(max-width:640px){
+  .bq-home-assignment-state{display:grid;min-height:0}
+  .bq-home-assignment-state[data-home-assignment-state="loading"]{grid-template-columns:auto minmax(0,1fr)}
+  .bq-home-assignment-state[data-home-assignment-state="loading"]>.bq-home-assignment-state-actions{grid-column:1/-1}
+  .bq-home-assignment-state-actions{justify-content:flex-start}
+  .bq-home-assignment-state-actions .bq-secondary-button{flex:1 1 140px;justify-content:center}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-home-assignment-state[data-home-assignment-state="loading"]::before{animation:none;border-color:var(--forest-700)}
+}
+
+@media(prefers-contrast:more){
+  .bq-home-assignment-state[data-home-assignment-state="signed-out"],
+  .bq-home-assignment-state[data-home-assignment-state="offline"],
+  .bq-home-assignment-state[data-home-assignment-state="no-congregation"],
+  .bq-home-assignment-state[data-home-assignment-state="error"],
+  .bq-home-assignment-state[data-home-assignment-state="empty"],
+  .bq-home-assignment-state[data-home-assignment-state="completed"]{border-left-width:6px}
+}
