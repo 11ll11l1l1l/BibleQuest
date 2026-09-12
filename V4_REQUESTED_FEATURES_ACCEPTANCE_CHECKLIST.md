@@ -38,7 +38,7 @@ Purpose: persistent user-request checklist so requested features, UX requirement
 - [x] Rail must work from 320 px upward without document overflow. Verified: zero document-level horizontal overflow at 320px in browser smoke.
 - [x] Rail must be reduced-motion safe. `prefers-reduced-motion:reduce` override included.
 - [x] Initial high-value shortcuts should normally include Daily Journey, Reader, Assignments, Calendar and Progress/Grow. All 5 present in that order.
-- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix already covered by `tests/v4-home-assignments-edge.mjs`; rail covered by new `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
+- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix already covered by `tests/v4-home-assignments-edge.mjs`; rail covered by `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
 
 ## B. Priority-1 workflow surfaces
 
@@ -50,17 +50,19 @@ Purpose: persistent user-request checklist so requested features, UX requirement
 
 ## C. Secondary/social/family/media V4 tranche
 
-- [ ] Community: finish and certify V4 presentation/UX.
-- [ ] Couples: finish and certify V4 presentation/UX.
-- [ ] Journey Groups: finish and certify V4 presentation/UX.
-- [ ] Teams: finish and certify V4 presentation/UX.
-- [ ] Live Rooms: finish and certify V4 presentation/UX.
-- [ ] Recognition: finish and certify V4 presentation/UX.
-- [ ] Leaderboards: finish and certify V4 presentation/UX.
-- [ ] Media: finish and certify V4 presentation/UX.
-- [ ] Recordings: finish and certify V4 presentation/UX.
-- [ ] Encouragements: finish and certify V4 presentation/UX.
-- [ ] Add/maintain a unified V4 acceptance/static preservation contract for this tranche instead of assuming CSS presence equals completion.
+Certified checkpoint: `release/v4-community-family` @ `e72b6427fdc2c7e742152264c5091d80f9e6ad6d`; full accumulated regression run `34677870938` passed build/deployment gate, architecture validators, edge regressions, guarded harness syntax, and complete browser/mobile suite.
+
+- [x] Community: finish and certify V4 presentation/UX.
+- [x] Couples: finish and certify V4 presentation/UX.
+- [x] Journey Groups: finish and certify V4 presentation/UX.
+- [x] Teams: finish and certify V4 presentation/UX.
+- [x] Live Rooms: finish and certify V4 presentation/UX.
+- [x] Recognition: finish and certify V4 presentation/UX.
+- [x] Leaderboards: finish and certify V4 presentation/UX.
+- [x] Media: finish and certify V4 presentation/UX.
+- [x] Recordings: finish and certify V4 presentation/UX.
+- [x] Encouragements: finish and certify V4 presentation/UX.
+- [x] Add/maintain a unified V4 acceptance/static preservation contract for this tranche instead of assuming CSS presence equals completion. `tests/v4-community-family-static.mjs` byte-locks all 11 existing feature owners to the pre-tranche baseline.
 
 ## D. Named user-request flows that require exact acceptance
 
@@ -178,12 +180,12 @@ These should not be casually rebuilt if already green; instead preserve them and
 - [ ] Promote only after exact-candidate evidence is green.
 - [ ] After promotion, verify production bytes/build identity and production browser behavior.
 
-## Current audit conclusion at time of creation
+## Current audit conclusion
 
-- Most requested functional features exist in the repository and are being preserved.
-- V4 is **not yet feature/acceptance complete**.
-- Definite remaining Home gaps include the requested horizontal shortcut rail and explicit completion/proof of the full Home assignment-state UX matrix.
-- Calendar and several secondary/social/family/media surfaces still require dedicated V4 acceptance/certification.
+- The original serialized V4 family queue is now complete through the Community / Relational tranche; the Community checkpoint is exact-SHA certified.
+- V4 is **not yet feature/acceptance complete** because release-blocking requested-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates remain open.
+- The Home shortcut rail is complete; the remaining Home work is explicit reconciliation/proof of the full assignment-state UX matrix and related final acceptance items.
+- Calendar, Assignments, Daily Journey and Progress/Grow still require their requested final page-level acceptance audits.
 - Custom artwork/icon generation, cutting, canonical naming and integration remain active work.
 - Final whole-app responsive/accessibility/performance/PWA/security/device/release gates remain mandatory.
 
