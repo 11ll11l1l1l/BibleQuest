@@ -25,39 +25,117 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run deployment build gate
-        run: bash build.sh
-      - name: Validate architecture
-        run: node scripts/validate-v3-architecture.mjs
-      - name: Run protected-page static contracts
-        run: node tests/v4-protected-pages-static.mjs
-      - name: Install Playwright
-        run: npm install --no-save playwright
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-      - name: Start BibleQuest locally
+
+      - name: Run deployment and architecture gates
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-protected-pages-http.log 2>&1 &
-          echo $! > /tmp/biblequest-v4-protected-pages-http.pid
+          set -euo pipefail
+          bash build.sh
+          node scripts/validate-v3-architecture.mjs
+          node scripts/validate-v4-cebocb-packs.mjs
+
+      - name: Validate protected feature owners
+        run: |
+          set -euo pipefail
+          for script in \
+            scripts/validate-v3-private-notes.mjs \
+            scripts/validate-v3-cloud-notes.mjs \
+            scripts/validate-v3-congregation-membership.mjs \
+            scripts/validate-v3-operational-recovery.mjs \
+            scripts/validate-v3-client-diagnostics.mjs \
+            scripts/validate-v3-ministry-hub.mjs \
+            scripts/validate-v3-workspace.mjs \
+            scripts/validate-v3-personality-profile.mjs \
+            scripts/validate-v3-psychometrics.mjs \
+            scripts/validate-v3-avatar-vault.mjs \
+            scripts/validate-v3-accessibility.mjs \
+            scripts/validate-v3-content-review.mjs \
+            scripts/validate-v3-admin-console.mjs \
+            scripts/validate-v3-admin-operations.mjs; do
+            node "$script"
+          done
+
+      - name: Run protected static and edge contracts
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v4-bootstrap-order-edge.mjs \
+            tests/v4-foundation-static.mjs \
+            tests/v4-shell-static.mjs \
+            tests/v4-primary-family-static.mjs \
+            tests/v4-learn-composition-static.mjs \
+            tests/v4-reader-static.mjs \
+            tests/v4-games-avatar-static.mjs \
+            tests/v4-tranche11-static.mjs \
+            tests/v4-tranche13-static.mjs \
+            tests/v3-account-edge.mjs \
+            tests/v3-account-phase-b-static.mjs \
+            tests/v3-reader-edge.mjs \
+            tests/v3-games-edge.mjs \
+            tests/v3-avatar-vault-edge.mjs \
+            tests/v3-avatar-vault-phase-b-static.mjs \
+            tests/v3-private-notes-edge.mjs \
+            tests/v3-cloud-notes-edge.mjs \
+            tests/v3-transform-edge.mjs \
+            tests/v3-transform-basic-edge.mjs \
+            tests/v3-personality-profile-edge.mjs \
+            tests/v3-psychometrics-edge.mjs \
+            tests/v3-accessibility-edge.mjs \
+            tests/v3-content-review-edge.mjs \
+            tests/v3-admin-console-edge.mjs \
+            tests/v3-admin-operations-edge.mjs \
+            tests/v3-congregation-membership-edge.mjs \
+            tests/v3-operational-recovery-edge.mjs \
+            tests/v3-client-diagnostics-edge.mjs \
+            tests/v3-ministry-hub-edge.mjs \
+            tests/v3-workspace-edge.mjs; do
+            node "$test"
+          done
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local BibleQuest server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-protected-http.log 2>&1 &
+          echo $! > /tmp/biblequest-v4-protected-http.pid
           for i in {1..20}; do
             curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
             sleep 1
           done
-          cat /tmp/biblequest-v4-protected-pages-http.log
+          cat /tmp/biblequest-v4-protected-http.log
           exit 1
-      - name: Run protected-page browser audit
-        run: node tests/v4-protected-pages-browser-audit.mjs
-      - name: Cross-check account and private-owner browser smokes
+
+      - name: Run protected browser acceptance matrix
         run: |
-          node tests/v3-account-browser-smoke.mjs
-          node tests/v3-private-notes-browser-smoke.mjs
-          node tests/v3-cloud-notes-browser-smoke.mjs
-          node tests/v3-congregation-browser-smoke.mjs
-          node tests/v3-couples-browser-smoke.mjs
-          node tests/v3-journey-groups-browser-smoke.mjs
-          node tests/v3-team-center-browser-smoke.mjs
-          node tests/v3-assignments-browser-smoke.mjs
-          node tests/v3-admin-console-browser-smoke.mjs
-          node tests/v3-admin-operations-browser-smoke.mjs
-          node tests/v3-reset-recovery-browser-smoke.mjs
-          node tests/v3-live-rooms-browser-smoke.mjs
+          set -euo pipefail
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v4-bootstrap-safety-net-smoke.mjs \
+            tests/v4-shell-keyboard-motion-smoke.mjs \
+            tests/v3-final-mobile-widths-smoke.mjs \
+            tests/v4-primary-family-smoke.mjs \
+            tests/v3-account-phase-b-smoke.mjs \
+            tests/v3-reader-smoke.mjs \
+            tests/v3-games-smoke.mjs \
+            tests/v3-avatar-vault-smoke.mjs \
+            tests/v3-avatar-vault-phase-b-smoke.mjs \
+            tests/v3-private-notes-smoke.mjs \
+            tests/v3-cloud-notes-smoke.mjs \
+            tests/v3-transform-engine-smoke.mjs \
+            tests/v3-transform-basic-smoke.mjs \
+            tests/v3-transform-full-smoke.mjs \
+            tests/v3-personality-profile-smoke.mjs \
+            tests/v3-psychometrics-smoke.mjs \
+            tests/v3-accessibility-smoke.mjs \
+            tests/v3-content-review-smoke.mjs \
+            tests/v3-admin-console-smoke.mjs \
+            tests/v3-admin-operations-smoke.mjs \
+            tests/v3-congregation-membership-smoke.mjs \
+            tests/v3-operational-recovery-smoke.mjs \
+            tests/v3-client-diagnostics-smoke.mjs \
+            tests/v3-ministry-hub-smoke.mjs \
+            tests/v3-workspace-smoke.mjs; do
+            timeout 240s node "$test"
+          done
