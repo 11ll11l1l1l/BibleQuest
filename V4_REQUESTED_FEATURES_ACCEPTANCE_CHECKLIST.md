@@ -29,16 +29,16 @@ Purpose: persistent user-request checklist so requested features, UX requirement
 - [ ] Explicitly cover completed assignment.
 - [ ] Keep a clear direct action/link to the existing Assignments route.
 - [ ] Keep Daily Journey prominent on Home.
-- [ ] Replace/upgrade the current quick-action treatment to the requested horizontal shortcut/icon rail.
-- [ ] Rail must support touch/swipe and normal scrolling.
-- [ ] Rail must use scroll snap where appropriate.
-- [ ] Rail must support mouse/trackpad.
-- [ ] Rail must be keyboard/focus accessible.
-- [ ] Rail must show icon + text labels.
-- [ ] Rail must work from 320 px upward without document overflow.
-- [ ] Rail must be reduced-motion safe.
-- [ ] Initial high-value shortcuts should normally include Daily Journey, Reader, Assignments, Calendar and Progress/Grow.
-- [ ] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail.
+- [x] Replace/upgrade the current quick-action treatment to the requested horizontal shortcut/icon rail. **Done:** `release/v4-home-rail` @ exact SHA, run green.
+- [x] Rail must support touch/swipe and normal scrolling. Native horizontal overflow scroll, verified scrollable at 320px.
+- [x] Rail must use scroll snap where appropriate. `scroll-snap-type:x proximity` + per-item `scroll-snap-align:start`.
+- [x] Rail must support mouse/trackpad. Native overflow-x scroll (no custom scroll-hijacking).
+- [x] Rail must be keyboard/focus accessible. Left/Right arrow-key navigation between shortcuts, verified in browser smoke.
+- [x] Rail must show icon + text labels. Real SVG icon (new `calendar` icon added) + visible text label per item.
+- [x] Rail must work from 320 px upward without document overflow. Verified: zero document-level horizontal overflow at 320px in browser smoke.
+- [x] Rail must be reduced-motion safe. `prefers-reduced-motion:reduce` override included.
+- [x] Initial high-value shortcuts should normally include Daily Journey, Reader, Assignments, Calendar and Progress/Grow. All 5 present in that order.
+- [x] Add focused automated acceptance coverage for the Home assignment state matrix and shortcut rail. Assignment-state matrix already covered by `tests/v4-home-assignments-edge.mjs`; rail covered by new `tests/v4-home-rail-static.mjs` + `tests/v4-home-rail-smoke.mjs`.
 
 ## B. Priority-1 workflow surfaces
 
