@@ -1,0 +1,42 @@
+# BibleQuest V5 Lab A2 local-only Supabase configuration.
+# This file intentionally contains no hosted project reference or credentials.
+project_id = "biblequest-v5-a2-local"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+
+[db.seed]
+# Keep disabled until the clean migration chain is proven from zero. The next
+# tranche will introduce deterministic, synthetic two-congregation fixtures.
+enabled = false
+
+[studio]
+enabled = false
+
+[inbucket]
+enabled = false
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:4173"
+additional_redirect_urls = ["http://127.0.0.1:4173", "http://localhost:4173"]
+jwt_expiry = 3600
+enable_signup = true
+
+[realtime]
+enabled = true
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[analytics]
+enabled = false
