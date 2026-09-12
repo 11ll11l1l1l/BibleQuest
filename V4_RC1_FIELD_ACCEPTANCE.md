@@ -17,23 +17,32 @@ If no exact-RC preview/staging deployment can be identified, leave preview/stagi
 
 ## A. Preview/staging smoke
 
-Status: **OPEN**
+Status: **PASS — 2026-09-12 JST**
+
+Exact deployment evidence:
+
+- Cloudflare Pages check run: `103560676216` (`Cloudflare Pages: mybiblequest`) — **SUCCESS** on exact head SHA `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`.
+- Cloudflare deployment identifier: `9748307b-66e4-44d6-857d-80aa3b7a6e42`.
+- Immutable preview URL: `https://9748307b.mybiblequest.pages.dev`.
+- Branch preview URL: `https://release-v4-rc1-preview.mybiblequest.pages.dev`.
+- Final verification-only remote smoke: workflow run `34697229965`, job `103562690126` — **PASS**.
+- Verification workflow branch: `verify/v4-rc1-cloudflare-smoke` @ `2d90abc83ee058b7561ab3822b577dfbf8943540`; this branch contains only the external verifier and is not the release candidate.
 
 Required evidence:
 
-- [ ] Exact RC1 deployment identity is known/verifiable.
-- [ ] Home loads without blank screen or permanent loader.
-- [ ] Home assignment/status surface renders safely for the available account state.
-- [ ] Home shortcut rail works and does not cause horizontal document overflow.
-- [ ] Reader opens and renders content.
-- [ ] Play opens and at least one game launches and returns normally.
-- [ ] Grow/Progress opens.
-- [ ] More opens and representative lower-frequency destination navigation works.
-- [ ] Account/sign-in surface is reachable.
-- [ ] No obvious console/page/runtime failure is observed in the smoke environment.
-- [ ] Offline/reconnect behavior remains consistent with the automated contract where the environment permits testing.
+- [x] Exact RC1 deployment identity is known/verifiable. Cloudflare check is attached to the exact RC1 SHA.
+- [x] Home loads without blank screen or permanent loader. Remote smoke passed at 390x844 with body width 390/390.
+- [x] Home assignment/status surface renders safely for the available account state. `[data-home-assignments]` was present.
+- [x] Home shortcut rail works and does not cause horizontal document overflow. Rail was present, Home remained 390/390, and the Progress/Grow shortcut was clicked successfully.
+- [x] Reader opens and renders content. Reader route passed with rendered content and no overflow.
+- [x] Play opens and at least one game launches and returns normally. Memory Meadow launched and returned to the game launcher successfully.
+- [x] Grow/Progress opens. Direct Grow route passed and Home shortcut rail -> Grow navigation passed.
+- [x] More opens and representative lower-frequency destination navigation works. More route passed and More -> Backup navigation passed through the shipped control.
+- [x] Account/sign-in surface is reachable. Account route passed.
+- [x] No obvious console/page/runtime failure is observed in the smoke environment. No page errors or startup-failure surface occurred in the passing run.
+- [x] Offline/reconnect behavior remains consistent with the automated contract where the environment permits testing. Service worker became active, offline reload rendered the Home shell, then reconnect -> Reader passed.
 
-Record deployment URL/identifier and observation date when executed.
+The final run also directly passed Home, Reader, Play, Assignments, Calendar, Community, Backup, More, Account and Grow with no document-level horizontal overflow at the 390 px staging viewport.
 
 ## B. Installed PWA on a real Android device
 
