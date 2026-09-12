@@ -75,8 +75,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | 3 | Global shell/navigation | **CERTIFIED** — `release/v4-shell` @ `2e11dce90efd13c18fe7b8921e3f2e54b00e6d99` |
 | 4 | Home | **CERTIFIED** — `release/v4-home` @ `17ed040957d6aeb3bc2bc0d1832e1c23f46a6c0f` |
 | 5 | Learn hub | **CERTIFIED** — `release/v4-learn` @ `3f5d433ec16ef2d20a5ec00d5ba388161d2a9689`. Reader itself deferred to its own sub-tranche (see note below). |
-| 6 | Reader (deferred from Learn) or Games + Avatar Vault | **NEXT candidate.** Reader is materially larger/riskier (licensed-source handling, Japanese furigana/vocabulary, verse dialogs, search) than Learn hub was; recommend its own dedicated tranche rather than folding into Games |
-| 7 | More hub | Pending |
+| 6 | Reader | **CERTIFIED** — `release/v4-reader` @ `ece54af4883dfee3613cc7b62abaf0df11aff701`. CSS-only tranche (see note). |
+| 7 | Games + Avatar Vault | **NEXT / mandatory gate.** |
 | 8 | Ministry + Assignments + Workspace + Notifications | Pending |
 | 9 | Bible World + Progress + Personal Mission + Calendar | Pending |
 | 10 | Study family | Pending |
@@ -137,6 +137,18 @@ Protected surfaces were re-verified, not just assumed safe: the stable `<h1>Lear
 New contract: `tests/v4-learn-composition-static.mjs` — asserts all ten hooks/actions survive, the stable heading and protected doctrinal/provenance surfaces remain, Reader is styled as a distinct dominant entry (not a flat learning-card), and destinations are organized into at least three labeled groups.
 
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators (including the pre-existing doctrinal-safety and source-labels contracts, unmodified), full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34660376063`.
+
+## Reader certification evidence (this cycle)
+
+Checkpoint: `release/v4-reader` @ `ece54af4883dfee3613cc7b62abaf0df11aff701`.
+
+On inspection, Reader's markup (`src/features/reader/index.js`) is far more tightly coupled to its logic than any prior tranche: single-host event-delegation with ~20 distinct `data-*` hooks threaded through click/change/submit handlers (translation/book/chapter selects, prev/next, verse peek dialog, Hebrew/Greek context dialog, Japanese furigana/vocabulary controls, licensed-NLT external-link mode, in-place search). Restructuring that markup carries materially higher regression risk than any tranche so far for comparatively little visual gain, since the actual A1 recommendation ("stronger Scripture typography, editorial reading canvas") is achievable through typography alone.
+
+**Scope decision: this tranche is CSS-only.** `src/features/reader/index.js` was not touched — verified two ways, not just asserted: (1) every one of its ~20 interaction hooks is explicitly checked present in the new static contract, and (2) the contract diffs the file byte-for-byte against the prior certified checkpoint (`release/v4-learn`) using the full git history and fails if a single character changed. The verify branch used `fetch-depth: 0` specifically so this comparison could run for real in CI rather than being silently skipped.
+
+What changed: `src/ui/reader-v4.css` gives Scripture text (`.bq-verse p`, `.bq-peek-text`) the display/serif typography role at a larger, more readable size (16.5–18px vs. the prior 15–17px), calmer token-driven verse hover/highlight states (replacing hardcoded hex colors), and softer panel elevation using the certified Foundation shadow tokens. The highlighted-verse state keeps its non-color-only `box-shadow: inset` marker.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px), plus the byte-exact markup-preservation check against full git history. Run: `34660991263`.
 
 ## Change-class rules
 
