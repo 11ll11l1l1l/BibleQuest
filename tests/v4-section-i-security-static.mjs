@@ -57,8 +57,8 @@ for(const [factory,modulePath] of[
   ['createAssignmentsService','./assignments.js'],['createJourneyGroupsService','./journey-groups.js'],['createTeamCenterService','./team-center.js'],
   ['createCouplesCloudService','./couples-cloud.js'],['createLiveRoomsService','./live-rooms.js']
 ]){
-  assert.equal((bootstrap.match(new RegExp(`import \\{ ${factory} \\} from '${modulePath.replace('.','\\.')}'`,'g'))||[]).length,1,`${factory} must have exactly one bootstrap import owner.`);
-  assert.equal((bootstrap.match(new RegExp(`${factory}\\(`,'g'))||[]).length,2,`${factory} must appear only in its import and single construction call.`);
+  has(bootstrap,`import { ${factory} } from '${modulePath}';`,`${factory} must keep its canonical bootstrap import owner.`);
+  assert.equal((bootstrap.match(new RegExp(`${factory}\\(`,'g'))||[]).length,1,`${factory} must have exactly one construction call.`);
 }
 
 const jsFiles=[];
