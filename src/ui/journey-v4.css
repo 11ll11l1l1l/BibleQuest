@@ -42,7 +42,7 @@
 }
 
 .bq-bible-world .bq-world-art-frame{
-  aspect-ratio:16/8.2;
+  aspect-ratio:16/9;
   border-radius:calc(var(--radius-lg) - 8px);
   background:color-mix(in srgb,var(--forest-500) 8%,var(--surface-subtle));
 }
@@ -528,7 +528,7 @@
   .bq-bible-world .bq-world-head{display:grid}
   .bq-bible-world .bq-world-head>button{justify-self:start}
   .bq-bible-world .bq-world-art{padding:7px;border-radius:20px}
-  .bq-bible-world .bq-world-art-frame{aspect-ratio:4/3;border-radius:15px}
+  .bq-bible-world .bq-world-art-frame{aspect-ratio:16/9;border-radius:15px}
   .bq-bible-world .bq-world-region{grid-template-columns:44px minmax(0,1fr);min-height:100px;padding:13px}
   .bq-bible-world .bq-world-icon{width:42px;height:42px;border-radius:13px}
   .bq-bible-world .bq-world-status{grid-column:2;grid-row:2;display:flex;align-items:center;justify-content:space-between;min-width:0}
