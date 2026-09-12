@@ -20,17 +20,31 @@ Lane A's assigned top-down visual queue is complete. Do not enter Lane B tranche
 ```text
 LANE: A
 LAST VISUAL TRANCHE: 10 — Study family
-BASE CHECKPOINT: release/v4-journey @ 31951dc82095bb4b6161913fbd3f427f0c0648ea
-CERTIFIED CANDIDATE: 6a092de05b331be57efd49d4e9636987b42ae1a9
-CHECKPOINT: release/v4-study @ 6a092de05b331be57efd49d4e9636987b42ae1a9
-STATE: CERTIFIED / VISUAL QUEUE COMPLETE
-OWNED FILES: src/ui/study-family-v4.css; tests/v4-study-family-static.mjs; .github/workflows/v4-gate10-study-verify.yml; index.html (one V4 stylesheet registration)
-DELIBERATELY UNTOUCHED: src/features/study/index.js; src/features/deep-questions/index.js; src/features/story-journey/index.js; src/features/wisdom-situations/index.js; src/features/adaptive-learning/index.js; src/features/open-review/index.js; their content/session/reward/adaptive owners; Lane B runtime files
-TARGETED VERIFICATION: Gate 10 workflow run 34664666134 passed build/static preservation contract, source/doctrinal validators, all targeted edge regressions, browser smokes and mobile-width regression.
-FULL CERTIFICATION: accumulated regression run 34664722681 passed Cloudflare build, all accumulated architecture validators, all accumulated edge regressions, guarded harness syntax and the complete accumulated browser/mobile suite on exact SHA 6a092de05b331be57efd49d4e9636987b42ae1a9.
+LAST CLASS C BLOCKER: Home Assignments notification/integration
+BASE CHECKPOINT: release/v4-study @ 6a092de05b331be57efd49d4e9636987b42ae1a9
+CERTIFIED CANDIDATE: d97e04829926aa8ce999101d64c45c539849187a
+CHECKPOINT: release/v4-home-assignments @ d97e04829926aa8ce999101d64c45c539849187a
+STATE: HOME ASSIGNMENTS CERTIFIED / NEXT CEBUANO-BISAYA DATA BLOCKER
+TARGETED VERIFICATION: Home Assignments workflow run 34665387872 passed build, Home contracts, single-owner/Assignments validators, privacy/behavior regressions, 390px direct-open/privacy smoke, existing Assignments browser tests and mobile-width regression.
+FULL CERTIFICATION: accumulated regression run 34665430650 passed Cloudflare build, all accumulated architecture validators, all accumulated edge regressions, guarded harness syntax and the complete accumulated browser/mobile suite on exact SHA d97e04829926aa8ce999101d64c45c539849187a.
 OPEN FAILURES: none.
-NEXT SAFE ACTION: implement the separate Class C V4 release blocker — Home Assignments notification/integration — using the existing singleton Assignments service and existing Assignments route. Do not create a second store/service/API path.
+NEXT SAFE ACTION: implement the separate Cebuano/Bisaya Bible translation/data release blocker through the existing Bible registry, bundled-pack loader, Reader/search pipeline and offline cache. Use a redistribution-compatible source and preserve full attribution; do not add a second Bible-data owner or runtime API dependency.
 ```
+
+## Home Assignments Class C certification
+
+- Checkpoint: `release/v4-home-assignments` @ `d97e04829926aa8ce999101d64c45c539849187a`.
+- Targeted run: `34665387872` — PASS.
+- Full accumulated run: `34665430650` — PASS.
+- Home reuses the existing singleton Assignments service already constructed in bootstrap and the existing `assignments` route.
+- Current tasks are projected as safe metadata only and sorted by urgency: **Overdue**, **Due soon**, **In progress**, **Pending**.
+- Completed and not-yet-open scheduled tasks do not appear on Home.
+- Direct task action opens the task through the existing Assignments owner before routing to the existing Assignments page.
+- Submission text, leader feedback, private review responses and peer answer text are not projected into Home.
+- Load failures fail closed by hiding the Home assignment summary instead of exposing stale/partial data.
+- New static, deterministic edge and 390px browser/privacy/direct-open tests protect the integration.
+
+Full evidence: `V4_HOME_ASSIGNMENTS_CERTIFICATION.md`.
 
 ## Gate 10 implementation notes
 
@@ -59,22 +73,20 @@ Full evidence: `V4_GATE10_CERTIFICATION.md`.
 - Checkpoint: `release/v4-ministry-ops` @ `6be293d00ab419b0543bb6b7827e891097e858f8`.
 - Targeted run: `34663369219` — PASS.
 - Full accumulated run: `34663418384` — PASS.
-- Gate 8 was presentation-only and did not complete the Home assignment-notification behavior requirement.
+- Gate 8 was presentation-only; the separate Home assignment-notification Class C requirement was subsequently completed and certified at `release/v4-home-assignments`.
 
-## Active Class C release blocker — Home Assignments
+## Active separate Class C/data release blocker — Cebuano/Bisaya Bible
 
-Repository inspection confirms Home currently has no Assignments dependency/card. The existing singleton Assignments service is already created in bootstrap and is the source of truth. The safe implementation contract is:
+Use **Biblica® Open Ang Pulong sa Dios™ / Biblica® Open Cebuano Contemporary Bible™ 2024** (`CEBOCB` / `cebocb`, OCCB), distributed under CC BY-SA 4.0, rather than the older restrictive APSD-CEB source.
 
-- pass that existing singleton into Home; never create another Assignments service/store/API path;
-- load server-filtered assignment state without blocking the rest of Home;
-- keep completed and not-yet-open scheduled tasks out of the active Home list;
-- visibly distinguish **Pending**, **In progress**, **Due soon**, and **Overdue** states;
-- show only non-sensitive assignment metadata such as title/type/status/due date;
-- never expose submission text, private responses, leader feedback or unrelated private-study data on Home;
-- direct task action must call the existing Assignments owner and navigate into the existing Assignments route;
-- preserve correct congregation/user targeting and existing privacy/RLS boundaries;
-- keep the card visible and useful on mobile, not buried inside More.
+Implementation contract:
 
-## Remaining separate Class C/data release blocker — Cebuano/Bisaya Bible
-
-The requested Cebuano/Bisaya Bible translation remains separate from UI work. Preferred source remains Biblica Open Cebuano Contemporary Bible / Open Ang Pulong sa Dios 2024 (`CEBOCB` / `cebocb`, OCCB), CC BY-SA 4.0. It must be integrated through the existing translation registry/Reader/search/offline pipeline with attribution and canonical-book verification; the older restrictive APSD-CEB source must not be bundled.
+- integrate through the existing central Bible translation registry and Reader/search/offline pipeline;
+- bundle a complete 66-book local/offline pack set rather than creating a new runtime API dependency;
+- expose a clear Reader selector label containing both **Cebuano** and **Bisaya**;
+- preserve canonical BibleQuest book codes and chapter/verse mapping with no cross-translation mismapping;
+- preserve complete source, copyright, trademark, CC BY-SA 4.0 and adaptation/formatting disclosure in `data/packs/ATTRIBUTION.md`;
+- validate all 66 canonical books, duplicate-free chapter/verse coordinates, valid chapter ranges, readable verse text, Reader navigation, verse lookup, search, and opened-pack offline persistence;
+- if the delivery-pack conversion removes non-verse USFM material such as headings, footnotes or cross-references, disclose that packaging transformation while keeping Scripture verse text unmodified;
+- do not bundle the older restrictive APSD-CEB text;
+- keep audio outside this tranche unless its exact license is separately verified.
