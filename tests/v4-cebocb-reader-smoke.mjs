@@ -25,7 +25,7 @@ async function run(){
     reader.setTranslation('cebocb');reader.setBook('GEN',1);
 
     const host=document.createElement('main');host.dataset.cebocbSmoke='true';document.body.appendChild(host);
-    const definition=readerPage({reader}),dispose=definition.mount(host);
+    const definition=readerPage({reader});host.innerHTML=definition.html;const dispose=definition.mount(host);
     const waitFor=async predicate=>{for(let i=0;i<80;i++){if(predicate())return;await new Promise(resolve=>setTimeout(resolve,25))}throw new Error('Timed out waiting for CEBOCB Reader UI.')};
     await waitFor(()=>host.querySelector('[data-reader-translation]')&&host.querySelector('[data-verse="17"]'));
 
