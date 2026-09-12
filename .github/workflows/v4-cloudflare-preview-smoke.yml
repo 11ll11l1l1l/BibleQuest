@@ -1,0 +1,115 @@
+name: BibleQuest V4 Cloudflare preview smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  checks: read
+
+concurrency:
+  group: biblequest-v4-cloudflare-preview-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: true
+
+jobs:
+  preview-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify checked-out candidate identity
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_SHA"
+          echo "Exact candidate SHA: $actual"
+
+      - name: Wait for exact-SHA Cloudflare Pages preview
+        id: cloudflare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          short="${CANDIDATE_SHA:0:7}"
+          for attempt in $(seq 1 60); do
+            json="$(gh api -H 'Accept: application/vnd.github+json' "/repos/${GITHUB_REPOSITORY}/commits/${CANDIDATE_SHA}/check-runs?per_page=100")"
+            status="$(printf '%s' "$json" | jq -r '[.check_runs[] | select(.name == "Cloudflare Pages: mybiblequest")] | sort_by(.started_at) | last | .status // "missing"')"
+            conclusion="$(printf '%s' "$json" | jq -r '[.check_runs[] | select(.name == "Cloudflare Pages: mybiblequest")] | sort_by(.started_at) | last | .conclusion // ""')"
+            summary="$(printf '%s' "$json" | jq -r '[.check_runs[] | select(.name == "Cloudflare Pages: mybiblequest")] | sort_by(.started_at) | last | .output.summary // ""')"
+
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" != "success" ]; then
+                echo "Cloudflare Pages check completed with conclusion: $conclusion" >&2
+                exit 1
+              fi
+              if ! printf '%s' "$summary" | grep -Fq "<code>${short}</code>"; then
+                echo "Cloudflare preview check did not report candidate SHA ${short}." >&2
+                exit 1
+              fi
+              preview_url="$(printf '%s' "$summary" | grep -oE 'https://[A-Za-z0-9.-]+\.mybiblequest\.pages\.dev' | head -n 1 || true)"
+              if [ -z "$preview_url" ]; then
+                echo "Cloudflare preview URL was not present in the successful check output." >&2
+                exit 1
+              fi
+              echo "url=$preview_url" >> "$GITHUB_OUTPUT"
+              echo "Cloudflare exact-SHA preview: $preview_url"
+              exit 0
+            fi
+
+            echo "Cloudflare preview not ready yet (attempt ${attempt}/60, status=${status})."
+            sleep 10
+          done
+
+          echo "Timed out waiting for the Cloudflare Pages check for ${CANDIDATE_SHA}." >&2
+          exit 1
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Wait for preview host readiness
+        env:
+          BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if curl -fsS --max-time 15 "${BQ_BASE_URL}/" >/dev/null; then
+              exit 0
+            fi
+            echo "Preview host not ready yet (attempt ${attempt}/30)."
+            sleep 5
+          done
+          echo "Cloudflare preview host never became reachable." >&2
+          exit 1
+
+      - name: Run deployed critical-route and state smoke
+        env:
+          BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}/
+        run: |
+          set -euo pipefail
+          node tests/v4-whole-app-deep-routes-smoke.mjs
+          node tests/v4-whole-app-browser-states-smoke.mjs
+
+      - name: Run deployed PWA offline and recovery smoke
+        env:
+          BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}/
+        run: |
+          set -euo pipefail
+          node tests/v3-pwa-install-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-operational-recovery-smoke.mjs
