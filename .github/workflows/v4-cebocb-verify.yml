@@ -16,6 +16,7 @@ on:
       - tests/v4-cebocb-bridge-edge.mjs
       - tests/v4-cebocb-reader-smoke.mjs
       - tests/v3-source-labels-edge.mjs
+      - tests/v3-source-labels-smoke.mjs
       - .github/workflows/v4-cebocb-verify.yml
   workflow_dispatch:
 
