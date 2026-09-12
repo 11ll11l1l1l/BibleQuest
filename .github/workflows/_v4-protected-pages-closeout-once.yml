@@ -1,0 +1,71 @@
+name: BibleQuest V4 protected-page checklist closeout (one-shot)
+
+on:
+  push:
+    branches:
+      - v4/protected-pages-closeout
+    paths:
+      - .github/workflows/_v4-protected-pages-closeout-once.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  closeout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v4/protected-pages-closeout
+          fetch-depth: 0
+      - name: Mark Section E protected pages certified and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md')
+          text = path.read_text()
+
+          heading = "## E. Existing areas already substantially converted but still protected by final audit\n\nThese should not be casually rebuilt if already green; instead preserve them and include them in the whole-app final audit.\n"
+          certification = "\nCertified protected-page checkpoint: focused audit run `34688168693` passed deployment/architecture, protected owner validators, static/edge contracts, and the full protected browser matrix. Durable audit gate merged by PR #140 at `061bae2e50f2070544e840ff8ce07cf38c9d17b3`. No runtime/product regression was found and no behavior patch was required. See `V4_PROTECTED_PAGES_CERTIFICATION.md`.\n"
+          if heading not in text:
+              raise SystemExit('Section E heading block not found')
+          if 'V4_PROTECTED_PAGES_CERTIFICATION.md' not in text:
+              text = text.replace(heading, heading + certification, 1)
+
+          items = [
+              'Design system / shell remains intact and consistent.',
+              'Learn V4 composition remains intact.',
+              'Reader V4 presentation remains intact.',
+              'Play / Games V4 presentation remains intact.',
+              'Avatar Vault V4 presentation remains intact.',
+              'Account remains intact.',
+              'Private/cloud Notes remain intact.',
+              'Transform remains intact.',
+              'Personality/Psychometrics remain intact.',
+              'Accessibility settings remain intact.',
+              'Admin Console remains intact.',
+              'Admin Operations remains intact.',
+              'Content Review remains intact.',
+              'Congregation remains intact.',
+              'Diagnostics/recovery remains intact.',
+              'Ministry Hub / Workspace remains intact and coherent with the V4 family.'
+          ]
+          for item in items:
+              old = f'- [ ] {item}'
+              new = f'- [x] {item}'
+              if old not in text and new not in text:
+                  raise SystemExit(f'Expected Section E item not found: {item}')
+              text = text.replace(old, new, 1)
+
+          path.write_text(text)
+          PY
+          rm .github/workflows/_v4-protected-pages-closeout-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md .github/workflows/_v4-protected-pages-closeout-once.yml
+          git commit -m 'docs(v4): close final protected-page audit'
+          git push origin HEAD:v4/protected-pages-closeout
