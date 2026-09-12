@@ -133,7 +133,10 @@ Current-state authority: `V4_ACTIVE_STATUS.md`.
 - [x] Member-facing response-review UI does not expose other-member response presence.
 - [x] Ministry-role review remains available.
 - [x] Static/edge contracts protect the tightened rule.
-- [ ] Carry account-switching, role-demotion and cross-congregation scenarios into the integrated live verification phase.
+- [x] Live same-congregation two-member self-vs-ministry response-presence RLS behavior verified on the deployed database.
+- [x] Live database privilege-loss behavior verified transactionally with rollback restoring the real admin role.
+- [ ] Real browser account switching / stale-state clearing with legitimate separate authenticated sessions.
+- [ ] True cross-congregation field isolation with a legitimate second populated congregation.
 
 Checkpoint: `release/v4-phase1-assignment-privacy`.
 
@@ -143,14 +146,17 @@ Checkpoint: `release/v4-phase1-assignment-privacy`.
 - [x] Reactivate account.
 - [x] Force sign-out.
 - [x] Owner-only temporary-password operation with self-target protection and minimum length.
-- [x] Attempt immediate session revocation after applicable actions.
-- [x] Audit emergency operations without logging the temporary password value.
+- [x] Owner-only account email recovery/change operation.
+- [x] Attempt immediate session revocation after applicable credential/access changes.
+- [x] Audit emergency operations without logging the temporary password value or old/new email values.
 - [x] Protect another owner from inappropriate suspension and preserve authorization boundaries.
 - [x] App-side guards and static authorization contracts.
-- [ ] Deploy changed `bq-admin-ops` Edge Function behavior to a safe target/test Supabase environment.
-- [ ] Live-verify suspend/reactivate/force-sign-out/temp-password behavior and audit records.
-- [ ] Verify session-revocation behavior against real auth sessions.
-- [ ] Richer user-management/new-user-card presentation, severity tiers, typed destructive confirmation and email-change flow remain open unless explicitly removed from V4 scope.
+- [x] User-management card grouping by identity, congregation/group membership, and security/access.
+- [x] Safe/elevated/critical severity treatment and typed confirmation for destructive suspension, email-change, and deletion paths.
+- [x] Production `bq-admin-ops` deployed at OPS_VERSION 6 with repository action surface including `change_email`.
+- [x] Supabase-side authorization/grant structure inspected.
+- [ ] Live-verify suspend/reactivate/force-sign-out/temp-password/email-change behavior using legitimate authenticated owner + safe target sessions.
+- [ ] Verify real session revocation and resulting audit records against those authenticated sessions without secret leakage.
 
 Checkpoint: `release/v4-phase2-admin-emergency`.
 
@@ -158,13 +164,18 @@ Checkpoint: `release/v4-phase2-admin-emergency`.
 
 - [x] Confirmed and fixed the prior raw-row privacy weakness for ordinary members.
 - [x] Restrict raw `bible_presence` SELECT to ministry roles.
-- [x] Provide a scope-checked `SECURITY DEFINER` active-count aggregate.
+- [x] Public signed-in count RPC returns only an aggregate.
+- [x] Privileged counting implementation resides in the non-exposed `private` schema.
+- [x] Exposed `public.bible_presence_active_count(...)` is `SECURITY INVOKER` and delegates to the private implementation.
+- [x] Anon/PUBLIC execution is revoked and membership/bounded-window checks remain enforced.
 - [x] `presence.activeCount()` fails closed for signed-out/missing-congregation/out-of-scope callers.
 - [x] Home shows a privacy-safe “active in the last 30 min” aggregate state.
 - [x] Reuse the existing heartbeat rather than create a second presence owner.
 - [x] Repository contracts/fixtures/smokes updated.
-- [ ] Deploy the new RLS/function migration to a safe target/test Supabase/Postgres environment.
-- [ ] Live-verify member vs ministry-role visibility and aggregate behavior.
+- [x] Migration deployed to the live Supabase/Postgres environment.
+- [x] Live ordinary-member vs ministry-role raw visibility and aggregate behavior verified on 2026-09-13.
+- [x] Live transactional role-demotion test removed raw-presence visibility immediately and rolled back safely.
+- [x] Supabase Security Advisor no longer reports the V4 presence aggregate as an exposed-schema `SECURITY DEFINER` function.
 
 Checkpoint: `release/v4-phase3-presence`.
 
@@ -176,7 +187,7 @@ The Leader Center expansion is not a forgotten requirement and is not a V4 relea
 
 ## K. Official post-RC1 Phase 5 — Tutorial + Help Center
 
-Status at the consolidation snapshot: **ACTIVE / STABILIZATION**.
+Status: **CLOSED / ACCUMULATED REGRESSION GREEN**.
 
 - [x] Expand guided onboarding to 9 steps.
 - [x] Cover Reader, Assignments, Play, installation and Help in the expanded tour.
@@ -189,29 +200,30 @@ Status at the consolidation snapshot: **ACTIVE / STABILIZATION**.
 - [x] Add dedicated Phase 5 contract coverage.
 - [x] Correct stale smoke references from the old step count/order.
 - [x] Move Daily Journey tutorial action/navigation to the correct new step.
-- [ ] Run/finalize the applicable accumulated verification on the final Phase 5 head and record the exact green checkpoint.
-- [ ] Update `V4_ACTIVE_STATUS.md` when Phase 5 changes from active/stabilization to closed.
-
-Snapshot integration head at documentation rebase: `44728fc4ff543318202f76564606c1f1c4dc7ef6`. Post-RC1 Cloudflare preview deployments have succeeded, but preview deployability alone is not release certification.
+- [x] Applicable accumulated verification finalized on exact application SHA `4f908ad8b53f3feb00f21ae27dd4707597b5aa14`.
+- [x] Full accumulated regression, Section H, Section I, whole-app browser audit, and exact-SHA Cloudflare preview verification are green for that application tree.
+- [x] `V4_ACTIVE_STATUS.md` records Phase 5 as closed.
 
 ## L. Integrated post-RC1 security/backend verification — RELEASE BLOCKING
 
 Before a new RC freeze:
 
-- [ ] Live Phase 2 Supabase Edge Function verification.
-- [ ] Live Phase 3 Postgres/RLS/function verification.
-- [ ] Two-account assignment isolation.
-- [ ] Account switching / stale-state clearing.
-- [ ] Role demotion / privilege-loss behavior.
-- [ ] Cross-congregation isolation.
-- [ ] Suspend/reactivate/force-sign-out behavior.
-- [ ] Owner/admin authorization boundaries.
-- [ ] Temporary-password flow with no secret leakage to logs/audit UI.
-- [ ] Member vs ministry-role presence visibility.
-- [ ] Regression of the pre-RC1 Section I isolation protections.
-- [ ] Complete accumulated static/security/edge/browser/mobile suite on the final integrated head.
+- [x] Production `bq-admin-ops` Edge Function deployment verified at OPS_VERSION 6.
+- [x] Live Phase 3 Postgres/RLS/function verification.
+- [x] Live same-congregation two-member assignment response-presence isolation.
+- [ ] Real browser account switching / stale-state clearing with legitimate separate authenticated sessions.
+- [x] Live database role demotion / privilege-loss behavior verified transactionally and rolled back safely.
+- [ ] True cross-congregation field isolation with a legitimate second populated congregation.
+- [ ] Suspend/reactivate/force-sign-out/temp-password/email-change action matrix through legitimate owner + safe target sessions.
+- [ ] Owner/admin authorization boundaries exercised through the real authenticated action matrix.
+- [ ] Temporary-password and email-change flows with real session revocation and no secret leakage to audit/log surfaces.
+- [x] Member vs ministry-role presence visibility and aggregate behavior.
+- [x] Regression of the pre-RC1 Section I isolation protections on exact application SHA `4f908ad8...`.
+- [x] Complete accumulated static/security/edge/browser/mobile suite on exact application SHA `4f908ad8...`.
+- [x] Whole-app deep-route/localization/state matrix on exact application SHA `4f908ad8...`.
+- [x] Cloudflare exact-SHA preview deployment check for `4f908ad8...`.
 
-Static contracts do not count as live verification where the requirement specifically concerns deployed Supabase/Postgres/Edge behavior.
+Static contracts do not count as live verification where the requirement specifically concerns deployed Supabase/Postgres/Edge behavior. Headless/emulated browser evidence does not replace gates that explicitly require real authenticated sessions or physical devices.
 
 ## M. New V4 release candidate / production gates — RELEASE BLOCKING
 
@@ -232,13 +244,16 @@ Those checks certify RC1 only. Official development continued after RC1, so PR #
 
 ### Required new-candidate path
 
-- [ ] Reconcile this checklist and `V4_ACTIVE_STATUS.md` against the final official integration head.
+The current accumulated application checkpoint `4f908ad8...` is strongly verified but is **not** a production release candidate because the Phase 6 field gates below remain open.
+
+- [ ] Close every applicable Phase 6 real-session, topology and physical-device field gate without substituting static/headless evidence.
+- [ ] Reconcile this checklist and `V4_ACTIVE_STATUS.md` against the final official integration head after those gates close.
 - [ ] Freeze a new exact candidate from `v4/modern-ui-overhaul` (normally RC2 or later).
 - [ ] Run build/deployment gate on that exact candidate.
 - [ ] Run architecture validation on that exact candidate.
 - [ ] Run complete accumulated static/security/edge regression on that exact candidate.
 - [ ] Run complete browser/mobile/whole-app coverage on that exact candidate.
-- [ ] Run the integrated post-RC1 account/privacy/backend matrix on that exact candidate or immutable equivalent evidence.
+- [ ] Attach/record the integrated post-RC1 real-account/privacy/backend matrix on that exact candidate or immutable equivalent evidence.
 - [ ] Deploy the exact new candidate to Cloudflare preview/staging.
 - [ ] Verify Cloudflare preview build identity matches the frozen candidate.
 - [ ] Run critical-route/runtime/offline/reconnect staging smoke against that exact deployment.
@@ -252,17 +267,15 @@ Those checks certify RC1 only. Official development continued after RC1, so PR #
 
 ## Official audit conclusion
 
-V4 is **actively developing on the post-RC1 line**. The certified pre-RC1 visual/product work remains protected baseline, while post-RC1 privacy, admin, presence and Help/Tutorial work is now part of the official V4 scope.
+Current interpretation comes from `V4_ACTIVE_STATUS.md`.
 
-Current interpretation must come from `V4_ACTIVE_STATUS.md`. At this consolidation snapshot:
+- Phase 1: implemented and live RLS-verified; real browser account switching and cross-congregation field cases remain under Phase 6.
+- Phase 2: implemented and production Edge Function deployed; legitimate authenticated emergency-action/session-revocation field matrix remains open.
+- Phase 3: implemented and live database/RLS verified.
+- Phase 4: explicitly skipped.
+- Phase 5: closed; exact application SHA `4f908ad8...` accumulated verification is green.
+- Phase 6: active; automated/in-database portions are substantially closed, but authenticated-session, cross-congregation and physical-device gates remain.
+- New RC freeze/certification: blocked by those Phase 6 field gates.
+- Production promotion: blocked.
 
-- Phase 1: implemented;
-- Phase 2: implemented, live backend verification still owed;
-- Phase 3: implemented, live database verification still owed;
-- Phase 4: explicitly skipped;
-- Phase 5: active/stabilizing;
-- integrated post-RC1 verification: pending;
-- new RC freeze/certification: pending;
-- production promotion: pending.
-
-Therefore V4 must **not** be described as currently feature-complete, currently RC1-certified, or ready for production merely because the old RC1 exact-SHA gates were green.
+Therefore V4 must **not** be described as production-release-certified or promoted merely because the current accumulated application checkpoint is green. The remaining live/physical gates must be legitimately completed first.
