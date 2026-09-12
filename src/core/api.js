@@ -264,6 +264,12 @@ export function createApi() {
       const client=await getClient();
       const {error}=await client.from('bible_presence').delete().eq('congregation_id',congregationId).eq('user_id',userId);
       if(error)throw error;
+    },
+    async activeCount(congregationId,windowMinutes=30) {
+      const client=await getClient();
+      const {data,error}=await client.rpc('bible_presence_active_count',{target_congregation:congregationId,window_minutes:windowMinutes});
+      if(error)throw error;
+      return Number(data)||0;
     }
   });
 
