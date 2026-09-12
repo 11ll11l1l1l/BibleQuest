@@ -1,0 +1,68 @@
+name: BibleQuest V4 Gate 8 Ministry verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+  workflow_dispatch:
+
+concurrency:
+  group: biblequest-v4-gate8-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate8:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and V4 presentation contracts
+        run: |
+          bash build.sh
+          node tests/v4-ministry-ops-static.mjs
+      - name: Gate 8 architecture validators
+        run: |
+          node scripts/validate-v3-assignments.mjs
+          node scripts/validate-v3-advanced-assignments.mjs
+          node scripts/validate-v3-assignment-push.mjs
+          node scripts/validate-v3-ministry-hub.mjs
+          node scripts/validate-v3-notification-center.mjs
+          node scripts/validate-v3-workspace.mjs
+          node scripts/validate-v3-linked-activities.mjs
+      - name: Gate 8 edge regressions
+        run: |
+          node tests/v3-assignments-edge.mjs
+          node tests/v3-advanced-assignments-edge.mjs
+          node tests/v3-assignment-push-edge.mjs
+          node tests/v3-assignment-response-auth-edge.mjs
+          node tests/v3-assignment-publish-auth-edge.mjs
+          node tests/v3-ministry-hub-edge.mjs
+          node tests/v3-notification-center-edge.mjs
+          node tests/v3-workspace-edge.mjs
+          node tests/v3-linked-activities-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-gate8-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-gate8-http.log
+          exit 1
+      - name: Gate 8 browser and mobile regressions
+        run: |
+          timeout 240s node tests/v3-ministry-hub-smoke.mjs
+          timeout 240s node tests/v3-assignments-smoke.mjs
+          timeout 240s node tests/v3-advanced-assignments-smoke.mjs
+          timeout 240s node tests/v3-assignment-push-smoke.mjs
+          timeout 240s node tests/v3-notification-center-smoke.mjs
+          timeout 240s node tests/v3-workspace-smoke.mjs
+          timeout 240s node tests/v3-linked-activities-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
