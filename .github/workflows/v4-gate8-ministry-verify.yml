@@ -39,6 +39,10 @@ on:
       - .github/workflows/v4-gate8-ministry-verify.yml
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
   group: biblequest-v4-gate8-${{ github.ref }}
   cancel-in-progress: true
@@ -99,3 +103,7 @@ jobs:
           timeout 240s node tests/v3-workspace-smoke.mjs
           timeout 240s node tests/v3-linked-activities-smoke.mjs
           timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul
