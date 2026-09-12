@@ -151,3 +151,60 @@ It was noted during the original A-report phase and deferred again during the Ga
 3. **Games emoji → SVG art** (Task 4.2) — biggest remaining "looks unfinished" surface.
 4. **Avatar webp decision** (Task 4.3 / Workflow Issue #2) — quick decision + either wiring or cleanup.
 5. Resume the original family queue: Ministry + Assignments + Workspace + Notifications (much of this overlaps with the More hub work in step 1, so it may shrink in scope by the time it's reached).
+
+---
+
+## 8. Latest binding override — mandatory for every V4 AI/captain session
+
+This section records the newest user direction and **overrides any conflicting older wording in Sections 4–7, older reports, or stale chat context**. Every AI working on BibleQuest V4 must read and follow this document before selecting or executing work.
+
+### AI continuation rule
+
+- **Continue V4 development autonomously through every implementable task. Do not stop merely because an image/artwork task is waiting on the user.**
+- Image/artwork selection, generation, replacement, upload, or other asset work that genuinely requires the user is **deferred and non-blocking**. Record the dependency, skip that item, and immediately continue with the next implementable V4 task.
+- Do not repeatedly ask the user for image files, artwork decisions, or confirmation before proceeding with unrelated code, layout, navigation, behavior, tests, documentation, gates, or release preparation.
+- A missing/deferred image is **not a V4 release blocker unless the user later explicitly promotes that specific asset to a release requirement**.
+- Games emoji→art and the orphaned avatar-WebP decision are therefore deferred asset tasks for now. They remain recorded, but they no longer sit ahead of the executable family queue and must not halt development.
+- If a task can be completed correctly without the missing image (for example layout, semantic accent tokens, navigation, permissions, YouTube embedding, responsive behavior, tests), complete it now and leave only the actual asset substitution for later.
+- The captain remains the sole runtime integrator; analysis agents remain analysis/reporting-only unless the user explicitly changes that operating model. Agents must surface actionable findings into the captain flow rather than creating competing implementation branches or owners.
+
+### Active non-image execution order
+
+1. **Home quick-access + More hub reorganization** (Tasks 3.1 + 3.2), then re-measure reachability (Task 3.3).
+2. **Family accent-color tokens** (Task 4.1).
+3. **Continue the original executable family queue** — Ministry + Assignments + Workspace + Notifications, then the remaining page/family tranches according to current repository evidence and gate dependencies.
+4. **Execute the Congregation Media featured-YouTube task in Section 9** with the appropriate Ministry/Congregation/Media tranche; it is not dependent on new artwork.
+5. **Deferred image/artwork queue** (Games emoji→art, orphaned avatar-WebP decision, and any later user-supplied images) resumes when the user supplies/approves the needed assets or explicitly asks to prioritize it.
+
+---
+
+## 9. Added V4 task — Congregation Media featured YouTube video
+
+### Problem
+
+Congregation Media currently has no administrator workflow for an **admin, pastor, or authorized leader** to add/set the congregation's featured YouTube video. This is a required V4 functional gap and must be implemented in the relevant operational/media tranche.
+
+### Required behavior
+
+- Provide an authenticated, role-gated action for **admin, pastor, and authorized leader roles** to add or replace the featured YouTube video for their congregation.
+- Ordinary members/viewers may view the featured video but must not receive the management action unless their existing congregation permissions authorize it.
+- Reuse the existing congregation/auth/role ownership model. Do not create a second role system or bypass existing permission checks merely for this feature.
+- Store the featured-video setting at the appropriate congregation scope using the established backend/service ownership pattern. If a behavior/data change is required, classify and verify it as Class C rather than hiding it inside a visual-only tranche.
+- Accept a YouTube video reference in a safe, validated form and render it as a YouTube embed/player. Do not accept arbitrary executable embed markup from the user.
+- The management UI should clearly distinguish **Set featured video**, **Change featured video**, and the current featured-video state where applicable.
+
+### YouTube control rule
+
+- **Do not build BibleQuest-specific Play, Pause, Stop, or Seek controls for Congregation Media.**
+- Playback/transport belongs to the embedded YouTube player and its native controls. BibleQuest should provide the surrounding congregation/media presentation, permissions, title/context, loading/error/empty states, and responsive container only.
+- If custom transport controls from an older media-player pattern are currently shown on this YouTube surface, remove/avoid them for this feature rather than duplicating YouTube's own controls.
+
+### Acceptance criteria
+
+- An authorized admin/pastor/leader can set or replace a featured YouTube video through the Congregation Media UI.
+- A normal congregation member can view the featured video but cannot access the management action.
+- The video persists/reloads for the correct congregation through the existing authorized data path.
+- Invalid/non-YouTube input produces a clear safe error and does not persist arbitrary embed code.
+- The embedded YouTube player is responsive on required V4 widths and uses YouTube-native playback controls; BibleQuest exposes no redundant custom play/pause/stop/seek transport.
+- Existing media, recording, congregation, auth, and role behavior remains regression-covered and single-owner.
+- The feature is documented in the relevant tranche/gate evidence before V4 release.
