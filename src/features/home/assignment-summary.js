@@ -1,4 +1,4 @@
-const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const MINISTRY_ROLES = new Set(['facilitator','leader','pastor','admin']);
 const DUE_SOON_MS = 48 * 60 * 60 * 1000;
 const ASSIGNMENT_TYPE_LABELS = Object.freeze({
