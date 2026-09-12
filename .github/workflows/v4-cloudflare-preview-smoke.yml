@@ -4,13 +4,16 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
   checks: read
 
 concurrency:
-  group: biblequest-v4-cloudflare-preview-${{ github.event.pull_request.head.sha }}
+  group: biblequest-v4-cloudflare-preview-${{ github.event.pull_request.head.sha || github.sha }}
   cancel-in-progress: true
 
 jobs:
@@ -21,7 +24,7 @@ jobs:
       - name: Check out exact candidate head
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -30,18 +33,19 @@ jobs:
 
       - name: Verify checked-out candidate identity
         env:
-          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
           actual="$(git rev-parse HEAD)"
           test "$actual" = "$EXPECTED_SHA"
           echo "Exact candidate SHA: $actual"
 
-      - name: Wait for exact-SHA Cloudflare Pages preview
+      - name: Wait for exact-SHA Cloudflare Pages deployment
         id: cloudflare
         env:
           GH_TOKEN: ${{ github.token }}
-          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           short="${CANDIDATE_SHA:0:7}"
@@ -57,32 +61,36 @@ jobs:
                 exit 1
               fi
               if ! printf '%s' "$summary" | grep -Fq "<code>${short}</code>"; then
-                echo "Cloudflare preview check did not report candidate SHA ${short}." >&2
+                echo "Cloudflare deployment check did not report candidate SHA ${short}." >&2
                 exit 1
               fi
-              preview_url="$(printf '%s' "$summary" | grep -oE 'https://[A-Za-z0-9.-]+\.mybiblequest\.pages\.dev' | head -n 1 || true)"
-              if [ -z "$preview_url" ]; then
-                echo "Cloudflare preview URL was not present in the successful check output." >&2
+              immutable_url="$(printf '%s' "$summary" | grep -oE 'https://[A-Za-z0-9.-]+\.mybiblequest\.pages\.dev' | head -n 1 || true)"
+              if [ -z "$immutable_url" ]; then
+                echo "Cloudflare immutable deployment URL was not present in the successful check output." >&2
                 exit 1
               fi
-              echo "url=$preview_url" >> "$GITHUB_OUTPUT"
-              echo "Cloudflare exact-SHA preview: $preview_url"
+
+              if [ "$EVENT_NAME" = "push" ]; then
+                deployment_url="https://mybiblequest.pages.dev"
+                echo "Cloudflare production SHA deployment: $immutable_url"
+                echo "Canonical production smoke target: $deployment_url"
+              else
+                deployment_url="$immutable_url"
+                echo "Cloudflare exact-SHA preview: $deployment_url"
+              fi
+
+              echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
               exit 0
             fi
 
-            echo "Cloudflare preview not ready yet (attempt ${attempt}/60, status=${status})."
+            echo "Cloudflare deployment not ready yet (attempt ${attempt}/60, status=${status})."
             sleep 10
           done
 
           echo "Timed out waiting for the Cloudflare Pages check for ${CANDIDATE_SHA}." >&2
           exit 1
 
-      - name: Install Playwright and Chromium
-        run: |
-          npm install --no-save playwright
-          npx playwright install --with-deps chromium
-
-      - name: Wait for preview host readiness
+      - name: Wait for deployment host readiness
         env:
           BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}
         run: |
@@ -91,11 +99,16 @@ jobs:
             if curl -fsS --max-time 15 "${BQ_BASE_URL}/" >/dev/null; then
               exit 0
             fi
-            echo "Preview host not ready yet (attempt ${attempt}/30)."
+            echo "Deployment host not ready yet (attempt ${attempt}/30)."
             sleep 5
           done
-          echo "Cloudflare preview host never became reachable." >&2
+          echo "Cloudflare deployment host never became reachable." >&2
           exit 1
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
 
       - name: Run deployed critical-route and state smoke
         env:
