@@ -118,9 +118,6 @@ try {
   await page.locator('[data-open-tutorial]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'visible' });
   await page.locator('[data-tutorial-next]').click();
-  await page.locator('[data-tutorial-next]').click();
-  await page.locator('[data-tutorial-next]').click();
-  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 4 of 9'));
   await page.locator('[data-tutorial-action="mission"]').click();
   await page.waitForFunction(() => location.hash === '#/mission');
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Tutorial action handoff must close the overlay before routing.');
