@@ -1,8 +1,10 @@
 # BibleQuest v4 — Modern UI/UX Overhaul Development Plan
 
-Updated: 2026-09-12 JST
-Status: Authoritative planning contract for the v4 overhaul branch
+Updated: 2026-09-13 JST
+Status: **Original architecture/program reference. Current execution status, phase numbering, blockers, and release path are controlled by `V4_ACTIVE_STATUS.md`.**
 Tracking issue: #124
+
+> **Current-authority notice:** Read `V4_ACTIVE_STATUS.md` and `V4_DOCUMENTATION_AUTHORITY.md` before using this plan. The phase numbering below is the original V4 modernization program and is retained for architecture, design intent, and historical context. It must not be used by itself to infer current release readiness or the current post-RC1 phase. The official post-RC1 development line and new-RC path supersede any older “current” interpretation of this plan.
 
 ## 1. Purpose
 
@@ -77,7 +79,7 @@ Initial high-value actions should normally include:
 
 Other actions can be included only when they improve the Home experience rather than turning the rail into another full More menu. Candidate additions include Bible World, Games/Play, Community, Mission, or media depending on the final information hierarchy.
 
-Before visual implementation, inspect the legacy/original Home shortcut treatment for useful proportions, artwork language, discoverability, and interaction cues. Reuse the design idea, not obsolete architecture.
+Before visual implementation, inspect the legacy/original BibleQuest Home shortcut treatment for useful proportions, artwork language, discoverability, and interaction cues. Reuse the design idea, not obsolete architecture.
 
 ### 3.3 Modern polished visual overhaul
 
@@ -168,6 +170,8 @@ More remains the organized home for lower-frequency/community/account/ministry/s
 V4 may adjust bottom-navigation or top-level presentation only after an explicit route-reachability inventory proves that every existing destination remains discoverable and the change improves the product. Do not change primary navigation casually in the first tranche.
 
 ## 6. Implementation phases and gates
+
+**Historical-program note:** the Phase 0–6 labels in this section are the original modernization-plan phases. They are not the official current post-RC1 phase numbers. Use `V4_ACTIVE_STATUS.md` for current Phase 1–7 status and release sequencing.
 
 ### Phase 0 — freeze, audit, and visual contract
 
@@ -466,6 +470,8 @@ V4 is ready for final release consideration only when:
 10. Verified v3 rollback remains available until final v4 acceptance.
 
 ## 12. Immediate execution order
+
+**Historical-program note:** this sequence describes the original modernization execution order. For the current post-RC1 continuation, follow `V4_ACTIVE_STATUS.md` instead.
 
 When implementation begins, do not jump randomly between pages.
 
