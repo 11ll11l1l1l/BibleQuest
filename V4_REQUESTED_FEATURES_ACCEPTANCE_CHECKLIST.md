@@ -46,15 +46,19 @@ Certified assignment/status checkpoint: `release/v4-home-assignments` @ `c676e0e
 
 Calendar certification: `release/v4-calendar` @ `658f202d65481f4486a2f6c010cf0f2248f8b391`; full accumulated run `34679464999` passed. See `V4_CALENDAR_CERTIFICATION.md`.
 
-Assignments certification: `release/v4-assignments-page` @ `65d7ef14b6e1bf5dc8925a88c5838bc233e9fd95`; full accumulated run `34680055519` passed. Existing Assignments/linked-activity/backend owners were preserved while raw thrown backend/network details were blocked at the presentation boundary.
+Assignments certification: `release/v4-assignments-page` @ `65d7ef14b6e1bf5dc8925a88c5838bc233e9fd95`; full accumulated run `34680055519` passed.
 
 Daily Journey certification: `release/v4-daily-journey` @ `fbd8b474a3f8f71044b9cae48b47528f2075436a`; full accumulated run `34680442340` passed. See `V4_DAILY_JOURNEY_CERTIFICATION.md`.
 
-- [x] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route. Existing runtime/service owners were byte-locked; dedicated V4 presentation plus functional/mobile/security coverage is now part of accumulated CI.
+Progress/Grow certification: `release/v4-progress-grow` @ `6c55de27154b9f856faaf80d7cd17b18124c54f3`; full accumulated run `34680840140` passed. See `V4_PROGRESS_GROW_CERTIFICATION.md`.
+
+Primary-family certification: `release/v4-primary-family` @ `c7a78d71354696130efa07e6d7f010deae7795a0`; full accumulated run `34681411008` passed. See `V4_PRIMARY_FAMILY_CERTIFICATION.md`.
+
+- [x] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route.
 - [x] Assignments: final V4 acceptance audit of the full page/workflow while preserving its existing owner/service.
 - [x] Daily Mission / Daily Journey: final page-level V4 acceptance audit beyond Home integration.
-- [ ] Progress / Grow: final V4 acceptance audit and consistency pass.
-- [ ] Home, Learn, Play, Grow and More must remain a coherent modern app family with all required entry points reachable.
+- [x] Progress / Grow: final V4 acceptance audit and consistency pass.
+- [x] Home, Learn, Play, Grow and More remain a coherent modern app family with all required entry points reachable.
 
 ## C. Secondary/social/family/media V4 tranche
 
@@ -74,14 +78,16 @@ Certified checkpoint: `release/v4-community-family` @ `e72b6427fdc2c7e742152264c
 
 ## D. Named user-request flows that require exact acceptance
 
-- [ ] Kids Memory Match / Memory Meadow must be checked against the requested #38 behavior, not just old feature presence.
-- [ ] Mobile Memory Meadow target: 6 pairs / 12 cards / 3 columns.
-- [ ] Wide Memory Meadow target: 8 pairs / 16 cards / 4 columns.
-- [ ] Correct-match delay target: 350 ms.
-- [ ] Mismatch delay target: 650 ms.
-- [ ] Input locking during resolution must work correctly.
-- [ ] Rewards must remain stars + coins, with no unintended XP change.
-- [ ] Couples Journey / communication journey must be audited against the requested husband-wife journey/level system and current product requirements.
+Memory Meadow behavior certification: `release/v4-memory-meadow` @ `c7a78d71354696130efa07e6d7f010deae7795a0`; full accumulated run `34681411008` passed. See `V4_MEMORY_MEADOW_CERTIFICATION.md`.
+
+- [x] Kids Memory Match / Memory Meadow checked against the requested #38 behavior, not just old feature presence.
+- [x] Mobile Memory Meadow target: 6 pairs / 12 cards / 3 columns.
+- [x] Wide Memory Meadow target: 8 pairs / 16 cards / 4 columns.
+- [x] Correct-match delay target: 350 ms.
+- [x] Mismatch delay target: 650 ms.
+- [x] Input locking during resolution works correctly, including stale delayed-callback protection.
+- [x] Rewards remain stars + coins, with zero XP.
+- [ ] Couples Journey / communication journey must be implemented/audited against the requested husband-wife communication-level system and self-assessment. Current Couples flows do not yet contain a persistent communication-level/journey-level model.
 - [ ] Cebuano/Bisaya CEBOCB Reader integration must remain intact through all later V4 changes.
 
 ## E. Existing areas already substantially converted but still protected by final audit
@@ -190,11 +196,12 @@ These should not be casually rebuilt if already green; instead preserve them and
 
 ## Current audit conclusion
 
-- The original serialized V4 family queue is complete through the Community / Relational tranche; the Community checkpoint is exact-SHA certified.
+- The serialized Priority-1 V4 page/family queue is now closed with exact-SHA full-suite evidence through `release/v4-primary-family`.
 - Home assignment/status states and the requested shortcut rail are explicitly closed with exact evidence.
-- Calendar, full Assignments page, and Daily Journey page-level Priority-1 V4 acceptance are closed with exact-SHA full-suite evidence.
-- V4 is **not yet feature/acceptance complete** because Progress/Grow and navigation-family coherence still need Priority-1 closure, followed by named-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates.
-- Custom artwork/icon generation, cutting, canonical naming and integration remain active work.
-- Final whole-app responsive/accessibility/performance/PWA/security/device/release gates remain mandatory.
+- Calendar, full Assignments page, Daily Journey, Progress/Grow and primary Home/Learn/Play/Grow/More coherence are certified.
+- Memory Meadow exact #38 behavior is certified without runtime changes because the implementation and accumulated tests already match the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
+- The next named-flow blocker is Couples Journey communication levels/self-assessment; the current Couples service has useful cards/listening/check-in/repair/practice flows but no persistent communication-level/journey-level model.
+- Custom V4 artwork assets now exist on `main`, including Memory Meadow assets, but artwork integration remains a separate controlled tranche from behavioral certification.
+- V4 is **not yet feature/acceptance complete** because Couples Journey, CEBOCB preservation audit, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, privacy/field gates and final RC/release gates remain.
 
-This file is a release-blocking checklist: V4 should not be declared complete merely because the general regression suite is green while unchecked requested acceptance items remain.
+This file is release-blocking: V4 should not be declared complete merely because the general regression suite is green while unchecked requested acceptance items remain.
