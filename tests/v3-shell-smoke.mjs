@@ -4,7 +4,7 @@ const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
 const browser = await chromium.launch({ headless: true });
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 
-async function assertShell(page) {
+async function assertShell(page, { home = false } = {}) {
   const shell = page.locator('[data-bq-shell]');
   await shell.waitFor();
   assert(await shell.count() === 1, 'Shell must mount exactly once.');
@@ -12,7 +12,7 @@ async function assertShell(page) {
   assert(version === 'v3' || version === 'v4', `Unexpected BibleQuest shell version: ${version}.`);
   if (version === 'v4') {
     assert((await page.locator('[data-brand-home]').textContent())?.includes('BibleQuest'), 'v4 shell must retain the BibleQuest brand.');
-    await page.locator('[data-home-daily]').waitFor();
+    if (home) await page.locator('[data-home-daily]').waitFor();
   }
   return version;
 }
@@ -67,10 +67,10 @@ async function accountUiFlow(page) {
 
 async function desktopFlow(){
   const page=await browser.newPage({viewport:{width:1280,height:900}});let supabaseRequests=0;page.on('request',r=>{if(r.url().includes('supabase.co'))supabaseRequests++});await page.goto(BASE,{waitUntil:'networkidle'});
-  const shellVersion=await assertShell(page);
+  const shellVersion=await assertShell(page,{home:true});
   if(shellVersion==='v3')assert((await page.locator('h1').first().textContent())?.trim()==='BibleQuest','Legacy Home must render BibleQuest heading.');
   else assert(/Continue My Journey/i.test((await page.locator('[data-home-daily] h2').textContent())||''),'v4 Home must keep Daily Journey primary.');
   await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();assert(supabaseRequests===0,'Guest boot in local regression must not contact Supabase.');await coreServiceFlow(page);await accountServiceFlow(page);await accountUiFlow(page);await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('h1',{hasText:'Learn'}).waitFor();await page.reload({waitUntil:'networkidle'});await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();assert((await page.locator('h1').first().textContent())?.trim()==='Learn','Deep-link reload failed.');await assertShell(page);await page.locator('[data-route-link="play"]').click();await page.waitForURL(/#\/play$/);await page.locator('[data-games-page] [data-game-launch="quick-recall"]').waitFor();await page.goBack();await page.waitForURL(/#\/learn$/);await page.locator('h1',{hasText:'Learn'}).waitFor();await page.goForward();await page.waitForURL(/#\/play$/);await page.locator('[data-games-page] [data-game-launch="quick-recall"]').waitFor();await page.goto(`${BASE}#/does-not-exist`,{waitUntil:'networkidle'});assert((await page.locator('h1').first().textContent())?.trim()==='Page not found','Unknown route failed.');await page.close()
 }
-async function mobileFlow(){const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await page.goto(BASE,{waitUntil:'networkidle'});await assertShell(page);await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();const metrics=await page.evaluate(()=>({innerWidth:innerWidth,scrollWidth:document.documentElement.scrollWidth,navHeight:document.querySelector('.bq-nav')?.getBoundingClientRect().height||0,accountWidth:document.querySelector('[data-session-open]')?.getBoundingClientRect().width||0,accountHeight:document.querySelector('[data-session-open]')?.getBoundingClientRect().height||0}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Mobile horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.navHeight>=60,'Mobile nav missing.');assert(metrics.accountWidth>=44&&metrics.accountHeight>=44,'Mobile account control too small.');await page.locator('[data-session-open]').click();await page.waitForURL(/#\/account$/);await page.locator('[data-account-mode="signup"]').click();assert(await page.locator('[data-account-signup]').count()===1,'Mobile signup UI missing.');await page.locator('[data-account-guest]').click();for(const route of ['home','learn','play','grow','more']){await page.locator(`[data-route-link="${route}"]`).click();await page.waitForURL(new RegExp(`#/${route}$`));assert(await page.locator(`[data-route-link="${route}"][aria-current="page"]`).count()===1,`Mobile active nav missing for ${route}.`)}await page.close()}
+async function mobileFlow(){const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});await page.goto(BASE,{waitUntil:'networkidle'});await assertShell(page,{home:true});await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor();const metrics=await page.evaluate(()=>({innerWidth:innerWidth,scrollWidth:document.documentElement.scrollWidth,navHeight:document.querySelector('.bq-nav')?.getBoundingClientRect().height||0,accountWidth:document.querySelector('[data-session-open]')?.getBoundingClientRect().width||0,accountHeight:document.querySelector('[data-session-open]')?.getBoundingClientRect().height||0}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Mobile horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.navHeight>=60,'Mobile nav missing.');assert(metrics.accountWidth>=44&&metrics.accountHeight>=44,'Mobile account control too small.');await page.locator('[data-session-open]').click();await page.waitForURL(/#\/account$/);await page.locator('[data-account-mode="signup"]').click();assert(await page.locator('[data-account-signup]').count()===1,'Mobile signup UI missing.');await page.locator('[data-account-guest]').click();for(const route of ['home','learn','play','grow','more']){await page.locator(`[data-route-link="${route}"]`).click();await page.waitForURL(new RegExp(`#/${route}$`));assert(await page.locator(`[data-route-link="${route}"][aria-current="page"]`).count()===1,`Mobile active nav missing for ${route}.`)}await page.close()}
 try{await desktopFlow();await mobileFlow();console.log('BibleQuest shell/account/routing accumulated regression passed.')}finally{await browser.close()}
