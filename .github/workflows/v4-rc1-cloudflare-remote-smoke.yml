@@ -77,6 +77,14 @@ jobs:
           await page.waitForSelector('[data-progress-page]',{timeout:10000});
           console.log('PASS home shortcut rail -> Grow');
 
+          await page.goto(`${base}/#/more`,{waitUntil:'domcontentloaded',timeout:45000});
+          await page.waitForSelector('[data-open-backup]',{timeout:10000});
+          await page.locator('[data-open-backup]').click();
+          await page.waitForSelector('[data-backup-page]',{timeout:10000});
+          const moreDestination=await page.evaluate(()=>location.hash);
+          if(!moreDestination.includes('backup')) throw new Error(`More -> Backup navigation failed: ${moreDestination}`);
+          console.log('PASS More -> Backup navigation');
+
           await page.goto(`${base}/#/play`,{waitUntil:'domcontentloaded',timeout:45000});
           await page.waitForSelector('[data-memory-open]',{timeout:10000});
           await page.locator('[data-memory-open]').click();
