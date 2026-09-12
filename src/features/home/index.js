@@ -1,60 +1,10 @@
 import { requestNavigation } from '../../app/router.js';
 import { iconSvg } from '../../ui/icons.js';
+import { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
+
+export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const MINISTRY_ROLES = new Set(['facilitator','leader','pastor','admin']);
-const DUE_SOON_MS = 48 * 60 * 60 * 1000;
-const ASSIGNMENT_TYPE_LABELS = Object.freeze({
-  reading:'Reading','guided-study':'Guided Study',mission:'Mission',quiz:'Quiz',reflection:'Reflection',couples:'Couples',group:'Group activity',custom:'Custom'
-});
-
-const formatAssignmentDue = value => {
-  if (!value) return 'No deadline';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'No deadline';
-  try { return new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric'}).format(date); }
-  catch { return String(value); }
-};
-
-export function homeAssignmentItems(state,{now=Date.now(),limit=3}={}) {
-  if (state?.status !== 'ready' || !Array.isArray(state.assignments)) return [];
-  const nowMs = now instanceof Date ? now.getTime() : Number(now);
-  const safeNow = Number.isFinite(nowMs) ? nowMs : Date.now();
-  return state.assignments
-    .filter(row => row?.progress?.status !== 'completed' && row?.dueState !== 'completed' && row?.dueState !== 'scheduled')
-    .map(row => {
-      const dueMs = row?.dueAt ? Date.parse(row.dueAt) : Number.NaN;
-      const dueSoon = row?.dueState === 'open' && Number.isFinite(dueMs) && dueMs >= safeNow && dueMs - safeNow <= DUE_SOON_MS;
-      const started = row?.progress?.status === 'started';
-      const status = row?.dueState === 'overdue'
-        ? Object.freeze({key:'overdue',label:'Overdue',priority:0})
-        : dueSoon
-          ? Object.freeze({key:'due-soon',label:'Due soon',priority:1})
-          : started
-            ? Object.freeze({key:'in-progress',label:'In progress',priority:2})
-            : Object.freeze({key:'pending',label:'Pending',priority:3});
-      return Object.freeze({
-        id:String(row?.id||''),
-        title:String(row?.title||'Assignment'),
-        typeLabel:ASSIGNMENT_TYPE_LABELS[row?.type]||String(row?.type||'Assignment'),
-        dueAt:row?.dueAt||null,
-        dueText:formatAssignmentDue(row?.dueAt),
-        status,
-        progressLabel:started?'Started':'Assigned'
-      });
-    })
-    .filter(row => row.id)
-    .sort((a,b) => a.status.priority-b.status.priority || (Date.parse(a.dueAt)||Number.MAX_SAFE_INTEGER)-(Date.parse(b.dueAt)||Number.MAX_SAFE_INTEGER) || a.title.localeCompare(b.title))
-    .slice(0,Math.max(1,Number(limit)||3));
-}
-
-function assignmentPanelHtml(state) {
-  const items = homeAssignmentItems(state);
-  if (!items.length) return '';
-  const ministry = MINISTRY_ROLES.has(state.role);
-  const totalActive = state.assignments.filter(row => row?.progress?.status !== 'completed' && row?.dueState !== 'completed' && row?.dueState !== 'scheduled').length;
-  return `<div class="bq-home-assignment-head"><div><p class="bq-eyebrow">ASSIGNMENTS${totalActive?` · ${totalActive}`:''}</p><h2>${ministry?'Congregation assignments':'Your assignments'}</h2><p>${ministry?'Review current congregation tasks from the existing ministry workflow.':'Keep current congregation tasks visible without leaving Home.'}</p></div><button type="button" class="bq-secondary-button" data-home-assignments-all>See all</button></div><div class="bq-home-assignment-list">${items.map(item=>`<button type="button" class="bq-home-assignment-row" data-home-assignment-open="${escapeHtml(item.id)}" aria-label="Open assignment ${escapeHtml(item.title)}"><span class="bq-home-assignment-status is-${escapeHtml(item.status.key)}" data-home-assignment-status="${escapeHtml(item.status.key)}">${escapeHtml(item.status.label)}</span><span class="bq-home-assignment-copy"><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.typeLabel)} · ${escapeHtml(item.progressLabel)}${item.dueAt?` · Due ${escapeHtml(item.dueText)}`:''}</small></span><span class="bq-home-assignment-open" aria-hidden="true">Open</span></button>`).join('')}</div>`;
-}
 
 const HOME_SHORTCUTS = Object.freeze([
   Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', action: 'onMission' }),
@@ -98,7 +48,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
         <span class="bq-home-congregation-copy"><span class="bq-eyebrow">CONGREGATION</span><b>Congregation &amp; Assignments</b><small data-home-congregation-caption>Join or open your congregation.</small></span>
         <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="Open congregation and assignments">Open</button>
       </section>
-      <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite" hidden></section>
+      <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       ${shortcutRailHtml()}
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
@@ -153,26 +103,28 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
         items[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
       };
       const openAllAssignments = () => onAssignments?.();
-      const hideAssignments = () => { if (assignmentHost) { assignmentHost.hidden = true; assignmentHost.innerHTML = ''; } };
-      const renderAssignments = assignmentState => {
-        if (disposed || !assignmentHost) return;
-        congregationRoute = assignmentState?.status === 'ready' ? 'assignments' : 'congregation';
-        if (congregationCaption) congregationCaption.textContent = congregationRoute === 'assignments' ? 'Open current assignments and congregation tools.' : 'Join or open your congregation.';
-        const html = assignmentPanelHtml(assignmentState);
-        if (!html) { hideAssignments(); return; }
-        assignmentHost.innerHTML = html;
-        assignmentHost.hidden = false;
-        assignmentHost.querySelector('[data-home-assignments-all]')?.addEventListener('click',openAllAssignments,{once:true});
-        assignmentHost.querySelectorAll('[data-home-assignment-open]').forEach(button=>button.addEventListener('click',()=>{
+      const bindAssignmentActions = () => {
+        assignmentHost?.querySelector('[data-home-assignments-all]')?.addEventListener('click', openAllAssignments, {once:true});
+        assignmentHost?.querySelector('[data-home-assignments-retry]')?.addEventListener('click', loadAssignments, {once:true});
+        assignmentHost?.querySelectorAll('[data-home-assignment-open]').forEach(button=>button.addEventListener('click',()=>{
           try { assignments?.open?.(button.dataset.homeAssignmentOpen); } catch { /* stale state falls back to the Assignments list */ }
           onAssignments?.();
         },{once:true}));
       };
-      const loadAssignments = async () => {
-        if (!assignments?.load) return;
-        try { const next = await assignments.load(); if (!disposed) renderAssignments(next); }
-        catch { if (!disposed) { congregationRoute = 'congregation'; if (congregationCaption) congregationCaption.textContent = 'Join or open your congregation.'; hideAssignments(); } }
+      const renderAssignments = assignmentState => {
+        if (disposed || !assignmentHost) return;
+        congregationRoute = assignmentState?.status === 'ready' ? 'assignments' : 'congregation';
+        if (congregationCaption) congregationCaption.textContent = congregationRoute === 'assignments' ? 'Open current assignments and congregation tools.' : 'Join or open your congregation.';
+        assignmentHost.innerHTML = homeAssignmentPanelHtml(assignmentState);
+        bindAssignmentActions();
       };
+      async function loadAssignments() {
+        if (disposed) return;
+        if (!assignments?.load) { renderAssignments({status:'error'}); return; }
+        renderAssignments({status:'loading'});
+        try { const next = await assignments.load(); if (!disposed) renderAssignments(next); }
+        catch { if (!disposed) renderAssignments({status:'error'}); }
+      }
       dailyButton?.addEventListener('click', openDaily);
       tutorialButton?.addEventListener('click', openTutorial);
       recordingsButton?.addEventListener('click', openRecordings);
@@ -180,6 +132,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       congregationButton?.addEventListener('click', openCongregationAssignments);
       railTrack?.addEventListener('click', onRailClick);
       railTrack?.addEventListener('keydown', onRailKeydown);
+      bindAssignmentActions();
       void loadAssignments();
       return () => {
         disposed = true;
