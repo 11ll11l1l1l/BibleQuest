@@ -4,6 +4,39 @@ on:
   push:
     branches:
       - v4/modern-ui-overhaul
+    paths:
+      - src/ui/ministry-ops-v4.css
+      - index.html
+      - tests/v4-ministry-ops-static.mjs
+      - src/features/ministry-hub/**
+      - src/features/assignments/**
+      - src/features/workspace/**
+      - src/features/notification-center/**
+      - scripts/validate-v3-assignments.mjs
+      - scripts/validate-v3-advanced-assignments.mjs
+      - scripts/validate-v3-assignment-push.mjs
+      - scripts/validate-v3-ministry-hub.mjs
+      - scripts/validate-v3-notification-center.mjs
+      - scripts/validate-v3-workspace.mjs
+      - scripts/validate-v3-linked-activities.mjs
+      - tests/v3-assignments-edge.mjs
+      - tests/v3-advanced-assignments-edge.mjs
+      - tests/v3-assignment-push-edge.mjs
+      - tests/v3-assignment-response-auth-edge.mjs
+      - tests/v3-assignment-publish-auth-edge.mjs
+      - tests/v3-ministry-hub-edge.mjs
+      - tests/v3-notification-center-edge.mjs
+      - tests/v3-workspace-edge.mjs
+      - tests/v3-linked-activities-edge.mjs
+      - tests/v3-ministry-hub-smoke.mjs
+      - tests/v3-assignments-smoke.mjs
+      - tests/v3-advanced-assignments-smoke.mjs
+      - tests/v3-assignment-push-smoke.mjs
+      - tests/v3-notification-center-smoke.mjs
+      - tests/v3-workspace-smoke.mjs
+      - tests/v3-linked-activities-smoke.mjs
+      - tests/v3-final-mobile-widths-smoke.mjs
+      - .github/workflows/v4-gate8-ministry-verify.yml
   workflow_dispatch:
 
 concurrency:
