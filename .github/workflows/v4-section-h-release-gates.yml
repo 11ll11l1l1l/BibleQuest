@@ -1,0 +1,52 @@
+name: BibleQuest V4 Section H release gates
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v4/modern-ui-overhaul
+      - main
+
+concurrency:
+  group: biblequest-v4-section-h-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  section-h:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run deployment architecture and static Section H gates
+        run: |
+          bash build.sh
+          node scripts/validate-v3-architecture.mjs
+          node tests/v4-section-h-static-contracts.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-section-h-http.log 2>&1 &
+          echo $! > /tmp/biblequest-v4-section-h-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-section-h-http.log
+          exit 1
+      - name: Run responsive accessibility performance and PWA browser gate
+        run: node tests/v4-section-h-browser-smoke.mjs
+      - name: Cross-check existing mobile keyboard PWA offline and reconnect contracts
+        run: |
+          node tests/v3-final-mobile-widths-smoke.mjs
+          node tests/v4-home-rail-smoke.mjs
+          node tests/v3-pwa-install-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-operational-recovery-smoke.mjs
