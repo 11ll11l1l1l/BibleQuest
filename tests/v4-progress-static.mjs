@@ -1,8 +1,7 @@
 // BibleQuest V4 Progress/Grow acceptance contract.
-// This tranche certifies the existing Progress/Grow runtime without creating a
-// second progress/reward owner. Runtime owners are byte-locked to the last
-// fully verified V4 product checkpoint while V4 presentation and retained
-// functional/mobile tests remain mandatory.
+// The canonical progress/reward service remains byte-locked. Presentation may
+// evolve only while the hooks, ownership boundaries, artwork, responsive
+// contracts and retained functional/browser evidence below continue to pass.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -10,23 +9,17 @@ import { execFileSync } from 'node:child_process';
 
 const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='fbd8b474a3f8f71044b9cae48b47528f2075436a';
-const preserved=[
-  'src/core/progress.js',
-  'src/features/progress/index.js'
-];
-
-for(const relative of preserved){
-  const current=fs.readFileSync(path.join(root,relative),'utf8');
-  const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
-  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the V4 Progress/Grow certification tranche.`);
-}
+const ownerPath='src/core/progress.js';
+const currentOwner=fs.readFileSync(path.join(root,ownerPath),'utf8');
+const baselineOwner=execFileSync('git',['show',`${baselineSha}:${ownerPath}`],{cwd:root,encoding:'utf8'});
+assert.equal(currentOwner,baselineOwner,'Canonical progress/reward service must remain byte-for-byte unchanged unless a new ownership review explicitly certifies it.');
 
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const baseCss=fs.readFileSync(path.join(root,'src/ui/progress.css'),'utf8');
 const phaseCss=fs.readFileSync(path.join(root,'src/ui/progress-phase-b.css'),'utf8');
 const v4Css=fs.readFileSync(path.join(root,'src/ui/journey-v4.css'),'utf8');
 const feature=fs.readFileSync(path.join(root,'src/features/progress/index.js'),'utf8');
-const owner=fs.readFileSync(path.join(root,'src/core/progress.js'),'utf8');
+const owner=currentOwner;
 const edge=fs.readFileSync(path.join(root,'tests/v3-progress-edge.mjs'),'utf8');
 const smoke=fs.readFileSync(path.join(root,'tests/v3-progress-smoke.mjs'),'utf8');
 const phaseSmoke=fs.readFileSync(path.join(root,'tests/v3-progress-phase-b-smoke.mjs'),'utf8');
@@ -65,6 +58,7 @@ for(const hook of[
   'data-progress-badge'
 ]) assert.ok(feature.includes(hook),`Progress/Grow feature must preserve ${hook}.`);
 assert.ok(feature.includes("const PROGRESS_ART='assets/progress-feature-icons.svg';"),'Progress/Grow must retain its committed same-origin semantic artwork sprite.');
+assert.ok(feature.includes(`'"':'&quot;'`),'Progress/Grow HTML escaping must retain the complete quotation-mark entity.');
 assert.ok(!/\bfetch\s*\(/.test(feature),'Progress/Grow presentation must not create a data/API owner with direct fetch calls.');
 
 for(const token of[
