@@ -42,6 +42,26 @@
 
 [data-home-progress] h2{font-family:var(--font-display)}
 
+/* Home assignment notification: existing Assignments service is the only data owner.
+   Home renders only task metadata and routes into the existing Assignments workflow. */
+.bq-home-assignments{margin-top:0;padding:clamp(18px,3vw,26px);border-color:color-mix(in srgb,var(--forest-700) 16%,var(--line-200));background:linear-gradient(145deg,var(--surface-raised),color-mix(in srgb,var(--forest-500) 4%,var(--surface-raised)))}
+.bq-home-assignments[hidden]{display:none!important}
+.bq-home-assignment-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4)}
+.bq-home-assignment-head h2{margin:2px 0 4px;color:var(--forest-900);font-family:var(--font-display);font-size:clamp(20px,2.7vw,26px);letter-spacing:-.02em}
+.bq-home-assignment-head p:not(.bq-eyebrow){margin:0;color:var(--ink-500);font-size:12px;line-height:1.5}
+.bq-home-assignment-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2);margin-top:var(--space-4)}
+.bq-home-assignment-row{width:100%;min-height:88px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr;align-items:start;gap:7px 10px;padding:13px;border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised);color:inherit;text-align:left;font:inherit;cursor:pointer;box-shadow:none;transition:border-color var(--duration-base) var(--ease-standard),background var(--duration-base) var(--ease-standard),transform var(--duration-fast) var(--ease-standard)}
+.bq-home-assignment-row:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--forest-700) 30%,var(--line-200));background:color-mix(in srgb,var(--forest-500) 3%,var(--surface-raised))}
+.bq-home-assignment-status{grid-column:1;justify-self:start;display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border:1px solid var(--line-200);border-radius:999px;background:var(--surface-subtle);color:var(--ink-700);font-size:9.5px;font-weight:900;letter-spacing:.045em;text-transform:uppercase}
+.bq-home-assignment-status.is-overdue{border-color:color-mix(in srgb,var(--danger) 35%,var(--line-200));background:color-mix(in srgb,var(--danger) 7%,var(--surface-raised));color:var(--danger)}
+.bq-home-assignment-status.is-due-soon{border-color:color-mix(in srgb,var(--warning) 38%,var(--line-200));background:color-mix(in srgb,var(--warning) 8%,var(--surface-raised));color:var(--ink-800)}
+.bq-home-assignment-status.is-in-progress{border-color:color-mix(in srgb,var(--info) 34%,var(--line-200));background:color-mix(in srgb,var(--info) 7%,var(--surface-raised));color:var(--ink-800)}
+.bq-home-assignment-status.is-pending{border-color:color-mix(in srgb,var(--forest-700) 22%,var(--line-200));background:color-mix(in srgb,var(--forest-500) 6%,var(--surface-raised));color:var(--forest-900)}
+.bq-home-assignment-copy{grid-column:1;display:grid;gap:4px;min-width:0}
+.bq-home-assignment-copy b{overflow:hidden;color:var(--ink-900);font-size:13px;line-height:1.3;text-overflow:ellipsis;white-space:nowrap}
+.bq-home-assignment-copy small{color:var(--ink-500);font-size:10px;font-weight:650;line-height:1.35}
+.bq-home-assignment-open{grid-column:2;grid-row:1/-1;align-self:center;color:var(--forest-700);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+
 /* Secondary row: compact icon tiles instead of three equal-weight panels,
    so Daily Journey + Progress stay the dominant continuation path. */
 .bq-home-secondary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3);margin-top:var(--space-4)}
@@ -67,8 +87,13 @@
   #bq-view:has(> [data-home-progress])>.bq-hero{grid-column:1/-1}
   #bq-view:has(> [data-home-progress])>[data-home-daily]{grid-column:span 8}
   #bq-view:has(> [data-home-progress])>[data-home-progress]{grid-column:span 4}
+  #bq-view:has(> [data-home-progress])>[data-home-assignments]{grid-column:1/-1}
   #bq-view:has(> [data-home-progress])>.bq-home-secondary{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}
   [data-home-daily],[data-home-progress]{height:100%}
+}
+
+@media(max-width:760px){
+  .bq-home-assignment-list{grid-template-columns:1fr}
 }
 
 @media(max-width:640px){
@@ -77,10 +102,24 @@
   .bq-hero p{font-size:12px;line-height:1.5}
   .bq-hero img{max-height:138px}
   [data-home-daily] .bq-primary-button,[data-home-recordings] .bq-secondary-button,[data-home-media] .bq-secondary-button{width:100%}
+  .bq-home-assignment-head{display:grid}
+  .bq-home-assignment-head>button{justify-self:start}
 }
 
 @media(max-width:390px){
   .bq-hero{grid-template-columns:1fr;min-height:0}
   .bq-hero img{position:absolute;right:-14px;bottom:-8px;z-index:-1;width:124px;opacity:.22}
   .bq-hero p{max-width:88%}
+  .bq-home-assignments{padding:15px}
+  .bq-home-assignment-row{min-height:82px;padding:11px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .bq-home-assignment-row{transition:none!important}
+  .bq-home-assignment-row:hover{transform:none}
+}
+
+@media(prefers-contrast:more){
+  .bq-home-assignments,.bq-home-assignment-row{border-color:var(--ink-700)!important;box-shadow:none!important}
+  .bq-home-assignment-status{border-color:currentColor!important}
 }
