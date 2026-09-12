@@ -56,7 +56,19 @@ function assignmentPanelHtml(state) {
   return `<div class="bq-home-assignment-head"><div><p class="bq-eyebrow">ASSIGNMENTS${totalActive?` · ${totalActive}`:''}</p><h2>${ministry?'Congregation assignments':'Your assignments'}</h2><p>${ministry?'Review current congregation tasks from the existing ministry workflow.':'Keep current congregation tasks visible without leaving Home.'}</p></div><button type="button" class="bq-secondary-button" data-home-assignments-all>See all</button></div><div class="bq-home-assignment-list">${items.map(item=>`<button type="button" class="bq-home-assignment-row" data-home-assignment-open="${escapeHtml(item.id)}" aria-label="Open assignment ${escapeHtml(item.title)}"><span class="bq-home-assignment-status is-${escapeHtml(item.status.key)}" data-home-assignment-status="${escapeHtml(item.status.key)}">${escapeHtml(item.status.label)}</span><span class="bq-home-assignment-copy"><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.typeLabel)} · ${escapeHtml(item.progressLabel)}${item.dueAt?` · Due ${escapeHtml(item.dueText)}`:''}</small></span><span class="bq-home-assignment-open" aria-hidden="true">Open</span></button>`).join('')}</div>`;
 }
 
-export function homePage({ progress, dailyMission, assignments, onAssignments, onMission, onRecordings, onMedia, onTutorial }) {
+const HOME_SHORTCUTS = Object.freeze([
+  Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', action: 'onMission' }),
+  Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', action: 'onReader' }),
+  Object.freeze({ id: 'assignments', icon: 'guide', label: 'Assignments', action: 'onAssignments' }),
+  Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', action: 'onCalendar' }),
+  Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', action: 'onGrow' })
+]);
+
+function shortcutRailHtml() {
+  return `<nav class="bq-home-rail" data-home-rail aria-label="Quick shortcuts"><ul class="bq-home-rail-track" data-home-rail-track>${HOME_SHORTCUTS.map(item => `<li><button type="button" class="bq-home-rail-item" data-home-rail-item="${item.id}" data-home-rail-action="${item.action}"><span class="bq-home-rail-icon" aria-hidden="true">${iconSvg(item.icon, { size: 22 })}</span><span class="bq-home-rail-label">${escapeHtml(item.label)}</span></button></li>`).join('')}</ul></nav>`;
+}
+
+export function homePage({ progress, dailyMission, assignments, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow }) {
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
   const daily = dailyMission?.today?.();
   const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
@@ -87,6 +99,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
         <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="Open congregation and assignments">Open</button>
       </section>
       <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite" hidden></section>
+      ${shortcutRailHtml()}
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
           <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="Show BibleQuest tutorial">
@@ -113,6 +126,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       const recordingsButton = root.querySelector('[data-open-recordings]');
       const mediaButton = root.querySelector('[data-open-media]');
       const congregationButton = root.querySelector('[data-open-congregation-assignments]');
+      const railTrack = root.querySelector('[data-home-rail-track]');
       const congregationCaption = root.querySelector('[data-home-congregation-caption]');
       const assignmentHost = root.querySelector('[data-home-assignments]');
       let disposed = false;
@@ -122,6 +136,22 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       const openRecordings = () => onRecordings?.();
       const openMedia = () => onMedia?.();
       const openCongregationAssignments = () => congregationRoute === 'assignments' ? onAssignments?.() : requestNavigation('congregation');
+      const railActions = { onMission: () => onMission?.(), onReader: () => onReader?.(), onAssignments: () => onAssignments?.(), onCalendar: () => onCalendar?.(), onGrow: () => onGrow?.() };
+      const onRailClick = event => {
+        const button = event.target.closest('[data-home-rail-item]');
+        if (!button || !railTrack?.contains(button)) return;
+        railActions[button.dataset.homeRailAction]?.();
+      };
+      const onRailKeydown = event => {
+        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+        const items = Array.from(railTrack?.querySelectorAll('[data-home-rail-item]') || []);
+        const index = items.indexOf(document.activeElement);
+        if (index === -1) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'ArrowRight' ? Math.min(items.length - 1, index + 1) : Math.max(0, index - 1);
+        items[nextIndex]?.focus();
+        items[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      };
       const openAllAssignments = () => onAssignments?.();
       const hideAssignments = () => { if (assignmentHost) { assignmentHost.hidden = true; assignmentHost.innerHTML = ''; } };
       const renderAssignments = assignmentState => {
@@ -148,6 +178,8 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       recordingsButton?.addEventListener('click', openRecordings);
       mediaButton?.addEventListener('click', openMedia);
       congregationButton?.addEventListener('click', openCongregationAssignments);
+      railTrack?.addEventListener('click', onRailClick);
+      railTrack?.addEventListener('keydown', onRailKeydown);
       void loadAssignments();
       return () => {
         disposed = true;
@@ -156,6 +188,8 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
         recordingsButton?.removeEventListener('click', openRecordings);
         mediaButton?.removeEventListener('click', openMedia);
         congregationButton?.removeEventListener('click', openCongregationAssignments);
+        railTrack?.removeEventListener('click', onRailClick);
+        railTrack?.removeEventListener('keydown', onRailKeydown);
       };
     }
   };
