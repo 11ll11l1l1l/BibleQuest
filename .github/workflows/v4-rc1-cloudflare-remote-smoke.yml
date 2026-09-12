@@ -40,7 +40,7 @@ jobs:
           import { chromium } from 'playwright';
 
           const base = process.env.BASE_URL;
-          const routes = ['home','reader','games','assignments','calendar','community','backup','more','account'];
+          const routes = ['home','reader','play','assignments','calendar','community','backup','more','account','grow'];
           const browser = await chromium.launch({headless:true});
           const context = await browser.newContext({viewport:{width:390,height:844}, locale:'en-US'});
           const page = await context.newPage();
@@ -54,18 +54,38 @@ jobs:
             const state=await page.evaluate(()=>({
               appText:(document.querySelector('#app')?.innerText||'').trim(),
               startupFailure:!!document.querySelector('[data-startup-failure]'),
+              notFound:(document.querySelector('#app')?.innerText||'').includes('Page not found'),
               bodyWidth:document.body.scrollWidth,
               viewportWidth:window.innerWidth,
               route:location.hash
             }));
             if(!state.appText) throw new Error(`${route}: #app is blank`);
             if(state.startupFailure) throw new Error(`${route}: startup failure rendered`);
+            if(state.notFound) throw new Error(`${route}: fell through to not-found`);
             if(state.bodyWidth > state.viewportWidth + 2) throw new Error(`${route}: horizontal overflow ${state.bodyWidth}>${state.viewportWidth}`);
             if(!state.route.includes(route)) throw new Error(`${route}: wrong route ${state.route}`);
             console.log('PASS route',route,'text',state.appText.length,'width',state.bodyWidth+'/'+state.viewportWidth);
           }
 
           for(const route of routes) await assertRoute(route);
+
+          await page.goto(`${base}/#/home`,{waitUntil:'domcontentloaded',timeout:45000});
+          await page.waitForTimeout(1200);
+          if(!(await page.locator('[data-home-assignments]').count())) throw new Error('home assignment/status surface missing');
+          if(!(await page.locator('[data-home-rail]').count())) throw new Error('home shortcut rail missing');
+          await page.locator('[data-home-rail-item="grow"]').click();
+          await page.waitForSelector('[data-progress-page]',{timeout:10000});
+          if(location?.hash===undefined){}
+          console.log('PASS home shortcut rail -> Grow');
+
+          await page.goto(`${base}/#/play`,{waitUntil:'domcontentloaded',timeout:45000});
+          await page.waitForSelector('[data-memory-open]',{timeout:10000});
+          await page.locator('[data-memory-open]').click();
+          await page.waitForSelector('[data-memory-meadow]',{timeout:10000});
+          console.log('PASS game launch Memory Meadow');
+          await page.locator('[data-game-launcher]').click();
+          await page.waitForSelector('[data-memory-open]',{timeout:10000});
+          console.log('PASS game return to launcher');
 
           await page.goto(`${base}/#/home`,{waitUntil:'domcontentloaded',timeout:45000});
           await page.waitForTimeout(2500);
