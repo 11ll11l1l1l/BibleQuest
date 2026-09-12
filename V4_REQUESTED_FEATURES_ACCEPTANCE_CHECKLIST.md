@@ -140,46 +140,43 @@ Every overlay that hides an inline SVG restores it under `@media (forced-colors:
 
 `tests/v4-custom-art-static.mjs` guards all three failure modes: asset existence, no `background-image` on gradient-backed surfaces, and the Bible World exclusion staying in place.
 
-**Still unused: 92 of 160 assets** — chiefly the `core/` nav+brand set, `system/` status/empty/loading badges, and `decorative/` accents. These are not wired because the surfaces that would use them (bottom-nav icons, status badges, empty/loading states) are either already certified with scalable inline SVG (better for theming/recolour than PNG) or belong to the Section G/H audit work. Recommend deciding nav/system art during that audit rather than pre-emptively swapping certified SVG for raster.
+**Still unused: 92 of 160 assets** — chiefly the `core/` nav+brand set, `system/` status/empty/loading badges, and `decorative/` accents. These are not automatically missing requirements: certified scalable SVG/system presentation is retained where it is the better semantic/theming fit, and unused decorative art remains optional rather than release-blocking.
 
 ## G. Whole-app V4 polish audit
 
-- [ ] Audit loading states. (Requires browser rendering; Section H's job. Structurally present per spot-check but not systematically verified.)
-- [ ] Audit empty states. (Same as above.)
-- [ ] Audit error states. (Same as above.)
-- [ ] Audit success/completion states. (Same as above.)
-- [ ] Audit signed-out states. (Same as above.)
-- [ ] Audit offline/recovery states. (Same as above.)
-- [x] Audit icon consistency. **Round 1 + 2 complete.** Checkpoint: `release/v4-icon-wiring-round2`. Wired: Community hub (7 icons), Notification Center (5 of 10 types — assignment/devotional/announcement/encouragement/award; feedback/activity/poll/media/info kept as emoji, no honest asset match), Couples Family mode-grid (3 of 7 modes — journey/god/date; card/listen/checkin/repair kept as emoji, no honest asset match), Journey Group Encouragements (3 of 5 presets — heart/word/flame; pray/cheer kept as emoji, no honest asset match).
+Browser-required Section G certification: `release/v4-whole-app-browser-audit` @ exact candidate `65d08e93d4df2629db78f83f52ce3c610ce8bb25`. Focused whole-app run `34690641958`, protected-page run `34690641974`, and full accumulated regression run `34690725670` all passed. See `V4_WHOLE_APP_BROWSER_AUDIT_CERTIFICATION.md`.
 
-  **Congregation Recognition: now also done.** Checkpoint: `release/v4-recognition-icons`. Restructured the icon from bare text concatenated into title strings into its own stable `<span class="bq-recognition-icon" data-award-code="...">`/`data-badge-id="..."` element (additive — `row.awardCode`/`badge.badgeId` already existed on the data, just weren't exposed as attributes). 6 of 9 award/badge codes wired to real art (consistency, scripture-explorer, encourager, journey-finisher, group-helper, pastor-recognition); comeback/reflection/most-improved kept as emoji, no honest asset match. The award-selection `<select><option>` list cannot be iconified at all regardless of markup — browsers render `<option>` content as plain text only, a platform limitation, not a missed fix.
-
-  One real conflict found and fixed while gating this: an earlier Community-family contract test byte-locked `congregation-recognition/index.js` against its original checkpoint (to catch silent drift). Since this change is intentional and now independently verified by its own contract, exempted that one file from the byte-lock — following the exact precedent already set for Couples Family in the same test — rather than reverting the fix.
-
-  **Only remaining open item: Games** (13+8 emoji) — still deliberately deferred as its own tranche; the markup is one dense phase-based render function, too risky for a CSS-only overlay.
-
-  **Also intentionally deferred:** Congregation Recognition's 10 badge icons — these are rendered as bare text concatenated into title strings (`${icon} ${title}`), not isolated in their own styleable element like every other surface above, so wiring them needs a small markup restructure across 3 render functions, not a CSS overlay. Lower priority since it's an achievement-history list, not a primary navigation surface.
-
-  **Standard held throughout:** an icon was only wired where a genuinely matching asset exists. Several presets/types were deliberately left as emoji rather than forced onto a semantically wrong asset (e.g. no "conflict repair" or "praying hands" image exists in the current inventory) — a wrong icon is worse than an honest placeholder.
-- [x] Audit typography hierarchy. **Fixed:** Community and Couples Journey were missing the shared display-font h1 rule that the other 18 family CSS files already have. Both corrected.
+- [x] Audit loading states. Browser-rendered loading and loading -> ready/empty transitions are explicitly covered.
+- [x] Audit empty states. Ready-empty and no-congregation/context-empty states are browser verified.
+- [x] Audit error states. Safe rendered API failure state is verified, including no raw service-detail leakage.
+- [x] Audit success/completion states. Successful assignment completion and awarded-points feedback are browser verified; independent Games/Daily Journey regressions cross-check other completion paths.
+- [x] Audit signed-out states. Browser verified.
+- [x] Audit offline/recovery states. Offline/local-preview, Offline Shell, Cloud Notes local preview, and Operational Recovery browser regressions are green.
+- [x] Audit icon consistency. Round 1 + 2, Congregation Recognition, and the final Games artwork tranche are complete. Games was closed by `release/v4-games-art-final` at exact tested candidate `f7d141de7752eeabb628e06f6d0b14f9b67a080b`; focused Games verification, protected-page audit, and full accumulated regression all passed. See `V4_GAMES_ART_FINAL_CERTIFICATION.md`. Icons without an honest semantic asset match remain intentionally textual/emoji rather than being mapped to misleading artwork.
+- [x] Audit typography hierarchy. **Fixed:** Community and Couples Journey were missing the shared display-font h1 rule that the other family CSS files already have. Both corrected.
 - [x] Audit spacing and card/surface consistency. No gaps found in static review.
-- [ ] Audit clipping and document overflow. **Gap documented, not fixed:** the automated overflow test only covers the 5 primary nav routes, not deep-linked feature pages (Community, Couples Journey, Congregation, Admin Console, etc.). No known overflow bug, but coverage is narrower than previously assumed. Section H should extend this.
-- [ ] Audit layout shifts. (Requires browser rendering; Section H's job.)
-- [ ] Audit Japanese/English/Cebuano text expansion and localization resilience. (Requires browser rendering with real translated strings; Section H's job.)
+- [x] Audit clipping and document overflow. All 42 maintained routes are browser-traversed at 320 px and 430 px. The audit found one real 320 px Backup overflow (320 px viewport expanded to 367 px), traced to the native file picker's intrinsic width; `src/ui/reset-recovery-v4.css` now stacks/constrains only that picker/label, and the complete rerun is green.
+- [x] Audit layout shifts. Maintained routes now check late topbar/navigation geometry drift and material leading-content movement after render; the certified matrix is green.
+- [x] Audit Japanese/English/Cebuano text expansion and localization resilience. Representative high-value routes receive English, Japanese, and Cebuano/Bisaya text-expansion stress at 320 px; no document overflow or viewport escape remains.
 - [x] Audit micro-interactions/transitions. No gaps found in static review.
-- [x] Audit reduced-motion behavior. **Confirmed clean:** all 87 CSS files checked for transition/animation usage; zero files lack reduced-motion coverage (either a local guard or the certified global catch-all in v4-foundation.css).
-- [x] Audit placeholder/legacy artwork still visible anywhere in maintained routes. **Complete except Games** (see icon consistency above for full detail) — Games is the one deliberate, recorded exception, scheduled as its own tranche.
-- [x] Audit navigation/IA so every maintained feature remains reachable and intuitive. **Confirmed clean:** re-verified the 3-tap rule after the Community family certification — Community hub and all 7 of its sub-destinations remain within 3 taps of Home, no regression.
+- [x] Audit reduced-motion behavior. **Confirmed clean:** all transition/animation usage remains covered by local guards or the certified global reduced-motion catch-all.
+- [x] Audit placeholder/legacy artwork still visible anywhere in maintained routes. The previously recorded Games exception is closed by `release/v4-games-art-final`; remaining textual/emoji symbols are intentional semantic fallbacks where no honest matching custom asset exists.
+- [x] Audit navigation/IA so every maintained feature remains reachable and intuitive. Maintained navigation/3-tap evidence remains green, and the deep-route matrix confirms all 42 maintained routes resolve to real content rather than not-found/recovery surfaces.
 
 ### Section G evidence
 
-Checkpoint: `release/v4-whole-app-audit` @ `b92268b91cc479421bc43a7d86d0725657078282` (see `V4_UI_WHOLE_APP_AUDIT.md` for the exact SHA and full findings). Full accumulated suite green.
+Static checkpoint: `release/v4-whole-app-audit` @ `b92268b91cc479421bc43a7d86d0725657078282`.
 
-**Real fixes made:** Community hub emoji icons wired to real art; 2 missing typography-hierarchy gaps closed (Community, Couples Journey h1 headings).
+Final browser checkpoint: `release/v4-whole-app-browser-audit` @ `65d08e93d4df2629db78f83f52ce3c610ce8bb25`.
 
-**Real gaps found and honestly recorded, not fixed this pass:** Games still shows emoji chrome (known deferral, confirmed still true, biggest remaining surface); 4 more features have unwired emoji category icons with a stated priority order; document-overflow automated coverage is narrower than assumed (5 routes, not all routes).
+Exact-SHA runs:
+- `34690641958` — focused whole-app browser audit: PASS.
+- `34690641974` — protected-page audit: PASS.
+- `34690725670` — full accumulated build/architecture/edge/browser-mobile regression: PASS.
 
-**What could not be honestly audited without a real browser:** loading/empty/error/success/signed-out/offline states, layout shift, and localization text-expansion — these need Section H's device/browser verification, not static code review, and are left open rather than falsely marked done.
+Real browser defect found and fixed: `#/backup` overflowed at 320 px because the native file picker and its label were laid out horizontally. The presentation-only containment fix changed no Backup behavior, service/data ownership, storage, security logic, or route contract.
+
+Section G is now closed by repository evidence. Section H remains separate and still requires its broader responsive/accessibility/performance/PWA/device matrix.
 
 ## H. Responsive / accessibility / performance / PWA release gates
 
@@ -235,12 +232,13 @@ Checkpoint: `release/v4-whole-app-audit` @ `b92268b91cc479421bc43a7d86d072565707
 
 ## Current audit conclusion
 
-- The serialized Priority-1 V4 page/family queue is now closed with exact-SHA full-suite evidence through `release/v4-primary-family`.
+- The serialized Priority-1 V4 page/family queue is closed with exact-SHA full-suite evidence through `release/v4-primary-family`.
 - Home assignment/status states and the requested shortcut rail are explicitly closed with exact evidence.
 - Calendar, full Assignments page, Daily Journey, Progress/Grow and primary Home/Learn/Play/Grow/More coherence are certified.
-- Memory Meadow exact #38 behavior is certified without runtime changes because the implementation and accumulated tests already match the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
-- Couples Journey communication levels/self-assessment is certified at `release/v4-couples-journey` and the CEBOCB/Bisaya Reader preservation audit is now also certified; both named-flow acceptance items are closed.
-- The custom V4 artwork program is certified under Section F; remaining unused assets are audit-time choices rather than missing required integrations.
-- V4 is **not yet feature/acceptance complete** because whole-app polish, responsive/accessibility/PWA/device evidence, privacy/field gates and final RC/release gates remain.
+- Memory Meadow exact #38 behavior is certified against the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
+- Couples Journey communication levels/self-assessment and the CEBOCB/Bisaya Reader preservation requirement are certified.
+- The custom V4 artwork program is certified under Section F, and the final Games artwork/icon tranche is closed by `release/v4-games-art-final`.
+- The whole-app Section G polish/browser audit is now closed by `release/v4-whole-app-browser-audit`; one real 320 px Backup overflow was found and fixed during that audit.
+- V4 is **not yet release-ready** because Section H responsive/accessibility/performance/PWA/device evidence, Section I privacy/security/field gates, and Section J final RC/deployment gates remain.
 
 This file is release-blocking: V4 should not be declared complete merely because the general regression suite is green while unchecked requested acceptance items remain.
