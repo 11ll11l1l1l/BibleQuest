@@ -643,9 +643,25 @@ export function createApi() {
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: false })
         .limit(80);
-      const { data, error } = await withTimeout(request, 10000, 'Live Recordings took too long to load. Please try again.');
+      const { data, error } = await withTimeout(request, 10000, 'Videos took too long to load. Please try again.');
       if (error) throw error;
-      return (data || []).filter(row => String(row.youtube_url || '').includes('youtube.com/live/'));
+      return data || [];
+    },
+    async createVideo(payload) {
+      const client = await getClient();
+      const request = client.from('bible_media_library').insert(payload)
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type').single();
+      const { data, error } = await withTimeout(request, 10000, 'Adding this video took too long. Please try again.');
+      if (error) throw error;
+      return data;
+    },
+    async updateVideo(id, patch) {
+      const client = await getClient();
+      const request = client.from('bible_media_library').update(patch).eq('id', id)
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type').single();
+      const { data, error } = await withTimeout(request, 10000, 'Updating this video took too long. Please try again.');
+      if (error) throw error;
+      return data;
     }
   });
 

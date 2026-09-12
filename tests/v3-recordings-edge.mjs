@@ -18,7 +18,7 @@ let authenticated=false,mediaCalls=0,fail=false;
 const session={isAuthenticated:()=>authenticated};
 const media={async listLiveRecordings(){mediaCalls++;if(fail)throw new Error('simulated recordings failure');return[
   {id:'one',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Replay',featured:true},
-  {id:'bad',youtube_id:'bad!',youtube_url:'https://youtu.be/not-live',title:'Invalid source'},
+  {id:'bad',youtube_id:'bad!',youtube_url:'https://example.com/not-a-video',title:'Invalid source'},
   {id:'two',youtube_id:'ZyxWV987654',title:'Bible Study'},
   {id:'legacy',youtube_id:'',youtube_url:'https://www.youtube.com/live/Qwerty12345',title:'Legacy Live URL'}
 ]}};

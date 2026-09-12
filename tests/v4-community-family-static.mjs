@@ -2,9 +2,12 @@
 // The original Community tranche remains byte-exact except: the local
 // Couples owner, whose intentional Communication Journey evolution is now
 // governed by the dedicated V4 Couples Journey contracts (Couples Cloud
-// stays byte-locked); and Congregation Recognition, whose intentional icon
+// stays byte-locked); Congregation Recognition, whose intentional icon
 // restructuring (bare-text emoji -> stable data-award-code/data-badge-id
-// elements) is governed by the V4 whole-app audit contract instead.
+// elements) is governed by the V4 whole-app audit contract instead; and
+// Recordings, whose intentional merge with Media Library into one Videos
+// page (custom play/pause/seek controls retired, curation form added) is
+// governed by that feature's own tests, not byte-locked here.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -19,7 +22,6 @@ const preserved=[
   'src/features/team-center/index.js',
   'src/features/live-rooms/index.js',
   'src/features/media-library/index.js',
-  'src/features/recordings/index.js',
   'src/features/leaderboards/index.js',
   'src/features/encouragements/index.js'
 ];
@@ -77,7 +79,7 @@ const hooks={
   'src/features/team-center/index.js':['data-team-center-view','data-team-create','data-team-archive'],
   'src/features/live-rooms/index.js':['data-live-rooms-view','data-live-room-create','data-live-room-join','data-live-room-end'],
   'src/features/media-library/index.js':['data-media-library-page','data-media-open','data-media-play','data-media-stop'],
-  'src/features/recordings/index.js':['data-recordings-page','data-recording-select','data-recording-play','data-recording-stop'],
+  'src/features/recordings/index.js':['data-recordings-page','data-video-select','data-video-curator-toggle','data-video-add-form'],
   'src/features/congregation-recognition/index.js':['data-recognition-view','data-recognition-award','data-recognition-leaderboards'],
   'src/features/leaderboards/index.js':['data-leaderboards-view','data-leaderboard-period','data-leaderboard-lane'],
   'src/features/encouragements/index.js':['data-encouragements-view','data-send-encouragement','data-encouragements-back']

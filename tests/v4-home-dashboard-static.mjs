@@ -12,7 +12,11 @@ const css = fs.readFileSync(path.join(root, 'src', 'ui', 'home-v4.css'), 'utf8')
 
 // Every critical data hook and route action from the pre-redesign contract
 // must survive unchanged (Rule 1: no service/data change from a visual tranche).
-for (const hook of ['data-home-daily', 'data-open-daily', 'data-home-tutorial', 'data-open-tutorial', 'data-home-recordings', 'data-open-recordings', 'data-home-media', 'data-open-media', 'data-home-progress', 'data-home-xp', 'data-home-streak', 'data-home-activities', 'data-home-badges']) {
+// Note: data-home-media / data-open-media were retired when Live Recordings
+// and Media Library were merged into one Videos page (data-home-recordings /
+// data-open-recordings now cover both) - removing a duplicate destination
+// tile is intentional, not a preservation failure.
+for (const hook of ['data-home-daily', 'data-open-daily', 'data-home-tutorial', 'data-open-tutorial', 'data-home-recordings', 'data-open-recordings', 'data-home-progress', 'data-home-xp', 'data-home-streak', 'data-home-activities', 'data-home-badges']) {
   assert.ok(home.includes(hook), `Home must preserve the existing hook: ${hook}`);
 }
 for (const action of ['onMission?.()', 'onTutorial?.()', 'onRecordings?.()', 'onMedia?.()']) {
@@ -33,7 +37,7 @@ assert.ok(!/data-home-tutorial>[\s\S]{0,400}<h2>/.test(home), 'Tutorial must no 
 
 // Secondary tiles must still be real, labeled, accessible buttons — compact
 // is not an excuse to drop accessibility.
-const tileAriaLabels = ['Show BibleQuest tutorial', 'View live recordings', 'Browse media library'];
+const tileAriaLabels = ['Show BibleQuest tutorial', 'Watch worship and study videos'];
 for (const label of tileAriaLabels) {
   assert.ok(home.includes(label), `Secondary tile is missing its accessible label: "${label}"`);
 }

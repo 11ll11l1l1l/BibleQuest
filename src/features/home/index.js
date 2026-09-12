@@ -58,15 +58,9 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-recordings>
-          <button type="button" class="bq-home-tile-button" data-open-recordings aria-label="View live recordings">
+          <button type="button" class="bq-home-tile-button" data-open-recordings aria-label="Watch worship and study videos">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('video', { size: 20 })}</span>
-            <span class="bq-home-tile-text"><b>Live Recordings</b><small>Worship and study replays.</small></span>
-          </button>
-        </section>
-        <section class="bq-panel bq-home-tile" data-home-media>
-          <button type="button" class="bq-home-tile-button" data-open-media aria-label="Browse media library">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('library', { size: 20 })}</span>
-            <span class="bq-home-tile-text"><b>Media Library</b><small>Browse congregation media.</small></span>
+            <span class="bq-home-tile-text"><b>Videos</b><small>Worship and study videos.</small></span>
           </button>
         </section>
       </div>`,

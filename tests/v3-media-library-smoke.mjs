@@ -28,10 +28,13 @@ async function installHarness(page){
 async function desktop(){
   const page=await browser.newPage({viewport:{width:1280,height:900}});
   await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>mock player</title>'}));
-  let supabase=0;page.on('request',request=>{if(request.url().includes('supabase.co'))supabase++});
   await page.goto(BASE,{waitUntil:'networkidle'});
-  await page.locator('[data-open-media]').click();await page.waitForURL(/#\/media$/);await page.locator('h1',{hasText:'Sign in to browse congregation media'}).waitFor();
-  assert(supabase===0,'Guest Media Library route must not contact Supabase.');
+  // Note: the live /media route now serves the unified Videos page (the
+  // former Live Recordings + Media Library merge) - src/app/media-library.js
+  // and src/features/media-library/index.js remain a certified, tested
+  // internal owner (still exercised below via an isolated harness) but are
+  // no longer the live UI for any route. This test therefore verifies the
+  // component directly instead of through real-app navigation.
 
   await installHarness(page);const root=page.locator('#media-library-test-root');await root.locator('[data-media-open]').first().waitFor();
   assert(await root.locator('[data-media-open]').count()===2,'Media Library did not browse two published items.');
