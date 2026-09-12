@@ -75,8 +75,8 @@ assert.ok(!feature.includes('esc(error?.message'),'Assignments load failure must
 assert.ok(!feature.includes('esc(review.error'),'Assignments response-review failure must not display arbitrary service error details.');
 assert.ok(feature.includes('Assignments could not load.')&&feature.includes('Response status could not load.')&&feature.includes('Audience directory could not load.')&&feature.includes('Assignment could not be published.')&&feature.includes('Task could not be completed.'),'Assignments must provide bounded generic failure messages.');
 
-assert.ok(feature.includes('They cannot see one another’s answer text.'),'Peer response privacy boundary must remain explicit.');
-assert.ok(feature.includes('Submitted answer text is available only to authorized ministry roles.'),'Ministry-only answer visibility must remain explicit.');
+assert.ok(feature.includes('You cannot see whether other members have responded, their names, or their answers.'),'Self-only response privacy boundary (Phase 1) must remain explicit for members.');
+assert.ok(feature.includes('is private to authorized ministry roles')||feature.includes('visible only to authorized ministry roles'),'Ministry-only answer visibility must remain explicit.');
 assert.ok(feature.includes('Private study notes and other personal BibleQuest data stay outside Assignments.'),'Private study data boundary must remain explicit.');
 
 assert.ok(workflow.includes('tests/v4-assignments-static.mjs'),'Accumulated edge CI must run the V4 Assignments static acceptance contract.');
