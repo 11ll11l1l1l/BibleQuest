@@ -89,9 +89,11 @@ Implemented:
 
 Live backend state:
 
-- production `bq-admin-ops` is deployed at OPS_VERSION 6 and matches the repository action surface, including `change_email`;
+- production `bq-admin-ops` is deployed with repository contract `OPS_VERSION = 6` and matches the repository action surface, including `change_email`;
+- the Supabase deployment revision currently reports version 7, but the deployed source still declares `OPS_VERSION = 6`; inspection found no action-surface drift from the official repository implementation;
 - Supabase-side authorization/grant structure has been inspected;
-- repository Section I and accumulated regressions are green.
+- repository Section I and accumulated regressions are green;
+- read-only production audit inspection on 2026-09-13 found no recorded `suspend_account`, `reactivate_account`, `force_sign_out`, `set_temp_password`, or `change_email` events, confirming the real authenticated emergency matrix remains unexecuted rather than silently closed.
 
 Release blocker still open: suspend/reactivate/force-sign-out/temp-password/email-change and their resulting session revocation/audit records have **not** all been exercised through legitimate real authenticated owner + target sessions. Static tests, SQL role impersonation, or source inspection do not substitute for this requirement.
 
@@ -146,13 +148,16 @@ Completed evidence:
 - Phase 1 live self-vs-ministry assignment response-presence RLS verification;
 - Phase 3 live member-vs-ministry presence verification;
 - live role-demotion/privilege-loss database behavior verified transactionally and rolled back safely;
-- production `bq-admin-ops` OPS_VERSION 6 deployed;
+- production `bq-admin-ops` repository contract `OPS_VERSION = 6` deployed;
 - pre-RC1 Section I isolation regression remains green;
 - exact integrated application SHA `4f908ad8...` passed the complete accumulated static/security/edge/browser/mobile automation;
 - whole-app deep-route/localization/state matrix is green;
 - Cloudflare exact-SHA preview deployment is green;
 - presence and poll privileged aggregate implementations were moved out of the exposed public schema and live Security Advisor warnings for these functions were cleared;
-- transaction-only live poll aggregate test returned correct totals with zero residual test poll/vote rows.
+- transaction-only live poll aggregate test returned correct totals with zero residual test poll/vote rows;
+- production topology rechecked on 2026-09-13: one active congregation, six active congregation memberships, seven active app-access rows and eight Auth users; there is still no legitimate second populated congregation for Gate C.
+
+Phase 6 evidence is tracked in `V4_PHASE6_FIELD_EVIDENCE.json`. The companion validator `scripts/validate-v4-phase6-field-evidence.mjs` rejects malformed/secret-bearing evidence and, in production-complete mode, fails unless Gates A–F are all explicit PASS records tied to the certified application SHA. The `BibleQuest V4 Phase 6 field evidence gate` workflow runs schema/readiness validation on V4 integration PRs and requires full A–F completion on PRs targeting `main`. This workflow is a release-control guard only: it cannot manufacture a field PASS, and pending entries remain release blockers.
 
 Still release-blocking:
 
@@ -169,17 +174,17 @@ These gates must not be replaced by headless/emulated browser evidence when the 
 
 Do not freeze RC2 or promote to `main` yet.
 
-Release-control enforcement finding (2026-09-13): repository `main` is currently unprotected and the repository has no GitHub ruleset. The six main-target workflow suites have been proven green through verification-only PR #167, but GitHub does not currently require those checks server-side before a direct `main` update. **Before any real V4 production promotion, a repository administrator must enable branch protection or an equivalent repository ruleset for `main` that requires PR-based changes and the applicable promotion checks. Direct `main` updates remain prohibited by the V4 release process until that enforcement is active.** The current development connector does not expose GitHub repository-administration writes, so this setting cannot be closed by application code or by weakening CI.
+Release-control enforcement finding (2026-09-13): repository `main` is currently unprotected and the repository has no GitHub ruleset. The six main-target workflow suites have been proven green through verification-only PR #167, but GitHub does not currently require those checks server-side before a direct `main` update. **Before any real V4 production promotion, a repository administrator must enable branch protection or an equivalent repository ruleset for `main` that requires PR-based changes and the applicable promotion checks, including the Phase 6 field-evidence gate. Direct `main` updates remain prohibited by the V4 release process until that enforcement is active.** The current development connector does not expose GitHub repository-administration writes, so this setting cannot be closed by application code or by weakening CI.
 
 Once all Phase 6 blockers above are legitimately closed and the `main` enforcement requirement above is active:
 
-1. reconcile this file and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` against the final integration head;
+1. reconcile this file and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` against the final integration head and complete `V4_PHASE6_FIELD_EVIDENCE.json` with sanitized PASS evidence for A–F;
 2. freeze a new exact candidate from `v4/modern-ui-overhaul` (normally `release/v4-rc2` or later);
-3. run build, architecture, complete accumulated static/security/edge/browser/mobile, Section H, Section I, protected-page, whole-app and PWA automation on that exact candidate/application tree;
+3. run build, architecture, complete accumulated static/security/edge/browser/mobile, Section H, Section I, protected-page, whole-app, PWA and Phase-6 field-evidence automation on that exact candidate/application tree;
 4. deploy the exact candidate to the authoritative `mybiblequest` Cloudflare preview/staging path and verify build identity;
 5. run critical-route/runtime/offline/reconnect staging smoke;
 6. attach/record the completed real-session and physical-device field evidence;
-7. promote only the exact certified candidate to protected `main` through the required PR path;
+7. promote only the exact certified candidate to protected `main` through the required PR path; the Phase-6 evidence workflow must pass in production-complete mode;
 8. verify the authoritative `mybiblequest` Cloudflare production build identity/bytes and production browser behavior;
 9. preserve the known-good V3 rollback reference until post-promotion acceptance is complete.
 
@@ -192,7 +197,7 @@ The repository currently also reports a legacy/secondary Cloudflare Pages check 
 - Phase 3: implemented and live database/RLS verified.
 - Phase 4: intentionally skipped.
 - Phase 5: closed; accumulated exact-head automation green.
-- Phase 6: active; automated/in-database portions substantially closed, but authenticated-session, cross-congregation and physical-device gates remain.
+- Phase 6: active; automated/in-database portions substantially closed, but authenticated-session, cross-congregation and physical-device gates remain; the new evidence workflow fails production promotion unless all six field gates are explicit PASS.
 - New RC freeze: blocked.
 - Production `main`/Cloudflare promotion: blocked by Phase 6 and by missing server-side `main` protection/ruleset enforcement.
 - V4 is **not yet production-release-certified**.
