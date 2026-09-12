@@ -40,6 +40,6 @@ jobs:
       - name: Validate field-evidence schema and secret hygiene
         run: node scripts/validate-v4-phase6-field-evidence.mjs
 
-      - name: Require all six Phase 6 field gates before main promotion
+      - name: Require all seven Phase 6 field gates before main promotion
         if: ${{ github.base_ref == 'main' }}
         run: node scripts/validate-v4-phase6-field-evidence.mjs --require-complete
