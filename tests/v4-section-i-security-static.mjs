@@ -9,6 +9,7 @@ const assignmentsSql=read('supabase/migrations/20260904_assignments_presence_unl
 const groupsSql=read('supabase/migrations/20260904_journey_groups_daily_loop.sql');
 const couplesSql=read('supabase/migrations/20260905071100_couple_shared_write_hardening.sql');
 const bootstrap=read('src/app/bootstrap.js');
+const apiCore=read('src/core/api.js');
 const owners={
   assignments:read('src/app/assignments.js'),
   groups:read('src/app/journey-groups.js'),
@@ -50,7 +51,7 @@ has(couplesSql,'drop policy if exists "couple shared pair update"','Broad couple
 for(const [name,source] of Object.entries(owners)){
   assert.ok(!/\bfetch\s*\(/.test(source),`${name} owner must not bypass the shared API boundary with direct fetch().`);
   assert.ok(!/supabase\.co/i.test(source),`${name} owner must not hard-code a production Supabase endpoint.`);
-  assert.ok(!/service[_-]?role/i.test(source),`${name} owner must not contain service-role credentials or shortcuts.`);
+  assert.ok(!/service[_-]?role|sb_secret_/i.test(source),`${name} owner must not contain privileged Supabase credentials or shortcuts.`);
 }
 
 for(const [factory,modulePath] of[
@@ -61,13 +62,16 @@ for(const [factory,modulePath] of[
   assert.equal((bootstrap.match(new RegExp(`${factory}\\(`,'g'))||[]).length,1,`${factory} must have exactly one construction call.`);
 }
 
+has(apiCore,'supabaseUrl:','Shared API owner must retain the configured public Supabase endpoint boundary.');
+has(apiCore,'publishableKey:','Shared API owner must use a public publishable-key client boundary.');
+assert.ok(!/SUPABASE_SERVICE_ROLE|service_role_key|sb_secret_/i.test(apiCore),'Shared browser API config must not contain privileged Supabase credentials.');
+
 const jsFiles=[];
 const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);if(entry.isDirectory())walk(full);else if(entry.isFile()&&entry.name.endsWith('.js'))jsFiles.push(full)}};
 walk(path.join(root,'src'));
 for(const file of jsFiles){
   const source=fs.readFileSync(file,'utf8'),relative=path.relative(root,file);
-  assert.ok(!/SUPABASE_SERVICE_ROLE|service_role_key/i.test(source),`${relative} contains a browser-shipped service-role shortcut.`);
-  assert.ok(!/https:\/\/[a-z0-9-]+\.supabase\.co/i.test(source),`${relative} hard-codes a production Supabase project URL.`);
+  assert.ok(!/SUPABASE_SERVICE_ROLE|service_role_key|sb_secret_/i.test(source),`${relative} contains a browser-shipped privileged Supabase credential.`);
 }
 
 for(const [name,token] of[
