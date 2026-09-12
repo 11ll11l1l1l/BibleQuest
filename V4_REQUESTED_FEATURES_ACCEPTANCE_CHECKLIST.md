@@ -107,7 +107,7 @@ Certified protected-page checkpoint: focused audit run `34688168693` passed depl
 - [x] Private/cloud Notes remain intact.
 - [x] Transform remains intact.
 - [x] Personality/Psychometrics remain intact.
-- [x] Accessibility settings remain intact.
+- [x] Accessibility settings remains intact.
 - [x] Admin Console remains intact.
 - [x] Admin Operations remains intact.
 - [x] Content Review remains intact.
@@ -176,46 +176,54 @@ Exact-SHA runs:
 
 Real browser defect found and fixed: `#/backup` overflowed at 320 px because the native file picker and its label were laid out horizontally. The presentation-only containment fix changed no Backup behavior, service/data ownership, storage, security logic, or route contract.
 
-Section G is now closed by repository evidence. Section H remains separate and still requires its broader responsive/accessibility/performance/PWA/device matrix.
+Section G is closed by repository evidence.
 
 ## H. Responsive / accessibility / performance / PWA release gates
 
-- [ ] Verify 320 px viewport.
-- [ ] Verify 360 px viewport.
-- [ ] Verify 390 px viewport.
-- [ ] Verify 412 px viewport.
-- [ ] Verify 430 px viewport.
-- [ ] Verify tablet layouts.
-- [ ] Verify desktop layouts.
-- [ ] Verify portrait/landscape/orientation behavior where relevant.
-- [ ] Verify safe-area behavior.
-- [ ] Verify keyboard-only operation.
-- [ ] Verify visible/usable focus states.
-- [ ] Verify screen-reader semantics on major workflows.
-- [ ] Verify reduced-motion preference.
-- [ ] Review asset/performance cost and avoid unnecessary regressions.
-- [ ] Verify installed-PWA behavior.
-- [ ] Verify offline behavior.
-- [ ] Verify recovery/reconnect behavior.
+Automated/browser certification: `release/v4-section-h` @ exact tested candidate `d99965db288340d61cebfb3029d807dabb6b8490`; dedicated run `34692818724`, whole-app run `34692818768`, protected-page run `34692818740`, final Games run `34692818742`, and full accumulated run `34692817888` all passed. See `V4_SECTION_H_CERTIFICATION.md`.
+
+- [x] Verify 320 px viewport.
+- [x] Verify 360 px viewport.
+- [x] Verify 390 px viewport.
+- [x] Verify 412 px viewport.
+- [x] Verify 430 px viewport.
+- [x] Verify tablet layouts.
+- [x] Verify desktop layouts.
+- [x] Verify portrait/landscape/orientation behavior where relevant.
+- [x] Verify safe-area behavior.
+- [x] Verify keyboard-only operation.
+- [x] Verify visible/usable focus states.
+- [x] Verify screen-reader semantics on major workflows. Browser accessibility-name/landmark/focus semantics are certified; this does not claim physical TalkBack/VoiceOver field testing.
+- [x] Verify reduced-motion preference.
+- [x] Review asset/performance cost and avoid unnecessary regressions.
+- [ ] Verify installed-PWA behavior on a real device.
+- [x] Verify offline behavior.
+- [x] Verify recovery/reconnect behavior.
 - [ ] Verify physical Android Chrome at 100% zoom.
 - [ ] Verify physical Android Brave at 100% zoom.
 
+The three unchecked items are intentionally physical-device field gates and must not be inferred from headless Chromium or responsive emulation.
+
 ## I. Security, privacy and data integrity release gates
 
-- [ ] Preserve authentication boundaries.
-- [ ] Preserve RLS/security rules.
-- [ ] Preserve account isolation.
-- [ ] Verify multi-account isolation for Assignments.
-- [ ] Verify multi-account isolation for Groups/Teams.
-- [ ] Verify multi-account isolation for Couples.
-- [ ] Verify multi-account isolation for Live Rooms.
-- [ ] No duplicate state/API owners introduced by V4 presentation work.
-- [ ] No production database shortcuts or weakened privacy controls.
+Automated/security certification: `release/v4-section-i` @ exact tested candidate `9f8c530668b2d9cbaa0cca226750fe9278f0a24f`; full accumulated run `34693803229`, dedicated Section I run `34693803309`, Section H run `34693803249`, whole-app run `34693803222`, and protected-page run `34693802698` all passed. See `V4_SECTION_I_SECURITY_PRIVACY_CERTIFICATION.md`.
+
+- [x] Preserve authentication boundaries.
+- [x] Preserve RLS/security rules.
+- [x] Preserve account isolation.
+- [x] Verify multi-account isolation for Assignments.
+- [x] Verify multi-account isolation for Groups/Teams.
+- [x] Verify multi-account isolation for Couples.
+- [x] Verify multi-account isolation for Live Rooms.
+- [x] No duplicate state/API owners introduced by V4 presentation work.
+- [x] No production database shortcuts or weakened privacy controls.
+
+Section I found and fixed real stale-account in-memory state risks in Assignments, Journey Groups, Team Center, Couples and Live Rooms without changing Supabase schema/RLS/Edge Functions or introducing a new API/state owner.
 
 ## J. Final V4 release candidate / deployment gates
 
-- [ ] Reconcile this checklist against `DEVELOPMENT_PLAN_V4.md` and issue #124 before declaring feature-complete.
-- [ ] Synchronize `V4_ACTIVE_STATUS.md` with current repository evidence before RC freeze.
+- [x] Reconcile this checklist against `DEVELOPMENT_PLAN_V4.md` and issue #124 before declaring feature-complete. Reconciled 2026-09-12 after Section I; no additional product tranche is required before RC convergence.
+- [x] Synchronize `V4_ACTIVE_STATUS.md` with current repository evidence before RC freeze.
 - [ ] Freeze one exact V4 release-candidate SHA.
 - [ ] Run `bash build.sh` successfully on the exact candidate.
 - [ ] Run architecture validation on the exact candidate.
@@ -238,7 +246,9 @@ Section G is now closed by repository evidence. Section H remains separate and s
 - Memory Meadow exact #38 behavior is certified against the requested card counts, breakpoint, delays, locking and stars/coins/no-XP rules.
 - Couples Journey communication levels/self-assessment and the CEBOCB/Bisaya Reader preservation requirement are certified.
 - The custom V4 artwork program is certified under Section F, and the final Games artwork/icon tranche is closed by `release/v4-games-art-final`.
-- The whole-app Section G polish/browser audit is now closed by `release/v4-whole-app-browser-audit`; one real 320 px Backup overflow was found and fixed during that audit.
-- V4 is **not yet release-ready** because Section H responsive/accessibility/performance/PWA/device evidence, Section I privacy/security/field gates, and Section J final RC/deployment gates remain.
+- The whole-app Section G polish/browser audit is closed by `release/v4-whole-app-browser-audit`.
+- Section H automated/browser gates are closed; only the three explicit real-device/installed-PWA field checks remain open.
+- Section I security/privacy/data-integrity gates are closed by `release/v4-section-i` with exact-SHA full-suite evidence.
+- V4 is **feature-complete for final RC convergence but not yet release-ready**. Remaining release blockers are Section J exact-RC verification, preview/staging/production evidence, preservation of the V3 rollback reference, and the three real-device/installed-PWA field checks.
 
-This file is release-blocking: V4 should not be declared complete merely because the general regression suite is green while unchecked requested acceptance items remain.
+This file is release-blocking: V4 must not be declared complete while the remaining unchecked Section H/J field and deployment items remain.
