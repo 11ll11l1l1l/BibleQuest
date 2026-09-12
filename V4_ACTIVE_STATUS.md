@@ -1,3 +1,17 @@
+## Phase 1 — Assignment privacy tightening (self-only for members)
+
+**Verification finding, before any code changed:** the alarming "Member B can read Member A's private answer" scenario proposed in the new governing plan was checked directly against the live migrations, not assumed true. `bible_assignment_progress` (the table holding actual answer text + leader_feedback) was already correctly restricted by RLS to the author plus verified ministry roles (facilitator/leader/pastor/admin), and the client already gated the private-answer render block behind the same role check. **No confirmed leak of actual answer content or leader feedback exists or existed.**
+
+What genuinely was peer-visible to ordinary members, exactly as the governing plan itself described: other members' display name + "Completed" + completion date, via `bible_assignment_response_presence` (a table with no answer/feedback columns at all). This was intentional prior design, not a bypass.
+
+**Implemented as a real, deliberate tightening per the new requirement** ("ordinary members see only their own assignment state; nothing about other members' responses"):
+- Checkpoint: `release/v4-phase1-assignment-privacy`, exact-SHA verified, full accumulated suite green.
+- New migration `20260912090000_assignment_presence_self_only.sql`: RLS on `bible_assignment_response_presence` now requires `user_id = auth.uid()` OR a verified ministry role in that assignment's congregation. Ordinary members can no longer see any other member's presence row.
+- `src/features/assignments/index.js`: `responseReviewView` now returns nothing at all for members (`if(!readOnly)return ''`) — no names, no completion count, no error state, nothing. Section renamed "Member Responses" and clearly scoped to ministry roles only. Privacy-boundary disclosure text rewritten to accurately describe the new self-only contract.
+- 3 tests added/updated: a new edge test proving members get an empty view in every review state (idle/loading/error/ready), a new RLS static contract locking the policy text, and 2 pre-existing tests updated where they asserted the now-superseded peer-visible wording (found via running the *complete* registered edge/smoke suite locally before each gate attempt, not a partial spot-check - this caught both stale-assertion regressions before they reached a wasted CI run... one still slipped through to a live gate once and was fixed from the CI failure directly).
+
+**Not yet done from the full 7-phase plan:** Phase 0's two-account live reproduction test (moot given the verification finding above, but the account-switching/role-demotion/cross-congregation security test matrix from Phase 1's own requirements list is still owed as dedicated test coverage beyond what's implemented here). Phases 2-7 (Admin emergency console, 30-minute presence indicator, full Leader Center, Tutorial/Help rewrite, integrated test matrix, RC2 release) are not started.
+
 # BibleQuest V4 Active Development Status
 
 Updated: 2026-09-12 JST
