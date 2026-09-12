@@ -142,22 +142,32 @@ Every overlay that hides an inline SVG restores it under `@media (forced-colors:
 
 ## G. Whole-app V4 polish audit
 
-- [ ] Audit loading states.
-- [ ] Audit empty states.
-- [ ] Audit error states.
-- [ ] Audit success/completion states.
-- [ ] Audit signed-out states.
-- [ ] Audit offline/recovery states.
-- [ ] Audit icon consistency.
-- [ ] Audit typography hierarchy.
-- [ ] Audit spacing and card/surface consistency.
-- [ ] Audit clipping and document overflow.
-- [ ] Audit layout shifts.
-- [ ] Audit Japanese/English/Cebuano text expansion and localization resilience.
-- [ ] Audit micro-interactions/transitions.
-- [ ] Audit reduced-motion behavior.
-- [ ] Audit placeholder/legacy artwork still visible anywhere in maintained routes.
-- [ ] Audit navigation/IA so every maintained feature remains reachable and intuitive.
+- [ ] Audit loading states. (Requires browser rendering; Section H's job. Structurally present per spot-check but not systematically verified.)
+- [ ] Audit empty states. (Same as above.)
+- [ ] Audit error states. (Same as above.)
+- [ ] Audit success/completion states. (Same as above.)
+- [ ] Audit signed-out states. (Same as above.)
+- [ ] Audit offline/recovery states. (Same as above.)
+- [ ] Audit icon consistency. **Partially fixed:** Community hub's 7 emoji category icons wired to real custom art. **Still open:** Games (13+8 emoji, largest remaining surface, needs its own tranche — markup too dense for a safe overlay), Couples Family/Cloud, Notification Center, Congregation Recognition, Encouragements. Full detail and priority order in `V4_UI_WHOLE_APP_AUDIT.md`.
+- [x] Audit typography hierarchy. **Fixed:** Community and Couples Journey were missing the shared display-font h1 rule that the other 18 family CSS files already have. Both corrected.
+- [x] Audit spacing and card/surface consistency. No gaps found in static review.
+- [ ] Audit clipping and document overflow. **Gap documented, not fixed:** the automated overflow test only covers the 5 primary nav routes, not deep-linked feature pages (Community, Couples Journey, Congregation, Admin Console, etc.). No known overflow bug, but coverage is narrower than previously assumed. Section H should extend this.
+- [ ] Audit layout shifts. (Requires browser rendering; Section H's job.)
+- [ ] Audit Japanese/English/Cebuano text expansion and localization resilience. (Requires browser rendering with real translated strings; Section H's job.)
+- [x] Audit micro-interactions/transitions. No gaps found in static review.
+- [x] Audit reduced-motion behavior. **Confirmed clean:** all 87 CSS files checked for transition/animation usage; zero files lack reduced-motion coverage (either a local guard or the certified global catch-all in v4-foundation.css).
+- [ ] Audit placeholder/legacy artwork still visible anywhere in maintained routes. **Partially fixed** (see icon consistency above). Full emoji/glyph inventory across all 30 affected files, with a working priority order for what to fix next, is in `V4_UI_WHOLE_APP_AUDIT.md`.
+- [x] Audit navigation/IA so every maintained feature remains reachable and intuitive. **Confirmed clean:** re-verified the 3-tap rule after the Community family certification — Community hub and all 7 of its sub-destinations remain within 3 taps of Home, no regression.
+
+### Section G evidence
+
+Checkpoint: `release/v4-whole-app-audit` @ `b92268b91cc479421bc43a7d86d0725657078282` (see `V4_UI_WHOLE_APP_AUDIT.md` for the exact SHA and full findings). Full accumulated suite green.
+
+**Real fixes made:** Community hub emoji icons wired to real art; 2 missing typography-hierarchy gaps closed (Community, Couples Journey h1 headings).
+
+**Real gaps found and honestly recorded, not fixed this pass:** Games still shows emoji chrome (known deferral, confirmed still true, biggest remaining surface); 4 more features have unwired emoji category icons with a stated priority order; document-overflow automated coverage is narrower than assumed (5 routes, not all routes).
+
+**What could not be honestly audited without a real browser:** loading/empty/error/success/signed-out/offline states, layout shift, and localization text-expansion — these need Section H's device/browser verification, not static code review, and are left open rather than falsely marked done.
 
 ## H. Responsive / accessibility / performance / PWA release gates
 
