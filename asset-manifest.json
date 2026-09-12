@@ -1,0 +1,4327 @@
+{
+  "schema": 1,
+  "asset_root": "assets/v4",
+  "crop_order": "left-to-right, top-to-bottom",
+  "records": [
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "game-quick-recall",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        0,
+        119,
+        314,
+        404
+      ],
+      "output": "assets/v4/games/game-quick-recall.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "game-context-challenge",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        312,
+        119,
+        628,
+        404
+      ],
+      "output": "assets/v4/games/game-context-challenge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "game-mixed-quest",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        626,
+        119,
+        941,
+        404
+      ],
+      "output": "assets/v4/games/game-mixed-quest.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "game-per-book-recall",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        939,
+        119,
+        1254,
+        404
+      ],
+      "output": "assets/v4/games/game-per-book-recall.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "game-character-detective",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        0,
+        402,
+        314,
+        687
+      ],
+      "output": "assets/v4/games/game-character-detective.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "game-timeline",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        312,
+        402,
+        629,
+        687
+      ],
+      "output": "assets/v4/games/game-timeline.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "game-play-together",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        627,
+        402,
+        947,
+        687
+      ],
+      "output": "assets/v4/games/game-play-together.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "game-memory-meadow",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        945,
+        402,
+        1254,
+        687
+      ],
+      "output": "assets/v4/games/game-memory-meadow.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "game-recall-deck",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        0,
+        685,
+        314,
+        958
+      ],
+      "output": "assets/v4/games/game-recall-deck.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "game-clue",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        312,
+        685,
+        628,
+        958
+      ],
+      "output": "assets/v4/games/game-clue.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "game-correct",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        626,
+        685,
+        941,
+        958
+      ],
+      "output": "assets/v4/games/game-correct.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "game-review-this-one",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        939,
+        685,
+        1254,
+        958
+      ],
+      "output": "assets/v4/games/game-review-this-one.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "game-winner-trophy",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        0,
+        956,
+        314,
+        1254
+      ],
+      "output": "assets/v4/games/game-winner-trophy.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "game-scoreboard",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        312,
+        956,
+        628,
+        1254
+      ],
+      "output": "assets/v4/games/game-scoreboard.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "game-next",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        626,
+        956,
+        941,
+        1254
+      ],
+      "output": "assets/v4/games/game-next.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S03",
+      "sheet_title": "BQ_S03_GAMES",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "game-play-again",
+      "source": "bible_game_icons_sprite_sheet.png",
+      "source_sha256": "396660770190843da287cf8779716a8e80bc8352383cf3d16189a228363aa774",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 119,
+      "crop_box": [
+        939,
+        956,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/games/game-play-again.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "world-creation",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        0,
+        113,
+        314,
+        399
+      ],
+      "output": "assets/v4/bible-world/world-creation.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "world-patriarchs",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        312,
+        113,
+        628,
+        399
+      ],
+      "output": "assets/v4/bible-world/world-patriarchs.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "world-exodus",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        626,
+        113,
+        941,
+        399
+      ],
+      "output": "assets/v4/bible-world/world-exodus.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "world-kingdom",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        939,
+        113,
+        1254,
+        399
+      ],
+      "output": "assets/v4/bible-world/world-kingdom.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "world-wisdom",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        0,
+        397,
+        314,
+        684
+      ],
+      "output": "assets/v4/bible-world/world-wisdom.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "world-prophets",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        312,
+        397,
+        628,
+        684
+      ],
+      "output": "assets/v4/bible-world/world-prophets.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "world-gospels",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        626,
+        397,
+        941,
+        684
+      ],
+      "output": "assets/v4/bible-world/world-gospels.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "world-early-church",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        939,
+        397,
+        1254,
+        684
+      ],
+      "output": "assets/v4/bible-world/world-early-church.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "world-letters",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        0,
+        682,
+        314,
+        945
+      ],
+      "output": "assets/v4/bible-world/world-letters.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "world-next-marker",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        312,
+        682,
+        628,
+        945
+      ],
+      "output": "assets/v4/bible-world/world-next-marker.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "world-explored",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        626,
+        682,
+        941,
+        945
+      ],
+      "output": "assets/v4/bible-world/world-explored.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "world-unexplored",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        939,
+        682,
+        1254,
+        945
+      ],
+      "output": "assets/v4/bible-world/world-unexplored.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "world-map",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        0,
+        943,
+        332,
+        1254
+      ],
+      "output": "assets/v4/bible-world/world-map.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "world-route-scroll",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        330,
+        943,
+        628,
+        1254
+      ],
+      "output": "assets/v4/bible-world/world-route-scroll.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "world-compass",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        626,
+        943,
+        941,
+        1254
+      ],
+      "output": "assets/v4/bible-world/world-compass.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S05",
+      "sheet_title": "BQ_S05_BIBLE_WORLD",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "world-badge",
+      "source": "bible_world_sakura_icon_collection.png",
+      "source_sha256": "28b3d4753ba809305838ff7a6fb943d6719f03ba629155300110f8857319c3a4",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 113,
+      "crop_box": [
+        939,
+        943,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/bible-world/world-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "brand-mark",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        0,
+        121,
+        328,
+        405
+      ],
+      "output": "assets/v4/core/brand-mark.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "brand-mark-mini",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        326,
+        121,
+        628,
+        405
+      ],
+      "output": "assets/v4/core/brand-mark-mini.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "app-icon",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        626,
+        121,
+        941,
+        405
+      ],
+      "output": "assets/v4/core/app-icon.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "nav-home",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        939,
+        121,
+        1254,
+        405
+      ],
+      "output": "assets/v4/core/nav-home.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "nav-learn",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        0,
+        403,
+        317,
+        688
+      ],
+      "output": "assets/v4/core/nav-learn.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "nav-play",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        315,
+        403,
+        631,
+        688
+      ],
+      "output": "assets/v4/core/nav-play.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "nav-grow",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        629,
+        403,
+        941,
+        688
+      ],
+      "output": "assets/v4/core/nav-grow.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "nav-more",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        939,
+        403,
+        1254,
+        688
+      ],
+      "output": "assets/v4/core/nav-more.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "account",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        0,
+        686,
+        314,
+        978
+      ],
+      "output": "assets/v4/core/account.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "notifications",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        312,
+        686,
+        628,
+        978
+      ],
+      "output": "assets/v4/core/notifications.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "streak-flame",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        626,
+        686,
+        941,
+        978
+      ],
+      "output": "assets/v4/core/streak-flame.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "xp",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        939,
+        686,
+        1254,
+        978
+      ],
+      "output": "assets/v4/core/xp.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "coin",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        0,
+        976,
+        321,
+        1254
+      ],
+      "output": "assets/v4/core/coin.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "privacy-shield",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        319,
+        976,
+        628,
+        1254
+      ],
+      "output": "assets/v4/core/privacy-shield.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "cloud-sync",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        626,
+        976,
+        941,
+        1254
+      ],
+      "output": "assets/v4/core/cloud-sync.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S01",
+      "sheet_title": "BQ_S01_CORE_NAV_STATUS",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "device-local",
+      "source": "biblequest_core_navigation_icon_set.png",
+      "source_sha256": "9fc10f12c930b53190e3393aac0dd643bbe099bf37df16bed8465906282908aa",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 121,
+      "crop_box": [
+        939,
+        976,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/core/device-local.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "ministry-hub",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        0,
+        130,
+        314,
+        422
+      ],
+      "output": "assets/v4/ministry-more/ministry-hub.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "assignments",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        312,
+        130,
+        628,
+        422
+      ],
+      "output": "assets/v4/ministry-more/assignments.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "workspace",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        626,
+        130,
+        941,
+        422
+      ],
+      "output": "assets/v4/ministry-more/workspace.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "notification-center",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        939,
+        130,
+        1254,
+        422
+      ],
+      "output": "assets/v4/ministry-more/notification-center.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "content-review",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        0,
+        420,
+        326,
+        686
+      ],
+      "output": "assets/v4/ministry-more/content-review.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "moderation",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        324,
+        420,
+        628,
+        686
+      ],
+      "output": "assets/v4/ministry-more/moderation.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "report-content",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        626,
+        420,
+        941,
+        686
+      ],
+      "output": "assets/v4/ministry-more/report-content.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "backup",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        939,
+        420,
+        1254,
+        686
+      ],
+      "output": "assets/v4/ministry-more/backup.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "install-app",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        0,
+        684,
+        314,
+        952
+      ],
+      "output": "assets/v4/ministry-more/install-app.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "accessibility",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        312,
+        684,
+        628,
+        952
+      ],
+      "output": "assets/v4/ministry-more/accessibility.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "account-settings",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        626,
+        684,
+        941,
+        952
+      ],
+      "output": "assets/v4/ministry-more/account-settings.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "security",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        939,
+        684,
+        1254,
+        952
+      ],
+      "output": "assets/v4/ministry-more/security.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "admin-console",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        0,
+        950,
+        320,
+        1254
+      ],
+      "output": "assets/v4/ministry-more/admin-console.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "admin-operations",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        318,
+        950,
+        628,
+        1254
+      ],
+      "output": "assets/v4/ministry-more/admin-operations.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "analytics",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        626,
+        950,
+        941,
+        1254
+      ],
+      "output": "assets/v4/ministry-more/analytics.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S08",
+      "sheet_title": "BQ_S08_MINISTRY_MORE",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "help-support",
+      "source": "biblequest_ministry_icon_grid.png",
+      "source_sha256": "1cc34a8946360daabb21997497ba8806bafa46f00b826f98e708497c493e4106",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 130,
+      "crop_box": [
+        939,
+        950,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/ministry-more/help-support.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "memory-card-back",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        114,
+        314,
+        400
+      ],
+      "output": "assets/v4/memory-meadow/memory-card-back.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "memory-fox",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        114,
+        628,
+        400
+      ],
+      "output": "assets/v4/memory-meadow/memory-fox.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "memory-panda",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        114,
+        941,
+        400
+      ],
+      "output": "assets/v4/memory-meadow/memory-panda.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "memory-frog",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        114,
+        1254,
+        400
+      ],
+      "output": "assets/v4/memory-meadow/memory-frog.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "memory-monkey",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        398,
+        314,
+        678
+      ],
+      "output": "assets/v4/memory-meadow/memory-monkey.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "memory-lion",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        398,
+        628,
+        678
+      ],
+      "output": "assets/v4/memory-meadow/memory-lion.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "memory-rabbit",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        398,
+        941,
+        678
+      ],
+      "output": "assets/v4/memory-meadow/memory-rabbit.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "memory-tiger",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        398,
+        1254,
+        678
+      ],
+      "output": "assets/v4/memory-meadow/memory-tiger.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "memory-koala",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        676,
+        314,
+        940
+      ],
+      "output": "assets/v4/memory-meadow/memory-koala.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "memory-match",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        676,
+        628,
+        940
+      ],
+      "output": "assets/v4/memory-meadow/memory-match.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "memory-mismatch",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        676,
+        941,
+        940
+      ],
+      "output": "assets/v4/memory-meadow/memory-mismatch.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "memory-complete-medal",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        676,
+        1254,
+        940
+      ],
+      "output": "assets/v4/memory-meadow/memory-complete-medal.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "reward-star",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        938,
+        314,
+        1254
+      ],
+      "output": "assets/v4/memory-meadow/reward-star.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "reward-coin",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        938,
+        628,
+        1254
+      ],
+      "output": "assets/v4/memory-meadow/reward-coin.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "memory-all-friends",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        938,
+        941,
+        1254
+      ],
+      "output": "assets/v4/memory-meadow/memory-all-friends.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S04",
+      "sheet_title": "BQ_S04_MEMORY_MEADOW",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "memory-hidden-card",
+      "source": "bq_s04_memory_meadow_sticker_sheet.png",
+      "source_sha256": "1a8baa96a7df45cca57eb64f0bb71434c856c3478723912519b9342e66ddc418",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        938,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/memory-meadow/memory-hidden-card.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "starter",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        0,
+        99,
+        317,
+        393
+      ],
+      "output": "assets/v4/avatar-vault/starter.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "sakura",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        315,
+        99,
+        628,
+        393
+      ],
+      "output": "assets/v4/avatar-vault/sakura.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "lantern",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        626,
+        99,
+        941,
+        393
+      ],
+      "output": "assets/v4/avatar-vault/lantern.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "flame",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        939,
+        99,
+        1254,
+        393
+      ],
+      "output": "assets/v4/avatar-vault/flame.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "crown",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        0,
+        391,
+        314,
+        696
+      ],
+      "output": "assets/v4/avatar-vault/crown.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "scholar",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        312,
+        391,
+        628,
+        696
+      ],
+      "output": "assets/v4/avatar-vault/scholar.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "scroll",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        626,
+        391,
+        941,
+        696
+      ],
+      "output": "assets/v4/avatar-vault/scroll.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "shepherd",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        939,
+        391,
+        1254,
+        696
+      ],
+      "output": "assets/v4/avatar-vault/shepherd.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "couple",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        0,
+        694,
+        322,
+        966
+      ],
+      "output": "assets/v4/avatar-vault/couple.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "community",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        320,
+        694,
+        628,
+        966
+      ],
+      "output": "assets/v4/avatar-vault/community.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "world",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        626,
+        694,
+        941,
+        966
+      ],
+      "output": "assets/v4/avatar-vault/world.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "kitsune",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        939,
+        694,
+        1254,
+        966
+      ],
+      "output": "assets/v4/avatar-vault/kitsune.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "moon",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        0,
+        964,
+        314,
+        1254
+      ],
+      "output": "assets/v4/avatar-vault/moon.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "fuji",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        312,
+        964,
+        628,
+        1254
+      ],
+      "output": "assets/v4/avatar-vault/fuji.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "tea",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        626,
+        964,
+        941,
+        1254
+      ],
+      "output": "assets/v4/avatar-vault/tea.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S06",
+      "sheet_title": "BQ_S06_AVATAR_VAULT",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "lock",
+      "source": "bq_s06_avatar_vault_icon_set.png",
+      "source_sha256": "cfafacb41963acdf02fe93876791708e65a72f85a54edc4b8d45b9a1090a6710",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 99,
+      "crop_box": [
+        939,
+        964,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/avatar-vault/lock.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "community-hub",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        114,
+        314,
+        383
+      ],
+      "output": "assets/v4/community/community-hub.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "couples-family",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        114,
+        630,
+        383
+      ],
+      "output": "assets/v4/community/couples-family.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "couples-cloud",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        628,
+        114,
+        941,
+        383
+      ],
+      "output": "assets/v4/community/couples-cloud.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "journey-groups",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        114,
+        1254,
+        383
+      ],
+      "output": "assets/v4/community/journey-groups.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "encouragements",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        381,
+        314,
+        656
+      ],
+      "output": "assets/v4/community/encouragements.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "live-rooms",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        381,
+        628,
+        656
+      ],
+      "output": "assets/v4/community/live-rooms.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "congregation",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        381,
+        938,
+        656
+      ],
+      "output": "assets/v4/community/congregation.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "team-center",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        936,
+        381,
+        1254,
+        656
+      ],
+      "output": "assets/v4/community/team-center.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "leaderboards",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        654,
+        314,
+        915
+      ],
+      "output": "assets/v4/community/leaderboards.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "recognition",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        654,
+        628,
+        915
+      ],
+      "output": "assets/v4/community/recognition.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "family",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        654,
+        941,
+        915
+      ],
+      "output": "assets/v4/community/family.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "friendship",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        654,
+        1254,
+        915
+      ],
+      "output": "assets/v4/community/friendship.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "prayer-circle",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        0,
+        913,
+        314,
+        1254
+      ],
+      "output": "assets/v4/community/prayer-circle.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "member",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        312,
+        913,
+        628,
+        1254
+      ],
+      "output": "assets/v4/community/member.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "leader",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        626,
+        913,
+        941,
+        1254
+      ],
+      "output": "assets/v4/community/leader.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S07",
+      "sheet_title": "BQ_S07_COMMUNITY",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "pastor",
+      "source": "bq_s07_community_icon_sheet.png",
+      "source_sha256": "709837767d88136ebc6b9a648bb29ed851acaa221728e3e9574eef326b692920",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 114,
+      "crop_box": [
+        939,
+        913,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/community/pastor.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "loading",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        0,
+        158,
+        320,
+        433
+      ],
+      "output": "assets/v4/system/loading.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "offline",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        318,
+        158,
+        628,
+        433
+      ],
+      "output": "assets/v4/system/offline.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "connection-error",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        626,
+        158,
+        941,
+        433
+      ],
+      "output": "assets/v4/system/connection-error.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "success",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        939,
+        158,
+        1254,
+        433
+      ],
+      "output": "assets/v4/system/success.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "access-denied",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        0,
+        431,
+        314,
+        695
+      ],
+      "output": "assets/v4/system/access-denied.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "sign-in-required",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        312,
+        431,
+        628,
+        695
+      ],
+      "output": "assets/v4/system/sign-in-required.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "no-results",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        626,
+        431,
+        941,
+        695
+      ],
+      "output": "assets/v4/system/no-results.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "empty-state",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        939,
+        431,
+        1254,
+        695
+      ],
+      "output": "assets/v4/system/empty-state.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "local-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        0,
+        693,
+        314,
+        957
+      ],
+      "output": "assets/v4/system/local-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "cloud-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        312,
+        693,
+        628,
+        957
+      ],
+      "output": "assets/v4/system/cloud-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "live-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        626,
+        693,
+        941,
+        957
+      ],
+      "output": "assets/v4/system/live-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "verified-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        939,
+        693,
+        1254,
+        957
+      ],
+      "output": "assets/v4/system/verified-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "new-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        0,
+        955,
+        314,
+        1254
+      ],
+      "output": "assets/v4/system/new-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "due-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        312,
+        955,
+        628,
+        1254
+      ],
+      "output": "assets/v4/system/due-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "locked-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        626,
+        955,
+        941,
+        1254
+      ],
+      "output": "assets/v4/system/locked-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S09",
+      "sheet_title": "BQ_S09_SYSTEM_BADGES",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "unlocked-badge",
+      "source": "cute_sakura_system_badge_sprite_sheet.png",
+      "source_sha256": "84baecd9e0ae1d9be7f78d41f512e5a7a8af3723334950f32dfe098fad094f60",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 158,
+      "crop_box": [
+        939,
+        955,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/system/unlocked-badge.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "sakura-petal",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        0,
+        116,
+        314,
+        401
+      ],
+      "output": "assets/v4/decorative/sakura-petal.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "sampaguita",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        312,
+        116,
+        628,
+        401
+      ],
+      "output": "assets/v4/decorative/sampaguita.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "parol",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        626,
+        116,
+        941,
+        401
+      ],
+      "output": "assets/v4/decorative/parol.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "paper-lantern",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        939,
+        116,
+        1254,
+        401
+      ],
+      "output": "assets/v4/decorative/paper-lantern.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "sunrise",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        0,
+        399,
+        314,
+        686
+      ],
+      "output": "assets/v4/decorative/sunrise.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "mini-fuji",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        312,
+        399,
+        628,
+        686
+      ],
+      "output": "assets/v4/decorative/mini-fuji.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "cloud",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        626,
+        399,
+        941,
+        686
+      ],
+      "output": "assets/v4/decorative/cloud.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "wave",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        939,
+        399,
+        1254,
+        686
+      ],
+      "output": "assets/v4/decorative/wave.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "leaf",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        0,
+        684,
+        314,
+        951
+      ],
+      "output": "assets/v4/decorative/leaf.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "sparkle",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        312,
+        684,
+        628,
+        951
+      ],
+      "output": "assets/v4/decorative/sparkle.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "path-marker",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        626,
+        684,
+        941,
+        951
+      ],
+      "output": "assets/v4/decorative/path-marker.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "mini-bible-ribbon",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        939,
+        684,
+        1254,
+        951
+      ],
+      "output": "assets/v4/decorative/mini-bible-ribbon.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "mini-cross",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        0,
+        949,
+        314,
+        1254
+      ],
+      "output": "assets/v4/decorative/mini-cross.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "mini-church",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        312,
+        949,
+        628,
+        1254
+      ],
+      "output": "assets/v4/decorative/mini-church.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "mini-train",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        626,
+        949,
+        941,
+        1254
+      ],
+      "output": "assets/v4/decorative/mini-train.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S10",
+      "sheet_title": "BQ_S10_DECORATIVE",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "bento-baon",
+      "source": "kawaii_filipino_japanese_decorative_icon_grid.png",
+      "source_sha256": "3313aff772e8c8ff8f7b8fd7ab47241f9857053af1897f372eaa688f70e2cf9c",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 116,
+      "crop_box": [
+        939,
+        949,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/decorative/bento-baon.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 1,
+      "row": 1,
+      "column": 1,
+      "asset": "daily-journey",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        0,
+        127,
+        314,
+        391
+      ],
+      "output": "assets/v4/home-learn/daily-journey.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 2,
+      "row": 1,
+      "column": 2,
+      "asset": "continue-reading",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        312,
+        127,
+        628,
+        391
+      ],
+      "output": "assets/v4/home-learn/continue-reading.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 3,
+      "row": 1,
+      "column": 3,
+      "asset": "tutorial",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        626,
+        127,
+        941,
+        391
+      ],
+      "output": "assets/v4/home-learn/tutorial.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 4,
+      "row": 1,
+      "column": 4,
+      "asset": "recordings",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        939,
+        127,
+        1254,
+        391
+      ],
+      "output": "assets/v4/home-learn/recordings.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 5,
+      "row": 2,
+      "column": 1,
+      "asset": "media-library",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        0,
+        389,
+        314,
+        673
+      ],
+      "output": "assets/v4/home-learn/media-library.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 6,
+      "row": 2,
+      "column": 2,
+      "asset": "progress",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        312,
+        389,
+        628,
+        673
+      ],
+      "output": "assets/v4/home-learn/progress.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 7,
+      "row": 2,
+      "column": 3,
+      "asset": "daily-verse",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        626,
+        389,
+        941,
+        673
+      ],
+      "output": "assets/v4/home-learn/daily-verse.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 8,
+      "row": 2,
+      "column": 4,
+      "asset": "calendar",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        939,
+        389,
+        1254,
+        673
+      ],
+      "output": "assets/v4/home-learn/calendar.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 9,
+      "row": 3,
+      "column": 1,
+      "asset": "reader",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        0,
+        671,
+        314,
+        947
+      ],
+      "output": "assets/v4/home-learn/reader.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 10,
+      "row": 3,
+      "column": 2,
+      "asset": "guided-study",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        312,
+        671,
+        628,
+        947
+      ],
+      "output": "assets/v4/home-learn/guided-study.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 11,
+      "row": 3,
+      "column": 3,
+      "asset": "deep-questions",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        626,
+        671,
+        941,
+        947
+      ],
+      "output": "assets/v4/home-learn/deep-questions.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 12,
+      "row": 3,
+      "column": 4,
+      "asset": "story-journey",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        939,
+        671,
+        1254,
+        947
+      ],
+      "output": "assets/v4/home-learn/story-journey.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 13,
+      "row": 4,
+      "column": 1,
+      "asset": "wisdom-situations",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        0,
+        945,
+        314,
+        1254
+      ],
+      "output": "assets/v4/home-learn/wisdom-situations.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 14,
+      "row": 4,
+      "column": 2,
+      "asset": "adaptive-learning",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        312,
+        945,
+        628,
+        1254
+      ],
+      "output": "assets/v4/home-learn/adaptive-learning.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 15,
+      "row": 4,
+      "column": 3,
+      "asset": "open-review",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        626,
+        945,
+        941,
+        1254
+      ],
+      "output": "assets/v4/home-learn/open-review.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    },
+    {
+      "sheet": "S02",
+      "sheet_title": "BQ_S02_HOME_LEARN",
+      "slot": 16,
+      "row": 4,
+      "column": 4,
+      "asset": "notes",
+      "source": "sakura_bible_learning_icon_sheet.png",
+      "source_sha256": "f805538f2d9c54c4cc5bc327c9ba756103225f2eb2cb77bac46239e263ca585a",
+      "source_size": [
+        1254,
+        1254
+      ],
+      "grid_top": 127,
+      "crop_box": [
+        939,
+        945,
+        1254,
+        1254
+      ],
+      "output": "assets/v4/home-learn/notes.png",
+      "output_size": [
+        384,
+        384
+      ],
+      "source_had_useful_alpha": true
+    }
+  ]
+}

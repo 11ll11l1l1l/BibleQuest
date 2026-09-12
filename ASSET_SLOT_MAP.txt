@@ -1,0 +1,183 @@
+BibleQuest v4 generated asset slot map
+======================================
+Order inside every sheet: left-to-right, top-to-bottom.
+
+S01  BQ_S01_CORE_NAV_STATUS
+  01  R1C1  brand-mark.png
+  02  R1C2  brand-mark-mini.png
+  03  R1C3  app-icon.png
+  04  R1C4  nav-home.png
+  05  R2C1  nav-learn.png
+  06  R2C2  nav-play.png
+  07  R2C3  nav-grow.png
+  08  R2C4  nav-more.png
+  09  R3C1  account.png
+  10  R3C2  notifications.png
+  11  R3C3  streak-flame.png
+  12  R3C4  xp.png
+  13  R4C1  coin.png
+  14  R4C2  privacy-shield.png
+  15  R4C3  cloud-sync.png
+  16  R4C4  device-local.png
+
+S02  BQ_S02_HOME_LEARN
+  01  R1C1  daily-journey.png
+  02  R1C2  continue-reading.png
+  03  R1C3  tutorial.png
+  04  R1C4  recordings.png
+  05  R2C1  media-library.png
+  06  R2C2  progress.png
+  07  R2C3  daily-verse.png
+  08  R2C4  calendar.png
+  09  R3C1  reader.png
+  10  R3C2  guided-study.png
+  11  R3C3  deep-questions.png
+  12  R3C4  story-journey.png
+  13  R4C1  wisdom-situations.png
+  14  R4C2  adaptive-learning.png
+  15  R4C3  open-review.png
+  16  R4C4  notes.png
+
+S03  BQ_S03_GAMES
+  01  R1C1  game-quick-recall.png
+  02  R1C2  game-context-challenge.png
+  03  R1C3  game-mixed-quest.png
+  04  R1C4  game-per-book-recall.png
+  05  R2C1  game-character-detective.png
+  06  R2C2  game-timeline.png
+  07  R2C3  game-play-together.png
+  08  R2C4  game-memory-meadow.png
+  09  R3C1  game-recall-deck.png
+  10  R3C2  game-clue.png
+  11  R3C3  game-correct.png
+  12  R3C4  game-review-this-one.png
+  13  R4C1  game-winner-trophy.png
+  14  R4C2  game-scoreboard.png
+  15  R4C3  game-next.png
+  16  R4C4  game-play-again.png
+
+S04  BQ_S04_MEMORY_MEADOW
+  01  R1C1  memory-card-back.png
+  02  R1C2  memory-fox.png
+  03  R1C3  memory-panda.png
+  04  R1C4  memory-frog.png
+  05  R2C1  memory-monkey.png
+  06  R2C2  memory-lion.png
+  07  R2C3  memory-rabbit.png
+  08  R2C4  memory-tiger.png
+  09  R3C1  memory-koala.png
+  10  R3C2  memory-match.png
+  11  R3C3  memory-mismatch.png
+  12  R3C4  memory-complete-medal.png
+  13  R4C1  reward-star.png
+  14  R4C2  reward-coin.png
+  15  R4C3  memory-all-friends.png
+  16  R4C4  memory-hidden-card.png
+
+S05  BQ_S05_BIBLE_WORLD
+  01  R1C1  world-creation.png
+  02  R1C2  world-patriarchs.png
+  03  R1C3  world-exodus.png
+  04  R1C4  world-kingdom.png
+  05  R2C1  world-wisdom.png
+  06  R2C2  world-prophets.png
+  07  R2C3  world-gospels.png
+  08  R2C4  world-early-church.png
+  09  R3C1  world-letters.png
+  10  R3C2  world-next-marker.png
+  11  R3C3  world-explored.png
+  12  R3C4  world-unexplored.png
+  13  R4C1  world-map.png
+  14  R4C2  world-route-scroll.png
+  15  R4C3  world-compass.png
+  16  R4C4  world-badge.png
+
+S06  BQ_S06_AVATAR_VAULT
+  01  R1C1  starter.png
+  02  R1C2  sakura.png
+  03  R1C3  lantern.png
+  04  R1C4  flame.png
+  05  R2C1  crown.png
+  06  R2C2  scholar.png
+  07  R2C3  scroll.png
+  08  R2C4  shepherd.png
+  09  R3C1  couple.png
+  10  R3C2  community.png
+  11  R3C3  world.png
+  12  R3C4  kitsune.png
+  13  R4C1  moon.png
+  14  R4C2  fuji.png
+  15  R4C3  tea.png
+  16  R4C4  lock.png
+
+S07  BQ_S07_COMMUNITY
+  01  R1C1  community-hub.png
+  02  R1C2  couples-family.png
+  03  R1C3  couples-cloud.png
+  04  R1C4  journey-groups.png
+  05  R2C1  encouragements.png
+  06  R2C2  live-rooms.png
+  07  R2C3  congregation.png
+  08  R2C4  team-center.png
+  09  R3C1  leaderboards.png
+  10  R3C2  recognition.png
+  11  R3C3  family.png
+  12  R3C4  friendship.png
+  13  R4C1  prayer-circle.png
+  14  R4C2  member.png
+  15  R4C3  leader.png
+  16  R4C4  pastor.png
+
+S08  BQ_S08_MINISTRY_MORE
+  01  R1C1  ministry-hub.png
+  02  R1C2  assignments.png
+  03  R1C3  workspace.png
+  04  R1C4  notification-center.png
+  05  R2C1  content-review.png
+  06  R2C2  moderation.png
+  07  R2C3  report-content.png
+  08  R2C4  backup.png
+  09  R3C1  install-app.png
+  10  R3C2  accessibility.png
+  11  R3C3  account-settings.png
+  12  R3C4  security.png
+  13  R4C1  admin-console.png
+  14  R4C2  admin-operations.png
+  15  R4C3  analytics.png
+  16  R4C4  help-support.png
+
+S09  BQ_S09_SYSTEM_BADGES
+  01  R1C1  loading.png
+  02  R1C2  offline.png
+  03  R1C3  connection-error.png
+  04  R1C4  success.png
+  05  R2C1  access-denied.png
+  06  R2C2  sign-in-required.png
+  07  R2C3  no-results.png
+  08  R2C4  empty-state.png
+  09  R3C1  local-badge.png
+  10  R3C2  cloud-badge.png
+  11  R3C3  live-badge.png
+  12  R3C4  verified-badge.png
+  13  R4C1  new-badge.png
+  14  R4C2  due-badge.png
+  15  R4C3  locked-badge.png
+  16  R4C4  unlocked-badge.png
+
+S10  BQ_S10_DECORATIVE
+  01  R1C1  sakura-petal.png
+  02  R1C2  sampaguita.png
+  03  R1C3  parol.png
+  04  R1C4  paper-lantern.png
+  05  R2C1  sunrise.png
+  06  R2C2  mini-fuji.png
+  07  R2C3  cloud.png
+  08  R2C4  wave.png
+  09  R3C1  leaf.png
+  10  R3C2  sparkle.png
+  11  R3C3  path-marker.png
+  12  R3C4  mini-bible-ribbon.png
+  13  R4C1  mini-cross.png
+  14  R4C2  mini-church.png
+  15  R4C3  mini-train.png
+  16  R4C4  bento-baon.png
