@@ -1,49 +1,61 @@
-// BibleQuest V4 Phase 2: static contract for the new emergency
-// user-management actions added to supabase/functions/bq-admin-ops. CI
-// cannot execute Deno/Supabase locally (documented gap), so this locks in
-// the exact authorization/audit invariants as the closest available proof,
-// pending real deployment verification.
+// BibleQuest V4 Phase 2: static contract for emergency user-management.
+// Locks both the Edge Function authorization invariants and the Admin Console
+// presentation/interaction contract. Live authenticated Supabase execution is
+// still a separate release gate.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = path.resolve(import.meta.dirname, '..');
 const src = fs.readFileSync(path.join(root, 'supabase', 'functions', 'bq-admin-ops', 'index.ts'), 'utf8');
+const ui = fs.readFileSync(path.join(root, 'src', 'features', 'admin-console', 'index.js'), 'utf8');
 
 // Every action must sit behind the existing siteRole() check (owner/admin)
-// before the action router is ever reached - already enforced by the
-// pre-existing `if(!r)return json(req,{error:'Admin access required'},403)`
-// line that runs before the action dispatch; verify it still wraps ours.
+// before the action router is reached.
 const routerStart = src.indexOf("const body=await req.json()");
+assert.ok(routerStart >= 0, 'Admin operations request router must exist.');
 const dispatchBlock = src.slice(routerStart);
 assert.ok(dispatchBlock.includes("action==='suspend_account'"), 'suspend_account action must be dispatched from the same authenticated+role-checked router as every other action.');
 
 // Temporary password: owner-only, minimum length, never logged, self-action blocked.
 assert.ok(/action==='set_temp_password'\)\{\s*if\(r!=='owner'\)/.test(src), 'set_temp_password must be gated to the owner role only.');
-assert.ok(/password\.length<12/.test(src), 'Temporary password must enforce a minimum length server-side (never trust client-side validation alone).');
-assert.ok(/target===u\.id.*Use your own account recovery flow/.test(src), 'The owner must not be able to set a temporary password for their own account through the emergency tool.');
+assert.ok(/password\.length<12/.test(src), 'Temporary password must enforce a minimum length server-side.');
+assert.ok(/target===u\.id.*Use your own account recovery flow/.test(src), 'The owner must not set a temporary password for their own account through the emergency tool.');
 assert.ok(!/audit\(a,u\.id,target,'set_temp_password',\{[^}]*\bpassword\b[^}]*\}/.test(src), 'The audit-log detail object for set_temp_password must never include the raw password value.');
 assert.ok(src.includes("await audit(a,u.id,target,'set_temp_password'"), 'set_temp_password must be recorded in the audit log.');
 
 // Suspend/reactivate: mutual self-protection, owner-immunity from suspension, audited.
-assert.ok(/action==='suspend_account'\|\|action==='reactivate_account'/.test(src), 'Suspend and reactivate must share one authorization/audit code path, not diverge.');
-assert.ok(/target===u\.id\)return json\(req,\{error:'You cannot suspend or reactivate your own account'/.test(src), 'An admin/owner must not be able to suspend or reactivate their own account.');
-assert.ok(/suspend_account'&&targetAccess\.data\?\.role==='owner'/.test(src), 'Another owner account must be immune to suspension, mirroring the existing delete_user owner-immunity rule.');
-assert.ok(src.includes("await audit(a,u.id,target,action,"), 'Suspend/reactivate must be recorded in the audit log with the actual action name, not a generic label.');
-
-// Suspending an account must also revoke its active sessions immediately (Phase 3
-// requirement carried into Phase 2: "immediately lose... sessions revoked").
+assert.ok(/action==='suspend_account'\|\|action==='reactivate_account'/.test(src), 'Suspend and reactivate must share one authorization/audit code path.');
+assert.ok(/target===u\.id\)return json\(req,\{error:'You cannot suspend or reactivate your own account'/.test(src), 'An admin/owner must not suspend or reactivate their own account.');
+assert.ok(/suspend_account'&&targetAccess\.data\?\.role==='owner'/.test(src), 'Another owner account must be immune to suspension.');
+assert.ok(src.includes("await audit(a,u.id,target,action,"), 'Suspend/reactivate must be recorded in the audit log.');
 assert.ok(/suspend_account'\)\{try\{await forceSignOutUser\(target\)/.test(src), 'Suspending an account must immediately attempt to revoke its active sessions.');
 
-// Force sign-out: any owner/admin may use it (Safe tier per the governing plan), audited.
+// Force sign-out and session revocation implementation.
 assert.ok(src.includes("action==='force_sign_out'"), 'force_sign_out action must exist.');
 assert.ok(src.includes("await audit(a,u.id,target,'force_sign_out'"), 'force_sign_out must be recorded in the audit log.');
+assert.ok(src.includes('/auth/v1/admin/users/${targetUserId}/logout'), 'Session revocation must use the per-user GoTrue admin logout endpoint.');
+assert.ok(/res\.status!==404\)throw new Error/.test(src), 'Session revocation must distinguish no-session 404 from a real backend failure.');
 
-// The session-revocation helper must use the documented GoTrue admin REST
-// endpoint (supabase-js v2's auth.admin.signOut takes a JWT, not a user id,
-// so it cannot be used here) and must not swallow a real backend outage as
-// if the user were simply already signed out.
-assert.ok(src.includes('/auth/v1/admin/users/${targetUserId}/logout'), 'Session revocation must use the documented per-user GoTrue admin logout endpoint.');
-assert.ok(/res\.status!==404\)throw new Error/.test(src), 'Session revocation must distinguish "user has no active session" (404, fine) from a real failure (must throw).');
+// Admin Console must expose the emergency controls through the existing
+// createAdminOperationsService owner rather than inventing a second API path.
+for (const section of ['identity','congregations','security']) {
+  assert.ok(ui.includes(`data-admin-user-section=\"${section}\"`), `Admin user card must include the ${section} section.`);
+}
+for (const severity of ['safe','elevated','critical']) {
+  assert.ok(ui.includes(`data-admin-severity=\"${severity}\"`), `Admin user-management UI must include ${severity} severity treatment.`);
+}
+for (const control of ['data-admin-force-signout','data-admin-suspend-user','data-admin-reactivate-user','data-admin-temp-password']) {
+  assert.ok(ui.includes(control), `Admin Console must render ${control}.`);
+}
+assert.ok(ui.includes('accountDeletion.forceSignOut'), 'Force sign-out UI must call the existing Admin Operations service.');
+assert.ok(ui.includes('accountDeletion.suspendAccount'), 'Suspend UI must call the existing Admin Operations service.');
+assert.ok(ui.includes('accountDeletion.reactivateAccount'), 'Reactivate UI must call the existing Admin Operations service.');
+assert.ok(ui.includes('accountDeletion.setTempPassword'), 'Temporary-password UI must call the existing Admin Operations service.');
+assert.ok(ui.includes('`SUSPEND ${user.email||user.name}`'), 'Suspend must use a typed confirmation phrase tied to the target identity.');
+assert.ok(ui.includes('`DELETE ${user.email||user.name}`'), 'Permanent deletion must keep typed confirmation tied to the target identity.');
+assert.ok(/type=\"password\" minlength=\"12\"/.test(ui), 'Temporary-password input must be masked and enforce the 12-character client floor.');
+assert.ok(ui.includes('password.length<12'), 'Temporary-password UI must reject values below the server minimum before dispatch.');
+assert.ok(!ui.includes("fetch('/auth/v1/admin"), 'Admin Console must not bypass the shared Admin Operations API owner with direct auth-admin fetches.');
 
-console.log('BibleQuest v4 Phase 2 admin emergency-actions RLS/authorization contract passed.');
+console.log('BibleQuest v4 Phase 2 admin emergency-actions authorization + presentation contract passed.');
