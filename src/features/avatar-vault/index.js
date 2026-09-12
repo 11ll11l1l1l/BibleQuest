@@ -4,7 +4,7 @@ const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&
 const ART_IDS=new Set(['starter','sakura','lantern','flame','crown','scholar','scroll','shepherd','couple','community','world','kitsune','moon','fuji','tea']);
 const avatarArt=(id,{locked=false,hero=false}={})=>{
   const art=locked?'lock':(ART_IDS.has(id)?id:'starter');
-  return `<span class="bq-avatar-art-wrap${hero?' is-hero':''}" data-avatar-art="${art}" aria-hidden="true"><svg hidden aria-hidden="true" viewBox="0 0 24 24"><use href="assets/avatar-vault-icons.svg#${art}"></use></svg><img class="bq-avatar-art" src="${avatarArtPath(art)}" alt="" ${hero?'loading="eager"':'loading="lazy"'} decoding="async"></span>`;
+  return `<span class="bq-avatar-art-wrap${hero?' is-hero':''}" data-avatar-art="${art}" aria-hidden="true"><svg class="bq-avatar-art" hidden aria-hidden="true" viewBox="0 0 24 24"><use href="assets/avatar-vault-icons.svg#${art}"></use></svg><img class="bq-avatar-art" src="${avatarArtPath(art)}" alt="" ${hero?'loading="eager"':'loading="lazy"'} decoding="async"></span>`;
 };
 
 function grid(state){
