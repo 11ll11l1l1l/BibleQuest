@@ -73,8 +73,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | 1 | Infrastructure safety net | **CERTIFIED** — `release/v4-infra-safety-net` @ `0a4b7f6873c1955f2c65b5044c81f0180524670b` |
 | 2 | V4 foundation certification | **CERTIFIED** — `release/v4-foundation` @ `a008919fe9e7db1fcd2a03cac8b71fd7110afc0d` |
 | 3 | Global shell/navigation | **CERTIFIED** — `release/v4-shell` @ `2e11dce90efd13c18fe7b8921e3f2e54b00e6d99` |
-| 4 | Home | **NEXT / mandatory gate.** First migration already in Foundation A; needs dashboard-composition review (dominant continuation card, de-emphasize tutorial/media) + full targeted evidence |
-| 5 | Learn hub + Reader | Pending |
+| 4 | Home | **CERTIFIED** — `release/v4-home` @ `17ed040957d6aeb3bc2bc0d1832e1c23f46a6c0f` |
+| 5 | Learn hub + Reader | **NEXT / mandatory gate.** |
 | 6 | Games + Avatar Vault | Pending |
 | 7 | More hub | Pending |
 | 8 | Ministry + Assignments + Workspace + Notifications | Pending |
@@ -111,6 +111,18 @@ New coverage added:
 - `tests/v4-shell-keyboard-motion-smoke.mjs` — new browser evidence: Tab reaches all 5 primary nav links in correct visual order with a visible focus ring (using Foundation's new `:focus-visible` token), and `prefers-reduced-motion: reduce` collapses shell transition durations to effectively zero.
 
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px, plus the new keyboard/motion checks). Run: `34658715156`.
+
+## Home certification evidence (this cycle)
+
+Checkpoint: `release/v4-home` @ `17ed040957d6aeb3bc2bc0d1832e1c23f46a6c0f`.
+
+A1-V4-003 (Home reads as a stacked sequence of equal-weight panels rather than a dashboard) is closed. Tutorial, Live Recordings, and Media Library were each a full `.bq-panel` with its own eyebrow/heading/paragraph/button, visually competing with the Daily Journey card. They are now one compact `.bq-home-secondary` row of three icon tiles (`.bq-home-tile-button`, using three new icons added to the certified icon system: `guide`, `video`, `library`). Daily Journey + Progress remain the dominant path, including on desktop where Daily Journey now correctly spans 8/12 grid columns and the secondary row spans the full width below it (the previous desktop grid rules targeted the old per-panel selectors directly and would have collapsed to a broken single-column layout once those panels were restructured — caught and fixed before commit, not after).
+
+Every existing `data-*` hook and route action (`onMission`, `onTutorial`, `onRecordings`, `onMedia`) was preserved exactly — this was a pure Class A presentation change. The locked hero contract (`v3-home-visual-polish-static.mjs`) and the permanent-tutorial-launcher contract (`scripts/validate-v3-tutorial-onboarding.mjs`, which requires the literal string "Show tutorial") both still pass unmodified.
+
+New contract: `tests/v4-home-dashboard-static.mjs` — asserts all hooks/actions survive, the hero stays locked, secondary actions are compact tiles (not full panels with their own `<h2>`), and the desktop grid gives Daily Journey the dominant column share.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators (54 validators, all pass including the pre-existing tutorial-onboarding contract), full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34659814839`.
 
 ## Change-class rules
 
