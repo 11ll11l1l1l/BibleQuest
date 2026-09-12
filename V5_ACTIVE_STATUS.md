@@ -1,16 +1,19 @@
 # BibleQuest V5 Official Active Status
 
 Updated: 2026-09-13 JST
-Execution model: one serialized integration stream
+Execution model: controlled five-agent autonomous coding pool with serialized integration
 Official V5 integration branch: `v5/architecture-upgrade`
 Baseline cleaned `main`: `ef5d46485f9e7138b969777d34de585cfd9ecbd1`
+Accepted V5 planning merge: `1f504dec812f11453f82e30af61cdf3d6c547060`
 Production safety baseline: BibleQuest V4 RC3
+Autonomous protocol: `V5_AUTONOMOUS_AGENT_PROTOCOL.md`
+Program tracker: Issue #185
 
 ## Authority
 
 This file is the single authoritative source for current BibleQuest V5 phase, scope, blockers, candidate identity, and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context. V3 and V4 authority files are historical release records and must not be reused as current V5 status.
 
-Detailed execution lives in `DEVELOPMENT_PLAN_V5.md`; release acceptance inventory lives in `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`.
+Detailed execution lives in `DEVELOPMENT_PLAN_V5.md`; release acceptance inventory lives in `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`; scheduled autonomous execution is governed by `V5_AUTONOMOUS_AGENT_PROTOCOL.md`.
 
 ## V5 product decision
 
@@ -20,13 +23,30 @@ V5 is a deliberate architecture-level upgrade with **no V4-era restriction again
 
 V4 remains the production fallback until a V5 candidate is explicitly accepted and promoted.
 
+## Autonomous coding decision
+
+V5 is authorized to trial full scheduled autonomous coding with five agents running once per hour.
+
+The model is **controlled parallel development, serialized integration**:
+
+- four workers may implement independent non-overlapping tranches on isolated branches and PRs;
+- one integration/dispatch captain runs after the workers and is the only scheduled agent allowed to merge worker PRs into `v5/architecture-upgrade`;
+- task ownership is protected by short-lived Issue #185 leases;
+- agents have primary specialties but may safely work-steal unclaimed current-phase tasks when blocked;
+- workers never write runtime/database/workflow changes directly to `main` or the integration branch;
+- scheduled agents never promote V5 to `main`, deploy production, or mutate production Supabase data/configuration;
+- red integration/security/database evidence stops new merges until root cause is understood and repaired;
+- production/main remains manual-controlled unless a later explicit authority change says otherwise.
+
+This supersedes the earlier V4-style read-only investigator setup and the narrower rule that all development work itself must be single-threaded. The integration history remains serialized and auditable even when independent implementation tranches are prepared concurrently.
+
 ## Current state
 
-**Phase 0 — V5 architecture program definition: ACTIVE.**
+**Phase 0 — V5 architecture program definition and autonomous execution bootstrap: ACTIVE / NEAR EXIT.**
 
-No V5 runtime feature implementation has started yet. The current V5 branch was created directly from the cleaned and verified V4 production line at `ef5d46485f9e7138b969777d34de585cfd9ecbd1`.
+The V5 architecture program was accepted through PR #184 and merged at `1f504dec812f11453f82e30af61cdf3d6c547060` after all inherited automated gates passed on the exact planning head `9ccca11dcd2f10ef5e853a820a317c1999d36b77`.
 
-The first V5 deliverable is governance and architecture documentation only. Runtime changes begin only after this plan is accepted and the inherited baseline is green on the V5 branch.
+The five-agent autonomous coding protocol is now established on the V5 integration branch. Runtime implementation may begin only through that protocol. ADR-0001 and ADR-0002 remain proposed architecture decisions and must be accepted/refined by evidence before their respective irreversible implementation choices are treated as frozen.
 
 ## Mandatory V5 outcomes
 
@@ -67,13 +87,13 @@ Architecture may change; these outcomes may not silently regress:
 - secrets and privileged credentials never move into the client bundle;
 - assignment, presence, congregation, admin and linked-activity privacy/isolation contracts remain protected unless an explicit V5 ADR intentionally replaces them with a stricter/equivalent model;
 - copyrighted Bible translations remain external unless redistribution rights are verified;
-- one serialized runtime integration stream is maintained;
+- integration into `v5/architecture-upgrade` is serialized even when isolated implementation branches run concurrently;
 - field evidence is never fabricated and a waiver is never represented as PASS;
 - V3/V4 archive branches are recovery/history only and are never V5 integration branches.
 
 ## Phase state
 
-- Phase 0 — Authority, architecture program, ADRs, baseline: **ACTIVE**.
+- Phase 0 — Authority, architecture program, ADRs, baseline, autonomous protocol: **ACTIVE / NEAR EXIT**.
 - Phase 1 — Vite/TypeScript/build/test toolchain: NOT STARTED.
 - Phase 2 — Real Supabase/Postgres CI + deterministic tenant fixtures: NOT STARTED.
 - Phase 3 — Core client architecture/state/data boundary: NOT STARTED.
@@ -89,13 +109,14 @@ Architecture may change; these outcomes may not silently regress:
 
 ## Immediate next gate
 
-Before Phase 1 runtime work:
+The autonomous pool should close Phase 0 and begin Phase 1/2 foundations in dependency order:
 
-1. Merge/accept the V5 planning documents.
-2. Re-run inherited V4 regression, security/privacy, responsive/PWA, protected-page and whole-app/browser baselines on the exact V5 planning head.
-3. Record ADR-0001 for the build/client architecture decision and ADR-0002 for the real Supabase CI strategy.
-4. Freeze a Phase 0 baseline SHA in this file.
+1. verify the current integration SHA and inherited gates remain green after protocol-only changes;
+2. accept/refine ADR-0001 for build/client architecture and ADR-0002 for real Supabase CI based on current repository/tool evidence;
+3. produce the explicit route/domain ownership map and baseline characterization needed by the first migrations;
+4. freeze the Phase 0 baseline SHA in this file;
+5. begin bounded Phase 1 and Phase 2 implementation PRs in parallel only where ownership is non-overlapping.
 
 ## Release rule
 
-There is no V5 release candidate yet. `main`/V4 production remains authoritative for users. A V5 RC may be frozen only after applicable phase acceptance items are closed and the integrated database/browser/security/offline/tenant test matrix is green on one exact candidate SHA.
+There is no V5 release candidate yet. `main`/V4 production remains authoritative for users. A V5 RC may be frozen only after applicable phase acceptance items are closed and the integrated database/browser/security/offline/tenant test matrix is green on one exact candidate SHA. Scheduled agents may not promote V5 to production.
