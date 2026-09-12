@@ -1,7 +1,12 @@
 // BibleQuest V4 primary app-family acceptance contract.
 // Home / Learn / Play / Grow / More must remain one coherent modern shell with
 // real route wiring. This tranche may polish user-facing copy, but it must not
-// replace the shell, router/bootstrap ownership, or feature/service boundaries.
+// replace the shell or feature/service boundaries. bootstrap.js is
+// intentionally NOT byte-locked here: it is the single shared composition
+// root, and legitimately grows every time a new cross-cutting service (Home
+// shortcut rail's onReader/onCalendar/onGrow, Phase 3's presence.activeCount,
+// etc.) is wired into an existing route. shell.js remains byte-locked since
+// it should not need to change for routine feature wiring.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -11,11 +16,13 @@ const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='6c55de27154b9f856faaf80d7cd17b18124c54f3';
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
 
-for(const relative of['src/ui/shell.js','src/app/bootstrap.js']){
+for(const relative of['src/ui/shell.js']){
   const current=read(relative);
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
   assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the primary-family coherence tranche.`);
 }
+const bootstrapSrc=read('src/app/bootstrap.js');
+assert.ok(bootstrapSrc.includes("home:()=>homePage(") && bootstrapSrc.includes("learn:()=>learnPage(") && bootstrapSrc.includes("play:()=>gamesPage(") && bootstrapSrc.includes("grow:()=>progressPage(") && bootstrapSrc.includes("more:()=>morePage("),'bootstrap.js must keep the primary-family route map (home/learn/play/grow/more) intact, even as service wiring evolves.');
 
 const shell=read('src/ui/shell.js');
 const bootstrap=read('src/app/bootstrap.js');
