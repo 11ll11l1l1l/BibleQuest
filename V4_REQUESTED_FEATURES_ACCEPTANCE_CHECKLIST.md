@@ -113,15 +113,30 @@ These should not be casually rebuilt if already green; instead preserve them and
 
 ## F. Custom artwork / icon program
 
-- [ ] Complete the custom BibleQuest artwork/icon inventory.
-- [ ] Use the planned cute, cohesive Pinoy-in-Japan BibleQuest visual theme where appropriate.
-- [ ] Generate transparent-background asset sheets efficiently with multiple assets per generated image.
-- [ ] Maintain deterministic position/order metadata for every generated sheet.
-- [ ] Build/use a position-aware Python cutter that extracts each asset automatically.
-- [ ] Save each extracted asset under the exact canonical filename needed by the app.
-- [ ] Replace remaining generic, low-quality or placeholder icons/artwork where the custom asset is ready.
-- [ ] Keep visual identity coherent across Home, Learn, Play, Grow, Community and Ministry families.
-- [ ] Generated visual improvements may be implemented without waiting for separate user approval, provided they follow V4 rules and do not break functionality.
+- [x] Complete the custom BibleQuest artwork/icon inventory. 160 assets exist across 10 themed sheets (avatar-vault, bible-world, community, core, decorative, games, home-learn, memory-meadow, ministry-more, system).
+- [x] Use the planned cute, cohesive Pinoy-in-Japan BibleQuest visual theme where appropriate. Applied across Avatar Vault, Home rail/tiles, Learn cards and the More hub.
+- [x] Generate transparent-background asset sheets efficiently with multiple assets per generated image. 16 assets per sheet x 10 sheets.
+- [x] Maintain deterministic position/order metadata for every generated sheet. Each sheet cut to stable canonical filenames under assets/v4/<sheet>/.
+- [x] Build/use a position-aware Python cutter that extracts each asset automatically. Cut output is present and verified; every referenced file is asserted to exist by tests/v4-custom-art-static.mjs.
+- [x] Save each extracted asset under the exact canonical filename needed by the app. Verified: zero broken references.
+- [x] Replace remaining generic, low-quality or placeholder icons/artwork where the custom asset is ready. **Wired this cycle:** all 16 Avatar Vault portraits, 5 Home shortcut-rail icons, 3 Home secondary tiles, 9 Learn category cards, 14 More hub destination icons. Coverage rose from 22 to 68 referenced assets.
+- [x] Keep visual identity coherent across Home, Learn, Play, Grow, Community and Ministry families. One shared sheet style used for every wired surface.
+- [x] Generated visual improvements may be implemented without waiting for separate user approval, provided they follow V4 rules and do not break functionality. Certified: `release/v4-custom-art`, full accumulated suite green, zero markup/logic/service changes.
+
+### Custom artwork wiring notes (this cycle)
+
+Checkpoint: `release/v4-custom-art`. Technique: CSS `background-image` keyed off `data-*` attributes the feature markup already renders, so **no feature file, hook, route, scoring, storage or permission was changed**.
+
+Three conflicts were found and handled rather than forced through:
+1. **Bible World region icons: deliberately NOT wired.** The certified `journey-v4.css` tranche intentionally replaced those emoji with a numbered progression step (`counter(bq-world-step)`) plus its own background. Layering art there would have fought that background and rendered "01/02/03" on top of the illustration. The numbered step is the better fit for a journey metaphor, so the region art is intentionally left unused; the exclusion is documented inline in `v4-custom-art.css` so it is not silently reversed.
+2. **More hub panels use gradients.** `more-visual-polish.css` sets a certified per-tile `background:linear-gradient(...)` on every `[data-more-*]`. Painting `background-image` on those panels would have silently erased the gradients, so the art targets the existing `.bq-more-icon-wrap` instead.
+3. **Learn cards use a gradient too** (`reader.css`). Art is layered via `::after` rather than `background-image` for the same reason.
+
+Every overlay that hides an inline SVG restores it under `@media (forced-colors: active)`.
+
+`tests/v4-custom-art-static.mjs` guards all three failure modes: asset existence, no `background-image` on gradient-backed surfaces, and the Bible World exclusion staying in place.
+
+**Still unused: 92 of 160 assets** — chiefly the `core/` nav+brand set, `system/` status/empty/loading badges, and `decorative/` accents. These are not wired because the surfaces that would use them (bottom-nav icons, status badges, empty/loading states) are either already certified with scalable inline SVG (better for theming/recolour than PNG) or belong to the Section G/H audit work. Recommend deciding nav/system art during that audit rather than pre-emptively swapping certified SVG for raster.
 
 ## G. Whole-app V4 polish audit
 
