@@ -55,7 +55,9 @@ function nonEmpty(value) {
 }
 
 function isSafeStructuralKey(trail, key) {
-  return trail.join('.') === 'gates.A.actions' && key === 'set_temp_password';
+  const fullPath = [...trail, key].join('.');
+  return fullPath === 'gates.A.actions.set_temp_password'
+    || fullPath === 'gates.A.audit_secret_hygiene_verified';
 }
 
 function walk(value, trail = []) {
