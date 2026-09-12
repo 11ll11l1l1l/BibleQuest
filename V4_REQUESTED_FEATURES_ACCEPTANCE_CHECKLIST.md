@@ -224,18 +224,18 @@ Section I found and fixed real stale-account in-memory state risks in Assignment
 
 - [x] Reconcile this checklist against `DEVELOPMENT_PLAN_V4.md` and issue #124 before declaring feature-complete. Reconciled 2026-09-12 after Section I; no additional product tranche is required before RC convergence.
 - [x] Synchronize `V4_ACTIVE_STATUS.md` with current repository evidence before RC freeze.
-- [ ] Freeze one exact V4 release-candidate SHA.
-- [ ] Run `bash build.sh` successfully on the exact candidate.
-- [ ] Run architecture validation on the exact candidate.
-- [ ] Run the complete accumulated static/security/edge regression suite on the exact candidate.
-- [ ] Run complete browser/mobile coverage for changed and critical workflows.
-- [ ] Run Home assignment-state/shortcut-rail acceptance tests.
-- [ ] Run all changed-feature regressions.
-- [ ] Run the multi-account/privacy/isolation matrix.
-- [ ] Perform preview/staging smoke verification.
-- [ ] Perform installed-PWA field verification.
-- [ ] Preserve a known-good V3 rollback reference until V4 is accepted.
-- [ ] Promote only after exact-candidate evidence is green.
+- [x] Freeze one exact V4 release-candidate SHA. RC1 is `release/v4-rc1` @ `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`.
+- [x] Run `bash build.sh` successfully on the exact candidate. Covered by the Cloudflare deployment gate in full accumulated run `34694787827`.
+- [x] Run architecture validation on the exact candidate. Covered by full accumulated run `34694787827`.
+- [x] Run the complete accumulated static/security/edge regression suite on the exact candidate. Full accumulated run `34694787827` passed.
+- [x] Run complete browser/mobile coverage for changed and critical workflows. RC1 runs `34694787827`, `34694787772`, and `34694787823` passed.
+- [x] Run Home assignment-state/shortcut-rail acceptance tests. Included in the accumulated RC1 regression and rechecked on the Cloudflare staging deployment.
+- [x] Run all changed-feature regressions. Complete accumulated RC1 suite passed on the unchanged candidate.
+- [x] Run the multi-account/privacy/isolation matrix. Section I `34694787800` plus the accumulated RC1 suite passed.
+- [x] Perform preview/staging smoke verification. Cloudflare Pages check `103560676216` deployed exact RC1; final remote staging run `34697229965` passed routes, Home rail, More -> Backup, Memory Meadow launch/return, service worker, offline reload and reconnect.
+- [ ] Perform installed-PWA field verification on a real Android device.
+- [x] Preserve a known-good V3 rollback reference until V4 is accepted. `release/v3.71-japanese-furigana` remains at `c631bea8d5177a9a2ff68139cb104b6fbf26015b`.
+- [ ] Promote only after exact-candidate evidence and the remaining physical-device field gates are green.
 - [ ] After promotion, verify production bytes/build identity and production browser behavior.
 
 ## Current audit conclusion
@@ -249,6 +249,8 @@ Section I found and fixed real stale-account in-memory state risks in Assignment
 - The whole-app Section G polish/browser audit is closed by `release/v4-whole-app-browser-audit`.
 - Section H automated/browser gates are closed; only the three explicit real-device/installed-PWA field checks remain open.
 - Section I security/privacy/data-integrity gates are closed by `release/v4-section-i` with exact-SHA full-suite evidence.
-- V4 is **feature-complete for final RC convergence but not yet release-ready**. Remaining release blockers are Section J exact-RC verification, preview/staging/production evidence, preservation of the V3 rollback reference, and the three real-device/installed-PWA field checks.
+- RC1 exact-SHA automated verification is closed at `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`.
+- Exact-RC Cloudflare preview/staging is closed: Cloudflare check `103560676216` and remote staging run `34697229965` passed.
+- V4 is **feature-complete and staging-certified but not yet release-ready**. Remaining blockers are installed-PWA real-device acceptance, physical Android Chrome 100%, physical Android Brave 100%, then exact-RC promotion and post-promotion Cloudflare production verification.
 
-This file is release-blocking: V4 must not be declared complete while the remaining unchecked Section H/J field and deployment items remain.
+This file is release-blocking: V4 must not be declared complete while the remaining unchecked Section H/J physical-device, promotion and production-verification items remain.
