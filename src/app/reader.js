@@ -92,7 +92,7 @@ export function createReaderService({ bible, storage, progress }) {
     state = { ...state, book: book.code, chapter };
     persist();
     const loaded = await load();
-    if (!loaded.verses.some(item => item.verse === verse)) throw new Error('Search result verse is unavailable.');
+    if (!loaded.verses.some(item => item.verse <= verse && (item.verseEnd || item.verse) >= verse)) throw new Error('Search result verse is unavailable.');
     return Object.freeze({ chapter: loaded, verse });
   }
 
@@ -100,9 +100,10 @@ export function createReaderService({ bible, storage, progress }) {
     const number = Number(verse);
     if (!Number.isInteger(number) || number < 1) throw new Error('Invalid verse.');
     const loaded = await load();
-    const found = loaded.verses.find(item => item.verse === number);
+    const found = loaded.verses.find(item => item.verse <= number && (item.verseEnd || item.verse) >= number);
     if (!found) throw new Error('Verse is unavailable.');
-    return Object.freeze({ ...found, reference: `${loaded.book.name} ${loaded.chapter}:${found.verse}`, links: bible.externalLinks(loaded.book.code, loaded.chapter, found.verse) });
+    const label=(found.verseEnd || found.verse)>found.verse?`${found.verse}–${found.verseEnd}`:String(found.verse);
+    return Object.freeze({ ...found, reference: `${loaded.book.name} ${loaded.chapter}:${label}`, links: bible.externalLinks(loaded.book.code, loaded.chapter, number) });
   }
 
   async function contextChapter(code = state.book, chapter = state.chapter) {

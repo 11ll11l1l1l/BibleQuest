@@ -10,6 +10,7 @@ export const BIBLE_BOOKS = Object.freeze(BOOK_ROWS.map(([name, code, chapters], 
 const TRANSLATIONS = Object.freeze({
   bsb: Object.freeze({ id: 'bsb', label: 'English · BSB', folder: 'bible', language: 'English', bundled: true, mode: 'bundled', source: 'Berean Standard Bible', license: 'Public-domain / CC0 browser source', attribution: 'See data/packs/ATTRIBUTION.md' }),
   tl: Object.freeze({ id: 'tl', label: 'Tagalog · ULB', folder: 'tagalog', language: 'Tagalog', bundled: true, mode: 'bundled', source: 'Tagalog Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2018 Door43 World Missions Community' }),
+  cebocb: Object.freeze({ id: 'cebocb', label: 'Cebuano/Bisaya · OCCB', folder: 'cebuano', language: 'Cebuano', bundled: true, mode: 'bundled', source: 'Biblica® Open Ang Pulong sa Dios™ / Biblica® Open Cebuano Contemporary Bible™ 2024', license: 'CC BY-SA 4.0', attribution: '© 2009, 2010, 2014, 2024 Biblica, Inc. · See data/packs/ATTRIBUTION.md' }),
   jko: Object.freeze({ id: 'jko', label: '日本語 · 口語訳', language: 'Japanese', bundled: false, mode: 'live-kougo', source: '口語訳聖書 (1954/1955) · GetBible japkougo', license: '1955 edition copyright term expired; moral rights remain; later corrected wording may be protected', attribution: 'GetBible/CrossWire japkougo public-domain module · Scripture text displayed without modification' }),
   nlt: Object.freeze({ id: 'nlt', label: 'English · NLT', language: 'English', bundled: false, mode: 'licensed-link', externalVersion: 'NLT', source: 'New Living Translation', license: 'Copyrighted translation · licensed external reader only', attribution: 'Tyndale House Publishers · BibleQuest does not redistribute the NLT text' })
 });
@@ -29,9 +30,12 @@ for (const book of BIBLE_BOOKS) {
 }
 
 const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam','1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
-const safeVerse = row => row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(Number(row.v)) && Number(row.v) > 0 && typeof row.t === 'string' && row.t.trim();
-const freezeVerse = row => Object.freeze({ chapter: Number(row.c), verse: Number(row.v), text: String(row.t).trim() });
+const safeVerse = row => { const start=Number(row?.v),end=row?.e===undefined?start:Number(row.e); return row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(start) && start > 0 && Number.isInteger(end) && end >= start && typeof row.t === 'string' && row.t.trim(); };
+const freezeVerse = row => { const start=Number(row.v),end=row.e===undefined?start:Number(row.e); return Object.freeze({ chapter: Number(row.c), verse: start, ...(end>start?{ verseEnd:end }:{}), text: String(row.t).trim() }); };
+const verseEnd = verse => Number(verse?.verseEnd || verse?.verse || 0);
+const verseLabel = verse => verseEnd(verse) > Number(verse?.verse) ? `${verse.verse}–${verseEnd(verse)}` : String(verse?.verse ?? '');
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
+const verseReferenceText = (book, chapter, verse) => `${book.name} ${chapter}:${verseLabel(verse)}`;
 const plainString = value => typeof value === 'string' ? value.trim() : '';
 const OFFLINE_PACK_CACHE = 'biblequest-v3-opened-bible-packs-v1';
 
@@ -88,15 +92,18 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args), 
     if (!verses.length) throw new Error(`${translation.label} pack for ${book.name} contains no readable verses.`);
     const seen = new Set();
     for (const verse of verses) {
-      const verseKey = `${verse.chapter}:${verse.verse}`;
-      if (seen.has(verseKey)) throw new Error(`${translation.label} pack for ${book.name} contains duplicate verse ${verseKey}.`);
       if (verse.chapter > book.chapters) throw new Error(`${translation.label} pack for ${book.name} contains invalid chapter ${verse.chapter}.`);
-      seen.add(verseKey);
+      const end=verseEnd(verse);
+      for(let number=verse.verse;number<=end;number++){
+        const verseKey = `${verse.chapter}:${number}`;
+        if (seen.has(verseKey)) throw new Error(`${translation.label} pack for ${book.name} contains duplicate or overlapping verse ${verseKey}.`);
+        seen.add(verseKey);
+      }
     }
     return Object.freeze({ book, translation, verses: Object.freeze(verses) });
   }
 
-  const serializedPack = loaded => loaded.verses.map(verse => ({ c: verse.chapter, v: verse.verse, t: verse.text }));
+  const serializedPack = loaded => loaded.verses.map(verse => ({ c: verse.chapter, v: verse.verse, ...(verseEnd(verse)>verse.verse?{e:verseEnd(verse)}:{}), t: verse.text }));
   async function persistOpenedPack(path, loaded) {
     if (!packStore?.write || persistedPacks.has(path)) return;
     try { if (await packStore.write(path, serializedPack(loaded))) persistedPacks.add(path); }
@@ -229,8 +236,8 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args), 
     const parsed = parseReference(text);
     if (parsed) {
       const chapter = await loadChapter(translation.id, parsed.book.code, parsed.chapter);
-      const selected = parsed.verseStart === null ? chapter.verses : chapter.verses.filter(verse => verse.verse >= parsed.verseStart && verse.verse <= parsed.verseEnd);
-      return Object.freeze({ query: text, type: 'reference', results: Object.freeze(selected.slice(0, limit).map(verse => Object.freeze({ book: parsed.book, chapter: parsed.chapter, verse: verse.verse, text: verse.text, reference: referenceText(parsed.book, parsed.chapter, verse.verse) }))), skippedBooks: Object.freeze([]) });
+      const selected = parsed.verseStart === null ? chapter.verses : chapter.verses.filter(verse => verse.verse <= parsed.verseEnd && verseEnd(verse) >= parsed.verseStart);
+      return Object.freeze({ query: text, type: 'reference', results: Object.freeze(selected.slice(0, limit).map(verse => Object.freeze({ book: parsed.book, chapter: parsed.chapter, verse: verse.verse, ...(verseEnd(verse)>verse.verse?{verseEnd:verseEnd(verse)}:{}), text: verse.text, reference: verseReferenceText(parsed.book, parsed.chapter, verse) }))), skippedBooks: Object.freeze([]) });
     }
     if (!translation.bundled) throw new Error(`${translation.label} text search is unavailable because this translation is loaded live one chapter at a time. Search by Bible reference instead.`);
     const needle = text.toLocaleLowerCase();
@@ -241,7 +248,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args), 
         const loaded = await loadBook(translation.id, book.code, { persistOffline: false });
         for (const verse of loaded.verses) {
           if (!verse.text.toLocaleLowerCase().includes(needle)) continue;
-          results.push(Object.freeze({ book, chapter: verse.chapter, verse: verse.verse, text: verse.text, reference: referenceText(book, verse.chapter, verse.verse) }));
+          results.push(Object.freeze({ book, chapter: verse.chapter, verse: verse.verse, ...(verseEnd(verse)>verse.verse?{verseEnd:verseEnd(verse)}:{}), text: verse.text, reference: verseReferenceText(book, verse.chapter, verse) }));
           if (results.length >= limit) break;
         }
       } catch (error) { skippedBooks.push(Object.freeze({ code: book.code, message: error?.message || 'Pack unavailable.' })); }
