@@ -1,3 +1,4 @@
+import { requestNavigation } from '../../app/router.js';
 import { iconSvg } from '../../ui/icons.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -80,6 +81,11 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
           <div><b data-home-badges>${state.badges.length}</b><span>Badges</span></div>
         </div>
       </section>
+      <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
+        <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
+        <span class="bq-home-congregation-copy"><span class="bq-eyebrow">CONGREGATION</span><b>Congregation &amp; Assignments</b><small data-home-congregation-caption>Join or open your congregation.</small></span>
+        <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="Open congregation and assignments">Open</button>
+      </section>
       <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite" hidden></section>
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
@@ -106,16 +112,22 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       const tutorialButton = root.querySelector('[data-open-tutorial]');
       const recordingsButton = root.querySelector('[data-open-recordings]');
       const mediaButton = root.querySelector('[data-open-media]');
+      const congregationButton = root.querySelector('[data-open-congregation-assignments]');
+      const congregationCaption = root.querySelector('[data-home-congregation-caption]');
       const assignmentHost = root.querySelector('[data-home-assignments]');
       let disposed = false;
+      let congregationRoute = 'congregation';
       const openDaily = () => onMission?.();
       const openTutorial = () => onTutorial?.();
       const openRecordings = () => onRecordings?.();
       const openMedia = () => onMedia?.();
+      const openCongregationAssignments = () => congregationRoute === 'assignments' ? onAssignments?.() : requestNavigation('congregation');
       const openAllAssignments = () => onAssignments?.();
       const hideAssignments = () => { if (assignmentHost) { assignmentHost.hidden = true; assignmentHost.innerHTML = ''; } };
       const renderAssignments = assignmentState => {
         if (disposed || !assignmentHost) return;
+        congregationRoute = assignmentState?.status === 'ready' ? 'assignments' : 'congregation';
+        if (congregationCaption) congregationCaption.textContent = congregationRoute === 'assignments' ? 'Open current assignments and congregation tools.' : 'Join or open your congregation.';
         const html = assignmentPanelHtml(assignmentState);
         if (!html) { hideAssignments(); return; }
         assignmentHost.innerHTML = html;
@@ -129,12 +141,13 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
       const loadAssignments = async () => {
         if (!assignments?.load) return;
         try { const next = await assignments.load(); if (!disposed) renderAssignments(next); }
-        catch { if (!disposed) hideAssignments(); }
+        catch { if (!disposed) { congregationRoute = 'congregation'; if (congregationCaption) congregationCaption.textContent = 'Join or open your congregation.'; hideAssignments(); } }
       };
       dailyButton?.addEventListener('click', openDaily);
       tutorialButton?.addEventListener('click', openTutorial);
       recordingsButton?.addEventListener('click', openRecordings);
       mediaButton?.addEventListener('click', openMedia);
+      congregationButton?.addEventListener('click', openCongregationAssignments);
       void loadAssignments();
       return () => {
         disposed = true;
@@ -142,6 +155,7 @@ export function homePage({ progress, dailyMission, assignments, onAssignments, o
         tutorialButton?.removeEventListener('click', openTutorial);
         recordingsButton?.removeEventListener('click', openRecordings);
         mediaButton?.removeEventListener('click', openMedia);
+        congregationButton?.removeEventListener('click', openCongregationAssignments);
       };
     }
   };

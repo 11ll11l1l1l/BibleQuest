@@ -38,16 +38,29 @@ for (const label of tileAriaLabels) {
   assert.ok(home.includes(label), `Secondary tile is missing its accessible label: "${label}"`);
 }
 
+// Reachability rule: Congregation/Assignments must be directly available from
+// Home. Existing Assignments state determines the destination; no new auth or
+// congregation ownership is introduced here.
+for (const hook of ['data-home-congregation-assignments', 'data-open-congregation-assignments', 'data-home-congregation-caption']) {
+  assert.ok(home.includes(hook), `Home must expose the one-tap congregation shortcut hook: ${hook}`);
+}
+assert.ok(home.includes('Congregation &amp; Assignments'), 'Home must visibly label the direct Congregation & Assignments entry.');
+assert.ok(home.includes("assignmentState?.status === 'ready' ? 'assignments' : 'congregation'"), 'A ready Assignments service state must route the Home shortcut to Assignments.');
+assert.ok(home.includes("requestNavigation('congregation')"), 'A signed-out/no-congregation/non-ready state must fall back to congregation access.');
+assert.ok(home.includes("congregationRoute === 'assignments' ? onAssignments?.()"), 'Ready congregation members must reuse the existing Assignments route owner.');
+
 // CSS: the daily card must remain visually dominant (its own distinct
 // background treatment), and the secondary row must be an explicit
 // multi-column compact layout, not stacked full-width panels.
 assert.ok(/\[data-home-daily\]\{background:linear-gradient/.test(css), 'Daily Journey card must keep a visually distinct, dominant treatment.');
 assert.ok(/\.bq-home-secondary\{display:grid;grid-template-columns:repeat\(3,/.test(css), 'Secondary actions must render as a compact 3-column row, not stacked full panels.');
+assert.ok(/\.bq-home-congregation\{margin-top:0;display:grid/.test(css), 'Congregation & Assignments must render as a dedicated compact Home access card.');
 
 // Desktop grid must give the primary path (Daily Journey) more width than
-// any single secondary element, and must not leave the secondary row
-// accidentally collapsed to a single narrow grid track.
+// any single secondary element, and must not leave the secondary row or the
+// congregation shortcut accidentally collapsed to a narrow track.
 assert.ok(/>\[data-home-daily\]\{grid-column:span 8\}/.test(css), 'Daily Journey must occupy the dominant share of the desktop grid.');
+assert.ok(/>\[data-home-congregation-assignments\]\{grid-column:1\/-1\}/.test(css), 'Congregation & Assignments shortcut must span the Home grid and remain obvious.');
 assert.ok(/>\.bq-home-secondary\{grid-column:1\/-1/.test(css), 'Secondary row must span full width on desktop rather than collapsing into a single narrow column.');
 
-console.log('BibleQuest v4 Home dashboard-composition contract passed.');
+console.log('BibleQuest v4 Home dashboard-composition and reachability contract passed.');
