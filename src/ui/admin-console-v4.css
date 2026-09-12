@@ -1,0 +1,228 @@
+/* BibleQuest V4 — Admin Console
+   Presentation-only bottom-up tranche. The V3 Admin Console service, authorization,
+   mutations, interaction hooks, routing and server authority remain unchanged. */
+
+[data-admin-console-view]{
+  --admin-accent:var(--forest-700);
+  display:grid;
+  gap:var(--space-4);
+}
+
+[data-admin-console-view] > .bq-panel,
+[data-admin-user-list] > .bq-panel,
+[data-admin-user]{
+  margin-top:0;
+}
+
+/* Command header: restrained/high-trust, not game-like. */
+[data-admin-console-view] > .bq-panel:first-child{
+  position:relative;
+  overflow:hidden;
+  padding:clamp(22px,3.5vw,34px);
+  border-color:color-mix(in srgb,var(--forest-700) 24%,var(--line-200));
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--forest-900) 5%,var(--surface-raised)),var(--surface-raised) 58%),
+    var(--surface-raised);
+  box-shadow:var(--shadow-2);
+}
+[data-admin-console-view] > .bq-panel:first-child::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:var(--admin-accent);
+}
+[data-admin-console-view] > .bq-panel:first-child h1{
+  max-width:18ch;
+  font-family:var(--font-display);
+  font-size:clamp(28px,5vw,40px);
+  line-height:1.04;
+  color:var(--forest-900);
+}
+[data-admin-console-view] > .bq-panel:first-child > p:not(.bq-eyebrow){
+  max-width:68ch;
+  margin-bottom:var(--space-4);
+  color:var(--ink-700);
+}
+
+/* Search/refresh command bar. */
+[data-admin-console-view] [data-admin-console-search]{
+  background:color-mix(in srgb,var(--surface-subtle) 35%,var(--surface-raised));
+}
+[data-admin-console-view] > .bq-panel:nth-child(2){
+  border-color:color-mix(in srgb,var(--forest-700) 16%,var(--line-200));
+  box-shadow:none;
+}
+[data-admin-console-view] > .bq-panel:nth-child(2) .bq-form-grid{
+  align-items:end;
+}
+
+/* Structure creation reads as one administrative workspace. */
+[data-admin-create-congregation],
+[data-admin-create-group]{
+  padding:var(--space-3);
+  border:1px solid var(--line-200);
+  border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--surface-subtle) 34%,var(--surface-raised));
+}
+[data-admin-create-congregation] + h2{
+  margin-top:var(--space-6);
+  padding-top:var(--space-6);
+  border-top:1px solid var(--line-200);
+}
+
+/* Member records: clear identity, permissions, then membership structure. */
+[data-admin-user-list]{
+  display:grid;
+  gap:var(--space-4);
+}
+[data-admin-user]{
+  position:relative;
+  padding:clamp(20px,3vw,30px);
+  border-color:color-mix(in srgb,var(--ink-500) 22%,var(--line-200));
+  box-shadow:none;
+}
+[data-admin-user] > .bq-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  min-height:26px;
+  margin-bottom:var(--space-2)!important;
+  padding:4px 9px;
+  border:1px solid color-mix(in srgb,var(--forest-700) 22%,var(--line-200));
+  border-radius:var(--radius-pill);
+  background:color-mix(in srgb,var(--forest-700) 7%,var(--surface-raised));
+}
+[data-admin-user] > h2{
+  margin-bottom:2px;
+  font-size:clamp(21px,3vw,26px);
+}
+[data-admin-user] > .bq-muted{
+  margin-top:0;
+  font-size:13px;
+}
+[data-admin-user] > h3{
+  margin:var(--space-6) 0 var(--space-2);
+  padding-top:var(--space-4);
+  border-top:1px solid var(--line-200);
+  color:var(--forest-900);
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+[data-admin-membership],
+[data-admin-group-membership]{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(180px,240px) auto;
+  align-items:end;
+  gap:var(--space-3);
+  margin-top:var(--space-2);
+  padding:var(--space-3);
+  border:1px solid var(--line-200);
+  border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--surface-subtle) 24%,var(--surface-raised));
+}
+[data-admin-membership] > div:first-child,
+[data-admin-group-membership] > div:first-child{
+  align-self:center;
+  min-width:0;
+}
+[data-admin-membership] b,
+[data-admin-group-membership] b{
+  color:var(--ink-900);
+}
+[data-admin-membership] p,
+[data-admin-group-membership] p{
+  margin:2px 0 0;
+  font-size:12px;
+}
+
+/* Irreversible action zone is structurally distinct as well as colored. */
+[data-admin-user] .bq-owner-control{
+  margin-top:var(--space-6);
+  padding:var(--space-4);
+  border:1px solid color-mix(in srgb,var(--danger) 46%,var(--line-200));
+  border-left:4px solid var(--danger);
+  border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--danger) 5%,var(--surface-raised));
+}
+[data-admin-user] .bq-owner-control > b{
+  display:block;
+  color:var(--ink-900);
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+[data-admin-user] .bq-owner-control p{
+  margin:var(--space-2) 0 var(--space-3);
+}
+[data-admin-user] .bq-danger-button{
+  min-height:var(--tap-target);
+  padding:10px 16px;
+  border:1px solid var(--danger);
+  border-radius:var(--radius-sm);
+  background:var(--surface-raised);
+  color:var(--danger);
+  font-weight:850;
+}
+
+/* Loading/auth/error panels remain explicit and calm. */
+[data-admin-console-view] [role="alert"]{
+  padding:var(--space-3);
+  border-left:4px solid var(--danger);
+  background:color-mix(in srgb,var(--danger) 5%,var(--surface-raised));
+}
+[data-admin-console-view] [role="status"]{
+  padding:var(--space-3);
+  border-left:4px solid var(--success);
+  background:color-mix(in srgb,var(--success) 5%,var(--surface-raised));
+}
+
+@media(max-width:760px){
+  [data-admin-membership],
+  [data-admin-group-membership]{
+    grid-template-columns:1fr;
+    align-items:stretch;
+  }
+  [data-admin-membership] > button,
+  [data-admin-group-membership] > button{
+    width:100%;
+  }
+  [data-admin-console-view] .bq-form-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:420px){
+  [data-admin-console-view] > .bq-panel:first-child,
+  [data-admin-user]{padding:18px}
+  [data-admin-create-congregation],
+  [data-admin-create-group],
+  [data-admin-membership],
+  [data-admin-group-membership]{padding:var(--space-3)}
+}
+
+@media(prefers-contrast:more){
+  [data-admin-console-view] > .bq-panel:first-child,
+  [data-admin-user],
+  [data-admin-membership],
+  [data-admin-group-membership],
+  [data-admin-create-congregation],
+  [data-admin-create-group]{
+    border-color:var(--ink-700);
+    background:var(--surface-raised);
+    box-shadow:none;
+  }
+  [data-admin-user] > .bq-eyebrow{border-color:var(--ink-700);background:var(--surface-raised)}
+  [data-admin-user] .bq-owner-control{border-color:var(--danger);border-left-width:5px;background:var(--surface-raised)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-admin-console-view] *,[data-admin-console-view] *::before,[data-admin-console-view] *::after{
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+}
