@@ -1,0 +1,102 @@
+/* BibleQuest V4 — final Games artwork pass.
+   Presentation-only. The stateful Games renderer, services, timers, scoring,
+   Memory Meadow IDs/logic, persistence and accessibility labels remain unchanged. */
+
+/* Recall question mark: replace the remaining brain emoji chrome with the
+   canonical Recall Deck illustration while keeping the aria-hidden marker. */
+[data-recall-question] .bq-recall-mark {
+  width:88px;
+  height:88px;
+  margin:0 auto 8px;
+  font-size:0 !important;
+  background:url("../../assets/v4/games/game-recall-deck.png") center/contain no-repeat;
+  filter:drop-shadow(0 6px 10px rgb(38 91 58 / 12%));
+}
+
+/* Completion chrome: use stable, purpose-matched artwork instead of the
+   remaining trophy/star/seed/archive emoji display marks. */
+[data-recall-complete] .bq-game-medal,
+[data-game-complete] .bq-game-medal {
+  width:88px;
+  height:88px;
+  margin:0 auto 8px;
+  font-size:0 !important;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  filter:drop-shadow(0 7px 12px rgb(38 91 58 / 14%));
+}
+
+[data-recall-complete] .bq-game-medal {
+  background-image:url("../../assets/v4/games/game-recall-deck.png");
+}
+
+[data-game-complete] .bq-game-medal {
+  background-image:url("../../assets/v4/games/game-winner-trophy.png");
+}
+
+/* Pass-and-play completion previously had no dedicated visual result mark. */
+[data-same-room-complete]::before {
+  content:"";
+  display:block;
+  width:104px;
+  height:104px;
+  margin:0 auto 8px;
+  background:url("../../assets/v4/games/game-scoreboard.png") center/contain no-repeat;
+  filter:drop-shadow(0 7px 12px rgb(38 91 58 / 14%));
+}
+
+/* Feedback panels receive one restrained art cue. The text, Scripture
+   references and correctness wording remain the actual semantic content. */
+.bq-game-explanation[data-game-feedback]::before,
+.bq-game-explanation[data-same-room-feedback]::before,
+.bq-game-explanation[data-detective-feedback]::before,
+.bq-game-explanation[data-timeline-feedback]::before {
+  content:"";
+  display:block;
+  width:42px;
+  height:42px;
+  margin:0 0 6px;
+  background:url("../../assets/v4/games/game-clue.png") center/contain no-repeat;
+}
+
+/* Do not replace textual Scripture-reference 📖 markers, Memory reward ⭐/🪙
+   labels, or timeline arrows. They communicate content/currency/direction and
+   are not placeholder artwork. The custom card/reward art remains alongside
+   those labels from the earlier certified custom-art tranche. */
+
+@media (max-width:520px) {
+  [data-recall-question] .bq-recall-mark,
+  [data-recall-complete] .bq-game-medal,
+  [data-game-complete] .bq-game-medal {
+    width:72px;
+    height:72px;
+  }
+
+  [data-same-room-complete]::before {
+    width:88px;
+    height:88px;
+  }
+}
+
+/* High-contrast fallback restores the original text glyphs where CSS images
+   may be suppressed by the platform. */
+@media (forced-colors: active) {
+  [data-recall-question] .bq-recall-mark,
+  [data-recall-complete] .bq-game-medal,
+  [data-game-complete] .bq-game-medal {
+    width:auto;
+    height:auto;
+    font-size:2.2rem !important;
+    background:none;
+    filter:none;
+  }
+
+  [data-same-room-complete]::before,
+  .bq-game-explanation[data-game-feedback]::before,
+  .bq-game-explanation[data-same-room-feedback]::before,
+  .bq-game-explanation[data-detective-feedback]::before,
+  .bq-game-explanation[data-timeline-feedback]::before {
+    display:none;
+  }
+}
