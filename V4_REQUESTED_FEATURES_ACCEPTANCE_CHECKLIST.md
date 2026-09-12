@@ -46,9 +46,13 @@ Certified assignment/status checkpoint: `release/v4-home-assignments` @ `c676e0e
 
 Calendar certification: `release/v4-calendar` @ `658f202d65481f4486a2f6c010cf0f2248f8b391`; full accumulated run `34679464999` passed. See `V4_CALENDAR_CERTIFICATION.md`.
 
+Assignments certification: `release/v4-assignments-page` @ `65d7ef14b6e1bf5dc8925a88c5838bc233e9fd95`; full accumulated run `34680055519` passed. Existing Assignments/linked-activity/backend owners were preserved while raw thrown backend/network details were blocked at the presentation boundary.
+
+Daily Journey certification: `release/v4-daily-journey` @ `fbd8b474a3f8f71044b9cae48b47528f2075436a`; full accumulated run `34680442340` passed. See `V4_DAILY_JOURNEY_CERTIFICATION.md`.
+
 - [x] Calendar: complete dedicated V4 UX/presentation and certify it, not merely preserve the old functional route. Existing runtime/service owners were byte-locked; dedicated V4 presentation plus functional/mobile/security coverage is now part of accumulated CI.
-- [ ] Assignments: final V4 acceptance audit of the full page/workflow while preserving its existing owner/service.
-- [ ] Daily Mission / Daily Journey: final page-level V4 acceptance audit beyond Home integration.
+- [x] Assignments: final V4 acceptance audit of the full page/workflow while preserving its existing owner/service.
+- [x] Daily Mission / Daily Journey: final page-level V4 acceptance audit beyond Home integration.
 - [ ] Progress / Grow: final V4 acceptance audit and consistency pass.
 - [ ] Home, Learn, Play, Grow and More must remain a coherent modern app family with all required entry points reachable.
 
@@ -187,9 +191,9 @@ These should not be casually rebuilt if already green; instead preserve them and
 ## Current audit conclusion
 
 - The original serialized V4 family queue is complete through the Community / Relational tranche; the Community checkpoint is exact-SHA certified.
-- Home assignment/status states and the requested shortcut rail are now explicitly closed with exact evidence.
-- Calendar page-level V4 acceptance is closed at `release/v4-calendar`; no Calendar runtime/service owner was changed to obtain certification.
-- V4 is **not yet feature/acceptance complete** because Assignments, Daily Journey/Mission, Progress/Grow and navigation coherence still need Priority-1 closure, followed by named-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates.
+- Home assignment/status states and the requested shortcut rail are explicitly closed with exact evidence.
+- Calendar, full Assignments page, and Daily Journey page-level Priority-1 V4 acceptance are closed with exact-SHA full-suite evidence.
+- V4 is **not yet feature/acceptance complete** because Progress/Grow and navigation-family coherence still need Priority-1 closure, followed by named-flow audits, artwork integration, whole-app polish, responsive/accessibility/PWA/device evidence, and privacy/field gates.
 - Custom artwork/icon generation, cutting, canonical naming and integration remain active work.
 - Final whole-app responsive/accessibility/performance/PWA/security/device/release gates remain mandatory.
 
