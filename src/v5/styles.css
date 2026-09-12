@@ -1,0 +1,33 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f7f3;
+  color: #183026;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: #f6f7f3; }
+button { font: inherit; }
+
+.v5-shell { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr; }
+.v5-header { position: sticky; top: 0; z-index: 10; display: grid; gap: 0.8rem; padding: max(0.9rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.8rem max(1rem, env(safe-area-inset-left)); background: color-mix(in srgb, #f6f7f3 94%, transparent); backdrop-filter: blur(18px); border-bottom: 1px solid #dbe2dc; }
+.v5-brand { display: flex; align-items: baseline; gap: 0.55rem; }
+.v5-brand strong { font-size: 1.1rem; }
+.v5-brand span { color: #5c6f65; font-size: 0.8rem; }
+.v5-nav { display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: none; padding-bottom: 0.1rem; }
+.v5-nav button { min-height: 44px; border: 0; border-radius: 999px; padding: 0.55rem 0.85rem; background: transparent; color: #385044; cursor: pointer; white-space: nowrap; }
+.v5-nav button[aria-current="page"] { background: #173f30; color: white; }
+#v5-main { width: min(100% - 2rem, 72rem); margin: 0 auto; padding: clamp(1rem, 2.5vw, 2rem) 0 max(2rem, env(safe-area-inset-bottom)); outline: none; }
+.v5-card { border: 1px solid #dbe2dc; border-radius: 1.25rem; padding: clamp(1.1rem, 3vw, 2rem); background: #fff; box-shadow: 0 16px 40px rgb(31 56 45 / 8%); }
+.v5-card h2 { margin: 0 0 0.75rem; font-size: clamp(1.4rem, 4vw, 2.4rem); line-height: 1.08; }
+.v5-card p { max-width: 62ch; margin: 0; color: #52665b; line-height: 1.65; }
+.v5-eyebrow { margin-bottom: 0.55rem !important; color: #2f7654 !important; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+
+@media (min-width: 760px) {
+  .v5-header { grid-template-columns: minmax(13rem, 1fr) auto; align-items: center; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .v5-card { animation: v5-enter 180ms ease-out; }
+  @keyframes v5-enter { from { opacity: 0; transform: translateY(4px); } }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "biblequest-v5-a5-greenfield-lab",
+  "private": true,
+  "version": "5.0.0-lab.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev:v5": "vite --open /v5.html",
+    "build:v5": "vite build",
+    "typecheck:v5": "tsc --noEmit -p tsconfig.v5.json"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2",
+    "typescript": "7.0.2",
+    "vite": "8.2.2"
+  }
+}
