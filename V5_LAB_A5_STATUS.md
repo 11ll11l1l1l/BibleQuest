@@ -3,6 +3,7 @@
 Updated: 2026-09-13 JST
 Branch: `lab/v5-a5-greenfield`
 Baseline origin: `1f504dec812f11453f82e30af61cdf3d6c547060`
+Current lab HEAD before this status update: `b7c1940c8ff5bd656439d0ef9090a3dbb5dd2a9e`
 Lab identity: `BQ-V5-A5-GREENFIELD`
 
 ## Hypothesis
@@ -28,7 +29,7 @@ The lab will use these ownership rules:
 
 ### Tranche 1 — isolated typed shell/runtime boundary
 
-Status: IN PROGRESS
+Status: IMPLEMENTED, BUILD EVIDENCE PENDING
 
 Implemented in this tranche:
 
@@ -38,7 +39,10 @@ Implemented in this tranche:
 - framework-free greenfield router with one URL owner;
 - typed app-shell composition seam;
 - lazy-loaded Home and Not Found route modules;
-- greenfield-only CSS foundation with no dependency on the V4 override stack.
+- explicit placeholder registrations for primary parity routes that are not yet migrated;
+- greenfield-only CSS foundation with no dependency on the V4 override stack;
+- stale async route-render protection using a render version token;
+- singular `aria-current` ownership in the shell navigation.
 
 This first slice deliberately has no Supabase writes and no privileged backend behavior. It proves shell/build/router ownership before auth/data migration.
 
@@ -51,25 +55,27 @@ This first slice deliberately has no Supabase writes and no privileged backend b
 | App shell | V4 shell/nav/bootstrap owner | new shell owner, minimal nav | PARTIAL |
 | Session/auth | existing session owner | contract not migrated | MISSING |
 | Home | production feature | minimal architectural proof route | NOT PARITY |
-| Reader | production feature | not migrated | MISSING |
-| Games | production feature | not migrated | MISSING |
+| Reader | production feature | registered placeholder only | MISSING |
+| Games | production feature | registered placeholder only | MISSING |
+| Community/ministry/admin | production features | registered placeholder / not migrated | MISSING |
 | Media | production feature | not migrated | MISSING |
-| Community/ministry/admin | production features | not migrated | MISSING |
 | Offline/PWA | production install/runtime behavior | no greenfield SW contract yet | MISSING |
 | Supabase/RLS | protected production contracts | reused by policy, no new client repository yet | PRESERVED/UNUSED |
-| Accessibility | production baseline | shell semantics only; browser proof pending | PARTIAL |
+| Accessibility | production baseline | semantic shell, 44px controls, focus handoff, reduced-motion handling; browser proof pending | PARTIAL |
 
 ## Tests and evidence
 
 - Baseline lab branch verified at `1f504dec812f11453f82e30af61cdf3d6c547060` before writes.
 - V4 entry structure inspected: production still loads a large ordered CSS stack and boots through `src/app/bootstrap.js`.
 - Existing router contract inspected: hash-based route normalization, history/hash listeners, and unknown-route fallback are accepted behaviors to preserve or deliberately supersede.
-- Build/typecheck execution is required after package installation; do not count configuration presence as a passing build.
+- Source review caught and fixed a shell accessibility-state defect before completion: active-route cleanup initially queried route content instead of navigation and could leave multiple `aria-current` markers.
+- Package versions were pinned rather than floated. At this run, npm reports TypeScript `7.0.2`; Vite 8 requires Node 20.19+ or 22.12+, and this lab pins Node `>=22.12.0`.
+- A deterministic lockfile attempt using `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` timed out in the execution environment after 45 seconds. No lockfile/build/typecheck result is therefore claimed.
 
 ## Failures / unresolved evidence
 
-- No lockfile has been generated yet.
-- No `npm ci`, `npm run typecheck`, `npm run build`, browser test, PWA test or deployed preview is yet claimed green for this lab.
+- No lockfile has been generated yet because the package-lock-only attempt timed out.
+- No `npm ci`, `npm run typecheck:v5`, `npm run build:v5`, browser test, PWA test or deployed preview is yet claimed green for this lab.
 - Home is only a vertical architecture proof, not accepted feature parity.
 - Session, repository/data, offline/PWA and protected feature surfaces remain unmigrated.
 
@@ -79,6 +85,8 @@ This first slice deliberately has no Supabase writes and no privileged backend b
 2. The current route semantics are small enough to preserve behavior while replacing implementation ownership.
 3. Greenfield route modules should be lazy by construction rather than reproducing the current bootstrap import graph.
 4. V4 CSS override accumulation should not be copied into the new runtime; feature styles should be imported by the modules that own them.
+5. The shell can own loading/error/focus/navigation presentation without becoming the owner of auth, permissions or domain persistence.
+6. Async route loads need explicit stale-result suppression from the start; this is simpler to establish now than retrofit after many features migrate.
 
 ## Known debt
 
@@ -86,13 +94,14 @@ This first slice deliberately has no Supabase writes and no privileged backend b
 - auth/session and active-congregation context are not yet modeled;
 - no repository/data boundary exists yet;
 - no offline/cache update model exists yet;
-- no deterministic build identity or bundle budget exists yet.
+- no deterministic build identity or bundle budget exists yet;
+- dependency lock/build evidence remains blocked by the transient install timeout.
 
 ## Next 3 tasks
 
 1. Generate/commit deterministic dependency lock evidence and run typecheck/build; correct the greenfield shell until both pass.
 2. Add a typed session boundary plus a read-only repository contract and migrate one meaningful existing feature slice end-to-end without bypassing current backend authorization.
-3. Expand the route parity registry to the authoritative shipped surface inventory and add router/shell regression tests including deep-link/not-found behavior.
+3. Expand the route parity registry to the authoritative shipped surface inventory and add router/shell regression tests including deep-link/not-found and rapid-navigation stale-load behavior.
 
 ## Viability
 
