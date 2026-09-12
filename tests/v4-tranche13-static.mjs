@@ -1,6 +1,7 @@
 // BibleQuest V4 Tranche 13 presentation contract.
-// Admin Console, Admin Operations, Content Review, Congregation and Reset/Recovery
-// are presentation-only here. Their existing feature code and authority boundaries remain byte-exact.
+// Tranche 13 itself was CSS-only. Later functional tranches may legitimately
+// extend protected feature owners, so preserve its architecture/interaction
+// contract structurally rather than freezing every owner forever.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -9,19 +10,24 @@ import { execFileSync } from 'node:child_process';
 const root=path.resolve(import.meta.dirname,'..');
 // Exact active V4 HEAD immediately before Tranche 13 was integrated into the single stream.
 const baselineSha='76474d070da75cb8e0a9210642ea9e426b545200';
-const features=[
-  ['admin-console','src/features/admin-console/index.js'],
+
+// These owners have not received a later approved functional tranche, so the
+// original Tranche 13 byte lock remains useful for them. Admin Console is
+// intentionally excluded from this byte lock because V4 Phase 2 now extends
+// that existing owner with emergency user-management controls. Its ownership
+// and required hooks are guarded below instead.
+const byteLockedFeatures=[
   ['admin-operations','src/features/admin-operations/index.js'],
   ['content-review','src/features/content-review/index.js'],
   ['congregation','src/features/congregation/index.js'],
   ['reset-recovery','src/features/reset-recovery/index.js']
 ];
 
-for(const [name,relative] of features){
+for(const [name,relative] of byteLockedFeatures){
   const current=fs.readFileSync(path.join(root,relative),'utf8');
   let baseline=null;
   try{baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']})}catch{}
-  if(baseline!==null)assert.equal(current,baseline,`${name} must remain byte-for-byte unchanged in the CSS-only Tranche 13 redesign.`);
+  if(baseline!==null)assert.equal(current,baseline,`${name} must remain byte-for-byte unchanged unless a later approved functional tranche explicitly updates its contract.`);
 }
 
 const cssFiles={
@@ -52,9 +58,9 @@ for(const state of ['pending','include','exempt','remove'])assert.ok(cssFiles.re
 assert.ok(cssFiles.congregation.includes('[data-congregation-role]'),'Congregation role needs explicit high-trust hierarchy.');
 assert.ok(cssFiles.reset.includes('.bq-recovery-code')&&cssFiles.reset.includes('border:2px dashed'), 'Replacement recovery code must be visually prominent without relying on color alone.');
 
-// Existing interaction hooks must still exist in the untouched feature owners.
+// Existing interaction hooks and feature-owner boundaries must remain intact.
 const hooks={
-  'src/features/admin-console/index.js':['data-admin-console-search','data-admin-delete-user','data-admin-platform-role'],
+  'src/features/admin-console/index.js':['export function adminConsolePage','data-admin-console-view','data-admin-console-search','data-admin-delete-user','data-admin-platform-role','data-admin-congregation-role','data-admin-group-role'],
   'src/features/admin-operations/index.js':['data-ops-filter','data-ops-refresh','data-ops-health'],
   'src/features/content-review/index.js':['data-content-review-decide','data-content-review-congregation','data-content-review-filter'],
   'src/features/congregation/index.js':['data-congregation-join','data-congregation-role','data-congregation-back'],
@@ -64,5 +70,13 @@ for(const [relative,required] of Object.entries(hooks)){
   const source=fs.readFileSync(path.join(root,relative),'utf8');
   for(const hook of required)assert.ok(source.includes(hook),`${relative} must preserve ${hook}.`);
 }
+
+// Admin Console may evolve after Tranche 13, but it must continue using the
+// injected service owners rather than introducing a direct Supabase/auth admin
+// transport or a duplicate platform-management runtime.
+const adminSource=fs.readFileSync(path.join(root,'src/features/admin-console/index.js'),'utf8');
+assert.ok(adminSource.includes('adminConsolePage({admin,accountDeletion'), 'Admin Console must remain driven by the injected Admin Console and Admin Operations owners.');
+assert.ok(!adminSource.includes('createClient('), 'Admin Console presentation must not create a second Supabase client.');
+assert.ok(!/fetch\s*\(\s*[`'\"](?:\/|https?:).*auth\/v1\/admin/.test(adminSource), 'Admin Console presentation must not bypass the shared API owner with direct auth-admin requests.');
 
 console.log('BibleQuest v4 Tranche 13 static presentation contract passed.');
