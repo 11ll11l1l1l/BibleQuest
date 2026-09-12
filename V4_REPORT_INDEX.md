@@ -74,8 +74,8 @@ All families share one icon language, type scale, spacing system, motion languag
 | 2 | V4 foundation certification | **CERTIFIED** — `release/v4-foundation` @ `a008919fe9e7db1fcd2a03cac8b71fd7110afc0d` |
 | 3 | Global shell/navigation | **CERTIFIED** — `release/v4-shell` @ `2e11dce90efd13c18fe7b8921e3f2e54b00e6d99` |
 | 4 | Home | **CERTIFIED** — `release/v4-home` @ `17ed040957d6aeb3bc2bc0d1832e1c23f46a6c0f` |
-| 5 | Learn hub + Reader | **NEXT / mandatory gate.** |
-| 6 | Games + Avatar Vault | Pending |
+| 5 | Learn hub | **CERTIFIED** — `release/v4-learn` @ `3f5d433ec16ef2d20a5ec00d5ba388161d2a9689`. Reader itself deferred to its own sub-tranche (see note below). |
+| 6 | Reader (deferred from Learn) or Games + Avatar Vault | **NEXT candidate.** Reader is materially larger/riskier (licensed-source handling, Japanese furigana/vocabulary, verse dialogs, search) than Learn hub was; recommend its own dedicated tranche rather than folding into Games |
 | 7 | More hub | Pending |
 | 8 | Ministry + Assignments + Workspace + Notifications | Pending |
 | 9 | Bible World + Progress + Personal Mission + Calendar | Pending |
@@ -123,6 +123,20 @@ Every existing `data-*` hook and route action (`onMission`, `onTutorial`, `onRec
 New contract: `tests/v4-home-dashboard-static.mjs` — asserts all hooks/actions survive, the hero stays locked, secondary actions are compact tiles (not full panels with their own `<h2>`), and the desktop grid gives Daily Journey the dominant column share.
 
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators (54 validators, all pass including the pre-existing tutorial-onboarding contract), full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34659814839`.
+
+## Learn hub certification evidence (this cycle)
+
+Checkpoint: `release/v4-learn` @ `3f5d433ec16ef2d20a5ec00d5ba388161d2a9689`.
+
+A1-V4-004 (ten near-identical `.bq-learning-card` buttons with equal visual weight) is closed for the Learn hub itself. Bible Reader is now a dominant primary entry (same gradient/prominence pattern already certified for Home's Daily Journey card, reusing the `bible` icon). The remaining nine destinations are grouped into three labeled categories — **Study & Reflect** (Guided Study, Deep Questions, Story Journey, Wisdom Situations), **Explore & Review** (Bible World, Adaptive Learning, Open Smart Review), **Notes** (Private Notes, Cloud Notes) — instead of one flat undifferentiated grid.
+
+Protected surfaces were re-verified, not just assumed safe: the stable `<h1>Learn</h1>` heading, the doctrinal-safety policy panel (`DOCTRINAL_SAFETY`, `data-doctrinal-policy`), and the source-provenance guide (`sourceGuide`) all remain present verbatim, and the pre-existing `validate-v3-doctrinal-safety.mjs`/`validate-v3-source-labels.mjs` validators both pass unmodified. All ten `data-open-*` hooks and route actions were preserved exactly (Rule 1: pure Class A presentation change).
+
+**Scope note:** "Learn hub + Reader" was queued together, but on inspection Reader (`src/features/reader/index.js`) is a materially larger and riskier surface — licensed-translation handling (NLT external-link mode), Japanese furigana/vocabulary controls, verse dialogs, in-translation search, sticky control panel. Redesigning it with the same rigor as Learn hub would roughly double this tranche's size and risk. Per Rule 2 ("one page or tightly related group per tranche"), Reader is deferred to its own dedicated tranche rather than bundled in — this is a scope split, not a skipped requirement.
+
+New contract: `tests/v4-learn-composition-static.mjs` — asserts all ten hooks/actions survive, the stable heading and protected doctrinal/provenance surfaces remain, Reader is styled as a distinct dominant entry (not a flat learning-card), and destinations are organized into at least three labeled groups.
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators (including the pre-existing doctrinal-safety and source-labels contracts, unmodified), full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px). Run: `34660376063`.
 
 ## Change-class rules
 
