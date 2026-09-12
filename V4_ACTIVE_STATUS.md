@@ -3,66 +3,89 @@
 Updated: 2026-09-12 JST
 Execution model: one serialized development stream
 Active branch: `v4/modern-ui-overhaul`
-Coordination: `V4_PARALLEL_COORDINATION.md` (historical filename; serialized model is authoritative)
+Coordination: `V4_PARALLEL_COORDINATION.md` is historical; this file plus `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` define the active serialized state.
 
 ## Mandatory companion checklist
 
-Before selecting, implementing, certifying, or closing remaining V4 work, read `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`. It is a release-blocking record of the user's requested features, exact acceptance details, custom artwork program, whole-app audit requirements, device/accessibility/PWA gates, and final release gates. A green general regression run does not override unchecked requested acceptance items in that checklist.
+Before selecting, implementing, certifying, or closing remaining V4 work, read `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`. It is release-blocking. A green general regression run does not override unchecked requested acceptance items.
 
-## Last fully verified active baseline
+## Last fully verified V4 product checkpoint
 
-- Exact SHA: `76474d070da75cb8e0a9210642ea9e426b545200`
-- Full accumulated regression run: `34666411786`
+- Checkpoint: `release/v4-community-family`
+- Exact SHA: `e72b6427fdc2c7e742152264c5091d80f9e6ad6d`
+- Full accumulated regression run: `34677870938`
 - Result: **PASS**
-- This baseline includes the completed CEBOCB Cebuano/Bisaya Reader/source-guide integration and its accumulated regression coverage.
+- Passed: Cloudflare/build deployment gate, accumulated architecture validators, accumulated edge regressions, guarded field-harness syntax, and complete accumulated browser/mobile Playwright suite.
+- V4 feature/service owners for the Community tranche are byte-locked to pre-tranche baseline `7b2abd7507adf5b7363fe068d5038f54d1c7263a` by `tests/v4-community-family-static.mjs`.
 
-## Current tranche
+Later commits on `v4/modern-ui-overhaul` may update documentation/checklists. They do not create a new certified product identity unless runtime/product bytes change and earn their own complete verification.
 
-**Tranche 13 — Admin + Content Review + Congregation + diagnostics/recovery**
+## Serialized family-queue status
 
-State: **INTEGRATING / TESTING**
+The original V4 family implementation queue is complete through the final Community / Relational tranche.
 
-Work incorporated into the single active stream:
+Certified/retained work includes:
 
-- `src/ui/admin-console-v4.css`
-- `src/ui/admin-operations-v4.css`
-- `src/ui/content-review-v4.css`
-- `src/ui/congregation-v4.css`
-- `src/ui/reset-recovery-v4.css`
-- unified preservation contract: `tests/v4-tranche13-static.mjs`
-- five V4 presentation styles activated from the shared `index.html` V4 override list
+- infrastructure bootstrap safety net;
+- shared V4 foundation and icon system;
+- global shell/navigation;
+- Home dashboard and horizontal shortcut rail;
+- Learn hub;
+- Reader;
+- Games + Avatar Vault;
+- Ministry / Assignments / Workspace / Notifications presentation work;
+- Journey family work;
+- Study family work;
+- Trust / Reflection work (Account, Notes, Transform, Personality/Psychometrics, Accessibility);
+- Admin / Content Review / Congregation / diagnostics/recovery;
+- CEBOCB Cebuano/Bisaya Reader/source-guide integration;
+- More hub grouping and direct Home congregation/assignment access;
+- six-family accent identity system;
+- Community / Couples / Journey Groups / Teams / Live Rooms / Recognition / Leaderboards / Media / Recordings / Encouragements.
 
-The five existing feature owners remain intentionally unchanged from exact pre-tranche active baseline `76474d070da75cb8e0a9210642ea9e426b545200`:
+## Community / Relational certification completed this cycle
 
-- `src/features/admin-console/index.js`
-- `src/features/admin-operations/index.js`
-- `src/features/content-review/index.js`
-- `src/features/congregation/index.js`
-- `src/features/reset-recovery/index.js`
+New V4 presentation owner:
 
-No backend, RLS, auth, routing, privileged API, diagnostic authority, membership authority, review decision authority, or recovery ownership change is part of this tranche.
+- `src/ui/community-family-v4.css`
 
-## Current gate still open
+Unified preservation contract:
 
-1. Register `tests/v4-tranche13-static.mjs` in the accumulated regression workflow.
-2. Run the full accumulated regression against the resulting exact candidate SHA.
-3. Repair any regression against the same active stream if needed.
-4. Only after green evidence, mark Tranche 13 certified and synchronize the captain/report index.
+- `tests/v4-community-family-static.mjs`
 
-## Remaining serialized visual queue after Tranche 13
+Covered routes/surfaces:
 
-The old two-lane ordering is retired. Remaining work is handled from one queue against current repository evidence:
+- Community Bridge;
+- Couples local/device experience;
+- Couple Journey cloud experience;
+- Journey Groups;
+- Team Center;
+- Live Rooms;
+- Congregation Recognition;
+- Leaderboards;
+- Encouragements;
+- Media Library;
+- Live Recordings.
 
-1. Tranche 11 — Account + Notes + Transform + Psychometrics + Accessibility.
-2. Tranche 12 — Community + Couples + Journey Groups + Live Rooms + Media/Recordings + Encouragements.
-3. Reconcile any remaining V4 plan acceptance gaps, artwork/responsive/accessibility/performance polish, then exact V4 release-candidate gates.
+The tranche deliberately did **not** modify any corresponding `src/features/**/index.js` owner. It added responsive relational composition, structural privacy/role boundaries, explicit destructive-action presentation, Live Room connection/code hierarchy, and wide browse/player layouts while retaining the certified Community family accent tokens.
 
-The order may change only when repository evidence shows a dependency or blocker; no second implementation lane is created.
+## Remaining release-blocking work
+
+The next work is no longer another broad family conversion. It is acceptance closure and requested polish, in this order unless repository evidence exposes a blocker:
+
+1. **Home assignment/status acceptance reconciliation** — prove every requested signed-out/offline/no-congregation/loading/error/open/started/due/overdue/completed state against the existing Assignments owner and clear only the states actually evidenced.
+2. **Priority-1 page audits** — Calendar, Assignments, Daily Journey/Mission, Progress/Grow and coherent Home/Learn/Play/Grow/More reachability.
+3. **Named-flow audits** — Memory Meadow exact #38 behavior; Couples Journey/communication-level requirements; preserve CEBOCB through all later work.
+4. **Custom artwork/icon program** — finish inventory, generated asset sheets, deterministic cutter/naming pipeline and replacement of remaining generic/placeholder artwork.
+5. **Whole-app polish + responsive/accessibility/performance/PWA audit** — all maintained routes and states, target phone widths, tablet/desktop, safe areas, keyboard/screen reader, reduced motion, localization expansion and asset cost.
+6. **Security/privacy/field evidence** — account isolation and real multi-account Assignments/Groups/Teams/Couples/Live Rooms evidence without weakening RLS or data boundaries.
+7. **Exact V4 release candidate** — freeze one SHA, complete all release gates, preview/staging, installed-PWA/physical-device evidence, then promote while preserving the known-good V3 rollback reference.
 
 ## Safety rules
 
 - Repository evidence overrides stale chat summaries.
-- Preserve V3 single-owner architecture and all current privacy/isolation contracts.
+- Preserve V3 single-owner architecture and current privacy/isolation contracts.
 - Presentation-only work must not silently change business behavior.
-- Every completed tranche requires exact-SHA evidence rather than inherited PASS status.
+- Every runtime/product tranche requires exact-SHA evidence; documentation-only commits do not inherit a new product identity.
+- Do not weaken tests to obtain green status.
 - Do not modify production/main merely to advance V4.
