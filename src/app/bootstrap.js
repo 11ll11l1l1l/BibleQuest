@@ -108,7 +108,7 @@ import { morePage } from '../features/more/index.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
 
 function escapeStartupMessage(value){
-  return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+  return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 }
 
 // Fail-fast startup guard: if service construction/wiring below throws (for
