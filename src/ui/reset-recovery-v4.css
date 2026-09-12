@@ -1,0 +1,19 @@
+/* BibleQuest V4 — Account Reset/Recovery. Presentation only; recovery owner and security rules remain unchanged. */
+[data-reset-recovery-view]{display:grid;place-items:start center}
+[data-reset-recovery-view] .bq-reset-card{width:min(100%,720px);margin-top:0;padding:clamp(22px,4vw,36px);border-color:color-mix(in srgb,var(--forest-700) 22%,var(--line-200));box-shadow:var(--shadow-2)}
+[data-reset-recovery-view] .bq-reset-card h1{font-family:var(--font-display);font-size:clamp(28px,5vw,39px);line-height:1.06;color:var(--forest-900)}
+[data-reset-recovery-view] .bq-reset-card>p:not(.bq-eyebrow):not(.bq-reset-note):not(.bq-form-message){max-width:62ch;color:var(--ink-700)}
+[data-reset-recovery-view] .bq-reset-help{margin:var(--space-4) 0;padding:var(--space-4);border:1px solid color-mix(in srgb,var(--focus) 34%,var(--line-200));border-left:4px solid var(--focus);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--focus) 5%,var(--surface-raised))}
+[data-reset-recovery-view] .bq-reset-help b,[data-reset-recovery-view] .bq-reset-help span{display:block}
+[data-reset-recovery-view] .bq-reset-help span{margin-top:5px;color:var(--ink-700);font-size:13px}
+[data-reset-recovery-view] [data-reset-recovery-form]{display:grid;gap:var(--space-3);margin-top:var(--space-4)}
+[data-reset-recovery-view] [data-reset-recovery-form] label{display:grid;gap:var(--space-2)}
+[data-reset-recovery-view] [data-reset-recovery-form] button{width:100%}
+[data-reset-recovery-view] [data-reset-message]:not(:empty){padding:var(--space-3);border-left:4px solid var(--danger);background:color-mix(in srgb,var(--danger) 5%,var(--surface-raised))}
+[data-reset-recovery-view] .bq-reset-note{margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--line-200);font-size:12px;color:var(--ink-500)}
+[data-reset-recovery-view] .bq-recovery-code{margin:var(--space-4) 0;padding:var(--space-4);overflow-wrap:anywhere;border:2px dashed var(--forest-700);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface-subtle) 38%,var(--surface-raised));font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:clamp(16px,3vw,20px);font-weight:850;letter-spacing:.04em;color:var(--forest-900);text-align:center}
+[data-reset-recovery-view] .bq-save-check{display:flex;align-items:flex-start;gap:var(--space-2);margin:var(--space-4) 0;padding:var(--space-3);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised)}
+[data-reset-recovery-view] .bq-save-check input{flex:0 0 auto;margin-top:2px}
+@media(max-width:480px){[data-reset-recovery-view] .bq-reset-card{padding:18px}[data-reset-recovery-view] .bq-reset-help,[data-reset-recovery-view] .bq-recovery-code,[data-reset-recovery-view] .bq-save-check{padding:var(--space-3)}}
+@media(prefers-contrast:more){[data-reset-recovery-view] .bq-reset-card,[data-reset-recovery-view] .bq-reset-help,[data-reset-recovery-view] .bq-save-check{border-color:var(--ink-700);background:var(--surface-raised);box-shadow:none}[data-reset-recovery-view] .bq-recovery-code{border-color:var(--ink-900);background:var(--surface-raised)}}
+@media(prefers-reduced-motion:reduce){[data-reset-recovery-view] *,[data-reset-recovery-view] *::before,[data-reset-recovery-view] *::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
