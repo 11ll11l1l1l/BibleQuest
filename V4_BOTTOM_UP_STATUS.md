@@ -25,15 +25,25 @@ Do not enter top-down Lane A tranches.
 LANE: B
 TRANCHE: 13 — Admin + Content Review + Congregation + diagnostics/recovery
 BASE: 33bf8bd16781df5d63c01526afb43454fcaad6d5
-CANDIDATE: 33bf8bd16781df5d63c01526afb43454fcaad6d5
-STATE: PLANNING
-OWNED FILES: discovery pending; tranche-local files only
-TESTS EXECUTED: none yet — planning/discovery phase
-OPEN FAILURES: none known yet
-SHARED-FILE REQUESTS: none
-OVERLAP RISK: low by queue separation; shared workflow/foundation/docs remain locked
-NEXT SAFE ACTION: inspect current Tranche 13 runtime files, existing V3 contracts, and agent findings; produce a precise file-ownership and redesign map before implementation
+CANDIDATE: 37996c3b04287c9c64430381d79146e7aef84f55
+STATE: IMPLEMENTING
+OWNED FILES: src/ui/admin-console-v4.css; src/ui/admin-operations-v4.css; src/ui/content-review-v4.css; src/ui/congregation-v4.css; src/ui/reset-recovery-v4.css; tests/v4-admin-console-static.mjs; tests/v4-bottom-up-tranche13-static.mjs
+DELIBERATELY UNTOUCHED: src/features/admin-console/index.js; src/features/admin-operations/index.js; src/features/content-review/index.js; src/features/congregation/index.js; src/features/reset-recovery/index.js; src/app/**; src/core/**; src/ui/v4-foundation.css; src/ui/icons.js; index.html; .github/workflows/**; V4_REPORT_INDEX.md; V4_MODERN_UI_DEVELOPMENT_PLAN.md
+TESTS EXECUTED: none yet. Static preservation contracts have been authored, but the connected GitHub workflow is manual-only and the current execution environment cannot clone GitHub; do not treat authored tests as passing evidence.
+OPEN FAILURES: none observed by repository inspection. Executed static/browser/full-regression evidence is still open.
+SHARED-FILE REQUESTS: at integration, add the five Tranche 13 V4 stylesheet links to the shared V4 override load list in index.html; register tests/v4-bottom-up-tranche13-static.mjs (and optionally retire the narrower v4-admin-console-static.mjs after reconciliation) in the accumulated workflow. Do not perform those shared edits concurrently with Lane A.
+OVERLAP RISK: currently low. Latest Lane A delta from the coordination baseline touched only V4_REPORT_INDEX.md and certified Games/Avatar; Lane A has moved to Ministry/Assignments/Workspace/Notifications. index.html/workflow remain anticipated shared integration points and are therefore intentionally untouched here.
+NEXT SAFE ACTION: finish Tranche 13 presentation/evidence review, re-check active Lane A HEAD for overlap, then prepare this candidate for serialized integration and full browser/regression verification. Do not call Tranche 13 certified before those gates execute.
 ```
+
+## Tranche 13 implementation notes
+
+- Admin Console: new high-trust administrative hierarchy, clearer member/role/group structure, explicit irreversible-account-deletion zone, responsive membership controls, stronger-contrast and reduced-motion support.
+- Admin Operations: clearer operational dashboard hierarchy, status summary, health metrics, warnings, tags and narrow-screen layout. Diagnostics remain read-only presentation; no diagnostics owner or privileged API changed.
+- Content Review: reviewer queue hierarchy, explicit review-state edge markers, stronger action grouping and responsive decision controls. Reviewer eligibility, RLS, exact decision values and save orchestration are untouched.
+- Congregation: membership/role hierarchy and invite-join presentation modernized without touching membership authority, role normalization or trusted join behavior.
+- Reset/Recovery: security-focused recovery form and replacement-code presentation modernized without changing recovery validation, password reset behavior or recovery-code ownership.
+- Operational route-failure recovery remains owned by the already-certified shell/recovery architecture; this lane has not created or modified a competing recovery owner.
 
 ## Working rules
 
@@ -48,4 +58,5 @@ NEXT SAFE ACTION: inspect current Tranche 13 runtime files, existing V3 contract
 
 - 2026-09-12 — Bottom-up lane created to support concurrent V4 development without colliding with the top-down AI.
 - 2026-09-12 — Coordination baseline aligned to commit `33bf8bd16781df5d63c01526afb43454fcaad6d5`.
-- 2026-09-12 — Tranche 13 set to `PLANNING`; implementation has not yet started.
+- 2026-09-12 — Collision check against active `v4/modern-ui-overhaul` found only `V4_REPORT_INDEX.md` changed since coordination; Lane A certified Games/Avatar and moved to Ministry/Assignments.
+- 2026-09-12 — Tranche 13 moved from `PLANNING` to `IMPLEMENTING`; five route-scoped V4 presentation files and preservation contracts added without modifying V3 feature/service owners or shared integration files.
