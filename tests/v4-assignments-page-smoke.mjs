@@ -4,14 +4,6 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch({headless:true});
 const assert=(ok,message)=>{if(!ok)throw new Error(message)};
 
-const readyState=(role='member',assignments=[])=>({
-  status:'ready',authenticated:true,remoteAvailable:true,userId:'u1',
-  congregations:[],congregationId:'c1',congregationName:'Test Church',role,
-  assignments,activeId:'',
-  publishTargets:{members:[],teams:[],groups:[]},
-  activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}
-});
-
 const assignment={
   id:'a1',congregationId:'c1',createdBy:'leader1',title:'Private reflection',instructions:'Write one sentence.',
   type:'custom',scriptureRefs:[],targetScope:'all',targetId:null,dueAt:null,scheduleAt:null,reminderAt:null,
@@ -19,116 +11,64 @@ const assignment={
   progress:{assignmentId:'a1',userId:'u1',status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null}
 };
 
-async function run(){
+try{
   const page=await browser.newPage({viewport:{width:320,height:760},isMobile:true,hasTouch:true});
   const errors=[];
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(BASE,{waitUntil:'networkidle'});
 
-  const mobile=await page.evaluate(async({readyState,assignment})=>{
-    const {assignmentsPage}=await import(`/src/features/assignments/index.js?v4accept=${Date.now()}`);
-    const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-    const stateFrom=value=>JSON.parse(JSON.stringify(value));
-
-    function makeService({initial,loadError='',reviewError='',audienceError='',completeError=''}={}){
-      let state=stateFrom(initial);
-      const api={
-        snapshot:()=>state,
-        async load(){if(loadError)throw new Error(loadError);return state},
-        open(id){state={...state,activeId:id,activeReview:{assignmentId:id,status:'idle',responders:[],responses:[],error:''}};return state},
-        close(){state={...state,activeId:'',activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}};return state},
-        async loadReview(id){state={...state,activeId:id,activeReview:reviewError?{assignmentId:id,status:'error',responders:[],responses:[],error:reviewError}:{assignmentId:id,status:'ready',responders:[],responses:[],error:''}};return state},
-        async loadPublishTargets(){if(audienceError)throw new Error(audienceError);return state},
-        async publish(){return state},
-        async start(){return state},
-        async complete(){if(completeError)throw new Error(completeError);return{state,awarded:0,alreadyCompleted:false}},
-        async watch(){return()=>{}},
-        stopSync(){},
-        clear(){},
-        contract:{}
-      };
-      return api;
-    }
-
-    async function mount(service){
-      const host=document.createElement('div');
-      const def=assignmentsPage({assignments:service,onBack:()=>{},onAccount:()=>{}});
-      host.innerHTML=def.html;
-      document.body.appendChild(host);
-      const dispose=def.mount(host);
-      await sleep(35);
-      return{host,dispose:()=>{dispose?.();host.remove()}};
-    }
-
-    const texts={};
-    const stateCases={
-      signedOut:{status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:'',publishTargets:{members:[],teams:[],groups:[]},activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}},
-      offline:{status:'local-preview',authenticated:true,remoteAvailable:false,congregations:[],assignments:[],activeId:'',publishTargets:{members:[],teams:[],groups:[]},activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}},
-      noCongregation:{status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],assignments:[],activeId:'',publishTargets:{members:[],teams:[],groups:[]},activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}}
-    };
-    for(const [key,value] of Object.entries(stateCases)){
-      const mounted=await mount(makeService({initial:value}));texts[key]=mounted.host.textContent||'';mounted.dispose();
-    }
-
-    const rawLoad='postgres relation bible_assignments token=SUPER_SECRET';
-    let mounted=await mount(makeService({initial:readyState('member',[]),loadError:rawLoad}));
-    texts.loadError=mounted.host.textContent||'';mounted.dispose();
-
-    mounted=await mount(makeService({initial:readyState('member',[])}));
-    texts.empty=mounted.host.textContent||'';
-    const emptyMetrics={
-      scrollWidth:document.documentElement.scrollWidth,
-      innerWidth,
-      minButton:Math.min(...[...mounted.host.querySelectorAll('button')].map(node=>node.getBoundingClientRect().height))
-    };
-    mounted.dispose();
-
-    const rawReview='select * from private_responses where secret=LEAK_ME';
-    mounted=await mount(makeService({initial:readyState('member',[assignment]),reviewError:rawReview}));
-    mounted.host.querySelector('[data-assignment-open="a1"]')?.click();await sleep(35);
-    texts.reviewError=mounted.host.textContent||'';mounted.dispose();
-
-    const rawAudience='service_role_key=LEAK_ME_AUDIENCE';
-    mounted=await mount(makeService({initial:readyState('leader',[]),audienceError:rawAudience}));
-    mounted.host.querySelector('[data-assignment-targets]')?.click();await sleep(35);
-    texts.audienceError=mounted.host.textContent||'';
-    const mobilePublisherColumns=getComputedStyle(mounted.host.querySelector('[data-assignment-publish]')).gridTemplateColumns;
-    mounted.dispose();
-
-    const rawComplete='rpc complete_assignment failed: internal-secret';
-    mounted=await mount(makeService({initial:readyState('member',[assignment]),completeError:rawComplete}));
-    mounted.host.querySelector('[data-assignment-open="a1"]')?.click();await sleep(30);
-    const form=mounted.host.querySelector('[data-assignment-complete="a1"]');
-    form?.requestSubmit();await sleep(35);
-    texts.completeError=mounted.host.textContent||'';mounted.dispose();
-
-    return{texts,emptyMetrics,mobilePublisherColumns,rawLoad,rawReview,rawAudience,rawComplete};
-  },{readyState:readyState.toString(),assignment});
-
-  // Recreate the function source passed through Playwright serialization.
-  // The page-side test receives readyState as source text so it can remain self-contained.
-  // This branch should never execute: Playwright cannot serialize a function directly.
-  void mobile;
-}
-
-try{
-  // Use a page-side test with plain data only; helper source is injected below.
-  const page=await browser.newPage({viewport:{width:320,height:760},isMobile:true,hasTouch:true});
-  const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});
   const result=await page.evaluate(async assignment=>{
     const {assignmentsPage}=await import(`/src/features/assignments/index.js?v4accept=${Date.now()}`),sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     const ready=(role='member',rows=[])=>({status:'ready',authenticated:true,remoteAvailable:true,userId:'u1',congregations:[],congregationId:'c1',congregationName:'Test Church',role,assignments:rows,activeId:'',publishTargets:{members:[],teams:[],groups:[]},activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}});
     const makeService=({initial,loadError='',reviewError='',audienceError='',completeError=''})=>{let state=structuredClone(initial);return{snapshot:()=>state,async load(){if(loadError)throw new Error(loadError);return state},open(id){state={...state,activeId:id,activeReview:{assignmentId:id,status:'idle',responders:[],responses:[],error:''}};return state},close(){state={...state,activeId:'',activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}};return state},async loadReview(id){state={...state,activeId:id,activeReview:reviewError?{assignmentId:id,status:'error',responders:[],responses:[],error:reviewError}:{assignmentId:id,status:'ready',responders:[],responses:[],error:''}};return state},async loadPublishTargets(){if(audienceError)throw new Error(audienceError);return state},async publish(){return state},async start(){return state},async complete(){if(completeError)throw new Error(completeError);return{state,awarded:0,alreadyCompleted:false}},async watch(){return()=>{}},stopSync(){},contract:{}}};
     const mount=async service=>{const host=document.createElement('div'),def=assignmentsPage({assignments:service,onBack:()=>{},onAccount:()=>{}});host.innerHTML=def.html;document.body.appendChild(host);const dispose=def.mount(host);await sleep(35);return{host,dispose:()=>{dispose?.();host.remove()}}};
     const texts={};
-    for(const [key,state] of Object.entries({signedOut:{...ready(),status:'signed-out',authenticated:false},offline:{...ready(),status:'local-preview',remoteAvailable:false},noCongregation:{...ready(),status:'no-congregation'}})){const mounted=await mount(makeService({initial:state}));texts[key]=mounted.host.textContent||'';mounted.dispose()}
-    const rawLoad='postgres relation bible_assignments token=SUPER_SECRET';let mounted=await mount(makeService({initial:ready(),loadError:rawLoad}));texts.loadError=mounted.host.textContent||'';mounted.dispose();
-    mounted=await mount(makeService({initial:ready()}));texts.empty=mounted.host.textContent||'';const emptyMetrics={scrollWidth:document.documentElement.scrollWidth,innerWidth,minButton:Math.min(...[...mounted.host.querySelectorAll('button')].map(node=>node.getBoundingClientRect().height))};mounted.dispose();
-    const rawReview='select * from private_responses where secret=LEAK_ME';mounted=await mount(makeService({initial:ready('member',[assignment]),reviewError:rawReview}));mounted.host.querySelector('[data-assignment-open="a1"]')?.click();await sleep(35);texts.reviewError=mounted.host.textContent||'';mounted.dispose();
-    const rawAudience='service_role_key=LEAK_ME_AUDIENCE';mounted=await mount(makeService({initial:ready('leader'),audienceError:rawAudience}));mounted.host.querySelector('[data-assignment-targets]')?.click();await sleep(35);texts.audienceError=mounted.host.textContent||'';const mobilePublisherColumns=getComputedStyle(mounted.host.querySelector('[data-assignment-publish]')).gridTemplateColumns;mounted.dispose();
-    const rawComplete='rpc complete_assignment failed: internal-secret';mounted=await mount(makeService({initial:ready('member',[assignment]),completeError:rawComplete}));mounted.host.querySelector('[data-assignment-open="a1"]')?.click();await sleep(30);mounted.host.querySelector('[data-assignment-complete="a1"]')?.requestSubmit();await sleep(35);texts.completeError=mounted.host.textContent||'';mounted.dispose();
+
+    for(const [key,state] of Object.entries({
+      signedOut:{...ready(),status:'signed-out',authenticated:false},
+      offline:{...ready(),status:'local-preview',remoteAvailable:false},
+      noCongregation:{...ready(),status:'no-congregation'}
+    })){
+      const mounted=await mount(makeService({initial:state}));
+      texts[key]=mounted.host.textContent||'';
+      mounted.dispose();
+    }
+
+    const rawLoad='postgres relation bible_assignments token=SUPER_SECRET';
+    let mounted=await mount(makeService({initial:ready(),loadError:rawLoad}));
+    texts.loadError=mounted.host.textContent||'';
+    mounted.dispose();
+
+    mounted=await mount(makeService({initial:ready()}));
+    texts.empty=mounted.host.textContent||'';
+    const emptyMetrics={scrollWidth:document.documentElement.scrollWidth,innerWidth,minButton:Math.min(...[...mounted.host.querySelectorAll('button')].map(node=>node.getBoundingClientRect().height))};
+    mounted.dispose();
+
+    const rawReview='select * from private_responses where secret=LEAK_ME';
+    mounted=await mount(makeService({initial:ready('member',[assignment]),reviewError:rawReview}));
+    mounted.host.querySelector('[data-assignment-open="a1"]')?.click();
+    await sleep(35);
+    texts.reviewError=mounted.host.textContent||'';
+    mounted.dispose();
+
+    const rawAudience='service_role_key=LEAK_ME_AUDIENCE';
+    mounted=await mount(makeService({initial:ready('leader'),audienceError:rawAudience}));
+    mounted.host.querySelector('[data-assignment-targets]')?.click();
+    await sleep(35);
+    texts.audienceError=mounted.host.textContent||'';
+    const mobilePublisherColumns=getComputedStyle(mounted.host.querySelector('[data-assignment-publish]')).gridTemplateColumns;
+    mounted.dispose();
+
+    const rawComplete='rpc complete_assignment failed: internal-secret';
+    mounted=await mount(makeService({initial:ready('member',[assignment]),completeError:rawComplete}));
+    mounted.host.querySelector('[data-assignment-open="a1"]')?.click();
+    await sleep(30);
+    mounted.host.querySelector('[data-assignment-complete="a1"]')?.requestSubmit();
+    await sleep(35);
+    texts.completeError=mounted.host.textContent||'';
+    mounted.dispose();
+
     return{texts,emptyMetrics,mobilePublisherColumns,rawLoad,rawReview,rawAudience,rawComplete};
   },assignment);
 
@@ -149,11 +89,18 @@ try{
     const {assignmentsPage}=await import(`/src/features/assignments/index.js?v4desktop=${Date.now()}`),sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     let state={status:'ready',authenticated:true,remoteAvailable:true,userId:'leader1',congregations:[],congregationId:'c1',congregationName:'Test Church',role:'leader',assignments:[],activeId:'',publishTargets:{members:[],teams:[],groups:[]},activeReview:{assignmentId:'',status:'idle',responders:[],responses:[],error:''}};
     const service={snapshot:()=>state,async load(){return state},async loadPublishTargets(){return state},async publish(){return state},async start(){return state},async complete(){return{state,awarded:0,alreadyCompleted:false}},async watch(){return()=>{}},stopSync(){},contract:{}};
-    const host=document.createElement('div'),def=assignmentsPage({assignments:service,onBack:()=>{},onAccount:()=>{}});host.innerHTML=def.html;document.body.appendChild(host);const dispose=def.mount(host);await sleep(35);const form=host.querySelector('[data-assignment-publish]'),columns=getComputedStyle(form).gridTemplateColumns,metrics={innerWidth,scrollWidth:document.documentElement.scrollWidth};dispose?.();host.remove();return{columns,metrics};
+    const host=document.createElement('div'),def=assignmentsPage({assignments:service,onBack:()=>{},onAccount:()=>{}});
+    host.innerHTML=def.html;document.body.appendChild(host);
+    const dispose=def.mount(host);await sleep(35);
+    const form=host.querySelector('[data-assignment-publish]'),columns=getComputedStyle(form).gridTemplateColumns,metrics={innerWidth,scrollWidth:document.documentElement.scrollWidth};
+    dispose?.();host.remove();
+    return{columns,metrics};
   });
   assert(desktop.columns.split(' ').length>=2,'Assignments publisher must use the intentional wide two-column composition.');
   assert(desktop.metrics.innerWidth===1100&&desktop.metrics.scrollWidth<=1101,'Assignments acceptance must not overflow at desktop width.');
   assert(errors.length===0,`Unexpected V4 Assignments acceptance console/page errors: ${errors.join(' | ')}`);
   await page.close();
   console.log('BibleQuest v4 Assignments page browser acceptance passed.');
-}finally{await browser.close()}
+}finally{
+  await browser.close();
+}
