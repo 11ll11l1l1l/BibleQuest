@@ -1,3 +1,21 @@
+## Phase 2 — Admin emergency user management
+
+Checkpoint: `release/v4-phase2-admin-emergency`, exact-SHA verified, full accumulated suite green.
+
+**Reused existing infrastructure rather than duplicating it**, once found: `bible_app_access.active` was already the exact suspend/reactivate flag needed (no new migration required); `bible_admin_audit_log` already existed with the right shape; `supabase/functions/bq-admin-ops` already had the owner-only, audited `delete_user` action to extend rather than a new function to build.
+
+**Added, all inside `bq-admin-ops`:**
+- `suspend_account` / `reactivate_account` - owner or admin, mutual self-action block, another owner is immune to suspension (mirroring the existing delete-owner-immunity rule), suspension immediately attempts session revocation, both actions audited.
+- `force_sign_out` - any owner/admin, audited.
+- `set_temp_password` - **owner-only**, 12-character minimum enforced server-side, owner cannot target their own account, calls `auth.admin.updateUserById`, immediately attempts session revocation, the password value itself is never written to the audit log (only that the action happened).
+- New `forceSignOutUser()` helper using the documented GoTrue admin REST endpoint (`POST /auth/v1/admin/users/{id}/logout`), since supabase-js v2's `auth.admin.signOut()` takes a JWT, not a user id, and can't target an arbitrary other user.
+
+**Real bug caught by my own test before it shipped:** `setTempPassword`'s owner-only check ran before its ready/authorized check, so a signed-out/unauthorized call returned the wrong error code (`OWNER_REQUIRED` instead of `NOT_READY`) - fixed the check order.
+
+**Honest limitation:** the Edge Function is TypeScript/Deno - I cannot execute or deploy it from this environment, so it has never actually run against live Supabase. I wrote a static contract test locking in every authorization/audit invariant (owner-gating, self-action blocks, no-password-in-audit-log, the specific REST endpoint used) as the closest available proof, but **real deployment + live verification against a test Supabase project is still owed** before this can be trusted in production. The app-layer (`admin-operations.js`) and its guards are fully tested and verified, since that part runs in Node/the browser where I can actually execute it.
+
+**Not done from Phase 2's full scope:** the new-user-card UI (identity/congregation/security sections), the three severity-tier UI treatment, typed-confirmation for destructive actions, and email-change. Those are presentation-layer work on top of this now-real backend capability - a natural next tranche once someone has verified the Edge Function actually works live.
+
 ## Phase 1 — Assignment privacy tightening (self-only for members)
 
 **Verification finding, before any code changed:** the alarming "Member B can read Member A's private answer" scenario proposed in the new governing plan was checked directly against the live migrations, not assumed true. `bible_assignment_progress` (the table holding actual answer text + leader_feedback) was already correctly restricted by RLS to the author plus verified ministry roles (facilitator/leader/pastor/admin), and the client already gated the private-answer render block behind the same role check. **No confirmed leak of actual answer content or leader feedback exists or existed.**
