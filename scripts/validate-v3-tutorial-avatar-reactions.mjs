@@ -29,7 +29,7 @@ if (!failures.length) {
   }
   for (const token of [
     "['welcome', 'right', 'left', 'up', 'down', 'thumbs', 'surprise', 'thoughtful']",
-    "['welcome', 'down', 'up', 'thumbs', 'thoughtful', 'thumbs']",
+    "['welcome', 'down', 'right', 'up', 'thoughtful', 'left', 'thumbs', 'surprise', 'thumbs']",
     'trainerStateForStep',
     "return TUTORIAL_STEP_TRAINER_STATES[index] || 'welcome'"
   ]) if (!trainer.includes(token)) fail(`Trainer state mapping missing retained contract token: ${token}`);

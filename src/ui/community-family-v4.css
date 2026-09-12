@@ -1,0 +1,383 @@
+/* BibleQuest V4 — Community / Relational family
+   Presentation-only tranche. Existing community, couples, group, team,
+   realtime, recognition, leaderboard and media owners remain authoritative. */
+
+:is(
+  [data-community-view],
+  [data-couples-view],
+  [data-couples-cloud-view],
+  [data-journey-groups-view],
+  [data-team-center-view],
+  [data-live-rooms-view],
+  [data-media-library-page],
+  [data-recordings-page],
+  [data-recognition-view],
+  [data-leaderboards-view],
+  [data-encouragements-view]
+){
+  --bq-community-deep:var(--family-community-deep,#7B3F32);
+  --bq-community-accent:var(--family-community-accent,#A85C47);
+  --bq-community-soft:var(--family-community-soft,#F7E6E0);
+  --bq-community-line:color-mix(in srgb,var(--bq-community-accent) 24%,var(--line-200));
+  display:grid;
+  gap:var(--space-5,20px);
+  min-width:0;
+}
+
+:is(
+  [data-community-view],
+  [data-couples-view],
+  [data-couples-cloud-view],
+  [data-journey-groups-view],
+  [data-team-center-view],
+  [data-live-rooms-view],
+  [data-media-library-page],
+  [data-recordings-page],
+  [data-recognition-view],
+  [data-leaderboards-view],
+  [data-encouragements-view]
+) :is(h1,h2){text-wrap:balance}
+
+:is(
+  [data-community-view],
+  [data-couples-view],
+  [data-couples-cloud-view],
+  [data-journey-groups-view],
+  [data-team-center-view],
+  [data-live-rooms-view],
+  [data-media-library-page],
+  [data-recordings-page],
+  [data-recognition-view],
+  [data-leaderboards-view],
+  [data-encouragements-view]
+) :is(.bq-panel,.bq-account-section){
+  border-color:var(--bq-community-line);
+  box-shadow:0 10px 28px color-mix(in srgb,var(--bq-community-deep) 7%,transparent);
+}
+
+:is(.bq-community-head,.bq-couples-head,.bq-couples-cloud-head,.bq-journey-groups-head,.bq-team-center-head,.bq-encouragements-head){
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:var(--space-5,20px);
+  padding:clamp(18px,3vw,30px);
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-xl,24px);
+  background:
+    radial-gradient(circle at 92% 8%,color-mix(in srgb,var(--bq-community-soft) 92%,transparent),transparent 42%),
+    linear-gradient(145deg,var(--surface-raised),color-mix(in srgb,var(--bq-community-soft) 42%,var(--surface-raised)));
+  box-shadow:var(--shadow-sm,0 8px 24px rgba(0,0,0,.08));
+}
+
+:is(.bq-community-head,.bq-couples-head,.bq-couples-cloud-head,.bq-journey-groups-head,.bq-team-center-head,.bq-encouragements-head) h1{
+  margin:.15em 0 .3em;
+  color:var(--bq-community-deep);
+  font-family:var(--font-display);
+}
+
+/* Community bridge — scan-first destination grid instead of repeated flat panels. */
+[data-community-view] .bq-community-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+[data-community-view] .bq-community-grid button{
+  min-height:116px;
+  display:grid;
+  grid-template-columns:44px 1fr;
+  grid-template-areas:"icon title" "icon copy";
+  align-content:center;
+  gap:4px 12px;
+  padding:16px;
+  text-align:left;
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-lg,18px);
+  background:var(--surface-raised);
+  color:var(--ink-900);
+  box-shadow:0 5px 16px color-mix(in srgb,var(--bq-community-deep) 5%,transparent);
+}
+[data-community-view] .bq-community-grid button>span{
+  grid-area:icon;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:var(--bq-community-soft);
+  font-size:1.35rem;
+}
+[data-community-view] .bq-community-grid button>b{grid-area:title;color:var(--bq-community-deep);font-size:1rem}
+[data-community-view] .bq-community-grid button>small{grid-area:copy;color:var(--ink-600);line-height:1.35}
+[data-community-view] .bq-community-grid button:disabled{opacity:.52;box-shadow:none}
+[data-community-view] .bq-community-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+[data-community-view] .bq-community-summary>div{
+  display:grid;
+  gap:2px;
+  padding:14px;
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-lg,18px);
+  background:var(--surface-raised);
+}
+[data-community-view] .bq-community-summary strong{font-size:1.55rem;color:var(--bq-community-deep)}
+[data-community-view] .bq-community-boundary{
+  border-left:4px solid var(--bq-community-accent);
+  background:color-mix(in srgb,var(--bq-community-soft) 34%,var(--surface-raised));
+}
+
+/* Couples — relational warmth, while keeping local and cloud ownership visibly separate. */
+[data-couples-view] .bq-couples-mode-grid,
+[data-couples-cloud-view] .bq-couples-cloud-pair-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+[data-couples-view] .bq-couples-mode-grid>button,
+[data-couples-view] .bq-couples-categories>button,
+[data-couples-cloud-view] .bq-couples-cloud-pair-grid>button,
+[data-couples-cloud-view] .bq-couples-cloud-pair-grid>form{
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-lg,18px);
+  background:var(--surface-raised);
+  box-shadow:0 6px 18px color-mix(in srgb,var(--bq-community-deep) 6%,transparent);
+}
+[data-couples-view] .bq-couples-mode-grid>button{min-height:116px;padding:16px;text-align:left}
+[data-couples-view] .bq-couples-mode-grid>button>span{display:block;font-size:1.4rem;margin-bottom:8px}
+[data-couples-view] .bq-couples-mode-grid>button>b{display:block;color:var(--bq-community-deep)}
+[data-couples-view] .bq-couples-categories{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity}
+[data-couples-view] .bq-couples-categories>button{flex:0 0 auto;min-height:48px;padding:9px 13px;scroll-snap-align:start}
+[data-couples-view] .bq-couples-card,
+[data-couples-cloud-view] .bq-couples-cloud-step{
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-xl,24px);
+  background:linear-gradient(160deg,var(--surface-raised),color-mix(in srgb,var(--bq-community-soft) 28%,var(--surface-raised)));
+  box-shadow:0 14px 34px color-mix(in srgb,var(--bq-community-deep) 8%,transparent);
+}
+[data-couples-view] .bq-couples-safety,
+[data-couples-cloud-view] .bq-couples-cloud-privacy,
+[data-couples-cloud-view] .bq-couples-cloud-rule{
+  border-left:4px solid var(--bq-community-accent);
+  background:color-mix(in srgb,var(--bq-community-soft) 38%,var(--surface-raised));
+}
+[data-couples-cloud-view] .bq-couple-code{
+  display:inline-block;
+  padding:.2em .48em;
+  border:2px dashed var(--bq-community-accent);
+  border-radius:10px;
+  background:var(--bq-community-soft);
+  color:var(--bq-community-deep);
+  letter-spacing:.12em;
+}
+[data-couples-cloud-view] .bq-couples-cloud-journey{display:grid;gap:9px}
+[data-couples-cloud-view] .bq-couples-cloud-journey>button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:58px;
+  padding:11px 14px;
+  border:1px solid var(--bq-community-line);
+  border-radius:16px;
+  background:var(--surface-raised);
+  text-align:left;
+}
+[data-couples-cloud-view] .bq-couples-cloud-journey>button.done{
+  border-left:4px solid var(--success,#39765A);
+  background:color-mix(in srgb,var(--success-soft,#E5F3EA) 46%,var(--surface-raised));
+}
+[data-couples-cloud-view] .bq-couples-cloud-danger{
+  border:2px solid var(--danger,#A13B3B);
+  background:transparent;
+  color:var(--danger,#A13B3B);
+}
+
+/* Groups / teams — make role and privacy boundaries readable before actions. */
+[data-journey-groups-view] .bq-journey-group-card,
+[data-team-center-view] .bq-team-card,
+[data-encouragements-view] .bq-encouragement-group{
+  position:relative;
+  overflow:hidden;
+}
+[data-journey-groups-view] .bq-journey-group-card::before,
+[data-team-center-view] .bq-team-card::before,
+[data-encouragements-view] .bq-encouragement-group::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:var(--bq-community-accent);
+}
+[data-journey-groups-view] :is(.bq-journey-group-privacy,.bq-journey-group-owner-note),
+[data-team-center-view] :is(.bq-team-boundary,.bq-team-permission-note),
+[data-encouragements-view] .bq-encouragement-privacy{
+  padding:12px 14px;
+  border-left:4px solid var(--bq-community-accent);
+  border-radius:0 12px 12px 0;
+  background:color-mix(in srgb,var(--bq-community-soft) 34%,var(--surface-raised));
+}
+[data-team-center-view] .bq-team-member-list,
+[data-leaderboards-view] .bq-team-member-list{display:grid;gap:8px;padding:0;list-style:none}
+[data-team-center-view] .bq-team-member-list>li,
+[data-leaderboards-view] .bq-team-member-list>li{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:50px;
+  padding:10px 12px;
+  border:1px solid var(--bq-community-line);
+  border-radius:14px;
+  background:color-mix(in srgb,var(--bq-community-soft) 20%,var(--surface-raised));
+}
+[data-team-center-view] :is(.bq-team-danger,[data-team-archive]){
+  border:2px solid var(--danger,#A13B3B);
+  color:var(--danger,#A13B3B);
+}
+
+/* Live Rooms — connection state, room identity and destructive host action stay explicit. */
+[data-live-rooms-view] [data-live-room-active]{
+  border-top:4px solid var(--bq-community-accent);
+  background:linear-gradient(160deg,var(--surface-raised),color-mix(in srgb,var(--bq-community-soft) 26%,var(--surface-raised)));
+}
+[data-live-rooms-view] [data-live-room-code]{
+  display:inline-block;
+  padding:.35em .65em;
+  border:2px dashed var(--bq-community-accent);
+  border-radius:12px;
+  background:var(--bq-community-soft);
+  color:var(--bq-community-deep);
+  font-size:clamp(1.2rem,5vw,1.8rem);
+  letter-spacing:.12em;
+}
+[data-live-rooms-view] [data-live-room-connection]{font-weight:800;color:var(--bq-community-deep)}
+[data-live-rooms-view] [data-live-room-participants]{display:grid;gap:7px;padding-left:1.1rem}
+[data-live-rooms-view] [data-live-room-end]{border:2px solid var(--danger,#A13B3B);color:var(--danger,#A13B3B)}
+
+/* Recognition / leaderboards — celebrate without turning ministry into arcade chrome. */
+:is([data-recognition-view],[data-leaderboards-view])>.bq-team-center-head{
+  border:1px solid var(--bq-community-line);
+  border-radius:var(--radius-xl,24px);
+  background:linear-gradient(145deg,var(--surface-raised),color-mix(in srgb,var(--bq-community-soft) 40%,var(--surface-raised)));
+}
+[data-recognition-view] .bq-community-row,
+[data-leaderboards-view] .bq-team-member-list>li{
+  border-left:4px solid var(--bq-community-accent);
+}
+[data-leaderboards-view] [data-leaderboard-user]>span{display:grid;gap:2px}
+[data-leaderboards-view] [data-leaderboard-user]>strong{white-space:nowrap;color:var(--bq-community-deep)}
+[data-recognition-view] [data-recognition-award]{max-width:720px}
+
+/* Encouragements — preset actions feel warm but remain bounded, not chat-like. */
+[data-encouragements-view] .bq-encouragement-presets{display:flex;flex-wrap:wrap;gap:8px}
+[data-encouragements-view] .bq-encouragement-feed{display:grid;gap:7px;margin-top:14px}
+[data-encouragements-view] .bq-encouragement-feed>p{
+  margin:0;
+  padding:10px 12px;
+  border-radius:12px;
+  background:color-mix(in srgb,var(--bq-community-soft) 34%,var(--surface-raised));
+}
+
+/* Media / recordings — browse + player composition on wide screens, linear on phones. */
+:is([data-media-library-page],[data-recordings-page]) :is(.bq-media-head,.bq-recordings-head){
+  border-top:4px solid var(--bq-community-accent);
+  background:linear-gradient(150deg,var(--surface-raised),color-mix(in srgb,var(--bq-community-soft) 34%,var(--surface-raised)));
+}
+[data-media-library-page] .bq-media-layout,
+[data-recordings-page] .bq-recordings-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);
+  gap:18px;
+  align-items:start;
+}
+[data-media-library-page] .bq-media-grid,
+[data-recordings-page] .bq-recordings-list{display:grid;gap:10px;min-width:0}
+[data-media-library-page] .bq-media-card,
+[data-recordings-page] .bq-recording-card{
+  border-color:var(--bq-community-line);
+  background:var(--surface-raised);
+}
+[data-recordings-page] .bq-recording-card{
+  width:100%;
+  min-height:76px;
+  padding:14px;
+  text-align:left;
+  border:1px solid var(--bq-community-line);
+  border-radius:16px;
+}
+[data-media-library-page] :is(.bq-media-player-shell,.bq-media-toolbar),
+[data-recordings-page] .bq-recording-player-shell{
+  border-color:var(--bq-community-line);
+}
+[data-media-library-page] .bq-media-player-shell,
+[data-recordings-page] .bq-recording-player-shell{position:sticky;top:88px}
+[data-media-library-page] .bq-media-tabs{display:flex;gap:8px;flex-wrap:wrap}
+[data-media-library-page] .bq-media-tabs .is-active{
+  border:2px solid var(--bq-community-deep);
+  background:var(--bq-community-soft);
+  color:var(--bq-community-deep);
+  font-weight:800;
+}
+[data-media-library-page] :is(.bq-media-controls,.bq-media-actions),
+[data-recordings-page] :is(.bq-recording-controls,.bq-recording-actions){display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+
+@media(max-width:760px){
+  :is(.bq-community-head,.bq-couples-head,.bq-couples-cloud-head,.bq-journey-groups-head,.bq-team-center-head,.bq-encouragements-head){display:grid}
+  [data-community-view] .bq-community-grid,
+  [data-couples-view] .bq-couples-mode-grid,
+  [data-couples-cloud-view] .bq-couples-cloud-pair-grid,
+  [data-media-library-page] .bq-media-layout,
+  [data-recordings-page] .bq-recordings-layout{grid-template-columns:minmax(0,1fr)}
+  [data-media-library-page] .bq-media-player-shell,
+  [data-recordings-page] .bq-recording-player-shell{position:static}
+}
+
+@media(max-width:430px){
+  [data-community-view] .bq-community-grid{grid-template-columns:minmax(0,1fr)}
+  [data-community-view] .bq-community-summary{grid-template-columns:minmax(0,1fr)}
+  [data-team-center-view] .bq-team-member-list>li,
+  [data-leaderboards-view] .bq-team-member-list>li{align-items:flex-start;flex-direction:column}
+  [data-media-library-page] :is(.bq-media-controls,.bq-media-actions)>*,
+  [data-recordings-page] :is(.bq-recording-controls,.bq-recording-actions)>*{max-width:100%}
+}
+
+@media(prefers-contrast:more){
+  :is(
+    [data-community-view],
+    [data-couples-view],
+    [data-couples-cloud-view],
+    [data-journey-groups-view],
+    [data-team-center-view],
+    [data-live-rooms-view],
+    [data-media-library-page],
+    [data-recordings-page],
+    [data-recognition-view],
+    [data-leaderboards-view],
+    [data-encouragements-view]
+  ) :is(.bq-panel,.bq-account-section,button,input,select,textarea){border-width:2px}
+  [data-couples-cloud-view] .bq-couple-code,
+  [data-live-rooms-view] [data-live-room-code]{border-width:3px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  :is(
+    [data-community-view],
+    [data-couples-view],
+    [data-couples-cloud-view],
+    [data-journey-groups-view],
+    [data-team-center-view],
+    [data-live-rooms-view],
+    [data-media-library-page],
+    [data-recordings-page],
+    [data-recognition-view],
+    [data-leaderboards-view],
+    [data-encouragements-view]
+  ) *{
+    scroll-behavior:auto!important;
+    transition-duration:.001ms!important;
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+  }
+}

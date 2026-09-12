@@ -1,0 +1,47 @@
+/* V4 Games visual kit. CSS-only: games/index.js's markup is one large
+   phase-based render function with ~15 phases and dozens of data-* hooks
+   threaded through a single delegated handler - the same risk profile as
+   Reader. This tranche retokenizes the existing surfaces onto the certified
+   V4 foundation for a cohesive, more game-like feel without touching any
+   markup, hooks, or game logic. Replacing emoji markers with real SVG game
+   art is deferred to its own follow-up sub-tranche (recorded in the captain
+   index), matching the Reader precedent for scope-splitting a risky rewrite. */
+
+.bq-games-head h1{font-family:var(--font-display)}
+.bq-game-card{border-color:var(--line-200);box-shadow:var(--shadow-1);background:linear-gradient(155deg,var(--surface-raised) 0%,color-mix(in srgb,var(--amber-100) 22%,var(--surface-raised)) 100%)}
+.bq-game-card>span{color:var(--forest-700)}
+.bq-game-score{color:var(--ink-500)}
+
+.bq-question-card{box-shadow:var(--shadow-1);border-color:var(--line-200)}
+.bq-question-card h1{font-family:var(--font-display)}
+.bq-game-progress{background:var(--surface-subtle)}
+.bq-game-progress i{background:var(--forest-700)}
+.bq-game-choice{border-color:var(--line-200);background:var(--surface-raised);color:var(--ink-900)}
+.bq-game-choice>span{background:var(--surface-subtle);color:var(--ink-700)}
+.bq-game-choice:hover:not(:disabled){border-color:color-mix(in srgb,var(--forest-700) 40%,var(--line-200));background:color-mix(in srgb,var(--surface-subtle) 40%,var(--surface-raised))}
+.bq-game-choice.is-correct{border-color:color-mix(in srgb,var(--success) 50%,var(--line-200));background:color-mix(in srgb,var(--success) 10%,var(--surface-raised))}
+.bq-game-choice.is-wrong{border-color:color-mix(in srgb,var(--danger) 40%,var(--line-200));background:color-mix(in srgb,var(--danger) 8%,var(--surface-raised))}
+.bq-game-choice.is-correct>span{background:var(--success);color:var(--surface-raised)}
+.bq-game-choice.is-wrong>span{background:var(--danger);color:var(--surface-raised)}
+.bq-game-explanation{background:color-mix(in srgb,var(--surface-subtle) 60%,var(--surface-raised))}
+.bq-game-explanation p{color:var(--ink-500)}
+.bq-game-explanation>span{color:var(--forest-700)}
+.bq-game-explanation>small{color:var(--forest-700)}
+
+/* Completion medal: a soft circular badge behind the emoji gives it more
+   game-trophy weight without touching the glyph itself. */
+.bq-game-medal{display:inline-grid;place-items:center;width:88px;height:88px;margin:0 auto;border-radius:50%;background:radial-gradient(circle,var(--amber-100) 0%,transparent 72%);box-shadow:var(--shadow-1)}
+.bq-game-result h1{font-family:var(--font-display)}
+.bq-game-stats>div{border-color:var(--line-200);background:color-mix(in srgb,var(--surface-subtle) 46%,var(--surface-raised))}
+
+.bq-recall-book{border-color:var(--line-200);box-shadow:var(--shadow-1)}
+.bq-recall-icon{background:var(--amber-100)}
+.bq-recall-book>strong{color:var(--forest-700)}
+.bq-recall-answer{background:color-mix(in srgb,var(--amber-100) 40%,var(--surface-raised))}
+.bq-recall-answer small{color:var(--forest-700)}
+.bq-timeline-row{border-color:var(--line-200);background:var(--surface-raised)}
+.bq-timeline-number{background:var(--surface-subtle);color:var(--forest-700)}
+
+.bq-memory-meadow{background:linear-gradient(180deg,color-mix(in srgb,var(--amber-100) 30%,var(--surface-raised)) 0%,color-mix(in srgb,var(--forest-500) 8%,var(--surface-raised)) 100%);box-shadow:var(--shadow-2)}
+.bq-memory-card{border-radius:var(--radius-md);box-shadow:var(--shadow-1)}
+.bq-memory-card.is-matched{box-shadow:var(--shadow-1),inset 0 0 0 2px var(--success)}

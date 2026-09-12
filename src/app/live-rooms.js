@@ -25,7 +25,7 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
   const disconnect=()=>{if(stopChannel)stopChannel();stopChannel=null;connected=false;connectionStatus=room?'disconnected':'idle';return emit()};
   const clearRoom=()=>{if(stopChannel)stopChannel();stopChannel=null;room=null;participants=Object.freeze([]);connected=false;connectionStatus='idle'};
   async function loadMemberships(){const userId=identity(),rows=await congregation.load();memberships=(Array.isArray(rows)?rows:[]).map(row=>Object.freeze({...row,canHost:congregation.can?.(row.congregationId,'ministry')===true}));membershipUserId=userId;return memberships}
-  async function ensureMemberships(){const userId=identity();if(membershipUserId!==userId)await loadMemberships();return memberships}
+  async function ensureMemberships(){const userId=identity();if(membershipUserId!==userId){if(membershipUserId)clearRoom();memberships=[];await loadMemberships()}return memberships}
   function requireMembership(congregationId){const membership=congregation.get(String(congregationId||''));if(!membership)throw roomError('Join this room’s congregation before using Live Rooms.','BQ_LIVE_ROOMS_CONGREGATION');return membership}
   async function refreshParticipants(){if(!room)return Object.freeze([]);participants=normalizeParticipants(await api.participants(room.id,room.congregationId),room);emit();return participants}
   async function attach(){

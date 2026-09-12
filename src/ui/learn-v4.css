@@ -1,0 +1,25 @@
+/* V4 Learn hub composition. Groups the flat 10-card grid into a dominant
+   Reader entry plus labeled study/review/notes clusters, using the shared
+   V4 foundation tokens. Card/grid base classes (.bq-learning-card,
+   .bq-learning-grid) remain owned by reader.css; this file only adds the
+   grouping and the dominant-card treatment. */
+
+.bq-learn-primary{margin-top:var(--space-4);padding:0;overflow:hidden;background:linear-gradient(145deg,var(--forest-900),var(--forest-700));border-color:var(--forest-900);box-shadow:var(--shadow-2)}
+.bq-learn-primary-button{display:flex;align-items:center;gap:var(--space-4);width:100%;min-height:88px;padding:clamp(18px,3vw,26px);border:none;background:none;color:var(--surface-raised);text-align:left;font:inherit;cursor:pointer}
+.bq-learn-primary-icon{display:grid;place-items:center;flex:0 0 auto;width:52px;height:52px;border-radius:var(--radius-md);background:color-mix(in srgb,var(--amber-400) 22%,transparent);color:var(--amber-400)}
+.bq-learn-primary-text{display:grid;gap:4px;min-width:0}
+.bq-learn-primary-text b{font-family:var(--font-display);font-size:clamp(20px,3vw,26px);font-weight:750}
+.bq-learn-primary-text span{color:color-mix(in srgb,var(--surface-raised) 82%,transparent);font-size:13px;line-height:1.4}
+
+.bq-learn-group{margin-top:var(--space-6)}
+.bq-learn-group .bq-eyebrow{margin:0 0 var(--space-2)}
+.bq-learn-group .bq-learning-grid{margin-top:0}
+
+@media(min-width:820px){
+  .bq-learn-primary-icon{width:60px;height:60px}
+}
+
+@media(max-width:390px){
+  .bq-learn-primary-button{flex-direction:row;min-height:76px}
+  .bq-learn-primary-text b{font-size:19px}
+}

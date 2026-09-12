@@ -1,0 +1,65 @@
+name: BibleQuest V4 CEBOCB source import
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - scripts/import-cebocb-usfm.mjs
+      - scripts/validate-v4-cebocb-packs.mjs
+      - .github/workflows/v4-cebocb-import.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: biblequest-v4-cebocb-import-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  import-cebocb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Download official CEBOCB USFM package
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_URL='https://ebible.org/Scriptures/cebocb_usfm.zip'
+          curl --fail --location --retry 3 --retry-delay 2 "$SOURCE_URL" --output /tmp/cebocb_usfm.zip
+          test -s /tmp/cebocb_usfm.zip
+          unzip -tq /tmp/cebocb_usfm.zip
+          rm -rf /tmp/cebocb-usfm
+          mkdir -p /tmp/cebocb-usfm
+          unzip -q /tmp/cebocb_usfm.zip -d /tmp/cebocb-usfm
+          sha256sum /tmp/cebocb_usfm.zip | tee /tmp/cebocb-sha256.txt
+      - name: Convert official USFM to BibleQuest offline packs
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHA256="$(awk '{print $1}' /tmp/cebocb-sha256.txt)"
+          node scripts/import-cebocb-usfm.mjs /tmp/cebocb-usfm \
+            --output data/packs/cebuano \
+            --source-url 'https://ebible.org/Scriptures/cebocb_usfm.zip' \
+            --source-sha256 "$SHA256"
+          node scripts/validate-v4-cebocb-packs.mjs --packs-only
+      - name: Commit generated CEBOCB delivery packs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/packs/cebuano
+          if git diff --cached --quiet; then
+            echo 'CEBOCB delivery packs already match the official source package.'
+            exit 0
+          fi
+          git commit -m 'data(v4): import official CEBOCB offline packs'
+          git push origin HEAD:v4/modern-ui-overhaul

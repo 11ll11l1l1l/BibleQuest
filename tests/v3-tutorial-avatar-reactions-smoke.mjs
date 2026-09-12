@@ -5,9 +5,12 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 const expected = [
   ['welcome', '0% 0%'],
   ['down', '0% 100%'],
+  ['right', '33.333% 0%'],
   ['up', '100% 0%'],
-  ['thumbs', '33.333% 100%'],
   ['thoughtful', '100% 100%'],
+  ['left', '66.666% 0%'],
+  ['thumbs', '33.333% 100%'],
+  ['surprise', '66.666% 100%'],
   ['thumbs', '33.333% 100%']
 ];
 const normalizePosition = value => String(value || '').trim().split(/\s+/).map(token => /^0(?:px|%)?$/.test(token) ? '0' : token).join(' ');
@@ -67,7 +70,7 @@ try {
   }
 
   await page.locator('[data-tutorial-back]').click();
-  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer')?.dataset.trainerState === 'thoughtful');
+  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer')?.dataset.trainerState === 'surprise');
   await page.locator('[data-tutorial-next]').click();
   await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer')?.dataset.trainerState === 'thumbs');
 

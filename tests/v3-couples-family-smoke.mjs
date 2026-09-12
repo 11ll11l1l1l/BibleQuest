@@ -11,9 +11,12 @@ async function run(){
   await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="more"]').click();await page.waitForURL(/#\/more$/);await page.locator('[data-open-couples-family]').waitFor();
   await page.locator('[data-open-couples-family]').click();await page.waitForURL(/#\/couples-family$/);await page.locator('[data-couples-mode="card"]').waitFor();
   const overview=(await page.locator('[data-couples-view]').textContent())||'';
-  assert(overview.includes('Couples cloud is a separate later milestone'),'Couples local UI must state its cloud boundary.');
+  assert(overview.includes('Couples cloud remains separate'),'Couples local UI must state its cloud boundary.');
   assert(await page.locator('[data-couples-category]').count()===8,'Couples dashboard must expose all eight recovered categories.');
-  assert(await page.locator('[data-couples-mode]').count()===6,'Couples dashboard must expose all six recovered local modes.');
+  const modeIds=await page.locator('.bq-couples-mode-grid [data-couples-mode]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-couples-mode')));
+  assert(modeIds.length===7,'Couples dashboard must expose the six recovered local modes plus Communication Journey.');
+  for(const id of['card','listen','checkin','repair','god','date'])assert(modeIds.includes(id),`Recovered Couples mode disappeared: ${id}.`);
+  assert(modeIds.includes('journey'),'Communication Journey mode is missing.');
   let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-couples-view] button')].map(node=>node.getBoundingClientRect().height))}));
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Couples overview mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Couples overview touch target below 44px: ${metrics.minTarget}px.`);
 

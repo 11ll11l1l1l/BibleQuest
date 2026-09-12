@@ -111,32 +111,34 @@ export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),t
 
 export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
   if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
-  let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});
+  let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,userId:'',congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});
   let stopRemote=null,targetRequest=0,reviewRequest=0;
   const snapshot=()=>state;
   const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
   const sessionState=()=>session.getState();
+  const resetAccountState=(userId='',authenticated=false,remoteAvailable=true,status='idle')=>{stopSync();targetRequest++;reviewRequest++;state=Object.freeze({status,authenticated,remoteAvailable,userId:String(userId||''),congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});return state};
   const assertMemberResponse=()=>{if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
   const assertPublisher=()=>{if(state.status!=='ready'||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','An active ministry role is required to publish assignments.');congregation.assert(state.congregationId,'ministry');};
 
   async function load({congregationId,activeId}={}){
-    const current=sessionState();
-    if(!current?.remoteAvailable){stopSync();targetRequest++;reviewRequest++;state=Object.freeze({...state,status:'local-preview',authenticated:Boolean(current?.authenticated),remoteAvailable:false,assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});return state}
-    if(!current?.authenticated||!current?.user?.id){stopSync();targetRequest++;reviewRequest++;state=Object.freeze({...state,status:'signed-out',authenticated:false,remoteAvailable:true,congregations:[],assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});return state}
+    const current=sessionState(),currentUserId=String(current?.user?.id||'');
+    if(state.userId&&currentUserId&&state.userId!==currentUserId)resetAccountState(currentUserId,true,current?.remoteAvailable!==false,'idle');
+    if(!current?.remoteAvailable)return resetAccountState(currentUserId,Boolean(current?.authenticated),false,'local-preview');
+    if(!current?.authenticated||!currentUserId)return resetAccountState('',false,true,'signed-out');
     const memberships=await congregation.load();
-    if(!memberships.length){stopSync();targetRequest++;reviewRequest++;state=Object.freeze({status:'no-congregation',authenticated:true,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});return state}
+    if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation');
     const selected=memberships.find(row=>row.congregationId===String(congregationId||state.congregationId))||memberships[0];
     congregation.assert(selected.congregationId,'read');
-    const payload=await api.load(selected.congregationId,current.user.id);
+    const payload=await api.load(selected.congregationId,currentUserId);
     const assignments=(Array.isArray(payload?.assignments)?payload.assignments:[]).map(row=>normalizeAssignment(row,selected.congregationId));
     const visibleIds=new Set(assignments.map(row=>row.id)),progressMap=new Map();
-    for(const raw of Array.isArray(payload?.progress)?payload.progress:[]){const progress=normalizeProgress(raw,current.user.id,visibleIds);if(progress&&!progressMap.has(progress.assignmentId))progressMap.set(progress.assignmentId,progress)}
+    for(const raw of Array.isArray(payload?.progress)?payload.progress:[]){const progress=normalizeProgress(raw,currentUserId,visibleIds);if(progress&&!progressMap.has(progress.assignmentId))progressMap.set(progress.assignmentId,progress)}
     const nowValue=now(),nowMs=nowValue instanceof Date?nowValue.getTime():new Date(nowValue).getTime();
-    const rows=assignments.map(assignment=>{const progress=progressMap.get(assignment.id)||Object.freeze({assignmentId:assignment.id,userId:String(current.user.id),status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null});return Object.freeze({...assignment,progress,dueState:dueState(assignment,progress,nowMs)})});
-    const wanted=String(activeId||state.activeId||''),nextActive=rows.some(row=>row.id===wanted)?wanted:'',sameCongregation=state.congregationId===selected.congregationId;
-    if(!sameCongregation){targetRequest++;reviewRequest++}
-    const keepReview=sameCongregation&&nextActive&&state.activeReview?.assignmentId===nextActive?state.activeReview:emptyReview(nextActive);
-    state=Object.freeze({status:'ready',authenticated:true,remoteAvailable:true,userId:String(current.user.id),congregations:memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel})),congregationId:selected.congregationId,congregationName:selected.congregation.name,role:selected.role,assignments:rows,activeId:nextActive,publishTargets:sameCongregation?state.publishTargets:emptyTargets(),activeReview:keepReview});
+    const rows=assignments.map(assignment=>{const progress=progressMap.get(assignment.id)||Object.freeze({assignmentId:assignment.id,userId:currentUserId,status:'assigned',submission:'',leaderFeedback:'',completedAt:null,updatedAt:null});return Object.freeze({...assignment,progress,dueState:dueState(assignment,progress,nowMs)})});
+    const wanted=String(activeId||state.activeId||''),nextActive=rows.some(row=>row.id===wanted)?wanted:'',sameContext=state.congregationId===selected.congregationId&&state.userId===currentUserId;
+    if(!sameContext){targetRequest++;reviewRequest++}
+    const keepReview=sameContext&&nextActive&&state.activeReview?.assignmentId===nextActive?state.activeReview:emptyReview(nextActive);
+    state=Object.freeze({status:'ready',authenticated:true,remoteAvailable:true,userId:currentUserId,congregations:memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel})),congregationId:selected.congregationId,congregationName:selected.congregation.name,role:selected.role,assignments:rows,activeId:nextActive,publishTargets:sameContext?state.publishTargets:emptyTargets(),activeReview:keepReview});
     return state;
   }
 
@@ -239,6 +241,6 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     return stop;
   }
 
-  function clear(){stopSync();targetRequest++;reviewRequest++;state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()})}
+  function clear(){resetAccountState('',false,true,'idle')}
   return Object.freeze({load,loadPublishTargets,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
 }

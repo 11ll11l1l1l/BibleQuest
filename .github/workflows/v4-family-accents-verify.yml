@@ -1,0 +1,55 @@
+name: BibleQuest V4 Family Accents verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - index.html
+      - src/ui/family-accents-v4.css
+      - src/ui/learn-v4.css
+      - src/ui/reader-v4.css
+      - src/ui/games-v4.css
+      - src/ui/avatar-vault-v4.css
+      - src/ui/study-family-v4.css
+      - src/ui/trust-reflection-v4.css
+      - src/ui/community.css
+      - src/ui/community-visual-polish.css
+      - src/ui/couples-family.css
+      - src/ui/couples-cloud.css
+      - src/ui/couples-visual-polish.css
+      - src/ui/journey-groups.css
+      - src/ui/ministry-ops-v4.css
+      - src/ui/congregation-v4.css
+      - tests/v4-family-accents-static.mjs
+      - .github/workflows/v4-family-accents-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-family-accents-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  family-accents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and family identity contracts
+        run: |
+          bash build.sh
+          node tests/v4-family-accents-static.mjs
+          node tests/v4-home-dashboard-static.mjs
+      - name: Single-owner architecture validator
+        run: node scripts/validate-v3-architecture.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul

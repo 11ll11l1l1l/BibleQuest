@@ -47,7 +47,7 @@ export function createPresenceService({
   setIntervalFn=(fn,ms)=>setInterval(fn,ms),
   clearIntervalFn=id=>clearInterval(id)
 }={}){
-  if(!api?.touch||!api?.list||!api?.leave||!session||!congregation||!store)throw new Error('Presence requires API, session, congregation and store boundaries.');
+  if(!api?.touch||!api?.list||!api?.leave||!api?.activeCount||!session||!congregation||!store)throw new Error('Presence requires API, session, congregation and store boundaries.');
   if(!Number.isFinite(heartbeatMs)||heartbeatMs<=0||!Number.isFinite(staleMs)||staleMs<=heartbeatMs)throw new Error('Presence timing requires a positive heartbeat and a longer stale timeout.');
 
   let state=baseState(session.getState?.()||{},'idle');
@@ -172,5 +172,15 @@ export function createPresenceService({
     return [];
   }
 
-  return Object.freeze({start,heartbeat:()=>heartbeat(generation),load,snapshot,leave,dispose,getState:()=>state,isOnline:row=>isPresenceOnline(row,clock(),staleMs),timing:()=>Object.freeze({heartbeatMs,staleMs})});
+  // Privacy-safe member-facing aggregate: { activeCount } only, never a row
+  // list. Reuses the same congregation.can() scope check as load() (which
+  // remains the raw-row path for ministry roles / Leader Center).
+  async function activeCount(congregationId,windowMinutes=30){
+    const sessionState=session.getState(),id=clean(congregationId);
+    if(!sessionState?.authenticated||sessionState?.remoteAvailable===false||!sessionState?.user?.id)return null;
+    if(!id||!congregation.can(id,'read'))return null;
+    return Object.freeze({count:Math.max(0,Number(await api.activeCount(id,windowMinutes))||0),windowMinutes});
+  }
+
+  return Object.freeze({start,heartbeat:()=>heartbeat(generation),load,snapshot,activeCount,leave,dispose,getState:()=>state,isOnline:row=>isPresenceOnline(row,clock(),staleMs),timing:()=>Object.freeze({heartbeatMs,staleMs})});
 }

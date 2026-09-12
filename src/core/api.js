@@ -264,6 +264,12 @@ export function createApi() {
       const client=await getClient();
       const {error}=await client.from('bible_presence').delete().eq('congregation_id',congregationId).eq('user_id',userId);
       if(error)throw error;
+    },
+    async activeCount(congregationId,windowMinutes=30) {
+      const client=await getClient();
+      const {data,error}=await client.rpc('bible_presence_active_count',{target_congregation:congregationId,window_minutes:windowMinutes});
+      if(error)throw error;
+      return Number(data)||0;
     }
   });
 
@@ -611,6 +617,11 @@ export function createApi() {
     async health(){return invoke('bq-admin-ops',{action:'health'});},
     async dashboard(){return invoke('bq-admin-ops',{action:'dashboard'});},
     async deleteUser(targetUserId){return invoke('bq-admin-ops',{action:'delete_user',targetUserId});},
+    async suspendAccount(targetUserId,reason=''){return invoke('bq-admin-ops',{action:'suspend_account',targetUserId,reason});},
+    async reactivateAccount(targetUserId){return invoke('bq-admin-ops',{action:'reactivate_account',targetUserId});},
+    async forceSignOut(targetUserId){return invoke('bq-admin-ops',{action:'force_sign_out',targetUserId});},
+    async setTempPassword(targetUserId,password){return invoke('bq-admin-ops',{action:'set_temp_password',targetUserId,password});},
+    async changeEmail(targetUserId,email){return invoke('bq-admin-ops',{action:'change_email',targetUserId,email});},
     async frontendHealth(){
       const loadText=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.text()};
       const loadJson=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.json()};

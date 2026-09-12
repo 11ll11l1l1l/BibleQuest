@@ -1,0 +1,27 @@
+/* V4 Reader typography/editorial pass. CSS-only: no markup or logic change.
+   Reader's markup is tightly coupled to click/change-delegation handlers
+   (dozens of data-* hooks), so this tranche is scoped strictly to visual
+   presentation using the certified V4 foundation tokens - it does not touch
+   src/features/reader/index.js at all. */
+
+.bq-reader-head h1{font-family:var(--font-display);letter-spacing:-.02em}
+.bq-reader-title h2{font-family:var(--font-display);color:var(--forest-900);letter-spacing:-.01em}
+
+.bq-scripture-panel{box-shadow:var(--shadow-1);border-color:var(--line-200)}
+
+/* Scripture is the editorial anchor of this page: a calmer serif face,
+   larger size, and more generous line-height than ordinary UI copy. */
+.bq-verse p{font-family:var(--font-display);font-size:16.5px;line-height:1.75;color:var(--ink-900)}
+.bq-peek-text{font-family:var(--font-display);font-size:18px;line-height:1.8;color:var(--ink-900)}
+
+.bq-verse:hover,.bq-verse:focus-visible{background:color-mix(in srgb,var(--surface-subtle) 55%,transparent)}
+.bq-verse.is-highlighted{background:color-mix(in srgb,var(--amber-100) 70%,var(--surface-raised));box-shadow:inset 3px 0 var(--amber-600)}
+.bq-verse>span{color:var(--ink-500)}
+
+.bq-reader-controls{background:var(--surface-raised);box-shadow:var(--shadow-1);border-color:var(--line-200)}
+.bq-reader-source{background:color-mix(in srgb,var(--surface-subtle) 46%,var(--surface-raised));color:var(--ink-500)}
+.bq-reader-source b{color:var(--forest-900)}
+
+@media(max-width:480px){
+  .bq-verse p{font-size:16px;line-height:1.7}
+}

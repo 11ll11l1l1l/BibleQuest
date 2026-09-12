@@ -20,7 +20,12 @@ const api={
   async status(){calls.push(['status']);return {ok:true,role:'owner',userId:'owner-1',opsVersion:5}},
   async dashboard(){calls.push(['dashboard']);return dashboard()},
   async frontendHealth(){calls.push(['frontendHealth']);return {pwa:'70',packPolicy:'3',runtimePolicy:'3',build:'abcdef1234567890'}},
-  async deleteUser(targetUserId){calls.push(['deleteUser',targetUserId]);return {ok:true,deleted:true}}
+  async deleteUser(targetUserId){calls.push(['deleteUser',targetUserId]);return {ok:true,deleted:true}},
+  async suspendAccount(targetUserId,reason){calls.push(['suspendAccount',targetUserId,reason]);return {ok:true,active:false}},
+  async reactivateAccount(targetUserId){calls.push(['reactivateAccount',targetUserId]);return {ok:true,active:true}},
+  async forceSignOut(targetUserId){calls.push(['forceSignOut',targetUserId]);return {ok:true,revoked:true}},
+  async setTempPassword(targetUserId,password){calls.push(['setTempPassword',targetUserId,password]);return {ok:true,revoked:true}},
+  async changeEmail(targetUserId,email){calls.push(['changeEmail',targetUserId,email]);return {ok:true,changed:true,revoked:true}}
 };
 const session={getState:()=>sessionState};
 const service=createAdminOperationsService({api,session});
@@ -46,7 +51,7 @@ state=await adminService.authorize();assert.equal(state.status,'ready');assert.e
 await assert.rejects(()=>adminService.deleteUser('u2'),error=>error.code==='BQ_ADMIN_OPS_OWNER_REQUIRED');
 
 let signedOutCalls=0;
-const signedOutApi={status:async()=>{signedOutCalls++;return {role:'owner'}},dashboard:async()=>{signedOutCalls++;return {}},frontendHealth:async()=>{signedOutCalls++;return {}},deleteUser:async()=>{signedOutCalls++;return {deleted:true}}};
+const signedOutApi={status:async()=>{signedOutCalls++;return {role:'owner'}},dashboard:async()=>{signedOutCalls++;return {}},frontendHealth:async()=>{signedOutCalls++;return {}},deleteUser:async()=>{signedOutCalls++;return {deleted:true}},suspendAccount:async()=>{signedOutCalls++;return {active:false}},reactivateAccount:async()=>{signedOutCalls++;return {active:true}},forceSignOut:async()=>{signedOutCalls++;return {revoked:true}},setTempPassword:async()=>{signedOutCalls++;return {revoked:true}},changeEmail:async()=>{signedOutCalls++;return {changed:true}}};
 state=await createAdminOperationsService({api:signedOutApi,session:{getState:()=>({authenticated:false,user:null})}}).refresh();
 assert.equal(state.status,'signed-out');assert.equal(signedOutCalls,0,'Signed-out Admin Operations must not make privileged calls.');
 
@@ -64,5 +69,36 @@ state=await createAdminOperationsService({api:frontendFailure,session}).refresh(
 const unconfirmed={...api,deleteUser:async()=>({ok:true,deleted:false})};
 const unconfirmedService=createAdminOperationsService({api:unconfirmed,session});await unconfirmedService.authorize();
 await assert.rejects(()=>unconfirmedService.deleteUser('u2'),error=>error.code==='BQ_ADMIN_OPS_DELETE_UNCONFIRMED');
+
+// --- Phase 2: emergency user-management actions ---
+state=await service.refresh();assert.equal(state.status,'ready','Service must be re-authorized before Phase 2 assertions (a prior test left it cleared).');
+await service.suspendAccount('u2','Reported harassment');
+assert.deepEqual(calls.at(-1),['suspendAccount','u2','Reported harassment']);
+await assert.rejects(()=>service.suspendAccount('owner-1'),error=>error.code==='BQ_ADMIN_OPS_SELF_SUSPEND','Owner must not be able to suspend their own account.');
+
+await service.reactivateAccount('u2');
+assert.deepEqual(calls.at(-1),['reactivateAccount','u2']);
+await assert.rejects(()=>service.reactivateAccount('owner-1'),error=>error.code==='BQ_ADMIN_OPS_SELF_REACTIVATE');
+
+await service.forceSignOut('u2');
+assert.deepEqual(calls.at(-1),['forceSignOut','u2']);
+
+await service.setTempPassword('u2','a-genuinely-long-temp-pw');
+assert.deepEqual(calls.at(-1),['setTempPassword','u2','a-genuinely-long-temp-pw']);
+await assert.rejects(()=>service.setTempPassword('u2','short'),error=>error.code==='BQ_ADMIN_OPS_PASSWORD_TOO_SHORT','Temporary passwords under 12 characters must be rejected client-side too, not just trusted to the server.');
+await assert.rejects(()=>service.setTempPassword('owner-1','a-genuinely-long-temp-pw'),error=>error.code==='BQ_ADMIN_OPS_SELF_TEMP_PASSWORD','Owner must not be able to set a temporary password for themselves through the emergency tool.');
+await assert.rejects(()=>adminService.setTempPassword('u2','a-genuinely-long-temp-pw'),error=>error.code==='BQ_ADMIN_OPS_OWNER_REQUIRED','Only the owner - not an admin - may set a temporary password.');
+
+await service.changeEmail('u2',' New.Email@Example.test ');
+assert.deepEqual(calls.at(-1),['changeEmail','u2','new.email@example.test']);
+await assert.rejects(()=>service.changeEmail('owner-1','owner2@example.test'),error=>error.code==='BQ_ADMIN_OPS_SELF_EMAIL_CHANGE','Owner must not be able to change their own email through the emergency tool.');
+await assert.rejects(()=>service.changeEmail('u2','not-an-email'),error=>error.code==='BQ_ADMIN_OPS_EMAIL_INVALID','Invalid recovery emails must be rejected client-side.');
+await assert.rejects(()=>adminService.changeEmail('u2','member2@example.test'),error=>error.code==='BQ_ADMIN_OPS_OWNER_REQUIRED','Only the owner - not an admin - may change an account email.');
+
+// Same busy-lock discipline as deleteUser must apply to every new action.
+service.clear();
+for(const [method,args] of [['suspendAccount',['u2']],['reactivateAccount',['u2']],['forceSignOut',['u2']],['setTempPassword',['u2','a-genuinely-long-temp-pw']],['changeEmail',['u2','member2@example.test']]]){
+  await assert.rejects(()=>service[method](...args),error=>error.code==='BQ_ADMIN_OPS_NOT_READY',`${method} must require an authorized session.`);
+}
 
 console.log('v3 admin-operations edge: PASS');

@@ -39,7 +39,7 @@ function normalizeDashboard(data={}){
 const emptyDashboard=()=>normalizeDashboard();
 
 export function createAdminOperationsService({api,session}={}){
-  const required=['status','dashboard','frontendHealth','deleteUser'];
+  const required=['status','dashboard','frontendHealth','deleteUser','suspendAccount','reactivateAccount','forceSignOut','setTempPassword','changeEmail'];
   if(!api||required.some(name=>typeof api[name]!=='function')||!session?.getState)throw new Error('Admin Operations requires the shared API and Session owners.');
   let state={status:'idle',role:'',currentUserId:'',dashboard:emptyDashboard(),frontend:emptyFrontend(),busy:false,error:'',lastAction:null};
   const snapshot=()=>Object.freeze({...state});
@@ -84,5 +84,56 @@ export function createAdminOperationsService({api,session}={}){
     catch(error){state={...state,busy:false,error:error?.message||'Account deletion failed.',lastAction:'delete_user'};throw error}
   }
 
-  return Object.freeze({authorize,refresh,deleteUser,getState:snapshot,clear:()=>reset('idle')});
+  function guardTarget(targetUserId,selfMessage,selfCode){
+    ensureAuthorized();
+    const target=clean(targetUserId);if(!target)throw fail('A valid account is required.','BQ_ADMIN_OPS_TARGET_INVALID');
+    if(target===state.currentUserId)throw fail(selfMessage,selfCode);
+    if(state.busy)throw fail('Another Admin Operations action is still running.','BQ_ADMIN_OPS_BUSY');
+    return target;
+  }
+
+  async function suspendAccount(targetUserId,reason=''){
+    const target=guardTarget(targetUserId,'You cannot suspend your own account.','BQ_ADMIN_OPS_SELF_SUSPEND');
+    state={...state,busy:true,error:'',lastAction:'suspend_account'};
+    try{const result=await api.suspendAccount(target,clean(reason).slice(0,500));if(result?.active!==false)throw fail('The server did not confirm the suspension.','BQ_ADMIN_OPS_SUSPEND_UNCONFIRMED');state={...state,busy:false,lastAction:'suspend_account'};return Object.freeze({ok:true,result,state:snapshot()})}
+    catch(error){state={...state,busy:false,error:error?.message||'Account suspension failed.',lastAction:'suspend_account'};throw error}
+  }
+
+  async function reactivateAccount(targetUserId){
+    const target=guardTarget(targetUserId,'This is already your active account.','BQ_ADMIN_OPS_SELF_REACTIVATE');
+    state={...state,busy:true,error:'',lastAction:'reactivate_account'};
+    try{const result=await api.reactivateAccount(target);if(result?.active!==true)throw fail('The server did not confirm reactivation.','BQ_ADMIN_OPS_REACTIVATE_UNCONFIRMED');state={...state,busy:false,lastAction:'reactivate_account'};return Object.freeze({ok:true,result,state:snapshot()})}
+    catch(error){state={...state,busy:false,error:error?.message||'Account reactivation failed.',lastAction:'reactivate_account'};throw error}
+  }
+
+  async function forceSignOut(targetUserId){
+    const target=clean(targetUserId);ensureAuthorized();if(!target)throw fail('A valid account is required.','BQ_ADMIN_OPS_TARGET_INVALID');
+    if(state.busy)throw fail('Another Admin Operations action is still running.','BQ_ADMIN_OPS_BUSY');
+    state={...state,busy:true,error:'',lastAction:'force_sign_out'};
+    try{const result=await api.forceSignOut(target);state={...state,busy:false,lastAction:'force_sign_out'};return Object.freeze({ok:true,result,state:snapshot()})}
+    catch(error){state={...state,busy:false,error:error?.message||'Force sign-out failed.',lastAction:'force_sign_out'};throw error}
+  }
+
+  async function setTempPassword(targetUserId,password){
+    ensureAuthorized();
+    if(state.role!=='owner')throw fail('Only the BibleQuest owner can set a temporary password.','BQ_ADMIN_OPS_OWNER_REQUIRED');
+    const target=guardTarget(targetUserId,'Use your own account recovery flow, not this emergency tool.','BQ_ADMIN_OPS_SELF_TEMP_PASSWORD');
+    const value=String(password||'');if(value.length<12)throw fail('Temporary password must be at least 12 characters.','BQ_ADMIN_OPS_PASSWORD_TOO_SHORT');
+    state={...state,busy:true,error:'',lastAction:'set_temp_password'};
+    try{const result=await api.setTempPassword(target,value);state={...state,busy:false,lastAction:'set_temp_password'};return Object.freeze({ok:true,result,state:snapshot()})}
+    catch(error){state={...state,busy:false,error:error?.message||'Setting the temporary password failed.',lastAction:'set_temp_password'};throw error}
+  }
+
+  async function changeEmail(targetUserId,email){
+  ensureAuthorized();
+  if(state.role!=='owner')throw fail('Only the BibleQuest owner can change an account email.','BQ_ADMIN_OPS_OWNER_REQUIRED');
+  const target=guardTarget(targetUserId,'Use your own Account page for this active owner account.','BQ_ADMIN_OPS_SELF_EMAIL_CHANGE');
+  const value=clean(email).toLowerCase();
+  if(value.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw fail('A valid recovery email is required.','BQ_ADMIN_OPS_EMAIL_INVALID');
+  state={...state,busy:true,error:'',lastAction:'change_email'};
+  try{const result=await api.changeEmail(target,value);if(result?.changed!==true)throw fail('The server did not confirm the email change.','BQ_ADMIN_OPS_EMAIL_UNCONFIRMED');state={...state,busy:false,lastAction:'change_email'};return Object.freeze({ok:true,result,state:snapshot()})}
+  catch(error){state={...state,busy:false,error:error?.message||'Changing the account email failed.',lastAction:'change_email'};throw error}
+}
+
+return Object.freeze({authorize,refresh,deleteUser,suspendAccount,reactivateAccount,forceSignOut,setTempPassword,changeEmail,getState:snapshot,clear:()=>reset('idle')});
 }

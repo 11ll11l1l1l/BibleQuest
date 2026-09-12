@@ -1,13 +1,18 @@
 import { COUPLES_CATEGORIES,COUPLES_CARDS,COUPLES_CHECK_ITEMS,COUPLES_REPAIR_STEPS } from '../content/couples-family.js';
+import { COUPLES_JOURNEY_DOMAINS,COUPLES_JOURNEY_ITEMS,COUPLES_JOURNEY_LEVELS,COUPLES_JOURNEY_SAFETY_ITEM_ID,COUPLES_JOURNEY_SCALE } from '../content/couples-journey.js';
 
 const STORAGE_KEY='couples-family-local';
-const VERSION=1;
+const VERSION=2;
 const HISTORY_LIMIT=100;
 const COMMITMENT_LIMIT=30;
 const CHECKIN_LIMIT=30;
+const JOURNEY_LIMIT=12;
 const CARD_IDS=new Set(COUPLES_CARDS.map(card=>card.id));
 const CATEGORY_IDS=new Set(COUPLES_CATEGORIES.map(category=>category.id));
 const CHECK_IDS=COUPLES_CHECK_ITEMS.map(item=>item.id);
+const JOURNEY_IDS=COUPLES_JOURNEY_ITEMS.map(item=>item.id);
+const JOURNEY_LEVEL_IDS=new Set(COUPLES_JOURNEY_LEVELS.map(level=>level.id));
+const JOURNEY_DOMAIN_IDS=COUPLES_JOURNEY_DOMAINS.map(domain=>domain.id);
 const validStamp=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
 const freeze=value=>Object.freeze(value);
 const freezeEntry=value=>freeze({...value});
@@ -17,6 +22,29 @@ function normalizeRatings(value){
   const result={};
   for(const id of CHECK_IDS){const score=Number(value[id]);if(!Number.isInteger(score)||score<1||score>5)return null;result[id]=score}
   return result;
+}
+function normalizeJourneyRatings(value){
+  if(!value||typeof value!=='object'||Array.isArray(value))return null;
+  const result={};
+  for(const id of JOURNEY_IDS){const score=Number(value[id]);if(!Number.isInteger(score)||score<1||score>5)return null;result[id]=score}
+  return result;
+}
+function journeyLevel(total){
+  const score=Number(total);
+  if(!Number.isInteger(score)||score<COUPLES_JOURNEY_ITEMS.length||score>COUPLES_JOURNEY_ITEMS.length*5)return null;
+  return COUPLES_JOURNEY_LEVELS.find(level=>score>=level.min&&score<=level.max)||null;
+}
+function normalizeJourneyDomains(value){
+  if(!value||typeof value!=='object'||Array.isArray(value))return null;
+  const result={};
+  for(const id of JOURNEY_DOMAIN_IDS){const score=Number(value[id]);if(!Number.isFinite(score)||score<1||score>5)return null;result[id]=Math.round(score*100)/100}
+  return result;
+}
+function normalizeJourneySummary(value){
+  if(!value||typeof value!=='object'||Array.isArray(value)||!validStamp(value.at))return null;
+  const total=Number(value.total),level=journeyLevel(total),domains=normalizeJourneyDomains(value.domains);
+  if(!level||!domains||!JOURNEY_LEVEL_IDS.has(String(value.levelId))||level.id!==String(value.levelId))return null;
+  return {at:value.at,total,levelId:level.id,safetyPriority:Boolean(value.safetyPriority),domains};
 }
 function normalizeState(value){
   const input=value&&typeof value==='object'&&!Array.isArray(value)?value:{};
@@ -30,10 +58,12 @@ function normalizeState(value){
   }
   const checkins=[];
   for(const item of Array.isArray(input.checkins)?input.checkins:[]){const a=normalizeRatings(item?.a),b=normalizeRatings(item?.b);if(a&&b&&validStamp(item?.at))checkins.push({at:item.at,a,b})}
+  const journeyAssessments=[];
+  for(const item of Array.isArray(input.journeyAssessments)?input.journeyAssessments:[]){const normalized=normalizeJourneySummary(item);if(normalized)journeyAssessments.push(normalized)}
   const maxSeq=commitments.reduce((max,item)=>{const match=/^practice-(\d+)$/.exec(item.id);return Math.max(max,match?Number(match[1]):0)},0);
   const commitmentSeq=Number.isSafeInteger(input.commitmentSeq)&&input.commitmentSeq>=maxSeq?input.commitmentSeq:maxSeq;
   const listenCount=Number.isSafeInteger(input.listenCount)&&input.listenCount>=0?input.listenCount:0;
-  return {version:VERSION,favorites,history,commitments:commitments.slice(-COMMITMENT_LIMIT),checkins:checkins.slice(-CHECKIN_LIMIT),listenCount,commitmentSeq};
+  return {version:VERSION,favorites,history,commitments:commitments.slice(-COMMITMENT_LIMIT),checkins:checkins.slice(-CHECKIN_LIMIT),journeyAssessments:journeyAssessments.slice(-JOURNEY_LIMIT),listenCount,commitmentSeq};
 }
 
 export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Math.random}={}){
@@ -41,8 +71,9 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
   if(typeof rng!=='function')throw new Error('Couples & Family requires a random selector function.');
   let state=normalizeState(storage.read(STORAGE_KEY,null));
   const stamp=()=>{const raw=clock(),date=raw instanceof Date?new Date(raw.getTime()):new Date(raw);if(!Number.isFinite(date.getTime()))throw new Error('Couples & Family clock returned an invalid time.');return date.toISOString()};
+  const freezeJourneySummary=item=>freeze({at:item.at,total:item.total,levelId:item.levelId,safetyPriority:item.safetyPriority,domains:freeze({...item.domains})});
   const save=()=>{state=normalizeState(storage.write(STORAGE_KEY,state));return snapshot()};
-  const snapshot=()=>freeze({version:VERSION,favorites:freeze([...state.favorites]),history:freeze(state.history.map(freezeEntry)),commitments:freeze(state.commitments.map(freezeEntry)),checkins:freeze(state.checkins.map(item=>freeze({at:item.at,a:freeze({...item.a}),b:freeze({...item.b})}))),listenCount:state.listenCount});
+  const snapshot=()=>freeze({version:VERSION,favorites:freeze([...state.favorites]),history:freeze(state.history.map(freezeEntry)),commitments:freeze(state.commitments.map(freezeEntry)),checkins:freeze(state.checkins.map(item=>freeze({at:item.at,a:freeze({...item.a}),b:freeze({...item.b})}))),journeyAssessments:freeze(state.journeyAssessments.map(freezeJourneySummary)),listenCount:state.listenCount});
   const card=id=>{const found=COUPLES_CARDS.find(item=>item.id===String(id));if(!found)throw new Error('Couples topic not found.');return found};
   const category=id=>{const found=COUPLES_CATEGORIES.find(item=>item.id===String(id));if(!found)throw new Error('Couples category not found.');return found};
   const poolFor=({categoryId='',categories=[]}={})=>{
@@ -62,11 +93,29 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
   function recordListen(){state={...state,listenCount:state.listenCount+1};save();return state.listenCount}
   function recordCheckin(a,b){const first=normalizeRatings(a),second=normalizeRatings(b);if(!first||!second)throw new Error('Couple check-in ratings must all be from 1 to 5.');const entry={at:stamp(),a:first,b:second};state={...state,checkins:[...state.checkins,entry].slice(-CHECKIN_LIMIT)};save();return analyzeCheckin(first,second)}
   function analyzeCheckin(a,b){const first=normalizeRatings(a),second=normalizeRatings(b);if(!first||!second)throw new Error('Couple check-in ratings must all be from 1 to 5.');const rows=COUPLES_CHECK_ITEMS.map(item=>freeze({id:item.id,label:item.label,a:first[item.id],b:second[item.id]}));const gap=[...rows].sort((x,y)=>Math.abs(y.a-y.b)-Math.abs(x.a-x.b))[0];const strong=[...rows].sort((x,y)=>(y.a+y.b)-(x.a+x.b))[0];return freeze({rows:freeze(rows),gap,strong})}
+  function analyzeJourneyAssessment(value){
+    const ratings=normalizeJourneyRatings(value);if(!ratings)throw new Error('Communication Journey ratings must all be from 1 to 5.');
+    const total=JOURNEY_IDS.reduce((sum,id)=>sum+ratings[id],0),level=journeyLevel(total);if(!level)throw new Error('Communication Journey score is invalid.');
+    const domains={};
+    for(const domain of COUPLES_JOURNEY_DOMAINS){const ids=COUPLES_JOURNEY_ITEMS.filter(item=>item.domain===domain.id).map(item=>item.id),sum=ids.reduce((score,id)=>score+ratings[id],0);domains[domain.id]=Math.round((sum/ids.length)*100)/100}
+    return freeze({total,level,safetyPriority:ratings[COUPLES_JOURNEY_SAFETY_ITEM_ID]<=2,domains:freeze(domains)});
+  }
+  function recordJourneyAssessment(value){
+    const result=analyzeJourneyAssessment(value),entry={at:stamp(),total:result.total,levelId:result.level.id,safetyPriority:result.safetyPriority,domains:{...result.domains}};
+    state={...state,journeyAssessments:[...state.journeyAssessments,entry].slice(-JOURNEY_LIMIT)};save();return freeze({...result,at:entry.at});
+  }
+  function latestJourneyAssessment(){
+    const entry=state.journeyAssessments.at(-1);if(!entry)return null;const level=COUPLES_JOURNEY_LEVELS.find(item=>item.id===entry.levelId);return freeze({at:entry.at,total:entry.total,level,safetyPriority:entry.safetyPriority,domains:freeze({...entry.domains})});
+  }
   return freeze({
     snapshot,
     categories:()=>COUPLES_CATEGORIES,
     checkItems:()=>COUPLES_CHECK_ITEMS,
     repairSteps:()=>COUPLES_REPAIR_STEPS,
+    journeyItems:()=>COUPLES_JOURNEY_ITEMS,
+    journeyLevels:()=>COUPLES_JOURNEY_LEVELS,
+    journeyScale:()=>COUPLES_JOURNEY_SCALE,
+    journeyDomains:()=>COUPLES_JOURNEY_DOMAINS,
     getCard:card,
     pickCard,
     isFavorite:id=>state.favorites.includes(card(id).id),
@@ -77,6 +126,9 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
     completeActivePractice,
     recordListen,
     recordCheckin,
-    analyzeCheckin
+    analyzeCheckin,
+    analyzeJourneyAssessment,
+    recordJourneyAssessment,
+    latestJourneyAssessment
   });
 }

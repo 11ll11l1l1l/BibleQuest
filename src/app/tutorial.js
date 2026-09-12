@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'tutorial-onboarding';
 const VERSION = 1;
-export const TUTORIAL_STEP_COUNT = 6;
+export const TUTORIAL_STEP_COUNT = 9;
 
 function normalizeStored(value) {
   if (!value || typeof value !== 'object') return Object.freeze({ completed: false, completedAt: '' });

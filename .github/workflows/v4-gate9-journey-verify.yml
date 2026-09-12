@@ -1,0 +1,101 @@
+name: BibleQuest V4 Gate 9 Journey verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/ui/journey-v4.css
+      - index.html
+      - tests/v4-journey-static.mjs
+      - src/features/bible-world/**
+      - src/features/progress/**
+      - src/features/mission/**
+      - src/features/calendar/**
+      - src/app/bible-world.js
+      - src/core/progress.js
+      - src/engines/mission.js
+      - src/app/calendar.js
+      - scripts/validate-v3-bible-world.mjs
+      - scripts/validate-v3-bible-world-artwork.mjs
+      - scripts/validate-v3-calendar.mjs
+      - tests/v3-bible-world-edge.mjs
+      - tests/v3-bible-world-artwork-edge.mjs
+      - tests/v3-progress-edge.mjs
+      - tests/v3-progress-phase-b-static.mjs
+      - tests/v3-mission-phase-b-static.mjs
+      - tests/v3-calendar-edge.mjs
+      - tests/v3-calendar-phase-b-static.mjs
+      - tests/v3-bible-world-smoke.mjs
+      - tests/v3-bible-world-artwork-smoke.mjs
+      - tests/v3-progress-smoke.mjs
+      - tests/v3-progress-phase-b-smoke.mjs
+      - tests/v3-mission-phase-b-smoke.mjs
+      - tests/v3-calendar-smoke.mjs
+      - tests/v3-calendar-phase-b-smoke.mjs
+      - tests/v3-final-mobile-widths-smoke.mjs
+      - .github/workflows/v4-gate9-journey-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-gate9-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate9:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and V4 journey contracts
+        run: |
+          bash build.sh
+          node tests/v4-journey-static.mjs
+      - name: Gate 9 architecture validators
+        run: |
+          node scripts/validate-v3-bible-world.mjs
+          node scripts/validate-v3-bible-world-artwork.mjs
+          node scripts/validate-v3-calendar.mjs
+      - name: Gate 9 edge and presentation regressions
+        run: |
+          node tests/v3-bible-world-edge.mjs
+          node tests/v3-bible-world-artwork-edge.mjs
+          node tests/v3-progress-edge.mjs
+          node tests/v3-progress-phase-b-static.mjs
+          node tests/v3-mission-phase-b-static.mjs
+          node tests/v3-calendar-edge.mjs
+          node tests/v3-calendar-phase-b-static.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-gate9-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-gate9-http.log
+          exit 1
+      - name: Gate 9 browser and mobile regressions
+        run: |
+          timeout 240s node tests/v3-bible-world-smoke.mjs
+          timeout 240s node tests/v3-bible-world-artwork-smoke.mjs
+          timeout 240s node tests/v3-progress-smoke.mjs
+          timeout 240s node tests/v3-progress-phase-b-smoke.mjs
+          timeout 240s node tests/v3-mission-phase-b-smoke.mjs
+          timeout 240s node tests/v3-calendar-smoke.mjs
+          timeout 240s node tests/v3-calendar-phase-b-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul

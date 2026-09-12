@@ -13,6 +13,7 @@
     <symbol id="install" viewBox="0 0 24 24"><path fill="currentColor" d="M11 2h2v10.17l3.59-3.58L18 10l-6 6-6-6 1.41-1.41L11 12.17V2ZM4 18h2v2h12v-2h2v4H4v-4Z"/></symbol>
     <symbol id="backup" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a8 8 0 1 1-7.45 10.91l1.86-.73A6 6 0 1 0 7.6 7.7L10 10H3V3l3.17 3.17A7.96 7.96 0 0 1 12 4Zm-1 4h2v4.17l2.41 2.42L14 16l-3-3V8Z"/></symbol>
     <symbol id="mission" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2Zm0 2a8 8 0 1 1-8 8 8.01 8.01 0 0 1 8-8Zm3.7 4.3-5.2 2.2-2.2 5.2 5.2-2.2 2.2-5.2Zm-3.17 3.17.99-.42-.42.99-.99.42.42-.99Z"/></symbol>
+    <symbol id="help" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2Zm.25 15.25h-1.5v-1.5h1.5Zm1.63-6.14c-.86.62-1.13 1-1.13 1.64v.5h-1.5v-.5c0-1.15.6-1.83 1.44-2.44.8-.58 1.13-.9 1.13-1.56A1.75 1.75 0 0 0 12 6.5a1.75 1.75 0 0 0-1.82 1.5H8.68A3.25 3.25 0 0 1 12 5a3.25 3.25 0 0 1 1.88 5.11Z"/></symbol>
     <symbol id="calendar" viewBox="0 0 24 24"><path fill="currentColor" d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2ZM4 9v11h16V9H4Zm0-2h16V6h-3v1h-2V6H9v1H7V6H4v1Zm3 5h4v3H7v-3Z"/></symbol>
     <symbol id="congregation" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 3 8v2h2v10H3v2h18v-2h-2V10h2V8l-9-6Zm0 2.4L17.4 8H6.6L12 4.4ZM7 10h2v10H7V10Zm4 0h2v10h-2V10Zm4 0h2v10h-2V10Z"/></symbol>
   </defs>

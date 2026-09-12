@@ -1,0 +1,41 @@
+name: BibleQuest V4 Section I security privacy gates
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v4/modern-ui-overhaul
+      - main
+
+concurrency:
+  group: biblequest-v4-section-i-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  section-i:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run deployment architecture and security static gates
+        run: |
+          bash build.sh
+          node scripts/validate-v3-architecture.mjs
+          node tests/v4-section-i-security-static.mjs
+          node tests/v4-presence-active-count-static.mjs
+          node tests/v4-poll-aggregate-security-static.mjs
+          node tests/v4-admin-email-recovery-smoke.mjs
+      - name: Run explicit multi-account isolation matrix
+        run: node tests/v4-section-i-multi-account-edge.mjs
+      - name: Cross-check existing authentication scope and privacy regressions
+        run: |
+          node tests/v3-assignments-edge.mjs
+          node tests/v3-journey-groups-edge.mjs
+          node tests/v3-team-center-edge.mjs
+          node tests/v3-couples-cloud-edge.mjs
+          node tests/v3-live-rooms-edge.mjs

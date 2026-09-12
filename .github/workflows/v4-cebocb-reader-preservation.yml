@@ -1,0 +1,50 @@
+name: BibleQuest V4 CEBOCB Reader preservation
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/core/bible.js
+      - src/app/reader.js
+      - src/features/reader/**
+      - data/packs/cebuano/**
+      - data/packs/ATTRIBUTION.md
+      - scripts/validate-v4-cebocb-packs.mjs
+      - .github/workflows/v4-cebocb-reader-preservation.yml
+  pull_request:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/core/bible.js
+      - src/app/reader.js
+      - src/features/reader/**
+      - data/packs/cebuano/**
+      - data/packs/ATTRIBUTION.md
+      - scripts/validate-v4-cebocb-packs.mjs
+      - .github/workflows/v4-cebocb-reader-preservation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v4-cebocb-reader-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preserve-cebocb-reader:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax-check Bible and Reader owners
+        run: |
+          node --check src/core/bible.js
+          node --check src/app/reader.js
+          node --check src/features/reader/index.js
+      - name: Validate CEBOCB packs and Reader integration
+        run: node scripts/validate-v4-cebocb-packs.mjs

@@ -1,5 +1,5 @@
 export const TRAINER_STATES = Object.freeze(['welcome', 'right', 'left', 'up', 'down', 'thumbs', 'surprise', 'thoughtful']);
-export const TUTORIAL_STEP_TRAINER_STATES = Object.freeze(['welcome', 'down', 'up', 'thumbs', 'thoughtful', 'thumbs']);
+export const TUTORIAL_STEP_TRAINER_STATES = Object.freeze(['welcome', 'down', 'right', 'up', 'thoughtful', 'left', 'thumbs', 'surprise', 'thumbs']);
 
 export function trainerStateForStep(step) {
   const index = Number.isInteger(step) ? step : 0;

@@ -7,14 +7,15 @@ function makeStore(session){
 }
 
 let now=Date.UTC(2026,8,9,12,0,0),sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},memberships=[{congregationId:'c1',userId:'u1'}],loadCalls=0;
-const store=makeStore(sessionState),touches=[],leaves=[],timers=new Map();let nextTimer=1;
+const store=makeStore(sessionState),touches=[],leaves=[],timers=new Map();let nextTimer=1;const activeCountCalls=[];let activeCountValue=3;
 const api={
   async touch(congregationId,userId,surface){touches.push({congregationId,userId,surface});return {congregation_id:congregationId,user_id:userId,last_seen_at:new Date(now).toISOString(),surface}},
   async list(congregationId){return [
     {congregation_id:congregationId,user_id:'u1',last_seen_at:new Date(now-1000).toISOString(),surface:'BibleQuest'},
     {congregation_id:congregationId,user_id:'u2',last_seen_at:new Date(now-PRESENCE_STALE_MS-1).toISOString(),surface:'BibleQuest'}
   ]},
-  async leave(congregationId,userId){leaves.push({congregationId,userId})}
+  async leave(congregationId,userId){leaves.push({congregationId,userId})},
+  async activeCount(congregationId,windowMinutes){activeCountCalls.push({congregationId,windowMinutes});return activeCountValue}
 };
 const session={getState:()=>sessionState};
 const congregation={
@@ -48,14 +49,33 @@ assert(service.getState().status==='offline','Presence leave did not publish off
 await service.dispose();assert(timers.size===0,'Presence dispose must be idempotent and timer-free.');
 
 let guestTouches=0;sessionState={authenticated:false,remoteAvailable:true,user:null};memberships=[];
-const guestStore=makeStore(sessionState),guest=createPresenceService({api:{touch:async()=>{guestTouches+=1},list:async()=>[],leave:async()=>{}},session,congregation,store:guestStore,setIntervalFn(){throw new Error('Signed-out Presence must not schedule a heartbeat.')},clearIntervalFn(){}});
+const guestStore=makeStore(sessionState),guest=createPresenceService({api:{touch:async()=>{guestTouches+=1},list:async()=>[],leave:async()=>{},activeCount:async()=>0},session,congregation,store:guestStore,setIntervalFn(){throw new Error('Signed-out Presence must not schedule a heartbeat.')},clearIntervalFn(){}});
 state=await guest.start();assert(state.status==='signed-out'&&guestTouches===0,'Signed-out Presence must not write cloud state.');await guest.dispose({remove:false});
 
 sessionState={authenticated:true,remoteAvailable:false,user:{id:'u1'}};
-const previewStore=makeStore(sessionState),preview=createPresenceService({api:{touch:async()=>{guestTouches+=1},list:async()=>[],leave:async()=>{}},session,congregation,store:previewStore,setIntervalFn(){throw new Error('Local-preview Presence must not schedule a heartbeat.')},clearIntervalFn(){}});
+const previewStore=makeStore(sessionState),preview=createPresenceService({api:{touch:async()=>{guestTouches+=1},list:async()=>[],leave:async()=>{},activeCount:async()=>0},session,congregation,store:previewStore,setIntervalFn(){throw new Error('Local-preview Presence must not schedule a heartbeat.')},clearIntervalFn(){}});
 state=await preview.start();assert(state.status==='local-preview'&&guestTouches===0,'Local-preview Presence must not write cloud state.');await preview.dispose({remove:false});
 
 sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}};memberships=[{congregationId:'c1',userId:'u1'}];
-const scoped=createPresenceService({api:{touch:async()=>{},leave:async()=>{},list:async()=>[{congregation_id:'foreign',user_id:'u9',last_seen_at:new Date(now).toISOString(),surface:'BibleQuest'}]},session,congregation,store:makeStore(sessionState),clock:()=>now,setIntervalFn:()=>1,clearIntervalFn:()=>{}});
+const scoped=createPresenceService({api:{touch:async()=>{},leave:async()=>{},list:async()=>[{congregation_id:'foreign',user_id:'u9',last_seen_at:new Date(now).toISOString(),surface:'BibleQuest'}],activeCount:async()=>0},session,congregation,store:makeStore(sessionState),clock:()=>now,setIntervalFn:()=>1,clearIntervalFn:()=>{}});
 await scoped.start();let scopeFailed=false;try{await scoped.load('c1')}catch(error){scopeFailed=error.code==='BQ_PRESENCE_SCOPE'}assert(scopeFailed,'Foreign-congregation Presence data must fail closed.');await scoped.dispose({remove:false});
+// --- Phase 3: privacy-safe activeCount aggregate ---
+sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}};memberships=[{congregationId:'c1',userId:'u1'}];
+const countStore=makeStore(sessionState),countService=createPresenceService({api,session,congregation,store:countStore,clock:()=>now,setIntervalFn:()=>1,clearIntervalFn:()=>{}});
+await countService.start();
+const countResult=await countService.activeCount('c1',30);
+assert(countResult?.count===3&&countResult.windowMinutes===30,'activeCount must return the aggregate {count, windowMinutes}, not a row list.');
+assert(activeCountCalls.at(-1).congregationId==='c1'&&activeCountCalls.at(-1).windowMinutes===30,'activeCount must forward the congregation and window to the API boundary.');
+const foreignCount=await countService.activeCount('foreign-congregation',30);
+assert(foreignCount===null,'activeCount must fail closed (return null) for a congregation the caller does not belong to, not call the API.');
+assert(activeCountCalls.length===1,'activeCount must not call the API boundary for an out-of-scope congregation.');
+const noCongCount=await countService.activeCount('',30);
+assert(noCongCount===null,'activeCount must return null for a missing congregation id.');
+await countService.dispose({remove:false});
+
+sessionState={authenticated:false,remoteAvailable:true,user:null};
+const signedOutCountService=createPresenceService({api,session,congregation,store:makeStore(sessionState),clock:()=>now,setIntervalFn:()=>1,clearIntervalFn:()=>{}});
+const signedOutCount=await signedOutCountService.activeCount('c1',30);
+assert(signedOutCount===null,'A signed-out caller must never receive an activeCount result.');
+
 console.log('BibleQuest v3 Presence edge regression passed.');

@@ -13,10 +13,11 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
       const host = root.querySelector('[data-daily-page]');
       let snapshot;
 
-      const showError = error => {
+      const showError = (message = 'Could not update today’s journey. Retry the action.') => {
+        const safeMessage = String(message || 'Could not update today’s journey. Retry the action.');
         const node = host.querySelector('[data-daily-message]');
-        if (node) node.textContent = error?.message || 'Could not save this step. Retry the action.';
-        else host.insertAdjacentHTML('afterbegin', `<p class="bq-form-message" data-daily-message>${escapeHtml(error?.message || 'Could not open Daily Journey.')}</p>`);
+        if (node) node.textContent = safeMessage;
+        else host.insertAdjacentHTML('afterbegin', `<p class="bq-form-message" data-daily-message role="alert">${escapeHtml(safeMessage)}</p>`);
       };
 
       const stepList = state => ['retrieve','context','learn','apply','reflect'].map((id, index) => {
@@ -56,15 +57,15 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
 
       const answer = value => {
         try { render(mission.respond(value)); }
-        catch (error) { showError(error); }
+        catch { showError('Could not save this step. Retry the action.'); }
       };
       const next = () => {
         try { render(mission.advance()); }
-        catch (error) { showError(error); }
+        catch { showError('Could not continue today’s journey. Retry the action.'); }
       };
       const openReader = () => {
         try { mission.prepareReader(); onReader(); }
-        catch (error) { showError(error); }
+        catch { showError('Could not open this passage in Reader. Retry the action.'); }
       };
       const onClick = event => {
         const target = event.target instanceof Element ? event.target : null;
@@ -86,7 +87,7 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
       host.addEventListener('click', onClick);
       host.addEventListener('submit', onSubmit);
       try { render(mission.open()); }
-      catch (error) { host.innerHTML = `<section class="bq-panel"><h1>Daily Journey unavailable</h1><p class="bq-form-message">${escapeHtml(error?.message || 'Could not open today’s journey.')}</p></section>`; }
+      catch { host.innerHTML = '<section class="bq-panel"><h1>Daily Journey unavailable</h1><p class="bq-form-message" role="alert">Could not open today’s journey.</p></section>'; }
       return () => {
         host.removeEventListener('click', onClick);
         host.removeEventListener('submit', onSubmit);

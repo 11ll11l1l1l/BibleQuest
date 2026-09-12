@@ -16,9 +16,11 @@ async function run(){
   await open('learn');
   await page.locator('[data-source-guide]').waitFor();
   assert((await page.locator('main h1').first().textContent())?.trim()==='Learn','Source guide changed the stable Learn heading.');
-  assert(await page.locator('[data-source-guide-id]').count()===10,'Learn source guide must show 4 translations + recall source + 5 BibleQuest content types.');
+  assert(await page.locator('[data-source-guide-id]').count()===11,'Learn source guide must show 5 translations + recall source + 5 BibleQuest content types.');
   const guideText=await page.locator('[data-source-guide]').textContent();
   assert(guideText?.includes('Berean Standard Bible'),'Learn source guide lost Bible-owner BSB attribution.');
+  assert(guideText?.includes('Cebuano/Bisaya · OCCB')&&guideText?.includes('Biblica® Open Ang Pulong sa Dios™')&&guideText?.includes('CC BY-SA 4.0'),'Learn source guide lost CEBOCB Cebuano/Bisaya source and open-license attribution.');
+  assert(await page.locator('[data-source-guide-id="translation:cebocb"]').count()===1,'Learn source guide must expose exactly one CEBOCB translation source entry.');
   assert(guideText?.includes('New Living Translation')&&guideText?.includes('licensed external reader only'),'Learn source guide lost NLT licensed-reader attribution.');
   assert(guideText?.includes('unfoldingWord Translation Questions v90')&&guideText?.includes('CC BY-SA 4.0'),'Learn source guide lost Recall-owner attribution.');
   assert(guideText?.includes('A Scripture reference is not presented as though it were a quotation.'),'Learn source guide lost the reference-vs-quotation rule.');

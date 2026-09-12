@@ -1,0 +1,50 @@
+name: BibleQuest V4 Phase 6 field evidence gate
+
+on:
+  pull_request:
+    branches:
+      - v4/modern-ui-overhaul
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v4-phase6-field-evidence-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: true
+
+jobs:
+  field-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out exact candidate head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify checked-out candidate identity
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$EXPECTED_SHA"
+          echo "Exact candidate SHA: $actual"
+
+      - name: Regression-test field-evidence validator
+        run: |
+          node tests/v4-phase6-field-evidence-validator.mjs
+          node tests/v4-phase6-field-evidence-complete-fixture.mjs
+
+      - name: Validate field-evidence schema and secret hygiene
+        run: node scripts/validate-v4-phase6-field-evidence.mjs
+
+      - name: Require all seven Phase 6 field gates before main promotion
+        if: ${{ github.base_ref == 'main' }}
+        run: node scripts/validate-v4-phase6-field-evidence.mjs --require-complete

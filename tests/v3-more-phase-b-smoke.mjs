@@ -16,11 +16,11 @@ try{
   assert(assetText.includes('id="calendar"')&&assetText.includes('id="workspace"'),'Loaded More Phase B sprite is missing expected symbols.');
 
   const icons=page.locator('.bq-more-icon');
-  assert(await icons.count()===15,`Expected 15 More feature icons, found ${await icons.count()}.`);
+  assert(await icons.count()===16,`Expected 16 More feature icons, found ${await icons.count()}.`);
   const hrefs=await page.locator('.bq-more-icon use').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('href')));
-  assert(hrefs.length===15,'Every More icon must contain one external sprite reference.');
+  assert(hrefs.length===16,'Every More icon must contain one external sprite reference.');
   assert(hrefs.every(href=>href?.startsWith('assets/more-feature-icons.svg#')),'More icon reference escaped the committed sprite.');
-  assert(new Set(hrefs).size===15,'More feature cards must use distinct semantic sprite symbols.');
+  assert(new Set(hrefs).size===16,'More feature cards must use distinct semantic sprite symbols.');
 
   const visibleIconMetrics=await page.locator('[data-more-workspace] .bq-more-icon').evaluate(node=>{const box=node.getBoundingClientRect(),style=getComputedStyle(node);return{width:box.width,height:box.height,color:style.color,display:style.display}});
   assert(visibleIconMetrics.display!=='none','More feature icon must be rendered.');

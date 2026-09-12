@@ -90,14 +90,14 @@ try {
     };
   });
   assert(metrics.layers === 1 && metrics.dialogs === 1, 'Launcher must open exactly one visible tutorial overlay.');
-  assert(metrics.step.includes('Step 1 of 6'), `Tutorial did not start at step 1: ${metrics.step}`);
+  assert(metrics.step.includes('Step 1 of 9'), `Tutorial did not start at step 1: ${metrics.step}`);
   assert(metrics.nextHeight >= 44, `Tutorial Next target is too short for mobile: ${metrics.nextHeight}px.`);
   assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Tutorial caused horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
 
   await page.locator('[data-tutorial-next]').click();
-  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 2 of 6'));
+  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 2 of 9'));
   await page.locator('[data-tutorial-back]').click();
-  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 1 of 6'));
+  await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 1 of 9'));
 
   await page.locator('[data-tutorial-skip]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'hidden' });
@@ -106,7 +106,7 @@ try {
   metrics = await page.evaluate(() => ({ layers: document.querySelectorAll('[data-bq-tutorial-layer]').length, dialogs: document.querySelectorAll('.bq-tutorial-dialog').length }));
   assert(metrics.layers === 1 && metrics.dialogs === 1, 'Force-open launcher must reuse the single mounted overlay.');
 
-  for (let step = 1; step < 6; step += 1) await page.locator('[data-tutorial-next]').click();
+  for (let step = 1; step < 9; step += 1) await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'hidden' });
   const persisted = await page.evaluate(() => JSON.parse(localStorage.getItem('biblequest.v3.tutorial-onboarding') || 'null'));
@@ -117,7 +117,8 @@ try {
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Completed tutorial must remain closed after reload.');
   await page.locator('[data-open-tutorial]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'visible' });
-  await page.locator('[data-tutorial-next]').click();
+  // Guided tour order (Phase 5, 9 steps): Welcome(0) -> Home(1) -> Read(2) -> Daily Journey(3, action=mission) -> ...
+  for (let step = 0; step < 3; step += 1) await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-tutorial-action="mission"]').click();
   await page.waitForFunction(() => location.hash === '#/mission');
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Tutorial action handoff must close the overlay before routing.');

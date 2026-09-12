@@ -253,3 +253,338 @@
 @media (prefers-reduced-motion: reduce) {
   .bq-nav-art { transition:none; }
 }
+
+/* ============================================================
+   Custom-art wiring, phase 2 (Section F).
+   Technique: CSS background-image keyed off data-* attributes the
+   feature markup already renders. No markup, hook, route, scoring,
+   storage or permission change in any feature file.
+   ============================================================ */
+
+/* --- Avatar Vault: 16 custom style portraits ---------------- */
+.bq-avatar-art-wrap[data-avatar-art] {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+/* The sprite <svg> stays in the DOM as the structural/sizing element and as a
+   graceful fallback if a PNG ever fails to load; the custom portrait is
+   layered over it. */
+.bq-avatar-art-wrap[data-avatar-art] > .bq-avatar-art { opacity:0; }
+@media (forced-colors: active) {
+  .bq-avatar-art-wrap[data-avatar-art] { background-image:none !important; }
+  .bq-avatar-art-wrap[data-avatar-art] > .bq-avatar-art { opacity:1; }
+}
+.bq-avatar-art-wrap[data-avatar-art="starter"]   { background-image:url("../../assets/v4/avatar-vault/starter.png"); }
+.bq-avatar-art-wrap[data-avatar-art="sakura"]    { background-image:url("../../assets/v4/avatar-vault/sakura.png"); }
+.bq-avatar-art-wrap[data-avatar-art="lantern"]   { background-image:url("../../assets/v4/avatar-vault/lantern.png"); }
+.bq-avatar-art-wrap[data-avatar-art="flame"]     { background-image:url("../../assets/v4/avatar-vault/flame.png"); }
+.bq-avatar-art-wrap[data-avatar-art="crown"]     { background-image:url("../../assets/v4/avatar-vault/crown.png"); }
+.bq-avatar-art-wrap[data-avatar-art="scholar"]   { background-image:url("../../assets/v4/avatar-vault/scholar.png"); }
+.bq-avatar-art-wrap[data-avatar-art="scroll"]    { background-image:url("../../assets/v4/avatar-vault/scroll.png"); }
+.bq-avatar-art-wrap[data-avatar-art="shepherd"]  { background-image:url("../../assets/v4/avatar-vault/shepherd.png"); }
+.bq-avatar-art-wrap[data-avatar-art="couple"]    { background-image:url("../../assets/v4/avatar-vault/couple.png"); }
+.bq-avatar-art-wrap[data-avatar-art="community"] { background-image:url("../../assets/v4/avatar-vault/community.png"); }
+.bq-avatar-art-wrap[data-avatar-art="world"]     { background-image:url("../../assets/v4/avatar-vault/world.png"); }
+.bq-avatar-art-wrap[data-avatar-art="kitsune"]   { background-image:url("../../assets/v4/avatar-vault/kitsune.png"); }
+.bq-avatar-art-wrap[data-avatar-art="moon"]      { background-image:url("../../assets/v4/avatar-vault/moon.png"); }
+.bq-avatar-art-wrap[data-avatar-art="fuji"]      { background-image:url("../../assets/v4/avatar-vault/fuji.png"); }
+.bq-avatar-art-wrap[data-avatar-art="tea"]       { background-image:url("../../assets/v4/avatar-vault/tea.png"); }
+.bq-avatar-art-wrap[data-avatar-art="lock"]      { background-image:url("../../assets/v4/avatar-vault/lock.png"); }
+
+/* --- Bible World: 9 region illustrations -------------------- */
+/* --- Bible World region icons: DELIBERATELY NOT wired ------
+   The certified journey-v4.css tranche intentionally replaced the region
+   emoji with a numbered progression step (counter(bq-world-step)) and sets
+   font-size:0 plus its own background/border on .bq-world-icon. Layering a
+   custom illustration here would (a) fight that certified background and
+   (b) render the "01/02/03" step number on top of the artwork. The numbered
+   step is the better fit for a journey/progression metaphor, so Bible World
+   region art is intentionally left unused rather than forced in.
+   Bible World artwork is still used on the Learn hub entry card below. */
+
+/* --- Home shortcut rail: custom art behind each icon -------- */
+.bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:76%;
+}
+.bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon > .bq-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon { background-image:none !important; }
+  .bq-home-rail-item[data-home-rail-item] .bq-home-rail-icon > .bq-icon { opacity:1; }
+}
+.bq-home-rail-item[data-home-rail-item="daily"]       .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/daily-journey.png"); }
+.bq-home-rail-item[data-home-rail-item="reader"]      .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/reader.png"); }
+.bq-home-rail-item[data-home-rail-item="assignments"] .bq-home-rail-icon { background-image:url("../../assets/v4/ministry-more/assignments.png"); }
+.bq-home-rail-item[data-home-rail-item="calendar"]    .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/calendar.png"); }
+.bq-home-rail-item[data-home-rail-item="grow"]        .bq-home-rail-icon { background-image:url("../../assets/v4/home-learn/progress.png"); }
+
+/* --- Home secondary tiles ----------------------------------- */
+.bq-home-tile .bq-home-tile-icon {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:76%;
+}
+.bq-home-tile .bq-home-tile-icon > .bq-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-home-tile .bq-home-tile-icon { background-image:none !important; }
+  .bq-home-tile .bq-home-tile-icon > .bq-icon { opacity:1; }
+}
+[data-home-tutorial]   .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/tutorial.png"); }
+[data-home-recordings] .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/recordings.png"); }
+[data-home-media]      .bq-home-tile-icon { background-image:url("../../assets/v4/home-learn/media-library.png"); }
+
+/* --- Learn hub: category cards ------------------------------
+   Uses ::after rather than background-image: .bq-learning-card already has
+   `background:linear-gradient(...)` in reader.css, and a background-image
+   longhand here would silently replace that gradient. ::after layers the
+   art over the existing card background instead of competing with it. */
+.bq-learning-card[data-open-study],
+.bq-learning-card[data-open-deep-questions],
+.bq-learning-card[data-open-story-journey],
+.bq-learning-card[data-open-wisdom-situations],
+.bq-learning-card[data-open-bible-world],
+.bq-learning-card[data-open-adaptive-learning],
+.bq-learning-card[data-open-open-review],
+.bq-learning-card[data-open-private-notes],
+.bq-learning-card[data-open-cloud-notes] { position:relative; }
+
+.bq-learning-card[data-open-study]::after,
+.bq-learning-card[data-open-deep-questions]::after,
+.bq-learning-card[data-open-story-journey]::after,
+.bq-learning-card[data-open-wisdom-situations]::after,
+.bq-learning-card[data-open-bible-world]::after,
+.bq-learning-card[data-open-adaptive-learning]::after,
+.bq-learning-card[data-open-open-review]::after,
+.bq-learning-card[data-open-private-notes]::after,
+.bq-learning-card[data-open-cloud-notes]::after {
+  content:"";
+  position:absolute;
+  right:12px;
+  bottom:10px;
+  width:46px;
+  height:46px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  pointer-events:none;
+  opacity:.92;
+}
+@media (forced-colors: active) {
+  .bq-learning-card::after { display:none; }
+}
+.bq-learning-card[data-open-study]::after             { background-image:url("../../assets/v4/home-learn/guided-study.png"); }
+.bq-learning-card[data-open-deep-questions]::after    { background-image:url("../../assets/v4/home-learn/deep-questions.png"); }
+.bq-learning-card[data-open-story-journey]::after     { background-image:url("../../assets/v4/home-learn/story-journey.png"); }
+.bq-learning-card[data-open-wisdom-situations]::after { background-image:url("../../assets/v4/home-learn/wisdom-situations.png"); }
+.bq-learning-card[data-open-bible-world]::after       { background-image:url("../../assets/v4/bible-world/world-map.png"); }
+.bq-learning-card[data-open-adaptive-learning]::after { background-image:url("../../assets/v4/home-learn/adaptive-learning.png"); }
+.bq-learning-card[data-open-open-review]::after       { background-image:url("../../assets/v4/home-learn/open-review.png"); }
+.bq-learning-card[data-open-private-notes]::after     { background-image:url("../../assets/v4/home-learn/notes.png"); }
+.bq-learning-card[data-open-cloud-notes]::after       { background-image:url("../../assets/v4/core/cloud-sync.png"); }
+
+/* --- More hub: custom art inside the existing icon wrapper ---
+   Targets .bq-more-icon-wrap (already rendered by more/index.js), NOT the
+   panel background: more-visual-polish.css sets a certified per-tile
+   `background:linear-gradient(...)` on every [data-more-*], and painting a
+   background-image on the panel here would silently erase those gradients. */
+.bq-more-icon-wrap {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:78%;
+}
+[data-more-workspace] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-notifications] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-community] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-ministry-hub] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-content-review] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-couples] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-couples-cloud] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-journey-groups] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-team-center] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-accessibility] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-backup] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-install] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-calendar] .bq-more-icon-wrap > .bq-more-icon,
+[data-more-congregation] .bq-more-icon-wrap > .bq-more-icon { opacity:0; }
+@media (forced-colors: active) {
+  .bq-more-icon-wrap { background-image:none !important; }
+  .bq-more-icon-wrap > .bq-more-icon { opacity:1 !important; }
+}
+[data-more-workspace]      .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/workspace.png"); }
+[data-more-notifications]  .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/notification-center.png"); }
+[data-more-community]      .bq-more-icon-wrap { background-image:url("../../assets/v4/community/community-hub.png"); }
+[data-more-ministry-hub]   .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/ministry-hub.png"); }
+[data-more-content-review] .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/content-review.png"); }
+[data-more-couples]        .bq-more-icon-wrap { background-image:url("../../assets/v4/community/couples-family.png"); }
+[data-more-couples-cloud]  .bq-more-icon-wrap { background-image:url("../../assets/v4/community/couples-cloud.png"); }
+[data-more-journey-groups] .bq-more-icon-wrap { background-image:url("../../assets/v4/community/journey-groups.png"); }
+[data-more-team-center]    .bq-more-icon-wrap { background-image:url("../../assets/v4/community/team-center.png"); }
+[data-more-accessibility]  .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/accessibility.png"); }
+[data-more-backup]         .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/backup.png"); }
+[data-more-install]        .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/install-app.png"); }
+[data-more-calendar]       .bq-more-icon-wrap { background-image:url("../../assets/v4/home-learn/calendar.png"); }
+[data-more-congregation]   .bq-more-icon-wrap { background-image:url("../../assets/v4/community/congregation.png"); }
+
+/* ============================================================
+   Custom-art wiring, phase 3 (Section G whole-app audit finding:
+   emoji category icons still visible on Community hub). Same
+   overlay technique as the Learn/More icon wrappers: the emoji
+   glyph is hidden (font-size:0) and a background-image is applied
+   to the existing 44px icon span certified by community-family-v4.css,
+   which sets its own background color but not an image - no conflict.
+   ============================================================ */
+[data-community-view] .bq-community-grid button>span {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:70%;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  [data-community-view] .bq-community-grid button>span { background-image:none !important; font-size:1.35rem; }
+}
+[data-community-route="congregation"]    > span { background-image:url("../../assets/v4/community/congregation.png"); }
+[data-community-route="leaderboards"]    > span { background-image:url("../../assets/v4/community/leaderboards.png"); }
+[data-community-route="recognition"]     > span { background-image:url("../../assets/v4/community/recognition.png"); }
+[data-community-route="assignments"]     > span { background-image:url("../../assets/v4/ministry-more/assignments.png"); }
+[data-community-route="live-rooms"]      > span { background-image:url("../../assets/v4/community/live-rooms.png"); }
+[data-community-route="journey-groups"]  > span { background-image:url("../../assets/v4/community/journey-groups.png"); }
+[data-community-route="encouragements"]  > span { background-image:url("../../assets/v4/community/encouragements.png"); }
+
+/* ============================================================
+   Custom-art wiring, phase 4 (Section G audit priority list,
+   round 2: Notification Center + Couples Family).
+   ============================================================ */
+
+/* Notification Center: per-type icon. .notification-center-icon is a fixed
+   40x40 box with a plain background color (ministry-ops-v4.css) - no
+   conflict. Added data-notification-type to the span (additive, no existing
+   hook changed) so CSS can target it; item.type itself was already used as
+   plain text elsewhere in the row, so this introduces no new information. */
+.notification-center-icon[data-notification-type] {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:66%;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  .notification-center-icon[data-notification-type] { background-image:none !important; font-size:1.1rem; }
+}
+.notification-center-icon[data-notification-type="assignment"]    { background-image:url("../../assets/v4/ministry-more/assignments.png"); }
+.notification-center-icon[data-notification-type="devotional"]    { background-image:url("../../assets/v4/home-learn/daily-verse.png"); }
+.notification-center-icon[data-notification-type="announcement"]  { background-image:url("../../assets/v4/core/notifications.png"); }
+.notification-center-icon[data-notification-type="encouragement"] { background-image:url("../../assets/v4/community/encouragements.png"); }
+.notification-center-icon[data-notification-type="award"]         { background-image:url("../../assets/v4/community/recognition.png"); }
+/* feedback, activity, poll, media, info: left as emoji. No custom asset in
+   the current inventory is a genuine semantic match (a wrong-meaning icon
+   is worse than an emoji placeholder), recorded here rather than forced. */
+
+/* Couples Family: mode-grid icons. The <span> here is a bare inline emoji
+   at font-size:22px with no box/background (couples-family.css), unlike the
+   Community/More icon wrappers, so it needs an explicit box before an
+   overlay makes sense. Only the 3 modes with a genuine, unambiguous asset
+   match are wired; the rest keep their emoji rather than get a mismatched
+   icon (see note below). */
+[data-couples-mode="journey"] > span,
+[data-couples-mode="god"] > span,
+[data-couples-mode="date"] > span {
+  display:block;
+  width:34px;
+  height:34px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  [data-couples-mode="journey"] > span,
+  [data-couples-mode="god"] > span,
+  [data-couples-mode="date"] > span { background-image:none !important; font-size:22px; }
+}
+[data-couples-mode="journey"] > span { background-image:url("../../assets/v4/bible-world/world-compass.png"); }
+[data-couples-mode="god"] > span     { background-image:url("../../assets/v4/decorative/mini-cross.png"); }
+[data-couples-mode="date"] > span    { background-image:url("../../assets/v4/decorative/sparkle.png"); }
+/* card, listen, checkin, repair: intentionally left as emoji. No asset in
+   the current inventory represents "one conversation card", "listening",
+   "emotional temperature check-in", or "conflict repair" without forcing an
+   unrelated icon (e.g. a prayer-circle image does not mean "repair a
+   disagreement"). Recorded here rather than silently skipped. */
+
+/* Journey Group Encouragements: preset send-buttons. Only 3 of 5 presets
+   have a genuine asset match (see note); pray/cheer keep their emoji. */
+[data-send-encouragement="heart"] > span,
+[data-send-encouragement="word"] > span,
+[data-send-encouragement="flame"] > span {
+  display:inline-block;
+  width:20px;
+  height:20px;
+  vertical-align:middle;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  [data-send-encouragement="heart"] > span,
+  [data-send-encouragement="word"] > span,
+  [data-send-encouragement="flame"] > span { background-image:none !important; font-size:1rem; }
+}
+[data-send-encouragement="heart"] > span { background-image:url("../../assets/v4/community/friendship.png"); }
+[data-send-encouragement="word"] > span  { background-image:url("../../assets/v4/decorative/mini-bible-ribbon.png"); }
+[data-send-encouragement="flame"] > span { background-image:url("../../assets/v4/core/streak-flame.png"); }
+/* pray, cheer: intentionally left as emoji - no asset in the current
+   inventory represents "praying hands" or "applause" without a forced,
+   inaccurate substitute. */
+
+/* Congregation Recognition: intentionally NOT wired this pass. Its badge
+   icons (10 achievement types) are rendered as bare text concatenated with
+   the title/name string (e.g. "${esc(row.icon)} ${esc(row.title)}"), not
+   isolated in their own styleable element the way Community/Notification/
+   Couples/Encouragements icons are. Wiring these would require restructuring
+   markup across 3 render functions in src/features/congregation-recognition/
+   index.js, not a CSS-only overlay - a real but lower-priority follow-up
+   given this is an achievement-history list, not a primary navigation
+   surface. Recorded here so it isn't silently forgotten. */
+
+/* ============================================================
+   Custom-art wiring, phase 5: Congregation Recognition badge icons.
+   Previously deferred because the icon was bare text concatenated into the
+   title string. Markup now wraps it in its own .bq-recognition-icon span
+   with a stable data-award-code/data-badge-id attribute (additive only -
+   row.awardCode and badge.badgeId already existed on the data, just were
+   not exposed as attributes; no existing hook, route, or service changed).
+   Only codes with a genuine asset match are wired; the rest keep their
+   emoji rather than get a semantically wrong icon. */
+.bq-recognition-icon {
+  display:inline-block;
+  width:18px;
+  height:18px;
+  vertical-align:-3px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  .bq-recognition-icon { background-image:none !important; font-size:1rem; }
+}
+.bq-recognition-icon[data-award-code="consistency"],
+.bq-recognition-icon[data-badge-id="consistency"]         { background-image:url("../../assets/v4/core/streak-flame.png"); }
+.bq-recognition-icon[data-award-code="scripture-explorer"],
+.bq-recognition-icon[data-badge-id="scripture-explorer"]  { background-image:url("../../assets/v4/decorative/mini-bible-ribbon.png"); }
+.bq-recognition-icon[data-award-code="encourager"],
+.bq-recognition-icon[data-badge-id="encourager"]           { background-image:url("../../assets/v4/community/friendship.png"); }
+.bq-recognition-icon[data-award-code="journey-finisher"],
+.bq-recognition-icon[data-badge-id="journey-finisher"]     { background-image:url("../../assets/v4/bible-world/world-explored.png"); }
+.bq-recognition-icon[data-award-code="group-helper"],
+.bq-recognition-icon[data-badge-id="group-helper"]         { background-image:url("../../assets/v4/community/family.png"); }
+.bq-recognition-icon[data-award-code="pastor-recognition"],
+.bq-recognition-icon[data-badge-id="pastor-recognition"]   { background-image:url("../../assets/v4/community/pastor.png"); }
+/* comeback, reflection, most-improved: intentionally left as emoji - no
+   asset in the current inventory represents "returning after a break",
+   "reflection", or "measured improvement" without forcing an unrelated
+   substitute. The award-selection <option> list in awardForm() cannot be
+   iconified at all regardless of markup: browsers render <option> content
+   as plain text only, so its emoji stays as-is by platform limitation, not
+   a missed fix. */

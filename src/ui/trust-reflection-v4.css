@@ -1,0 +1,110 @@
+/* BibleQuest V4 — Tranche 11 trust + reflection family. Presentation only. */
+
+/* Account */
+.bq-account-panel{width:min(100%,900px);margin-inline:auto;padding:clamp(20px,4vw,36px);border-color:color-mix(in srgb,var(--forest-700) 20%,var(--line-200));box-shadow:var(--shadow-2)}
+.bq-account-panel>h1,.bq-account-intro h1,.bq-account-signed-hero h1{font-family:var(--font-display);font-size:clamp(28px,5vw,40px);line-height:1.05;color:var(--forest-900)}
+.bq-account-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:var(--space-4) 0;padding:4px;border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-subtle)}
+.bq-account-tabs button{min-height:var(--tap-target);border:0;border-radius:calc(var(--radius-sm) - 3px);background:transparent;font-weight:800;color:var(--ink-700)}
+.bq-account-tabs button.active{background:var(--surface-raised);box-shadow:var(--shadow-1);color:var(--forest-900)}
+.bq-account-intro,.bq-account-signed-hero{display:flex;align-items:center;gap:var(--space-4);margin:var(--space-4) 0}
+.bq-account-art-wrap{display:grid;place-items:center;flex:0 0 auto;width:58px;height:58px;border:1px solid color-mix(in srgb,var(--forest-700) 24%,var(--line-200));border-radius:18px;background:color-mix(in srgb,var(--forest-100) 54%,var(--surface-raised))}
+.bq-account-art-wrap.is-small{width:38px;height:38px;border-radius:12px}
+.bq-account-art{width:28px;height:28px;color:var(--forest-800)}
+.bq-account-form{display:grid;gap:var(--space-4);margin-top:var(--space-4)}
+.bq-account-form label{display:grid;gap:var(--space-2);font-weight:750;color:var(--ink-800)}
+.bq-account-section{margin-top:var(--space-4);padding:var(--space-4);border:1px solid var(--line-200);border-radius:var(--radius-md);background:color-mix(in srgb,var(--surface-subtle) 18%,var(--surface-raised))}
+.bq-account-section-heading{display:flex;align-items:center;gap:var(--space-3)}
+.bq-account-section-heading h2{margin:0;color:var(--ink-900)}
+.bq-device-list{display:grid;gap:var(--space-2);margin-top:var(--space-3)}
+.bq-device-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-3);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised)}
+.bq-device-row small{display:block;margin-top:3px;color:var(--ink-500)}
+.bq-current-device{display:inline-flex;align-items:center;min-height:28px;padding:3px 9px;border:1px solid color-mix(in srgb,var(--success) 40%,var(--line-200));border-radius:var(--radius-pill);font-size:11px;font-weight:900;letter-spacing:.04em;color:var(--success)}
+.bq-recovery-result{padding-top:var(--space-2)}
+.bq-recovery-code{margin:var(--space-4) 0;padding:var(--space-4);border:2px dashed var(--forest-700);border-radius:var(--radius-sm);background:var(--surface-subtle);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:850;overflow-wrap:anywhere;text-align:center}
+.bq-save-check{display:flex!important;align-items:flex-start;gap:var(--space-2)!important;margin:var(--space-4) 0;padding:var(--space-3);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised)}
+
+/* Private + cloud notes */
+[data-private-notes-view],[data-cloud-notes-view]{width:min(100%,940px);margin-inline:auto}
+.bq-private-notes-head,.bq-cloud-notes-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);padding-bottom:var(--space-4);border-bottom:1px solid var(--line-200)}
+.bq-private-notes-head h1,.bq-cloud-notes-head h1,[data-cloud-notes-view]>h1{font-family:var(--font-display);font-size:clamp(28px,5vw,40px);line-height:1.05;color:var(--forest-900)}
+.bq-private-notes-count,.bq-cloud-notes-count{display:inline-flex;align-items:center;min-height:30px;padding:4px 10px;border:1px solid var(--line-200);border-radius:var(--radius-pill);background:var(--surface-subtle);font-size:12px;font-weight:850;white-space:nowrap;color:var(--ink-700)}
+.bq-private-notes-actions,.bq-cloud-notes-actions{display:flex;flex-wrap:wrap;gap:var(--space-2);margin:var(--space-4) 0}
+.bq-private-notes-list,.bq-cloud-notes-list{display:grid;gap:var(--space-3)}
+.bq-private-note-card,.bq-cloud-note-card{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);width:100%;min-height:74px;padding:var(--space-4);border:1px solid var(--line-200);border-radius:var(--radius-md);background:var(--surface-raised);box-shadow:none;text-align:left;color:var(--ink-900)}
+.bq-private-note-card:hover,.bq-cloud-note-card:hover{border-color:color-mix(in srgb,var(--forest-700) 34%,var(--line-200));box-shadow:var(--shadow-1)}
+.bq-private-note-card small,.bq-cloud-note-card small{display:block;margin-top:5px;color:var(--ink-500)}
+.bq-private-notes-empty,.bq-cloud-notes-empty{padding:clamp(24px,6vw,48px);border:1px dashed var(--line-300);border-radius:var(--radius-md);background:color-mix(in srgb,var(--surface-subtle) 45%,var(--surface-raised));text-align:center}
+.bq-private-note-form,.bq-cloud-note-form{display:grid;gap:var(--space-4);margin-top:var(--space-4)}
+.bq-private-note-form label,.bq-cloud-note-form label{display:grid;gap:var(--space-2);font-weight:750;color:var(--ink-800)}
+.bq-cloud-reference-grid{display:grid;grid-template-columns:2fr repeat(3,minmax(90px,1fr));gap:var(--space-3)}
+.bq-cloud-notes-boundary{padding:var(--space-3);border-left:4px solid var(--forest-700);background:color-mix(in srgb,var(--forest-100) 38%,var(--surface-raised));color:var(--ink-700)}
+.bq-private-note-delete,.bq-cloud-note-delete{border-color:color-mix(in srgb,var(--danger) 42%,var(--line-200));color:var(--danger)}
+.bq-private-notes-message:not(:empty),.bq-cloud-notes-message:not(:empty){padding:var(--space-3);border-left:4px solid var(--focus);background:color-mix(in srgb,var(--focus) 5%,var(--surface-raised))}
+
+/* Transform + Personality + Psychometrics */
+[data-transform-page],[data-personality-profile-page],[data-psychometrics-page]{display:grid;gap:var(--space-4);width:min(100%,1040px);margin-inline:auto}
+[data-transform-page]>.bq-panel,[data-personality-profile-page]>.bq-panel,[data-psychometrics-page]>.bq-panel{margin-top:0}
+.bq-transform-head{position:relative;overflow:hidden;padding:clamp(22px,4vw,36px);border-color:color-mix(in srgb,var(--forest-700) 20%,var(--line-200));box-shadow:var(--shadow-2)}
+.bq-transform-head::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--forest-700)}
+.bq-transform-head h1,[data-personality-profile-page] h1,[data-psychometrics-page] h1{font-family:var(--font-display);font-size:clamp(28px,5vw,40px);line-height:1.05;color:var(--forest-900)}
+.bq-transform-list{display:grid;gap:var(--space-3)}
+.bq-transform-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--space-4);margin:0;border-color:color-mix(in srgb,var(--ink-500) 18%,var(--line-200));box-shadow:none}
+.bq-transform-item p{margin-bottom:0;color:var(--ink-700)}
+.bq-transform-scale{display:grid;grid-template-columns:repeat(5,44px);gap:6px}
+.bq-transform-scale button{min-width:44px;min-height:44px;border:1px solid var(--line-300);border-radius:12px;background:var(--surface-raised);font-weight:850;color:var(--ink-700)}
+.bq-transform-scale button.is-selected,.bq-transform-scale button[aria-pressed="true"]{border-width:2px;border-color:var(--forest-800);background:color-mix(in srgb,var(--forest-100) 66%,var(--surface-raised));color:var(--forest-900);box-shadow:0 0 0 2px color-mix(in srgb,var(--forest-700) 12%,transparent)}
+.bq-transform-scale-note{font-size:12px;color:var(--ink-500)}
+.bq-transform-actions{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.bq-transform-actions>div:last-child{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--space-2)}
+.bq-transform-focus{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--space-3)}
+.bq-transform-focus article{padding:var(--space-4);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface-subtle) 28%,var(--surface-raised))}
+.bq-transform-bars{display:grid;gap:var(--space-3)}
+.bq-transform-bars>div{display:grid;grid-template-columns:minmax(120px,1fr) minmax(140px,2fr) auto;align-items:center;gap:var(--space-3)}
+.bq-transform-bars span{height:10px;overflow:hidden;border-radius:var(--radius-pill);background:var(--surface-subtle)}
+.bq-transform-bars i{display:block;height:100%;border-radius:inherit;background:var(--forest-700)}
+[data-personality-profile-page]>.bq-panel:first-of-type,[data-psychometrics-page]>.bq-transform-head:first-of-type{border-color:color-mix(in srgb,var(--forest-700) 20%,var(--line-200));box-shadow:var(--shadow-2)}
+[data-personality-presentation]{border-left:4px solid var(--focus)}
+[data-psych-quality] article{border-left:4px solid var(--focus)}
+[data-psych-rse-score]{font-family:var(--font-display);font-size:clamp(30px,6vw,46px);color:var(--forest-900)}
+
+/* Accessibility */
+.bq-accessibility-page,.bq-accessibility-controls{width:min(100%,780px);margin-inline:auto;padding:clamp(22px,4vw,34px)}
+.bq-accessibility-page{border-color:color-mix(in srgb,var(--forest-700) 20%,var(--line-200));box-shadow:var(--shadow-2)}
+.bq-accessibility-page h1{font-family:var(--font-display);font-size:clamp(30px,5vw,40px);color:var(--forest-900)}
+.bq-accessibility-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,260px);align-items:center;gap:var(--space-3) var(--space-5)}
+.bq-accessibility-controls h2,.bq-accessibility-controls [data-accessibility-reset],.bq-accessibility-status{grid-column:1/-1}
+.bq-accessibility-controls label{font-weight:800;color:var(--ink-800)}
+.bq-accessibility-controls select{min-height:var(--tap-target);width:100%}
+.bq-accessibility-status:not(:empty){padding:var(--space-3);border-left:4px solid var(--success);background:color-mix(in srgb,var(--success) 5%,var(--surface-raised));color:var(--ink-700)}
+
+@media(max-width:720px){
+  .bq-account-tabs{grid-template-columns:1fr}
+  .bq-account-intro,.bq-account-signed-hero,.bq-private-notes-head,.bq-cloud-notes-head,.bq-transform-actions{align-items:stretch;flex-direction:column}
+  .bq-account-intro,.bq-account-signed-hero{display:grid;grid-template-columns:auto minmax(0,1fr)}
+  .bq-device-row{align-items:flex-start;flex-direction:column}
+  .bq-device-row button{width:100%}
+  .bq-cloud-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bq-transform-item{grid-template-columns:1fr}
+  .bq-transform-scale{grid-template-columns:repeat(5,minmax(44px,1fr));width:100%}
+  .bq-transform-actions>div:last-child{justify-content:stretch;width:100%}
+  .bq-transform-actions>div:last-child button{flex:1 1 180px}
+  .bq-transform-bars>div{grid-template-columns:1fr auto}
+  .bq-transform-bars span{grid-column:1/-1;grid-row:2}
+  .bq-accessibility-controls{grid-template-columns:1fr}
+  .bq-accessibility-controls h2,.bq-accessibility-controls [data-accessibility-reset],.bq-accessibility-status{grid-column:auto}
+}
+@media(max-width:480px){
+  .bq-cloud-reference-grid{grid-template-columns:1fr}
+  .bq-private-notes-actions,.bq-cloud-notes-actions{display:grid;grid-template-columns:1fr}
+  .bq-private-notes-actions button,.bq-cloud-notes-actions button{width:100%}
+  .bq-transform-scale{gap:4px}
+  .bq-transform-scale button{min-width:0}
+}
+@media(prefers-contrast:more){
+  .bq-account-panel,.bq-account-section,.bq-device-row,.bq-account-tabs,.bq-private-note-card,.bq-cloud-note-card,.bq-private-notes-empty,.bq-cloud-notes-empty,.bq-transform-head,.bq-transform-item,.bq-transform-focus article,.bq-accessibility-page,.bq-accessibility-controls{border-color:var(--ink-700);background:var(--surface-raised);box-shadow:none}
+  .bq-transform-scale button{border-color:var(--ink-700)}
+  .bq-transform-scale button.is-selected,.bq-transform-scale button[aria-pressed="true"]{border-color:var(--ink-900);outline:2px solid var(--ink-900);outline-offset:2px}
+}
+@media(prefers-reduced-motion:reduce){
+  .bq-account-panel *,[data-private-notes-view] *,[data-cloud-notes-view] *,[data-transform-page] *,[data-personality-profile-page] *,[data-psychometrics-page] *,[data-accessibility-page] *,[data-accessibility-page]+.bq-accessibility-controls *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}

@@ -1,0 +1,105 @@
+name: BibleQuest V4 Gate 10 Study verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/ui/study-family-v4.css
+      - index.html
+      - tests/v4-study-family-static.mjs
+      - src/features/study/**
+      - src/features/deep-questions/**
+      - src/features/story-journey/**
+      - src/features/wisdom-situations/**
+      - src/features/adaptive-learning/**
+      - src/features/open-review/**
+      - src/engines/lesson.js
+      - src/engines/adaptive-learning.js
+      - src/app/open-review.js
+      - src/core/content-provenance.js
+      - src/ui/source-labels.js
+      - src/ui/doctrinal-safety.js
+      - scripts/validate-v3-source-labels.mjs
+      - scripts/validate-v3-doctrinal-safety.mjs
+      - tests/v3-lesson-edge.mjs
+      - tests/v3-study-edge.mjs
+      - tests/v3-deep-questions-edge.mjs
+      - tests/v3-story-journey-edge.mjs
+      - tests/v3-wisdom-situations-edge.mjs
+      - tests/v3-adaptive-learning-edge.mjs
+      - tests/v3-adaptive-focus-edge.mjs
+      - tests/v3-open-review-edge.mjs
+      - tests/v3-lesson-smoke.mjs
+      - tests/v3-study-smoke.mjs
+      - tests/v3-deep-questions-smoke.mjs
+      - tests/v3-story-journey-smoke.mjs
+      - tests/v3-wisdom-situations-smoke.mjs
+      - tests/v3-adaptive-learning-smoke.mjs
+      - tests/v3-open-review-smoke.mjs
+      - tests/v3-final-mobile-widths-smoke.mjs
+      - .github/workflows/v4-gate10-study-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-gate10-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate10:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and V4 Study-family contracts
+        run: |
+          bash build.sh
+          node tests/v4-study-family-static.mjs
+      - name: Study-family provenance and doctrine validators
+        run: |
+          node scripts/validate-v3-source-labels.mjs
+          node scripts/validate-v3-doctrinal-safety.mjs
+      - name: Gate 10 edge regressions
+        run: |
+          node tests/v3-lesson-edge.mjs
+          node tests/v3-study-edge.mjs
+          node tests/v3-deep-questions-edge.mjs
+          node tests/v3-story-journey-edge.mjs
+          node tests/v3-wisdom-situations-edge.mjs
+          node tests/v3-adaptive-learning-edge.mjs
+          node tests/v3-adaptive-focus-edge.mjs
+          node tests/v3-open-review-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-gate10-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-gate10-http.log
+          exit 1
+      - name: Gate 10 browser and mobile regressions
+        run: |
+          timeout 240s node tests/v3-lesson-smoke.mjs
+          timeout 240s node tests/v3-study-smoke.mjs
+          timeout 240s node tests/v3-deep-questions-smoke.mjs
+          timeout 240s node tests/v3-story-journey-smoke.mjs
+          timeout 240s node tests/v3-wisdom-situations-smoke.mjs
+          timeout 240s node tests/v3-adaptive-learning-smoke.mjs
+          timeout 240s node tests/v3-open-review-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul

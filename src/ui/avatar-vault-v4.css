@@ -1,0 +1,10 @@
+/* V4 Avatar Vault alignment. CSS-only: layers the certified V4 foundation's
+   shadow/type tokens onto Avatar Vault's existing Phase-B presentation
+   (which already has real SVG art, its own purple collectible accent, and
+   an "Equipped" badge) without replacing its established Play-family
+   identity or touching any markup/logic. */
+
+.bq-vault-hero h1{font-family:var(--font-display)}
+.bq-vault-hero .bq-avatar-art-wrap{box-shadow:var(--shadow-2)}
+.bq-badge-card{box-shadow:var(--shadow-1)}
+.bq-badge-card.is-active{box-shadow:var(--shadow-2)}

@@ -1,43 +1,5 @@
 import { trainerStateClass, trainerStateForStep } from './trainer.js';
-
-const STEPS = Object.freeze([
-  Object.freeze({
-    eyebrow: 'WELCOME TO BIBLEQUEST',
-    title: 'A short guide to the app',
-    body: 'BibleQuest has many tools, but you do not need to learn them all at once. This guide shows the main path and where to go when you want something more specific.',
-    action: Object.freeze({ route: 'home', label: 'Show Home' })
-  }),
-  Object.freeze({
-    eyebrow: 'BEST DAILY START',
-    title: 'Continue My Journey',
-    body: 'The Daily Journey is the simplest everyday path: retrieve, understand context, learn, apply, and reflect. One meaningful Bible activity can protect your streak; completing the full journey gives stronger progress evidence.',
-    action: Object.freeze({ route: 'mission', label: 'Open Daily Journey' })
-  }),
-  Object.freeze({
-    eyebrow: 'READ AND UNDERSTAND',
-    title: 'Use Learn for Scripture and study tools',
-    body: 'Open Learn when you want the Bible Reader, Guided Study, Story Journey, Smart Review, private notes, or deeper context instead of another general activity.',
-    action: Object.freeze({ route: 'learn', label: 'Open Learn' })
-  }),
-  Object.freeze({
-    eyebrow: 'GROW WITH PURPOSE',
-    title: 'Progress should point somewhere',
-    body: 'Grow holds progress, Transformation, Personality Profile, Psychometrics, Avatar Vault, and other tools that help you see what to review or practice next. Scores describe app evidence; they are not a measure of faith.',
-    action: Object.freeze({ route: 'grow', label: 'Open Grow' })
-  }),
-  Object.freeze({
-    eyebrow: 'PEOPLE AND PRACTICE',
-    title: 'More connects the wider BibleQuest tools',
-    body: 'Use More for community, ministry, assignments, couples and family tools, congregation features, notifications, backups, and your focused Personal Mission.',
-    action: Object.freeze({ route: 'more', label: 'Open More' })
-  }),
-  Object.freeze({
-    eyebrow: 'YOU ARE READY',
-    title: 'Start simple and come back anytime',
-    body: 'Most days, start on Home and continue the next useful step. When you need a specific tool, use the main navigation. The Show tutorial button on Home will always reopen this guide even after you finish it.',
-    action: Object.freeze({ route: 'home', label: 'Go to Home' })
-  })
-]);
+import { STEPS } from './steps.js';
 
 function template(state) {
   const step = STEPS[state.step] || STEPS[0];

@@ -1,0 +1,18 @@
+/* V4 More hub grouping. CSS-only companion to the group-wrapper markup added
+   in src/features/more/index.js. Groups the previous flat 15-section scroll
+   into 5 labeled categories (Ministry & Congregation, Personal Planning,
+   Together, Workspace & Inbox, Device & Settings) per V4_UI_ASSESSMENT_AND_TASKS.md
+   Task 3.2. No data/service/routing change - existing sections and hooks
+   are unchanged, only wrapped and labeled. */
+
+.bq-more-group{margin-top:var(--space-6)}
+.bq-more-group:first-of-type{margin-top:var(--space-4)}
+.bq-more-group-label{margin:0 0 var(--space-2)}
+.bq-more-group>.bq-panel{margin-top:var(--space-3)}
+.bq-more-group>.bq-panel:first-of-type{margin-top:0}
+
+@media(min-width:820px){
+  .bq-more-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);align-items:start}
+  .bq-more-group-label{grid-column:1/-1;margin-bottom:0}
+  .bq-more-group>.bq-panel{margin-top:0}
+}

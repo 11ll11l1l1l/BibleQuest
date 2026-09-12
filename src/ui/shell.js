@@ -1,11 +1,11 @@
-import { V4_ART } from './v4-art.js';
+import { iconSvg } from './icons.js';
 
 const NAV = [
-  ['home','Home',V4_ART.core.home],
-  ['learn','Learn',V4_ART.core.learn],
-  ['play','Play',V4_ART.core.play],
-  ['grow','Grow',V4_ART.core.grow],
-  ['more','More',V4_ART.core.more]
+  ['home','Home','home'],
+  ['learn','Learn','learn'],
+  ['play','Play','play'],
+  ['grow','Grow','grow'],
+  ['more','More','more']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -15,23 +15,23 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   if (root.querySelector('[data-bq-shell="v3"]')) throw new Error('BibleQuest shell is already mounted.');
 
   root.innerHTML = `
-    <div class="bq-shell" data-bq-shell="v3">
+    <div class="bq-shell" data-bq-shell="v3" data-ui-version="4">
       <header class="bq-topbar">
         <a class="bq-brand" href="#/home" data-brand-home aria-label="BibleQuest home">
-          <img class="bq-brand-art" src="${V4_ART.core.brandMini}" alt="" aria-hidden="true" decoding="async">
-          <span><strong>BibleQuest</strong><small>Rebuild v3</small></span>
+          <span class="bq-brand-mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
+          <span><strong>BibleQuest</strong><small>Read · Learn · Grow</small></span>
         </a>
         <div class="bq-top-actions">
           <span class="bq-progress-chip" data-progress-chip aria-label="BibleQuest progress"><b data-progress-xp>0 XP</b><small data-progress-streak>0 day streak</small></span>
           <button type="button" class="bq-session-chip" data-session-open aria-label="Open account">
-            <img class="bq-session-art" src="${V4_ART.core.account}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <span data-session-dot aria-hidden="true"></span>
             <span data-session-label>Starting…</span>
           </button>
         </div>
       </header>
       <main class="bq-main" id="bq-view" tabindex="-1"></main>
       <nav class="bq-nav" aria-label="Primary navigation">
-        ${NAV.map(([id,label,icon]) => `<a href="#/${id}" data-route-link="${id}"><img class="bq-nav-art" src="${icon}" alt="" aria-hidden="true" loading="eager" decoding="async"><small>${label}</small></a>`).join('')}
+        ${NAV.map(([id,label,icon]) => `<a href="#/${id}" data-route-link="${id}"><span class="bq-nav-icon" aria-hidden="true">${iconSvg(icon)}</span><small>${label}</small></a>`).join('')}
       </nav>
     </div>`;
 

@@ -1,0 +1,32 @@
+/* BibleQuest V4 — Admin / Ministry Operations. Presentation only; diagnostics and privileged data remain V3-owned. */
+[data-admin-operations-view]{display:grid;gap:var(--space-4)}
+[data-admin-operations-view]>.bq-panel,[data-admin-operations-view] .bq-ops-section,[data-admin-operations-view] .bq-ops-stat{margin-top:0}
+[data-admin-operations-view] .bq-ops-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-4);padding:clamp(20px,3vw,30px);border-color:color-mix(in srgb,var(--forest-700) 22%,var(--line-200));box-shadow:var(--shadow-2)}
+[data-admin-operations-view] .bq-ops-top h1{font-family:var(--font-display);font-size:clamp(27px,4.5vw,38px);line-height:1.06;color:var(--forest-900)}
+[data-admin-operations-view] .bq-ops-role{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:5px 10px;border:1px solid color-mix(in srgb,var(--forest-700) 28%,var(--line-200));border-radius:var(--radius-pill);background:var(--surface-raised);font-size:12px;font-weight:900;color:var(--forest-900)}
+[data-admin-operations-view] .bq-ops-toolbar{display:flex;align-items:end;justify-content:space-between;gap:var(--space-3);box-shadow:none;background:color-mix(in srgb,var(--surface-subtle) 30%,var(--surface-raised))}
+[data-admin-operations-view] .bq-ops-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3)}
+[data-admin-operations-view] .bq-ops-stat{padding:var(--space-4);border-color:var(--line-200);box-shadow:none}
+[data-admin-operations-view] .bq-ops-stat b{display:block;font-family:var(--font-display);font-size:28px;line-height:1;color:var(--forest-900)}
+[data-admin-operations-view] .bq-ops-stat span{display:block;margin-top:6px;color:var(--ink-500);font-size:12px;font-weight:750}
+[data-admin-operations-view] .bq-ops-section{box-shadow:none}
+[data-admin-operations-view] .bq-ops-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid var(--line-200)}
+[data-admin-operations-view] .bq-ops-section-head h2{margin:0;color:var(--ink-900)}
+[data-admin-operations-view] .bq-ops-list{display:grid;gap:var(--space-2);margin-top:var(--space-3)}
+[data-admin-operations-view] .bq-ops-row{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);padding:var(--space-3);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface-subtle) 24%,var(--surface-raised))}
+[data-admin-operations-view] .bq-ops-row h3{margin:0 0 3px;font-size:14px;color:var(--ink-900)}
+[data-admin-operations-view] .bq-ops-row p{margin:0;color:var(--ink-500);font-size:12px}
+[data-admin-operations-view] .bq-ops-meta{flex:0 0 auto;color:var(--ink-500);font-size:11px;font-weight:750;white-space:nowrap}
+[data-admin-operations-view] .bq-ops-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:var(--space-2)}
+[data-admin-operations-view] .bq-ops-tag{display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border:1px solid var(--line-200);border-radius:var(--radius-pill);background:var(--surface-raised);font-size:11px;color:var(--ink-700)}
+[data-admin-operations-view] .bq-ops-warning{padding:var(--space-3);border:1px solid color-mix(in srgb,var(--warning) 45%,var(--line-200));border-left:4px solid var(--warning);border-radius:var(--radius-sm);background:color-mix(in srgb,var(--warning) 5%,var(--surface-raised));color:var(--ink-700)}
+[data-admin-operations-view] .bq-ops-health-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-2);margin-top:var(--space-3)}
+[data-admin-operations-view] .bq-ops-health-grid>div{padding:var(--space-3);border:1px solid var(--line-200);border-radius:var(--radius-sm);background:var(--surface-raised)}
+[data-admin-operations-view] .bq-ops-health-grid b,[data-admin-operations-view] .bq-ops-health-grid span{display:block}
+[data-admin-operations-view] .bq-ops-health-grid span{margin-top:4px;color:var(--ink-500);font-size:11px}
+[data-admin-operations-view] .bq-ops-health-grid .bad{border-left:4px solid var(--danger)}
+[data-admin-operations-view] .bq-ops-health-grid .good{border-left:4px solid var(--success)}
+@media(max-width:760px){[data-admin-operations-view] .bq-ops-top{grid-template-columns:1fr}[data-admin-operations-view] .bq-ops-top>[data-ops-back]{justify-self:start}[data-admin-operations-view] .bq-ops-role{justify-self:start}[data-admin-operations-view] .bq-ops-summary{grid-template-columns:repeat(2,minmax(0,1fr))}[data-admin-operations-view] .bq-ops-health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){[data-admin-operations-view] .bq-ops-toolbar,[data-admin-operations-view] .bq-ops-row,[data-admin-operations-view] .bq-ops-section-head{display:grid;grid-template-columns:1fr}[data-admin-operations-view] .bq-ops-summary,[data-admin-operations-view] .bq-ops-health-grid{grid-template-columns:1fr}[data-admin-operations-view] .bq-ops-meta{white-space:normal}}
+@media(prefers-contrast:more){[data-admin-operations-view] .bq-ops-top,[data-admin-operations-view] .bq-ops-toolbar,[data-admin-operations-view] .bq-ops-stat,[data-admin-operations-view] .bq-ops-section,[data-admin-operations-view] .bq-ops-row,[data-admin-operations-view] .bq-ops-health-grid>div,[data-admin-operations-view] .bq-ops-tag{border-color:var(--ink-700);background:var(--surface-raised);box-shadow:none}}
+@media(prefers-reduced-motion:reduce){[data-admin-operations-view] *,[data-admin-operations-view] *::before,[data-admin-operations-view] *::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
