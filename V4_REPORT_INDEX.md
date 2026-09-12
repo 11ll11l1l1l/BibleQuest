@@ -77,7 +77,7 @@ All families share one icon language, type scale, spacing system, motion languag
 | 5 | Learn hub | **CERTIFIED** — `release/v4-learn` @ `3f5d433ec16ef2d20a5ec00d5ba388161d2a9689`. Reader itself deferred to its own sub-tranche (see note below). |
 | 6 | Reader | **CERTIFIED** — `release/v4-reader` @ `ece54af4883dfee3613cc7b62abaf0df11aff701`. CSS-only tranche (see note). |
 | 7 | Games + Avatar Vault | **CERTIFIED** — `release/v4-games-avatar` @ `cd5d16215236ab0f3541eac7029b10a336e2bdd2`. CSS-only (see note). |
-| 8 | Ministry + Assignments + Workspace + Notifications | **NEXT / mandatory gate.** |
+| 8 | Ministry + Assignments + Workspace + Notifications | **Superseded in ordering** by `V4_UI_ASSESSMENT_AND_TASKS.md` — see next-tranche order there. Home quick-access + More hub reorg now come first. |
 | 9 | Bible World + Progress + Personal Mission + Calendar | Pending |
 | 10 | Study family | Pending |
 | 11 | Account + Notes + Transform + Psychometrics + Accessibility | Pending |
@@ -161,6 +161,19 @@ Checkpoint: `release/v4-games-avatar` @ `cd5d16215236ab0f3541eac7029b10a336e2bdd
 **Explicitly deferred, not silently dropped:** replacing Games' emoji markers (🦊🕵️🧠🏆🌟🌱📘🗃️) with real SVG game art, as A1 originally recommended. Doing that safely requires editing the same single dense render function that owns all the interaction hooks — a distinct, higher-risk Class A tranche of its own, not bundled into this CSS pass.
 
 Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions, guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (320/375/768/1024px), plus byte-exact markup-preservation checks for both files against full git history. Run: `34661855982`.
+
+## New governing document: V4_UI_ASSESSMENT_AND_TASKS.md
+
+A full UI/UX assessment was performed against `release/v4-games-avatar` (7 gates certified), covering functions/features/color/overall feel, plus three new user-directed requirements now in force:
+- **3-tap reachability**: every feature must be reachable in ≤3 taps from Home.
+- **Minimized (not banned) scrolling**.
+- **Congregation and Assignments must be reachable directly from Home**, not buried behind More → Ministry Hub.
+
+Measured audit found the literal tap-count mostly holds by accident (More is 1 tap away), but the *intent* is violated: Congregation/Assignments are buried in More's flat 15-section scroll, and reaching Assignments specifically is a 3-tap path only in the best case. Full findings, a revised next-tranche order, a per-family accent-color task, and step-by-step manual image-upload instructions are in `V4_UI_ASSESSMENT_AND_TASKS.md`.
+
+**Revised next-tranche order** (supersedes the original Step 8 ordering above): (1) Home quick-access + More hub reorganization, (2) family accent-color tokens, (3) Games emoji→SVG art, (4) orphaned avatar-webp decision, (5) resume original family queue.
+
+Two workflow issues recorded there also apply immediately: five avatar `.webp` assets exist in `/assets/` but are referenced by no code anywhere in the repo (need a wire-in-or-delete decision before the next Avatar Vault tranche), and Games' emoji-to-SVG conversion has now been deferred twice without a scheduled tranche.
 
 ## Change-class rules
 
