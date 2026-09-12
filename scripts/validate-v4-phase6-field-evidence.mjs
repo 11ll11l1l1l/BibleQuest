@@ -4,9 +4,19 @@ import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
 const evidencePath = path.join(root, 'V4_PHASE6_FIELD_EVIDENCE.json');
 const requireComplete = process.argv.includes('--require-complete');
-const expectedGates = ['A', 'B', 'C', 'D', 'E', 'F'];
+const expectedGates = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 const allowedStatus = new Set(['pending', 'pass', 'fail']);
 const emergencyActions = ['authorization', 'force_sign_out', 'suspend_reactivate', 'set_temp_password', 'change_email'];
+const linkedActivityScenarios = [
+  'journey_group_create_join_persistence',
+  'journey_group_assignment_and_unrelated_denial',
+  'cloud_team_management_assignment_and_denial',
+  'linked_couple_accept_assignment_and_unrelated_isolation',
+  'couples_challenge_shared_day_individual_points',
+  'live_room_realtime_reconnect_and_isolation',
+  'reload_relogin_persistence',
+  'read_only_postrun_confirmation'
+];
 
 function fail(message) {
   throw new Error(`V4 Phase 6 field-evidence gate: ${message}`);
@@ -130,6 +140,14 @@ for (const gateId of expectedGates) {
     requireBoolean(gate, 'offline_contract_verified', gateId);
     requireBoolean(gate, 'reconnect_without_reinstall_verified', gateId);
     requireBoolean(gate, 'relaunch_state_verified', gateId);
+  }
+
+  if (gateId === 'G' && gate.status === 'pass') {
+    requireBoolean(gate, 'real_authenticated_sessions', gateId);
+    requireBoolean(gate, 'normal_product_paths_only', gateId);
+    if (!Number.isInteger(gate.distinct_authenticated_accounts) || gate.distinct_authenticated_accounts < 3) fail('Gate G requires at least three distinct authenticated accounts/sessions');
+    if (!gate.scenarios || typeof gate.scenarios !== 'object' || Array.isArray(gate.scenarios)) fail('Gate G requires a scenarios object');
+    for (const scenario of linkedActivityScenarios) if (gate.scenarios[scenario] !== 'pass') fail(`Gate G requires scenarios.${scenario}=pass`);
   }
 }
 
