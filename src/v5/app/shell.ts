@@ -53,7 +53,7 @@ export function createAppShell(root: HTMLElement, routes: readonly RouteDefiniti
         if (version !== renderVersion) return;
         const view: RouteView = module.createView();
         cleanup = view.mount(main, snapshot);
-        main.querySelectorAll('[data-route]').forEach((element) => element.removeAttribute('aria-current'));
+        nav.querySelectorAll('[data-route]').forEach((element) => element.removeAttribute('aria-current'));
         const active = nav.querySelector(`[data-route="${snapshot.key}"]`);
         active?.setAttribute('aria-current', 'page');
         main.focus({ preventScroll: true });
