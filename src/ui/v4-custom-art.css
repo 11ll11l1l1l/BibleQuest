@@ -426,3 +426,28 @@
 [data-more-install]        .bq-more-icon-wrap { background-image:url("../../assets/v4/ministry-more/install-app.png"); }
 [data-more-calendar]       .bq-more-icon-wrap { background-image:url("../../assets/v4/home-learn/calendar.png"); }
 [data-more-congregation]   .bq-more-icon-wrap { background-image:url("../../assets/v4/community/congregation.png"); }
+
+/* ============================================================
+   Custom-art wiring, phase 3 (Section G whole-app audit finding:
+   emoji category icons still visible on Community hub). Same
+   overlay technique as the Learn/More icon wrappers: the emoji
+   glyph is hidden (font-size:0) and a background-image is applied
+   to the existing 44px icon span certified by community-family-v4.css,
+   which sets its own background color but not an image - no conflict.
+   ============================================================ */
+[data-community-view] .bq-community-grid button>span {
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:70%;
+  font-size:0;
+}
+@media (forced-colors: active) {
+  [data-community-view] .bq-community-grid button>span { background-image:none !important; font-size:1.35rem; }
+}
+[data-community-route="congregation"]    > span { background-image:url("../../assets/v4/community/congregation.png"); }
+[data-community-route="leaderboards"]    > span { background-image:url("../../assets/v4/community/leaderboards.png"); }
+[data-community-route="recognition"]     > span { background-image:url("../../assets/v4/community/recognition.png"); }
+[data-community-route="assignments"]     > span { background-image:url("../../assets/v4/ministry-more/assignments.png"); }
+[data-community-route="live-rooms"]      > span { background-image:url("../../assets/v4/community/live-rooms.png"); }
+[data-community-route="journey-groups"]  > span { background-image:url("../../assets/v4/community/journey-groups.png"); }
+[data-community-route="encouragements"]  > span { background-image:url("../../assets/v4/community/encouragements.png"); }
