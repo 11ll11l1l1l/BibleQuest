@@ -1,149 +1,198 @@
-## Phase 4 — SKIPPED (explicit decision, recorded per user instruction)
+# BibleQuest V4 Official Active Status
 
-The Leader Center (Overview, People, Assignments review, Groups, Activity dashboards) is **explicitly and officially skipped** at the user's direction. This is a deliberate scope decision, not an oversight or failure - the Ministry Hub's existing deferred Leader Dashboard slot remains deferred. If resumed later, it should build on Phase 1's response-review model and Phase 3's ministry-role presence RLS, both already in place and unaffected by this skip.
-
-## Phase 3 — 30-minute presence indicator on Home
-
-Checkpoint: `release/v4-phase3-presence`, exact-SHA verified, full accumulated suite green (including full browser/mobile).
-
-**Real privacy finding, verified before writing code:** the existing `bible_presence` RLS policy let any authenticated congregation member read every raw presence row - other members' `user_id` included - not just a count. Same class of "member list exposed to compute an aggregate in JS" problem the governing plan warned against, confirmed directly from the migration SQL.
-
-**Implemented:**
-- Migration tightens raw `bible_presence` SELECT to ministry roles only (Leader Center); adds `public.bible_presence_active_count(congregation_id, window_minutes=30)`, a `SECURITY DEFINER` function that checks congregation membership server-side and returns only an integer count, window clamped to 1-1440 minutes.
-- `presence.activeCount()` app-service method: fails closed (`null`) for signed-out, missing-congregation, or out-of-scope callers, without ever hitting the API boundary in those cases.
-- Home's existing Congregation card now shows "● N active in the last 30 min" (or "No recent activity." / hidden, per state), reusing `presence`'s already-running heartbeat rather than starting a second presence system.
-
-**Two real bugs my own tests caught:**
-1. Adding the new required `api.activeCount` broke 4 existing presence-edge fixtures and 1 smoke fixture that construct the service without it - found and fixed all 5.
-2. A prior tranche had byte-locked `bootstrap.js` in its entirety. This is the **second time** this exact class of over-broad lock has blocked a legitimate change (first was Congregation Recognition's icon fix). `bootstrap.js` is the shared composition root and *must* change whenever a new service is wired into an existing route - locking it byte-for-byte is fighting the architecture, not protecting it. Replaced with a structural check (the five primary routes must still map to the right page factories) that actually catches what the original lock was trying to prevent (a duplicated/replaced shell) without blocking normal service wiring.
-
-**Same honest limitation as Phases 1-2:** the RLS policy and `SECURITY DEFINER` function have never executed against real Postgres. Static contract test locks in the authorization logic; live deployment verification is still owed.
-
-**Not done from Phase 3's full scope:** the Leader Center's own richer presence view (names + timestamps for ministry roles) - the raw-row RLS now correctly allows this, but no UI consumes it yet. That's naturally Phase 4 (Leader Center) work, not duplicated here.
-
-## Phase 2 — Admin emergency user management
-
-Checkpoint: `release/v4-phase2-admin-emergency`, exact-SHA verified, full accumulated suite green.
-
-**Reused existing infrastructure rather than duplicating it**, once found: `bible_app_access.active` was already the exact suspend/reactivate flag needed (no new migration required); `bible_admin_audit_log` already existed with the right shape; `supabase/functions/bq-admin-ops` already had the owner-only, audited `delete_user` action to extend rather than a new function to build.
-
-**Added, all inside `bq-admin-ops`:**
-- `suspend_account` / `reactivate_account` - owner or admin, mutual self-action block, another owner is immune to suspension (mirroring the existing delete-owner-immunity rule), suspension immediately attempts session revocation, both actions audited.
-- `force_sign_out` - any owner/admin, audited.
-- `set_temp_password` - **owner-only**, 12-character minimum enforced server-side, owner cannot target their own account, calls `auth.admin.updateUserById`, immediately attempts session revocation, the password value itself is never written to the audit log (only that the action happened).
-- New `forceSignOutUser()` helper using the documented GoTrue admin REST endpoint (`POST /auth/v1/admin/users/{id}/logout`), since supabase-js v2's `auth.admin.signOut()` takes a JWT, not a user id, and can't target an arbitrary other user.
-
-**Real bug caught by my own test before it shipped:** `setTempPassword`'s owner-only check ran before its ready/authorized check, so a signed-out/unauthorized call returned the wrong error code (`OWNER_REQUIRED` instead of `NOT_READY`) - fixed the check order.
-
-**Honest limitation:** the Edge Function is TypeScript/Deno - I cannot execute or deploy it from this environment, so it has never actually run against live Supabase. I wrote a static contract test locking in every authorization/audit invariant (owner-gating, self-action blocks, no-password-in-audit-log, the specific REST endpoint used) as the closest available proof, but **real deployment + live verification against a test Supabase project is still owed** before this can be trusted in production. The app-layer (`admin-operations.js`) and its guards are fully tested and verified, since that part runs in Node/the browser where I can actually execute it.
-
-**Not done from Phase 2's full scope:** the new-user-card UI (identity/congregation/security sections), the three severity-tier UI treatment, typed-confirmation for destructive actions, and email-change. Those are presentation-layer work on top of this now-real backend capability - a natural next tranche once someone has verified the Edge Function actually works live.
-
-## Phase 1 — Assignment privacy tightening (self-only for members)
-
-**Verification finding, before any code changed:** the alarming "Member B can read Member A's private answer" scenario proposed in the new governing plan was checked directly against the live migrations, not assumed true. `bible_assignment_progress` (the table holding actual answer text + leader_feedback) was already correctly restricted by RLS to the author plus verified ministry roles (facilitator/leader/pastor/admin), and the client already gated the private-answer render block behind the same role check. **No confirmed leak of actual answer content or leader feedback exists or existed.**
-
-What genuinely was peer-visible to ordinary members, exactly as the governing plan itself described: other members' display name + "Completed" + completion date, via `bible_assignment_response_presence` (a table with no answer/feedback columns at all). This was intentional prior design, not a bypass.
-
-**Implemented as a real, deliberate tightening per the new requirement** ("ordinary members see only their own assignment state; nothing about other members' responses"):
-- Checkpoint: `release/v4-phase1-assignment-privacy`, exact-SHA verified, full accumulated suite green.
-- New migration `20260912090000_assignment_presence_self_only.sql`: RLS on `bible_assignment_response_presence` now requires `user_id = auth.uid()` OR a verified ministry role in that assignment's congregation. Ordinary members can no longer see any other member's presence row.
-- `src/features/assignments/index.js`: `responseReviewView` now returns nothing at all for members (`if(!readOnly)return ''`) — no names, no completion count, no error state, nothing. Section renamed "Member Responses" and clearly scoped to ministry roles only. Privacy-boundary disclosure text rewritten to accurately describe the new self-only contract.
-- 3 tests added/updated: a new edge test proving members get an empty view in every review state (idle/loading/error/ready), a new RLS static contract locking the policy text, and 2 pre-existing tests updated where they asserted the now-superseded peer-visible wording (found via running the *complete* registered edge/smoke suite locally before each gate attempt, not a partial spot-check - this caught both stale-assertion regressions before they reached a wasted CI run... one still slipped through to a live gate once and was fixed from the CI failure directly).
-
-**Not yet done from the full 7-phase plan:** Phase 0's two-account live reproduction test (moot given the verification finding above, but the account-switching/role-demotion/cross-congregation security test matrix from Phase 1's own requirements list is still owed as dedicated test coverage beyond what's implemented here). Phases 2-7 (Admin emergency console, 30-minute presence indicator, full Leader Center, Tutorial/Help rewrite, integrated test matrix, RC2 release) are not started.
-
-# BibleQuest V4 Active Development Status
-
-Updated: 2026-09-12 JST
+Updated: 2026-09-13 JST
 Execution model: one serialized development stream
-Active integration branch: `v4/modern-ui-overhaul`
+Official active integration branch: `v4/modern-ui-overhaul`
 Tracking issue: #124
 
-Repository and CI evidence override stale chat summaries. `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` remains release-blocking.
+## Authority and reading rule
 
-## Current release state
+**This file is the single authoritative source for the current BibleQuest V4 development status, current phase state, current release path, and current blockers.**
 
-BibleQuest V4 is feature-complete. RC1 has passed all applicable automated repository/browser gates **and the exact-RC Cloudflare preview/staging gate**.
+Before selecting or evaluating any V4 work, the manual captain, ChatGPT development chat, agent, reviewer, or release operator must read this file first, then `V4_DOCUMENTATION_AUTHORITY.md`, then the release-blocking acceptance checklist as needed.
 
-- Frozen RC branch: `release/v4-rc1`
-- Exact RC1 SHA: `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`
-- Final draft/promotion PR: #151, targeting `main`
-- Automated certification: `V4_RC1_AUTOMATED_CERTIFICATION.md`
-- Field/staging record: `V4_RC1_FIELD_ACCEPTANCE.md`
-- PR #151 remains intentionally unmerged.
+If another V4 document, old release record, pull request, issue comment, chat summary, or earlier checkpoint conflicts with this file about **what is current**, this file wins unless a later repository commit on the official integration line explicitly updates the authority chain.
 
-Exact-SHA RC1 automated evidence:
+Repository branch/commit/CI evidence overrides stale chat context. Historical certification documents remain valid evidence for the exact SHA they certified, but they do not automatically certify later application bytes.
 
-- Full accumulated build/architecture/static/security/edge/browser-mobile regression `34694787827` — **PASS**.
-- Section I security/privacy gates `34694787800` — **PASS**.
-- Section H responsive/accessibility/performance/PWA browser gates `34694787772` — **PASS**.
-- Whole-app browser audit `34694787823` — **PASS**.
+At the time of this consolidation, the official integration line was at:
 
-The accumulated RC1 regression also executes the protected-page architecture validators, static/edge contracts, and protected browser scenarios. The standalone protected-page workflow is base-branch limited to V4 integration PRs, so no duplicate standalone protected-page run is required to establish RC1 behavioral coverage.
+- branch: `v4/modern-ui-overhaul`
+- head: `4ba9eac283487b54494cc58b4bcfdda5c1a18ca2`
+- latest change: Daily Journey tutorial action moved to step 4 of the expanded 9-step tour and smoke navigation updated.
 
-## Exact-RC Cloudflare preview/staging — PASS
+The branch may advance after this snapshot. When it does, the live branch head is the current implementation state; this file must be updated in the same development stream whenever phase status, release readiness, or blockers materially change.
 
-Cloudflare successfully deployed the unchanged RC1 candidate before production promotion:
+## Official release-state decision
 
-- Cloudflare Pages check run `103560676216` — **SUCCESS**.
-- Check head SHA: `cf58fa2e467f70f1c4a963b4ca50e33f11da9983` — exact RC1.
-- Deployment id: `9748307b-66e4-44d6-857d-80aa3b7a6e42`.
-- Immutable preview: `https://9748307b.mybiblequest.pages.dev`.
-- Branch preview: `https://release-v4-rc1-preview.mybiblequest.pages.dev`.
-- Final verification-only remote staging workflow run `34697229965`, job `103562690126` — **PASS**.
+The earlier frozen V4 RC1 remains a **historical certified checkpoint only**:
 
-The final staging smoke used a 390x844 Chromium viewport against the deployed Cloudflare preview and passed Home, Reader, Play, Assignments, Calendar, Community, Backup, More, Account and Grow with no document-level horizontal overflow. It also passed Home rail -> Grow, More -> Backup, Memory Meadow launch/return, active service worker, offline reload, and reconnect -> Reader, with no page errors/startup-failure surface.
+- `release/v4-rc1`
+- `cf58fa2e467f70f1c4a963b4ca50e33f11da9983`
+- PR #151
 
-The verifier lives only on `verify/v4-rc1-cloudflare-smoke`; it is not part of the frozen RC. The RC1 application bytes remain unchanged.
+RC1 passed its automated and Cloudflare staging gates, but it is **not the current V4 release candidate** because official V4 development continued after that freeze. The active integration line is 47 commits ahead of RC1 at the consolidation snapshot.
 
-## Product/security checkpoints preserved
+Therefore:
 
-Important certified checkpoints remain available:
+- do **not** infer current V4 release readiness from RC1 certification;
+- do **not** merge PR #151 as the current V4 promotion path unless the user explicitly decides to abandon the post-RC1 work and revert to RC1;
+- post-RC1 runtime/product changes require a new exact candidate and new applicable certification;
+- the next production candidate is expected to be a new RC (normally RC2 or later) frozen from the official integration line after the active program below is complete and verified.
 
-- Primary Home/Learn/Play/Grow/More family: `release/v4-primary-family`
-- Couples Journey communication-level/self-assessment: `release/v4-couples-journey`
-- Custom artwork program: `release/v4-custom-art`
-- Final Games artwork cleanup: `release/v4-games-art-final`
-- Whole-app browser/polish audit: `release/v4-whole-app-browser-audit`
-- Section H automated release gates: `release/v4-section-h`
-- Section I security/privacy/multi-account gates: `release/v4-section-i` @ `9f8c530668b2d9cbaa0cca226750fe9278f0a24f`
+## Official post-RC1 development program
 
-Section I closed real stale-account state risks in Assignments, Journey Groups, Team Center, Couples and Live Rooms without changing Supabase schema, RLS policy, Edge Functions, production-data contracts, or canonical API/service ownership. See `V4_SECTION_I_SECURITY_PRIVACY_CERTIFICATION.md`.
+### Phase 1 — Assignment privacy tightening — IMPLEMENTED / VERIFIED IN REPOSITORY
 
-No additional product feature tranche is required by `DEVELOPMENT_PLAN_V4.md`, issue #124, or the requested-feature checklist before release consideration.
+Checkpoint: `release/v4-phase1-assignment-privacy`.
+
+Verified finding before implementation: actual assignment answer text and leader feedback in `bible_assignment_progress` were already author/ministry-role restricted. The peer-visible surface was response-presence metadata (display name/completion/date), not private answer text.
+
+Implemented:
+
+- ordinary members now see only their own assignment response/presence state;
+- `bible_assignment_response_presence` RLS requires self OR a verified ministry role in the assignment congregation;
+- the Assignment response-review UI renders nothing for ordinary members;
+- ministry-role review remains available;
+- dedicated static/edge coverage protects the tighter contract.
+
+Outstanding from the broader security program: dedicated account-switching, role-demotion, and cross-congregation live/integrated scenarios are carried into the integrated verification phase below rather than treated as completed merely because Phase 1 repository tests are green.
+
+### Phase 2 — Admin emergency user management — IMPLEMENTED / LIVE BACKEND VERIFICATION OWED
+
+Checkpoint: `release/v4-phase2-admin-emergency`.
+
+Implemented by extending existing infrastructure rather than creating duplicate ownership:
+
+- suspend account;
+- reactivate account;
+- force sign-out;
+- owner-only temporary-password action with minimum length and self-target protection;
+- session-revocation attempts;
+- owner protection rules;
+- audit logging without storing the temporary password value;
+- app-side authorization/guard behavior and static authorization contracts.
+
+Important release limitation: the changed Supabase/Deno Edge Function behavior has not yet been proven by real deployment and live execution against the target/test Supabase environment. Static contracts are evidence, not a substitute for that live backend verification.
+
+Presentation follow-ons from the larger Phase 2 scope remain unclosed unless explicitly removed from scope: richer new-user/user-management card organization, severity-tier treatment, typed confirmation for destructive actions, and email-change handling.
+
+### Phase 3 — Privacy-safe 30-minute presence indicator — IMPLEMENTED / LIVE DATABASE VERIFICATION OWED
+
+Checkpoint: `release/v4-phase3-presence`.
+
+A real privacy weakness was found during this phase: ordinary authenticated congregation members could read raw `bible_presence` rows, including other members' user IDs, to derive presence in client code.
+
+Implemented:
+
+- raw `bible_presence` SELECT tightened to ministry roles;
+- `public.bible_presence_active_count(congregation_id, window_minutes=30)` provides a scope-checked `SECURITY DEFINER` integer aggregate;
+- `presence.activeCount()` fails closed for signed-out, missing-congregation, or out-of-scope callers;
+- Home's existing Congregation card shows a privacy-safe recent-active count without exposing the underlying member row list;
+- existing heartbeat infrastructure is reused rather than duplicated;
+- repository contracts and smoke fixtures were updated and verified.
+
+Important release limitation: the new RLS/function behavior still needs real Postgres/Supabase deployment and live verification before production trust is claimed.
+
+### Phase 4 — Leader Center — OFFICIALLY SKIPPED
+
+The Leader Center expansion (Overview, People, assignment review, Groups, Activity dashboards and richer ministry presence UI) is **explicitly and officially skipped by user instruction**.
+
+This is a deliberate scope decision, not forgotten work and not a release blocker. The existing deferred Leader Dashboard slot may remain deferred. If this work is resumed in a later version, it should build on the completed Phase 1 response-review boundary and Phase 3 ministry-role presence boundary rather than reimplement them.
+
+### Phase 5 — Tutorial + Help Center — ACTIVE / STABILIZATION
+
+This is the current active post-RC1 development tranche at the consolidation snapshot.
+
+Implemented on the official integration line:
+
+- guided onboarding expanded to a 9-step tour;
+- tour now covers the broader core experience including Reader, Assignments, Play, installation and Help;
+- trainer states extended for the 9-step tour;
+- `TUTORIAL_STEP_COUNT` updated to 9;
+- always-available Help and Tutorial Center added;
+- real Help icon added to the More visual system;
+- Help Center entry point wired into More;
+- Help route wired into the application;
+- dedicated Phase 5 contract coverage registered;
+- stale smoke assumptions about the old step count/order corrected;
+- Daily Journey tutorial action moved to the correct new step and smoke navigation updated.
+
+Latest snapshot head `4ba9eac283487b54494cc58b4bcfdda5c1a18ca2` successfully produced a Cloudflare Pages preview. This confirms deployability of that snapshot, **not full RC certification**.
+
+Phase 5 remains stabilization work until the applicable accumulated tests and the intended acceptance behavior are green on the final Phase 5 head.
+
+### Phase 6 — Integrated security/backend/role-transition verification — NEXT RELEASE-BLOCKING VERIFICATION
+
+After Phase 5 stabilization, consolidate and execute the post-RC1 verification matrix, including where technically applicable:
+
+- deploy and live-test the Phase 2 admin Edge Function changes;
+- deploy and live-test the Phase 3 RLS/`SECURITY DEFINER` presence aggregate;
+- two-account assignment isolation;
+- account switching with stale client state cleared;
+- role demotion / privilege-loss behavior;
+- cross-congregation isolation;
+- suspended/reactivated/forced-sign-out behavior;
+- owner/admin authorization boundaries;
+- temporary-password flow without secret leakage into logs/audit surfaces;
+- presence aggregate visibility for member vs ministry roles;
+- regression of existing Section I account-isolation protections;
+- complete accumulated static/security/edge/browser/mobile suite on the integrated head.
+
+Do not mark this phase complete from static source inspection alone when the requirement specifically concerns live Supabase/Postgres/Edge behavior.
+
+### Phase 7 — New release-candidate convergence and V4 release — PENDING
+
+Once the official post-RC1 scope and Phase 6 verification are closed:
+
+1. reconcile `V4_ACTIVE_STATUS.md` and `V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` against the actual integration head;
+2. freeze a **new exact V4 candidate** from `v4/modern-ui-overhaul` (normally RC2 or later);
+3. run the complete applicable build, architecture, static, security, edge, browser/mobile, accessibility/PWA and whole-app regression gates on that exact SHA;
+4. deploy that exact candidate to Cloudflare preview/staging and verify deployment identity plus critical-route/runtime behavior;
+5. complete the still-required physical-device field checks unless the user explicitly changes those gates: installed PWA on real Android, Android Chrome at 100% zoom, Android Brave at 100% zoom;
+6. promote only that exact verified new candidate to `main`;
+7. independently verify Cloudflare production build identity/bytes and production browser behavior;
+8. keep the known-good V3 rollback reference until post-promotion acceptance is complete.
+
+## Current status summary
+
+Official status as of this consolidation:
+
+- V4 development is **active**, not frozen at RC1.
+- Phases 1 and 3 include privacy/security hardening that occurred after RC1.
+- Phase 2 adds admin emergency operations after RC1.
+- Phase 4 is intentionally skipped.
+- Phase 5 Help/Tutorial expansion is the current stabilization tranche.
+- Phase 6 live/integrated verification is still required.
+- A new RC must be frozen and recertified after the post-RC1 line is ready.
+- V4 is **not production-live and not currently release-certified at the active integration head**.
+
+## Historical RC1 evidence — preserved, not current
+
+RC1 evidence remains valuable for regression history:
+
+- full accumulated RC1 regression: `34694787827` — PASS;
+- Section I RC1 security/privacy: `34694787800` — PASS;
+- Section H RC1 responsive/accessibility/performance/PWA automation: `34694787772` — PASS;
+- RC1 whole-app browser audit: `34694787823` — PASS;
+- Cloudflare exact-RC1 deployment check: `103560676216` — SUCCESS;
+- remote RC1 staging smoke: `34697229965` — PASS.
+
+These certify RC1 only. They do not certify the post-RC1 integration bytes.
 
 ## Rollback reference
 
-The verified V3 rollback remains preserved and must remain available until post-promotion V4 acceptance is complete:
+Preserve until the final post-RC release is accepted:
 
 - `release/v3.71-japanese-furigana`
 - `c631bea8d5177a9a2ff68139cb104b6fbf26015b`
 
-## Remaining release blockers
+## Development safety rules
 
-Repository automation and exact-RC Cloudflare staging are green. The remaining required evidence is now strictly:
-
-1. Installed-PWA behavior on a real Android device.
-2. Physical Android Chrome at 100% zoom.
-3. Physical Android Brave at 100% zoom.
-4. Promotion of the exact verified V4 state to `main` only after those three field gates pass.
-5. Post-promotion confirmation that Cloudflare production serves the intended V4 bytes/build identity and passes production browser smoke.
-
-The canonical Cloudflare production target follows `main`; V4 is **not production-live yet**.
-
-## Section H field boundary
-
-Headless Chromium, responsive emulation and exact-RC staging now certify the web-deployable candidate, including 320/360/390/412/430 px automated coverage, tablet/desktop, orientation, safe areas, keyboard/focus, browser accessibility semantics, reduced motion, resource ceilings, service worker, offline shell and reconnect recovery.
-
-They do **not** certify installed-PWA behavior on an actual phone or physical Chrome/Brave rendering. Those three checks remain deliberately open and must never be inferred from CI.
-
-## Release safety rules
-
-- Do not merge PR #151 while required physical-device evidence remains open.
-- Any runtime/product-byte change to `release/v4-rc1` invalidates the exact-candidate certification and requires a new RC with complete applicable reruns.
+- Keep one serialized integration stream; avoid concurrent uncoordinated runtime ownership changes.
+- Repository evidence overrides stale chat summaries.
 - Do not weaken a valid test to obtain green status.
-- Preserve current single-owner architecture and privacy/isolation contracts.
-- Preserve the verified V3 rollback route until V4 production acceptance is complete.
-- Keep preview-trigger PR #153 unmerged; it exists only to preserve access to the exact-RC Cloudflare preview for field testing.
-- After promotion, verify deployment identity and production behavior rather than assuming a GitHub merge equals Cloudflare propagation.
+- Preserve single-owner architecture and privacy/isolation contracts.
+- Treat historical checkpoint documents as evidence for their exact scope/SHA, not global current status.
+- Any document that uses words such as “current”, “feature-complete”, “release-ready”, “final candidate”, or “remaining blockers” must defer to this file for current V4 meaning.
+- When a phase materially advances, update this file in the same development stream so the repository never again has an older release narrative masquerading as current status.
