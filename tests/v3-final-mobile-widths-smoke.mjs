@@ -17,7 +17,10 @@ async function verifyWidth(width) {
   page.on('pageerror', error => errors.push(`page: ${error.message}`));
 
   await page.goto(`${BASE}#/home`, { waitUntil: 'networkidle' });
-  await page.locator('[data-bq-shell="v3"]').waitFor();
+  const shell = page.locator('[data-bq-shell]');
+  await shell.waitFor();
+  const shellVersion = await shell.getAttribute('data-bq-shell');
+  assert(shellVersion === 'v3' || shellVersion === 'v4', `${width}px unexpected shell version: ${shellVersion}.`);
   await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
   await page.locator('[data-home-daily]').waitFor();
 
@@ -27,17 +30,21 @@ async function verifyWidth(width) {
       return value ? { left: value.left, right: value.right, top: value.top, bottom: value.bottom, width: value.width, height: value.height } : null;
     };
     const font = node => Number.parseFloat(node ? getComputedStyle(node).fontSize : '0') || 0;
+    const visible = node => node && getComputedStyle(node).display !== 'none' && node.getBoundingClientRect().width > 0;
     const navLinks = [...document.querySelectorAll('.bq-nav [data-route-link]')];
     const navLabels = navLinks.map(link => link.querySelector('small'));
+    const progressChip = document.querySelector('[data-progress-chip]');
     return {
       innerWidth,
       innerHeight,
       htmlScrollWidth: document.documentElement.scrollWidth,
       bodyScrollWidth: document.body.scrollWidth,
+      shellVersion: document.querySelector('[data-bq-shell]')?.getAttribute('data-bq-shell') || '',
       topbar: rect(document.querySelector('.bq-topbar')),
       brand: rect(document.querySelector('.bq-brand')),
       topActions: rect(document.querySelector('.bq-top-actions')),
-      progressChip: rect(document.querySelector('[data-progress-chip]')),
+      progressChip: visible(progressChip) ? rect(progressChip) : null,
+      progressCard: rect(document.querySelector('[data-home-progress]')),
       account: rect(document.querySelector('[data-session-open]')),
       nav: rect(document.querySelector('.bq-nav')),
       navCount: navLinks.length,
@@ -50,7 +57,7 @@ async function verifyWidth(width) {
       daily: rect(document.querySelector('[data-home-daily]')),
       dailyButton: rect(document.querySelector('[data-open-daily]')),
       dailyHeading: document.querySelector('[data-home-daily] h2')?.textContent?.trim() || '',
-      heroSupportFont: font(document.querySelector('.bq-hero p:not(.bq-eyebrow)')),
+      heroSupportFont: font(document.querySelector('.bq-home-welcome p:not(.bq-eyebrow), .bq-hero p:not(.bq-eyebrow)')),
       dailySupportFont: font(document.querySelector('[data-home-daily] p:not(.bq-eyebrow)')),
       bodyFont: font(document.body)
     };
@@ -61,10 +68,14 @@ async function verifyWidth(width) {
   assert(home.topbar && home.topbar.left >= -1 && home.topbar.right <= width + 1, `${width}px topbar does not fit the viewport.`);
   assert(home.brand && home.topActions && home.brand.right <= home.topActions.left + 1, `${width}px topbar controls overlap/crowd.`);
   assert(home.account?.height >= 44 && home.account?.width >= 44, `${width}px account control is below practical 44px target.`);
-  assert(home.progressChip?.width > 0, `${width}px progress status chip is missing.`);
+  if (home.shellVersion === 'v4' && width <= 360) {
+    assert(home.progressCard?.width > 0, `${width}px compact v4 topbar hid progress without retaining the Home progress surface.`);
+  } else {
+    assert(home.progressChip?.width > 0, `${width}px progress status chip is missing.`);
+  }
 
-  assert(home.navCount === 5, `${width}px current v3 shell must retain five primary nav destinations, got ${home.navCount}.`);
-  assert(home.navLabels.join('|') === 'Home|Learn|Play|Grow|More', `${width}px current v3 primary navigation labels changed: ${home.navLabels.join('|')}.`);
+  assert(home.navCount === 5, `${width}px shell must retain five primary nav destinations, got ${home.navCount}.`);
+  assert(home.navLabels.join('|') === 'Home|Learn|Play|Grow|More', `${width}px primary navigation labels changed: ${home.navLabels.join('|')}.`);
   assert(approxEqual(home.navWidths), `${width}px primary navigation columns are not equal: ${home.navWidths.join(', ')}.`);
   assert(home.navHeights.every(value => value >= 44), `${width}px primary navigation contains a target below 44px: ${home.navHeights.join(', ')}.`);
   assert(home.navLabelFonts.every(value => value >= 10), `${width}px primary navigation label fell below 10px: ${home.navLabelFonts.join(', ')}.`);
@@ -78,7 +89,7 @@ async function verifyWidth(width) {
 
   for (const route of PRIMARY_ROUTES) {
     await page.goto(`${BASE}#/${route}`, { waitUntil: 'networkidle' });
-    await page.locator(`[data-route-link="${route}"][aria-current]`).waitFor();
+    await page.locator(`[data-route-link="${route}"][aria-current="page"]`).waitFor();
     const routeMetrics = await page.evaluate(() => ({
       innerWidth,
       htmlScrollWidth: document.documentElement.scrollWidth,
@@ -90,13 +101,13 @@ async function verifyWidth(width) {
     assert(routeMetrics.mainRight <= width + 1 && routeMetrics.navRight <= width + 1, `${width}px #/${route} shell/main exceeds viewport.`);
   }
 
-  assert(errors.length === 0, `${width}px current-v3 mobile acceptance produced errors: ${errors.join(' | ')}`);
+  assert(errors.length === 0, `${width}px mobile acceptance produced errors: ${errors.join(' | ')}`);
   await page.close();
 }
 
 try {
   for (const width of WIDTHS) await verifyWidth(width);
-  console.log(`BibleQuest v3 final mobile-width acceptance passed at ${WIDTHS.join('/')} px.`);
+  console.log(`BibleQuest final mobile-width acceptance passed at ${WIDTHS.join('/')} px.`);
 } finally {
   await browser.close();
 }
