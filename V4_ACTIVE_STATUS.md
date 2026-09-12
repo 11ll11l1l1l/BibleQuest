@@ -11,20 +11,19 @@ Before selecting, implementing, certifying, or closing remaining V4 work, read `
 
 ## Last fully verified V4 product checkpoint
 
-- Checkpoint: `release/v4-community-family`
-- Exact SHA: `e72b6427fdc2c7e742152264c5091d80f9e6ad6d`
-- Full accumulated regression run: `34677870938`
+- Checkpoint: `release/v4-home-assignments`
+- Exact SHA: `c676e0ec821ffb1ff2d8ddc0ecdd6168c50a62e7`
+- Full accumulated regression run: `34678365877`
+- Additional same-SHA accumulated run: `34678385543`
 - Result: **PASS**
-- Passed: Cloudflare/build deployment gate, accumulated architecture validators, accumulated edge regressions, guarded field-harness syntax, and complete accumulated browser/mobile Playwright suite.
-- V4 feature/service owners for the Community tranche are byte-locked to pre-tranche baseline `7b2abd7507adf5b7363fe068d5038f54d1c7263a` by `tests/v4-community-family-static.mjs`.
+- Passed: Cloudflare/build deployment gate, accumulated architecture validators, accumulated edge/security/privacy regressions, guarded field-harness syntax, and complete accumulated browser/mobile Playwright suite.
+- The expanded `tests/v4-home-assignments-edge.mjs` is now part of accumulated CI rather than an uncalled standalone test.
 
-Later commits on `v4/modern-ui-overhaul` may update documentation/checklists. They do not create a new certified product identity unless runtime/product bytes change and earn their own complete verification.
+Later documentation/checklist commits on `v4/modern-ui-overhaul` do not create a new certified product identity unless runtime/product bytes change and earn their own complete verification.
 
 ## Serialized family-queue status
 
-The original V4 family implementation queue is complete through the final Community / Relational tranche.
-
-Certified/retained work includes:
+The original V4 family implementation queue is complete through Community / Relational. Certified/retained work includes:
 
 - infrastructure bootstrap safety net;
 - shared V4 foundation and icon system;
@@ -43,43 +42,47 @@ Certified/retained work includes:
 - six-family accent identity system;
 - Community / Couples / Journey Groups / Teams / Live Rooms / Recognition / Leaderboards / Media / Recordings / Encouragements.
 
-## Community / Relational certification completed this cycle
+Community / Relational remains separately recoverable at `release/v4-community-family` -> `e72b6427fdc2c7e742152264c5091d80f9e6ad6d`, run `34677870938` PASS.
 
-New V4 presentation owner:
+## Home assignment/status acceptance completed this cycle
 
-- `src/ui/community-family-v4.css`
+The requested Home matrix is now explicit rather than hiding the assignment surface outside the ready/active state.
 
-Unified preservation contract:
+Certified states:
 
-- `tests/v4-community-family-static.mjs`
+- loading;
+- signed out;
+- local-preview/offline cloud-unavailable mode;
+- authenticated with no congregation;
+- API/load failure with generic retry;
+- no open assignments;
+- completed/no-pending work;
+- one open assignment;
+- multiple open assignments;
+- started/in-progress;
+- due soon;
+- overdue.
 
-Covered routes/surfaces:
+The Home projection remains privacy-minimized: only approved task metadata is rendered. Submission text, leader feedback and raw API/server errors are excluded. Every state keeps a direct action into the existing Assignments route and task opening still uses the existing singleton Assignments service.
 
-- Community Bridge;
-- Couples local/device experience;
-- Couple Journey cloud experience;
-- Journey Groups;
-- Team Center;
-- Live Rooms;
-- Congregation Recognition;
-- Leaderboards;
-- Encouragements;
-- Media Library;
-- Live Recordings.
+Primary implementation/evidence:
 
-The tranche deliberately did **not** modify any corresponding `src/features/**/index.js` owner. It added responsive relational composition, structural privacy/role boundaries, explicit destructive-action presentation, Live Room connection/code hierarchy, and wide browse/player layouts while retaining the certified Community family accent tokens.
+- `src/features/home/assignment-summary.js`
+- `src/features/home/index.js`
+- `src/ui/home-assignment-states-v4.css`
+- `tests/v4-home-assignments-edge.mjs`
+- `V4_HOME_ASSIGNMENTS_CERTIFICATION.md`
 
 ## Remaining release-blocking work
 
-The next work is no longer another broad family conversion. It is acceptance closure and requested polish, in this order unless repository evidence exposes a blocker:
+The next work is acceptance closure and requested polish, in this order unless repository evidence exposes a blocker:
 
-1. **Home assignment/status acceptance reconciliation** — prove every requested signed-out/offline/no-congregation/loading/error/open/started/due/overdue/completed state against the existing Assignments owner and clear only the states actually evidenced.
-2. **Priority-1 page audits** — Calendar, Assignments, Daily Journey/Mission, Progress/Grow and coherent Home/Learn/Play/Grow/More reachability.
-3. **Named-flow audits** — Memory Meadow exact #38 behavior; Couples Journey/communication-level requirements; preserve CEBOCB through all later work.
-4. **Custom artwork/icon program** — finish inventory, generated asset sheets, deterministic cutter/naming pipeline and replacement of remaining generic/placeholder artwork.
-5. **Whole-app polish + responsive/accessibility/performance/PWA audit** — all maintained routes and states, target phone widths, tablet/desktop, safe areas, keyboard/screen reader, reduced motion, localization expansion and asset cost.
-6. **Security/privacy/field evidence** — account isolation and real multi-account Assignments/Groups/Teams/Couples/Live Rooms evidence without weakening RLS or data boundaries.
-7. **Exact V4 release candidate** — freeze one SHA, complete all release gates, preview/staging, installed-PWA/physical-device evidence, then promote while preserving the known-good V3 rollback reference.
+1. **Priority-1 page audits** — Calendar first, then full Assignments page, Daily Journey/Mission, Progress/Grow, and coherent Home/Learn/Play/Grow/More reachability.
+2. **Named-flow audits** — Memory Meadow exact #38 behavior; Couples Journey/communication-level requirements; preserve CEBOCB through all later work.
+3. **Custom artwork/icon program** — finish inventory, generated asset sheets, deterministic cutter/naming pipeline and replacement of remaining generic/placeholder artwork.
+4. **Whole-app polish + responsive/accessibility/performance/PWA audit** — all maintained routes and states, target phone widths, tablet/desktop, safe areas, keyboard/screen reader, reduced motion, localization expansion and asset cost.
+5. **Security/privacy/field evidence** — account isolation and real multi-account Assignments/Groups/Teams/Couples/Live Rooms evidence without weakening RLS or data boundaries.
+6. **Exact V4 release candidate** — freeze one SHA, complete all release gates, preview/staging, installed-PWA/physical-device evidence, then promote while preserving the known-good V3 rollback reference.
 
 ## Safety rules
 
