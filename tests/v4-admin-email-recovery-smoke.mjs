@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createAdminOperationsService} from '../src/app/admin-operations.js';
+
+const edge=fs.readFileSync('supabase/functions/bq-admin-ops/index.ts','utf8');
+const api=fs.readFileSync('src/core/api.js','utf8');
+const ui=fs.readFileSync('src/features/admin-console/index.js','utf8');
+assert.match(edge,/OPS_VERSION=6/);
+assert.match(edge,/action==='change_email'/);
+assert.match(edge,/Only the BibleQuest owner can change an account email/);
+assert.match(edge,/updateUserById\(target,\{email\}\)/);
+assert.match(edge,/audit\(a,u\.id,target,'change_email',\{emailChanged:true,sessionsRevoked:revoked\}\)/);
+assert.doesNotMatch(edge,/audit\([^\n]*change_email[^\n]*email:/);
+assert.match(api,/action:'change_email',targetUserId,email/);
+assert.match(ui,/data-admin-change-email=/);
+assert.match(ui,/CHANGE EMAIL/);
+const calls=[];
+const fakeApi={status:async()=>({role:'owner',userId:'owner-1'}),dashboard:async()=>({role:'owner'}),frontendHealth:async()=>({}),deleteUser:async()=>({deleted:true}),suspendAccount:async()=>({active:false}),reactivateAccount:async()=>({active:true}),forceSignOut:async()=>({revoked:true}),setTempPassword:async()=>({ok:true}),changeEmail:async(targetUserId,email)=>{calls.push({targetUserId,email});return {changed:true,revoked:true}}};
+const session={getState:()=>({authenticated:true,user:{id:'owner-1'}})};
+const service=createAdminOperationsService({api:fakeApi,session});
+await service.authorize();
+const result=await service.changeEmail('member-2',' NEW@Example.COM ');
+assert.equal(result.ok,true);
+assert.deepEqual(calls,[{targetUserId:'member-2',email:'new@example.com'}]);
+await assert.rejects(()=>service.changeEmail('owner-1','owner2@example.com'),/own Account page/);
+await assert.rejects(()=>service.changeEmail('member-2','not-an-email'),/valid recovery email/);
+console.log('V4 admin email recovery smoke: PASS');

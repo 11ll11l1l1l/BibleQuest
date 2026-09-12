@@ -1,5 +1,5 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.112.4';
-const PRIMARY='https://mybiblequest.pages.dev',HOSTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'],OPS_VERSION=5;
+const PRIMARY='https://mybiblequest.pages.dev',HOSTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'],OPS_VERSION=6;
 function allowed(v:string){try{const u=new URL(v);return u.protocol==='https:'&&(u.origin==='https://11ll11l1l1l.github.io'||HOSTS.some(h=>u.hostname===h||u.hostname.endsWith(`.${h}`)))}catch{return false}}
 function cors(req:Request){const o=req.headers.get('Origin')||'';return {'Access-Control-Allow-Origin':allowed(o)?o:PRIMARY,'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json','Vary':'Origin'}}
 const json=(req:Request,b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:cors(req)});
@@ -72,4 +72,18 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:revoked});
       return json(req,{ok:true,revoked});
     }
+    if(action==='change_email'){
+    if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can change an account email'},403);
+    const target=String(body?.targetUserId||''),email=String(body?.email||'').trim().toLowerCase();
+    if(!target)return json(req,{error:'targetUserId required'},400);
+    if(target===u.id)return json(req,{error:'Use your own Account page for this active owner account'},409);
+    if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return json(req,{error:'A valid recovery email is required'},400);
+    const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);
+    if(String(got.data.user?.email||'').trim().toLowerCase()===email)return json(req,{error:'That email is already assigned to this account'},409);
+    const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
+    let revoked=false;try{revoked=await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-email-change',e)}
+    // Never write the old or new email address to the audit detail.
+    await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:revoked});
+    return json(req,{ok:true,changed:true,revoked});
+  }
     return json(req,{error:'Unknown action'},400)}catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:err instanceof Error?err.message:'Unexpected admin operations error'},500)}});
