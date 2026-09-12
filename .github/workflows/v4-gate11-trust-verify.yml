@@ -1,0 +1,114 @@
+name: BibleQuest V4 Gate 11 Trust and reflection verification
+
+on:
+  push:
+    branches:
+      - v4/modern-ui-overhaul
+    paths:
+      - src/ui/trust-reflection-v4.css
+      - index.html
+      - tests/v4-tranche11-static.mjs
+      - src/features/account/**
+      - src/features/private-notes/**
+      - src/features/cloud-notes/**
+      - src/features/transform/**
+      - src/features/personality-profile/**
+      - src/features/psychometrics/**
+      - src/features/accessibility/**
+      - scripts/validate-v3-private-notes.mjs
+      - scripts/validate-v3-cloud-notes.mjs
+      - scripts/validate-v3-personality-profile.mjs
+      - scripts/validate-v3-psychometrics.mjs
+      - scripts/validate-v3-accessibility.mjs
+      - tests/v3-account-edge.mjs
+      - tests/v3-account-phase-b-static.mjs
+      - tests/v3-private-notes-edge.mjs
+      - tests/v3-cloud-notes-edge.mjs
+      - tests/v3-transform-edge.mjs
+      - tests/v3-transform-basic-edge.mjs
+      - tests/v3-personality-profile-edge.mjs
+      - tests/v3-psychometrics-edge.mjs
+      - tests/v3-accessibility-edge.mjs
+      - tests/v3-account-phase-b-smoke.mjs
+      - tests/v3-private-notes-smoke.mjs
+      - tests/v3-cloud-notes-smoke.mjs
+      - tests/v3-transform-engine-smoke.mjs
+      - tests/v3-transform-basic-smoke.mjs
+      - tests/v3-transform-full-smoke.mjs
+      - tests/v3-personality-profile-smoke.mjs
+      - tests/v3-psychometrics-smoke.mjs
+      - tests/v3-accessibility-smoke.mjs
+      - tests/v3-final-mobile-widths-smoke.mjs
+      - .github/workflows/v4-gate11-trust-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: biblequest-v4-gate11-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate11:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deployment and V4 Tranche 11 contract
+        run: |
+          bash build.sh
+          node tests/v4-tranche11-static.mjs
+      - name: Trust and reflection validators
+        run: |
+          node scripts/validate-v3-private-notes.mjs
+          node scripts/validate-v3-cloud-notes.mjs
+          node scripts/validate-v3-personality-profile.mjs
+          node scripts/validate-v3-psychometrics.mjs
+          node scripts/validate-v3-accessibility.mjs
+      - name: Tranche 11 edge regressions
+        run: |
+          node tests/v3-account-edge.mjs
+          node tests/v3-account-phase-b-static.mjs
+          node tests/v3-private-notes-edge.mjs
+          node tests/v3-cloud-notes-edge.mjs
+          node tests/v3-transform-edge.mjs
+          node tests/v3-transform-basic-edge.mjs
+          node tests/v3-personality-profile-edge.mjs
+          node tests/v3-psychometrics-edge.mjs
+          node tests/v3-accessibility-edge.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-gate11-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-gate11-http.log
+          exit 1
+      - name: Tranche 11 browser and mobile regressions
+        run: |
+          timeout 240s node tests/v3-account-phase-b-smoke.mjs
+          timeout 240s node tests/v3-private-notes-smoke.mjs
+          timeout 240s node tests/v3-cloud-notes-smoke.mjs
+          timeout 240s node tests/v3-transform-engine-smoke.mjs
+          timeout 240s node tests/v3-transform-basic-smoke.mjs
+          timeout 240s node tests/v3-transform-full-smoke.mjs
+          timeout 240s node tests/v3-personality-profile-smoke.mjs
+          timeout 240s node tests/v3-psychometrics-smoke.mjs
+          timeout 240s node tests/v3-accessibility-smoke.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Dispatch complete accumulated regression gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run v3-regression.yml --ref v4/modern-ui-overhaul
