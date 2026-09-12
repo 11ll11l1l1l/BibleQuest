@@ -1,3 +1,7 @@
+## Phase 4 — SKIPPED (explicit decision, recorded per user instruction)
+
+The Leader Center (Overview, People, Assignments review, Groups, Activity dashboards) is **explicitly and officially skipped** at the user's direction. This is a deliberate scope decision, not an oversight or failure - the Ministry Hub's existing deferred Leader Dashboard slot remains deferred. If resumed later, it should build on Phase 1's response-review model and Phase 3's ministry-role presence RLS, both already in place and unaffected by this skip.
+
 ## Phase 3 — 30-minute presence indicator on Home
 
 Checkpoint: `release/v4-phase3-presence`, exact-SHA verified, full accumulated suite green (including full browser/mobile).
