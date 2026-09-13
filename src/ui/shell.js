@@ -1,11 +1,12 @@
 import { iconSvg } from './icons.js';
+import { localization } from '../app/localization.js';
 
 const NAV = [
-  ['home','Home','home'],
-  ['learn','Learn','learn'],
-  ['play','Play','play'],
-  ['grow','Grow','grow'],
-  ['more','More','more']
+  ['home','nav.home','home'],
+  ['learn','nav.learn','learn'],
+  ['play','nav.play','play'],
+  ['grow','nav.grow','grow'],
+  ['more','nav.more','more']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -14,24 +15,32 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   if (!root) throw new Error('App root is required.');
   if (root.querySelector('[data-bq-shell="v3"]')) throw new Error('BibleQuest shell is already mounted.');
 
+  const locale = localization.getLocale();
+  const text = (key, values) => localization.t(key, { locale, values });
+  const optionSelected = value => value === locale ? ' selected' : '';
+
   root.innerHTML = `
-    <div class="bq-shell" data-bq-shell="v3" data-ui-version="4">
+    <div class="bq-shell" data-bq-shell="v3" data-ui-version="4" data-locale="${escapeHtml(locale)}">
       <header class="bq-topbar">
-        <a class="bq-brand" href="#/home" data-brand-home aria-label="BibleQuest home">
+        <a class="bq-brand" href="#/home" data-brand-home aria-label="${escapeHtml(text('shell.brandHomeLabel'))}">
           <span class="bq-brand-mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
-          <span><strong>BibleQuest</strong><small>Read · Learn · Grow</small></span>
+          <span><strong>${escapeHtml(text('app.name'))}</strong><small>${escapeHtml(text('shell.brandTagline'))}</small></span>
         </a>
         <div class="bq-top-actions">
-          <span class="bq-progress-chip" data-progress-chip aria-label="BibleQuest progress"><b data-progress-xp>0 XP</b><small data-progress-streak>0 day streak</small></span>
-          <button type="button" class="bq-session-chip" data-session-open aria-label="Open account">
+          <span class="bq-progress-chip" data-progress-chip aria-label="${escapeHtml(text('shell.progressLabel'))}"><b data-progress-xp>0 XP</b><small data-progress-streak>${escapeHtml(text('shell.streak.other', { count: 0 }))}</small></span>
+          <select class="bq-session-chip bq-locale-select" data-locale-select aria-label="${escapeHtml(text('locale.label'))}">
+            <option value="en"${optionSelected('en')}>${escapeHtml(text('locale.english'))}</option>
+            <option value="tl"${optionSelected('tl')}>${escapeHtml(text('locale.tagalog'))}</option>
+          </select>
+          <button type="button" class="bq-session-chip" data-session-open aria-label="${escapeHtml(text('shell.accountOpenLabel'))}">
             <span data-session-dot aria-hidden="true"></span>
-            <span data-session-label>Starting…</span>
+            <span data-session-label>${escapeHtml(text('shell.starting'))}</span>
           </button>
         </div>
       </header>
       <main class="bq-main" id="bq-view" tabindex="-1"></main>
-      <nav class="bq-nav" aria-label="Primary navigation">
-        ${NAV.map(([id,label,icon]) => `<a href="#/${id}" data-route-link="${id}"><span class="bq-nav-icon" aria-hidden="true">${iconSvg(icon)}</span><small>${label}</small></a>`).join('')}
+      <nav class="bq-nav" aria-label="${escapeHtml(text('shell.primaryNavigationLabel'))}">
+        ${NAV.map(([id,labelKey,icon]) => `<a href="#/${id}" data-route-link="${id}"><span class="bq-nav-icon" aria-hidden="true">${iconSvg(icon)}</span><small>${escapeHtml(text(labelKey))}</small></a>`).join('')}
       </nav>
     </div>`;
 
@@ -46,6 +55,12 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
     onNavigate('home');
   });
   root.querySelector('[data-session-open]')?.addEventListener('click', onAccountOpen);
+
+  const localeSelect = root.querySelector('[data-locale-select]');
+  localeSelect?.addEventListener('change', event => {
+    const nextLocale = localization.setLocale(event.currentTarget.value);
+    if (nextLocale !== locale) window.location.reload();
+  });
 
   const view = root.querySelector('#bq-view');
   const sessionLabel = root.querySelector('[data-session-label]');
@@ -73,16 +88,16 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
     updateSession(session) {
       if (!sessionLabel || !sessionChip) return;
       if (session?.status === 'authenticated') {
-        sessionLabel.textContent = session.user?.displayName || session.user?.email || 'Account';
+        sessionLabel.textContent = session.user?.displayName || session.user?.email || text('shell.account');
         sessionChip.dataset.sessionState = 'authenticated';
         return;
       }
       if (session?.status === 'authenticating' || session?.status === 'booting') {
-        sessionLabel.textContent = session.status === 'authenticating' ? 'Signing in…' : 'Starting…';
+        sessionLabel.textContent = session.status === 'authenticating' ? text('shell.signingIn') : text('shell.starting');
         sessionChip.dataset.sessionState = 'busy';
         return;
       }
-      sessionLabel.textContent = 'Guest';
+      sessionLabel.textContent = text('shell.guest');
       sessionChip.dataset.sessionState = 'guest';
     },
     updateProgress(progress) {
@@ -90,7 +105,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       const xp = Number(progress?.xp || 0);
       const streak = Number(progress?.streak || 0);
       progressXp.textContent = `${xp} XP`;
-      progressStreak.textContent = `${streak} day${streak === 1 ? '' : 's'} streak`;
+      progressStreak.textContent = text(streak === 1 ? 'shell.streak.one' : 'shell.streak.other', { count: streak });
     },
     renderRecovery(failure, { onRetry, onHome }) {
       try { releasePage(); } catch {}
