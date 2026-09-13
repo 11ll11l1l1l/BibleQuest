@@ -404,7 +404,7 @@ Critical auth/admin/RLS operations have executable database/server/browser tests
 
 ---
 
-# Phase 11 — Design system, i18n, observability and performance consolidation
+# Phase 11 — Design system, motion/sound system, i18n, observability and performance consolidation
 
 ## Design-system architecture
 
@@ -415,6 +415,30 @@ V4 established the modern visual language. V5 turns repeated patterns into reusa
 - icon/art registry;
 - accessibility/focus/keyboard contracts;
 - story/demo/test surface for components if the chosen stack supports it cheaply.
+
+## Motion and sound system
+
+### Current constraint
+
+Reduced-motion handling is already real and broadly correct (V4's whole-app audit found zero gaps across 87 CSS files: every animated surface either has its own guard or relies on one certified global `prefers-reduced-motion` catch-all in the foundation layer). What does not exist is a *system*: motion is scattered per-feature CSS with no shared timing/easing tokens beyond a handful already in the foundation, no orchestration for sequenced or celebratory animation, and there is no sound layer of any kind outside the single-purpose Audio/media owner used for Recordings/Videos playback. "Fully polished, integrated app feel" cannot be reached by adding more one-off CSS per page; it requires a real, centrally-owned system the same way Progress, Presence, and Audio are each owned by exactly one service today.
+
+### V5 architecture
+
+Introduce a `MotionSystem` and a `SoundSystem` as new first-class app-level owners, following the same single-owner pattern already established for `audio.js`/`presence.js`:
+
+- **Motion tokens**: a formal set of durations/easings/patterns (entrance, exit, emphasis, celebratory/reward, list-stagger, route-transition) layered on top of the existing `--duration-*`/`--ease-*` foundation tokens, not replacing them.
+- **Animation registry**: named, reusable animation presets (e.g. `badge-unlock`, `streak-increment`, `assignment-complete`, `route-enter`) that features request by name rather than hand-authoring bespoke keyframes per feature, matching the "reusable, testable primitives" charter of this phase's design-system work.
+- **Sound registry**: a small library of short, purposeful sound effects (completion chime, gentle notification tone, streak/badge reward, error/denial tone) with per-category volume, a global mute, and a persisted user preference distinct from - and never overriding - the OS `prefers-reduced-motion`/`prefers-reduced-data` signals.
+- **Gesture-unlock handling**: sound playback is inert until a genuine user gesture unlocks the audio context (a real mobile browser constraint, not a design choice) - the system must handle this transparently so features never have to think about it.
+- **Haptics as a pure enhancement**: `navigator.vibrate()` where supported (Android Chrome only), always optional, never a dependency for any feedback the system provides.
+- **Accessibility-first by construction**: every registered animation must have a reduced-motion-safe fallback and every registered sound must be non-essential to understanding the outcome (visual/text confirmation is never sound-only) - this is enforced the same way the existing reduced-motion contract test enforces CSS today.
+- **Preference storage**: sound/haptics preferences live in the same private, device/account-scoped storage pattern already used for Accessibility settings - no new storage architecture needed.
+
+This phase builds the system and proves it end-to-end on 2-3 representative surfaces (e.g. a badge unlock, a route transition, an assignment-completion moment) as a working reference implementation. It deliberately does **not** attempt to apply the system across the whole app - that full-coverage rollout is V6's job (see `DEVELOPMENT_PLAN_V6.md`), once the system itself is proven correct, tested, and accessible.
+
+### Exit gate (motion/sound)
+
+Automated tests prove: every registered animation has a reduced-motion-safe equivalent; every registered sound has a non-audio-dependent visual/text equivalent; the mute/volume preference persists and is respected; gesture-unlock is handled without requiring feature code to manage it; and the 2-3 reference surfaces pass browser regression with sound/motion both enabled and both disabled.
 
 ## i18n/content architecture
 
