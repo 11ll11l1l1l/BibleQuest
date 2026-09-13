@@ -9,10 +9,13 @@ on:
       - 'src/content/locales/**'
       - 'src/app/localization.js'
       - 'src/ui/shell.js'
+      - 'src/features/transform/index.js'
       - 'docs/v5/localization-glossary.md'
       - 'tests/v5-localization-foundation.test.mjs'
       - 'tests/v5-shared-shell-localization.test.mjs'
       - 'tests/v5-shared-shell-localization-browser.mjs'
+      - 'tests/v5-transform-localization.test.mjs'
+      - 'tests/v5-transform-localization-browser.mjs'
       - '.github/workflows/v5-localization-foundation-verify.yml'
 
 permissions:
@@ -34,7 +37,7 @@ jobs:
       - name: Build current application
         run: bash build.sh
       - name: Run focused localization contracts
-        run: node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs
+        run: node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs
       - name: Run accumulated static integration contracts
         run: |
           node tests/v5-section-e-integration-sweep.mjs
@@ -64,6 +67,8 @@ jobs:
           exit 1
       - name: Run visible Tagalog shell browser proof
         run: timeout 240s node tests/v5-shared-shell-localization-browser.mjs
+      - name: Run visible Tagalog Transformation browser proof
+        run: timeout 240s node tests/v5-transform-localization-browser.mjs
       - name: Run representative shell/mobile regression
         run: |
           timeout 240s node tests/v3-shell-smoke.mjs
