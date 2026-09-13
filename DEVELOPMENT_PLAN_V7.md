@@ -1,74 +1,264 @@
 # BibleQuest V7 Development Plan
 
 Updated: 2026-09-13 JST
-Authority: this document is the forward-looking sketch for V7; it becomes binding only once V6 Phase 12 (certification/promotion) is complete and a dedicated `V7_ACTIVE_STATUS.md` supersedes it, following the same governance pattern as V4 and V6.
-Depends on: V6 Phase 11's Motion and Sound System (architecture must be built, tested, and proven on reference surfaces before V7 begins).
+Status: **PLANNED / BLOCKED BY V6**
+Authority before activation: this document
+Future active authority: `V7_ACTIVE_STATUS.md`
+Required baseline: exact accepted V6 production SHA after V6 Phase 12
+Depends on: the certified V6 engine
 
 ## 1. V7 line in the sand
 
-V3 established/recovered broad product capability. V4 modernized presentation without touching architecture. V6 is the deliberate architecture-replacement version - real build tooling, real database testing, decomposed Reader/Games, a real media platform, push, offline reading, Leader Center, multi-congregation, and the foundational Motion and Sound System.
+V5 completes the product. V6 replaces the engine. **V7 performs the full product overhaul using that engine.**
 
-V7 is **not** another architecture version. V7 is the deliberate full-coverage application of what V6 built: sound, animation, and consistent polish applied everywhere, plus the cross-cutting cohesion work that only makes sense once every surface shares the same design/motion/sound language. Where V4's mandate was "modernize the look," V7's mandate is "make the whole app feel like one considered, alive product" - not a collection of well-built independent pages.
+V7 is deliberately broader than a motion/sound polish pass. It may substantially redesign page composition, navigation treatment, information hierarchy, interaction patterns, component structure, responsive behavior, visual language, artwork placement, motion, sound and cross-page cohesion.
 
-V7 must not re-litigate V6's architecture. If V7 work reveals the Motion/Sound System itself has a real gap (not just "this one page needs a custom exception"), that is a V6 defect to fix in V6, not a reason to invent a second system in V7.
+V7 does **not** create another backend/client engine. It consumes the V6 app kernel, repositories, tenant context, Reader/content engine, Games engine, media engine, notification/sync engine, component/design-token system and motion/sound registry. If the V6 engine lacks a genuinely reusable capability, that gap is fixed at the engine layer rather than bypassed with page-specific hacks.
 
-## 2. Why this needs its own major version, not a V6 sub-phase
+## 2. Goal
 
-V6 Phase 11 deliberately proves the Motion/Sound System on only 2-3 reference surfaces and stops there. Rolling it out to *every* page, game, dialog, and transition in the app - and then doing the cross-page cohesion pass that a partial rollout can never achieve - is comparable in scope to V4's entire family-by-family visual rollout (which took the majority of that version's work). Bundling it into V6 would either bloat V6's architecture-focused scope past a reviewable size, or force a rushed, shallow rollout that undermines the very point of building the system properly first.
+The V7 target is a BibleQuest that feels like one deliberately designed modern application rather than a set of independently modernized pages.
 
-## 3. Execution model
+The overhaul must achieve all of the following together:
 
-Same discipline as V4 and V6: one serialized integration stream, exact-SHA verified checkpoints per tranche, full accumulated regression before every freeze, honest recording of what's deferred versus done. V7 additionally requires, per tranche:
+- coherent app shell/navigation and page hierarchy;
+- polished responsive layouts across phone/tablet/desktop;
+- consistent component behavior and state presentation;
+- page-family-specific visual identity without fragmentation;
+- complete replacement of legacy-looking UI patterns where the V6 engine makes a better pattern possible;
+- motion/sound/haptics used intentionally and accessibly;
+- consistent loading/empty/offline/error/unauthorized experiences;
+- preserved privacy, security, data and feature behavior from V5/V6;
+- measurable performance and accessibility budgets.
 
-1. confirm the tranche's target surface(s) do not require any Motion/Sound System change (if they do, stop and route that fix through V6 first);
-2. apply registered animation/sound presets from the V6 registry - do not hand-author new one-off effects unless the registry genuinely lacks the pattern, in which case add it to the registry first (keeps the system canonical, not fragmented again);
-3. verify with sound/motion both enabled and both disabled (matching the V6 exit-gate discipline);
-4. verify on real device classes for haptics/audio-unlock behavior, not just desktop browser emulation;
-5. update `V7_ACTIVE_STATUS.md` and the V7 acceptance checklist in the same stream.
+## 3. V7 freedom and limits
 
-## 4. Proposed phase sequence
+### V7 may change
 
-### Phase 0 - Registry completion and cohesion audit
-Before rolling out to every page, do a single pass identifying every distinct "moment" across the whole app that deserves a considered animation/sound treatment (completions, unlocks, streaks, errors, route transitions, form success/failure, notification arrival, real-time presence changes) and ensure each has a registered preset. This prevents the family-by-family rollout from inventing slightly-different treatments for the same conceptual moment in different corners of the app - the single biggest risk to "feels integrated" rather than "feels like many small polish passes."
+- page layouts and information architecture;
+- navigation placement/treatment and route composition;
+- cards, panels, dialogs, sheets, forms and controls;
+- responsive composition and density;
+- typography, spacing, depth and visual hierarchy;
+- artwork/icons/backgrounds and contextual illustrations;
+- interactions, progressive disclosure and onboarding flows;
+- transition/motion/sound/haptic treatment;
+- feature presentation as long as accepted capability remains available and secure.
 
-**Exit gate:** a complete, reviewed moment-to-preset mapping exists and is checked into the registry before any page-family rollout begins.
+### V7 may not silently change
 
-### Phase 1 - Explore/Home/Journey family
-Home's daily-continuation flow, streak increments, Bible World region reveals, Calendar interactions, Daily Journey completion. This family is first because it's the highest-traffic surface and the best proof that the rollout methodology (registry-first, not bespoke-per-page) actually holds up under real page complexity.
+- server authorization/RLS/privacy rules;
+- user data meaning or ownership;
+- feature availability accepted by V5/V6;
+- Bible translation licensing constraints;
+- tenant isolation;
+- privileged admin semantics;
+- engine contracts merely to solve one page's cosmetic problem.
 
-### Phase 2 - Play/Games/Avatar family
-The family with the most legitimate reason for playful, tactile motion and sound - game round completions, Memory Meadow match/mismatch feedback, Avatar Vault unlocks, badge reveals. Directly builds on V6 Phase 5's Games engine decomposition, since a proper component-based Games UI is what makes per-interaction animation hooks tractable instead of another emoji-and-innerHTML patch.
+Any intentional product-contract change requires explicit acceptance and corresponding tests/evidence.
 
-### Phase 3 - Learn/Read/Study family
-Reader page-turn/chapter-transition motion, Guided Study step progression, Smart Review reveal/rate feedback. Deliberately restrained here - this family's personality (per V4's own established design language) is editorial and calm, so the register of animation/sound is quieter than Play's, using the same underlying system with different preset choices.
+## 4. Execution model
 
-### Phase 4 - Grow/Reflect family
-Progress milestones, Transformation reflection saves, Personality Profile/Psychometrics completion. Calm, personal register again - reinforces that "integrated" means one system used with situational judgment, not one animation style stamped everywhere.
+V7 uses one serialized integration stream with page-family tranches. Each tranche:
 
-### Phase 5 - Community/Relational family
-Encouragement-sent confirmation, Recognition/badge-award reveals, Live Rooms join/leave presence cues, Journey Group activity. People-first register - warmth over spectacle.
+1. starts from the certified V6 engine and current V7 integration tip;
+2. inventories the full route/state matrix for the target family;
+3. designs the new composition and interaction model before coding;
+4. uses only V6 engine/component/motion/sound primitives unless a reusable engine gap is proven;
+5. migrates bounded surfaces and removes superseded page-specific legacy code;
+6. validates mobile/tablet/desktop, keyboard/touch, reduced motion, sound disabled, offline/error states and performance;
+7. runs accumulated regression/security/browser/PWA evidence;
+8. updates `V7_ACTIVE_STATUS.md` and V7 acceptance evidence.
 
-### Phase 6 - Ministry/Ops/Admin family
-Deliberately the *lightest* touch. Per the standing "never treat like games" rule already established in V4/V6 governance, Assignments, Leader Center, Admin Console, and Content Review get functional micro-feedback only (a save confirmed, an action completed) - restrained, professional, trustworthy. Explicitly verify no celebratory/playful preset ever appears here.
+No tranche should preserve an outdated V4/V5 page structure merely because it exists. The point of V7 is to use the engine to redesign confidently.
 
-### Phase 7 - Cross-page cohesion pass
-The step a family-by-family rollout cannot do by itself: consistent route-transition motion between every page regardless of family, a single consistent "you did something right" audio signature reused everywhere it's earned (not six different chimes), and an audit that nothing from Phase 1-6 accidentally drifted from the Phase 0 registry into a one-off exception.
+---
 
-**Exit gate:** a full-app audit (mirroring V4's whole-app polish audit methodology) finds zero unregistered animation/sound implementations outside the approved family-appropriate exceptions from Phase 6.
+# Phase 0 — Full-app overhaul inventory and design language
 
-### Phase 8 - Integrated V7 certification and promotion
-Full accumulated regression, sound/motion on/off matrix across every migrated route, physical-device haptic/audio-unlock verification, exact-SHA candidate freeze, staged promotion following the same rollback-preserving discipline as V4 RC and V6 Phase 12.
+## Work
 
-## 5. What "fully polished, integrated" means here, precisely
+- complete route/surface inventory, including member, leader and admin states;
+- map every page to a product family and primary user job;
+- define global shell/navigation model;
+- define page hierarchy, spacing, typography, component and responsive rules;
+- define family-specific visual registers: Explore/Journey, Play, Learn/Read, Grow/Reflect, Community, Ministry/Admin;
+- complete motion/sound/haptic moment-to-preset registry using V6 engine capabilities;
+- define accessibility/performance budgets and visual-regression strategy;
+- identify every legacy UI pattern to retire.
 
-To keep this from becoming an unbounded aesthetic goal with no exit criteria:
+## Exit gate
 
-- **Polished** = every registered moment has a deliberate, tested, accessible treatment - not merely "something moves."
-- **Integrated** = the same conceptual moment (a completion, an error, a reward) uses the same preset everywhere it occurs, and the register of intensity (playful vs. restrained) is consistent within each family and deliberately different across families, per the boundaries already established for "game-like" scope in V4.
-- **Fully** = the Phase 7 cohesion audit finds no gaps, not merely "most pages got attention."
+A complete overhaul map exists with no major route/family omitted and every shared interaction mapped to canonical V6 components/presets.
 
-## 6. Non-goals
+---
 
-- V7 is not a redesign. Visual identity, layout, and information architecture from V4/V6 are not up for revision here except where a motion/sound treatment genuinely requires a small structural hook (e.g. a container to animate into).
-- V7 does not touch backend/RLS/data architecture. If a V7 tranche seems to need that, it has scoped itself incorrectly.
-- V7 does not invent new sound/animation infrastructure. Every tranche consumes the V6 registry; gaps get fixed by extending the registry, not by one-off page code.
+# Phase 1 — App shell, navigation, Home/Explore/Journey
+
+Overhaul the highest-traffic product frame first:
+
+- global shell/header/bottom or adaptive navigation;
+- Home/Explore hierarchy and Continue My Journey prominence;
+- Daily Journey progression/resume/completion;
+- Bible World and Calendar composition;
+- notification/account access patterns;
+- responsive behavior from narrow phone through desktop;
+- route transitions and primary completion feedback.
+
+## Exit gate
+
+The app shell and daily journey feel coherent on phone/tablet/desktop and all existing critical flows remain reachable and persistent.
+
+---
+
+# Phase 2 — Learn / Reader / Study overhaul
+
+Use the V6 Reader/content engine to redesign without monolithic-render constraints:
+
+- Reader navigation/chapter controls;
+- translation/furigana/vocabulary presentation;
+- search and verse/context tools;
+- Guided Study / Smart Review / contextual learning flows;
+- offline/download states;
+- calm editorial motion/sound register;
+- legal/licensed translation handling remains explicit.
+
+## Exit gate
+
+Reader/Study family is visually and behaviorally unified, supports online/offline states clearly and passes representative translation/device/accessibility matrices.
+
+---
+
+# Phase 3 — Play / Games / Kids / Avatar overhaul
+
+Use the V6 Games engine and component layer for the most playful family:
+
+- launcher/discovery;
+- individual game family UIs;
+- shared question/feedback/result/score patterns;
+- Memory Meadow and visual assets;
+- Avatar/achievement/unlock presentation;
+- solo/local-multiplayer flows;
+- stronger animation/sound/haptic use within accessibility preferences.
+
+## Exit gate
+
+Every game family follows the shared engine/UI language while retaining its own personality; no legacy monolithic visual path remains live.
+
+---
+
+# Phase 4 — Grow / Reflect / Transformation overhaul
+
+Redesign reflective/personal-growth experiences with a calm, private register:
+
+- progress and reflection flows;
+- Transform/assessment presentation;
+- Personality/Profile/Psychometrics presentation where retained;
+- Notes/reflection continuity;
+- save/recovery/error states;
+- privacy messaging and boundaries.
+
+No playful/game treatment should trivialize private reflection content.
+
+---
+
+# Phase 5 — Community / Congregation / Couples overhaul
+
+Redesign relational surfaces around people and context:
+
+- congregation home/directory/context switching;
+- Journey Groups/Teams;
+- Live Rooms;
+- Couples/Family/Cloud features;
+- Recognition/Encouragements;
+- community notification/deep-link flows;
+- warm but non-gamified relational motion/sound language.
+
+## Exit gate
+
+Community flows remain tenant-safe and role-safe while becoming much easier to understand and navigate.
+
+---
+
+# Phase 6 — Ministry / Leader / Admin overhaul
+
+Use the V6 engine to give operational surfaces a mature professional treatment:
+
+- Leader Center;
+- Assignments/review/follow-up;
+- group/team management;
+- Content Review/moderation;
+- Admin Console and privileged actions;
+- role/tenant context clarity;
+- restrained functional micro-feedback only.
+
+## Exit gate
+
+Operational tools are efficient, trustworthy and clear without game-like decoration; role/privacy boundaries remain independently enforced.
+
+---
+
+# Phase 7 — Media / Notifications / Settings / Account overhaul
+
+Redesign cross-cutting utility experiences:
+
+- Videos/Recordings/player surfaces using V6 media engine;
+- playlists/resume/PiP presentation;
+- Notification Center and push preferences;
+- offline/download/storage management;
+- account/security/recovery/settings;
+- install/update/PWA state;
+- consistent permission/error/recovery UI.
+
+---
+
+# Phase 8 — Cross-page cohesion, motion, sound and visual-completion pass
+
+This is the full-system pass that family-by-family work cannot do alone.
+
+- consistent route transitions;
+- one canonical treatment for completion/error/success/notification moments;
+- registered motion/sound presets only;
+- no one-off animation/audio implementations without registry justification;
+- visual spacing/typography/depth consistency;
+- empty/loading/offline/error/unauthorized consistency;
+- artwork/icon completeness;
+- reduced-motion/sound-off matrix;
+- performance and memory regression review;
+- accessibility sweep across every route family.
+
+## Exit gate
+
+A whole-app audit finds no major legacy UI, unregistered motion/sound, inconsistent state treatment or unexplained family drift.
+
+---
+
+# Phase 9 — Integrated V7 certification and promotion
+
+## Required evidence
+
+- complete route/surface acceptance matrix;
+- full accumulated feature/security/database/browser/PWA regression;
+- responsive matrix across representative phone/tablet/desktop sizes;
+- keyboard/focus/contrast/text-scaling checks;
+- reduced-motion and sound-off/on matrices;
+- physical-device audio-unlock/haptic verification where applicable;
+- performance/bundle/runtime budgets;
+- exact-SHA candidate freeze and rollback plan.
+
+## Exit gate
+
+One exact V7 candidate is accepted as the fully overhauled BibleQuest production application.
+
+## 5. Definition of done
+
+V7 is complete only when:
+
+- **Full** — every active product family and route is covered, not merely the most visible pages.
+- **Overhauled** — pages use the V6 engine/component system and no longer preserve obsolete structures by default.
+- **Coherent** — shared concepts use shared components/presets and navigation/state language across families.
+- **Appropriate** — Play can be expressive, Reader calm, Community warm and Ministry/Admin restrained without becoming visually disconnected.
+- **Accessible** — motion, sound, haptics and visual complexity remain controllable and understandable.
+- **Safe** — all V5/V6 privacy/security/data guarantees still hold.
+
+V7 is the product transformation version. V6 builds the engine that makes this breadth safe.
