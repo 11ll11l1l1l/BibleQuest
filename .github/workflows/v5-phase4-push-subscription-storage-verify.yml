@@ -35,6 +35,12 @@ jobs:
       - name: Run push subscription storage security contract
         run: node --test tests/v5-push-subscription-storage.test.mjs
 
+      - name: Run accumulated Admin/security companions
+        run: |
+          node --test tests/v5-admin-emergency-security-static.mjs
+          node --test tests/admin-delete-audit-privacy-static.mjs
+          node --test tests/admin-membership-static.mjs
+
       - name: Verify no server secret markers entered migration
         run: |
           ! grep -Eqi 'VAPID[_ -]?PRIVATE|PRIVATE[_ -]?KEY|SERVICE[_ -]?ROLE' supabase/migrations/20260914072000_push_subscriptions.sql
