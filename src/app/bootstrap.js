@@ -36,6 +36,7 @@ import { createContentModerationService } from './content-moderation.js';
 import { createContentReviewService } from './content-review.js';
 import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
+import { createLeaderCenterService } from './leader-center.js';
 import { createNotificationCenterService } from './notification-center.js';
 import { createWorkspaceService } from './workspace.js';
 import { createPresenceService } from './presence.js';
@@ -83,6 +84,7 @@ import { encouragementsPage } from '../features/encouragements/index.js';
 import { liveRoomsPage } from '../features/live-rooms/index.js';
 import { communityPage } from '../features/community/index.js';
 import { ministryHubPage } from '../features/ministry-hub/index.js';
+import { leaderCenterPage } from '../features/leader-center/index.js';
 import { notificationCenterPage } from '../features/notification-center/index.js';
 import { workspacePage } from '../features/workspace/index.js';
 import { teamCenterPage } from '../features/team-center/index.js';
@@ -184,6 +186,7 @@ function boot(root){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
+  const leaderCenter=createLeaderCenterService({assignments,presence});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
@@ -218,6 +221,7 @@ function boot(root){
     community:()=>communityPage({bridge:communityBridge,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'live-rooms':()=>liveRoomsPage({liveRooms,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
+    'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onCongregation:()=>router.navigate('congregation')}),
     'notification-center':()=>notificationCenterPage({notifications,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     workspace:()=>workspacePage({workspace,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
