@@ -29,8 +29,8 @@ async function run(){
   assert(await page.locator('[data-ministry-tool="calendar"] [data-ministry-route="calendar"]').count()===1,'Leader must retain the shared Calendar entry.');
   assert(await page.locator('[data-ministry-privileged]').count()===1,'Leader must receive bounded ministry-role presentation.');
   assert(await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').count()===1,'Leader assignment publishing must delegate to existing Assignments route.');
-  assert(await page.locator('[data-ministry-deferred="leader-dashboard"]').isDisabled(),'Leader Dashboard must remain deferred.');
-  await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').click();routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments','Ministry tool navigation did not delegate to Assignments.');
+  assert(await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').count()===1,'Leader Center (V5 Phase 1) must now be a real, available tool, not deferred.');
+  await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').click();await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').click();routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments,leader-center','Ministry tool navigation did not delegate to Assignments and the new Leader Center route.');
 
   await mountForRole('bishop');
   assert(await page.locator('[data-ministry-route]').count()===0,'Unsupported role must receive no congregation navigation controls.');
