@@ -11,7 +11,7 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 ## Exact lab state inspected
 
-- Starting lab HEAD for this run: `9b3da6471dafd5f191398c3152283cb899adfaf5`.
+- Starting lab HEAD for this run: `83e62e074003bd68e1e38c7414be71494e1ab3f8`.
 - The branch HEAD containing this status file is the authoritative endpoint for this run.
 
 ## Completed work
@@ -29,48 +29,59 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 - Added `scripts/v5-built-output-contract.mjs` plus `scripts/v5-check-built-output.mjs`.
 - Added `npm run check:built-output`.
 - The validator requires emitted `index.html`, verifies every local `href`/`src` resolves inside `dist/`, requires `.vite/manifest.json` and at least one emitted entry chunk, validates entry JS/CSS files, validates web-manifest icon targets, and byte-compares every declared stable-root artifact against its source.
-- No router, session, Reader, Games, Supabase, storage, service-worker runtime behavior, or production configuration changed.
+
+### Tranche 5 — dependency-free router/session characterization
+- Added `tests/v5-incremental-runtime-boundaries.test.mjs` using Node's built-in test runner; no package installation is required.
+- Characterized router default-home startup, not-found fallback, centralized navigation-request ownership, verified authenticated session publication, expired-session fail-closed behavior, and sign-out cleanup ordering.
+- Added `npm run test:v5-boundaries`.
+- Added `.github/workflows/v5-lab-a1-boundaries.yml` for exact-revision dependency-free CI on this isolated lab branch/draft PR.
+- No router, session, Reader, Games, Supabase, storage or production runtime implementation was changed.
 
 ## Validation / evidence
 
-- `node --check` passed for both new validator modules under Node `v22.16.0`.
-- Synthetic production-like fixture passed with an emitted HTML entry, Vite manifest, JS/CSS entry assets, web manifest, icon and stable-root artifacts.
-- Negative fixture with a referenced CSS asset removed failed as intended with `missing index reference` and non-zero exit.
-- A fresh `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` attempt timed out after 180 seconds, so deterministic install and real Vite build are still not claimed.
+- Previous built-output validator syntax/synthetic positive/negative fixture checks remain recorded from Tranche 4.
+- Dependency-free GitHub Actions run `34734662501` executed on exact head `bdce1ab18a7dfbfd5a901a4752dcb4529282a9ed` using Node `22.16.0` and completed successfully.
+- In that run, `node scripts/v5-artifact-contract.mjs` passed.
+- In that run, `node --test tests/v5-incremental-runtime-boundaries.test.mjs` passed.
+- The local execution container still cannot resolve `github.com`, so local checkout execution was unavailable; GitHub Actions is the authoritative executable proof for this tranche.
+- Deterministic dependency installation and a real Vite production build remain unproven because no verified `package-lock.json` exists yet.
 - No production or Supabase state was touched.
 
 ## Failures / blockers
 
-1. Deterministic install remains incomplete because `package-lock.json` has not been generated and verified; registry access timed out again this run.
+1. Deterministic install remains incomplete because `package-lock.json` has not been generated and verified; registry access has repeatedly timed out from the available execution environment.
 2. Vite build execution has not yet been proven on the exact lab branch.
 3. The built-output validator is validated synthetically but cannot be exercised against a real `dist/` until dependency installation succeeds.
-4. Existing inherited workflows still assume the source-root V4 deployment/build model.
+4. Existing inherited workflows still assume the source-root V4 deployment/build model; the lab-specific workflow is intentionally isolated evidence, not a production CI replacement.
 5. ADR-0001 remains `PROPOSED`; this disposable lab is evidence for the decision, not approval of it.
 
 ## Architecture decisions learned
 
 - Source-side artifact validation and built-output validation should remain separate: the former protects deployment intent; the latter proves what Vite actually emitted.
-- A real build can be rejected when HTML points at missing assets, Vite manifest entries are incomplete, PWA icons are absent, or stable-root files drift from source, without coupling validation to application feature code.
-- The incremental architecture can continue hardening its deployment boundary independently of router/session/domain migration.
+- Router and session behavior can be characterized with dependency-free executable tests before migration, reducing the risk of introducing parallel navigation/session ownership during incremental decomposition.
+- The current router contract is small enough to preserve explicitly while changing how route modules are loaded later.
+- Session migration must preserve fail-closed expiry handling, sanitized user publication and pre-sign-out cleanup ordering; these are behavioral/security contracts, not implementation details.
+- The incremental architecture can continue hardening runtime seams independently of the blocked package-install path.
 - TypeScript migration should still begin at new architecture/service boundaries rather than globally checking legacy JS.
 
 ## Known debt
 
 - Missing lockfile and `npm ci` proof.
 - No exact Vite production build or real `dist/` inventory yet.
+- No bootstrap ownership characterization yet.
 - No route-level lazy imports yet.
 - No typed service contract migrated yet.
-- No V5-specific unit runner/lint command yet.
+- No general V5 lint/unit harness beyond the dependency-free boundary suite.
 - No bundle/image budgets until a production-equivalent build exists.
 
 ## Next 3 tasks
 
-1. Obtain deterministic dependency installation; run `npm ci`, artifact contract, typecheck, production build and the new built-output validator against the real repository.
+1. Obtain deterministic dependency installation; run `npm ci`, artifact contract, typecheck, production build and the built-output validator against the real repository.
 2. Once the real build passes, record artifact/bundle inventory and establish initial JS/CSS/image budgets without weakening V4 behavior.
-3. Add bootstrap/router/session characterization and migrate one low-risk route/domain boundary to a typed lazy-loaded adapter only after build parity is demonstrated.
+3. Add bootstrap ownership characterization, then introduce one low-risk lazy-loaded typed route/domain adapter while retaining the characterized router/session contracts.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The incremental experiment now has an auditable source contract, a single build-emission owner and an independent built-output parity gate. Registry availability remains the principal external blocker to full build proof; it is not evidence that the incremental architecture is inferior.
+The incremental experiment now has executable pre-migration contracts around its deployment artifacts plus the two highest-risk central runtime seams, router and session. The remaining package-registry blocker limits real Vite build proof but no longer prevents useful architecture-safety progress.
