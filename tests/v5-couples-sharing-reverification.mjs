@@ -47,8 +47,8 @@ assert.doesNotMatch(feature,/api\.(notes|transformation|account)/,'Couples prese
 
 const edge=fs.readFileSync(new URL('../supabase/functions/bq-couple/index.ts',import.meta.url),'utf8');
 assert.match(edge,/\.or\(`user_a\.eq\.\$\{user\.id\},user_b\.eq\.\$\{user\.id\}`\)/,'pair status must resolve membership symmetrically for either spouse');
-assert.match(edge,/pair\.user_a !== user\.id && pair\.user_b !== user\.id/,'pair leave authorization must reject non-members');
-assert.match(edge,/pair\.user_a === user\.id/,'pair creator must not join their own invite');
+assert.match(edge,/pair\.data\.user_a!==user\.id&&pair\.data\.user_b!==user\.id/,'pair leave authorization must reject non-members');
+assert.match(edge,/inv\.data\.created_by===user\.id/,'pair creator must not join their own invite');
 
 const hardening=fs.readFileSync(new URL('../supabase/migrations/20260905071100_couple_shared_write_hardening.sql',import.meta.url),'utf8');
 assert.match(hardening,/REVOKE UPDATE ON TABLE public\.bible_couple_shared FROM authenticated/i,'shared-history UPDATE must remain revoked');
