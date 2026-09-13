@@ -20,7 +20,8 @@ export const routes: readonly RouteDefinition[] = Object.freeze([
   { key: 'reader', label: 'Read', load: placeholder('Reader') },
   { key: 'games', label: 'Play', load: placeholder('Games') },
   { key: 'community', label: 'Community', load: placeholder('Community') },
-  { key: 'more', label: 'More', load: placeholder('More') }
+  { key: 'more', label: 'More', load: placeholder('More') },
+  { key: 'account', label: 'Account', load: () => import('../features/account/view') }
 ]);
 
 export const loadNotFound: RouteLoader = () => import('../features/not-found/view');
