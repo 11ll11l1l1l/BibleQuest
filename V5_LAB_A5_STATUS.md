@@ -3,7 +3,7 @@
 Updated: 2026-09-13 JST
 Branch: `lab/v5-a5-greenfield`
 Baseline origin: `1f504dec812f11453f82e30af61cdf3d6c547060`
-Current lab HEAD before this status update: `b7c1940c8ff5bd656439d0ef9090a3dbb5dd2a9e`
+Current lab HEAD before this status update: `b89be1003c4ad612e0f7e2aec6c32d122c6803d1`
 Lab identity: `BQ-V5-A5-GREENFIELD`
 
 ## Hypothesis
@@ -12,39 +12,30 @@ A clean typed client runtime can replace the V4 bootstrap/router/view ownership 
 
 ## Architecture blueprint
 
-The lab will use these ownership rules:
-
-- `v5.html` is the isolated greenfield browser entry during the experiment; production `index.html` remains untouched until parity evidence justifies any cutover.
+- `v5.html` is the isolated greenfield browser entry; production `index.html` remains untouched until parity evidence justifies any cutover.
 - Vite owns the lab build graph and production-style artifacts.
 - `src/v5/app/` owns application composition only.
 - `src/v5/platform/router/` owns URL parsing/navigation and exposes typed route snapshots.
 - `src/v5/platform/session/` will own typed auth/session state without becoming an authorization source.
 - `src/v5/platform/data/` will define repositories over existing protected backend contracts rather than exposing ad-hoc remote calls to views.
 - `src/v5/features/*` owns route/domain UI and feature-local state.
-- server authorization/RLS remain authoritative; UI capability checks are presentation only.
-- route modules are lazy-loaded from a typed route registry.
-- cross-feature state is not placed into one giant global store.
+- Server authorization/RLS remain authoritative; UI capability checks are presentation only.
+- Route modules are lazy-loaded from a typed route registry.
+- Cross-feature state is not placed into one giant global store.
 
 ## Implemented slices
 
 ### Tranche 1 — isolated typed shell/runtime boundary
-
 Status: IMPLEMENTED, BUILD EVIDENCE PENDING
 
-Implemented in this tranche:
+Implemented: isolated `v5.html`; Vite/TypeScript-capable configuration; typed route contract/registry; framework-free router; typed shell seam; lazy Home/Not Found; primary-route placeholders; greenfield-only CSS; stale async render suppression; singular `aria-current` ownership.
 
-- dedicated `v5.html` greenfield entry, leaving V4 `index.html` unchanged;
-- Vite + TypeScript-capable lab build configuration;
-- typed route contract and route registry;
-- framework-free greenfield router with one URL owner;
-- typed app-shell composition seam;
-- lazy-loaded Home and Not Found route modules;
-- explicit placeholder registrations for primary parity routes that are not yet migrated;
-- greenfield-only CSS foundation with no dependency on the V4 override stack;
-- stale async route-render protection using a render version token;
-- singular `aria-current` ownership in the shell navigation.
+### Tranche 2 — zero-dependency architecture contract gate
+Status: IMPLEMENTED, EXACT-BRANCH EXECUTION PENDING
 
-This first slice deliberately has no Supabase writes and no privileged backend behavior. It proves shell/build/router ownership before auth/data migration.
+Added `tests/v5-greenfield-architecture.mjs` plus `npm run test:architecture:v5`. The gate intentionally needs only Node, so architecture isolation can be checked even when npm registry access is unavailable. It asserts exact dependency pins, isolated Vite output/entry, separation from V4 bootstrap/CSS ownership, lazy Home/Not Found route modules, stale-render and active-route accessibility seams, and absence of service-role/direct-Supabase-client patterns in the current shell/route entry surface.
+
+This is an architecture guard, not browser/security parity proof. It does not substitute for typecheck/build/browser/PWA/RLS evidence.
 
 ## Parity matrix
 
@@ -62,49 +53,50 @@ This first slice deliberately has no Supabase writes and no privileged backend b
 | Offline/PWA | production install/runtime behavior | no greenfield SW contract yet | MISSING |
 | Supabase/RLS | protected production contracts | reused by policy, no new client repository yet | PRESERVED/UNUSED |
 | Accessibility | production baseline | semantic shell, 44px controls, focus handoff, reduced-motion handling; browser proof pending | PARTIAL |
+| Architecture regression gate | none specific to greenfield | zero-dependency Node contract checker | PARTIAL |
 
 ## Tests and evidence
 
-- Baseline lab branch verified at `1f504dec812f11453f82e30af61cdf3d6c547060` before writes.
-- V4 entry structure inspected: production still loads a large ordered CSS stack and boots through `src/app/bootstrap.js`.
-- Existing router contract inspected: hash-based route normalization, history/hash listeners, and unknown-route fallback are accepted behaviors to preserve or deliberately supersede.
-- Source review caught and fixed a shell accessibility-state defect before completion: active-route cleanup initially queried route content instead of navigation and could leave multiple `aria-current` markers.
-- Package versions were pinned rather than floated. At this run, npm reports TypeScript `7.0.2`; Vite 8 requires Node 20.19+ or 22.12+, and this lab pins Node `>=22.12.0`.
-- A deterministic lockfile attempt using `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` timed out in the execution environment after 45 seconds. No lockfile/build/typecheck result is therefore claimed.
+- Lab branch baseline remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
+- Current greenfield shell sources were re-read before this tranche.
+- `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` was retried and timed out after 45 seconds because registry/network resolution remains unavailable in the execution environment. No lockfile/install/build/typecheck result is claimed.
+- The new architecture-checker logic was executed successfully in a reconstructed local fixture representing its asserted contracts: `V5 greenfield architecture contracts: PASS`. Because a full repository checkout was not available in the execution container, this is checker-smoke evidence, not an exact-branch test execution claim.
+- Exact source review confirms the branch still uses isolated `v5.html`, isolated `dist-v5`, lazy Home/Not Found route imports, render-version stale-result suppression, one active `aria-current` owner, and greenfield-only CSS.
 
 ## Failures / unresolved evidence
 
-- No lockfile has been generated yet because the package-lock-only attempt timed out.
-- No `npm ci`, `npm run typecheck:v5`, `npm run build:v5`, browser test, PWA test or deployed preview is yet claimed green for this lab.
-- Home is only a vertical architecture proof, not accepted feature parity.
+- No lockfile because dependency resolution timed out again.
+- No exact-branch `npm run test:architecture:v5`, `npm ci`, typecheck, Vite build, browser run, PWA test or deployed-preview result is yet claimed green.
+- Home is only an architecture proof, not feature parity.
 - Session, repository/data, offline/PWA and protected feature surfaces remain unmigrated.
 
 ## Architecture decisions learned
 
-1. A separate experimental browser entry is the safest way to test greenfield ownership without turning the experiment into an all-at-once production replacement.
-2. The current route semantics are small enough to preserve behavior while replacing implementation ownership.
-3. Greenfield route modules should be lazy by construction rather than reproducing the current bootstrap import graph.
-4. V4 CSS override accumulation should not be copied into the new runtime; feature styles should be imported by the modules that own them.
-5. The shell can own loading/error/focus/navigation presentation without becoming the owner of auth, permissions or domain persistence.
-6. Async route loads need explicit stale-result suppression from the start; this is simpler to establish now than retrofit after many features migrate.
+1. A separate experimental browser entry remains the safest way to test greenfield ownership without an all-at-once production replacement.
+2. Route modules should stay lazy by construction instead of reproducing the V4 bootstrap import graph.
+3. V4 CSS override accumulation should not be copied into the new runtime.
+4. Shell loading/error/focus/navigation ownership can be isolated without owning auth, permissions or persistence.
+5. Async route loads need explicit stale-result suppression from the beginning.
+6. A zero-dependency architecture gate is valuable because it protects ownership boundaries independently of package-manager availability, but it must remain narrower than behavioral/browser/security tests.
 
 ## Known debt
 
-- exact route inventory still needs to be represented in a typed parity registry before broad migration;
-- auth/session and active-congregation context are not yet modeled;
-- no repository/data boundary exists yet;
-- no offline/cache update model exists yet;
-- no deterministic build identity or bundle budget exists yet;
-- dependency lock/build evidence remains blocked by the transient install timeout.
+- exact shipped-route inventory still needs representation in a typed parity registry;
+- auth/session and active-congregation context are not modeled;
+- no repository/data boundary exists;
+- no offline/cache update model exists;
+- no deterministic build identity or bundle budget exists;
+- dependency lock/build evidence remains blocked by transient network resolution;
+- architecture checker still needs exact-branch execution in CI or a real checkout.
 
 ## Next 3 tasks
 
-1. Generate/commit deterministic dependency lock evidence and run typecheck/build; correct the greenfield shell until both pass.
-2. Add a typed session boundary plus a read-only repository contract and migrate one meaningful existing feature slice end-to-end without bypassing current backend authorization.
-3. Expand the route parity registry to the authoritative shipped surface inventory and add router/shell regression tests including deep-link/not-found and rapid-navigation stale-load behavior.
+1. Obtain deterministic dependency lock/typecheck/build evidence when package resolution is available; run `test:architecture:v5` against the exact branch in the same environment.
+2. Add a typed session boundary plus read-only repository contract and migrate one meaningful existing feature slice end-to-end without bypassing backend authorization.
+3. Expand the route parity registry to the authoritative shipped surface inventory and add behavioral router/shell regression tests for deep-link/not-found/rapid-navigation cases.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-There is not yet evidence that the greenfield approach is superior to incremental migration, but the first ownership seams can be isolated without changing V4 production code or protected backend contracts. Reassess after one meaningful data-backed feature reaches parity and the greenfield build/browser evidence is green.
+The package-manager blocker is environmental, not architectural. The lab now has an executable, dependency-independent guard for its most important ownership boundaries, but superiority over incremental migration still cannot be judged until one meaningful data-backed feature reaches parity and build/browser evidence is green.
