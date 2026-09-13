@@ -4,10 +4,13 @@
 // governed by the dedicated V4 Couples Journey contracts (Couples Cloud
 // stays byte-locked); Congregation Recognition, whose intentional icon
 // restructuring (bare-text emoji -> stable data-award-code/data-badge-id
-// elements) is governed by the V4 whole-app audit contract instead; and
-// Recordings, whose intentional merge with Media Library into one Videos
-// page (custom play/pause/seek controls retired, curation form added) is
-// governed by that feature's own tests, not byte-locked here.
+// elements) is governed by the V4 whole-app audit contract instead;
+// Encouragements, whose authorized V5 Phase 3 genuine-match artwork evolution
+// is governed by behavior/accessibility hooks plus the focused V5 artwork
+// contract instead of an accidental whole-file byte lock; and Recordings,
+// whose intentional merge with Media Library into one Videos page (custom
+// play/pause/seek controls retired, curation form added) is governed by that
+// feature's own tests, not byte-locked here.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -22,8 +25,7 @@ const preserved=[
   'src/features/team-center/index.js',
   'src/features/live-rooms/index.js',
   'src/features/media-library/index.js',
-  'src/features/leaderboards/index.js',
-  'src/features/encouragements/index.js'
+  'src/features/leaderboards/index.js'
 ];
 
 for(const relative of preserved){
@@ -82,11 +84,15 @@ const hooks={
   'src/features/recordings/index.js':['data-recordings-page','data-video-select','data-video-curator-toggle','data-video-add-form'],
   'src/features/congregation-recognition/index.js':['data-recognition-view','data-recognition-award','data-recognition-leaderboards'],
   'src/features/leaderboards/index.js':['data-leaderboards-view','data-leaderboard-period','data-leaderboard-lane'],
-  'src/features/encouragements/index.js':['data-encouragements-view','data-send-encouragement','data-encouragements-back']
+  'src/features/encouragements/index.js':['data-encouragements-view','data-send-encouragement','data-encouragements-back','bq-encouragement-privacy']
 };
 for(const [relative,required] of Object.entries(hooks)){
   const source=fs.readFileSync(path.join(root,relative),'utf8');
   for(const hook of required)assert.ok(source.includes(hook),`${relative} must preserve ${hook}.`);
 }
+
+const encouragementsSrc=fs.readFileSync(path.join(root,'src/features/encouragements/index.js'),'utf8');
+assert.ok(encouragementsSrc.includes('aria-hidden="true"'),'Encouragement decorative icon content must remain hidden from assistive technology so text labels carry meaning.');
+assert.ok(encouragementsSrc.includes('<b>Privacy:</b> Encouragements never include private notes, reflections, answers, completion status, rankings, or XP.'),'Encouragement privacy boundary copy must remain explicit.');
 
 console.log('BibleQuest v4 Community / Relational family static presentation contract passed.');
