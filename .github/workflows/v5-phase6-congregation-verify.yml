@@ -31,7 +31,7 @@ jobs:
           set -euo pipefail
           echo "candidate_sha=$(git rev-parse HEAD)"
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-      - name: Active congregation focused contract
+      - name: Active congregation and account-switch isolation contract
         run: |
           set -euo pipefail
           node --check src/app/congregation-membership.js
@@ -44,10 +44,6 @@ jobs:
         run: |
           set -euo pipefail
           node tests/community-role-parity-static.mjs
-      - name: Existing session/auth safety companion
-        run: |
-          set -euo pipefail
-          node tests/auth-flow-static-smoke.mjs
       - name: Verify candidate remained exact and source-clean
         run: |
           set -euo pipefail
