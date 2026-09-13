@@ -20,6 +20,7 @@ export const routes: readonly RouteDefinition[] = Object.freeze([
   { key: 'reader', label: 'Read', load: placeholder('Reader') },
   { key: 'games', label: 'Play', load: placeholder('Games') },
   { key: 'community', label: 'Community', load: placeholder('Community') },
+  { key: 'assignments', label: 'Tasks', load: () => import('../features/assignments/view') },
   { key: 'more', label: 'More', load: placeholder('More') },
   { key: 'account', label: 'Account', load: () => import('../features/account/view') }
 ]);
