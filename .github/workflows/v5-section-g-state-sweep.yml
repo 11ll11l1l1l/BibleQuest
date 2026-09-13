@@ -1,0 +1,68 @@
+name: BibleQuest V5 Section G state sweep
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v5-section-g-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  section-g:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Run build and STATIC state sweep
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash build.sh
+          node tests/v5-section-g-state-sweep.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-section-g-http.log 2>&1 &
+          echo $! > /tmp/bq-v5-section-g-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-section-g-http.log
+          exit 1
+      - name: Run BROWSER-AUTO loading empty error offline matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/v4-whole-app-browser-states-smoke.mjs
+          node tests/v4-whole-app-deep-routes-smoke.mjs
+          node tests/v4-assignments-page-smoke.mjs
+          node tests/v4-daily-journey-page-smoke.mjs
+      - name: Verify source clean and exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git diff --name-only)"
