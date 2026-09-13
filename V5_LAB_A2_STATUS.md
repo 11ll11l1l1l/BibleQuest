@@ -3,8 +3,8 @@
 Lab identity: `BQ-V5-LAB-A2-DATA-FIRST`
 Branch: `lab/v5-a2-db-first`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Branch HEAD at start of this run: `3ebcf3977737f2d2361983921124066e187e079b`
-Implementation HEAD before this status commit: `1ea6947900b37bfa5a1661a9a478b3d165334e03`
+Branch HEAD at start of this run: `3bbad39a497d34100f66e9dd46e7fe9137406706`
+Implementation HEAD before this status commit: `bc6fac1709dd508fd9fd4091b021cc9e14a07106`
 
 ## Hypothesis
 
@@ -14,40 +14,48 @@ BibleQuest V5 becomes safer and easier to evolve when executable database/securi
 
 **VIABLE — CONTINUE.**
 
-The DB-first path continues to expose bounded historical reproducibility defects without requiring weaker security or a replacement backend. Clean migration replay is still red at `supabase start`, so this run did not guess at another migration repair without the exact SQL error. Instead it advanced an independent prerequisite: deterministic multi-tenant fixtures and caller-context isolation assertions that will execute automatically as soon as replay reaches them.
+The DB-first path is still blocked at local Supabase startup, before migration reset and before executable RLS assertions. The latest exact-head workflow again proved that this is a startup/migration reproducibility problem rather than a fixture-test failure. This run therefore strengthened the CI diagnostic boundary instead of guessing at another schema repair without the failing SQL message.
 
 ## Completed this run
 
-- Re-fetched exact lab HEAD `3ebcf3977737f2d2361983921124066e187e079b` and exact-head workflow evidence.
-- Confirmed `V5 Lab A2 DB Security` run 10 completed **failure** during `Start disposable local Supabase`; replay, foundational security characterization and tenant isolation remain unclaimed.
-- Added `supabase/tests/fixtures/0001_two_congregations.sql` with five deterministic synthetic auth identities, two isolated congregations, two owners and one member per congregation plus an authenticated outsider.
-- Added `supabase/tests/0002_congregation_isolation.sql` that executes under the real `authenticated` Postgres role with local JWT claim context and verifies member A sees only congregation A, member B sees only congregation B, the outsider sees neither, and the protected membership helper does not leak cross-congregation membership.
-- Updated the lab DB workflow so, after clean replay and foundational catalog checks, it loads the deterministic fixture and executes the caller-context isolation matrix with `psql -X -v ON_ERROR_STOP=1`.
-- Kept `[db.seed]` disabled: fixtures are test-owned and cannot conceal migration failures during `supabase db reset --local --no-seed`.
-- Did not touch hosted Supabase, production data/configuration, application runtime, another lab, `main`, or `v5/architecture-upgrade`.
+- Re-fetched exact lab HEAD `3bbad39a497d34100f66e9dd46e7fe9137406706` and exact-head workflow/check evidence.
+- Confirmed `V5 Lab A2 DB Security` run 18 completed **failure** in `Start disposable local Supabase`; reset, foundational characterization, fixture load and congregation-isolation tests were skipped.
+- Confirmed the failing check contains three annotations, but the available repository connector does not expose the underlying Actions log/annotation text directly enough to identify the first failing SQL statement safely.
+- Changed the lab workflow startup command to `supabase start --debug` while teeing the full runner-local log.
+- Added a failure-only diagnostic step for the existing draft lab PR. It extracts only likely startup/migration/error lines, redacts JWT-like tokens and key/token fields, and creates or updates one marker comment rather than accumulating duplicate comments.
+- Restricted the added workflow permission to `issues: write` plus existing `contents: read`; the diagnostic is only published for pull-request runs and never sends hosted Supabase credentials because this lab has none.
+- Preserved the existing fail-closed order: startup must succeed before clean reset, catalog security characterization, fixture loading or caller-context RLS checks can run.
+- Did not alter any schema, migration SQL, RLS policy, grant, fixture, application runtime, hosted Supabase state, production configuration, another lab branch, `main`, or `v5/architecture-upgrade`.
 
 ## DB/security evidence
 
 ### Confirmed executable evidence
 
-- `3ebcf3977737f2d2361983921124066e187e079b`: exact-head `V5 Lab A2 DB Security` run 10 failed in `Start disposable local Supabase`.
-- Because startup failed, `Replay migrations from zero` and `Execute foundational security characterization` were skipped. No clean-replay or RLS success is claimed.
-- The earlier workflow on `1f59628810f215d017d6d2008dae6646e1e1c25f` reached disposable Postgres and exposed the missing historical `private` schema; the baseline migration repaired that specific clean-build defect.
+- `3bbad39a497d34100f66e9dd46e7fe9137406706`: `V5 Lab A2 DB Security` run 18 failed in `Start disposable local Supabase with diagnostics` predecessor step; all database assertions remained skipped.
+- The exact-head job metadata shows startup failure followed by skipped migration reset, skipped foundational security characterization, skipped deterministic fixture load and skipped congregation-isolation characterization.
+- No RLS, migration replay, fixture or generated-type success is claimed for this run.
 
-### New deterministic security harness awaiting execution
+### Diagnostic evidence added this run
 
-- Synthetic user IDs are stable and intentionally non-secret; no password/authentication flow is used by these SQL tests.
-- Congregation A and B use stable UUIDs and separate owner/member identities.
-- The RLS test switches to database role `authenticated`, injects local request JWT claims for each synthetic caller, and queries the real protected tables/helper.
-- Assertions check positive membership visibility and negative cross-tenant/outsider visibility rather than only catalog metadata.
-- Fixture loading and isolation checks are ordered after clean reset, so they cannot make a broken migration chain appear green.
+- CI now executes `supabase start --debug` and retains the runner-local startup log for the duration of the job.
+- On startup failure in PR context, CI filters error/migration/SQLSTATE-style lines and publishes a sanitized excerpt to the persistent draft PR using marker `v5-lab-a2-startup-diagnostic`.
+- The diagnostic updater edits the existing marker comment when present, preventing hourly duplicate-comment churn.
+- JWT-like strings and key/token/secret assignments are redacted before publishing.
+- The diagnostic step itself does not convert startup failure into success; the job remains red when `supabase start` fails.
+
+### Existing deterministic security harness awaiting execution
+
+- `supabase/tests/fixtures/0001_two_congregations.sql` defines stable synthetic identities, two separate congregations, separate owners/members and an authenticated outsider.
+- `supabase/tests/0002_congregation_isolation.sql` executes under PostgreSQL role `authenticated` with local JWT claim context and asserts positive same-congregation visibility plus negative cross-congregation/outsider isolation.
+- `[db.seed]` remains disabled so fixture data cannot make broken migration replay appear healthy.
 
 ### Pending exact evidence
 
-- Exact-head `supabase start` success after migration-version normalization.
-- `supabase db reset --local --no-seed` success for the full chain.
+- The first concrete SQL/startup error excerpt from the new sanitized PR diagnostic.
+- Exact-head `supabase start` success after the demonstrated startup defect is repaired.
+- `supabase db reset --local --no-seed` success for the complete migration chain.
 - `supabase/tests/0001_security_baseline.sql` execution success.
-- Fixture-load success against the actual Supabase `auth.users` schema.
+- Deterministic fixture load success against the actual local Supabase auth schema.
 - `supabase/tests/0002_congregation_isolation.sql` caller-context execution success.
 - Assignments/presence caller-context matrices and generated database/domain type evidence.
 
@@ -55,27 +63,29 @@ The DB-first path continues to expose bounded historical reproducibility defects
 
 1. Migration replay from an empty disposable database remains the authoritative clean-build proof.
 2. Historical SQL semantics are preserved while installation/history defects are repaired explicitly.
-3. Migration versions in the lab must be unique, deterministic and sortable; new work uses full timestamp versions.
-4. Renaming historical versions is safe only for this isolated disposable experiment. Existing hosted migration histories remain untouched and require separate reconciliation if this architecture is ever adopted.
-5. General seed execution remains disabled until clean replay passes. Security fixtures are explicitly loaded by the test job only after reset.
+3. No further migration/schema repair is made without an observed failing statement or equivalent concrete executable evidence.
+4. Migration versions in the lab must be unique, deterministic and sortable; renamed historical versions remain lab-only history experiments and do not authorize hosted-history mutation.
+5. General seed execution remains disabled until clean replay passes. Security fixtures are explicitly loaded only after reset.
 6. Multi-tenant security proof must execute under the real `authenticated` database role with caller claim context; static SQL/catalog checks alone are insufficient.
-7. Positive and negative isolation evidence are both required: same-congregation access must work and cross-congregation/outsider access must fail closed.
-8. No RLS policy, grant or valid security test is weakened to obtain green CI.
+7. CI diagnostics may expose only sanitized local failure evidence and must never publish privileged or production credentials.
+8. A diagnostic mechanism must not weaken the failing gate: startup failure remains a job failure.
+9. No RLS policy, grant or valid security test is weakened to obtain green CI.
 
 ## Known debt / risks
 
-- The exact SQL message behind current `supabase start` failure is not exposed by the available workflow metadata; another migration fix would be speculative until the first failing statement can be observed.
-- The new fixture insert into `auth.users` is intentionally realistic but has not executed yet because migration startup is still red; Supabase auth-schema compatibility remains pending evidence.
-- `supabase/schema.sql` and ordered migrations historically represented two installation paths. Further drift may surface when startup advances.
-- Existing production/hosted migration history may contain the former short `20260904` version. This lab does not mutate or reconcile remote history.
-- The workflow still installs Supabase CLI `latest`; pinning follows once a green compatible version is established.
+- Clean local Supabase startup is still red; the new diagnostic has not yet run on the implementation head, so the next concrete startup defect is still unknown.
+- The workflow still installs Supabase CLI `latest`; once one compatible green toolchain is established it should be pinned for deterministic replay.
+- The synthetic fixture insert into `auth.users` has not executed yet because startup remains red; auth-schema compatibility is still pending evidence.
+- `supabase/schema.sql` and ordered migrations historically represented two installation paths, so further drift may surface as replay advances.
+- Existing production/hosted migration history may contain former short `20260904` versions. This lab does not mutate or reconcile remote history.
 - Assignments, presence, admin, media and other sensitive domains still need executable tenant/authorization matrices.
+- The local execution container used by this investigator could not resolve `github.com`; therefore no local Docker/Supabase result is being substituted for CI evidence.
 
 ## Next 3 tasks
 
-1. Inspect the new exact-head DB workflow. If startup is still red and the failing SQL statement becomes observable, repair only that demonstrated migration/schema defect without weakening security.
-2. Once startup/reset is green, validate and if necessary minimally correct the synthetic `auth.users` fixture shape, then require `0001_security_baseline.sql` and `0002_congregation_isolation.sql` to pass under Postgres.
-3. Extend the same caller-context matrix to assignments/presence, then generate database types from the tested local schema and begin a typed repository/data-access boundary.
+1. Inspect the exact-head draft-PR run and its sanitized startup diagnostic. Repair only the first concrete startup/migration defect it identifies without weakening authorization or bypassing migrations.
+2. Once startup/reset is green, validate and minimally correct the synthetic `auth.users` fixture shape if necessary, then require both `0001_security_baseline.sql` and `0002_congregation_isolation.sql` to pass under PostgreSQL.
+3. Extend caller-context matrices to assignments/presence, then generate database types from the tested local schema and begin a typed repository/data-access boundary.
 
 ## Stop condition
 
