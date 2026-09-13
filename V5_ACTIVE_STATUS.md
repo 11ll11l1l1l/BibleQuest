@@ -32,6 +32,7 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 5. A real, minimum offline-reading capability for previously-opened Scripture passages.
 6. Multi-congregation verification unblocked (a real second test congregation) plus a minimum active-congregation switcher.
 7. Closure of three specific pieces of verification debt: CEBOCB Reader re-verification, Couples Journey bidirectional-sharing verification, and the deferred V4 whole-app audit Sections E/G.
+8. A real Feature Flag / Runtime Configuration system - the V5-to-V6 bridge, so V6's riskier architecture changes can ship with a real kill-switch instead of a big-bang cutover. Added creatively, not requested in the original scope, precisely because it directly de-risks the version that follows.
 
 ## Phase state
 
@@ -42,7 +43,8 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 - Phase 5 — Baseline offline Bible reading: NOT STARTED.
 - Phase 6 — Multi-congregation verification/tooling: NOT STARTED.
 - Phase 7 — Verification debt (CEBOCB/Couples Journey/Sections E-G): NOT STARTED.
-- Phase 8 — V5 certification and promotion: NOT STARTED.
+- Phase 8 — Feature Flag / Runtime Configuration system: NOT STARTED.
+- Phase 9 — V5 certification and promotion: NOT STARTED.
 
 ## Phase 1 evidence (Leader Center)
 
