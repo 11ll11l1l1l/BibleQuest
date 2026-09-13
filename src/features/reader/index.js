@@ -1,6 +1,7 @@
 import { createContextLab } from './context.js';
 import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary.js';
 import { japaneseFuriganaControl } from './furigana.js';
+import { renderReaderError, renderReaderLoading } from '../../v5/reader/async-view.mjs';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
@@ -13,11 +14,8 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
     html: '<section data-reader-page><div class="bq-panel"><p>Loading Bible Reader…</p></div></section>',
     mount(root) {
       const host = root.querySelector('[data-reader-page]'); let searchResults = null, highlightVerse = null, operation = 0, furiganaPass = 0, currentChapter = null;
-      const renderLoading = message => { host.innerHTML = `<section class="bq-panel"><p class="bq-eyebrow">BIBLE READER</p><h1>Bible Reader</h1><p>${escapeHtml(message)}</p></section>`; };
-      const renderError = error => {
-        const japanese = reader.getState().translation === 'jko';
-        host.innerHTML = `<section class="bq-panel"><p class="bq-eyebrow">BIBLE READER</p><h1>Bible Reader</h1><p class="bq-form-message">${escapeHtml(error?.message || 'Could not load Scripture.')}</p>${japanese ? '<p data-jko-failure>口語訳はライブの章データです。本文を推測したり別の訳で置き換えたりしません。接続を確認して再試行するか、明示的にBSBへ切り替えてください。</p>' : ''}<div class="bq-reader-nav"><button type="button" class="bq-secondary-button" data-reader-retry>Retry</button>${japanese ? '<button type="button" class="bq-secondary-button" data-reader-use-bsb>Use BSB</button>' : ''}</div></section>`;
-      };
+      const renderLoading = message => { host.innerHTML = renderReaderLoading(message); };
+      const renderError = error => { host.innerHTML = renderReaderError(error, { japanese: reader.getState().translation === 'jko' }); };
       const renderSearch = () => { if (!searchResults) return ''; const warning = searchResults.skippedBooks?.length ? `<p class="bq-reader-note">${searchResults.skippedBooks.length} book pack(s) were unavailable during this search.</p>` : ''; if (!searchResults.results.length) return `<section class="bq-search-results"><h2>Search results</h2><p>No matches found.</p>${warning}</section>`; return `<section class="bq-search-results"><div class="bq-reader-title"><h2>Search results</h2><small>${searchResults.results.length} shown</small></div><div class="bq-search-list">${searchResults.results.map((result, index) => `<button type="button" data-search-result="${index}"><b>${escapeHtml(result.reference)}</b><span>${escapeHtml(result.text)}</span></button>`).join('')}</div>${warning}</section>`; };
       const renderChapter = chapter => {
         const state = reader.getState(), links = reader.externalLinks(), japanese = state.translation === 'jko', licensed = chapter.translation.mode === 'licensed-link';
