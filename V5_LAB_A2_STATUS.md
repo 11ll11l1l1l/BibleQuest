@@ -3,8 +3,8 @@
 Lab identity: `BQ-V5-LAB-A2-DATA-FIRST`
 Branch: `lab/v5-a2-db-first`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Branch HEAD at start of this run: `1f504dec812f11453f82e30af61cdf3d6c547060`
-Implementation head immediately before this status commit: `8fd7bfe0abfe73c5eee359b74f14de463f3f0376`
+Branch HEAD at start of this run: `b9363727f68c122a14217d7130e0f553a12dfa2c`
+Implementation head immediately before this status commit: `819bc21c9e34693d3c699f457db32beb79673e48`
 
 ## Hypothesis
 
@@ -14,14 +14,14 @@ BibleQuest V5 becomes safer and easier to evolve when executable database/securi
 
 **VIABLE — CONTINUE.**
 
-The production baseline already has meaningful RLS and `SECURITY DEFINER` seams, so a data-first architecture has concrete behavior to characterize rather than requiring an invented backend. The first experiment is deliberately infrastructure-only and does not alter hosted Supabase or application runtime behavior.
+The production baseline already has meaningful RLS and `SECURITY DEFINER` seams, so a data-first architecture has concrete behavior to characterize rather than requiring an invented backend. This run converts the first static lab setup into an executable CI experiment without touching hosted Supabase or application runtime behavior.
 
 ## Completed this run
 
-- Added secret-free `supabase/config.toml` for an isolated local Supabase project.
-- Kept deterministic seeding disabled until clean migration replay is proven; this prevents fixture work from hiding a migration-chain defect.
-- Added `supabase/tests/0001_security_baseline.sql`, an executable Postgres catalog characterization for sensitive congregation-table RLS and the private congregation-membership `SECURITY DEFINER` helper.
-- The SQL test checks real catalog state, function privilege state and explicit `search_path`; it is not a static SQL text-match replacement.
+- Added `.github/workflows/v5-lab-a2-db-security.yml`, scoped to this disposable lab branch / its draft PR paths.
+- The workflow checks out the exact commit, installs the Supabase CLI, starts a disposable local stack, runs `supabase db reset --local --no-seed`, executes `supabase/tests/0001_security_baseline.sql` through `psql -v ON_ERROR_STOP=1`, captures migration/status diagnostics, and stops the stack without backup.
+- The job intentionally uses no hosted project reference, access token, service-role secret, production database URL or production Supabase mutation.
+- Existing seed execution remains disabled until migration replay is proven green.
 
 ## DB/security evidence
 
@@ -33,18 +33,18 @@ The production baseline already has meaningful RLS and `SECURITY DEFINER` seams,
 
 ### Validation performed
 
-- `supabase/config.toml` was parsed successfully with Python 3 `tomllib`; project/API/DB/auth/storage/realtime sections are syntactically valid TOML.
-- The current Supabase CLI documentation was checked before choosing config keys; `project_id` is required and `[db.seed]` supports `enabled`/`sql_paths`.
+- `supabase/config.toml` previously parsed successfully with Python 3 `tomllib`.
+- A CI execution path now exists for real migration replay and Postgres security-test execution.
+- The workflow is fail-closed: migration errors and SQL assertion errors terminate the main proof steps; diagnostic steps run only under `if: always()` and do not convert a failure into success.
 
-### Not yet proven
+### Pending exact evidence
 
-- No claim that `supabase start` succeeds.
-- No claim that the complete migration chain replays from zero.
-- No claim that `0001_security_baseline.sql` has executed against Postgres yet.
+- The new workflow run for exact branch head is pending/unknown until GitHub Actions reports a conclusion.
+- No claim is made yet that `supabase start` succeeds in CI.
+- No claim is made yet that the complete migration chain replays from zero.
+- No claim is made yet that `0001_security_baseline.sql` passes against Postgres.
 - No RLS caller-context or two-congregation fixture evidence yet.
 - No generated database type evidence yet.
-
-These remain intentionally open until a disposable local/CI stack executes them.
 
 ## Architecture decisions in this lab
 
@@ -52,19 +52,20 @@ These remain intentionally open until a disposable local/CI stack executes them.
 2. Local config contains no hosted project reference and no credential; all destructive/reset work must be explicit local/ephemeral execution.
 3. Seed data will be synthetic and deterministic. It will not be copied from production.
 4. RLS/function security proof must execute inside Postgres; static repository checks remain supplemental only.
-5. Fixtures are deferred until migration replay is green, so seeds cannot accidentally compensate for missing schema/migration state.
+5. Fixtures remain deferred until migration replay is green, so seeds cannot accidentally compensate for missing schema/migration state.
+6. CI migration replay is now the primary truth source for deciding whether the historical migration chain is usable as the V5 data spine; failures should be repaired at root cause rather than bypassed with schema snapshots or weakened assertions.
 
 ## Known debt / risks
 
-- `supabase/schema.sql` and ordered migrations may represent overlapping historical installation paths; clean replay must determine the correct V5 bootstrap contract.
-- Local Supabase CLI/container execution is not available through the GitHub write path used in this run, so real DB evidence remains pending.
+- `supabase/schema.sql` and ordered migrations may represent overlapping historical installation paths; the new CI gate is expected to expose whether migrations are independently replayable.
+- The workflow currently pins `supabase/setup-cli@v1` but requests the latest CLI release; once a green compatible version is observed, deterministic pinning should be considered for reproducibility.
 - The first security test characterizes only foundational congregation membership/RLS seams; assignments, presence, admin functions, media and other sensitive domains still require executable matrices.
 - Auth fixture insertion needs to follow the local Supabase auth schema/CLI rather than assuming hosted internal table details.
 
 ## Next 3 tasks
 
-1. Prove a clean local `supabase db reset`/migration replay from zero and repair ordering/bootstrap defects without changing accepted security semantics.
-2. Introduce deterministic synthetic auth + two-congregation fixtures covering member, multi-member, ministry role and platform-privileged identities.
+1. Inspect the exact GitHub Actions result for this migration replay gate; if red, repair the first demonstrated migration/bootstrap defect without weakening accepted RLS/security semantics.
+2. Once clean replay is green, introduce deterministic synthetic auth + two-congregation fixtures covering member, multi-member, ministry role and platform-privileged identities.
 3. Add executable caller-context RLS matrices for congregation membership plus one highest-risk domain (assignments/presence), then generate database types from the tested schema.
 
 ## Stop condition
