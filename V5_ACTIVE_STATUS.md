@@ -32,6 +32,38 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 5. A real, minimum offline-reading capability for previously-opened Scripture passages.
 6. Multi-congregation verification unblocked (a real second test congregation) plus a minimum active-congregation switcher.
 7. Closure of three specific pieces of verification debt: CEBOCB Reader re-verification, Couples Journey bidirectional-sharing verification, and the deferred V4 whole-app audit Sections E/G.
+8. Complete the accepted V5 content/UX track: a connected weekly spiritual journey, useful Today surface, Tagalog-first localization, full Cebuano/Bisaya UI/authored-content target, true colored calendar, completed-live-service Media automation, stronger Transformation/family/couples content, and lightweight discovery/progress presentation — all on the current architecture.
+
+## Accepted cross-phase V5 content/UX additions
+
+These are product-completion tasks and must be closed before Phase 8 can be accepted. They may be dispatched as bounded non-overlapping tranches alongside the established phase sequence, but they must not replace or weaken any Phase 1-7 gate.
+
+### P0
+
+- **Today / This Week home surface:** compose existing current-architecture sources into an immediately useful view of next event, current assignment, continue-reading state, latest service, Transformation prompt, and unread notifications.
+- **Connected weekly journey:** connect an existing sermon/service to Scripture, Transformation/reflection, discussion, prayer, assignment/action, and calendar context without introducing a new workflow/state engine.
+- **Tagalog-first localization:** complete Tagalog for Transformation and then the main member-facing UI, including navigation, controls, empty/error states, Calendar, Assignments, notifications, settings, leader instructions, and other authored application copy. Scripture text must continue to come from approved/licensed Bible translations; BibleQuest must not machine-translate Scripture.
+- **Real calendar presentation:** month-grid calendar as the primary calendar-format view, with event category colors plus text/icon labels so color is never the sole accessibility cue; preserve existing personal/congregation/assignment behavior and active-congregation filtering.
+- **Latest completed live service in Media:** when the current livestream/recording source exposes a stable completed recording, surface it automatically in the existing Media/Recordings experience using stable video identity for deduplication; allow authorized hide/edit correction and do not create a new media platform/ingestion architecture.
+
+### P1
+
+- **Transformation content flow:** structure authored Transformation content as Scripture/context -> understand -> reflect -> apply -> pray, with optional spouse/family discussion and weekly action using existing data/assignment patterns.
+- **Pastor/leader weekly message:** a small current-architecture content surface that can anchor the week's Scripture, service, Transformation, assignment, and calendar event.
+- **My Journey / reflection history:** present existing reading, Transformation, assignment and personal reflection/progress signals as an encouraging personal history; no new analytics/state engine and no competitive spiritual leaderboard.
+- **Family & Couples content tracks:** short practical journeys for communication, forgiveness, finances/stewardship, intimacy/love, parenting, serving together, family Bible time, gratitude, kindness and prayer, reusing existing Journey/Transformation/Assignment patterns.
+- **Personal milestones/achievements:** encouraging non-competitive milestones for reading, reflection, prayer/journey and assignment consistency using existing progress sources where possible.
+- **Ask at Dinner:** optional one-question spouse/family discussion prompt attached to a sermon/Transformation/weekly journey.
+
+### P2
+
+- **Full Cebuano/Bisaya localization:** complete member-facing UI and BibleQuest-authored content in Cebuano/Bisaya. CEBOCB or another approved existing Cebuano Scripture source remains the Scripture text; do not generate an app-owned Bible translation.
+- **Lightweight discovery:** simple filtering/search across content already exposed by the current architecture (Bible passages where supported, existing Media metadata, Transformation topics and church activities). Do not build the V6 search/index/content platform.
+- **Media organization:** improve the existing Recordings/Media presentation with categories such as latest service, Sunday services, Bible studies, worship, testimonies, couples/family and kids, using existing metadata/owners rather than a replacement media engine.
+
+### Explicit V6 boundary for this track
+
+The additions above do **not** authorize a new Reader engine, generalized offline/cache framework, notification engine, background-sync framework, global repository/data-access rewrite, tenant engine, media-platform replacement, generalized search/index engine, or new state-ownership model. If an item requires one of those to implement correctly, V5 must stop at the current-architecture version and defer the replacement architecture to V6.
 
 ## Phase state
 
@@ -42,6 +74,7 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 - Phase 5 — Baseline offline Bible reading: NOT STARTED.
 - Phase 6 — Multi-congregation verification/tooling: NOT STARTED.
 - Phase 7 — Verification debt (CEBOCB/Couples Journey/Sections E-G): NOT STARTED.
+- Cross-phase content/UX completion track: ACCEPTED / NOT YET CERTIFIED.
 - Phase 8 — V5 certification and promotion: NOT STARTED.
 
 ## Sequencing with V6 and V7
