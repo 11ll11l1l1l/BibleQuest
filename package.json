@@ -9,7 +9,8 @@
   "scripts": {
     "dev:v5": "vite --open /v5.html",
     "build:v5": "vite build",
-    "typecheck:v5": "tsc --noEmit -p tsconfig.v5.json"
+    "typecheck:v5": "tsc --noEmit -p tsconfig.v5.json",
+    "test:architecture:v5": "node tests/v5-greenfield-architecture.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.2",
