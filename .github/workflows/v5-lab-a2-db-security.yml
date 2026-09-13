@@ -1,0 +1,79 @@
+name: V5 Lab A2 DB Security
+
+on:
+  push:
+    branches:
+      - lab/v5-a2-db-first
+    paths:
+      - '.github/workflows/v5-lab-a2-db-security.yml'
+      - 'supabase/**'
+      - 'V5_LAB_A2_STATUS.md'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/v5-lab-a2-db-security.yml'
+      - 'supabase/**'
+      - 'V5_LAB_A2_STATUS.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v5-lab-a2-db-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migration-replay-and-security:
+    name: migration replay + executable security contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Show tool identity
+        run: |
+          set -euo pipefail
+          echo "commit=${GITHUB_SHA}"
+          supabase --version
+          docker --version
+          psql --version
+
+      - name: Start disposable local Supabase
+        run: |
+          set -euo pipefail
+          supabase start
+
+      - name: Replay migrations from zero
+        run: |
+          set -euo pipefail
+          supabase db reset --local --no-seed
+
+      - name: Execute foundational security characterization
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '54322'
+          PGDATABASE: postgres
+          PGUSER: postgres
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f supabase/tests/0001_security_baseline.sql
+
+      - name: Capture migration state
+        if: always()
+        run: |
+          set +e
+          supabase migration list --local
+          supabase status
+
+      - name: Stop disposable stack
+        if: always()
+        run: supabase stop --no-backup
