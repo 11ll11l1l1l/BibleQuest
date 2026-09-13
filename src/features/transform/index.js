@@ -1,24 +1,28 @@
+import { localization } from '../../app/localization.js';
+
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const scale=[1,2,3,4,5];
 
 export function transformPage({transform,onGrow}){
+  const locale=localization.getLocale();
+  const text=(key,values)=>localization.t(key,{locale,values});
   return{
-    title:'Transformation',
-    html:'<section data-transform-page><div class="bq-panel"><p>Opening Transformation…</p></div></section>',
+    title:text('nav.transformation'),
+    html:`<section data-transform-page><div class="bq-panel"><p>${escapeHtml(text('transform.opening'))}</p></div></section>`,
     mount(root){
       const host=root.querySelector('[data-transform-page]');
       let mode='basic';
       let message='';
 
-      const modeButtons=active=>`<section class="bq-panel bq-transform-actions" aria-label="Transformation mode"><div><b>Choose a reflection mode</b><p>Basic focuses on faith and practice. Full adds personality tendencies, thinking-pattern scenarios, recommendations, and a private journal.</p></div><div><button type="button" class="${active==='basic'?'bq-primary-button':'bq-secondary-button'}" data-transform-mode-basic>Basic</button><button type="button" class="${active==='full'?'bq-primary-button':'bq-secondary-button'}" data-transform-mode-full>Full Transform</button></div></section>`;
+      const modeButtons=active=>`<section class="bq-panel bq-transform-actions" aria-label="${escapeHtml(text('transform.mode.label'))}"><div><b>${escapeHtml(text('transform.mode.prompt'))}</b><p>${escapeHtml(text('transform.mode.description'))}</p></div><div><button type="button" class="${active==='basic'?'bq-primary-button':'bq-secondary-button'}" data-transform-mode-basic>${escapeHtml(text('transform.mode.basic'))}</button><button type="button" class="${active==='full'?'bq-primary-button':'bq-secondary-button'}" data-transform-mode-full>${escapeHtml(text('transform.mode.full'))}</button></div></section>`;
 
       const renderBasic=state=>{
         const answers=state.spiritual.answers||{};
         const result=state.spiritual.result;
         const items=transform.definitions.spiritual;
         const answered=items.filter(item=>answers[item.id]).length;
-        const resultHtml=result?`<section class="bq-panel bq-transform-result" data-transform-result><p class="bq-eyebrow">PRIVATE REFLECTION</p><h2>Your reflection</h2><p>This is a snapshot of your own answers, not a spiritual grade. Lower ratings simply identify areas you may want to practice deliberately.</p><div class="bq-transform-bars">${result.scores.map(row=>`<div><b>${escapeHtml(row.dimension)}</b><span><i style="width:${row.score*20}%"></i></span><strong>${row.score}/5</strong></div>`).join('')}</div><div class="bq-transform-focus"><h3>Suggested next focus</h3>${result.focus.map(row=>`<article><b>${escapeHtml(row.dimension)}</b><p>${escapeHtml(row.guide)}</p></article>`).join('')}</div></section>`:'';
-        host.innerHTML=`<section class="bq-panel bq-transform-head"><p class="bq-eyebrow">TRANSFORMATION</p><h1>Faith & practice reflection</h1><p><b>Important:</b> this is private self-reflection, not a spiritual score, diagnosis, moral ranking, or measure of God’s approval. Use it to notice patterns and choose concrete practices.</p><p class="bq-transform-scale-note">1 = rarely true · 5 = consistently true</p></section>${modeButtons('basic')}<section class="bq-transform-list">${items.map(item=>`<article class="bq-panel bq-transform-item" data-transform-item="${escapeHtml(item.id)}"><div><b>${escapeHtml(item.dimension)}</b><p>${escapeHtml(item.text)}</p></div><div class="bq-transform-scale" role="group" aria-label="${escapeHtml(item.dimension)} rating">${scale.map(value=>`<button type="button" data-transform-rating="${escapeHtml(item.id)}" data-value="${value}" class="${answers[item.id]===value?'is-selected':''}" aria-pressed="${answers[item.id]===value}">${value}</button>`).join('')}</div></article>`).join('')}</section><section class="bq-panel bq-transform-actions"><div><b>${answered}/${items.length} answered</b><p class="bq-form-message" data-transform-message aria-live="polite">${escapeHtml(message)}</p></div><div><button type="button" class="bq-secondary-button" data-transform-back>Back to Grow</button><button type="button" class="bq-secondary-button" data-transform-reset ${answered?'':'disabled'}>Reset</button><button type="button" class="bq-primary-button" data-transform-calculate ${answered===items.length?'':'disabled'}>${result?'Reflection saved':'View reflection'}</button></div></section>${resultHtml}`;
+        const resultHtml=result?`<section class="bq-panel bq-transform-result" data-transform-result><p class="bq-eyebrow">${escapeHtml(text('transform.basic.privateReflection'))}</p><h2>${escapeHtml(text('transform.basic.yourReflection'))}</h2><p>${escapeHtml(text('transform.basic.resultDisclaimer'))}</p><div class="bq-transform-bars">${result.scores.map(row=>`<div><b>${escapeHtml(row.dimension)}</b><span><i style="width:${row.score*20}%"></i></span><strong>${row.score}/5</strong></div>`).join('')}</div><div class="bq-transform-focus"><h3>${escapeHtml(text('transform.basic.nextFocus'))}</h3>${result.focus.map(row=>`<article><b>${escapeHtml(row.dimension)}</b><p>${escapeHtml(row.guide)}</p></article>`).join('')}</div></section>`:'';
+        host.innerHTML=`<section class="bq-panel bq-transform-head"><p class="bq-eyebrow">${escapeHtml(text('transform.basic.eyebrow'))}</p><h1>${escapeHtml(text('transform.basic.heading'))}</h1><p><b>${escapeHtml(text('transform.basic.disclaimerLead'))}</b> ${escapeHtml(text('transform.basic.disclaimer'))}</p><p class="bq-transform-scale-note">${escapeHtml(text('transform.basic.scale'))}</p></section>${modeButtons('basic')}<section class="bq-transform-list">${items.map(item=>`<article class="bq-panel bq-transform-item" data-transform-item="${escapeHtml(item.id)}"><div><b>${escapeHtml(item.dimension)}</b><p>${escapeHtml(item.text)}</p></div><div class="bq-transform-scale" role="group" aria-label="${escapeHtml(text('transform.basic.ratingLabel',{dimension:item.dimension}))}">${scale.map(value=>`<button type="button" data-transform-rating="${escapeHtml(item.id)}" data-value="${value}" class="${answers[item.id]===value?'is-selected':''}" aria-pressed="${answers[item.id]===value}">${value}</button>`).join('')}</div></article>`).join('')}</section><section class="bq-panel bq-transform-actions"><div><b>${escapeHtml(text('transform.basic.answered',{answered,total:items.length}))}</b><p class="bq-form-message" data-transform-message aria-live="polite">${escapeHtml(message)}</p></div><div><button type="button" class="bq-secondary-button" data-transform-back>${escapeHtml(text('transform.basic.backGrow'))}</button><button type="button" class="bq-secondary-button" data-transform-reset ${answered?'':'disabled'}>${escapeHtml(text('transform.basic.reset'))}</button><button type="button" class="bq-primary-button" data-transform-calculate ${answered===items.length?'':'disabled'}>${escapeHtml(text(result?'transform.basic.reflectionSaved':'transform.basic.viewReflection'))}</button></div></section>${resultHtml}`;
       };
 
       const personalityResultHtml=result=>{
@@ -57,7 +61,7 @@ export function transformPage({transform,onGrow}){
       const render=state=>mode==='full'?renderFull(state):renderBasic(state);
       const refresh=()=>render(transform.getState());
       const openFull=()=>{mode='full';message='';const opened=transform.openFull();if(opened.progressResult?.awardedXp)message=`Recovered completed Full Transform · +${opened.progressResult.awardedXp} XP`;render(opened.state)};
-      const openBasic=()=>{mode='basic';message='';const opened=transform.openBasic();if(opened.progressResult?.awardedXp)message=`Recovered saved reflection · +${opened.progressResult.awardedXp} XP`;render(opened.state)};
+      const openBasic=()=>{mode='basic';message='';const opened=transform.openBasic();if(opened.progressResult?.awardedXp)message=text('transform.basic.recovered',{xp:opened.progressResult.awardedXp});render(opened.state)};
 
       const onClick=event=>{
         const target=event.target instanceof Element?event.target:null;
@@ -67,8 +71,8 @@ export function transformPage({transform,onGrow}){
 
         const rating=target.closest('[data-transform-rating]');
         if(rating){try{message='';transform.setSpiritualAnswer(rating.dataset.transformRating,Number(rating.dataset.value));refresh()}catch(error){message=error.message;refresh()}return}
-        if(target.closest('[data-transform-calculate]')){try{const output=transform.completeBasicAssessment();message=output.progressResult?.awardedXp?`Reflection saved · +${output.progressResult.awardedXp} XP`:'Reflection saved';render(output.state);queueMicrotask(()=>host.querySelector('[data-transform-result]')?.scrollIntoView({block:'start'}))}catch(error){message=error.message;refresh()}return}
-        if(target.closest('[data-transform-reset]')){if(!window.confirm('Clear all 12 Transformation answers and the current result?'))return;try{message='Assessment cleared.';transform.resetSpiritual();refresh()}catch(error){message=error.message;refresh()}return}
+        if(target.closest('[data-transform-calculate]')){try{const output=transform.completeBasicAssessment();message=output.progressResult?.awardedXp?text('transform.basic.savedXp',{xp:output.progressResult.awardedXp}):text('transform.basic.reflectionSaved');render(output.state);queueMicrotask(()=>host.querySelector('[data-transform-result]')?.scrollIntoView({block:'start'}))}catch(error){message=error.message;refresh()}return}
+        if(target.closest('[data-transform-reset]')){if(!window.confirm(text('transform.basic.confirmReset')))return;try{message=text('transform.basic.cleared');transform.resetSpiritual();refresh()}catch(error){message=error.message;refresh()}return}
 
         const personalityRating=target.closest('[data-transform-personality-rating]');
         if(personalityRating){try{message='';transform.setPersonalityAnswer(personalityRating.dataset.transformPersonalityRating,Number(personalityRating.dataset.value));refresh()}catch(error){message=error.message;refresh()}return}
@@ -86,7 +90,7 @@ export function transformPage({transform,onGrow}){
       };
 
       host.addEventListener('click',onClick);
-      try{openBasic()}catch(error){host.innerHTML=`<section class="bq-panel"><h1>Transformation unavailable</h1><p class="bq-form-message">${escapeHtml(error?.message||'Could not open Transformation.')}</p></section>`}
+      try{openBasic()}catch(error){host.innerHTML=`<section class="bq-panel"><h1>${escapeHtml(text('transform.unavailable'))}</h1><p class="bq-form-message">${escapeHtml(error?.message||text('transform.unavailableMessage'))}</p></section>`}
       return()=>host.removeEventListener('click',onClick);
     }
   };
