@@ -1,4 +1,4 @@
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 function membershipRows(rows,activeMembership){
   if(!rows.length)return '<p data-congregation-empty>You are not linked to an active congregation yet. Use an invite code below to join one.</p>';
