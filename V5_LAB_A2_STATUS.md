@@ -3,8 +3,8 @@
 Lab identity: `BQ-V5-LAB-A2-DATA-FIRST`
 Branch: `lab/v5-a2-db-first`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Branch HEAD at start of this run: `b9363727f68c122a14217d7130e0f553a12dfa2c`
-Implementation head immediately before this status commit: `819bc21c9e34693d3c699f457db32beb79673e48`
+Branch HEAD at start of this run: `1f59628810f215d017d6d2008dae6646e1e1c25f`
+Implementation head immediately before this status commit: `ba5a374a0286c107b362273f6718cd48bb09aef7`
 
 ## Hypothesis
 
@@ -14,60 +14,63 @@ BibleQuest V5 becomes safer and easier to evolve when executable database/securi
 
 **VIABLE — CONTINUE.**
 
-The production baseline already has meaningful RLS and `SECURITY DEFINER` seams, so a data-first architecture has concrete behavior to characterize rather than requiring an invented backend. This run converts the first static lab setup into an executable CI experiment without touching hosted Supabase or application runtime behavior.
+The first real CI execution produced a useful failure rather than an architectural dead end: the historical migration directory is not self-bootstrapping because the accepted base schema lived only in `supabase/schema.sql`. The lab now promotes that accepted schema, unchanged in security semantics, into an ordered baseline migration so fresh databases can replay the same foundation before later feature migrations.
 
 ## Completed this run
 
-- Added `.github/workflows/v5-lab-a2-db-security.yml`, scoped to this disposable lab branch / its draft PR paths.
-- The workflow checks out the exact commit, installs the Supabase CLI, starts a disposable local stack, runs `supabase db reset --local --no-seed`, executes `supabase/tests/0001_security_baseline.sql` through `psql -v ON_ERROR_STOP=1`, captures migration/status diagnostics, and stops the stack without backup.
-- The job intentionally uses no hosted project reference, access token, service-role secret, production database URL or production Supabase mutation.
-- Existing seed execution remains disabled until migration replay is proven green.
+- Inspected the exact failed `Lab A2 DB Security` workflow logs for branch head `1f59628810f215d017d6d2008dae6646e1e1c25f`.
+- Confirmed Supabase CLI `2.117.0`, Docker `28.0.4`, PostgreSQL client `16.15` and the disposable Postgres 17.6 image initialized successfully before migration application.
+- Identified the first deterministic replay failure: `20260904_assignments_presence_unlocks.sql` attempts to create `private.bible_assignment_visible(...)`, but a fresh database has no `private` schema because the base BibleQuest schema was never represented as an earlier migration.
+- Added `supabase/migrations/20260903000000_biblequest_baseline.sql` as an exact migration-form copy of the accepted `supabase/schema.sql` base schema. No RLS policy, grant, function, table definition or application runtime contract was intentionally weakened or redesigned in this repair.
+- Kept seed execution disabled; no fixture data is allowed to compensate for migration ordering/bootstrap defects.
 
 ## DB/security evidence
 
-### Confirmed from repository baseline
+### Confirmed from executable CI
 
-- `supabase/schema.sql` defines congregation/member/team/session/score domains with RLS enabled.
-- `private.is_bible_congregation_member(uuid)` is defined as `SECURITY DEFINER`, uses an explicit empty `search_path`, revokes PUBLIC execution and grants authenticated execution.
-- ADR-0002 requires local Supabase, clean migration replay, deterministic two-congregation topology and executable RLS/function tests.
+- `supabase start` reaches a real disposable Postgres instance and begins applying repository migrations.
+- The previous exact-head failure was SQLSTATE `3F000` (`schema "private" does not exist`) at statement 0 of `20260904_assignments_presence_unlocks.sql`.
+- The failure occurs before `supabase db reset` and before `supabase/tests/0001_security_baseline.sql`; therefore neither clean replay nor the security assertions were previously green.
+- The diagnostic `migration list` failure after that point was secondary: Supabase had already stopped the database containers after migration initialization failed.
 
-### Validation performed
+### Repository repair now under proof
 
-- `supabase/config.toml` previously parsed successfully with Python 3 `tomllib`.
-- A CI execution path now exists for real migration replay and Postgres security-test execution.
-- The workflow is fail-closed: migration errors and SQL assertion errors terminate the main proof steps; diagnostic steps run only under `if: always()` and do not convert a failure into success.
+- `supabase/schema.sql` begins with `create extension if not exists pgcrypto;` and `create schema if not exists private;` and defines the core congregation/member/team/session domains before their later feature migrations.
+- `supabase/migrations/20260903000000_biblequest_baseline.sql` now supplies that accepted foundation before all `20260904*` migrations.
+- The baseline preserves the existing `private.is_bible_congregation_member(uuid)` `SECURITY DEFINER` definition, empty `search_path`, PUBLIC revoke, authenticated execute grant and the existing RLS/grant posture.
 
 ### Pending exact evidence
 
-- The new workflow run for exact branch head is pending/unknown until GitHub Actions reports a conclusion.
-- No claim is made yet that `supabase start` succeeds in CI.
-- No claim is made yet that the complete migration chain replays from zero.
-- No claim is made yet that `0001_security_baseline.sql` passes against Postgres.
+- The workflow conclusion for the new branch head containing the baseline migration is still required before claiming full migration replay success.
+- `supabase db reset --local --no-seed` is not yet claimed green on the repaired chain.
+- `0001_security_baseline.sql` is not yet claimed green against Postgres.
 - No RLS caller-context or two-congregation fixture evidence yet.
 - No generated database type evidence yet.
 
 ## Architecture decisions in this lab
 
-1. The migration chain, not `schema.sql` alone, will be treated as the eventual authoritative clean-build path.
-2. Local config contains no hosted project reference and no credential; all destructive/reset work must be explicit local/ephemeral execution.
-3. Seed data will be synthetic and deterministic. It will not be copied from production.
-4. RLS/function security proof must execute inside Postgres; static repository checks remain supplemental only.
-5. Fixtures remain deferred until migration replay is green, so seeds cannot accidentally compensate for missing schema/migration state.
-6. CI migration replay is now the primary truth source for deciding whether the historical migration chain is usable as the V5 data spine; failures should be repaired at root cause rather than bypassed with schema snapshots or weakened assertions.
+1. The migration chain, not `schema.sql` alone, is the authoritative clean-build path for this experiment.
+2. The historical `schema.sql` foundation is treated as accepted behavior to migrate into replayable history, not as a parallel runtime installation mechanism.
+3. Local config contains no hosted project reference and no credential; all destructive/reset work remains explicit local/ephemeral execution.
+4. Seed data will be synthetic and deterministic. It will not be copied from production.
+5. RLS/function security proof must execute inside Postgres; static repository checks remain supplemental only.
+6. Fixtures remain deferred until migration replay is green, so seeds cannot accidentally compensate for missing schema/migration state.
+7. CI migration replay remains the primary truth source; each failure will be repaired at the first demonstrated ordering/schema defect rather than bypassed with disabled migrations or weakened assertions.
 
 ## Known debt / risks
 
-- `supabase/schema.sql` and ordered migrations may represent overlapping historical installation paths; the new CI gate is expected to expose whether migrations are independently replayable.
-- The workflow currently pins `supabase/setup-cli@v1` but requests the latest CLI release; once a green compatible version is observed, deterministic pinning should be considered for reproducibility.
+- `supabase/schema.sql` and ordered migrations represented two historical installation paths. The new baseline migration deliberately begins convergence, but later migrations may still expose schema.sql-versus-history drift that must be resolved explicitly.
+- The new baseline migration is intentionally an exact semantic copy rather than a redesigned V5 schema. Once replay is proven, future normalization should occur through later migrations with security tests, not by silently rewriting the historical baseline.
+- The workflow currently uses `supabase/setup-cli@v1` with `latest`; once a compatible green CLI version is observed, pinning the CLI should improve reproducibility.
 - The first security test characterizes only foundational congregation membership/RLS seams; assignments, presence, admin functions, media and other sensitive domains still require executable matrices.
-- Auth fixture insertion needs to follow the local Supabase auth schema/CLI rather than assuming hosted internal table details.
+- Auth fixture insertion needs to follow local Supabase auth behavior rather than assuming hosted internal table details.
 
 ## Next 3 tasks
 
-1. Inspect the exact GitHub Actions result for this migration replay gate; if red, repair the first demonstrated migration/bootstrap defect without weakening accepted RLS/security semantics.
-2. Once clean replay is green, introduce deterministic synthetic auth + two-congregation fixtures covering member, multi-member, ministry role and platform-privileged identities.
+1. Inspect the exact GitHub Actions result for the repaired migration chain; if red, repair only the next demonstrated migration/schema ordering defect without weakening RLS/security semantics.
+2. Once clean replay and the foundational security SQL are green, introduce deterministic synthetic auth + two-congregation fixtures covering member, multi-member, ministry role and platform-privileged identities.
 3. Add executable caller-context RLS matrices for congregation membership plus one highest-risk domain (assignments/presence), then generate database types from the tested schema.
 
 ## Stop condition
 
-Mark `RECOMMEND SCRAP` if the migration history cannot be made reproducible without effectively rebuilding production schema by hand, or if a DB-first boundary would require weakening existing authorization/privacy guarantees. Neither condition is currently observed.
+Mark `RECOMMEND SCRAP` if the migration history cannot be made reproducible without effectively inventing a replacement production schema, or if a DB-first boundary would require weakening existing authorization/privacy guarantees. The current failure does not meet either condition: it exposed a bounded missing-baseline migration that can be repaired from the repository's accepted schema source.
