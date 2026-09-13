@@ -18,7 +18,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: v5-lab-a2-db-security-${{ github.ref }}
@@ -55,27 +54,26 @@ jobs:
           echo "start_log=${START_LOG}" >> "${GITHUB_OUTPUT}"
           supabase start --debug 2>&1 | tee "${START_LOG}"
 
-      - name: Publish sanitized startup failure diagnostic to lab PR
-        if: failure() && github.event_name == 'pull_request' && steps.supabase_start.outcome == 'failure'
+      - name: Build sanitized startup failure diagnostic
+        if: failure() && steps.supabase_start.outcome == 'failure'
+        id: sanitize_start_failure
         env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           START_LOG: ${{ steps.supabase_start.outputs.start_log }}
         run: |
           set -euo pipefail
-          MARKER='<!-- v5-lab-a2-startup-diagnostic -->'
-          DIAG="${RUNNER_TEMP}/v5-a2-startup-diagnostic.txt"
-          BODY="${RUNNER_TEMP}/v5-a2-startup-comment.md"
+          DIAG_DIR="${RUNNER_TEMP}/v5-a2-diagnostic"
+          DIAG="${DIAG_DIR}/supabase-start-sanitized.txt"
+          mkdir -p "${DIAG_DIR}"
 
           grep -Ei 'error|failed|failure|migration|sqlstate|does not exist|already exists|duplicate|syntax|permission denied|cannot|could not' "${START_LOG}" \
-            | tail -n 50 \
+            | tail -n 80 \
             | sed -E \
                 -e 's/eyJ[A-Za-z0-9._-]{20,}/[REDACTED_JWT]/g' \
                 -e 's/((anon|service_role|secret|token|key)[[:space:]_:-]*[=:][[:space:]]*)[^[:space:]]+/\1[REDACTED]/Ig' \
             > "${DIAG}" || true
 
           if [ ! -s "${DIAG}" ]; then
-            tail -n 80 "${START_LOG}" \
+            tail -n 120 "${START_LOG}" \
               | sed -E \
                   -e 's/eyJ[A-Za-z0-9._-]{20,}/[REDACTED_JWT]/g' \
                   -e 's/((anon|service_role|secret|token|key)[[:space:]_:-]*[=:][[:space:]]*)[^[:space:]]+/\1[REDACTED]/Ig' \
@@ -83,26 +81,25 @@ jobs:
           fi
 
           {
-            echo "${MARKER}"
-            echo "**V5 Lab A2 local Supabase startup diagnostic**"
+            echo '### V5 Lab A2 local Supabase startup diagnostic'
             echo
             echo "Exact head: \`${GITHUB_SHA}\`"
             echo
             echo '```text'
             cat "${DIAG}"
             echo '```'
-          } > "${BODY}"
+          } >> "${GITHUB_STEP_SUMMARY}"
 
-          COMMENT_ID="$({
-            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
-              --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" || true
-          } | tail -n 1)"
+          echo "diagnostic_path=${DIAG}" >> "${GITHUB_OUTPUT}"
 
-          if [ -n "${COMMENT_ID}" ]; then
-            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" -F "body=@${BODY}" >/dev/null
-          else
-            gh api --method POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -F "body=@${BODY}" >/dev/null
-          fi
+      - name: Upload sanitized startup diagnostic artifact
+        if: failure() && steps.supabase_start.outcome == 'failure' && steps.sanitize_start_failure.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-a2-supabase-start-diagnostic-${{ github.sha }}
+          path: ${{ steps.sanitize_start_failure.outputs.diagnostic_path }}
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Replay migrations from zero
         run: |
