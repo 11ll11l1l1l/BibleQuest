@@ -1,235 +1,183 @@
-# BibleQuest V6 Requested Features & Architecture Acceptance Checklist
+# BibleQuest V6 Engine / Architecture Acceptance Checklist
 
 Updated: 2026-09-13 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
+Status: PLANNED / BLOCKED BY V5
 
-This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
+This checklist is the release-blocking inventory for the V6 **engine upgrade**. V6 starts only from the exact accepted V5 production SHA. A waiver is never a PASS.
 
-## A. Phase 0 — V6 authority and baseline
+## A. V5 handoff / Phase 0
 
-- [ ] `V6_ACTIVE_STATUS.md` accepted as current authority.
-- [ ] `DEVELOPMENT_PLAN_V6.md` accepted.
-- [ ] V6 integration branch created from cleaned `main` `ef5d46485f9e7138b969777d34de585cfd9ecbd1`.
-- [ ] V3/V4 archives remain unchanged/read-only by policy.
-- [ ] ADR index/template exists.
-- [ ] Initial build/client architecture ADR accepted.
-- [ ] Initial real-database-CI ADR accepted.
-- [ ] Full inherited baseline green on exact Phase 0 V6 head.
+- [ ] V5 Phase 8 is complete.
+- [ ] Exact accepted V5 production SHA recorded as V6 baseline.
+- [ ] `v6/architecture-upgrade` is based on that exact V5 SHA, not the historical V4 cleanup SHA.
+- [ ] Final V5 feature checklist and regression/security/browser/PWA evidence archived.
+- [ ] V4/V5 rollback refs preserved.
+- [ ] `V6_ACTIVE_STATUS.md` activated.
+- [ ] ADR process exists under `docs/v6/adr/`.
+- [ ] Build/client ADR accepted.
+- [ ] Real database-CI ADR accepted.
+- [ ] Full inherited V5 baseline green on exact V6 Phase 0 head.
 
-## B. Build/toolchain
+## B. Build engine
 
-- [ ] `package.json` + lockfile exist and installs are deterministic.
-- [ ] Supported Node version is pinned/documented.
-- [ ] Vite produces deterministic deployable artifacts.
-- [ ] TypeScript is enabled for new architecture contracts; migration policy for legacy JS is documented.
-- [ ] Typecheck/lint/unit/build commands run in CI.
-- [ ] Built route/deep-link behavior matches production expectations.
-- [ ] Source maps are generated/handled safely.
-- [ ] Route/domain code splitting is available.
-- [ ] CSS/assets/images are owned by build pipeline.
-- [ ] Bundle/chunk/image budgets exist and are CI-visible.
-- [ ] Cloudflare exact-SHA deployment identity works from built artifacts.
+- [ ] `package.json` + deterministic lockfile.
+- [ ] Supported Node version pinned.
+- [ ] Vite development/build pipeline.
+- [ ] Incremental TypeScript policy documented and enforced for new engine contracts.
+- [ ] Deterministic deployable artifacts with exact release identity.
+- [ ] Safe production source-map handling.
+- [ ] CSS/assets/images owned by build pipeline.
+- [ ] Route/domain code splitting available.
+- [ ] lint/typecheck/unit/build commands run in CI.
+- [ ] Bundle/chunk/image budgets defined.
+- [ ] Deep links, auth/session startup, PWA install and critical V5 routes preserve parity.
 
-## C. Real Supabase/Postgres CI
+## C. Database verification engine
 
-- [ ] Reproducible local Supabase project configuration exists.
-- [ ] CI starts a real ephemeral Supabase/Postgres environment.
-- [ ] Clean database applies all required migrations from zero.
-- [ ] Upgrade-path database test represents supported V4→V6 migration.
-- [ ] Schema/type drift check exists.
-- [ ] Generated TypeScript database types are committed/generated deterministically.
-- [ ] At least two populated congregations exist in deterministic fixtures.
-- [ ] Fixtures include ordinary member + ministry-role + platform-privileged identities required by tests.
-- [ ] RLS allow/deny tests execute as actual database callers.
-- [ ] Anonymous/public exposure is explicitly tested.
-- [ ] Cross-congregation denial is tested for every sensitive migrated domain.
-- [ ] `SECURITY DEFINER` / `SECURITY INVOKER` behavior is actually executed.
-- [ ] Function grants/revokes are tested.
-- [ ] Privileged function search-path/least-privilege requirements are tested.
-- [ ] Static SQL checks remain fast guards but are not the sole release proof.
+- [ ] Reproducible local Supabase project config.
+- [ ] CI starts real ephemeral Supabase/Postgres.
+- [ ] Full migration chain applies from zero.
+- [ ] Migration order/idempotence/drift checks exist.
+- [ ] Deterministic fixtures include two congregations, multi-membership and required roles.
+- [ ] RLS allow/deny tests run as real callers.
+- [ ] Cross-congregation denial tested across every sensitive migrated domain.
+- [ ] `SECURITY DEFINER` / invoker functions actually execute under realistic roles.
+- [ ] Grants/revokes/search-path/least-privilege assertions exist.
+- [ ] Generated TypeScript DB types are deterministic and drift-checked.
+- [ ] Static SQL checks remain fast guards but are not sole authorization proof.
 
-## D. Core V6 client architecture
+## D. Application kernel
 
-- [ ] Typed app-shell/router contract established.
-- [ ] Typed session/auth owner established.
-- [ ] Explicit active-congregation context established.
-- [ ] Central repository/data-access boundary established.
-- [ ] Standard async/error/offline/unauthorized state contract established.
-- [ ] Feature modules do not make UI visibility the authority for protected actions.
-- [ ] Route-level loading/cancellation/stale-request behavior is standardized.
-- [ ] Compatibility/feature-flag cutover mechanism exists.
-- [ ] At least one low-risk feature proves the new architecture end to end before Reader/Games rewrite.
+- [ ] Typed app shell/router contract.
+- [ ] Typed session/auth owner.
+- [ ] Explicit active-congregation context separated from identity.
+- [ ] Central repository/data interfaces.
+- [ ] Domain services independent from DOM rendering.
+- [ ] Standard idle/loading/ready/empty/offline/error/unauthorized states.
+- [ ] Cancellation/stale-request protection standardized.
+- [ ] Shared safe error taxonomy/user mapping.
+- [ ] Explicit cross-feature event/command boundaries.
+- [ ] State owned at narrow durable scope rather than one giant store.
+- [ ] At least one low-risk V5 feature proves the new kernel end to end.
 
-## E. Reader decomposition
+## E. Reader/content/offline engine
 
-- [ ] Current Reader behavior has characterization tests before migration.
-- [ ] Navigation/translation state separated from DOM renderer.
-- [ ] Scripture repository/content provider separated from route/view.
-- [ ] Chapter/verse presentation split into testable components.
-- [ ] Search is independently testable.
-- [ ] Verse Peek is independently testable.
-- [ ] Context Lab bridge is independently testable.
-- [ ] Japanese furigana support preserved.
-- [ ] Japanese vocabulary support preserved.
-- [ ] Copyright/licensed-link behavior preserved.
-- [ ] Read/progress writes use new domain/data boundary.
-- [ ] Reader route passes parity + accessibility + mobile tests.
+- [ ] V5 Reader behavior characterized before migration.
+- [ ] Reader responsibilities split into testable owners/services/components.
+- [ ] Scripture provider/navigation/search/context/furigana/vocabulary/progress boundaries explicit.
+- [ ] Copyright/licensed translation behavior preserved.
+- [ ] Versioned Scripture content manifests with checksums/version/license metadata.
+- [ ] Deliberate book/translation downloads where legally supported.
+- [ ] Storage/update/remove/recovery controls.
+- [ ] Offline reading position and supported local search.
+- [ ] Live/licensed translations fail explicitly offline rather than silently substituting.
+- [ ] App/SW/content versions migrate safely.
+- [ ] Installed-PWA physical offline acceptance passes.
 
-## F. True offline Bible
+## F. Games engine
 
-- [ ] Versioned Scripture content-manifest format exists.
-- [ ] Download manager supports deliberate translation/book packages.
-- [ ] At least one supported full translation can be made truly offline where licensing/size permits.
-- [ ] Download progress/cancel/retry/remove controls exist.
-- [ ] Storage usage/reclaim controls exist.
-- [ ] Package checksums/version validation exist.
-- [ ] Corrupt/outdated package recovery is tested.
-- [ ] Previously downloaded Bible text opens with network disabled.
-- [ ] Offline chapter navigation works after app restart.
-- [ ] Supported local search works offline or is clearly scoped if deferred.
-- [ ] Live/licensed translations never silently substitute another translation offline.
-- [ ] App/service-worker/content-pack versions can upgrade safely.
-- [ ] Physical installed-PWA offline acceptance passes.
+- [ ] V5 Games behavior/artwork state characterized before migration.
+- [ ] Common game registry/metadata contract.
+- [ ] Deterministic session/action/scoring/timer/result contracts.
+- [ ] Game logic can run independently of DOM.
+- [ ] Persistence/accessibility/pass-and-play adapters separated.
+- [ ] Individual game family components replace all-game monolithic renderer.
+- [ ] Shared launcher/question/feedback/result/score primitives.
+- [ ] Existing V5 game flows pass parity/browser tests.
+- [ ] Representative sessions replay deterministically in unit tests.
 
-## G. Games engine and Games UI
+## G. Media engine
 
-- [ ] Existing games have characterization/parity inventory.
-- [ ] Common game registry/metadata contract exists.
-- [ ] Game session logic can run without DOM rendering.
-- [ ] Scoring/reward policies are isolated and testable.
-- [ ] Turn/timer rules are isolated where applicable.
-- [ ] Progress/result contract is shared.
-- [ ] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
-- [ ] Individual game views/components replace one monolithic all-game renderer.
-- [ ] Shared question/feedback/result/scoreboard primitives exist.
-- [ ] Raw decorative emoji are removed where intentional art assets exist.
-- [ ] Accessible labels remain independent from decorative art.
-- [ ] Recall/game content is lazy-loaded where appropriate.
-- [ ] Representative engine sessions are deterministic/replayable in unit tests.
-- [ ] All existing game launcher→result flows pass browser regression.
-
-## H. Media subsystem
-
-- [ ] Provider-adapter architecture exists.
-- [ ] YouTube playback uses the official IFrame API or an equally explicit supported adapter, not command-only raw messaging as the primary abstraction.
-- [ ] Multiple media instances can register without creating uncontrolled persistent iframes.
-- [ ] One-audible-session default policy is enforced/tested.
-- [ ] Player switching/route teardown is deterministic.
-- [ ] Queue/playlist behavior exists where accepted.
-- [ ] Continue-watching/resume state exists where accepted.
-- [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
-- [ ] Background/foreground lifecycle is tested.
+- [ ] Provider-adapter architecture.
+- [ ] Official YouTube/provider APIs used as supported abstraction.
+- [ ] Multiple media instances may register safely.
+- [ ] Explicit one-audible-session default policy.
+- [ ] Deterministic player/route/background teardown.
+- [ ] Queue/playlist/resume behavior where accepted.
+- [ ] PiP where supported with graceful fallback.
+- [ ] Accessibility/media-control semantics.
 - [ ] Media curation remains server-authorized.
-- [ ] Old dead Media Library owner is removed only after live routes have parity/evidence.
 
-## I. Push notifications and background delivery
+## H. Notification / background-sync engine
 
-- [ ] Web Push subscription lifecycle exists.
-- [ ] Push server secrets remain server-side.
-- [ ] Notification-category preferences exist.
-- [ ] Service worker handles push events and notification clicks.
-- [ ] Push deep links resolve through supported V6 routes.
-- [ ] Expired/invalid push subscriptions are cleaned safely.
-- [ ] Delivery is deduplicated/idempotent/rate-limited.
-- [ ] Assignment assigned/due push is supported.
-- [ ] Leader/congregation announcement push is supported.
-- [ ] Encouragement push is supported.
-- [ ] In-app Notification Center remains the durable fallback.
-- [ ] Sign-out/account switch clears/changes device notification context correctly.
-- [ ] Physical-device push acceptance passes.
+- [ ] V5 minimum push behavior characterized before migration.
+- [ ] Authenticated device subscription lifecycle robust.
+- [ ] Category preferences preserved/migrated.
+- [ ] SW delivery/click/deep-link handling.
+- [ ] Invalid subscription cleanup.
+- [ ] Dedup/idempotency/rate controls.
+- [ ] In-app Notification Center remains source of truth.
+- [ ] Safe operational delivery metadata only.
+- [ ] Versioned offline-write outbox for explicitly allowed user-owned writes.
+- [ ] Retry/conflict/idempotency policies.
+- [ ] Account/tenant switch cannot leak queued writes.
+- [ ] Privileged/admin/auth actions are never blindly queued.
 
-## J. Offline mutation/sync
+## I. Ministry/Admin migration
 
-- [ ] Offline-write allowlist is documented per domain.
-- [ ] Versioned IndexedDB outbox exists for accepted safe mutations.
-- [ ] Idempotency/retry/backoff rules exist.
-- [ ] Conflict policy exists and is testable.
-- [ ] Reload/restart preserves queued safe writes.
-- [ ] Account/tenant switching does not leak queued writes across identities/tenants.
-- [ ] Privileged/destructive admin operations are never blindly queued offline.
-
-## K. Leader Center
-
-- [ ] Leader Center is restored as an explicit V6 feature, not an unavailable placeholder.
-- [ ] Server-authorized role gate is enforced.
-- [ ] Active congregation is visible/explicit.
-- [ ] Assignment publishing/review/follow-up workflows are available as accepted.
-- [ ] Privacy-safe member/group activity summaries are available.
-- [ ] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
-- [ ] Upcoming due items/events surface is available.
-- [ ] Leader announcement/notification publishing is integrated.
-- [ ] Journey Group/team management entry points are integrated where applicable.
-- [ ] Moderation/review entry points preserve existing server authority.
-- [ ] Role matrix passes DB + browser tests.
+- [ ] Completed V5 Leader Center migrated to V6 kernel with behavior parity.
+- [ ] Completed V5 Admin Console migrated without weakening privileged controls.
+- [ ] Role/tenant context explicit.
+- [ ] Assignment/review/presence/group/team composition uses typed repositories.
+- [ ] Privacy-safe aggregates preserved; no new surveillance-like raw feeds.
+- [ ] Member/facilitator/leader/pastor/admin role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
 
-## L. Multi-congregation
+## J. Tenant engine
 
-- [ ] Two-congregation deterministic CI topology is permanently available.
-- [ ] Users with multiple memberships have an explicit congregation switcher/context.
+- [ ] V5 active-congregation switcher behavior preserved/migrated.
+- [ ] Every tenant-sensitive repository call requires explicit congregation context.
 - [ ] Tenant switch clears stale cached/view state.
-- [ ] Sensitive repository calls require explicit congregation context.
-- [ ] Invitation/join flow is preserved/migrated.
-- [ ] Membership/role management is preserved/migrated.
-- [ ] Congregation profile/settings workflow exists as accepted.
-- [ ] Congregation provisioning workflow exists as accepted.
-- [ ] Assignments/responses cross-tenant isolation passes.
-- [ ] Presence cross-tenant isolation passes.
-- [ ] Groups/teams/rooms cross-tenant isolation passes.
-- [ ] Media/notifications/Leader Center cross-tenant isolation passes.
-- [ ] Any inter-congregation directory/shared-resource feature is opt-in and separately approved, not implied by tenancy support.
+- [ ] Two-congregation deterministic fixture topology permanent in CI.
+- [ ] Assignment/response isolation tested.
+- [ ] Presence isolation tested.
+- [ ] Groups/teams/rooms isolation tested.
+- [ ] Media/notifications/Leader/Admin isolation tested.
+- [ ] Join/membership/provisioning/role tooling remains server-authorized.
+- [ ] No feature silently chooses first membership.
 
-## M. Auth/admin/security hardening
+## K. Auth/security hardening
 
-- [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
-- [ ] Privileged Owner/Admin re-auth requirements are reviewed.
-- [ ] Real session revocation is tested.
-- [ ] Admin operation contracts/audit schema are typed/tested.
-- [ ] Client bundle contains no privileged secrets.
-- [ ] Dependency/security scanning exists after package management is introduced.
-- [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
-- [ ] Secret scanning/client artifact scanning exists.
-- [ ] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
-- [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
+- [ ] Privileged re-auth/session freshness reviewed.
+- [ ] Real session revocation tested.
+- [ ] Leaked-password/MFA/passkey options evaluated and documented.
+- [ ] CSP and unsafe-DOM audit completed.
+- [ ] Dependency/security scanning exists after package management introduction.
+- [ ] Client artifacts scanned for secrets.
+- [ ] Edge/database privileged functions reviewed for least privilege/search path.
+- [ ] Relevant Supabase security-advisor findings triaged.
 
-## N. Design system / i18n / accessibility
+## L. Design/runtime platform and motion/sound engine
 
-- [ ] Shared component primitives cover common buttons/forms/dialogs/cards/status states.
-- [ ] Focus/keyboard contracts are componentized/tested.
-- [ ] Icon/art registry replaces scattered decorative symbols where applicable.
-- [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
-- [ ] Existing supported-language and Japanese/furigana behavior is preserved.
-- [ ] Scripture licensing/source metadata remains separate from UI localization.
-- [ ] Automated accessibility checks run on built artifacts.
-- [ ] Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.
+- [ ] Shared component primitives and design tokens.
+- [ ] Focus/keyboard/accessibility contracts componentized.
+- [ ] Structured i18n/content boundaries.
+- [ ] Privacy-safe runtime error diagnostics with exact build identity.
+- [ ] Route/bundle/image/startup performance budgets.
+- [ ] Motion token/preset registry.
+- [ ] Sound-event registry with persisted user preference.
+- [ ] reduced-motion and sound-off behavior defined.
+- [ ] Browser gesture-unlock/audio policy handled centrally.
+- [ ] Haptic capability abstraction where supported.
+- [ ] Engine proven on 2-3 reference surfaces spanning playful and restrained families.
+- [ ] Full app rollout is explicitly deferred to V7.
 
-## O. Observability and performance
+## M. V6 certification / promotion
 
-- [ ] Release SHA/build identity is available in diagnostics.
-- [ ] Privacy-safe structured error reporting exists.
-- [ ] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
-- [ ] Controlled source-map resolution exists.
-- [ ] Diagnostics expose safe SW/content/connectivity state.
-- [ ] Route/chunk size budgets are enforced.
-- [ ] Image/font budgets are enforced.
-- [ ] Startup/critical-route performance budgets are defined.
-- [ ] Large Bible/game/media payloads are not eagerly loaded without need.
-
-## P. CI/release architecture
-
-- [ ] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
-- [ ] Unit/type/lint/build gates run on PRs.
-- [ ] Database/RLS integration gate runs on relevant PRs.
-- [ ] Whole-app/protected-route/browser gates run against built output.
-- [ ] PWA/offline gate covers real V6 SW/content architecture.
-- [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
-- [ ] Exact-SHA Cloudflare preview verification remains mandatory.
-- [ ] V4→V6 upgrade database path is tested before RC.
-- [ ] V4→V6 route/feature parity matrix is complete.
+- [ ] Complete V5→V6 parity matrix.
+- [ ] Clean-install DB migration test.
+- [ ] Supported V5→V6 upgrade DB path test.
+- [ ] Full executable RLS/security matrix.
+- [ ] Browser/mobile/PWA/offline/media/tenant coverage.
+- [ ] Build identity/performance budgets green.
+- [ ] Reference-surface motion/sound preference/accessibility matrix green.
+- [ ] Exact-SHA Cloudflare preview verification.
 - [ ] One exact V6 RC SHA passes all applicable automated gates.
-- [ ] Required field/device evidence is attached to exact candidate.
-- [ ] No WAIVED item is represented as PASS.
-- [ ] Production promotion uses the exact certified candidate.
-- [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
-- [ ] V4 rollback reference remains available through V6 production acceptance.
+- [ ] Required physical/field evidence attached to same candidate.
+- [ ] No WAIVED item represented as PASS.
+- [ ] Production promotion uses exact certified candidate.
+- [ ] Post-production exact-SHA route/PWA/offline/media smoke passes.
+- [ ] Exact accepted V6 production SHA recorded as V7 baseline.
+- [ ] V5 rollback remains available through V6 production acceptance.
