@@ -3,7 +3,7 @@
 Updated: 2026-09-13 JST
 Branch: `lab/v5-a5-greenfield`
 Baseline origin: `1f504dec812f11453f82e30af61cdf3d6c547060`
-Current lab HEAD before this status update: `8349c8e9d33d64da059464b663448d2953217afa`
+Current lab HEAD before this status update: `3e3276efba4a297957cb27d55439cc7f4db9b334`
 Lab identity: `BQ-V5-A5-GREENFIELD`
 
 ## Hypothesis
@@ -46,7 +46,12 @@ Status: IMPLEMENTED, BACKEND PARITY/BUILD/BROWSER EVIDENCE PENDING
 
 Added a congregation-context service contract independent of session identity, a typed read-only `AssignmentsRepository`, an explicit fail-closed unavailable adapter, and a lazy Tasks route. The Tasks view refuses repository access unless the session is authenticated and an active congregation is selected. It contains no direct `fetch`, Supabase client, service-role credential path or local fabricated protected-data fallback. Repository results are rendered only after the current request remains live; route cleanup invalidates stale async results.
 
-The V4 assignments owner was inspected only for accepted product/security contracts: assignments are scoped to a selected congregation, ordinary members must not gain ministry response visibility, and backend authorization remains authoritative. The monolithic V4 service/view implementation was not copied into the greenfield tree.
+### Tranche 5 — dependency-free protected feature behavioral proof
+Status: IMPLEMENTED, CI EXECUTION PENDING
+
+Added `tests/v5-assignments-behavior.mjs`, executed through Node 22 native TypeScript stripping, to exercise the real `src/v5/features/assignments/view.ts` module with deterministic fake session/congregation/repository services and a minimal fake DOM. The suite asserts: remote-unavailable fail-closed behavior, signed-out fail-closed behavior, missing-congregation fail-closed behavior, exact user/congregation scoping for authorized reads, suppression of stale results after congregation changes, and cleanup/unsubscribe suppression of late results.
+
+Added `.github/workflows/v5-lab-a5-greenfield.yml` as a lab-only, read-only-permission evidence workflow. It runs the architecture contract and assignments behavior suites on the draft lab PR using Node 22.12 without production secrets or package installation. It does not deploy or contact Supabase.
 
 ## Parity matrix
 
@@ -58,7 +63,7 @@ The V4 assignments owner was inspected only for accepted product/security contra
 | Session/auth | production session/auth owner | typed source/service boundary + unavailable lab adapter; no sign-in | PARTIAL |
 | Congregation context | selected membership drives protected features | separate typed context boundary + unavailable lab adapter | PARTIAL |
 | Account | production account surface | read-only session-state slice | PARTIAL |
-| Assignments | protected congregation-scoped assignments and progress | lazy read-only repository/view boundary; backend adapter intentionally unavailable | PARTIAL ARCHITECTURE / NO DATA PARITY |
+| Assignments | protected congregation-scoped assignments and progress | lazy read-only repository/view boundary + deterministic behavior tests; backend adapter intentionally unavailable | PARTIAL ARCHITECTURE / BEHAVIOR-GATED / NO DATA PARITY |
 | Home | production feature | minimal architectural proof route | NOT PARITY |
 | Reader | production feature | registered placeholder only | MISSING |
 | Games | production feature | registered placeholder only | MISSING |
@@ -71,16 +76,19 @@ The V4 assignments owner was inspected only for accepted product/security contra
 ## Tests and evidence
 
 - Branch lineage remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
-- The exact code head before this status commit is `8349c8e9d33d64da059464b663448d2953217afa`.
-- Architecture guard was expanded to require lazy Tasks loading, explicit route-context injection of session/congregation/assignments, authenticated + selected-congregation gating, repository-only protected reads, no direct feature `fetch`, no feature/direct Supabase client creation, explicit unavailable congregation state and fail-closed assignments repository behavior.
+- Exact code head before this status commit is `3e3276efba4a297957cb27d55439cc7f4db9b334`.
+- `tests/v5-assignments-behavior.mjs` imports the real greenfield assignments view rather than reimplementing its decision logic. It uses only deterministic fake boundaries and does not require credentials/network/backend access.
+- The new lab CI workflow has `permissions: contents: read`, is branch-gated to `lab/v5-a5-greenfield` for pull-request execution, and contains no deployment or secret-consuming step.
 - No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced.
 - Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only for CI evidence.
-- At inspection time the exact code head had seven inherited PR checks registered; several were queued/in progress. Pending checks are not counted as passed.
+- Immediately after the workflow commit, no workflow run had yet appeared for exact head `3e3276efba4a297957cb27d55439cc7f4db9b334`; pending/absent checks are not counted as passed.
 
 ## Failures / unresolved evidence
 
+- Local git checkout/execution remains blocked in this automation environment by DNS failure resolving `github.com`, so no local exact-branch Node execution is claimed.
 - No lockfile because dependency resolution previously timed out.
 - No exact-branch `npm ci`, TypeScript typecheck, Vite build, browser run, PWA test or deployed-preview result is claimed green for this tranche.
+- Lab CI workflow execution for the new behavior suite is pending; configuration presence is not treated as PASS.
 - The current session and congregation adapters intentionally report unavailable; production auth/membership wiring is not implemented.
 - The assignments repository intentionally fails closed; no real protected-data request is claimed successful.
 - Existing V4 assignment mutation, publisher, response-review and realtime behavior are not migrated.
@@ -94,6 +102,8 @@ The V4 assignments owner was inspected only for accepted product/security contra
 4. The repository boundary is the correct place for a future Supabase/RPC adapter; views should not know transport details.
 5. An unavailable adapter is preferable to invented local protected data because it keeps missing backend parity visible and fail-closed.
 6. Protected route cleanup needs request-version invalidation in addition to subscription cleanup so stale async results cannot render after navigation/context changes.
+7. Node 22 native TypeScript stripping provides a useful zero-dependency test path for leaf TypeScript modules whose runtime imports are dependency-free; this can protect architecture behavior even while npm resolution is unavailable.
+8. Lab-only CI can provide exact-head behavioral evidence without introducing deployment authority, backend credentials or production coupling.
 
 ## Known debt
 
@@ -104,16 +114,17 @@ The V4 assignments owner was inspected only for accepted product/security contra
 - no offline/cache update model exists;
 - no deterministic build identity or bundle budget exists;
 - dependency lock/build evidence remains blocked by package-resolution availability;
-- architecture guard still needs exact-branch execution evidence and behavioral tests with deterministic fake services.
+- browser-level accessibility and route behavior remain unproven;
+- real RLS/backend authorization remains unproven in this lab.
 
 ## Next 3 tasks
 
-1. Add deterministic behavioral tests for Tasks request gating, context changes, stale-result suppression and cleanup using fake session/congregation/repository services; execute them against the exact branch without requiring production credentials.
+1. Wait for and inspect exact-head lab CI for the architecture + assignments behavior suites; repair real failures without weakening the tests.
 2. Characterize the accepted V4 assignments API/RLS contract and implement a transport adapter only if it can preserve selected-congregation scoping and server authorization without embedding privileged configuration.
-3. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures rather than weakening architecture checks.
+3. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures; then connect an isolated local/ephemeral protected read before considering functional data parity.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The lab now demonstrates four distinct owners—router/shell, session, congregation context and protected feature repository/view—without copying the V4 bootstrap or assignments monolith. This is stronger evidence that a greenfield architecture can reduce ownership coupling safely. Superiority over incremental migration is still unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
+The lab now demonstrates separate router/shell, session, congregation-context and protected repository/view owners plus executable behavior tests that directly import the new protected feature view. This is stronger evidence that the greenfield architecture is testable without recreating V4 monoliths. Superiority over incremental migration remains unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
