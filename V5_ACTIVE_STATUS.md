@@ -25,12 +25,12 @@ V4 remains the production fallback until a V5 candidate is explicitly accepted a
 
 ## Autonomous coding decision
 
-V5 is authorized to trial full scheduled autonomous coding with five agents running once per hour.
+V5 uses five scheduled autonomous agents working together on **one shared V5 program**.
 
 The model is **controlled parallel development, serialized integration**:
 
-- four workers may implement independent non-overlapping tranches on isolated branches and PRs;
-- one integration/dispatch captain runs after the workers and is the only scheduled agent allowed to merge worker PRs into `v5/architecture-upgrade`;
+- A1-A4 implement independent non-overlapping tranches on short-lived worker branches and PRs;
+- A5 is the integration/dispatch captain and is the only scheduled agent allowed to merge worker PRs into `v5/architecture-upgrade`;
 - task ownership is protected by short-lived Issue #185 leases;
 - agents have primary specialties but may safely work-steal unclaimed current-phase tasks when blocked;
 - workers never write runtime/database/workflow changes directly to `main` or the integration branch;
@@ -38,7 +38,7 @@ The model is **controlled parallel development, serialized integration**:
 - red integration/security/database evidence stops new merges until root cause is understood and repaired;
 - production/main remains manual-controlled unless a later explicit authority change says otherwise.
 
-This supersedes the earlier V4-style read-only investigator setup and the narrower rule that all development work itself must be single-threaded. The integration history remains serialized and auditable even when independent implementation tranches are prepared concurrently.
+The temporary independent-lab experiment is ended. Its five `lab/v5-*` branches are preserved only as read-only experimental evidence and idea sources. They are not active development routes and must not continue as competing V5 products. Useful work from them may be selectively re-implemented or ported only after review into a fresh worker branch based on the latest `v5/architecture-upgrade`.
 
 ## Current state
 
@@ -46,7 +46,7 @@ This supersedes the earlier V4-style read-only investigator setup and the narrow
 
 The V5 architecture program was accepted through PR #184 and merged at `1f504dec812f11453f82e30af61cdf3d6c547060` after all inherited automated gates passed on the exact planning head `9ccca11dcd2f10ef5e853a820a317c1999d36b77`.
 
-The five-agent autonomous coding protocol is now established on the V5 integration branch. Runtime implementation may begin only through that protocol. ADR-0001 and ADR-0002 remain proposed architecture decisions and must be accepted/refined by evidence before their respective irreversible implementation choices are treated as frozen.
+The coordinated five-agent autonomous coding protocol is active again. Runtime implementation must proceed only through that shared integration route. ADR-0001 and ADR-0002 remain proposed architecture decisions and must be accepted/refined by evidence before their respective irreversible implementation choices are treated as frozen.
 
 ## Mandatory V5 outcomes
 
@@ -111,11 +111,12 @@ Architecture may change; these outcomes may not silently regress:
 
 The autonomous pool should close Phase 0 and begin Phase 1/2 foundations in dependency order:
 
-1. verify the current integration SHA and inherited gates remain green after protocol-only changes;
-2. accept/refine ADR-0001 for build/client architecture and ADR-0002 for real Supabase CI based on current repository/tool evidence;
-3. produce the explicit route/domain ownership map and baseline characterization needed by the first migrations;
-4. freeze the Phase 0 baseline SHA in this file;
-5. begin bounded Phase 1 and Phase 2 implementation PRs in parallel only where ownership is non-overlapping.
+1. verify the current integration SHA and inherited gates remain green after the coordination reset;
+2. inventory useful evidence from the five historical labs without bulk-merging them;
+3. accept/refine ADR-0001 for build/client architecture and ADR-0002 for real Supabase CI based on current repository/tool evidence;
+4. produce the explicit route/domain ownership map and baseline characterization needed by the first migrations;
+5. freeze the Phase 0 baseline SHA in this file;
+6. begin bounded Phase 1 and Phase 2 implementation PRs in parallel only where ownership is non-overlapping.
 
 ## Release rule
 
