@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "check:artifact-contract": "node scripts/v5-artifact-contract.mjs",
     "copy:static-artifacts": "node scripts/v5-copy-static-artifacts.mjs",
-    "check:built-output": "node scripts/v5-check-built-output.mjs"
+    "check:built-output": "node scripts/v5-check-built-output.mjs",
+    "test:v5-boundaries": "node --test tests/v5-incremental-runtime-boundaries.test.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",
