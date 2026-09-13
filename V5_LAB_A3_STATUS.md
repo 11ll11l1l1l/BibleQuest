@@ -2,7 +2,7 @@
 
 Branch: `lab/v5-a3-offline-first`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Latest implementation HEAD before this status commit: `3eca7ed6b80047e83ff5b29d3dec56984e606a0d`
+Latest implementation HEAD before this status commit: `fd1e636bd4e6a71bc81338b206569cf333c99b9e`
 Experiment state: **VIABLE — CONTINUE**
 
 ## Hypothesis
@@ -11,58 +11,61 @@ BibleQuest can gain a stronger V5 architecture by treating offline/mobile constr
 
 ## Completed this run
 
-- Preserved the current `offline-shell-sw.js` implementation and added characterization rather than changing worker behavior prematurely.
-- Added `tests/v5-offline-shell-sw-characterization.test.mjs` with an isolated service-worker harness covering request interception, active cache behavior, navigation fallback, cache cleanup and client claiming.
-- Proved the current shell worker does not intercept ordinary same-origin Scripture/data requests because those requests are neither navigation requests nor script/style/image/font destinations.
-- Proved current shell assets are network-first with cache fallback, network probes/out-of-scope URLs are excluded, offline navigation falls back to the cached app-scope root, and activation removes only obsolete BibleQuest shell-cache versions.
-- No Reader, service-worker runtime, auth, backend, media, push, Cloudflare or Supabase code changed.
+- Added `src/offline/scripture-content-provider.js` as the first Reader-facing offline-first content boundary without wiring it into the production Reader yet.
+- Added `tests/v5-scripture-content-provider.test.mjs` with deterministic coverage for local-first resolution, explicit offline-only behavior, verified network repair, corrupt local content removal and durable-write proof.
+- Kept `src/features/reader/index.js`, `src/core/bible.js`, service-worker runtime, auth, backend, media, push, Cloudflare and Supabase unchanged.
+- Preserved the existing package trust chain: manifest/license validation -> verified SHA-256 download -> IndexedDB repository -> content provider.
+- Confirmed the existing browser audit installs Playwright ad hoc; no stable Lab A3 browser fixture exists yet, so this run did not claim browser/PWA evidence.
 
 ## Offline/PWA/media evidence
 
-- The current worker's shell ownership is intentionally narrow: navigations plus `script`, `style`, `image` and `font` destinations inside registration scope.
-- Scripture package requests such as `/offline/web/jhn.json` currently bypass `respondWith`, so the previously introduced `scripture-package-download.js` remains the network/integrity owner for those bytes.
-- Successful shell network responses refresh the active shell cache; failed shell requests may fall back to a warmed cached response.
-- Failed offline navigations may fall back to the cached scope root when the exact route is unavailable.
-- Worker activation cleans only obsolete caches carrying the BibleQuest shell prefix and leaves unrelated caches intact.
-- This is deterministic Node service-worker characterization, not physical-device or installed-browser PWA evidence.
+- `createScriptureContentProvider()` requires an exact versioned manifest and uses its deterministic package key; it does not infer a "latest" package or silently select a different translation/version.
+- The provider reads durable verified content before invoking the network.
+- `allowNetwork: false` produces an explicit offline-missing error and never invokes the downloader.
+- Stored metadata that does not match the requested manifest is removed before repair.
+- Stored bytes that are not valid UTF-8 JSON are removed before repair; in offline-only mode that corruption fails closed instead of substituting content.
+- Network repair is delegated only to the previously verified downloader. A download is not considered usable until the expected package can be read back from durable storage.
+- The current production Reader is not migrated yet. `src/core/bible.js` still owns the accepted V4 bundled/live/licensed translation behavior and its older Cache Storage opened-pack fallback.
+- This run is deterministic Node/domain evidence, not physical-device or installed-browser PWA evidence.
 
 ## Validation
 
-Executed locally with Node against the exact fetched `offline-shell-sw.js` content and the exact new test content before repository write:
+Executed locally against the exact provider/test content before repository write:
 
-`node --test tests/v5-offline-shell-sw-characterization.test.mjs`
+`node --test tests/v5-scripture-content-provider.test.mjs`
 
-Result: **6 passed, 0 failed, 0 skipped**.
+Result: **7 passed, 0 failed, 0 skipped**.
 
-Covered: Scripture/data bypass, network-probe and scope exclusion, network-first shell refresh, cache fallback, navigation root fallback, and activation cache cleanup/client claim.
+Covered: local package precedence, missing-package verified download, explicit offline-only missing behavior, metadata mismatch cleanup + repair, malformed local JSON cleanup + repair, offline corrupt-content fail-closed behavior, and rejection when a successful downloader call does not yield readable durable content.
 
-Previous download validation remains separately covered by `tests/v5-scripture-package-download.test.mjs` with **7 passed, 0 failed, 0 skipped** on its implementation run. Previous repository validation remains separately covered by `tests/v5-scripture-package-repository.test.mjs` with **5 passed, 0 failed, 0 skipped**. Manifest validation remains separately covered by `tests/v5-offline-content-manifest.test.mjs` with **6 passed, 0 failed, 0 skipped**.
+Previous service-worker characterization remains separately covered by `tests/v5-offline-shell-sw-characterization.test.mjs` with **6 passed, 0 failed, 0 skipped** on its implementation run. Previous download validation remains separately covered by `tests/v5-scripture-package-download.test.mjs` with **7 passed, 0 failed, 0 skipped**. Previous repository validation remains separately covered by `tests/v5-scripture-package-repository.test.mjs` with **5 passed, 0 failed, 0 skipped**. Manifest validation remains separately covered by `tests/v5-offline-content-manifest.test.mjs` with **6 passed, 0 failed, 0 skipped**.
 
 Physical installed-PWA/offline behavior is **NOT TESTED**. Real-browser IndexedDB lifecycle, service-worker update lifecycle, storage quota behavior, device network transitions and cross-browser behavior remain unproven.
 
 ## Architecture decisions learned
 
-1. Keep Scripture acquisition/integrity outside shell-cache interception. The current worker already has this separation; a future V5 worker must preserve it deliberately.
-2. Characterize current service-worker behavior before replacing the V3-named cache strategy. Offline-first does not require an immediate worker rewrite.
-3. Keep application release, app-shell cache version, Scripture manifest version, Scripture IndexedDB schema version and package content version independently evolvable.
-4. Keep integrity verification before durable package persistence; service-worker cache fallback must never become an alternate Scripture trust path.
-5. Reader should later consume verified packages through a content-provider boundary rather than directly owning fetch, Cache Storage or IndexedDB.
+1. Reader should depend on a Scripture content-provider boundary rather than owning IndexedDB, Cache Storage or raw package downloads directly.
+2. Exact manifest identity is the compatibility contract. Offline-first must not guess a newest version or silently substitute another translation when the requested package is absent.
+3. Corrupt or metadata-mismatched durable content should be removed and may be repaired only through the verified download path; offline-only mode must fail closed.
+4. A completed network transfer is not sufficient evidence of availability. The provider requires successful read-back from durable storage before returning downloaded content.
+5. Keep the current `src/core/bible.js` owner intact until an adapter/parity tranche proves bundled, live Japanese and licensed-link behavior through the new provider boundary.
+6. Keep Scripture acquisition/integrity outside shell-cache interception; app-shell cache and Scripture package storage remain separate trust domains.
 
 ## Known debt / open questions
 
-- The current worker still uses `biblequest-v3-offline-shell-` naming and a warmed-resource strategy; naming/version redesign is deferred until browser lifecycle evidence exists.
-- No real-browser proof exists yet for install/activate/update/reload behavior, blocked worker updates or storage eviction.
-- No real-browser IndexedDB characterization exists for install/read/remove, versionchange handling, quota errors or private/incognito storage constraints.
-- No tested Reader provider consumes verified offline packages yet.
+- The new provider currently returns parsed package JSON but is not yet adapted to the accepted `createBibleDataService()` chapter/search/navigation contract.
+- `src/core/bible.js` still uses `biblequest-v3-opened-bible-packs-v1` Cache Storage for previously opened bundled packs; migration/removal must wait for parity evidence.
+- No real-browser proof exists yet for IndexedDB install/read/remove/versionchange behavior or installed-PWA service-worker update/reload behavior.
+- No storage quota/eviction recovery or package download progress UI exists.
 - No mutation queue, account/tenant queue isolation, reconnect conflict policy, push delivery or media lifecycle abstraction exists yet.
-- The Node harness models the service-worker APIs relevant to current logic but does not substitute for browser/PWA execution.
+- The Node harnesses do not substitute for browser/PWA execution or physical-device acceptance.
 
 ## Next 3 tasks
 
-1. Add real-browser IndexedDB/service-worker characterization if the existing browser harness can support it; specifically verify install/read/remove and worker offline navigation/update behavior.
-2. Introduce a Reader-facing content-provider abstraction that resolves verified offline Scripture packages before controlled network fallback without exposing IndexedDB/fetch ownership to Reader UI code.
-3. Define the first identity/tenant-scoped idempotent offline mutation-envelope contract without yet enabling background replay.
+1. Add a compatibility adapter/characterization tranche that maps a verified offline book package into the accepted `createBibleDataService()` book/chapter shape without changing licensed-link or live-Japanese behavior.
+2. Add real-browser IndexedDB/service-worker characterization using a stable checked-in browser harness if it can be introduced without coupling this lab to unrelated CI architecture.
+3. Define the first identity/tenant-scoped idempotent offline mutation-envelope contract without enabling background replay yet.
 
 ## Viability
 
-**VIABLE — CONTINUE.** The experiment now has explicit evidence that the existing app-shell worker and the new Scripture integrity path are separate owners rather than competing caches. That materially reduces the risk of adding offline Scripture incrementally. The next evidence gap is browser lifecycle behavior, not basic ownership ambiguity.
+**VIABLE — CONTINUE.** The lab now has an explicit Reader-facing local-first content resolution seam on top of independently tested manifest, integrity-download and IndexedDB layers. The remaining risk is no longer basic storage ownership; it is compatibility with the mature Reader data contract plus browser lifecycle evidence. That is a bounded incremental migration problem, not evidence that the offline-first hypothesis should be scrapped.
