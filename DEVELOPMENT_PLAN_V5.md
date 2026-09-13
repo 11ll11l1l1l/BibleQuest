@@ -29,6 +29,8 @@ Every item below is a concrete, previously-identified gap - not a generic wishli
 - Couples Journey's "shared" communication assessment needs verification that it is genuinely bidirectional (spouse can see spouse's relevant summary) rather than a single-account self-assessment that merely uses the word "shared" in its copy;
 - the V4 whole-app audit's Section E (16 items: re-verify already-converted areas still work together) and part of Section G (systematic loading/empty/error/offline state audit across every screen) were explicitly left open for "the gates instance" and, as far as repository evidence shows, never actually completed.
 
+Human-approved V5 product-completion additions are also tracked in the cross-phase content/UX workstream below. These additions improve content, presentation and connection between existing current-architecture features; they do not authorize the V6 architecture-replacement program.
+
 ## 3. Execution model
 
 Same discipline as every prior version: one serialized integration stream, exact-SHA verified checkpoints, full accumulated regression before every freeze, honest recording of what's deferred versus done. Each phase:
@@ -148,10 +150,43 @@ Each of these three items gets an explicit PASS/FAIL recorded with real evidence
 
 ---
 
+# Cross-phase V5 content/UX completion workstream
+
+This workstream is additive to Phases 1-7 and is required before Phase 8 certification. A5 may serialize it as bounded tranches wherever file ownership is clear. It exists to make BibleQuest feel like one connected church application using the current architecture, not to pre-build V6.
+
+## P0 — required first
+
+1. **Today / This Week Home** — compose existing data into a useful member-facing surface for next event, active assignment, continue reading, latest service, Transformation prompt and unread notifications.
+2. **Connected weekly spiritual journey** — link an existing service/sermon to Scripture, Transformation/reflection, discussion, prayer, assignment/action and Calendar context. This is composition/navigation on current owners, not a new workflow engine.
+3. **Tagalog-first localization** — complete Tagalog Transformation content first, then main member-facing UI including navigation, controls, empty/error/loading states, Calendar, Assignments, Notification Center, settings, leader instructions and other BibleQuest-authored copy. Scripture must use approved/licensed translations rather than app-generated translations.
+4. **True calendar-format UI** — month grid as the main calendar presentation, retaining existing agenda/details as useful secondary presentation; event-category colors must be accompanied by visible text/icon category cues and preserve active-congregation filtering.
+5. **Latest completed live service -> Media/Recordings** — automatically surface a completed livestream/recording when the existing source provides a stable recording identity; deduplicate by stable video identity; expose authorized hide/edit correction; preserve the existing Media/Recordings owner rather than building a new ingestion platform.
+
+## P1 — connected content depth
+
+6. **Transformation content upgrade** — Scripture/context -> understand -> reflect -> apply -> pray, with optional family/couple discussion and weekly action using existing content/assignment patterns.
+7. **Pastor/leader weekly message** — lightweight existing-pattern content that anchors the week's Scripture, service, Transformation, assignment and Calendar event.
+8. **My Journey / reflection history** — encouraging presentation of existing reading, Transformation, assignment and personal reflection/progress signals. No new analytics/state engine; no competitive spiritual leaderboard.
+9. **Family & Couples content tracks** — practical content for communication, forgiveness, stewardship/finances, intimacy/love, parenting, serving together, family Bible time, gratitude, kindness and prayer using existing Journey/Transformation/Assignment owners.
+10. **Personal milestones** — non-competitive encouragement for reading/reflection/journey/assignment consistency using current progress sources where possible.
+11. **Ask at Dinner** — optional short spouse/family discussion question attached to a service, Transformation item or weekly journey.
+
+## P2 — completeness and discovery
+
+12. **Full Cebuano/Bisaya UI and authored-content localization** — complete member-facing UI and BibleQuest-authored content. CEBOCB or another approved existing Cebuano Bible source remains Scripture; do not generate a new Bible translation.
+13. **Lightweight discovery** — search/filter content already exposed by current owners (supported Bible lookup, Media metadata, Transformation topics and church activities). Do not build a generalized V6 indexing/search platform.
+14. **Existing Media organization** — improve the current Recordings/Media presentation with useful categories such as latest service, Sunday services, Bible studies, worship, testimonies, couples/family and kids using existing metadata.
+
+## Workstream acceptance rule
+
+Every item implemented in V5 must have a current-architecture owner, bounded regression proof and accessibility/privacy behavior appropriate to the surface. Items may be split into separate PRs. If correct implementation requires a new Reader engine, generalized offline/cache system, notification/background-sync engine, repository/data-access rewrite, tenant engine, media-platform replacement, generalized search/index engine or state-ownership replacement, stop and defer that architecture work to V6.
+
+---
+
 # Phase 8 — V5 certification and promotion
 
 Full accumulated regression, exact-SHA candidate freeze, staged promotion following the same rollback-preserving discipline as every prior version. V4 remains the production fallback until V5 is explicitly accepted.
 
 ## Exit gate
 
-All Phase 1-7 exit gates pass on one exact-SHA candidate. `DEVELOPMENT_PLAN_V6.md` (architecture upgrade) may begin only after this phase closes.
+All Phase 1-7 exit gates and all accepted cross-phase content/UX checklist items marked required for V5 pass on one exact-SHA candidate. `DEVELOPMENT_PLAN_V6.md` (architecture upgrade) may begin only after this phase closes.
