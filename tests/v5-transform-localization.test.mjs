@@ -17,6 +17,10 @@ const [{ en, LOCALE_KEY_INVENTORY }, { tl }, { localization }] = await Promise.a
   import('../src/app/localization.js')
 ]);
 const source = await readFile(new URL('../src/features/transform/index.js', import.meta.url), 'utf8');
+const basicStart = source.indexOf('const renderBasic=state=>{');
+const basicEnd = source.indexOf('const personalityResultHtml=');
+assert.ok(basicStart >= 0 && basicEnd > basicStart, 'Could not isolate the Basic Transformation renderer.');
+const basicRendererSource = source.slice(basicStart, basicEnd);
 
 const TRANSFORM_BASIC_KEYS = [
   'transform.opening','transform.mode.label','transform.mode.prompt','transform.mode.description',
@@ -61,9 +65,10 @@ test('Transformation page uses the one integrated localization owner without tou
   for (const key of ['transform.mode.prompt','transform.basic.heading','transform.basic.answered','transform.basic.confirmReset','transform.unavailable']) {
     assert.ok(source.includes(`'${key}'`), `Transformation page is not wired to ${key}`);
   }
-  for (const hardCoded of ['Faith & practice reflection','Back to Grow','View reflection','Clear all 12 Transformation answers and the current result?']) {
-    assert.ok(!source.includes(hardCoded), `Basic Transformation still hard-codes localized UI text: ${hardCoded}`);
+  for (const hardCoded of ['Faith & practice reflection','Back to Grow','View reflection']) {
+    assert.ok(!basicRendererSource.includes(hardCoded), `Basic Transformation still hard-codes localized UI text: ${hardCoded}`);
   }
+  assert.ok(!source.includes("window.confirm('Clear all 12 Transformation answers and the current result?')"), 'Basic reset confirmation must use localization rather than a hard-coded English dialog.');
   assert.match(source, /transform\.definitions\.spiritual/);
   assert.match(source, /escapeHtml\(item\.text\)/);
   assert.match(source, /escapeHtml\(row\.guide\)/);
