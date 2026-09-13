@@ -2,3 +2,29 @@
 [data-calendar-page]{padding:16px}
 [data-calendar-page] form[data-calendar-add]{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;padding:10px;border-radius:12px}
 [data-calendar-page] section.bq-panel{border-radius:12px;margin-bottom:10px;padding:10px}
+.bq-calendar-month{margin:16px 0 20px}
+.bq-calendar-month-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:10px}
+.bq-calendar-month-header h2,.bq-calendar-agenda-title{margin:0;text-align:center}
+.bq-calendar-weekdays,.bq-calendar-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.bq-calendar-weekdays{font-size:.72rem;font-weight:700;text-align:center;opacity:.7;margin-bottom:4px}
+.bq-calendar-month-grid{border:1px solid color-mix(in srgb,currentColor 18%,transparent);border-radius:12px;overflow:hidden}
+.bq-calendar-month-cell{min-height:58px;padding:6px;border-right:1px solid color-mix(in srgb,currentColor 12%,transparent);border-bottom:1px solid color-mix(in srgb,currentColor 12%,transparent)}
+.bq-calendar-month-cell:nth-child(7n){border-right:0}
+.bq-calendar-month-cell:nth-last-child(-n+7){border-bottom:0}
+.bq-calendar-month-cell.is-outside-month{opacity:.38}
+.bq-calendar-month-day{display:block;font-size:.82rem;font-weight:700}
+.bq-calendar-month-events{display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:6px}
+.bq-calendar-month-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:currentColor}
+.bq-calendar-month-dot--personal{color:#3b82f6}
+.bq-calendar-month-dot--assignment{color:#d97706}
+.bq-calendar-month-dot--congregation{color:#16a34a}
+.bq-calendar-month-more{font-size:.68rem;font-weight:700}
+.bq-calendar-month-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.76rem;margin-top:8px}
+.bq-calendar-month-legend span{display:inline-flex;align-items:center;gap:5px}
+.bq-calendar-month-nav{min-width:42px;min-height:42px;padding:4px 10px;font-size:1.35rem}
+.bq-calendar-agenda-title{text-align:left;margin:18px 0 10px}
+@media (max-width:480px){
+  .bq-calendar-month-cell{min-height:48px;padding:4px}
+  .bq-calendar-weekdays{font-size:.64rem}
+  .bq-calendar-month-legend{gap:8px}
+}
