@@ -23,8 +23,8 @@ test('bootstrap retains one guarded startup owner and actionable failure UI', as
   assert.match(source, /data-startup-reload/);
   assert.match(source, /DOMContentLoaded/);
 
-  const startCalls = source.match(/\bstart\(\);/g) ?? [];
-  assert.equal(startCalls.length, 1, 'bootstrap should expose one immediate startup call site');
+  const startupOwnerCalls = source.match(/(?<![\w$.])start\(\);/g) ?? [];
+  assert.equal(startupOwnerCalls.length, 1, 'bootstrap should expose one direct startup-owner call site');
 });
 
 test('bootstrap initializes fail-closed session state before constructing session-dependent services', async () => {
