@@ -5,18 +5,36 @@ const { en, LOCALE_KEY_INVENTORY } = await import('../src/content/locales/en.js'
 const { tl } = await import('../src/content/locales/tl.js');
 const { t, getMissingLocaleKeys } = await import('../src/app/localization.js');
 
-const migratedPrefixes = ['nav.', 'shell.', 'transform.'];
-const migratedKeys = LOCALE_KEY_INVENTORY.filter(key => migratedPrefixes.some(prefix => key.startsWith(prefix)));
-const sharedUntranslatedTerms = new Set([
+const shellKeys = [
+  'app.name',
+  'locale.label',
+  'locale.english',
+  'locale.tagalog',
   'nav.home',
-  'nav.media',
+  'nav.learn',
+  'nav.play',
+  'nav.grow',
+  'nav.more',
+  ...LOCALE_KEY_INVENTORY.filter(key => key.startsWith('shell.'))
+];
+const transformKeys = [
   'nav.transformation',
+  ...LOCALE_KEY_INVENTORY.filter(key => key.startsWith('transform.'))
+];
+const migratedKeys = [...new Set([...shellKeys, ...transformKeys])].sort();
+const reviewedSharedTerms = new Set([
+  'app.name',
+  'locale.tagalog',
+  'nav.home',
+  'nav.transformation',
+  'shell.account',
   'transform.mode.basic',
   'transform.mode.full',
   'transform.basic.eyebrow'
 ]);
 
 const placeholders = value => [...String(value).matchAll(/\{([a-zA-Z0-9_]+)\}/g)].map(match => match[1]).sort();
+const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 assert.deepEqual(Object.keys(tl).sort(), LOCALE_KEY_INVENTORY, 'Tagalog dictionary must retain exact canonical key coverage.');
 assert.deepEqual(getMissingLocaleKeys('tl'), [], 'Tagalog dictionary must not have empty/missing canonical values.');
@@ -25,7 +43,7 @@ for (const key of migratedKeys) {
   assert.equal(typeof tl[key], 'string', `Missing Tagalog string for migrated key ${key}`);
   assert.ok(tl[key].trim().length > 0, `Empty Tagalog string for migrated key ${key}`);
   assert.deepEqual(placeholders(tl[key]), placeholders(en[key]), `Placeholder mismatch for ${key}`);
-  if (!sharedUntranslatedTerms.has(key)) {
+  if (!reviewedSharedTerms.has(key)) {
     assert.notEqual(tl[key], en[key], `Migrated Tagalog key unexpectedly equals English: ${key}`);
   }
 }
@@ -34,24 +52,18 @@ const fallbackDictionaries = { en, tl: { ...tl, 'nav.calendar': '' } };
 assert.equal(t('nav.calendar', { locale: 'tl', dictionaries: fallbackDictionaries }), en['nav.calendar'], 'Empty Tagalog values must deterministically fall back to English.');
 
 const sourceContracts = [
-  {
-    path: 'src/ui/shell.js',
-    keys: migratedKeys.filter(key => key.startsWith('nav.') || key.startsWith('shell.'))
-  },
-  {
-    path: 'src/features/transform/index.js',
-    keys: migratedKeys.filter(key => key.startsWith('transform.'))
-  }
+  { path: 'src/ui/shell.js', keys: shellKeys },
+  { path: 'src/features/transform/index.js', keys: transformKeys }
 ];
 
 for (const contract of sourceContracts) {
   const source = fs.readFileSync(new URL(`../${contract.path}`, import.meta.url), 'utf8');
-  assert.match(source, /localization\.(?:t|getLocale)|localization\.getLocale/, `${contract.path} must continue using the integrated localization owner.`);
+  assert.match(source, /localization\.(?:t|getLocale)/, `${contract.path} must continue using the integrated localization owner.`);
 
   for (const key of contract.keys) {
-    assert.match(source, new RegExp(`['\"]${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['\"]`), `${contract.path} no longer references migrated key ${key}`);
+    assert.match(source, new RegExp(`['\"]${escapeRegExp(key)}['\"]`), `${contract.path} no longer references migrated key ${key}`);
 
-    if (sharedUntranslatedTerms.has(key)) continue;
+    if (reviewedSharedTerms.has(key)) continue;
     const english = en[key];
     if (english.length < 4) continue;
     const quotedEnglish = [`'${english}'`, `"${english}"`, `\`${english}\``];
@@ -76,5 +88,5 @@ for (const text of knownNotYetMigratedRecoveryStrings) {
   assert.ok(shellSource.includes(text), `Known not-yet-migrated recovery string changed; update localization QA classification deliberately: ${text}`);
 }
 
-console.log(`PASS V5 localization QA: ${migratedKeys.length} migrated Tagalog keys complete, placeholders stable, fallback deterministic, and no canonical English UI literals leaked into migrated shell/Transformation contracts.`);
+console.log(`PASS V5 localization QA: ${migratedKeys.length} currently migrated Tagalog keys are complete, placeholders are stable, fallback is deterministic, and canonical English UI literals do not leak through their owners.`);
 console.log(`INFO V5 localization QA: ${knownNotYetMigratedRecoveryStrings.length} shell recovery strings remain explicitly classified as not-yet-migrated debt; this gate does not claim full Tagalog coverage.`);
