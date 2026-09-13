@@ -1,0 +1,43 @@
+name: V5 Phase 4 Push Subscription Storage Verify
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+      - 'tests/v5-push-subscription-storage.test.mjs'
+      - '.github/workflows/v5-phase4-push-subscription-storage-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  push-subscription-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Record exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+
+      - name: Syntax check focused security contract
+        run: node --check tests/v5-push-subscription-storage.test.mjs
+
+      - name: Run push subscription storage security contract
+        run: node --test tests/v5-push-subscription-storage.test.mjs
+
+      - name: Verify no server secret markers entered migration
+        run: |
+          ! grep -Eqi 'VAPID[_ -]?PRIVATE|PRIVATE[_ -]?KEY|SERVICE[_ -]?ROLE' supabase/migrations/20260914072000_push_subscriptions.sql
+
+      - name: Verify tracked source remains clean
+        run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
