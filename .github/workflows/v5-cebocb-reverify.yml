@@ -45,7 +45,7 @@ jobs:
           node tests/v4-cebocb-bridge-edge.mjs
       - name: Install Playwright and Chromium
         run: |
-          npm install --no-save playwright
+          npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
       - name: Start BibleQuest locally
         run: |
@@ -60,11 +60,9 @@ jobs:
         run: timeout 240s node tests/v4-cebocb-reader-smoke.mjs
       - name: Existing Reader regression companion
         run: timeout 240s node tests/v3-reader-smoke.mjs
-      - name: Verify candidate remained exact and clean
+      - name: Verify candidate remained exact and source-clean
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git status --short
-            exit 1
-          fi
+          git diff --exit-code
+          git diff --cached --exit-code
