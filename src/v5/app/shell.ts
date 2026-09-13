@@ -1,4 +1,4 @@
-import type { RouteDefinition, RouteSnapshot, RouteView } from '../platform/router/contracts';
+import type { RouteContext, RouteDefinition, RouteSnapshot, RouteView } from '../platform/router/contracts';
 import type { Router } from '../platform/router/router';
 import { loadNotFound } from './routes';
 
@@ -7,7 +7,7 @@ export interface AppShell {
   destroy(): void;
 }
 
-export function createAppShell(root: HTMLElement, routes: readonly RouteDefinition[], router: Router): AppShell {
+export function createAppShell(root: HTMLElement, routes: readonly RouteDefinition[], router: Router, context: RouteContext): AppShell {
   const shell = document.createElement('div');
   shell.className = 'v5-shell';
 
@@ -51,7 +51,7 @@ export function createAppShell(root: HTMLElement, routes: readonly RouteDefiniti
         const definition = routes.find((candidate) => candidate.key === snapshot.key);
         const module = await (definition?.load() ?? loadNotFound());
         if (version !== renderVersion) return;
-        const view: RouteView = module.createView();
+        const view: RouteView = module.createView(context);
         cleanup = view.mount(main, snapshot);
         nav.querySelectorAll('[data-route]').forEach((element) => element.removeAttribute('aria-current'));
         const active = nav.querySelector(`[data-route="${snapshot.key}"]`);
@@ -74,6 +74,7 @@ export function createAppShell(root: HTMLElement, routes: readonly RouteDefiniti
     },
     destroy() {
       cleanup?.();
+      context.session.dispose();
       root.replaceChildren();
     }
   };
