@@ -1,0 +1,22 @@
+export const tl = Object.freeze({
+  'app.name': 'BibleQuest',
+  'common.back': 'Bumalik',
+  'common.cancel': 'Kanselahin',
+  'common.close': 'Isara',
+  'common.continue': 'Magpatuloy',
+  'common.error': 'May nangyaring problema.',
+  'common.loading': 'Naglo-load…',
+  'common.retry': 'Subukan muli',
+  'common.save': 'I-save',
+  'locale.english': 'Ingles',
+  'locale.tagalog': 'Tagalog',
+  'nav.assignments': 'Mga Gawain',
+  'nav.bible': 'Biblia',
+  'nav.calendar': 'Kalendaryo',
+  'nav.community': 'Komunidad',
+  'nav.home': 'Home',
+  'nav.media': 'Media',
+  'nav.notifications': 'Mga Abiso',
+  'nav.settings': 'Mga Setting',
+  'nav.transformation': 'Transformation'
+});
