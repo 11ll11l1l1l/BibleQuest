@@ -1,0 +1,47 @@
+name: V5 Phase 2 Admin Security Verify
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'tests/v5-admin-emergency-security-static.mjs'
+      - 'tests/admin-membership-static.mjs'
+      - 'tests/auth-flow-static-smoke.mjs'
+      - '.github/workflows/v5-phase2-admin-security-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Record exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+
+      - name: Syntax check focused contract
+        run: node --check tests/v5-admin-emergency-security-static.mjs
+
+      - name: Run focused Admin emergency security contract
+        run: node --test tests/v5-admin-emergency-security-static.mjs
+
+      - name: Run maintained Admin membership companion
+        run: node --test tests/admin-membership-static.mjs
+
+      - name: Run maintained auth-flow companion
+        run: node --test tests/auth-flow-static-smoke.mjs
+
+      - name: Verify tracked source remains clean
+        run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
