@@ -11,7 +11,8 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 ## Exact lab state inspected
 
-- Starting lab HEAD for this run: `cbeb6008f7cc457bd384962e8340400a8b272e65`.
+- Starting lab HEAD for this run: `9e4cf34d5bca508c7a8782d4fe3ad8cd98679aee`.
+- Bootstrap-test repair commit validated by isolated CI: `40489aa5e916ce90accdaa8b4c36a83aa8538f68`.
 - The branch HEAD containing this status file is the authoritative endpoint for this run.
 - Persistent draft evidence PR: `#187`, `[LAB ONLY][DO NOT MERGE] V5 A1 incremental architecture`, targeting `main` only for CI/preview evidence.
 
@@ -31,19 +32,25 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 ### Tranche 5 — dependency-free router/session characterization
 - Added executable characterization for router default/fallback/navigation ownership and session authenticated publication, expiry fail-closed behavior and cleanup-before-sign-out ordering.
-- Added the isolated lab CI workflow using Node `22.16.0`; the previous exact-revision run passed the artifact contract and router/session suite.
+- Added the isolated lab CI workflow using Node `22.16.0`.
 
 ### Tranche 6 — bootstrap composition-root characterization
 - Added `tests/v5-bootstrap-ownership-characterization.test.mjs` without changing runtime code.
 - Characterizes one guarded startup owner/actionable startup failure UI, fail-closed initial session state, one route table/one router construction, shell-before-router ordering, non-blocking offline/session startup after initial route delivery, and centralized pagehide disposal of stateful owners.
 - Extended `.github/workflows/v5-lab-a1-boundaries.yml` so this characterization runs in dependency-free CI.
-- This tranche intentionally records durable ownership/startup behavior rather than freezing every service/page import or exact route count; later lazy-loading work may change implementation shape while retaining these contracts.
+
+### Tranche 7 — characterization reliability repair
+- Investigated the exact-head failure of the new bootstrap characterization rather than adding migration code on top of a red boundary gate.
+- Root cause: the test pattern `/\bstart\(\);/g` also matched the `start();` suffix inside `router.start();`, so a valid router method call was incorrectly counted as a second direct bootstrap-owner invocation.
+- Replaced the assertion with `/(?<![\w$.])start\(\);/g`, which distinguishes the direct bootstrap owner call from member-method starts while preserving the intended single-start-owner contract.
+- No production/runtime code changed.
 
 ## Validation / evidence
 
-- Previous dependency-free GitHub Actions evidence passed the source artifact contract and router/session characterization on the then-current lab revision.
-- The new bootstrap suite and workflow were committed to the isolated lab branch and draft PR; exact-head CI evidence for the final status commit must be read from the associated workflow run and is not pre-claimed here.
-- Local checkout execution remains unavailable because the execution container cannot resolve `github.com`; no local Node result is being fabricated.
+- Exact fix commit `40489aa5e916ce90accdaa8b4c36a83aa8538f68`: `V5 Lab A1 Boundary Characterization` run `#12` completed **SUCCESS**.
+- In that exact run the source artifact contract, router/session characterization and repaired bootstrap ownership characterization all completed successfully.
+- On the same fix commit, the V4 Section I security/privacy gate and Phase 6 field-evidence gate had already completed successfully when status was recorded; several broader inherited workflows were still in progress and are not claimed as passed here.
+- Previous failed run on `9e4cf34d5bca508c7a8782d4fe3ad8cd98679aee` was isolated to the bootstrap-characterization step; source artifact and router/session checks passed before it.
 - Deterministic dependency installation and a real Vite production build remain unproven because no verified `package-lock.json` exists yet.
 - No production, Cloudflare production, Supabase state, database schema, router/session runtime or feature implementation was changed.
 
@@ -57,6 +64,8 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 ## Architecture decisions learned
 
+- Characterization gates themselves need root-cause review when red; a false-positive test must be narrowed to the intended contract rather than freezing unrelated implementation details.
+- Direct bootstrap ownership and service lifecycle methods are distinct contracts. Tests should recognize one naked bootstrap `start()` owner without constraining legitimate `router.start()` or other service starts.
 - Source-side artifact validation and built-output validation should remain separate: one protects deployment intent and the other proves actual build output.
 - Router, session and bootstrap ownership can be characterized with dependency-free executable tests before migration, reducing the risk of accidentally creating parallel owners during incremental decomposition.
 - Bootstrap currently acts as the composition root for service construction, route ownership, shell wiring, startup sequencing and teardown. V5 can split loading/composition incrementally if it keeps one authoritative startup/navigation/session path.
@@ -83,4 +92,4 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 **VIABLE — CONTINUE.**
 
-The incremental experiment now has executable pre-migration contracts around deployment artifacts plus router, session and bootstrap composition ownership. The unresolved package-registry path still blocks real Vite artifact proof, but it no longer blocks safe characterization of the seams that will be migrated once deterministic build evidence is available.
+The incremental experiment now has green dependency-free CI around deployment intent plus router, session and bootstrap ownership after correcting an over-broad characterization assertion. The failure provided useful evidence that the characterization layer can be repaired without changing accepted V4 runtime behavior. The unresolved package-registry path still blocks real Vite artifact proof, but it does not currently invalidate the incremental architecture hypothesis.
