@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "check:artifact-contract": "node scripts/v5-artifact-contract.mjs",
-    "copy:static-artifacts": "node scripts/v5-copy-static-artifacts.mjs"
+    "copy:static-artifacts": "node scripts/v5-copy-static-artifacts.mjs",
+    "check:built-output": "node scripts/v5-check-built-output.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",
