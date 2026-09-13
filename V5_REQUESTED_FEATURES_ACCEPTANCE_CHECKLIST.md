@@ -5,12 +5,14 @@ Scope: product-completeness work on the current architecture. See `DEVELOPMENT_P
 
 ## A. Phase 1 — Leader Center
 
-- [ ] Overview view: congregation snapshot, role, member count, active-in-30-min.
-- [ ] Assignments view: published/scheduled/completed split.
-- [ ] Response review reachable as a real navigation destination, not only inline per-assignment.
-- [ ] People view: ministry-relevant directory only - verified to exclude private notes, Transform, Couples, personality/psychometrics data.
-- [ ] Groups & Teams view composes existing Journey Groups/Team Center owners, no new backend.
-- [ ] Ordinary members cannot reach any Leader Center route - verified both by hiding and by independent server-side role check.
+Checkpoint: `release/v5-leader-center`. Delivered scope was intentionally smaller than originally listed here - recorded honestly rather than checked off by generosity.
+
+- [x] Overview view: congregation snapshot, role, active-in-30-min. **Member count deferred** - no existing owner exposes this aggregate; would need a new query, out of this phase's "compose only" scope.
+- [x] Assignments view: open vs. scheduled split, using the real `scheduleAt` field. **Original "published/scheduled/completed" split not built as specified** - "completed" would require a real per-assignment aggregate this data does not carry; corrected mid-build rather than fabricated.
+- [x] Response review reachable as a real navigation destination (Leader Center's Quick Actions link into the existing Assignments/review flow).
+- [ ] People view: ministry-relevant directory only. **Not built this phase** - genuine gap, not deferred by design.
+- [x] Groups & Teams: links out to the existing Journey Groups/Team Center owners, no new backend. (Inline summary, not just links, remains a deferred enhancement.)
+- [x] Ordinary members cannot reach any Leader Center route - verified both by hiding and by an independent server-side role check in the composed service itself, plus a real browser test proving a member sees an explicit denied state, not the data.
 
 ## B. Phase 2 — Admin Console completion
 
@@ -60,9 +62,17 @@ Scope: product-completeness work on the current architecture. See `DEVELOPMENT_P
 - [ ] V4 whole-app audit Section E (re-verify already-converted areas) completed with evidence.
 - [ ] V4 whole-app audit Section G's deferred loading/empty/error/offline state sweep completed with evidence.
 
-## H. Phase 8 — Certification and promotion
+## H. Phase 8 — Feature Flag / Runtime Configuration system (V5-to-V6 bridge)
+
+- [ ] `bible_feature_flags` table with off/percentage/role/everyone rollout modes, RLS matching the established owner/admin-write, authenticated-read pattern.
+- [ ] `src/app/feature-flags.js` single-owner service; no feature checks anything but this service.
+- [ ] Percentage rollout is deterministic per user id, not `Math.random()` - verified by a real test asserting stability across reloads.
+- [ ] Admin Console panel to view/toggle flags, using the same severity-tier confirmation/audit discipline as Phase 2's other Restricted actions.
+- [ ] At least one real, already-shipped V5 feature (recommended: Videos curation) wired behind a flag as a working reference implementation.
+
+## I. Phase 9 — Certification and promotion
 
 - [ ] Full accumulated regression green on one exact candidate SHA.
-- [ ] All of Sections A-G above PASS on that same exact SHA.
+- [ ] All of Sections A-H above PASS on that same exact SHA.
 - [ ] V4 preserved as rollback until V5 is explicitly accepted.
 - [ ] `V5_ACTIVE_STATUS.md` updated to reflect promotion before `DEVELOPMENT_PLAN_V6.md` work begins.
