@@ -36,11 +36,17 @@ jobs:
           set -euo pipefail
           node --check src/app/congregation-membership.js
           node --test tests/v5-active-congregation-selection.test.mjs
-      - name: Accumulated congregation and session safety companions
+      - name: Existing admin membership safety companion
         run: |
           set -euo pipefail
           node tests/admin-membership-static.mjs
+      - name: Existing congregation role parity companion
+        run: |
+          set -euo pipefail
           node tests/community-role-parity-static.mjs
+      - name: Existing session/auth safety companion
+        run: |
+          set -euo pipefail
           node tests/auth-flow-static-smoke.mjs
       - name: Verify candidate remained exact and source-clean
         run: |
