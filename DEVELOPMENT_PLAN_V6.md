@@ -3,499 +3,336 @@
 Updated: 2026-09-13 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
-Starting baseline: cleaned `main` `ef5d46485f9e7138b969777d34de585cfd9ecbd1`
+Starting baseline: **TBD — exact accepted V5 production SHA after V5 Phase 8**
+Depends on: completed/certified V5 feature-completion release
 
 ## 1. V6 line in the sand
 
-V3 established/recovered broad product capability. V4 modernized presentation, repaired concrete gaps, strengthened privacy/release evidence, and intentionally avoided broad architecture replacement. V6 is the deliberate point where BibleQuest may change its architecture.
+V5 finishes the product on the current architecture. **V6 replaces and strengthens the engine underneath that completed product.**
 
-The objective is not a visual V4.1. It is to make the existing working product safer to evolve: executable database security tests, a real build system, typed module boundaries, decomposed Reader/Games, real offline reading, push delivery, a modern media platform, Leader Center, and genuine multi-congregation operation.
+V6 is allowed to change build tooling, module boundaries, state ownership, app shell/router ownership, data/repository boundaries, database test infrastructure, service-worker/storage architecture, media ownership, notification delivery infrastructure, security/test tooling and feature internals.
 
-V6 is allowed to replace internal architecture without preserving old implementation shapes. It must preserve user data, authorization/privacy outcomes, accepted feature behavior, rollback ability and test evidence unless a documented V6 product decision explicitly changes them.
+V6 is not allowed to use architecture work as an excuse to re-open feature-completion scope. Leader Center, Admin Console completion, artwork cleanup, minimum push, baseline offline reading, active-congregation switching and the named V5 verification debt must already be complete when V6 begins.
 
-## 2. Repository evidence driving this plan
+The V5 production behavior/data/security contract is the V6 parity baseline unless an explicit V6 ADR deliberately supersedes it.
 
-This program is grounded in current production code, not a generic wishlist:
+## 2. What the V6 engine means
 
-- there is no `package.json`; the production app still has no standard Node/Vite build graph;
-- `sw.js` is a retirement/network-pass-through worker that clears prior caches rather than providing an offline Scripture strategy;
-- `.github/workflows/v4-section-i-security-privacy.yml` runs static/security text and JS edge tests but does not start Postgres/Supabase and execute migrations/RLS as real database behavior;
-- `supabase/` already contains schema, migrations and Edge Functions, but there is no checked-in `supabase/config.toml` local-project definition;
-- `src/features/reader/index.js` mixes loading, translation controls, chapter rendering, search, dialogs, furigana, vocabulary and event handling in one large mount/render owner;
-- `src/features/games/index.js` contains a large phase-driven renderer and still emits raw emoji such as the Memory Meadow fox, detective mark, book/Scripture symbols and reward symbols despite the V4 asset system;
-- `src/app/audio.js` owns exactly one iframe, destroys the previous player on every mount, sends YouTube commands using `postMessage`, and reports a maximum connected player count of one;
-- `src/app/notification-center.js` is an in-app fetch/read-state inbox; no Web Push subscription/delivery owner exists;
-- congregation membership already supports a user having a list of memberships, but there is no first-class active-tenant context/switcher/product workflow;
-- `src/app/ministry-hub.js` explicitly marks the retained Leader Dashboard as unavailable/not migrated;
-- the app contains many mature domain owners—assignments, presence, admin, couples, Journey Groups, Live Rooms, notifications, media—while the shared store is intentionally tiny and the bootstrap owner is large. V6 needs clearer typed boundaries before more cross-domain growth.
+The V6 engine is the reusable technical platform that V7 will later use for the full overhaul:
 
-## 3. Execution model
+- deterministic build and deployment pipeline;
+- typed app kernel and route/domain boundaries;
+- real executable database/security test platform;
+- explicit session/tenant/data ownership;
+- component and design-token primitives;
+- structured Reader/content/offline engine;
+- deterministic Games engine;
+- modern media session engine;
+- notification/push/background-sync engine;
+- observability, error taxonomy and performance budgets;
+- motion/sound registry/preferences/unlock/accessibility infrastructure.
 
-V6 keeps one serialized runtime integration stream. Multiple analysis helpers may investigate, but only one coordinated change stream may alter overlapping runtime/data ownership at a time.
+V6 should prove these systems on representative surfaces, but **not redesign every page**. V7 owns the full product overhaul.
 
-Each phase uses this sequence:
+## 3. Handoff from V5
 
-1. record/approve the architecture decision if the phase changes a contract;
-2. add characterization/parity tests for the behavior being migrated;
-3. introduce the new owner behind an explicit boundary;
-4. migrate one route/domain slice at a time;
-5. run old + new regression evidence;
+Phase 0 cannot start until V5 Phase 8 closes.
+
+Required V5 handoff evidence:
+
+1. exact accepted V5 production SHA;
+2. final `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` status;
+3. full accumulated V5 regression/security/browser/PWA evidence;
+4. V4 and V5 rollback refs;
+5. explicit known limitations that are architecture debt rather than unfinished features.
+
+The V6 branch must be rebased/recreated from that V5 production SHA. The old V4 cleanup SHA is historical only and is not a valid V6 runtime baseline.
+
+## 4. Execution model
+
+V6 uses one serialized integration stream, even if multiple specialists investigate or prepare non-overlapping work.
+
+For each architecture tranche:
+
+1. write/accept an ADR when ownership or a durable contract changes;
+2. add characterization/parity tests for the V5 behavior being migrated;
+3. introduce the new engine boundary alongside the old owner where necessary;
+4. migrate bounded slices;
+5. run old/new parity and security evidence;
 6. remove the old owner only after no live route depends on it;
-7. update `V6_ACTIVE_STATUS.md` and the V6 checklist in the same serialized stream.
+7. update `V6_ACTIVE_STATUS.md` and the V6 checklist with exact evidence.
 
-No phase may obtain green status by deleting a valid security/privacy/behavior test without an explicit replacement proving the new contract.
+No valid security/privacy/behavior test may be removed merely to obtain green status.
 
 ---
 
-# Phase 0 — Governance, baseline and architecture decisions
-
-## Goal
-
-Turn the cleaned V4 production tree into a controlled V6 architecture program before runtime changes begin.
+# Phase 0 — V5 handoff, baseline, architecture authority
 
 ## Work
 
-- Establish `V6_ACTIVE_STATUS.md` as the only current V6 state authority.
-- Establish this plan and `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`.
-- Create `docs/v5/adr/` and the ADR template/index.
-- Record the exact cleaned-main/V4 fallback SHAs and immutable archive references.
-- Run all inherited automated gates on the V6 branch before architectural implementation.
-- Produce a route/domain ownership map: shell/router/session, Reader, Games, media, notifications, congregation/ministry, assignments, linked activities, admin, offline/PWA.
-- Define compatibility/parity policy: V4 behavior remains the reference until a V6 ADR intentionally changes it.
+- Record the exact accepted V5 production SHA as V6 baseline.
+- Rebase/create `v6/architecture-upgrade` from that SHA.
+- Re-run inherited V5 regression/security/browser/PWA gates on the exact V6 baseline.
+- Confirm ADR process under `docs/v6/adr/`.
+- Accept ADR-0001 (build/client architecture) and ADR-0002 (real Supabase/Postgres CI) before dependent implementation.
+- Produce a route/domain ownership map for shell/router/session, Reader, Games, media, notifications, ministry/admin, congregation/tenant, assignments, linked activities and offline/PWA.
 
 ## Exit gate
 
-- V6 planning documents accepted.
-- Exact Phase 0 SHA has accumulated baseline green.
-- ADR-0001 and ADR-0002 accepted before Phase 1/2 implementation begins.
+Exact V5 baseline is frozen, inherited evidence is green and the first engine ADRs are accepted.
 
 ---
 
-# Phase 1 — Real build system: Vite + typed module platform
-
-## Why first
-
-The lack of a build graph is the ceiling preventing safe large refactors. Reader/Games/media/offline changes should not be attempted as another layer of hand-wired browser scripts.
-
-## Required architecture
-
-- Add `package.json` and lockfile.
-- Pin supported Node version for development and CI.
-- Introduce Vite as the build/development server.
-- Introduce TypeScript incrementally; existing JS may enter through `allowJs` during migration, but all new architecture contracts should be typed.
-- Preserve stable external/deep routes during cutover.
-- Produce deployable `dist/` output with deterministic release identity.
-- Add source maps suitable for privacy-safe production diagnostics.
-- Add CSS/asset handling and image optimization without changing visual behavior merely for migration.
-- Add code splitting at route/domain boundaries where it produces real startup savings.
-- Add lint/format/typecheck commands and fast unit test runner.
-- Retain Playwright/deployed browser tests as higher-level gates.
-- Add bundle/chunk/image budgets once the first production-equivalent bundle exists.
-
-## Framework rule
-
-Do not choose a UI framework by fashion. ADR-0001 must compare the smallest credible options against the existing DOM-heavy modules and migration risk. Vite + TypeScript is required; the component technology may be lightweight components/Web Components/Preact/etc. only after the spike demonstrates the best incremental migration path.
-
-## Exit gate
-
-The Vite-built application must match the current production route matrix, auth/session startup, deep linking, PWA installation behavior and critical flows before feature refactors continue.
-
----
-
-# Phase 2 — Real Supabase/Postgres testing in CI
-
-## Priority
-
-This is V6's highest-priority risk-reduction change.
-
-V4 proved SQL/security changes mainly through static tests and selected live/manual checks. V6 must execute database behavior on every relevant PR.
-
-## Required architecture
-
-- Check in a reproducible Supabase local configuration (`supabase/config.toml` or the supported equivalent).
-- Run an ephemeral Supabase/Postgres stack in CI.
-- Apply the full schema/migration chain from a clean database, not a hand-prepared snapshot only.
-- Fail CI on migration ordering/idempotence/schema drift problems.
-- Add deterministic seed identities/topology:
-  - at least two populated congregations;
-  - ordinary members in each;
-  - multi-membership account where supported;
-  - facilitator/leader/pastor/admin roles;
-  - platform Owner/Admin identities where platform operations require them;
-  - assignments/responses, presence, groups, couples, teams, rooms, notifications and media fixtures needed by policy tests.
-- Add executable RLS matrix tests for anonymous, ordinary member, ministry role, admin/owner and cross-congregation access.
-- Execute `SECURITY DEFINER`/`SECURITY INVOKER` functions under realistic caller roles.
-- Assert grants/revokes and public/anon exposure explicitly.
-- Test privileged functions for search-path safety and least privilege.
-- Generate TypeScript DB types from the tested schema and fail on uncommitted type drift.
-- Keep static SQL/security tests as fast guards, but never treat them as the sole proof of database authorization.
-
-## Tooling
-
-Prefer Supabase CLI + SQL/pgTAP or a small SQL test harness executed against the local stack. Avoid mocks for RLS outcomes.
-
-## Exit gate
-
-A clean CI job can build the database from zero and prove all critical allow/deny cases, including genuine two-congregation isolation, without production credentials.
-
----
-
-# Phase 3 — Core client architecture: state, data and feature boundaries
+# Phase 1 — Build engine
 
 ## Goal
 
-Create a platform on which Reader/Games/media/Leader Center can be safely rewritten without rebuilding cross-cutting concerns per page.
+Replace the hand-wired browser-script ceiling with a deterministic modern build without changing product behavior merely for migration.
 
-## Required architecture
+## Required outcomes
 
-- Typed app shell/router contract.
-- Typed session/auth context.
-- Explicit active-congregation/tenant context separate from authentication identity.
-- Centralized repository/data-access interfaces over Supabase/remote APIs.
-- Domain services that do not depend on rendered DOM.
-- UI components/views that do not own server authorization decisions.
-- Standard async states: idle/loading/ready/empty/offline/error/unauthorized.
-- Standard cancellation/stale-request protection.
-- Shared error taxonomy and safe user-facing error mapping.
-- Route-level lazy loading.
-- Feature flags/compatibility adapters for incremental V4→V6 cutover.
-- Explicit event/command boundaries for cross-feature coordination instead of importing mutable owners opportunistically.
-
-## State rule
-
-Do not replace the current tiny store with one giant global store. State should be owned at the narrowest durable scope: global session/tenant/config; route feature state; durable domain repositories; ephemeral component state.
+- `package.json`, lockfile and pinned Node version;
+- Vite dev/build pipeline;
+- incremental TypeScript with `allowJs`/compatibility only as needed;
+- deterministic `dist/` and embedded exact build identity;
+- source maps suitable for privacy-safe diagnostics;
+- CSS/assets/image pipeline;
+- route/domain code splitting where useful;
+- lint/format/typecheck/unit-test commands;
+- bundle/chunk/image budgets after first production-equivalent build;
+- preserved deep links, auth startup, PWA install and critical V5 routes.
 
 ## Exit gate
 
-At least one low-risk feature is migrated end-to-end through the new shell/data/state contracts, proving the architecture before Reader/Games migration.
+A Vite-built app matches the accepted V5 route/critical-flow matrix on one exact SHA.
 
 ---
 
-# Phase 4 — Reader architecture + true offline Bible
+# Phase 2 — Database verification engine
 
-## Why together
+## Goal
 
-Offline reading should be designed into the Reader's data contract, not bolted onto its existing monolithic renderer.
+Turn database authorization from largely static inspection into executable proof.
 
-## Reader decomposition
+## Required outcomes
 
-Split current responsibilities into independently testable owners, for example:
-
-- Reader route/controller;
-- Scripture repository/content provider;
-- translation/book/chapter navigation state;
-- chapter/verse view components;
-- search service/results;
-- Verse Peek;
-- Hebrew/Greek Context Lab bridge;
-- Japanese furigana pipeline;
-- Japanese vocabulary support;
-- read/progress command owner;
-- external/licensed translation adapter.
-
-Preserve copyright behavior: licensed translations remain link/external modes unless redistribution rights are explicitly obtained.
-
-## Offline Bible architecture
-
-- Define versioned Scripture content manifests with translation/book/chapter identity, checksum/version and license metadata.
-- Support deliberate downloads rather than blindly precaching the entire repository.
-- Allow at minimum book-level and full-supported-translation offline packages where size/licensing allows.
-- Use IndexedDB/Cache Storage according to content shape; do not force all Bible text into service-worker cache entries if a structured DB is better.
-- Expose storage usage, update availability, download progress, remove/reclaim controls and corrupt-package recovery.
-- Maintain reading position and supported local search offline.
-- Make network/live translations visibly unavailable offline rather than silently substituting another text.
-- Version service worker/application/content independently enough to safely update one without corrupting another.
+- checked-in reproducible local Supabase configuration;
+- ephemeral Postgres/Supabase CI;
+- clean migration replay from zero;
+- migration order/idempotence/drift checks;
+- deterministic fixtures with two congregations, multi-membership and meaningful role/account combinations;
+- executable RLS allow/deny matrix;
+- real `SECURITY DEFINER` / invoker function tests under realistic caller roles;
+- grant/revoke and search-path assertions;
+- generated TypeScript DB types with drift failure;
+- static SQL checks retained as fast guards, not sole evidence.
 
 ## Exit gate
 
-A physical/offline browser session can launch the installed app, open a previously downloaded supported translation/book, navigate chapters, use supported local Reader functionality, close/reopen the PWA and continue reading without network access.
+CI can rebuild the DB from zero and prove critical privacy/tenant cases without production credentials.
 
 ---
 
-# Phase 5 — Games engine and componentized Games UI
+# Phase 3 — Application kernel: shell, state, data, tenant
 
-## Problem to remove
+## Goal
 
-The current Games route is a large phase/switch-style renderer that couples game-specific markup, rewards, timers, local multiplayer and navigation. It is difficult to change one game without risking the whole route.
+Create the shared engine that V7 can build on without re-solving cross-cutting concerns per page.
 
-## Engine architecture
+## Required outcomes
 
-Create a game registry and common contracts for:
-
-- game metadata/availability;
-- content/question provider;
-- deterministic session state;
-- answer/action validation;
-- scoring/rewards policy;
-- timer/turn policy;
-- progress/result contract;
-- persistence adapter;
-- accessibility announcements;
-- local pass-and-play adapter;
-- future realtime/team adapters.
-
-Game logic should run independently of DOM rendering so sessions can be unit tested/replayed deterministically.
-
-## UI migration
-
-- One component/view module per game family.
-- Shared launcher, question, feedback, result, scoreboard and progress primitives.
-- Replace raw decorative emoji with the existing/expanded V4/V6 asset system where an intentional art asset exists.
-- Keep text/accessible labels independent of visual icon choice.
-- Lazy-load large recall/game content.
-- Do not duplicate scoring logic between solo, pass-and-play and remote modes.
+- typed app shell/router contract;
+- typed session/auth context;
+- explicit active-congregation context separate from identity;
+- centralized repository/data interfaces over Supabase/remote APIs;
+- domain services independent of rendered DOM;
+- standard async states and stale-request cancellation;
+- shared safe error taxonomy/mapping;
+- route-level lazy loading;
+- explicit event/command boundaries between features;
+- state owned at narrow durable scope, not one giant global store.
 
 ## Exit gate
 
-Every existing game has parity tests; at least representative game engines pass deterministic unit tests; route/browser tests prove launcher→play→result→replay flows; no single renderer owns all game modes.
+At least one low-risk V5 feature is migrated end-to-end through the new kernel with parity evidence.
 
 ---
 
-# Phase 6 — Media subsystem modernization
+# Phase 4 — Reader/content/offline engine
 
-## Current constraint
+V5 already provides baseline offline re-open behavior. V6 replaces that minimum with a real content engine.
 
-The V4 Audio owner intentionally has one iframe and unloads the previous frame on every mount. That was a valid V4 safety boundary but blocks richer Videos behavior.
+## Required outcomes
 
-## V6 architecture
+- decompose Reader controller, content provider, navigation state, search, verse/context helpers, Japanese pipelines, progress command owner and external/licensed adapters;
+- versioned Scripture manifests with checksums/version/license metadata;
+- deliberate book/full-translation downloads where licensing permits;
+- IndexedDB/Cache Storage chosen by content shape;
+- storage usage/update/remove/recovery controls;
+- offline reading position and supported local search;
+- explicit unavailable state for live/licensed translations offline;
+- independently versioned app/service-worker/content migrations.
 
-Create a media session platform with:
+## Exit gate
 
-- provider adapters (`YouTube`, native audio/video where applicable);
-- official YouTube IFrame API integration rather than command-only `postMessage` guessing;
-- multiple registered media instances/views while enforcing an explicit audible-session policy;
-- central playback lifecycle/state events;
-- queue/playlist support;
-- continue-watching/resume position where privacy/product policy permits;
-- foreground/background lifecycle handling;
-- Picture-in-Picture where browser/provider support exists;
-- teardown/resource limits so multiple players do not mean uncontrolled persistent iframes;
+Installed app can launch offline, read downloaded supported content, navigate and recover after close/reopen without corrupting state.
+
+---
+
+# Phase 5 — Games engine
+
+V5 artwork completion is the visual baseline. V6 removes the monolithic game runtime.
+
+## Required outcomes
+
+- game registry and metadata contract;
+- deterministic session/action/scoring/timer/result contracts;
+- persistence and accessibility adapters;
+- local pass-and-play adapter and future remote/team seam;
+- game logic testable without DOM;
+- component/view module per game family;
+- shared launcher/question/feedback/result/score primitives;
+- no duplicated scoring logic across play modes.
+
+## Exit gate
+
+Existing games have parity/browser coverage and representative engines replay deterministically in unit tests.
+
+---
+
+# Phase 6 — Media engine
+
+## Required outcomes
+
+- provider adapters (YouTube/native media as applicable);
+- official provider APIs rather than raw command guessing;
+- multiple registered media instances with explicit audible-session policy;
+- central lifecycle/state events;
+- queue/playlist/resume support;
+- PiP where supported;
+- route/background teardown/resource limits;
 - accessibility/media-control semantics;
-- analytics/telemetry limited to product-operational needs.
-
-The server remains authoritative for media curation permissions.
-
-## Cleanup
-
-After Videos/Recordings fully use the new media platform and parity tests pass, remove the old dead `media-library` architectural owner and any duplicate playback path rather than preserving two competing implementations forever.
+- server-authoritative curation permissions.
 
 ## Exit gate
 
-Automated/browser tests prove provider initialization, switch/pause policy, queue/resume behavior, teardown, route changes and unsupported-provider failure. Only one source may be audible by default unless an explicit use case says otherwise.
+Provider init/switch/pause/queue/resume/teardown/route-change failure cases are browser-tested.
 
 ---
 
-# Phase 7 — Push notifications, background delivery and offline mutation infrastructure
+# Phase 7 — Notification, push and background-sync engine
 
-## Push platform
+V5 already has minimum real push. V6 turns it into a durable platform.
 
-Extend the existing Notification Center rather than replacing its inbox semantics:
+## Required outcomes
 
-- Web Push subscription lifecycle tied to authenticated user/device;
-- VAPID/server-side delivery secret kept outside client code;
-- push preference model per notification category;
-- service-worker push + notification-click handlers;
-- deep links into migrated BibleQuest destinations;
-- invalid/expired subscription cleanup;
-- rate limits/deduplication/idempotency;
-- delivery audit metadata without storing sensitive payload contents unnecessarily;
-- in-app Notification Center remains the durable fallback/source of truth.
-
-Initial push-worthy events should come from existing domains: assignment due/assigned, leader/congregation announcements and encouragements. Additional event types require explicit product acceptance.
-
-## Background/offline writes
-
-Create a versioned IndexedDB outbox for carefully selected user-owned mutations such as local progress/notes/draft responses where safe. Define conflict/retry/idempotency policies.
-
-Do **not** queue privileged destructive admin operations, role changes, password/email actions, or other actions whose authorization/freshness must be evaluated live.
+- robust authenticated device subscription lifecycle;
+- category preference model and invalid subscription cleanup;
+- service-worker delivery/click/deep-link handling;
+- idempotency/dedup/rate controls;
+- operational delivery metadata without sensitive payload logging;
+- in-app inbox remains durable source of truth;
+- versioned IndexedDB outbox for carefully selected user-owned safe writes;
+- explicit retry/conflict/idempotency rules;
+- privileged destructive/admin/auth actions never queued offline.
 
 ## Exit gate
 
-Push opt-in/out, delivery, click/deep-link and subscription removal are tested; offline-safe writes survive reload and reconcile predictably; privileged actions remain online/reauthorized.
+Push and safe offline writes survive reload/network recovery predictably while privileged actions remain live-authorized.
 
 ---
 
-# Phase 8 — Leader Center flagship
+# Phase 8 — Ministry/admin migration to the engine
 
-## Product position
+V5 already has a working Leader Center and completed Admin Console. V6 migrates them onto the new kernel and typed data/security boundaries.
 
-Leader Center was explicitly skipped in V4. V6 restores it deliberately after the database/client foundations exist.
+## Required outcomes
 
-## Existing building blocks to consume
-
-- congregation membership/role model;
-- assignment publishing and response/review model;
-- privacy-safe aggregate presence capabilities;
-- Journey Groups/team/linked activity models;
-- Notification Center and V6 push platform;
-- media/content moderation where relevant.
-
-## Initial Leader Center scope
-
-- role-gated congregation dashboard;
-- assignment publishing/review/follow-up queues;
-- member/group activity summaries using privacy-safe aggregates rather than raw surveillance-like activity feeds;
-- upcoming due items/events;
-- leader announcements/notification publishing;
-- Journey Group/team management entry points;
-- moderation/review entry points where the role already has server authority;
-- clear congregation context when a leader belongs to multiple congregations.
-
-## Privacy rule
-
-Leader Center must not create new raw-member surveillance merely because data exists. Every metric needs a ministry purpose, minimum necessary scope, RLS/server authorization and an executable tenant/privacy test.
+- Leader Center route/data/state migration with role/privacy parity;
+- assignment/review/presence/group/team composition through typed repositories;
+- Admin Console privileged actions remain server-authoritative and re-auth-safe;
+- privacy-safe aggregate activity only; no new surveillance-like raw feeds;
+- executable role and cross-congregation DB/browser matrices.
 
 ## Exit gate
 
-Member/facilitator/leader/pastor/admin role matrices are executable-tested in DB + browser tests, including denied controls and cross-congregation denial.
+V5 ministry/admin behavior survives the new engine with equivalent-or-stronger privacy/security evidence.
 
 ---
 
-# Phase 9 — Genuine multi-congregation product/tooling
+# Phase 9 — Tenant/multi-congregation engine
 
-## Principle
+V5 provides a minimum switcher and real Gate C topology. V6 makes tenant context systemic.
 
-Multi-congregation is first a tenancy/security architecture, then a product surface. The goal is not to create cross-church data leakage in the name of a directory.
+## Required outcomes
 
-## Required foundation
-
-- deterministic two-congregation database fixtures from Phase 2;
-- explicit active-congregation context in Phase 3;
-- every tenant-sensitive repository call requires congregation context rather than inferring a convenient first membership;
-- cross-tenant denial tests for assignments/responses, presence, groups, teams, couples where applicable, rooms, media, notifications and leader/admin surfaces.
-
-## Product tooling
-
-- congregation membership switcher for users with multiple memberships;
-- invitation/join flow and membership management;
-- congregation profile/settings and role administration under existing authorization rules;
-- safe congregation provisioning process;
-- explicit stale-state clearing on tenant switch;
-- scoped notification/Leader Center behavior per active congregation.
-
-## Optional inter-congregation direction
-
-A public/partner congregation directory, shared events/resources or inter-congregation discovery should be a separate opt-in product decision/ADR. It is not required merely to call the data model multi-tenant.
+- every tenant-sensitive repository call requires explicit congregation context;
+- stale state cleared on tenant switch;
+- deterministic two-congregation fixtures across assignments, responses, presence, groups, teams, rooms, media, notifications and ministry/admin surfaces;
+- safe membership/join/provisioning/role tooling under server authorization;
+- no feature silently falls back to first membership.
 
 ## Exit gate
 
-Two populated congregations can coexist in CI/staging; users with one or both memberships see only allowed tenant data; active-tenant switching clears stale state; every sensitive domain has explicit cross-congregation denial tests.
+Cross-tenant denial and tenant switching are executable-tested across every sensitive domain.
 
 ---
 
-# Phase 10 — Authentication, admin and security hardening
+# Phase 10 — Auth/admin/security hardening
 
-## Work
+## Required outcomes
 
-- Enable/verify leaked-password protection or document a supported replacement; V4 recorded it disabled as a post-release follow-up.
-- Revisit privileged re-authentication for Owner/Admin destructive/recovery operations.
-- Preserve/strengthen real session revocation tests.
-- Typed/admin operation contracts and audit-event schema.
-- Device/session visibility where supported without exposing token material.
-- Evaluate MFA/passkeys for privileged roles; adopt only with recovery/support flows designed at the same time.
-- Dependency/SCA scanning after package management exists.
-- Content Security Policy compatible with the new build/media/push architecture.
-- automated secret scanning/client-bundle checks.
-- Supabase security-advisor findings triaged as release evidence rather than ignored noise.
+- privileged re-auth/session-freshness review;
+- session revocation tests;
+- leaked-password/MFA/passkey evaluation where appropriate;
+- CSP and unsafe-DOM audit;
+- dependency/security scanning;
+- secret/logging/privacy review;
+- least-privilege Edge Function and database function review.
 
 ## Exit gate
 
-Critical auth/admin/RLS operations have executable database/server/browser tests; no secret appears in client artifacts/logs; known high-risk advisor findings are closed or explicitly accepted with rationale.
+Security matrix is green with no unresolved high-severity architecture regression.
 
 ---
 
-# Phase 11 — Design system, motion/sound system, i18n, observability and performance consolidation
+# Phase 11 — Design/runtime platform, observability, performance, motion/sound engine
 
-## Design-system architecture
+This phase builds **capabilities**, not the V7 full rollout.
 
-V4 established the modern visual language. V6 turns repeated patterns into reusable, testable primitives rather than another visual overhaul for its own sake:
+## Required outcomes
 
-- buttons/inputs/dialogs/cards/status/empty/error/loading primitives;
-- responsive layout primitives;
-- icon/art registry;
-- accessibility/focus/keyboard contracts;
-- story/demo/test surface for components if the chosen stack supports it cheaply.
-
-## Motion and sound system
-
-### Current constraint
-
-Reduced-motion handling is already real and broadly correct (V4's whole-app audit found zero gaps across 87 CSS files: every animated surface either has its own guard or relies on one certified global `prefers-reduced-motion` catch-all in the foundation layer). What does not exist is a *system*: motion is scattered per-feature CSS with no shared timing/easing tokens beyond a handful already in the foundation, no orchestration for sequenced or celebratory animation, and there is no sound layer of any kind outside the single-purpose Audio/media owner used for Recordings/Videos playback. "Fully polished, integrated app feel" cannot be reached by adding more one-off CSS per page; it requires a real, centrally-owned system the same way Progress, Presence, and Audio are each owned by exactly one service today.
-
-### V6 architecture
-
-Introduce a `MotionSystem` and a `SoundSystem` as new first-class app-level owners, following the same single-owner pattern already established for `audio.js`/`presence.js`:
-
-- **Motion tokens**: a formal set of durations/easings/patterns (entrance, exit, emphasis, celebratory/reward, list-stagger, route-transition) layered on top of the existing `--duration-*`/`--ease-*` foundation tokens, not replacing them.
-- **Animation registry**: named, reusable animation presets (e.g. `badge-unlock`, `streak-increment`, `assignment-complete`, `route-enter`) that features request by name rather than hand-authoring bespoke keyframes per feature, matching the "reusable, testable primitives" charter of this phase's design-system work.
-- **Sound registry**: a small library of short, purposeful sound effects (completion chime, gentle notification tone, streak/badge reward, error/denial tone) with per-category volume, a global mute, and a persisted user preference distinct from - and never overriding - the OS `prefers-reduced-motion`/`prefers-reduced-data` signals.
-- **Gesture-unlock handling**: sound playback is inert until a genuine user gesture unlocks the audio context (a real mobile browser constraint, not a design choice) - the system must handle this transparently so features never have to think about it.
-- **Haptics as a pure enhancement**: `navigator.vibrate()` where supported (Android Chrome only), always optional, never a dependency for any feedback the system provides.
-- **Accessibility-first by construction**: every registered animation must have a reduced-motion-safe fallback and every registered sound must be non-essential to understanding the outcome (visual/text confirmation is never sound-only) - this is enforced the same way the existing reduced-motion contract test enforces CSS today.
-- **Preference storage**: sound/haptics preferences live in the same private, device/account-scoped storage pattern already used for Accessibility settings - no new storage architecture needed.
-
-This phase builds the system and proves it end-to-end on 2-3 representative surfaces (e.g. a badge unlock, a route transition, an assignment-completion moment) as a working reference implementation. It deliberately does **not** attempt to apply the system across the whole app - that full-coverage rollout is V6's job (see `DEVELOPMENT_PLAN_V7.md`), once the system itself is proven correct, tested, and accessible.
-
-### Exit gate (motion/sound)
-
-Automated tests prove: every registered animation has a reduced-motion-safe equivalent; every registered sound has a non-audio-dependent visual/text equivalent; the mute/volume preference persists and is respected; gesture-unlock is handled without requiring feature code to manage it; and the 2-3 reference surfaces pass browser regression with sound/motion both enabled and both disabled.
-
-## i18n/content architecture
-
-As features migrate, move user-facing strings into structured catalogs instead of scattering new strings through render code. Preserve Japanese/furigana and existing supported-language behavior. Keep Scripture content licensing/source metadata separate from UI translation catalogs.
-
-## Observability
-
-- release SHA/build version available in diagnostics;
-- privacy-safe structured client error reporting;
-- no Scripture/private notes/auth token content in telemetry by default;
-- source-map-backed stack resolution under controlled access;
-- health/diagnostic surface for SW version, content-pack version, remote connectivity and tenant/session state without exposing secrets.
-
-## Performance
-
-- route/chunk budgets;
-- startup and route-interaction budgets;
-- image/font budgets;
-- long-task monitoring in CI/browser tests where stable;
-- avoid preloading Bible/game/media payloads that are not needed for first render.
+- reusable component/design-token layer;
+- structured i18n/content boundaries;
+- privacy-safe runtime error/diagnostic pipeline and exact release identity;
+- route/bundle/image/performance budgets;
+- motion tokens and preset registry;
+- sound-event registry with user preference, reduced-motion handling and gesture-unlock policy;
+- haptic/audio capability abstraction where supported;
+- proof on 2-3 representative surfaces spanning playful and restrained product families.
 
 ## Exit gate
 
-Migrated routes use shared primitives/catalogs; accessibility and performance gates are version-neutral and enforced against built artifacts.
+The engine is documented, testable, preference-respecting and proven on reference surfaces without app-wide rollout.
 
 ---
 
-# Phase 12 — Integrated V6 certification and production promotion
+# Phase 12 — Integrated V6 engine certification and promotion
 
-## Candidate convergence
+## Required evidence
 
-- Produce a V4→V6 parity/migration matrix for every live route and critical domain.
-- Close all applicable acceptance checklist items.
-- Freeze one exact V6 RC SHA.
-- Apply database migrations from a clean database and from a V4-like upgrade state.
-- Run unit/type/lint/build, DB integration/RLS, security/privacy, browser/mobile, whole-app, protected pages, push, offline Bible, media, Leader Center, multi-congregation and PWA/recovery gates on the exact candidate.
-- Deploy exact candidate to authoritative Cloudflare preview/staging and verify build identity.
-- Execute physical-device acceptance for areas emulation cannot prove, especially installed PWA/offline/push behavior.
-- Promote only the exact certified candidate through PR.
-- Verify canonical production exact-SHA identity and post-promotion browser/PWA/push/offline behavior.
-- Retain V4 archive rollback until V6 production acceptance is complete.
+- full V5→V6 parity matrix;
+- clean-install and upgrade-path database migration tests;
+- real RLS/security matrix;
+- browser/mobile/PWA/offline/media/tenant coverage;
+- build identity and performance budgets;
+- motion/sound preference/accessibility matrix on reference surfaces;
+- exact-SHA RC freeze and rollback plan.
 
-## Evidence semantics
+## Exit gate
 
-`PASS` means executed evidence. `WAIVED` means an explicit owner decision and is never rewritten as PASS. Static evidence may support but cannot substitute for real DB or physical-device evidence where the acceptance item requires it.
+One exact V6 candidate is accepted and promoted. Its production SHA becomes the only valid starting baseline for V7.
 
----
+## V7 handoff
 
-# Cross-phase engineering rules
-
-1. **No architecture preservation for its own sake.** If V4 structure is the limiting factor, V6 may replace it.
-2. **No big-bang rewrite.** Production parity is protected through adapters, characterization tests and one-owner-at-a-time migration.
-3. **Database authorization is executable behavior.** Static SQL matching is never sufficient V6 release evidence for RLS.
-4. **Tenant context is explicit.** No sensitive feature should guess which congregation is active.
-5. **Server authority remains authoritative.** Client role checks are UX only.
-6. **Offline is explicit.** Each domain declares what is cached/readable/writable offline and how conflicts recover.
-7. **One media platform, one notification platform, one auth/session owner, one active-tenant owner.** Feature routes consume these; they do not recreate them.
-8. **New dependencies require reason and ownership.** Vite/TypeScript/test tooling are justified platform dependencies; avoid framework sprawl.
-9. **Every intentional breaking architecture change gets an ADR.** Historical implementation details need not be preserved, but decisions must be recoverable.
-10. **Current status stays singular.** `V6_ACTIVE_STATUS.md` wins over old phase docs, issues or chat summaries.
+V7 receives a completed engine plus documented component, routing, data, offline, media, notification, tenant, motion and sound APIs. V7 may then perform the full page-by-page overhaul without inventing another technical foundation.
