@@ -2,16 +2,16 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 
 const STATIC_SWEEP = [
-  'tests/v4-whole-app-audit-static.mjs',
-  'tests/v3-offline-shell-smoke.mjs',
-  'tests/v3-operational-recovery-smoke.mjs'
+  'tests/v4-whole-app-audit-static.mjs'
 ];
 
 const BROWSER_SWEEP = [
   'tests/v4-whole-app-browser-states-smoke.mjs',
   'tests/v4-whole-app-deep-routes-smoke.mjs',
   'tests/v4-assignments-page-smoke.mjs',
-  'tests/v4-daily-journey-page-smoke.mjs'
+  'tests/v4-daily-journey-page-smoke.mjs',
+  'tests/v3-offline-shell-smoke.mjs',
+  'tests/v3-operational-recovery-smoke.mjs'
 ];
 
 for (const file of [...STATIC_SWEEP, ...BROWSER_SWEEP]) {
