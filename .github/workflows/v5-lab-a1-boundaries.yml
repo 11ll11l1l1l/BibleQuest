@@ -33,3 +33,6 @@ jobs:
 
       - name: Characterize router and session boundaries
         run: node --test tests/v5-incremental-runtime-boundaries.test.mjs
+
+      - name: Characterize bootstrap ownership boundary
+        run: node --test tests/v5-bootstrap-ownership-characterization.test.mjs
