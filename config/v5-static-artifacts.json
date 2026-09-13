@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "entryDocument": "index.html",
+  "sourceEntry": "src/app/bootstrap.js",
+  "manifest": "manifest.webmanifest",
+  "serviceWorker": "sw.js",
+  "rootCopies": [
+    "app-icon.svg",
+    "manifest.webmanifest",
+    "pwa-icon-192.png",
+    "pwa-icon-512.png",
+    "pwa-icon-maskable-512.png",
+    "sw.js"
+  ]
+}
