@@ -35,7 +35,7 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 
 ## Phase state
 
-- Phase 1 — Leader Center: NOT STARTED.
+- Phase 1 — Leader Center: CERTIFIED. Checkpoint `release/v5-leader-center` @ dfcb851b38326edef0e4969958eb15866c673c8d, full accumulated suite green including complete browser/mobile, run evidence recorded below.
 - Phase 2 — Admin Console completion: NOT STARTED.
 - Phase 3 — Icon/artwork completion: NOT STARTED.
 - Phase 4 — Push notifications (minimum): NOT STARTED.
@@ -43,6 +43,18 @@ This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime
 - Phase 6 — Multi-congregation verification/tooling: NOT STARTED.
 - Phase 7 — Verification debt (CEBOCB/Couples Journey/Sections E-G): NOT STARTED.
 - Phase 8 — V5 certification and promotion: NOT STARTED.
+
+## Phase 1 evidence (Leader Center)
+
+Built as pure composition over `assignments.js` and `presence.js` - both already server-authorized owners. No new Supabase query, no new RLS, no new state ownership. Un-deferred the Leader Dashboard tool in `ministry-hub.js` (previously blocked on milestone #76) and wired a real `leader-center` route.
+
+**One real correction made mid-build, not shipped as a bug:** the first draft invented a "published/scheduled/closed" categorization and a "total completions" aggregate using fields that do not exist on the assignment row as loaded (`progress` reflects the caller's own status, not a cross-member aggregate). Corrected to only surface what the data actually supports (open vs. scheduled counts); a real per-assignment completion count would need `assignments.loadReview(id)` per assignment and is recorded as a deferred enhancement, not fabricated.
+
+**Two stale test assertions found and fixed while gating** (both from un-deferring a tool that two separate tests had hardcoded as permanently unavailable): `tests/v3-ministry-hub-edge.mjs` and the browser-level `tests/v3-ministry-hub-smoke.mjs` (the second one only surfaced after the edge suite already passed - found by running the actual gate, not local checks alone).
+
+Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions (including new `v5-leader-center-edge.mjs`), guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (including new `v5-leader-center-smoke.mjs`: leader sees real data, member sees an honest denied state, 44px mobile targets).
+
+**Deferred, recorded honestly:** per-assignment completion counts on the Overview (needs a per-assignment review call or a new lightweight aggregate, neither built here); Groups & Teams composition currently just links out to the existing Journey Groups/Team Center pages rather than summarizing them inline.
 
 ## Sequencing with V6 and V7
 
