@@ -148,10 +148,34 @@ Each of these three items gets an explicit PASS/FAIL recorded with real evidence
 
 ---
 
-# Phase 8 — V5 certification and promotion
+# Phase 8 — Feature Flag / Runtime Configuration system (V5-to-V6 bridge)
+
+## Why this belongs in V5, not V6
+
+Every tranche in this project (20+ so far) ships via the same discipline: isolated verify branch, exact-SHA gate, freeze, or it does not ship at all. That is correct for *shipping* safely. It has no answer for *un-shipping* quickly - today, disabling a feature that turns out to be wrong in production means reverting code and running the full pipeline again. V6 is explicitly the riskier version of this project (real build tooling, Reader/Games decomposition, a new media platform) and should not be shipped as one big-bang cutover with no kill-switch. This system is genuinely V5-scoped: it is additive, changes no existing state ownership, needs no build tool, and directly follows this plan's own mandate (finish real product capability on the current architecture) - it just happens to be capability V6 will lean on immediately.
+
+## Current constraint
+
+No feature-flag or runtime-configuration capability exists anywhere in the current architecture. (A same-named file exists only in the legacy pre-rebuild codebase and is unrelated.) Every feature is either fully shipped to everyone or not shipped at all.
+
+## V5 architecture
+
+- A new `bible_feature_flags` table: flag key, rollout mode (`off` / `percentage` / `role` / `everyone`), rollout value, updated_at/updated_by - following the exact RLS pattern already established everywhere else (public read of the flag *state* for authenticated users, write restricted to platform owner/admin via the existing `bible_can_review_content`-style role check).
+- A single-owner client service, `src/app/feature-flags.js`, following the same pattern as every other owner (`presence.js`, `admin-operations.js`): loads flag state once per session, exposes `isEnabled(key)`, never lets a feature check anything but this one service.
+- Deterministic percentage rollout: hash the user id + flag key, not `Math.random()`, so a given user's flag state is stable across reloads instead of flickering.
+- A minimal Admin Console panel to view/toggle flags - reuses the severity-tier pattern already being built in Phase 2 (flipping a flag is a Restricted action: confirmed, audited, never silent).
+- Explicit non-goals: this is not an A/B-testing/analytics platform, not a general config store for arbitrary settings, and not a replacement for the exact-SHA verify/gate/freeze pipeline - it complements that pipeline for the specific case of "safely dial a shipped feature up, down, or off without a new deploy."
+
+## Exit gate
+
+A flag can be created, toggled off, and takes effect for a real signed-in test session without any new deploy. Percentage rollout is proven deterministic (the same user id always lands on the same side of a given flag). The Admin Console panel enforces the same confirmation/audit discipline as every other Restricted action. At least one real, already-shipped V5 feature (recommend: the Videos curation form) is wired behind a flag as a working reference implementation, proving the system end-to-end rather than shipping unused infrastructure.
+
+---
+
+# Phase 9 — V5 certification and promotion
 
 Full accumulated regression, exact-SHA candidate freeze, staged promotion following the same rollback-preserving discipline as every prior version. V4 remains the production fallback until V5 is explicitly accepted.
 
 ## Exit gate
 
-All Phase 1-7 exit gates pass on one exact-SHA candidate. `DEVELOPMENT_PLAN_V6.md` (architecture upgrade) may begin only after this phase closes.
+All Phase 1-8 exit gates pass on one exact-SHA candidate. `DEVELOPMENT_PLAN_V6.md` (architecture upgrade) may begin only after this phase closes.
