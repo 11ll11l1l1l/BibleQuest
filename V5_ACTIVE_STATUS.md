@@ -40,6 +40,11 @@ V5 must address the following codebase-proven limits:
 6. True offline Bible reading with versioned downloadable Scripture content and a deliberate service-worker/storage strategy.
 7. A proper Leader Center using the assignment-review, membership and privacy-safe presence capabilities already established in V4.
 8. Genuine multi-congregation architecture/tooling with deterministic two-congregation CI fixtures and explicit active-congregation context.
+9. A real Motion and Sound System (see Phase 11 of `DEVELOPMENT_PLAN_V5.md`) as a first-class app-level owner - design tokens, an animation/sound preset registry, gesture-unlock handling, and a persisted user preference - proven end-to-end on 2-3 reference surfaces. Full-app rollout of this system is explicitly out of V5 scope; see `DEVELOPMENT_PLAN_V6.md`.
+
+## V6 is already scoped, not yet active
+
+`DEVELOPMENT_PLAN_V6.md` sketches the next major version: full-coverage, family-by-family application of the V5 Motion and Sound System across every page, plus the cross-page cohesion pass a partial rollout cannot achieve ("fully polished, integrated app feel"). V6 does not begin until V5 Phase 12 (certification/promotion) is complete. V6 must not re-architect anything - if V6 work exposes a real gap in the Motion/Sound System itself, that gap is fixed in V5, not worked around in V6.
 
 ## Additional architecture outcomes adopted for V5
 
