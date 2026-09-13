@@ -1,6 +1,8 @@
+import type { AssignmentsRepository } from '../../data/assignments/contracts';
+import type { CongregationContextService } from '../congregation/contracts';
 import type { SessionService } from '../session/contracts';
 
-export type RouteKey = 'home' | 'reader' | 'games' | 'community' | 'more' | 'account' | 'not-found';
+export type RouteKey = 'home' | 'reader' | 'games' | 'community' | 'assignments' | 'more' | 'account' | 'not-found';
 
 export interface RouteSnapshot {
   readonly key: RouteKey;
@@ -10,6 +12,8 @@ export interface RouteSnapshot {
 
 export interface RouteContext {
   readonly session: SessionService;
+  readonly congregation: CongregationContextService;
+  readonly assignments: AssignmentsRepository;
 }
 
 export interface RouteView {
