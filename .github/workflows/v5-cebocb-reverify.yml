@@ -1,0 +1,70 @@
+name: BibleQuest V5 CEBOCB re-verification
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - src/core/bible.js
+      - src/app/reader.js
+      - src/features/reader/**
+      - data/packs/cebuano/**
+      - data/packs/ATTRIBUTION.md
+      - scripts/validate-v4-cebocb-packs.mjs
+      - tests/v4-cebocb-reader-smoke.mjs
+      - tests/v5-cebocb-reader-reverification.mjs
+      - .github/workflows/v5-cebocb-reverify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v5-cebocb-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cebocb-current-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Record exact candidate
+        run: |
+          set -euo pipefail
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Current-head CEBOCB canonical and Reader contracts
+        run: |
+          set -euo pipefail
+          bash build.sh
+          node tests/v5-cebocb-reader-reverification.mjs
+          node tests/v4-cebocb-bridge-edge.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v5-cebocb-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v5-cebocb-http.log
+          exit 1
+      - name: CEBOCB Reader behavior at 390px
+        run: timeout 240s node tests/v4-cebocb-reader-smoke.mjs
+      - name: Existing Reader regression companion
+        run: timeout 240s node tests/v3-reader-smoke.mjs
+      - name: Verify candidate remained exact and clean
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git status --short
+            exit 1
+          fi
