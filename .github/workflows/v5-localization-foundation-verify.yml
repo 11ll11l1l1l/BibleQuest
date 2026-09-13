@@ -8,8 +8,11 @@ on:
     paths:
       - 'src/content/locales/**'
       - 'src/app/localization.js'
+      - 'src/ui/shell.js'
       - 'docs/v5/localization-glossary.md'
       - 'tests/v5-localization-foundation.test.mjs'
+      - 'tests/v5-shared-shell-localization.test.mjs'
+      - 'tests/v5-shared-shell-localization-browser.mjs'
       - '.github/workflows/v5-localization-foundation-verify.yml'
 
 permissions:
@@ -30,8 +33,8 @@ jobs:
         run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
       - name: Build current application
         run: bash build.sh
-      - name: Run focused localization foundation contract
-        run: node --test tests/v5-localization-foundation.test.mjs
+      - name: Run focused localization contracts
+        run: node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs
       - name: Run accumulated static integration contracts
         run: |
           node tests/v5-section-e-integration-sweep.mjs
@@ -59,7 +62,9 @@ jobs:
           done
           cat /tmp/bq-v5-localization-http.log
           exit 1
-      - name: Run representative shell/mobile regression before visible migration
+      - name: Run visible Tagalog shell browser proof
+        run: timeout 240s node tests/v5-shared-shell-localization-browser.mjs
+      - name: Run representative shell/mobile regression
         run: |
           timeout 240s node tests/v3-shell-smoke.mjs
           timeout 240s node tests/v3-final-mobile-widths-smoke.mjs

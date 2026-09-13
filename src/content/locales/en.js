@@ -8,6 +8,7 @@ export const en = Object.freeze({
   'common.loading': 'Loading…',
   'common.retry': 'Try again',
   'common.save': 'Save',
+  'locale.label': 'Language',
   'locale.english': 'English',
   'locale.tagalog': 'Tagalog',
   'nav.assignments': 'Assignments',
@@ -15,10 +16,25 @@ export const en = Object.freeze({
   'nav.calendar': 'Calendar',
   'nav.community': 'Community',
   'nav.home': 'Home',
+  'nav.learn': 'Learn',
+  'nav.play': 'Play',
+  'nav.grow': 'Grow',
+  'nav.more': 'More',
   'nav.media': 'Media',
   'nav.notifications': 'Notifications',
   'nav.settings': 'Settings',
-  'nav.transformation': 'Transformation'
+  'nav.transformation': 'Transformation',
+  'shell.brandHomeLabel': 'BibleQuest home',
+  'shell.brandTagline': 'Read · Learn · Grow',
+  'shell.primaryNavigationLabel': 'Primary navigation',
+  'shell.progressLabel': 'BibleQuest progress',
+  'shell.accountOpenLabel': 'Open account',
+  'shell.account': 'Account',
+  'shell.signingIn': 'Signing in…',
+  'shell.starting': 'Starting…',
+  'shell.guest': 'Guest',
+  'shell.streak.one': '{count} day streak',
+  'shell.streak.other': '{count} days streak'
 });
 
 export const LOCALE_KEY_INVENTORY = Object.freeze(Object.keys(en).sort());
