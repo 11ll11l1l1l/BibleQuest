@@ -32,7 +32,7 @@ Status: IMPLEMENTED, BUILD EVIDENCE PENDING
 Isolated `v5.html`; Vite/TypeScript-capable configuration; typed route contract/registry; framework-free router; typed shell seam; lazy Home/Not Found; primary-route placeholders; greenfield-only CSS; stale async render suppression; singular `aria-current` ownership.
 
 ### Tranche 2 — zero-dependency architecture contract gate
-Status: IMPLEMENTED, EXACT-BRANCH EXECUTION PENDING
+Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 
 Added `tests/v5-greenfield-architecture.mjs` plus `npm run test:architecture:v5`. This is an architecture guard, not browser/security parity proof.
 
@@ -47,7 +47,7 @@ Status: IMPLEMENTED, BACKEND PARITY/BUILD/BROWSER EVIDENCE PENDING
 Added a congregation-context service contract independent of session identity, a typed read-only `AssignmentsRepository`, an explicit fail-closed unavailable adapter, and a lazy Tasks route. The Tasks view refuses repository access unless the session is authenticated and an active congregation is selected. It contains no direct `fetch`, Supabase client, service-role credential path or local fabricated protected-data fallback. Repository results are rendered only after the current request remains live; route cleanup invalidates stale async results.
 
 ### Tranche 5 — dependency-free protected feature behavioral proof
-Status: IMPLEMENTED, CI EXECUTION PENDING
+Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 
 Added `tests/v5-assignments-behavior.mjs`, executed through Node 22 native TypeScript stripping, to exercise the real `src/v5/features/assignments/view.ts` module with deterministic fake session/congregation/repository services and a minimal fake DOM. The suite asserts: remote-unavailable fail-closed behavior, signed-out fail-closed behavior, missing-congregation fail-closed behavior, exact user/congregation scoping for authorized reads, suppression of stale results after congregation changes, and cleanup/unsubscribe suppression of late results.
 
@@ -76,19 +76,21 @@ Added `.github/workflows/v5-lab-a5-greenfield.yml` as a lab-only, read-only-perm
 ## Tests and evidence
 
 - Branch lineage remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
-- Exact code head before this status commit is `3e3276efba4a297957cb27d55439cc7f4db9b334`.
+- Exact tested code head is `3e3276efba4a297957cb27d55439cc7f4db9b334`.
+- GitHub Actions run `34736628661`, job `dependency-free-contracts`, completed successfully on that exact head with Node 22.12.
+- `Greenfield architecture contracts` step: PASS.
+- `Protected assignments behavior` step: PASS.
 - `tests/v5-assignments-behavior.mjs` imports the real greenfield assignments view rather than reimplementing its decision logic. It uses only deterministic fake boundaries and does not require credentials/network/backend access.
-- The new lab CI workflow has `permissions: contents: read`, is branch-gated to `lab/v5-a5-greenfield` for pull-request execution, and contains no deployment or secret-consuming step.
+- The lab CI workflow has `permissions: contents: read`, is branch-gated to `lab/v5-a5-greenfield` for pull-request execution, and contains no deployment or secret-consuming step.
 - No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced.
 - Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only for CI evidence.
-- Immediately after the workflow commit, no workflow run had yet appeared for exact head `3e3276efba4a297957cb27d55439cc7f4db9b334`; pending/absent checks are not counted as passed.
+- Other inherited PR workflows were still running when this status was updated; they are not counted as passed here.
 
 ## Failures / unresolved evidence
 
-- Local git checkout/execution remains blocked in this automation environment by DNS failure resolving `github.com`, so no local exact-branch Node execution is claimed.
+- Local git checkout/execution remains blocked in this automation environment by DNS failure resolving `github.com`; exact-head behavioral proof therefore comes from GitHub Actions, not the local container.
 - No lockfile because dependency resolution previously timed out.
 - No exact-branch `npm ci`, TypeScript typecheck, Vite build, browser run, PWA test or deployed-preview result is claimed green for this tranche.
-- Lab CI workflow execution for the new behavior suite is pending; configuration presence is not treated as PASS.
 - The current session and congregation adapters intentionally report unavailable; production auth/membership wiring is not implemented.
 - The assignments repository intentionally fails closed; no real protected-data request is claimed successful.
 - Existing V4 assignment mutation, publisher, response-review and realtime behavior are not migrated.
@@ -119,12 +121,12 @@ Added `.github/workflows/v5-lab-a5-greenfield.yml` as a lab-only, read-only-perm
 
 ## Next 3 tasks
 
-1. Wait for and inspect exact-head lab CI for the architecture + assignments behavior suites; repair real failures without weakening the tests.
-2. Characterize the accepted V4 assignments API/RLS contract and implement a transport adapter only if it can preserve selected-congregation scoping and server authorization without embedding privileged configuration.
-3. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures; then connect an isolated local/ephemeral protected read before considering functional data parity.
+1. Characterize the accepted V4 assignments API/RLS contract and implement a transport adapter only if it can preserve selected-congregation scoping and server authorization without embedding privileged configuration.
+2. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures; then connect an isolated local/ephemeral protected read before considering functional data parity.
+3. Extend the same deterministic behavior-test pattern to active-congregation/session transitions once a real local transport adapter exists, including unauthorized/error mapping and tenant-switch cancellation.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The lab now demonstrates separate router/shell, session, congregation-context and protected repository/view owners plus executable behavior tests that directly import the new protected feature view. This is stronger evidence that the greenfield architecture is testable without recreating V4 monoliths. Superiority over incremental migration remains unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
+The lab now demonstrates separate router/shell, session, congregation-context and protected repository/view owners plus exact-head CI-passing behavioral tests that directly import the new protected feature view. This is stronger evidence that the greenfield architecture is testable without recreating V4 monoliths. Superiority over incremental migration remains unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
