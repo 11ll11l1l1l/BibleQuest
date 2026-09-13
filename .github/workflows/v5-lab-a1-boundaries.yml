@@ -1,0 +1,35 @@
+name: V5 Lab A1 Boundary Characterization
+
+on:
+  push:
+    branches:
+      - lab/v5-a1-incremental-vite
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-boundaries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact lab revision
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+
+      - name: Show exact revision
+        run: git rev-parse HEAD
+
+      - name: Validate source artifact contract
+        run: node scripts/v5-artifact-contract.mjs
+
+      - name: Characterize router and session boundaries
+        run: node --test tests/v5-incremental-runtime-boundaries.test.mjs
