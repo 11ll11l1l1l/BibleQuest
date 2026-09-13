@@ -60,6 +60,8 @@ jobs:
           node tests/v4-whole-app-deep-routes-smoke.mjs
           node tests/v4-assignments-page-smoke.mjs
           node tests/v4-daily-journey-page-smoke.mjs
+          node tests/v3-offline-shell-smoke.mjs
+          node tests/v3-operational-recovery-smoke.mjs
       - name: Verify source clean and exact head
         shell: bash
         run: |
