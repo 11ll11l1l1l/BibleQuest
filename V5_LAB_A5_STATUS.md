@@ -3,130 +3,127 @@
 Updated: 2026-09-13 JST
 Branch: `lab/v5-a5-greenfield`
 Baseline origin: `1f504dec812f11453f82e30af61cdf3d6c547060`
-Current lab HEAD before this status update: `3e3276efba4a297957cb27d55439cc7f4db9b334`
+Current lab code HEAD before this status update: `4485e0e9ebf2528d1726ea4b771641eb6fb47897`
 Lab identity: `BQ-V5-A5-GREENFIELD`
 
 ## Hypothesis
 
-A clean typed client runtime can replace the V4 bootstrap/router/view ownership while preserving valuable domain, security, privacy, data and product contracts. The experiment is successful only if the new architecture reaches parity with less ownership coupling and measurable testability; greenfield freedom is not permission to silently drop features.
+A clean typed client runtime can replace the V4 bootstrap/router/view ownership while preserving valuable domain, security, privacy, data and product contracts. The experiment succeeds only if the new architecture reaches parity with less ownership coupling and measurable testability; greenfield freedom is not permission to silently drop features.
 
 ## Architecture blueprint
 
-- `v5.html` is the isolated greenfield browser entry; production `index.html` remains untouched until parity evidence justifies any cutover.
+- `v5.html` is the isolated greenfield browser entry; production `index.html` remains untouched until parity evidence justifies cutover.
 - Vite owns the lab build graph and production-style artifacts.
 - `src/v5/app/` owns application composition only.
-- `src/v5/platform/router/` owns URL parsing/navigation and exposes typed route snapshots plus typed route context.
-- `src/v5/platform/session/` owns typed auth/session state through a source/service boundary without becoming an authorization source.
-- `src/v5/platform/congregation/` owns active-congregation context separately from authentication identity.
-- `src/v5/data/` owns feature repository contracts/adapters; feature views do not create backend clients or issue direct network requests.
-- Feature views consume platform/data services by dependency injection rather than importing mutable singletons.
-- Server authorization/RLS remain authoritative; UI session/capability state is presentation only.
-- Route modules are lazy-loaded from a typed route registry.
-- Cross-feature state is not placed into one giant global store.
+- `src/v5/platform/router/` owns URL parsing/navigation and typed route context.
+- `src/v5/platform/session/` owns typed authentication/session state without becoming an authorization source.
+- `src/v5/platform/congregation/` owns active-congregation context separately from identity.
+- `src/v5/data/` owns repository contracts/adapters; feature views do not create backend clients or issue direct network requests.
+- Server authorization/RLS remain authoritative; UI session/capability state is presentation/request context only.
+- Route modules are lazy-loaded and cross-feature state is not collapsed into one global store.
 
 ## Implemented slices
 
 ### Tranche 1 — isolated typed shell/runtime boundary
 Status: IMPLEMENTED, BUILD EVIDENCE PENDING
 
-Isolated `v5.html`; Vite/TypeScript-capable configuration; typed route contract/registry; framework-free router; typed shell seam; lazy Home/Not Found; primary-route placeholders; greenfield-only CSS; stale async render suppression; singular `aria-current` ownership.
+Isolated `v5.html`; Vite/TypeScript-capable configuration; typed route registry; framework-free router; shell seam; lazy routes; greenfield-only CSS; stale async render suppression; singular `aria-current` ownership.
 
-### Tranche 2 — zero-dependency architecture contract gate
+### Tranche 2 — zero-dependency architecture gate
 Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 
-Added `tests/v5-greenfield-architecture.mjs` plus `npm run test:architecture:v5`. This is an architecture guard, not browser/security parity proof.
+`tests/v5-greenfield-architecture.mjs` protects the clean runtime ownership graph without requiring package installation.
 
 ### Tranche 3 — typed session + route-context vertical slice
 Status: IMPLEMENTED, BUILD/BROWSER EVIDENCE PENDING
 
-Added typed `SessionSnapshot`, `SessionSource` and `SessionService` contracts; a narrow session service with boot/read/subscribe/dispose ownership; explicit unavailable-source behavior for the isolated lab; typed `RouteContext`; shell-level dependency injection; and a lazy Account route that renders session states without owning authorization. The lab does not connect production Supabase or implement sign-in yet.
+Typed session contracts/service, explicit unavailable-source behavior, route-context dependency injection and a lazy Account route. No production Supabase connection or sign-in is implemented.
 
 ### Tranche 4 — congregation context + protected read-only assignments boundary
 Status: IMPLEMENTED, BACKEND PARITY/BUILD/BROWSER EVIDENCE PENDING
 
-Added a congregation-context service contract independent of session identity, a typed read-only `AssignmentsRepository`, an explicit fail-closed unavailable adapter, and a lazy Tasks route. The Tasks view refuses repository access unless the session is authenticated and an active congregation is selected. It contains no direct `fetch`, Supabase client, service-role credential path or local fabricated protected-data fallback. Repository results are rendered only after the current request remains live; route cleanup invalidates stale async results.
+Separate congregation-context ownership, typed `AssignmentsRepository`, fail-closed unavailable adapter and lazy Tasks route. Tasks requires authenticated identity plus an active congregation before repository access.
 
-### Tranche 5 — dependency-free protected feature behavioral proof
+### Tranche 5 — protected feature behavioral proof
 Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 
-Added `tests/v5-assignments-behavior.mjs`, executed through Node 22 native TypeScript stripping, to exercise the real `src/v5/features/assignments/view.ts` module with deterministic fake session/congregation/repository services and a minimal fake DOM. The suite asserts: remote-unavailable fail-closed behavior, signed-out fail-closed behavior, missing-congregation fail-closed behavior, exact user/congregation scoping for authorized reads, suppression of stale results after congregation changes, and cleanup/unsubscribe suppression of late results.
+`tests/v5-assignments-behavior.mjs` imports the real Tasks view with deterministic fake session/congregation/repository services and proves signed-out/no-congregation fail-closed behavior, exact scope forwarding, context-switch stale-result suppression and route-cleanup suppression.
 
-Added `.github/workflows/v5-lab-a5-greenfield.yml` as a lab-only, read-only-permission evidence workflow. It runs the architecture contract and assignments behavior suites on the draft lab PR using Node 22.12 without production secrets or package installation. It does not deploy or contact Supabase.
+### Tranche 6 — characterized authorized assignment read boundary
+Status: IMPLEMENTED, CI RESULT PENDING FOR CURRENT CODE HEAD
+
+Characterized the accepted V4 read contract from `ASSIGNMENTS_V3.md`, `src/core/api.js` and `src/app/assignments.js`: active assignment SELECTs are scoped to the selected congregation; progress SELECTs are scoped to the signed-in user and visible assignment ids; RLS remains authoritative for assignment audience/scheduled visibility; malformed foreign-congregation assignment rows are rejected; progress for another user or an unknown assignment is never exposed to the member surface.
+
+Added `src/v5/data/assignments/authorized-read.ts`, which converts that contract into a transport-independent repository boundary. It requires an injected authorized read port and does not contain a Supabase URL, publishable/service key, auth bypass or direct privileged backend path. It validates tenant scope, active rows, supported assignment types, timestamps and progress status before returning the narrow V5 `AssignmentSummary` model. Due-state calculation preserves completed/scheduled/overdue/open semantics.
+
+Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/user request scoping, foreign-row fail-closed behavior, peer/unknown progress suppression, invalid-status rejection and invalid caller-scope rejection before transport access. The lab workflow now executes this suite on the draft PR.
 
 ## Parity matrix
 
-| Area | V4 accepted behavior | Greenfield state | Status |
-| --- | --- | --- | --- |
-| Boot | `index.html` -> `src/app/bootstrap.js` | isolated `v5.html` -> `src/v5/main.ts` | PROTOTYPE |
-| Router/deep link | hash routes, unknown -> not-found | typed hash router, unknown -> not-found | PARTIAL |
-| App shell | V4 shell/nav/bootstrap owner | new shell owner + typed route context | PARTIAL |
-| Session/auth | production session/auth owner | typed source/service boundary + unavailable lab adapter; no sign-in | PARTIAL |
-| Congregation context | selected membership drives protected features | separate typed context boundary + unavailable lab adapter | PARTIAL |
-| Account | production account surface | read-only session-state slice | PARTIAL |
-| Assignments | protected congregation-scoped assignments and progress | lazy read-only repository/view boundary + deterministic behavior tests; backend adapter intentionally unavailable | PARTIAL ARCHITECTURE / BEHAVIOR-GATED / NO DATA PARITY |
-| Home | production feature | minimal architectural proof route | NOT PARITY |
-| Reader | production feature | registered placeholder only | MISSING |
-| Games | production feature | registered placeholder only | MISSING |
-| Community/ministry/admin | production features | registered placeholder / not migrated | MISSING |
-| Media | production feature | not migrated | MISSING |
-| Offline/PWA | production install/runtime behavior | no greenfield SW contract yet | MISSING |
-| Supabase/RLS | protected production contracts | policy preserved; no production client connection | PRESERVED/UNUSED |
-| Accessibility | production baseline | semantic shell, focus handoff, reduced motion, Account live status, Tasks status/error states; browser proof pending | PARTIAL |
+| Area | Greenfield state | Status |
+| --- | --- | --- |
+| Boot/router/shell | isolated typed runtime and lazy router | PARTIAL |
+| Session/auth | typed source/service; no production sign-in | PARTIAL |
+| Congregation context | separate typed context; no production membership adapter | PARTIAL |
+| Account | read-only session-state slice | PARTIAL |
+| Assignments feature | protected view + deterministic behavior tests | PARTIAL |
+| Assignments read data | authorized transport-independent repository contract characterized; no real backend connection | PARTIAL ARCHITECTURE / NO REAL DATA PARITY |
+| Home | architecture proof only | NOT PARITY |
+| Reader | placeholder only | MISSING |
+| Games | placeholder only | MISSING |
+| Community/ministry/admin | not migrated | MISSING |
+| Media | not migrated | MISSING |
+| Offline/PWA | no greenfield SW contract | MISSING |
+| Supabase/RLS | accepted authority preserved; not yet executed by greenfield lab | PRESERVED/UNPROVEN |
+| Accessibility | semantic shell/status states; browser proof pending | PARTIAL |
 
 ## Tests and evidence
 
 - Branch lineage remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
-- Exact tested code head is `3e3276efba4a297957cb27d55439cc7f4db9b334`.
-- GitHub Actions run `34736628661`, job `dependency-free-contracts`, completed successfully on that exact head with Node 22.12.
-- `Greenfield architecture contracts` step: PASS.
-- `Protected assignments behavior` step: PASS.
-- `tests/v5-assignments-behavior.mjs` imports the real greenfield assignments view rather than reimplementing its decision logic. It uses only deterministic fake boundaries and does not require credentials/network/backend access.
-- The lab CI workflow has `permissions: contents: read`, is branch-gated to `lab/v5-a5-greenfield` for pull-request execution, and contains no deployment or secret-consuming step.
-- No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced.
-- Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only for CI evidence.
-- Other inherited PR workflows were still running when this status was updated; they are not counted as passed here.
+- Prior exact tested code head `3e3276efba4a297957cb27d55439cc7f4db9b334` passed GitHub Actions run `34736628661`: greenfield architecture contracts and protected assignments behavior.
+- Current code head before this status update is `4485e0e9ebf2528d1726ea4b771641eb6fb47897`.
+- Current workflow includes `tests/v5-assignments-authorized-read.mjs`; its exact-head result is pending and is not claimed green here.
+- No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced in the new V5 adapter.
+- Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only.
 
 ## Failures / unresolved evidence
 
-- Local git checkout/execution remains blocked in this automation environment by DNS failure resolving `github.com`; exact-head behavioral proof therefore comes from GitHub Actions, not the local container.
-- No lockfile because dependency resolution previously timed out.
-- No exact-branch `npm ci`, TypeScript typecheck, Vite build, browser run, PWA test or deployed-preview result is claimed green for this tranche.
-- The current session and congregation adapters intentionally report unavailable; production auth/membership wiring is not implemented.
-- The assignments repository intentionally fails closed; no real protected-data request is claimed successful.
-- Existing V4 assignment mutation, publisher, response-review and realtime behavior are not migrated.
-- Reader, Games, offline/PWA and most protected feature surfaces remain unmigrated.
+- No deterministic dependency lock, `npm ci`, TypeScript compiler pass, Vite production build, browser run, PWA proof or deployed-preview result is claimed green.
+- The current session and congregation adapters remain unavailable by design.
+- The new authorized assignment repository has an abstract authorized read port only; no real Supabase/local-RLS transport is wired yet.
+- Real RLS execution and multi-tenant backend isolation remain unproven in this lab.
+- Assignment mutations, publishing, response review and realtime refresh are not migrated.
+- Reader, Games, media, offline/PWA and most protected surfaces remain unmigrated.
 
 ## Architecture decisions learned
 
-1. Route-context dependency injection can carry narrow platform and repository contracts without recreating a global mutable app store.
-2. Authentication identity and active-congregation context should be separate owners; protected feature data requires both.
-3. A feature view can prove authorization-safe request gating without owning Supabase or credentials.
-4. The repository boundary is the correct place for a future Supabase/RPC adapter; views should not know transport details.
-5. An unavailable adapter is preferable to invented local protected data because it keeps missing backend parity visible and fail-closed.
-6. Protected route cleanup needs request-version invalidation in addition to subscription cleanup so stale async results cannot render after navigation/context changes.
-7. Node 22 native TypeScript stripping provides a useful zero-dependency test path for leaf TypeScript modules whose runtime imports are dependency-free; this can protect architecture behavior even while npm resolution is unavailable.
-8. Lab-only CI can provide exact-head behavioral evidence without introducing deployment authority, backend credentials or production coupling.
+1. Route-context dependency injection can carry narrow platform/repository contracts without recreating a global mutable store.
+2. Authentication identity and active congregation should remain separate owners; protected feature data requires both.
+3. Views can remain transport-agnostic and still prove authorization-safe request gating.
+4. The V4 assignments contract confirms that the backend/RLS, not the browser, owns audience/scheduled visibility; greenfield should preserve that boundary instead of reconstructing audience authorization client-side.
+5. A narrow authorized-read port is sufficient to preserve selected-congregation and current-user scoping while keeping backend implementation replaceable.
+6. Foreign congregation assignment rows should fail closed, while irrelevant peer/unknown progress rows can be ignored because the member surface must never expose them.
+7. Dependency-free Node 22 tests remain useful architecture/behavior evidence while package installation is unavailable, but they do not replace real DB/browser/build proof.
 
 ## Known debt
 
-- exact shipped-route inventory still needs representation in a typed parity registry;
-- production auth adapter, membership loader and congregation selection workflow are not connected;
-- no real Supabase/RPC assignments adapter exists and its exact V4 server contract must be characterized before implementation;
-- assignment detail/mutations/ministry review/privacy behavior remain unmigrated;
-- no offline/cache update model exists;
-- no deterministic build identity or bundle budget exists;
-- dependency lock/build evidence remains blocked by package-resolution availability;
-- browser-level accessibility and route behavior remain unproven;
-- real RLS/backend authorization remains unproven in this lab.
+- no real local/ephemeral Supabase adapter behind the authorized read port;
+- no executable RLS evidence for greenfield requests;
+- exact shipped-route inventory still needs a typed parity registry;
+- production auth/membership/congregation-selection workflows are not connected;
+- assignment mutations/ministry/realtime behavior remain unmigrated;
+- no offline/cache update model;
+- no deterministic build identity or bundle budget;
+- browser accessibility and route behavior remain unproven.
 
 ## Next 3 tasks
 
-1. Characterize the accepted V4 assignments API/RLS contract and implement a transport adapter only if it can preserve selected-congregation scoping and server authorization without embedding privileged configuration.
-2. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures; then connect an isolated local/ephemeral protected read before considering functional data parity.
-3. Extend the same deterministic behavior-test pattern to active-congregation/session transitions once a real local transport adapter exists, including unauthorized/error mapping and tenant-switch cancellation.
+1. Implement a local/ephemeral Supabase-backed `AuthorizedAssignmentsReadPort` only after proving it uses ordinary authenticated caller context and cannot carry service-role credentials; add real RLS tenant-isolation evidence if infrastructure is available.
+2. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures rather than relying only on Node strip-types execution.
+3. Characterize and migrate assignment realtime as refresh-signal-only behavior, preserving congregation/user subscription scoping and idempotent cleanup without treating realtime payloads as authoritative state.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The lab now demonstrates separate router/shell, session, congregation-context and protected repository/view owners plus exact-head CI-passing behavioral tests that directly import the new protected feature view. This is stronger evidence that the greenfield architecture is testable without recreating V4 monoliths. Superiority over incremental migration remains unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
+The greenfield path now preserves the accepted assignment read security contract in a cleaner typed repository boundary without copying the V4 API owner or embedding privileged configuration. This strengthens the case that the frontend can be rebuilt around smaller ownership seams. Superiority over disciplined incremental migration remains unproven until the lab demonstrates deterministic build/browser evidence and at least one real RLS-protected backend read with tenant-isolation proof.
