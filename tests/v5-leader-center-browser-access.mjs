@@ -11,6 +11,10 @@ page.on('pageerror', error => pageErrors.push(error.message));
 
 async function mountLeaderCenter(role) {
   await page.goto(APP_URL, { waitUntil: 'domcontentloaded' });
+  // The proof owns only Leader Center composition. Ignore any unrelated base-app
+  // bootstrap error emitted before this fixture replaces the page body, then
+  // retain page-error detection for everything the Leader Center itself does.
+  pageErrors.length = 0;
   await page.evaluate(async requestedRole => {
     document.body.innerHTML = '<main id="v5LeaderProof"></main>';
     const [{ createLeaderCenterService }, { leaderCenterPage }] = await Promise.all([
