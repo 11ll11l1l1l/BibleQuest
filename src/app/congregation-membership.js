@@ -27,6 +27,8 @@ function normalizeMembership(row){
 export function createCongregationMembershipService({api,session}){
   if(!api?.congregation||!session)throw new Error('Congregation membership requires shared API and session boundaries.');
   let memberships=[];
+  let activeCongregationId='';
+  let loadedUserId='';
 
   const requireUser=()=>{
     const state=session.getState();
@@ -35,11 +37,24 @@ export function createCongregationMembershipService({api,session}){
   };
   const list=()=>memberships.slice();
   const get=congregationId=>memberships.find(row=>row.congregationId===String(congregationId))||null;
+  const currentUserId=()=>{
+    const state=session.getState();
+    return state.authenticated&&state.user?.id?String(state.user.id):'';
+  };
+  const getActive=()=>{
+    const userId=currentUserId();
+    if(!userId||userId!==loadedUserId)return null;
+    return get(activeCongregationId);
+  };
 
   async function load(){
     const user=requireUser();
+    const userId=String(user.id);
+    if(loadedUserId&&loadedUserId!==userId)activeCongregationId='';
     const rows=await api.congregation.listMemberships(user.id);
-    memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row.congregationId&&row.userId===String(user.id));
+    memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row.congregationId&&row.userId===userId);
+    loadedUserId=userId;
+    if(!get(activeCongregationId))activeCongregationId=memberships[0]?.congregationId||'';
     return list();
   }
 
@@ -49,6 +64,16 @@ export function createCongregationMembershipService({api,session}){
     if(code.length<5){const error=new Error('Enter a valid congregation invite code.');error.code='BQ_CONGREGATION_INVITE_INVALID';throw error}
     await api.congregation.join(code);
     return load();
+  }
+
+  function setActive(congregationId){
+    const user=requireUser();
+    const userId=String(user.id);
+    if(!loadedUserId||loadedUserId!==userId){const error=new Error('Reload congregation memberships before switching congregation.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    const membership=get(congregationId);
+    if(!membership||membership.userId!==userId){const error=new Error('You are not a member of that congregation.');error.code='BQ_CONGREGATION_NOT_MEMBER';throw error}
+    activeCongregationId=membership.congregationId;
+    return membership;
   }
 
   function can(congregationId,capability){
@@ -67,7 +92,7 @@ export function createCongregationMembershipService({api,session}){
     throw error;
   }
 
-  function clear(){memberships=[]}
+  function clear(){memberships=[];activeCongregationId='';loadedUserId=''}
 
-  return Object.freeze({load,join,list,get,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
+  return Object.freeze({load,join,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
 }

@@ -1,0 +1,52 @@
+name: BibleQuest V5 Phase 6 congregation verification
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - src/app/congregation-membership.js
+      - tests/v5-active-congregation-selection.test.mjs
+      - .github/workflows/v5-phase6-congregation-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v5-phase6-congregation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  congregation-current-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Record exact candidate
+        run: |
+          set -euo pipefail
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Active congregation and account-switch isolation contract
+        run: |
+          set -euo pipefail
+          node --check src/app/congregation-membership.js
+          node --test tests/v5-active-congregation-selection.test.mjs
+      - name: Existing admin membership safety companion
+        run: |
+          set -euo pipefail
+          node tests/admin-membership-static.mjs
+      - name: Existing congregation role parity companion
+        run: |
+          set -euo pipefail
+          node tests/community-role-parity-static.mjs
+      - name: Verify candidate remained exact and source-clean
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
