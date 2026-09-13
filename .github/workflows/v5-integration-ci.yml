@@ -73,3 +73,82 @@ jobs:
             git status --short >&2
             exit 1
           fi
+
+  inherited-baseline:
+    name: Inherited accumulated regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use supported Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run inherited accumulated baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          legacy_workflow=.github/workflows/v3-regression.yml
+          test -f "$legacy_workflow"
+
+          extract_step() {
+            local step_name="$1"
+            awk -v target="$step_name" '
+              $0 == "      - name: " target { found=1; next }
+              found && /^        run: / {
+                if ($0 != "        run: |") {
+                  sub(/^        run: /, "")
+                  print
+                  exit
+                }
+                block=1
+                next
+              }
+              block && /^      - / { exit }
+              block {
+                sub(/^          /, "")
+                print
+              }
+            ' "$legacy_workflow"
+          }
+
+          run_inherited_step() {
+            local step_name="$1"
+            local script
+            script="$(extract_step "$step_name")"
+            if [[ -z "$script" ]]; then
+              echo "Inherited regression step missing or no longer parseable: $step_name" >&2
+              exit 1
+            fi
+            echo "::group::Inherited: $step_name"
+            ( eval "$script" )
+            echo "::endgroup::"
+          }
+
+          inherited_steps=(
+            "Run Cloudflare deployment gate"
+            "Run accumulated architecture validators"
+            "Run accumulated edge regressions"
+            "Syntax-check guarded field harnesses"
+            "Install Playwright"
+            "Install Chromium"
+            "Start BibleQuest v3 locally"
+            "Run accumulated browser/mobile regressions"
+          )
+
+          for step_name in "${inherited_steps[@]}"; do
+            run_inherited_step "$step_name"
+          done
+
+      - name: Verify exact inherited-baseline candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
