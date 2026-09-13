@@ -1,7 +1,19 @@
 import { defineConfig } from "vite";
+import { copyStaticArtifacts } from "./scripts/v5-static-artifacts.mjs";
+
+function stableRootArtifactsPlugin() {
+  return {
+    name: "biblequest-stable-root-artifacts",
+    apply: "build",
+    async closeBundle() {
+      await copyStaticArtifacts({ root: process.cwd(), outDir: "dist" });
+    }
+  };
+}
 
 export default defineConfig({
   appType: "spa",
+  plugins: [stableRootArtifactsPlugin()],
   build: {
     outDir: "dist",
     emptyOutDir: true,

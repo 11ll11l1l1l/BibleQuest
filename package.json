@@ -11,7 +11,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "check:artifact-contract": "node scripts/v5-artifact-contract.mjs"
+    "check:artifact-contract": "node scripts/v5-artifact-contract.mjs",
+    "copy:static-artifacts": "node scripts/v5-copy-static-artifacts.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",

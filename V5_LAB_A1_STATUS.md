@@ -11,9 +11,8 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 
 ## Exact lab state inspected
 
-- Starting lab HEAD for this run: `704a3335841f903d8c4e0897477a6f4d1b3a14a2`.
-- Code/toolchain HEAD immediately before this status commit: `f73ea67c8a3b813740b2d9dd3238e1ffcbf8bb4b`.
-- This status file is written as the final commit of the tranche; the branch HEAD containing this file is the authoritative run endpoint.
+- Starting lab HEAD for this run: `13612e6985640008a2c367d5cded23497da81348`.
+- This status file is part of the tranche commit; the branch HEAD containing it is the authoritative endpoint for this run.
 
 ## Completed work
 
@@ -23,62 +22,65 @@ BibleQuest can reach V5 architecture quality through disciplined incremental evo
 - Pinned the supported Node floor to `>=22.12.0`.
 - Added `vite.config.ts` with deterministic `dist/` output ownership, hashed JS/chunk/assets, manifest generation, source maps and an ES2022 build target.
 - Added `tsconfig.json` for incremental TypeScript adoption: strict new TS boundaries, `allowJs` migration compatibility, no big-bang JS checking or emit.
-- Added `node_modules/`, `dist/` and `*.tsbuildinfo` ignores.
 
 ### Tranche 2 — executable V4 static/PWA artifact contract
 
-- Added `config/v5-static-artifacts.json` as the explicit list of root-URL artifacts that must remain stable across the Vite migration: web manifest, install icons, app icon and `sw.js`.
-- Added dependency-free `scripts/v5-artifact-contract.mjs` to validate repository-relative path safety, root-copy uniqueness/existence, every local `index.html` href/src, manifest icon existence/root preservation, the stable service-worker URL, and the bootstrap source entry.
-- Added `npm run check:artifact-contract` without changing application runtime behavior.
-- Kept `index.html`, bootstrap/router/session, service worker behavior, feature modules, Supabase, storage and production deployment untouched.
+- Added `config/v5-static-artifacts.json` as the explicit list of stable root-URL artifacts.
+- Added `scripts/v5-artifact-contract.mjs` to validate the source-side contract.
+- Kept application runtime behavior untouched.
+
+### Tranche 3 — contract-driven Vite root artifact emission
+
+- Added `scripts/v5-static-artifacts.mjs`, a dependency-free build helper that loads the existing contract, rejects unsafe paths/output directories, copies only declared stable-root files, and byte-verifies every copy.
+- Added `scripts/v5-copy-static-artifacts.mjs` as a standalone executable path for CI/debugging independent of Vite.
+- Wired the same helper into `vite.config.ts` through a build-only `closeBundle` plugin so Vite owns root artifact emission without copying the repository wholesale.
+- Added `npm run copy:static-artifacts`.
+- No router, session, Reader, Games, Supabase, storage, service-worker behavior, or production deployment configuration changed.
 
 ## Validation / evidence
 
-- Current `index.html` still owns the V4 page shell and imports `src/app/bootstrap.js` plus the existing CSS chain; root install/PWA resources include `manifest.webmanifest`, `app-icon.svg` and `pwa-icon-192.png`.
-- Current `manifest.webmanifest` references four install icons; the artifact contract preserves all four referenced files at stable root paths.
-- Current `sw.js` is a legacy service-worker retirement shim and still requires stable root availability for existing installs.
-- The new checker was executed against a synthetic repository fixture using Node `v22.16.0`: positive fixture PASS; a negative fixture with a root icon removed from the copy contract failed as intended.
-- A direct checkout of the real lab branch for exact repository execution was attempted but the execution container could not resolve `github.com`; therefore no claim is made that the checker has executed against the complete real checkout yet.
-- A second `npm install --package-lock-only --ignore-scripts --no-audit --no-fund` attempt timed out because registry access remains unavailable/too slow; no lockfile, `npm ci`, TypeScript or Vite build pass is claimed.
-- Draft PR #187 remains open, draft, unmerged and targeted only to `main` for CI/preview evidence.
+- Current V5 plan requires deterministic deployable `dist/`, explicit asset handling and preservation of PWA/deep-route behavior before feature refactors.
+- ADR-0001 proposes Vite + incremental TypeScript and specifically requires deep routes/PWA/service-worker paths to be preserved during cutover; it remains `PROPOSED` on this lab baseline.
+- The new helper/CLI were executed with Node `v22.16.0` against a synthetic repository fixture: declared root artifacts copied successfully and nested declared paths were preserved.
+- Byte equality of source/destination is checked by the helper itself after every copy.
+- Negative synthetic execution using an output directory outside the repository failed as intended with `[static-artifacts] outDir must stay inside the repository root`.
+- Exact full-repository `npm ci`, typecheck and Vite build are still not claimed because `package-lock.json` is not yet available and dependency installation remains unproven.
+- No production or Supabase state was touched.
 
 ## Failures / blockers
 
 1. Deterministic install remains incomplete because `package-lock.json` has not been generated and verified.
-2. Vite build execution has not yet been proven on this branch.
-3. The artifact copy **contract** now exists, but Vite does not yet implement that root-copy contract into `dist/`; implementation must follow only with build-level proof.
-4. Exact checker execution against a complete checkout is pending because the execution container could not resolve GitHub for cloning.
-5. Existing inherited workflows still assume the source-root V4 deployment/build model; this lab has not altered them yet.
-
-These are bounded experimental gaps, not evidence that the incremental hypothesis has failed.
+2. Vite build execution has not yet been proven on the exact lab branch.
+3. Built-output parity beyond the stable-root artifact subset is not yet characterized.
+4. Existing inherited workflows still assume the source-root V4 deployment/build model.
+5. ADR-0001 is still `PROPOSED`; this disposable lab is evidence for the decision, not approval of it.
 
 ## Architecture decisions learned
 
-- Vite + incremental TypeScript remains compatible with the existing direct-module entry model as a first migration seam; no framework rewrite is required to begin.
-- Static/PWA parity is now separable into two classes: `src/` resources that belong to Vite's graph, and stable root-URL resources that require explicit artifact preservation. This gives the build migration a small auditable boundary instead of copying the entire repository.
-- `manifest.webmanifest` and its referenced icon URLs must move together; hashing only one side would break install metadata.
-- `sw.js` must retain its root URL while existing installs may still request it, even if V5 later replaces its strategy through a deliberate PWA migration.
-- TypeScript should initially type new architecture/service boundaries only. Enabling `checkJs` globally would create broad migration noise and freeze incidental V4 implementation detail.
-- Build migration must remain distinct from Reader/Games/state refactors until exact route/PWA parity is demonstrated.
+- A small explicit artifact contract is sufficient to bridge stable PWA/install URLs into Vite without copying unrelated repository files into `dist/`.
+- The artifact contract now has one implementation owner reused by both Vite and a standalone CLI, avoiding divergent copy logic.
+- Stable-root emission can remain independent of router/session/feature migration, reducing the blast radius of Phase 1.
+- The helper deliberately rejects output outside the repository and verifies copied bytes, making the build seam deterministic and auditable.
+- TypeScript migration should still begin at new architecture/service boundaries rather than globally checking legacy JS.
 
 ## Known debt
 
 - Missing lockfile and `npm ci` proof.
-- No production-equivalent `dist/` artifact inventory/diff yet.
-- Root-copy contract is characterized but not yet implemented in Vite.
+- No exact Vite production build or production-equivalent `dist/` inventory yet.
+- No built-output validator for Vite-rewritten `index.html`/manifest relationships yet.
 - No route-level lazy imports yet.
 - No typed service contract migrated yet.
-- No V5-specific unit runner/lint command yet; add only after the basic build is executable.
+- No V5-specific unit runner/lint command yet.
 - No bundle/image budgets until a production-equivalent build exists.
 
 ## Next 3 tasks
 
 1. Generate and commit a deterministic lockfile, then run `npm ci`, `npm run typecheck`, `npm run check:artifact-contract` and `npm run build`; record exact results and artifact inventory.
-2. Implement the smallest Vite-owned root-copy mechanism driven by `config/v5-static-artifacts.json`, then assert the built `dist/` preserves those exact URLs without copying repository-only docs/tests.
-3. Add characterization around bootstrap/router/session and migrate one low-risk route/domain boundary to a typed lazy-loaded adapter, proving incremental code splitting without changing behavior.
+2. Add a built-output validator that checks emitted `index.html`, Vite manifest and stable-root PWA/install URLs against `dist/` after a real build.
+3. Add characterization around bootstrap/router/session and migrate one low-risk route/domain boundary to a typed lazy-loaded adapter only after build parity is demonstrated.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The experiment now has an executable boundary between Vite-owned module resources and stable root PWA/install artifacts. The remaining blocker is build execution and implementation proof, not an architectural requirement for a clean-slate rewrite.
+The incremental experiment now has both a source-side artifact contract and a single auditable implementation path for Vite/CLI emission. The remaining gating risk is deterministic dependency installation and full build parity, not evidence that a clean-slate rewrite is necessary.
