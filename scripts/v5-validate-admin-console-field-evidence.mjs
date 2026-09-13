@@ -15,6 +15,7 @@ export const REQUIRED_ACTIONS = Object.freeze({
 
 const VALID_RESULTS = new Set(['PASS', 'FAIL', 'NOT_RUN']);
 const VALID_EVIDENCE = new Set(['GUIDED_REAL_BACKEND', 'REAL_DEVICE']);
+const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 
 function nonEmpty(value) {
   return typeof value === 'string' && value.trim().length > 0;
@@ -28,10 +29,12 @@ export function validateAdminConsoleFieldEvidence(document) {
     return { valid: false, phaseReady: false, errors: ['evidence must be a JSON object'], blockers: [] };
   }
 
-  if (!nonEmpty(document.integration_sha) || !/^[0-9a-f]{40}$/i.test(document.integration_sha)) {
-    errors.push('integration_sha must be a full 40-character commit SHA');
+  if (!nonEmpty(document.integration_sha) || !SHA_PATTERN.test(document.integration_sha) || /^0{40}$/.test(document.integration_sha)) {
+    errors.push('integration_sha must be the real full 40-character commit SHA, not a placeholder');
   }
-  if (!nonEmpty(document.executed_at)) errors.push('executed_at is required');
+  if (!nonEmpty(document.executed_at) || Number.isNaN(Date.parse(document.executed_at))) {
+    errors.push('executed_at must be a parseable timestamp');
+  }
   if (!nonEmpty(document.environment)) errors.push('environment is required');
   if (!nonEmpty(document.operator)) errors.push('operator is required');
 
