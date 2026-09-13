@@ -3,7 +3,8 @@
 Lab identity: `BQ-V5-LAB-A2-DATA-FIRST`
 Branch: `lab/v5-a2-db-first`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Branch HEAD at start of this run: `307865dc56dafbdb43834fdfde742be0d2f11704`
+Branch HEAD at start of this run: `3ebcf3977737f2d2361983921124066e187e079b`
+Implementation HEAD before this status commit: `1ea6947900b37bfa5a1661a9a478b3d165334e03`
 
 ## Hypothesis
 
@@ -13,63 +14,68 @@ BibleQuest V5 becomes safer and easier to evolve when executable database/securi
 
 **VIABLE — CONTINUE.**
 
-The DB-first path continues to expose bounded historical reproducibility defects rather than requiring weaker security or a replacement backend. After adding the missing accepted baseline migration, the exact branch workflow still failed during `supabase start`. The migration directory also contained eight legacy files sharing the short version `20260904`, while current Supabase migrations use unique timestamp-prefixed versions. This lab now normalizes only those local migration identities to unique 14-digit timestamps while preserving their existing lexical order and SQL blob contents.
+The DB-first path continues to expose bounded historical reproducibility defects without requiring weaker security or a replacement backend. Clean migration replay is still red at `supabase start`, so this run did not guess at another migration repair without the exact SQL error. Instead it advanced an independent prerequisite: deterministic multi-tenant fixtures and caller-context isolation assertions that will execute automatically as soon as replay reaches them.
 
 ## Completed this run
 
-- Re-fetched exact lab HEAD `307865dc56dafbdb43834fdfde742be0d2f11704` and its `Lab A2 DB Security` workflow evidence.
-- Confirmed the repaired-head DB workflow still fails during `supabase start`, before explicit `db reset` and before `0001_security_baseline.sql`; therefore neither replay nor security tests are claimed green yet.
-- Audited `supabase/migrations/` and found eight legacy files with the same short migration version `20260904`.
-- Verified current Supabase guidance uses `YYYYMMDDHHmmss_short_description.sql` / `<timestamp>_<name>.sql` migration naming and that short timestamp versions have documented CLI ordering/parsing problems.
-- Renamed the eight `20260904_*` migrations to unique 14-digit versions `20260904000000` through `20260904000700`, preserving their prior alphabetical execution order.
-- Reused each original Git blob for the renamed file; no SQL statement, RLS policy, grant, function, table definition or application runtime behavior was changed in this tranche.
-- Did not run or mutate any hosted Supabase project and did not repair remote migration history.
+- Re-fetched exact lab HEAD `3ebcf3977737f2d2361983921124066e187e079b` and exact-head workflow evidence.
+- Confirmed `V5 Lab A2 DB Security` run 10 completed **failure** during `Start disposable local Supabase`; replay, foundational security characterization and tenant isolation remain unclaimed.
+- Added `supabase/tests/fixtures/0001_two_congregations.sql` with five deterministic synthetic auth identities, two isolated congregations, two owners and one member per congregation plus an authenticated outsider.
+- Added `supabase/tests/0002_congregation_isolation.sql` that executes under the real `authenticated` Postgres role with local JWT claim context and verifies member A sees only congregation A, member B sees only congregation B, the outsider sees neither, and the protected membership helper does not leak cross-congregation membership.
+- Updated the lab DB workflow so, after clean replay and foundational catalog checks, it loads the deterministic fixture and executes the caller-context isolation matrix with `psql -X -v ON_ERROR_STOP=1`.
+- Kept `[db.seed]` disabled: fixtures are test-owned and cannot conceal migration failures during `supabase db reset --local --no-seed`.
+- Did not touch hosted Supabase, production data/configuration, application runtime, another lab, `main`, or `v5/architecture-upgrade`.
 
 ## DB/security evidence
 
 ### Confirmed executable evidence
 
-- The prior workflow on `1f59628810f215d017d6d2008dae6646e1e1c25f` reached disposable Postgres and failed because the historical migration chain lacked the base `private` schema.
-- `20260903000000_biblequest_baseline.sql` repaired that missing clean-build foundation from the repository's accepted `supabase/schema.sql` semantics.
-- The subsequent workflow on `307865dc56dafbdb43834fdfde742be0d2f11704` still fails in the `supabase start` step, so clean replay remains unproven.
+- `3ebcf3977737f2d2361983921124066e187e079b`: exact-head `V5 Lab A2 DB Security` run 10 failed in `Start disposable local Supabase`.
+- Because startup failed, `Replay migrations from zero` and `Execute foundational security characterization` were skipped. No clean-replay or RLS success is claimed.
+- The earlier workflow on `1f59628810f215d017d6d2008dae6646e1e1c25f` reached disposable Postgres and exposed the missing historical `private` schema; the baseline migration repaired that specific clean-build defect.
 
-### Migration-history normalization under proof
+### New deterministic security harness awaiting execution
 
-- The branch had eight files with migration version `20260904`: assignments/presence, group signup limits, innovation stage, journey groups, journey presence indexes, personality profiles, release hardening and room poll edge.
-- They are now assigned unique 14-digit local versions in their prior lexical order.
-- This is a lab clean-replay experiment only. Promotion to any existing hosted project would require explicit reconciliation against that project's migration history; this lab does not perform or recommend an automatic remote history rewrite.
+- Synthetic user IDs are stable and intentionally non-secret; no password/authentication flow is used by these SQL tests.
+- Congregation A and B use stable UUIDs and separate owner/member identities.
+- The RLS test switches to database role `authenticated`, injects local request JWT claims for each synthetic caller, and queries the real protected tables/helper.
+- Assertions check positive membership visibility and negative cross-tenant/outsider visibility rather than only catalog metadata.
+- Fixture loading and isolation checks are ordered after clean reset, so they cannot make a broken migration chain appear green.
 
 ### Pending exact evidence
 
 - Exact-head `supabase start` success after migration-version normalization.
 - `supabase db reset --local --no-seed` success for the full chain.
-- `supabase/tests/0001_security_baseline.sql` execution success against Postgres.
-- Deterministic synthetic identities, two-congregation fixture topology and real caller-context RLS matrices.
-- Generated database/domain type evidence.
+- `supabase/tests/0001_security_baseline.sql` execution success.
+- Fixture-load success against the actual Supabase `auth.users` schema.
+- `supabase/tests/0002_congregation_isolation.sql` caller-context execution success.
+- Assignments/presence caller-context matrices and generated database/domain type evidence.
 
 ## Architecture decisions in this lab
 
-1. Migration replay from an empty disposable database is the authoritative clean-build proof.
+1. Migration replay from an empty disposable database remains the authoritative clean-build proof.
 2. Historical SQL semantics are preserved while installation/history defects are repaired explicitly.
 3. Migration versions in the lab must be unique, deterministic and sortable; new work uses full timestamp versions.
-4. Renaming historical versions is safe only for this isolated disposable experiment. Existing hosted migration histories are a separate migration/reconciliation decision and remain untouched.
-5. Seed data remains disabled until the full migration chain and foundational security assertions pass.
-6. RLS/function security proof must execute in Postgres; static checks are supplemental only.
-7. No security test is weakened to obtain a green replay.
+4. Renaming historical versions is safe only for this isolated disposable experiment. Existing hosted migration histories remain untouched and require separate reconciliation if this architecture is ever adopted.
+5. General seed execution remains disabled until clean replay passes. Security fixtures are explicitly loaded by the test job only after reset.
+6. Multi-tenant security proof must execute under the real `authenticated` database role with caller claim context; static SQL/catalog checks alone are insufficient.
+7. Positive and negative isolation evidence are both required: same-congregation access must work and cross-congregation/outsider access must fail closed.
+8. No RLS policy, grant or valid security test is weakened to obtain green CI.
 
 ## Known debt / risks
 
-- The exact reason for the latest `supabase start` failure is not exposed by the available workflow metadata; duplicate/short migration versions are a demonstrated repository defect and a plausible contributing cause, but the normalization must be validated by the next exact-head run.
-- `supabase/schema.sql` and ordered migrations historically represented two installation paths. Further drift may surface after the chain progresses.
-- Existing production/hosted migration history may contain the short `20260904` version. This lab intentionally does not mutate or reconcile remote history; any future adoption requires a reviewed rollout strategy.
-- The workflow currently installs Supabase CLI `latest`; pinning follows once a green compatible version is established.
-- Foundational security characterization is still narrow; assignments, presence, admin, media and other sensitive domains need executable matrices.
+- The exact SQL message behind current `supabase start` failure is not exposed by the available workflow metadata; another migration fix would be speculative until the first failing statement can be observed.
+- The new fixture insert into `auth.users` is intentionally realistic but has not executed yet because migration startup is still red; Supabase auth-schema compatibility remains pending evidence.
+- `supabase/schema.sql` and ordered migrations historically represented two installation paths. Further drift may surface when startup advances.
+- Existing production/hosted migration history may contain the former short `20260904` version. This lab does not mutate or reconcile remote history.
+- The workflow still installs Supabase CLI `latest`; pinning follows once a green compatible version is established.
+- Assignments, presence, admin, media and other sensitive domains still need executable tenant/authorization matrices.
 
 ## Next 3 tasks
 
-1. Inspect the exact-head DB workflow after version normalization; if red, repair only the first newly demonstrated migration/schema defect without weakening security semantics.
-2. Once `supabase start`, clean reset and `0001_security_baseline.sql` are green, add deterministic synthetic auth identities plus a two-congregation fixture topology.
-3. Add real caller-context RLS matrices for congregation membership and assignments/presence, then generate database types from the tested schema.
+1. Inspect the new exact-head DB workflow. If startup is still red and the failing SQL statement becomes observable, repair only that demonstrated migration/schema defect without weakening security.
+2. Once startup/reset is green, validate and if necessary minimally correct the synthetic `auth.users` fixture shape, then require `0001_security_baseline.sql` and `0002_congregation_isolation.sql` to pass under Postgres.
+3. Extend the same caller-context matrix to assignments/presence, then generate database types from the tested local schema and begin a typed repository/data-access boundary.
 
 ## Stop condition
 
