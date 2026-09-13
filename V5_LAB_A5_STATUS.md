@@ -3,7 +3,7 @@
 Updated: 2026-09-13 JST
 Branch: `lab/v5-a5-greenfield`
 Baseline origin: `1f504dec812f11453f82e30af61cdf3d6c547060`
-Current lab HEAD before this status update: `b3a0542648dc575b9a50e1b0ab781f829e686264`
+Current lab HEAD before this status update: `8349c8e9d33d64da059464b663448d2953217afa`
 Lab identity: `BQ-V5-A5-GREENFIELD`
 
 ## Hypothesis
@@ -17,7 +17,9 @@ A clean typed client runtime can replace the V4 bootstrap/router/view ownership 
 - `src/v5/app/` owns application composition only.
 - `src/v5/platform/router/` owns URL parsing/navigation and exposes typed route snapshots plus typed route context.
 - `src/v5/platform/session/` owns typed auth/session state through a source/service boundary without becoming an authorization source.
-- Feature views consume platform services by dependency injection rather than importing mutable singletons.
+- `src/v5/platform/congregation/` owns active-congregation context separately from authentication identity.
+- `src/v5/data/` owns feature repository contracts/adapters; feature views do not create backend clients or issue direct network requests.
+- Feature views consume platform/data services by dependency injection rather than importing mutable singletons.
 - Server authorization/RLS remain authoritative; UI session/capability state is presentation only.
 - Route modules are lazy-loaded from a typed route registry.
 - Cross-feature state is not placed into one giant global store.
@@ -39,6 +41,13 @@ Status: IMPLEMENTED, BUILD/BROWSER EVIDENCE PENDING
 
 Added typed `SessionSnapshot`, `SessionSource` and `SessionService` contracts; a narrow session service with boot/read/subscribe/dispose ownership; explicit unavailable-source behavior for the isolated lab; typed `RouteContext`; shell-level dependency injection; and a lazy Account route that renders session states without owning authorization. The lab does not connect production Supabase or implement sign-in yet.
 
+### Tranche 4 — congregation context + protected read-only assignments boundary
+Status: IMPLEMENTED, BACKEND PARITY/BUILD/BROWSER EVIDENCE PENDING
+
+Added a congregation-context service contract independent of session identity, a typed read-only `AssignmentsRepository`, an explicit fail-closed unavailable adapter, and a lazy Tasks route. The Tasks view refuses repository access unless the session is authenticated and an active congregation is selected. It contains no direct `fetch`, Supabase client, service-role credential path or local fabricated protected-data fallback. Repository results are rendered only after the current request remains live; route cleanup invalidates stale async results.
+
+The V4 assignments owner was inspected only for accepted product/security contracts: assignments are scoped to a selected congregation, ordinary members must not gain ministry response visibility, and backend authorization remains authoritative. The monolithic V4 service/view implementation was not copied into the greenfield tree.
+
 ## Parity matrix
 
 | Area | V4 accepted behavior | Greenfield state | Status |
@@ -47,7 +56,9 @@ Added typed `SessionSnapshot`, `SessionSource` and `SessionService` contracts; a
 | Router/deep link | hash routes, unknown -> not-found | typed hash router, unknown -> not-found | PARTIAL |
 | App shell | V4 shell/nav/bootstrap owner | new shell owner + typed route context | PARTIAL |
 | Session/auth | production session/auth owner | typed source/service boundary + unavailable lab adapter; no sign-in | PARTIAL |
+| Congregation context | selected membership drives protected features | separate typed context boundary + unavailable lab adapter | PARTIAL |
 | Account | production account surface | read-only session-state slice | PARTIAL |
+| Assignments | protected congregation-scoped assignments and progress | lazy read-only repository/view boundary; backend adapter intentionally unavailable | PARTIAL ARCHITECTURE / NO DATA PARITY |
 | Home | production feature | minimal architectural proof route | NOT PARITY |
 | Reader | production feature | registered placeholder only | MISSING |
 | Games | production feature | registered placeholder only | MISSING |
@@ -55,50 +66,54 @@ Added typed `SessionSnapshot`, `SessionSource` and `SessionService` contracts; a
 | Media | production feature | not migrated | MISSING |
 | Offline/PWA | production install/runtime behavior | no greenfield SW contract yet | MISSING |
 | Supabase/RLS | protected production contracts | policy preserved; no production client connection | PRESERVED/UNUSED |
-| Accessibility | production baseline | semantic shell, focus handoff, reduced motion, Account live session status; browser proof pending | PARTIAL |
+| Accessibility | production baseline | semantic shell, focus handoff, reduced motion, Account live status, Tasks status/error states; browser proof pending | PARTIAL |
 
 ## Tests and evidence
 
 - Branch lineage remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
-- V4 `src/app/session.js` was inspected as behavioral evidence before defining the new contract. The lab preserved the important separation between identity/session state and server authorization, but did not copy the old owner.
+- The exact code head before this status commit is `8349c8e9d33d64da059464b663448d2953217afa`.
+- Architecture guard was expanded to require lazy Tasks loading, explicit route-context injection of session/congregation/assignments, authenticated + selected-congregation gating, repository-only protected reads, no direct feature `fetch`, no feature/direct Supabase client creation, explicit unavailable congregation state and fail-closed assignments repository behavior.
 - No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced.
-- Exact-branch package install/typecheck/build/browser evidence remains pending because prior package resolution repeatedly timed out.
 - Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only for CI evidence.
+- At inspection time the exact code head had seven inherited PR checks registered; several were queued/in progress. Pending checks are not counted as passed.
 
 ## Failures / unresolved evidence
 
 - No lockfile because dependency resolution previously timed out.
-- No exact-branch `npm ci`, typecheck, Vite build, browser run, PWA test or deployed-preview result is claimed green for this tranche.
-- The current session source intentionally reports unavailable; production auth wiring is not yet implemented.
-- Account is a read-only architectural slice, not feature parity.
-- Reader, Games, data repositories beyond session, offline/PWA and protected feature surfaces remain unmigrated.
+- No exact-branch `npm ci`, TypeScript typecheck, Vite build, browser run, PWA test or deployed-preview result is claimed green for this tranche.
+- The current session and congregation adapters intentionally report unavailable; production auth/membership wiring is not implemented.
+- The assignments repository intentionally fails closed; no real protected-data request is claimed successful.
+- Existing V4 assignment mutation, publisher, response-review and realtime behavior are not migrated.
+- Reader, Games, offline/PWA and most protected feature surfaces remain unmigrated.
 
 ## Architecture decisions learned
 
-1. Route-context dependency injection gives feature modules access to narrow platform contracts without recreating a global mutable app store.
-2. Session state can be modeled as an explicit source/service boundary independent of Supabase client details and independent of authorization decisions.
-3. A greenfield route can consume session state without owning authentication mechanics or backend permissions.
-4. The isolated unavailable adapter is safer than embedding production configuration merely to make the experimental UI appear connected.
-5. Session lifecycle belongs at app composition/shell scope; route views only subscribe and clean up their own listeners.
+1. Route-context dependency injection can carry narrow platform and repository contracts without recreating a global mutable app store.
+2. Authentication identity and active-congregation context should be separate owners; protected feature data requires both.
+3. A feature view can prove authorization-safe request gating without owning Supabase or credentials.
+4. The repository boundary is the correct place for a future Supabase/RPC adapter; views should not know transport details.
+5. An unavailable adapter is preferable to invented local protected data because it keeps missing backend parity visible and fail-closed.
+6. Protected route cleanup needs request-version invalidation in addition to subscription cleanup so stale async results cannot render after navigation/context changes.
 
 ## Known debt
 
 - exact shipped-route inventory still needs representation in a typed parity registry;
-- production auth adapter and active-congregation context are not modeled;
-- no general repository/data-access boundary exists beyond the session source contract;
+- production auth adapter, membership loader and congregation selection workflow are not connected;
+- no real Supabase/RPC assignments adapter exists and its exact V4 server contract must be characterized before implementation;
+- assignment detail/mutations/ministry review/privacy behavior remain unmigrated;
 - no offline/cache update model exists;
 - no deterministic build identity or bundle budget exists;
 - dependency lock/build evidence remains blocked by package-resolution availability;
-- architecture checker should be expanded to guard typed session/route-context ownership and executed against the exact branch.
+- architecture guard still needs exact-branch execution evidence and behavioral tests with deterministic fake services.
 
 ## Next 3 tasks
 
-1. Obtain deterministic dependency lock/typecheck/build evidence and run `test:architecture:v5` against the exact branch; repair any real type-contract failures rather than weakening checks.
-2. Introduce one read-only protected-data repository behind the route context and migrate one meaningful existing feature slice without bypassing backend authorization/RLS.
-3. Add active-congregation context separately from authentication identity and expand behavioral tests for session transitions, route cleanup and rapid navigation.
+1. Add deterministic behavioral tests for Tasks request gating, context changes, stale-result suppression and cleanup using fake session/congregation/repository services; execute them against the exact branch without requiring production credentials.
+2. Characterize the accepted V4 assignments API/RLS contract and implement a transport adapter only if it can preserve selected-congregation scoping and server authorization without embedding privileged configuration.
+3. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures rather than weakening architecture checks.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The greenfield architecture now demonstrates shell/router/session/view separation without copying the V4 bootstrap/session owner or connecting privileged backend state. Superiority over incremental migration is still unproven until a real protected data-backed feature and deterministic build/browser evidence are green.
+The lab now demonstrates four distinct owners—router/shell, session, congregation context and protected feature repository/view—without copying the V4 bootstrap or assignments monolith. This is stronger evidence that a greenfield architecture can reduce ownership coupling safely. Superiority over incremental migration is still unproven until deterministic build/browser evidence and at least one real RLS-protected backend read reach parity.
