@@ -6,7 +6,6 @@ on:
     branches:
       - v5/feature-completion
     paths:
-      - 'tests/v5-leader-center-browser-access.mjs'
       - '.github/workflows/v5-leader-center-access-reverify.yml'
 
 permissions:
@@ -27,9 +26,7 @@ jobs:
         run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
       - name: Build current application
         run: bash build.sh
-      - name: Static syntax check
-        run: node --check tests/v5-leader-center-browser-access.mjs
-      - name: Run existing Leader Center domain contract
+      - name: Run maintained Leader Center domain contract
         run: node tests/v5-leader-center-edge.mjs
       - name: Install Playwright and Chromium
         run: |
@@ -44,9 +41,7 @@ jobs:
           done
           cat /tmp/bq-v5-leader-http.log
           exit 1
-      - name: Prove member denied and leader allowed in Chromium
-        run: timeout 240s node tests/v5-leader-center-browser-access.mjs
-      - name: Run existing Leader Center smoke regression
+      - name: Prove member denied, leader allowed and mobile-safe in Chromium
         run: timeout 240s node tests/v5-leader-center-smoke.mjs
       - name: Verify exact source head remained unchanged
         run: |
