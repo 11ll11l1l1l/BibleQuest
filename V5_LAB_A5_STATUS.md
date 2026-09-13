@@ -50,13 +50,13 @@ Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 `tests/v5-assignments-behavior.mjs` imports the real Tasks view with deterministic fake session/congregation/repository services and proves signed-out/no-congregation fail-closed behavior, exact scope forwarding, context-switch stale-result suppression and route-cleanup suppression.
 
 ### Tranche 6 — characterized authorized assignment read boundary
-Status: IMPLEMENTED, CI RESULT PENDING FOR CURRENT CODE HEAD
+Status: IMPLEMENTED, EXACT-BRANCH CI PASS
 
 Characterized the accepted V4 read contract from `ASSIGNMENTS_V3.md`, `src/core/api.js` and `src/app/assignments.js`: active assignment SELECTs are scoped to the selected congregation; progress SELECTs are scoped to the signed-in user and visible assignment ids; RLS remains authoritative for assignment audience/scheduled visibility; malformed foreign-congregation assignment rows are rejected; progress for another user or an unknown assignment is never exposed to the member surface.
 
-Added `src/v5/data/assignments/authorized-read.ts`, which converts that contract into a transport-independent repository boundary. It requires an injected authorized read port and does not contain a Supabase URL, publishable/service key, auth bypass or direct privileged backend path. It validates tenant scope, active rows, supported assignment types, timestamps and progress status before returning the narrow V5 `AssignmentSummary` model. Due-state calculation preserves completed/scheduled/overdue/open semantics.
+Added `src/v5/data/assignments/authorized-read.ts`, which converts that contract into a transport-independent repository boundary. It requires an injected authorized read port and contains no Supabase URL, publishable/service key, auth bypass or privileged backend path. It validates tenant scope, active rows, supported assignment types, timestamps and progress status before returning the narrow V5 `AssignmentSummary` model. Due-state calculation preserves completed/scheduled/overdue/open semantics.
 
-Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/user request scoping, foreign-row fail-closed behavior, peer/unknown progress suppression, invalid-status rejection and invalid caller-scope rejection before transport access. The lab workflow now executes this suite on the draft PR.
+Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/user request scoping, foreign-row fail-closed behavior, peer/unknown progress suppression, invalid-status rejection and invalid caller-scope rejection before transport access. GitHub Actions run `34738937724` completed successfully on exact code head `4485e0e9ebf2528d1726ea4b771641eb6fb47897`, including the architecture gate, protected assignments behavior suite and authorized read contract suite.
 
 ## Parity matrix
 
@@ -80,9 +80,12 @@ Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/use
 ## Tests and evidence
 
 - Branch lineage remains derived from accepted planning SHA `1f504dec812f11453f82e30af61cdf3d6c547060`.
-- Prior exact tested code head `3e3276efba4a297957cb27d55439cc7f4db9b334` passed GitHub Actions run `34736628661`: greenfield architecture contracts and protected assignments behavior.
-- Current code head before this status update is `4485e0e9ebf2528d1726ea4b771641eb6fb47897`.
-- Current workflow includes `tests/v5-assignments-authorized-read.mjs`; its exact-head result is pending and is not claimed green here.
+- Earlier exact code head `3e3276efba4a297957cb27d55439cc7f4db9b334` passed run `34736628661` for architecture and protected-view behavior.
+- Exact code head `4485e0e9ebf2528d1726ea4b771641eb6fb47897` passed lab run `34738937724`.
+- `Greenfield architecture contracts`: PASS.
+- `Protected assignments behavior`: PASS.
+- `Authorized assignments read contract`: PASS.
+- V4 Section I security/privacy workflow also completed successfully on that code head; other inherited workflows were still running and are not counted as pass here.
 - No production Supabase URL/key, service-role secret, RLS bypass or backend mutation was introduced in the new V5 adapter.
 - Draft PR #191 remains `[LAB ONLY][DO NOT MERGE]` and draft-only.
 
@@ -90,7 +93,7 @@ Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/use
 
 - No deterministic dependency lock, `npm ci`, TypeScript compiler pass, Vite production build, browser run, PWA proof or deployed-preview result is claimed green.
 - The current session and congregation adapters remain unavailable by design.
-- The new authorized assignment repository has an abstract authorized read port only; no real Supabase/local-RLS transport is wired yet.
+- The authorized assignment repository has an abstract authorized read port only; no real Supabase/local-RLS transport is wired yet.
 - Real RLS execution and multi-tenant backend isolation remain unproven in this lab.
 - Assignment mutations, publishing, response review and realtime refresh are not migrated.
 - Reader, Games, media, offline/PWA and most protected surfaces remain unmigrated.
@@ -100,10 +103,10 @@ Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/use
 1. Route-context dependency injection can carry narrow platform/repository contracts without recreating a global mutable store.
 2. Authentication identity and active congregation should remain separate owners; protected feature data requires both.
 3. Views can remain transport-agnostic and still prove authorization-safe request gating.
-4. The V4 assignments contract confirms that the backend/RLS, not the browser, owns audience/scheduled visibility; greenfield should preserve that boundary instead of reconstructing audience authorization client-side.
-5. A narrow authorized-read port is sufficient to preserve selected-congregation and current-user scoping while keeping backend implementation replaceable.
-6. Foreign congregation assignment rows should fail closed, while irrelevant peer/unknown progress rows can be ignored because the member surface must never expose them.
-7. Dependency-free Node 22 tests remain useful architecture/behavior evidence while package installation is unavailable, but they do not replace real DB/browser/build proof.
+4. The V4 assignments contract confirms that backend RLS, not the browser, owns audience/scheduled visibility; greenfield should preserve that boundary instead of reconstructing audience authorization client-side.
+5. A narrow authorized-read port preserves selected-congregation and current-user scoping while keeping transport implementation replaceable.
+6. Foreign congregation assignment rows should fail closed, while irrelevant peer/unknown progress rows are suppressed because the member surface must never expose them.
+7. Dependency-free Node 22 tests provide useful architecture/behavior evidence while package installation is unavailable, but they do not replace real DB/browser/build proof.
 
 ## Known debt
 
@@ -119,11 +122,11 @@ Added `tests/v5-assignments-authorized-read.mjs` to prove exact congregation/use
 ## Next 3 tasks
 
 1. Implement a local/ephemeral Supabase-backed `AuthorizedAssignmentsReadPort` only after proving it uses ordinary authenticated caller context and cannot carry service-role credentials; add real RLS tenant-isolation evidence if infrastructure is available.
-2. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair any real type/runtime failures rather than relying only on Node strip-types execution.
+2. Obtain deterministic dependency lock/typecheck/build/browser evidence and repair real type/runtime failures instead of relying only on Node strip-types execution.
 3. Characterize and migrate assignment realtime as refresh-signal-only behavior, preserving congregation/user subscription scoping and idempotent cleanup without treating realtime payloads as authoritative state.
 
 ## Viability
 
 **VIABLE — CONTINUE.**
 
-The greenfield path now preserves the accepted assignment read security contract in a cleaner typed repository boundary without copying the V4 API owner or embedding privileged configuration. This strengthens the case that the frontend can be rebuilt around smaller ownership seams. Superiority over disciplined incremental migration remains unproven until the lab demonstrates deterministic build/browser evidence and at least one real RLS-protected backend read with tenant-isolation proof.
+The greenfield path now preserves the accepted assignment read security contract in a cleaner typed repository boundary without copying the V4 API owner or embedding privileged configuration, and that boundary has exact-head CI evidence. This strengthens the case that the frontend can be rebuilt around smaller ownership seams. Superiority over disciplined incremental migration remains unproven until the lab demonstrates deterministic build/browser evidence and at least one real RLS-protected backend read with tenant-isolation proof.
