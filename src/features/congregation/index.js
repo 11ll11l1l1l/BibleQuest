@@ -1,8 +1,16 @@
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
-function membershipRows(rows){
+function membershipRows(rows,activeMembership){
   if(!rows.length)return '<p data-congregation-empty>You are not linked to an active congregation yet. Use an invite code below to join one.</p>';
-  return rows.map(row=>`<article class="bq-account-section" data-congregation-row="${escapeHtml(row.congregationId)}"><p class="bq-eyebrow">CONGREGATION</p><h2>${escapeHtml(row.congregation.name)}</h2><p><b>Role:</b> <span data-congregation-role>${escapeHtml(row.roleLabel)}</span></p>${row.congregation.timezone?`<p><b>Timezone:</b> ${escapeHtml(row.congregation.timezone)}</p>`:''}${row.roleKnown?'':`<p class="bq-form-message">This role is not recognized by the v3 permission model. Privileged controls stay locked.</p>`}<p>${row.roleKnown&&row.role!=='member'?'Ministry access is available when a feature is rebuilt and the server authorizes the action.':'Member access is active for this congregation.'}</p></article>`).join('');
+  const activeId=String(activeMembership?.congregationId||'');
+  const switchable=rows.length>1;
+  return rows.map(row=>{
+    const isActive=row.congregationId===activeId;
+    const activeState=isActive
+      ?'<p class="bq-form-message" data-congregation-active aria-current="true">Active congregation</p>'
+      :switchable?`<p><button type="button" class="bq-secondary-button" data-congregation-switch="${escapeHtml(row.congregationId)}">Use ${escapeHtml(row.congregation.name)}</button></p>`:'';
+    return `<article class="bq-account-section" data-congregation-row="${escapeHtml(row.congregationId)}"${isActive?' data-congregation-current="true"':''}><p class="bq-eyebrow">CONGREGATION</p><h2>${escapeHtml(row.congregation.name)}</h2><p><b>Role:</b> <span data-congregation-role>${escapeHtml(row.roleLabel)}</span></p>${row.congregation.timezone?`<p><b>Timezone:</b> ${escapeHtml(row.congregation.timezone)}</p>`:''}${row.roleKnown?'':`<p class="bq-form-message">This role is not recognized by the v3 permission model. Privileged controls stay locked.</p>`}<p>${row.roleKnown&&row.role!=='member'?'Ministry access is available when a feature is rebuilt and the server authorizes the action.':'Member access is active for this congregation.'}</p>${activeState}</article>`;
+  }).join('');
 }
 
 export function congregationPage({membership,onAccount,onBack}){
@@ -14,7 +22,7 @@ export function congregationPage({membership,onAccount,onBack}){
       const list=root.querySelector('[data-congregation-list]');
       const message=root.querySelector('[data-congregation-message]');
       const setMessage=value=>{if(message)message.textContent=value||''};
-      const render=rows=>{if(list)list.innerHTML=membershipRows(rows)};
+      const render=rows=>{if(list)list.innerHTML=membershipRows(rows,membership.getActive())};
       const refresh=async()=>{
         if(!signedIn)return;
         try{render(await membership.load())}
@@ -24,6 +32,17 @@ export function congregationPage({membership,onAccount,onBack}){
         const target=event.target instanceof Element?event.target:null;if(!target)return;
         if(target.closest('[data-congregation-account]'))onAccount?.();
         else if(target.closest('[data-congregation-back]'))onBack?.();
+        else{
+          const switchButton=target.closest('[data-congregation-switch]');
+          if(switchButton){
+            setMessage('');
+            try{
+              const active=membership.setActive(switchButton.getAttribute('data-congregation-switch'));
+              render(membership.list());
+              setMessage(`Active congregation changed to ${active.congregation.name}.`);
+            }catch(error){setMessage(error?.message||'Could not switch active congregation.')}
+          }
+        }
       };
       const onSubmit=async event=>{
         const form=event.target instanceof HTMLFormElement?event.target:null;if(!form?.matches('[data-congregation-join]'))return;
