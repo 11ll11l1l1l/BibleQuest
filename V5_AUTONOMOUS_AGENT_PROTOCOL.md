@@ -7,13 +7,13 @@ Integration branch: `v5/architecture-upgrade`
 
 ## Purpose
 
-BibleQuest V5 may be developed by five scheduled autonomous coding agents running once per hour. The objective is high coding throughput without sacrificing repository correctness, privacy/security contracts, CI evidence, or recoverability.
+BibleQuest V5 is developed by five scheduled autonomous coding agents running once per hour. The objective is one shared V5 program with high coding throughput without sacrificing repository correctness, privacy/security contracts, CI evidence, or recoverability.
 
-This protocol replaces the old V4 read-only investigator model for these five agents. It does not authorize uncontrolled parallel edits, direct production changes, or direct writes to `main`.
+This protocol replaces both the old V4 read-only investigator model and the temporary five-independent-lab experiment. The lab branches are historical experimental evidence only and are not active development routes.
 
 ## Operating model
 
-There are four coding workers and one integration/dispatch captain.
+There are four coding workers and one integration/dispatch captain working together on the same V5 integration program.
 
 - A1 — Build / Client Architecture / UI Platform
 - A2 — Database / Security / Supabase CI
@@ -22,6 +22,20 @@ There are four coding workers and one integration/dispatch captain.
 - A5 — Integration / Dispatch / Release-Control Captain
 
 All five run hourly, staggered through the hour. Each run performs at most one coherent bounded coding tranche plus validation and handoff.
+
+The agents do not build competing versions of V5. A1-A4 prepare non-overlapping changes from the current integration branch; A5 serializes accepted work into `v5/architecture-upgrade`.
+
+## Historical lab branches
+
+The following branches are preserved only as read-only architecture evidence unless a human explicitly authorizes reuse of a specific idea:
+
+- `lab/v5-a1-incremental-vite`
+- `lab/v5-a2-db-first`
+- `lab/v5-a3-offline-first`
+- `lab/v5-a4-component-rebuild`
+- `lab/v5-a5-greenfield`
+
+Agents may inspect those branches for lessons, tests, architecture ideas, and already-proven approaches, but must not continue them as independent products. Reuse must be deliberate: re-implement or selectively port only compatible, reviewed work into a fresh worker branch based on the latest `v5/architecture-upgrade`. Do not bulk-merge a lab branch.
 
 ## Hard boundaries
 
@@ -138,7 +152,7 @@ A5 must:
 8. create narrowly scoped integration fixes when needed, but not compete with worker feature ownership;
 9. never merge V5 runtime work to `main` or deploy production.
 
-If integration becomes red, A5 stops merging new feature PRs and prioritizes rollback/revert/root-cause repair on the integration branch.
+A5 should actively turn useful lab findings into ranked integration tasks rather than treating labs as candidate products. If integration becomes red, A5 stops merging new feature PRs and prioritizes rollback/revert/root-cause repair on the integration branch.
 
 ## Fail-closed conditions
 
@@ -188,9 +202,9 @@ Primary focus: checked-in Supabase local config, migration replay, deterministic
 
 Agents continue through `DEVELOPMENT_PLAN_V5.md` in dependency order. A5 may dynamically rebalance lanes as architecture ownership becomes clearer, while preserving lease/non-overlap rules.
 
-## Success metric for the trial
+## Success metric
 
-The five-agent model is considered effective when, over repeated hourly cycles:
+The five-agent model is effective when, over repeated hourly cycles:
 
 - useful PR throughput increases without direct-main or production changes;
 - merge conflicts remain rare and bounded;
@@ -200,4 +214,4 @@ The five-agent model is considered effective when, over repeated hourly cycles:
 - defects introduced by automation are caught before integration/production;
 - repository authority files remain coherent.
 
-Throughput is secondary to correctness. Five agents producing five conflicting patches is failure; five agents producing two safely merged, well-tested tranches plus three useful unblocking investigations is success.
+Throughput is secondary to correctness. Five agents producing five conflicting patches is failure; five agents jointly advancing one integrated V5 through several safely merged, well-tested tranches is success.
