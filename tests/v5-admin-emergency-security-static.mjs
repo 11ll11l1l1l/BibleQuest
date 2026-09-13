@@ -44,7 +44,7 @@ assert.match(tempPassword, /forceSignOutUser\(target\)/, 'temporary password mus
 assert.match(tempPassword, /audit\(a,u\.id,target,'set_temp_password',\{sessionsRevoked:revoked\}\)/, 'temporary password audit must record only revocation state');
 assert.doesNotMatch(tempPassword, /audit\([^\n]*(password|token|secret)\s*:/i, 'temporary password audit must never persist credentials');
 
-const changeEmail = between("if(action==='change_email')", "throw new Error('Unknown admin action')");
+const changeEmail = between("if(action==='change_email')", "return json(req,{error:'Unknown action'},400)");
 assert.match(changeEmail, /if\(r!=='owner'\).*403/, 'change_email must remain owner-only');
 assert.match(changeEmail, /target===u\.id/, 'change_email must reject the active owner self-target');
 assert.match(changeEmail, /email\.length>254/, 'change_email must bound email length');
