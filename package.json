@@ -10,7 +10,8 @@
     "dev:v5": "vite --open /v5.html",
     "build:v5": "vite build",
     "typecheck:v5": "tsc --noEmit -p tsconfig.v5.json",
-    "test:architecture:v5": "node tests/v5-greenfield-architecture.mjs"
+    "test:architecture:v5": "node tests/v5-greenfield-architecture.mjs",
+    "test:assignments:v5": "node --experimental-strip-types tests/v5-assignments-behavior.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.2",
