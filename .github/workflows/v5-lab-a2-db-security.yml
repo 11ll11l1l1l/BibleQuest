@@ -57,7 +57,7 @@ jobs:
           supabase db reset --local --no-seed
 
       - name: Execute foundational security characterization
-        env:
+        env: &local_postgres
           PGHOST: 127.0.0.1
           PGPORT: '54322'
           PGDATABASE: postgres
@@ -66,6 +66,18 @@ jobs:
         run: |
           set -euo pipefail
           psql -X -v ON_ERROR_STOP=1 -f supabase/tests/0001_security_baseline.sql
+
+      - name: Load deterministic two-congregation fixtures
+        env: *local_postgres
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f supabase/tests/fixtures/0001_two_congregations.sql
+
+      - name: Execute congregation isolation RLS characterization
+        env: *local_postgres
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f supabase/tests/0002_congregation_isolation.sql
 
       - name: Capture migration state
         if: always()
