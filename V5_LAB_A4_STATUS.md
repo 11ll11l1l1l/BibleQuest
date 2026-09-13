@@ -3,7 +3,7 @@
 Updated: 2026-09-13 JST
 Lab branch: `lab/v5-a4-component-rebuild`
 Baseline origin: `main` `1f504dec812f11453f82e30af61cdf3d6c547060`
-Implementation head before this tranche: `cf0e1b9d692c5625ff8cca9aaec2029fbc5cc9e6`
+Implementation head before this tranche: `f3cc8f179ebfcf89318b8ba14b4421cd7cb6a9e3`
 
 ## Hypothesis
 
@@ -19,36 +19,38 @@ No framework has been selected. The experiment remains framework-neutral while i
 
 - Added `src/v5/ui/primitives.mjs` as the dependency-free component boundary.
 - Added `src/v5/ui/view-mount.mjs` as a deterministic single delegated action owner for future migrated subtrees.
-- Added `tests/v5-component-primitives.mjs` and `tests/v5-view-mount.mjs`.
-- Characterized the current Reader owner in `src/features/reader/index.js`: one route mount owns `change`, `click`, and `submit`; `reader` remains the domain/service state owner; async loading/error rendering is currently imperative markup inside that route.
+- Added focused primitive/mount tests.
+- Characterized the current Reader owner in `src/features/reader/index.js`: one route mount owns `change`, `click`, and `submit`; `reader` remains the domain/service state owner.
 - Added `src/v5/reader/async-view.mjs` as a Reader-specific presentation boundary for loading/error states.
-- The Reader async component reuses shared V5 loading/error semantics and preserves the current retry and Japanese-to-BSB action selectors, avoiding a second listener owner or a behavior/licensing change.
-- Added `tests/v5-reader-async-view.mjs` covering loading/error semantics, escaping, retry continuity and the Japanese failure/BSB path.
-- This tranche deliberately does not wire the new async component into the shipped Reader yet; wiring is held until inherited Reader/browser evidence can validate the swap rather than creating an unproven production-surface change.
+- The Reader async component preserves retry and Japanese-to-BSB action selectors and does not create another listener owner.
+- Added `tests/v5-reader-async-view.mjs` for semantic loading/error presentation and Japanese recovery behavior.
+- Added `tests/v5-reader-route-async-characterization.mjs` to protect the existing route-level async contract before wiring the extracted component: one route listener owner, stale-request operation token, initial load, retry behavior, explicit BSB recovery, and Japanese no-synthesized-fallback messaging.
+- The shipped Reader is still intentionally unchanged; the extracted async component remains unwired until characterization plus broader inherited/browser evidence is available.
 
 ## Component/state decisions
 
 1. Component APIs expose presentation and semantic state; feature/domain state remains with the existing service until a bounded migration proves a better owner.
-2. One interaction owner per mounted subtree remains mandatory. The new `view-mount` must not be introduced beside Reader's existing route listener set.
-3. Reader loading/error is the first extraction seam because it can be represented without moving chapter, search, verse-peek, translation, licensing or persistence state.
-4. Compatibility action selectors are temporarily preserved in the Reader adapter so the existing route event owner can consume the new presentation without duplicate handlers.
+2. One interaction owner per mounted subtree remains mandatory. The V5 view mount must not be introduced beside Reader's existing route listener set.
+3. Reader loading/error remains the first extraction seam because it does not require moving chapter, search, verse-peek, translation, licensing or persistence state.
+4. Compatibility action selectors are temporarily preserved so the existing route event owner can consume a future presentation swap without duplicate handlers.
 5. Japanese translation failure behavior is protected: no fallback Scripture is synthesized; BSB remains an explicit user action.
-6. Shared components continue escaping user/error text by default.
+6. Shared components escape user/error text by default.
 7. Framework selection remains open until at least one Reader interaction slice and one Games slice are measured.
 
 ## Tests and evidence
 
-- Isolated exact-module execution: `node tests/v5-reader-async-view.mjs` — PASS (`v5 reader async view: PASS`).
-- Assertions cover loading `role=status`/polite live region, error `role=alert`/assertive live region, escaped error content, retry continuity, Japanese failure notice, explicit BSB action, and absence of inline `onclick`.
-- Existing Reader source was inspected at branch head `cf0e1b9d692c5625ff8cca9aaec2029fbc5cc9e6`; it retains a single route listener owner and existing reader service/state owner.
-- No browser, responsive, PWA or shipped Reader parity evidence is claimed for the new adapter because it is not wired into the route in this tranche.
-- No database/security behavior changed.
+- Previous isolated execution: `node tests/v5-reader-async-view.mjs` — PASS (`v5 reader async view: PASS`).
+- New characterization file added: `tests/v5-reader-route-async-characterization.mjs`.
+- New characterization assertions cover single Reader `change`/`click`/`submit` ownership and cleanup; operation-token stale-request protection; initial load; retry continuity; explicit BSB switch with search/highlight reset; and async-view loading/error/Japanese recovery semantics.
+- The current Reader source at `f3cc8f179ebfcf89318b8ba14b4421cd7cb6a9e3` confirms these accepted contracts remain present.
+- Full execution of the new route characterization is not yet claimed in this connector-only run; no checked-out repository/browser harness was available.
+- No browser, responsive, PWA, database or security behavior changed.
 
 ## Failures / constraints
 
-- Repository work continues through the GitHub connector rather than a checked-out clone; local validation uses isolated copies of exact new module/test contents.
-- Direct raw GitHub download from the execution container failed with transient DNS resolution, so a checkout-based inherited suite was unavailable in this run.
-- The draft lab PR supplies inherited CI evidence only; it is never a merge candidate.
+- Repository work continues through the GitHub connector rather than a checked-out clone.
+- The new route characterization has been committed but has not yet been executed in a full repository checkout in this run.
+- Draft-PR CI is evidence only; this lab PR is never a merge candidate.
 
 ## Known debt
 
@@ -60,7 +62,7 @@ No framework has been selected. The experiment remains framework-neutral while i
 
 ## Next 3 tasks
 
-1. Add focused Reader characterization around loading/error transitions and retry/explicit-BSB behavior using the existing route owner, then wire `async-view.mjs` only if parity is proven.
+1. Execute the new Reader route characterization in repository CI/local checkout; if green, wire only `renderReaderLoading`/`renderReaderError` into the existing Reader owner without changing listener/state/service ownership.
 2. Extract the Reader verse-peek presentation model without moving `reader.peek`, context, vocabulary or dialog ownership prematurely.
 3. Spike one representative Games launcher/question/result slice behind the same component/state contract and compare complexity before framework selection.
 
