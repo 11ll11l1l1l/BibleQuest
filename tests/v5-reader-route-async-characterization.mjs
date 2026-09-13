@@ -17,6 +17,11 @@ assert.equal(count(readerSource, "host.removeEventListener('change', onChange)")
 assert.equal(count(readerSource, "host.removeEventListener('click', onClick)"), 1, 'Reader cleanup must remove click ownership');
 assert.equal(count(readerSource, "host.removeEventListener('submit', onSubmit)"), 1, 'Reader cleanup must remove submit ownership');
 
+// The shipped Reader now delegates only async presentation to the V5 component boundary.
+assert.match(readerSource, /import \{ renderReaderError, renderReaderLoading \} from '\.\.\/\.\.\/v5\/reader\/async-view\.mjs';/, 'Reader must import the V5 async presentation boundary');
+assert.match(readerSource, /const renderLoading = message => \{ host\.innerHTML = renderReaderLoading\(message\); \};/, 'Reader loading must delegate to the async component');
+assert.match(readerSource, /const renderError = error => \{ host\.innerHTML = renderReaderError\(error, \{ japanese: reader\.getState\(\)\.translation === 'jko' \}\); \};/, 'Reader error rendering must preserve Japanese-state input while delegating presentation');
+
 // Loading remains stale-request protected and delegates data work to the existing Reader service.
 assert.match(readerSource, /const load = async \(message = 'Loading chapter…'\) => \{ const id = \+\+operation;[\s\S]*reader\.load\(\)[\s\S]*id === operation[\s\S]*renderChapter\(chapter\)[\s\S]*id === operation[\s\S]*renderError\(error\)/, 'Reader load must keep operation-token stale request protection');
 assert.match(readerSource, /host\.addEventListener\('submit', onSubmit\); load\(\);/, 'Reader must still perform its initial chapter load');
