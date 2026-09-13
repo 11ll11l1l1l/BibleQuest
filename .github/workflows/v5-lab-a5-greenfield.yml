@@ -1,0 +1,39 @@
+name: V5 Lab A5 Greenfield Evidence
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/v5/**'
+      - 'tests/v5-*.mjs'
+      - 'package.json'
+      - 'tsconfig.v5.json'
+      - 'vite.config.ts'
+      - 'v5.html'
+      - '.github/workflows/v5-lab-a5-greenfield.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-free-contracts:
+    if: github.head_ref == 'lab/v5-a5-greenfield' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+      - name: Use Node 22.12
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+      - name: Record exact SHA
+        run: |
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          git status --short
+      - name: Greenfield architecture contracts
+        run: node tests/v5-greenfield-architecture.mjs
+      - name: Protected assignments behavior
+        run: node --experimental-strip-types tests/v5-assignments-behavior.mjs
