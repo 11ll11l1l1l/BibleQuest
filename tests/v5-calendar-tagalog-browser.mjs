@@ -73,10 +73,9 @@ try {
   assert.equal(await page.locator('[name="eventDate"]').inputValue(), selectedDate);
   const dayAria = await day.getAttribute('aria-label');
   assert.ok(dayAria?.includes('3 event:'), `Tagalog event summary missing from day aria-label: ${dayAria}`);
-  assert.equal(await day.getByText('Gawain:', { exact: true }).count(), 1);
-  assert.equal(await day.getByText('Kongregasyon:', { exact: true }).count(), 1);
-  assert.equal(await day.getByText('Personal:', { exact: true }).count(), 1);
-  assert.equal(await day.getByText('Read Romans', { exact: true }).count(), 1, 'user/source event title must remain unchanged');
+  const dayText = (await day.textContent()) || '';
+  assert.ok(dayText.includes('Gawain:') && dayText.includes('Kongregasyon:') && dayText.includes('Personal:'), `localized category labels missing from day cell: ${dayText}`);
+  assert.ok(dayText.includes('Read Romans') && dayText.includes('Church service') && dayText.includes('Prayer reminder'), `source event titles must remain unchanged: ${dayText}`);
 
   const initialHeading = await page.locator('.bq-calendar-month-toolbar h2').textContent();
   await page.locator('[data-calendar-month-next]').click();
