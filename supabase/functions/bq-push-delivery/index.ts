@@ -195,6 +195,27 @@ function safePushEndpoint(endpoint: unknown) {
   }
 }
 
+function decodeBase64Url(value: unknown, maxLength: number) {
+  const candidate = String(value || '').trim();
+  if (!candidate || candidate.length > maxLength || !/^[A-Za-z0-9_-]+={0,2}$/.test(candidate)) return null;
+  const unpadded = candidate.replace(/=+$/, '');
+  const padding = '='.repeat((4 - (unpadded.length % 4)) % 4);
+  try {
+    const decoded = atob(unpadded.replace(/-/g, '+').replace(/_/g, '/') + padding);
+    return { candidate, bytes: Uint8Array.from(decoded, (char) => char.charCodeAt(0)) };
+  } catch {
+    return null;
+  }
+}
+
+function safePushKeys(p256dh: unknown, auth: unknown) {
+  const publicKey = decodeBase64Url(p256dh, 1024);
+  const authSecret = decodeBase64Url(auth, 512);
+  if (!publicKey || publicKey.bytes.length !== 65 || publicKey.bytes[0] !== 0x04) return null;
+  if (!authSecret || authSecret.bytes.length !== 16) return null;
+  return { p256dh: publicKey.candidate, auth: authSecret.candidate };
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') return response({ error: 'POST required' }, 405);
 
@@ -254,6 +275,13 @@ Deno.serve(async (req: Request) => {
         continue;
       }
 
+      const keys = safePushKeys(subscription.p256dh, subscription.auth);
+      if (!keys) {
+        failed += 1;
+        console.error('push key material rejected');
+        continue;
+      }
+
       const claimed = await claimDelivery(adminDb, notification.id, subscription.id);
       if (!claimed) {
         skipped += 1;
@@ -265,7 +293,7 @@ Deno.serve(async (req: Request) => {
         await webpush.sendNotification(
           {
             endpoint,
-            keys: { p256dh: subscription.p256dh, auth: subscription.auth },
+            keys,
           },
           payload,
           { TTL: 300 },
