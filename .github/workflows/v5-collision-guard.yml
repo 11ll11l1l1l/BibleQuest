@@ -16,7 +16,7 @@ concurrency:
 jobs:
   collision-guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,37 +24,107 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Verify deployable static build
         run: bash build.sh
-      - name: Run certified collision contracts
+
+      - name: Assignment publish auth boundary
+        id: assignment_auth
+        continue-on-error: true
+        run: node tests/v3-assignment-publish-auth-edge.mjs
+      - name: Shell structural contract
+        id: shell_contract
+        continue-on-error: true
+        run: node tests/v4-shell-static.mjs
+      - name: Home rail structural contract
+        id: home_rail
+        continue-on-error: true
+        run: node tests/v4-home-rail-static.mjs
+      - name: Home dashboard structural contract
+        id: home_dashboard
+        continue-on-error: true
+        run: node tests/v4-home-dashboard-static.mjs
+      - name: Assignments structural contract
+        id: assignments_contract
+        continue-on-error: true
+        run: node tests/v4-assignments-static.mjs
+      - name: Calendar structural contract
+        id: calendar_contract
+        continue-on-error: true
+        run: node tests/v4-calendar-static.mjs
+      - name: Tranche 11 owner contract
+        id: tranche11
+        continue-on-error: true
+        run: node tests/v4-tranche11-static.mjs
+      - name: Tranche 13 owner contract
+        id: tranche13
+        continue-on-error: true
+        run: node tests/v4-tranche13-static.mjs
+
+      - name: V5 shared-shell localization contract
+        id: v5_shell_locale
+        continue-on-error: true
+        run: node tests/v5-shared-shell-localization.test.mjs
+      - name: V5 Home localization contract
+        id: v5_home_locale
+        continue-on-error: true
+        run: node tests/v5-home-tagalog-surface.test.mjs
+      - name: V5 Assignments localization contract
+        id: v5_assignments_locale
+        continue-on-error: true
+        run: node tests/v5-assignments-tagalog-surface.test.mjs
+      - name: V5 Assignments active-congregation contract
+        id: v5_assignments_congregation
+        continue-on-error: true
+        run: node tests/v5-assignments-active-congregation.test.mjs
+      - name: V5 Calendar month-grid contract
+        id: v5_calendar_grid
+        continue-on-error: true
+        run: node tests/v5-calendar-month-grid-rework.test.mjs
+      - name: V5 Calendar localization contract
+        id: v5_calendar_locale
+        continue-on-error: true
+        run: node tests/v5-calendar-tagalog-surface.test.mjs
+      - name: V5 active-congregation selection contract
+        id: v5_active_congregation
+        continue-on-error: true
+        run: node tests/v5-active-congregation-selection.test.mjs
+      - name: Assignment push boundary contract
+        id: assignment_push
+        continue-on-error: true
+        run: node tests/v3-assignment-push-edge.mjs
+
+      - name: Enforce collision guard outcomes
+        if: always()
+        env:
+          ASSIGNMENT_AUTH: ${{ steps.assignment_auth.outcome }}
+          SHELL_CONTRACT: ${{ steps.shell_contract.outcome }}
+          HOME_RAIL: ${{ steps.home_rail.outcome }}
+          HOME_DASHBOARD: ${{ steps.home_dashboard.outcome }}
+          ASSIGNMENTS_CONTRACT: ${{ steps.assignments_contract.outcome }}
+          CALENDAR_CONTRACT: ${{ steps.calendar_contract.outcome }}
+          TRANCHE11: ${{ steps.tranche11.outcome }}
+          TRANCHE13: ${{ steps.tranche13.outcome }}
+          V5_SHELL_LOCALE: ${{ steps.v5_shell_locale.outcome }}
+          V5_HOME_LOCALE: ${{ steps.v5_home_locale.outcome }}
+          V5_ASSIGNMENTS_LOCALE: ${{ steps.v5_assignments_locale.outcome }}
+          V5_ASSIGNMENTS_CONGREGATION: ${{ steps.v5_assignments_congregation.outcome }}
+          V5_CALENDAR_GRID: ${{ steps.v5_calendar_grid.outcome }}
+          V5_CALENDAR_LOCALE: ${{ steps.v5_calendar_locale.outcome }}
+          V5_ACTIVE_CONGREGATION: ${{ steps.v5_active_congregation.outcome }}
+          ASSIGNMENT_PUSH: ${{ steps.assignment_push.outcome }}
         run: |
           set -euo pipefail
-          for test in \
-            tests/v3-assignment-publish-auth-edge.mjs \
-            tests/v4-shell-static.mjs \
-            tests/v4-home-rail-static.mjs \
-            tests/v4-home-dashboard-static.mjs \
-            tests/v4-assignments-static.mjs \
-            tests/v4-calendar-static.mjs \
-            tests/v4-tranche11-static.mjs \
-            tests/v4-tranche13-static.mjs; do
-            echo "::group::$test"
-            node "$test"
-            echo "::endgroup::"
+          failed=0
+          for result in \
+            "$ASSIGNMENT_AUTH" "$SHELL_CONTRACT" "$HOME_RAIL" "$HOME_DASHBOARD" \
+            "$ASSIGNMENTS_CONTRACT" "$CALENDAR_CONTRACT" "$TRANCHE11" "$TRANCHE13" \
+            "$V5_SHELL_LOCALE" "$V5_HOME_LOCALE" "$V5_ASSIGNMENTS_LOCALE" \
+            "$V5_ASSIGNMENTS_CONGREGATION" "$V5_CALENDAR_GRID" "$V5_CALENDAR_LOCALE" \
+            "$V5_ACTIVE_CONGREGATION" "$ASSIGNMENT_PUSH"; do
+            if [ "$result" != "success" ]; then failed=1; fi
           done
-      - name: Run V5 superseding contracts
-        run: |
-          set -euo pipefail
-          for test in \
-            tests/v5-shared-shell-localization.test.mjs \
-            tests/v5-home-tagalog-surface.test.mjs \
-            tests/v5-assignments-tagalog-surface.test.mjs \
-            tests/v5-assignments-active-congregation.test.mjs \
-            tests/v5-calendar-month-grid-rework.test.mjs \
-            tests/v5-calendar-tagalog-surface.test.mjs \
-            tests/v5-active-congregation-selection.test.mjs \
-            tests/v3-assignment-push-edge.mjs; do
-            echo "::group::$test"
-            node "$test"
-            echo "::endgroup::"
-          done
+          if [ "$failed" -ne 0 ]; then
+            echo "One or more V5 collision contracts failed; see the named steps above."
+            exit 1
+          fi
