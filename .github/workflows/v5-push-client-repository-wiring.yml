@@ -1,0 +1,32 @@
+name: V5 push client repository verify
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/app/push-subscription-repository.js'
+      - 'src/app/push-subscription.js'
+      - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+      - 'tests/v5-push-client-repository-wiring.mjs'
+      - '.github/workflows/v5-push-client-repository-wiring.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Exact candidate
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Build
+        run: bash build.sh
+      - name: Push repository contract
+        run: node --test tests/v5-push-client-repository-wiring.mjs tests/v5-push-subscription-lifecycle.mjs
+      - name: Source clean
+        run: test -z "$(git status --porcelain --untracked-files=no)"
