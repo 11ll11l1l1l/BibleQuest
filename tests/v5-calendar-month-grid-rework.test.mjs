@@ -74,9 +74,9 @@ test('Calendar month-grid UI exposes navigation, day interaction, explicit categ
   assert.match(source, /data-calendar-day=/);
   assert.match(source, /days:42/);
   assert.match(source, /role="grid"/);
-  assert.match(source, /Assignment/);
-  assert.match(source, /Congregation/);
-  assert.match(source, /Personal/);
+  assert.match(source, /calendar\.source\.assignment/);
+  assert.match(source, /calendar\.source\.congregation/);
+  assert.match(source, /calendar\.source\.personal/);
   assert.match(source, /aria-pressed=/);
 });
 
