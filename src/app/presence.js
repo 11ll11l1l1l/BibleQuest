@@ -48,6 +48,7 @@ export function createPresenceService({
   clearIntervalFn=id=>clearInterval(id)
 }={}){
   if(!api?.touch||!api?.list||!api?.leave||!api?.activeCount||!session||!congregation||!store)throw new Error('Presence requires API, session, congregation and store boundaries.');
+  if(typeof congregation.getActive!=='function')throw new Error('Presence requires the active congregation boundary.');
   if(!Number.isFinite(heartbeatMs)||heartbeatMs<=0||!Number.isFinite(staleMs)||staleMs<=heartbeatMs)throw new Error('Presence timing requires a positive heartbeat and a longer stale timeout.');
 
   let state=baseState(session.getState?.()||{},'idle');
@@ -72,31 +73,44 @@ export function createPresenceService({
     return state;
   }
 
-  async function membershipsFor(userId){
-    let memberships=congregation.list();
-    let mine=memberships.filter(row=>clean(row?.userId)===userId&&clean(row?.congregationId));
-    if(!mine.length){
-      memberships=await congregation.load();
-      mine=memberships.filter(row=>clean(row?.userId)===userId&&clean(row?.congregationId));
+  async function activeCongregationFor(userId){
+    let membership=congregation.getActive();
+    if(!membership){
+      await congregation.load();
+      membership=congregation.getActive();
     }
-    return mine.map(row=>clean(row.congregationId));
+    const id=clean(membership?.congregationId);
+    if(!id||clean(membership?.userId)!==userId||!congregation.can(id,'read'))return '';
+    return id;
+  }
+
+  async function removePriorPresence(nextId,userId){
+    const staleIds=[...new Set(activeCongregationIds)].filter(id=>id&&id!==nextId);
+    if(!staleIds.length)return [];
+    const results=await Promise.allSettled(staleIds.map(id=>api.leave(id,userId)));
+    const failed=results.find(result=>result.status==='rejected');
+    if(failed)throw failed.reason;
+    staleIds.forEach(id=>cache.delete(id));
+    return results;
   }
 
   async function heartbeat(expectedGeneration=generation){
     const sessionState=session.getState();
     const userId=clean(sessionState?.user?.id);
     if(!started||!sessionState?.authenticated||sessionState?.remoteAvailable===false||!userId)return unavailable(sessionState);
-    const ids=[...new Set(await membershipsFor(userId))];
+    const id=await activeCongregationFor(userId);
     if(expectedGeneration!==generation)return state;
-    if(!ids.length){
+    await removePriorPresence(id,userId);
+    if(expectedGeneration!==generation)return state;
+    if(!id){
       stopTimer();activeCongregationIds=[];cache.clear();
       return publish({status:'no-congregation',authenticated:true,remoteAvailable:true,userId,congregationIds:[],lastHeartbeatAt:null,error:''});
     }
-    await Promise.all(ids.map(congregationId=>api.touch(congregationId,userId,SURFACE)));
+    await api.touch(id,userId,SURFACE);
     if(expectedGeneration!==generation)return state;
-    activeCongregationIds=ids;
+    activeCongregationIds=[id];
     const heartbeatAt=new Date(clock()).toISOString();
-    publish({status:'online',authenticated:true,remoteAvailable:true,userId,congregationIds:ids,lastHeartbeatAt:heartbeatAt,error:''});
+    publish({status:'online',authenticated:true,remoteAvailable:true,userId,congregationIds:[id],lastHeartbeatAt:heartbeatAt,error:''});
     if(timer===null)timer=setIntervalFn(()=>{heartbeat(generation).catch(error=>publish({status:'degraded',error:error?.message||'Presence heartbeat failed.'}))},heartbeatMs);
     return state;
   }
@@ -128,14 +142,18 @@ export function createPresenceService({
     return reconcile();
   }
 
+  async function requireActiveScope(requestedId){
+    const sessionState=session.getState(),userId=clean(sessionState?.user?.id);
+    if(!sessionState?.authenticated||sessionState?.remoteAvailable===false||!userId)return '';
+    const activeId=await activeCongregationFor(userId);
+    const requested=clean(requestedId);
+    if(!activeId||!requested||requested!==activeId)return '';
+    return activeId;
+  }
+
   async function load(congregationId){
-    const sessionState=session.getState(),id=clean(congregationId);
-    if(!sessionState?.authenticated||sessionState?.remoteAvailable===false||!sessionState?.user?.id)return Object.freeze([]);
-    if(!congregation.can(id,'read')){
-      const error=new Error('Presence can only be read inside your congregation.');
-      error.code='BQ_PRESENCE_SCOPE';
-      throw error;
-    }
+    const id=await requireActiveScope(congregationId);
+    if(!id)return Object.freeze([]);
     const now=clock(),rows=await api.list(id);
     const normalized=freezeList((Array.isArray(rows)?rows:[]).map(row=>normalizeRow(row,id,now,staleMs)));
     cache.set(id,normalized);
@@ -143,7 +161,9 @@ export function createPresenceService({
   }
 
   function snapshot(congregationId){
-    const id=clean(congregationId),now=clock(),rows=cache.get(id)||Object.freeze([]);
+    const id=clean(congregationId),activeId=clean(congregation.getActive()?.congregationId),now=clock();
+    if(!id||id!==activeId)return Object.freeze([]);
+    const rows=cache.get(id)||Object.freeze([]);
     return freezeList(rows.map(row=>({...row,online:isPresenceOnline(row,now,staleMs)})));
   }
 
@@ -172,13 +192,9 @@ export function createPresenceService({
     return [];
   }
 
-  // Privacy-safe member-facing aggregate: { activeCount } only, never a row
-  // list. Reuses the same congregation.can() scope check as load() (which
-  // remains the raw-row path for ministry roles / Leader Center).
   async function activeCount(congregationId,windowMinutes=30){
-    const sessionState=session.getState(),id=clean(congregationId);
-    if(!sessionState?.authenticated||sessionState?.remoteAvailable===false||!sessionState?.user?.id)return null;
-    if(!id||!congregation.can(id,'read'))return null;
+    const id=await requireActiveScope(congregationId);
+    if(!id)return null;
     return Object.freeze({count:Math.max(0,Number(await api.activeCount(id,windowMinutes))||0),windowMinutes});
   }
 
