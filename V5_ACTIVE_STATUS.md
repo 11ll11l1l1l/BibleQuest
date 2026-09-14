@@ -1,9 +1,9 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-13 JST
+Updated: 2026-09-15 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD at this reconciliation: `dfcb851b38326edef0e4969958eb15866c673c8d`
+Observed integration HEAD at this reconciliation: `e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9`
 Production fallback: V4 on `main` until an exact V5 candidate is accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -31,19 +31,28 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 ## 3. Current reconciliation state
 
-The integration branch has not yet serialized the current queue of open worker PRs. Therefore phase state is tracked as **implemented/open-evidence/in-progress**, not inferred from stale prompts.
+A5 has repaired the concurrent-work collision damage and is serializing one reviewed tranche at a time. The integration line now has a push/PR collision guard, exact-head focused workflows for newly integrated high-risk work, and a fail-fast browser startup diagnostic. Open PRs remain work products rather than integrated truth.
 
-- **Phase 1 — Leader Center:** implementation is present on the integration line, but the exit gate remains open until current-head member-vs-leader browser denial/allow evidence is recorded. Do not redesign or re-open the phase except for demonstrated regression or missing exit evidence.
-- **Phase 2 — Admin Console completion:** IN PROGRESS. UI/security/email-change work exists across open PRs and still requires controlled real Supabase Auth evidence for the email-change gate.
-- **Phase 3 — artwork/dead-owner cleanup:** IN PROGRESS. Several bounded artwork/Media-retirement PRs are pending serialization/evidence.
-- **Phase 4 — minimum Web Push:** IN PROGRESS. Service-worker delivery/click handling and subscription-storage work exist in separate PRs; client subscription lifecycle, server delivery/cleanup, integration, and real closed-app device proof remain.
-- **Phase 5 — baseline offline Scripture:** IN PROGRESS. Offline availability characterization exists in an open PR; Reader UI wiring and actual no-network reopen evidence remain.
-- **Phase 6 — multi-congregation:** IN PROGRESS. An account-safe active-congregation primitive exists in an open PR; visible switcher, Calendar/presence/Assignments wiring, controlled second congregation, and real Gate C execution remain.
-- **Phase 7 — verification debt:** IN PROGRESS. CEBOCB current-head automated browser evidence exists in an open PR; Couples bidirectional verification and deferred whole-app Section E/G evidence remain.
-- **Cross-phase content/UX completion track:** ACCEPTED / IMPLEMENTATION NOT CERTIFIED. The precise V5 target is defined below and in the plan/checklist.
-- **Phase 8 — certification/promotion:** NOT STARTED. No production promotion is authorized until all required gates pass on one exact SHA.
+- **Integration stability:** REPAIRED / GREEN at this reconciliation. The incomplete My Journey bootstrap wiring and retired `mediaLibrary.leave()` cleanup reference were removed in #336. The shared-shell browser gate now reports module/startup failures directly instead of timing out. The V5 collision guard is active on integration work.
+- **Phase 1 — Leader Center:** IMPLEMENTED / EXIT EVIDENCE OPEN. The feature owner is present, but the current-candidate member-denied vs leader-allowed browser gate still needs to be serialized on the current integration line.
+- **Phase 2 — Admin Console completion:** IN PROGRESS. The truthful account-deletion audit ordering fix is integrated in #338: `accountDeleted:true` is recorded only after Supabase Auth deletion succeeds. Controlled real Supabase Auth email-change evidence remains a required open gate.
+- **Phase 3 — artwork/dead-owner cleanup:** IN PROGRESS. The duplicate Media Library owner has been retired and the live `media` route remains on Recordings; remaining genuine-match artwork/glyph verification debt still needs reconciliation.
+- **Phase 4 — minimum Web Push:** IN PROGRESS. The reviewed browser `PushManager` lifecycle and service-worker push/click handling are integrated in #339 with dedicated exact-head CI. Explicit category opt-in defaults off, stale-account subscription rotation/rollback/sign-out cleanup are covered, and notification click targets are same-origin. Final backend persistence/delivery integration evidence, invalid-endpoint cleanup against real push-service responses, and app-closed DEVICE/FIELD delivery/tap proof remain open.
+- **Phase 5 — baseline offline Scripture:** **COMPLETE / ACCEPTANCE GATE SATISFIED.** Availability detection is integrated, Reader visibly reports offline availability, and merged PR #323 proved cached Scripture reopening with an actual Chromium context switched offline via `context.setOffline(true)`. The same proof requires never-opened Scripture to remain unavailable/fail clearly. The checklist explicitly allows equivalent real-browser no-network evidence; no hardware-device claim is needed for this gate. Compare `8b74b6520ea42a542ba8294f275244b0165e4fd6..e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9` shows the Phase 5 Reader/offline owners and proof files were not modified afterward.
+- **Phase 6 — multi-congregation:** IN PROGRESS. The account-safe active-congregation primitive and Assignments consumption are integrated, and Presence active-context consumption/switch cleanup is integrated in #340. Existing Calendar code consumes the active congregation owner. Remaining release gate is controlled second-congregation topology plus real cross-congregation Gate C BACKEND-E2E/DEVICE-FIELD execution; any visible-switcher acceptance gap must also be closed before Phase 6 is marked complete.
+- **Phase 7 — verification debt:** IN PROGRESS. CEBOCB/current Reader verification has substantial integrated evidence; Couples bidirectional verification and deferred whole-app Section E/G evidence still need current-head reconciliation.
+- **Cross-phase localization/content/UX:** IN PROGRESS. The localization foundation is integrated. Shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, and Videos/Recordings have current EN/TL coverage and browser/static evidence. Remaining agreed Tagalog surfaces, Cebuano/Bisaya completion, latest-service/weekly composition, and content-depth work remain.
+- **Phase 8 — certification/promotion:** NOT STARTED. No production promotion is authorized until all remaining required gates pass on one exact candidate SHA.
 
-Open PRs are work products, not integrated truth. A5 must serialize them one at a time after exact-head review/evidence.
+Recent A5 serialized integration sequence from the repaired line:
+
+1. `71c980efcfafc635e162c9eaf64c35c9113ff303` — runtime/module-graph startup repair (#336).
+2. `d4b1ea78520457746e64bd9a3137661f6a113c0d` — Videos/Recordings Tagalog tranche (#337).
+3. `d8988ca3b535f8b31513a706502e436603967b3b` — truthful Admin delete audit ordering (#338).
+4. `7518aab617b8e358c8031efc9848639ba2adeb41` — Phase 4 browser push lifecycle (#339).
+5. `e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9` — Phase 6 Presence active-congregation consumer (#340).
+
+A5 must continue to serialize one PR at a time after exact-head review/evidence. A stale/red PR must be rebased/replayed or superseded rather than merged by assumption.
 
 ## 4. Mandatory V5 outcomes
 
@@ -51,7 +60,7 @@ Open PRs are work products, not integrated truth. A5 must serialize them one at 
 2. Admin Console completion, including emergency-action UI and owner-only email-change/recovery with real controlled verification.
 3. Remaining honest artwork/icon completion and dead duplicate Media Library owner retirement.
 4. Minimum real Web Push using the existing Notification Center as source of truth.
-5. Baseline reopening of previously-opened Scripture offline with clear availability state.
+5. Baseline reopening of previously-opened Scripture offline with clear availability state. **Satisfied.**
 6. Real second-congregation Gate C evidence plus minimum active-congregation selection/switching respected by Calendar, presence, and Assignments.
 7. CEBOCB, Couples bidirectional-sharing, and deferred whole-app verification debt closed with evidence.
 8. Accepted content/UX completion track completed on the current architecture.
@@ -120,7 +129,7 @@ Use explicit evidence classes:
 - **BACKEND-E2E** — controlled real backend execution with non-sensitive evidence.
 - **DEVICE/FIELD** — actual device/network/account/congregation behavior.
 
-A static test never substitutes for a required real backend/device gate. Push requires DEVICE/FIELD app-closed delivery. Offline requires actual no-network reopening. Gate C requires real cross-congregation execution. Email-change requires controlled real Supabase Auth execution.
+A static test never substitutes for a required real backend/device gate. Push requires DEVICE/FIELD app-closed delivery. Offline requires actual no-network reopening; Phase 5 satisfies this through the checklist-approved real Chromium no-network equivalent. Gate C requires real cross-congregation execution. Email-change requires controlled real Supabase Auth execution.
 
 ## 8. V6/V7 sequencing
 
