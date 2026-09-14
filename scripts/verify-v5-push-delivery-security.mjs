@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 const fn = readFileSync('supabase/functions/bq-push-delivery/index.ts', 'utf8');
 const migration = readFileSync('supabase/migrations/20260914072000_push_subscriptions.sql', 'utf8');
+const deliveryMigration = readFileSync('supabase/migrations/20260914212500_push_delivery_idempotency.sql', 'utf8');
 const notificationsMigration = readFileSync('supabase/migrations/20260905_biblequest_production_upgrade_v1.sql', 'utf8');
 const router = readFileSync('src/app/router.js', 'utf8');
 const bootstrap = readFileSync('src/app/bootstrap.js', 'utf8');
@@ -91,6 +92,35 @@ has(fn, "console.error('push endpoint rejected')", 'rejected endpoint must be re
 has(fn, 'endpoint,\n            keys:', 'send must use validated endpoint value');
 lacks(fn, 'endpoint: subscription.endpoint', 'raw subscription endpoint must never reach privileged sender');
 
+// Idempotency is isolated from Notification Center semantics and unavailable to clients.
+has(deliveryMigration, 'create table if not exists public.bible_push_delivery_ledger', 'delivery ledger must be explicit and isolated');
+has(deliveryMigration, 'notification_id uuid not null references public.bible_notifications(id) on delete cascade', 'ledger must bind the persisted notification');
+has(deliveryMigration, 'subscription_id uuid not null references public.bible_push_subscriptions(id) on delete cascade', 'ledger must bind the exact subscription');
+has(deliveryMigration, 'primary key (notification_id, subscription_id)', 'one notification/subscription claim must be unique');
+has(deliveryMigration, 'alter table public.bible_push_delivery_ledger enable row level security;', 'ledger must have RLS enabled');
+has(deliveryMigration, 'revoke all on table public.bible_push_delivery_ledger from anon, authenticated;', 'client roles must have no ledger privileges');
+lacks(deliveryMigration, 'create policy', 'ledger must expose no client RLS policy');
+has(deliveryMigration, 'grant select, insert, update, delete on table public.bible_push_delivery_ledger to service_role;', 'ledger must remain service-role only');
+has(deliveryMigration, 'create or replace function public.bible_claim_push_delivery(', 'sender must use one bounded atomic claim primitive');
+has(deliveryMigration, 'security definer', 'claim primitive must execute under its server-owned definition');
+has(deliveryMigration, 'on conflict (notification_id, subscription_id) do nothing', 'duplicate/replayed claim must fail closed');
+has(deliveryMigration, 'revoke all on function public.bible_claim_push_delivery(uuid, uuid) from public, anon, authenticated;', 'client roles must not invoke the claim primitive');
+has(deliveryMigration, 'grant execute on function public.bible_claim_push_delivery(uuid, uuid) to service_role;', 'service role alone may invoke the claim primitive');
+lacks(deliveryMigration, 'alter table public.bible_notifications add column', 'idempotency must not overload Notification Center rows');
+
+has(fn, "adminDb.rpc('bible_claim_push_delivery'", 'sender must atomically claim before outbound delivery');
+has(fn, 'if (!claimed)', 'duplicate/replayed delivery must be skipped');
+has(fn, 'skipped += 1;', 'deduplicated attempts must be counted without exposing sensitive data');
+has(fn, ".from('bible_push_delivery_ledger')\n    .update({ delivered_at:", 'successful delivery must be finalized in the ledger');
+has(fn, 'async function releaseFailedDeliveryClaim', 'known failed deliveries must be retryable');
+has(fn, ".delete()\n    .eq('notification_id', notificationId)\n    .eq('subscription_id', subscriptionId)\n    .is('delivered_at', null)", 'only the exact unfinished claim may be released');
+has(fn, 'if (remoteAccepted)', 'unknown post-send finalization state must fail closed rather than release a possibly delivered claim');
+has(fn, "console.error('push delivery finalization failed')", 'post-send finalization failure must not disclose delivery material');
+const endpointGuard = fn.indexOf('const endpoint = safePushEndpoint(subscription.endpoint);');
+const claimCall = fn.indexOf('const claimed = await claimDelivery(adminDb, notification.id, subscription.id);');
+assert.ok(endpointGuard >= 0 && endpointGuard < claimCall, 'invalid endpoint must be rejected before consuming a delivery claim');
+assert.ok(claimCall >= 0 && claimCall < outboundSend, 'atomic claim must precede outbound push');
+
 // Redirects are failures, while permanent endpoint invalidation alone triggers cleanup.
 has(fn, 'statusCode >= 300 && statusCode < 400', 'push-service redirect status must fail closed');
 has(fn, "console.error('push delivery redirect rejected', { statusCode })", 'redirect rejection must avoid target disclosure');
@@ -103,4 +133,4 @@ has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
 for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
 
-console.log('V5 push delivery compatibility/security: PASS');
+console.log('V5 push delivery compatibility/security/idempotency: PASS');

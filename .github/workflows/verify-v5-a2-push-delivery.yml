@@ -7,6 +7,7 @@ on:
     paths:
       - 'supabase/functions/bq-push-delivery/**'
       - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+      - 'supabase/migrations/20260914212500_push_delivery_idempotency.sql'
       - 'src/app/router.js'
       - 'src/app/bootstrap.js'
       - 'scripts/verify-v5-push-delivery-security.mjs'
