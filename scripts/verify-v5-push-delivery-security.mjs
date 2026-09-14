@@ -126,8 +126,19 @@ for (const marker of [
 ]) has(fn, marker, `endpoint target screening missing ${marker}`);
 has(fn, 'const endpoint = safePushEndpoint(subscription.endpoint);', 'subscription endpoint must be screened before send');
 has(fn, "console.error('push endpoint rejected')", 'rejected endpoint must be recorded without endpoint material');
-has(fn, 'endpoint,\n            keys:', 'send must use validated endpoint value');
+has(fn, 'endpoint,\n            keys,', 'send must use validated endpoint and key values');
 lacks(fn, 'endpoint: subscription.endpoint', 'raw subscription endpoint must never reach privileged sender');
+
+// Persisted Web Push key material must be structurally valid before consuming an idempotency claim.
+has(fn, 'function decodeBase64Url(value: unknown, maxLength: number)', 'sender must own bounded base64url decoding');
+has(fn, '/^[A-Za-z0-9_-]+={0,2}$/.test(candidate)', 'key material must be restricted to base64url syntax');
+has(fn, "const decoded = atob(unpadded.replace(/-/g, '+').replace(/_/g, '/') + padding);", 'key material must be decoded before use');
+has(fn, 'function safePushKeys(p256dh: unknown, auth: unknown)', 'sender must validate both persisted subscription keys');
+has(fn, 'publicKey.bytes.length !== 65 || publicKey.bytes[0] !== 0x04', 'p256dh must be an uncompressed P-256 public key');
+has(fn, 'authSecret.bytes.length !== 16', 'auth secret must be exactly 16 bytes');
+has(fn, 'const keys = safePushKeys(subscription.p256dh, subscription.auth);', 'persisted key material must be screened before send');
+has(fn, "console.error('push key material rejected')", 'rejected key material must be logged without exposing key values');
+lacks(fn, 'keys: { p256dh: subscription.p256dh, auth: subscription.auth }', 'raw persisted key material must never reach web-push');
 
 // Idempotency is isolated from Notification Center semantics and unavailable to clients.
 has(deliveryMigration, 'create table if not exists public.bible_push_delivery_ledger', 'delivery ledger must be explicit and isolated');
@@ -154,8 +165,10 @@ has(fn, ".delete()\n    .eq('notification_id', notificationId)\n    .eq('subscri
 has(fn, 'if (remoteAccepted)', 'unknown post-send finalization state must fail closed rather than release a possibly delivered claim');
 has(fn, "console.error('push delivery finalization failed')", 'post-send finalization failure must not disclose delivery material');
 const endpointGuard = fn.indexOf('const endpoint = safePushEndpoint(subscription.endpoint);');
+const keyGuard = fn.indexOf('const keys = safePushKeys(subscription.p256dh, subscription.auth);');
 const claimCall = fn.indexOf('const claimed = await claimDelivery(adminDb, notification.id, subscription.id);');
-assert.ok(endpointGuard >= 0 && endpointGuard < claimCall, 'invalid endpoint must be rejected before consuming a delivery claim');
+assert.ok(endpointGuard >= 0 && endpointGuard < keyGuard, 'endpoint validation must precede key-material validation');
+assert.ok(keyGuard >= 0 && keyGuard < claimCall, 'invalid key material must be rejected before consuming a delivery claim');
 assert.ok(claimCall >= 0 && claimCall < outboundSend, 'atomic claim must precede outbound push');
 
 // Redirects are failures, while permanent endpoint invalidation alone triggers cleanup.
@@ -168,6 +181,6 @@ has(fn, ".delete()\n            .eq('id', subscription.id)\n            .eq('use
 has(fn, "Deno.env.get('VAPID_PRIVATE_KEY')", 'private VAPID key must be server environment only');
 has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
-for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
+for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at','console.log(keys','console.error(keys']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
 
-console.log('V5 push delivery compatibility/security/idempotency/assignment-producer: PASS');
+console.log('V5 push delivery compatibility/security/idempotency/assignment-producer/key-validation: PASS');
