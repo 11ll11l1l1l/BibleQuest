@@ -1,0 +1,54 @@
+name: V5 Reader offline no-network browser
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/core/bible.js'
+      - 'src/app/offline-scripture-status.js'
+      - 'src/app/reader.js'
+      - 'tests/v5-reader-offline-network-browser.mjs'
+      - '.github/workflows/v5-reader-offline-network-browser.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-reader-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Build current application
+        run: bash build.sh
+      - name: Start same-origin static server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-offline-http.log 2>&1 &
+          echo $! > /tmp/bq-v5-offline-http.pid
+          for i in {1..20}; do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 0.5; done
+          curl --fail --silent http://127.0.0.1:4173/ >/dev/null
+      - name: Run real browser no-network Scripture reopening proof
+        run: node tests/v5-reader-offline-network-browser.mjs
+      - name: Run accumulated Phase 5 companions
+        run: |
+          node --test tests/v5-offline-bible-availability.test.mjs
+          node --test tests/v5-reader-offline-availability.test.mjs
+          node scripts/validate-v4-cebocb-packs.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
