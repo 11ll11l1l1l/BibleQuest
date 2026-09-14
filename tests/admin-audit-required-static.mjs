@@ -11,11 +11,11 @@ function between(start, end) {
   return source.slice(from, to);
 }
 
-assert.match(
-  source,
-  /async function auditRequired\([^)]*\)\{const r=await a\.from\('bible_admin_audit_log'\)\.insert\(\{actor_id:actor,target_user_id:target,action,detail:\{stage:'requested'\}\}\);if\(r\.error\)throw new Error\('Admin audit unavailable'\)\}/,
-  'security-sensitive actions need a fail-closed durable audit checkpoint helper',
-);
+const requiredAuditHelper = between('async function auditRequired', 'async function health');
+assert.match(requiredAuditHelper, /from\('bible_admin_audit_log'\)\.insert/, 'required checkpoint must persist through the existing audit owner');
+assert.match(requiredAuditHelper, /detail:\{stage:'requested'\}/, 'required checkpoint detail must remain privacy-safe and bounded');
+assert.match(requiredAuditHelper, /if\(r\.error\)throw new Error\('Admin audit unavailable'\)/, 'audit persistence failure must fail closed');
+assert.doesNotMatch(requiredAuditHelper, /password|email|token|secret/i, 'required checkpoint helper must not accept or persist sensitive values');
 
 function assertCheckpointBefore(block, action, mutation, label) {
   const checkpoint = `auditRequired(a,u.id,target,'${action}')`;
@@ -41,10 +41,8 @@ assertCheckpointBefore(forceSignOut, 'force_sign_out', 'forceSignOutUser(target)
 
 const tempPassword = between("if(action==='set_temp_password')", "if(action==='change_email')");
 assertCheckpointBefore(tempPassword, 'set_temp_password', 'a.auth.admin.updateUserById(target,{password})', 'set_temp_password');
-assert.doesNotMatch(tempPassword, /auditRequired\([^\n]*(password|secret|token|email)/i, 'temp-password checkpoint must not persist credential values');
 
 const changeEmail = between("if(action==='change_email')", "return json(req,{error:'Unknown action'},400)");
 assertCheckpointBefore(changeEmail, 'change_email', 'a.auth.admin.updateUserById(target,{email})', 'change_email');
-assert.doesNotMatch(changeEmail, /auditRequired\([^\n]*(email|password|secret|token)/i, 'email-change checkpoint must not persist email or credential values');
 
 console.log('PASS admin emergency actions require durable audit checkpoint before mutation');
