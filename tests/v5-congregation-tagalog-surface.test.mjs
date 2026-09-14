@@ -18,6 +18,7 @@ const [{ en, LOCALE_KEY_INVENTORY }, { tl }, { localization }, { congregationPag
   import('../src/features/congregation/index.js')
 ]);
 const source = await readFile(new URL('../src/features/congregation/index.js', import.meta.url), 'utf8');
+const executableSource = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
 
 const KEYS = [
   'congregation.title','congregation.eyebrow','congregation.heading','congregation.description','congregation.empty',
@@ -50,10 +51,10 @@ test('Congregation page uses only the integrated localization owner for bounded 
   assert.match(source, /import \{ localization \} from '\.\.\/\.\.\/app\/localization\.js';/);
   assert.match(source, /const locale=localization\.getLocale\(\)/);
   for (const key of ['congregation.heading','congregation.empty','congregation.active','congregation.joinHeading','congregation.signInPrompt','congregation.switched']) {
-    assert.ok(source.includes(`'${key}'`), `Congregation page is not wired to ${key}`);
+    assert.ok(executableSource.includes(`'${key}'`), `Congregation page is not wired to ${key}`);
   }
   for (const leak of ['Your congregation','Active congregation','Join with invite code','Sign in to view or join a congregation.','Back to More','Joining…']) {
-    assert.equal(source.includes(leak), false, `Congregation source still hard-codes localized English UI: ${leak}`);
+    assert.equal(executableSource.includes(leak), false, `Congregation executable source still hard-codes localized English UI: ${leak}`);
   }
 });
 
@@ -74,12 +75,12 @@ test('guest Congregation HTML renders reviewed Tagalog without changing auth beh
 });
 
 test('localization does not change congregation permission, membership, or persistence ownership', () => {
-  assert.match(source, /membership\.isAuthenticated\(\)/);
-  assert.match(source, /membership\.getActive\(\)/);
-  assert.match(source, /membership\.setActive\(/);
-  assert.match(source, /membership\.join\(/);
-  assert.equal(source.includes('localStorage'), false);
-  assert.equal(source.includes('sessionStorage'), false);
-  assert.equal(source.includes('supabase'), false);
-  assert.equal(source.includes('createClient'), false);
+  assert.match(executableSource, /membership\.isAuthenticated\(\)/);
+  assert.match(executableSource, /membership\.getActive\(\)/);
+  assert.match(executableSource, /membership\.setActive\(/);
+  assert.match(executableSource, /membership\.join\(/);
+  assert.equal(executableSource.includes('localStorage'), false);
+  assert.equal(executableSource.includes('sessionStorage'), false);
+  assert.equal(executableSource.includes('supabase'), false);
+  assert.equal(executableSource.includes('createClient'), false);
 });
