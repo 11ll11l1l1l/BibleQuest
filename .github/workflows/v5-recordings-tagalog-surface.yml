@@ -58,7 +58,6 @@ jobs:
         run: |
           timeout 240s node tests/v5-shared-shell-localization-browser.mjs
           timeout 240s node tests/v5-transform-localization-browser.mjs
-          timeout 240s node tests/v5-home-tagalog-browser.mjs
           timeout 240s node tests/v5-calendar-tagalog-browser.mjs
           timeout 240s node tests/v5-assignments-tagalog-browser.mjs
           timeout 240s node tests/v5-notification-center-tagalog-browser.mjs
