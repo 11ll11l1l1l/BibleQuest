@@ -11,12 +11,21 @@ on:
       - 'src/ui/shell.js'
       - 'src/features/transform/index.js'
       - 'src/features/home/index.js'
+      - 'src/features/calendar/index.js'
+      - 'src/features/assignments/index.js'
+      - 'src/features/notification-center/index.js'
       - 'tests/v5-localization-foundation.test.mjs'
       - 'tests/v5-shared-shell-localization.test.mjs'
       - 'tests/v5-shared-shell-localization-browser.mjs'
       - 'tests/v5-transform-localization.test.mjs'
       - 'tests/v5-transform-localization-browser.mjs'
       - 'tests/v5-home-tagalog-surface.test.mjs'
+      - 'tests/v5-calendar-tagalog-surface.test.mjs'
+      - 'tests/v5-calendar-tagalog-browser.mjs'
+      - 'tests/v5-assignments-tagalog-surface.test.mjs'
+      - 'tests/v5-assignments-tagalog-browser.mjs'
+      - 'tests/v5-notification-center-tagalog-surface.test.mjs'
+      - 'tests/v5-notification-center-tagalog-browser.mjs'
       - 'tests/v5-localization-qa-current-surfaces.mjs'
       - '.github/workflows/v5-localization-qa-current-surfaces.yml'
 
@@ -26,7 +35,7 @@ permissions:
 jobs:
   localization-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,10 +47,17 @@ jobs:
         run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
       - name: Build current application
         run: bash build.sh
-      - name: Run localization completeness and leak QA
+      - name: Run localization completeness and integrated-surface leak QA
         run: |
           node tests/v5-localization-qa-current-surfaces.mjs
-          node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs
+          node --test \
+            tests/v5-localization-foundation.test.mjs \
+            tests/v5-shared-shell-localization.test.mjs \
+            tests/v5-transform-localization.test.mjs \
+            tests/v5-home-tagalog-surface.test.mjs \
+            tests/v5-calendar-tagalog-surface.test.mjs \
+            tests/v5-assignments-tagalog-surface.test.mjs \
+            tests/v5-notification-center-tagalog-surface.test.mjs
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save playwright
@@ -59,6 +75,9 @@ jobs:
         run: |
           timeout 240s node tests/v5-shared-shell-localization-browser.mjs
           timeout 240s node tests/v5-transform-localization-browser.mjs
+          timeout 240s node tests/v5-calendar-tagalog-browser.mjs
+          timeout 240s node tests/v5-assignments-tagalog-browser.mjs
+          timeout 240s node tests/v5-notification-center-tagalog-browser.mjs
           timeout 240s node --input-type=module <<'EOF'
           import { chromium } from 'playwright';
           const browser = await chromium.launch({ headless: true });
