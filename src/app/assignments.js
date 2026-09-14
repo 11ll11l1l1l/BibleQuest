@@ -127,7 +127,8 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     if(!current?.authenticated||!currentUserId)return resetAccountState('',false,true,'signed-out');
     const memberships=await congregation.load();
     if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation');
-    const selected=memberships.find(row=>row.congregationId===String(congregationId||state.congregationId))||memberships[0];
+    const activeMembership=typeof congregation.getActive==='function'?congregation.getActive():null;
+    const selected=memberships.find(row=>row.congregationId===String(congregationId||activeMembership?.congregationId||state.congregationId))||memberships[0];
     congregation.assert(selected.congregationId,'read');
     const payload=await api.load(selected.congregationId,currentUserId);
     const assignments=(Array.isArray(payload?.assignments)?payload.assignments:[]).map(row=>normalizeAssignment(row,selected.congregationId));

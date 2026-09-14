@@ -1,0 +1,46 @@
+name: V5 Assignments active congregation verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/assignments.js'
+      - 'tests/v5-assignments-active-congregation.test.mjs'
+      - '.github/workflows/v5-assignments-active-congregation-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  assignments-active-congregation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Phase 6 Assignments contracts
+        run: |
+          node --check src/app/assignments.js
+          node --check tests/v5-assignments-active-congregation.test.mjs
+          node --test tests/v5-assignments-active-congregation.test.mjs
+      - name: Run relevant accumulated congregation and Assignments contracts
+        run: |
+          node --test tests/v5-active-congregation-selection.test.mjs
+          node tests/admin-membership-static.mjs
+          node tests/community-role-parity-static.mjs
+          if test -f tests/assignments-static.mjs; then node tests/assignments-static.mjs; fi
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
