@@ -92,9 +92,9 @@ assert.ok(feature.includes("BQ_ASSIGNMENT_PUBLISH_INPUT")&&feature.includes("BQ_
 assert.ok(!feature.includes('message=error?.message'),'Assignments action handlers must not display arbitrary thrown error messages.');
 assert.ok(!feature.includes('esc(error?.message'),'Assignments load failure must not display arbitrary thrown error messages.');
 assert.ok(!feature.includes('esc(review.error'),'Assignments response-review failure must not display arbitrary service error details.');
-for(const key of['assignments.error.load','assignments.review.error','assignments.error.targets','assignments.error.publish','assignments.error.complete'])assert.ok(feature.includes(key),`Assignments must provide bounded localized failure copy via ${key}.`);
+for(const key of['assignments.error.load','assignments.review.error','assignments.error.audiences','assignments.error.publish','assignments.error.complete'])assert.ok(feature.includes(key),`Assignments must provide bounded localized failure copy via ${key}.`);
 
-for(const key of['assignments.responsePrivacy','assignments.leaderPrivacy','assignments.privacy.description'])assert.ok(feature.includes(key),`Assignments privacy boundary must remain explicit via ${key}.`);
+for(const key of['assignments.responsePrivacy','assignments.leaderPrivacy','assignments.privacy.ministry','assignments.privacy.member','assignments.privacy.personal'])assert.ok(feature.includes(key),`Assignments privacy boundary must remain explicit via ${key}.`);
 
 assert.ok(workflow.includes('tests/v4-assignments-static.mjs'),'Accumulated edge CI must run the V4 Assignments static acceptance contract.');
 assert.ok(workflow.includes('tests/v4-assignments-page-smoke.mjs'),'Accumulated browser CI must run the V4 Assignments page acceptance smoke.');
