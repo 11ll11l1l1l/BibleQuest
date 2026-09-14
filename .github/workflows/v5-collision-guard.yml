@@ -1,0 +1,60 @@
+name: BibleQuest V5 collision guard
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - v5/feature-completion
+  pull_request:
+    branches:
+      - v5/feature-completion
+
+concurrency:
+  group: biblequest-v5-collision-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  collision-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify deployable static build
+        run: bash build.sh
+      - name: Run certified collision contracts
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v3-assignment-publish-auth-edge.mjs \
+            tests/v4-shell-static.mjs \
+            tests/v4-home-rail-static.mjs \
+            tests/v4-home-dashboard-static.mjs \
+            tests/v4-assignments-static.mjs \
+            tests/v4-calendar-static.mjs \
+            tests/v4-tranche11-static.mjs \
+            tests/v4-tranche13-static.mjs; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
+      - name: Run V5 superseding contracts
+        run: |
+          set -euo pipefail
+          for test in \
+            tests/v5-shared-shell-localization.test.mjs \
+            tests/v5-home-tagalog-surface.test.mjs \
+            tests/v5-assignments-tagalog-surface.test.mjs \
+            tests/v5-assignments-active-congregation.test.mjs \
+            tests/v5-calendar-month-grid-rework.test.mjs \
+            tests/v5-calendar-tagalog-surface.test.mjs \
+            tests/v5-active-congregation-selection.test.mjs \
+            tests/v3-assignment-push-edge.mjs; do
+            echo "::group::$test"
+            node "$test"
+            echo "::endgroup::"
+          done
