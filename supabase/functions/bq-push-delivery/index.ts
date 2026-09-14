@@ -85,6 +85,63 @@ function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
+function ipv4Octets(hostname: string) {
+  if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname)) return null;
+  const octets = hostname.split('.').map(Number);
+  return octets.every((part) => Number.isInteger(part) && part >= 0 && part <= 255) ? octets : null;
+}
+
+function isBlockedIpv4(hostname: string) {
+  const octets = ipv4Octets(hostname);
+  if (!octets) return false;
+  const [a, b, c] = octets;
+  return a === 0
+    || a === 10
+    || a === 127
+    || a >= 224
+    || (a === 100 && b >= 64 && b <= 127)
+    || (a === 169 && b === 254)
+    || (a === 172 && b >= 16 && b <= 31)
+    || (a === 192 && b === 168)
+    || (a === 192 && b === 0 && (c === 0 || c === 2))
+    || (a === 198 && (b === 18 || b === 19))
+    || (a === 198 && b === 51 && c === 100)
+    || (a === 203 && b === 0 && c === 113);
+}
+
+function isBlockedPushHost(hostname: string) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/g, '').replace(/\.$/, '');
+  if (!host || host === 'localhost') return true;
+  if (isBlockedIpv4(host)) return true;
+
+  if (host.includes(':')) {
+    return host === '::'
+      || host === '::1'
+      || host.startsWith('::ffff:')
+      || /^f[cd]/.test(host)
+      || /^fe[89ab]/.test(host)
+      || /^ff/.test(host)
+      || host.startsWith('2001:db8:');
+  }
+
+  if (!host.includes('.')) return true;
+  return ['.localhost', '.local', '.localdomain', '.internal', '.home', '.lan', '.test', '.invalid']
+    .some((suffix) => host.endsWith(suffix));
+}
+
+function safePushEndpoint(endpoint: unknown) {
+  const candidate = String(endpoint || '').trim();
+  if (!candidate || candidate.length > 4096) return null;
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== 'https:' || url.username || url.password || url.hash) return null;
+    if (isBlockedPushHost(url.hostname)) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') return response({ error: 'POST required' }, 405);
 
@@ -131,10 +188,17 @@ Deno.serve(async (req: Request) => {
     let failed = 0;
 
     for (const subscription of rows) {
+      const endpoint = safePushEndpoint(subscription.endpoint);
+      if (!endpoint) {
+        failed += 1;
+        console.error('push endpoint rejected');
+        continue;
+      }
+
       try {
         await webpush.sendNotification(
           {
-            endpoint: subscription.endpoint,
+            endpoint,
             keys: { p256dh: subscription.p256dh, auth: subscription.auth },
           },
           payload,
@@ -143,7 +207,10 @@ Deno.serve(async (req: Request) => {
         delivered += 1;
       } catch (error) {
         const statusCode = Number((error as { statusCode?: number })?.statusCode || 0);
-        if (statusCode === 404 || statusCode === 410) {
+        if (statusCode >= 300 && statusCode < 400) {
+          failed += 1;
+          console.error('push delivery redirect rejected', { statusCode });
+        } else if (statusCode === 404 || statusCode === 410) {
           const cleanup = await adminDb
             .from('bible_push_subscriptions')
             .delete()
