@@ -1,9 +1,12 @@
+import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
+
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
 
 export function createReaderService({ bible, storage, progress }) {
   if (!bible || !storage || !progress) throw new Error('Reader service requires Bible data, storage and progress boundaries.');
 
+  const offlineScripture = createOfflineScriptureAvailability({ bibleService: bible });
   const normalize = input => {
     const translation = bible.translations.some(item => item.id === input?.translation) ? input.translation : DEFAULT_STATE.translation;
     let book;
@@ -58,6 +61,10 @@ export function createReaderService({ bible, storage, progress }) {
 
   async function load() {
     return bible.loadChapter(state.translation, state.book, state.chapter);
+  }
+
+  async function getOfflineStatus() {
+    return offlineScripture.getStatus(state.translation, state.book);
   }
 
   function readKey(translation = state.translation, code = state.book, chapter = state.chapter) {
@@ -121,6 +128,7 @@ export function createReaderService({ bible, storage, progress }) {
     setChapter,
     move,
     load,
+    getOfflineStatus,
     markRead,
     isRead,
     search,
