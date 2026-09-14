@@ -37,6 +37,22 @@ jobs:
       - name: Verify current Admin and push evidence prerequisites
         run: node scripts/verify-v5-a2-nonprod-evidence-readiness.mjs
 
+      - name: Prove runtime preflight fails closed without operator configuration
+        run: |
+          set -euo pipefail
+          if node scripts/verify-v5-a2-nonprod-evidence-readiness.mjs --runtime-preflight; then
+            echo 'Runtime preflight unexpectedly accepted missing non-production evidence configuration.'
+            exit 1
+          fi
+
+      - name: Run accumulated Admin and push security regressions
+        run: |
+          set -euo pipefail
+          node scripts/validate-v3-admin-console.mjs
+          node scripts/validate-v3-admin-operations.mjs
+          node scripts/validate-v3-reset-recovery.mjs
+          node scripts/verify-v5-push-delivery-security.mjs
+
       - name: Confirm workflow contains no runtime evidence secrets
         run: |
           set -euo pipefail
