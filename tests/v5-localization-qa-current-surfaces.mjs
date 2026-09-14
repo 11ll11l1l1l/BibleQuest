@@ -21,7 +21,8 @@ const transformKeys = [
   'nav.transformation',
   ...LOCALE_KEY_INVENTORY.filter(key => key.startsWith('transform.'))
 ];
-const migratedKeys = [...new Set([...shellKeys, ...transformKeys])].sort();
+const homeKeys = LOCALE_KEY_INVENTORY.filter(key => key.startsWith('home.'));
+const migratedKeys = [...new Set([...shellKeys, ...transformKeys, ...homeKeys])].sort();
 const reviewedSharedTerms = new Set([
   'app.name',
   'locale.tagalog',
@@ -30,7 +31,15 @@ const reviewedSharedTerms = new Set([
   'shell.account',
   'transform.mode.basic',
   'transform.mode.full',
-  'transform.basic.eyebrow'
+  'transform.basic.eyebrow',
+  'home.progress.xp'
+]);
+const intentionalSourceCompatibilityLiterals = new Set([
+  'home.shortcut.daily',
+  'home.shortcut.reader',
+  'home.shortcut.assignments',
+  'home.shortcut.calendar',
+  'home.shortcut.progress'
 ]);
 
 const placeholders = value => [...String(value).matchAll(/\{([a-zA-Z0-9_]+)\}/g)].map(match => match[1]).sort();
@@ -48,12 +57,13 @@ for (const key of migratedKeys) {
   }
 }
 
-const fallbackDictionaries = { en, tl: { ...tl, 'nav.calendar': '' } };
-assert.equal(t('nav.calendar', { locale: 'tl', dictionaries: fallbackDictionaries }), en['nav.calendar'], 'Empty Tagalog values must deterministically fall back to English.');
+const fallbackDictionaries = { en, tl: { ...tl, 'home.today.open': '' } };
+assert.equal(t('home.today.open', { locale: 'tl', dictionaries: fallbackDictionaries }), en['home.today.open'], 'Empty Tagalog Home values must deterministically fall back to English.');
 
 const sourceContracts = [
   { path: 'src/ui/shell.js', keys: shellKeys },
-  { path: 'src/features/transform/index.js', keys: transformKeys }
+  { path: 'src/features/transform/index.js', keys: transformKeys },
+  { path: 'src/features/home/index.js', keys: homeKeys }
 ];
 
 for (const contract of sourceContracts) {
@@ -63,12 +73,17 @@ for (const contract of sourceContracts) {
   for (const key of contract.keys) {
     assert.match(source, new RegExp(`['\"]${escapeRegExp(key)}['\"]`), `${contract.path} no longer references migrated key ${key}`);
 
-    if (reviewedSharedTerms.has(key)) continue;
+    if (reviewedSharedTerms.has(key) || intentionalSourceCompatibilityLiterals.has(key)) continue;
     const english = en[key];
     if (english.length < 4) continue;
     const quotedEnglish = [`'${english}'`, `"${english}"`, `\`${english}\``];
     assert.ok(!quotedEnglish.some(literal => source.includes(literal)), `${contract.path} hard-codes migrated English UI instead of using ${key}: ${english}`);
   }
+}
+
+const homeSource = fs.readFileSync(new URL('../src/features/home/index.js', import.meta.url), 'utf8');
+for (const key of intentionalSourceCompatibilityLiterals) {
+  assert.match(homeSource, new RegExp(`label:\\s*['\"]${escapeRegExp(en[key])}['\"]\\s*,\\s*labelKey:\\s*['\"]${escapeRegExp(key)}['\"]`), `Home compatibility label for ${key} must remain paired with its localized labelKey and must not become the rendered source of truth.`);
 }
 
 const shellSource = fs.readFileSync(new URL('../src/ui/shell.js', import.meta.url), 'utf8');
@@ -88,5 +103,6 @@ for (const text of knownNotYetMigratedRecoveryStrings) {
   assert.ok(shellSource.includes(text), `Known not-yet-migrated recovery string changed; update localization QA classification deliberately: ${text}`);
 }
 
-console.log(`PASS V5 localization QA: ${migratedKeys.length} currently migrated Tagalog keys are complete, placeholders are stable, fallback is deterministic, and canonical English UI literals do not leak through their owners.`);
+console.log(`PASS V5 localization QA: ${migratedKeys.length} currently migrated Tagalog keys across shell, Transformation, and Home/Today are complete, placeholders are stable, fallback is deterministic, and canonical English UI literals do not leak through their rendered owners.`);
+console.log(`INFO V5 localization QA: ${intentionalSourceCompatibilityLiterals.size} Home shortcut English literals remain explicitly classified as non-rendered compatibility metadata paired with localized labelKey owners.`);
 console.log(`INFO V5 localization QA: ${knownNotYetMigratedRecoveryStrings.length} shell recovery strings remain explicitly classified as not-yet-migrated debt; this gate does not claim full Tagalog coverage.`);

@@ -10,11 +10,13 @@ on:
       - 'src/app/localization.js'
       - 'src/ui/shell.js'
       - 'src/features/transform/index.js'
+      - 'src/features/home/index.js'
       - 'tests/v5-localization-foundation.test.mjs'
       - 'tests/v5-shared-shell-localization.test.mjs'
       - 'tests/v5-shared-shell-localization-browser.mjs'
       - 'tests/v5-transform-localization.test.mjs'
       - 'tests/v5-transform-localization-browser.mjs'
+      - 'tests/v5-home-tagalog-surface.test.mjs'
       - 'tests/v5-localization-qa-current-surfaces.mjs'
       - '.github/workflows/v5-localization-qa-current-surfaces.yml'
 
@@ -39,7 +41,7 @@ jobs:
       - name: Run localization completeness and leak QA
         run: |
           node tests/v5-localization-qa-current-surfaces.mjs
-          node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs
+          node --test tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save playwright
@@ -57,6 +59,39 @@ jobs:
         run: |
           timeout 240s node tests/v5-shared-shell-localization-browser.mjs
           timeout 240s node tests/v5-transform-localization-browser.mjs
+          timeout 240s node --input-type=module <<'EOF'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+          try {
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const pageErrors = [];
+            page.on('pageerror', error => pageErrors.push(error.message));
+            await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+            await page.locator('[data-locale-select]').waitFor();
+            await page.locator('[data-locale-select]').selectOption('tl');
+            await page.waitForFunction(() => document.querySelector('[data-bq-shell="v3"]')?.dataset.locale === 'tl');
+            await page.goto('http://127.0.0.1:4173/#/home', { waitUntil: 'networkidle' });
+            await page.getByText('Tuklasin · Matuto · Lumago', { exact: true }).waitFor();
+            await page.getByText('IYONG PAG-UNLAD', { exact: true }).waitFor();
+            const state = await page.evaluate(() => ({
+              innerWidth: window.innerWidth,
+              scrollWidth: document.documentElement.scrollWidth,
+              railLabel: document.querySelector('[data-home-rail]')?.getAttribute('aria-label'),
+              minControlHeight: Math.min(...[...document.querySelectorAll('[data-open-daily], [data-open-congregation-assignments], [data-home-rail-item], [data-open-tutorial], [data-open-recordings]')].map(node => node.getBoundingClientRect().height))
+            }));
+            assert(state.railLabel === 'Mabilis na mga shortcut', `Unexpected Home rail label: ${state.railLabel}`);
+            assert(state.scrollWidth <= state.innerWidth + 1, `Tagalog Home overflows at 390px: ${state.scrollWidth}px > ${state.innerWidth}px.`);
+            assert(state.minControlHeight >= 40, `Home control height regressed below 40px: ${state.minControlHeight}px.`);
+            for (const leak of ['Explore · Learn · Grow','Continue My Journey — 4 min','YOUR PROGRESS','Congregation & Assignments','Show tutorial','Checking recent activity…']) {
+              assert(await page.getByText(leak, { exact: true }).count() === 0, `Home localized surface still exposes English UI text: ${leak}`);
+            }
+            assert(pageErrors.length === 0, `Browser page errors occurred: ${pageErrors.join(' | ')}`);
+            console.log('PASS V5 Home/Today Tagalog browser localization');
+          } finally {
+            await browser.close();
+          }
+          EOF
           timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
       - name: Verify exact source head remained unchanged
         run: |
