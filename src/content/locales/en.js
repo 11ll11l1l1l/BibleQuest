@@ -120,7 +120,7 @@ export const en = Object.freeze({
   'assignments.pointsLabel': 'Completion points',
   'assignments.none': 'None',
   'assignments.optional': 'Optional',
-  'assignments.scriptureRefs': 'Scripture references',
+  'assignments.referencesLabel': 'Scripture references',
   'assignments.yourResponse': 'Your submitted response',
   'assignments.leaderFeedback': 'Leader feedback',
   'assignments.type.reading': 'Reading',
