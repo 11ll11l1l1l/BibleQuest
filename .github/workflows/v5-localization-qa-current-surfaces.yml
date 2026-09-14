@@ -14,6 +14,7 @@ on:
       - 'src/features/calendar/index.js'
       - 'src/features/assignments/index.js'
       - 'src/features/notification-center/index.js'
+      - 'src/features/account/index.js'
       - 'tests/v5-localization-foundation.test.mjs'
       - 'tests/v5-shared-shell-localization.test.mjs'
       - 'tests/v5-shared-shell-localization-browser.mjs'
@@ -26,6 +27,8 @@ on:
       - 'tests/v5-assignments-tagalog-browser.mjs'
       - 'tests/v5-notification-center-tagalog-surface.test.mjs'
       - 'tests/v5-notification-center-tagalog-browser.mjs'
+      - 'tests/v5-account-settings-tagalog-surface.test.mjs'
+      - 'tests/v5-account-settings-tagalog-browser.mjs'
       - 'tests/v5-localization-qa-current-surfaces.mjs'
       - '.github/workflows/v5-localization-qa-current-surfaces.yml'
 
@@ -57,7 +60,8 @@ jobs:
             tests/v5-home-tagalog-surface.test.mjs \
             tests/v5-calendar-tagalog-surface.test.mjs \
             tests/v5-assignments-tagalog-surface.test.mjs \
-            tests/v5-notification-center-tagalog-surface.test.mjs
+            tests/v5-notification-center-tagalog-surface.test.mjs \
+            tests/v5-account-settings-tagalog-surface.test.mjs
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save playwright
@@ -78,6 +82,7 @@ jobs:
           timeout 240s node tests/v5-calendar-tagalog-browser.mjs
           timeout 240s node tests/v5-assignments-tagalog-browser.mjs
           timeout 240s node tests/v5-notification-center-tagalog-browser.mjs
+          timeout 240s node tests/v5-account-settings-tagalog-browser.mjs
           timeout 240s node --input-type=module <<'EOF'
           import { chromium } from 'playwright';
           const browser = await chromium.launch({ headless: true });
