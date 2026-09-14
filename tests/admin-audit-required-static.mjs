@@ -28,6 +28,12 @@ function assertCheckpointBefore(block, action, mutation, label) {
 const deleteUser = between("if(action==='delete_user')", "if(action==='suspend_account'||action==='reactivate_account')");
 assertCheckpointBefore(deleteUser, 'delete_account', "a.from('bible_shared_sessions').update", 'delete_user shared-session cleanup');
 assertCheckpointBefore(deleteUser, 'delete_account', 'a.auth.admin.deleteUser(target)', 'delete_user Auth deletion');
+const deleteMutationAt = deleteUser.indexOf('a.auth.admin.deleteUser(target)');
+const deleteSuccessCheckAt = deleteUser.indexOf('if(del.error)throw del.error');
+const deleteCompletionAuditAt = deleteUser.indexOf("audit(a,u.id,target,'delete_account',{accountDeleted:true})");
+assert.ok(deleteMutationAt >= 0, 'delete_user must call Supabase Auth deletion');
+assert.ok(deleteSuccessCheckAt > deleteMutationAt, 'delete_user must check Auth deletion result');
+assert.ok(deleteCompletionAuditAt > deleteSuccessCheckAt, 'delete_user must not claim accountDeleted=true until Auth deletion succeeds');
 
 const suspendReactivate = between("if(action==='suspend_account'||action==='reactivate_account')", "if(action==='force_sign_out')");
 assert.match(suspendReactivate, /auditRequired\(a,u\.id,target,action\)/, 'suspend/reactivate must checkpoint the exact requested action');
@@ -45,4 +51,4 @@ assertCheckpointBefore(tempPassword, 'set_temp_password', 'a.auth.admin.updateUs
 const changeEmail = between("if(action==='change_email')", "return json(req,{error:'Unknown action'},400)");
 assertCheckpointBefore(changeEmail, 'change_email', 'a.auth.admin.updateUserById(target,{email})', 'change_email');
 
-console.log('PASS admin emergency actions require durable audit checkpoint before mutation');
+console.log('PASS admin emergency actions require durable pre-mutation audit and truthful delete completion ordering');
