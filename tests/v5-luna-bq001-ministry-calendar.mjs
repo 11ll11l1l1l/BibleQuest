@@ -38,6 +38,7 @@ async function proveBrowserFlow() {
     await page.goto(`${BASE}tests/v5-luna-bq001-ministry-calendar.mjs`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(async () => {
       document.head.innerHTML = `
+        <base href="/">
         <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
         <link rel="icon" href="data:,">
         <link rel="stylesheet" href="/src/ui/app.css">
