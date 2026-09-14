@@ -2,10 +2,18 @@ const CACHE_PREFIX='biblequest-v3-offline-shell-';
 const CACHE_NAME=`${CACHE_PREFIX}v1`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
+const PUSH_FALLBACK_ROUTE='/#/notification-center';
 
 const sameOriginInScope=url=>url.origin===self.location.origin&&url.href.startsWith(self.registration.scope);
 const isNetworkProbe=url=>url.searchParams.has('bq-net-probe');
 const isShellRequest=(request,url)=>sameOriginInScope(url)&&!isNetworkProbe(url)&&(request.mode==='navigate'||SHELL_DESTINATIONS.has(request.destination));
+
+function safeNotificationUrl(raw){
+  try{
+    const url=new URL(String(raw||PUSH_FALLBACK_ROUTE),self.registration.scope);
+    return url.origin===self.location.origin?url.href:new URL(PUSH_FALLBACK_ROUTE,self.registration.scope).href;
+  }catch{return new URL(PUSH_FALLBACK_ROUTE,self.registration.scope).href}
+}
 
 async function put(cache,request,response){
   if(response?.ok)await cache.put(request,response.clone());
@@ -53,6 +61,37 @@ self.addEventListener('activate',event=>{
 self.addEventListener('message',event=>{
   if(event?.data?.type!=='BIBLEQUEST_WARM_SHELL')return;
   event.waitUntil(warmShell(event.data.urls).then(()=>event.ports?.[0]?.postMessage({ok:true})).catch(()=>event.ports?.[0]?.postMessage({ok:false})));
+});
+
+self.addEventListener('push',event=>{
+  event.waitUntil((async()=>{
+    let payload={};
+    try{payload=event.data?.json?.()||{}}catch{}
+    const title=String(payload?.title||'BibleQuest').slice(0,120);
+    const body=String(payload?.body||'').slice(0,240);
+    const url=safeNotificationUrl(payload?.url);
+    await self.registration.showNotification(title,{
+      body,
+      tag:payload?.notificationId?`bq-${String(payload.notificationId).slice(0,80)}`:undefined,
+      data:{url,notificationId:String(payload?.notificationId||''),type:String(payload?.type||'')}
+    });
+  })());
+});
+
+self.addEventListener('notificationclick',event=>{
+  event.notification?.close?.();
+  event.waitUntil((async()=>{
+    const target=safeNotificationUrl(event.notification?.data?.url);
+    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    for(const client of windows){
+      let sameOrigin=false;
+      try{sameOrigin=new URL(client.url).origin===self.location.origin}catch{}
+      if(!sameOrigin)continue;
+      try{if(client.url!==target&&typeof client.navigate==='function')await client.navigate(target)}catch{}
+      if(typeof client.focus==='function')return client.focus();
+    }
+    return self.clients.openWindow?.(target);
+  })());
 });
 
 self.addEventListener('fetch',event=>{
