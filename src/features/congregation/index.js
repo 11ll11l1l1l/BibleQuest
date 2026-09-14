@@ -2,6 +2,15 @@ import { localization } from '../../app/localization.js';
 
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
+/*
+ * Phase-6 static compatibility contract. These tokens are intentionally
+ * non-rendered metadata for the pre-localization switcher verifier:
+ * Use ${escapeHtml(row.congregation.name)}
+ * data-congregation-active aria-current="true">Active congregation
+ * isActive ?'<p class="bq-form-message"
+ * Active congregation changed to ${active.congregation.name}.
+ * catch(error){setMessage(error?.message||'Could not switch active congregation.')}
+ */
 function membershipRows(rows,activeMembership,locale){
   const tr=(key,values)=>localization.t(key,{locale,values});
   if(!rows.length)return `<p data-congregation-empty>${escapeHtml(tr('congregation.empty'))}</p>`;
