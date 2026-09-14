@@ -37,8 +37,19 @@ function response(body: unknown, status = 200) {
   });
 }
 
+function bearerToken(req: Request) {
+  return (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '').trim();
+}
+
+function isInternalServiceRequest(req: Request) {
+  const secret = serviceSecret();
+  const bearer = bearerToken(req);
+  const apiKey = (req.headers.get('apikey') || '').trim();
+  return Boolean(secret && (bearer === secret || apiKey === secret));
+}
+
 async function requireAdmin(req: Request, adminDb: Db) {
-  const jwt = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '').trim();
+  const jwt = bearerToken(req);
   if (!jwt) throw response({ error: 'Authentication required' }, 401);
 
   const auth = await adminDb.auth.getUser(jwt);
@@ -189,7 +200,8 @@ Deno.serve(async (req: Request) => {
 
   try {
     const adminDb = db();
-    await requireAdmin(req, adminDb);
+    const internalService = isInternalServiceRequest(req);
+    if (!internalService) await requireAdmin(req, adminDb);
 
     const input = await req.json().catch(() => ({}));
     const notificationId = String(input?.notificationId || '').trim();

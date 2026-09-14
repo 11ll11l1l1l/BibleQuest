@@ -2,23 +2,60 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const fn = readFileSync('supabase/functions/bq-push-delivery/index.ts', 'utf8');
+const assignmentFn = readFileSync('supabase/functions/bq-assignment/index.ts', 'utf8');
 const migration = readFileSync('supabase/migrations/20260914072000_push_subscriptions.sql', 'utf8');
 const deliveryMigration = readFileSync('supabase/migrations/20260914212500_push_delivery_idempotency.sql', 'utf8');
 const notificationsMigration = readFileSync('supabase/migrations/20260905_biblequest_production_upgrade_v1.sql', 'utf8');
+const workflowsMigration = readFileSync('supabase/migrations/20260905_biblequest_production_workflows_v1.sql', 'utf8');
+const triggerGrantMigration = readFileSync('supabase/migrations/20260905_revoke_notification_trigger_rpc_execution.sql', 'utf8');
 const router = readFileSync('src/app/router.js', 'utf8');
 const bootstrap = readFileSync('src/app/bootstrap.js', 'utf8');
 
 const has = (text, needle, label) => assert.ok(text.includes(needle), label);
 const lacks = (text, needle, label) => assert.ok(!text.includes(needle), label);
 
-// Privileged invocation remains server-authoritative.
+// Privileged invocation remains server-authoritative. Direct user calls remain owner/admin only;
+// the only additional trust path is the service credential already owned by Supabase Edge Functions.
 has(fn, "req.method !== 'POST'", 'delivery must be POST-only');
-has(fn, 'adminDb.auth.getUser(jwt)', 'caller JWT must be verified');
-has(fn, ".from('bible_app_access')", 'caller access must be authoritative');
-has(fn, "!['owner', 'admin'].includes", 'delivery must remain owner/admin only');
+has(fn, 'adminDb.auth.getUser(jwt)', 'direct caller JWT must be verified');
+has(fn, ".from('bible_app_access')", 'direct caller access must be authoritative');
+has(fn, "!['owner', 'admin'].includes", 'direct user delivery must remain owner/admin only');
+has(fn, 'function isInternalServiceRequest(req: Request)', 'sender must explicitly distinguish server-to-server invocation');
+has(fn, "const apiKey = (req.headers.get('apikey') || '').trim();", 'server invocation must use request credentials, never caller body data');
+has(fn, 'bearer === secret || apiKey === secret', 'server invocation must match the existing Supabase service credential');
+has(fn, 'if (!internalService) await requireAdmin(req, adminDb);', 'non-service requests must retain owner/admin authorization');
 has(fn, "const notificationId = String(input?.notificationId", 'request accepts only existing notification identity');
 has(fn, ".from('bible_notifications')", 'Notification Center row remains source of truth');
 for (const field of ['input?.title','input?.body','input?.endpoint','input?.userId','input?.createdAt','input?.created_at']) lacks(fn, field, `caller must not control ${field}`);
+for (const forbidden of ['console.log(secret','console.error(secret','return response({ secret','return response({ serviceSecret']) lacks(fn, forbidden, `service credential must never be exposed: ${forbidden}`);
+
+// Assignment/feedback producer linkage reuses the existing DB-trigger producer and server function owner.
+has(workflowsMigration, 'create or replace function public.bq_notify_assignment()', 'assignment Notification Center producer must remain the existing DB trigger function');
+has(workflowsMigration, 'create or replace function public.bq_notify_assignment_feedback()', 'feedback Notification Center producer must remain the existing DB trigger function');
+has(workflowsMigration, 'create trigger trg_bq_notify_assignment after insert on public.bible_assignments', 'assignment insert must synchronously create inbox rows');
+has(workflowsMigration, 'create trigger trg_bq_notify_assignment_feedback after update of leader_feedback on public.bible_assignment_progress', 'feedback update must synchronously create inbox rows');
+has(triggerGrantMigration, 'revoke execute on function public.bq_notify_assignment() from public, anon, authenticated;', 'browser roles must not execute the assignment producer directly');
+has(triggerGrantMigration, 'revoke execute on function public.bq_notify_assignment_feedback() from public, anon, authenticated;', 'browser roles must not execute the feedback producer directly');
+has(assignmentFn, "const PUSH_NOTIFICATION_LIMIT=100;", 'assignment push fanout must be explicitly bounded');
+has(assignmentFn, "const PUSH_DISPATCH_BATCH=10;", 'server-to-server dispatch concurrency must be bounded');
+has(assignmentFn, ".from('bible_notifications').select('id')", 'assignment function must dispatch only persisted Notification Center identities');
+has(assignmentFn, ".eq('action_kind','assignment').eq('notification_type',notificationType)", 'assignment dispatch must remain scoped to assignment/feedback rows');
+has(assignmentFn, ".contains('action_payload',{assignment_id:assignmentId})", 'assignment dispatch must bind notifications to the authoritative assignment id');
+has(assignmentFn, ".gte('created_at',new Date(Date.now()-2*60*1000).toISOString())", 'producer dispatch must only consider freshly created rows');
+has(assignmentFn, 'if(rows.length>PUSH_NOTIFICATION_LIMIT)', 'oversized producer fanout must fail closed without partial delivery');
+has(assignmentFn, "admin.functions.invoke('bq-push-delivery',{body:{notificationId:row.id}})", 'assignment producer must call the existing sender using only persisted notification identity');
+has(assignmentFn, "console.error('assignment push dispatch fanout rejected')", 'fanout rejection must log no notification or recipient material');
+has(assignmentFn, "console.error('assignment push dispatch incomplete',{attempted:rows.length,failed})", 'partial sender failure may expose counts only');
+has(assignmentFn, "console.error('assignment push dispatch unavailable')", 'producer lookup/invocation failure must not expose sensitive material');
+has(assignmentFn, "await dispatchAssignmentPush(admin,String(made.data.id),'assignment');", 'successful assignment creation must hand off fresh trigger-created notifications');
+has(assignmentFn, "if(updated.data)await dispatchAssignmentPush(admin,String(assignment.id),'feedback',targetUserId);", 'successful feedback update must hand off only the target feedback notification');
+const assignmentInsert = assignmentFn.indexOf("admin.from('bible_assignments').insert(");
+const assignmentDispatch = assignmentFn.indexOf("await dispatchAssignmentPush(admin,String(made.data.id),'assignment');");
+const feedbackUpdate = assignmentFn.indexOf("admin.from('bible_assignment_progress').update(");
+const feedbackDispatch = assignmentFn.indexOf("await dispatchAssignmentPush(admin,String(assignment.id),'feedback',targetUserId);");
+assert.ok(assignmentInsert >= 0 && assignmentInsert < assignmentDispatch, 'assignment DB mutation/trigger must finish before push handoff');
+assert.ok(feedbackUpdate >= 0 && feedbackUpdate < feedbackDispatch, 'feedback DB mutation/trigger must finish before push handoff');
+for (const forbidden of ['SUPABASE_SERVICE_ROLE_KEY','SUPABASE_SECRET_KEYS','VAPID_PRIVATE_KEY','p256dh','subscription.endpoint']) lacks(assignmentFn, forbidden, `assignment producer must not handle delivery secret/material: ${forbidden}`);
 
 // Freshness/replay window must use the persisted Notification Center timestamp and fail closed.
 has(notificationsMigration, 'create table if not exists public.bible_notifications', 'current notification schema must remain explicit');
@@ -133,4 +170,4 @@ has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
 for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
 
-console.log('V5 push delivery compatibility/security/idempotency: PASS');
+console.log('V5 push delivery compatibility/security/idempotency/assignment-producer: PASS');
