@@ -1,0 +1,58 @@
+name: V5 Luna current-head regression pack
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'index.html'
+      - 'src/app/v5-luna-regression-guards.js'
+      - 'src/features/games/index.js'
+      - 'src/features/daily-mission/index.js'
+      - 'tests/v5-luna-bq001-ministry-calendar.mjs'
+      - 'tests/v5-luna-regression-pack.mjs'
+      - '.github/workflows/v5-luna-regression-pack.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  luna-regression-pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Verify focused proof syntax
+        run: node --check tests/v5-luna-regression-pack.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-luna-pack-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-luna-pack-http.log
+          exit 1
+      - name: Prove BQ-002 and BQ-003 canonical behavior
+        run: timeout 240s node tests/v5-luna-regression-pack.mjs
+      - name: Re-run integrated BQ-001 companion regression
+        run: timeout 240s node tests/v5-luna-bq001-ministry-calendar.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
