@@ -1,0 +1,97 @@
+name: V5 Congregation Tagalog surface
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/congregation/index.js'
+      - 'src/content/locales/**'
+      - 'src/app/localization.js'
+      - 'tests/v5-congregation-tagalog-surface.test.mjs'
+      - '.github/workflows/v5-congregation-tagalog-surface.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  congregation-tagalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused and accumulated localization contracts
+        run: |
+          node --check src/features/congregation/index.js
+          node --test tests/v5-congregation-tagalog-surface.test.mjs tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs
+          node tests/v5-localization-qa-current-surfaces.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-congregation-tl-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-congregation-tl-http.log
+          exit 1
+      - name: Prove Tagalog Congregation guest surface at 390px
+        run: |
+          timeout 240s node --input-type=module <<'EOF'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+          try {
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const pageErrors = [];
+            page.on('pageerror', error => pageErrors.push(error.message));
+            await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+            await page.locator('[data-locale-select]').waitFor();
+            await page.locator('[data-locale-select]').selectOption('tl');
+            await page.waitForFunction(() => document.querySelector('[data-bq-shell="v3"]')?.dataset.locale === 'tl');
+            await page.goto('http://127.0.0.1:4173/#/congregation', { waitUntil: 'networkidle' });
+            await page.getByText('Iyong kongregasyon', { exact: true }).waitFor();
+            await page.getByText('Mag-sign in para makita o salihan ang isang kongregasyon.', { exact: true }).waitFor();
+            const state = await page.evaluate(() => ({
+              innerWidth: window.innerWidth,
+              scrollWidth: document.documentElement.scrollWidth,
+              accountText: document.querySelector('[data-congregation-account]')?.textContent?.trim(),
+              backText: document.querySelector('[data-congregation-back]')?.textContent?.trim(),
+              minControlHeight: Math.min(...[...document.querySelectorAll('[data-congregation-account], [data-congregation-back]')].map(node => node.getBoundingClientRect().height))
+            }));
+            assert(state.accountText === 'Buksan ang account', `Unexpected account CTA: ${state.accountText}`);
+            assert(state.backText === 'Bumalik sa Higit pa', `Unexpected back CTA: ${state.backText}`);
+            assert(state.scrollWidth <= state.innerWidth + 1, `Tagalog Congregation overflows at 390px: ${state.scrollWidth}px > ${state.innerWidth}px.`);
+            assert(state.minControlHeight >= 40, `Congregation control height regressed below 40px: ${state.minControlHeight}px.`);
+            for (const leak of ['Your congregation','Sign in to view or join a congregation.','Open account','Back to More']) {
+              assert(await page.getByText(leak, { exact: true }).count() === 0, `Congregation localized surface still exposes English UI text: ${leak}`);
+            }
+            assert(pageErrors.length === 0, `Browser page errors occurred: ${pageErrors.join(' | ')}`);
+            console.log('PASS V5 Congregation Tagalog browser localization');
+          } finally {
+            await browser.close();
+          }
+          EOF
+      - name: Run existing localized mobile regressions
+        run: |
+          timeout 240s node tests/v5-shared-shell-localization-browser.mjs
+          timeout 240s node tests/v5-transform-localization-browser.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
