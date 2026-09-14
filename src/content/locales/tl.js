@@ -85,7 +85,7 @@ export const tl = Object.freeze({
   'congregation.loading': 'Naglo-load ng membership…',
   'congregation.joinHeading': 'Sumali gamit ang invite code',
   'congregation.joinDescription': 'Hindi ina-upgrade ng browser ang iyong role kapag sumali. Ang trusted join service ang nagpapasya sa membership.',
-  'congregation.inviteCode': 'Invite code',
+  'congregation.inviteCode': 'Code ng imbitasyon',
   'congregation.join': 'Sumali sa kongregasyon',
   'congregation.signInPrompt': 'Mag-sign in para makita o salihan ang isang kongregasyon.',
   'congregation.openAccount': 'Buksan ang account',
