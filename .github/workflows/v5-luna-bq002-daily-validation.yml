@@ -1,0 +1,60 @@
+name: V5 Luna BQ-002 Daily Journey validation
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/daily-mission/index.js'
+      - 'src/engines/lesson.js'
+      - 'tests/v5-luna-bq002-daily-validation.mjs'
+      - '.github/workflows/v5-luna-bq002-daily-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  luna-bq002-daily-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Verify source syntax
+        run: |
+          node --check src/features/daily-mission/index.js
+          node --check src/engines/lesson.js
+          node --check tests/v5-luna-bq002-daily-validation.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-luna-bq002-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-luna-bq002-http.log
+          exit 1
+      - name: Prove BQ-002 validation at 390px
+        run: timeout 240s node tests/v5-luna-bq002-daily-validation.mjs
+      - name: Run maintained Daily Journey companions
+        run: |
+          if [ -f tests/v3-daily-mission-regression.mjs ]; then node tests/v3-daily-mission-regression.mjs; fi
+          if [ -f tests/v5-section-g-state-sweep.mjs ]; then node tests/v5-section-g-state-sweep.mjs; fi
+      - name: Verify candidate remained source-clean
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
