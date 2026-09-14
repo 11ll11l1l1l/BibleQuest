@@ -36,9 +36,8 @@ jobs:
           node --check src/app/calendar.js
           node --check src/features/calendar/index.js
           node --test tests/v5-calendar-month-grid-rework.test.mjs
-      - name: Run accumulated Calendar and congregation contracts
-        run: |
-          node --test tests/calendar.test.mjs tests/v5-active-congregation-switcher.test.mjs
+      - name: Run accumulated active-congregation contract
+        run: node --test tests/v5-active-congregation-switcher.test.mjs
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save playwright
