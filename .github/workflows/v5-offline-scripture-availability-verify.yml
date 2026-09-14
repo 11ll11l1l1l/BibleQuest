@@ -1,0 +1,47 @@
+name: V5 offline Scripture availability verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/core/bible.js'
+      - 'src/app/offline-scripture-status.js'
+      - 'tests/v5-offline-bible-availability.test.mjs'
+      - '.github/workflows/v5-offline-scripture-availability-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-scripture-availability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Phase 5 availability contract
+        run: |
+          node --check src/core/bible.js
+          node --check src/app/offline-scripture-status.js
+          node --check tests/v5-offline-bible-availability.test.mjs
+          node --test tests/v5-offline-bible-availability.test.mjs
+      - name: Run maintained Bible and Reader companions
+        run: |
+          node --check src/app/reader.js
+          node --check src/features/reader/index.js
+          node scripts/validate-v4-cebocb-packs.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
