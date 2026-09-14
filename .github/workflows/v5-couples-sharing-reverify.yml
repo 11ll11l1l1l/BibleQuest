@@ -1,0 +1,67 @@
+name: BibleQuest V5 Couples sharing re-verification
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - src/app/couples-cloud.js
+      - src/core/api.js
+      - src/features/couples-cloud/**
+      - supabase/functions/bq-couple/**
+      - supabase/migrations/20260905071100_couple_shared_write_hardening.sql
+      - tests/v5-couples-sharing-reverification.mjs
+      - tests/v5-couples-sharing-browser.mjs
+      - docs/v5/phase7-couples-sharing-evidence.md
+      - .github/workflows/v5-couples-sharing-reverify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v5-couples-sharing-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  couples-current-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Record exact candidate
+        run: |
+          set -euo pipefail
+          echo "candidate_sha=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Current-head build and Couples contracts
+        run: |
+          set -euo pipefail
+          bash build.sh
+          node tests/v5-couples-sharing-reverification.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v5-couples-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v5-couples-http.log
+          exit 1
+      - name: Couples bidirectional sharing and privacy at 390px
+        run: timeout 240s node tests/v5-couples-sharing-browser.mjs
+      - name: Accumulated Luna current-head regression companion
+        run: timeout 240s node tests/v5-luna-regression-pack.mjs
+      - name: Verify candidate remained exact and source-clean
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
