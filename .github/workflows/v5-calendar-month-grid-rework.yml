@@ -1,0 +1,65 @@
+name: V5 Calendar month-grid rework
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/calendar.js'
+      - 'src/features/calendar/index.js'
+      - 'src/ui/calendar.css'
+      - 'tests/v5-calendar-month-grid-rework.test.mjs'
+      - 'tests/v5-calendar-month-grid-browser.mjs'
+      - '.github/workflows/v5-calendar-month-grid-rework.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  calendar-month-grid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Calendar contracts
+        run: |
+          node --check src/app/calendar.js
+          node --check src/features/calendar/index.js
+          node --test tests/v5-calendar-month-grid-rework.test.mjs
+      - name: Run accumulated Calendar and congregation contracts
+        run: |
+          node --test tests/calendar.test.mjs tests/v5-active-congregation-switcher.test.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-calendar-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-calendar-http.log
+          exit 1
+      - name: Prove month navigation and mobile interaction
+        env:
+          BQ_TEST_BASE_URL: http://127.0.0.1:4173
+        run: timeout 240s node tests/v5-calendar-month-grid-browser.mjs
+      - name: Run current mobile smoke
+        run: timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
