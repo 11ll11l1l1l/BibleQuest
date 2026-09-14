@@ -25,14 +25,21 @@ async function proveBrowserFlow() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const errors = [];
-  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => {
+    if (message.type() === 'error' && !message.text().startsWith('Failed to load resource:')) errors.push(`console: ${message.text()}`);
+  });
+  page.on('pageerror', error => errors.push(`pageerror: ${error.message}`));
+  page.on('requestfailed', request => errors.push(`requestfailed: ${request.method()} ${request.url()} ${request.failure()?.errorText || ''}`));
+  page.on('response', response => {
+    if (response.status() >= 400) errors.push(`http: ${response.status()} ${response.url()}`);
+  });
 
   try {
     await page.goto(`${BASE}tests/v5-luna-bq001-ministry-calendar.mjs`, { waitUntil: 'domcontentloaded' });
     await page.evaluate(async () => {
       document.head.innerHTML = `
         <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+        <link rel="icon" href="data:,">
         <link rel="stylesheet" href="/src/ui/app.css">
         <link rel="stylesheet" href="/src/ui/community.css">
         <link rel="stylesheet" href="/src/ui/community-visual-polish.css">
