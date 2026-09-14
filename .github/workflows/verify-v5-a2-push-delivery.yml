@@ -1,0 +1,55 @@
+name: V5 A2 Push Delivery Security Verify
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/functions/bq-push-delivery/**'
+      - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+      - 'src/app/router.js'
+      - 'src/app/bootstrap.js'
+      - 'scripts/verify-v5-push-delivery-security.mjs'
+      - '.github/workflows/verify-v5-a2-push-delivery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  push-delivery-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+      - name: Syntax check focused security contract
+        run: node --check scripts/verify-v5-push-delivery-security.mjs
+      - name: Run focused push delivery compatibility/security contract
+        run: node scripts/verify-v5-push-delivery-security.mjs
+      - name: Re-run integrated push subscription storage security contract
+        run: node --test tests/v5-push-subscription-storage.test.mjs
+      - name: Run accumulated Admin/security companions
+        run: |
+          node --test tests/v5-admin-emergency-security-static.mjs
+          node --test tests/admin-delete-audit-privacy-static.mjs
+          node --test tests/admin-membership-static.mjs
+      - name: Set up Deno for Edge Function type check
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type check push delivery Edge Function
+        run: deno check supabase/functions/bq-push-delivery/index.ts
+      - name: Verify no embedded secret-like material in claimed runtime
+        shell: bash
+        run: |
+          ! grep -En "(eyJ[a-zA-Z0-9_-]{20,}\\.|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|service_role[[:space:]]*[:=][[:space:]]*['\"][^'\"]+)" supabase/functions/bq-push-delivery/index.ts
+      - name: Verify tracked source remains clean
+        run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
