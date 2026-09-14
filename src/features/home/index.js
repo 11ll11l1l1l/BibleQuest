@@ -8,11 +8,11 @@ export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summa
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const HOME_SHORTCUTS = Object.freeze([
-  Object.freeze({ id: 'daily', icon: 'home', labelKey: 'home.shortcut.daily', action: 'onMission' }),
-  Object.freeze({ id: 'reader', icon: 'bible', labelKey: 'home.shortcut.reader', action: 'onReader' }),
-  Object.freeze({ id: 'assignments', icon: 'guide', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
-  Object.freeze({ id: 'calendar', icon: 'calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
-  Object.freeze({ id: 'grow', icon: 'grow', labelKey: 'home.shortcut.progress', action: 'onGrow' })
+  Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', labelKey: 'home.shortcut.daily', action: 'onMission' }),
+  Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', labelKey: 'home.shortcut.reader', action: 'onReader' }),
+  Object.freeze({ id: 'assignments', icon: 'guide', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
+  Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
+  Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
 ]);
 
 function shortcutRailHtml(locale) {
