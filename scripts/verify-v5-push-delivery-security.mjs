@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 const fn = readFileSync('supabase/functions/bq-push-delivery/index.ts', 'utf8');
 const migration = readFileSync('supabase/migrations/20260914072000_push_subscriptions.sql', 'utf8');
+const notificationsMigration = readFileSync('supabase/migrations/20260905_biblequest_production_upgrade_v1.sql', 'utf8');
 const router = readFileSync('src/app/router.js', 'utf8');
 const bootstrap = readFileSync('src/app/bootstrap.js', 'utf8');
 
@@ -16,7 +17,28 @@ has(fn, ".from('bible_app_access')", 'caller access must be authoritative');
 has(fn, "!['owner', 'admin'].includes", 'delivery must remain owner/admin only');
 has(fn, "const notificationId = String(input?.notificationId", 'request accepts only existing notification identity');
 has(fn, ".from('bible_notifications')", 'Notification Center row remains source of truth');
-for (const field of ['input?.title','input?.body','input?.endpoint','input?.userId']) lacks(fn, field, `caller must not control ${field}`);
+for (const field of ['input?.title','input?.body','input?.endpoint','input?.userId','input?.createdAt','input?.created_at']) lacks(fn, field, `caller must not control ${field}`);
+
+// Freshness/replay window must use the persisted Notification Center timestamp and fail closed.
+has(notificationsMigration, 'create table if not exists public.bible_notifications', 'current notification schema must remain explicit');
+has(notificationsMigration, 'expires_at timestamptz,created_at timestamptz not null default now()', 'notification schema must provide server-owned created_at');
+has(fn, "action_kind,created_at')", 'sender must load persisted notification creation time');
+has(fn, 'const MAX_NOTIFICATION_AGE_MS = 15 * 60 * 1000;', 'delivery replay window must remain bounded');
+has(fn, 'const MAX_FUTURE_SKEW_MS = 60 * 1000;', 'future clock-skew tolerance must remain bounded');
+has(fn, 'function isNotificationFresh(createdAt: unknown, nowMs = Date.now())', 'sender must own freshness evaluation');
+has(fn, "typeof createdAt !== 'string' || !createdAt.trim()", 'missing persisted timestamp must fail closed');
+has(fn, 'const createdAtMs = Date.parse(createdAt);', 'persisted timestamp must be parsed');
+has(fn, 'if (!Number.isFinite(createdAtMs)) return false;', 'invalid persisted timestamp must fail closed');
+has(fn, 'ageMs >= -MAX_FUTURE_SKEW_MS && ageMs <= MAX_NOTIFICATION_AGE_MS', 'future and stale notifications must be rejected');
+has(fn, 'if (!isNotificationFresh(notification.created_at))', 'freshness guard must consume persisted created_at');
+has(fn, "Notification is outside the push delivery window' }, 409", 'out-of-window notification must fail before delivery');
+const freshnessGuard = fn.indexOf('if (!isNotificationFresh(notification.created_at))');
+const subscriptionLookup = fn.indexOf(".from('bible_push_subscriptions')");
+const vapidSetup = fn.indexOf('vapid();');
+const outboundSend = fn.indexOf('webpush.sendNotification');
+assert.ok(freshnessGuard >= 0 && freshnessGuard < subscriptionLookup, 'freshness guard must precede subscription lookup');
+assert.ok(freshnessGuard < vapidSetup, 'freshness guard must precede VAPID setup');
+assert.ok(freshnessGuard < outboundSend, 'freshness guard must precede outbound push');
 
 // Storage/category contract remains explicit opt-in and owner-scoped.
 has(fn, ".eq('user_id', notification.user_id)", 'subscription query must target notification recipient');
@@ -79,6 +101,6 @@ has(fn, ".delete()\n            .eq('id', subscription.id)\n            .eq('use
 has(fn, "Deno.env.get('VAPID_PRIVATE_KEY')", 'private VAPID key must be server environment only');
 has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
-for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
+for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
 
 console.log('V5 push delivery compatibility/security: PASS');
