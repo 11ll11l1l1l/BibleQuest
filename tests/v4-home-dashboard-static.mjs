@@ -1,7 +1,8 @@
 // BibleQuest V4 Home dashboard-composition contract. Locks in the fix for
 // A1-V4-003: Daily Journey + Progress must read as the dominant continuation
 // path; Tutorial/Recordings/Media must be compact secondary tiles, not three
-// more full-weight panels competing with the primary journey.
+// more full-weight panels competing with the primary journey. V5 may localize
+// visible labels through the existing localization owner.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -35,11 +36,11 @@ assert.ok(home.includes('bq-home-secondary'), 'Home must group secondary actions
 assert.ok(home.includes('bq-home-tile-button'), 'Secondary actions must use the compact tile-button treatment.');
 assert.ok(!/data-home-tutorial>[\s\S]{0,400}<h2>/.test(home), 'Tutorial must no longer render as a full panel with its own <h2> heading competing with the primary journey card.');
 
-// Secondary tiles must still be real, labeled, accessible buttons — compact
-// is not an excuse to drop accessibility.
-const tileAriaLabels = ['Show BibleQuest tutorial', 'Watch worship and study videos'];
-for (const label of tileAriaLabels) {
-  assert.ok(home.includes(label), `Secondary tile is missing its accessible label: "${label}"`);
+// Secondary tiles must still be real, labeled, accessible buttons. V5 supplies
+// the visible/ARIA copy through localization keys instead of frozen English.
+assert.ok(home.includes("import { localization } from '../../app/localization.js'"), 'Home must use the integrated localization owner.');
+for (const key of ['home.tutorial.ariaLabel', 'home.recordings.ariaLabel']) {
+  assert.ok(home.includes(`tx('${key}')`), `Secondary tile is missing its localized accessible label key: ${key}`);
 }
 
 // Reachability rule: Congregation/Assignments must be directly available from
@@ -48,7 +49,8 @@ for (const label of tileAriaLabels) {
 for (const hook of ['data-home-congregation-assignments', 'data-open-congregation-assignments', 'data-home-congregation-caption']) {
   assert.ok(home.includes(hook), `Home must expose the one-tap congregation shortcut hook: ${hook}`);
 }
-assert.ok(home.includes('Congregation &amp; Assignments'), 'Home must visibly label the direct Congregation & Assignments entry.');
+assert.ok(home.includes("tx('home.congregation.heading')"), 'Home must visibly label the direct Congregation & Assignments entry through localization.');
+assert.ok(home.includes("tx('home.congregation.openAria')"), 'Home congregation shortcut must retain an accessible localized action name.');
 assert.ok(home.includes("assignmentState?.status === 'ready' ? 'assignments' : 'congregation'"), 'A ready Assignments service state must route the Home shortcut to Assignments.');
 assert.ok(home.includes("requestNavigation('congregation')"), 'A signed-out/no-congregation/non-ready state must fall back to congregation access.');
 assert.ok(home.includes("congregationRoute === 'assignments' ? onAssignments?.()"), 'Ready congregation members must reuse the existing Assignments route owner.');
