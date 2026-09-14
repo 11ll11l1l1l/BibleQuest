@@ -120,7 +120,7 @@ export const tl = Object.freeze({
   'assignments.pointsLabel': 'Puntos sa pagkumpleto',
   'assignments.none': 'Wala',
   'assignments.optional': 'Opsyonal',
-  'assignments.scriptureRefs': 'Mga reperensya sa Kasulatan',
+  'assignments.referencesLabel': 'Mga reperensya sa Kasulatan',
   'assignments.yourResponse': 'Ang isinumite mong sagot',
   'assignments.leaderFeedback': 'Feedback ng leader',
   'assignments.type.reading': 'Pagbabasa',
