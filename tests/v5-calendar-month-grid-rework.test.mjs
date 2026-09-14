@@ -37,10 +37,8 @@ function fixture() {
   };
   const service = createCalendarService({
     session: { getState: () => ({ authenticated: true, user: { id: 'leader-1' } }) },
-    privateStorage: memoryStorage(),
-    api,
-    assignments: { snapshot: () => ({ assignments: [] }) },
-    congregation,
+    privateStorage: memoryStorage(), api,
+    assignments: { snapshot: () => ({ assignments: [] }) }, congregation,
     clock: () => new Date('2026-09-14T00:00:00Z')
   });
   return { service, requestedCongregations };
@@ -60,10 +58,8 @@ test('Calendar ranged agenda reaches a later visible 6-week month beyond the old
   const state = await service.load();
   assert.equal(state.agenda.some(day => day.date === '2026-11-20'), false, 'default 30-day agenda must not falsely prove a later month');
   const agenda = service.getAgenda({ startDate: new Date('2026-11-01T00:00:00Z'), days: 42 });
-  const serviceDay = agenda.find(day => day.date === '2026-11-20');
-  assert.ok(serviceDay?.events.some(event => event.title === 'Church service' && event.source === 'congregation'));
-  const recurrence = agenda.find(day => day.date === '2026-12-04');
-  assert.ok(recurrence?.events.some(event => event.title === 'Weekly study' && event.source === 'congregation'));
+  assert.ok(agenda.find(day => day.date === '2026-11-20')?.events.some(event => event.title === 'Church service' && event.source === 'congregation'));
+  assert.ok(agenda.find(day => day.date === '2026-12-04')?.events.some(event => event.title === 'Weekly study' && event.source === 'congregation'));
 });
 
 test('Calendar month-grid UI exposes navigation, day interaction, explicit categories and 42-day requests', () => {
@@ -74,9 +70,9 @@ test('Calendar month-grid UI exposes navigation, day interaction, explicit categ
   assert.match(source, /data-calendar-day=/);
   assert.match(source, /days:42/);
   assert.match(source, /role="grid"/);
-  assert.match(source, /Assignment/);
-  assert.match(source, /Congregation/);
-  assert.match(source, /Personal/);
+  assert.match(source, /calendar\.source\.assignment/);
+  assert.match(source, /calendar\.source\.congregation/);
+  assert.match(source, /calendar\.source\.personal/);
   assert.match(source, /aria-pressed=/);
 });
 
