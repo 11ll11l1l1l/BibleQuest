@@ -1,0 +1,47 @@
+name: V5 push subscription lifecycle verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'offline-shell-sw.js'
+      - 'src/app/push-subscription.js'
+      - 'tests/v5-push-subscription-lifecycle.mjs'
+      - '.github/workflows/v5-push-subscription-lifecycle.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  push-subscription-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Syntax-check push lifecycle owners
+        run: |
+          node --check src/app/push-subscription.js
+          node --check tests/v5-push-subscription-lifecycle.mjs
+          node --check offline-shell-sw.js
+      - name: Run focused push subscription lifecycle contract
+        run: node tests/v5-push-subscription-lifecycle.mjs
+      - name: Verify no V6-style background sync or client secret regression
+        run: |
+          ! grep -Eiq 'backgroundsync|periodicsync' offline-shell-sw.js
+          ! grep -Eiq 'private[_-]?key|vapid[_-]?private|service[_-]?role|sb_secret_' src/app/push-subscription.js offline-shell-sw.js
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
