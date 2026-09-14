@@ -6,6 +6,7 @@ on:
       - v5/feature-completion
     paths:
       - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'tests/admin-audit-required-static.mjs'
       - 'tests/admin-delete-audit-privacy-static.mjs'
       - 'tests/v5-admin-emergency-security-static.mjs'
       - 'tests/admin-membership-static.mjs'
@@ -34,8 +35,12 @@ jobs:
 
       - name: Syntax check focused contracts
         run: |
+          node --check tests/admin-audit-required-static.mjs
           node --check tests/admin-delete-audit-privacy-static.mjs
           node --check tests/v5-admin-emergency-security-static.mjs
+
+      - name: Run durable Admin audit checkpoint contract
+        run: node --test tests/admin-audit-required-static.mjs
 
       - name: Run delete-account audit privacy contract
         run: node --test tests/admin-delete-audit-privacy-static.mjs
@@ -48,6 +53,14 @@ jobs:
 
       - name: Run maintained Admin link companion
         run: node --test tests/admin-link-static-smoke.mjs
+
+      - name: Set up Deno for Admin Edge Function type check
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type check Admin Edge Function
+        run: deno check supabase/functions/bq-admin-ops/index.ts
 
       - name: Verify tracked source remains clean
         run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
