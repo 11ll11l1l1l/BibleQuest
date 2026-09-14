@@ -10,7 +10,7 @@ async function proveStaticContract() {
     fs.readFile('index.html', 'utf8'),
     fs.readFile('src/features/games/index.js', 'utf8'),
   ]);
-  assert(index.includes('src/app/v5-luna-regression-guards.js'), 'App shell must load the canonical Luna regression guard.');
+  assert(!index.includes('<script type="module" src="src/app/v5-luna-regression-guards.js">'), 'App shell must boot exactly one script entry - the Luna guards must not be a second top-level <script>.');
   assert(guard.includes("const DAILY_FORM = '[data-daily-text-form]'"), 'BQ-002 must target the existing Daily Journey form owner.');
   assert(guard.includes('Please enter a response before saving this step.'), 'BQ-002 must retain canonical required-response guidance.');
   assert(guard.includes("textarea.setAttribute('aria-invalid', 'true')"), 'BQ-002 must expose invalid state accessibly.');
@@ -36,7 +36,8 @@ async function proveBrowserBehavior() {
       document.body.innerHTML = `<main><section class="bq-panel" data-daily-step><form data-daily-text-form><label for="bq-luna-response">Reflection</label><textarea id="bq-luna-response" name="response" required></textarea><button type="submit" class="bq-primary-button" data-daily-save>Save reflection</button></form><p data-daily-message aria-live="polite"></p></section><section class="bq-panel" data-games-page><div class="bq-question-card" data-game-question="quick-recall-1"><h1>Quick Recall</h1><button type="button" class="bq-primary-button" data-quick-recall-answer>Answer</button></div></section></main>`;
       window.__bqLunaPack = { submitCount: 0 };
       document.querySelector('[data-daily-text-form]').addEventListener('submit', event => { event.preventDefault(); window.__bqLunaPack.submitCount += 1; });
-      await import(`/src/app/v5-luna-regression-guards.js?pack=${Date.now()}`);
+      const guardModule = await import(`/src/app/v5-luna-regression-guards.js?pack=${Date.now()}`);
+      guardModule.installV5LunaRegressionGuards();
     });
 
     const textarea = page.locator('textarea[name="response"]');
