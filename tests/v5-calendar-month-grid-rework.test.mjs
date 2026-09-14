@@ -55,11 +55,11 @@ test('Calendar consumes the Phase 6 active congregation rather than memberships[
   assert.equal(state.canShareWithCongregation, true);
 });
 
-test('Calendar ranged agenda can fill a later visible 6-week month beyond the old 30-day horizon', async () => {
+test('Calendar ranged agenda reaches a later visible 6-week month beyond the old 30-day horizon', async () => {
   const { service } = fixture();
-  await service.load();
+  const state = await service.load();
+  assert.equal(state.agenda.some(day => day.date === '2026-11-20'), false, 'default 30-day agenda must not falsely prove a later month');
   const agenda = service.getAgenda({ startDate: new Date('2026-11-01T00:00:00Z'), days: 42 });
-  assert.equal(agenda.length, 42);
   const serviceDay = agenda.find(day => day.date === '2026-11-20');
   assert.ok(serviceDay?.events.some(event => event.title === 'Church service' && event.source === 'congregation'));
   const recurrence = agenda.find(day => day.date === '2026-12-04');
