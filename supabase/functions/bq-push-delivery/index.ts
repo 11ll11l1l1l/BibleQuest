@@ -95,6 +95,38 @@ function isNotificationFresh(createdAt: unknown, nowMs = Date.now()) {
   return ageMs >= -MAX_FUTURE_SKEW_MS && ageMs <= MAX_NOTIFICATION_AGE_MS;
 }
 
+async function claimDelivery(adminDb: Db, notificationId: string, subscriptionId: string) {
+  const claim = await adminDb.rpc('bible_claim_push_delivery', {
+    target_notification: notificationId,
+    target_subscription: subscriptionId,
+  });
+  if (claim.error) throw claim.error;
+  return claim.data === true;
+}
+
+async function markDeliveryComplete(adminDb: Db, notificationId: string, subscriptionId: string) {
+  const completed = await adminDb
+    .from('bible_push_delivery_ledger')
+    .update({ delivered_at: new Date().toISOString() })
+    .eq('notification_id', notificationId)
+    .eq('subscription_id', subscriptionId)
+    .is('delivered_at', null)
+    .select('notification_id')
+    .maybeSingle();
+  if (completed.error) throw completed.error;
+  if (!completed.data) throw new Error('Push delivery claim was not available to finalize');
+}
+
+async function releaseFailedDeliveryClaim(adminDb: Db, notificationId: string, subscriptionId: string) {
+  const released = await adminDb
+    .from('bible_push_delivery_ledger')
+    .delete()
+    .eq('notification_id', notificationId)
+    .eq('subscription_id', subscriptionId)
+    .is('delivered_at', null);
+  if (released.error) throw released.error;
+}
+
 function ipv4Octets(hostname: string) {
   if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname)) return null;
   const octets = hostname.split('.').map(Number);
@@ -186,7 +218,7 @@ Deno.serve(async (req: Request) => {
     if (subscriptions.error) throw subscriptions.error;
 
     const rows = subscriptions.data || [];
-    if (!rows.length) return response({ ok: true, category, attempted: 0, delivered: 0, removed: 0, failed: 0 });
+    if (!rows.length) return response({ ok: true, category, attempted: 0, delivered: 0, removed: 0, failed: 0, skipped: 0 });
 
     vapid();
     const payload = JSON.stringify({
@@ -200,6 +232,7 @@ Deno.serve(async (req: Request) => {
     let delivered = 0;
     let removed = 0;
     let failed = 0;
+    let skipped = 0;
 
     for (const subscription of rows) {
       const endpoint = safePushEndpoint(subscription.endpoint);
@@ -209,6 +242,13 @@ Deno.serve(async (req: Request) => {
         continue;
       }
 
+      const claimed = await claimDelivery(adminDb, notification.id, subscription.id);
+      if (!claimed) {
+        skipped += 1;
+        continue;
+      }
+
+      let remoteAccepted = false;
       try {
         await webpush.sendNotification(
           {
@@ -218,9 +258,17 @@ Deno.serve(async (req: Request) => {
           payload,
           { TTL: 300 },
         );
+        remoteAccepted = true;
+        await markDeliveryComplete(adminDb, notification.id, subscription.id);
         delivered += 1;
       } catch (error) {
         const statusCode = Number((error as { statusCode?: number })?.statusCode || 0);
+        if (remoteAccepted) {
+          failed += 1;
+          console.error('push delivery finalization failed');
+          continue;
+        }
+
         if (statusCode >= 300 && statusCode < 400) {
           failed += 1;
           console.error('push delivery redirect rejected', { statusCode });
@@ -235,15 +283,22 @@ Deno.serve(async (req: Request) => {
             console.error('push cleanup failed', { statusCode });
           } else {
             removed += 1;
+            continue;
           }
         } else {
           failed += 1;
           console.error('push delivery failed', { statusCode: statusCode || 'unknown' });
         }
+
+        try {
+          await releaseFailedDeliveryClaim(adminDb, notification.id, subscription.id);
+        } catch {
+          console.error('push delivery claim release failed');
+        }
       }
     }
 
-    return response({ ok: failed === 0, category, attempted: rows.length, delivered, removed, failed });
+    return response({ ok: failed === 0, category, attempted: rows.length, delivered, removed, failed, skipped });
   } catch (error) {
     if (error instanceof Response) return error;
     console.error('push delivery request failed');
