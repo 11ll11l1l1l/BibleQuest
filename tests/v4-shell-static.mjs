@@ -1,6 +1,7 @@
 // BibleQuest V4 Shell/Navigation static contract. Locks in what Foundation
 // A/B already built (real icons, no dev/rebuild language, full nav/session/
-// progress/recovery chrome) as an explicit, verifiable v4 contract.
+// progress/recovery chrome) while allowing the approved V5 localization owner
+// to supply visible labels instead of hard-coded English strings.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -22,24 +23,30 @@ for (const glyph of bannedGlyphs) {
 }
 assert.ok(shell.includes("import { iconSvg } from './icons.js'"), 'Shell must render navigation/brand icons through the shared icon system, not inline glyphs.');
 
-// Real brand identity, not a bare text mark.
-assert.ok(/BibleQuest<\/strong>/.test(shell), 'Shell must render the BibleQuest brand name.');
+// V5 localizes shell chrome through the single localization owner. Brand and
+// navigation identity must remain real labels, not a bare text mark or icons.
+assert.ok(shell.includes("import { localization } from '../app/localization.js'"), 'Shell must use the integrated localization owner.');
+assert.ok(shell.includes("text('app.name')"), 'Shell must render the localized BibleQuest app name.');
+assert.ok(shell.includes("text('shell.brandHomeLabel')"), 'Shell brand control must retain an accessible localized name.');
 assert.ok(!/>BQ<\/strong>/.test(shell), 'Shell must not fall back to a bare "BQ" text mark.');
 
-// All five primary routes present, each with an icon and a label.
-for (const route of ['home', 'learn', 'play', 'grow', 'more']) {
-  assert.ok(shell.includes(`'${route}'`), `Shell navigation is missing the '${route}' route.`);
+// All five primary routes present, each wired to a stable localized label key.
+for (const [route, key] of [['home','nav.home'], ['learn','nav.learn'], ['play','nav.play'], ['grow','nav.grow'], ['more','nav.more']]) {
+  assert.ok(shell.includes(`'${route}'`) && shell.includes(`'${key}'`), `Shell navigation is missing the '${route}' route or its localized label key.`);
 }
 assert.ok(/aria-current/.test(shell), 'Shell must mark the active route with aria-current for assistive tech.');
 
-// Session chrome: three distinguishable states, not just color (each has its own label text).
+// Session chrome: three distinguishable states, with the guest label supplied
+// by localization rather than frozen to English source text.
 for (const state of ['authenticated', 'guest', 'busy']) {
   assert.ok(shell.includes(`'${state}'`), `Shell session chip must define the '${state}' state.`);
 }
-assert.ok(/sessionLabel\.textContent *= *'Guest'/.test(shell), 'Guest state must be labeled in text, not communicated by color/dot alone.');
+assert.ok(shell.includes("sessionLabel.textContent = text('shell.guest')"), 'Guest state must have a localized text label, not be communicated by color/dot alone.');
+assert.ok(shell.includes("text('shell.signingIn')") && shell.includes("text('shell.starting')"), 'Busy session states must retain localized text labels.');
 
 // Progress chrome present and update-able.
 assert.ok(shell.includes('data-progress-chip') && shell.includes('data-progress-xp') && shell.includes('data-progress-streak'), 'Shell must render an updatable progress chip (xp + streak).');
+assert.ok(shell.includes("'shell.streak.one'") && shell.includes("'shell.streak.other'"), 'Shell streak text must remain localization-aware.');
 
 // Recovery/error state: primary + secondary action, not a dead end.
 assert.ok(shell.includes('data-recovery-retry') && shell.includes('data-recovery-home'), 'Shell recovery panel must offer both a retry and a way home.');
