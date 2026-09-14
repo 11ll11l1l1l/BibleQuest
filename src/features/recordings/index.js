@@ -1,4 +1,5 @@
 import { localization } from '../../app/localization.js';
+import { recordingsDictionaries } from '../../content/locales/recordings.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
@@ -21,7 +22,9 @@ function videoCard(row, isSelected, tr) {
 
 export function recordingsPage({ recordings, onHome, onAccount }) {
   const locale = localization.getLocale();
-  const tr = (key, values) => localization.t(key, { locale, values });
+  const tr = (key, values) => localization.t(key, key.startsWith('recordings.')
+    ? { locale, values, dictionaries: recordingsDictionaries }
+    : { locale, values });
   return {
     title: tr('recordings.pageTitle'),
     html: `<section data-recordings-page><section class="bq-panel"><p>${escapeHtml(tr('recordings.loading'))}</p></section></section>`,
