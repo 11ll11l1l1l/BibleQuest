@@ -5,6 +5,8 @@ type Db = ReturnType<typeof db>;
 type PushCategory = 'assignment' | 'ministry' | 'recognition' | 'calendar' | 'media';
 
 const MAX_SUBSCRIPTIONS_PER_USER = 20;
+const MAX_NOTIFICATION_AGE_MS = 15 * 60 * 1000;
+const MAX_FUTURE_SKEW_MS = 60 * 1000;
 
 function serviceSecret() {
   const modern = Deno.env.get('SUPABASE_SECRET_KEYS');
@@ -85,6 +87,14 @@ function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
+function isNotificationFresh(createdAt: unknown, nowMs = Date.now()) {
+  if (typeof createdAt !== 'string' || !createdAt.trim()) return false;
+  const createdAtMs = Date.parse(createdAt);
+  if (!Number.isFinite(createdAtMs)) return false;
+  const ageMs = nowMs - createdAtMs;
+  return ageMs >= -MAX_FUTURE_SKEW_MS && ageMs <= MAX_NOTIFICATION_AGE_MS;
+}
+
 function ipv4Octets(hostname: string) {
   if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname)) return null;
   const octets = hostname.split('.').map(Number);
@@ -155,13 +165,17 @@ Deno.serve(async (req: Request) => {
 
     const notificationResult = await adminDb
       .from('bible_notifications')
-      .select('id,user_id,notification_type,title,body,action_kind')
+      .select('id,user_id,notification_type,title,body,action_kind,created_at')
       .eq('id', notificationId)
       .maybeSingle();
     if (notificationResult.error) throw notificationResult.error;
     if (!notificationResult.data) return response({ error: 'Notification not found' }, 404);
 
     const notification = notificationResult.data;
+    if (!isNotificationFresh(notification.created_at)) {
+      return response({ error: 'Notification is outside the push delivery window' }, 409);
+    }
+
     const category = categoryFor(String(notification.notification_type || ''), String(notification.action_kind || ''));
     const subscriptions = await adminDb
       .from('bible_push_subscriptions')
