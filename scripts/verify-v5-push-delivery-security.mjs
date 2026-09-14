@@ -48,12 +48,37 @@ has(fn, "return '/#/notification-center'", 'ministry/default push must land on N
 lacks(fn, "return '/notifications'", 'nonexistent path route must not return');
 lacks(fn, "return '/assignments'", 'non-hash assignment route must not return');
 
-// Private material stays server-only; cleanup remains exact and permanent-only.
+// Subscription-controlled network targets must fail closed before privileged outbound delivery.
+has(fn, 'function safePushEndpoint(endpoint: unknown)', 'sender must validate persisted endpoint text before delivery');
+has(fn, "url.protocol !== 'https:'", 'push endpoint must require HTTPS');
+has(fn, 'url.username || url.password || url.hash', 'credentials/fragments must be rejected');
+has(fn, 'isBlockedPushHost(url.hostname)', 'endpoint hostname must pass local/private target screening');
+for (const marker of [
+  "host === 'localhost'",
+  "host.startsWith('::ffff:')",
+  "a === 10",
+  "a === 127",
+  "a === 169 && b === 254",
+  "a === 172 && b >= 16 && b <= 31",
+  "a === 192 && b === 168",
+  "'.internal'",
+  "'.local'",
+]) has(fn, marker, `endpoint target screening missing ${marker}`);
+has(fn, 'const endpoint = safePushEndpoint(subscription.endpoint);', 'subscription endpoint must be screened before send');
+has(fn, "console.error('push endpoint rejected')", 'rejected endpoint must be recorded without endpoint material');
+has(fn, 'endpoint,\n            keys:', 'send must use validated endpoint value');
+lacks(fn, 'endpoint: subscription.endpoint', 'raw subscription endpoint must never reach privileged sender');
+
+// Redirects are failures, while permanent endpoint invalidation alone triggers cleanup.
+has(fn, 'statusCode >= 300 && statusCode < 400', 'push-service redirect status must fail closed');
+has(fn, "console.error('push delivery redirect rejected', { statusCode })", 'redirect rejection must avoid target disclosure');
+has(fn, 'statusCode === 404 || statusCode === 410', 'cleanup must be limited to permanent invalidation');
+has(fn, ".delete()\n            .eq('id', subscription.id)\n            .eq('user_id', notification.user_id)", 'cleanup must delete exact recipient-owned row');
+
+// Private material stays server-only.
 has(fn, "Deno.env.get('VAPID_PRIVATE_KEY')", 'private VAPID key must be server environment only');
 has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
-has(fn, 'statusCode === 404 || statusCode === 410', 'cleanup must be limited to permanent invalidation');
-has(fn, ".delete()\n            .eq('id', subscription.id)\n            .eq('user_id', notification.user_id)", 'cleanup must delete exact recipient-owned row');
 for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
 
 console.log('V5 push delivery compatibility/security: PASS');
