@@ -32,9 +32,15 @@ assert(guards.includes("const ACTIVE_GAME_QUESTION = '[data-games-page] [data-ga
 assert(guards.includes("window.addEventListener('beforeunload'"),'BQ-003 must protect browser refresh/navigation');
 assert(guards.includes("event.returnValue = ''"),'BQ-003 must request the browser leave/reload confirmation');
 
+// Integration: the architecture requires exactly one script entry
+// (index.html boots only bootstrap.js). These guards must be imported and
+// explicitly invoked by bootstrap.js itself, not loaded as a second
+// top-level <script> - that was the actual bug this test previously
+// enshrined instead of catching.
 const guardTag='<script type="module" src="src/app/v5-luna-regression-guards.js"></script>';
-const bootstrapTag='<script type="module" src="src/app/bootstrap.js"></script>';
-assert(index.includes(guardTag),'Luna regression guards must be loaded by the app shell');
-assert(index.indexOf(guardTag)<index.indexOf(bootstrapTag),'Luna regression guards must load before app bootstrap');
+assert(!index.includes(guardTag),'Luna regression guards must not be a second top-level <script> entry - index.html must boot exactly one script.');
+assert(bootstrap.includes("import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';"),'bootstrap.js must import the Luna regression guards installer.');
+assert(bootstrap.includes('installV5LunaRegressionGuards();'),'bootstrap.js must actually call the Luna regression guards installer during boot.');
+assert(!guards.includes("if (typeof window !== 'undefined' && typeof document !== 'undefined')"),'The guards module must not self-install on import - bootstrap.js is the single, explicit caller.');
 
 console.log('V5 Luna regression static checks passed: BQ-001 validation, BQ-002 Calendar route, BQ-003 refresh warning.');
