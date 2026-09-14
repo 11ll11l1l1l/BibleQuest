@@ -56,7 +56,6 @@ import { createOfflineShellService } from './offline-shell.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
-import { createMyJourneyService } from './my-journey.js';
 import { createRecallPackService } from '../core/recall-packs.js';
 import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
@@ -86,7 +85,6 @@ import { encouragementsPage } from '../features/encouragements/index.js';
 import { liveRoomsPage } from '../features/live-rooms/index.js';
 import { communityPage } from '../features/community/index.js';
 import { ministryHubPage } from '../features/ministry-hub/index.js';
-import { myJourneyPage } from '../features/my-journey/index.js';
 import { leaderCenterPage } from '../features/leader-center/index.js';
 import { notificationCenterPage } from '../features/notification-center/index.js';
 import { workspacePage } from '../features/workspace/index.js';
@@ -190,7 +188,6 @@ function boot(root){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
-  const myJourney=createMyJourneyService({progress,assignments});
   const leaderCenter=createLeaderCenterService({assignments,presence});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
@@ -235,8 +232,7 @@ function boot(root){
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
-    'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
@@ -279,6 +275,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
