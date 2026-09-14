@@ -1,0 +1,49 @@
+name: V5 A2 non-production backend evidence readiness
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'scripts/verify-v5-a2-nonprod-evidence-readiness.mjs'
+      - 'docs/v5/a2-nonprod-backend-evidence-runbook.md'
+      - '.github/workflows/verify-v5-a2-nonprod-evidence-readiness.yml'
+      - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/functions/bq-push-delivery/index.ts'
+      - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact candidate
+        run: |
+          set -euo pipefail
+          echo "candidate=$(git rev-parse HEAD)"
+          test -z "$(git status --porcelain)"
+
+      - name: Syntax check readiness verifier
+        run: node --check scripts/verify-v5-a2-nonprod-evidence-readiness.mjs
+
+      - name: Verify current Admin and push evidence prerequisites
+        run: node scripts/verify-v5-a2-nonprod-evidence-readiness.mjs
+
+      - name: Confirm workflow contains no runtime evidence secrets
+        run: |
+          set -euo pipefail
+          ! grep -RniE '(service[_-]?role[^A-Za-z]*(=|:)[^$]|VAPID_PRIVATE_KEY[^A-Za-z]*(=|:)[^$]|ACCESS_TOKEN[^A-Za-z]*(=|:)[^$]|REFRESH_TOKEN[^A-Za-z]*(=|:)[^$])' \
+            scripts/verify-v5-a2-nonprod-evidence-readiness.mjs \
+            docs/v5/a2-nonprod-backend-evidence-runbook.md \
+            .github/workflows/verify-v5-a2-nonprod-evidence-readiness.yml
+
+      - name: Verify source remains clean
+        run: test -z "$(git status --porcelain)"
