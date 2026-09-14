@@ -7,10 +7,26 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const pageErrors = [];
+  const consoleErrors = [];
+  const failedResources = [];
   page.on('pageerror', error => pageErrors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+  page.on('response', response => {
+    if (response.status() >= 400 && /\.(?:js|mjs)(?:\?|$)/i.test(response.url())) failedResources.push(`${response.status()} ${response.url()}`);
+  });
 
   await page.goto(BASE, { waitUntil: 'networkidle' });
-  await page.locator('[data-bq-shell="v3"]').waitFor();
+  try {
+    await page.waitForFunction(() => document.querySelector('[data-bq-shell="v3"]') || document.querySelector('[data-startup-failure]'), null, { timeout: 5000 });
+  } catch {
+    const body = (await page.locator('body').innerText().catch(() => '')).trim().slice(0, 500);
+    throw new Error(`BibleQuest shell did not start. pageErrors=${pageErrors.join(' | ') || 'none'}; consoleErrors=${consoleErrors.join(' | ') || 'none'}; failedResources=${failedResources.join(' | ') || 'none'}; body=${body || '<empty>'}`);
+  }
+  const startupFailure = page.locator('[data-startup-failure]');
+  if (await startupFailure.count()) {
+    const detail = (await startupFailure.innerText()).trim().replace(/\s+/g, ' ');
+    throw new Error(`BibleQuest rendered startup failure instead of the shell: ${detail}`);
+  }
   await page.locator('[data-locale-select]').waitFor();
 
   assert(await page.locator('[data-bq-shell="v3"][data-locale="en"]').count() === 1, 'English must remain the default shell locale.');
@@ -63,6 +79,7 @@ try {
   await page.locator('[data-bq-shell="v3"][data-locale="tl"]').waitFor();
   assert((await page.locator('[data-locale-select]').inputValue()) === 'tl', 'Tagalog preference did not survive a full reload.');
   assert(pageErrors.length === 0, `Browser page errors occurred: ${pageErrors.join(' | ')}`);
+  assert(failedResources.length === 0, `Browser requested missing JavaScript resources: ${failedResources.join(' | ')}`);
 
   console.log('PASS V5 shared shell Tagalog browser localization');
 } finally {
