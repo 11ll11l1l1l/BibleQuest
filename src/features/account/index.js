@@ -1,3 +1,5 @@
+import { localization } from '../../app/localization.js';
+
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const ACCOUNT_ART = 'assets/account-feature-icons.svg';
 
@@ -32,25 +34,27 @@ function codeView(title, code, detail) {
   return `<div class="bq-recovery-result"><p class="bq-eyebrow">SECURITY</p>${accountIntro('recovery', title, detail)}<div class="bq-recovery-code" data-recovery-code>${escapeHtml(code)}</div><button type="button" class="bq-secondary-button" data-copy-recovery>Copy recovery code</button><label class="bq-save-check"><input type="checkbox" data-code-saved> I saved this recovery code somewhere safe.</label><button type="button" class="bq-primary-button" data-code-done disabled>Continue</button><p class="bq-form-message" data-auth-message aria-live="polite"></p></div>`;
 }
 
-function signedInShell(state) {
-  const name = state.user?.displayName || state.user?.email || 'BibleQuest learner';
-  return `<section class="bq-panel bq-account-panel"><p class="bq-eyebrow">YOUR ACCOUNT</p><div class="bq-account-signed-hero">${accountArt('profile')}<div><h1>${escapeHtml(name)}</h1><p>${escapeHtml(state.user?.email || '')}</p></div></div><div data-account-body></div></section>`;
+function signedInShell(state, tr) {
+  const name = state.user?.displayName || state.user?.email || tr('account.settings.learnerFallback');
+  return `<section class="bq-panel bq-account-panel"><p class="bq-eyebrow">${escapeHtml(tr('account.settings.eyebrow'))}</p><div class="bq-account-signed-hero">${accountArt('profile')}<div><h1>${escapeHtml(name)}</h1><p>${escapeHtml(state.user?.email || '')}</p></div></div><div data-account-body></div></section>`;
 }
 
-function centerView() {
-  return `<div class="bq-account-section"><div class="bq-account-section-heading">${accountArt('device', true)}<h2>Remembered devices</h2></div><p class="bq-section-copy">Only your own device rows are accessible through database security policies.</p><div class="bq-device-list" data-device-list><p>Loading devices…</p></div></div><div class="bq-account-section"><div class="bq-account-section-heading">${accountArt('security', true)}<h2>Security & recovery</h2></div><div class="bq-account-actions"><button type="button" class="bq-secondary-button" data-issue-recovery>Generate new recovery code</button></div><form class="bq-account-form" data-account-password novalidate><label>Current password<input name="current_password" type="password" autocomplete="current-password" required></label><label>New password<input name="new_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></label><label>Confirm new password<input name="confirm_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></label><button class="bq-secondary-button" type="submit">Change password</button></form><p class="bq-form-message" data-auth-message aria-live="polite"></p></div><div class="bq-account-actions"><button type="button" class="bq-primary-button" data-account-home>Return home</button><button type="button" class="bq-secondary-button" data-account-signout>Sign out on this device</button></div>`;
+function centerView(tr) {
+  return `<div class="bq-account-section"><div class="bq-account-section-heading">${accountArt('device', true)}<h2>${escapeHtml(tr('account.settings.devicesHeading'))}</h2></div><p class="bq-section-copy">${escapeHtml(tr('account.settings.devicesPrivacy'))}</p><div class="bq-device-list" data-device-list><p>${escapeHtml(tr('account.settings.devicesLoading'))}</p></div></div><div class="bq-account-section"><div class="bq-account-section-heading">${accountArt('security', true)}<h2>${escapeHtml(tr('account.settings.securityHeading'))}</h2></div><div class="bq-account-actions"><button type="button" class="bq-secondary-button" data-issue-recovery>${escapeHtml(tr('account.settings.generateRecovery'))}</button></div><form class="bq-account-form" data-account-password novalidate><label>${escapeHtml(tr('account.settings.currentPassword'))}<input name="current_password" type="password" autocomplete="current-password" required></label><label>${escapeHtml(tr('account.settings.newPassword'))}<input name="new_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></label><label>${escapeHtml(tr('account.settings.confirmPassword'))}<input name="confirm_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required></label><button class="bq-secondary-button" type="submit">${escapeHtml(tr('account.settings.changePassword'))}</button></form><p class="bq-form-message" data-auth-message aria-live="polite"></p></div><div class="bq-account-actions"><button type="button" class="bq-primary-button" data-account-home>${escapeHtml(tr('account.settings.returnHome'))}</button><button type="button" class="bq-secondary-button" data-account-signout>${escapeHtml(tr('account.settings.signOut'))}</button></div>`;
 }
 
-function deviceRows(devices) {
-  if (!devices.length) return '<p>No remembered devices yet.</p>';
-  return devices.map(device => `<div class="bq-device-row"><div><b>${escapeHtml(device.label || 'Web browser')}</b><small>${escapeHtml(device.platform || 'Web')}${device.last_seen_at ? ` · ${escapeHtml(new Date(device.last_seen_at).toLocaleString())}` : ''}</small></div>${device.current ? '<span class="bq-current-device">THIS DEVICE</span>' : `<button type="button" class="bq-secondary-button" data-device-remove="${escapeHtml(device.id)}">Remove</button>`}</div>`).join('');
+function deviceRows(devices, tr) {
+  if (!devices.length) return `<p>${escapeHtml(tr('account.settings.devicesEmpty'))}</p>`;
+  return devices.map(device => `<div class="bq-device-row"><div><b>${escapeHtml(device.label || tr('account.settings.deviceBrowserFallback'))}</b><small>${escapeHtml(device.platform || tr('account.settings.devicePlatformFallback'))}${device.last_seen_at ? ` · ${escapeHtml(new Date(device.last_seen_at).toLocaleString())}` : ''}</small></div>${device.current ? `<span class="bq-current-device">${escapeHtml(tr('account.settings.currentDevice'))}</span>` : `<button type="button" class="bq-secondary-button" data-device-remove="${escapeHtml(device.id)}">${escapeHtml(tr('account.settings.removeDevice'))}</button>`}</div>`).join('');
 }
 
 export function accountPage({ account, session, onHome, onTutorial }) {
   const state = session.getState();
+  const locale = localization.getLocale();
+  const tr = (key, values) => localization.t(key, { locale, values });
   return {
-    title: 'Account',
-    html: state.authenticated ? signedInShell(state) : guestShell(state),
+    title: state.authenticated ? tr('account.settings.pageTitle') : 'Account',
+    html: state.authenticated ? signedInShell(state, tr) : guestShell(state),
     mount(root) {
       const body = root.querySelector('[data-account-body]');
       let mode = state.authenticated ? 'center' : 'login';
@@ -71,8 +75,8 @@ export function accountPage({ account, session, onHome, onTutorial }) {
       const renderDevices = async () => {
         const list = root.querySelector('[data-device-list]');
         if (!list) return;
-        try { list.innerHTML = deviceRows(await account.listDevices()); }
-        catch (error) { list.innerHTML = `<p class="bq-form-message">${escapeHtml(error?.message || 'Could not load devices.')}</p>`; }
+        try { list.innerHTML = deviceRows(await account.listDevices(), tr); }
+        catch (error) { list.innerHTML = `<p class="bq-form-message">${escapeHtml(error?.message || tr('account.settings.devicesLoadError'))}</p>`; }
       };
       const render = nextMode => {
         mode = nextMode;
@@ -80,7 +84,7 @@ export function accountPage({ account, session, onHome, onTutorial }) {
         if (mode === 'login') body.innerHTML = loginView();
         else if (mode === 'signup') body.innerHTML = signupView();
         else if (mode === 'recovery') body.innerHTML = recoveryView();
-        else if (mode === 'center') { body.innerHTML = centerView(); renderDevices(); }
+        else if (mode === 'center') { body.innerHTML = centerView(tr); renderDevices(); }
         root.querySelectorAll('[data-account-mode]').forEach(button => button.classList.toggle('active', button.dataset.accountMode === mode));
       };
       const showCode = (title, code, detail, nextMode, afterSave = null) => {
@@ -96,24 +100,24 @@ export function accountPage({ account, session, onHome, onTutorial }) {
         if (tab) return render(tab.dataset.accountMode);
         if (target.closest('[data-account-guest]') || target.closest('[data-account-home]')) return onHome();
         if (target.closest('[data-account-signout]')) {
-          setMessage('Signing out…');
+          setMessage(tr('account.settings.signingOut'));
           try { await session.signOut(); render('login'); }
-          catch (error) { setMessage(error?.message || 'Could not sign out.'); }
+          catch (error) { setMessage(error?.message || tr('account.settings.signOutError')); }
           return;
         }
         if (target.closest('[data-issue-recovery]')) {
-          setMessage('Creating a new code…');
+          setMessage(tr('account.settings.creatingRecovery'));
           try {
             const result = await account.issueRecoveryCode();
             showCode('Save your new recovery code', result.recovery_code, 'This replaces every older recovery code for your account.', 'center');
-          } catch (error) { setMessage(error?.message || 'Could not create a recovery code.'); }
+          } catch (error) { setMessage(error?.message || tr('account.settings.createRecoveryError')); }
           return;
         }
         const remove = target.closest('[data-device-remove]');
         if (remove) {
           remove.disabled = true;
           try { await account.removeDevice(remove.dataset.deviceRemove); await renderDevices(); }
-          catch (error) { setMessage(error?.message || 'Could not remove device.'); remove.disabled = false; }
+          catch (error) { setMessage(error?.message || tr('account.settings.removeDeviceError')); remove.disabled = false; }
           return;
         }
         if (target.closest('[data-copy-recovery]')) {
@@ -169,9 +173,9 @@ export function accountPage({ account, session, onHome, onTutorial }) {
           } catch (error) { setMessage(error?.message || 'Recovery failed.'); }
           finally { busy(form, false); }
         } else if (form.matches('[data-account-password]')) {
-          busy(form, true, 'Changing password…');
-          try { await account.changePassword(data.get('current_password'), data.get('new_password'), data.get('confirm_password')); form.reset(); setMessage('Password updated.'); }
-          catch (error) { setMessage(error?.message || 'Could not change password.'); }
+          busy(form, true, tr('account.settings.changingPassword'));
+          try { await account.changePassword(data.get('current_password'), data.get('new_password'), data.get('confirm_password')); form.reset(); setMessage(tr('account.settings.passwordUpdated')); }
+          catch (error) { setMessage(error?.message || tr('account.settings.changePasswordError')); }
           finally { busy(form, false); }
         }
       };
