@@ -58,7 +58,7 @@ test('Congregation page uses only the integrated localization owner for bounded 
 });
 
 test('guest Congregation HTML renders reviewed Tagalog without changing auth behavior', () => {
-  store.set('biblequest.v3.locale', JSON.stringify({ value: 'tl', updatedAt: Date.now() }));
+  store.set('biblequest.v3.locale', JSON.stringify('tl'));
   const page = congregationPage({
     membership: { isAuthenticated: () => false },
     onAccount() {},
