@@ -119,7 +119,3 @@ export function installV5LunaRegressionGuards() {
   installDailyJourneyValidation();
   installQuizRefreshWarning();
 }
-
-if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-  installV5LunaRegressionGuards();
-}
