@@ -87,7 +87,7 @@ export function createPushSubscriptionService({
 
   async function cleanup({ removeRemote = true } = {}) {
     const ready = await registration().catch(() => null);
-    const subscription = await ready?.pushManager?.getSubscription?.().catch?.(() => null) ?? await ready?.pushManager?.getSubscription?.();
+    const subscription = ready ? await ready.pushManager.getSubscription().catch(() => null) : null;
     const endpoint = String(subscription?.endpoint || '').trim();
     if (removeRemote && endpoint) {
       try { await repository.removeByEndpoint(endpoint); } catch {}
@@ -131,7 +131,7 @@ export function createPushSubscriptionService({
         const ready = await registration();
         let subscription = await ready.pushManager.getSubscription();
         const previousOwner = readOwner();
-        if (subscription && previousOwner && previousOwner !== userId) {
+        if (subscription && previousOwner !== userId) {
           await dropBrowserSubscription(subscription);
           subscription = null;
           writeOwner('');
