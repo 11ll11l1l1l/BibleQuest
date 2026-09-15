@@ -1,4 +1,5 @@
 import { createStore } from './store.js';
+import { createMyJourneyService } from './my-journey.js';
 import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
@@ -85,6 +86,7 @@ import { encouragementsPage } from '../features/encouragements/index.js';
 import { liveRoomsPage } from '../features/live-rooms/index.js';
 import { communityPage } from '../features/community/index.js';
 import { ministryHubPage } from '../features/ministry-hub/index.js';
+import { myJourneyPage } from '../features/my-journey/index.js';
 import { leaderCenterPage } from '../features/leader-center/index.js';
 import { notificationCenterPage } from '../features/notification-center/index.js';
 import { workspacePage } from '../features/workspace/index.js';
@@ -188,6 +190,7 @@ function boot(root){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
+  const myJourney=createMyJourneyService({progress,assignments});
   const leaderCenter=createLeaderCenterService({assignments,presence});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
@@ -232,7 +235,8 @@ function boot(root){
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
+    'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
