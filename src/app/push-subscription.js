@@ -25,11 +25,12 @@ export function createPushSubscriptionService({
   serviceWorker = globalThis.navigator?.serviceWorker,
   notification = globalThis.Notification,
   applicationServerKey = '',
-  ownerStorage = globalThis.localStorage,
+  ownerStorage,
   ownerKey = DEFAULT_OWNER_KEY,
 } = {}) {
   if (!session?.getState || !session?.beforeSignOut) throw new Error('Push subscription service requires session lifecycle support.');
   if (!persistence?.save || !persistence?.remove) throw new Error('Push subscription service requires account-safe persistence.');
+  if (!ownerStorage?.getItem || !ownerStorage?.setItem || !ownerStorage?.removeItem) throw new Error('Push subscription service requires an explicit owner-storage boundary (e.g. the shared authStorage owner) - it must never default to raw browser storage.');
   let disposed = false;
   let operation = Promise.resolve();
   const readOwner = () => { try { return clean(ownerStorage?.getItem?.(ownerKey)); } catch { return ''; } };
