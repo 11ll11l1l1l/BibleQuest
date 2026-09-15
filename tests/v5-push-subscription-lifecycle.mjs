@@ -15,8 +15,12 @@ function harness({ owner = '', permission = 'granted', persistError = null } = {
   let current = owner ? subscription('https://push.example.test/stale') : null;
   const created = [], saved = [], removed = [];
   let beforeSignOut = null;
-  const storage = new Map(owner ? [['bq:v5:push-owner', owner]] : []);
-  const ownerStorage = { getItem: key => storage.get(key) || null, setItem: (key, value) => storage.set(key, String(value)), removeItem: key => storage.delete(key) };
+  const storage = new Map(owner ? [['push-owner', owner]] : []);
+  const ownerStorage = {
+    read(key, fallback = null) { return storage.has(key) ? storage.get(key) : fallback; },
+    write(key, value) { storage.set(key, String(value)); return value; },
+    remove(key) { storage.delete(key); },
+  };
   const session = { getState: () => ({ authenticated: true, user: { id: 'user-a' } }), beforeSignOut(listener) { beforeSignOut = listener; return () => { beforeSignOut = null; }; } };
   const pushManager = { async getSubscription() { return current; }, async subscribe(options) { assert.equal(options.userVisibleOnly, true); assert.ok(options.applicationServerKey instanceof Uint8Array); current = subscription(`https://push.example.test/new-${created.length + 1}`); created.push(current); return current; } };
   const persistence = { async save(value, categories) { if (persistError) throw persistError; saved.push({ value, categories }); return { user_id: 'user-a', endpoint: value.endpoint }; }, async remove(value) { removed.push(value.endpoint); } };
@@ -35,11 +39,11 @@ function harness({ owner = '', permission = 'granted', persistError = null } = {
   assert.equal(h.saved.length, 1);
   assert.deepEqual(h.saved[0].categories, ['assignment'], 'lifecycle must delegate normalized categories to integrated persistence');
   assert.equal(h.saved[0].value, h.current, 'native PushSubscription must be passed to persistence owner');
-  assert.equal(h.storage.get('bq:v5:push-owner'), 'user-a');
+  assert.equal(h.storage.get('push-owner'), 'user-a');
   await h.beforeSignOut();
   assert.deepEqual(h.removed, [h.current.endpoint], 'sign-out must remove the exact owned endpoint through persistence');
   assert.equal(h.current.unsubscribed, 1, 'sign-out must unsubscribe the browser endpoint');
-  assert.equal(h.storage.has('bq:v5:push-owner'), false, 'sign-out must clear local account ownership');
+  assert.equal(h.storage.has('push-owner'), false, 'sign-out must clear local account ownership');
 }
 {
   const h = harness({ permission: 'denied' });
@@ -50,11 +54,16 @@ function harness({ owner = '', permission = 'granted', persistError = null } = {
   const h = harness({ persistError: new Error('backend unavailable') });
   await assert.rejects(() => h.service.enable(['media']), /backend unavailable/);
   assert.equal(h.created[0].unsubscribed, 1, 'failed persistence must not leave an unowned live browser subscription');
-  assert.equal(h.storage.has('bq:v5:push-owner'), false);
+  assert.equal(h.storage.has('push-owner'), false);
 }
 {
   const h = harness();
   await assert.rejects(() => h.service.enable([]), /at least one/i, 'push must default off until a category is explicitly selected');
+}
+{
+  const session = { getState: () => ({ authenticated: true, user: { id: 'user-a' } }), beforeSignOut() { return () => {}; } };
+  const persistence = { async save() {}, async remove() {} };
+  assert.throws(() => createPushSubscriptionService({ session, persistence }), /shared storage boundary/i, 'push lifecycle must fail closed without the shared storage owner');
 }
 const workerSource = await readFile(new URL('../offline-shell-sw.js', import.meta.url), 'utf8');
 assert.match(workerSource, /addEventListener\('push'/);
@@ -65,4 +74,5 @@ const persistenceSource = await readFile(new URL('../src/app/push-subscription-p
 assert.match(persistenceSource, /requireAccount\(session\)/, 'integrated persistence must remain account-scoped');
 assert.match(source, /persistence\.save\(subscription, categories\)/, 'lifecycle must consume integrated persistence rather than duplicate backend writes');
 assert.doesNotMatch(source, /\.upsert\(/, 'lifecycle must not duplicate persistence API ownership');
+assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage)\b/, 'push lifecycle must not bypass the shared storage owner for its local account marker');
 console.log('PASS v5 push subscription lifecycle + persistence integration');
