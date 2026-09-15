@@ -54,8 +54,16 @@ test('new This Week copy is bilingual without replacing shared locale dictionari
   assert.doesNotMatch(week, /fetch\(|localStorage|sessionStorage|createApi|supabase/i);
 });
 
-test('composition does not invent unavailable Home datasets', async () => {
+test('Home expands This Week with accepted P0.5 owner composition without bypassing owners', async () => {
   const { home, week } = await sources();
-  const combined = `${home}\n${week}`;
-  assert.doesNotMatch(combined, /nextEvent|latestService|unreadCount|calendar\.load|recordings\.load|notifications\.load/);
+  assert.match(home, /data-home-next-event/);
+  assert.match(home, /data-home-continue-reading/);
+  assert.match(home, /data-home-latest-service/);
+  assert.match(home, /data-home-transformation-prompt/);
+  assert.match(home, /data-home-unread-notifications/);
+  assert.match(home, /calendar\?\.load/);
+  assert.match(home, /recordings\?\.load/);
+  assert.match(home, /notifications\?\.load/);
+  assert.match(week, /data-open-this-week-calendar/);
+  assert.doesNotMatch(home, /localStorage|sessionStorage|createClient|@supabase/i);
 });
