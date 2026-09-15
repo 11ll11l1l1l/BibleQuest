@@ -47,7 +47,7 @@ jobs:
         run: |
           grep -F "BQ_V5_E2E_CONFIRM_NONPROD" tests/v5-admin-email-change-e2e.mjs
           grep -F "Refusing to run against the production Supabase project" tests/v5-admin-email-change-e2e.mjs
-          grep -F "changed=true" docs/v5/phase2-email-change-e2e.md
+          grep -F "changed:true" docs/v5/phase2-email-change-e2e.md
           grep -F 'sessionsRevoked:true' docs/v5/phase2-email-change-e2e.md
           grep -F "Controlled target email was not restored" tests/v5-admin-email-change-e2e.mjs
       - name: Verify tracked source remains clean
