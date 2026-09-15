@@ -1,0 +1,68 @@
+{
+  "integration_sha": "0000000000000000000000000000000000000000",
+  "executed_at": "YYYY-MM-DDTHH:MM:SS+09:00",
+  "environment": "controlled non-production Supabase/browser test environment",
+  "operator": "replace-with-test-operator",
+  "actions": [
+    {
+      "action": "force_sign_out",
+      "severity": "SAFE",
+      "confirmation": null,
+      "actor_role": "owner/admin",
+      "target_kind": "non-self test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed UI and session result"
+    },
+    {
+      "action": "suspend",
+      "severity": "ELEVATED",
+      "confirmation": "SUSPEND",
+      "actor_role": "owner/admin",
+      "target_kind": "non-self test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed suspension and access result"
+    },
+    {
+      "action": "reactivate",
+      "severity": "SAFE",
+      "confirmation": null,
+      "actor_role": "owner/admin",
+      "target_kind": "previously suspended test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed reactivation result"
+    },
+    {
+      "action": "temporary_password",
+      "severity": "ELEVATED",
+      "confirmation": null,
+      "actor_role": "owner/admin",
+      "target_kind": "non-self test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed temporary-password and forced-change result"
+    },
+    {
+      "action": "recovery_email_change",
+      "severity": "CRITICAL",
+      "confirmation": "CHANGE EMAIL",
+      "actor_role": "owner",
+      "target_kind": "test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed auth-email/profile synchronization result"
+    },
+    {
+      "action": "delete_account",
+      "severity": "CRITICAL",
+      "confirmation": "DELETE",
+      "actor_role": "owner/admin",
+      "target_kind": "disposable non-owner test user",
+      "evidence_level": "GUIDED_REAL_BACKEND",
+      "result": "NOT_RUN",
+      "observed": "replace with observed deletion and post-delete access result"
+    }
+  ]
+}
