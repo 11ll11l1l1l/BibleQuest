@@ -1,0 +1,71 @@
+name: V5 Admin current-head certification
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/features/admin-console/index.js'
+      - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
+      - 'tests/v4-admin-emergency-actions-static.mjs'
+      - 'tests/v5-admin-emergency-security-static.mjs'
+      - 'tests/v5-admin-session-revocation-fail-closed.test.mjs'
+      - 'scripts/verify-v5-a2-nonprod-evidence-readiness.mjs'
+      - 'scripts/validate-v3-admin-console.mjs'
+      - 'scripts/validate-v3-admin-operations.mjs'
+      - 'scripts/validate-v3-reset-recovery.mjs'
+      - '.github/workflows/v5-admin-current-head-certification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify-admin-static-and-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Assert exact clean candidate
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+          test -z "$(git status --porcelain)"
+
+      - name: Verify Admin Console presentation and emergency controls
+        run: node tests/v4-admin-emergency-actions-static.mjs
+
+      - name: Verify Admin security, negative cases, audit privacy and session safety
+        run: |
+          set -euo pipefail
+          node tests/v5-admin-emergency-security-static.mjs
+          node tests/v5-admin-session-revocation-fail-closed.test.mjs
+
+      - name: Verify current Admin owners and recovery contracts
+        run: |
+          set -euo pipefail
+          node scripts/validate-v3-admin-console.mjs
+          node scripts/validate-v3-admin-operations.mjs
+          node scripts/validate-v3-reset-recovery.mjs
+
+      - name: Verify controlled non-production field path is runnable and fail-closed
+        run: |
+          set -euo pipefail
+          node scripts/verify-v5-a2-nonprod-evidence-readiness.mjs
+          if node scripts/verify-v5-a2-nonprod-evidence-readiness.mjs --runtime-preflight; then
+            echo 'Runtime preflight unexpectedly accepted missing operator-controlled non-production configuration.'
+            exit 1
+          fi
+
+      - name: Verify source clean and exact head
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
