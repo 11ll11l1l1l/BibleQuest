@@ -1,6 +1,6 @@
 const YOUTUBE_ID=/^[A-Za-z0-9_-]{6,20}$/;
 const cloneRows=rows=>Object.freeze(rows.map(row=>Object.freeze({...row})));
-const snapshot=state=>Object.freeze({...state,rows:cloneRows(state.rows)});
+const snapshot=state=>Object.freeze({...state,rows:cloneRows(state.rows),latestService:state.latestService?Object.freeze({...state.latestService}):null});
 const youtubeIdFromUrl=value=>{
   try{
     const url=new URL(String(value||'')),host=url.hostname.toLowerCase().replace(/^www\./,'').replace(/^m\./,'');
@@ -22,22 +22,30 @@ function normalizeRow(row){
   return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),createdAt:String(row.created_at||row.createdAt||'')};
 }
 
+function latestConfirmedService(rows){
+  return rows.filter(row=>row.featured).slice().sort((a,b)=>{
+    const byDate=String(b.createdAt||'').localeCompare(String(a.createdAt||''));
+    return byDate||String(b.id).localeCompare(String(a.id));
+  })[0]||null;
+}
+
 export function createRecordingsService({media,audio,session,congregation}){
   if(!media||!audio||!session)throw new Error('Recordings service requires media, audio, and session owners.');
-  let state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown'};
+  let state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null};
   const getState=()=>snapshot(state);
   const set=patch=>{state={...state,...patch};return getState()};
 
   async function load(){
     audio.unload();
-    if(!session.isAuthenticated())return set({status:'locked',rows:[],selectedId:null,error:'',access:'signin'});
-    set({status:'loading',rows:[],selectedId:null,error:'',access:'granted'});
+    if(!session.isAuthenticated())return set({status:'locked',rows:[],selectedId:null,error:'',access:'signin',latestService:null});
+    set({status:'loading',rows:[],selectedId:null,error:'',access:'granted',latestService:null});
     try{
       const input=await media.listLiveRecordings();
-      const rows=(Array.isArray(input)?input:[]).map(normalizeRow).filter(Boolean);
-      return set({status:'ready',rows,selectedId:null,error:'',access:'granted'});
+      const seen=new Set();
+      const rows=(Array.isArray(input)?input:[]).map(normalizeRow).filter(row=>row&&!seen.has(row.youtubeId)&&seen.add(row.youtubeId));
+      return set({status:'ready',rows,selectedId:null,error:'',access:'granted',latestService:latestConfirmedService(rows)});
     }catch(error){
-      return set({status:'error',rows:[],selectedId:null,error:error?.message||'Could not load recordings.',access:'granted'});
+      return set({status:'error',rows:[],selectedId:null,error:error?.message||'Could not load recordings.',access:'granted',latestService:null});
     }
   }
 
@@ -53,22 +61,20 @@ export function createRecordingsService({media,audio,session,congregation}){
   function stop(){requireSelection();audio.stop();return getState()}
   function seek(seconds){requireSelection();audio.seek(seconds);return getState()}
   function leave(){audio.unload();return set({selectedId:null,error:''})}
-  function dispose(){audio.dispose();state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown'}}
+  function dispose(){audio.dispose();state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null}}
 
   async function addVideo({title,description='',youtubeUrl,congregationId,featured=false}={}){
-    const state=session.getState?.();
-    if(!state?.authenticated||!state?.user?.id)throw new Error('Sign in to add a video.');
+    const sessionState=session.getState?.();
+    if(!sessionState?.authenticated||!sessionState?.user?.id)throw new Error('Sign in to add a video.');
     let id=String(congregationId||'');
     if(!id&&congregation){const memberships=await congregation.load();id=String(memberships?.[0]?.congregationId||'');}
     if(!id)throw new Error('Join a congregation before adding a video.');
     const youtubeId=youtubeIdFromUrl(youtubeUrl);
     if(!YOUTUBE_ID.test(youtubeId))throw new Error('Enter a valid YouTube video, live, or shorts link.');
+    if(state.rows.some(row=>row.youtubeId===youtubeId))throw new Error('This YouTube recording is already in Videos.');
     const cleanTitle=String(title||'').trim();
     if(cleanTitle.length<2)throw new Error('Enter a title for this video.');
-    // The insert itself is the real authorization check (RLS requires a
-    // leader/pastor/admin/platform-admin role via private.bible_can_review_content) -
-    // this call is never assumed to succeed just because the form was shown.
-    const created=await media.createVideo({congregation_id:id,created_by:state.user.id,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured)});
+    const created=await media.createVideo({congregation_id:id,created_by:sessionState.user.id,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured)});
     await load();
     return created;
   }
@@ -83,5 +89,5 @@ export function createRecordingsService({media,audio,session,congregation}){
     return updated;
   }
 
-  return Object.freeze({getState,load,select,play,pause,stop,seek,leave,dispose,addVideo,setFeatured,archive,getAudioState:audio.getState,getPlayerCount:audio.getPlayerCount});
+  return Object.freeze({getState,load,select,play,pause,stop,seek,leave,dispose,addVideo,setFeatured,archive,getLatestService:()=>getState().latestService,getAudioState:audio.getState,getPlayerCount:audio.getPlayerCount});
 }
