@@ -8,7 +8,7 @@ on:
       - 'docs/v5/phase2-email-change-e2e.md'
       - 'supabase/functions/bq-admin-ops/index.ts'
       - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
-      - 'tests/v5-admin-session-revocation-static.mjs'
+      - 'tests/v5-admin-session-revocation-fail-closed.test.mjs'
       - 'tests/v5-admin-emergency-security-static.mjs'
       - 'tests/admin-delete-audit-privacy-static.mjs'
       - '.github/workflows/v5-phase2-email-change-e2e-verify.yml'
@@ -38,7 +38,7 @@ jobs:
       - name: Syntax check controlled E2E harness
         run: node --check tests/v5-admin-email-change-e2e.mjs
       - name: Run session-revocation security contract
-        run: node --test tests/v5-admin-session-revocation-static.mjs
+        run: node --test tests/v5-admin-session-revocation-fail-closed.test.mjs
       - name: Run accumulated Admin security contracts
         run: |
           node --test tests/v5-admin-emergency-security-static.mjs
