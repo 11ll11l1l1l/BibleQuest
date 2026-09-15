@@ -29,14 +29,18 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Record exact candidate
         run: |
           set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
           echo "candidate_sha=$(git rev-parse HEAD)"
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
       - name: Current-head CEBOCB canonical and Reader contracts
         run: |
           set -euo pipefail
@@ -63,6 +67,6 @@ jobs:
       - name: Verify candidate remained exact and source-clean
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          git diff --exit-code
-          git diff --cached --exit-code
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
