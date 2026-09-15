@@ -21,7 +21,8 @@ const session={getState:()=>sessionState};
 const congregation={
   list:()=>memberships.slice(),
   async load(){loadCalls+=1;memberships=sessionState.user?.id==='u2'?[{congregationId:'c2',userId:'u2'}]:[{congregationId:'c1',userId:'u1'}];return memberships.slice()},
-  can(id,capability){return capability==='read'&&memberships.some(row=>row.congregationId===id&&row.userId===sessionState.user?.id)}
+  can(id,capability){return capability==='read'&&memberships.some(row=>row.congregationId===id&&row.userId===sessionState.user?.id)},
+  getActive(){const userId=sessionState.user?.id;return memberships.find(row=>row.userId===userId)||null}
 };
 const service=createPresenceService({api,session,congregation,store,clock:()=>now,setIntervalFn(fn,ms){const id=nextTimer++;timers.set(id,{fn,ms});return id},clearIntervalFn:id=>timers.delete(id)});
 let state=await service.start();
