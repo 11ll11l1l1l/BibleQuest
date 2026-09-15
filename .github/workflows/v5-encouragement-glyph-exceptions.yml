@@ -1,0 +1,29 @@
+name: V5 Encouragement Glyph Exceptions
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/app/encouragements.js'
+      - 'src/features/encouragements/index.js'
+      - 'tests/v5-encouragement-glyph-exceptions.mjs'
+      - '.github/workflows/v5-encouragement-glyph-exceptions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact candidate checkout
+        run: |
+          test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"
+      - name: Verify reviewed Encouragement glyph exceptions
+        run: node tests/v5-encouragement-glyph-exceptions.mjs
+      - name: Verify tracked source clean
+        run: git diff --exit-code
