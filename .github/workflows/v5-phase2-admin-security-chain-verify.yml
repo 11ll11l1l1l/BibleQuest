@@ -1,0 +1,82 @@
+name: V5 Phase 2 Admin Security Chain Verify
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
+      - 'tests/admin-audit-required-static.mjs'
+      - 'tests/admin-delete-audit-privacy-static.mjs'
+      - 'tests/v5-admin-emergency-security-static.mjs'
+      - 'tests/v5-admin-session-revocation-fail-closed.test.mjs'
+      - 'tests/v5-admin-email-change-e2e.mjs'
+      - 'docs/v5/phase2-email-change-e2e.md'
+      - '.github/workflows/v5-phase2-admin-security-chain-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-security-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Record exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+
+      - name: Require integrated security owners
+        run: |
+          test -f supabase/functions/bq-admin-ops/index.ts
+          test -f supabase/migrations/20260915183000_admin_session_revocation.sql
+          test -f tests/v5-admin-email-change-e2e.mjs
+          test -f docs/v5/phase2-email-change-e2e.md
+
+      - name: Syntax check security contracts and controlled harness
+        run: |
+          node --check tests/admin-audit-required-static.mjs
+          node --check tests/admin-delete-audit-privacy-static.mjs
+          node --check tests/v5-admin-emergency-security-static.mjs
+          node --check tests/v5-admin-session-revocation-fail-closed.test.mjs
+          node --check tests/v5-admin-email-change-e2e.mjs
+
+      - name: Run fail-closed session revocation contract
+        run: node --test tests/v5-admin-session-revocation-fail-closed.test.mjs
+
+      - name: Run durable audit and truthful delete contracts
+        run: |
+          node --test tests/admin-audit-required-static.mjs
+          node --test tests/admin-delete-audit-privacy-static.mjs
+
+      - name: Run accumulated Admin emergency security contract
+        run: node --test tests/v5-admin-emergency-security-static.mjs
+
+      - name: Verify controlled email-change harness remains fail closed
+        run: |
+          grep -F "BQ_V5_E2E_CONFIRM_NONPROD" tests/v5-admin-email-change-e2e.mjs
+          grep -F "Refusing to run against the production Supabase project" tests/v5-admin-email-change-e2e.mjs
+          grep -F "Controlled target email was not restored" tests/v5-admin-email-change-e2e.mjs
+          grep -F 'changed:true' docs/v5/phase2-email-change-e2e.md
+          grep -F 'sessionsRevoked:true' docs/v5/phase2-email-change-e2e.md
+          grep -F 'pre-change refresh token fails after revocation' docs/v5/phase2-email-change-e2e.md
+
+      - name: Set up Deno for Admin Edge Function type check
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type check Admin Edge Function
+        run: deno check supabase/functions/bq-admin-ops/index.ts
+
+      - name: Verify tracked source remains clean
+        run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
