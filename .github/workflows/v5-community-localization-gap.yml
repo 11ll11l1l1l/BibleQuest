@@ -1,0 +1,42 @@
+name: V5 Community Localization Gap
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/community/index.js'
+      - 'src/app/localization.js'
+      - 'src/content/locales/**'
+      - 'tests/v5-community-localization-gap.mjs'
+      - 'V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md'
+      - '.github/workflows/v5-community-localization-gap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  characterize-community-localization-gap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Show exact candidate SHA
+        run: |
+          set -euo pipefail
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ -n "${{ github.event.pull_request.head.sha }}" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+
+      - name: Characterize current Community localization gap
+        run: node tests/v5-community-localization-gap.mjs
+
+      - name: Ensure tracked source stayed clean
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain --untracked-files=no)"
