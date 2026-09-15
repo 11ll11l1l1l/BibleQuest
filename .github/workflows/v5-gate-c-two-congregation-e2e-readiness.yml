@@ -59,7 +59,7 @@ jobs:
           grep -Fq "STATIC/readiness only" "$runbook"
           grep -Fq "read-only" "$runbook"
           grep -Fq "no service-role path" "$runbook"
-          grep -Fq "does not certify authoring workflows" "$runbook"
+          grep -Fq "does not certify assignment/calendar authoring permissions" "$runbook"
           grep -Fq "must not be described as production-ready" "$runbook"
 
           echo 'Gate-C STATIC/readiness contract verified. No backend execution occurred.'
