@@ -1,0 +1,25 @@
+name: V5 Admin Delete Post-Auth Cleanup
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'tests/v5-admin-delete-post-auth-cleanup-static.mjs'
+      - '.github/workflows/v5-admin-delete-post-auth-cleanup.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-delete-post-auth-cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run bounded Admin delete cleanup contract
+        run: node tests/v5-admin-delete-post-auth-cleanup-static.mjs
