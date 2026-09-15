@@ -1,0 +1,25 @@
+name: V5 Notification Glyph Exceptions
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/features/notification-center/index.js'
+      - 'tests/v5-notification-glyph-exceptions.mjs'
+      - '.github/workflows/v5-notification-glyph-exceptions.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact candidate
+        if: github.event_name == 'pull_request'
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Verify reviewed Notification Center glyph exceptions
+        run: node --test tests/v5-notification-glyph-exceptions.mjs
+      - name: Verify source remains clean
+        run: test -z "$(git status --porcelain --untracked-files=no)"
