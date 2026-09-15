@@ -5,22 +5,13 @@ function cors(req:Request){const o=req.headers.get('Origin')||'';return {'Access
 const json=(req:Request,b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:cors(req)});
 function secret(){const modern=Deno.env.get('SUPABASE_SECRET_KEYS');if(modern){try{const x=JSON.parse(modern);if(x?.default)return String(x.default);const first=Object.values(x||{})[0];if(first)return String(first)}catch{}}return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||''}
 function db(){const url=Deno.env.get('SUPABASE_URL')||'',key=secret();if(!url||!key)throw new Error('Supabase environment incomplete');return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}})}
-async function forceSignOutUser(targetUserId:string){
-  const url=Deno.env.get('SUPABASE_URL')||'',key=secret();
-  if(!url||!key)throw new Error('Supabase environment incomplete');
-  // supabase-js v2 does not wrap "revoke all sessions for an arbitrary user id" -
-  // auth.admin.signOut() takes a JWT, not a user id. The documented GoTrue admin
-  // REST endpoint for this is POST /auth/v1/admin/users/{id}/logout.
-  const res=await fetch(`${url.replace(/\/$/,'')}/auth/v1/admin/users/${targetUserId}/logout`,{
-    method:'POST',
-    headers:{apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'}
-  });
-  if(!res.ok && res.status!==404)throw new Error(`Session revocation failed (${res.status})`);
-  return res.status!==404;
+async function forceSignOutUser(a:ReturnType<typeof db>,targetUserId:string){
+  const r=await a.rpc('bible_revoke_auth_sessions',{target_user_id:targetUserId});
+  if(r.error)throw new Error(`Session revocation failed: ${r.error.message}`);
+  return Number(r.data||0);
 }
-async function requireSessionRevocation(targetUserId:string){
-  const revoked=await forceSignOutUser(targetUserId);
-  if(!revoked)throw new Error('Session revocation failed: target user not found');
+async function requireSessionRevocation(a:ReturnType<typeof db>,targetUserId:string){
+  await forceSignOutUser(a,targetUserId);
 }
 async function requireUser(req:Request,a:ReturnType<typeof db>){const jwt=(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').trim(),r=await a.auth.getUser(jwt);if(!jwt||r.error||!r.data.user)throw json(req,{error:'Authentication required'},401);return r.data.user}
 async function siteRole(a:ReturnType<typeof db>,id:string){const r=await a.from('bible_app_access').select('role,active').eq('user_id',id).maybeSingle();if(r.error)throw r.error;return r.data?.active&&['owner','admin'].includes(r.data.role)?String(r.data.role):''}
@@ -55,7 +46,7 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(action==='suspend_account'&&targetAccess.data?.role==='owner')return json(req,{error:'Another owner account cannot be suspended'},409);
       await auditRequired(a,u.id,target,action);
       const nextActive=action==='reactivate_account';
-      if(action==='suspend_account')await requireSessionRevocation(target);
+      if(action==='suspend_account')await requireSessionRevocation(a,target);
       const upd=await a.from('bible_app_access').update({active:nextActive,updated_at:new Date().toISOString()}).eq('user_id',target);if(upd.error)throw upd.error;
       await audit(a,u.id,target,action,{reason:String(body?.reason||'').slice(0,500)});
       return json(req,{ok:true,active:nextActive});
@@ -63,9 +54,9 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
     if(action==='force_sign_out'){
       const target=String(body?.targetUserId||'');if(!target)return json(req,{error:'targetUserId required'},400);
       await auditRequired(a,u.id,target,'force_sign_out');
-      const revoked=await forceSignOutUser(target);
+      const revokedSessions=await forceSignOutUser(a,target);
       await audit(a,u.id,target,'force_sign_out',{});
-      return json(req,{ok:true,revoked});
+      return json(req,{ok:true,revoked:true,revokedSessions});
     }
     if(action==='set_temp_password'){
       if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can set a temporary password'},403);
@@ -74,7 +65,7 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(target===u.id)return json(req,{error:'Use your own account recovery flow, not this emergency tool'},409);
       if(password.length<12)return json(req,{error:'Temporary password must be at least 12 characters'},400);
       await auditRequired(a,u.id,target,'set_temp_password');
-      await requireSessionRevocation(target);
+      await requireSessionRevocation(a,target);
       const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
       // Never log the password itself - only that the action happened.
       await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:true});
@@ -89,7 +80,7 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
     const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);
     if(String(got.data.user?.email||'').trim().toLowerCase()===email)return json(req,{error:'That email is already assigned to this account'},409);
     await auditRequired(a,u.id,target,'change_email');
-    await requireSessionRevocation(target);
+    await requireSessionRevocation(a,target);
     const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
     // Never write the old or new email address to the audit detail.
     await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true});
