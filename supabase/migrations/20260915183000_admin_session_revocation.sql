@@ -9,6 +9,7 @@
 -- The public wrapper is SECURITY INVOKER and executable only by service_role.
 
 create schema if not exists private;
+grant usage on schema private to service_role;
 
 create or replace function private.bible_revoke_auth_sessions_impl(
   target_user_id uuid
