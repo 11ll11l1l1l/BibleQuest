@@ -1,0 +1,96 @@
+name: V5 current-head architecture unblock
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/push-subscription.js'
+      - 'tests/v5-push-subscription-lifecycle.mjs'
+      - 'scripts/validate-v3-architecture.mjs'
+      - 'scripts/validate-v3-tutorial-onboarding.mjs'
+      - 'src/features/home/index.js'
+      - 'src/content/locales/en.js'
+      - 'src/content/locales/tl.js'
+      - 'tests/v3-tutorial-onboarding-edge.mjs'
+      - 'tests/v3-tutorial-onboarding-smoke.mjs'
+      - 'tests/v5-my-journey-edge.mjs'
+      - 'tests/v5-my-journey-static.mjs'
+      - 'tests/v5-my-journey-smoke.mjs'
+      - '.github/workflows/v5-current-head-architecture-unblock.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify exact candidate
+        run: |
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "$(git rev-parse HEAD)" = "$expected"
+          echo "candidate=$expected"
+
+      - name: Build current application
+        run: bash build.sh
+
+      - name: Syntax-check repaired owners
+        run: |
+          node --check src/app/push-subscription.js
+          node --check tests/v5-push-subscription-lifecycle.mjs
+          node --check scripts/validate-v3-tutorial-onboarding.mjs
+
+      - name: Run architecture and tutorial validators
+        run: |
+          node scripts/validate-v3-architecture.mjs
+          node scripts/validate-v3-tutorial-onboarding.mjs
+
+      - name: Run focused lifecycle and current-head contracts
+        run: |
+          node tests/v5-push-subscription-lifecycle.mjs
+          node tests/v3-tutorial-onboarding-edge.mjs
+          node tests/v5-my-journey-edge.mjs
+          node tests/v5-my-journey-static.mjs
+
+      - name: Install Playwright
+        run: npm install --no-save --package-lock=false playwright
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v5-http.log 2>&1 &
+          echo $! > /tmp/biblequest-v5-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/biblequest-v5-http.log
+          exit 1
+
+      - name: Run tutorial and My Journey browser proof
+        run: |
+          timeout 240s node tests/v3-tutorial-onboarding-smoke.mjs
+          timeout 240s node tests/v5-my-journey-smoke.mjs
+
+      - name: Verify source clean and exact head
+        run: |
+          expected='${{ github.event.pull_request.head.sha || github.sha }}'
+          test "$(git rev-parse HEAD)" = "$expected"
+          git diff --exit-code
+          git diff --cached --exit-code
