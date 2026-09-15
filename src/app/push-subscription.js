@@ -1,6 +1,6 @@
 const PUSH_CATEGORIES = Object.freeze(['assignment', 'ministry', 'recognition', 'calendar', 'media']);
 const PUSH_CATEGORY_SET = new Set(PUSH_CATEGORIES);
-const DEFAULT_OWNER_KEY = 'bq:v5:push-owner';
+const DEFAULT_OWNER_KEY = 'push-owner';
 
 const clean = value => String(value ?? '').trim();
 function normalizeCategories(value) {
@@ -25,15 +25,16 @@ export function createPushSubscriptionService({
   serviceWorker = globalThis.navigator?.serviceWorker,
   notification = globalThis.Notification,
   applicationServerKey = '',
-  ownerStorage = globalThis.localStorage,
+  ownerStorage,
   ownerKey = DEFAULT_OWNER_KEY,
 } = {}) {
   if (!session?.getState || !session?.beforeSignOut) throw new Error('Push subscription service requires session lifecycle support.');
   if (!persistence?.save || !persistence?.remove) throw new Error('Push subscription service requires account-safe persistence.');
+  if (!ownerStorage?.read || !ownerStorage?.write || !ownerStorage?.remove) throw new Error('Push subscription service requires the shared storage boundary.');
   let disposed = false;
   let operation = Promise.resolve();
-  const readOwner = () => { try { return clean(ownerStorage?.getItem?.(ownerKey)); } catch { return ''; } };
-  const writeOwner = userId => { try { userId ? ownerStorage?.setItem?.(ownerKey, userId) : ownerStorage?.removeItem?.(ownerKey); } catch {} };
+  const readOwner = () => { try { return clean(ownerStorage.read(ownerKey, '')); } catch { return ''; } };
+  const writeOwner = userId => { try { userId ? ownerStorage.write(ownerKey, userId) : ownerStorage.remove(ownerKey); } catch {} };
   const registration = async () => {
     if (!serviceWorker?.ready) throw new Error('Service workers are not available on this device.');
     const ready = await serviceWorker.ready;
