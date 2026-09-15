@@ -6,6 +6,7 @@ on:
       - v5/feature-completion
     paths:
       - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
       - 'tests/admin-audit-required-static.mjs'
       - 'tests/admin-delete-audit-privacy-static.mjs'
       - 'tests/v5-admin-emergency-security-static.mjs'
