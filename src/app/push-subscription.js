@@ -2,73 +2,38 @@ const PUSH_CATEGORIES = Object.freeze(['assignment', 'ministry', 'recognition', 
 const PUSH_CATEGORY_SET = new Set(PUSH_CATEGORIES);
 const DEFAULT_OWNER_KEY = 'bq:v5:push-owner';
 
+const clean = value => String(value ?? '').trim();
 function normalizeCategories(value) {
-  const source = Array.isArray(value) ? value : [];
-  return Object.freeze([...new Set(source.map(item => String(item || '').trim()).filter(item => PUSH_CATEGORY_SET.has(item)))]);
+  return Object.freeze([...new Set((Array.isArray(value) ? value : []).map(item => clean(item).toLowerCase()).filter(item => PUSH_CATEGORY_SET.has(item)))]);
 }
-
 function decodeApplicationServerKey(value) {
-  const raw = String(value || '').trim();
+  const raw = clean(value);
   if (!raw) throw new Error('Push delivery is not configured on this device.');
   const padding = '='.repeat((4 - raw.length % 4) % 4);
   const normalized = (raw + padding).replace(/-/g, '+').replace(/_/g, '/');
   const binary = globalThis.atob ? globalThis.atob(normalized) : Buffer.from(normalized, 'base64').toString('binary');
   return Uint8Array.from(binary, char => char.charCodeAt(0));
 }
-
-function encodeKey(subscription, name) {
-  const value = subscription?.getKey?.(name);
-  if (!value) return '';
-  const bytes = new Uint8Array(value);
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  const encoded = globalThis.btoa ? globalThis.btoa(binary) : Buffer.from(binary, 'binary').toString('base64');
-  return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-}
-
-function serializeSubscription(subscription, userId, categories) {
-  const endpoint = String(subscription?.endpoint || '').trim();
-  const p256dh = encodeKey(subscription, 'p256dh');
-  const auth = encodeKey(subscription, 'auth');
-  if (!endpoint || !p256dh || !auth) throw new Error('Browser push subscription is incomplete.');
-  return Object.freeze({
-    user_id: userId,
-    endpoint,
-    p256dh,
-    auth,
-    enabled_categories: [...categories]
-  });
-}
-
 function currentUserId(session) {
   const state = session?.getState?.();
-  return state?.authenticated === true && state?.user?.id ? String(state.user.id) : '';
+  return state?.authenticated === true && state?.user?.id ? clean(state.user.id) : '';
 }
 
 export function createPushSubscriptionService({
   session,
-  repository,
+  persistence,
   serviceWorker = globalThis.navigator?.serviceWorker,
   notification = globalThis.Notification,
   applicationServerKey = '',
   ownerStorage = globalThis.localStorage,
-  ownerKey = DEFAULT_OWNER_KEY
+  ownerKey = DEFAULT_OWNER_KEY,
 } = {}) {
   if (!session?.getState || !session?.beforeSignOut) throw new Error('Push subscription service requires session lifecycle support.');
-  if (!repository?.upsert || !repository?.removeByEndpoint) throw new Error('Push subscription service requires subscription persistence.');
-
+  if (!persistence?.save || !persistence?.remove) throw new Error('Push subscription service requires account-safe persistence.');
   let disposed = false;
   let operation = Promise.resolve();
-
-  const readOwner = () => {
-    try { return String(ownerStorage?.getItem?.(ownerKey) || ''); } catch { return ''; }
-  };
-  const writeOwner = userId => {
-    try {
-      if (userId) ownerStorage?.setItem?.(ownerKey, userId);
-      else ownerStorage?.removeItem?.(ownerKey);
-    } catch {}
-  };
+  const readOwner = () => { try { return clean(ownerStorage?.getItem?.(ownerKey)); } catch { return ''; } };
+  const writeOwner = userId => { try { userId ? ownerStorage?.setItem?.(ownerKey, userId) : ownerStorage?.removeItem?.(ownerKey); } catch {} };
   const registration = async () => {
     if (!serviceWorker?.ready) throw new Error('Service workers are not available on this device.');
     const ready = await serviceWorker.ready;
@@ -84,36 +49,27 @@ export function createPushSubscriptionService({
     if (!subscription) return false;
     try { return await subscription.unsubscribe(); } catch { return false; }
   };
-
-  async function cleanup({ removeRemote = true } = {}) {
+  async function cleanup() {
     const ready = await registration().catch(() => null);
     const subscription = ready ? await ready.pushManager.getSubscription().catch(() => null) : null;
-    const endpoint = String(subscription?.endpoint || '').trim();
-    if (removeRemote && endpoint) {
-      try { await repository.removeByEndpoint(endpoint); } catch {}
+    if (subscription) {
+      try { await persistence.remove(subscription); } catch {}
+      await dropBrowserSubscription(subscription);
     }
-    await dropBrowserSubscription(subscription);
     writeOwner('');
     return Object.freeze({ enabled: false, categories: Object.freeze([]) });
   }
-
-  const detachBeforeSignOut = session.beforeSignOut(() => withOperation(() => cleanup({ removeRemote: true })));
+  const detachBeforeSignOut = session.beforeSignOut(() => withOperation(cleanup));
 
   return Object.freeze({
     categories: PUSH_CATEGORIES,
     async getState() {
-      if (disposed) return Object.freeze({ supported: false, enabled: false, categories: Object.freeze([]), permission: 'default' });
-      const permission = String(notification?.permission || 'default');
+      const permission = clean(notification?.permission) || 'default';
+      if (disposed) return Object.freeze({ supported: false, enabled: false, categories: Object.freeze([]), permission });
       const ready = await registration().catch(() => null);
       const subscription = ready ? await ready.pushManager.getSubscription().catch(() => null) : null;
-      const owner = readOwner();
       const userId = currentUserId(session);
-      return Object.freeze({
-        supported: Boolean(ready && notification && typeof notification.requestPermission === 'function'),
-        enabled: Boolean(subscription && owner && userId && owner === userId),
-        categories: Object.freeze([]),
-        permission
-      });
+      return Object.freeze({ supported: Boolean(ready && notification && typeof notification.requestPermission === 'function'), enabled: Boolean(subscription && userId && readOwner() === userId), categories: Object.freeze([]), permission });
     },
     async enable(requestedCategories) {
       return withOperation(async () => {
@@ -123,45 +79,24 @@ export function createPushSubscriptionService({
         const categories = normalizeCategories(requestedCategories);
         if (!categories.length) throw new Error('Choose at least one push notification category.');
         if (!notification || typeof notification.requestPermission !== 'function') throw new Error('Web Push is not supported by this browser.');
-
-        let permission = String(notification.permission || 'default');
+        let permission = clean(notification.permission) || 'default';
         if (permission === 'default') permission = await notification.requestPermission();
         if (permission !== 'granted') throw new Error('Notification permission was not granted.');
-
         const ready = await registration();
         let subscription = await ready.pushManager.getSubscription();
-        const previousOwner = readOwner();
-        if (subscription && previousOwner !== userId) {
+        if (subscription && readOwner() !== userId) {
           await dropBrowserSubscription(subscription);
           subscription = null;
           writeOwner('');
         }
-        if (!subscription) {
-          subscription = await ready.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: decodeApplicationServerKey(applicationServerKey)
-          });
-        }
-
-        const row = serializeSubscription(subscription, userId, categories);
-        try {
-          await repository.upsert(row);
-        } catch (error) {
-          await dropBrowserSubscription(subscription);
-          writeOwner('');
-          throw error;
-        }
+        if (!subscription) subscription = await ready.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: decodeApplicationServerKey(applicationServerKey) });
+        try { await persistence.save(subscription, categories); }
+        catch (error) { await dropBrowserSubscription(subscription); writeOwner(''); throw error; }
         writeOwner(userId);
-        return Object.freeze({ enabled: true, categories, endpoint: row.endpoint });
+        return Object.freeze({ enabled: true, categories, endpoint: clean(subscription.endpoint) });
       });
     },
-    async disable() {
-      return withOperation(() => cleanup({ removeRemote: true }));
-    },
-    dispose() {
-      if (disposed) return;
-      disposed = true;
-      detachBeforeSignOut?.();
-    }
+    async disable() { return withOperation(cleanup); },
+    dispose() { if (!disposed) { disposed = true; detachBeforeSignOut?.(); } },
   });
 }
