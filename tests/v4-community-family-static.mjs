@@ -1,13 +1,8 @@
 // BibleQuest V4 Community / Relational family presentation contract.
-// The original Community tranche remains byte-exact except: the local
-// Couples owner, whose intentional Communication Journey evolution is now
-// governed by the dedicated V4 Couples Journey contracts (Couples Cloud
-// stays byte-locked); Congregation Recognition, whose intentional icon
-// restructuring (bare-text emoji -> stable data-award-code/data-badge-id
-// elements) is governed by the V4 whole-app audit contract instead; and
-// Recordings, whose intentional merge with Media Library into one Videos
-// page (custom play/pause/seek controls retired, curation form added) is
-// governed by that feature's own tests, not byte-locked here.
+// Frozen relational owners remain byte-exact. Two later accepted V5 evolutions
+// are intentionally verified by behavior instead of the obsolete V4 byte lock:
+// Community EN/TL localization and retirement of the duplicate Media Library
+// owner in favor of canonical Recordings.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -16,12 +11,10 @@ import { execFileSync } from 'node:child_process';
 const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='7b2abd7507adf5b7363fe068d5038f54d1c7263a';
 const preserved=[
-  'src/features/community/index.js',
   'src/features/couples-cloud/index.js',
   'src/features/journey-groups/index.js',
   'src/features/team-center/index.js',
   'src/features/live-rooms/index.js',
-  'src/features/media-library/index.js',
   'src/features/leaderboards/index.js',
   'src/features/encouragements/index.js'
 ];
@@ -29,8 +22,30 @@ const preserved=[
 for(const relative of preserved){
   const current=fs.readFileSync(path.join(root,relative),'utf8');
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
-  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the V4 Community presentation tranche.`);
+  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the frozen relational presentation owners.`);
 }
+
+// Community intentionally evolved after the V4 presentation tranche to use the
+// accepted V5 localization owner. Preserve its navigation/privacy/data hooks
+// instead of requiring obsolete English bytes.
+const communitySrc=fs.readFileSync(path.join(root,'src/features/community/index.js'),'utf8');
+assert.ok(communitySrc.includes("../../app/localization.js"),'Community must consume the accepted localization owner.');
+for(const key of ['community.title','community.summary.aria','community.boundary.heading','community.error.fallback']){
+  assert.ok(communitySrc.includes(key),`Community must retain localized key ${key}.`);
+}
+for(const hook of ['data-community-view','data-community-route','data-community-retry']){
+  assert.ok(communitySrc.includes(hook),`Community must preserve ${hook}.`);
+}
+assert.ok(communitySrc.includes('esc(row.name)')&&communitySrc.includes('esc(row.roleLabel)'),'Community runtime congregation identity/role data must remain escaped rather than translated as authored copy.');
+assert.ok(communitySrc.includes('bq-community-boundary'),'Community privacy boundary must remain present after localization.');
+
+// The duplicate Media Library UI/service was deliberately retired in V5. The
+// canonical media route must remain Recordings-owned rather than resurrecting
+// the deleted owner merely to satisfy this historical V4 contract.
+assert.ok(!fs.existsSync(path.join(root,'src/features/media-library/index.js')),'Retired duplicate Media Library page must not return.');
+assert.ok(!fs.existsSync(path.join(root,'src/app/media-library.js')),'Retired duplicate Media Library service must not return.');
+const bootstrapSrc=fs.readFileSync(path.join(root,'src/app/bootstrap.js'),'utf8');
+assert.ok(/media\s*:\s*\(\)\s*=>\s*recordingsPage/.test(bootstrapSrc),'The media route must remain delegated to the canonical Recordings page.');
 
 const congregationRecognitionSrc=fs.readFileSync(path.join(root,'src/features/congregation-recognition/index.js'),'utf8');
 assert.ok(congregationRecognitionSrc.includes('bq-recognition-icon'),'Congregation Recognition icon restructuring must be present (governed by the V4 whole-app audit contract, not byte-locked here).');
@@ -69,16 +84,14 @@ assert.ok(css.includes('[data-live-room-connection]')&&css.includes('[data-live-
 assert.ok(css.includes('[data-live-room-end]')&&css.includes('var(--danger'),'Live Room host end action must remain visibly destructive.');
 assert.ok(css.includes('.bq-team-boundary')&&css.includes('.bq-team-danger'),'Team role boundary and destructive management must remain explicit.');
 assert.ok(css.includes('grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr)'),'Wide media surfaces must use intentional browse/player composition.');
-assert.ok(css.includes('.bq-media-player-shell')&&css.includes('.bq-recording-player-shell'),'Both media owners must receive the V4 player composition.');
+assert.ok(css.includes('.bq-media-player-shell')&&css.includes('.bq-recording-player-shell'),'Legacy CSS compatibility plus canonical Recordings player composition must remain available.');
 
 const hooks={
-  'src/features/community/index.js':['data-community-view','data-community-route','data-community-retry'],
   'src/features/couples-family/index.js':['data-couples-view','data-couples-mode','data-couples-reader'],
   'src/features/couples-cloud/index.js':['data-couples-cloud-view','data-couple-cloud-create','data-couple-cloud-leave'],
   'src/features/journey-groups/index.js':['data-journey-groups-view','data-journey-groups-join','data-journey-groups-create'],
   'src/features/team-center/index.js':['data-team-center-view','data-team-create','data-team-archive'],
   'src/features/live-rooms/index.js':['data-live-rooms-view','data-live-room-create','data-live-room-join','data-live-room-end'],
-  'src/features/media-library/index.js':['data-media-library-page','data-media-open','data-media-play','data-media-stop'],
   'src/features/recordings/index.js':['data-recordings-page','data-video-select','data-video-curator-toggle','data-video-add-form'],
   'src/features/congregation-recognition/index.js':['data-recognition-view','data-recognition-award','data-recognition-leaderboards'],
   'src/features/leaderboards/index.js':['data-leaderboards-view','data-leaderboard-period','data-leaderboard-lane'],
@@ -89,4 +102,4 @@ for(const [relative,required] of Object.entries(hooks)){
   for(const hook of required)assert.ok(source.includes(hook),`${relative} must preserve ${hook}.`);
 }
 
-console.log('BibleQuest v4 Community / Relational family static presentation contract passed.');
+console.log('BibleQuest V4/V5 Community / Relational family static presentation contract passed.');
