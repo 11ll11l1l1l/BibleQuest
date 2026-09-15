@@ -2,6 +2,7 @@ import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
 import { iconSvg } from '../../ui/icons.js';
 import { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
+import { homeThisWeekIntroHtml } from './today-this-week.js';
 
 export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
 
@@ -47,12 +48,15 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
           <div><b data-home-badges>${state.badges.length}</b><span>${escapeHtml(tx('home.progress.badges'))}</span></div>
         </div>
       </section>
-      <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
-        <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
-        <span class="bq-home-congregation-copy"><span class="bq-eyebrow">${escapeHtml(tx('home.congregation.eyebrow'))}</span><b>${escapeHtml(tx('home.congregation.heading'))}</b><small data-home-congregation-caption>${escapeHtml(tx('home.congregation.joinCaption'))}</small><small data-home-active-count></small></span>
-        <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="${escapeHtml(tx('home.congregation.openAria'))}">${escapeHtml(tx('home.congregation.open'))}</button>
+      <section class="bq-home-week" data-home-this-week>
+        ${homeThisWeekIntroHtml(locale)}
+        <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
+          <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
+          <span class="bq-home-congregation-copy"><span class="bq-eyebrow">${escapeHtml(tx('home.congregation.eyebrow'))}</span><b>${escapeHtml(tx('home.congregation.heading'))}</b><small data-home-congregation-caption>${escapeHtml(tx('home.congregation.joinCaption'))}</small><small data-home-active-count></small></span>
+          <button type="button" class="bq-secondary-button" data-open-congregation-assignments aria-label="${escapeHtml(tx('home.congregation.openAria'))}">${escapeHtml(tx('home.congregation.open'))}</button>
+        </section>
+        <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       </section>
-      <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       ${shortcutRailHtml(locale)}
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
@@ -73,6 +77,7 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
       const tutorialButton = root.querySelector('[data-open-tutorial]');
       const recordingsButton = root.querySelector('[data-open-recordings]');
       const mediaButton = root.querySelector('[data-open-media]');
+      const weekCalendarButton = root.querySelector('[data-open-this-week-calendar]');
       const congregationButton = root.querySelector('[data-open-congregation-assignments]');
       const railTrack = root.querySelector('[data-home-rail-track]');
       const congregationCaption = root.querySelector('[data-home-congregation-caption]');
@@ -83,6 +88,7 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
       const openTutorial = () => onTutorial?.();
       const openRecordings = () => onRecordings?.();
       const openMedia = () => onMedia?.();
+      const openWeekCalendar = () => onCalendar?.();
       const openCongregationAssignments = () => congregationRoute === 'assignments' ? onAssignments?.() : requestNavigation('congregation');
       const railActions = { onMission: () => onMission?.(), onReader: () => onReader?.(), onAssignments: () => onAssignments?.(), onCalendar: () => onCalendar?.(), onGrow: () => onGrow?.() };
       const onRailClick = event => {
@@ -127,6 +133,7 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
       tutorialButton?.addEventListener('click', openTutorial);
       recordingsButton?.addEventListener('click', openRecordings);
       mediaButton?.addEventListener('click', openMedia);
+      weekCalendarButton?.addEventListener('click', openWeekCalendar);
       congregationButton?.addEventListener('click', openCongregationAssignments);
       railTrack?.addEventListener('click', onRailClick);
       railTrack?.addEventListener('keydown', onRailKeydown);
@@ -153,6 +160,7 @@ export function homePage({ progress, dailyMission, assignments, presence, onAssi
         tutorialButton?.removeEventListener('click', openTutorial);
         recordingsButton?.removeEventListener('click', openRecordings);
         mediaButton?.removeEventListener('click', openMedia);
+        weekCalendarButton?.removeEventListener('click', openWeekCalendar);
         congregationButton?.removeEventListener('click', openCongregationAssignments);
         railTrack?.removeEventListener('click', onRailClick);
         railTrack?.removeEventListener('keydown', onRailKeydown);

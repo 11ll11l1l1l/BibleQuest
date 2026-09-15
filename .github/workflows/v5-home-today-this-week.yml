@@ -1,0 +1,38 @@
+name: V5 Home Today This Week
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - src/features/home/index.js
+      - src/features/home/today-this-week.js
+      - tests/v5-home-today-this-week.test.mjs
+      - .github/workflows/v5-home-today-this-week.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Assert exact candidate
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+
+      - name: Syntax check Home composition
+        run: |
+          node --check src/features/home/index.js
+          node --check src/features/home/today-this-week.js
+          node --check tests/v5-home-today-this-week.test.mjs
+
+      - name: Run focused Home composition contract
+        run: node --test tests/v5-home-today-this-week.test.mjs
+
+      - name: Verify source clean
+        run: git diff --exit-code && git diff --cached --exit-code
