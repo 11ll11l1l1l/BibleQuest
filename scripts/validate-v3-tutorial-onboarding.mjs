@@ -48,7 +48,13 @@ if (!failures.length) {
     if (!ui.includes(token)) fail(`Tutorial presenter missing interaction contract: ${token}`);
   }
 
-  for (const token of ['data-open-tutorial', 'Show tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
+  for (const token of ['data-open-tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
+  // The literal string "Show tutorial" was correctly replaced by a
+  // localization key (home.tutorial.title) once Home was localized - this
+  // checks the key/dictionary entry instead of the old hardcoded English.
+  if (!home.includes("tx('home.tutorial.title')")) fail('Home missing permanent tutorial launcher contract: home.tutorial.title lookup');
+  const en = fs.readFileSync(new URL('../src/content/locales/en.js', import.meta.url), 'utf8');
+  if (!en.includes("'home.tutorial.title': 'Show tutorial'")) fail('en.js missing the expected Show tutorial launcher copy for home.tutorial.title');
   for (const token of ['onTutorial?.()', 'data-code-saved', 'data-code-done']) if (!account.includes(token)) fail(`Account missing recovery-save tutorial handoff: ${token}`);
   for (const forbidden of ['onTutorial?.(result.recovery_code', 'onTutorial?.(code', 'bq-account-created', 'sessionStorage']) if (account.includes(forbidden)) fail(`Account leaked recovery material or legacy trigger state into tutorial handoff: ${forbidden}`);
 
