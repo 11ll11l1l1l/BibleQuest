@@ -1,6 +1,6 @@
 import { localization } from '../../app/localization.js';
 
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 export const CONGREGATION_COPY = Object.freeze({
   en: Object.freeze({
