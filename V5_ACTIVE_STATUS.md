@@ -1,144 +1,248 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-15 JST
+Updated: 2026-09-16 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD at this reconciliation: `e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9`
-Production fallback: V4 on `main` until an exact V5 candidate is accepted and promoted
+Observed integration HEAD before this documentation reconciliation: `1f74a64e59e9ed35a4168949ef31e673898e1963`
+Formal acceptance coverage after Pass 3 reconciliation: **68/122 = 55.7%**
+Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
 
 Use this order whenever instructions disagree:
 
-1. Current repository/branch/commit state, CI/check evidence, and controlled backend/device evidence.
+1. Current repository/branch/commit state, exact-head CI/check evidence, and controlled backend/device evidence.
 2. `V5_ACTIVE_STATUS.md` — current phase/blocker/candidate truth.
 3. `DEVELOPMENT_PLAN_V5.md` — complete V5 target and sequencing.
 4. `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — testable completion contract.
 5. `V5_COORDINATED_AGENT_PROTOCOL.md` — five-agent operating rules and ownership lanes.
 6. The newest non-expired `V5-CLAIM` / `V5-DISPATCH` entries on Issue #185.
 7. Scheduled-agent prompt text.
-8. Older Issue #185 comments, old chat handoffs, lab branches, README prose, and historical V5/V6 naming.
+8. Older Issue #185 comments, chat handoffs, lab branches, README prose, and historical V5/V6 naming.
 
-Older Issue #185 architecture-era dispatches remain historical evidence only. They do not override the files above. A claim expires unless it has a corresponding active branch/PR or is renewed after re-checking current ownership.
+Historical claims do not override current repository evidence. A claim expires unless it still has an active branch/PR or is renewed after re-checking current ownership.
 
 ## 2. V5 line in the sand
 
 V5 is **feature completion on the current proven architecture**. V6 owns engine/architecture replacement. V7 owns the later full product/visual overhaul.
 
-V5 must not introduce a Vite/build migration, global router/state rewrite, Reader/Games engine rewrite, generalized offline/background-sync platform, replacement notification engine, generalized repository/data-access layer, tenant engine, replacement media platform, generalized search/index engine, or broad visual/navigation overhaul.
+V5 must not introduce a Vite/build migration, global router/state rewrite, broad TypeScript conversion, Reader/Games engine rewrite, generalized offline/background-sync platform, replacement notification engine, generalized repository/data-access layer, tenant engine, replacement media platform, generalized search/index engine, or broad V7 visual/navigation overhaul.
 
 A small helper needed to complete an accepted V5 feature is allowed only when it remains local, dependency-light, current-architecture compatible, separately testable, and does not redefine ownership across the app.
 
-## 2b. My Journey (P1 content track) - committed, blocked from full CI proof by a pre-existing unrelated failure
-
-Implemented as an unclaimed, uncontested V5 P1 item (no open PR referenced it; an earlier incomplete attempt had already been removed in #336). Pure composition over the existing shared progress-event log and Assignments owner, no new state/storage. Fully localized in English and Tagalog through the existing `localization.t()` system (new `myjourney.*` keys added to both `en.js`/`tl.js`, key-parity verified by both the localization foundation test suite and a new dedicated static contract). Real edge, static, and browser smoke coverage added (EN/TL rendering, empty state, mobile touch targets).
-
-Committed directly to `v5/feature-completion` and verified clean on an independent fresh clone (local edge suite, validators, and the project's own localization-parity tests). **A real CI gate was attempted and came back `failure`** - but the failing step was `architecture validators`, which was proven pre-existing and unrelated *before* committing (stashed all My Journey changes, re-ran the same failing checks against the bare branch tip: identical failures - `push-subscription.js` direct-storage-use and a stale tutorial-launcher contract, both from other agents' in-flight work). That pre-existing failure short-circuits the workflow, so the edge-regression and full browser suite steps never ran at all for this candidate - meaning **My Journey has not yet received real CI-level browser proof**, only local/fresh-clone proof. Per the standing rule ("never freeze a SHA that has not itself passed the gate"), no `release/v5-my-journey` checkpoint was created. This is recorded as an honest gap, not a claimed certification.
-
-**Action needed from A5 or whoever owns Phase 3/4 artwork+push serialization:** once the `push-subscription.js` storage-boundary violation and the stale tutorial-launcher contract are fixed (both pre-existing, unrelated to this item), re-run the gate for My Journey specifically - the code itself is already integrated and should pass cleanly once the architecture-validator step itself is unblocked.
-
 ## 3. Current reconciliation state
 
-A5 has repaired the concurrent-work collision damage and is serializing one reviewed tranche at a time. The integration line now has a push/PR collision guard, exact-head focused workflows for newly integrated high-risk work, and a fail-fast browser startup diagnostic. Open PRs remain work products rather than integrated truth.
+Integration stability: **GREEN at this reconciliation**.
 
-- **Integration stability:** REPAIRED / GREEN at this reconciliation. The incomplete My Journey bootstrap wiring and retired `mediaLibrary.leave()` cleanup reference were removed in #336. The shared-shell browser gate now reports module/startup failures directly instead of timing out. The V5 collision guard is active on integration work.
-- **Phase 1 — Leader Center:** IMPLEMENTED / EXIT EVIDENCE OPEN. The feature owner is present, but the current-candidate member-denied vs leader-allowed browser gate still needs to be serialized on the current integration line.
-- **Phase 2 — Admin Console completion:** IN PROGRESS. The truthful account-deletion audit ordering fix is integrated in #338: `accountDeleted:true` is recorded only after Supabase Auth deletion succeeds. Controlled real Supabase Auth email-change evidence remains a required open gate.
-- **Phase 3 — artwork/dead-owner cleanup:** IN PROGRESS. The duplicate Media Library owner has been retired and the live `media` route remains on Recordings; remaining genuine-match artwork/glyph verification debt still needs reconciliation.
-- **Phase 4 — minimum Web Push:** IN PROGRESS. The reviewed browser `PushManager` lifecycle and service-worker push/click handling are integrated in #339 with dedicated exact-head CI. Explicit category opt-in defaults off, stale-account subscription rotation/rollback/sign-out cleanup are covered, and notification click targets are same-origin. Final backend persistence/delivery integration evidence, invalid-endpoint cleanup against real push-service responses, and app-closed DEVICE/FIELD delivery/tap proof remain open.
-- **Phase 5 — baseline offline Scripture:** **COMPLETE / ACCEPTANCE GATE SATISFIED.** Availability detection is integrated, Reader visibly reports offline availability, and merged PR #323 proved cached Scripture reopening with an actual Chromium context switched offline via `context.setOffline(true)`. The same proof requires never-opened Scripture to remain unavailable/fail clearly. The checklist explicitly allows equivalent real-browser no-network evidence; no hardware-device claim is needed for this gate. Compare `8b74b6520ea42a542ba8294f275244b0165e4fd6..e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9` shows the Phase 5 Reader/offline owners and proof files were not modified afterward.
-- **Phase 6 — multi-congregation:** IN PROGRESS. The account-safe active-congregation primitive and Assignments consumption are integrated, and Presence active-context consumption/switch cleanup is integrated in #340. Existing Calendar code consumes the active congregation owner. Remaining release gate is controlled second-congregation topology plus real cross-congregation Gate C BACKEND-E2E/DEVICE-FIELD execution; any visible-switcher acceptance gap must also be closed before Phase 6 is marked complete.
-- **Phase 7 — verification debt:** IN PROGRESS. CEBOCB/current Reader verification has substantial integrated evidence; Couples bidirectional verification and deferred whole-app Section E/G evidence still need current-head reconciliation.
-- **Cross-phase localization/content/UX:** IN PROGRESS. The localization foundation is integrated. Shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, and Videos/Recordings have current EN/TL coverage and browser/static evidence. Remaining agreed Tagalog surfaces, Cebuano/Bisaya completion, latest-service/weekly composition, and content-depth work remain.
-- **Phase 8 — certification/promotion:** NOT STARTED. No production promotion is authorized until all remaining required gates pass on one exact candidate SHA.
+Recent exact-head evidence and serialized merges have repaired the earlier concurrent-work collision damage. Collision guard, Section G, Section E, Admin certification, and the current-head Leader/Phase-6/My-Journey evidence pack are green on their accepted heads.
 
-Recent A5 serialized integration sequence from the repaired line:
+Formal checklist coverage is **68/122 = 55.7%**. This is an evidence-acceptance ratio, not an implementation-progress estimate. Implementation remains materially further ahead than formal certification.
 
-1. `71c980efcfafc635e162c9eaf64c35c9113ff303` — runtime/module-graph startup repair (#336).
-2. `d4b1ea78520457746e64bd9a3137661f6a113c0d` — Videos/Recordings Tagalog tranche (#337).
-3. `d8988ca3b535f8b31513a706502e436603967b3b` — truthful Admin delete audit ordering (#338).
-4. `7518aab617b8e358c8031efc9848639ba2adeb41` — Phase 4 browser push lifecycle (#339).
-5. `e0899b185fc1d3c0aa31dfd7f9de74993faa9bb9` — Phase 6 Presence active-congregation consumer (#340).
+### Phase 1 — Leader Center
 
-A5 must continue to serialize one PR at a time after exact-head review/evidence. A stale/red PR must be rebased/replayed or superseded rather than merged by assumption.
+Status: **PARTIAL / ROLE-ACCESS EVIDENCE COMPLETE / PRODUCT GAPS OPEN**.
 
-## 4. Mandatory V5 outcomes
+Accepted:
 
-1. Leader Center complete and role-safe.
-2. Admin Console completion, including emergency-action UI and owner-only email-change/recovery with real controlled verification.
-3. Remaining honest artwork/icon completion and dead duplicate Media Library owner retirement.
-4. Minimum real Web Push using the existing Notification Center as source of truth.
-5. Baseline reopening of previously-opened Scripture offline with clear availability state. **Satisfied.**
-6. Real second-congregation Gate C evidence plus minimum active-congregation selection/switching respected by Calendar, presence, and Assignments.
-7. CEBOCB, Couples bidirectional-sharing, and deferred whole-app verification debt closed with evidence.
-8. Accepted content/UX completion track completed on the current architecture.
-9. Full exact-SHA certification before promotion.
+- ordinary member denied;
+- authorized leader allowed;
+- exact-current-head Chromium role proof and 390px mobile-safe behavior.
 
-## 5. Accepted content/UX completion target
+Still open:
 
-### P0 — release-critical product completion
+- Overview member count requirement;
+- full published/scheduled/completed assignment split acceptance;
+- real completed-response review destination;
+- privacy-safe People directory acceptance;
+- Groups & Teams composition acceptance.
 
-#### 5.1 Localization foundation, then Tagalog
+Do not mark Phase 1 complete merely because access/browser smoke is green.
 
-Localization is not a find/replace exercise. Before broad translation work, add the smallest current-architecture localization mechanism required to avoid repeated hard-coded rewrites:
+### Phase 2 — Admin Console
 
-- plain key -> string dictionaries for `en`, `tl`, and later `ceb`;
-- a tiny lookup helper such as `t(key)` with deterministic English fallback;
-- locale preference wired through an existing safe settings/state pattern rather than a new global state system;
-- no framework dependency, build-tool change, routing rewrite, or generalized content platform;
-- one canonical key inventory reused by Tagalog and Cebuano;
-- missing-key and fallback tests.
+Status: **6/7 ACCEPTED / REAL EMAIL-CHANGE BACKEND-E2E OPEN**.
 
-Then complete natural Tagalog for BibleQuest-authored UI/content, starting with Transformation and shared shell/navigation, then Home, Calendar, Assignments, Notifications, settings, Community/Media, remaining member surfaces, and leader/admin user-visible instructions. Proper nouns and Bible translation names may remain unchanged. Scripture text itself must always come from approved/licensed Bible translations and must never be machine-translated by BibleQuest.
+Accepted evidence covers:
 
-#### 5.2 Real Calendar
+- identity/congregation/security user-card sections;
+- safe/restricted/destructive severity treatment;
+- typed destructive confirmations;
+- owner-only sensitive operations, privacy-safe audit detail, and session-safe/fail-closed ordering;
+- negative/self/invalid-target cases;
+- runnable fail-closed controlled non-production evidence path.
 
-Calendar's primary presentation becomes a true month grid over the existing current-architecture event data. Preserve useful agenda/detail views. Event category colors must have visible text/icon cues so color is never the only accessibility signal. Mobile day selection must remain usable. Personal/congregation/assignment behavior and active-congregation filtering must be preserved.
+Still open:
 
-#### 5.3 Media / latest completed service
+- real controlled Supabase Auth email-change execution with target email restored/cleaned up. **BACKEND-E2E required.**
 
-V5 may automatically surface a completed service **only when the current BibleQuest/recordings flow already exposes a stable completed recording identity**. Use stable video identity for deduplication and provide authorized hide/edit correction.
+Readiness/static evidence must not be relabeled as real backend execution.
 
-V5 does **not** add YouTube Data API polling, webhooks, scheduled external discovery, a new ingestion daemon/service, or a replacement media platform. If the current app cannot know that a livestream ended without such an integration, V5 uses the smallest leader confirmation/import action and defers external discovery automation to V6.
+### Phase 3 — artwork / dead-owner completion
 
-#### 5.4 Today / This Week Home
+Status: **IN PROGRESS**.
 
-Compose existing owners into an immediately useful member view: next event, current assignment, continue reading, latest service, current Transformation prompt, and unread notifications. Do not create a new state engine.
+Accepted:
 
-#### 5.5 Connected weekly spiritual journey
+- abandoned duplicate Media Library service/page retired while the canonical `media -> Recordings` route remains authoritative.
 
-Connect existing service/sermon, Scripture, Transformation/reflection, discussion/prayer, assignment/action, and Calendar context through current owners and links/composition. Do not create a new workflow engine.
+Integrated/reviewed evidence exists for several Games, Notification and Encouragement glyph mappings/exceptions, but Phase 3 remains open until the accepted whole-app reconciliation, remaining genuine matches/exceptions, validator/docs state, and accessibility requirements are fully closed.
 
-### P1 — connected content depth
+### Phase 4 — minimum real Web Push
 
-- Transformation authored flow: Scripture/context -> understand -> reflect -> apply -> pray, with optional spouse/family discussion and weekly action.
-- Pastor/leader weekly message anchoring the week's Scripture/service/Transformation/assignment/Calendar context using existing patterns.
-- My Journey/reflection history presenting existing private reading/reflection/assignment/progress signals without a new analytics engine or competitive spiritual leaderboard.
-- Family & Couples tracks for communication, forgiveness, stewardship/finances, intimacy/love, parenting, serving together, family Bible time, gratitude, kindness, and prayer.
-- Non-competitive personal milestones using existing progress sources where possible.
-- Optional Ask at Dinner prompt attached to a service, Transformation item, or weekly journey.
+Status: **IN PROGRESS**.
 
-### P2 — completeness and discovery
+Accepted/integrated:
 
-- Full Cebuano/Bisaya localization of the same scoped BibleQuest-authored UI/content inventory using the localization foundation above. CEBOCB or another approved Cebuano Bible source remains Scripture.
-- Lightweight filtering/search over data already loaded/exposed by current owners. No generalized index/search platform.
-- Better organization of existing Media/Recordings by available metadata/categories. New schema is not assumed; reuse existing metadata first. Any genuinely required small schema change must be a separate reviewed/RLS-tested tranche.
+- browser PushManager lifecycle;
+- explicit category opt-in default off;
+- account-switch/sign-out safety;
+- account-safe subscription persistence over the RLS-backed owner;
+- Notification Center remains source of truth;
+- same-origin notification click routing;
+- no private VAPID/service secret shipped to the client.
 
-## 6. Data-model rule for content additions
+Still open:
 
-Composition/reuse comes first. Before adding a content table or new durable schema, prove that current Transformation, Assignment, Journey, Calendar, Media/Recordings, or existing settings owners cannot represent the requirement cleanly. Any new table/column must be minimal, separately claimed, use existing RLS conventions, and must not become a new V6-style content/repository engine.
+- final-candidate server-side delivery acceptance for required notification types;
+- real push-service invalid/unsubscribed endpoint cleanup evidence;
+- app-closed receive/open proof;
+- push-disabled final device proof.
 
-## 7. Evidence rules
+Required closed-app and disabled behavior remains **DEVICE/FIELD** work.
 
-Use explicit evidence classes:
+### Phase 5 — baseline offline Scripture
 
-- **STATIC** — source/contract/unit checks only.
+Status: **COMPLETE / ACCEPTED**.
+
+Equivalent real-browser no-network evidence satisfies the permitted acceptance path. Previously-opened/current cached Scripture behavior and unavailable-content failure handling are proven without introducing a generalized offline engine.
+
+### Phase 6 — multi-congregation
+
+Status: **CLIENT/CONSUMER ACCEPTANCE SUBSTANTIALLY COMPLETE / GATE C OPEN**.
+
+Accepted:
+
+- account-safe active-congregation selection;
+- visible multi-membership switcher with exact-current-head 390px browser proof;
+- Calendar consumes active congregation rather than `memberships[0]`;
+- Presence consumes active congregation;
+- Assignments consume active congregation.
+
+Still open:
+
+- controlled second test congregation or equivalent isolated safe topology;
+- real cross-congregation isolation Gate C execution with no leakage. **BACKEND-E2E/DEVICE-FIELD required.**
+
+### Phase 7 — verification debt
+
+Status: **COMPLETE / ACCEPTED**.
+
+Accepted evidence now covers:
+
+- CEBOCB 66-book/current Reader contract;
+- CEBOCB 390px Reader browser behavior;
+- Couples bidirectional/private sharing proof;
+- deferred Section E integration sweep;
+- Section G loading/empty/error/offline matrix.
+
+The Section E refresh correctly identified and repaired obsolete historical test assumptions for accepted Community localization and Media Library retirement without weakening frozen relational-owner protection.
+
+### Cross-phase localization / content / UX
+
+Status: **IN PROGRESS**.
+
+Accepted/integrated highlights:
+
+- current-architecture EN/TL localization foundation;
+- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community, Videos/Recordings scoped EN/TL work;
+- Community 390px Tagalog browser proof;
+- latest confirmed service stable-identity derivation;
+- Home/Today existing-owner composition;
+- My Journey private/noncompetitive history with EN/TL, empty-state and 390px browser proof.
+
+Still open includes:
+
+- remaining Tagalog surfaces and final no-unexplained-English scan;
+- Cebuano/Bisaya dictionary and full agreed UI/content coverage;
+- weekly connected spiritual journey;
+- remaining content-depth items;
+- Family/Couples content targets;
+- Ask at Dinner;
+- Media discovery/organization;
+- Home missing-source intentional-empty-state and dedicated composition browser acceptance;
+- authorized latest-service hide/edit/correct UI controls.
+
+### My Journey
+
+Status: **IMPLEMENTED AND FORMALLY ACCEPTED FOR THE CURRENT P1 CHECKLIST ITEM**.
+
+The earlier note that My Journey lacked CI browser proof is obsolete.
+
+Exact-current-head #392 evidence proves:
+
+- composition over existing Progress and Assignments owners;
+- no direct Supabase/local/session-storage owner bypass;
+- meaningful/private history only;
+- no rank/leaderboard/percentile/comparison output;
+- EN/TL presentation;
+- real empty state;
+- 390px mobile-safe browser behavior.
+
+The first #392 run exposed a Playwright harness argument-shape error; only the test harness was repaired. Product runtime was unchanged. The final evidence-pack run passed.
+
+### Phase 8 — final certification / promotion
+
+Status: **NOT STARTED AS A FINAL CANDIDATE FREEZE**.
+
+Do not begin final promotion until required implementation sections and real backend/device gates are complete enough to freeze one exact candidate.
+
+Required final actions include:
+
+- all required checklist sections pass or have correctly bound evidence;
+- accumulated regression green on one exact candidate SHA;
+- required browser/backend/device evidence recorded honestly;
+- V4 retained as rollback until explicit V5 acceptance;
+- A5 reports/freezes but scheduled agents do not autonomously promote;
+- final `V5_ACTIVE_STATUS.md` reconciliation before V6 runtime work begins.
+
+## 4. Certification reconciliation history
+
+- Pass 1 / PR #387: **46/122 -> 54/122 (44.3%)**.
+- Admin exact-head certification / PR #389: six Admin acceptance items proven while real email-change E2E stayed open.
+- Section E current-head refresh / PR #390: stale historical byte locks repaired; full Section E matrix green.
+- Pass 2 / PR #391: **54/122 -> 63/122 (51.6%)**.
+- Current-head evidence pack / PR #392: Leader role access, Phase 6 switcher/Calendar active context, and My Journey exact-current-head browser/static proof.
+- Pass 3 reconciliation: **63/122 -> 68/122 (55.7%)** once this documentation-only reconciliation is merged.
+
+## 5. Highest-priority remaining certification/development path
+
+1. Complete the five genuine Leader Center product gaps, then rerun its exact-head acceptance suite.
+2. Execute Admin real email-change BACKEND-E2E in an explicitly approved isolated non-production Supabase topology.
+3. Close Phase 3 artwork/glyph reconciliation.
+4. Complete/accept remaining Web Push server and real-device gates.
+5. Establish the controlled second-congregation topology and execute real Gate C.
+6. Close latest-service correction controls and Home empty/mobile acceptance.
+7. Finish remaining Tagalog, Cebuano/Bisaya, weekly journey, content-depth and Media organization requirements.
+8. Freeze one exact V5 release candidate, run the full accumulated regression/evidence matrix, then make the explicit promotion decision.
+
+## 6. Evidence rules
+
+Evidence labels remain:
+
+- **STATIC** — source/contract/unit evidence.
 - **BROWSER-AUTO** — automated browser behavior on an exact SHA.
-- **BACKEND-E2E** — controlled real backend execution with non-sensitive evidence.
+- **BACKEND-E2E** — controlled real backend execution.
 - **DEVICE/FIELD** — actual device/network/account/congregation behavior.
 
-A static test never substitutes for a required real backend/device gate. Push requires DEVICE/FIELD app-closed delivery. Offline requires actual no-network reopening; Phase 5 satisfies this through the checklist-approved real Chromium no-network equivalent. Gate C requires real cross-congregation execution. Email-change requires controlled real Supabase Auth execution.
+Rules:
 
-## 8. V6/V7 sequencing
+- STATIC never substitutes for a required real backend/device gate.
+- Readiness harnesses do not equal execution.
+- A green workflow only proves the assertions it actually executed.
+- Exact-head evidence must remain bound to the tested SHA/PR/environment.
+- Stale PRs are replayed/recreated or explicitly superseded; they are never merged by assumption.
+- One reviewed integration tranche at a time remains the default serialization rule for collision-sensitive owners.
 
-`V5 certification -> V6 architecture upgrade -> V7 full overhaul` is strict. V6 and V7 may be documented but no runtime implementation from those programs is allowed while V5 is active.
+## 7. Release boundary
+
+The current public production site remains the V4 fallback until V5 is explicitly accepted. No documentation reconciliation, scheduled agent, or verification-only PR authorizes promotion to `main` or production by itself.
