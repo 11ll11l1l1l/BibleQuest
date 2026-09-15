@@ -20,12 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Verify exact candidate
-        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+        run: |
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
       - name: Build current application
         run: bash build.sh
       - name: Verify maintained Section E inventory
@@ -72,6 +75,6 @@ jobs:
             tests/v3-final-mobile-widths-smoke.mjs; do timeout 240s node "$test"; done
       - name: Verify exact source head remained unchanged
         run: |
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
-          git diff --exit-code
-          git diff --cached --exit-code
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
