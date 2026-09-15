@@ -1,0 +1,54 @@
+name: V5 Phase 2 Email Change E2E Harness Verify
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'tests/v5-admin-email-change-e2e.mjs'
+      - 'docs/v5/phase2-email-change-e2e.md'
+      - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
+      - 'tests/v5-admin-session-revocation-fail-closed.test.mjs'
+      - 'tests/v5-admin-emergency-security-static.mjs'
+      - 'tests/admin-delete-audit-privacy-static.mjs'
+      - '.github/workflows/v5-phase2-email-change-e2e-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  email-change-evidence-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Record exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+          fi
+      - name: Require integrated revocation migration and function
+        run: |
+          test -f supabase/migrations/20260915183000_admin_session_revocation.sql
+          test -f supabase/functions/bq-admin-ops/index.ts
+      - name: Syntax check controlled E2E harness
+        run: node --check tests/v5-admin-email-change-e2e.mjs
+      - name: Run session-revocation security contract
+        run: node --test tests/v5-admin-session-revocation-fail-closed.test.mjs
+      - name: Run accumulated Admin security contracts
+        run: |
+          node --test tests/v5-admin-emergency-security-static.mjs
+          node --test tests/admin-delete-audit-privacy-static.mjs
+      - name: Verify fail-closed real-run markers
+        run: |
+          grep -F "BQ_V5_E2E_CONFIRM_NONPROD" tests/v5-admin-email-change-e2e.mjs
+          grep -F "Refusing to run against the production Supabase project" tests/v5-admin-email-change-e2e.mjs
+          grep -F "changed:true" docs/v5/phase2-email-change-e2e.md
+          grep -F 'sessionsRevoked:true' docs/v5/phase2-email-change-e2e.md
+          grep -F "Controlled target email was not restored" tests/v5-admin-email-change-e2e.mjs
+      - name: Verify tracked source remains clean
+        run: git diff --exit-code && git status --porcelain=v1 --untracked-files=no | test ! -s /dev/stdin
