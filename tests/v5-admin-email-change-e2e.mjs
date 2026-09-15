@@ -46,19 +46,30 @@ async function latestAudit(targetUserId) {
 }
 async function refresh(refreshToken) { return jsonFetch(`${base}/auth/v1/token?grant_type=refresh_token`, { method: 'POST', headers: anonHeaders, body: JSON.stringify({ refresh_token: refreshToken }) }); }
 
-const sensitiveKeys = /email|password|token|secret|credential/i;
 function assertAuditSafe(detail) {
-  assert.equal(detail?.emailChanged, true, 'Audit must record that email changed');
-  assert.equal(detail?.sessionsRevoked, true, 'Audit must record that sessions were revoked');
-  for (const key of Object.keys(detail || {})) assert.equal(sensitiveKeys.test(key), false, `Sensitive audit key detected: ${key}`);
-  const encoded = JSON.stringify(detail || {}).toLowerCase();
-  for (const sensitiveValue of [env.BQ_V5_TARGET_EMAIL, env.BQ_V5_TARGET_NEW_EMAIL, env.BQ_V5_TARGET_PASSWORD]) assert.equal(encoded.includes(String(sensitiveValue).toLowerCase()), false, 'Sensitive value leaked into audit detail');
+  assert.ok(detail && typeof detail === 'object' && !Array.isArray(detail), 'Audit detail must be an object');
+  assert.deepEqual(Object.keys(detail).sort(), ['emailChanged', 'sessionsRevoked'], 'Audit detail must contain only the two approved boolean markers');
+  assert.equal(detail.emailChanged, true, 'Audit must record that email changed');
+  assert.equal(detail.sessionsRevoked, true, 'Audit must record that sessions were revoked');
+  const encoded = JSON.stringify(detail).toLowerCase();
+  const sensitiveValues = [
+    env.BQ_V5_OWNER_EMAIL, env.BQ_V5_OWNER_PASSWORD,
+    env.BQ_V5_ADMIN_EMAIL, env.BQ_V5_ADMIN_PASSWORD,
+    env.BQ_V5_TARGET_EMAIL, env.BQ_V5_TARGET_NEW_EMAIL, env.BQ_V5_TARGET_PASSWORD,
+  ];
+  for (const sensitiveValue of sensitiveValues) {
+    assert.equal(encoded.includes(String(sensitiveValue).toLowerCase()), false, 'Sensitive value leaked into audit detail');
+  }
 }
 
 let targetId = null;
 let restored = false;
 try {
-  const [owner, admin, target] = await Promise.all([signIn(env.BQ_V5_OWNER_EMAIL, env.BQ_V5_OWNER_PASSWORD), signIn(env.BQ_V5_ADMIN_EMAIL, env.BQ_V5_ADMIN_PASSWORD), signIn(env.BQ_V5_TARGET_EMAIL, env.BQ_V5_TARGET_PASSWORD)]);
+  const [owner, admin, target] = await Promise.all([
+    signIn(env.BQ_V5_OWNER_EMAIL, env.BQ_V5_OWNER_PASSWORD),
+    signIn(env.BQ_V5_ADMIN_EMAIL, env.BQ_V5_ADMIN_PASSWORD),
+    signIn(env.BQ_V5_TARGET_EMAIL, env.BQ_V5_TARGET_PASSWORD),
+  ]);
   targetId = target.user.id;
   assert.notEqual(owner.user.id, targetId, 'Owner and target identities must be distinct');
   assert.notEqual(admin.user.id, targetId, 'Admin and target identities must be distinct');
@@ -71,10 +82,10 @@ try {
 
   const change = await invoke(owner.access_token, { action: 'change_email', targetUserId: targetId, email: env.BQ_V5_TARGET_NEW_EMAIL });
   assert.equal(change.response.ok, true, `Owner email change failed (${change.response.status})`);
+  assert.deepEqual(Object.keys(change.body || {}).sort(), ['changed', 'ok', 'revoked'], 'Success response must remain privacy-bounded');
   assert.equal(change.body?.ok, true, 'Owner email-change response must report success');
   assert.equal(change.body?.changed, true, 'Owner email-change response must report changed=true');
   assert.equal(change.body?.revoked, true, 'Owner email-change response must report revoked=true');
-  assert.equal(Object.prototype.hasOwnProperty.call(change.body || {}, 'email'), false, 'Success response must not echo email');
 
   const got = await serviceGetUser(targetId);
   assert.equal(got.response.ok, true, `Unable to verify target Auth account (${got.response.status})`);
