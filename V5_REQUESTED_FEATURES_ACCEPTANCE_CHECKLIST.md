@@ -1,6 +1,6 @@
 # BibleQuest V5 Requested Features Acceptance Checklist
 
-Updated: 2026-09-15 JST
+Updated: 2026-09-16 JST
 Scope: feature completion on the current architecture
 Authority: `V5_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V5.md`
@@ -14,6 +14,8 @@ Evidence labels used below:
 - **DEVICE/FIELD** — actual device/network/account/congregation behavior.
 
 Static evidence never substitutes for a required real backend/device gate.
+
+Documentation reconciliation 2026-09-16: merged evidence supports **54/122 accepted items (44.3%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -34,7 +36,7 @@ Static evidence never substitutes for a required real backend/device gate.
 - [ ] Email change proven against a controlled real Supabase Auth account and target email restored/cleaned up. **BACKEND-E2E required.**
 - [ ] Existing Gate A field-test path is runnable against the completed UI.
 
-Evidence note: #338 is integrated and ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. This improves Phase 2 integrity but does not replace the required real email-change BACKEND-E2E gate.
+Evidence note: #338 is integrated and ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. #358/#365/#371 add fail-closed session-revocation semantics, controlled email-change E2E readiness, and integrated security-chain verification. This improves Phase 2 integrity but does not replace the required real email-change BACKEND-E2E gate.
 
 ## C. Phase 3 — artwork/dead-owner completion
 
@@ -49,7 +51,7 @@ Evidence note: #338 is integrated and ensures `delete_account` cannot write a fa
 ## D. Phase 4 — minimum real Web Push
 
 - [x] Push subscription capture through client `PushManager` or current-browser equivalent. **STATIC/current-browser lifecycle: #339.**
-- [ ] Subscription persistence is account/device-safe with owner-only access/RLS.
+- [x] Subscription persistence is account/device-safe with owner-only access/RLS. **STATIC: merged #348 persistence adapter + #349 lifecycle wiring over the existing RLS-backed `bible_push_subscriptions` owner.**
 - [x] Explicit category opt-in/out defaults to off. **STATIC: #339.**
 - [x] Sign-out/account switch cannot leak or reuse another account's subscription context. **STATIC executable lifecycle: #339.**
 - [x] In-app Notification Center remains source of truth; no replacement notification engine was introduced by the browser lifecycle tranche.
@@ -68,7 +70,7 @@ Evidence note: #338 is integrated and ensures `delete_account` cannot write a fa
 - [x] Never-opened/unavailable content fails clearly rather than blank/broken. **Same real-browser no-network proof + companion contracts.**
 - [x] No generalized cache-everything/offline mutation queue/book-package engine is introduced.
 
-**Phase 5 acceptance is satisfied.** The checklist permits DEVICE/FIELD **or equivalent real browser no-network evidence**. Compare from merged proof commit `8b74b6520ea42a542ba8294f275244b0165e4fd6` to the 2026-09-15 reconciliation head shows these Reader/offline owners and proof files were not modified afterward.
+**Phase 5 acceptance is satisfied.** The checklist permits DEVICE/FIELD **or equivalent real browser no-network evidence**. Compare from merged proof commit `8b74b6520ea42a542ba8294f275244b0165e4fd6` to the reconciliation line shows these Reader/offline owners and proof files remained protected by accumulated regression/collision checks.
 
 ## F. Phase 6 — multi-congregation
 
@@ -84,9 +86,9 @@ Evidence note: #338 is integrated and ensures `delete_account` cannot write a fa
 
 - [ ] CEBOCB 66-book/current Reader contract remains intact on current candidate.
 - [ ] CEBOCB representative mobile Reader behavior has current exact-head browser proof. **BROWSER-AUTO required.**
-- [ ] Couples Journey intended spouse-to-spouse sharing is genuinely bidirectional and private to the correct relationship/account scope. **BROWSER-AUTO plus backend evidence where applicable.**
+- [x] Couples Journey intended spouse-to-spouse sharing is genuinely bidirectional and private to the correct relationship/account scope. **STATIC + BROWSER-AUTO: merged #383, exact head `63d1995b209d70a50210df355d600fbfc2fb1124`, run `35021093121` SUCCESS including 390px bidirectional/privacy proof.**
 - [ ] Deferred V4 Section E integration sweep completed with evidence.
-- [ ] Deferred Section G loading/empty/error/offline sweep completed with evidence.
+- [x] Deferred Section G loading/empty/error/offline sweep completed with evidence. **STATIC + BROWSER-AUTO: current-line run `35029103272` SUCCESS; preceding exact Home integration run `35028738463` explicitly executed the Playwright loading/empty/error/offline matrix.**
 
 ## H. Cross-phase P0 — localization foundation
 
@@ -110,7 +112,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] Calendar localized.
 - [x] Assignments and Notification Center localized.
 - [x] Settings/profile localized on the integrated Account/settings surface.
-- [ ] Community/Media and remaining member-facing surfaces fully localized. Videos/Recordings is integrated; remaining agreed surfaces still need completion.
+- [ ] Community/Media and remaining member-facing surfaces fully localized. Community EN/TL is integrated in #372 and 390px browser proof passed in #380; Videos/Recordings is integrated; remaining agreed member surfaces still need completion.
 - [ ] Leader/admin user-visible instructions, errors, empty/loading states localized where part of V5 scope.
 - [x] Proper nouns/Bible translation names may remain unchanged where appropriate.
 - [x] Representative mobile/browser checks show translated text does not cause clipping/overflow or inaccessible controls on the currently migrated surfaces. **BROWSER-AUTO.**
@@ -130,18 +132,18 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 
 ## K. P0 — latest completed service in Media/Recordings
 
-- [ ] Stable recording/video identity is the deduplication key for latest-service surfacing.
-- [ ] When the current BibleQuest/recordings flow already exposes a completed stable recording, it is surfaced as the latest service without duplicate insertion.
+- [x] Stable recording/video identity is the deduplication key for latest-service surfacing. **STATIC: merged #353; stable YouTube ID dedupe contract.**
+- [x] When the current BibleQuest/recordings flow already exposes a completed stable recording, it is surfaced as the latest service without duplicate insertion. **STATIC: merged #353, exact head `229a5ebeef67bc74f1dd923027ab58fc5ca699db`, run `34927753652` SUCCESS.**
 - [ ] Authorized user can hide/edit/correct an incorrectly surfaced item.
-- [ ] If completion cannot be known from current data, V5 uses a minimal leader confirmation/import step rather than pretending external automation exists.
+- [x] If completion cannot be known from current data, V5 uses a minimal leader confirmation/import step rather than pretending external automation exists. **STATIC: #353 uses the existing leader-curated `featured` signal and returns no latest service for unconfirmed rows rather than inferring completion by date.**
 - [x] No YouTube Data API polling, webhook ingestion, scheduled external discovery, new ingestion daemon/service, or replacement media platform is introduced in the integrated Videos/Recordings localization tranche.
 - [x] Existing Recordings/Media owner remains authoritative.
 
 ## L. P0 — Today / This Week Home
 
-- [ ] Home composes existing owners for next event, current assignment, continue reading, latest service, Transformation prompt, and unread notifications.
+- [x] Home composes existing owners for next event, current assignment, continue reading, latest service, Transformation prompt, and unread notifications. **STATIC: merged #385; exact head `fa8d443917b135d4029f7a96c5f281e3dc4d8ee8`; runs `35028738458` and `35028738560` SUCCESS.**
 - [ ] Missing source data produces intentional empty state rather than broken placeholders.
-- [ ] No new state engine or duplicate data owner is created.
+- [x] No new state engine or duplicate data owner is created. **STATIC: #385 acceptance contract requires Calendar/Reader/Recordings/Transform/Notification/Assignments/Daily Journey owners and rejects localStorage/sessionStorage/direct Supabase bypasses.**
 - [ ] Representative mobile/browser composition works. **BROWSER-AUTO required.**
 
 ## M. P0 — connected weekly spiritual journey
@@ -157,7 +159,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [ ] Transformation flow supports Scripture/context -> understand -> reflect -> apply -> pray.
 - [ ] Optional spouse/family discussion and weekly action use existing Journey/Assignment patterns.
 - [ ] Pastor/leader weekly message anchors existing weekly content without a new content engine.
-- [ ] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard.
+- [ ] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard. **Implementation is integrated with EN/TL and dedicated tests, but remains unchecked here until accepted exact-current-candidate proof is reconciled.**
 - [ ] Family & Couples tracks cover agreed topics using existing owners/patterns.
 - [ ] Personal milestones are encouraging/non-competitive and derive from current progress where possible.
 - [ ] Ask at Dinner attaches one short prompt to relevant weekly content.
