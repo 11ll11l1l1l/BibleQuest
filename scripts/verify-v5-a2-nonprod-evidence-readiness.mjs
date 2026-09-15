@@ -69,10 +69,14 @@ function staticContract() {
     "if(r!=='owner')",
     "if(target===u.id)",
     "a.auth.admin.updateUserById(target,{email})",
-    'forceSignOutUser(target)',
-    "await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:revoked})",
-  ], 'bq-admin-ops email-change contract');
+    'async function requireSessionRevocation(targetUserId:string)',
+    "if(!revoked)throw new Error('Session revocation failed: target user not found')",
+    'await requireSessionRevocation(target)',
+    "await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true})",
+    'return json(req,{ok:true,changed:true,revoked:true})',
+  ], 'bq-admin-ops email-change fail-closed contract');
   assert(!/change_email[^]*audit\([^)]*(?:oldEmail|newEmail|email\s*:)/.test(admin), 'change_email audit path must not add email values');
+  assert(!/change_email[^]*force-sign-out-on-email-change/.test(admin), 'change_email must not swallow session-revocation failures');
 
   includesAll(push, [
     'await requireAdmin(req, adminDb)',
