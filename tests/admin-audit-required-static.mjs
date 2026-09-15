@@ -43,7 +43,7 @@ assert.ok(
 );
 
 const forceSignOut = between("if(action==='force_sign_out')", "if(action==='set_temp_password')");
-assertCheckpointBefore(forceSignOut, 'force_sign_out', 'forceSignOutUser(target)', 'force_sign_out');
+assertCheckpointBefore(forceSignOut, 'force_sign_out', 'forceSignOutUser(a,target)', 'force_sign_out');
 
 const tempPassword = between("if(action==='set_temp_password')", "if(action==='change_email')");
 assertCheckpointBefore(tempPassword, 'set_temp_password', 'a.auth.admin.updateUserById(target,{password})', 'set_temp_password');
