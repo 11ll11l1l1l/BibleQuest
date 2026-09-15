@@ -15,7 +15,7 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 2): merged evidence supports **63/122 accepted items (51.6%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md` and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 3): merged evidence supports **68/122 accepted items (55.7%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -24,7 +24,7 @@ Documentation reconciliation 2026-09-16 (Pass 2): merged evidence supports **63/
 - [ ] Response review reachable as a real destination, not only inline.
 - [ ] People view exposes ministry-relevant directory only and excludes private notes, Transform answers, Couples content, personality/psychometric answers.
 - [ ] Groups & Teams composes existing Journey Groups/Team Center owners; no new backend.
-- [ ] Ordinary member denied and authorized leader allowed on current candidate using real browser evidence. **BROWSER-AUTO or stronger required.**
+- [x] Ordinary member denied and authorized leader allowed on current candidate using real browser evidence. **BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`, evidence-pack run `35035310862` SUCCESS.**
 
 ## B. Phase 2 — Admin Console completion
 
@@ -75,8 +75,8 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 ## F. Phase 6 — multi-congregation
 
 - [x] Active-congregation selection is account-safe and rejects non-member IDs. **Maintained V5 active-congregation contract remains green in the collision guard.**
-- [ ] Visible switcher exists for users with multiple memberships and has current-candidate acceptance evidence.
-- [ ] Calendar respects active congregation with dedicated/current-candidate acceptance evidence.
+- [x] Visible switcher exists for users with multiple memberships and has current-candidate acceptance evidence. **STATIC + BROWSER-AUTO: #392 exact-head visible switching/single-membership/fail-closed/390px proof; run `35035310862` SUCCESS.**
+- [x] Calendar respects active congregation with dedicated/current-candidate acceptance evidence. **STATIC + BROWSER-AUTO: #392 proves Calendar consumes the active congregation owner rather than `memberships[0]`, with Calendar browser proof on the same exact head.**
 - [x] Presence respects active congregation. **Focused exact-head Phase 6 Presence verification: #340.**
 - [x] Assignments respect active congregation. **Maintained exact-head Assignments active-congregation contract.**
 - [ ] A controlled second test congregation exists or equivalent safe test topology is established.
@@ -90,7 +90,7 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 - [x] Deferred V4 Section E integration sweep completed with evidence. **STATIC + BROWSER-AUTO: repaired exact head `53fdc20835fb54541278764f0aa9eac3142ada75`; Section E run `35034652466`, collision run `35034652255`, Section G run `35034652337` all SUCCESS; merged #390 as `1fce2b1d03ac6e91c4ef81e5620d5a8c0d272a06`.**
 - [x] Deferred Section G loading/empty/error/offline sweep completed with evidence. **STATIC + BROWSER-AUTO: current-line run `35029103272` SUCCESS; preceding exact Home integration run `35028738463` explicitly executed the Playwright loading/empty/error/offline matrix.**
 
-**Phase 7 verification debt is formally satisfied at Pass 2.**
+**Phase 7 verification debt is formally satisfied.**
 
 ## H. Cross-phase P0 — localization foundation
 
@@ -129,14 +129,14 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] Color is not the sole category cue; visible text/icon cue exists.
 - [x] Mobile day selection/detail flow is covered by current Calendar browser evidence.
 - [x] Existing personal/congregation/assignment event behavior is preserved by maintained contracts.
-- [ ] Active-congregation filtering has dedicated/current-candidate Phase 6 acceptance evidence.
+- [x] Active-congregation filtering has dedicated/current-candidate Phase 6 acceptance evidence. **STATIC + BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`, run `35035310862` SUCCESS.**
 - [x] No new calendar backend/engine is introduced.
 
 ## K. P0 — latest completed service in Media/Recordings
 
 - [x] Stable recording/video identity is the deduplication key for latest-service surfacing. **STATIC: merged #353; stable YouTube ID dedupe contract.**
 - [x] When the current BibleQuest/recordings flow already exposes a completed stable recording, it is surfaced as the latest service without duplicate insertion. **STATIC: merged #353, exact head `229a5ebeef67bc74f1dd923027ab58fc5ca699db`, run `34927753652` SUCCESS.**
-- [ ] Authorized user can hide/edit/correct an incorrectly surfaced item.
+- [ ] Authorized user can hide/edit/correct an incorrectly surfaced item. **Current Recordings service has `setFeatured`/`archive`, but the current Videos UI does not expose correction controls; implementation remains open.**
 - [x] If completion cannot be known from current data, V5 uses a minimal leader confirmation/import step rather than pretending external automation exists. **STATIC: #353 uses the existing leader-curated `featured` signal and returns no latest service for unconfirmed rows rather than inferring completion by date.**
 - [x] No YouTube Data API polling, webhook ingestion, scheduled external discovery, new ingestion daemon/service, or replacement media platform is introduced in the integrated Videos/Recordings localization tranche.
 - [x] Existing Recordings/Media owner remains authoritative.
@@ -161,7 +161,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [ ] Transformation flow supports Scripture/context -> understand -> reflect -> apply -> pray.
 - [ ] Optional spouse/family discussion and weekly action use existing Journey/Assignment patterns.
 - [ ] Pastor/leader weekly message anchors existing weekly content without a new content engine.
-- [ ] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard. **Implementation is integrated with EN/TL and dedicated tests, but remains unchecked here until accepted exact-current-candidate proof is reconciled.**
+- [x] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard. **STATIC + BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`; existing-owner/private/noncompetitive contracts plus EN/TL/empty/390px proof; run `35035310862` SUCCESS.**
 - [ ] Family & Couples tracks cover agreed topics using existing owners/patterns.
 - [ ] Personal milestones are encouraging/non-competitive and derive from current progress where possible.
 - [ ] Ask at Dinner attaches one short prompt to relevant weekly content.
