@@ -29,6 +29,14 @@ V5 must not introduce a Vite/build migration, global router/state rewrite, Reade
 
 A small helper needed to complete an accepted V5 feature is allowed only when it remains local, dependency-light, current-architecture compatible, separately testable, and does not redefine ownership across the app.
 
+## 2b. My Journey (P1 content track) - committed, blocked from full CI proof by a pre-existing unrelated failure
+
+Implemented as an unclaimed, uncontested V5 P1 item (no open PR referenced it; an earlier incomplete attempt had already been removed in #336). Pure composition over the existing shared progress-event log and Assignments owner, no new state/storage. Fully localized in English and Tagalog through the existing `localization.t()` system (new `myjourney.*` keys added to both `en.js`/`tl.js`, key-parity verified by both the localization foundation test suite and a new dedicated static contract). Real edge, static, and browser smoke coverage added (EN/TL rendering, empty state, mobile touch targets).
+
+Committed directly to `v5/feature-completion` and verified clean on an independent fresh clone (local edge suite, validators, and the project's own localization-parity tests). **A real CI gate was attempted and came back `failure`** - but the failing step was `architecture validators`, which was proven pre-existing and unrelated *before* committing (stashed all My Journey changes, re-ran the same failing checks against the bare branch tip: identical failures - `push-subscription.js` direct-storage-use and a stale tutorial-launcher contract, both from other agents' in-flight work). That pre-existing failure short-circuits the workflow, so the edge-regression and full browser suite steps never ran at all for this candidate - meaning **My Journey has not yet received real CI-level browser proof**, only local/fresh-clone proof. Per the standing rule ("never freeze a SHA that has not itself passed the gate"), no `release/v5-my-journey` checkpoint was created. This is recorded as an honest gap, not a claimed certification.
+
+**Action needed from A5 or whoever owns Phase 3/4 artwork+push serialization:** once the `push-subscription.js` storage-boundary violation and the stale tutorial-launcher contract are fixed (both pre-existing, unrelated to this item), re-run the gate for My Journey specifically - the code itself is already integrated and should pass cleanly once the architecture-validator step itself is unblocked.
+
 ## 3. Current reconciliation state
 
 A5 has repaired the concurrent-work collision damage and is serializing one reviewed tranche at a time. The integration line now has a push/PR collision guard, exact-head focused workflows for newly integrated high-risk work, and a fail-fast browser startup diagnostic. Open PRs remain work products rather than integrated truth.
