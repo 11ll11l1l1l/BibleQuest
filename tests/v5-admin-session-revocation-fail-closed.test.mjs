@@ -30,6 +30,11 @@ function assertBefore(block, first, second, message) {
 test('session revocation mirrors Supabase Auth logout through a service-role-only RPC', () => {
   assert.match(
     revocationMigration,
+    /grant usage on schema private to service_role/i,
+    'fresh backends must explicitly allow the service role to traverse the private implementation schema',
+  );
+  assert.match(
+    revocationMigration,
     /create or replace function private\.bible_revoke_auth_sessions_impl\([\s\S]*?security definer[\s\S]*?delete from auth\.sessions[\s\S]*?where user_id = target_user_id/i,
     'private definer must delete the same auth.sessions rows used by Supabase Auth global logout',
   );
