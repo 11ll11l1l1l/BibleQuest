@@ -48,7 +48,8 @@ if (!failures.length) {
     if (!ui.includes(token)) fail(`Tutorial presenter missing interaction contract: ${token}`);
   }
 
-  for (const token of ['data-open-tutorial', 'Show tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
+  for (const token of ['data-open-tutorial', 'onTutorial']) if (!home.includes(token)) fail(`Home missing permanent tutorial launcher contract: ${token}`);
+  for (const key of ['home.tutorial.ariaLabel', 'home.tutorial.title', 'home.tutorial.description']) if (!home.includes(`tx('${key}')`)) fail(`Home missing localized permanent tutorial launcher contract: ${key}`);
   for (const token of ['onTutorial?.()', 'data-code-saved', 'data-code-done']) if (!account.includes(token)) fail(`Account missing recovery-save tutorial handoff: ${token}`);
   for (const forbidden of ['onTutorial?.(result.recovery_code', 'onTutorial?.(code', 'bq-account-created', 'sessionStorage']) if (account.includes(forbidden)) fail(`Account leaked recovery material or legacy trigger state into tutorial handoff: ${forbidden}`);
 
