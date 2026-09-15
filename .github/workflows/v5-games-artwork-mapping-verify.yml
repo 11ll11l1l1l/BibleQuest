@@ -1,0 +1,39 @@
+name: V5 Games Artwork Mapping Verify
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/games/index.js'
+      - 'assets/v4/games/**'
+      - 'tests/v5-games-artwork-mapping.test.mjs'
+      - '.github/workflows/v5-games-artwork-mapping-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify exact candidate SHA
+        if: github.event_name == 'pull_request'
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+
+      - name: Run Phase 3 Games genuine-match mapping contract
+        run: node --test tests/v5-games-artwork-mapping.test.mjs
+
+      - name: Verify source clean
+        run: test -z "$(git status --porcelain)"
