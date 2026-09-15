@@ -18,6 +18,10 @@ async function forceSignOutUser(targetUserId:string){
   if(!res.ok && res.status!==404)throw new Error(`Session revocation failed (${res.status})`);
   return res.status!==404;
 }
+async function requireSessionRevocation(targetUserId:string){
+  const revoked=await forceSignOutUser(targetUserId);
+  if(!revoked)throw new Error('Session revocation failed: target user not found');
+}
 async function requireUser(req:Request,a:ReturnType<typeof db>){const jwt=(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').trim(),r=await a.auth.getUser(jwt);if(!jwt||r.error||!r.data.user)throw json(req,{error:'Authentication required'},401);return r.data.user}
 async function siteRole(a:ReturnType<typeof db>,id:string){const r=await a.from('bible_app_access').select('role,active').eq('user_id',id).maybeSingle();if(r.error)throw r.error;return r.data?.active&&['owner','admin'].includes(r.data.role)?String(r.data.role):''}
 async function audit(a:ReturnType<typeof db>,actor:string,target:string|null,action:string,detail:Record<string,unknown>={}){const r=await a.from('bible_admin_audit_log').insert({actor_id:actor,target_user_id:target,action,detail});if(r.error)console.error('audit',r.error)}
@@ -52,7 +56,7 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       await auditRequired(a,u.id,target,action);
       const nextActive=action==='reactivate_account';
       const upd=await a.from('bible_app_access').update({active:nextActive,updated_at:new Date().toISOString()}).eq('user_id',target);if(upd.error)throw upd.error;
-      if(action==='suspend_account'){try{await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-suspend',e)}}
+      if(action==='suspend_account')await requireSessionRevocation(target);
       await audit(a,u.id,target,action,{reason:String(body?.reason||'').slice(0,500)});
       return json(req,{ok:true,active:nextActive});
     }
@@ -71,10 +75,10 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(password.length<12)return json(req,{error:'Temporary password must be at least 12 characters'},400);
       await auditRequired(a,u.id,target,'set_temp_password');
       const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
-      let revoked=false;try{revoked=await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-temp-password',e)}
+      await requireSessionRevocation(target);
       // Never log the password itself - only that the action happened.
-      await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:revoked});
-      return json(req,{ok:true,revoked});
+      await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:true});
+      return json(req,{ok:true,revoked:true});
     }
     if(action==='change_email'){
     if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can change an account email'},403);
@@ -86,9 +90,9 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
     if(String(got.data.user?.email||'').trim().toLowerCase()===email)return json(req,{error:'That email is already assigned to this account'},409);
     await auditRequired(a,u.id,target,'change_email');
     const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
-    let revoked=false;try{revoked=await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-email-change',e)}
+    await requireSessionRevocation(target);
     // Never write the old or new email address to the audit detail.
-    await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:revoked});
-    return json(req,{ok:true,changed:true,revoked});
+    await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true});
+    return json(req,{ok:true,changed:true,revoked:true});
   }
     return json(req,{error:'Unknown action'},400)}catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:err instanceof Error?err.message:'Unexpected admin operations error'},500)}});
