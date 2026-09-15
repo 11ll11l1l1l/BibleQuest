@@ -8,7 +8,9 @@ on:
     paths:
       - 'offline-shell-sw.js'
       - 'src/app/push-subscription.js'
+      - 'src/app/push-subscription-persistence.js'
       - 'tests/v5-push-subscription-lifecycle.mjs'
+      - 'tests/v5-push-subscription-persistence.mjs'
       - '.github/workflows/v5-push-subscription-lifecycle.yml'
 
 permissions:
@@ -32,14 +34,18 @@ jobs:
       - name: Syntax-check push lifecycle owners
         run: |
           node --check src/app/push-subscription.js
+          node --check src/app/push-subscription-persistence.js
           node --check tests/v5-push-subscription-lifecycle.mjs
+          node --check tests/v5-push-subscription-persistence.mjs
           node --check offline-shell-sw.js
-      - name: Run focused push subscription lifecycle contract
-        run: node tests/v5-push-subscription-lifecycle.mjs
+      - name: Run focused push lifecycle and persistence contracts
+        run: |
+          node tests/v5-push-subscription-persistence.mjs
+          node tests/v5-push-subscription-lifecycle.mjs
       - name: Verify no V6-style background sync or client secret regression
         run: |
           ! grep -Eiq 'backgroundsync|periodicsync' offline-shell-sw.js
-          ! grep -Eiq 'private[_-]?key|vapid[_-]?private|service[_-]?role|sb_secret_' src/app/push-subscription.js offline-shell-sw.js
+          ! grep -Eiq 'private[_-]?key|vapid[_-]?private|service[_-]?role|sb_secret_' src/app/push-subscription.js src/app/push-subscription-persistence.js offline-shell-sw.js
       - name: Verify exact source head remained unchanged
         run: |
           test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
