@@ -55,8 +55,8 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(action==='suspend_account'&&targetAccess.data?.role==='owner')return json(req,{error:'Another owner account cannot be suspended'},409);
       await auditRequired(a,u.id,target,action);
       const nextActive=action==='reactivate_account';
-      const upd=await a.from('bible_app_access').update({active:nextActive,updated_at:new Date().toISOString()}).eq('user_id',target);if(upd.error)throw upd.error;
       if(action==='suspend_account')await requireSessionRevocation(target);
+      const upd=await a.from('bible_app_access').update({active:nextActive,updated_at:new Date().toISOString()}).eq('user_id',target);if(upd.error)throw upd.error;
       await audit(a,u.id,target,action,{reason:String(body?.reason||'').slice(0,500)});
       return json(req,{ok:true,active:nextActive});
     }
@@ -74,8 +74,8 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(target===u.id)return json(req,{error:'Use your own account recovery flow, not this emergency tool'},409);
       if(password.length<12)return json(req,{error:'Temporary password must be at least 12 characters'},400);
       await auditRequired(a,u.id,target,'set_temp_password');
-      const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
       await requireSessionRevocation(target);
+      const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
       // Never log the password itself - only that the action happened.
       await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:true});
       return json(req,{ok:true,revoked:true});
@@ -89,8 +89,8 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
     const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);
     if(String(got.data.user?.email||'').trim().toLowerCase()===email)return json(req,{error:'That email is already assigned to this account'},409);
     await auditRequired(a,u.id,target,'change_email');
-    const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
     await requireSessionRevocation(target);
+    const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
     // Never write the old or new email address to the audit detail.
     await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true});
     return json(req,{ok:true,changed:true,revoked:true});
