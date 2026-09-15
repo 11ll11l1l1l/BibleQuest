@@ -5,7 +5,7 @@ const browser=await chromium.launch({headless:true});
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
 async function installHarness(page,{empty=false,locale='en'}={}){
-  await page.evaluate(async(empty,locale)=>{
+  await page.evaluate(async({empty,locale})=>{
     const [{createMyJourneyService},{myJourneyPage},{localization}]=await Promise.all([
       import('/src/app/my-journey.js'),import('/src/features/my-journey/index.js'),import('/src/app/localization.js')
     ]);
@@ -17,7 +17,7 @@ async function installHarness(page,{empty=false,locale='en'}={}){
     const root=document.createElement('div');root.id='my-journey-test-root';document.body.append(root);
     const definition=myJourneyPage({myJourney,onBack:()=>{window.__mjBack=true}});root.innerHTML=definition.html;const cleanup=definition.mount(root);
     window.__removeMyJourneyHarness=()=>{cleanup?.();root.remove();delete window.__mjBack;localization.setLocale('en')};
-  },empty,locale);
+  },{empty,locale});
 }
 
 async function showsMomentsEnglish(){

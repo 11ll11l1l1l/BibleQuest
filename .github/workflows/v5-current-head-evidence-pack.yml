@@ -1,0 +1,90 @@
+name: V5 current-head evidence pack
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - '.github/workflows/v5-current-head-evidence-pack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-current-head:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Assert exact clean candidate
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain)"
+
+      - name: Build current application
+        run: bash build.sh
+
+      - name: Leader Center role-safe access contracts
+        run: |
+          set -euo pipefail
+          node tests/v5-leader-center-edge.mjs
+
+      - name: Phase 6 active-congregation contracts
+        run: |
+          set -euo pipefail
+          node --test tests/v5-active-congregation-selection.test.mjs tests/v5-active-congregation-switcher.test.mjs
+          node --test tests/v5-calendar-month-grid-rework.test.mjs
+          node tests/admin-membership-static.mjs
+          node tests/community-role-parity-static.mjs
+
+      - name: My Journey private non-competitive composition contracts
+        run: |
+          set -euo pipefail
+          node tests/v5-my-journey-static.mjs
+          node tests/v5-my-journey-edge.mjs
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-current-head-evidence.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-current-head-evidence.log
+          exit 1
+
+      - name: Prove Leader Center member-denied leader-allowed and mobile-safe
+        run: timeout 240s node tests/v5-leader-center-smoke.mjs
+
+      - name: Prove visible congregation switching and mobile-safe behavior
+        run: timeout 240s node tests/v5-active-congregation-switcher-browser.mjs
+
+      - name: Prove Calendar month-grid browser behavior
+        run: timeout 240s node tests/v5-calendar-month-grid-browser.mjs
+
+      - name: Prove My Journey EN TL empty-state and mobile behavior
+        run: timeout 240s node tests/v5-my-journey-smoke.mjs
+
+      - name: Verify exact source head remained unchanged
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
