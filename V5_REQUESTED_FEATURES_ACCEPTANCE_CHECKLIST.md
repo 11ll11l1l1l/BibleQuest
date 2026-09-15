@@ -15,7 +15,7 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16: merged evidence supports **54/122 accepted items (44.3%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 2): merged evidence supports **63/122 accepted items (51.6%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md` and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -28,15 +28,15 @@ Documentation reconciliation 2026-09-16: merged evidence supports **54/122 accep
 
 ## B. Phase 2 — Admin Console completion
 
-- [ ] User card UI: identity, congregation, security sections.
-- [ ] Safe/Restricted/Destructive action tiers exist for every accepted emergency action.
-- [ ] Typed confirmation for destructive actions.
-- [ ] Email-change/recovery action owner-only, audited, session-safe, no sensitive value logged.
-- [ ] Non-owner/self/invalid-target cases fail correctly.
+- [x] User card UI: identity, congregation, security sections. **STATIC exact-current-head certification: #389.**
+- [x] Safe/Restricted/Destructive action tiers exist for every accepted emergency action. **STATIC exact-current-head certification: #389.**
+- [x] Typed confirmation for destructive actions. **STATIC exact-current-head certification: #389.**
+- [x] Email-change/recovery action owner-only, audited, session-safe, no sensitive value logged. **STATIC security chain + session-revocation certification: #358/#365/#371/#389.**
+- [x] Non-owner/self/invalid-target cases fail correctly. **STATIC exact-current-head security certification: #389.**
 - [ ] Email change proven against a controlled real Supabase Auth account and target email restored/cleaned up. **BACKEND-E2E required.**
-- [ ] Existing Gate A field-test path is runnable against the completed UI.
+- [x] Existing Gate A field-test path is runnable against the completed UI. **Controlled non-production readiness path verified fail-closed on #389; this does not claim the real field run.**
 
-Evidence note: #338 is integrated and ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. #358/#365/#371 add fail-closed session-revocation semantics, controlled email-change E2E readiness, and integrated security-chain verification. This improves Phase 2 integrity but does not replace the required real email-change BACKEND-E2E gate.
+Evidence note: #338 ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. #358/#365/#371 add fail-closed session-revocation semantics, controlled email-change E2E readiness, and integrated security-chain verification. #389 executes the existing UI/security/readiness contracts together on one exact current head. The real owner email-change BACKEND-E2E requirement remains open.
 
 ## C. Phase 3 — artwork/dead-owner completion
 
@@ -84,11 +84,13 @@ Evidence note: #338 is integrated and ensures `delete_account` cannot write a fa
 
 ## G. Phase 7 — verification debt
 
-- [ ] CEBOCB 66-book/current Reader contract remains intact on current candidate.
-- [ ] CEBOCB representative mobile Reader behavior has current exact-head browser proof. **BROWSER-AUTO required.**
+- [x] CEBOCB 66-book/current Reader contract remains intact on current candidate. **STATIC: merged #347 exact-head CEBOCB/source/current Reader re-verification; run `34911926437` SUCCESS.**
+- [x] CEBOCB representative mobile Reader behavior has current exact-head browser proof. **BROWSER-AUTO: #347, run `34911926437` includes 390px CEBOCB Reader proof.**
 - [x] Couples Journey intended spouse-to-spouse sharing is genuinely bidirectional and private to the correct relationship/account scope. **STATIC + BROWSER-AUTO: merged #383, exact head `63d1995b209d70a50210df355d600fbfc2fb1124`, run `35021093121` SUCCESS including 390px bidirectional/privacy proof.**
-- [ ] Deferred V4 Section E integration sweep completed with evidence.
+- [x] Deferred V4 Section E integration sweep completed with evidence. **STATIC + BROWSER-AUTO: repaired exact head `53fdc20835fb54541278764f0aa9eac3142ada75`; Section E run `35034652466`, collision run `35034652255`, Section G run `35034652337` all SUCCESS; merged #390 as `1fce2b1d03ac6e91c4ef81e5620d5a8c0d272a06`.**
 - [x] Deferred Section G loading/empty/error/offline sweep completed with evidence. **STATIC + BROWSER-AUTO: current-line run `35029103272` SUCCESS; preceding exact Home integration run `35028738463` explicitly executed the Playwright loading/empty/error/offline matrix.**
+
+**Phase 7 verification debt is formally satisfied at Pass 2.**
 
 ## H. Cross-phase P0 — localization foundation
 
