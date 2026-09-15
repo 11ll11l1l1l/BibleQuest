@@ -6,9 +6,11 @@ on:
       - v5/feature-completion
     paths:
       - 'supabase/functions/bq-admin-ops/index.ts'
+      - 'supabase/migrations/20260915183000_admin_session_revocation.sql'
       - 'tests/admin-audit-required-static.mjs'
       - 'tests/admin-delete-audit-privacy-static.mjs'
       - 'tests/v5-admin-emergency-security-static.mjs'
+      - 'tests/v5-admin-session-revocation-fail-closed.test.mjs'
       - 'tests/admin-membership-static.mjs'
       - 'tests/admin-link-static-smoke.mjs'
       - '.github/workflows/v5-phase2-admin-security-verify.yml'
@@ -38,6 +40,7 @@ jobs:
           node --check tests/admin-audit-required-static.mjs
           node --check tests/admin-delete-audit-privacy-static.mjs
           node --check tests/v5-admin-emergency-security-static.mjs
+          node --check tests/v5-admin-session-revocation-fail-closed.test.mjs
 
       - name: Run durable Admin audit checkpoint contract
         run: node --test tests/admin-audit-required-static.mjs
@@ -47,6 +50,9 @@ jobs:
 
       - name: Run Admin emergency security contract
         run: node --test tests/v5-admin-emergency-security-static.mjs
+
+      - name: Run session-revocation fail-closed regression
+        run: node --test tests/v5-admin-session-revocation-fail-closed.test.mjs
 
       - name: Run maintained Admin membership companion
         run: node --test tests/admin-membership-static.mjs
