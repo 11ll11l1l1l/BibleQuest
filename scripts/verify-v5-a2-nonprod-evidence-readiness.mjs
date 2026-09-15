@@ -61,6 +61,7 @@ function presentSecret(name) {
 
 function staticContract() {
   const admin = read('supabase/functions/bq-admin-ops/index.ts');
+  const revocation = read('supabase/migrations/20260915183000_admin_session_revocation.sql');
   const push = read('supabase/functions/bq-push-delivery/index.ts');
   const pushStorage = read('supabase/migrations/20260914072000_push_subscriptions.sql');
 
@@ -69,14 +70,27 @@ function staticContract() {
     "if(r!=='owner')",
     "if(target===u.id)",
     "a.auth.admin.updateUserById(target,{email})",
-    'async function requireSessionRevocation(targetUserId:string)',
-    "if(!revoked)throw new Error('Session revocation failed: target user not found')",
-    'await requireSessionRevocation(target)',
+    "a.rpc('bible_revoke_auth_sessions',{target_user_id:targetUserId})",
+    'async function requireSessionRevocation(a:ReturnType<typeof db>,targetUserId:string)',
+    'await requireSessionRevocation(a,target)',
     "await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true})",
     'return json(req,{ok:true,changed:true,revoked:true})',
   ], 'bq-admin-ops email-change fail-closed contract');
+  assert(!/\/auth\/v1\/admin\/users\/.*\/logout/.test(admin), 'admin ops must not depend on an unsupported admin logout-by-user-id HTTP route');
   assert(!/change_email[^]*audit\([^)]*(?:oldEmail|newEmail|email\s*:)/.test(admin), 'change_email audit path must not add email values');
   assert(!/change_email[^]*force-sign-out-on-email-change/.test(admin), 'change_email must not swallow session-revocation failures');
+
+  includesAll(revocation, [
+    'create or replace function private.bible_revoke_auth_sessions_impl(',
+    'security definer',
+    'delete from auth.sessions',
+    'where user_id = target_user_id',
+    'create or replace function public.bible_revoke_auth_sessions(',
+    'security invoker',
+    'select private.bible_revoke_auth_sessions_impl(target_user_id)',
+    'from public, anon, authenticated',
+    'to service_role',
+  ], 'admin session-revocation migration contract');
 
   includesAll(push, [
     'await requireAdmin(req, adminDb)',
