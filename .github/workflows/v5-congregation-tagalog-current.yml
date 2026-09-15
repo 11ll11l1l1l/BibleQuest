@@ -1,0 +1,101 @@
+name: V5 Congregation Tagalog current
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/congregation/index.js'
+      - 'tests/v5-congregation-tagalog-current.test.mjs'
+      - '.github/workflows/v5-congregation-tagalog-current.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  congregation-tagalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Congregation localization contract
+        run: |
+          node --check src/features/congregation/index.js
+          node --test tests/v5-congregation-tagalog-current.test.mjs
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-congregation-tl.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-congregation-tl.log
+          exit 1
+      - name: Prove Tagalog guest Congregation at 390px
+        shell: bash
+        run: |
+          timeout 240s node --input-type=module <<'EOF'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const assert = (condition, message) => { if (!condition) throw new Error(message); };
+          try {
+            const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const pageErrors = [];
+            page.on('pageerror', error => pageErrors.push(error.message));
+            await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle' });
+            await page.locator('[data-locale-select]').waitFor();
+            await page.locator('[data-locale-select]').selectOption('tl');
+            await page.waitForFunction(() => document.querySelector('[data-bq-shell="v3"]')?.dataset.locale === 'tl');
+            await page.goto('http://127.0.0.1:4173/#/congregation', { waitUntil: 'networkidle' });
+            await page.getByText('Iyong kongregasyon', { exact: true }).waitFor();
+            await page.getByText('Mag-sign in para makita o salihan ang isang kongregasyon.', { exact: true }).waitFor();
+            const state = await page.evaluate(() => ({
+              innerWidth: window.innerWidth,
+              scrollWidth: document.documentElement.scrollWidth,
+              accountText: document.querySelector('[data-congregation-account]')?.textContent?.trim(),
+              backText: document.querySelector('[data-congregation-back]')?.textContent?.trim(),
+              minControlHeight: Math.min(...[...document.querySelectorAll('[data-congregation-account], [data-congregation-back]')].map(node => node.getBoundingClientRect().height))
+            }));
+            assert(state.accountText === 'Buksan ang account', `Unexpected account CTA: ${state.accountText}`);
+            assert(state.backText === 'Bumalik sa Higit pa', `Unexpected back CTA: ${state.backText}`);
+            assert(state.scrollWidth <= state.innerWidth + 1, `Congregation overflows at 390px: ${state.scrollWidth}px > ${state.innerWidth}px`);
+            assert(state.minControlHeight >= 40, `Congregation touch target regressed below 40px: ${state.minControlHeight}px`);
+            for (const leak of ['Your congregation','Sign in to view or join a congregation.','Open account','Back to More']) {
+              assert(await page.getByText(leak, { exact: true }).count() === 0, `English UI leak: ${leak}`);
+            }
+            assert(pageErrors.length === 0, `Browser page errors: ${pageErrors.join(' | ')}`);
+            console.log('PASS V5 current-head Congregation Tagalog 390px browser proof');
+          } finally {
+            await browser.close();
+          }
+          EOF
+      - name: Verify source clean and exact head
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
