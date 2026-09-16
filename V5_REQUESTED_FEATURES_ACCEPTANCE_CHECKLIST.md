@@ -15,7 +15,7 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 3): merged evidence supports **68/122 accepted items (55.7%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 4): merged evidence supports **76/122 accepted items (62.3%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS4_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -136,25 +136,31 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 
 - [x] Stable recording/video identity is the deduplication key for latest-service surfacing. **STATIC: merged #353; stable YouTube ID dedupe contract.**
 - [x] When the current BibleQuest/recordings flow already exposes a completed stable recording, it is surfaced as the latest service without duplicate insertion. **STATIC: merged #353, exact head `229a5ebeef67bc74f1dd923027ab58fc5ca699db`, run `34927753652` SUCCESS.**
-- [ ] Authorized user can hide/edit/correct an incorrectly surfaced item. **Current Recordings service has `setFeatured`/`archive`, but the current Videos UI does not expose correction controls; implementation remains open.**
+- [x] Authorized user can hide/edit/correct an incorrectly surfaced item. **STATIC + BROWSER-AUTO: merged #396; exact head `1ebaa759f503255f065ece0f2ebd5e66dffca6db`; focused run `35040064030` SUCCESS. UI delegates only to existing `setFeatured`/`archive`; server RLS remains authoritative.**
 - [x] If completion cannot be known from current data, V5 uses a minimal leader confirmation/import step rather than pretending external automation exists. **STATIC: #353 uses the existing leader-curated `featured` signal and returns no latest service for unconfirmed rows rather than inferring completion by date.**
 - [x] No YouTube Data API polling, webhook ingestion, scheduled external discovery, new ingestion daemon/service, or replacement media platform is introduced in the integrated Videos/Recordings localization tranche.
 - [x] Existing Recordings/Media owner remains authoritative.
 
+**Section K is formally satisfied at Pass 4.**
+
 ## L. P0 — Today / This Week Home
 
 - [x] Home composes existing owners for next event, current assignment, continue reading, latest service, Transformation prompt, and unread notifications. **STATIC: merged #385; exact head `fa8d443917b135d4029f7a96c5f281e3dc4d8ee8`; runs `35028738458` and `35028738560` SUCCESS.**
-- [ ] Missing source data produces intentional empty state rather than broken placeholders.
+- [x] Missing source data produces intentional empty state rather than broken placeholders. **STATIC + BROWSER-AUTO: merged #394; exact head `87b21bc566e128d9cb1916102bfc8ebbc99f2d44`; focused run `35039155709` SUCCESS with EN/TL empty and populated owner states.**
 - [x] No new state engine or duplicate data owner is created. **STATIC: #385 acceptance contract requires Calendar/Reader/Recordings/Transform/Notification/Assignments/Daily Journey owners and rejects localStorage/sessionStorage/direct Supabase bypasses.**
-- [ ] Representative mobile/browser composition works. **BROWSER-AUTO required.**
+- [x] Representative mobile/browser composition works. **BROWSER-AUTO: #394 focused run `35039155709` SUCCESS at 390px; Home Tagalog `35039155616`, collision `35039155644`, Section G `35039155587` also SUCCESS.**
+
+**Section L is formally satisfied at Pass 4.**
 
 ## M. P0 — connected weekly spiritual journey
 
-- [ ] Existing service/sermon can connect to Scripture context.
-- [ ] Existing Transformation/reflection can connect to the week's service/Scripture.
-- [ ] Optional discussion/prayer and assignment/action can be reached through current owners.
-- [ ] Calendar context can be linked without a new workflow engine.
-- [ ] A user can follow the intended weekly chain without duplicate authoritative records.
+- [x] Existing service/sermon can connect to Scripture context. **STATIC + BROWSER-AUTO: merged #395 exact head `e0e83bf0f3637c4e9f0c23617ebee9177408bd81`, focused run `35039686763` SUCCESS.**
+- [x] Existing Transformation/reflection can connect to the week's service/Scripture. **Same #395 existing-owner route sequence and 390px EN/TL browser proof.**
+- [x] Optional discussion/prayer and assignment/action can be reached through current owners. **#395 routes through existing Journey Groups and Assignments owners; no new backend.**
+- [x] Calendar context can be linked without a new workflow engine. **#395 existing `#/calendar` route; static firewall rejects new storage/API/workflow persistence.**
+- [x] A user can follow the intended weekly chain without duplicate authoritative records. **#395 proves `Recordings -> Reader -> Transformation -> Journey Groups -> Assignments -> Calendar` navigation only; collision run `35039686747` and Section G `35039686745` SUCCESS.**
+
+**Section M is formally satisfied at Pass 4.**
 
 ## N. P1 — content depth
 
