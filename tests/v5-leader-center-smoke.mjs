@@ -46,8 +46,11 @@ async function leaderSeesComposedCenter(){
   assert(await root.locator('[data-leader-member-count]').textContent()==='2','Member count did not render from the ministry-safe directory.');
   assert(await root.locator('[data-leader-open-count]').textContent()==='1','Open assignment count did not render.');
   assert(await root.locator('[data-leader-scheduled-count]').textContent()==='1','Scheduled assignment count did not render.');
-  assert((await root.locator('[data-leader-people]').innerText()).includes('Ana Member'),'People directory is missing the safe member label.');
-  assert(!(await root.locator('[data-leader-people]').innerText()).match(/reflection|personality answer/i),'People view contains sensitive content.');
+  const personRows=root.locator('[data-leader-person-row]');
+  assert(await personRows.count()===2,'People directory did not render the two safe member rows.');
+  const peopleData=await personRows.allInnerTexts();
+  assert(peopleData.some(text=>text.includes('Ana Member')),'People directory is missing the safe member label.');
+  assert(!peopleData.join(' ').match(/reflection|note|couples|personality|psychometric/i),'People data rows contain sensitive content.');
   const spaces=await root.locator('[data-leader-groups-teams]').innerText();
   assert(spaces.includes('Young Adults')&&spaces.includes('Worship Team'),'Groups/Teams composition did not render.');
 
