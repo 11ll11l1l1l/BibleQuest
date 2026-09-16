@@ -50,7 +50,8 @@ test('Detective, Recall, Timeline and round-result chrome use purpose-matched ex
   const [css,finalCss,games]=await Promise.all([
     read('src/ui/v4-custom-art.css'),read('src/ui/games-art-final-v4.css'),read('src/features/games/index.js')
   ]);
-  assert.match(css,/\.bq-detective-mark\s*\{[^}]*font-size:0 !important;[^}]*game-character-detective\.png/s);
+  assert.match(css,/\.bq-detective-mark,\s*\.bq-recall-icon,\s*\.bq-memory-mark\s*\{[^}]*font-size:0 !important;/s,'decorative Detective/Recall/Memory legacy tokens must be hidden by the shared art layer');
+  assert.match(css,/\.bq-detective-mark\s*\{[^}]*game-character-detective\.png/s);
   assert.match(css,/\.bq-recall-icon\s*\{[^}]*game-recall-deck\.png/s);
   assert.ok(css.includes('game-timeline.png'),'Timeline must use its dedicated artwork');
   assert.match(finalCss,/\[data-recall-question\] \.bq-recall-mark\s*\{[^}]*font-size:0 !important;[^}]*game-recall-deck\.png/s);
