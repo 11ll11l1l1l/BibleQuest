@@ -1,0 +1,56 @@
+name: V5 Recordings latest-service correction
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/recordings.js'
+      - 'src/features/recordings/index.js'
+      - 'src/content/locales/recordings.js'
+      - 'tests/v5-recordings-latest-service.test.mjs'
+      - 'tests/v5-recordings-latest-correction.test.mjs'
+      - 'tests/v5-recordings-latest-correction-browser.mjs'
+      - '.github/workflows/v5-recordings-latest-correction.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recordings-latest-correction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Prove latest-service and correction contracts
+        run: node --test tests/v5-recordings-latest-service.test.mjs tests/v5-recordings-latest-correction.test.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-recordings-correction-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-recordings-correction-http.log
+          exit 1
+      - name: Prove EN TL correction controls and 390px usability
+        run: timeout 240s node tests/v5-recordings-latest-correction-browser.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
