@@ -7,7 +7,11 @@ on:
     paths:
       - 'src/app/media-library.js'
       - 'src/features/media-library/index.js'
+      - 'src/app/recordings.js'
+      - 'src/features/recordings/index.js'
       - 'src/app/bootstrap.js'
+      - 'scripts/validate-v3-architecture.mjs'
+      - 'docs/v5/V5_MEDIA_ARCHITECTURE_OWNERSHIP.md'
       - 'tests/v5-media-library-retirement.test.mjs'
       - '.github/workflows/v5-media-library-retirement.yml'
   workflow_dispatch:
@@ -35,8 +39,10 @@ jobs:
           test "$(git rev-parse HEAD)" = "$EXPECTED"
       - name: Syntax check retirement contract
         run: node --check tests/v5-media-library-retirement.test.mjs
-      - name: Run retirement contract
+      - name: Run retirement and architecture contract
         run: node --test tests/v5-media-library-retirement.test.mjs
+      - name: Run architecture validator
+        run: node scripts/validate-v3-architecture.mjs
       - name: Verify source clean
         shell: bash
         run: |
