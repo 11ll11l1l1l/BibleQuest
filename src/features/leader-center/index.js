@@ -73,7 +73,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
             <section class="bq-panel" data-leader-people>
               <p class="bq-eyebrow">PEOPLE</p><h2>Ministry directory</h2>
               <p><small>Only the existing ministry-safe member directory is shown here. Private reflections, notes, Couples content, and personality answers are not part of this view.</small></p>
-              ${directoryReady ? listHtml(state.people || [], 'No members are currently listed.', person => `<div class="bq-list-row"><div><b>${esc(person.label)}</b><small>${esc(person.role || 'member')}</small></div></div>`) : '<p>Member directory is unavailable right now.</p>'}
+              ${directoryReady ? listHtml(state.people || [], 'No members are currently listed.', person => `<div class="bq-list-row" data-leader-person-row><div><b>${esc(person.label)}</b><small>${esc(person.role || 'member')}</small></div></div>`) : '<p>Member directory is unavailable right now.</p>'}
             </section>
             <section class="bq-panel" data-leader-groups-teams>
               <p class="bq-eyebrow">GROUPS &amp; TEAMS</p><h2>Existing ministry spaces</h2>
