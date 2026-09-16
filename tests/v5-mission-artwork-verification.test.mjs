@@ -10,8 +10,8 @@ const missionArtwork = await readFile(new URL('../assets/mission-feature-icons.s
 assert.doesNotMatch(missionSource, /icon\s*:/, 'Mission engine must not expose unused presentation glyph fields');
 assert.match(missionSource, /action:\s*'review'/);
 assert.match(missionSource, /action:\s*'study'/);
-assert.match(missionArtwork, /<symbol id="review"\b/, 'mission artwork exposes an exact review symbol');
-assert.match(missionArtwork, /<symbol id="study"\b/, 'mission artwork exposes an exact study symbol');
+assert.match(missionArtwork, /<symbol id="review"(?:\s|>)/, 'mission artwork exposes an exact review symbol');
+assert.match(missionArtwork, /<symbol id="study"(?:\s|>)/, 'mission artwork exposes an exact study symbol');
 
 // The renderer derives artwork only from the semantic action owner. Artwork is
 // decorative; visible title/copy and button text independently carry meaning.
