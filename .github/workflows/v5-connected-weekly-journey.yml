@@ -1,0 +1,53 @@
+name: V5 connected weekly journey
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/home/today-this-week.js'
+      - 'tests/v5-connected-weekly-journey.mjs'
+      - 'tests/v5-connected-weekly-journey-browser.mjs'
+      - '.github/workflows/v5-connected-weekly-journey.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  connected-weekly-journey:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Prove weekly journey owner composition and V5 firewall
+        run: node --test tests/v5-connected-weekly-journey.mjs tests/v5-home-today-this-week.test.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-weekly-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-weekly-http.log
+          exit 1
+      - name: Prove EN TL route sequence and 390px usability
+        run: timeout 240s node tests/v5-connected-weekly-journey-browser.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
