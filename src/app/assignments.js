@@ -1,6 +1,7 @@
 const ASSIGNMENT_TYPES=Object.freeze(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const TARGET_SCOPES=Object.freeze(['all','member','team','group']);
 const PROGRESS_STATES=Object.freeze(['assigned','started','completed']);
+const LEADER_LIFECYCLE_STATES=Object.freeze(['published','scheduled','completed']);
 const EVIDENCE_TYPES=Object.freeze(['none','text','confirmation']);
 const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin']);
 
@@ -65,7 +66,12 @@ function normalizeMutation(payload,assignmentId,userId){
 }
 
 function normalizeTargets(payload){
-  const normalize=(rows,kind)=>Object.freeze((Array.isArray(rows)?rows:[]).map(row=>{const id=String(row?.id||''),label=text(row?.label,120);if(!id||!label)fail('BQ_ASSIGNMENT_TARGET_RESPONSE',`Assignment ${kind} directory returned invalid data.`);return Object.freeze({id,label,...(kind==='member'?{role:text(row?.role,40)}:{}),...(kind==='team'?{type:text(row?.type,40)}:{})})}));
+  const normalize=(rows,kind)=>Object.freeze((Array.isArray(rows)?rows:[]).map(row=>{
+    const id=String(row?.id||''),label=text(row?.label,120);
+    if(!id||!label)fail('BQ_ASSIGNMENT_TARGET_RESPONSE',`Assignment ${kind} directory returned invalid data.`);
+    const memberIds=Object.freeze([...new Set((Array.isArray(row?.memberIds)?row.memberIds:[]).map(String).filter(Boolean))]);
+    return Object.freeze({id,label,memberIds,...(kind==='member'?{role:text(row?.role,40)}:{}),...(kind==='team'?{type:text(row?.type,40)}:{})});
+  }));
   return Object.freeze({members:normalize(payload?.members,'member'),teams:normalize(payload?.teams,'team'),groups:normalize(payload?.groups,'group')});
 }
 
@@ -107,7 +113,15 @@ function dueState(assignment,progress,nowMs){
   return'open';
 }
 
-export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),ministryRoles:[...MINISTRY_ROLES],submissionMax:4000,recurrenceGeneration:false,linkedPublishing:false,responsePrivacy:'peer-presence-only'});
+function targetMemberIds(assignment,targets){
+  if(assignment.targetScope==='all')return [...new Set((targets.members||[]).map(row=>String(row.id)).filter(Boolean))];
+  if(assignment.targetScope==='member')return (targets.members||[]).some(row=>String(row.id)===String(assignment.targetId))?[String(assignment.targetId)]:[];
+  const collection=assignment.targetScope==='team'?targets.teams:assignment.targetScope==='group'?targets.groups:[];
+  const target=(collection||[]).find(row=>String(row.id)===String(assignment.targetId));
+  return target?[...target.memberIds]:[];
+}
+
+export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),targetScopes:TARGET_SCOPES.slice(),progressStates:PROGRESS_STATES.slice(),leaderLifecycleStates:LEADER_LIFECYCLE_STATES.slice(),evidenceTypes:EVIDENCE_TYPES.slice(),ministryRoles:[...MINISTRY_ROLES],submissionMax:4000,recurrenceGeneration:false,linkedPublishing:false,responsePrivacy:'peer-presence-only',leaderCompletionRule:'all-current-target-recipients'});
 
 export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
   if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
@@ -150,6 +164,27 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     const current=sessionState();
     if(request!==targetRequest||state.congregationId!==cid||!current?.authenticated||String(current?.user?.id||'')!==userId||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_TARGET_STALE','The congregation or account changed while publish targets were loading.');
     state=Object.freeze({...state,publishTargets:targets});return state;
+  }
+
+  async function loadLifecycleSummaries(){
+    assertPublisher();
+    if(typeof api.loadResponsePresence!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Assignment response status is not available yet.');
+    await loadPublishTargets();
+    const cid=state.congregationId,userId=String(sessionState()?.user?.id||''),role=state.role,rows=state.assignments.slice(),targets=state.publishTargets;
+    const nowValue=now(),nowMs=nowValue instanceof Date?nowValue.getTime():new Date(nowValue).getTime();
+    const summaries=await Promise.all(rows.map(async assignment=>{
+      const recipientIds=targetMemberIds(assignment,targets);
+      const presenceRows=await api.loadResponsePresence(cid,assignment.id);
+      const responders=(Array.isArray(presenceRows)?presenceRows:[]).map(row=>normalizeResponder(row,assignment.id,cid));
+      const completedIds=new Set(responders.map(row=>row.userId));
+      const completedCount=recipientIds.reduce((count,id)=>count+(completedIds.has(id)?1:0),0);
+      const scheduled=Boolean(assignment.scheduleAt&&new Date(assignment.scheduleAt).getTime()>nowMs);
+      const lifecycle=scheduled?'scheduled':recipientIds.length>0&&completedCount===recipientIds.length?'completed':'published';
+      return Object.freeze({assignmentId:assignment.id,status:lifecycle,targetCount:recipientIds.length,completedCount,remainingCount:Math.max(0,recipientIds.length-completedCount)});
+    }));
+    const current=sessionState();
+    if(state.congregationId!==cid||state.role!==role||!current?.authenticated||String(current?.user?.id||'')!==userId)fail('BQ_ASSIGNMENT_TARGET_STALE','The congregation or account changed while assignment lifecycle was loading.');
+    return Object.freeze(summaries);
   }
 
   async function publish(input){
@@ -243,5 +278,5 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
   }
 
   function clear(){resetAccountState('',false,true,'idle')}
-  return Object.freeze({load,loadPublishTargets,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
+  return Object.freeze({load,loadPublishTargets,loadLifecycleSummaries,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
 }
