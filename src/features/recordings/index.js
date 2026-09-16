@@ -2,6 +2,16 @@ import { localization } from '../../app/localization.js';
 import { recordingsDictionaries } from '../../content/locales/recordings.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const normalizeSearch = value => String(value ?? '').trim().toLocaleLowerCase();
+
+export function filterRecordingRows(rows, { query = '', featuredOnly = false } = {}) {
+  const needle = normalizeSearch(query);
+  return (Array.isArray(rows) ? rows : []).filter(row => {
+    if (featuredOnly && !row?.featured) return false;
+    if (!needle) return true;
+    return normalizeSearch(`${row?.title || ''} ${row?.description || ''}`).includes(needle);
+  });
+}
 
 // BibleQuest V4: Live Recordings and Media Library are now one Videos page.
 // Iframe/player creation stays entirely inside the Audio owner (recordings.select
@@ -44,6 +54,8 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
       let disposed = false;
       let curatorOpen = false;
       let correctionBusy = false;
+      let searchQuery = '';
+      let featuredOnly = false;
 
       const message = text => { const node = host.querySelector('[data-video-message]'); if (node) node.textContent = text || ''; };
 
@@ -59,6 +71,29 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         </form>` : ''}
         <p class="bq-form-message" data-video-message role="status"></p>
       </section>`;
+
+      const filteredRows = rows => filterRecordingRows(rows, { query: searchQuery, featuredOnly });
+      const filterStatus = rows => tr('recordings.filter.results', { count: filteredRows(rows).length });
+      const listHtml = (rows, selectedId) => {
+        const visibleRows = filteredRows(rows);
+        if (visibleRows.length) return visibleRows.map(row => videoCard(row, row.id === selectedId, tr)).join('');
+        return `<section class="bq-panel bq-recordings-empty"><h2>${escapeHtml(tr('recordings.filter.empty.heading'))}</h2><p>${escapeHtml(tr('recordings.filter.empty.description'))}</p></section>`;
+      };
+      const filterHtml = rows => `<section class="bq-panel bq-recordings-filter" aria-labelledby="recordings-filter-heading">
+        <h2 id="recordings-filter-heading">${escapeHtml(tr('recordings.filter.heading'))}</h2>
+        <div class="bq-account-form">
+          <label>${escapeHtml(tr('recordings.filter.searchLabel'))}<input type="search" maxlength="120" value="${escapeHtml(searchQuery)}" placeholder="${escapeHtml(tr('recordings.filter.searchPlaceholder'))}" data-recordings-search></label>
+          <label>${escapeHtml(tr('recordings.filter.scopeLabel'))}<select data-recordings-feature-filter><option value="all"${featuredOnly ? '' : ' selected'}>${escapeHtml(tr('recordings.filter.all'))}</option><option value="featured"${featuredOnly ? ' selected' : ''}>${escapeHtml(tr('recordings.filter.featured'))}</option></select></label>
+        </div>
+        <p data-recordings-filter-status role="status" aria-live="polite">${escapeHtml(filterStatus(rows))}</p>
+      </section>`;
+
+      const refreshFilteredList = state => {
+        const list = host.querySelector('[data-recordings-list]');
+        if (list) list.innerHTML = listHtml(state.rows || [], state.selectedId);
+        const status = host.querySelector('[data-recordings-filter-status]');
+        if (status) status.textContent = filterStatus(state.rows || []);
+      };
 
       const render = state => {
         if (disposed) return;
@@ -78,8 +113,9 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         const selectedRow = rows.find(item => item.id === state.selectedId);
         host.innerHTML = `<section class="bq-panel bq-recordings-head"><p class="bq-eyebrow">${escapeHtml(tr('recordings.eyebrow'))}</p><h1>${escapeHtml(tr('recordings.heading'))}</h1><p>${escapeHtml(tr('recordings.description'))}</p></section>
         ${curatorHtml()}
+        ${rows.length ? filterHtml(rows) : ''}
         <section class="bq-recordings-layout">
-          <div class="bq-recordings-list" data-recordings-list>${rows.length ? rows.map(row => videoCard(row, row.id === state.selectedId, tr)).join('') : `<section class="bq-panel bq-recordings-empty"><h2>${escapeHtml(tr('recordings.empty.heading'))}</h2><p>${escapeHtml(tr('recordings.empty.description'))}</p></section>`}</div>
+          <div class="bq-recordings-list" data-recordings-list>${rows.length ? listHtml(rows, state.selectedId) : `<section class="bq-panel bq-recordings-empty"><h2>${escapeHtml(tr('recordings.empty.heading'))}</h2><p>${escapeHtml(tr('recordings.empty.description'))}</p></section>`}</div>
           <section class="bq-panel bq-recording-player-shell">
             <div data-recording-now>${selectedRow ? `<p class="bq-eyebrow">${escapeHtml(tr('recordings.nowPlaying.eyebrow'))}</p><h2>${escapeHtml(selectedRow.title || tr('recordings.videoFallback'))}</h2>${selectedRow.description ? `<p>${escapeHtml(selectedRow.description)}</p>` : ''}${correctionControls(selectedRow, tr)}` : `<p class="bq-eyebrow">${escapeHtml(tr('recordings.nowPlaying.eyebrow'))}</p><h2>${escapeHtml(tr('recordings.nowPlaying.choose'))}</h2><p>${escapeHtml(tr('recordings.nowPlaying.chooseDescription'))}</p>`}</div>
             <div class="bq-recording-frame" data-recording-frame></div>
@@ -158,10 +194,21 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         }
       };
 
+      const onFilter = event => {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) return;
+        if (target.matches('[data-recordings-search]')) searchQuery = target.value;
+        else if (target.matches('[data-recordings-feature-filter]')) featuredOnly = target.value === 'featured';
+        else return;
+        refreshFilteredList(recordings.getState());
+      };
+
       host.addEventListener('click', onClick);
       host.addEventListener('submit', onSubmit);
+      host.addEventListener('input', onFilter);
+      host.addEventListener('change', onFilter);
       load().catch(error => render({ status: 'error', rows: [], error: error?.message || tr('recordings.loadError') }));
-      return () => { disposed = true; host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); recordings.leave(); };
+      return () => { disposed = true; host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); host.removeEventListener('input', onFilter); host.removeEventListener('change', onFilter); recordings.leave(); };
     }
   };
 }

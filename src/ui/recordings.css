@@ -4,6 +4,8 @@
 .bq-video-card.is-selected{outline:2px solid currentColor;outline-offset:2px}
 .bq-video-card b{font-size:1rem}
 .bq-video-card small{line-height:1.4}
+.bq-recordings-filter{margin-bottom:16px}.bq-recordings-filter h2{font-size:1rem}.bq-recordings-filter .bq-account-form{grid-template-columns:minmax(0,1fr) minmax(150px,.35fr);margin:12px 0}.bq-recordings-filter input,.bq-recordings-filter select{width:100%;min-height:46px;padding:10px 12px;border:1px solid rgba(39,61,47,.16);border-radius:12px;background:#fbfcf9;color:#223229;font:inherit;font-size:16px}.bq-recordings-filter input:focus,.bq-recordings-filter select:focus{outline:3px solid rgba(47,112,77,.14);border-color:#4f8161}.bq-recordings-filter [data-recordings-filter-status]{font-size:.8rem}
+@media(max-width:480px){.bq-recordings-filter .bq-account-form{grid-template-columns:1fr}}
 .bq-video-curator{margin-top:12px}
 .bq-video-curator form{display:grid;gap:10px;margin-top:10px}
 .bq-video-curator label{display:grid;gap:4px;font-size:.85rem;font-weight:700}
