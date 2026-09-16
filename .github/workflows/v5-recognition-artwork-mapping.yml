@@ -1,0 +1,58 @@
+name: V5 Recognition artwork mapping
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/congregation-recognition.js'
+      - 'src/features/congregation-recognition/**'
+      - 'assets/progress-feature-icons.svg'
+      - 'tests/v3-congregation-recognition-edge.mjs'
+      - 'tests/v5-recognition-artwork-mapping.mjs'
+      - 'tests/v5-recognition-artwork-browser.mjs'
+      - '.github/workflows/v5-recognition-artwork-mapping.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recognition-artwork:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Preserve Recognition domain behavior
+        run: node tests/v3-congregation-recognition-edge.mjs
+      - name: Verify reviewed artwork mapping and exceptions
+        run: node tests/v5-recognition-artwork-mapping.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-recognition-art.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-recognition-art.log
+          exit 1
+      - name: Prove genuine matches, reviewed exceptions and 390px safety
+        run: timeout 240s node tests/v5-recognition-artwork-browser.mjs
+      - name: Verify source clean and exact head
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
