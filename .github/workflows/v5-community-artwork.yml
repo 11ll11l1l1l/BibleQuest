@@ -1,0 +1,63 @@
+name: V5 Community artwork certification
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/community/index.js'
+      - 'src/ui/community.css'
+      - 'assets/v4/community/**'
+      - 'assets/v4/ministry-more/assignments.png'
+      - 'tests/v5-community-artwork.mjs'
+      - 'tests/v5-community-localization-browser.mjs'
+      - '.github/workflows/v5-community-artwork.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  community-artwork:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Verify exact candidate
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build current application
+        run: bash build.sh
+      - name: Certify Community artwork mapping
+        run: node tests/v5-community-artwork.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-community-artwork-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-community-artwork-http.log
+          exit 1
+      - name: Run Community Tagalog + artwork 390px browser acceptance
+        run: timeout 240s node tests/v5-community-localization-browser.mjs
+      - name: Run whole-app glyph inventory
+        run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
+      - name: Verify source clean and exact head
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
