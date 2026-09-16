@@ -163,7 +163,7 @@ function relative(file) {
   return path.relative(root, file).split(path.sep).join('/');
 }
 
-test('Phase 3 whole-app glyph inventory executes against current source and reports undocumented debt', async (t) => {
+test('Phase 3 whole-app glyph inventory rejects undocumented source glyphs', async (t) => {
   const files = await walk(sourceRoot);
   assert.ok(files.length > 0, 'expected current src tree to contain scannable source files');
 
@@ -203,10 +203,9 @@ test('Phase 3 whole-app glyph inventory executes against current source and repo
     t.diagnostic(`UNRESOLVED ${item.file}:${item.line} ${JSON.stringify(item.glyph)}`);
   }
 
-  // This remains an inventory/evidence collector, not the exit gate itself.
-  // A later reconciliation tranche may promote the unresolved count to a hard
-  // zero assertion only after each occurrence has a genuine asset match or a
-  // reviewed documented exception. Keeping this informational avoids silently
-  // blessing unknown glyphs or weakening product assertions to obtain green CI.
-  assert.ok(Array.isArray(undocumented));
+  assert.deepEqual(
+    undocumented,
+    [],
+    'Phase 3 hard-zero gate: every source glyph must have a genuine asset mapping or a focused reviewed exception'
+  );
 });
