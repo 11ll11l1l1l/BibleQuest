@@ -7,6 +7,12 @@ on:
       - v5/feature-completion
     paths:
       - '.github/workflows/v5-leader-center-access-reverify.yml'
+      - 'src/app/leader-center.js'
+      - 'src/features/leader-center/index.js'
+      - 'src/app/assignments.js'
+      - 'src/app/presence.js'
+      - 'tests/v5-leader-center-edge.mjs'
+      - 'tests/v5-leader-center-smoke.mjs'
 
 permissions:
   contents: read
@@ -41,7 +47,7 @@ jobs:
           done
           cat /tmp/bq-v5-leader-http.log
           exit 1
-      - name: Prove member denied, leader allowed and mobile-safe in Chromium
+      - name: Prove role access, safe directory, review handoff and mobile safety in Chromium
         run: timeout 240s node tests/v5-leader-center-smoke.mjs
       - name: Verify exact source head remained unchanged
         run: |
