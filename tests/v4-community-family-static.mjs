@@ -2,7 +2,8 @@
 // Frozen relational owners remain byte-exact. Three later accepted V5 evolutions
 // are intentionally verified by behavior instead of the obsolete V4 byte lock:
 // Community EN/TL localization and retirement of the duplicate Media Library
-// owner in favor of canonical Recordings, plus reviewed Encouragement artwork.
+// owner in favor of canonical Recordings, reviewed Encouragement artwork, and
+// the certified semantic leaderboard rank-label replacement.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -14,8 +15,7 @@ const preserved=[
   'src/features/couples-cloud/index.js',
   'src/features/journey-groups/index.js',
   'src/features/team-center/index.js',
-  'src/features/live-rooms/index.js',
-  'src/features/leaderboards/index.js'
+  'src/features/live-rooms/index.js'
 ];
 
 for(const relative of preserved){
@@ -23,6 +23,19 @@ for(const relative of preserved){
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
   assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the frozen relational presentation owners.`);
 }
+
+// Leaderboards intentionally evolved after the V4 presentation tranche to
+// replace medal glyphs with accessible semantic rank labels. Preserve the
+// relational and non-spiritual-ranking contract structurally; the dedicated V5
+// rank-semantics regression owns the exact accepted representation.
+const leaderboardsSrc=fs.readFileSync(path.join(root,'src/features/leaderboards/index.js'),'utf8');
+assert.ok(leaderboardsSrc.includes("rank===1?'1st':rank===2?'2nd':rank===3?'3rd'"),'Leaderboard top ranks must retain certified semantic labels.');
+for(const glyph of ['🥇','🥈','🥉'])assert.equal(leaderboardsSrc.includes(glyph),false,`Leaderboard must not restore undocumented ${glyph}.`);
+for(const hook of ['data-leaderboards-view','data-leaderboard-period','data-leaderboard-lane']){
+  assert.ok(leaderboardsSrc.includes(hook),`Leaderboard must preserve ${hook}.`);
+}
+assert.ok(leaderboardsSrc.includes('aria-label="Leaderboard rankings"'),'Leaderboard rankings must retain their accessible list label.');
+assert.ok(leaderboardsSrc.includes('Rankings do not measure spiritual worth.'),'Leaderboard must retain its non-spiritual-ranking boundary.');
 
 // Community intentionally evolved after the V4 presentation tranche to use the
 // accepted V5 localization owner. Preserve its navigation/privacy/data hooks
