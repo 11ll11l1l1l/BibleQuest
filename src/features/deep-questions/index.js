@@ -13,7 +13,7 @@ export function deepQuestionsPage({deepQuestions,onReader,onLearn}){
       const host=root.querySelector('[data-deep-page]');
       let disposed=false;
 
-      const referenceButtons=item=>`<div class="bq-deep-references" aria-label="Scripture references">${item.references.map((reference,index)=>`<button type="button" class="bq-secondary-button" data-deep-reader="${index}">📖 ${escapeHtml(reference.label)}</button>`).join('')}</div>`;
+      const referenceButtons=item=>`<div class="bq-deep-references" aria-label="Scripture references">${item.references.map((reference,index)=>`<button type="button" class="bq-secondary-button" data-deep-reader="${index}">Open ${escapeHtml(reference.label)}</button>`).join('')}</div>`;
       const feedbackHtml=feedback=>feedback?`<div class="bq-deep-feedback" role="status"><strong>Response saved</strong>${feedback.message?`<p>${escapeHtml(feedback.message)}</p>`:''}</div>`:'';
 
       const renderLibrary=()=>{
