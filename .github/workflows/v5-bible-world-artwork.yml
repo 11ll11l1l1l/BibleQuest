@@ -4,8 +4,7 @@ on:
   pull_request:
     branches: [v5/feature-completion]
     paths:
-      - 'index.html'
-      - 'src/ui/bible-world-v5-art.css'
+      - 'src/ui/bible-world-visual-polish.css'
       - 'src/features/bible-world/**'
       - 'src/app/bible-world.js'
       - 'assets/v4/bible-world/**'
