@@ -22,7 +22,7 @@ const documented = new Map([
   ['src/features/games/index.js|⭐', 'reviewed Memory reward currency label; exact reward-star art is also present and visible text names stars'],
   ['src/features/games/index.js|🪙', 'reviewed Memory reward currency label; exact reward-coin art is also present and visible text names coins'],
   ['src/features/games/index.js|📖', 'reviewed textual Scripture-reference marker; final Games art contract explicitly preserves it as semantic text rather than placeholder chrome'],
-  ['src/features/games/index.js|🧠', 'Recall question legacy token is aria-hidden/font-hidden under the exact Character Detective asset'],
+  ['src/features/games/index.js|🧠', 'Recall question legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],
   ['src/features/games/index.js|🗃', 'Recall completion legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],
   ['src/features/games/index.js|🏆', 'round-result fallback token is hidden under the exact winner-trophy art in normal presentation; score/result text remains independent'],
   ['src/features/games/index.js|🌟', 'round-result fallback token is hidden under the exact winner-trophy art in normal presentation; score/result text remains independent'],
