@@ -77,6 +77,28 @@ const documented = new Map([
   ['src/app/congregation-recognition.js|📈', 'reviewed Recognition most-improved source; runtime uses genuine progress artwork and visible text carries meaning'],
   ['src/app/congregation-recognition.js|🏅', 'reviewed Recognition badge source/default; pastor-recognition maps to genuine badge artwork and generic fallback remains decorative beside text'],
   ['src/app/congregation-recognition.js|🎖', 'reviewed dynamic earned-badge fallback; decorative only beside the visible badge name'],
+
+  ['src/content/couples-family.js|✝', 'reviewed Couples Christ category source; normal presentation uses genuine mini-cross artwork and visible text remains independent'],
+  ['src/content/couples-family.js|💛', 'reviewed unmatched Couples gratitude category glyph; decorative fallback remains beside independent text'],
+  ['src/content/couples-family.js|🏠', 'reviewed unmatched Couples stewardship category glyph; decorative fallback remains beside independent text'],
+  ['src/content/couples-family.js|🤍', 'reviewed unmatched Couples intimacy category glyph; decorative fallback remains beside independent text'],
+  ['src/content/couples-family.js|🌱', 'reviewed unmatched Couples family category glyph; decorative fallback remains beside independent text'],
+
+  ['src/features/couples-cloud/index.js|🙏', 'reviewed Couple Cloud prayer source; normal presentation uses genuine prayer-circle artwork and visible text remains independent'],
+  ['src/features/couples-cloud/index.js|👂', 'reviewed unmatched Couple Cloud listening glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-cloud/index.js|💛', 'reviewed unmatched Couple Cloud gratitude glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-cloud/index.js|🕊', 'reviewed unmatched Couple Cloud repair glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-cloud/index.js|🏠', 'reviewed unmatched Couple Cloud home glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-cloud/index.js|🤝', 'reviewed unmatched Couple Cloud service glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-cloud/index.js|✝', 'reviewed Couple Cloud Christ source; normal presentation uses genuine mini-cross artwork and visible text remains independent'],
+
+  ['src/features/couples-family/index.js|🧭', 'reviewed unmatched Couples journey glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-family/index.js|💬', 'reviewed unmatched Couples card glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-family/index.js|👂', 'reviewed unmatched Couples listening glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-family/index.js|🌡', 'reviewed unmatched Couples check-in glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-family/index.js|🕊', 'reviewed unmatched Couples repair glyph; decorative fallback remains beside independent text'],
+  ['src/features/couples-family/index.js|✝', 'reviewed Couples Christ source; normal presentation uses genuine mini-cross artwork and visible text remains independent'],
+  ['src/features/couples-family/index.js|✨', 'reviewed Couples date-night source; normal presentation uses genuine sparkle artwork and visible text remains independent'],
 ]);
 
 async function walk(dir) {
