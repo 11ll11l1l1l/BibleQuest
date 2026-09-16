@@ -9,14 +9,33 @@ const sourceRoot = path.join(root, 'src');
 const sourceExtensions = new Set(['.js', '.css', '.html']);
 const pictograph = /\p{Extended_Pictographic}/gu;
 
-// Phase-3 documented exceptions already established by the integrated Games
-// mapping contract. These are presentation glyphs with no forced unrelated art.
+// Phase-3 documented exceptions established by focused reviewed contracts.
+// These remain presentation glyphs only where no demonstrated genuine
+// one-to-one existing artwork is available. The focused contracts are rerun
+// beside this inventory so these declarations cannot silently drift.
 const documented = new Map([
   ['src/features/games/index.js|🦊', 'legacy Memory Meadow marker/result while genuine-match runtime wiring remains owner work'],
   ['src/features/games/index.js|🕵', 'legacy Bible Detective marker while genuine-match runtime wiring remains owner work'],
   ['src/features/games/index.js|📘', 'legacy Recall Library marker while genuine-match runtime wiring remains owner work'],
   ['src/features/games/index.js|⭐', 'unmatched star reward glyph; do not force unrelated artwork'],
   ['src/features/games/index.js|🪙', 'unmatched coin reward glyph; do not force unrelated artwork'],
+
+  ['src/features/notification-center/index.js|📮', 'reviewed unmatched Notification assignment glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|💬', 'reviewed unmatched Notification feedback glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|📖', 'reviewed unmatched Notification devotional glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|📣', 'reviewed unmatched Notification announcement glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|🧭', 'reviewed unmatched Notification activity glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|💛', 'reviewed unmatched Notification encouragement glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|📊', 'reviewed unmatched Notification poll glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|🏅', 'reviewed unmatched Notification award glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|🎬', 'reviewed unmatched Notification media glyph; decorative and text-independent'],
+  ['src/features/notification-center/index.js|🔔', 'reviewed unmatched Notification info/fallback glyph; decorative and text-independent'],
+
+  ['src/app/encouragements.js|🙏', 'reviewed unmatched Encouragement prayer preset glyph with independent text label'],
+  ['src/app/encouragements.js|👏', 'reviewed unmatched Encouragement cheer preset glyph with independent text label'],
+  ['src/app/encouragements.js|💛', 'reviewed unmatched Encouragement heart preset glyph with independent text label'],
+  ['src/app/encouragements.js|📖', 'reviewed unmatched Encouragement Word preset glyph with independent text label'],
+  ['src/app/encouragements.js|🔥', 'reviewed unmatched Encouragement consistency preset glyph with independent text label'],
 ]);
 
 async function walk(dir) {
@@ -62,7 +81,7 @@ test('Phase 3 whole-app glyph inventory executes against current source and repo
     t.diagnostic(`UNRESOLVED ${item.file}:${item.line} ${JSON.stringify(item.glyph)}`);
   }
 
-  // This tranche is an inventory/evidence collector, not the exit gate itself.
+  // This remains an inventory/evidence collector, not the exit gate itself.
   // A later reconciliation tranche may promote the unresolved count to a hard
   // zero assertion only after each occurrence has a genuine asset match or a
   // reviewed documented exception. Keeping this informational avoids silently
