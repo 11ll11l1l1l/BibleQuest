@@ -99,6 +99,16 @@ const documented = new Map([
   ['src/features/couples-family/index.js|🕊', 'reviewed unmatched Couples repair glyph; decorative fallback remains beside independent text'],
   ['src/features/couples-family/index.js|✝', 'reviewed Couples Christ source; normal presentation uses genuine mini-cross artwork and visible text remains independent'],
   ['src/features/couples-family/index.js|✨', 'reviewed Couples date-night source; normal presentation uses genuine sparkle artwork and visible text remains independent'],
+
+  ['src/app/bible-world.js|🌍', 'Bible World Creation state token; normal presentation uses exact world-creation.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|🏕', 'Bible World Patriarchs state token; normal presentation uses exact world-patriarchs.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|🌊', 'Bible World Exodus state token; normal presentation uses exact world-exodus.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|🏰', 'Bible World Kingdom state token; normal presentation uses exact world-kingdom.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|🎵', 'Bible World Wisdom state token; normal presentation uses exact world-wisdom.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|📜', 'Bible World Prophets state token; normal presentation uses exact world-prophets.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|✝', 'Bible World Gospels state token; normal presentation uses exact world-gospels.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|🔥', 'Bible World Early Church state token; normal presentation uses exact world-early-church.png artwork with independent visible title/books/progress text'],
+  ['src/app/bible-world.js|✉', 'Bible World Letters state token; normal presentation uses exact world-letters.png artwork with independent visible title/books/progress text'],
 ]);
 
 async function walk(dir) {
