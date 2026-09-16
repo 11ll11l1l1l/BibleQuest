@@ -52,6 +52,37 @@ try {
     assert.equal(await page.getByText(leak, { exact: true }).count(), 0, `Community exposes migrated English UI text: ${leak}`);
   }
 
+  const expectedArt = {
+    congregation: 'assets/v4/community/congregation.png',
+    leaderboards: 'assets/v4/community/leaderboards.png',
+    recognition: 'assets/v4/community/recognition.png',
+    assignments: 'assets/v4/ministry-more/assignments.png',
+    'live-rooms': 'assets/v4/community/live-rooms.png',
+    'journey-groups': 'assets/v4/community/journey-groups.png',
+    encouragements: 'assets/v4/community/encouragements.png'
+  };
+  const artwork = await page.evaluate(() => [...document.querySelectorAll('[data-community-route]')].map(button => {
+    const img = button.querySelector('img.bq-community-art');
+    return {
+      route: button.dataset.communityRoute,
+      src: img?.getAttribute('src') || '',
+      alt: img?.getAttribute('alt'),
+      ariaHidden: img?.getAttribute('aria-hidden'),
+      naturalWidth: img?.naturalWidth || 0,
+      width: img?.getBoundingClientRect().width || 0,
+      height: img?.getBoundingClientRect().height || 0
+    };
+  }));
+  assert.equal(artwork.length, 7, `expected seven Community artwork actions, found ${artwork.length}`);
+  for (const item of artwork) {
+    assert.equal(item.src, expectedArt[item.route], `wrong Community artwork for ${item.route}`);
+    assert.equal(item.alt, '', `Community artwork must have empty alt text for ${item.route}`);
+    assert.equal(item.ariaHidden, 'true', `Community artwork must remain decorative for ${item.route}`);
+    assert.ok(item.naturalWidth > 0, `Community artwork failed to load for ${item.route}`);
+    assert.ok(item.width > 0 && item.width <= 48, `Community artwork width is unsafe for ${item.route}: ${item.width}`);
+    assert.ok(item.height > 0 && item.height <= 48, `Community artwork height is unsafe for ${item.route}: ${item.height}`);
+  }
+
   const geometry = await page.evaluate(() => {
     const buttons = [...document.querySelectorAll('[data-community-route], [data-community-back]')];
     const heights = buttons.map(node => node.getBoundingClientRect().height).filter(Boolean);
@@ -67,7 +98,7 @@ try {
   assert.ok(geometry.minButtonHeight >= 44, `Community touch target regressed below 44px: ${geometry.minButtonHeight}`);
   assert.deepEqual(pageErrors, [], `Browser page errors occurred: ${pageErrors.join(' | ')}`);
 
-  console.log('BROWSER-AUTO PASS: Tagalog Community chrome, runtime-data preservation, English-leak rejection, 390px touch/overflow');
+  console.log('BROWSER-AUTO PASS: Tagalog Community chrome, exact artwork, runtime-data preservation, English-leak rejection, 390px touch/overflow');
 } finally {
   await browser.close();
 }
