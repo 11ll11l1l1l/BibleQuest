@@ -7,7 +7,10 @@ if(/localStorage|sessionStorage|authStorage/i.test(owner))fail('application owne
 if(/award|badge|recognition|\bxp\b/i.test(owner))fail('Leaderboards must not own awards, badges, recognition or XP.');
 if(!api.includes("client.rpc('bible_leaderboard'")||!api.includes("bible_congregation_members"))fail('central API must own retained leaderboard RPC and congregation directory read.');
 if(!bootstrap.includes("createLeaderboardsService")||!bootstrap.includes("leaderboardsPage"))fail('bootstrap must compose the sole leaderboard owner and view.');
-if(!community.includes('data-community-route="leaderboards"'))fail('Community must expose the verified leaderboard route.');
+const communityLeaderboardRoute=/\{route:['"]leaderboards['"]\b/.test(community);
+const communityRouteRenderer=community.includes('data-community-route="${action.route}"');
+const communityRouteDispatch=community.includes('onNavigate?.(button.dataset.communityRoute)');
+if(!communityLeaderboardRoute||!communityRouteRenderer||!communityRouteDispatch)fail('Community must declare, render and dispatch the verified leaderboard route.');
 if(!view.includes('LOCAL CONGREGATION BOARD')||!view.includes('spiritual worth'))fail('view must retain congregation scope and non-spiritual-ranking copy.');
 if(!workflow.includes('scripts/validate-v3-leaderboards.mjs')||!workflow.includes('tests/v3-leaderboards-edge.mjs')||!workflow.includes('tests/v3-leaderboards-smoke.mjs'))fail('accumulated workflow must retain Leaderboards coverage.');
 console.log('BibleQuest v3 Leaderboards architecture boundary passed.');
