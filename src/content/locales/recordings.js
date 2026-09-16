@@ -26,6 +26,13 @@ export const recordingsEn = Object.freeze({
   'recordings.curator.descriptionLabel': 'Description (optional)',
   'recordings.curator.feature': 'Feature this video at the top',
   'recordings.curator.submit': 'Add video',
+  'recordings.curator.correctionDescription': 'Leaders, pastors, and admins can correct the latest-service confirmation or hide this video. Server permissions remain the final authorization check.',
+  'recordings.curator.markLatest': 'Confirm for latest service',
+  'recordings.curator.removeLatest': 'Remove latest-service confirmation',
+  'recordings.curator.archive': 'Hide video',
+  'recordings.corrected': 'Latest-service confirmation updated.',
+  'recordings.archived': 'Video hidden from the active list.',
+  'recordings.correctError': 'Could not update that video. Only authorized leaders, pastors, and admins can make this change.',
   'recordings.added': 'Video added.',
   'recordings.addError': 'Could not add that video. Only leaders, pastors, and admins can add videos.'
 });
@@ -58,6 +65,13 @@ export const recordingsTl = Object.freeze({
   'recordings.curator.descriptionLabel': 'Paglalarawan (opsyonal)',
   'recordings.curator.feature': 'Itampok ang video na ito sa itaas',
   'recordings.curator.submit': 'Magdagdag ng video',
+  'recordings.curator.correctionDescription': 'Maaaring itama ng mga leader, pastor, at admin ang kumpirmasyon para sa latest service o itago ang video. Ang server permissions pa rin ang huling authorization check.',
+  'recordings.curator.markLatest': 'Kumpirmahin para sa latest service',
+  'recordings.curator.removeLatest': 'Alisin ang kumpirmasyon sa latest service',
+  'recordings.curator.archive': 'Itago ang video',
+  'recordings.corrected': 'Na-update ang kumpirmasyon para sa latest service.',
+  'recordings.archived': 'Nakatago na ang video sa aktibong listahan.',
+  'recordings.correctError': 'Hindi ma-update ang video na iyon. Mga awtorisadong leader, pastor, at admin lamang ang maaaring gumawa ng pagbabagong ito.',
   'recordings.added': 'Naidagdag ang video.',
   'recordings.addError': 'Hindi maidagdag ang video na iyon. Mga leader, pastor, at admin lamang ang maaaring magdagdag ng video.'
 });
