@@ -1,18 +1,19 @@
-// BibleQuest V5 Phase 1: Leader Center. Pure composition over existing,
-// already-authorized owners - assignments.js already resolves the caller's
-// active congregation/role and enforces server-side authorization for
-// publish/review; presence.js's activeCount() already verifies congregation
-// membership server-side before returning an aggregate. This service adds
-// no new data access, no new RLS, and no new state ownership - it only
-// arranges existing capabilities into one leader-facing view. Hiding this
-// route from non-ministry roles is a UX convenience, never the real
-// authorization boundary; every call below independently re-verifies via
-// its own owner's existing server-side check.
+// BibleQuest V5 Leader Center composes already-authorized owners. Assignment
+// lifecycle truth is projected by assignments.js from the current resolved
+// recipient set plus completion-presence records. Private response text stays
+// inside the existing assignment review boundary.
 const MINISTRY_ROLES = new Set(['facilitator', 'leader', 'pastor', 'admin']);
 
 const safePerson = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || ''), role: String(row?.role || '') });
 const safeGroup = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || '') });
 const safeTeam = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || ''), type: String(row?.type || '') });
+const safeLifecycle = row => Object.freeze({
+  assignmentId: String(row?.assignmentId || ''),
+  status: ['published','scheduled','completed'].includes(String(row?.status)) ? String(row.status) : 'published',
+  targetCount: Math.max(0, Number(row?.targetCount) || 0),
+  completedCount: Math.max(0, Number(row?.completedCount) || 0),
+  remainingCount: Math.max(0, Number(row?.remainingCount) || 0)
+});
 
 export function createLeaderCenterService({ assignments, presence } = {}) {
   if (!assignments?.load || !assignments?.snapshot || !presence?.activeCount) {
@@ -30,11 +31,6 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     }
     const congregationId = assignmentState.congregationId;
     const rows = assignmentState.assignments || [];
-    // Do not invent an assignment-level completion lifecycle. The row carries
-    // only the caller's own progress, not aggregate member completion truth.
-    const now = Date.now();
-    const scheduled = rows.filter(row => row.scheduleAt && new Date(row.scheduleAt).getTime() > now);
-    const open = rows.filter(row => !(row.scheduleAt && new Date(row.scheduleAt).getTime() > now));
 
     let activeCount = null;
     try {
@@ -42,13 +38,23 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       activeCount = presenceResult ? presenceResult.count : null;
     } catch { activeCount = null; }
 
-    // Reuse the Assignments publishing directory because it is already scoped
-    // to the active congregation and ministry-authorized. Only its public
-    // id/label/role/type fields are projected into Leader Center; unrelated
-    // sensitive domains are never read by this owner.
     let directoryStatus = 'unavailable';
-    let people = Object.freeze([]), groups = Object.freeze([]), teams = Object.freeze([]);
-    if (typeof assignments.loadPublishTargets === 'function') {
+    let lifecycleStatus = 'unavailable';
+    let people = Object.freeze([]), groups = Object.freeze([]), teams = Object.freeze([]), lifecycleRows = Object.freeze([]);
+    if (typeof assignments.loadLifecycleSummaries === 'function') {
+      try {
+        lifecycleRows = Object.freeze((await assignments.loadLifecycleSummaries()).map(safeLifecycle));
+        lifecycleStatus = 'ready';
+        const targetState = assignments.snapshot();
+        const targets = targetState?.publishTargets || {};
+        people = Object.freeze((targets.members || []).map(safePerson));
+        groups = Object.freeze((targets.groups || []).map(safeGroup));
+        teams = Object.freeze((targets.teams || []).map(safeTeam));
+        directoryStatus = 'ready';
+      } catch {
+        lifecycleStatus = 'unavailable';
+      }
+    } else if (typeof assignments.loadPublishTargets === 'function') {
       try {
         const targetState = await assignments.loadPublishTargets();
         const targets = targetState?.publishTargets || {};
@@ -59,6 +65,16 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       } catch { directoryStatus = 'unavailable'; }
     }
 
+    const lifecycleById = new Map(lifecycleRows.map(item => [item.assignmentId, item]));
+    const projected = Object.freeze(rows.map(row => Object.freeze({ ...row, lifecycle: lifecycleById.get(String(row.id)) || null })));
+    const published = Object.freeze(projected.filter(row => row.lifecycle?.status === 'published'));
+    const scheduled = Object.freeze(projected.filter(row => row.lifecycle?.status === 'scheduled'));
+    const completed = Object.freeze(projected.filter(row => row.lifecycle?.status === 'completed'));
+    const weeklyAnchor = projected
+      .filter(row => row.lifecycle?.status !== 'scheduled' && Array.isArray(row.scriptureRefs) && row.scriptureRefs.length)
+      .slice()
+      .sort((a,b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))[0] || null;
+
     return Object.freeze({
       status: 'ready',
       authorized: true,
@@ -68,12 +84,16 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       activeInLast30Min: activeCount,
       memberCount: directoryStatus === 'ready' ? people.length : null,
       directoryStatus,
+      lifecycleStatus,
       people,
       groups,
       teams,
+      weeklyAnchor,
       assignments: Object.freeze({
-        open: Object.freeze(open),
-        scheduled: Object.freeze(scheduled),
+        published,
+        scheduled,
+        completed,
+        open: published,
         total: rows.length
       })
     });
