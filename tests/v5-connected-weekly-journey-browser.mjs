@@ -35,6 +35,7 @@ try {
   assert.match((await page.locator('[data-weekly-journey-step="scripture"]').textContent()) || '', /Scripture/);
   assert.match((await page.locator('[data-weekly-journey-step="reflect"]').textContent()) || '', /Reflect/);
   assert.match((await page.locator('[data-weekly-journey-step="discuss"]').textContent()) || '', /Discuss & pray/);
+  await assertDinnerPrompt('en', /ASK AT DINNER · OPTIONAL/, /What did God show us this week/);
 
   for (const route of expectedRoutes) await page.locator(`[data-weekly-journey-route="${route}"]`).click();
   assert.deepEqual(await page.evaluate(() => window.__weeklyClicks), expectedRoutes.map(route => `#/${route}`), 'each weekly journey step must remain directly navigable to its existing owner');
@@ -47,6 +48,7 @@ try {
   assert.match(tagalogText, /Mag-usap at manalangin/);
   assert.match(tagalogText, /Isabuhay/);
   assert.match(tagalogText, /Magplano/);
+  await assertDinnerPrompt('tl', /PAG-USAPAN SA HAPUNAN · OPSYONAL/, /Ano ang ipinakita sa atin ng Diyos ngayong linggo/);
 
   assert.deepEqual(pageErrors, [], `weekly journey browser emitted page errors: ${pageErrors.join(' | ')}`);
   console.log('BROWSER-AUTO PASS: connected weekly journey EN/TL, route sequence, touch targets and 390px overflow');
@@ -66,4 +68,24 @@ async function assertJourney(locale) {
   }));
   geometry.heights.forEach((height, index) => assert.ok(height >= 44, `${locale} step ${index + 1} touch target is too small: ${height}px`));
   assert.ok(geometry.scrollWidth <= geometry.innerWidth + 1, `${locale} weekly journey overflows at 390px: ${geometry.scrollWidth} > ${geometry.innerWidth}`);
+}
+
+async function assertDinnerPrompt(locale, label, prompt) {
+  const dinner = page.locator('[data-weekly-dinner-prompt]');
+  assert.equal(await dinner.count(), 1, `${locale} must show exactly one Ask at Dinner prompt`);
+  await dinner.scrollIntoViewIfNeeded();
+  assert.equal(await dinner.isVisible(), true, `${locale} Ask at Dinner prompt must be visible`);
+  const text = (await dinner.textContent()) || '';
+  assert.match(text, label);
+  assert.match(text, prompt);
+  assert.equal(await dinner.locator('a, button, form').count(), 0, `${locale} Ask at Dinner must remain optional non-interactive content`);
+  assert.equal(await dinner.getAttribute('aria-labelledby'), 'weekly-dinner-prompt-label', `${locale} Ask at Dinner prompt must retain its accessible label`);
+  const geometry = await dinner.evaluate(node => ({
+    left: node.getBoundingClientRect().left,
+    right: node.getBoundingClientRect().right,
+    viewport: window.innerWidth,
+    scrollWidth: document.documentElement.scrollWidth
+  }));
+  assert.ok(geometry.left >= -1 && geometry.right <= geometry.viewport + 1, `${locale} Ask at Dinner prompt overflows its 390px viewport`);
+  assert.ok(geometry.scrollWidth <= geometry.viewport + 1, `${locale} Ask at Dinner page overflows at 390px`);
 }
