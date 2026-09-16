@@ -40,7 +40,11 @@ async function desktop(){
   await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>mock player</title>'}));
   let supabase=0;page.on('request',request=>{if(request.url().includes('supabase.co'))supabase++});
   await page.goto(BASE,{waitUntil:'networkidle'});
-  await page.locator('[data-open-recordings]').click();await page.waitForURL(/#\/recordings$/);
+  // Home now also carries a separate "latest completed service" auto-surface
+  // tile (data-home-latest-service) that shares the same navigation hook -
+  // that is someone else's in-progress feature, not this test's concern.
+  // Scope to the general Videos tile (data-home-recordings) specifically.
+  await page.locator('[data-home-recordings] [data-open-recordings]').click();await page.waitForURL(/#\/recordings$/);
   await page.locator('h1',{hasText:'Sign in to view congregation videos'}).waitFor();
   assert(supabase===0,'Guest Videos route must not contact Supabase.');
 
