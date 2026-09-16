@@ -75,3 +75,15 @@
   .bq-world-art,.bq-world-region,.bq-world-note,.bq-world-detail{border-color:rgba(31,54,39,.34)}
   .bq-world-region.is-next{border-color:#805819}
 }
+
+/* V5 Phase 3: exact existing Bible World region artwork replaces decorative glyph presentation. */
+.bq-world-region>.bq-world-icon{font-size:0;background-repeat:no-repeat;background-position:center;background-size:contain}
+.bq-world-region[data-world-region="creation"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-creation.png')}
+.bq-world-region[data-world-region="patriarchs"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-patriarchs.png')}
+.bq-world-region[data-world-region="exodus"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-exodus.png')}
+.bq-world-region[data-world-region="kingdom"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-kingdom.png')}
+.bq-world-region[data-world-region="wisdom"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-wisdom.png')}
+.bq-world-region[data-world-region="prophets"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-prophets.png')}
+.bq-world-region[data-world-region="jesus"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-gospels.png')}
+.bq-world-region[data-world-region="church"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-early-church.png')}
+.bq-world-region[data-world-region="letters"]>.bq-world-icon{background-image:url('/assets/v4/bible-world/world-letters.png')}
