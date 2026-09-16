@@ -13,7 +13,10 @@ if(!failures.length){
   for(const item of["import { createCongregationRecognitionService } from './congregation-recognition.js'",'createCongregationRecognitionService({api:api.congregationRecognition,session,congregation})',"recognition:()=>congregationRecognitionPage",'recognition.clear()'])if(!bootstrap.includes(item))fail(`Bootstrap missing #72 composition: ${item}`);
   if(!feature.includes('Only leaders, pastors and admins can create persisted special recognition.'))fail('Recognition presentation must communicate the recovered award-role boundary.');
   if(!feature.includes('spiritual worth'))fail('Recognition presentation must retain the non-spiritual-scoring boundary.');
-  if(!community.includes('data-community-route="recognition"'))fail('Community must expose the bounded Recognition destination.');
+  const communityRecognitionRoute=/\{route:['"]recognition['"],/.test(community);
+  const communityRouteRenderer=community.includes('data-community-route="${action.route}"');
+  const communityRouteDispatch=community.includes('onNavigate?.(button.dataset.communityRoute)');
+  if(!communityRecognitionRoute||!communityRouteRenderer||!communityRouteDispatch)fail('Community must declare, render and dispatch the bounded Recognition destination.');
   for(const item of['sole v3 client owner','sole browser Supabase boundary','leader`, `pastor` or `admin`','removed `facilitator`','does not own score-event submission','Production v2, `main`, production Supabase and production Cloudflare remain untouched'])if(!contract.includes(item))fail(`Recognition contract missing boundary: ${item}`);
   const rows=['| 72 | Congregation recognition | Yes | Compatibility | Implemented | load/award/display; permissions |','| 72 | Congregation recognition | Yes | Compatibility | Verified | load/award/display; permissions |','| 72 | Congregation recognition | Yes | Compatibility | Regression-tested | load/award/display; permissions |'];
   if(!rows.some(row=>inventory.includes(row)))fail('#72 Congregation Recognition must be Implemented or better once owner/regressions are committed.');
