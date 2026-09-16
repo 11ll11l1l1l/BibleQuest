@@ -10,6 +10,7 @@ on:
       - 'tests/v5-notification-glyph-exceptions.mjs'
       - 'tests/v5-encouragement-glyph-exceptions.mjs'
       - 'tests/v5-recognition-artwork-mapping.mjs'
+      - 'tests/v5-games-artwork-certification.mjs'
       - '.github/workflows/v5-whole-app-glyph-inventory.yml'
   workflow_dispatch:
 
@@ -36,6 +37,8 @@ jobs:
         run: node tests/v5-encouragement-glyph-exceptions.mjs
       - name: Revalidate reviewed Recognition mapping and exceptions
         run: node tests/v5-recognition-artwork-mapping.mjs
+      - name: Revalidate reviewed Games artwork and exceptions
+        run: node --test tests/v5-games-artwork-certification.mjs
       - name: Run Phase 3 whole-app glyph inventory
         run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
       - name: Verify source clean

@@ -9,16 +9,46 @@ const sourceRoot = path.join(root, 'src');
 const sourceExtensions = new Set(['.js', '.css', '.html']);
 const pictograph = /\p{Extended_Pictographic}/gu;
 
-// Phase-3 documented exceptions established by focused reviewed contracts.
-// These remain presentation glyphs only where no demonstrated genuine
-// one-to-one existing artwork is available. The focused contracts are rerun
-// beside this inventory so these declarations cannot silently drift.
+// Phase-3 documented sources/exceptions established by focused reviewed
+// contracts. A documented source is either (a) a legacy/state token whose
+// normal presentation is already replaced by a genuine exact asset, or (b) a
+// reviewed semantic/text fallback for which forcing unrelated artwork would be
+// incorrect. Focused contracts are rerun beside this collector so entries
+// cannot silently drift into unreviewed debt forgiveness.
 const documented = new Map([
-  ['src/features/games/index.js|🦊', 'legacy Memory Meadow marker/result while genuine-match runtime wiring remains owner work'],
-  ['src/features/games/index.js|🕵', 'legacy Bible Detective marker while genuine-match runtime wiring remains owner work'],
-  ['src/features/games/index.js|📘', 'legacy Recall Library marker while genuine-match runtime wiring remains owner work'],
-  ['src/features/games/index.js|⭐', 'unmatched star reward glyph; do not force unrelated artwork'],
-  ['src/features/games/index.js|🪙', 'unmatched coin reward glyph; do not force unrelated artwork'],
+  ['src/features/games/index.js|🦊', 'Memory Meadow HUD/result legacy token is decorative; exact Memory artwork is the normal visual presentation'],
+  ['src/features/games/index.js|🕵', 'Bible Detective legacy token is aria-hidden/font-hidden under the exact Character Detective asset'],
+  ['src/features/games/index.js|📘', 'Recall Library legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],
+  ['src/features/games/index.js|⭐', 'reviewed Memory reward currency label; exact reward-star art is also present and visible text names stars'],
+  ['src/features/games/index.js|🪙', 'reviewed Memory reward currency label; exact reward-coin art is also present and visible text names coins'],
+  ['src/features/games/index.js|📖', 'reviewed textual Scripture-reference marker; final Games art contract explicitly preserves it as semantic text rather than placeholder chrome'],
+  ['src/features/games/index.js|🧠', 'Recall question legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],
+  ['src/features/games/index.js|🗃', 'Recall completion legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],
+  ['src/features/games/index.js|🏆', 'round-result fallback token is hidden under the exact winner-trophy art in normal presentation; score/result text remains independent'],
+  ['src/features/games/index.js|🌟', 'round-result fallback token is hidden under the exact winner-trophy art in normal presentation; score/result text remains independent'],
+  ['src/features/games/index.js|🌱', 'round-result fallback token is hidden under the exact winner-trophy art in normal presentation; score/result text remains independent'],
+
+  ['src/features/games/memory.js|🦊', 'Memory state identity; visual card face is exact memory-fox.png'],
+  ['src/features/games/memory.js|🐼', 'Memory state identity; visual card face is exact memory-panda.png'],
+  ['src/features/games/memory.js|🐸', 'Memory state identity; visual card face is exact memory-frog.png'],
+  ['src/features/games/memory.js|🐵', 'Memory state identity; visual card face is exact memory-monkey.png'],
+  ['src/features/games/memory.js|🦁', 'Memory state identity; visual card face is exact memory-lion.png'],
+  ['src/features/games/memory.js|🐰', 'Memory state identity; visual card face is exact memory-rabbit.png'],
+  ['src/features/games/memory.js|🐯', 'Memory state identity; visual card face is exact memory-tiger.png'],
+  ['src/features/games/memory.js|🐨', 'Memory state identity; visual card face is exact memory-koala.png'],
+
+  ['src/ui/games-art-final-v4.css|📖', 'documentation comment for reviewed semantic Scripture-reference exception; no rendered CSS content'],
+  ['src/ui/games-art-final-v4.css|⭐', 'documentation comment for reviewed star currency label; exact reward art is separately wired'],
+  ['src/ui/games-art-final-v4.css|🪙', 'documentation comment for reviewed coin currency label; exact reward art is separately wired'],
+
+  ['src/ui/v4-custom-art.css|🦊', 'CSS selector token maps Memory state identity to exact memory-fox.png'],
+  ['src/ui/v4-custom-art.css|🐼', 'CSS selector token maps Memory state identity to exact memory-panda.png'],
+  ['src/ui/v4-custom-art.css|🐸', 'CSS selector token maps Memory state identity to exact memory-frog.png'],
+  ['src/ui/v4-custom-art.css|🐵', 'CSS selector token maps Memory state identity to exact memory-monkey.png'],
+  ['src/ui/v4-custom-art.css|🦁', 'CSS selector token maps Memory state identity to exact memory-lion.png'],
+  ['src/ui/v4-custom-art.css|🐰', 'CSS selector token maps Memory state identity to exact memory-rabbit.png'],
+  ['src/ui/v4-custom-art.css|🐯', 'CSS selector token maps Memory state identity to exact memory-tiger.png'],
+  ['src/ui/v4-custom-art.css|🐨', 'CSS selector token maps Memory state identity to exact memory-koala.png'],
 
   ['src/features/notification-center/index.js|📮', 'reviewed unmatched Notification assignment glyph; decorative and text-independent'],
   ['src/features/notification-center/index.js|💬', 'reviewed unmatched Notification feedback glyph; decorative and text-independent'],
