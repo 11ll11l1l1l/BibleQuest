@@ -69,18 +69,15 @@ function localText(locale, key) {
 
 function weeklyJourneyHtml(locale) {
   return `<nav class="bq-panel bq-home-weekly-journey" data-home-weekly-journey aria-label="${escapeHtml(localText(locale, 'home.week.journeyLabel'))}">
-    <ol class="bq-home-weekly-journey-list">
-      ${WEEKLY_JOURNEY_STEPS.map(step => `<li data-weekly-journey-step="${step.id}">
-        <a class="bq-home-weekly-journey-link" href="#/${step.route}" data-weekly-journey-route="${step.route}">
-          <span class="bq-home-weekly-journey-icon" aria-hidden="true">${iconSvg(step.icon, { size: 20 })}</span>
-          <span class="bq-home-weekly-journey-copy">
-            <b>${escapeHtml(localText(locale, `home.week.${step.id}.title`))}</b>
-            <small>${escapeHtml(localText(locale, `home.week.${step.id}.description`))}</small>
-          </span>
-          <span class="bq-home-weekly-journey-action">${escapeHtml(localText(locale, `home.week.${step.id}.action`))}</span>
+    <div class="bq-home-assignment-list" role="list">
+      ${WEEKLY_JOURNEY_STEPS.map(step => `<div role="listitem" data-weekly-journey-step="${step.id}">
+        <a class="bq-home-assignment-row" style="text-decoration:none" href="#/${step.route}" data-weekly-journey-route="${step.route}">
+          <span class="bq-home-assignment-status"><span aria-hidden="true">${iconSvg(step.icon, { size: 16 })}</span> ${escapeHtml(localText(locale, `home.week.${step.id}.title`))}</span>
+          <span class="bq-home-assignment-copy"><b>${escapeHtml(localText(locale, `home.week.${step.id}.title`))}</b><small>${escapeHtml(localText(locale, `home.week.${step.id}.description`))}</small></span>
+          <span class="bq-home-assignment-open">${escapeHtml(localText(locale, `home.week.${step.id}.action`))}</span>
         </a>
-      </li>`).join('')}
-    </ol>
+      </div>`).join('')}
+    </div>
   </nav>`;
 }
 
