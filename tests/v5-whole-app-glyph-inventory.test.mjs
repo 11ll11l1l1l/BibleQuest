@@ -36,6 +36,17 @@ const documented = new Map([
   ['src/app/encouragements.js|💛', 'reviewed unmatched Encouragement heart preset glyph with independent text label'],
   ['src/app/encouragements.js|📖', 'reviewed unmatched Encouragement Word preset glyph with independent text label'],
   ['src/app/encouragements.js|🔥', 'reviewed unmatched Encouragement consistency preset glyph with independent text label'],
+
+  ['src/app/congregation-recognition.js|🔥', 'reviewed Recognition consistency source; runtime uses genuine streak artwork and visible text carries meaning'],
+  ['src/app/congregation-recognition.js|📖', 'reviewed Recognition Scripture Explorer source; runtime uses genuine chapter artwork and visible text carries meaning'],
+  ['src/app/congregation-recognition.js|💛', 'reviewed unmatched Recognition encourager source; decorative fallback remains beside independent text'],
+  ['src/app/congregation-recognition.js|🗺', 'reviewed unmatched Recognition journey-finisher source; decorative fallback remains beside independent text'],
+  ['src/app/congregation-recognition.js|🌱', 'reviewed Recognition comeback source; runtime uses genuine growth artwork and visible text carries meaning'],
+  ['src/app/congregation-recognition.js|🤝', 'reviewed unmatched Recognition group-helper source; decorative fallback remains beside independent text'],
+  ['src/app/congregation-recognition.js|💭', 'reviewed unmatched Recognition reflection source; decorative fallback remains beside independent text'],
+  ['src/app/congregation-recognition.js|📈', 'reviewed Recognition most-improved source; runtime uses genuine progress artwork and visible text carries meaning'],
+  ['src/app/congregation-recognition.js|🏅', 'reviewed Recognition badge source/default; pastor-recognition maps to genuine badge artwork and generic fallback remains decorative beside text'],
+  ['src/app/congregation-recognition.js|🎖', 'reviewed dynamic earned-badge fallback; decorative only beside the visible badge name'],
 ]);
 
 async function walk(dir) {
