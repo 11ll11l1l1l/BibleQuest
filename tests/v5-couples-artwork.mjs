@@ -4,6 +4,7 @@ import fs from 'node:fs';
 const familyCss=fs.readFileSync('src/ui/couples-family.css','utf8');
 const cloudCss=fs.readFileSync('src/ui/couples-cloud.css','utf8');
 const familySource=fs.readFileSync('src/features/couples-family/index.js','utf8');
+const familyContent=fs.readFileSync('src/content/couples-family.js','utf8');
 const cloudSource=fs.readFileSync('src/features/couples-cloud/index.js','utf8');
 
 for(const asset of [
@@ -33,8 +34,12 @@ for(const label of ['Pray Honestly','Listen First','Notice the Good','Repair Gen
 const reviewedUnmatchedFamily=['🧭','💬','👂','🌡️','🕊️'];
 const reviewedUnmatchedCategories=['💛','🏠','🤍','🌱'];
 const reviewedUnmatchedCloud=['👂','💛','🕊️','🏠','🤝'];
-for(const glyph of [...reviewedUnmatchedFamily,...reviewedUnmatchedCategories,...reviewedUnmatchedCloud])
-  assert.ok(familySource.includes(glyph)||cloudSource.includes(glyph),`reviewed unmatched glyph must remain explicit rather than receive a false asset: ${glyph}`);
+for(const glyph of reviewedUnmatchedFamily)
+  assert.ok(familySource.includes(glyph),`reviewed unmatched Family glyph must remain explicit rather than receive a false asset: ${glyph}`);
+for(const glyph of reviewedUnmatchedCategories)
+  assert.ok(familyContent.includes(glyph),`reviewed unmatched category glyph must remain explicit in the content catalog rather than receive a false asset: ${glyph}`);
+for(const glyph of reviewedUnmatchedCloud)
+  assert.ok(cloudSource.includes(glyph),`reviewed unmatched Cloud glyph must remain explicit rather than receive a false asset: ${glyph}`);
 
 assert.match(cloudSource,/done\.has\(String\(index\+1\)\)\?'✓':item\.icon/,'completed Couple Cloud journey must retain its explicit checkmark state');
 console.log('v5 Couples genuine artwork mappings + reviewed exceptions: PASS');
