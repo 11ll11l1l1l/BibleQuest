@@ -16,6 +16,19 @@ const HOME_SHORTCUTS = Object.freeze([
   Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
 ]);
 
+const HOME_COMPOSITION_COPY = Object.freeze({
+  en: Object.freeze({
+    'home.composition.noUpcomingEvents': 'No upcoming events yet.',
+    'home.composition.noContinueReading': 'Open the Bible to start or continue reading.',
+    'home.composition.noLatestService': 'No confirmed latest service yet.'
+  }),
+  tl: Object.freeze({
+    'home.composition.noUpcomingEvents': 'Wala pang paparating na event.',
+    'home.composition.noContinueReading': 'Buksan ang Biblia para magsimula o magpatuloy sa pagbabasa.',
+    'home.composition.noLatestService': 'Wala pang kumpirmadong pinakabagong recording ng service.'
+  })
+});
+
 function shortcutRailHtml(locale) {
   const tx = (key, values) => localization.t(key, { locale, values });
   return `<nav class="bq-home-rail" data-home-rail aria-label="${escapeHtml(tx('home.shortcut.ariaLabel'))}"><ul class="bq-home-rail-track" data-home-rail-track>${HOME_SHORTCUTS.map(item => `<li><button type="button" class="bq-home-rail-item" data-home-rail-item="${item.id}" data-home-rail-action="${item.action}"><span class="bq-home-rail-icon" aria-hidden="true">${iconSvg(item.icon, { size: 22 })}</span><span class="bq-home-rail-label">${escapeHtml(tx(item.labelKey))}</span></button></li>`).join('')}</ul></nav>`;
@@ -33,6 +46,7 @@ const eventSummary = event => event ? `${event.date || ''}${event.date && event.
 export function homePage({ progress, dailyMission, assignments, presence, calendar, reader, recordings, transform, notifications, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
   const locale = localization.getLocale();
   const tx = (key, values) => localization.t(key, { locale, values });
+  const homeTx = (key, values) => localization.t(key, { locale, values, dictionaries: HOME_COMPOSITION_COPY });
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
   const daily = dailyMission?.today?.();
   const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
@@ -42,6 +56,9 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
   const transformationState = transform?.getState?.();
   const notificationState = notifications?.snapshot?.();
   const transformationDetail = transformationState?.spiritual?.result ? tx('transform.basic.viewReflection') : tx('transform.mode.prompt');
+  const nextEventDetail = eventSummary(nextEvent) || homeTx('home.composition.noUpcomingEvents');
+  const continueReadingDetail = continueReading || homeTx('home.composition.noContinueReading');
+  const latestServiceDetail = latestService?.title || homeTx('home.composition.noLatestService');
   return {
     title: tx('nav.home'),
     html: `
@@ -76,19 +93,19 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         <section class="bq-panel bq-home-tile" data-home-next-event>
           <button type="button" class="bq-home-tile-button" data-open-home-next-event aria-label="${escapeHtml(tx('nav.calendar'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('calendar', { size: 20 })}</span>
-            <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.calendar'))}</b><small data-home-next-event-detail aria-live="polite">${escapeHtml(eventSummary(nextEvent))}</small></span>
+            <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.calendar'))}</b><small data-home-next-event-detail aria-live="polite">${escapeHtml(nextEventDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-continue-reading>
           <button type="button" class="bq-home-tile-button" data-open-home-continue-reading aria-label="${escapeHtml(tx('nav.bible'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('bible', { size: 20 })}</span>
-            <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.bible'))}</b><small data-home-continue-reading-detail>${escapeHtml(continueReading)}</small></span>
+            <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.bible'))}</b><small data-home-continue-reading-detail aria-live="polite">${escapeHtml(continueReadingDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-latest-service>
           <button type="button" class="bq-home-tile-button" data-open-recordings aria-label="${escapeHtml(tx('home.recordings.ariaLabel'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('video', { size: 20 })}</span>
-            <span class="bq-home-tile-text"><b>${escapeHtml(tx('home.recordings.title'))}</b><small data-home-latest-service-detail aria-live="polite">${escapeHtml(latestService?.title || tx('home.recordings.description'))}</small></span>
+            <span class="bq-home-tile-text"><b>${escapeHtml(tx('home.recordings.title'))}</b><small data-home-latest-service-detail aria-live="polite">${escapeHtml(latestServiceDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-transformation-prompt>
@@ -191,13 +208,13 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         if (calendar?.load) {
           try {
             const calendarState = await calendar.load();
-            if (!disposed && nextEventHost) nextEventHost.textContent = eventSummary(firstAgendaEvent(calendarState));
+            if (!disposed && nextEventHost) nextEventHost.textContent = eventSummary(firstAgendaEvent(calendarState)) || homeTx('home.composition.noUpcomingEvents');
           } catch { /* retain the current safe calendar summary */ }
         }
         if (recordings?.load) {
           try {
             const recordingState = await recordings.load();
-            if (!disposed && latestServiceHost) latestServiceHost.textContent = recordingState?.latestService?.title || tx('home.recordings.description');
+            if (!disposed && latestServiceHost) latestServiceHost.textContent = recordingState?.latestService?.title || homeTx('home.composition.noLatestService');
           } catch { /* retain the current recordings fallback */ }
         }
         if (notifications?.load) {
