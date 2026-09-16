@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -149,6 +149,17 @@ test('Phase 3 whole-app glyph inventory executes against current source and repo
   }
 
   const undocumented = findings.filter((item) => !item.documented);
+  const diagnosticsPath = process.env.V5_GLYPH_DIAGNOSTICS_PATH;
+  if (diagnosticsPath) {
+    await writeFile(path.resolve(root, diagnosticsPath), `${JSON.stringify({
+      candidate: process.env.V5_GLYPH_CANDIDATE || null,
+      total: findings.length,
+      documented: findings.length - undocumented.length,
+      undocumented: undocumented.length,
+      unresolved: undocumented,
+    }, null, 2)}\n`, 'utf8');
+  }
+
   t.diagnostic(`Phase 3 glyph inventory: ${findings.length} occurrences; ${findings.length - undocumented.length} documented; ${undocumented.length} undocumented`);
   for (const item of undocumented) {
     t.diagnostic(`UNRESOLVED ${item.file}:${item.line} ${JSON.stringify(item.glyph)}`);
