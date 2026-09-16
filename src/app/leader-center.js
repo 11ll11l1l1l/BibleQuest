@@ -44,8 +44,8 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
 
     // Reuse the Assignments publishing directory because it is already scoped
     // to the active congregation and ministry-authorized. Only its public
-    // id/label/role/type fields are projected into Leader Center; private
-    // notes, Transform answers, Couples data and psychometrics are never read.
+    // id/label/role/type fields are projected into Leader Center; unrelated
+    // sensitive domains are never read by this owner.
     let directoryStatus = 'unavailable';
     let people = Object.freeze([]), groups = Object.freeze([]), teams = Object.freeze([]);
     if (typeof assignments.loadPublishTargets === 'function') {
