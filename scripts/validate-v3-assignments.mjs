@@ -9,7 +9,10 @@ if(/localStorage|sessionStorage|createClient|\.from\(|functions\.invoke|\.channe
 for(const token of["'bible_assignments'","'bible_assignment_progress'","'bq-assignment'","action:'start'","action:'complete'",'client.channel','removeChannel',".eq('user_id',userId)"])if(!api.includes(token))fail(`Central API missing Assignments boundary: ${token}`);
 if(/\.insert\([^\n]*bible_assignment_progress|\.update\([^\n]*bible_assignment_progress|\.upsert\([^\n]*bible_assignment_progress/.test(api))fail('Browser API must not directly mutate assignment progress; retained trusted function owns writes.');
 for(const token of['createAssignmentsService','assignmentsPage','api.assignments',"assignments:()=>assignmentsPage",'assignments.clear'])if(!bootstrap.includes(token))fail(`Bootstrap missing Assignments composition: ${token}`);
-if(!community.includes('data-community-route="assignments"'))fail('Community must expose the Assignments route.');
+const communityAssignmentsRoute=/\{route:['"]assignments['"],/.test(community);
+const communityRouteRenderer=community.includes('data-community-route="${action.route}"');
+const communityRouteDispatch=community.includes('onNavigate?.(button.dataset.communityRoute)');
+if(!communityAssignmentsRoute||!communityRouteRenderer||!communityRouteDispatch)fail('Community must declare, render and dispatch the Assignments route.');
 for(const phrase of['#73 Assignments','bq-assignment','RLS','realtime','read-only for ministry roles','#74 Advanced assignments','#75 Assignment push workflow','#79 Linked activities/challenges'])if(!contract.includes(phrase))fail(`Assignments contract missing boundary: ${phrase}`);
 const row=n=>inventory.split('\n').find(line=>line.startsWith(`| ${n} |`))||'';
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(73)))fail('Inventory #73 must be Implemented or better once this validator is accumulated.');
