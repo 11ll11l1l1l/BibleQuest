@@ -134,6 +134,10 @@ const documented = new Map([
   ['src/app/bible-world.js|🔥', 'Bible World Early Church state token; normal presentation uses exact world-early-church.png artwork with independent visible title/books/progress text'],
   ['src/app/bible-world.js|✉', 'Bible World Letters state token; normal presentation uses exact world-letters.png artwork with independent visible title/books/progress text'],
 
+  ['src/core/bible.js|©', 'required translation copyright attribution text; preserved verbatim rather than replaced by artwork'],
+  ['src/core/bible.js|®', 'required registered-trademark attribution text; preserved verbatim rather than replaced by artwork'],
+  ['src/core/bible.js|™', 'required trademark attribution text; preserved verbatim rather than replaced by artwork'],
+
   ['src/features/story-journey/content.js|🪨', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
   ['src/features/story-journey/content.js|🫶', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
   ['src/features/story-journey/content.js|🦁', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
