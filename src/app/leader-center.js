@@ -10,6 +10,10 @@
 // its own owner's existing server-side check.
 const MINISTRY_ROLES = new Set(['facilitator', 'leader', 'pastor', 'admin']);
 
+const safePerson = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || ''), role: String(row?.role || '') });
+const safeGroup = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || '') });
+const safeTeam = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || ''), type: String(row?.type || '') });
+
 export function createLeaderCenterService({ assignments, presence } = {}) {
   if (!assignments?.load || !assignments?.snapshot || !presence?.activeCount) {
     throw new Error('Leader Center requires the existing Assignments and Presence owners.');
@@ -26,15 +30,8 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     }
     const congregationId = assignmentState.congregationId;
     const rows = assignmentState.assignments || [];
-    // Categorize using the same scheduleAt/dueAt fields the existing
-    // dueState() computation already relies on, rather than inventing a
-    // publish-state field that does not exist on the merged row - the row
-    // only carries the caller's own progress.status (assigned/started/
-    // completed), not a per-assignment publish lifecycle or aggregate
-    // completion count. A real "how many members completed this" number
-    // requires assignments.loadReview(id) per assignment (already built,
-    // already server-authorized) - deferred here as an explicit follow-up
-    // rather than fabricated from data that does not carry it.
+    // Do not invent an assignment-level completion lifecycle. The row carries
+    // only the caller's own progress, not aggregate member completion truth.
     const now = Date.now();
     const scheduled = rows.filter(row => row.scheduleAt && new Date(row.scheduleAt).getTime() > now);
     const open = rows.filter(row => !(row.scheduleAt && new Date(row.scheduleAt).getTime() > now));
@@ -43,7 +40,24 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     try {
       const presenceResult = await presence.activeCount(congregationId, 30);
       activeCount = presenceResult ? presenceResult.count : null;
-    } catch { activeCount = null; } // presence is a secondary enhancement, never blocks the Overview
+    } catch { activeCount = null; }
+
+    // Reuse the Assignments publishing directory because it is already scoped
+    // to the active congregation and ministry-authorized. Only its public
+    // id/label/role/type fields are projected into Leader Center; private
+    // notes, Transform answers, Couples data and psychometrics are never read.
+    let directoryStatus = 'unavailable';
+    let people = Object.freeze([]), groups = Object.freeze([]), teams = Object.freeze([]);
+    if (typeof assignments.loadPublishTargets === 'function') {
+      try {
+        const targetState = await assignments.loadPublishTargets();
+        const targets = targetState?.publishTargets || {};
+        people = Object.freeze((targets.members || []).map(safePerson));
+        groups = Object.freeze((targets.groups || []).map(safeGroup));
+        teams = Object.freeze((targets.teams || []).map(safeTeam));
+        directoryStatus = 'ready';
+      } catch { directoryStatus = 'unavailable'; }
+    }
 
     return Object.freeze({
       status: 'ready',
@@ -52,6 +66,11 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       congregationId,
       congregationName: assignmentState.congregationName,
       activeInLast30Min: activeCount,
+      memberCount: directoryStatus === 'ready' ? people.length : null,
+      directoryStatus,
+      people,
+      groups,
+      teams,
       assignments: Object.freeze({
         open: Object.freeze(open),
         scheduled: Object.freeze(scheduled),
@@ -60,5 +79,15 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     });
   }
 
-  return Object.freeze({ load, isMinistryRole: role => MINISTRY_ROLES.has(String(role || '')) });
+  async function openReview(assignmentId) {
+    const id = String(assignmentId || '');
+    if (!id) throw new Error('Choose an assignment to review.');
+    if (typeof assignments.open !== 'function' || typeof assignments.loadReview !== 'function') {
+      throw new Error('Assignment review is not available yet.');
+    }
+    assignments.open(id);
+    return assignments.loadReview(id);
+  }
+
+  return Object.freeze({ load, openReview, isMinistryRole: role => MINISTRY_ROLES.has(String(role || '')) });
 }
