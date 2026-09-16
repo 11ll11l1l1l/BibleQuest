@@ -30,7 +30,8 @@ try {
   assert.equal(await page.evaluate(() => window.__bqRecordingsTitle), 'Mga Video');
   assert.equal((await page.locator('.bq-recordings-head h1').textContent())?.trim(), 'Mga video para sa pagsamba at pag-aaral ng Biblia');
   assert.equal((await page.locator('[data-video-curator-toggle]').textContent())?.trim(), 'Magdagdag ng video');
-  assert.equal(await page.getByText('Itinatampok', { exact: true }).count(), 1);
+  assert.equal(await page.locator('[data-video-select]', { hasText: 'Runtime Worship Title' }).getByText('Itinatampok', { exact: true }).count(), 1);
+  assert.equal(await page.locator('[data-video-select]', { hasText: 'Youth Fellowship' }).getByText('Itinatampok', { exact: true }).count(), 1);
   assert.equal(await page.getByText('Runtime Worship Title', { exact: true }).count(), 1);
   assert.equal(await page.getByText('Runtime description remains source data.', { exact: true }).count(), 1);
   assert.equal((await page.locator('[data-recordings-filter-status]').textContent())?.trim(), '3 video ang ipinapakita');
