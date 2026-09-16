@@ -54,19 +54,24 @@ for (const kind of ['heart', 'word', 'flame']) {
   assert.ok(new RegExp(`\\[data-send-encouragement="${kind}"\\] > span\\s*\\{\\s*background-image:`).test(artCss), `Encouragement preset icon for '${kind}' must use real custom art.`);
 }
 
-// Congregation Recognition is a recorded, honest deferral (bare-text icon
-// concatenation, not an isolated element) - assert the reasoning stays
-// documented so it isn't silently dropped from tracking.
-assert.ok(artCss.includes('Congregation Recognition: intentionally NOT wired'), 'The Congregation Recognition icon deferral must stay documented inline.');
-
-// --- Icon consistency, round 3: Congregation Recognition badges. Fixed by
-// restructuring the icon into its own stable element (data-award-code /
-// data-badge-id), the deferral reason recorded in round 1 no longer applies.
+// --- Icon consistency, round 3: Congregation Recognition.
+// V5 supersedes the old tag/CSS-specific award hook with a reviewed mapper.
+// Keep the invariant semantic rather than requiring a particular HTML tag:
+// genuine matches render from the approved semantic sprite, reviewed
+// unmatched concepts stay decorative glyphs, and visible titles retain the
+// accessible meaning. Earned badges keep their independent stable hook.
 const recognitionSrc = read('src/features/congregation-recognition/index.js');
-assert.ok(recognitionSrc.includes('bq-recognition-icon') && recognitionSrc.includes('data-award-code='), 'Congregation Recognition award icon must be isolated in its own stable, styleable element.');
-assert.ok(recognitionSrc.includes('data-badge-id='), 'Congregation Recognition badge icon must be isolated in its own stable, styleable element.');
-for (const code of ['consistency', 'scripture-explorer', 'encourager', 'journey-finisher', 'group-helper', 'pastor-recognition']) {
-  assert.ok(artCss.includes(`[data-award-code="${code}"]`), `Congregation Recognition icon for '${code}' must use real custom art.`);
+const recognitionArtworkSrc = read('src/features/congregation-recognition/artwork.js');
+assert.ok(recognitionSrc.includes('renderRecognitionArtwork(row.awardCode,row.icon)'), 'Congregation Recognition award rows must delegate to the reviewed V5 artwork mapper.');
+assert.ok(recognitionArtworkSrc.includes("const ASSET = 'assets/progress-feature-icons.svg'"), 'Congregation Recognition genuine matches must use the approved semantic icon asset.');
+for (const code of ['consistency', 'scripture-explorer', 'comeback', 'most-improved', 'pastor-recognition']) {
+  assert.ok(recognitionArtworkSrc.includes(code), `Congregation Recognition reviewed genuine match '${code}' disappeared from the mapper.`);
 }
+for (const code of ['encourager', 'journey-finisher', 'group-helper', 'reflection']) {
+  assert.ok(recognitionArtworkSrc.includes(code), `Congregation Recognition reviewed exception '${code}' disappeared from the mapper.`);
+}
+assert.ok(recognitionArtworkSrc.includes('aria-hidden="true"') && recognitionArtworkSrc.includes('focusable="false"'), 'Matched Congregation Recognition artwork must remain decorative.');
+assert.ok(recognitionSrc.includes('data-badge-id=') && recognitionSrc.includes('aria-hidden="true"'), 'Congregation Recognition earned badge icon must remain isolated and decorative beside its visible badge name.');
+assert.ok(!recognitionSrc.includes('${esc(row.icon)} ${esc(row.title)}'), 'Congregation Recognition award meaning must not depend on a decorative emoji prefix.');
 
 console.log('BibleQuest v4 whole-app polish audit contract passed.');
