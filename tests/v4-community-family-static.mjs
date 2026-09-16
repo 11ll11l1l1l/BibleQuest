@@ -1,8 +1,8 @@
 // BibleQuest V4 Community / Relational family presentation contract.
-// Frozen relational owners remain byte-exact. Two later accepted V5 evolutions
+// Frozen relational owners remain byte-exact. Three later accepted V5 evolutions
 // are intentionally verified by behavior instead of the obsolete V4 byte lock:
 // Community EN/TL localization and retirement of the duplicate Media Library
-// owner in favor of canonical Recordings.
+// owner in favor of canonical Recordings, plus reviewed Encouragement artwork.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -15,8 +15,7 @@ const preserved=[
   'src/features/journey-groups/index.js',
   'src/features/team-center/index.js',
   'src/features/live-rooms/index.js',
-  'src/features/leaderboards/index.js',
-  'src/features/encouragements/index.js'
+  'src/features/leaderboards/index.js'
 ];
 
 for(const relative of preserved){
@@ -38,6 +37,27 @@ for(const hook of ['data-community-view','data-community-route','data-community-
 }
 assert.ok(communitySrc.includes('esc(row.name)')&&communitySrc.includes('esc(row.roleLabel)'),'Community runtime congregation identity/role data must remain escaped rather than translated as authored copy.');
 assert.ok(communitySrc.includes('bq-community-boundary'),'Community privacy boundary must remain present after localization.');
+
+// Encouragements intentionally evolved after the V4 presentation tranche to
+// use reviewed genuine artwork where an exact semantic match exists. Preserve
+// the relational/privacy contract structurally instead of requiring obsolete
+// glyph-rendering bytes.
+const encouragementServiceSrc=fs.readFileSync(path.join(root,'src/app/encouragements.js'),'utf8');
+const encouragementSrc=fs.readFileSync(path.join(root,'src/features/encouragements/index.js'),'utf8');
+for(const kind of ['pray','cheer','heart','word','flame']){
+  assert.ok(encouragementServiceSrc.includes(`${kind}:Object.freeze`),`Encouragement service must preserve the reviewed ${kind} preset owner.`);
+}
+assert.ok(encouragementServiceSrc.includes("'BQ_ENCOURAGEMENTS_KIND'"),'Encouragement service must reject unreviewed/custom preset kinds.');
+assert.ok(encouragementServiceSrc.includes("'BQ_ENCOURAGEMENTS_PERMISSION'"),'Encouragement service must preserve group-scope authorization.');
+for(const hook of ['data-encouragements-view','data-send-encouragement','data-group-id','data-encouragements-back']){
+  assert.ok(encouragementSrc.includes(hook),`Encouragement presentation must preserve ${hook}.`);
+}
+assert.ok(encouragementSrc.includes('esc(group.id)')&&encouragementSrc.includes('esc(group.name)'),'Encouragement group identity and names must remain escaped.');
+assert.ok(encouragementSrc.includes('esc(preset.label)')&&encouragementSrc.includes('esc(item.label)'),'Encouragement preset/feed labels must remain escaped and independently visible.');
+assert.ok(encouragementSrc.includes('sent.has(kind)')&&encouragementSrc.includes('disabled aria-disabled="true"'),'Encouragement send-once state must remain visibly and accessibly disabled.');
+assert.ok(encouragementSrc.includes('data-encouragement-art=')&&encouragementSrc.includes('data-encouragement-glyph='),'Encouragement presentation must retain reviewed artwork and fallback hooks.');
+assert.ok(encouragementSrc.includes('alt=""')&&encouragementSrc.includes('aria-hidden="true"'),'Encouragement artwork/fallbacks must remain decorative while text carries meaning.');
+assert.ok(encouragementSrc.includes('Encouragements never include private notes, reflections, answers, completion status, rankings, or XP.'),'Encouragement privacy boundary must remain explicit.');
 
 // The duplicate Media Library UI/service was deliberately retired in V5. The
 // canonical media route must remain Recordings-owned rather than resurrecting
