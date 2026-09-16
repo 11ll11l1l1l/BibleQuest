@@ -15,7 +15,7 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 6): merged evidence supports **86/122 accepted items (70.5%)**. See the prior reconciliation records and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS6_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 7): merged evidence supports **91/122 accepted items (74.6%)**. See the prior reconciliation records and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS7_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -172,7 +172,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard. **STATIC + BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`; existing-owner/private/noncompetitive contracts plus EN/TL/empty/390px proof; run `35035310862` SUCCESS.**
 - [ ] Family & Couples tracks cover agreed topics using existing owners/patterns.
 - [ ] Personal milestones are encouraging/non-competitive and derive from current progress where possible.
-- [ ] Ask at Dinner attaches one short prompt to relevant weekly content.
+- [x] Ask at Dinner attaches one short prompt to relevant weekly content. **STATIC + BROWSER-AUTO: merged #431 adds exactly one explicitly optional EN/TL prompt to the existing connected weekly journey without changing its six-owner route sequence or adding persistence, scoring, backend, schema, or a content engine. Exact PR head `a7663599c2b5b9d71ee3c86d63e27f3315fd7812`; connected-journey run `35157691298`, accumulated regression `35157691285`, collision guard `35157691271`, Section G `35157691320`, Home/browser companions, and hard-zero glyph run `35157691273` all SUCCESS; merged as `f79301a6880af2a60e5431f3725768f8bf84d98b`.**
 
 ## O. P2 — full Cebuano/Bisaya localization
 
@@ -185,10 +185,10 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 
 ## P. P2 — discovery and Media organization
 
-- [ ] Lightweight filter/search operates only over data already exposed/loaded by current owners unless a separately-approved minimal current-architecture query is needed.
-- [ ] No generalized index/ranking/search platform is introduced.
-- [ ] Media organization uses available metadata first.
-- [ ] Any new category field/metadata extension is proven necessary, isolated, and RLS-tested if persisted.
+- [x] Lightweight filter/search operates only over data already exposed/loaded by current owners unless a separately-approved minimal current-architecture query is needed. **STATIC + BROWSER-AUTO: merged #432 filters only the canonical Recordings owner's already-loaded rows; search reads existing `title`/`description` and featured-only filtering reads existing `featured`. Exact PR head `d53022bc7b9ef9aff7e5f54580449fdf463f76f6`; focused Recordings run `35158463303` and accumulated regression `35158463291` SUCCESS; merged as `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`.**
+- [x] No generalized index/ranking/search platform is introduced. **STATIC: #432 remains a local presentation filter over the current Recordings state and adds no API/query, index, ranking field, external discovery, data owner, or search service.**
+- [x] Media organization uses available metadata first. **STATIC + BROWSER-AUTO: #432 uses only existing `title`, `description`, and `featured` values, while preserving canonical Recordings service/query/player ownership. Focused run `35158463303` SUCCESS.**
+- [x] Any new category field/metadata extension is proven necessary, isolated, and RLS-tested if persisted. **NOT APPLICABLE / STATIC FIREWALL: #432 introduced no category field, metadata extension, schema change, persistence, or Supabase mutation; therefore no new persisted field required RLS evidence.**
 - [ ] Categories may include latest service, Sunday services, Bible studies, worship, testimonies, couples/family, kids when supported by real metadata.
 
 ## Q. Data-model discipline
