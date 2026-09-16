@@ -8,7 +8,9 @@ on:
     paths:
       - 'src/features/recordings/index.js'
       - 'src/content/locales/recordings.js'
+      - 'src/ui/recordings.css'
       - 'src/app/localization.js'
+      - 'tests/v5-recordings-filter.test.mjs'
       - 'tests/v5-recordings-tagalog-surface.test.mjs'
       - 'tests/v5-recordings-tagalog-browser.mjs'
       - '.github/workflows/v5-recordings-tagalog-surface.yml'
@@ -35,9 +37,10 @@ jobs:
         run: |
           node --check src/features/recordings/index.js
           node --check src/content/locales/recordings.js
+          node --check tests/v5-recordings-filter.test.mjs
           node --check tests/v5-recordings-tagalog-surface.test.mjs
           node --check tests/v5-recordings-tagalog-browser.mjs
-          node --test tests/v5-recordings-tagalog-surface.test.mjs tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs tests/v5-calendar-tagalog-surface.test.mjs tests/v5-assignments-tagalog-surface.test.mjs tests/v5-notification-center-tagalog-surface.test.mjs tests/v5-account-settings-tagalog-surface.test.mjs
+          node --test tests/v5-recordings-filter.test.mjs tests/v5-recordings-tagalog-surface.test.mjs tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs tests/v5-calendar-tagalog-surface.test.mjs tests/v5-assignments-tagalog-surface.test.mjs tests/v5-notification-center-tagalog-surface.test.mjs tests/v5-account-settings-tagalog-surface.test.mjs
           node tests/v5-localization-qa-current-surfaces.mjs
       - name: Install Playwright and Chromium
         run: |
