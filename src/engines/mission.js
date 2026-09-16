@@ -16,7 +16,6 @@ export function recommend({ due = 0, weakest = '' } = {}) {
   const dueCount = Number.isFinite(Number(due)) && Number(due) > 0 ? Math.floor(Number(due)) : 0;
   if (dueCount > 0) {
     return Object.freeze({
-      icon: '🧠',
       title: `${dueCount} review${dueCount === 1 ? '' : 's'} due`,
       text: 'Start with retrieval practice before adding more new material.',
       action: 'review'
@@ -24,7 +23,6 @@ export function recommend({ due = 0, weakest = '' } = {}) {
   }
   const focus = String(weakest || '').trim();
   return Object.freeze({
-    icon: '📘',
     title: focus ? `Strengthen ${focus}` : 'Continue your study',
     text: focus
       ? `Your evidence is lighter here. Read a passage, then retrieve what you remember.`
