@@ -14,7 +14,10 @@ try{
   for(const [region,asset] of Object.entries(expected)){
     const button=page.locator(`[data-world-region="${region}"]`);
     const icon=button.locator('.bq-world-icon');
-    assert.match(await icon.evaluate(node=>getComputedStyle(node).backgroundImage),new RegExp(asset.replace('.','\\.')));
+    const image=icon.locator('img');
+    assert.match(await image.getAttribute('src'),new RegExp(asset.replace('.','\\.')));
+    assert.equal(await image.evaluate(node=>node.complete&&node.naturalWidth>0),true,`${region} artwork must load`);
+    assert.equal(await image.getAttribute('alt'),'');
     assert.equal(await icon.getAttribute('aria-hidden'),'true');
     assert.ok((await button.locator('.bq-world-title').innerText()).trim().length>0,`${region} must retain visible title text`);
   }
