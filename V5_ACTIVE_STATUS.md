@@ -3,8 +3,8 @@
 Updated: 2026-09-16 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD before this documentation reconciliation: `f41fb0fa53c925287cc1da0078b1175c7a7c9eea`
-Formal acceptance coverage after Pass 5 reconciliation: **80/122 = 65.6%**
+Observed integration HEAD before this documentation reconciliation: `fe0805083d3a020274b97b4f5b8c572733190575`
+Formal acceptance coverage after Pass 6 reconciliation: **86/122 = 70.5%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -36,7 +36,7 @@ Integration stability: **GREEN at this reconciliation**.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **80/122 = 65.6%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
+Formal checklist coverage is **86/122 = 70.5%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
 
 ### Phase 1 — Leader Center
 
@@ -72,15 +72,17 @@ Readiness/static evidence must not be relabeled as real backend execution.
 
 ### Phase 3 — artwork / dead-owner completion
 
-Status: **IN PROGRESS / INVENTORY QUANTIFIED, NOT AN EXIT GATE**.
+Status: **COMPLETE / 7 OF 7 ACCEPTED / HARD-ZERO REGRESSION ACTIVE**.
 
 Accepted:
 
-- abandoned duplicate Media Library service/page retired while the canonical `media -> Recordings` route remains authoritative.
+- abandoned duplicate Media Library service/page retired while the canonical `media -> Recordings` route remains authoritative;
+- genuine Games, Recognition, Couples, Notification, Encouragement, Bible World, Avatar Vault, Story Journey, and semantic UI artwork mappings plus reviewed exceptions;
+- independent visible/accessibility meaning for decorative artwork;
+- Mission recommendations render genuine SVG assets from semantic `review`/`study` action IDs with no dead emoji presentation fields;
+- the whole-app inventory is now a hard-zero gate.
 
-The current whole-app glyph inventory remains informational rather than a zero-debt gate. On the #399 merge candidate, run `35051843422` reported **155 glyph occurrences: 6 documented and 149 undocumented**. A green inventory run therefore does not mean artwork debt is complete.
-
-The remaining work must be reduced in bounded groups: genuine existing-asset matches where semantically correct, reviewed/documented exceptions where no genuine match exists, validator/docs reconciliation, and independent accessibility-label evidence. Older unmerged artwork experiments do not count as current runtime completion.
+On #427 exact head `bf93a9796b039203757e95dedf5315ea10e99824`, workflow run `35115458073` reported **128 glyph occurrences: 128 documented and 0 undocumented**. Collision guard `35115458236` and Section G `35115458103` also passed. Any future undocumented source glyph now fails CI.
 
 ### Phase 4 — minimum real Web Push
 
@@ -228,18 +230,19 @@ Required final actions include:
 - Recordings correction / PR #396: remaining Section K correction behavior implemented/proven.
 - Pass 4 / PR #397: **68/122 -> 76/122 (62.3%)**.
 - Leader Center fast-track / PR #399: four existing-owner Phase 1 behaviors implemented/proven; aggregate lifecycle deliberately remains open.
-- Pass 5 reconciliation: **76/122 -> 80/122 (65.6%)** once this documentation-only reconciliation is merged.
+- Pass 5 reconciliation: **76/122 -> 80/122 (65.6%)**.
+- Mission hard-zero closeout / PR #427: 128/128 documented source glyphs; 0 undocumented; exact-head focused and accumulated checks green.
+- Pass 6 reconciliation: **80/122 -> 86/122 (70.5%)** once this documentation-only reconciliation is merged.
 
 ## 5. Highest-priority remaining certification/development path
 
 1. Preserve the remaining Leader aggregate assignment-lifecycle item as open unless authoritative current-owner completion truth can be exposed without inventing a second owner or aggregate model.
-2. Close Phase 3 artwork/glyph reconciliation in bounded genuine-match/reviewed-exception tranches, including validator/docs and accessibility evidence.
-3. Execute Admin real email-change BACKEND-E2E in an explicitly approved isolated non-production Supabase topology.
-4. Complete/accept remaining Web Push server and real-device gates.
-5. Establish the controlled second-congregation topology and execute real Gate C.
-6. Finish remaining Tagalog completeness and full Cebuano/Bisaya scope.
-7. Complete remaining P1 content-depth and Media discovery/organization requirements.
-8. Reconcile data-model discipline evidence, freeze one exact V5 release candidate, run the full accumulated evidence matrix, then make the explicit promotion decision.
+2. Execute Admin real email-change BACKEND-E2E in an explicitly approved isolated non-production Supabase topology.
+3. Complete/accept remaining Web Push server and real-device gates.
+4. Establish the controlled second-congregation topology and execute real Gate C.
+5. Finish remaining Tagalog completeness and full Cebuano/Bisaya scope.
+6. Complete remaining P1 content-depth and Media discovery/organization requirements.
+7. Reconcile data-model discipline evidence, freeze one exact V5 release candidate, run the full accumulated evidence matrix, then make the explicit promotion decision.
 
 ## 6. Evidence rules
 
