@@ -9,12 +9,11 @@ for(const [region,asset] of Object.entries(mappings)){
   const path=`assets/v4/bible-world/${asset}`;
   assert.ok(fs.existsSync(path),`exact Bible World artwork must exist: ${path}`);
   assert.ok(fs.statSync(path).size>1000,`Bible World artwork must not be empty: ${path}`);
-  assert.ok(css.includes(`[data-world-region="${region}"]>.bq-world-icon`),`missing stable region artwork selector: ${region}`);
-  assert.ok(css.includes(`url('/${path}')`),`missing exact region artwork mapping: ${region}`);
+  assert.ok(source.includes(`${region}:'${asset}'`),`missing exact region artwork mapping: ${region}`);
 }
 
-assert.match(css,/\.bq-world-region>\.bq-world-icon\{font-size:0;/,'source glyph font must be hidden when exact artwork is available');
-assert.match(source,/class="bq-world-icon" aria-hidden="true"/,'region artwork must remain decorative');
+assert.match(css,/\.bq-world-icon img\{display:block;width:100%;height:100%;object-fit:contain\}/,'region artwork must remain contained');
+assert.match(source,/class="bq-world-icon" aria-hidden="true"><img /,'region artwork must remain decorative');
 for(const token of ['region.title','region.books.join','aria-label="${esc(region.title)} exploration"'])
   assert.ok(source.includes(token),`accessible region meaning must remain independent of artwork: ${token}`);
 
