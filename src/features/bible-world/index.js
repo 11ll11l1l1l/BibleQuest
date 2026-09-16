@@ -3,7 +3,7 @@ const REGION_ARTWORK=Object.freeze({creation:'world-creation.png',patriarchs:'wo
 
 function worldArtwork(state,failed){
   const art=state.artwork||{},percent=Math.max(0,Math.min(100,Number(art.revealPercent)||0));
-  if(failed)return `<section class="bq-world-art bq-world-art-fallback" data-world-art-fallback role="status"><div class="bq-world-art-fallback-icon" aria-hidden="true">🗺️</div><div><b>Bible World artwork is unavailable.</b><p>${percent}% of the world is revealed from your learning evidence. The map and every Scripture route remain available below.</p></div></section>`;
+  if(failed)return `<section class="bq-world-art bq-world-art-fallback" data-world-art-fallback role="status"><div><b>Bible World artwork is unavailable.</b><p>${percent}% of the world is revealed from your learning evidence. The map and every Scripture route remain available below.</p></div></section>`;
   return `<section class="bq-world-art" data-world-art style="--bq-world-reveal:${percent}%"><div class="bq-world-art-frame" data-world-art-frame><img src="${esc(art.locked||'')}" alt="Bible World hidden in clouds" class="bq-world-art-locked" data-world-art-image="locked" loading="eager" decoding="async"><img src="${esc(art.revealed||'')}" alt="Revealed Bible World" class="bq-world-art-revealed" data-world-art-image="revealed" loading="eager" decoding="async"></div><div class="bq-world-art-copy"><b><span data-world-reveal-percent>${percent}%</span> of the world revealed</b><small>Learning evidence clears more of the clouds. Scripture itself stays available.</small></div></section>`;
 }
 
