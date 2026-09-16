@@ -3,8 +3,8 @@
 Updated: 2026-09-16 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD before this documentation reconciliation: `fe0805083d3a020274b97b4f5b8c572733190575`
-Formal acceptance coverage after Pass 6 reconciliation: **86/122 = 70.5%**
+Observed integration HEAD before this documentation reconciliation: `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`
+Formal acceptance coverage after Pass 7 reconciliation: **91/122 = 74.6%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -36,7 +36,7 @@ Integration stability: **GREEN at this reconciliation**.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **86/122 = 70.5%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
+Formal checklist coverage is **91/122 = 74.6%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
 
 ### Phase 1 — Leader Center
 
@@ -184,7 +184,8 @@ Accepted/integrated highlights:
 - Community and Videos/Recordings 390px Tagalog browser proof;
 - latest-service stable identity, confirmation and correction;
 - Home/Today existing-owner composition with intentional empty states and mobile proof;
-- connected weekly spiritual journey;
+- connected weekly spiritual journey, including one optional EN/TL Ask at Dinner prompt;
+- lightweight Recordings search and featured-only filtering over already-loaded current-owner data, with no schema/index/metadata extension;
 - My Journey private/noncompetitive history with EN/TL, empty-state and 390px browser proof.
 
 Still open includes:
@@ -193,8 +194,7 @@ Still open includes:
 - Cebuano/Bisaya dictionary and full agreed UI/content coverage;
 - remaining P1 content-depth items;
 - Family/Couples content targets;
-- Ask at Dinner;
-- Media discovery/organization.
+- metadata-backed Media category support beyond the accepted search/featured controls.
 
 ### My Journey
 
@@ -232,7 +232,10 @@ Required final actions include:
 - Leader Center fast-track / PR #399: four existing-owner Phase 1 behaviors implemented/proven; aggregate lifecycle deliberately remains open.
 - Pass 5 reconciliation: **76/122 -> 80/122 (65.6%)**.
 - Mission hard-zero closeout / PR #427: 128/128 documented source glyphs; 0 undocumented; exact-head focused and accumulated checks green.
-- Pass 6 reconciliation: **80/122 -> 86/122 (70.5%)** once this documentation-only reconciliation is merged.
+- Pass 6 reconciliation: **80/122 -> 86/122 (70.5%)**.
+- Ask at Dinner / PR #431: exactly one optional EN/TL weekly prompt proven on exact PR head `a7663599c2b5b9d71ee3c86d63e27f3315fd7812`; merged as `f79301a6880af2a60e5431f3725768f8bf84d98b`.
+- Recordings filter / PR #432: local search and featured-only filtering over already-loaded current-owner data, with no schema/index/metadata extension; exact PR head `d53022bc7b9ef9aff7e5f54580449fdf463f76f6`; merged as `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`.
+- Pass 7 reconciliation: **86/122 -> 91/122 (74.6%)** once this documentation-only reconciliation is merged.
 
 ## 5. Highest-priority remaining certification/development path
 
