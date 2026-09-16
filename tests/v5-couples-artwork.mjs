@@ -32,7 +32,7 @@ for(const label of ['Pray Honestly','Listen First','Notice the Good','Repair Gen
   assert.ok(cloudSource.includes(label),`Cloud accessible text must remain independent of decorative art: ${label}`);
 
 const reviewedUnmatchedFamily=['🧭','💬','👂','🌡️','🕊️'];
-const reviewedUnmatchedCategories=['💛','🏠','🤍','🌱'];
+const reviewedUnmatchedCategories=['👂','🕊️','💛','🏠','🤍','🌱','🧭'];
 const reviewedUnmatchedCloud=['👂','💛','🕊️','🏠','🤝'];
 for(const glyph of reviewedUnmatchedFamily)
   assert.ok(familySource.includes(glyph),`reviewed unmatched Family glyph must remain explicit rather than receive a false asset: ${glyph}`);
@@ -40,6 +40,15 @@ for(const glyph of reviewedUnmatchedCategories)
   assert.ok(familyContent.includes(glyph),`reviewed unmatched category glyph must remain explicit in the content catalog rather than receive a false asset: ${glyph}`);
 for(const glyph of reviewedUnmatchedCloud)
   assert.ok(cloudSource.includes(glyph),`reviewed unmatched Cloud glyph must remain explicit rather than receive a false asset: ${glyph}`);
+
+for(const [glyph,label] of [['🔗','Create pair code'],['🏁','Shared challenge progress']]){
+  assert.ok(cloudSource.includes(glyph),`reviewed Couple Cloud utility glyph must remain explicit: ${glyph}`);
+  assert.ok(cloudSource.includes(label),`Couple Cloud utility meaning must remain independently visible: ${label}`);
+}
+for(const [glyph,label] of [['💞','DEEP QUESTION CARD'],['📖','READ TOGETHER'],['📱','Pass the phone']]){
+  assert.ok(familySource.includes(glyph),`reviewed Couples UI glyph must remain explicit: ${glyph}`);
+  assert.ok(familySource.includes(label),`Couples UI glyph meaning/context must remain independently visible: ${label}`);
+}
 
 assert.match(cloudSource,/done\.has\(String\(index\+1\)\)\?'✓':item\.icon/,'completed Couple Cloud journey must retain its explicit checkmark state');
 console.log('v5 Couples genuine artwork mappings + reviewed exceptions: PASS');
