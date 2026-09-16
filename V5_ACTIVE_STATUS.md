@@ -3,8 +3,8 @@
 Updated: 2026-09-16 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD before this documentation reconciliation: `1f74a64e59e9ed35a4168949ef31e673898e1963`
-Formal acceptance coverage after Pass 3 reconciliation: **68/122 = 55.7%**
+Observed integration HEAD before this documentation reconciliation: `c97c065d5cdc84e4c9d8e79cbb2729f461127f89`
+Formal acceptance coverage after Pass 4 reconciliation: **76/122 = 62.3%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -34,13 +34,13 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 Integration stability: **GREEN at this reconciliation**.
 
-Recent exact-head evidence and serialized merges have repaired the earlier concurrent-work collision damage. Collision guard, Section G, Section E, Admin certification, and the current-head Leader/Phase-6/My-Journey evidence pack are green on their accepted heads.
+The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey and Recordings correction tranches all passed their focused exact-head gates together with the relevant collision/state/localization regression guards before serialized merge.
 
-Formal checklist coverage is **68/122 = 55.7%**. This is an evidence-acceptance ratio, not an implementation-progress estimate. Implementation remains materially further ahead than formal certification.
+Formal checklist coverage is **76/122 = 62.3%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
 
 ### Phase 1 — Leader Center
 
-Status: **PARTIAL / ROLE-ACCESS EVIDENCE COMPLETE / PRODUCT GAPS OPEN**.
+Status: **PARTIAL / ROLE-ACCESS EVIDENCE COMPLETE / FIVE PRODUCT GAPS OPEN**.
 
 Accepted:
 
@@ -62,14 +62,7 @@ Do not mark Phase 1 complete merely because access/browser smoke is green.
 
 Status: **6/7 ACCEPTED / REAL EMAIL-CHANGE BACKEND-E2E OPEN**.
 
-Accepted evidence covers:
-
-- identity/congregation/security user-card sections;
-- safe/restricted/destructive severity treatment;
-- typed destructive confirmations;
-- owner-only sensitive operations, privacy-safe audit detail, and session-safe/fail-closed ordering;
-- negative/self/invalid-target cases;
-- runnable fail-closed controlled non-production evidence path.
+Accepted evidence covers identity/congregation/security cards, action severity, typed destructive confirmations, owner-only/privacy-safe/session-safe sensitive operations, negative cases, and the fail-closed non-production evidence path.
 
 Still open:
 
@@ -85,7 +78,7 @@ Accepted:
 
 - abandoned duplicate Media Library service/page retired while the canonical `media -> Recordings` route remains authoritative.
 
-Integrated/reviewed evidence exists for several Games, Notification and Encouragement glyph mappings/exceptions, but Phase 3 remains open until the accepted whole-app reconciliation, remaining genuine matches/exceptions, validator/docs state, and accessibility requirements are fully closed.
+The current whole-app inventory still contains substantial unresolved glyph/artwork debt. Older unmerged artwork experiments do not count as current runtime completion. Phase 3 remains open until genuine mappings/reviewed exceptions, validator/docs state, and accessibility requirements are fully reconciled on current source.
 
 ### Phase 4 — minimum real Web Push
 
@@ -137,15 +130,44 @@ Still open:
 
 Status: **COMPLETE / ACCEPTED**.
 
-Accepted evidence now covers:
+Accepted evidence covers CEBOCB 66-book/current Reader, CEBOCB mobile Reader behavior, Couples bidirectional/private sharing, deferred Section E integration, and the Section G loading/empty/error/offline matrix.
 
-- CEBOCB 66-book/current Reader contract;
-- CEBOCB 390px Reader browser behavior;
-- Couples bidirectional/private sharing proof;
-- deferred Section E integration sweep;
-- Section G loading/empty/error/offline matrix.
+### P0 — latest completed service / Media-Recordings
 
-The Section E refresh correctly identified and repaired obsolete historical test assumptions for accepted Community localization and Media Library retirement without weakening frozen relational-owner protection.
+Status: **COMPLETE / ACCEPTED FOR SECTION K**.
+
+Merged #396 adds the previously missing correction surface over the existing Recordings owner:
+
+- confirm/unconfirm an existing recording for latest-service surfacing through `setFeatured()`;
+- hide/archive an incorrect active row through `archive()`;
+- server-side RLS remains authoritative;
+- EN/TL correction copy and 390px browser interaction are proven;
+- no YouTube API polling, webhook ingestion, scheduled external discovery, new daemon or replacement media platform was introduced.
+
+Focused run `35040064030`, collision run `35040063941`, Section G run `35040063924`, Recordings Tagalog run `35040064074`, and localization QA run `35040064013` all passed on the accepted #396 head before merge `c97c065d5cdc84e4c9d8e79cbb2729f461127f89`.
+
+### P0 — Today / This Week Home
+
+Status: **COMPLETE / ACCEPTED FOR SECTION L**.
+
+Merged #394 closes both previously open Home acceptance behaviors:
+
+- missing Calendar/Reader/latest-service data has intentional EN/TL empty-state copy rather than blank/broken details;
+- exact-head 390px browser evidence covers empty and populated composition, all five owner tiles, navigation handoffs, and overflow/page-error safety.
+
+Focused run `35039155709`, Home Tagalog `35039155616`, localization QA `35039155617`, collision `35039155644`, and Section G `35039155587` all passed before merge `2ba17a8794b9ae1fa79166ab7de1b02e73ab0051`.
+
+### P0 — connected weekly spiritual journey
+
+Status: **COMPLETE / ACCEPTED FOR SECTION M**.
+
+Merged #395 provides a composition-only weekly path through existing owners:
+
+`Recordings/service -> Reader/Scripture -> Transformation/reflection -> Journey Groups/discussion/prayer -> Assignments/action -> Calendar/plan`
+
+The implementation uses existing first-class routes only. It creates no workflow engine, duplicate authoritative record, storage key, new backend/API, or automatic sermon-to-passage inference.
+
+Focused run `35039686763`, collision run `35039686747`, Section G run `35039686745`, and Home browser run `35039686719` passed before merge `e89277383837cd590e023363690b4fc069462efa`.
 
 ### Cross-phase localization / content / UX
 
@@ -154,41 +176,27 @@ Status: **IN PROGRESS**.
 Accepted/integrated highlights:
 
 - current-architecture EN/TL localization foundation;
-- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community, Videos/Recordings scoped EN/TL work;
-- Community 390px Tagalog browser proof;
-- latest confirmed service stable-identity derivation;
-- Home/Today existing-owner composition;
+- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community and Videos/Recordings scoped EN/TL work;
+- Community and Videos/Recordings 390px Tagalog browser proof;
+- latest-service stable identity, confirmation and correction;
+- Home/Today existing-owner composition with intentional empty states and mobile proof;
+- connected weekly spiritual journey;
 - My Journey private/noncompetitive history with EN/TL, empty-state and 390px browser proof.
 
 Still open includes:
 
 - remaining Tagalog surfaces and final no-unexplained-English scan;
 - Cebuano/Bisaya dictionary and full agreed UI/content coverage;
-- weekly connected spiritual journey;
-- remaining content-depth items;
+- remaining P1 content-depth items;
 - Family/Couples content targets;
 - Ask at Dinner;
-- Media discovery/organization;
-- Home missing-source intentional-empty-state and dedicated composition browser acceptance;
-- authorized latest-service hide/edit/correct UI controls.
+- Media discovery/organization.
 
 ### My Journey
 
 Status: **IMPLEMENTED AND FORMALLY ACCEPTED FOR THE CURRENT P1 CHECKLIST ITEM**.
 
-The earlier note that My Journey lacked CI browser proof is obsolete.
-
-Exact-current-head #392 evidence proves:
-
-- composition over existing Progress and Assignments owners;
-- no direct Supabase/local/session-storage owner bypass;
-- meaningful/private history only;
-- no rank/leaderboard/percentile/comparison output;
-- EN/TL presentation;
-- real empty state;
-- 390px mobile-safe browser behavior.
-
-The first #392 run exposed a Playwright harness argument-shape error; only the test harness was repaired. Product runtime was unchanged. The final evidence-pack run passed.
+Current evidence proves composition over existing Progress/Assignments owners, no direct owner bypass, private/noncompetitive history, EN/TL, empty state and 390px mobile behavior.
 
 ### Phase 8 — final certification / promotion
 
@@ -211,19 +219,23 @@ Required final actions include:
 - Admin exact-head certification / PR #389: six Admin acceptance items proven while real email-change E2E stayed open.
 - Section E current-head refresh / PR #390: stale historical byte locks repaired; full Section E matrix green.
 - Pass 2 / PR #391: **54/122 -> 63/122 (51.6%)**.
-- Current-head evidence pack / PR #392: Leader role access, Phase 6 switcher/Calendar active context, and My Journey exact-current-head browser/static proof.
-- Pass 3 reconciliation: **63/122 -> 68/122 (55.7%)** once this documentation-only reconciliation is merged.
+- Current-head evidence pack / PR #392: Leader role access, Phase 6 switcher/Calendar active context, and My Journey exact-current-head proof.
+- Pass 3 / PR #393: **63/122 -> 68/122 (55.7%)** and stale active-status reconciliation replaced.
+- Home closeout / PR #394: two Section L behaviors implemented/proven.
+- Connected weekly journey / PR #395: all five Section M behaviors implemented/proven.
+- Recordings correction / PR #396: remaining Section K correction behavior implemented/proven.
+- Pass 4 reconciliation: **68/122 -> 76/122 (62.3%)** once this documentation-only reconciliation is merged.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Complete the five genuine Leader Center product gaps, then rerun its exact-head acceptance suite.
+1. Complete the five genuine Leader Center product gaps, then rerun exact-head acceptance.
 2. Execute Admin real email-change BACKEND-E2E in an explicitly approved isolated non-production Supabase topology.
 3. Close Phase 3 artwork/glyph reconciliation.
 4. Complete/accept remaining Web Push server and real-device gates.
 5. Establish the controlled second-congregation topology and execute real Gate C.
-6. Close latest-service correction controls and Home empty/mobile acceptance.
-7. Finish remaining Tagalog, Cebuano/Bisaya, weekly journey, content-depth and Media organization requirements.
-8. Freeze one exact V5 release candidate, run the full accumulated regression/evidence matrix, then make the explicit promotion decision.
+6. Finish remaining Tagalog completeness and full Cebuano/Bisaya scope.
+7. Complete remaining P1 content-depth and Media discovery/organization requirements.
+8. Reconcile data-model discipline evidence, freeze one exact V5 release candidate, run the full accumulated evidence matrix, then make the explicit promotion decision.
 
 ## 6. Evidence rules
 
