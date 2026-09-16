@@ -15,16 +15,18 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 4): merged evidence supports **76/122 accepted items (62.3%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS4_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 5): merged evidence supports **80/122 accepted items (65.6%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS4_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS5_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
-- [ ] Overview: congregation snapshot, role, member count, active-in-30-min.
-- [ ] Assignments: published/scheduled/completed split.
-- [ ] Response review reachable as a real destination, not only inline.
-- [ ] People view exposes ministry-relevant directory only and excludes private notes, Transform answers, Couples content, personality/psychometric answers.
-- [ ] Groups & Teams composes existing Journey Groups/Team Center owners; no new backend.
-- [x] Ordinary member denied and authorized leader allowed on current candidate using real browser evidence. **BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`, evidence-pack run `35035310862` SUCCESS.**
+- [x] Overview: congregation snapshot, role, member count, active-in-30-min. **STATIC + BROWSER-AUTO: merged #399; final PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc`; focused run `35051843361` SUCCESS. Member count reuses the existing ministry-authorized Assignments target directory; Presence remains the existing active-count owner.**
+- [ ] Assignments: published/scheduled/completed split. **Still open: current Leader rows expose reliable schedule state but not authoritative aggregate assignment-completion truth. Do not infer aggregate completion from one member's progress.**
+- [x] Response review reachable as a real destination, not only inline. **STATIC + BROWSER-AUTO: #399 delegates through existing `assignments.open(id)` + `assignments.loadReview(id)` before navigating to the current Assignments review destination; focused run `35051843361` SUCCESS.**
+- [x] People view exposes ministry-relevant directory only and excludes private notes, Transform answers, Couples content, personality/psychometric answers. **STATIC + BROWSER-AUTO: #399 projects only existing ministry-safe `id`/`label`/`role` fields; domain and Chromium privacy assertions passed on run `35051843361`. Directory failure is unavailable, never fabricated as zero.**
+- [x] Groups & Teams composes existing Journey Groups/Team Center owners; no new backend. **STATIC + BROWSER-AUTO: #399 reuses the existing Assignments target directory and existing Journey Groups/Team Center navigation owners; focused run `35051843361` SUCCESS.**
+- [x] Ordinary member denied and authorized leader allowed on current candidate using real browser evidence. **BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`, evidence-pack run `35035310862` SUCCESS; #399 reran and preserved this role boundary on its exact merge candidate.**
+
+**Phase 1 is 5/6 formally accepted at Pass 5. The aggregate assignment-lifecycle item remains open.**
 
 ## B. Phase 2 — Admin Console completion
 
@@ -45,7 +47,7 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 - [ ] Couples, Notification Center, Encouragements remaining genuine matches wired.
 - [x] Dead duplicate `src/app/media-library.js` and `src/features/media-library/index.js` retired while the live `media` route continues to resolve to the accepted Recordings/Media owner.
 - [ ] Architecture validator/docs updated atomically with dead-owner retirement where still applicable.
-- [ ] Whole-app glyph/emoji scan leaves only documented exceptions.
+- [ ] Whole-app glyph/emoji scan leaves only documented exceptions. **Current informational inventory on the #399 merge candidate reported 155 occurrences, 6 documented and 149 undocumented; green inventory status is not an exit gate.**
 - [ ] Accessibility labels remain meaningful independent of decorative images.
 
 ## D. Phase 4 — minimum real Web Push
