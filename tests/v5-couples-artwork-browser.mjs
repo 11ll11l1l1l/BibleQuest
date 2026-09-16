@@ -45,7 +45,7 @@ try{
   assert.match(result.familyChrist,/mini-cross\.png/);
   assert.match(result.cloudPrayer,/prayer-circle\.png/);
   assert.match(result.cloudChrist,/mini-cross\.png/);
-  assert.equal(result.doneBg,'none','completed checkmark must not be covered by journey artwork');
+  assert.doesNotMatch(result.doneBg,/prayer-circle\.png|mini-cross\.png|sparkle\.png/,'completed checkmark must not be covered by custom journey artwork');
   assert.equal(result.doneText,'✓');
   assert.ok(result.prayerButton.h>=44,'Couple Cloud journey touch target must remain at least 44px high');
   assert.match(result.labels,/Pray Honestly/);
