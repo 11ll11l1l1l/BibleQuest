@@ -3,6 +3,7 @@
 // are wired. Unmatched recognition concepts remain decorative glyphs rather
 // than being forced onto unrelated artwork.
 const ASSET = 'assets/progress-feature-icons.svg';
+const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const MATCHED = Object.freeze({
   consistency: Object.freeze({ symbol: 'streak', reason: 'Consistency is represented by the existing streak/flame semantic icon.' }),
@@ -31,9 +32,10 @@ export function recognitionArtwork(awardCode) {
 }
 
 export function renderRecognitionArtwork(awardCode, fallbackGlyph = '') {
-  const match = recognitionArtwork(awardCode);
+  const code = String(awardCode || '');
+  const match = recognitionArtwork(code);
   if (match) {
-    return `<svg class="bq-recognition-icon" data-recognition-art="${match.symbol}" aria-hidden="true" focusable="false" width="24" height="24"><use href="${match.asset}#${match.symbol}"></use></svg>`;
+    return `<svg class="bq-recognition-icon" data-recognition-art="${esc(match.symbol)}" aria-hidden="true" focusable="false" width="24" height="24"><use href="${esc(match.asset)}#${esc(match.symbol)}"></use></svg>`;
   }
-  return `<span class="bq-recognition-icon" data-recognition-glyph="${String(awardCode || '')}" aria-hidden="true">${String(fallbackGlyph || '')}</span>`;
+  return `<span class="bq-recognition-icon" data-recognition-glyph="${esc(code)}" aria-hidden="true">${esc(fallbackGlyph)}</span>`;
 }
