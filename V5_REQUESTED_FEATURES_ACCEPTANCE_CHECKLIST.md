@@ -15,7 +15,7 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 5): merged evidence supports **80/122 accepted items (65.6%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS2_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS3_2026-09-16.md`, `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS4_2026-09-16.md`, and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS5_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Documentation reconciliation 2026-09-16 (Pass 6): merged evidence supports **86/122 accepted items (70.5%)**. See the prior reconciliation records and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS6_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
@@ -42,13 +42,13 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 
 ## C. Phase 3 — artwork/dead-owner completion
 
-- [ ] Games matchable emoji/HUD/card-face items replaced only with genuine matching existing assets.
-- [ ] Recognition remaining genuine matches wired; unmatched codes documented rather than forced.
-- [ ] Couples, Notification Center, Encouragements remaining genuine matches wired.
+- [x] Games matchable emoji/HUD/card-face items replaced only with genuine matching existing assets. **STATIC exact-head revalidation: #427 hard-zero workflow run `35115458073` reran `tests/v5-games-artwork-certification.mjs` successfully before accepting zero undocumented glyphs.**
+- [x] Recognition remaining genuine matches wired; unmatched codes documented rather than forced. **STATIC exact-head revalidation: #427 run `35115458073` reran the focused Recognition mapping/exception contract successfully.**
+- [x] Couples, Notification Center, Encouragements remaining genuine matches wired. **STATIC exact-head revalidation: #427 run `35115458073` reran all three focused contracts successfully; documented exceptions retain independent text meaning.**
 - [x] Dead duplicate `src/app/media-library.js` and `src/features/media-library/index.js` retired while the live `media` route continues to resolve to the accepted Recordings/Media owner.
-- [ ] Architecture validator/docs updated atomically with dead-owner retirement where still applicable.
-- [ ] Whole-app glyph/emoji scan leaves only documented exceptions. **Current informational inventory on the #399 merge candidate reported 155 occurrences, 6 documented and 149 undocumented; green inventory status is not an exit gate.**
-- [ ] Accessibility labels remain meaningful independent of decorative images.
+- [x] Architecture validator/docs updated atomically with dead-owner retirement where still applicable. **The duplicate Media owner remains retired, canonical Media/Recordings routing remains protected, and #427 collision guard run `35115458236` plus Section G run `35115458103` passed on the same candidate.**
+- [x] Whole-app glyph/emoji scan leaves only documented exceptions. **#427 removed the final unused Mission glyph fields and promoted the collector to a hard-zero assertion. Exact-head run `35115458073` reported 128 occurrences, 128 documented, 0 undocumented.**
+- [x] Accessibility labels remain meaningful independent of decorative images. **Focused Games, Recognition, Couples, Notification, Encouragement, Bible World, Story Journey, Avatar Vault, semantic-UI, Scripture-reference, leaderboard, and Mission contracts were green on #427; Mission artwork remains `aria-hidden` while title/copy/action text carries meaning.**
 
 ## D. Phase 4 — minimum real Web Push
 
