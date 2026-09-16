@@ -9,6 +9,8 @@ const HOME_WEEK_COPY = Object.freeze({
     'home.week.heading': 'Keep your week connected',
     'home.week.description': 'Move through the same BibleQuest owners in one simple rhythm. Nothing here creates a second record of your service, Scripture, reflection, group, assignment, or calendar data.',
     'home.week.journeyLabel': 'This week spiritual journey',
+    'home.week.dinner.label': 'ASK AT DINNER · OPTIONAL',
+    'home.week.dinner.prompt': 'What did God show us this week, and how can we live it out together?',
     'home.week.service.title': '1 · Service',
     'home.week.service.description': 'Start from the latest confirmed service or sermon recording.',
     'home.week.service.action': 'Open service',
@@ -33,6 +35,8 @@ const HOME_WEEK_COPY = Object.freeze({
     'home.week.heading': 'Panatilihing magkakaugnay ang linggo mo',
     'home.week.description': 'Sundan ang iisang simpleng daloy gamit ang kasalukuyang BibleQuest tools. Walang panibagong kopya ng service, Kasulatan, reflection, group, assignment, o calendar data.',
     'home.week.journeyLabel': 'Espirituwal na paglalakbay ngayong linggo',
+    'home.week.dinner.label': 'PAG-USAPAN SA HAPUNAN · OPSYONAL',
+    'home.week.dinner.prompt': 'Ano ang ipinakita sa atin ng Diyos ngayong linggo, at paano natin ito maisasabuhay nang magkakasama?',
     'home.week.service.title': '1 · Service',
     'home.week.service.description': 'Magsimula sa pinakabagong kumpirmadong recording ng service o sermon.',
     'home.week.service.action': 'Buksan ang service',
@@ -78,6 +82,10 @@ function weeklyJourneyHtml(locale) {
         </a>
       </div>`).join('')}
     </div>
+    <aside class="bq-panel bq-progress-note" data-weekly-dinner-prompt aria-labelledby="weekly-dinner-prompt-label">
+      <p class="bq-eyebrow" id="weekly-dinner-prompt-label">${escapeHtml(localText(locale, 'home.week.dinner.label'))}</p>
+      <p>${escapeHtml(localText(locale, 'home.week.dinner.prompt'))}</p>
+    </aside>
   </nav>`;
 }
 

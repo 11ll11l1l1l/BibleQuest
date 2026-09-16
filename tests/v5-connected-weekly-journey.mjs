@@ -31,6 +31,22 @@ test('weekly journey presents service to Scripture to reflection to community to
   }
 });
 
+test('weekly journey includes one optional non-interactive Ask at Dinner prompt in EN and TL', () => {
+  const expected = {
+    en: ['ASK AT DINNER · OPTIONAL', 'What did God show us this week, and how can we live it out together?'],
+    tl: ['PAG-USAPAN SA HAPUNAN · OPSYONAL', 'Ano ang ipinakita sa atin ng Diyos ngayong linggo, at paano natin ito maisasabuhay nang magkakasama?']
+  };
+  for (const locale of ['en', 'tl']) {
+    const html = homeThisWeekIntroHtml(locale);
+    const prompts = html.match(/data-weekly-dinner-prompt/g) || [];
+    assert.equal(prompts.length, 1, `${locale} must render exactly one dinner prompt`);
+    assert.match(html, new RegExp(expected[locale][0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.match(html, new RegExp(expected[locale][1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    const promptHtml = html.match(/<aside[^>]*data-weekly-dinner-prompt[\s\S]*?<\/aside>/)?.[0] || '';
+    assert.doesNotMatch(promptHtml, /<a\b|<button\b|<form\b|data-weekly-journey-route=/i, `${locale} dinner prompt must remain optional content, not a scored or routed action`);
+  }
+});
+
 test('weekly journey language does not claim automatic sermon-to-passage inference', async () => {
   const source = await readFile(weekPath, 'utf8');
   assert.match(source, /Open the Bible to read the passage or context connected to what you heard/);
