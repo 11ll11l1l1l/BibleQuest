@@ -7,7 +7,7 @@ if(/localStorage|sessionStorage|authStorage/i.test(owner))fail('application owne
 if(/award|badge|recognition|\bxp\b/i.test(owner))fail('Leaderboards must not own awards, badges, recognition or XP.');
 if(!api.includes("client.rpc('bible_leaderboard'")||!api.includes("bible_congregation_members"))fail('central API must own retained leaderboard RPC and congregation directory read.');
 if(!bootstrap.includes("createLeaderboardsService")||!bootstrap.includes("leaderboardsPage"))fail('bootstrap must compose the sole leaderboard owner and view.');
-const communityLeaderboardRoute=/\{route:['"]leaderboards['"]\b/.test(community);
+const communityLeaderboardRoute=/\{route:['"]leaderboards['"],/.test(community);
 const communityRouteRenderer=community.includes('data-community-route="${action.route}"');
 const communityRouteDispatch=community.includes('onNavigate?.(button.dataset.communityRoute)');
 if(!communityLeaderboardRoute||!communityRouteRenderer||!communityRouteDispatch)fail('Community must declare, render and dispatch the verified leaderboard route.');
