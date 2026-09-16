@@ -4,7 +4,8 @@ import {chromium} from 'playwright';
 const base=process.env.BQ_BASE_URL||'http://127.0.0.1:4173';
 const expected={creation:'world-creation.png',patriarchs:'world-patriarchs.png',exodus:'world-exodus.png',kingdom:'world-kingdom.png',wisdom:'world-wisdom.png',prophets:'world-prophets.png',jesus:'world-gospels.png',church:'world-early-church.png',letters:'world-letters.png'};
 const browser=await chromium.launch({headless:true});
-const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+const page=await context.newPage();
 const errors=[];
 page.on('pageerror',error=>errors.push(String(error)));
 try{
