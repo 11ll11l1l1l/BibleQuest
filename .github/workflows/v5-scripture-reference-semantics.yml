@@ -1,0 +1,49 @@
+name: V5 Scripture reference semantics certification
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/deep-questions/index.js'
+      - 'src/features/open-review/index.js'
+      - 'src/features/story-journey/index.js'
+      - 'src/features/study/index.js'
+      - 'src/features/wisdom-situations/index.js'
+      - 'tests/v5-scripture-reference-semantics.test.mjs'
+      - 'tests/v5-whole-app-glyph-inventory.test.mjs'
+      - '.github/workflows/v5-scripture-reference-semantics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scripture-reference-semantics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Verify exact candidate
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build current application
+        run: bash build.sh
+      - name: Certify Scripture reference semantics
+        run: node --test tests/v5-scripture-reference-semantics.test.mjs
+      - name: Run whole-app glyph inventory
+        run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
+      - name: Verify source clean and exact head
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
