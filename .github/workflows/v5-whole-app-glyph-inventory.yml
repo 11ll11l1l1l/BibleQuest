@@ -7,6 +7,8 @@ on:
     paths:
       - 'src/**'
       - 'tests/v5-whole-app-glyph-inventory.test.mjs'
+      - 'tests/v5-notification-glyph-exceptions.mjs'
+      - 'tests/v5-encouragement-glyph-exceptions.mjs'
       - '.github/workflows/v5-whole-app-glyph-inventory.yml'
   workflow_dispatch:
 
@@ -27,6 +29,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Revalidate reviewed Notification exceptions
+        run: node --test tests/v5-notification-glyph-exceptions.mjs
+      - name: Revalidate reviewed Encouragement exceptions
+        run: node tests/v5-encouragement-glyph-exceptions.mjs
       - name: Run Phase 3 whole-app glyph inventory
         run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
       - name: Verify source clean
