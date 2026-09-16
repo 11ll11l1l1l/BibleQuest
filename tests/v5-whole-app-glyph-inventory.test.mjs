@@ -133,6 +133,16 @@ const documented = new Map([
   ['src/app/bible-world.js|✝', 'Bible World Gospels state token; normal presentation uses exact world-gospels.png artwork with independent visible title/books/progress text'],
   ['src/app/bible-world.js|🔥', 'Bible World Early Church state token; normal presentation uses exact world-early-church.png artwork with independent visible title/books/progress text'],
   ['src/app/bible-world.js|✉', 'Bible World Letters state token; normal presentation uses exact world-letters.png artwork with independent visible title/books/progress text'],
+
+  ['src/features/story-journey/content.js|🪨', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|🫶', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|🦁', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|🌾', 'reviewed Story Journey content-identity glyph used by two stories; each has independent title, passage label, and checkpoint Scripture reference'],
+  ['src/features/story-journey/content.js|🔥', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|👑', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|🌍', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|⛓', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
+  ['src/features/story-journey/content.js|🫧', 'reviewed Story Journey content-identity glyph; independent story title, passage label, and checkpoint Scripture reference carry meaning'],
 ]);
 
 async function walk(dir) {
