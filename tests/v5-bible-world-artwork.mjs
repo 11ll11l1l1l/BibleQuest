@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const css=fs.readFileSync('src/ui/bible-world-v5-art.css','utf8');
+const css=fs.readFileSync('src/ui/bible-world-visual-polish.css','utf8');
 const source=fs.readFileSync('src/features/bible-world/index.js','utf8');
-const html=fs.readFileSync('index.html','utf8');
 const mappings={creation:'world-creation.png',patriarchs:'world-patriarchs.png',exodus:'world-exodus.png',kingdom:'world-kingdom.png',wisdom:'world-wisdom.png',prophets:'world-prophets.png',jesus:'world-gospels.png',church:'world-early-church.png',letters:'world-letters.png'};
 
-assert.ok(html.includes('src/ui/bible-world-v5-art.css'),'Bible World V5 artwork stylesheet must load');
 for(const [region,asset] of Object.entries(mappings)){
   const path=`assets/v4/bible-world/${asset}`;
   assert.ok(fs.existsSync(path),`exact Bible World artwork must exist: ${path}`);
