@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import http from 'node:http';
-import { firefox } from 'playwright';
+import { chromium } from 'playwright';
 
 const env = process.env;
 for (const key of ['BQ_LOCAL_SUPABASE_URL', 'BQ_LOCAL_ANON_KEY', 'BQ_LOCAL_SERVICE_ROLE_KEY']) {
@@ -169,14 +169,17 @@ try {
   user = await createUser();
   webServer = await startWebOrigin();
 
-  browser = await firefox.launch({
-    headless: true,
-    firefoxUserPrefs: {
-      'dom.push.enabled': true,
-      'dom.push.connection.enabled': true,
-      'dom.webnotifications.enabled': true,
-      'dom.webnotifications.requireuserinteraction': false,
-    },
+  const chromePath = String(env.BQ_PROVIDER_CHROME_PATH || '').trim();
+  assert.ok(chromePath, 'Google Chrome path was not supplied by CI');
+  browser = await chromium.launch({
+    headless: false,
+    executablePath: chromePath,
+    args: [
+      '--enable-features=PushMessagingBackgroundMode',
+      '--disable-dev-shm-usage',
+      '--no-first-run',
+      '--no-default-browser-check',
+    ],
   });
   const context = await browser.newContext();
   await context.grantPermissions(['notifications'], { origin: 'http://127.0.0.1:4173' });
@@ -189,7 +192,7 @@ try {
     subscription: window.__subscription || null,
     error: window.__subscriptionError || '',
   }));
-  assert.equal(subscriptionState.error, '', `Firefox PushManager subscription failed: ${subscriptionState.error}`);
+  assert.equal(subscriptionState.error, '', `Google Chrome PushManager subscription failed: ${subscriptionState.error}`);
   const subscription = subscriptionState.subscription;
   const endpointUrl = new URL(subscription.endpoint);
   assert.equal(endpointUrl.protocol, 'https:', 'Real browser push endpoint must be HTTPS');
@@ -210,7 +213,7 @@ try {
     const current = await registration.pushManager.getSubscription();
     return current ? current.unsubscribe() : false;
   });
-  assert.equal(unsubscribed, true, 'Firefox did not unregister the controlled push subscription');
+  assert.equal(unsubscribed, true, 'Google Chrome did not unregister the controlled push subscription');
 
   let cleanupObserved = false;
   let last = null;
