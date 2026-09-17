@@ -1,0 +1,41 @@
+name: V5 Admin Email Change E2E Preflight
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'tests/v5-admin-email-change-e2e.mjs'
+      - 'tests/v5-admin-email-change-e2e-preflight.mjs'
+      - '.github/workflows/v5-admin-email-change-e2e-preflight.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Bind evidence to checked-out head
+        if: github.event_name == 'pull_request'
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Verify preflight fails closed without controlled inputs
+        run: |
+          if node tests/v5-admin-email-change-e2e-preflight.mjs; then
+            echo 'Preflight unexpectedly passed without controlled environment inputs.' >&2
+            exit 1
+          fi
+      - name: Verify preflight source contract
+        run: |
+          node --check tests/v5-admin-email-change-e2e-preflight.mjs
+          node --check tests/v5-admin-email-change-e2e.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('tests/v5-admin-email-change-e2e-preflight.mjs', 'utf8');
+          if (/\bfetch\s*\(/.test(source)) throw new Error('Preflight must remain network-free');
+          if (!source.includes('No network request executed')) throw new Error('Preflight must state evidence boundary');
+          console.log('PASS: static preflight remains network-free and cannot masquerade as BACKEND-E2E.');
+          NODE
