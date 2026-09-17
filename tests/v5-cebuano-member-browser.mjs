@@ -64,7 +64,7 @@ try {
     feature.mount(root);
   });
   await page.waitForSelector('.bq-community-summary');
-  assert.equal(await page.getByText('Komunidad', { exact: true }).count() >= 1, true);
+  assert.equal(await page.getByText('Magtubo nga magkuyog nga dili ibutyag ang pribadong pagtuon.', { exact: true }).count(), 1);
   assert.equal(await page.getByText('Unsay magpabiling bulag', { exact: true }).count(), 1);
   assert.equal(await page.getByText('Runtime Congregation', { exact: true }).count(), 1);
   for (const leak of ['Grow together without exposing private study.', 'What stays separate', 'Back to More', 'Assignments']) {
