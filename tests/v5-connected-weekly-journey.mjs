@@ -8,15 +8,15 @@ const expectedRoutes = ['recordings', 'reader', 'transform', 'journey-groups', '
 
 test('weekly journey is a fixed composition over existing owners only', async () => {
   assert.deepEqual([...HOME_WEEKLY_JOURNEY_ROUTES], expectedRoutes);
-  assert.deepEqual([...HOME_WEEK_LOCALES].sort(), ['en', 'tl']);
+  assert.deepEqual([...HOME_WEEK_LOCALES].sort(), ['ceb', 'en', 'tl']);
   const source = await readFile(weekPath, 'utf8');
   for (const route of expectedRoutes) assert.match(source, new RegExp(`route: '${route.replace('-', '\\-')}'`));
   assert.doesNotMatch(source, /localStorage|sessionStorage|indexedDB|createApi|supabase|fetch\(|XMLHttpRequest|new WebSocket|new EventSource/i);
   assert.doesNotMatch(source, /insert\(|update\(|delete\(|persist|repository|workflow engine/i);
 });
 
-test('weekly journey presents service to Scripture to reflection to community to action to Calendar in EN and TL', () => {
-  for (const locale of ['en', 'tl']) {
+test('weekly journey presents service to Scripture to reflection to community to action to Calendar in EN, TL, and CEB', () => {
+  for (const locale of ['en', 'tl', 'ceb']) {
     const html = homeThisWeekIntroHtml(locale);
     const indexes = expectedRoutes.map(route => html.indexOf(`data-weekly-journey-route="${route}"`));
     indexes.forEach((index, i) => assert.ok(index >= 0, `${locale} missing ${expectedRoutes[i]} weekly journey route`));
@@ -31,12 +31,13 @@ test('weekly journey presents service to Scripture to reflection to community to
   }
 });
 
-test('weekly journey includes one optional non-interactive Ask at Dinner prompt in EN and TL', () => {
+test('weekly journey includes one optional non-interactive Ask at Dinner prompt in EN, TL, and CEB', () => {
   const expected = {
     en: ['ASK AT DINNER · OPTIONAL', 'What did God show us this week, and how can we live it out together?'],
-    tl: ['PAG-USAPAN SA HAPUNAN · OPSYONAL', 'Ano ang ipinakita sa atin ng Diyos ngayong linggo, at paano natin ito maisasabuhay nang magkakasama?']
+    tl: ['PAG-USAPAN SA HAPUNAN · OPSYONAL', 'Ano ang ipinakita sa atin ng Diyos ngayong linggo, at paano natin ito maisasabuhay nang magkakasama?'],
+    ceb: ['HISGOTAN SA PANIHAPON · OPSYONAL', 'Unsay gipakita sa Dios kanato karong semanaha, ug unsaon nato kini pagkinabuhi nga magkuyog?']
   };
-  for (const locale of ['en', 'tl']) {
+  for (const locale of ['en', 'tl', 'ceb']) {
     const html = homeThisWeekIntroHtml(locale);
     const prompts = html.match(/data-weekly-dinner-prompt/g) || [];
     assert.equal(prompts.length, 1, `${locale} must render exactly one dinner prompt`);

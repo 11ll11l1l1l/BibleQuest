@@ -6,9 +6,9 @@ import { recordingsEn, recordingsTl } from '../src/content/locales/recordings.js
 
 const source = await readFile(new URL('../src/features/recordings/index.js', import.meta.url), 'utf8');
 const rows = Object.freeze([
-  Object.freeze({ id: 'featured', title: 'Sunday Worship', description: 'Grace and prayer', featured: true }),
-  Object.freeze({ id: 'study', title: 'Bible Study', description: 'The book of Romans', featured: false }),
-  Object.freeze({ id: 'youth', title: 'Youth Night', description: '', featured: true })
+  Object.freeze({ id: 'featured', title: 'Sunday Worship', description: 'Grace and prayer', featured: true, category: 'sunday-service' }),
+  Object.freeze({ id: 'study', title: 'Bible Study', description: 'The book of Romans', featured: false, category: 'bible-study' }),
+  Object.freeze({ id: 'youth', title: 'Youth Night', description: '', featured: true, category: 'kids' })
 ]);
 
 test('Recordings filter searches only loaded title and description metadata', () => {
@@ -18,11 +18,15 @@ test('Recordings filter searches only loaded title and description metadata', ()
   assert.deepEqual(rows.map(row => row.id), ['featured', 'study', 'youth'], 'filtering must not mutate canonical loaded rows');
 });
 
-test('Recordings featured filter composes with search without inventing categories', () => {
+test('Recordings featured and metadata-backed category filters compose with search', () => {
   assert.deepEqual(filterRecordingRows(rows, { featuredOnly: true }).map(row => row.id), ['featured', 'youth']);
   assert.deepEqual(filterRecordingRows(rows, { query: 'bible', featuredOnly: true }), []);
-  assert.doesNotMatch(source, /row\??\.(?:platform|category|rank(?:ing)?)/i);
-  assert.match(source, /filterRecordingRows\(rows, \{ query: searchQuery, featuredOnly \}\)/);
+  assert.deepEqual(filterRecordingRows(rows, { category: 'bible-study' }).map(row => row.id), ['study']);
+  assert.deepEqual(filterRecordingRows(rows, { category: 'sunday-service', featuredOnly: true, query: 'grace' }).map(row => row.id), ['featured']);
+  assert.deepEqual(filterRecordingRows(rows, { category: 'worship' }), [], 'title words must not be guessed as category metadata');
+  assert.match(source, /row\?\.category\s*!==\s*category/);
+  assert.match(source, /filterRecordingRows\(rows, \{ query: searchQuery, featuredOnly, category:\s*categoryFilter \}\)/);
+  assert.doesNotMatch(source, /row\??\.(?:platform|rank(?:ing)?)/i);
 });
 
 test('Recordings filter copy remains complete and localized in its scoped EN/TL dictionary', () => {
