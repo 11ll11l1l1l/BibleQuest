@@ -22,6 +22,9 @@ alter table public.bible_push_delivery_ledger enable row level security;
 revoke all on table public.bible_push_delivery_ledger from anon, authenticated;
 grant select, insert, update, delete on table public.bible_push_delivery_ledger to service_role;
 
+create index if not exists bible_push_delivery_ledger_subscription_idx
+  on public.bible_push_delivery_ledger(subscription_id);
+
 create or replace function public.bible_claim_push_delivery(
   target_notification uuid,
   target_subscription uuid
