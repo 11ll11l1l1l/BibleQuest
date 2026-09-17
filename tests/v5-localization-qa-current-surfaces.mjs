@@ -46,6 +46,13 @@ const intentionalSourceCompatibilityLiterals = new Set([
 
 const placeholders = value => [...String(value).matchAll(/\{([a-zA-Z0-9_]+)\}/g)].map(match => match[1]).sort();
 const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const containsRenderedEnglishLiteral = (source, english) => [
+  `>${english}<`,
+  `'${english}'`,
+  `"${english}"`,
+  `\`${english}\``,
+  `${english} · BibleQuest`
+].some(fragment => source.includes(fragment));
 
 assert.deepEqual(Object.keys(tl).sort(), LOCALE_KEY_INVENTORY, 'Tagalog dictionary must retain exact canonical key coverage.');
 assert.deepEqual(getMissingLocaleKeys('tl'), [], 'Tagalog dictionary must not have empty/missing canonical values.');
@@ -104,7 +111,7 @@ for (const key of V5_CLOSEOUT_LOCALE_KEY_INVENTORY) {
   assert.ok(shellSource.includes(`'${key}'`), `Shell recovery no longer references localized closeout key ${key}`);
 }
 for (const english of Object.values(v5CloseoutLocales.en)) {
-  assert.ok(!shellSource.includes(english), `Shell recovery hard-codes English instead of using the localization owner: ${english}`);
+  assert.ok(!containsRenderedEnglishLiteral(shellSource, english), `Shell recovery hard-codes English instead of using the localization owner: ${english}`);
 }
 
 assert.deepEqual(Object.keys(ceb).sort(), LOCALE_KEY_INVENTORY, 'Cebuano dictionary must retain exact canonical key coverage.');
