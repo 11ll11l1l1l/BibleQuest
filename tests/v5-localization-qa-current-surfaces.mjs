@@ -3,6 +3,8 @@ import fs from 'node:fs';
 
 const { en, LOCALE_KEY_INVENTORY } = await import('../src/content/locales/en.js');
 const { tl } = await import('../src/content/locales/tl.js');
+const { ceb } = await import('../src/content/locales/ceb.js');
+const { V5_CLOSEOUT_LOCALE_KEY_INVENTORY, v5CloseoutLocales } = await import('../src/content/locales/v5-closeout.js');
 const { t, getMissingLocaleKeys } = await import('../src/app/localization.js');
 
 const shellKeys = [
@@ -57,6 +59,17 @@ for (const key of migratedKeys) {
   }
 }
 
+for (const key of V5_CLOSEOUT_LOCALE_KEY_INVENTORY) {
+  const english = v5CloseoutLocales.en[key];
+  assert.ok(english, `Missing English V5 closeout string for ${key}`);
+  assert.ok(v5CloseoutLocales.tl[key], `Missing Tagalog V5 closeout string for ${key}`);
+  assert.ok(v5CloseoutLocales.ceb[key], `Missing Cebuano V5 closeout string for ${key}`);
+  assert.notEqual(v5CloseoutLocales.tl[key], english, `Tagalog V5 closeout key unexpectedly equals English: ${key}`);
+  assert.notEqual(v5CloseoutLocales.ceb[key], english, `Cebuano V5 closeout key unexpectedly equals English: ${key}`);
+  assert.equal(t(key, { locale: 'tl' }), v5CloseoutLocales.tl[key], `Localization owner did not expose Tagalog ${key}`);
+  assert.equal(t(key, { locale: 'ceb' }), v5CloseoutLocales.ceb[key], `Localization owner did not expose Cebuano ${key}`);
+}
+
 const fallbackDictionaries = { en, tl: { ...tl, 'home.today.open': '' } };
 assert.equal(t('home.today.open', { locale: 'tl', dictionaries: fallbackDictionaries }), en['home.today.open'], 'Empty Tagalog Home values must deterministically fall back to English.');
 
@@ -87,22 +100,16 @@ for (const key of intentionalSourceCompatibilityLiterals) {
 }
 
 const shellSource = fs.readFileSync(new URL('../src/ui/shell.js', import.meta.url), 'utf8');
-const knownNotYetMigratedRecoveryStrings = [
-  'RECOVERY',
-  'Feature could not open',
-  'The BibleQuest shell is still available.',
-  'Checking whether this is an app or connection problem…',
-  'Try again',
-  'Go Home',
-  'Recovery · BibleQuest',
-  'BibleQuest host check passed.',
-  'BibleQuest host check failed.',
-  'Connection was not tested.'
-];
-for (const text of knownNotYetMigratedRecoveryStrings) {
-  assert.ok(shellSource.includes(text), `Known not-yet-migrated recovery string changed; update localization QA classification deliberately: ${text}`);
+for (const key of V5_CLOSEOUT_LOCALE_KEY_INVENTORY) {
+  assert.ok(shellSource.includes(`'${key}'`), `Shell recovery no longer references localized closeout key ${key}`);
+}
+for (const english of Object.values(v5CloseoutLocales.en)) {
+  assert.ok(!shellSource.includes(english), `Shell recovery hard-codes English instead of using the localization owner: ${english}`);
 }
 
-console.log(`PASS V5 localization QA: ${migratedKeys.length} currently migrated Tagalog keys across shell, Transformation, and Home/Today are complete, placeholders are stable, fallback is deterministic, and canonical English UI literals do not leak through their rendered owners.`);
+assert.deepEqual(Object.keys(ceb).sort(), LOCALE_KEY_INVENTORY, 'Cebuano dictionary must retain exact canonical key coverage.');
+assert.deepEqual(getMissingLocaleKeys('ceb'), [], 'Cebuano dictionary must not have empty/missing canonical values.');
+
+console.log(`PASS V5 localization QA: ${migratedKeys.length} migrated Tagalog keys across shell, Transformation, and Home/Today are complete, placeholders are stable, fallback is deterministic, and canonical English UI literals do not leak through their rendered owners.`);
+console.log(`PASS V5 localization QA: ${V5_CLOSEOUT_LOCALE_KEY_INVENTORY.length} shell recovery strings are localized through the shared owner in English, Tagalog, and Cebuano.`);
 console.log(`INFO V5 localization QA: ${intentionalSourceCompatibilityLiterals.size} Home shortcut English literals remain explicitly classified as non-rendered compatibility metadata paired with localized labelKey owners.`);
-console.log(`INFO V5 localization QA: ${knownNotYetMigratedRecoveryStrings.length} shell recovery strings remain explicitly classified as not-yet-migrated debt; this gate does not claim full Tagalog coverage.`);
