@@ -17,6 +17,8 @@ Static evidence never substitutes for a required real backend/device gate.
 
 Candidate reconciliation 2026-09-17 (Pass 8): exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1` supports **108/122 accepted items (88.5%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS8_2026-09-17.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
+Controlled existing-project evidence update 2026-09-18: source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c` adds accepted server-delivery and Gate C evidence, bringing the checklist to **111/122 accepted items (91.0%)**. See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`. The stricter A2 non-production Admin Auth gate and Push DEVICE/FIELD gates remain open.
+
 ## A. Phase 1 — Leader Center
 
 - [x] Overview: congregation snapshot, role, member count, active-in-30-min. **STATIC + BROWSER-AUTO: merged #399; final PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc`; focused run `35051843361` SUCCESS. Member count reuses the existing ministry-authorized Assignments target directory; Presence remains the existing active-count owner.**
@@ -35,10 +37,10 @@ Candidate reconciliation 2026-09-17 (Pass 8): exact candidate `b301a617c17c21dc2
 - [x] Typed confirmation for destructive actions. **STATIC exact-current-head certification: #389.**
 - [x] Email-change/recovery action owner-only, audited, session-safe, no sensitive value logged. **STATIC security chain + session-revocation certification: #358/#365/#371/#389.**
 - [x] Non-owner/self/invalid-target cases fail correctly. **STATIC exact-current-head security certification: #389.**
-- [ ] Email change proven against a controlled real Supabase Auth account and target email restored/cleaned up. **BACKEND-E2E required.**
+- [ ] Email change proven against a controlled real Supabase Auth account and target email restored/cleaned up. **BACKEND-E2E required. Live existing-project QA execution on 2026-09-18 passed denial/self-protection/change/session-revocation/audit-privacy/restore/cleanup, but the checked-in A2 runbook requires a separate non-production Supabase origin; therefore this formal gate remains open. See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.**
 - [x] Existing Gate A field-test path is runnable against the completed UI. **Controlled non-production readiness path verified fail-closed on #389; this does not claim the real field run.**
 
-Evidence note: #338 ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. #358/#365/#371 add fail-closed session-revocation semantics, controlled email-change E2E readiness, and integrated security-chain verification. #389 executes the existing UI/security/readiness contracts together on one exact current head. The real owner email-change BACKEND-E2E requirement remains open.
+Evidence note: #338 ensures `delete_account` cannot write a false `{accountDeleted:true}` terminal audit until Supabase Auth deletion succeeds. #358/#365/#371 add fail-closed session-revocation semantics, controlled email-change E2E readiness, and integrated security-chain verification. #389 executes the existing UI/security/readiness contracts together on one exact current head. On 2026-09-18 the real deployed path was also exercised successfully with disposable QA identities in the existing project and fully restored/cleaned; because that topology does not satisfy the runbook's separate-non-production-origin rule, the formal owner email-change BACKEND-E2E requirement remains open.
 
 ## C. Phase 3 — artwork/dead-owner completion
 
@@ -57,9 +59,9 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 - [x] Explicit category opt-in/out defaults to off. **STATIC: #339.**
 - [x] Sign-out/account switch cannot leak or reuse another account's subscription context. **STATIC executable lifecycle: #339.**
 - [x] In-app Notification Center remains source of truth; no replacement notification engine was introduced by the browser lifecycle tranche.
-- [ ] Server-side delivery exists for accepted current notification types and is accepted on the final candidate.
+- [x] Server-side delivery exists for accepted current notification types and is accepted on the final candidate. **STATIC + live backend path + exact-SHA CI: candidate `7b2710fe` has the server-authoritative sender, encrypted Vault VAPID fallback, idempotency ledger, bounded recipient/category selection, and no client secret exposure. Controlled existing-project execution proved the no-subscription no-op and signed sender path; exact-SHA push security/source-contract/type-check/secret-scan workflows all passed. Automatic assignment-triggered production fanout remains deliberately undeployed pending DEVICE/FIELD evidence.**
 - [x] Same-origin notification click/deep-link behavior works. **STATIC service-worker contract: #339.**
-- [ ] Invalid/unsubscribed endpoints are cleaned up safely on appropriate real push-service responses.
+- [ ] Invalid/unsubscribed endpoints are cleaned up safely on appropriate real push-service responses. **A controlled signed HTTPS 410 exercise on 2026-09-18 removed exactly the disposable recipient subscription with zero failures and full cleanup, but it was a simulated permanent endpoint rather than a genuine browser push-provider response; formal acceptance remains open.**
 - [x] No private VAPID/service secret is shipped to the client. **Exact-head focused CI: #339.**
 - [ ] App closed + push enabled receives and opens a real notification. **DEVICE/FIELD required.**
 - [ ] Push disabled preserves pre-push behavior. **DEVICE/FIELD required for final acceptance.**
@@ -81,8 +83,8 @@ Evidence note: #338 ensures `delete_account` cannot write a false `{accountDelet
 - [x] Calendar respects active congregation with dedicated/current-candidate acceptance evidence. **STATIC + BROWSER-AUTO: #392 proves Calendar consumes the active congregation owner rather than `memberships[0]`, with Calendar browser proof on the same exact head.**
 - [x] Presence respects active congregation. **Focused exact-head Phase 6 Presence verification: #340.**
 - [x] Assignments respect active congregation. **Maintained exact-head Assignments active-congregation contract.**
-- [ ] A controlled second test congregation exists or equivalent safe test topology is established.
-- [ ] Cross-congregation isolation Gate C actually executes without leakage. **BACKEND-E2E/DEVICE-FIELD required.**
+- [x] A controlled second test congregation exists or equivalent safe test topology is established. **BACKEND fixture: 2026-09-18 QA-only second congregation with two QA identities; real congregation memberships were not repurposed.**
+- [x] Cross-congregation isolation Gate C actually executes without leakage. **BACKEND-E2E: 2026-09-18 existing-project QA run passed 14/14 bidirectional RLS assertions covering congregation visibility, member directory, assignments, and calendar; transient rows/membership changes were cleaned/restored. See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.**
 
 ## G. Phase 7 — verification debt
 
@@ -202,7 +204,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 
 - [ ] All required sections above pass on one exact candidate SHA or have evidence explicitly bound to that candidate/environment.
 - [x] Full accumulated regression green on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`. **GitHub run `35207329259` SUCCESS; all 29 candidate workflows green.**
-- [x] Required browser/backend/device evidence is recorded honestly; skipped/pending is not PASS. **Exact-SHA staging run `35207329163` passed deployed routes/state/PWA-offline/recovery; Admin Auth, Push DEVICE/FIELD, and Gate C BACKEND-E2E remain explicitly open.**
+- [x] Required browser/backend/device evidence is recorded honestly; skipped/pending is not PASS. **Exact-SHA staging run `35207329163` passed deployed routes/state/PWA-offline/recovery. Gate C BACKEND-E2E is now recorded PASS from the 2026-09-18 QA-only isolation run; the stricter A2 non-production Admin Auth gate and Push DEVICE/FIELD gates remain explicitly open.**
 - [x] V4 remains rollback until V5 is explicitly accepted.
 - [x] A5 freezes/reports the candidate but scheduled agents do not autonomously promote to `main`/production.
 - [x] `V5_ACTIVE_STATUS.md` is updated to the exact current candidate state before V6 runtime work begins.
