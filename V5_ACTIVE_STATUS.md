@@ -1,10 +1,10 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-16 JST
+Updated: 2026-09-17 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Observed integration HEAD before this documentation reconciliation: `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`
-Formal acceptance coverage after Pass 7 reconciliation: **91/122 = 74.6%**
+Exact reconciled release candidate: `b301a617c17c21dc212b74a0210b9aa6fce57ed1`
+Formal acceptance coverage after Pass 8 reconciliation: **108/122 = 88.5%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -32,15 +32,15 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 ## 3. Current reconciliation state
 
-Integration stability: **GREEN at this reconciliation**.
+Integration stability: **GREEN on exact candidate `b301a617`**.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **91/122 = 74.6%**. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate. Implementation remains materially further ahead than the formal release percentage in areas whose final backend/device evidence is still pending.
+Formal checklist coverage is **108/122 = 88.5%**. All 29 candidate workflows passed, including accumulated regression `35207329259` and deployed exact-SHA preview smoke `35207329163`. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
 
 ### Phase 1 — Leader Center
 
-Status: **PARTIAL / 5 OF 6 ACCEPTED / AGGREGATE ASSIGNMENT LIFECYCLE OPEN**.
+Status: **COMPLETE / 6 OF 6 ACCEPTED**.
 
 Accepted:
 
@@ -52,11 +52,7 @@ Accepted:
 
 Merged #399 completed these existing-owner composition gaps without adding a backend/schema/RLS/repository/router/state engine. The final merge candidate combined PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc` with then-current integration and passed Leader, collision, Section G, Presence, and glyph-inventory companions before merge `f41fb0fa53c925287cc1da0078b1175c7a7c9eea`.
 
-Still open:
-
-- authoritative aggregate published/scheduled/completed assignment split acceptance.
-
-The current Leader row does not expose authoritative aggregate completion truth. Do not infer this from one member's progress or fabricate a completion state simply to close Phase 1.
+The exact candidate adds the authoritative server-owned published/scheduled/completed projection. The accepted denominator is current active targeted recipients; aggregate completion requires a non-zero audience with every current recipient completed. Invalid or unavailable aggregates fail closed and never borrow the signed-in member's progress.
 
 ### Phase 2 — Admin Console
 
@@ -236,16 +232,17 @@ Required final actions include:
 - Ask at Dinner / PR #431: exactly one optional EN/TL weekly prompt proven on exact PR head `a7663599c2b5b9d71ee3c86d63e27f3315fd7812`; merged as `f79301a6880af2a60e5431f3725768f8bf84d98b`.
 - Recordings filter / PR #432: local search and featured-only filtering over already-loaded current-owner data, with no schema/index/metadata extension; exact PR head `d53022bc7b9ef9aff7e5f54580449fdf463f76f6`; merged as `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`.
 - Pass 7 reconciliation: **86/122 -> 91/122 (74.6%)** once this documentation-only reconciliation is merged.
+- Reconciled candidate / PR #438: both divergent V5 lines combined, stale EN/TL-only and pre-category test contracts corrected, Transform status-region collision fixed, and exact-SHA Cloudflare preview verification enabled.
+- Pass 8 reconciliation: **91/122 -> 108/122 (88.5%)** on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`; all 29 workflows green.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Preserve the remaining Leader aggregate assignment-lifecycle item as open unless authoritative current-owner completion truth can be exposed without inventing a second owner or aggregate model.
-2. Execute Admin real email-change BACKEND-E2E in an explicitly approved isolated non-production Supabase topology.
-3. Complete/accept remaining Web Push server and real-device gates.
-4. Establish the controlled second-congregation topology and execute real Gate C.
-5. Finish remaining Tagalog completeness and full Cebuano/Bisaya scope.
-6. Complete remaining P1 content-depth and Media discovery/organization requirements.
-7. Reconcile data-model discipline evidence, freeze one exact V5 release candidate, run the full accumulated evidence matrix, then make the explicit promotion decision.
+1. Establish an explicitly approved isolated BibleQuest non-production Supabase topology; the currently available second project belongs to another application.
+2. Execute Admin email-change BACKEND-E2E with cleanup/restore.
+3. Execute Web Push backend cleanup/delivery and real closed-app DEVICE/FIELD gates.
+4. Create the controlled second-congregation fixtures and execute Gate C BACKEND-E2E.
+5. Close the remaining full-surface Tagalog/Cebuano completeness and representative Cebuano browser rows.
+6. Re-run the exact candidate after evidence/bookkeeping changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
 
 ## 6. Evidence rules
 

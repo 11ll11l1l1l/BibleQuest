@@ -19,6 +19,7 @@ assert.match(owner,/function normalizeLifecycle/);
 assert.match(owner,/async function loadLifecycle/);
 assert.match(page,/data-leader-published-count/);
 assert.match(page,/data-leader-completed-count/);
-assert.match(page,/Status unavailable/);
+assert.match(page,/leaderCenter\.status\.unavailable/);
+assert.doesNotMatch(page,/Status unavailable/,'Leader lifecycle fallback must use the shared localization owner.');
 
 console.log('BibleQuest v5 authoritative assignment lifecycle static regression passed.');
