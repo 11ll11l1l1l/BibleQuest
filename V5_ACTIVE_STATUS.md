@@ -1,10 +1,10 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-17 JST
+Updated: 2026-09-18 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Exact reconciled release candidate: `b301a617c17c21dc212b74a0210b9aa6fce57ed1`
-Formal acceptance coverage after Pass 8 reconciliation: **108/122 = 88.5%**
+Runtime/source candidate under controlled-backend evidence reconciliation: `7b2710fe097b6321fef68916938017bb88bc1c7c` (later branch commits are evidence/documentation-only)
+Formal acceptance coverage after 2026-09-18 controlled evidence reconciliation: **111/122 = 91.0%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -32,11 +32,11 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 ## 3. Current reconciliation state
 
-Integration stability: **GREEN on exact candidate `b301a617`**.
+Integration stability: **GREEN on runtime/source candidate `7b2710fe`**. Temporary verification PR #444 passed all seven triggered exact-SHA checks (Cloudflare deployment, collision guard, preview smoke, accumulated browser/mobile regression, push security/type-check/secret scan, push source contract, and Section G), then closed without merge.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **108/122 = 88.5%**. All 29 candidate workflows passed, including accumulated regression `35207329259` and deployed exact-SHA preview smoke `35207329163`. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
+Formal checklist coverage is **111/122 = 91.0%**. The prior Pass 8 suite remains green; the 2026-09-18 exact-SHA verification also passed all seven triggered deployment/security/browser/regression checks on runtime/source candidate `7b2710fe`. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
 
 ### Phase 1 — Leader Center
 
@@ -60,11 +60,13 @@ Status: **6/7 ACCEPTED / REAL EMAIL-CHANGE BACKEND-E2E OPEN**.
 
 Accepted evidence covers identity/congregation/security cards, action severity, typed destructive confirmations, owner-only/privacy-safe/session-safe sensitive operations, negative cases, and the fail-closed non-production evidence path.
 
+2026-09-18 live observation: the deployed path passed non-owner denial, owner self-protection, target email mutation, fail-closed session revocation, privacy-safe audit flags, restoration, and cleanup using disposable QA identities in the existing BibleQuest Supabase project.
+
 Still open:
 
-- real controlled Supabase Auth email-change execution with target email restored/cleaned up. **BACKEND-E2E required.**
+- formal A2 email-change BACKEND-E2E under the checked-in runbook's **separate non-production Supabase origin** requirement. The operator explicitly rejected provisioning another paid Supabase project, so this gate remains open rather than weakening the evidence rule.
 
-Readiness/static evidence must not be relabeled as real backend execution.
+See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.
 
 ### Phase 3 — artwork / dead-owner completion
 
@@ -91,15 +93,18 @@ Accepted/integrated:
 - account-switch/sign-out safety;
 - account-safe subscription persistence over the RLS-backed owner;
 - Notification Center remains source of truth;
+- server-side delivery sender accepted on runtime/source candidate `7b2710fe`, including encrypted Supabase Vault VAPID fallback, service-only idempotency, bounded recipient/category selection, Deno type checks, and secret scanning;
+- controlled live sender execution proved the zero-subscription no-op and exact cleanup path for a signed HTTPS 410 simulation;
 - same-origin notification click routing;
 - no private VAPID/service secret shipped to the client.
 
 Still open:
 
-- final-candidate server-side delivery acceptance for required notification types;
-- real push-service invalid/unsubscribed endpoint cleanup evidence;
+- genuine browser push-provider invalid/unsubscribed endpoint cleanup evidence;
 - app-closed receive/open proof;
 - push-disabled final device proof.
+
+The live `bq-assignment` deployment remains intentionally unchanged, so automatic assignment-triggered push fanout to real users is still OFF.
 
 Required closed-app and disabled behavior remains **DEVICE/FIELD** work.
 
@@ -111,7 +116,7 @@ Equivalent real-browser no-network evidence satisfies the permitted acceptance p
 
 ### Phase 6 — multi-congregation
 
-Status: **CLIENT/CONSUMER ACCEPTANCE SUBSTANTIALLY COMPLETE / GATE C OPEN**.
+Status: **COMPLETE / ACCEPTED — GATE C BACKEND-E2E PASS**.
 
 Accepted:
 
@@ -121,10 +126,13 @@ Accepted:
 - Presence consumes active congregation;
 - Assignments consume active congregation.
 
-Still open:
+2026-09-18 Gate C evidence:
 
-- controlled second test congregation or equivalent isolated safe topology;
-- real cross-congregation isolation Gate C execution with no leakage. **BACKEND-E2E/DEVICE-FIELD required.**
+- a clearly labelled QA-only second congregation exists with two QA identities; real congregation memberships were not repurposed;
+- 14/14 live bidirectional RLS assertions passed for congregation visibility, member directory, assignments, and calendar;
+- transient rows and temporary membership alterations were cleaned/restored.
+
+See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.
 
 ### Phase 7 — verification debt
 
@@ -234,15 +242,14 @@ Required final actions include:
 - Pass 7 reconciliation: **86/122 -> 91/122 (74.6%)** once this documentation-only reconciliation is merged.
 - Reconciled candidate / PR #438: both divergent V5 lines combined, stale EN/TL-only and pre-category test contracts corrected, Transform status-region collision fixed, and exact-SHA Cloudflare preview verification enabled.
 - Pass 8 reconciliation: **91/122 -> 108/122 (88.5%)** on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`; all 29 workflows green.
+- 2026-09-18 controlled existing-Supabase evidence: **108/122 -> 111/122 (91.0%)** on runtime/source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c`; server delivery sender accepted and Phase 6 Gate C topology/isolation closed. Admin's stricter separate-nonprod gate and Push DEVICE/FIELD/genuine-provider cleanup remain open.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Establish an explicitly approved isolated BibleQuest non-production Supabase topology; the currently available second project belongs to another application.
-2. Execute Admin email-change BACKEND-E2E with cleanup/restore.
-3. Execute Web Push backend cleanup/delivery and real closed-app DEVICE/FIELD gates.
-4. Create the controlled second-congregation fixtures and execute Gate C BACKEND-E2E.
-5. Close the remaining full-surface Tagalog/Cebuano completeness and representative Cebuano browser rows.
-6. Re-run the exact candidate after evidence/bookkeeping changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
+1. Keep the formal Admin email-change A2 gate open unless the separate-nonproduction evidence requirement can be satisfied **without provisioning another paid Supabase project**, or the evidence policy is explicitly revised through normal project authority; do not weaken it implicitly.
+2. Complete the remaining genuine Web Push evidence: real push-provider invalidation behavior plus closed-app receive/open and push-disabled DEVICE/FIELD proof.
+3. Close the remaining full-surface Tagalog/Cebuano completeness and representative Cebuano browser rows.
+4. Re-run the exact candidate after remaining implementation/evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
 
 ## 6. Evidence rules
 
