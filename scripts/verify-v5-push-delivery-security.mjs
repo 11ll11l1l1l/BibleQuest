@@ -1,4 +1,3 @@
-// CI-only verification branch for the V5 Vault-backed push path.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
