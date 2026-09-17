@@ -174,6 +174,11 @@ try {
   browser = await chromium.launch({
     headless: false,
     executablePath: chromePath,
+    ignoreDefaultArgs: [
+      '--disable-background-networking',
+      '--disable-component-extensions-with-background-pages',
+      '--disable-component-update',
+    ],
     args: [
       '--enable-features=PushMessagingBackgroundMode',
       '--disable-dev-shm-usage',
