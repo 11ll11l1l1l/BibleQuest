@@ -78,20 +78,27 @@ jobs:
           cd /tmp/bq-v5-admin-local
           supabase functions serve bq-admin-ops > /tmp/bq-v5-admin-function.log 2>&1 &
           echo $! > /tmp/bq-v5-admin-function.pid
-          for i in {1..30}; do
-            status="$(curl -sS -o /tmp/bq-admin-ready-body -w '%{http_code}' http://127.0.0.1:54321/functions/v1/bq-admin-ops || true)"
-            if [ "$status" != "000" ] && [ "$status" != "404" ]; then
+          for i in {1..45}; do
+            status="$(curl -sS -o /tmp/bq-admin-ready-body -w '%{http_code}'               -X POST               -H "apikey: $BQ_LOCAL_ANON_KEY"               -H "Authorization: Bearer $BQ_LOCAL_ANON_KEY"               -H 'Content-Type: application/json'               --data '{}'               http://127.0.0.1:54321/functions/v1/bq-admin-ops || true)"
+            if [ "$status" = "401" ]; then
               exit 0
             fi
             sleep 1
           done
-          cat /tmp/bq-v5-admin-function.log
+          tail -n 120 /tmp/bq-v5-admin-function.log || true
           exit 1
 
       - name: Run real Admin email-change harness on isolated local backend
         run: |
           set -euo pipefail
           node tests/v5-admin-email-change-localstack-ci.mjs
+
+      - name: Show local function diagnostics on failure
+        if: failure()
+        run: |
+          if [ -f /tmp/bq-v5-admin-function.log ]; then
+            grep -Ei 'error|failed|exception|worker|boot|serve' /tmp/bq-v5-admin-function.log | tail -n 120 || true
+          fi
 
       - name: Verify exact source remains clean
         run: |
