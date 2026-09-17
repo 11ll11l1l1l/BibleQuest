@@ -30,6 +30,13 @@ on:
       - 'tests/v5-account-settings-tagalog-surface.test.mjs'
       - 'tests/v5-account-settings-tagalog-browser.mjs'
       - 'tests/v5-localization-qa-current-surfaces.mjs'
+      - 'tests/v5-localization-final-completeness.mjs'
+      - 'tests/v5-cebuano-localization.test.mjs'
+      - 'tests/v5-cebuano-member-browser.mjs'
+      - 'tests/v5-community-localization-browser.mjs'
+      - 'tests/v5-recordings-tagalog-browser.mjs'
+      - 'tests/v5-connected-weekly-journey.mjs'
+      - 'tests/v5-connected-weekly-journey-browser.mjs'
       - '.github/workflows/v5-localization-qa-current-surfaces.yml'
 
 permissions:
@@ -53,6 +60,7 @@ jobs:
       - name: Run localization completeness and integrated-surface leak QA
         run: |
           node tests/v5-localization-qa-current-surfaces.mjs
+          node --test tests/v5-localization-final-completeness.mjs tests/v5-cebuano-localization.test.mjs tests/v5-connected-weekly-journey.mjs
           node --test \
             tests/v5-localization-foundation.test.mjs \
             tests/v5-shared-shell-localization.test.mjs \
@@ -83,6 +91,10 @@ jobs:
           timeout 240s node tests/v5-assignments-tagalog-browser.mjs
           timeout 240s node tests/v5-notification-center-tagalog-browser.mjs
           timeout 240s node tests/v5-account-settings-tagalog-browser.mjs
+          timeout 240s node tests/v5-community-localization-browser.mjs
+          timeout 240s node tests/v5-recordings-tagalog-browser.mjs
+          timeout 240s node tests/v5-connected-weekly-journey-browser.mjs
+          timeout 300s node tests/v5-cebuano-member-browser.mjs
           timeout 240s node --input-type=module <<'EOF'
           import { chromium } from 'playwright';
           const browser = await chromium.launch({ headless: true });
