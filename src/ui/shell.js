@@ -110,8 +110,8 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
     },
     renderRecovery(failure, { onRetry, onHome }) {
       try { releasePage(); } catch {}
-      view.innerHTML = `<section class="bq-panel bq-recovery-panel" data-recovery-id="${escapeHtml(failure?.id || '')}" data-recovery-route="${escapeHtml(failure?.route || 'feature')}"><div role="alert"><p class="bq-eyebrow">RECOVERY</p><h1>${escapeHtml(failure?.title || 'Feature could not open')}</h1><p>${escapeHtml(failure?.message || 'The BibleQuest shell is still available.')}</p><p class="bq-recovery-diagnostic" data-recovery-diagnostic aria-live="polite">Checking whether this is an app or connection problem…</p><div class="bq-recovery-actions"><button type="button" class="bq-primary-button" data-recovery-retry>Try again</button><button type="button" class="bq-secondary-button" data-recovery-home>Go Home</button></div></div></section>`;
-      document.title = 'Recovery · BibleQuest';
+      view.innerHTML = `<section class="bq-panel bq-recovery-panel" data-recovery-id="${escapeHtml(failure?.id || '')}" data-recovery-route="${escapeHtml(failure?.route || 'feature')}"><div role="alert"><p class="bq-eyebrow">${escapeHtml(text('shell.recovery.eyebrow'))}</p><h1>${escapeHtml(failure?.title || text('shell.recovery.title'))}</h1><p>${escapeHtml(failure?.message || text('shell.recovery.message'))}</p><p class="bq-recovery-diagnostic" data-recovery-diagnostic aria-live="polite">${escapeHtml(text('shell.recovery.checking'))}</p><div class="bq-recovery-actions"><button type="button" class="bq-primary-button" data-recovery-retry>${escapeHtml(text('shell.recovery.retry'))}</button><button type="button" class="bq-secondary-button" data-recovery-home>${escapeHtml(text('shell.recovery.home'))}</button></div></div></section>`;
+      document.title = `${text('shell.recovery.pageTitle')} · BibleQuest`;
       const retryButton = view.querySelector('[data-recovery-retry]');
       const homeButton = view.querySelector('[data-recovery-home]');
       const retry = () => { void onRetry?.(); };
@@ -129,7 +129,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       if(!panel||panel.dataset.recoveryId!==id||!diagnostic?.code)return false;
       const host=panel.querySelector('[data-recovery-diagnostic]');
       if(!host)return false;
-      const connection=diagnostic.serverReachable===true?'BibleQuest host check passed.':diagnostic.serverReachable===false?'BibleQuest host check failed.':'Connection was not tested.';
+      const connection=diagnostic.serverReachable===true?text('shell.recovery.hostPassed'):diagnostic.serverReachable===false?text('shell.recovery.hostFailed'):text('shell.recovery.notTested');
       host.dataset.diagnosticReachable=String(diagnostic.serverReachable);
       host.innerHTML=`<strong data-diagnostic-code>${escapeHtml(diagnostic.code)} · ${escapeHtml(diagnostic.category)}</strong><span>${escapeHtml(diagnostic.message)}</span><small>${escapeHtml(connection)}</small>`;
       return true;
