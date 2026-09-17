@@ -44,7 +44,9 @@ jobs:
         run: |
           set -euo pipefail
           npm install --no-save playwright web-push
-          npx playwright install --with-deps firefox
+          CHROME_PATH="$(command -v google-chrome-stable || command -v google-chrome || true)"
+          test -n "$CHROME_PATH"
+          echo "BQ_PROVIDER_CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
 
       - name: Generate disposable VAPID keypair without logging private material
         run: |
@@ -118,7 +120,7 @@ jobs:
       - name: Run genuine browser provider invalidation E2E
         run: |
           set -euo pipefail
-          node tests/v5-push-provider-invalidation-e2e.mjs
+          xvfb-run -a node tests/v5-push-provider-invalidation-e2e.mjs
 
       - name: Show sender diagnostics on failure
         if: failure()
