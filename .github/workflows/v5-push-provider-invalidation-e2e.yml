@@ -1,0 +1,143 @@
+name: V5 genuine push-provider invalidation E2E
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/functions/bq-push-delivery/index.ts'
+      - 'supabase/migrations/20260914072000_push_subscriptions.sql'
+      - 'supabase/migrations/20260914212500_push_delivery_idempotency.sql'
+      - 'tests/v5-push-provider-invalidation-e2e.mjs'
+      - 'tests/fixtures/v5-push-provider-local-schema.sql'
+      - 'tests/fixtures/v5-push-provider-local-grants.sql'
+      - '.github/workflows/v5-push-provider-invalidation-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  push-provider-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install provider test dependency
+        run: |
+          set -euo pipefail
+          npm install --no-save web-push
+
+      - name: Generate disposable VAPID keypair without logging private material
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs';
+          import webpush from 'web-push';
+          const keys = webpush.generateVAPIDKeys();
+          fs.writeFileSync('/tmp/bq-vapid.env',
+            'VAPID_SUBJECT=https://mybiblequest.pages.dev\n' +
+            'VAPID_PUBLIC_KEY=' + keys.publicKey + '\n' +
+            'VAPID_PRIVATE_KEY=' + keys.privateKey + '\n',
+            { mode: 0o600 });
+          fs.writeFileSync('/tmp/bq-vapid-public', keys.publicKey, { mode: 0o600 });
+          EOF
+
+      - name: Prepare isolated minimal local Supabase project
+        run: |
+          set -euo pipefail
+          ROOT="/tmp/bq-v5-push-provider"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT"
+          cd "$ROOT"
+          supabase init
+          rm -rf supabase/migrations
+          mkdir -p supabase/migrations supabase/functions/bq-push-delivery
+          cp "$GITHUB_WORKSPACE/tests/fixtures/v5-push-provider-local-schema.sql" supabase/migrations/20260901000000_provider_test_base.sql
+          cp "$GITHUB_WORKSPACE/supabase/migrations/20260914072000_push_subscriptions.sql" supabase/migrations/
+          cp "$GITHUB_WORKSPACE/supabase/migrations/20260914212500_push_delivery_idempotency.sql" supabase/migrations/
+          cp "$GITHUB_WORKSPACE/tests/fixtures/v5-push-provider-local-grants.sql" supabase/migrations/20260914213000_provider_test_grants.sql
+          cp "$GITHUB_WORKSPACE/supabase/functions/bq-push-delivery/index.ts" supabase/functions/bq-push-delivery/index.ts
+
+      - name: Start isolated local Supabase stack
+        run: |
+          set -euo pipefail
+          cd /tmp/bq-v5-push-provider
+          supabase start
+          supabase status -o env > /tmp/bq-v5-push-local-status.env
+          set -a
+          . /tmp/bq-v5-push-local-status.env
+          set +a
+          : "${API_URL:?Supabase CLI did not expose API_URL}"
+          : "${ANON_KEY:?Supabase CLI did not expose ANON_KEY}"
+          SERVER_KEY="${SECRET_KEY:-${SERVICE_ROLE_KEY:-}}"
+          : "${SERVER_KEY:?Supabase CLI did not expose a server secret key}"
+          {
+            echo "BQ_LOCAL_SUPABASE_URL=$API_URL"
+            echo "BQ_LOCAL_ANON_KEY=$ANON_KEY"
+            echo "BQ_LOCAL_SERVICE_ROLE_KEY=$SERVER_KEY"
+          } >> "$GITHUB_ENV"
+          rm -f /tmp/bq-v5-push-local-status.env
+
+      - name: Serve exact push sender with disposable VAPID credentials
+        run: |
+          set -euo pipefail
+          cd /tmp/bq-v5-push-provider
+          supabase functions serve --env-file /tmp/bq-vapid.env bq-push-delivery > /tmp/bq-v5-push-function.log 2>&1 &
+          echo $! > /tmp/bq-v5-push-function.pid
+          for i in {1..45}; do
+            status="$(curl -sS -o /tmp/bq-push-ready-body -w '%{http_code}'               -X POST               -H "apikey: $BQ_LOCAL_SERVICE_ROLE_KEY"               -H "Authorization: Bearer $BQ_LOCAL_SERVICE_ROLE_KEY"               -H 'Content-Type: application/json'               --data '{"notificationId":"not-a-uuid"}'               http://127.0.0.1:54321/functions/v1/bq-push-delivery || true)"
+            if [ "$status" = "400" ]; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Last readiness HTTP status: ${status:-unset}"
+          test ! -s /tmp/bq-push-ready-body || cat /tmp/bq-push-ready-body
+          tail -n 120 /tmp/bq-v5-push-function.log || true
+          exit 1
+
+      - name: Run genuine browser push-provider invalidation E2E
+        run: |
+          set -euo pipefail
+          node tests/v5-push-provider-invalidation-e2e.mjs
+
+      - name: Show sender diagnostics on failure
+        if: failure()
+        run: |
+          if [ -f /tmp/bq-v5-push-function.log ]; then
+            grep -Ei 'push|error|failed|exception|worker|boot|serve' /tmp/bq-v5-push-function.log | tail -n 160 || true
+          fi
+
+      - name: Verify exact source remains clean
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code
+
+      - name: Stop isolated Supabase stack
+        if: always()
+        run: |
+          rm -f /tmp/bq-vapid.env /tmp/bq-vapid-public
+          if [ -d /tmp/bq-v5-push-provider/supabase ]; then
+            cd /tmp/bq-v5-push-provider
+            supabase stop || true
+          fi

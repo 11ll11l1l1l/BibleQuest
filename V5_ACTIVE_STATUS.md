@@ -4,7 +4,7 @@ Updated: 2026-09-18 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
 Runtime/source candidate after localization closeout: `04034d8749695d272f532ecc3e848b7ebf600a46` (later branch commits are evidence/documentation-only)
-Formal acceptance coverage after 2026-09-18 Admin isolated-local BACKEND-E2E: **118/122 = 96.7%**
+Formal acceptance coverage after 2026-09-18 genuine push-provider BACKEND-E2E: **119/122 = 97.5%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -36,7 +36,7 @@ Integration stability: **GREEN on runtime/source candidate `04034d87`**. Localiz
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **118/122 = 96.7%**. The prior backend/Gate C and localization evidence remains valid. The formal Admin email-change gate is now BACKEND-E2E PASS from isolated local Supabase run `35283763923` / job `105411397336`, with real Auth mutation, session revocation, audit validation, restoration, disposable-user cleanup, and stack teardown. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
+Formal checklist coverage is **119/122 = 97.5%**. The prior backend/Gate C, localization, and Admin evidence remains valid. The genuine push-provider invalidation gate is now BACKEND-E2E PASS from exact source head `618ce3cde7730925a3c3373a484e88987470d380`, run `35288009361` / job `105424531705`: the exact sender posted a signed/encrypted request to Mozilla Autopush, removed exactly the matching invalid assignment subscription on the terminal provider response, and preserved an unrelated calendar control row. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
 
 ### Phase 1 — Leader Center
 
@@ -80,7 +80,7 @@ On #427 exact head `bf93a9796b039203757e95dedf5315ea10e99824`, workflow run `351
 
 ### Phase 4 — minimum real Web Push
 
-Status: **IN PROGRESS**.
+Status: **IN PROGRESS / 9 OF 11 ACCEPTED — PROVIDER CLEANUP BACKEND-E2E PASS; 2 DEVICE/FIELD GATES OPEN**.
 
 Accepted/integrated:
 
@@ -91,18 +91,18 @@ Accepted/integrated:
 - Notification Center remains source of truth;
 - server-side delivery sender accepted on runtime/source candidate `7b2710fe`, including encrypted Supabase Vault VAPID fallback, service-only idempotency, bounded recipient/category selection, Deno type checks, and secret scanning;
 - controlled live sender execution proved the zero-subscription no-op and exact cleanup path for a signed HTTPS 410 simulation;
+- genuine Mozilla Autopush invalid-endpoint cleanup is BACKEND-E2E PASS on exact source head `618ce3cde7730925a3c3373a484e88987470d380`, run `35288009361` / job `105424531705`; exactly one matching assignment subscription was removed and an unrelated calendar control subscription remained;
 - same-origin notification click routing;
 - no private VAPID/service secret shipped to the client.
 
 Still open:
 
-- genuine browser push-provider invalid/unsubscribed endpoint cleanup evidence;
-- app-closed receive/open proof;
-- push-disabled final device proof.
+- app-closed receive/open proof — DEVICE/FIELD;
+- push-disabled final device proof — DEVICE/FIELD.
 
 The live `bq-assignment` deployment remains intentionally unchanged, so automatic assignment-triggered push fanout to real users is still OFF.
 
-Required closed-app and disabled behavior remains **DEVICE/FIELD** work.
+Required closed-app and disabled behavior remains **DEVICE/FIELD** work. Provider-response cleanup is no longer a blocker. See `docs/v5/V5_PUSH_PROVIDER_INVALIDATION_E2E_2026-09-18.md`.
 
 ### Phase 5 — baseline offline Scripture
 
@@ -235,11 +235,12 @@ Required final actions include:
 - 2026-09-18 controlled existing-Supabase evidence: **108/122 -> 111/122 (91.0%)** on runtime/source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c`; server delivery sender accepted and Phase 6 Gate C topology/isolation closed. Admin's stricter separate-nonprod gate and Push DEVICE/FIELD/genuine-provider cleanup remain open.
 - 2026-09-18 localization closeout: **111/122 -> 117/122 (95.9%)** on runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46`; final Tagalog completeness and all four Cebuano/Bisaya acceptance items closed. Verification PR #445 passed localization, collision, Section G, preview, Cloudflare, and accumulated regression companions and was closed without merge.
 - 2026-09-18 isolated-local Admin evidence: **117/122 -> 118/122 (96.7%)**; run `35283763923` / job `105411397336` passed the real email-change BACKEND-E2E against a disposable loopback Supabase CLI stack with restoration and cleanup.
+- 2026-09-18 genuine push-provider evidence: **118/122 -> 119/122 (97.5%)**; run `35288009361` / job `105424531705` passed terminal invalid-endpoint cleanup against Mozilla Autopush while preserving an unrelated control subscription.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Complete the remaining genuine Web Push evidence: real push-provider invalidation behavior plus closed-app receive/open and push-disabled DEVICE/FIELD proof.
-2. Re-run the exact candidate after the remaining evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
+1. Complete the two remaining Web Push DEVICE/FIELD gates: app closed + push enabled receives/opens a real notification, and push disabled preserves pre-push behavior.
+2. Re-run the exact candidate after those device results are bound, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
 
 ## 6. Evidence rules
 
