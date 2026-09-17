@@ -29,6 +29,8 @@ assert.ok(/leader-dashboard['"][,:\s]*[\s\S]{0,200}available:true/.test(ministry
 
 const page = read('src/features/leader-center/index.js');
 assert.ok(page.includes('data-leader-center-denied'), 'Leader Center must render an explicit denied state for non-ministry roles, not a blank/silent failure.');
-assert.ok(page.includes('enforced by the same server-side role check'), 'The denied state must be honest that hiding is not the real authorization boundary.');
+assert.ok(page.includes("tr('leaderCenter.denied.description')"), 'The denied state must use the shared localized authorization explanation.');
+const english = read('src/content/locales/en.js');
+assert.ok(english.includes("'leaderCenter.denied.description'") && english.includes('Server-side role checks remain authoritative.'), 'The localized denied state must be honest that hiding is not the real authorization boundary.');
 
 console.log('BibleQuest v5 Leader Center static contract passed.');
