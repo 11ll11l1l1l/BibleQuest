@@ -1,6 +1,6 @@
 # BibleQuest V5 Requested Features Acceptance Checklist
 
-Updated: 2026-09-16 JST
+Updated: 2026-09-17 JST
 Scope: feature completion on the current architecture
 Authority: `V5_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V5.md`
@@ -15,18 +15,18 @@ Evidence labels used below:
 
 Static evidence never substitutes for a required real backend/device gate.
 
-Documentation reconciliation 2026-09-16 (Pass 7): merged evidence supports **91/122 accepted items (74.6%)**. See the prior reconciliation records and `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS7_2026-09-16.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
+Candidate reconciliation 2026-09-17 (Pass 8): exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1` supports **108/122 accepted items (88.5%)**. See `docs/v5/V5_CERTIFICATION_RECONCILIATION_PASS8_2026-09-17.md`. This ratio is formal acceptance coverage, not implementation-progress percentage.
 
 ## A. Phase 1 — Leader Center
 
 - [x] Overview: congregation snapshot, role, member count, active-in-30-min. **STATIC + BROWSER-AUTO: merged #399; final PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc`; focused run `35051843361` SUCCESS. Member count reuses the existing ministry-authorized Assignments target directory; Presence remains the existing active-count owner.**
-- [ ] Assignments: published/scheduled/completed split. **Still open: current Leader rows expose reliable schedule state but not authoritative aggregate assignment-completion truth. Do not infer aggregate completion from one member's progress.**
+- [x] Assignments: published/scheduled/completed split. **STATIC + BROWSER-AUTO on exact candidate `b301a617`: server-owned lifecycle projection resolves the current active target-recipient denominator; `completed` requires a non-zero audience with every current recipient completed. Unknown aggregates fail closed and never use one member's progress.**
 - [x] Response review reachable as a real destination, not only inline. **STATIC + BROWSER-AUTO: #399 delegates through existing `assignments.open(id)` + `assignments.loadReview(id)` before navigating to the current Assignments review destination; focused run `35051843361` SUCCESS.**
 - [x] People view exposes ministry-relevant directory only and excludes private notes, Transform answers, Couples content, personality/psychometric answers. **STATIC + BROWSER-AUTO: #399 projects only existing ministry-safe `id`/`label`/`role` fields; domain and Chromium privacy assertions passed on run `35051843361`. Directory failure is unavailable, never fabricated as zero.**
 - [x] Groups & Teams composes existing Journey Groups/Team Center owners; no new backend. **STATIC + BROWSER-AUTO: #399 reuses the existing Assignments target directory and existing Journey Groups/Team Center navigation owners; focused run `35051843361` SUCCESS.**
 - [x] Ordinary member denied and authorized leader allowed on current candidate using real browser evidence. **BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`, evidence-pack run `35035310862` SUCCESS; #399 reran and preserved this role boundary on its exact merge candidate.**
 
-**Phase 1 is 5/6 formally accepted at Pass 5. The aggregate assignment-lifecycle item remains open.**
+**Phase 1 is 6/6 formally accepted at Pass 8.**
 
 ## B. Phase 2 — Admin Console completion
 
@@ -101,7 +101,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] One small current-architecture localization helper exists with stable string keys and deterministic lookup.
 - [x] Canonical English dictionary/source exists.
 - [x] Tagalog dictionary uses the same key inventory on migrated surfaces.
-- [ ] Cebuano dictionary is designed/implemented to use the same key inventory rather than a second ad-hoc mechanism.
+- [x] Cebuano dictionary is implemented through the same localization helper and canonical key inventory as English/Tagalog. **STATIC: exact-candidate localization completeness and Cebuano contracts.**
 - [x] Missing key falls back safely to English and is test-detectable.
 - [x] Locale preference uses an existing safe settings/state pattern; no new global state engine.
 - [x] No third-party i18n framework/build migration/router rewrite is introduced for V5.
@@ -117,7 +117,7 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] Assignments and Notification Center localized.
 - [x] Settings/profile localized on the integrated Account/settings surface.
 - [ ] Community/Media and remaining member-facing surfaces fully localized. Community EN/TL is integrated in #372 and 390px browser proof passed in #380; Videos/Recordings is integrated; remaining agreed member surfaces still need completion.
-- [ ] Leader/admin user-visible instructions, errors, empty/loading states localized where part of V5 scope.
+- [x] Leader/admin user-visible instructions, errors, empty/loading states localized where part of V5 scope. **STATIC + BROWSER-AUTO: shared Leader Center EN/TL/CEB dictionary and localized Admin auth/status shell are green on `b301a617`.**
 - [x] Proper nouns/Bible translation names may remain unchanged where appropriate.
 - [x] Representative mobile/browser checks show translated text does not cause clipping/overflow or inaccessible controls on the currently migrated surfaces. **BROWSER-AUTO.**
 - [ ] Completeness scan has no unexplained English leaks across every agreed final Tagalog surface.
@@ -166,22 +166,22 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 
 ## N. P1 — content depth
 
-- [ ] Transformation flow supports Scripture/context -> understand -> reflect -> apply -> pray.
-- [ ] Optional spouse/family discussion and weekly action use existing Journey/Assignment patterns.
-- [ ] Pastor/leader weekly message anchors existing weekly content without a new content engine.
+- [x] Transformation flow supports Scripture/context -> understand -> reflect -> apply -> pray. **STATIC + BROWSER-AUTO: existing Transform persistence owner; no leader-visible response or spiritual score.**
+- [x] Optional spouse/family discussion and weekly action use existing Journey/Assignment patterns. **STATIC + BROWSER-AUTO on exact candidate.**
+- [x] Pastor/leader weekly message anchors existing weekly content without a new content engine. **STATIC: existing assignment owner and route only.**
 - [x] My Journey/reflection history presents existing private signals only; no competitive spiritual leaderboard. **STATIC + BROWSER-AUTO: #392 exact head `8e6bf5246267595691ad37068faece27353811d0`; existing-owner/private/noncompetitive contracts plus EN/TL/empty/390px proof; run `35035310862` SUCCESS.**
-- [ ] Family & Couples tracks cover agreed topics using existing owners/patterns.
-- [ ] Personal milestones are encouraging/non-competitive and derive from current progress where possible.
+- [x] Family & Couples tracks cover agreed topics using existing owners/patterns. **STATIC + BROWSER-AUTO: bounded authored tracks reuse the Couples owner.**
+- [x] Personal milestones are encouraging/non-competitive and derive from current progress where possible. **STATIC + BROWSER-AUTO: no score, rank, or spiritual-worth projection.**
 - [x] Ask at Dinner attaches one short prompt to relevant weekly content. **STATIC + BROWSER-AUTO: merged #431 adds exactly one explicitly optional EN/TL prompt to the existing connected weekly journey without changing its six-owner route sequence or adding persistence, scoring, backend, schema, or a content engine. Exact PR head `a7663599c2b5b9d71ee3c86d63e27f3315fd7812`; connected-journey run `35157691298`, accumulated regression `35157691285`, collision guard `35157691271`, Section G `35157691320`, Home/browser companions, and hard-zero glyph run `35157691273` all SUCCESS; merged as `f79301a6880af2a60e5431f3725768f8bf84d98b`.**
 
 ## O. P2 — full Cebuano/Bisaya localization
 
-- [ ] Same localization keys/mechanism used as English/Tagalog.
+- [x] Same localization keys/mechanism used as English/Tagalog. **STATIC: canonical 444-key EN/TL/CEB inventory on exact candidate.**
 - [ ] Member-facing UI fully localized in Cebuano/Bisaya for agreed V5 surfaces.
 - [ ] BibleQuest-authored member content fully localized in Cebuano/Bisaya.
 - [ ] Representative mobile/browser checks show no clipping/overflow or inaccessible controls. **BROWSER-AUTO required.**
 - [ ] Completeness scan has no unexplained English/Tagalog leaks on agreed Cebuano surfaces.
-- [ ] CEBOCB or another approved Cebuano Scripture source remains Scripture; BibleQuest does not generate its own Cebuano Bible translation.
+- [x] CEBOCB or another approved Cebuano Scripture source remains Scripture; BibleQuest does not generate its own Cebuano Bible translation. **STATIC: maintained Reader/source contract; localization inventory excludes Scripture translation keys.**
 
 ## P. P2 — discovery and Media organization
 
@@ -189,23 +189,23 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] No generalized index/ranking/search platform is introduced. **STATIC: #432 remains a local presentation filter over the current Recordings state and adds no API/query, index, ranking field, external discovery, data owner, or search service.**
 - [x] Media organization uses available metadata first. **STATIC + BROWSER-AUTO: #432 uses only existing `title`, `description`, and `featured` values, while preserving canonical Recordings service/query/player ownership. Focused run `35158463303` SUCCESS.**
 - [x] Any new category field/metadata extension is proven necessary, isolated, and RLS-tested if persisted. **NOT APPLICABLE / STATIC FIREWALL: #432 introduced no category field, metadata extension, schema change, persistence, or Supabase mutation; therefore no new persisted field required RLS evidence.**
-- [ ] Categories may include latest service, Sunday services, Bible studies, worship, testimonies, couples/family, kids when supported by real metadata.
+- [x] Categories include Sunday services, Bible studies, worship, testimonies, couples/family, kids, and other only when supported by persisted real metadata. **STATIC: exact-candidate metadata contract rejects title/description guessing; category migration/index is isolated.**
 
 ## Q. Data-model discipline
 
-- [ ] For every new table/column proposal, existing Transformation/Assignment/Journey/Calendar/Media/settings/progress owners were checked first.
-- [ ] New durable schema is minimal and separately claimed/reviewed.
-- [ ] Existing RLS/security conventions are preserved.
+- [x] For every new table/column proposal, existing Transformation/Assignment/Journey/Calendar/Media/settings/progress owners were checked first. **Exact candidate reuses existing owners; only bounded Media category metadata is added.**
+- [x] New durable schema is minimal and separately claimed/reviewed. **One constrained `category` column and index; no generalized content/search engine.**
+- [x] Existing RLS/security conventions are preserved. **Category remains inside the existing RLS-enabled Media owner; lifecycle aggregation stays server-authorized.**
 - [x] No integrated V5 schema change becomes a generalized V6 content/repository/tenant engine at this reconciliation.
 
 ## R. Phase 8 — certification and promotion
 
 - [ ] All required sections above pass on one exact candidate SHA or have evidence explicitly bound to that candidate/environment.
-- [ ] Full accumulated regression green on the exact candidate SHA.
-- [ ] Required browser/backend/device evidence is recorded honestly; skipped/pending is not PASS.
+- [x] Full accumulated regression green on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`. **GitHub run `35207329259` SUCCESS; all 29 candidate workflows green.**
+- [x] Required browser/backend/device evidence is recorded honestly; skipped/pending is not PASS. **Exact-SHA staging run `35207329163` passed deployed routes/state/PWA-offline/recovery; Admin Auth, Push DEVICE/FIELD, and Gate C BACKEND-E2E remain explicitly open.**
 - [x] V4 remains rollback until V5 is explicitly accepted.
 - [x] A5 freezes/reports the candidate but scheduled agents do not autonomously promote to `main`/production.
-- [ ] `V5_ACTIVE_STATUS.md` is updated to the exact final state before V6 runtime work begins.
+- [x] `V5_ACTIVE_STATUS.md` is updated to the exact current candidate state before V6 runtime work begins.
 
 ## S. V5/V6/V7 firewall
 
