@@ -2,10 +2,15 @@ import { storage } from '../core/storage.js';
 import { en, LOCALE_KEY_INVENTORY } from '../content/locales/en.js';
 import { tl } from '../content/locales/tl.js';
 import { ceb } from '../content/locales/ceb.js';
+import { v5CloseoutLocales } from '../content/locales/v5-closeout.js';
 
 const STORAGE_KEY = 'locale';
 const DEFAULT_LOCALE = 'en';
-const dictionaries = Object.freeze({ en, tl, ceb });
+const dictionaries = Object.freeze({
+  en: Object.freeze({ ...en, ...v5CloseoutLocales.en }),
+  tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl }),
+  ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb })
+});
 const supportedLocales = Object.freeze(Object.keys(dictionaries));
 
 function normalizeLocale(value) {
