@@ -88,11 +88,12 @@ jobs:
           set +a
           : "${API_URL:?Supabase CLI did not expose API_URL}"
           : "${ANON_KEY:?Supabase CLI did not expose ANON_KEY}"
-          : "${SERVICE_ROLE_KEY:?Supabase CLI did not expose SERVICE_ROLE_KEY}"
+          SERVER_KEY="${SECRET_KEY:-${SERVICE_ROLE_KEY:-}}"
+          : "${SERVER_KEY:?Supabase CLI did not expose a server secret key}"
           {
             echo "BQ_LOCAL_SUPABASE_URL=$API_URL"
             echo "BQ_LOCAL_ANON_KEY=$ANON_KEY"
-            echo "BQ_LOCAL_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "BQ_LOCAL_SERVICE_ROLE_KEY=$SERVER_KEY"
           } >> "$GITHUB_ENV"
           rm -f /tmp/bq-v5-push-local-status.env
 
@@ -109,6 +110,8 @@ jobs:
             fi
             sleep 1
           done
+          echo "Last readiness HTTP status: ${status:-unset}"
+          test ! -s /tmp/bq-push-ready-body || cat /tmp/bq-push-ready-body
           tail -n 120 /tmp/bq-v5-push-function.log || true
           exit 1
 
