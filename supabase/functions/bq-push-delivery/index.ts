@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
 import webpush from 'npm:web-push@3.6.7';
+import postgres from 'npm:postgres@3.4.7';
 
 type Db = ReturnType<typeof db>;
 type PushCategory = 'assignment' | 'ministry' | 'recognition' | 'calendar' | 'media';
@@ -85,10 +86,46 @@ function routeFor(category: PushCategory) {
   return '/#/notification-center';
 }
 
-function vapid() {
-  const subject = (Deno.env.get('VAPID_SUBJECT') || '').trim();
-  const publicKey = (Deno.env.get('VAPID_PUBLIC_KEY') || '').trim();
-  const privateKey = (Deno.env.get('VAPID_PRIVATE_KEY') || '').trim();
+async function vaultVapidConfig() {
+  const connectionString = Deno.env.get('SUPABASE_DB_URL') || '';
+  if (!connectionString) return null;
+
+  const sql = postgres(connectionString, { prepare: false, max: 1 });
+  try {
+    const rows = await sql`
+      select decrypted_secret
+      from vault.decrypted_secrets
+      where name = 'bq_vapid_config'
+      limit 1
+    `;
+    const raw = String(rows?.[0]?.decrypted_secret || '').trim();
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return {
+      subject: String(parsed?.subject || '').trim(),
+      publicKey: String(parsed?.publicKey || '').trim(),
+      privateKey: String(parsed?.privateKey || '').trim(),
+    };
+  } catch {
+    console.error('VAPID Vault lookup failed');
+    return null;
+  } finally {
+    await sql.end({ timeout: 1 }).catch(() => {});
+  }
+}
+
+async function vapid() {
+  let subject = (Deno.env.get('VAPID_SUBJECT') || '').trim();
+  let publicKey = (Deno.env.get('VAPID_PUBLIC_KEY') || '').trim();
+  let privateKey = (Deno.env.get('VAPID_PRIVATE_KEY') || '').trim();
+
+  if (!subject || !publicKey || !privateKey) {
+    const stored = await vaultVapidConfig();
+    subject ||= stored?.subject || '';
+    publicKey ||= stored?.publicKey || '';
+    privateKey ||= stored?.privateKey || '';
+  }
+
   if (!subject || !publicKey || !privateKey) throw new Error('Web Push environment incomplete');
   if (!/^mailto:|^https:\/\//i.test(subject)) throw new Error('VAPID_SUBJECT must be mailto: or https:');
   webpush.setVapidDetails(subject, publicKey, privateKey);
@@ -253,7 +290,7 @@ Deno.serve(async (req: Request) => {
     const rows = subscriptions.data || [];
     if (!rows.length) return response({ ok: true, category, attempted: 0, delivered: 0, removed: 0, failed: 0, skipped: 0 });
 
-    vapid();
+    await vapid();
     const payload = JSON.stringify({
       title: String(notification.title || 'BibleQuest').slice(0, 120),
       body: String(notification.body || '').slice(0, 240),
