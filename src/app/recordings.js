@@ -1,4 +1,5 @@
 const YOUTUBE_ID=/^[A-Za-z0-9_-]{6,20}$/;
+export const RECORDING_CATEGORIES=Object.freeze(['sunday-service','bible-study','worship','testimony','kids','family-couples','other']);
 const cloneRows=rows=>Object.freeze(rows.map(row=>Object.freeze({...row})));
 const snapshot=state=>Object.freeze({...state,rows:cloneRows(state.rows),latestService:state.latestService?Object.freeze({...state.latestService}):null});
 const youtubeIdFromUrl=value=>{
@@ -19,7 +20,9 @@ function normalizeRow(row){
   if(!row||typeof row!=='object')return null;
   const id=String(row.id||'').trim(),storedId=String(row.youtube_id||row.youtubeId||'').trim(),derivedId=youtubeIdFromUrl(row.youtube_url||row.youtubeUrl),youtubeId=YOUTUBE_ID.test(storedId)?storedId:derivedId,title=String(row.title||'').trim();
   if(!id||!YOUTUBE_ID.test(youtubeId)||!title)return null;
-  return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),createdAt:String(row.created_at||row.createdAt||'')};
+  const rawCategory=String(row.category||'other');
+  const category=RECORDING_CATEGORIES.includes(rawCategory)?rawCategory:'other';
+  return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),category,createdAt:String(row.created_at||row.createdAt||'')};
 }
 
 function latestConfirmedService(rows){
@@ -63,7 +66,7 @@ export function createRecordingsService({media,audio,session,congregation}){
   function leave(){audio.unload();return set({selectedId:null,error:''})}
   function dispose(){audio.dispose();state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null}}
 
-  async function addVideo({title,description='',youtubeUrl,congregationId,featured=false}={}){
+  async function addVideo({title,description='',youtubeUrl,congregationId,featured=false,category='other'}={}){
     const sessionState=session.getState?.();
     if(!sessionState?.authenticated||!sessionState?.user?.id)throw new Error('Sign in to add a video.');
     let id=String(congregationId||'');
@@ -74,7 +77,8 @@ export function createRecordingsService({media,audio,session,congregation}){
     if(state.rows.some(row=>row.youtubeId===youtubeId))throw new Error('This YouTube recording is already in Videos.');
     const cleanTitle=String(title||'').trim();
     if(cleanTitle.length<2)throw new Error('Enter a title for this video.');
-    const created=await media.createVideo({congregation_id:id,created_by:sessionState.user.id,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured)});
+    const cleanCategory=RECORDING_CATEGORIES.includes(String(category))?String(category):'other';
+    const created=await media.createVideo({congregation_id:id,created_by:sessionState.user.id,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured),category:cleanCategory});
     await load();
     return created;
   }

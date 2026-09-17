@@ -3,11 +3,13 @@ import { recordingsDictionaries } from '../../content/locales/recordings.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const normalizeSearch = value => String(value ?? '').trim().toLocaleLowerCase();
+export const RECORDING_CATEGORY_LABELS=Object.freeze({'sunday-service':'Sunday services','bible-study':'Bible studies',worship:'Worship',testimony:'Testimonies',kids:'Kids','family-couples':'Family & couples',other:'Other'});
 
-export function filterRecordingRows(rows, { query = '', featuredOnly = false } = {}) {
+export function filterRecordingRows(rows, { query = '', featuredOnly = false, category = 'all' } = {}) {
   const needle = normalizeSearch(query);
   return (Array.isArray(rows) ? rows : []).filter(row => {
     if (featuredOnly && !row?.featured) return false;
+    if(category!=='all'&&row?.category!==category)return false;
     if (!needle) return true;
     return normalizeSearch(`${row?.title || ''} ${row?.description || ''}`).includes(needle);
   });
@@ -26,6 +28,7 @@ export function filterRecordingRows(rows, { query = '', featuredOnly = false } =
 function videoCard(row, isSelected, tr) {
   return `<button type="button" class="bq-video-card${isSelected ? ' is-selected' : ''}" data-video-select="${escapeHtml(row.id)}">
     ${row.featured ? `<span class="bq-status-badge bq-status-badge--info">${escapeHtml(tr('recordings.featured'))}</span>` : ''}
+    <span class="bq-status-badge">${escapeHtml(tr(`recordings.category.${row.category||'other'}`))}</span>
     <b>${escapeHtml(row.title)}</b>${row.description ? `<small>${escapeHtml(row.description)}</small>` : ''}
   </button>`;
 }
@@ -56,6 +59,7 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
       let correctionBusy = false;
       let searchQuery = '';
       let featuredOnly = false;
+      let categoryFilter = 'all';
 
       const message = text => { const node = host.querySelector('[data-video-message]'); if (node) node.textContent = text || ''; };
 
@@ -66,13 +70,14 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
           <label>${escapeHtml(tr('recordings.curator.title'))}<input type="text" name="title" maxlength="160" required></label>
           <label>${escapeHtml(tr('recordings.curator.youtubeLink'))}<input type="url" name="youtubeUrl" placeholder="https://www.youtube.com/watch?v=... or /live/..." required></label>
           <label>${escapeHtml(tr('recordings.curator.descriptionLabel'))}<textarea name="description" maxlength="2500" rows="2"></textarea></label>
+          <label>${escapeHtml(tr('recordings.category.label'))}<select name="category">${Object.keys(RECORDING_CATEGORY_LABELS).map(value=>`<option value="${escapeHtml(value)}">${escapeHtml(tr(`recordings.category.${value}`))}</option>`).join('')}</select></label>
           <label><input type="checkbox" name="featured"> ${escapeHtml(tr('recordings.curator.feature'))}</label>
           <button type="submit" class="bq-primary-button">${escapeHtml(tr('recordings.curator.submit'))}</button>
         </form>` : ''}
         <p class="bq-form-message" data-video-message role="status"></p>
       </section>`;
 
-      const filteredRows = rows => filterRecordingRows(rows, { query: searchQuery, featuredOnly });
+      const filteredRows = rows => filterRecordingRows(rows, { query: searchQuery, featuredOnly, category:categoryFilter });
       const filterStatus = rows => tr('recordings.filter.results', { count: filteredRows(rows).length });
       const listHtml = (rows, selectedId) => {
         const visibleRows = filteredRows(rows);
@@ -84,6 +89,7 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         <div class="bq-account-form">
           <label>${escapeHtml(tr('recordings.filter.searchLabel'))}<input type="search" maxlength="120" value="${escapeHtml(searchQuery)}" placeholder="${escapeHtml(tr('recordings.filter.searchPlaceholder'))}" data-recordings-search></label>
           <label>${escapeHtml(tr('recordings.filter.scopeLabel'))}<select data-recordings-feature-filter><option value="all"${featuredOnly ? '' : ' selected'}>${escapeHtml(tr('recordings.filter.all'))}</option><option value="featured"${featuredOnly ? ' selected' : ''}>${escapeHtml(tr('recordings.filter.featured'))}</option></select></label>
+          <label>${escapeHtml(tr('recordings.category.label'))}<select data-recordings-category-filter><option value="all">${escapeHtml(tr('recordings.category.all'))}</option>${Object.keys(RECORDING_CATEGORY_LABELS).map(value=>`<option value="${escapeHtml(value)}"${categoryFilter===value?' selected':''}>${escapeHtml(tr(`recordings.category.${value}`))}</option>`).join('')}</select></label>
         </div>
         <p data-recordings-filter-status role="status" aria-live="polite">${escapeHtml(filterStatus(rows))}</p>
       </section>`;
@@ -182,7 +188,8 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
             title: data.get('title'),
             youtubeUrl: data.get('youtubeUrl'),
             description: data.get('description'),
-            featured: data.get('featured') === 'on'
+            featured: data.get('featured') === 'on',
+            category: data.get('category')
           });
           curatorOpen = false;
           render(recordings.getState());
@@ -199,6 +206,7 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         if (!target) return;
         if (target.matches('[data-recordings-search]')) searchQuery = target.value;
         else if (target.matches('[data-recordings-feature-filter]')) featuredOnly = target.value === 'featured';
+        else if (target.matches('[data-recordings-category-filter]')) categoryFilter = target.value;
         else return;
         refreshFilteredList(recordings.getState());
       };

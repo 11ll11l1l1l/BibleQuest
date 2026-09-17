@@ -55,6 +55,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
   const latestService = recordings?.getLatestService?.();
   const transformationState = transform?.getState?.();
   const notificationState = notifications?.snapshot?.();
+  const leaderAnchor=(assignments?.snapshot?.()?.assignments||[]).find(row=>row?.progress?.status!=='completed'&&row?.dueState!=='scheduled')||null;
   const transformationDetail = transformationState?.spiritual?.result ? tx('transform.basic.viewReflection') : tx('transform.mode.prompt');
   const nextEventDetail = eventSummary(nextEvent) || homeTx('home.composition.noUpcomingEvents');
   const continueReadingDetail = continueReading || homeTx('home.composition.noContinueReading');
@@ -81,7 +82,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </div>
       </section>
       <section class="bq-home-week" data-home-this-week>
-        ${homeThisWeekIntroHtml(locale)}
+        ${homeThisWeekIntroHtml(locale,{leaderAnchor})}
         <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
           <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
           <span class="bq-home-congregation-copy"><span class="bq-eyebrow">${escapeHtml(tx('home.congregation.eyebrow'))}</span><b>${escapeHtml(tx('home.congregation.heading'))}</b><small data-home-congregation-caption>${escapeHtml(tx('home.congregation.joinCaption'))}</small><small data-home-active-count></small></span>

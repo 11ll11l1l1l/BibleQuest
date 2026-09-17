@@ -19,6 +19,15 @@ export const recordingsEn = Object.freeze({
   'recordings.filter.scopeLabel': 'Show',
   'recordings.filter.all': 'All videos',
   'recordings.filter.featured': 'Featured only',
+  'recordings.category.label': 'Category',
+  'recordings.category.all': 'All categories',
+  'recordings.category.sunday-service': 'Sunday services',
+  'recordings.category.bible-study': 'Bible studies',
+  'recordings.category.worship': 'Worship',
+  'recordings.category.testimony': 'Testimonies',
+  'recordings.category.kids': 'Kids',
+  'recordings.category.family-couples': 'Family & couples',
+  'recordings.category.other': 'Other',
   'recordings.filter.results': '{count} videos shown',
   'recordings.filter.empty.heading': 'No matching videos',
   'recordings.filter.empty.description': 'Try a different search or show all videos.',
@@ -67,6 +76,15 @@ export const recordingsTl = Object.freeze({
   'recordings.filter.scopeLabel': 'Ipakita',
   'recordings.filter.all': 'Lahat ng video',
   'recordings.filter.featured': 'Itinatampok lamang',
+  'recordings.category.label': 'Kategorya',
+  'recordings.category.all': 'Lahat ng kategorya',
+  'recordings.category.sunday-service': 'Mga Sunday service',
+  'recordings.category.bible-study': 'Mga pag-aaral ng Biblia',
+  'recordings.category.worship': 'Pagsamba',
+  'recordings.category.testimony': 'Mga Patotoo',
+  'recordings.category.kids': 'Mga Bata',
+  'recordings.category.family-couples': 'Pamilya at Mag-asawa',
+  'recordings.category.other': 'Iba pa',
   'recordings.filter.results': '{count} video ang ipinapakita',
   'recordings.filter.empty.heading': 'Walang katugmang video',
   'recordings.filter.empty.description': 'Subukan ang ibang paghahanap o ipakita ang lahat ng video.',
@@ -94,5 +112,11 @@ export const recordingsTl = Object.freeze({
   'recordings.addError': 'Hindi maidagdag ang video na iyon. Mga leader, pastor, at admin lamang ang maaaring magdagdag ng video.'
 });
 
+export const recordingsCeb = Object.freeze({
+  ...recordingsEn,
+  'recordings.pageTitle':'Mga Video','recordings.featured':'Gipili','recordings.loading':'Nag-load sa mga video…','recordings.eyebrow':'MGA VIDEO','recordings.locked.heading':'Pag-sign in aron makita ang mga video sa kongregasyon','recordings.locked.description':'Ang mga video nakaangkla sa account. Ang guest mode dili mokontak sa cloud.','recordings.locked.signIn':'Pag-sign in','recordings.backHome':'Balik sa Home','recordings.error.heading':'Dili ma-load ang mga video','recordings.heading':'Mga video sa pagsimba ug pagtuon sa Bibliya','recordings.description':'Pagpili og video sa ubos. Gigamit sa playback ang kaugalingong controls sa YouTube.','recordings.empty.heading':'Wala pay mga video','recordings.empty.description':'Walay gipatik nga video alang niini nga kongregasyon.','recordings.filter.heading':'Pangita og video','recordings.filter.searchLabel':'Pangita sa na-load nga mga video','recordings.filter.searchPlaceholder':'Titulo o paghulagway','recordings.filter.scopeLabel':'Ipakita','recordings.filter.all':'Tanang video','recordings.filter.featured':'Gipili lamang','recordings.filter.results':'{count} ka video ang gipakita','recordings.filter.empty.heading':'Walay katugbang nga video','recordings.filter.empty.description':'Sulayi ang laing pagpangita o ipakita ang tanang video.','recordings.nowPlaying.eyebrow':'GIPATUKAR KARON','recordings.nowPlaying.choose':'Pagpili og video','recordings.nowPlaying.chooseDescription':'I-tap ang bisan unsang video aron sugdan dinhi.','recordings.videoFallback':'Video','recordings.openError':'Dili maablihan kana nga video.','recordings.loadError':'Dili ma-load ang mga video.','recordings.curator.open':'Dugang og video','recordings.curator.title':'Titulo','recordings.curator.youtubeLink':'YouTube link','recordings.curator.descriptionLabel':'Paghulagway (opsyonal)','recordings.curator.feature':'Ipahiluna kini nga video sa ibabaw','recordings.curator.submit':'Dugang og video','recordings.curator.markLatest':'Kumpirmahi alang sa pinakabag-ong service','recordings.curator.removeLatest':'Tangtanga ang kumpirmasyon sa pinakabag-ong service','recordings.curator.archive':'Tagoa ang video','recordings.corrected':'Na-update ang kumpirmasyon.','recordings.archived':'Gitago ang video sa aktibong lista.','recordings.added':'Nadugang ang video.'
+  ,'recordings.category.label':'Kategorya','recordings.category.all':'Tanang kategorya','recordings.category.sunday-service':'Mga Sunday service','recordings.category.bible-study':'Mga pagtuon sa Bibliya','recordings.category.worship':'Pagsimba','recordings.category.testimony':'Mga pagpamatuod','recordings.category.kids':'Mga bata','recordings.category.family-couples':'Pamilya ug magtiayon','recordings.category.other':'Uban pa'
+});
+
 export const RECORDINGS_LOCALE_KEY_INVENTORY = Object.freeze(Object.keys(recordingsEn).sort());
-export const recordingsDictionaries = Object.freeze({ en: recordingsEn, tl: recordingsTl });
+export const recordingsDictionaries = Object.freeze({ en: recordingsEn, tl: recordingsTl, ceb: recordingsCeb });

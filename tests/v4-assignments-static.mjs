@@ -47,7 +47,7 @@ const requiredServiceContracts=[
   'state.userId===currentUserId',
   "String(current?.user?.id||'')!==userId",
   "typeof congregation.getActive==='function'?congregation.getActive():null",
-  "return Object.freeze({load,loadPublishTargets,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract})"
+  "return Object.freeze({load,loadPublishTargets,loadLifecycle,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract})"
 ];
 for(const token of requiredServiceContracts)assert.ok(service.includes(token),`Assignments service must retain contract: ${token}`);
 assert.ok(!/\bfetch\s*\(/.test(service),'Assignments service must continue using the shared API owner rather than direct fetch().');

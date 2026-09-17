@@ -11,6 +11,7 @@ export const en = Object.freeze({
   'locale.label': 'Language',
   'locale.english': 'English',
   'locale.tagalog': 'Tagalog',
+  'locale.cebuano': 'Cebuano / Bisaya',
   'nav.assignments': 'Assignments',
   'nav.bible': 'Bible',
   'nav.calendar': 'Calendar',

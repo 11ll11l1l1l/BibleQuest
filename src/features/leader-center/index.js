@@ -12,7 +12,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
       let disposed = false;
 
       const intro = '<div class="bq-team-center-head"><div><p class="bq-eyebrow">MINISTRY</p><h1>Leader Center</h1><p>A composed view over your congregation\u2019s existing assignments, activity, people, groups, and teams. Every action here is authorized again by its existing owner.</p></div><button type="button" class="bq-secondary-button" data-leader-back>Back</button></div>';
-      const assignmentRows = state => [...(state.assignments?.open || []), ...(state.assignments?.scheduled || [])];
+      const assignmentRows = state => [...(state.assignments?.published || []), ...(state.assignments?.scheduled || []), ...(state.assignments?.completed || []), ...(state.assignments?.unclassified || [])];
       const listHtml = (rows, emptyCopy, mapper) => rows.length ? `<div class="bq-stack">${rows.map(mapper).join('')}</div>` : `<p>${esc(emptyCopy)}</p>`;
 
       const bind = () => {
@@ -59,14 +59,16 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
               <div class="bq-progress-stats">
                 <div><b data-leader-member-count>${state.memberCount ?? '\u2014'}</b><span>${esc(memberCopy)}</span></div>
                 <div><b data-leader-active-count>${state.activeInLast30Min ?? '\u2014'}</b><span>${esc(activeCopy)}</span></div>
-                <div><b data-leader-open-count>${state.assignments.open.length}</b><span>Open assignments</span></div>
+                <div><b data-leader-published-count>${state.assignments.published.length}</b><span>Published</span></div>
                 <div><b data-leader-scheduled-count>${state.assignments.scheduled.length}</b><span>Scheduled</span></div>
+                <div><b data-leader-completed-count>${state.assignments.completed.length}</b><span>Completed</span></div>
               </div>
             </section>
             <section class="bq-panel" data-leader-review>
               <p class="bq-eyebrow">ASSIGNMENTS &amp; RESPONSE REVIEW</p>
               <h2>Review member responses</h2>
-              ${listHtml(rows, 'No assignments are available to review.', row => `<div class="bq-list-row"><div><b>${esc(row.title || 'Assignment')}</b><small>${row.scheduleAt && new Date(row.scheduleAt).getTime() > Date.now() ? 'Scheduled' : 'Open'}</small></div><button type="button" class="bq-secondary-button" data-leader-review-assignment="${esc(row.id)}">Review responses</button></div>`)}
+              ${state.assignments.lifecycleStatus!=='ready'?'<p class="bq-form-message" role="status">Completion totals are unavailable right now; assignments are left unclassified.</p>':''}
+              ${listHtml(rows, 'No assignments are available to review.', row => {const life=row.lifecycle;const label=life?.status==='completed'?'Completed':life?.status==='scheduled'?'Scheduled':life?.status==='published'?'Published':'Status unavailable';const totals=life?` · ${life.completedCount}/${life.recipientCount} completed`:'';return `<div class="bq-list-row"><div><b>${esc(row.title || 'Assignment')}</b><small>${esc(label+totals)}</small></div><button type="button" class="bq-secondary-button" data-leader-review-assignment="${esc(row.id)}">Review responses</button></div>`})}
               <p class="bq-form-message" data-leader-review-message role="status"></p>
               <button type="button" class="bq-secondary-button" data-leader-open-assignments>Open all Assignments</button>
             </section>
