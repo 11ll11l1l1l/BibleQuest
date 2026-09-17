@@ -4,7 +4,7 @@ Updated: 2026-09-18 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
 Runtime/source candidate after localization closeout: `04034d8749695d272f532ecc3e848b7ebf600a46` (later branch commits are evidence/documentation-only)
-Formal acceptance coverage after 2026-09-18 localization closeout: **117/122 = 95.9%**
+Formal acceptance coverage after 2026-09-18 Admin isolated-local BACKEND-E2E: **118/122 = 96.7%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -36,7 +36,7 @@ Integration stability: **GREEN on runtime/source candidate `04034d87`**. Localiz
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **117/122 = 95.9%**. The prior backend/Gate C evidence remains valid, and the 2026-09-18 localization closeout passed the dedicated completeness/browser gate together with collision, Section G, preview, Cloudflare, and accumulated browser/mobile regression companions. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
+Formal checklist coverage is **118/122 = 96.7%**. The prior backend/Gate C and localization evidence remains valid. The formal Admin email-change gate is now BACKEND-E2E PASS from isolated local Supabase run `35283763923` / job `105411397336`, with real Auth mutation, session revocation, audit validation, restoration, disposable-user cleanup, and stack teardown. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
 
 ### Phase 1 — Leader Center
 
@@ -56,17 +56,13 @@ The exact candidate adds the authoritative server-owned published/scheduled/comp
 
 ### Phase 2 — Admin Console
 
-Status: **6/7 ACCEPTED / REAL EMAIL-CHANGE BACKEND-E2E OPEN**.
+Status: **COMPLETE / 7 OF 7 ACCEPTED — EMAIL-CHANGE BACKEND-E2E PASS**.
 
 Accepted evidence covers identity/congregation/security cards, action severity, typed destructive confirmations, owner-only/privacy-safe/session-safe sensitive operations, negative cases, and the fail-closed non-production evidence path.
 
 2026-09-18 live observation: the deployed path passed non-owner denial, owner self-protection, target email mutation, fail-closed session revocation, privacy-safe audit flags, restoration, and cleanup using disposable QA identities in the existing BibleQuest Supabase project.
 
-Still open:
-
-- formal A2 email-change BACKEND-E2E under the checked-in runbook's **separate non-production Supabase origin** requirement. The operator explicitly rejected provisioning another paid Supabase project, so this gate remains open rather than weakening the evidence rule.
-
-See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.
+Formal BACKEND-E2E is now closed through the checked-in zero-cost isolated-local path: Supabase CLI loopback run `35283763923` / job `105411397336` executed the real candidate function/Auth/session-revocation path with disposable identities and verified restoration/cleanup. The hosted project was not contacted. See `docs/v5/V5_ADMIN_LOCAL_BACKEND_E2E_2026-09-18.md`.
 
 ### Phase 3 — artwork / dead-owner completion
 
@@ -238,12 +234,12 @@ Required final actions include:
 - Pass 8 reconciliation: **91/122 -> 108/122 (88.5%)** on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`; all 29 workflows green.
 - 2026-09-18 controlled existing-Supabase evidence: **108/122 -> 111/122 (91.0%)** on runtime/source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c`; server delivery sender accepted and Phase 6 Gate C topology/isolation closed. Admin's stricter separate-nonprod gate and Push DEVICE/FIELD/genuine-provider cleanup remain open.
 - 2026-09-18 localization closeout: **111/122 -> 117/122 (95.9%)** on runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46`; final Tagalog completeness and all four Cebuano/Bisaya acceptance items closed. Verification PR #445 passed localization, collision, Section G, preview, Cloudflare, and accumulated regression companions and was closed without merge.
+- 2026-09-18 isolated-local Admin evidence: **117/122 -> 118/122 (96.7%)**; run `35283763923` / job `105411397336` passed the real email-change BACKEND-E2E against a disposable loopback Supabase CLI stack with restoration and cleanup.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Keep the formal Admin email-change A2 gate open unless the separate-nonproduction evidence requirement can be satisfied **without provisioning another paid Supabase project**, or the evidence policy is explicitly revised through normal project authority; do not weaken it implicitly.
-2. Complete the remaining genuine Web Push evidence: real push-provider invalidation behavior plus closed-app receive/open and push-disabled DEVICE/FIELD proof.
-3. Re-run the exact candidate after the remaining evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
+1. Complete the remaining genuine Web Push evidence: real push-provider invalidation behavior plus closed-app receive/open and push-disabled DEVICE/FIELD proof.
+2. Re-run the exact candidate after the remaining evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
 
 ## 6. Evidence rules
 
