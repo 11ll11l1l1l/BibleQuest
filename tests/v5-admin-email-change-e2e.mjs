@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 
 const env = process.env;
 const required = [
-  'BQ_V5_TEST_SUPABASE_URL', 'BQ_V5_PRODUCTION_SUPABASE_URL', 'BQ_V5_TEST_ANON_KEY',
+  'BQ_V5_TEST_SUPABASE_URL', 'BQ_V5_TEST_ANON_KEY',
   'BQ_V5_TEST_SERVICE_ROLE_KEY', 'BQ_V5_OWNER_EMAIL', 'BQ_V5_OWNER_PASSWORD',
   'BQ_V5_ADMIN_EMAIL', 'BQ_V5_ADMIN_PASSWORD', 'BQ_V5_TARGET_EMAIL',
   'BQ_V5_TARGET_PASSWORD', 'BQ_V5_TARGET_NEW_EMAIL',
@@ -11,10 +11,18 @@ for (const key of required) assert.ok(env[key], `Missing required environment va
 assert.equal(env.BQ_V5_E2E_CONFIRM_NONPROD, 'I_UNDERSTAND_NONPROD_ONLY', 'Refusing to run without explicit non-production confirmation');
 
 const testUrl = new URL(env.BQ_V5_TEST_SUPABASE_URL);
-const productionUrl = new URL(env.BQ_V5_PRODUCTION_SUPABASE_URL);
-assert.equal(testUrl.protocol, 'https:', 'Test Supabase URL must use HTTPS');
-assert.notEqual(testUrl.origin, productionUrl.origin, 'Refusing to run against the production Supabase project');
-assert.ok(testUrl.hostname.endsWith('.supabase.co') || ['localhost', '127.0.0.1'].includes(testUrl.hostname), 'Unexpected Supabase host');
+const isLoopback = ['localhost', '127.0.0.1'].includes(testUrl.hostname);
+if (isLoopback) {
+  assert.ok(['http:', 'https:'].includes(testUrl.protocol), 'Local Supabase URL must use HTTP or HTTPS');
+  assert.equal(env.BQ_V5_E2E_CONFIRM_LOCALSTACK, 'I_UNDERSTAND_LOCALSTACK_ONLY', 'Refusing local-stack evidence without explicit loopback confirmation');
+} else {
+  assert.equal(testUrl.protocol, 'https:', 'Hosted test Supabase URL must use HTTPS');
+  assert.ok(env.BQ_V5_PRODUCTION_SUPABASE_URL, 'Hosted evidence requires the declared production Supabase URL');
+  const productionUrl = new URL(env.BQ_V5_PRODUCTION_SUPABASE_URL);
+  assert.equal(productionUrl.protocol, 'https:', 'Production Supabase URL must use HTTPS');
+  assert.notEqual(testUrl.origin, productionUrl.origin, 'Refusing to run against the production Supabase project');
+}
+assert.ok(testUrl.hostname.endsWith('.supabase.co') || isLoopback, 'Unexpected Supabase host');
 assert.notEqual(env.BQ_V5_TEST_SERVICE_ROLE_KEY, env.BQ_V5_TEST_ANON_KEY, 'Service-role key must not equal anon key');
 assert.notEqual(env.BQ_V5_TARGET_EMAIL.toLowerCase(), env.BQ_V5_TARGET_NEW_EMAIL.toLowerCase(), 'Replacement email must differ from original');
 
