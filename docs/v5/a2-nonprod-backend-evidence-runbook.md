@@ -4,7 +4,7 @@ Status: V5 evidence-readiness only. This document does not authorize production 
 
 ## Purpose
 
-Phase 2 still requires a real Supabase Auth email-change run and restoration on controlled identities. Phase 4 still requires controlled server delivery plus closed-app/disabled-push device evidence. Before either is attempted, the operator must prove that the target topology is non-production, isolated from the production project, uses dedicated test identities/device data, and has an explicit cleanup plan.
+Phase 2 requires a real Supabase Auth email-change run and restoration on controlled identities. Phase 4 requires controlled server delivery plus closed-app/disabled-push device evidence. Before either is attempted, the operator must prove that the target topology is non-production, isolated from the production project, uses dedicated test identities/device data, and has an explicit cleanup plan. For Phase 2, an isolated loopback Supabase CLI stack is an accepted zero-cost non-production topology when the dedicated local-stack workflow enforces loopback-only execution and destroys the stack after the run.
 
 The checked-in preflight is intentionally network-free. It verifies current source security contracts and, when run with `--runtime-preflight`, validates only the shape and separation of operator-provided test configuration. It never prints credential, token, email, user-id, project-id, or VAPID values.
 
@@ -19,8 +19,8 @@ The checked-in preflight is intentionally network-free. It verifies current sour
 
 Do not execute real backend evidence if any condition below is true:
 
-1. The test Supabase project origin is missing, not HTTPS, or equals the declared production project origin.
-2. The project is merely "connected" but has not been positively identified by the operator as a disposable/controlled non-production BibleQuest environment.
+1. The test Supabase origin is missing; for hosted evidence it is not HTTPS or equals the declared production project origin; for local-stack evidence it is not loopback (`localhost`/`127.0.0.1`) or the explicit local-stack acknowledgement is absent.
+2. The project is merely "connected" but has not been positively identified as a disposable/controlled non-production BibleQuest environment. A fresh Supabase CLI loopback stack created inside an ephemeral CI runner qualifies for the bounded Phase 2 path because it cannot address the hosted production origin and contains only generated test identities.
 3. The owner, admin, and target identities are not three dedicated, distinct controlled test users.
 4. The target account does not have two controlled email addresses available: the original address and a temporary replacement address used only for the test.
 5. The operator cannot restore the target email immediately after the Phase 2 mutation or cannot remove test push subscriptions after Phase 4 evidence.
@@ -66,9 +66,23 @@ Never set `BQ_EVIDENCE_PRODUCTION_MUTATION_ALLOWED=yes`; the preflight rejects i
 
 A successful runtime preflight means only that the proposed topology is structurally ready. It performs zero network calls and must be recorded as readiness, not BACKEND-E2E or DEVICE/FIELD PASS.
 
+### Automated isolated-local Phase 2 path
+
+For the zero-cost Admin email-change gate, `.github/workflows/v5-admin-local-supabase-e2e.yml` is the accepted automated alternative to the combined hosted runtime preflight. It:
+
+- starts a fresh loopback Supabase CLI stack inside the ephemeral GitHub Actions runner;
+- applies only the checked-in Admin/Auth parity and session-revocation migrations required by the gate;
+- serves the exact checked-in `bq-admin-ops` function;
+- creates three distinct disposable Auth identities at runtime without committing or logging their credentials;
+- runs `tests/v5-admin-email-change-e2e.mjs` with explicit non-production and local-stack acknowledgements;
+- verifies source cleanliness; and
+- stops/destroys the local execution environment after the test.
+
+The E2E harness permits HTTP only for loopback Supabase CLI origins. Hosted evidence still requires HTTPS and an explicit production-origin separation check. This local exception does not authorize production mutation and does not apply to DEVICE/FIELD push evidence.
+
 ## Phase 2 controlled email-change evidence sequence
 
-Only after the preflight passes:
+Only after the applicable preflight passes (combined hosted runtime preflight or the isolated-local Phase 2 workflow):
 
 1. Confirm the test project's `bq-admin-ops` deployment corresponds to the candidate source being evaluated; do not deploy to production.
 2. Authenticate the dedicated non-owner admin and prove `change_email` is denied.
