@@ -51,6 +51,29 @@ test('service credentials remain server-side and authorize only exact secret mat
   assert.doesNotMatch(payload, /SUPABASE_SECRET_KEYS|SUPABASE_SERVICE_ROLE_KEY|VAPID_PRIVATE_KEY|serviceSecret/);
 });
 
+test('VAPID material prefers Edge secrets and falls back to encrypted Vault storage', () => {
+  assert.match(source, /import postgres from 'npm:postgres@3\.4\.7';/);
+
+  const vaultFallback = between(
+    'async function vaultVapidConfig()',
+    'async function vapid()',
+  );
+  assert.match(vaultFallback, /Deno\.env\.get\('SUPABASE_DB_URL'\)/);
+  assert.match(vaultFallback, /from vault\.decrypted_secrets/);
+  assert.match(vaultFallback, /name = 'bq_vapid_config'/);
+  assert.doesNotMatch(vaultFallback, /console\.(?:log|error)\([^\n]*(?:decrypted_secret|privateKey|publicKey)/);
+
+  const vapidSetup = between(
+    'async function vapid()',
+    'function isUuid',
+  );
+  assert.match(vapidSetup, /Deno\.env\.get\('VAPID_SUBJECT'\)/);
+  assert.match(vapidSetup, /Deno\.env\.get\('VAPID_PUBLIC_KEY'\)/);
+  assert.match(vapidSetup, /Deno\.env\.get\('VAPID_PRIVATE_KEY'\)/);
+  assert.match(vapidSetup, /const stored = await vaultVapidConfig\(\)/);
+  assert.match(vapidSetup, /webpush\.setVapidDetails\(subject, publicKey, privateKey\)/);
+});
+
 test('successful delivery is claimed once and finalized idempotently', () => {
   const claim = between(
     'async function claimDelivery',
