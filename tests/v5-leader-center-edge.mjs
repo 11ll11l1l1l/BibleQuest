@@ -59,7 +59,7 @@ for (const role of ['facilitator', 'leader', 'pastor', 'admin']) {
 assert.equal(createLeaderCenterService(({ assignments: fakeAssignments({}), presence: fakePresence(0) })).isMinistryRole('member'), false);
 assert.equal(createLeaderCenterService(({ assignments: fakeAssignments({}), presence: fakePresence(0) })).isMinistryRole('leader'), true);
 
-// Assignment categorization remains scheduled vs open only; do not fabricate aggregate completion truth.
+// Assignment lifecycle uses the authoritative targeted-recipient aggregate.
 {
   const now = Date.now();
   const rows = [
@@ -67,13 +67,35 @@ assert.equal(createLeaderCenterService(({ assignments: fakeAssignments({}), pres
     { id: 'a2', scheduleAt: new Date(now + 86400000).toISOString(), title: 'Scheduled future' },
     { id: 'a3', scheduleAt: new Date(now - 86400000).toISOString(), title: 'Past schedule, now open' }
   ];
-  const assignments = fakeAssignments({ status: 'ready', role: 'leader', congregationId: 'c1', congregationName: 'Test', assignments: rows });
+  const assignments = fakeAssignments({ status: 'ready', role: 'leader', congregationId: 'c1', congregationName: 'Test', assignments: rows },{
+    async loadLifecycle(){return[
+      {assignmentId:'a1',status:'completed',recipientCount:2,completedCount:2},
+      {assignmentId:'a2',status:'scheduled',recipientCount:3,completedCount:0},
+      {assignmentId:'a3',status:'published',recipientCount:3,completedCount:2}
+    ]}
+  });
   const state = await createLeaderCenterService({ assignments, presence: fakePresence(0) }).load();
   assert.equal(state.assignments.total, 3);
   assert.equal(state.assignments.scheduled.length, 1);
   assert.equal(state.assignments.scheduled[0].id, 'a2');
-  assert.equal(state.assignments.open.length, 2);
-  assert.equal('completed' in state.assignments,false,'Leader Center must not invent an assignment-level completed bucket from the leader caller progress row.');
+  assert.equal(state.assignments.published.length, 1);
+  assert.equal(state.assignments.published[0].id, 'a3');
+  assert.equal(state.assignments.completed.length, 1);
+  assert.equal(state.assignments.completed[0].id, 'a1');
+  assert.equal(state.assignments.completed[0].lifecycle.completedCount,2);
+  assert.equal(state.assignments.denominator,'current-active-target-recipients');
+  assert.equal(state.assignments.unclassified.length,0);
+}
+
+// Lifecycle failure never guesses completion from the leader's own progress.
+{
+  const rows=[{id:'a1',title:'Unknown aggregate',progress:{status:'completed'}}];
+  const assignments=fakeAssignments({status:'ready',role:'leader',congregationId:'c1',congregationName:'Church',assignments:rows},{async loadLifecycle(){throw new Error('offline')}});
+  const state=await createLeaderCenterService({assignments,presence:fakePresence(0)}).load();
+  assert.equal(state.assignments.lifecycleStatus,'unavailable');
+  assert.equal(state.assignments.completed.length,0);
+  assert.equal(state.assignments.published.length,0);
+  assert.equal(state.assignments.unclassified.length,1);
 }
 
 // Existing ministry-authorized publish targets are projected into a privacy-safe directory.
@@ -135,6 +157,7 @@ assert.equal(createLeaderCenterService(({ assignments: fakeAssignments({}), pres
   assert.doesNotMatch(runtime,/createClient|supabase\.|\.from\(|localStorage|sessionStorage|fetch\(/i);
   assert.doesNotMatch(serviceSource,/private-notes|couples-cloud|couples-family|personality-profile|psychometrics/i);
   assert.match(serviceSource,/loadPublishTargets/);
+  assert.match(serviceSource,/loadLifecycle/);
   assert.match(serviceSource,/assignments\.loadReview/);
 }
 

@@ -55,6 +55,9 @@ const HOME_WEEK_COPY = Object.freeze({
     'home.week.plan.title': '6 · Magplano',
     'home.week.plan.description': 'Gamitin ang Kalendaryo para manatiling malinaw ang susunod na pagtitipon, deadline, o follow-up.',
     'home.week.plan.action': 'Buksan ang Kalendaryo'
+  }),
+  ceb: Object.freeze({
+    'home.week.eyebrow':'KARONG SEMANA','home.week.heading':'Hupti nga magkonektado ang imong semana','home.week.description':'Sunda ang usa ka yano nga ritmo gamit ang kasamtangang BibleQuest tools.','home.week.journeyLabel':'Espirituhanong panaw karong semana','home.week.dinner.label':'HISGOTAN SA PANIHAPON · OPSYONAL','home.week.dinner.prompt':'Unsay gipakita sa Dios kanato karong semanaha, ug unsaon nato kini pagkinabuhi nga magkuyog?','home.week.service.title':'1 · Service','home.week.service.description':'Sugdi sa pinakabag-ong kumpirmadong recording sa service o sermon.','home.week.service.action':'Ablihi ang service','home.week.scripture.title':'2 · Kasulatan','home.week.scripture.description':'Ablihi ang Bibliya ug basaha ang teksto ug konteksto.','home.week.scripture.action':'Basaha ang Kasulatan','home.week.reflect.title':'3 · Pamalandong','home.week.reflect.description':'Gamita ang Transformation aron masabtan, pamalandongan, i-apply, ug iampo ang nakat-onan.','home.week.reflect.action':'Ablihi ang pamalandong','home.week.discuss.title':'4 · Hisgot ug ampo','home.week.discuss.description':'Ipadayon ang panag-istorya o pag-ampo sa imong Journey Group.','home.week.discuss.action':'Ablihi ang Journey Group','home.week.act.title':'5 · Buhata','home.week.act.description':'Ablihi ang kasamtangang buluhaton o lakang sa kongregasyon.','home.week.act.action':'Ablihi ang mga buluhaton','home.week.plan.title':'6 · Pagplano','home.week.plan.description':'Gamita ang Kalendaryo alang sa sunod nga panagtigom o deadline.','home.week.plan.action':'Ablihi ang Kalendaryo'
   })
 });
 
@@ -89,7 +92,7 @@ function weeklyJourneyHtml(locale) {
   </nav>`;
 }
 
-export function homeThisWeekIntroHtml(locale) {
+export function homeThisWeekIntroHtml(locale,{leaderAnchor=null}={}) {
   const calendarLabel = localization.t('home.shortcut.calendar', { locale });
   return `<header class="bq-home-week-heading" data-home-week-heading>
     <div>
@@ -101,7 +104,7 @@ export function homeThisWeekIntroHtml(locale) {
       <span aria-hidden="true">${iconSvg('calendar', { size: 18 })}</span>
       <span>${escapeHtml(calendarLabel)}</span>
     </button>
-  </header>${weeklyJourneyHtml(locale)}`;
+  </header>${leaderAnchor?`<aside class="bq-panel bq-progress-note" data-home-weekly-leader-anchor><p class="bq-eyebrow">WEEKLY MINISTRY ANCHOR</p><h3>${escapeHtml(leaderAnchor.title)}</h3>${leaderAnchor.instructions?`<p>${escapeHtml(leaderAnchor.instructions)}</p>`:''}<a href="#/assignments" data-weekly-journey-route="assignments">Open leader assignment</a></aside>`:''}${weeklyJourneyHtml(locale)}`;
 }
 
 export const HOME_WEEK_LOCALES = Object.freeze(Object.keys(HOME_WEEK_COPY));

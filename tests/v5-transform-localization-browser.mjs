@@ -17,6 +17,8 @@ try {
   await page.goto(new URL('#/transform', BASE).href, { waitUntil: 'networkidle' });
   await page.locator('[data-transform-page]').waitFor();
   await page.getByRole('heading', { name: 'Pagninilay sa pananampalataya at pagsasabuhay' }).waitFor();
+  assert(await page.locator('[data-transform-message]').count() === 1, 'Basic assessment must own one unambiguous status message');
+  assert(await page.locator('[data-transform-flow-message]').count() === 1, 'Scripture flow must own its separate status message');
 
   const state = await page.evaluate(() => ({
     heading: document.querySelector('[data-transform-page] h1')?.textContent?.trim(),

@@ -1,10 +1,11 @@
 import { storage } from '../core/storage.js';
 import { en, LOCALE_KEY_INVENTORY } from '../content/locales/en.js';
 import { tl } from '../content/locales/tl.js';
+import { ceb } from '../content/locales/ceb.js';
 
 const STORAGE_KEY = 'locale';
 const DEFAULT_LOCALE = 'en';
-const dictionaries = Object.freeze({ en, tl });
+const dictionaries = Object.freeze({ en, tl, ceb });
 const supportedLocales = Object.freeze(Object.keys(dictionaries));
 
 function normalizeLocale(value) {

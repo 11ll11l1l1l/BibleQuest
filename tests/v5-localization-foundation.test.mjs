@@ -12,6 +12,7 @@ globalThis.localStorage = {
 
 const { en, LOCALE_KEY_INVENTORY } = await import('../src/content/locales/en.js');
 const { tl } = await import('../src/content/locales/tl.js');
+const { ceb } = await import('../src/content/locales/ceb.js');
 const { localization, getLocale, setLocale, t, getMissingLocaleKeys } = await import('../src/app/localization.js');
 
 test('English is the canonical stable-key inventory and Tagalog matches it', () => {
@@ -45,7 +46,16 @@ test('locale preference reuses current portable storage and normalizes language 
   assert.equal(getLocale(), 'en');
 });
 
-test('foundation exposes only reviewed locales; Cebuano can reuse the same inventory later', () => {
-  assert.deepEqual(localization.supportedLocales, ['en', 'tl']);
+test('foundation exposes English, Tagalog, and reviewed Cebuano through one inventory', () => {
+  assert.deepEqual(Object.keys(ceb).sort(), LOCALE_KEY_INVENTORY);
+  assert.equal(getMissingLocaleKeys('ceb').length,0);
+  assert.deepEqual(localization.supportedLocales, ['en', 'tl', 'ceb']);
   assert.equal(localization.keyInventory, LOCALE_KEY_INVENTORY);
+});
+
+test('Cebuano language tags normalize and reviewed member chrome does not leak English',()=>{
+  assert.equal(setLocale('ceb-PH'),'ceb');
+  assert.equal(t('nav.learn',{locale:'ceb'}),'Pagtuon');
+  assert.equal(t('community.title',{locale:'ceb'}),'Komunidad');
+  assert.equal(t('assignments.openTask',{locale:'ceb'}),'Ablihi ang buluhaton');
 });

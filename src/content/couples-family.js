@@ -9,6 +9,11 @@ export const COUPLES_CATEGORIES=Object.freeze([
   {id:'mission',icon:'🧭',label:'Purpose & Future'}
 ].map(item=>Object.freeze(item)));
 
+export const COUPLES_TRACKS=Object.freeze([
+  Object.freeze({id:'couples',label:'Couples Track',description:'Communication, repair, friendship, stewardship, closeness, faith, and shared purpose.',categories:Object.freeze(['christ','communication','conflict','gratitude','stewardship','intimacy','mission'])}),
+  Object.freeze({id:'family',label:'Family Track',description:'Parenting, home atmosphere, family boundaries, faith at home, and shared responsibility.',categories:Object.freeze(['family','christ','stewardship','gratitude'])})
+]);
+
 export const COUPLES_CARDS=Object.freeze([
   {id:'c01',cat:'christ',title:'Same direction?',prompt:'Sa season natin ngayon, saan mo pinaka-nararamdaman na hinihila tayo ni Christ na mag-grow bilang mag-asawa?',follow:'Ano ang isang maliit na spiritual habit na kaya nating gawin together nang realistic?',practice:'10 minutes this week: read, pray, then share one sentence each.',ref:'Colossians 3:12–14',code:'COL',chapter:3},
   {id:'c02',cat:'christ',title:'Faith without performance',prompt:'May part ba ng spiritual life natin na ginagawa natin dahil “dapat,” pero hindi na natin pinag-uusapan nang totoo?',follow:'Ano ang makakatulong para maging mas honest at less performative ang faith natin sa bahay?',practice:'Ask one honest faith question without trying to fix the answer.',ref:'Psalm 139:23–24',code:'PSA',chapter:139},

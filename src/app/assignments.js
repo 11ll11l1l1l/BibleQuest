@@ -69,6 +69,17 @@ function normalizeTargets(payload){
   return Object.freeze({members:normalize(payload?.members,'member'),teams:normalize(payload?.teams,'team'),groups:normalize(payload?.groups,'group')});
 }
 
+function normalizeLifecycle(payload,congregationId){
+  const rows=Array.isArray(payload?.assignments)?payload.assignments:[];
+  return Object.freeze(rows.map(row=>{
+    const assignmentId=String(row?.assignmentId||''),status=String(row?.status||''),recipientCount=Number(row?.recipientCount),completedCount=Number(row?.completedCount);
+    if(!assignmentId||String(row?.congregationId||'')!==String(congregationId)||!['published','scheduled','completed'].includes(status))fail('BQ_ASSIGNMENT_LIFECYCLE_RESPONSE','Assignment lifecycle returned invalid scope or status.');
+    if(!Number.isInteger(recipientCount)||recipientCount<0||!Number.isInteger(completedCount)||completedCount<0||completedCount>recipientCount)fail('BQ_ASSIGNMENT_LIFECYCLE_RESPONSE','Assignment lifecycle returned invalid recipient totals.');
+    if(status==='completed'&&(recipientCount===0||completedCount!==recipientCount))fail('BQ_ASSIGNMENT_LIFECYCLE_RESPONSE','Assignment lifecycle marked an incomplete audience as completed.');
+    return Object.freeze({assignmentId,status,recipientCount,completedCount});
+  }));
+}
+
 function normalizeResponder(row,assignmentId,congregationId){
   if(String(row?.assignment_id||'')!==String(assignmentId)||String(row?.congregation_id||'')!==String(congregationId))fail('BQ_ASSIGNMENT_REVIEW_SCOPE','Assignment responder data was outside the active task.');
   const userId=String(row?.user_id||''),displayName=text(row?.display_name,120)||'Member',completedAt=validIso(row?.completed_at);
@@ -150,6 +161,15 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     const current=sessionState();
     if(request!==targetRequest||state.congregationId!==cid||!current?.authenticated||String(current?.user?.id||'')!==userId||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_TARGET_STALE','The congregation or account changed while publish targets were loading.');
     state=Object.freeze({...state,publishTargets:targets});return state;
+  }
+
+  async function loadLifecycle(){
+    assertPublisher();
+    if(typeof api.lifecycle!=='function')fail('BQ_ASSIGNMENT_LIFECYCLE_UNAVAILABLE','Assignment lifecycle is not available yet.');
+    const cid=state.congregationId,userId=String(sessionState()?.user?.id||'');
+    const rows=normalizeLifecycle(await api.lifecycle(cid),cid),current=sessionState();
+    if(state.congregationId!==cid||!current?.authenticated||String(current?.user?.id||'')!==userId||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_LIFECYCLE_STALE','The congregation or account changed while assignment lifecycle was loading.');
+    return rows;
   }
 
   async function publish(input){
@@ -243,5 +263,5 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
   }
 
   function clear(){resetAccountState('',false,true,'idle')}
-  return Object.freeze({load,loadPublishTargets,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
+  return Object.freeze({load,loadPublishTargets,loadLifecycle,publish,open,loadReview,close,start,complete,watch,stopSync,snapshot,clear,contract:assignmentsContract});
 }
