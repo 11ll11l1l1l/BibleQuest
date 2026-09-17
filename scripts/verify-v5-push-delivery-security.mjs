@@ -177,8 +177,12 @@ has(fn, "console.error('push delivery redirect rejected', { statusCode })", 'red
 has(fn, 'statusCode === 404 || statusCode === 410', 'cleanup must be limited to permanent invalidation');
 has(fn, ".delete()\n            .eq('id', subscription.id)\n            .eq('user_id', notification.user_id)", 'cleanup must delete exact recipient-owned row');
 
-// Private material stays server-only.
-has(fn, "Deno.env.get('VAPID_PRIVATE_KEY')", 'private VAPID key must be server environment only');
+// Private material stays server-only. Environment secrets remain preferred, with
+// encrypted Supabase Vault as the server-side fallback when function secrets are absent.
+has(fn, "Deno.env.get('VAPID_PRIVATE_KEY')", 'private VAPID key environment path must remain available');
+has(fn, "Deno.env.get('SUPABASE_DB_URL')", 'Vault fallback must use the server-only database connection');
+has(fn, 'from vault.decrypted_secrets', 'Vault fallback must read encrypted-at-rest VAPID configuration');
+has(fn, "name = 'bq_vapid_config'", 'Vault fallback must use the dedicated VAPID secret name');
 has(fn, 'webpush.sendNotification', 'server-side delivery must exist');
 has(fn, '{ TTL: 300 }', 'push TTL must remain bounded');
 for (const forbidden of ['console.log(privateKey','console.error(privateKey','console.log(subscription','console.error(subscription','return response({ endpoint','return response({ p256dh','console.log(notification.created_at','console.error(notification.created_at','console.log(keys','console.error(keys']) lacks(fn, forbidden, `sensitive push material must not be exposed: ${forbidden}`);
