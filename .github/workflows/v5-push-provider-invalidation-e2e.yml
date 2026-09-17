@@ -40,13 +40,10 @@ jobs:
         with:
           version: latest
 
-      - name: Install provider test dependencies
+      - name: Install provider test dependency
         run: |
           set -euo pipefail
-          npm install --no-save playwright web-push
-          CHROME_PATH="$(command -v google-chrome-stable || command -v google-chrome || true)"
-          test -n "$CHROME_PATH"
-          echo "BQ_PROVIDER_CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+          npm install --no-save web-push
 
       - name: Generate disposable VAPID keypair without logging private material
         run: |
@@ -117,10 +114,10 @@ jobs:
           tail -n 120 /tmp/bq-v5-push-function.log || true
           exit 1
 
-      - name: Run genuine browser provider invalidation E2E
+      - name: Run genuine browser push-provider invalidation E2E
         run: |
           set -euo pipefail
-          xvfb-run -a node tests/v5-push-provider-invalidation-e2e.mjs
+          node tests/v5-push-provider-invalidation-e2e.mjs
 
       - name: Show sender diagnostics on failure
         if: failure()
