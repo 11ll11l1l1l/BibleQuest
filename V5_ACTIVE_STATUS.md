@@ -3,8 +3,8 @@
 Updated: 2026-09-18 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Runtime/source candidate under controlled-backend evidence reconciliation: `7b2710fe097b6321fef68916938017bb88bc1c7c` (later branch commits are evidence/documentation-only)
-Formal acceptance coverage after 2026-09-18 controlled evidence reconciliation: **111/122 = 91.0%**
+Runtime/source candidate after localization closeout: `04034d8749695d272f532ecc3e848b7ebf600a46` (later branch commits are evidence/documentation-only)
+Formal acceptance coverage after 2026-09-18 localization closeout: **117/122 = 95.9%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -32,11 +32,11 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 ## 3. Current reconciliation state
 
-Integration stability: **GREEN on runtime/source candidate `7b2710fe`**. Temporary verification PR #444 passed all seven triggered exact-SHA checks (Cloudflare deployment, collision guard, preview smoke, accumulated browser/mobile regression, push security/type-check/secret scan, push source contract, and Section G), then closed without merge.
+Integration stability: **GREEN on runtime/source candidate `04034d87`**. Localization verification PR #445 tested the same runtime/source tree plus a CI-only comment marker and passed localization QA `35281386346`, collision guard `35281386338`, Section G `35281386331`, Cloudflare preview smoke `35281386515`, and accumulated browser/mobile regression `35281386502`. PR #445 was closed without merge and its branch reset to the source candidate.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **111/122 = 91.0%**. The prior Pass 8 suite remains green; the 2026-09-18 exact-SHA verification also passed all seven triggered deployment/security/browser/regression checks on runtime/source candidate `7b2710fe`. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
+Formal checklist coverage is **117/122 = 95.9%**. The prior backend/Gate C evidence remains valid, and the 2026-09-18 localization closeout passed the dedicated completeness/browser gate together with collision, Section G, preview, Cloudflare, and accumulated browser/mobile regression companions. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
 
 ### Phase 1 — Leader Center
 
@@ -179,26 +179,20 @@ Focused run `35039686763`, collision run `35039686747`, Section G run `350396867
 
 ### Cross-phase localization / content / UX
 
-Status: **IN PROGRESS**.
+Status: **LOCALIZATION COMPLETE / ACCEPTED FOR THE V5 CHECKLIST**.
 
 Accepted/integrated highlights:
 
-- current-architecture EN/TL localization foundation;
-- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community and Videos/Recordings scoped EN/TL work;
-- Community and Videos/Recordings 390px Tagalog browser proof;
-- latest-service stable identity, confirmation and correction;
-- Home/Today existing-owner composition with intentional empty states and mobile proof;
-- connected weekly spiritual journey, including one optional EN/TL Ask at Dinner prompt;
-- lightweight Recordings search and featured-only filtering over already-loaded current-owner data, with no schema/index/metadata extension;
-- My Journey private/noncompetitive history with EN/TL, empty-state and 390px browser proof.
+- current-architecture EN/TL/CEB localization foundation with canonical 444-key parity;
+- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community and Videos/Recordings localized for the agreed V5 surfaces;
+- final Tagalog completeness gate with reviewed shared-term exceptions only;
+- Cebuano explicit ownership for every canonical key except the intentional `BibleQuest` product name, plus complete Videos and shell-recovery copy;
+- connected weekly journey / Ask at Dinner authored in EN/TL/CEB;
+- 390px Cebuano browser proof across shell, Community, Account, Calendar, Videos, and weekly journey, with overflow/page-error/touch-target assertions;
+- Community and Videos/Recordings Tagalog browser proofs included in the final accumulated localization gate;
+- latest-service, Home/Today, Recordings filtering, My Journey, Family/Couples, and other content/UX checklist items remain governed by their already-accepted dedicated sections rather than a stale localization blocker.
 
-Still open includes:
-
-- remaining Tagalog surfaces and final no-unexplained-English scan;
-- Cebuano/Bisaya dictionary and full agreed UI/content coverage;
-- remaining P1 content-depth items;
-- Family/Couples content targets;
-- metadata-backed Media category support beyond the accepted search/featured controls.
+Evidence: `docs/v5/V5_LOCALIZATION_CLOSEOUT_2026-09-18.md`; localization run `35281386346` SUCCESS.
 
 ### My Journey
 
@@ -243,13 +237,13 @@ Required final actions include:
 - Reconciled candidate / PR #438: both divergent V5 lines combined, stale EN/TL-only and pre-category test contracts corrected, Transform status-region collision fixed, and exact-SHA Cloudflare preview verification enabled.
 - Pass 8 reconciliation: **91/122 -> 108/122 (88.5%)** on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`; all 29 workflows green.
 - 2026-09-18 controlled existing-Supabase evidence: **108/122 -> 111/122 (91.0%)** on runtime/source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c`; server delivery sender accepted and Phase 6 Gate C topology/isolation closed. Admin's stricter separate-nonprod gate and Push DEVICE/FIELD/genuine-provider cleanup remain open.
+- 2026-09-18 localization closeout: **111/122 -> 117/122 (95.9%)** on runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46`; final Tagalog completeness and all four Cebuano/Bisaya acceptance items closed. Verification PR #445 passed localization, collision, Section G, preview, Cloudflare, and accumulated regression companions and was closed without merge.
 
 ## 5. Highest-priority remaining certification/development path
 
 1. Keep the formal Admin email-change A2 gate open unless the separate-nonproduction evidence requirement can be satisfied **without provisioning another paid Supabase project**, or the evidence policy is explicitly revised through normal project authority; do not weaken it implicitly.
 2. Complete the remaining genuine Web Push evidence: real push-provider invalidation behavior plus closed-app receive/open and push-disabled DEVICE/FIELD proof.
-3. Close the remaining full-surface Tagalog/Cebuano completeness and representative Cebuano browser rows.
-4. Re-run the exact candidate after remaining implementation/evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
+3. Re-run the exact candidate after the remaining evidence changes, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
 
 ## 6. Evidence rules
 
