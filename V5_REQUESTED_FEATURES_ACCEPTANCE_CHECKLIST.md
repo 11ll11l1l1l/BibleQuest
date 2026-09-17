@@ -19,6 +19,8 @@ Candidate reconciliation 2026-09-17 (Pass 8): exact candidate `b301a617c17c21dc2
 
 Controlled existing-project evidence update 2026-09-18: source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c` adds accepted server-delivery and Gate C evidence, bringing the checklist to **111/122 accepted items (91.0%)**. See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`. The stricter A2 non-production Admin Auth gate and Push DEVICE/FIELD gates remain open.
 
+Localization closeout 2026-09-18: runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46` closes the remaining Tagalog and Cebuano/Bisaya localization items, bringing formal acceptance to **117/122 accepted items (95.9%)**. Exact-head-equivalent verification PR #445 passed localization QA `35281386346`, collision `35281386338`, Section G `35281386331`, preview smoke `35281386515`, and accumulated regression `35281386502`; the PR was closed without merge and its branch reset to the source candidate. See `docs/v5/V5_LOCALIZATION_CLOSEOUT_2026-09-18.md`.
+
 ## A. Phase 1 — Leader Center
 
 - [x] Overview: congregation snapshot, role, member count, active-in-30-min. **STATIC + BROWSER-AUTO: merged #399; final PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc`; focused run `35051843361` SUCCESS. Member count reuses the existing ministry-authorized Assignments target directory; Presence remains the existing active-count owner.**
@@ -118,11 +120,11 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 - [x] Calendar localized.
 - [x] Assignments and Notification Center localized.
 - [x] Settings/profile localized on the integrated Account/settings surface.
-- [ ] Community/Media and remaining member-facing surfaces fully localized. Community EN/TL is integrated in #372 and 390px browser proof passed in #380; Videos/Recordings is integrated; remaining agreed member surfaces still need completion.
+- [x] Community/Media and remaining member-facing surfaces fully localized. **STATIC + BROWSER-AUTO: final Tagalog closeout on source candidate `04034d87`; Community and Videos/Recordings 390px proofs are included in localization run `35281386346`, alongside shell, Transformation, Calendar, Assignments, Notification Center, Account/settings, weekly journey, Home/Today, and final mobile-width companions.**
 - [x] Leader/admin user-visible instructions, errors, empty/loading states localized where part of V5 scope. **STATIC + BROWSER-AUTO: shared Leader Center EN/TL/CEB dictionary and localized Admin auth/status shell are green on `b301a617`.**
 - [x] Proper nouns/Bible translation names may remain unchanged where appropriate.
 - [x] Representative mobile/browser checks show translated text does not cause clipping/overflow or inaccessible controls on the currently migrated surfaces. **BROWSER-AUTO.**
-- [ ] Completeness scan has no unexplained English leaks across every agreed final Tagalog surface.
+- [x] Completeness scan has no unexplained English leaks across every agreed final Tagalog surface. **STATIC: `tests/v5-localization-final-completeness.mjs` requires explicit 444-key Tagalog ownership, placeholder parity, and permits byte-equal English only for a reviewed set of product/proper/technical terms; run `35281386346` SUCCESS.**
 - [x] Scripture text always comes from approved/licensed Bible translations and is never app-generated/machine-translated.
 
 ## J. P0 — real Calendar
@@ -179,10 +181,10 @@ This section must pass before broad Tagalog/Cebuano screen migration is consider
 ## O. P2 — full Cebuano/Bisaya localization
 
 - [x] Same localization keys/mechanism used as English/Tagalog. **STATIC: canonical 444-key EN/TL/CEB inventory on exact candidate.**
-- [ ] Member-facing UI fully localized in Cebuano/Bisaya for agreed V5 surfaces.
-- [ ] BibleQuest-authored member content fully localized in Cebuano/Bisaya.
-- [ ] Representative mobile/browser checks show no clipping/overflow or inaccessible controls. **BROWSER-AUTO required.**
-- [ ] Completeness scan has no unexplained English/Tagalog leaks on agreed Cebuano surfaces.
+- [x] Member-facing UI fully localized in Cebuano/Bisaya for agreed V5 surfaces. **STATIC + BROWSER-AUTO: all former canonical UI fallbacks closed except intentional `BibleQuest` product-name inheritance; representative shell, Community, Account, Calendar, Videos, and weekly journey UI passed at 390px on run `35281386346`.**
+- [x] BibleQuest-authored member content fully localized in Cebuano/Bisaya. **STATIC: canonical authored Home/Transformation/Assignments/Notification/Account/Calendar member copy, Videos copy, shell recovery copy, and connected weekly journey / Ask at Dinner content are explicit in Cebuano under the current V5 localization owners; Scripture remains approved-source CEBOCB and is excluded.**
+- [x] Representative mobile/browser checks show no clipping/overflow or inaccessible controls. **BROWSER-AUTO: `tests/v5-cebuano-member-browser.mjs` covers 390 × 844 shell, Community, Account, Calendar, Videos, and weekly journey with overflow, page-error, and touch-target assertions; run `35281386346` SUCCESS.**
+- [x] Completeness scan has no unexplained English/Tagalog leaks on agreed Cebuano surfaces. **STATIC + BROWSER-AUTO: final completeness gate requires explicit Cebuano ownership for every canonical key except the reviewed BibleQuest product name, complete explicit Videos copy, stable placeholders, and canonical-English leak rejection in the representative browser matrix; run `35281386346` SUCCESS.**
 - [x] CEBOCB or another approved Cebuano Scripture source remains Scripture; BibleQuest does not generate its own Cebuano Bible translation. **STATIC: maintained Reader/source contract; localization inventory excludes Scripture translation keys.**
 
 ## P. P2 — discovery and Media organization
