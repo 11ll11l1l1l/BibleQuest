@@ -23,6 +23,10 @@ async function installHarness(page,{role='leader',directoryFails=false}={}){
           teams:[{id:'t1',label:'Worship Team',type:'ministry'}]
         }};
       },
+      async loadLifecycle(){return[
+        {assignmentId:'a1',status:'completed',recipientCount:2,completedCount:2},
+        {assignmentId:'a2',status:'scheduled',recipientCount:2,completedCount:0}
+      ]},
       open(id){window.__lcReviewCalls.push(['open',id])},
       async loadReview(id){window.__lcReviewCalls.push(['loadReview',id]);return{activeId:id,activeReview:{status:'ready'}}}
     };
@@ -44,8 +48,10 @@ async function leaderSeesComposedCenter(){
   assert(await root.locator('[data-leader-center-denied]').count()===0,'A real leader must not see the denied state.');
   assert(await root.locator('[data-leader-active-count]').textContent()==='4','Active count did not render.');
   assert(await root.locator('[data-leader-member-count]').textContent()==='2','Member count did not render from the ministry-safe directory.');
-  assert(await root.locator('[data-leader-open-count]').textContent()==='1','Open assignment count did not render.');
+  assert(await root.locator('[data-leader-published-count]').textContent()==='0','Published assignment count did not render.');
   assert(await root.locator('[data-leader-scheduled-count]').textContent()==='1','Scheduled assignment count did not render.');
+  assert(await root.locator('[data-leader-completed-count]').textContent()==='1','Completed assignment count did not render.');
+  assert((await root.locator('[data-leader-review]').innerText()).includes('2/2 completed'),'Recipient completion denominator did not render.');
   const personRows=root.locator('[data-leader-person-row]');
   assert(await personRows.count()===2,'People directory did not render the two safe member rows.');
   const peopleData=await personRows.allInnerTexts();

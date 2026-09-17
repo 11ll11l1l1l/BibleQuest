@@ -3,7 +3,7 @@ import { SPIRITUAL_ITEMS, SPIRITUAL_GUIDES, PERSONALITY_FACTORS, PERSONALITY_ITE
 const STORAGE_KEY = 'transform-state';
 const VERSION = 1;
 const HISTORY_LIMIT = 10;
-const REFLECTION_LIMITS = Object.freeze({ practice:500, noticed:1200, action:1200, prayer:1200 });
+const REFLECTION_LIMITS = Object.freeze({ practice:500, noticed:1200, action:1200, prayer:1200, scripture:500, understand:1200, reflect:1200, apply:1200, pray:1200 });
 
 const safeIso = value => {
   const date = value instanceof Date ? new Date(value.getTime()) : new Date(value);
@@ -29,7 +29,7 @@ const choice = (value, max) => {
 };
 
 function defaults() {
-  return { version:VERSION, spiritual:{answers:{},result:null}, personality:{answers:{},result:null}, bias:{answers:{},result:null}, reflection:{practice:'',noticed:'',action:'',prayer:''}, history:[] };
+  return { version:VERSION, spiritual:{answers:{},result:null}, personality:{answers:{},result:null}, bias:{answers:{},result:null}, reflection:{practice:'',noticed:'',action:'',prayer:'',scripture:'',understand:'',reflect:'',apply:'',pray:''}, history:[] };
 }
 const completeAnswers = (items,answers) => items.every(item => Object.prototype.hasOwnProperty.call(answers,item.id));
 
@@ -83,9 +83,9 @@ export function createTransformEngine({storage,clock=()=>new Date()}){
   function calculateSpiritual(){if(state.spiritual.result)return getState();const date=safeIso(clock()),result=spiritualResult(state.spiritual.answers,date),base={...state,spiritual:{...state.spiritual,result}};return commit(addHistory(base,'spiritual',date,result.focus.map(item=>item.dimension).join(', ')))}
   function calculatePersonality(){if(state.personality.result)return getState();const date=safeIso(clock()),result=personalityResult(state.personality.answers,date),base={...state,personality:{...state.personality,result}};return commit(addHistory(base,'personality',date,Object.values(result.scores).map(item=>`${item.name}: ${item.band}`).join('; ')))}
   function calculateBias(){if(state.bias.result)return getState();const date=safeIso(clock()),result=biasResult(state.bias.answers,date),base={...state,bias:{...state.bias,result}};return commit(addHistory(base,'bias',date,`${result.helpful}/${result.total} bias-resistant responses`))}
-  function saveReflection(input={}){if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Reflection update must be an object.');const nextReflection={...state.reflection};let changed=false;for(const[key,max]of Object.entries(REFLECTION_LIMITS)){if(!Object.prototype.hasOwnProperty.call(input,key))continue;const value=boundedText(input[key],`Reflection ${key}`,max);if(nextReflection[key]!==value){nextReflection[key]=value;changed=true}}if(!changed)return Object.freeze({applied:false,state:getState()});const date=safeIso(clock()),base={...state,reflection:nextReflection},summary=nextReflection.action||nextReflection.noticed||nextReflection.practice||'Private reflection updated';return Object.freeze({applied:true,state:commit(addHistory(base,'reflection',date,summary))})}
+  function saveReflection(input={}){if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Reflection update must be an object.');const nextReflection={...state.reflection};let changed=false;for(const[key,max]of Object.entries(REFLECTION_LIMITS)){if(!Object.prototype.hasOwnProperty.call(input,key))continue;const value=boundedText(input[key],`Reflection ${key}`,max);if(nextReflection[key]!==value){nextReflection[key]=value;changed=true}}if(!changed)return Object.freeze({applied:false,state:getState()});const date=safeIso(clock()),base={...state,reflection:nextReflection},summary=nextReflection.apply||nextReflection.action||nextReflection.reflect||nextReflection.noticed||nextReflection.scripture||nextReflection.practice||'Private reflection updated';return Object.freeze({applied:true,state:commit(addHistory(base,'reflection',date,summary))})}
   function recommendations(){const out=[],scores=state.personality.result?.scores;if(scores){Object.entries(scores).sort((a,b)=>Math.abs(b[1].mean-3)-Math.abs(a[1].mean-3)||a[0].localeCompare(b[0])).slice(0,2).forEach(([factor,score])=>{const definition=PERSONALITY_FACTORS[factor],body=score.band==='Higher expression'?definition.highPractice:score.band==='Lower expression'?definition.lowPractice:'Notice one context where this tendency helps and one where a different response would serve better.';out.push({title:`${definition.name}: ${score.band}`,body})})}state.bias.result?.signals?.filter(item=>!item.helpful).slice(0,2).forEach(item=>out.push({title:item.title,body:item.practice}));if(!out.length)out.push({title:'Start with observation',body:'For one week, pause once a day and ask: “What pattern in me is shaping this choice, and what response would be faithful and wise?”'});return deepFreeze(structuredClone(out.slice(0,4)))}
   function resetDomain(domain){if(!['spiritual','personality','bias'].includes(domain))throw new Error('Unknown Transform reset domain.');return commit({...state,[domain]:{answers:{},result:null}})}
-  const resetReflection=()=>commit({...state,reflection:{practice:'',noticed:'',action:'',prayer:''}}),resetAll=()=>commit(defaults());
+  const resetReflection=()=>commit({...state,reflection:defaults().reflection}),resetAll=()=>commit(defaults());
   return Object.freeze({getState,setSpiritualAnswer:(id,value)=>setRating('spiritual',SPIRITUAL_ITEMS,id,value),calculateSpiritual,setPersonalityAnswer:(id,value)=>setRating('personality',PERSONALITY_ITEMS,id,value),calculatePersonality,setBiasAnswer,calculateBias,saveReflection,recommendations,resetSpiritual:()=>resetDomain('spiritual'),resetPersonality:()=>resetDomain('personality'),resetBias:()=>resetDomain('bias'),resetReflection,resetAll,definitions:Object.freeze({spiritual:SPIRITUAL_ITEMS,personality:PERSONALITY_ITEMS,bias:BIAS_TASKS,factors:PERSONALITY_FACTORS,spiritualGuides:SPIRITUAL_GUIDES})});
 }

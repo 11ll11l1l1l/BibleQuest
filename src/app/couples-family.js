@@ -1,4 +1,4 @@
-import { COUPLES_CATEGORIES,COUPLES_CARDS,COUPLES_CHECK_ITEMS,COUPLES_REPAIR_STEPS } from '../content/couples-family.js';
+import { COUPLES_CATEGORIES,COUPLES_TRACKS,COUPLES_CARDS,COUPLES_CHECK_ITEMS,COUPLES_REPAIR_STEPS } from '../content/couples-family.js';
 import { COUPLES_JOURNEY_DOMAINS,COUPLES_JOURNEY_ITEMS,COUPLES_JOURNEY_LEVELS,COUPLES_JOURNEY_SAFETY_ITEM_ID,COUPLES_JOURNEY_SCALE } from '../content/couples-journey.js';
 
 const STORAGE_KEY='couples-family-local';
@@ -9,6 +9,7 @@ const CHECKIN_LIMIT=30;
 const JOURNEY_LIMIT=12;
 const CARD_IDS=new Set(COUPLES_CARDS.map(card=>card.id));
 const CATEGORY_IDS=new Set(COUPLES_CATEGORIES.map(category=>category.id));
+const TRACK_IDS=new Set(COUPLES_TRACKS.map(track=>track.id));
 const CHECK_IDS=COUPLES_CHECK_ITEMS.map(item=>item.id);
 const JOURNEY_IDS=COUPLES_JOURNEY_ITEMS.map(item=>item.id);
 const JOURNEY_LEVEL_IDS=new Set(COUPLES_JOURNEY_LEVELS.map(level=>level.id));
@@ -76,6 +77,7 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
   const snapshot=()=>freeze({version:VERSION,favorites:freeze([...state.favorites]),history:freeze(state.history.map(freezeEntry)),commitments:freeze(state.commitments.map(freezeEntry)),checkins:freeze(state.checkins.map(item=>freeze({at:item.at,a:freeze({...item.a}),b:freeze({...item.b})}))),journeyAssessments:freeze(state.journeyAssessments.map(freezeJourneySummary)),listenCount:state.listenCount});
   const card=id=>{const found=COUPLES_CARDS.find(item=>item.id===String(id));if(!found)throw new Error('Couples topic not found.');return found};
   const category=id=>{const found=COUPLES_CATEGORIES.find(item=>item.id===String(id));if(!found)throw new Error('Couples category not found.');return found};
+  const track=id=>{const found=COUPLES_TRACKS.find(item=>item.id===String(id));if(!found||!TRACK_IDS.has(found.id))throw new Error('Couples & Family track not found.');return found};
   const poolFor=({categoryId='',categories=[]}={})=>{
     if(categoryId){category(categoryId);return COUPLES_CARDS.filter(item=>item.cat===categoryId)}
     if(categories.length){const valid=categories.map(id=>category(id).id);return COUPLES_CARDS.filter(item=>valid.includes(item.cat))}
@@ -110,6 +112,8 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
   return freeze({
     snapshot,
     categories:()=>COUPLES_CATEGORIES,
+    tracks:()=>COUPLES_TRACKS,
+    pickTrackCard:(id,excludeId='')=>pickCard({categories:track(id).categories,excludeId}),
     checkItems:()=>COUPLES_CHECK_ITEMS,
     repairSteps:()=>COUPLES_REPAIR_STEPS,
     journeyItems:()=>COUPLES_JOURNEY_ITEMS,

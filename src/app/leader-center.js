@@ -30,11 +30,16 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     }
     const congregationId = assignmentState.congregationId;
     const rows = assignmentState.assignments || [];
-    // Do not invent an assignment-level completion lifecycle. The row carries
-    // only the caller's own progress, not aggregate member completion truth.
-    const now = Date.now();
-    const scheduled = rows.filter(row => row.scheduleAt && new Date(row.scheduleAt).getTime() > now);
-    const open = rows.filter(row => !(row.scheduleAt && new Date(row.scheduleAt).getTime() > now));
+    let lifecycleStatus='unavailable',lifecycle=[];
+    if(typeof assignments.loadLifecycle==='function'){
+      try{lifecycle=await assignments.loadLifecycle();lifecycleStatus='ready'}catch{lifecycleStatus='unavailable'}
+    }
+    const lifecycleById=new Map(lifecycle.map(row=>[row.assignmentId,row]));
+    const projected=rows.map(row=>Object.freeze({...row,lifecycle:lifecycleById.get(row.id)||null}));
+    const scheduled=projected.filter(row=>row.lifecycle?.status==='scheduled');
+    const completed=projected.filter(row=>row.lifecycle?.status==='completed');
+    const published=projected.filter(row=>row.lifecycle?.status==='published');
+    const unclassified=projected.filter(row=>!row.lifecycle);
 
     let activeCount = null;
     try {
@@ -72,8 +77,12 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       groups,
       teams,
       assignments: Object.freeze({
-        open: Object.freeze(open),
+        published: Object.freeze(published),
         scheduled: Object.freeze(scheduled),
+        completed: Object.freeze(completed),
+        unclassified: Object.freeze(unclassified),
+        lifecycleStatus,
+        denominator:'current-active-target-recipients',
         total: rows.length
       })
     });
