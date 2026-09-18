@@ -85,7 +85,7 @@ const SPIRITUAL=Object.freeze({
     obedience:['Pagtuman','Kung klarong atubangon sa Kasulatan ang akong batasan, mohimo ko og konkretong kausaban imbes mouyon lamang.','Pilia ang usa ka klarong sugo gikan sa teksto karon ug himoa kini nga aksyon nga mahuman sulod sa 24 oras.'],
     love:['Gugma','Makita sa mga tawo nga duol kanako ang pailub, kaayo, pagpasaylo, ug praktikal nga pag-atiman sa akong batasan.','Pilia ang usa ka tawo nga nanginahanglan og pailub, tabang, pagpasaylo, o pagtagad ug buhata ang usa ka konkretong lakang.'],
     service:['Pag-alagad','Gigamit nako ang oras, abilidad, o kahinguhaan sa pag-alagad sa uban nga dili mangita og pag-ila.','Buhata karong semanaha ang usa ka mapuslanong butang alang sa uban nga dili dali mabayran.'],
-    community:['Komunidad','Aduna koy makahuluganon nga koneksyon sa ubang magtutuo nga makadasig ug makat correction kanako.','Pakigsulti karong semanaha sa usa ka hamtong nga magtutuo bahin sa tinuod nga kalisdanan o desisyon.'],
+    community:['Komunidad','Aduna koy makahuluganon nga koneksyon sa ubang magtutuo nga makadasig ug makatul-id kanako.','Pakigsulti karong semanaha sa usa ka hamtong nga magtutuo bahin sa tinuod nga kalisdanan o desisyon.'],
     integrity:['Integridad','Ang akong pribadong mga pagpili kasagarang nahiuyon sa pagtuo nga akong gipakita sa publiko.','Ngalani ang usa ka pribadong batasan nga supak sa imong kombiksyon ug pagbutang og usa ka praktikal nga utlanan.'],
     witness:['Pagpamatuod','Natural akong makasulti bahin kang Cristo ug sa maayong balita kung adunay angay nga higayon.','Pag-andam og duha ka minutong pagpasabot sa imong pagtuo kang Jesus ug nganong importante kini kanimo.'],
     wisdom:['Kaalam','Mohunong ko og igo aron mangita og biblikal nga kaalam sa dili pa motubag sa lisod nga sitwasyon.','Sa dili pa ang lisod nga desisyon, isulat ang mga kamatuoran, may kalabotang biblikal nga prinsipyo, posible nga resulta, ug tambag nga angay pangitaon.'],
@@ -185,7 +185,6 @@ export function createTransformLocalizer(locale){
         return{title:`${factorName(factor,english)}: ${band(rawBand)}`,body:body||row.body};
       }
     }
-    for(const id of Object.keys(BIAS.en||{})){void id}
     for(const id of ['sunk','base','confirm','outcome','frame']){
       const source={sunk:'Sunk-cost thinking',base:'Base-rate neglect',confirm:'Confirmation bias',outcome:'Outcome bias',frame:'Framing effect'}[id];
       if(row.title===source&&BIAS[lang]?.[id])return{title:BIAS[lang][id].signal,body:BIAS[lang][id].practice};
