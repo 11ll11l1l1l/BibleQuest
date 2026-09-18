@@ -5,7 +5,7 @@ Execution model: coordinated five-agent feature-completion program with serializ
 Official V5 integration branch: `v5/feature-completion`
 Final certified runtime/source candidate: `c0772d458e9d17ab1728c47c568e99857c7d67a1` (later commits are evidence/documentation-only)
 Formal acceptance coverage after physical Web Push DEVICE/FIELD closeout: **122/122 = 100%**
-Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
+Production: **V5 RELEASED** on `main` at `f6a0cff0e63ddf676b77b8470d84678958fe9d70`; V4 rollback preserved at `rollback/v4-pre-v5-production-20260918`
 
 ## 1. Authority and conflict resolution
 
@@ -238,11 +238,12 @@ Required final actions include:
 - 2026-09-18 genuine push-provider evidence: **118/122 -> 119/122 (97.5%)**; run `35288009361` / job `105424531705` passed terminal invalid-endpoint cleanup against Mozilla Autopush while preserving an unrelated control subscription.
 - 2026-09-18 physical Web Push closeout: **119/122 -> 122/122 (100%)**. Android/Brave closed-app delivery/open and disabled/no-push behavior passed. The notification deep-link hydration race discovered during the field run was corrected and exact-head regression-proven on final runtime candidate `c0772d458e9d17ab1728c47c568e99857c7d67a1`; accumulated regression run `35302198022` passed.
 
-## 5. Highest-priority remaining certification/development path
+## 5. Post-release handoff
 
 1. Preserve `c0772d458e9d17ab1728c47c568e99857c7d67a1` as the certified V5 runtime/source freeze.
-2. Reconcile the six documentation-only commits currently unique to `main` without importing stale/conflicting V5 acceptance scope.
-3. Promote the certified V5 runtime to production with V4 retained as rollback, then verify the exact production SHA/site before beginning V6 runtime work.
+2. Production promotion is complete at `f6a0cff0e63ddf676b77b8470d84678958fe9d70`; both Cloudflare projects deployed that exact commit successfully and the post-merge deployed preview smoke passed.
+3. Preserve `rollback/v4-pre-v5-production-20260918` as the V4 rollback reference.
+4. Begin V6 only from the released V5 production baseline and the final 122/122 acceptance/evidence contract; do not revive the superseded main-only V5 Feature Flag checklist.
 
 ## 6. Evidence rules
 
@@ -264,4 +265,4 @@ Rules:
 
 ## 7. Release boundary
 
-V5 is now explicitly accepted by its active 122-item contract. The current public production site remains the V4 fallback until the controlled `main`/Cloudflare promotion completes. Production promotion must preserve the certified runtime/source freeze, reconcile main-only documentation without reviving superseded V5 scope, and retain the V4 rollback ref.
+**V5 RELEASED — 2026-09-18 JST.** The certified V5 tree was promoted through PR #449 to production commit `f6a0cff0e63ddf676b77b8470d84678958fe9d70`. Cloudflare deployments for both `mybiblequest` and `biblequest` completed successfully on that commit, and the post-merge deployed preview smoke passed. The certified runtime/source freeze remains `c0772d458e9d17ab1728c47c568e99857c7d67a1`; later release reconciliation/bookkeeping changes are documentation/test-contract only. V4 remains available at `rollback/v4-pre-v5-production-20260918`.

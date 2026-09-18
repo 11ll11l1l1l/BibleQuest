@@ -1,9 +1,9 @@
 # BibleQuest V6 Development Plan
 
-Updated: 2026-09-17 JST
+Updated: 2026-09-18 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
-Starting baseline: **TBD — exact accepted V5 production SHA after V5 Phase 9**
+Starting baseline: released V5 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
 Depends on: completed/certified V5 feature-completion release
 
 ## 1. V6 line in the sand
@@ -12,7 +12,7 @@ V5 finishes the product on the current architecture. **V6 replaces and strengthe
 
 V6 is allowed to change build tooling, module boundaries, state ownership, app shell/router ownership, data/repository boundaries, database test infrastructure, service-worker/storage architecture, media ownership, notification delivery infrastructure, security/test tooling and feature internals.
 
-V6 is not allowed to use architecture work as an excuse to re-open feature-completion scope. Leader Center, Admin Console completion, artwork cleanup, minimum push, baseline offline reading, active-congregation switching, the V5 Feature Flag / Runtime Configuration bridge, and the named V5 verification debt must already be complete when V6 begins.
+V6 is not allowed to use architecture work as an excuse to re-open feature-completion scope. Leader Center, Admin Console completion, artwork cleanup, minimum push, baseline offline reading, active-congregation switching, and the named V5 verification debt are complete in the released V5 baseline. The stale main-only V5 Feature Flag / Runtime Configuration expansion was not part of the certified 122-item V5 contract and must not be treated as unfinished V5 scope.
 
 The V5 production behavior/data/security contract is the V6 parity baseline unless an explicit V6 ADR deliberately supersedes it.
 
@@ -36,7 +36,7 @@ V6 should prove these systems on representative surfaces, but **not redesign eve
 
 ## 3. Handoff from V5
 
-Phase 0 cannot start until V5 Phase 9 closes.
+V5 certification and production promotion are complete. Phase 0 starts only from the released V5 production baseline recorded above.
 
 Required V5 handoff evidence:
 
