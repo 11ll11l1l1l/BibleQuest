@@ -276,6 +276,11 @@ function boot(root){
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration);syncShell(store.getState());syncModeration(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
+    // Router starts immediately so public/local-first surfaces stay responsive.
+    // Once persisted Auth state is known, re-resolve the same route exactly
+    // once so authenticated deep links (including notification clicks) cannot
+    // remain stuck on their pre-hydration guest rendering.
+    router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
