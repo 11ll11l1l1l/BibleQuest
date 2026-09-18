@@ -30,6 +30,8 @@ for(const icon of ['assignments','transform','notifications','tutorial'])assert.
 const home=read('src/features/home/index.js');
 for(const binding of ["icon: 'assignments'","iconSvg('transform'","iconSvg('notifications'","iconSvg('tutorial'"])assert.ok(home.includes(binding),`Home is missing semantic icon binding: ${binding}`);
 
+for(const title of ['Makinig at Gawin','Paminaw ug Buhata'])assert.ok(home.includes(title),`Home Daily Journey localized title missing: ${title}`);
+
 const grow=read('src/features/progress/index.js');
 for(const token of ["import { localization }","'progress.heading':'Ang iyong pag-unlad sa BibleQuest'","'progress.heading':'Imong pag-uswag sa BibleQuest'","t('progress.openTransform')"])assert.ok(grow.includes(token),`Grow localization contract missing: ${token}`);
 
