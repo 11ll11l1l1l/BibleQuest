@@ -1,0 +1,27 @@
+name: V5 one-shot physical push trigger
+
+on:
+  push:
+    branches:
+      - ops/v5-field-push-trigger-20260918-1131
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger exact field-test push
+        run: |
+          set -euo pipefail
+          body="$(curl -fsS --max-time 30 'https://zkfmgezvzugchcwppreq.supabase.co/functions/v1/bq-v5-push-e2e-probe-20260918')"
+          echo "$body"
+          test "$(printf '%s' "$body" | jq -r '.ok')" = "true"
+          test "$(printf '%s' "$body" | jq -r '.category')" = "assignment"
+          test "$(printf '%s' "$body" | jq -r '.attempted')" = "1"
+          test "$(printf '%s' "$body" | jq -r '.delivered')" = "1"
+          test "$(printf '%s' "$body" | jq -r '.removed')" = "0"
+          test "$(printf '%s' "$body" | jq -r '.failed')" = "0"
+          test "$(printf '%s' "$body" | jq -r '.skipped')" = "0"
