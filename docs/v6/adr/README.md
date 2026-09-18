@@ -28,7 +28,7 @@ An ADR must include:
 - ADR-0001 — V6 build/client architecture: **ACCEPTED** — see `ADR-0001-build-client-architecture.md`.
 - ADR-0002 — Reproducible ephemeral/local Supabase/Postgres CI and deterministic tenant seed topology: **ACCEPTED** — see `ADR-0002-database-ci.md`.
 - ADR-0003 — Active-congregation/tenant context and data-access boundary: **ACCEPTED** — see `ADR-0003-active-congregation-data-boundary.md`.
-- ADR-0004 — Offline Scripture storage/content manifest strategy.
+- ADR-0004 — Offline Scripture storage/content manifest strategy: **ACCEPTED** — see `ADR-0004-offline-scripture-storage.md`.
 - ADR-0005 — Games engine contracts.
 - ADR-0006 — Media session/provider architecture.
 - ADR-0007 — Web Push and notification delivery architecture.
