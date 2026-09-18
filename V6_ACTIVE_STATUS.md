@@ -1,106 +1,85 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-09-13 JST
-Execution model: one serialized integration stream
+Updated: 2026-09-18 JST
+Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
-Baseline cleaned `main`: `ef5d46485f9e7138b969777d34de585cfd9ecbd1`
-Production safety baseline: BibleQuest V4 RC3
+Released V5 production baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
+Certified V5 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
+Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
 
 ## Authority
 
-This file is the single authoritative source for current BibleQuest V6 phase, scope, blockers, candidate identity, and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context. V3 and V4 authority files are historical release records and must not be reused as current V6 status.
-
-Detailed execution lives in `DEVELOPMENT_PLAN_V6.md`; release acceptance inventory lives in `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`.
-
-## V6 product decision
-
-V6 is a deliberate architecture-level upgrade with **no V4-era restriction against changing architecture, build tooling, module boundaries, state ownership, database test infrastructure, service-worker strategy, or feature internals**.
-
-"Without limitation" does not mean unsafe big-bang replacement. V6 may replace architecture intentionally, but every replacement must preserve or deliberately supersede production behavior through explicit contracts, migrations, tests, and rollback evidence.
-
-V4 remains the production fallback until a V6 candidate is explicitly accepted and promoted.
+This file is the authoritative source for current BibleQuest V6 phase, scope, blockers and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Detailed execution is in `DEVELOPMENT_PLAN_V6.md`; acceptance inventory is in `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`; Phase-0 evidence is in `docs/v6/V6_PHASE0_BOOTSTRAP.md`.
 
 ## Current state
 
-**Phase 0 — V6 architecture program definition: ACTIVE.**
+**Phase 0 — COMPLETE.**
+**Phase 1 — BUILD/CLIENT ENGINE: ACTIVE.**
 
-No V6 runtime feature implementation has started yet. The current V6 branch was created directly from the cleaned and verified V4 production line at `ef5d46485f9e7138b969777d34de585cfd9ecbd1`.
+The active V6 line starts from the exact released V5 production commit `f6a0cff0...`. The obsolete pre-V5 V6 experiment is preserved separately and is not part of active V6 history.
 
-The first V6 deliverable is governance and architecture documentation only. Runtime changes begin only after this plan is accepted and the inherited baseline is green on the V6 branch.
+ADR-0001 and ADR-0002 are ACCEPTED:
 
-## Mandatory V6 outcomes
+- `docs/v6/adr/ADR-0001-build-client-architecture.md`
+- `docs/v6/adr/ADR-0002-database-ci.md`
 
-V6 must address the following codebase-proven limits:
+Inherited static/governance gates reported green on the Phase-0 candidate for build/deployment, PWA/install, offline shell/Bible, assignment authorization, shell/Home/Assignments/Calendar, EN/TL localization, active-congregation, push lifecycle/persistence, glyph inventory and V5 state sweep.
 
-1. Real Supabase/Postgres database testing in CI, including migrations, RLS, grants/revokes and `SECURITY DEFINER` behavior.
-2. A real Node/Vite build system with TypeScript-capable module boundaries, code splitting, CSS/assets processing and production build artifacts.
-3. Reader and Games decomposition into testable modules/components with isolated state; Games gains a proper game engine and removes raw emoji UI where real assets exist.
-4. A real media subsystem replacing the one-frame Audio singleton and raw YouTube command bridge while retaining controlled audible playback.
-5. Real Web Push delivery for supported notifications, backed by explicit subscriptions/preferences and an in-app inbox fallback.
-6. True offline Bible reading with versioned downloadable Scripture content and a deliberate service-worker/storage strategy.
-7. A proper Leader Center using the assignment-review, membership and privacy-safe presence capabilities already established in V4.
-8. Genuine multi-congregation architecture/tooling with deterministic two-congregation CI fixtures and explicit active-congregation context.
-9. A real Motion and Sound System (see Phase 11 of `DEVELOPMENT_PLAN_V6.md`) as a first-class app-level owner - design tokens, an animation/sound preset registry, gesture-unlock handling, and a persisted user preference - proven end-to-end on 2-3 reference surfaces. Full-app rollout of this system is explicitly out of V6 scope; see `DEVELOPMENT_PLAN_V7.md`.
+Browser automation was not runnable in the originating workspace because Chromium installation did not complete. This is an environment limitation, not a product failure. It does not block starting bounded V6 coding. Browser parity remains mandatory before a runtime tranche is certified/merged and before RC promotion. Never represent unexecuted browser evidence as PASS.
 
-## V6 is already scoped, not yet active
+## V6 product decision
 
-`DEVELOPMENT_PLAN_V6.md` sketches the next major version: full-coverage, family-by-family application of the V6 Motion and Sound System across every page, plus the cross-page cohesion pass a partial rollout cannot achieve ("fully polished, integrated app feel"). V6 does not begin until V6 Phase 12 (certification/promotion) is complete. V6 must not re-architect anything - if V6 work exposes a real gap in the Motion/Sound System itself, that gap is fixed in V6, not worked around in V6.
+V6 strengthens the engine underneath the released V5 product. It may change build tooling, typed module boundaries, state/data ownership, database-test infrastructure, service-worker/storage architecture, media, notifications and internal implementation, but must preserve accepted V5 product/security behavior unless an explicit ADR deliberately supersedes it.
 
-## Additional architecture outcomes adopted for V6
+V6 does not reopen completed V5 feature scope merely to justify architecture work.
 
-Because they directly support the required upgrades above, V6 also adopts:
+## Immediate coding authority
 
-- generated database types and typed domain/service contracts;
-- deterministic local/CI seed topology covering two congregations and meaningful role/account combinations;
-- a real test pyramid: unit/domain, database integration, component/browser, deployed E2E and physical-device acceptance where required;
-- a centralized data/repository boundary instead of feature-specific ad-hoc remote calls;
-- explicit app/session/tenant state ownership and migration away from fragile monolithic render/state flows;
-- versioned offline mutation queues and conflict rules for safe user-owned writes;
-- privacy-safe observability, release/build identity and production error diagnostics;
-- formal architecture decision records (ADRs) for intentional V6 contract changes;
-- version-neutral CI naming and reusable release gates rather than continuing permanent `v3-*` / `v4-*` workflow naming;
-- a formal design-system/component layer and i18n/content boundaries as modules are migrated;
-- removal of certified-but-dead owners such as the old Media Library path only after parity and regression proof;
-- bundle, image and route performance budgets once Vite owns the build.
+Terra/Sol development may start immediately on READY Phase-1 and other bounded V6 work that does not violate an unresolved architecture boundary.
+
+Initial READY work includes:
+
+1. Vite/package/toolchain bootstrap with V5 parity preserved.
+2. Incremental TypeScript configuration and typed boundary scaffolding.
+3. capability-detection utilities;
+4. manifest/PWA asset validation;
+5. install-state/install UI work;
+6. online/offline state and fallback UI;
+7. safe local-persistence wrappers;
+8. route/deep-link inventory and validation;
+9. notification UI/types/preferences;
+10. badges, shortcuts and share helpers;
+11. tests, localization, accessibility and responsive regression work.
+
+High-risk changes to global auth, RLS strategy, destructive schema, global routing, service-worker architecture, offline conflict policy or production deployment require captain/ADR review.
 
 ## Non-negotiable inherited safety contracts
 
-Architecture may change; these outcomes may not silently regress:
-
-- server-side authorization remains authoritative; UI visibility is never treated as permission;
-- RLS/data-isolation behavior must be executable-tested, not weakened to make tests pass;
-- secrets and privileged credentials never move into the client bundle;
-- assignment, presence, congregation, admin and linked-activity privacy/isolation contracts remain protected unless an explicit V6 ADR intentionally replaces them with a stricter/equivalent model;
-- copyrighted Bible translations remain external unless redistribution rights are verified;
-- one serialized runtime integration stream is maintained;
-- field evidence is never fabricated and a waiver is never represented as PASS;
-- V3/V4 archive branches are recovery/history only and are never V6 integration branches.
+- server-side authorization remains authoritative;
+- RLS/data isolation may not be weakened to make tests pass;
+- privileged secrets never enter client bundles;
+- tenant/assignment/presence/admin privacy boundaries remain protected;
+- copyrighted Bible content remains subject to verified redistribution rights;
+- one serialized integration stream is maintained for overlapping runtime owners;
+- test/field evidence is never fabricated;
+- archived branches are history/recovery only.
 
 ## Phase state
 
-- Phase 0 — Authority, architecture program, ADRs, baseline: **ACTIVE**.
-- Phase 1 — Vite/TypeScript/build/test toolchain: NOT STARTED.
-- Phase 2 — Real Supabase/Postgres CI + deterministic tenant fixtures: NOT STARTED.
-- Phase 3 — Core client architecture/state/data boundary: NOT STARTED.
-- Phase 4 — Reader architecture + true offline Bible: NOT STARTED.
-- Phase 5 — Games engine + componentized Games UI: NOT STARTED.
-- Phase 6 — Media subsystem modernization: NOT STARTED.
-- Phase 7 — Push notifications + service-worker/background/offline-sync platform: NOT STARTED.
-- Phase 8 — Leader Center: NOT STARTED.
-- Phase 9 — Multi-congregation product/tooling: NOT STARTED.
-- Phase 10 — Auth/admin/security hardening: NOT STARTED.
-- Phase 11 — Design system, i18n, observability, performance consolidation: NOT STARTED.
-- Phase 12 — Integrated V6 certification and production promotion: NOT STARTED.
-
-## Immediate next gate
-
-Before Phase 1 runtime work:
-
-1. Merge/accept the V6 planning documents.
-2. Re-run inherited V4 regression, security/privacy, responsive/PWA, protected-page and whole-app/browser baselines on the exact V6 planning head.
-3. Record ADR-0001 for the build/client architecture decision and ADR-0002 for the real Supabase CI strategy.
-4. Freeze a Phase 0 baseline SHA in this file.
+- Phase 0 — Authority, ADRs, released-V5 baseline: **COMPLETE**.
+- Phase 1 — Vite/TypeScript/build/test toolchain: **ACTIVE**.
+- Phase 2 — executable Supabase/Postgres CI + fixtures: READY after Phase-1 tooling primitives needed by CI.
+- Phase 3 — application kernel/state/data/tenant: READY in bounded characterization/scaffolding tranches.
+- Phase 4 — Reader/content/offline engine: NOT STARTED.
+- Phase 5 — Games engine: NOT STARTED.
+- Phase 6 — Media engine: NOT STARTED.
+- Phase 7 — Notification/push/background-sync engine: READY for bounded UI/types/tests; high-risk SW/backend architecture remains ADR/captain-owned.
+- Phase 8 — Ministry/admin migration: NOT STARTED.
+- Phase 9 — tenant/multi-congregation engine: NOT STARTED.
+- Phase 10 — auth/admin/security hardening: NOT STARTED.
+- Phase 11 — design/runtime/observability/performance: NOT STARTED.
+- Phase 12 — integrated certification/promotion: NOT STARTED.
 
 ## Release rule
 
-There is no V6 release candidate yet. `main`/V4 production remains authoritative for users. A V6 RC may be frozen only after applicable phase acceptance items are closed and the integrated database/browser/security/offline/tenant test matrix is green on one exact candidate SHA.
+There is no V6 release candidate yet. Production remains the released V5 line until one exact V6 candidate passes applicable automated, backend, browser/device, security, offline and tenant gates and is explicitly promoted.
