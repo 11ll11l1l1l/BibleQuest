@@ -183,7 +183,7 @@ export function morePage({pwaInstall,onCommunity,onMinistryHub,onNotificationCen
         installPanel?.toggleAttribute('hidden',!visible);
         installButton?.toggleAttribute('hidden',!state?.canPrompt&&state?.status!=='prompting');
         if(installButton)installButton.disabled=state?.status==='prompting';
-        if(installStatus)installStatus.textContent=state?.status==='prompting'?moreText('Opening the install prompt…',locale):state?.status==='dismissed'?moreText('Installation was not completed. You can try again when your browser offers it.',locale):'';
+        if(installStatus)installStatus.textContent=state?.status==='prompting'?'Opening the install prompt…':state?.status==='dismissed'?'Installation was not completed. You can try again when your browser offers it.':'';
       };
       const install=()=>{void pwaInstall?.prompt()};
       communityButton?.addEventListener('click',openCommunity);ministryHubButton?.addEventListener('click',openMinistryHub);notificationButton?.addEventListener('click',openNotifications);workspaceButton?.addEventListener('click',openWorkspace);contentReviewButton?.addEventListener('click',openContentReview);couplesButton?.addEventListener('click',openCouples);couplesCloudButton?.addEventListener('click',openCouplesCloud);journeyGroupsButton?.addEventListener('click',openJourneyGroups);teamCenterButton?.addEventListener('click',openTeamCenter);congregation?.addEventListener('click',open);backupButton?.addEventListener('click',openBackup);missionButton?.addEventListener('click',openMission);accessibilityButton?.addEventListener('click',openAccessibility);calendarButton?.addEventListener('click',openCalendar);helpButton?.addEventListener('click',openHelp);installButton?.addEventListener('click',install);
