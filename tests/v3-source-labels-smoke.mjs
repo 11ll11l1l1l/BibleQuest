@@ -36,7 +36,7 @@ async function run(){
   await expectSource('bq-study','Guided Study');
 
   await open('deep-questions');
-  await page.locator('[data-deep-open="p1"]').click();
+  await page.locator('[data-deep-open="p1"]').first().click();
   await page.locator('[data-deep-session="p1"]').waitFor();
   await expectSource('bq-study','Deep Questions');
 
