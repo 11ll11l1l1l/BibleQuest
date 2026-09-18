@@ -276,6 +276,11 @@ function boot(root){
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration);syncShell(store.getState());syncModeration(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
+    // Router starts immediately so public/local-first surfaces stay responsive.
+    // Only a successfully restored authenticated session needs a forced
+    // re-resolve: signed-out/local-first routes already rendered correctly and
+    // must not be remounted just because Auth boot completed.
+    if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));

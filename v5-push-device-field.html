@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" data-bq-v5-push-field>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>BibleQuest V5 Push Device Field Harness</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light dark}
+    body{margin:0;padding:20px;max-width:760px;margin-inline:auto;line-height:1.45}
+    main{display:grid;gap:16px}
+    section{border:1px solid currentColor;border-radius:14px;padding:16px}
+    h1,h2,p{margin-top:0}
+    label{display:grid;gap:6px;margin:12px 0}
+    input,button{font:inherit;min-height:44px;border-radius:10px;padding:10px 12px}
+    input{border:1px solid #888}
+    button{cursor:pointer;border:1px solid currentColor}
+    .actions{display:flex;flex-wrap:wrap;gap:10px}
+    .actions button{flex:1 1 180px}
+    dl{display:grid;grid-template-columns:minmax(130px,.8fr) minmax(0,1.2fr);gap:8px 12px;margin:0}
+    dt{font-weight:700}
+    dd{margin:0;overflow-wrap:anywhere}
+    [data-kind="ok"]{font-weight:700}
+    [data-kind="error"]{font-weight:700}
+    .warning{font-weight:700}
+    code{overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <p class="warning">QA ONLY — V5 DEVICE/FIELD HARNESS</p>
+    <h1>Web Push device validation</h1>
+    <p>This unlinked page exists only to execute the two remaining physical-device release gates. Use a designated safe BibleQuest test account. Do not capture credentials, email addresses, push endpoints, or tokens in evidence.</p>
+    <p>Automatic assignment-triggered push fanout remains off. This page cannot perform privileged server sends.</p>
+  </section>
+
+  <section>
+    <h2>Account</h2>
+    <form data-field-signin>
+      <label>Email
+        <input name="email" type="email" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <div class="actions">
+        <button type="submit">Sign in test account</button>
+        <button type="button" data-field-signout>Sign out</button>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Push controls</h2>
+    <p>The enable action requests browser notification permission and opts in only to the <strong>assignment</strong> category through the accepted V5 lifecycle/persistence path.</p>
+    <div class="actions">
+      <button type="button" data-field-enable>Enable assignment push</button>
+      <button type="button" data-field-disable>Disable push</button>
+      <button type="button" data-field-refresh>Refresh status</button>
+    </div>
+  </section>
+
+  <section aria-live="polite">
+    <h2>Sanitized status</h2>
+    <dl>
+      <dt>Harness</dt><dd data-field-harness>booting</dd>
+      <dt>Signed in</dt><dd data-field-auth>no</dd>
+      <dt>Push supported</dt><dd data-field-supported>checking</dd>
+      <dt>Permission</dt><dd data-field-permission>checking</dd>
+      <dt>Browser subscription</dt><dd data-field-browser-sub>checking</dd>
+      <dt>Persisted rows</dt><dd data-field-persisted>checking</dd>
+      <dt>Assignment opt-in</dt><dd data-field-assignment>checking</dd>
+      <dt>Owner marker</dt><dd data-field-owner>checking</dd>
+    </dl>
+    <p data-field-message></p>
+    <div class="actions">
+      <button type="button" data-field-copy>Copy sanitized status</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Field sequence</h2>
+    <p><strong>Gate 1:</strong> enable assignment push, confirm the sanitized status is green, fully close the browser/PWA, have the controlled server test send one assignment notification, observe the OS notification, tap it, and confirm BibleQuest opens the same-origin Assignments destination.</p>
+    <p><strong>Gate 2:</strong> return here, disable push, confirm the browser subscription and persisted row are absent, fully close the app again, have the controlled server create the in-app notification and run the sender. The sender must report zero eligible subscriptions; no OS push should arrive while the Notification Center still shows the normal in-app item.</p>
+    <p>Record results only through <code>docs/v5/V5_PUSH_DEVICE_FIELD_RUNBOOK.md</code> and <code>V5_PUSH_DEVICE_FIELD_EVIDENCE.json</code>.</p>
+  </section>
+</main>
+<script type="module" src="./v5-push-device-field.js"></script>
+</body>
+</html>
