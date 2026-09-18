@@ -25,8 +25,8 @@ An ADR must include:
 
 ## Initial ADR queue
 
-- ADR-0001 — V6 build/client architecture: Vite + TypeScript and selected component migration strategy.
-- ADR-0002 — Ephemeral Supabase/Postgres in CI and deterministic tenant seed topology.
+- ADR-0001 — V6 build/client architecture: **ACCEPTED** — see `ADR-0001-build-client-architecture.md`.
+- ADR-0002 — Reproducible ephemeral/local Supabase/Postgres CI and deterministic tenant seed topology: **ACCEPTED** — see `ADR-0002-database-ci.md`.
 - ADR-0003 — Active-congregation/tenant context and data-access boundary.
 - ADR-0004 — Offline Scripture storage/content manifest strategy.
 - ADR-0005 — Games engine contracts.
