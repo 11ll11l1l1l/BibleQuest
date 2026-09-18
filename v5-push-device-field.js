@@ -279,10 +279,9 @@ $('[data-field-copy]').addEventListener('click', async () => {
   }
 });
 
-window.addEventListener('pagehide', () => {
-  push.dispose();
-  session.dispose();
-}, { once: true });
+window.addEventListener('pageshow', () => {
+  void refresh().catch(() => {});
+});
 
 await session.boot();
 await refresh();
