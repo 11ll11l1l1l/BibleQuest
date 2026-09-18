@@ -1,0 +1,35 @@
+name: V5 Push Device Field Harness Readiness
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'v5-push-device-field.html'
+      - 'v5-push-device-field.js'
+      - 'tests/v5-push-device-field-harness-static.mjs'
+      - 'docs/v5/V5_PUSH_DEVICE_FIELD_RUNBOOK.md'
+      - '.github/workflows/v5-push-device-field-readiness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Harness static safety contract
+        run: node tests/v5-push-device-field-harness-static.mjs
+      - name: Syntax check field harness
+        run: node --check v5-push-device-field.js
+      - name: Source remains clean
+        run: test -z "$(git status --porcelain --untracked-files=no)"
