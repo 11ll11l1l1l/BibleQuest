@@ -35,7 +35,7 @@ try {
 
   assert(state.heading === 'Pagninilay sa pananampalataya at pagsasabuhay', `Unexpected Transformation heading: ${state.heading}`);
   assert(state.modePrompt === 'Pumili ng paraan ng pagninilay', `Unexpected mode prompt: ${state.modePrompt}`);
-  assert(state.modeLabel === 'Paraan ng Transformation', `Unexpected mode aria-label: ${state.modeLabel}`);
+  assert(state.modeLabel === 'Paraan ng Pagbabago', `Unexpected mode aria-label: ${state.modeLabel}`);
   assert(state.answered === '0/12 nasagutan', `Unexpected answered label: ${state.answered}`);
   assert(state.back === 'Bumalik sa Lumago', `Unexpected back label: ${state.back}`);
   assert(state.reset === 'I-reset', `Unexpected reset label: ${state.reset}`);
@@ -50,6 +50,9 @@ try {
   const firstRating = page.locator('[data-transform-rating]').first();
   const ratingLabel = await firstRating.locator('xpath=..').getAttribute('aria-label');
   assert(ratingLabel?.startsWith('Rating para sa '), `Rating aria-label was not localized: ${ratingLabel}`);
+  const firstPrompt = await page.locator('[data-transform-item="word"] p').textContent();
+  assert(firstPrompt?.includes('Regular akong nagbabasa ng Kasulatan'), `Tagalog spiritual prompt was not localized: ${firstPrompt}`);
+  assert(!firstPrompt?.includes('I regularly read Scripture'), 'Tagalog Transform leaked the canonical English spiritual prompt.');
   assert(pageErrors.length === 0, `Browser page errors occurred: ${pageErrors.join(' | ')}`);
 
   console.log('PASS V5 basic Transformation Tagalog browser localization');

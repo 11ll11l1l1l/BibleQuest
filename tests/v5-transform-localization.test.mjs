@@ -70,8 +70,9 @@ test('Transformation page uses the one integrated localization owner without tou
   }
   assert.ok(!source.includes("window.confirm('Clear all 12 Transformation answers and the current result?')"), 'Basic reset confirmation must use localization rather than a hard-coded English dialog.');
   assert.match(source, /transform\.definitions\.spiritual/);
-  assert.match(source, /escapeHtml\(item\.text\)/);
-  assert.match(source, /escapeHtml\(row\.guide\)/);
+  assert.match(source, /createTransformLocalizer/);
+  assert.match(source, /local\.spiritual\(item\)/);
+  assert.match(source, /local\.spiritualResult\(row\)/);
 });
 
 test('Transformation localization inventory never introduces Scripture translation keys', () => {

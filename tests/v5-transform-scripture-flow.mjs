@@ -15,5 +15,5 @@ assert.equal(resumed.reflection.pray,flow.pray);
 
 const feature=await readFile(new URL('../src/features/transform/index.js',import.meta.url),'utf8');
 for(const hook of ['data-transform-flow-scripture','data-transform-flow-understand','data-transform-flow-reflect','data-transform-flow-apply','data-transform-flow-pray','data-transform-flow-save'])assert.match(feature,new RegExp(hook));
-assert.match(feature,/Complete all five Scripture reflection steps before saving/);
+assert.match(feature,/copy\('completeScripture'\)/);
 console.log('BibleQuest v5 Transformation Scripture-to-prayer flow regression passed.');
