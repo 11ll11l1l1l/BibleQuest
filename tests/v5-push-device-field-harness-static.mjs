@@ -28,7 +28,7 @@ assert.match(js, /push\.enable\(\['assignment'\]\)/);
 assert.match(js, /push\.disable\(\)/);
 assert.match(js, /serviceWorker\.register\('\/offline-shell-sw\.js'/);
 assert.match(js, /mybiblequest\.pages\.dev/);
-assert.match(js, /client\.from\('bible_push_subscriptions'\)/);
+assert.match(js, /client\s*\.from\('bible_push_subscriptions'\)/);
 
 assert.equal(bootstrap.includes('v5-push-device-field'), false, 'field harness must remain outside normal bootstrap');
 assert.equal(index.includes('v5-push-device-field'), false, 'field harness must remain unlinked from normal app');
