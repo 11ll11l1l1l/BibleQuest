@@ -39,7 +39,7 @@ async function run(){
   assert(runtime.q10==='context'&&runtime.q21==='context','Passage-sensitive authored questions lost context classification.');
   assert(runtime.baptismAction==='context'&&/baptism|passage|context/i.test(runtime.baptismNote),'Imported John baptism question did not retain contextual safety metadata.');
 
-  await page.goto(`${BASE}#/deep-questions`,{waitUntil:'networkidle'});await page.locator('[data-deep-open="p1"]').click();await page.locator('[data-deep-session="p1"]').waitFor();
+  await page.goto(`${BASE}#/deep-questions`,{waitUntil:'networkidle'});await page.locator('[data-deep-open="p1"]').first().click();await page.locator('[data-deep-session="p1"]').waitFor();
   await page.locator('[data-doctrinal-action="neutral"]').waitFor();
   assert(/interpretive|reflection|doctrine/i.test((await page.locator('[data-doctrinal-action="neutral"]').textContent())||''),'Deep Questions neutral safety notice is missing.');
   await page.locator('[data-deep-choice="0"]').click();await page.locator('.bq-deep-feedback').waitFor();
