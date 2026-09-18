@@ -48,11 +48,15 @@ export function createCalendarService({ session, privateStorage, api, assignment
     return rows.map(fromAssignmentDue).filter(Boolean);
   }
 
+  function combinedEvents() {
+    return [...readLocal(owner()), ...assignmentEvents(), ...congregationState.events];
+  }
+
   async function loadCongregation() {
     if (!congregation) { congregationState = { congregationId: '', congregationName: '', canShare: false, events: [] }; return; }
     try {
       const memberships = await congregation.load();
-      const active = memberships[0];
+      const active = congregation.getActive?.() || memberships[0];
       if (!active) { congregationState = { congregationId: '', congregationName: '', canShare: false, events: [] }; return; }
       const canShare = congregation.can(active.congregationId, 'ministry');
       const rows = await api.calendar.listCongregation(active.congregationId);
@@ -64,18 +68,22 @@ export function createCalendarService({ session, privateStorage, api, assignment
     } catch { congregationState = { congregationId: '', congregationName: '', canShare: false, events: [] }; }
   }
 
+  function getAgenda({ startDate = clock(), days = 30 } = {}) {
+    return buildAgenda(combinedEvents(), { today: startDate, days });
+  }
+
   function present() {
     const current = owner();
     const personal = readLocal(current);
-    const events = [...personal, ...assignmentEvents(), ...congregationState.events];
     return Object.freeze({
       owner: current,
       accountUserId: sessionUserId(),
       scope: current.startsWith('account:') ? 'account-cloud' : 'guest-device',
       canShareWithCongregation: congregationState.canShare,
+      congregationId: congregationState.congregationId,
       congregationName: congregationState.congregationName,
       events: Object.freeze(personal),
-      agenda: buildAgenda(events, { today: clock(), days: 30 })
+      agenda: getAgenda({ startDate: clock(), days: 30 })
     });
   }
 
@@ -169,5 +177,5 @@ export function createCalendarService({ session, privateStorage, api, assignment
     return { ...present(), synced };
   }
 
-  return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getState: present });
+  return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present });
 }

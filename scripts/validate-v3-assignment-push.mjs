@@ -18,7 +18,7 @@ if(/linkedActivity|linked_activity/.test(owner))fail('#75 browser owner must kee
 
 for(const token of['data-assignment-publisher','data-assignment-publish','data-assignment-targets','name="targetScope"','name="requiredReflection"','name="minQuizScore"','name="evidenceType"'])if(!ui.includes(token))fail(`Assignments UI missing #75 publishing control: ${token}`);
 if(/linkedActivity|linked_activity/.test(ui))fail('#75 publishing UI must not expose linked activity.');
-if(!ui.includes('does not send notifications or generate recurring copies'))fail('#75 UI must preserve notification/recurrence boundary.');
+if(!ui.includes("tx('assignments.publisher.note')"))fail('#75 UI must preserve notification/recurrence boundary.');
 
 for(const token of["async targets(congregationId)","async create(congregationId,payload)","action:'targets'","action:'create'"])if(!api.includes(token))fail(`Central API missing trusted assignment publish boundary: ${token}`);
 for(const table of['bible_assignments','bible_assignment_progress','bible_score_events']){

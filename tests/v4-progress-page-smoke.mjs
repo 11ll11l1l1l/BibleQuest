@@ -36,12 +36,12 @@ async function inspect(width,height,isMobile=false){
   assert(result.scrollWidth<=result.innerWidth+1,`V4 Progress/Grow document overflow at ${width}px: ${result.scrollWidth}px > ${result.innerWidth}px.`);
   assert(result.minLeft>=-1&&result.maxRight<=result.innerWidth+1,`V4 Progress/Grow cards/actions escape the ${width}px viewport.`);
   assert(result.use==='assets/progress-feature-icons.svg#progress','V4 Progress/Grow hero lost canonical semantic artwork.');
-  assert(result.actionCount===4,'V4 Progress/Grow must retain all four growth-tool actions.');
+  assert(result.actionCount===5,'V4 Progress/Grow must retain all growth-tool actions (Transform/Profile/Psychometrics/Avatar/My Journey).');
   assert(result.minActionHeight>=44,'V4 Progress/Grow action target is below 44px.');
   assert(result.statCount===4,'V4 Progress/Grow must retain the four canonical progress statistics.');
   assert(result.badgeCount>0,'V4 Progress/Grow badge surface disappeared.');
   assert(/^\d+$/.test(result.xp)&&/^\d+$/.test(result.streak),'V4 Progress/Grow canonical XP/streak values are not rendered as readable values.');
-  for(const label of['Open Transformation','Personality Profile','Psychometrics Lab','Avatar Vault'])assert(result.labels.includes(label),`V4 Progress/Grow action disappeared: ${label}`);
+  for(const label of['Open Transformation','Personality Profile','Psychometrics Lab','Avatar Vault','My Journey'])assert(result.labels.includes(label),`V4 Progress/Grow action disappeared: ${label}`);
   assert(errors.length===0,`Unexpected V4 Progress/Grow console/page errors at ${width}px: ${errors.join(' | ')}`);
   await page.close();
 }

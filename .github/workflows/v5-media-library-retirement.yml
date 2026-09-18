@@ -1,0 +1,50 @@
+name: V5 Media Library retirement
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/media-library.js'
+      - 'src/features/media-library/index.js'
+      - 'src/app/recordings.js'
+      - 'src/features/recordings/index.js'
+      - 'src/app/bootstrap.js'
+      - 'scripts/validate-v3-architecture.mjs'
+      - 'docs/v5/V5_MEDIA_ARCHITECTURE_OWNERSHIP.md'
+      - 'tests/v5-media-library-retirement.test.mjs'
+      - '.github/workflows/v5-media-library-retirement.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Assert exact candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - name: Syntax check retirement contract
+        run: node --check tests/v5-media-library-retirement.test.mjs
+      - name: Run retirement and architecture contract
+        run: node --test tests/v5-media-library-retirement.test.mjs
+      - name: Run architecture validator
+        run: node scripts/validate-v3-architecture.mjs
+      - name: Verify source clean
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain --untracked-files=no)"

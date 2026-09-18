@@ -1,0 +1,32 @@
+name: BibleQuest V5 push delivery source contract
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'supabase/functions/bq-push-delivery/index.ts'
+      - 'tests/v5-push-delivery-source-contract.test.mjs'
+      - '.github/workflows/v5-push-delivery-source-contract.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: biblequest-v5-push-delivery-contract-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify push delivery source contract
+        run: node --test tests/v5-push-delivery-source-contract.test.mjs

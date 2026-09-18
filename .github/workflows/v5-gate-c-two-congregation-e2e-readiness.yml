@@ -1,0 +1,65 @@
+name: V5 Gate C Two-Congregation E2E Readiness
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - tests/v5-gate-c-two-congregation-e2e.mjs
+      - docs/v5/phase6-gate-c-two-congregation-e2e.md
+      - .github/workflows/v5-gate-c-two-congregation-e2e-readiness.yml
+      - src/app/congregation-membership.js
+      - src/core/api.js
+      - supabase/migrations/20260904_assignments_presence_unlocks.sql
+      - supabase/migrations/20260911131000_assignment_response_presence.sql
+      - supabase/migrations/20260912090000_assignment_presence_self_only.sql
+      - supabase/migrations/20260911_calendar_events.sql
+      - supabase/migrations/20260911140000_calendar_congregation_sharing.sql
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-readiness:
+    name: STATIC/readiness only
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Parse Gate C backend harness
+        run: node --check tests/v5-gate-c-two-congregation-e2e.mjs
+
+      - name: Execute no-network readiness mode
+        run: node tests/v5-gate-c-two-congregation-e2e.mjs --static-readiness
+
+      - name: Verify fail-closed evidence contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          harness='tests/v5-gate-c-two-congregation-e2e.mjs'
+          runbook='docs/v5/phase6-gate-c-two-congregation-e2e.md'
+
+          grep -Fq "BIBLEQUEST_GATE_C_BACKEND_E2E_ALLOWED" "$harness"
+          grep -Fq "BIBLEQUEST_PRODUCTION_SUPABASE_URL" "$harness"
+          grep -Fq "BIBLEQUEST_TEST_SUPABASE_SERVICE_ROLE_KEY" "$harness"
+          grep -Fq "test and production Supabase origins are identical" "$harness"
+          grep -Fq "bible_congregation_members" "$harness"
+          grep -Fq "bible_assignments" "$harness"
+          grep -Fq "bible_calendar_events" "$harness"
+          grep -Fq "Gate-C BACKEND-E2E PASS" "$harness"
+
+          grep -Fq "STATIC/readiness only" "$runbook"
+          grep -Fq "read-only" "$runbook"
+          grep -Fq "no service-role path" "$runbook"
+          grep -Fq "does not certify assignment/calendar authoring permissions" "$runbook"
+          grep -Fq "must not be described as production-ready" "$runbook"
+
+          echo 'Gate-C STATIC/readiness contract verified. No backend execution occurred.'

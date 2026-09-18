@@ -1,0 +1,56 @@
+name: V5 Home Today browser closeout
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/home/index.js'
+      - 'src/features/home/**'
+      - 'src/app/bootstrap.js'
+      - 'tests/v5-home-today-browser.mjs'
+      - 'tests/v5-home-today-composition-gap.mjs'
+      - 'tests/v5-home-today-this-week.test.mjs'
+      - '.github/workflows/v5-home-today-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  home-today-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run Home composition contracts
+        run: node --test tests/v5-home-today-composition-gap.mjs tests/v5-home-today-this-week.test.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start BibleQuest locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-home-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-home-http.log
+          exit 1
+      - name: Prove Home empty and populated composition at 390px
+        run: timeout 240s node tests/v5-home-today-browser.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code

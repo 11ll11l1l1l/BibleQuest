@@ -1,35 +1,12 @@
-// BibleQuest V4 Tranche 13 presentation contract.
-// Tranche 13 itself was CSS-only. Later functional tranches may legitimately
-// extend protected feature owners, so preserve its architecture/interaction
-// contract structurally rather than freezing every owner forever.
+// BibleQuest V4/V5 Tranche 13 presentation contract.
+// Tranche 13 was CSS-only, but later approved V4/V5 functional work extends
+// several protected owners. Preserve architecture, interaction and trust
+// boundaries structurally rather than freezing obsolete file bytes.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 
 const root=path.resolve(import.meta.dirname,'..');
-// Exact active V4 HEAD immediately before Tranche 13 was integrated into the single stream.
-const baselineSha='76474d070da75cb8e0a9210642ea9e426b545200';
-
-// These owners have not received a later approved functional tranche, so the
-// original Tranche 13 byte lock remains useful for them. Admin Console is
-// intentionally excluded from this byte lock because V4 Phase 2 now extends
-// that existing owner with emergency user-management controls. Its ownership
-// and required hooks are guarded below instead.
-const byteLockedFeatures=[
-  ['admin-operations','src/features/admin-operations/index.js'],
-  ['content-review','src/features/content-review/index.js'],
-  ['congregation','src/features/congregation/index.js'],
-  ['reset-recovery','src/features/reset-recovery/index.js']
-];
-
-for(const [name,relative] of byteLockedFeatures){
-  const current=fs.readFileSync(path.join(root,relative),'utf8');
-  let baseline=null;
-  try{baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']})}catch{}
-  if(baseline!==null)assert.equal(current,baseline,`${name} must remain byte-for-byte unchanged unless a later approved functional tranche explicitly updates its contract.`);
-}
-
 const cssFiles={
   admin:fs.readFileSync(path.join(root,'src/ui/admin-console-v4.css'),'utf8'),
   operations:fs.readFileSync(path.join(root,'src/ui/admin-operations-v4.css'),'utf8'),
@@ -66,17 +43,25 @@ const hooks={
   'src/features/congregation/index.js':['data-congregation-join','data-congregation-role','data-congregation-back'],
   'src/features/reset-recovery/index.js':['data-reset-recovery-form','data-reset-recovery-code','data-reset-finish']
 };
+const sources={};
 for(const [relative,required] of Object.entries(hooks)){
   const source=fs.readFileSync(path.join(root,relative),'utf8');
+  sources[relative]=source;
   for(const hook of required)assert.ok(source.includes(hook),`${relative} must preserve ${hook}.`);
+  assert.ok(!source.includes('createClient('),`${relative} must not create a second Supabase client.`);
+  assert.ok(!/supabase\.co|service[_-]?role|sb_secret_/i.test(source),`${relative} must not embed privileged backend access.`);
 }
 
 // Admin Console may evolve after Tranche 13, but it must continue using the
 // injected service owners rather than introducing a direct Supabase/auth admin
 // transport or a duplicate platform-management runtime.
-const adminSource=fs.readFileSync(path.join(root,'src/features/admin-console/index.js'),'utf8');
+const adminSource=sources['src/features/admin-console/index.js'];
 assert.ok(adminSource.includes('adminConsolePage({admin,accountDeletion'), 'Admin Console must remain driven by the injected Admin Console and Admin Operations owners.');
-assert.ok(!adminSource.includes('createClient('), 'Admin Console presentation must not create a second Supabase client.');
 assert.ok(!/fetch\s*\(\s*[`'\"](?:\/|https?:).*auth\/v1\/admin/.test(adminSource), 'Admin Console presentation must not bypass the shared API owner with direct auth-admin requests.');
 
-console.log('BibleQuest v4 Tranche 13 static presentation contract passed.');
+// V5 congregation switching must continue through the existing congregation
+// feature owner rather than creating a parallel membership/runtime path.
+const congregationSource=sources['src/features/congregation/index.js'];
+assert.ok(congregationSource.includes('data-congregation-'), 'V5 congregation evolution must remain inside the certified feature owner.');
+
+console.log('BibleQuest v4/v5 Tranche 13 structural presentation contract passed.');

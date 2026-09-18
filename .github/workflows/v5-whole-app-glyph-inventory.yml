@@ -1,0 +1,71 @@
+name: V5 Whole-App Glyph Inventory
+
+on:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/**'
+      - 'tests/v5-whole-app-glyph-inventory.test.mjs'
+      - 'tests/v5-notification-glyph-exceptions.mjs'
+      - 'tests/v5-encouragement-glyph-exceptions.mjs'
+      - 'tests/v5-recognition-artwork-mapping.mjs'
+      - 'tests/v5-games-artwork-certification.mjs'
+      - 'tests/v5-couples-artwork.mjs'
+      - 'tests/v5-bible-world-artwork.mjs'
+      - 'tests/v5-mission-artwork-verification.test.mjs'
+      - '.github/workflows/v5-whole-app-glyph-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - name: Verify exact candidate
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          echo "candidate=$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Revalidate reviewed Notification exceptions
+        run: node --test tests/v5-notification-glyph-exceptions.mjs
+      - name: Revalidate reviewed Encouragement exceptions
+        run: node tests/v5-encouragement-glyph-exceptions.mjs
+      - name: Revalidate reviewed Recognition mapping and exceptions
+        run: node tests/v5-recognition-artwork-mapping.mjs
+      - name: Revalidate reviewed Games artwork and exceptions
+        run: node --test tests/v5-games-artwork-certification.mjs
+      - name: Revalidate reviewed Couples artwork and exceptions
+        run: node tests/v5-couples-artwork.mjs
+      - name: Revalidate reviewed Bible World artwork mappings
+        run: node tests/v5-bible-world-artwork.mjs
+      - name: Revalidate Mission semantic artwork mapping
+        run: node tests/v5-mission-artwork-verification.test.mjs
+      - name: Run Phase 3 hard-zero whole-app glyph gate
+        env:
+          V5_GLYPH_DIAGNOSTICS_PATH: v5-glyph-diagnostics.json
+          V5_GLYPH_CANDIDATE: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
+      - name: Upload exact-head glyph diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: v5-glyph-diagnostics
+          path: v5-glyph-diagnostics.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify source clean and exact head
+        run: |
+          set -euo pipefail
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"

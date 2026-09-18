@@ -1,4 +1,6 @@
 import { createStore } from './store.js';
+import { createMyJourneyService } from './my-journey.js';
+import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
@@ -36,6 +38,7 @@ import { createContentModerationService } from './content-moderation.js';
 import { createContentReviewService } from './content-review.js';
 import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
+import { createLeaderCenterService } from './leader-center.js';
 import { createNotificationCenterService } from './notification-center.js';
 import { createWorkspaceService } from './workspace.js';
 import { createPresenceService } from './presence.js';
@@ -83,6 +86,8 @@ import { encouragementsPage } from '../features/encouragements/index.js';
 import { liveRoomsPage } from '../features/live-rooms/index.js';
 import { communityPage } from '../features/community/index.js';
 import { ministryHubPage } from '../features/ministry-hub/index.js';
+import { myJourneyPage } from '../features/my-journey/index.js';
+import { leaderCenterPage } from '../features/leader-center/index.js';
 import { notificationCenterPage } from '../features/notification-center/index.js';
 import { workspacePage } from '../features/workspace/index.js';
 import { teamCenterPage } from '../features/team-center/index.js';
@@ -122,6 +127,7 @@ function renderStartupFailure(root,error){
 }
 
 function start(){
+  installV5LunaRegressionGuards();
   const root=document.getElementById('app');
   try{
     boot(root);
@@ -184,6 +190,8 @@ function boot(root){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
+  const myJourney=createMyJourneyService({progress,assignments});
+  const leaderCenter=createLeaderCenterService({assignments,presence});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
@@ -199,7 +207,7 @@ function boot(root){
   const reloadAfterLocalDataChange=()=>location.reload();
   const openCouplesScripture=card=>{reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const routes=Object.freeze({
-    home:()=>homePage({progress,dailyMission,assignments,presence,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:()=>router.navigate('reader'),onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow')}),
+    home:()=>homePage({progress,dailyMission,assignments,presence,calendar,reader,recordings,transform,notifications,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:()=>router.navigate('reader'),onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
     learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
@@ -218,6 +226,7 @@ function boot(root){
     community:()=>communityPage({bridge:communityBridge,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'live-rooms':()=>liveRoomsPage({liveRooms,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
+    'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onCongregation:()=>router.navigate('congregation')}),
     'notification-center':()=>notificationCenterPage({notifications,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     workspace:()=>workspacePage({workspace,onNavigate:route=>router.navigate(route),onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
@@ -226,7 +235,8 @@ function boot(root){
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault')}),
+    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
+    'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
@@ -266,9 +276,14 @@ function boot(root){
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration);syncShell(store.getState());syncModeration(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
+    // Router starts immediately so public/local-first surfaces stay responsive.
+    // Only a successfully restored authenticated session needs a forced
+    // re-resolve: signed-out/local-first routes already rendered correctly and
+    // must not be remounted just because Auth boot completed.
+    if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();mediaLibrary.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

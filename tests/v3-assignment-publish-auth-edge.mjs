@@ -59,6 +59,7 @@ const executable=source
   .replace('} as Record<string,string>)','})')
   .replace('const text=(v:unknown,max=500)=>','const text=(v,max=500)=>')
   .replace('async function assignmentRecipient(admin:ReturnType<typeof adminClient>,assignment:any,userId:string)','async function assignmentRecipient(admin,assignment,userId)')
+  .replace("async function dispatchAssignmentPush(admin:ReturnType<typeof adminClient>,assignmentId:string,notificationType:'assignment'|'feedback',targetUserId:string|null=null)",'async function dispatchAssignmentPush(admin,assignmentId,notificationType,targetUserId=null)')
   .replace('function iso(v:unknown)','function iso(v)')
   .replace('async(req:Request)=>','async(req)=>')
   .replaceAll('(x:unknown)=>','(x)=>')

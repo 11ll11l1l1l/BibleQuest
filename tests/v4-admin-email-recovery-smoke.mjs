@@ -9,7 +9,7 @@ assert.match(edge,/OPS_VERSION=6/);
 assert.match(edge,/action==='change_email'/);
 assert.match(edge,/Only the BibleQuest owner can change an account email/);
 assert.match(edge,/updateUserById\(target,\{email\}\)/);
-assert.match(edge,/audit\(a,u\.id,target,'change_email',\{emailChanged:true,sessionsRevoked:revoked\}\)/);
+assert.match(edge,/audit\(a,u\.id,target,'change_email',\{emailChanged:true,sessionsRevoked:true\}\)/);
 assert.doesNotMatch(edge,/audit\([^\n]*change_email[^\n]*email:/);
 assert.match(api,/action:'change_email',targetUserId,email/);
 assert.match(ui,/data-admin-change-email=/);

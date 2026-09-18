@@ -9,7 +9,7 @@ const MEMBER_TOOLS=Object.freeze([
 
 const MINISTRY_TOOLS=Object.freeze([
   Object.freeze({id:'assignment-publishing',label:'Assignment publishing',description:'Authorized ministry roles can publish from the existing Assignments owner; the server authorizes again.',route:'assignments',available:true}),
-  Object.freeze({id:'leader-dashboard',label:'Leader Dashboard',description:'The retained leader dashboard is not migrated by milestone #76.',route:null,available:false})
+  Object.freeze({id:'leader-dashboard',label:'Leader Center',description:'Congregation activity, assignments, and groups composed from existing verified owners. Ministry role required.',route:'leader-center',available:true})
 ]);
 
 const exposeTools=tools=>tools.map(tool=>tool);

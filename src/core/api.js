@@ -372,6 +372,7 @@ export function createApi() {
       return data||[];
     },
     async targets(congregationId) { return invoke('bq-assignment',{action:'targets',congregationId}); },
+    async lifecycle(congregationId) { return invoke('bq-assignment',{action:'lifecycle',congregationId}); },
     async create(congregationId,payload) { return invoke('bq-assignment',{action:'create',congregationId,...payload}); },
     async start(congregationId,assignmentId) { return invoke('bq-assignment',{action:'start',congregationId,assignmentId}); },
     async complete(congregationId,assignmentId,submission,quizScore=null) { return invoke('bq-assignment',{action:'complete',congregationId,assignmentId,submission,quizScore}); },
@@ -635,7 +636,7 @@ export function createApi() {
       const client = await getClient();
       const now = new Date().toISOString();
       const request = client.from('bible_media_library')
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type')
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category')
         .eq('active', true)
         .eq('media_type', 'youtube_video')
         .lte('publish_at', now)
@@ -650,7 +651,7 @@ export function createApi() {
     async createVideo(payload) {
       const client = await getClient();
       const request = client.from('bible_media_library').insert(payload)
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type').single();
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
       const { data, error } = await withTimeout(request, 10000, 'Adding this video took too long. Please try again.');
       if (error) throw error;
       return data;
@@ -658,7 +659,7 @@ export function createApi() {
     async updateVideo(id, patch) {
       const client = await getClient();
       const request = client.from('bible_media_library').update(patch).eq('id', id)
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type').single();
+        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
       const { data, error } = await withTimeout(request, 10000, 'Updating this video took too long. Please try again.');
       if (error) throw error;
       return data;

@@ -16,10 +16,13 @@ async function run(){
     const {congregationPage}=await import('/src/features/congregation/index.js');
     const host=document.querySelector('#bq-view');
     let rows=[{congregationId:'c1',userId:'u1',role:'member',roleKnown:true,roleLabel:'Member',displayName:'Mark',joinedAt:null,congregation:{id:'c1',name:'ICAC Test Church',timezone:'Asia/Tokyo',ownerId:'u2'}}];
+    let activeId='c1';
     const membership={
       isAuthenticated:()=>true,
       async load(){return rows.slice()},
-      async join(code){if(String(code).replace(/[^A-Za-z0-9]/g,'').length<5)throw new Error('Enter a valid congregation invite code.');rows=[...rows,{congregationId:'c2',userId:'u1',role:'facilitator',roleKnown:true,roleLabel:'Facilitator',displayName:'Mark',joinedAt:null,congregation:{id:'c2',name:'Joined Test Church',timezone:'Asia/Tokyo',ownerId:'u3'}}];return rows.slice()}
+      async join(code){if(String(code).replace(/[^A-Za-z0-9]/g,'').length<5)throw new Error('Enter a valid congregation invite code.');rows=[...rows,{congregationId:'c2',userId:'u1',role:'facilitator',roleKnown:true,roleLabel:'Facilitator',displayName:'Mark',joinedAt:null,congregation:{id:'c2',name:'Joined Test Church',timezone:'Asia/Tokyo',ownerId:'u3'}}];return rows.slice()},
+      getActive(){return rows.find(row=>row.congregationId===activeId)||null},
+      setActive(id){if(rows.some(row=>row.congregationId===id))activeId=id;return membership.getActive()}
     };
     const view=congregationPage({membership,onAccount:()=>{},onBack:()=>{}});host.innerHTML=view.html;window.__bqMembershipCleanup=view.mount(host);
   });

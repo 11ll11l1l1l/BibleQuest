@@ -1,0 +1,20 @@
+name: V5 Recordings latest service verify
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/app/recordings.js'
+      - 'tests/v5-recordings-latest-service.test.mjs'
+      - '.github/workflows/v5-recordings-latest-service.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tests/v5-recordings-latest-service.test.mjs
+      - run: node --check src/app/recordings.js
+      - run: git diff --exit-code

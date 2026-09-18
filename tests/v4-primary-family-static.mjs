@@ -1,26 +1,14 @@
 // BibleQuest V4 primary app-family acceptance contract.
 // Home / Learn / Play / Grow / More must remain one coherent modern shell with
-// real route wiring. This tranche may polish user-facing copy, but it must not
-// replace the shell or feature/service boundaries. bootstrap.js is
-// intentionally NOT byte-locked here: it is the single shared composition
-// root, and legitimately grows every time a new cross-cutting service (Home
-// shortcut rail's onReader/onCalendar/onGrow, Phase 3's presence.activeCount,
-// etc.) is wired into an existing route. shell.js remains byte-locked since
-// it should not need to change for routine feature wiring.
+// real route wiring. V5 may evolve shared shell copy through the reviewed
+// localization owner, but must preserve the shell route/composition contract.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 
 const root=path.resolve(import.meta.dirname,'..');
-const baselineSha='6c55de27154b9f856faaf80d7cd17b18124c54f3';
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
 
-for(const relative of['src/ui/shell.js']){
-  const current=read(relative);
-  const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
-  assert.equal(current,baseline,`${relative} must remain byte-for-byte unchanged in the primary-family coherence tranche.`);
-}
 const bootstrapSrc=read('src/app/bootstrap.js');
 assert.ok(bootstrapSrc.includes("home:()=>homePage(") && bootstrapSrc.includes("learn:()=>learnPage(") && bootstrapSrc.includes("play:()=>gamesPage(") && bootstrapSrc.includes("grow:()=>progressPage(") && bootstrapSrc.includes("more:()=>morePage("),'bootstrap.js must keep the primary-family route map (home/learn/play/grow/more) intact, even as service wiring evolves.');
 
@@ -35,13 +23,14 @@ const index=read('index.html');
 const workflow=read('.github/workflows/v3-regression.yml');
 
 const navEntries=[
-  "['home','Home','home']",
-  "['learn','Learn','learn']",
-  "['play','Play','play']",
-  "['grow','Grow','grow']",
-  "['more','More','more']"
+  "['home','nav.home','home']",
+  "['learn','nav.learn','learn']",
+  "['play','nav.play','play']",
+  "['grow','nav.grow','grow']",
+  "['more','nav.more','more']"
 ];
 for(const entry of navEntries) assert.ok(shell.includes(entry),`Primary shell navigation changed or lost ${entry}.`);
+assert.ok(shell.includes("import { localization } from '../app/localization.js';"),'Primary shell localization must use the single reviewed localization owner.');
 assert.equal((shell.match(/data-route-link=/g)||[]).length,1,'Primary navigation must continue to render from the single NAV owner, not a duplicated hard-coded route set.');
 assert.ok(shell.includes('aria-current'),'Primary shell must preserve active-route semantics.');
 

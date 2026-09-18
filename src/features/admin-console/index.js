@@ -1,9 +1,16 @@
+import { localization } from '../../app/localization.js';
+
 const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const label=value=>({owner:'Owner',admin:'Admin',pastor:'Pastor',leader:'Leader',facilitator:'Facilitator',member:'Member'}[value]||String(value||'Member'));
 const activeRows=rows=>(Array.isArray(rows)?rows:[]).filter(row=>row?.active!==false);
 
-function intro(role=''){
-  return `<section class="bq-panel"><p class="bq-eyebrow">PLATFORM ADMINISTRATION${role?` · ${esc(label(role).toUpperCase())}`:''}</p><h1>Admin Console</h1><p>Manage BibleQuest platform access, congregation memberships and small groups. Server permissions remain authoritative.</p><div class="bq-form-grid"><button type="button" class="bq-secondary-button" data-admin-console-back>Back to More</button><button type="button" class="bq-secondary-button" data-admin-console-operations>Ministry Operations</button></div></section>`;
+function intro(tr,role=''){
+  if(typeof tr!=='function'){
+    role=tr||'';
+    const locale=localization.getLocale();
+    tr=(key,values)=>localization.t(key,{locale,values});
+  }
+  return `<section class="bq-panel"><p class="bq-eyebrow">${esc(tr('adminConsole.eyebrow'))}${role?` · ${esc(label(role).toUpperCase())}`:''}</p><h1>${esc(tr('adminConsole.title'))}</h1><p>${esc(tr('adminConsole.description'))}</p><div class="bq-form-grid"><button type="button" class="bq-secondary-button" data-admin-console-back>${esc(tr('adminConsole.back'))}</button><button type="button" class="bq-secondary-button" data-admin-console-operations>${esc(tr('adminConsole.operations'))}</button></div></section>`;
 }
 function platformRoleControl(user,state){
   const owner=state.role==='owner';
@@ -45,7 +52,9 @@ function userCard(user,state,operationsState){
 }
 
 export function adminConsolePage({admin,accountDeletion,onBack,onAccount,onOperations}={}){
-  return {title:'Admin Console',html:'<section data-admin-console-view></section>',mount(root){
+  const locale=localization.getLocale();
+  const tr=(key,values)=>localization.t(key,{locale,values});
+  return {title:tr('adminConsole.title'),html:'<section data-admin-console-view></section>',mount(root){
     const view=root.querySelector('[data-admin-console-view]');let disposed=false,busy=false,query='',message='';
     const bindBase=()=>{
       view.querySelector('[data-admin-console-back]')?.addEventListener('click',()=>onBack?.(),{once:true});
@@ -80,10 +89,10 @@ export function adminConsolePage({admin,accountDeletion,onBack,onAccount,onOpera
     };
     const render=state=>{
       if(disposed)return;
-      if(state.status==='signed-out'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Sign in required</h2><p>Admin Console has no guest authority.</p><button type="button" class="bq-primary-button" data-admin-console-account>Open account</button></section>`;bindBase();return}
-      if(state.status==='unauthorized'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Owner/Admin access required</h2><p>This account does not have active BibleQuest platform administration access.</p></section>`;bindBase();return}
-      if(state.status==='error'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Admin Console could not load</h2><p class="bq-form-message" role="alert">${esc(state.error||'Try again.')}</p><button type="button" class="bq-secondary-button" data-admin-console-retry>Try again</button></section>`;bindBase();return}
-      if(state.status!=='ready'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Verifying admin access…</h2></section>`;bindBase();return}
+      if(state.status==='signed-out'){view.innerHTML=`${intro(tr)}<section class="bq-panel"><h2>${esc(tr('adminConsole.signedOut.heading'))}</h2><p>${esc(tr('adminConsole.signedOut.description'))}</p><button type="button" class="bq-primary-button" data-admin-console-account>${esc(tr('community.openAccount'))}</button></section>`;bindBase();return}
+      if(state.status==='unauthorized'){view.innerHTML=`${intro(tr)}<section class="bq-panel"><h2>${esc(tr('adminConsole.denied.heading'))}</h2><p>${esc(tr('adminConsole.denied.description'))}</p></section>`;bindBase();return}
+      if(state.status==='error'){view.innerHTML=`${intro(tr)}<section class="bq-panel"><h2>${esc(tr('adminConsole.error.heading'))}</h2><p class="bq-form-message" role="alert">${esc(state.error||tr('common.retry'))}</p><button type="button" class="bq-secondary-button" data-admin-console-retry>${esc(tr('common.retry'))}</button></section>`;bindBase();return}
+      if(state.status!=='ready'){view.innerHTML=`${intro(tr)}<section class="bq-panel"><h2>${esc(tr('adminConsole.verifying'))}</h2></section>`;bindBase();return}
       const needle=query.trim().toLocaleLowerCase();
       const users=state.users.filter(user=>!needle||[user.name,user.email,user.role,...user.memberships.map(m=>`${m.congregationName} ${m.role}`),...user.groupMemberships.map(g=>`${g.groupName} ${g.role}`)].join(' ').toLocaleLowerCase().includes(needle));
       const congregationOptions=state.options.congregations.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');

@@ -4,17 +4,24 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { localization } from '../src/app/localization.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 const src = fs.readFileSync(path.join(root, 'src', 'features', 'assignments', 'index.js'), 'utf8');
+const en = fs.readFileSync(path.join(root, 'src', 'content', 'locales', 'en.js'), 'utf8');
 
 // Extract and evaluate responseReviewView in isolation (pure function, no DOM needed).
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const formatDate = () => 'Jan 1';
-const fnMatch = src.match(/function responseReviewView\(state,row,readOnly\)\{[\s\S]*?\n\}/);
+const tx = (key, values) => localization.t(key, { locale: 'en', values });
+// The function is now defined as a closure-scoped arrow const (it captures
+// tx/esc/formatDate from the outer scope, following the same localization
+// pattern as the rest of this file), not a standalone top-level function -
+// extract it as such rather than assuming the pre-localization shape.
+const fnMatch = src.match(/const responseReviewView=\(state,row,readOnly\)=>\{[\s\S]*?\n\};/) || src.match(/const responseReviewView=\(state,row,readOnly\)=>\{.*?\};/);
 assert.ok(fnMatch, 'responseReviewView must exist with the expected signature.');
 // eslint-disable-next-line no-new-func
-const responseReviewView = new Function('esc', 'formatDate', `return ${fnMatch[0].replace('function responseReviewView', 'function')}`)(esc, formatDate);
+const responseReviewView = new Function('esc', 'formatDate', 'tx', `return ${fnMatch[0].replace('const responseReviewView=', '')}`)(esc, formatDate, tx);
 
 const rowWithResponders = {
   id: 'a1',
@@ -57,7 +64,8 @@ assert.ok(!src.includes('Responses received'), 'The old member-facing "Responses
 
 // --- The bottom-of-page privacy disclosure text must accurately describe the
 // new self-only contract for members, and must not overstate what leaders get.
-assert.ok(src.includes('You see only your own assignment status'), 'The privacy-boundary disclosure must accurately describe the self-only contract for members.');
-assert.ok(!src.includes('Members assigned to the same task can see who has responded'), 'The old peer-visibility disclosure must be removed - it is no longer true.');
+assert.ok(src.includes("'assignments.privacy.member'"), 'The privacy-boundary disclosure must use the localized self-only key for members.');
+assert.ok(en.includes("'assignments.privacy.member': 'You see only your own assignment status") , 'The privacy-boundary disclosure must accurately describe the self-only contract for members.');
+assert.ok(!en.includes('Members assigned to the same task can see who has responded'), 'The old peer-visibility disclosure must be removed - it is no longer true.');
 
 console.log('BibleQuest v4 Phase 1 assignment self-only privacy edge regression passed.');

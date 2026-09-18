@@ -1,80 +1,267 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-13 JST
-Execution model: one serialized integration stream
+Updated: 2026-09-18 JST
+Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Baseline: current production `main`
+Final certified runtime/source candidate: `c0772d458e9d17ab1728c47c568e99857c7d67a1` (later commits are evidence/documentation-only)
+Formal acceptance coverage after physical Web Push DEVICE/FIELD closeout: **122/122 = 100%**
+Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
-## Authority
+## 1. Authority and conflict resolution
 
-This file is the single authoritative source for current BibleQuest V5 phase, scope, blockers, candidate identity, and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context.
+Use this order whenever instructions disagree:
 
-**Renumbering note:** the architecture-replacement program previously tracked as "V5" (branch `v5/architecture-upgrade`, `DEVELOPMENT_PLAN_V5.md` covering build tooling/real DB testing/Reader-Games decomposition/media platform/push/offline/Leader Center/multi-congregation) has been renumbered **V6**. Its documents now live at `DEVELOPMENT_PLAN_V6.md` / `V6_ACTIVE_STATUS.md` / `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`, and its branch is `v6/architecture-upgrade`. The full motion/sound/polish rollout that depends on it is renumbered **V7** (`DEVELOPMENT_PLAN_V7.md`). This V5 is a new, product-completeness program on the *current* architecture, sequenced to run first.
+1. Current repository/branch/commit state, exact-head CI/check evidence, and controlled backend/device evidence.
+2. `V5_ACTIVE_STATUS.md` — current phase/blocker/candidate truth.
+3. `DEVELOPMENT_PLAN_V5.md` — complete V5 target and sequencing.
+4. `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — testable completion contract.
+5. `V5_COORDINATED_AGENT_PROTOCOL.md` — five-agent operating rules and ownership lanes.
+6. The newest non-expired `V5-CLAIM` / `V5-DISPATCH` entries on Issue #185.
+7. Scheduled-agent prompt text.
+8. Older Issue #185 comments, chat handoffs, lab branches, README prose, and historical V5/V6 naming.
 
-## V5 product decision
+Historical claims do not override current repository evidence. A claim expires unless it still has an active branch/PR or is renewed after re-checking current ownership.
 
-V5 completes concrete, previously-identified missing/incomplete functionality on the current, already-working architecture. **No architecture, build-tooling, or state-ownership change is in scope for V5** - that is V6's explicit mandate, not V5's. V5 exists so that unfinished product work does not get carried forward and re-done twice across an architecture change.
+## 2. V5 line in the sand
 
-V4 remains the production fallback until a V5 candidate is explicitly accepted and promoted.
+V5 is **feature completion on the current proven architecture**. V6 owns engine/architecture replacement. V7 owns the later full product/visual overhaul.
 
-## Current state
+V5 must not introduce a Vite/build migration, global router/state rewrite, broad TypeScript conversion, Reader/Games engine rewrite, generalized offline/background-sync platform, replacement notification engine, generalized repository/data-access layer, tenant engine, replacement media platform, generalized search/index engine, or broad V7 visual/navigation overhaul.
 
-**Phase 0 — plan established, no implementation started.**
+A small helper needed to complete an accepted V5 feature is allowed only when it remains local, dependency-light, current-architecture compatible, separately testable, and does not redefine ownership across the app.
 
-This document and `DEVELOPMENT_PLAN_V5.md` are the first V5 deliverable. Runtime work begins with Phase 1 (Leader Center) once this plan is reviewed.
+## 3. Current reconciliation state
 
-## Mandatory V5 outcomes
+Integration stability: **GREEN on final runtime/source candidate `c0772d45`**. Exact-head accumulated regression run `35302198022` passed, including the authenticated notification deep-link hydration browser regression. Section G, collision guard, deployed Cloudflare preview smoke, Push Delivery Security, Ministry Calendar, Home Today, glyph inventory, Media retirement and field-harness readiness companions are green on the same candidate line.
 
-1. A working Leader Center (previously officially skipped), built entirely from existing Phase 1/Phase 3 capabilities.
-2. Admin Console UI for the already-built Phase 2 emergency actions, plus the missing email-change/recovery action.
-3. Icon/artwork completion: Games' 21 remaining emoji, remaining Congregation Recognition/Couples/Notification/Encouragements icons, and deletion of the dead Media Library owner.
-4. A real, minimum Web Push implementation for existing in-app notification types.
-5. A real, minimum offline-reading capability for previously-opened Scripture passages.
-6. Multi-congregation verification unblocked (a real second test congregation) plus a minimum active-congregation switcher.
-7. Closure of three specific pieces of verification debt: CEBOCB Reader re-verification, Couples Journey bidirectional-sharing verification, and the deferred V4 whole-app audit Sections E/G.
-8. A real Feature Flag / Runtime Configuration system - the V5-to-V6 bridge, so V6's riskier architecture changes can ship with a real kill-switch instead of a big-bang cutover. Added creatively, not requested in the original scope, precisely because it directly de-risks the version that follows.
+The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-## Phase state
+Formal checklist coverage is **122/122 = 100%**. Prior backend/Gate C, localization, Admin, and genuine-provider evidence remains valid. The two physical Web Push gates are now closed by `docs/v5/V5_PUSH_DEVICE_FIELD_EVIDENCE_2026-09-18.md`. Physical delivery was exercised on immutable candidate `35da53900fef8842a8d75187e4a4efaa1c5adc0e`; all push-critical owners are byte-identical on final runtime candidate `c0772d458e9d17ab1728c47c568e99857c7d67a1`, whose only later runtime correction is the separately-proven authenticated deep-link hydration fix.
 
-- Phase 1 — Leader Center: CERTIFIED. Checkpoint `release/v5-leader-center` @ dfcb851b38326edef0e4969958eb15866c673c8d, full accumulated suite green including complete browser/mobile, run evidence recorded below.
-- Phase 2 — Admin Console completion: NOT STARTED.
-- Phase 3 — Icon/artwork completion: NOT STARTED.
-- Phase 4 — Push notifications (minimum): NOT STARTED.
-- Phase 5 — Baseline offline Bible reading: NOT STARTED.
-- Phase 6 — Multi-congregation verification/tooling: NOT STARTED.
-- Phase 7 — Verification debt (CEBOCB/Couples Journey/Sections E-G): NOT STARTED.
-- Phase 8 — Feature Flag / Runtime Configuration system: NOT STARTED.
-- Phase 9 — V5 certification and promotion: NOT STARTED.
+### Phase 1 — Leader Center
 
-## Phase 1 evidence (Leader Center)
+Status: **COMPLETE / 6 OF 6 ACCEPTED**.
 
-Built as pure composition over `assignments.js` and `presence.js` - both already server-authorized owners. No new Supabase query, no new RLS, no new state ownership. Un-deferred the Leader Dashboard tool in `ministry-hub.js` (previously blocked on milestone #76) and wired a real `leader-center` route.
+Accepted:
 
-**One real correction made mid-build, not shipped as a bug:** the first draft invented a "published/scheduled/closed" categorization and a "total completions" aggregate using fields that do not exist on the assignment row as loaded (`progress` reflects the caller's own status, not a cross-member aggregate). Corrected to only surface what the data actually supports (open vs. scheduled counts); a real per-assignment completion count would need `assignments.loadReview(id)` per assignment and is recorded as a deferred enhancement, not fabricated.
+- congregation snapshot, role, ministry-safe member count, and active-in-30-min Overview composition;
+- real response-review handoff through the existing Assignments owner and review destination;
+- privacy-safe People directory limited to existing ministry-relevant directory fields;
+- Groups & Teams composition through existing Journey Groups/Team Center ownership;
+- ordinary member denied and authorized leader allowed, including exact-head Chromium/390px evidence.
 
-**Two stale test assertions found and fixed while gating** (both from un-deferring a tool that two separate tests had hardcoded as permanently unavailable): `tests/v3-ministry-hub-edge.mjs` and the browser-level `tests/v3-ministry-hub-smoke.mjs` (the second one only surfaced after the edge suite already passed - found by running the actual gate, not local checks alone).
+Merged #399 completed these existing-owner composition gaps without adding a backend/schema/RLS/repository/router/state engine. The final merge candidate combined PR head `f82d8d2f103feebf6c3a17ecf1d88b884b3b45dc` with then-current integration and passed Leader, collision, Section G, Presence, and glyph-inventory companions before merge `f41fb0fa53c925287cc1da0078b1175c7a7c9eea`.
 
-Verification executed and passed on the exact candidate SHA: Cloudflare deployment gate, full accumulated architecture validators, full accumulated edge regressions (including new `v5-leader-center-edge.mjs`), guarded-field-harness syntax checks, and the full accumulated browser/mobile Playwright suite (including new `v5-leader-center-smoke.mjs`: leader sees real data, member sees an honest denied state, 44px mobile targets).
+The exact candidate adds the authoritative server-owned published/scheduled/completed projection. The accepted denominator is current active targeted recipients; aggregate completion requires a non-zero audience with every current recipient completed. Invalid or unavailable aggregates fail closed and never borrow the signed-in member's progress.
 
-**Deferred, recorded honestly:** per-assignment completion counts on the Overview (needs a per-assignment review call or a new lightweight aggregate, neither built here); Groups & Teams composition currently just links out to the existing Journey Groups/Team Center pages rather than summarizing them inline.
+### Phase 2 — Admin Console
 
-## Sequencing with V6 and V7
+Status: **COMPLETE / 7 OF 7 ACCEPTED — EMAIL-CHANGE BACKEND-E2E PASS**.
 
-`DEVELOPMENT_PLAN_V6.md` (architecture upgrade, formerly numbered V5) and `DEVELOPMENT_PLAN_V7.md` (full motion/sound/polish rollout, formerly numbered V6) are already scoped and do not change. Neither begins until this V5 completes Phase 8 certification. This is a strict sequence, not parallel tracks: complete the product first, transform the base second, apply full polish third.
+Accepted evidence covers identity/congregation/security cards, action severity, typed destructive confirmations, owner-only/privacy-safe/session-safe sensitive operations, negative cases, and the fail-closed non-production evidence path.
 
-## How to execute a V5 phase (any agent, with or without prior context)
+2026-09-18 live observation: the deployed path passed non-owner denial, owner self-protection, target email mutation, fail-closed session revocation, privacy-safe audit flags, restoration, and cleanup using disposable QA identities in the existing BibleQuest Supabase project.
 
-This is the exact, reproducible pipeline used to certify every V4/V5 checkpoint so far. Follow it precisely - do not shortcut steps even under time pressure, since every shortcut taken this way has previously caused a real regression to slip through.
+Formal BACKEND-E2E is now closed through the checked-in zero-cost isolated-local path: Supabase CLI loopback run `35283763923` / job `105411397336` executed the real candidate function/Auth/session-revocation path with disposable identities and verified restoration/cleanup. The hosted project was not contacted. See `docs/v5/V5_ADMIN_LOCAL_BACKEND_E2E_2026-09-18.md`.
 
-1. **Clone the current tip of `v5/feature-completion` fresh** (not a stale local copy). Verify the specific gap you're about to fix still exists against this exact tip - repository evidence, not this document, is authoritative.
-2. **Implement using only patterns already proven in this codebase**: single-owner services, server-authoritative RLS (never client-side-only gating), the existing `data-*` hook conventions, existing CSS token layers. No new architecture - that is out of scope for V5 by definition.
-3. **Write real regression coverage** for the new behavior before considering it done - an edge test for logic, a static contract test for anything CI cannot execute for real (e.g. new SQL/RLS - document this limitation honestly in the test's own comments, per the established pattern), and a browser smoke test for anything user-facing.
-4. **Run the complete local suite before every push** - not a partial spot-check. Get the exact list of CI-registered edge tests from the workflow file itself (`grep` the `for test in ...` loop), and run every one of them plus every `scripts/validate-*.mjs`. Partial local checks have missed real regressions multiple times this project; full local runs catch them before they cost a wasted CI cycle.
-5. **Commit, then clone fresh again** (a brand-new clone, not your working copy) and re-run step 4 against that fresh clone. This has caught real bugs that a dirty working directory hid.
-6. **Fire the real gate**: create an isolated `verify/<short-description>-<short-sha>-<date>` branch from the exact candidate commit, temporarily add a `push:` trigger plus an exact-SHA assertion step to that branch's own copy of the CI workflow, push, and poll until the run completes. Never assume a change is safe without this step - static local checks alone have missed real regressions (an RLS policy text check is not proof RLS works; a unit test mocking a dependency is not proof the real dependency wiring is correct).
-7. **If it fails**: get the exact failure (add a debug annotation wrapper to the smoke-test loop if the browser suite fails opaquely - this has been necessary multiple times), fix the *real* cause (which is sometimes your new code, and sometimes a stale assertion in an *older* test that legitimately needs updating - tell these apart by checking whether the underlying behavior actually changed on purpose), then delete the failed verify branch and repeat from step 6 with a fresh one.
-8. **Once green on every step including the full browser/mobile suite**: restore the verify branch's workflow file to manual-trigger-only (remove the temporary push trigger and any debug wrapper), then freeze the checkpoint by creating a `release/v5-<phase-name>` branch pointing at the exact verified commit. Never freeze a SHA that has not itself passed the gate - a later commit "probably being fine" is not evidence.
-9. **Update `V5_ACTIVE_STATUS.md`** (this file) with the real checkpoint name, exact SHA, and CI run ID as evidence, an honest note of anything genuinely deferred, and any workflow/process issue discovered along the way (with the specific fix, not just the symptom) - the same way every prior phase in this project has been recorded. Move the phase's line in "Phase state" above from NOT STARTED to the real status.
-10. **Never claim something is verified that only passed a static/text-matching check** if the real thing (a live database, a live push send, a physical device) was never actually exercised - record that honestly as a known limitation rather than silently upgrading confidence.
+### Phase 3 — artwork / dead-owner completion
 
-If you hit a genuine architecture question mid-phase (something that cannot be solved without changing build tooling, state ownership, or module boundaries), stop and record it as a note for `DEVELOPMENT_PLAN_V6.md` rather than solving it with a V5-scoped workaround that will need to be redone.
+Status: **COMPLETE / 7 OF 7 ACCEPTED / HARD-ZERO REGRESSION ACTIVE**.
+
+Accepted:
+
+- abandoned duplicate Media Library service/page retired while the canonical `media -> Recordings` route remains authoritative;
+- genuine Games, Recognition, Couples, Notification, Encouragement, Bible World, Avatar Vault, Story Journey, and semantic UI artwork mappings plus reviewed exceptions;
+- independent visible/accessibility meaning for decorative artwork;
+- Mission recommendations render genuine SVG assets from semantic `review`/`study` action IDs with no dead emoji presentation fields;
+- the whole-app inventory is now a hard-zero gate.
+
+On #427 exact head `bf93a9796b039203757e95dedf5315ea10e99824`, workflow run `35115458073` reported **128 glyph occurrences: 128 documented and 0 undocumented**. Collision guard `35115458236` and Section G `35115458103` also passed. Any future undocumented source glyph now fails CI.
+
+### Phase 4 — minimum real Web Push
+
+Status: **COMPLETE / 11 OF 11 ACCEPTED — PROVIDER + DEVICE/FIELD PASS**.
+
+Accepted/integrated:
+
+- browser PushManager lifecycle;
+- explicit category opt-in default off;
+- account-switch/sign-out safety;
+- account-safe subscription persistence over the RLS-backed owner;
+- Notification Center remains source of truth;
+- server-side delivery sender accepted on runtime/source candidate `7b2710fe`, including encrypted Supabase Vault VAPID fallback, service-only idempotency, bounded recipient/category selection, Deno type checks, and secret scanning;
+- controlled live sender execution proved the zero-subscription no-op and exact cleanup path for a signed HTTPS 410 simulation;
+- genuine Mozilla Autopush invalid-endpoint cleanup is BACKEND-E2E PASS on exact source head `618ce3cde7730925a3c3373a484e88987470d380`, run `35288009361` / job `105424531705`; exactly one matching assignment subscription was removed and an unrelated calendar control subscription remained;
+- same-origin notification click routing;
+- no private VAPID/service secret shipped to the client.
+
+Physical closeout:
+
+- app closed + push enabled: real Android OS notification received; provider sender counters attempted=1/delivered=1/failed=0; notification tap opened the same V5 preview at Assignments;
+- push disabled: browser/persisted subscription count 0; sender attempted=0/delivered=0; no Android notification arrived during the required 90-second closed-app observation;
+- the field tap exposed a pre-session guest rendering race, corrected on final runtime candidate `c0772d45` and locked by exact browser regression;
+- accepted `bq-assignment` automatic dispatch is now live as Edge Function v7 after device/provider proof, with JWT verification enabled and zero persisted subscriptions at activation.
+
+See `docs/v5/V5_PUSH_PROVIDER_INVALIDATION_E2E_2026-09-18.md` and `docs/v5/V5_PUSH_DEVICE_FIELD_EVIDENCE_2026-09-18.md`.
+
+### Phase 5 — baseline offline Scripture
+
+Status: **COMPLETE / ACCEPTED**.
+
+Equivalent real-browser no-network evidence satisfies the permitted acceptance path. Previously-opened/current cached Scripture behavior and unavailable-content failure handling are proven without introducing a generalized offline engine.
+
+### Phase 6 — multi-congregation
+
+Status: **COMPLETE / ACCEPTED — GATE C BACKEND-E2E PASS**.
+
+Accepted:
+
+- account-safe active-congregation selection;
+- visible multi-membership switcher with exact-current-head 390px browser proof;
+- Calendar consumes active congregation rather than `memberships[0]`;
+- Presence consumes active congregation;
+- Assignments consume active congregation.
+
+2026-09-18 Gate C evidence:
+
+- a clearly labelled QA-only second congregation exists with two QA identities; real congregation memberships were not repurposed;
+- 14/14 live bidirectional RLS assertions passed for congregation visibility, member directory, assignments, and calendar;
+- transient rows and temporary membership alterations were cleaned/restored.
+
+See `docs/v5/V5_EXISTING_SUPABASE_CONTROLLED_EVIDENCE_2026-09-18.md`.
+
+### Phase 7 — verification debt
+
+Status: **COMPLETE / ACCEPTED**.
+
+Accepted evidence covers CEBOCB 66-book/current Reader, CEBOCB mobile Reader behavior, Couples bidirectional/private sharing, deferred Section E integration, and the Section G loading/empty/error/offline matrix.
+
+### P0 — latest completed service / Media-Recordings
+
+Status: **COMPLETE / ACCEPTED FOR SECTION K**.
+
+Merged #396 adds the previously missing correction surface over the existing Recordings owner:
+
+- confirm/unconfirm an existing recording for latest-service surfacing through `setFeatured()`;
+- hide/archive an incorrect active row through `archive()`;
+- server-side RLS remains authoritative;
+- EN/TL correction copy and 390px browser interaction are proven;
+- no YouTube API polling, webhook ingestion, scheduled external discovery, new daemon or replacement media platform was introduced.
+
+Focused run `35040064030`, collision run `35040063941`, Section G run `35040063924`, Recordings Tagalog run `35040064074`, and localization QA run `35040064013` all passed on the accepted #396 head before merge `c97c065d5cdc84e4c9d8e79cbb2729f461127f89`.
+
+### P0 — Today / This Week Home
+
+Status: **COMPLETE / ACCEPTED FOR SECTION L**.
+
+Merged #394 closes both previously open Home acceptance behaviors:
+
+- missing Calendar/Reader/latest-service data has intentional EN/TL empty-state copy rather than blank/broken details;
+- exact-head 390px browser evidence covers empty and populated composition, all five owner tiles, navigation handoffs, and overflow/page-error safety.
+
+Focused run `35039155709`, Home Tagalog `35039155616`, localization QA `35039155617`, collision `35039155644`, and Section G `35039155587` all passed before merge `2ba17a8794b9ae1fa79166ab7de1b02e73ab0051`.
+
+### P0 — connected weekly spiritual journey
+
+Status: **COMPLETE / ACCEPTED FOR SECTION M**.
+
+Merged #395 provides a composition-only weekly path through existing owners:
+
+`Recordings/service -> Reader/Scripture -> Transformation/reflection -> Journey Groups/discussion/prayer -> Assignments/action -> Calendar/plan`
+
+The implementation uses existing first-class routes only. It creates no workflow engine, duplicate authoritative record, storage key, new backend/API, or automatic sermon-to-passage inference.
+
+Focused run `35039686763`, collision run `35039686747`, Section G run `35039686745`, and Home browser run `35039686719` passed before merge `e89277383837cd590e023363690b4fc069462efa`.
+
+### Cross-phase localization / content / UX
+
+Status: **LOCALIZATION COMPLETE / ACCEPTED FOR THE V5 CHECKLIST**.
+
+Accepted/integrated highlights:
+
+- current-architecture EN/TL/CEB localization foundation with canonical 444-key parity;
+- shared shell, Transformation, Home, Calendar, Assignments, Notification Center, Account/settings, Community and Videos/Recordings localized for the agreed V5 surfaces;
+- final Tagalog completeness gate with reviewed shared-term exceptions only;
+- Cebuano explicit ownership for every canonical key except the intentional `BibleQuest` product name, plus complete Videos and shell-recovery copy;
+- connected weekly journey / Ask at Dinner authored in EN/TL/CEB;
+- 390px Cebuano browser proof across shell, Community, Account, Calendar, Videos, and weekly journey, with overflow/page-error/touch-target assertions;
+- Community and Videos/Recordings Tagalog browser proofs included in the final accumulated localization gate;
+- latest-service, Home/Today, Recordings filtering, My Journey, Family/Couples, and other content/UX checklist items remain governed by their already-accepted dedicated sections rather than a stale localization blocker.
+
+Evidence: `docs/v5/V5_LOCALIZATION_CLOSEOUT_2026-09-18.md`; localization run `35281386346` SUCCESS.
+
+### My Journey
+
+Status: **IMPLEMENTED AND FORMALLY ACCEPTED FOR THE CURRENT P1 CHECKLIST ITEM**.
+
+Current evidence proves composition over existing Progress/Assignments owners, no direct owner bypass, private/noncompetitive history, EN/TL, empty state and 390px mobile behavior.
+
+### Phase 8 — final certification / promotion
+
+Status: **CERTIFIED / 122 OF 122 ACCEPTED — EXACT RUNTIME CANDIDATE FROZEN**.
+
+Runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`. Physical device evidence is explicitly bound to this candidate as documented. Later commits on the closeout branch are evidence/documentation-only unless explicitly identified otherwise.
+
+Required final actions include:
+
+- all required checklist sections pass or have correctly bound evidence;
+- accumulated regression green on one exact candidate SHA;
+- required browser/backend/device evidence recorded honestly;
+- V4 retained as rollback until explicit V5 acceptance;
+- A5 reports/freezes but scheduled agents do not autonomously promote;
+- final `V5_ACTIVE_STATUS.md` reconciliation before V6 runtime work begins.
+
+## 4. Certification reconciliation history
+
+- Pass 1 / PR #387: **46/122 -> 54/122 (44.3%)**.
+- Admin exact-head certification / PR #389: six Admin acceptance items proven while real email-change E2E stayed open.
+- Section E current-head refresh / PR #390: stale historical byte locks repaired; full Section E matrix green.
+- Pass 2 / PR #391: **54/122 -> 63/122 (51.6%)**.
+- Current-head evidence pack / PR #392: Leader role access, Phase 6 switcher/Calendar active context, and My Journey exact-current-head proof.
+- Pass 3 / PR #393: **63/122 -> 68/122 (55.7%)** and stale active-status reconciliation replaced.
+- Home closeout / PR #394: two Section L behaviors implemented/proven.
+- Connected weekly journey / PR #395: all five Section M behaviors implemented/proven.
+- Recordings correction / PR #396: remaining Section K correction behavior implemented/proven.
+- Pass 4 / PR #397: **68/122 -> 76/122 (62.3%)**.
+- Leader Center fast-track / PR #399: four existing-owner Phase 1 behaviors implemented/proven; aggregate lifecycle deliberately remains open.
+- Pass 5 reconciliation: **76/122 -> 80/122 (65.6%)**.
+- Mission hard-zero closeout / PR #427: 128/128 documented source glyphs; 0 undocumented; exact-head focused and accumulated checks green.
+- Pass 6 reconciliation: **80/122 -> 86/122 (70.5%)**.
+- Ask at Dinner / PR #431: exactly one optional EN/TL weekly prompt proven on exact PR head `a7663599c2b5b9d71ee3c86d63e27f3315fd7812`; merged as `f79301a6880af2a60e5431f3725768f8bf84d98b`.
+- Recordings filter / PR #432: local search and featured-only filtering over already-loaded current-owner data, with no schema/index/metadata extension; exact PR head `d53022bc7b9ef9aff7e5f54580449fdf463f76f6`; merged as `3e4306aad8f8d29a9fb265df1b901a9f15ab1f36`.
+- Pass 7 reconciliation: **86/122 -> 91/122 (74.6%)** once this documentation-only reconciliation is merged.
+- Reconciled candidate / PR #438: both divergent V5 lines combined, stale EN/TL-only and pre-category test contracts corrected, Transform status-region collision fixed, and exact-SHA Cloudflare preview verification enabled.
+- Pass 8 reconciliation: **91/122 -> 108/122 (88.5%)** on exact candidate `b301a617c17c21dc212b74a0210b9aa6fce57ed1`; all 29 workflows green.
+- 2026-09-18 controlled existing-Supabase evidence: **108/122 -> 111/122 (91.0%)** on runtime/source candidate `7b2710fe097b6321fef68916938017bb88bc1c7c`; server delivery sender accepted and Phase 6 Gate C topology/isolation closed. Admin's stricter separate-nonprod gate and Push DEVICE/FIELD/genuine-provider cleanup remain open.
+- 2026-09-18 localization closeout: **111/122 -> 117/122 (95.9%)** on runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46`; final Tagalog completeness and all four Cebuano/Bisaya acceptance items closed. Verification PR #445 passed localization, collision, Section G, preview, Cloudflare, and accumulated regression companions and was closed without merge.
+- 2026-09-18 isolated-local Admin evidence: **117/122 -> 118/122 (96.7%)**; run `35283763923` / job `105411397336` passed the real email-change BACKEND-E2E against a disposable loopback Supabase CLI stack with restoration and cleanup.
+- 2026-09-18 genuine push-provider evidence: **118/122 -> 119/122 (97.5%)**; run `35288009361` / job `105424531705` passed terminal invalid-endpoint cleanup against Mozilla Autopush while preserving an unrelated control subscription.
+- 2026-09-18 physical Web Push closeout: **119/122 -> 122/122 (100%)**. Android/Brave closed-app delivery/open and disabled/no-push behavior passed. The notification deep-link hydration race discovered during the field run was corrected and exact-head regression-proven on final runtime candidate `c0772d458e9d17ab1728c47c568e99857c7d67a1`; accumulated regression run `35302198022` passed.
+
+## 5. Highest-priority remaining certification/development path
+
+1. Preserve `c0772d458e9d17ab1728c47c568e99857c7d67a1` as the certified V5 runtime/source freeze.
+2. Reconcile the six documentation-only commits currently unique to `main` without importing stale/conflicting V5 acceptance scope.
+3. Promote the certified V5 runtime to production with V4 retained as rollback, then verify the exact production SHA/site before beginning V6 runtime work.
+
+## 6. Evidence rules
+
+Evidence labels remain:
+
+- **STATIC** — source/contract/unit evidence.
+- **BROWSER-AUTO** — automated browser behavior on an exact SHA.
+- **BACKEND-E2E** — controlled real backend execution.
+- **DEVICE/FIELD** — actual device/network/account/congregation behavior.
+
+Rules:
+
+- STATIC never substitutes for a required real backend/device gate.
+- Readiness harnesses do not equal execution.
+- A green workflow only proves the assertions it actually executed.
+- Exact-head evidence must remain bound to the tested SHA/PR/environment.
+- Stale PRs are replayed/recreated or explicitly superseded; they are never merged by assumption.
+- One reviewed integration tranche at a time remains the default serialization rule for collision-sensitive owners.
+
+## 7. Release boundary
+
+V5 is now explicitly accepted by its active 122-item contract. The current public production site remains the V4 fallback until the controlled `main`/Cloudflare promotion completes. Production promotion must preserve the certified runtime/source freeze, reconcile main-only documentation without reviving superseded V5 scope, and retain the V4 rollback ref.

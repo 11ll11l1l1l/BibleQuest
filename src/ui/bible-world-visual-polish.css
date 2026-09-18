@@ -75,3 +75,5 @@
   .bq-world-art,.bq-world-region,.bq-world-note,.bq-world-detail{border-color:rgba(31,54,39,.34)}
   .bq-world-region.is-next{border-color:#805819}
 }
+
+.bq-world-icon img{display:block;width:100%;height:100%;object-fit:contain}

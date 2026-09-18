@@ -5,22 +5,18 @@ function cors(req:Request){const o=req.headers.get('Origin')||'';return {'Access
 const json=(req:Request,b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:cors(req)});
 function secret(){const modern=Deno.env.get('SUPABASE_SECRET_KEYS');if(modern){try{const x=JSON.parse(modern);if(x?.default)return String(x.default);const first=Object.values(x||{})[0];if(first)return String(first)}catch{}}return Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')||''}
 function db(){const url=Deno.env.get('SUPABASE_URL')||'',key=secret();if(!url||!key)throw new Error('Supabase environment incomplete');return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}})}
-async function forceSignOutUser(targetUserId:string){
-  const url=Deno.env.get('SUPABASE_URL')||'',key=secret();
-  if(!url||!key)throw new Error('Supabase environment incomplete');
-  // supabase-js v2 does not wrap "revoke all sessions for an arbitrary user id" -
-  // auth.admin.signOut() takes a JWT, not a user id. The documented GoTrue admin
-  // REST endpoint for this is POST /auth/v1/admin/users/{id}/logout.
-  const res=await fetch(`${url.replace(/\/$/,'')}/auth/v1/admin/users/${targetUserId}/logout`,{
-    method:'POST',
-    headers:{apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'}
-  });
-  if(!res.ok && res.status!==404)throw new Error(`Session revocation failed (${res.status})`);
-  return res.status!==404;
+async function forceSignOutUser(a:ReturnType<typeof db>,targetUserId:string){
+  const r=await a.rpc('bible_revoke_auth_sessions',{target_user_id:targetUserId});
+  if(r.error)throw new Error(`Session revocation failed: ${r.error.message}`);
+  return Number(r.data||0);
+}
+async function requireSessionRevocation(a:ReturnType<typeof db>,targetUserId:string){
+  await forceSignOutUser(a,targetUserId);
 }
 async function requireUser(req:Request,a:ReturnType<typeof db>){const jwt=(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').trim(),r=await a.auth.getUser(jwt);if(!jwt||r.error||!r.data.user)throw json(req,{error:'Authentication required'},401);return r.data.user}
 async function siteRole(a:ReturnType<typeof db>,id:string){const r=await a.from('bible_app_access').select('role,active').eq('user_id',id).maybeSingle();if(r.error)throw r.error;return r.data?.active&&['owner','admin'].includes(r.data.role)?String(r.data.role):''}
 async function audit(a:ReturnType<typeof db>,actor:string,target:string|null,action:string,detail:Record<string,unknown>={}){const r=await a.from('bible_admin_audit_log').insert({actor_id:actor,target_user_id:target,action,detail});if(r.error)console.error('audit',r.error)}
+async function auditRequired(a:ReturnType<typeof db>,actor:string,target:string|null,action:string){const r=await a.from('bible_admin_audit_log').insert({actor_id:actor,target_user_id:target,action,detail:{stage:'requested'}});if(r.error)throw new Error('Admin audit unavailable')}
 async function health(a:ReturnType<typeof db>){const day=new Date(Date.now()-86400000).toISOString(),tables=['bible_assignments','bible_ministry_messages','bible_polls','bible_media_library','bible_notifications','bible_member_recognitions','bible_ministry_calendar','bible_content_reports','bible_content_decisions'];const counts:Record<string,number>={};for(const t of tables){const r=await a.from(t).select('*',{count:'exact',head:true});if(!r.error)counts[t]=r.count||0}const er=await a.from('bible_client_errors').select('id,user_id,congregation_id,surface,message,app_version,created_at').gte('created_at',day).order('created_at',{ascending:false}).limit(50);if(er.error)throw er.error;return {ops_version:OPS_VERSION,checked_at:new Date().toISOString(),counts,client_errors_24h:er.data||[]}}
 async function dashboard(a:ReturnType<typeof db>){
   const cutoff=new Date(Date.now()-120000).toISOString(),since=new Date(Date.now()-30*86400000).toISOString();
@@ -43,22 +39,24 @@ async function dashboard(a:ReturnType<typeof db>){
   const cmap=new Map((c.data||[]).map((x:any)=>[x.id,x.name])),member=(cid:string,uid:string)=>members.find((x:any)=>x.congregation_id===cid&&x.user_id===uid)||{};
   return {congregations:c.data||[],online:(p.data||[]).map((x:any)=>{const w=member(x.congregation_id,x.user_id);return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',display_name:w.display_name||'Member',role:w.role||'member',avatar:w.avatar||{}}}),assignments:assignments.map((x:any)=>{const rows=(prog.data||[]).filter((r:any)=>r.assignment_id===x.id),w=member(x.congregation_id,x.created_by);return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',creator_name:w.display_name||'Member',creator_role:w.role||'member',started:rows.filter((r:any)=>r.status==='started').length,completed:rows.filter((r:any)=>r.status==='completed').length}}),messages:(m.data||[]).map((x:any)=>{const w=member(x.congregation_id,x.created_by);return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',creator_name:w.display_name||'Member',creator_role:w.role||'member'}}),polls:polls.map((x:any)=>{const w=member(x.congregation_id,x.created_by),rows=(votes.data||[]).filter((r:any)=>r.poll_id===x.id),options=Array.isArray(x.options)?x.options:[];return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',creator_name:w.display_name||'Member',creator_role:w.role||'member',votes:rows.length,totals:options.map((label:string,i:number)=>({label,total:rows.filter((r:any)=>r.option_index===i).length}))}}),rooms:sessions.map((x:any)=>{const w=member(x.congregation_id,x.created_by);return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',creator_name:w.display_name||'Former member',creator_role:w.role||'member',participants:(parts.data||[]).filter((r:any)=>r.session_id===x.id).length}}),media:media.map((x:any)=>{const w=member(x.congregation_id,x.created_by);return {...x,congregation_name:cmap.get(x.congregation_id)||'Congregation',creator_name:w.display_name||'Owner/Admin',creator_role:w.role||'platform'}}),calendar:cal.data||[],recognitions:rec.data||[],health:h};
 }
-Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('ok',{headers:cors(req)});if(req.method!=='POST')return json(req,{error:'POST required'},405);try{const a=db(),u=await requireUser(req,a),r=await siteRole(a,u.id);if(!r)return json(req,{error:'Admin access required'},403);const body=await req.json().catch(()=>({})),action=String(body?.action||'dashboard');if(action==='status')return json(req,{ok:true,role:r,userId:u.id,opsVersion:OPS_VERSION});if(action==='health')return json(req,{ok:true,role:r,...await health(a)});if(action==='dashboard')return json(req,{ok:true,role:r,...await dashboard(a)});if(action==='delete_user'){if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can delete accounts'},403);const target=String(body?.targetUserId||'');if(!target)return json(req,{error:'targetUserId required'},400);if(target===u.id)return json(req,{error:'The active owner account cannot delete itself'},409);const access=await a.from('bible_app_access').select('role,active').eq('user_id',target).maybeSingle();if(access.error)throw access.error;if(access.data?.active&&access.data.role==='owner')return json(req,{error:'Another owner account cannot be deleted. Remove or transfer owner access first.'},409);const [ownedC,ownedG]=await Promise.all([a.from('bible_congregations').select('id,name').eq('owner_id',target),a.from('bible_groups').select('id,name').eq('owner_id',target).eq('active',true)]);if(ownedC.error)throw ownedC.error;if(ownedG.error)throw ownedG.error;if((ownedC.data||[]).length)return json(req,{error:`Transfer congregation ownership first: ${(ownedC.data||[]).map((x:any)=>x.name).join(', ')}`},409);if((ownedG.data||[]).length)return json(req,{error:`Transfer small-group ownership first: ${(ownedG.data||[]).map((x:any)=>x.name).join(', ')}`},409);const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);const stamp=new Date().toISOString(),rooms=await a.from('bible_shared_sessions').update({status:'ended',ended_at:stamp,updated_at:stamp}).eq('created_by',target).neq('status','ended');if(rooms.error)throw rooms.error;await audit(a,u.id,target,'delete_account',{email:got.data.user?.email||null});const del=await a.auth.admin.deleteUser(target);if(del.error)throw del.error;return json(req,{ok:true,deleted:true})}if(action==='suspend_account'||action==='reactivate_account'){
+Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('ok',{headers:cors(req)});if(req.method!=='POST')return json(req,{error:'POST required'},405);try{const a=db(),u=await requireUser(req,a),r=await siteRole(a,u.id);if(!r)return json(req,{error:'Admin access required'},403);const body=await req.json().catch(()=>({})),action=String(body?.action||'dashboard');if(action==='status')return json(req,{ok:true,role:r,userId:u.id,opsVersion:OPS_VERSION});if(action==='health')return json(req,{ok:true,role:r,...await health(a)});if(action==='dashboard')return json(req,{ok:true,role:r,...await dashboard(a)});if(action==='delete_user'){if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can delete accounts'},403);const target=String(body?.targetUserId||'');if(!target)return json(req,{error:'targetUserId required'},400);if(target===u.id)return json(req,{error:'The active owner account cannot delete itself'},409);const access=await a.from('bible_app_access').select('role,active').eq('user_id',target).maybeSingle();if(access.error)throw access.error;if(access.data?.active&&access.data.role==='owner')return json(req,{error:'Another owner account cannot be deleted. Remove or transfer owner access first.'},409);const [ownedC,ownedG]=await Promise.all([a.from('bible_congregations').select('id,name').eq('owner_id',target),a.from('bible_groups').select('id,name').eq('owner_id',target).eq('active',true)]);if(ownedC.error)throw ownedC.error;if(ownedG.error)throw ownedG.error;if((ownedC.data||[]).length)return json(req,{error:`Transfer congregation ownership first: ${(ownedC.data||[]).map((x:any)=>x.name).join(', ')}`},409);if((ownedG.data||[]).length)return json(req,{error:`Transfer small-group ownership first: ${(ownedG.data||[]).map((x:any)=>x.name).join(', ')}`},409);const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);await auditRequired(a,u.id,target,'delete_account');const stamp=new Date().toISOString(),rooms=await a.from('bible_shared_sessions').update({status:'ended',ended_at:stamp,updated_at:stamp}).eq('created_by',target).neq('status','ended');if(rooms.error)throw rooms.error;await audit(a,u.id,target,'delete_account',{stage:'prepared'});const del=await a.auth.admin.deleteUser(target);if(del.error)throw del.error;await audit(a,u.id,target,'delete_account',{accountDeleted:true});return json(req,{ok:true,deleted:true})}if(action==='suspend_account'||action==='reactivate_account'){
       const target=String(body?.targetUserId||'');if(!target)return json(req,{error:'targetUserId required'},400);
       if(target===u.id)return json(req,{error:'You cannot suspend or reactivate your own account'},409);
       const targetAccess=await a.from('bible_app_access').select('role,active').eq('user_id',target).maybeSingle();if(targetAccess.error)throw targetAccess.error;
       if(action==='suspend_account'&&targetAccess.data?.role==='owner')return json(req,{error:'Another owner account cannot be suspended'},409);
+      await auditRequired(a,u.id,target,action);
       const nextActive=action==='reactivate_account';
+      if(action==='suspend_account')await requireSessionRevocation(a,target);
       const upd=await a.from('bible_app_access').update({active:nextActive,updated_at:new Date().toISOString()}).eq('user_id',target);if(upd.error)throw upd.error;
-      if(action==='suspend_account'){try{await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-suspend',e)}}
       await audit(a,u.id,target,action,{reason:String(body?.reason||'').slice(0,500)});
       return json(req,{ok:true,active:nextActive});
     }
     if(action==='force_sign_out'){
       const target=String(body?.targetUserId||'');if(!target)return json(req,{error:'targetUserId required'},400);
-      const revoked=await forceSignOutUser(target);
+      await auditRequired(a,u.id,target,'force_sign_out');
+      const revokedSessions=await forceSignOutUser(a,target);
       await audit(a,u.id,target,'force_sign_out',{});
-      return json(req,{ok:true,revoked});
+      return json(req,{ok:true,revoked:true,revokedSessions});
     }
     if(action==='set_temp_password'){
       if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can set a temporary password'},403);
@@ -66,11 +64,12 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(!target)return json(req,{error:'targetUserId required'},400);
       if(target===u.id)return json(req,{error:'Use your own account recovery flow, not this emergency tool'},409);
       if(password.length<12)return json(req,{error:'Temporary password must be at least 12 characters'},400);
+      await auditRequired(a,u.id,target,'set_temp_password');
+      await requireSessionRevocation(a,target);
       const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
-      let revoked=false;try{revoked=await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-temp-password',e)}
       // Never log the password itself - only that the action happened.
-      await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:revoked});
-      return json(req,{ok:true,revoked});
+      await audit(a,u.id,target,'set_temp_password',{sessionsRevoked:true});
+      return json(req,{ok:true,revoked:true});
     }
     if(action==='change_email'){
     if(r!=='owner')return json(req,{error:'Only the BibleQuest owner can change an account email'},403);
@@ -80,10 +79,11 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
     if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return json(req,{error:'A valid recovery email is required'},400);
     const got=await a.auth.admin.getUserById(target);if(got.error)return json(req,{error:'Account not found'},404);
     if(String(got.data.user?.email||'').trim().toLowerCase()===email)return json(req,{error:'That email is already assigned to this account'},409);
+    await auditRequired(a,u.id,target,'change_email');
+    await requireSessionRevocation(a,target);
     const upd=await a.auth.admin.updateUserById(target,{email});if(upd.error)throw upd.error;
-    let revoked=false;try{revoked=await forceSignOutUser(target)}catch(e){console.error('force-sign-out-on-email-change',e)}
     // Never write the old or new email address to the audit detail.
-    await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:revoked});
-    return json(req,{ok:true,changed:true,revoked});
+    await audit(a,u.id,target,'change_email',{emailChanged:true,sessionsRevoked:true});
+    return json(req,{ok:true,changed:true,revoked:true});
   }
     return json(req,{error:'Unknown action'},400)}catch(err){if(err instanceof Response)return err;console.error(err);return json(req,{error:err instanceof Error?err.message:'Unexpected admin operations error'},500)}});

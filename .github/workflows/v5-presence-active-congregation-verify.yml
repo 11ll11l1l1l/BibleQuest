@@ -1,0 +1,48 @@
+name: V5 Presence active congregation verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/presence.js'
+      - 'src/app/congregation-membership.js'
+      - 'src/app/leader-center.js'
+      - 'tests/v5-presence-active-congregation.test.mjs'
+      - '.github/workflows/v5-presence-active-congregation-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  presence-active-congregation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Phase 6 Presence contract
+        run: |
+          node --check src/app/presence.js
+          node --check src/app/congregation-membership.js
+          node --check src/app/leader-center.js
+          node --check tests/v5-presence-active-congregation.test.mjs
+          node --test tests/v5-presence-active-congregation.test.mjs
+      - name: Run maintained congregation companions
+        run: |
+          node --check src/app/calendar.js
+          node --check src/app/assignments.js
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code

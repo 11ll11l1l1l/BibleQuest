@@ -1,0 +1,48 @@
+name: V5 Reader offline availability verify
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/app/reader.js'
+      - 'src/features/reader/index.js'
+      - 'src/app/offline-scripture-status.js'
+      - 'tests/v5-reader-offline-availability.test.mjs'
+      - '.github/workflows/v5-reader-offline-availability-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reader-offline-availability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused Reader availability contract
+        run: |
+          node --check src/app/reader.js
+          node --check src/features/reader/index.js
+          node --check tests/v5-reader-offline-availability.test.mjs
+          node --test tests/v5-reader-offline-availability.test.mjs
+      - name: Run integrated Phase 5 cache-owner companion
+        run: |
+          node --check src/app/offline-scripture-status.js
+          node --test tests/v5-offline-bible-availability.test.mjs
+          node scripts/validate-v4-cebocb-packs.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code

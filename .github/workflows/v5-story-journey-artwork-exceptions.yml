@@ -1,0 +1,32 @@
+name: V5 Story Journey Artwork Exceptions
+
+on:
+  pull_request:
+    branches: [v5/feature-completion]
+    paths:
+      - 'src/features/story-journey/content.js'
+      - 'tests/v5-story-journey-artwork-exceptions.mjs'
+      - 'tests/v5-whole-app-glyph-inventory.test.mjs'
+      - '.github/workflows/v5-story-journey-artwork-exceptions.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: |
+          echo "candidate=$(git rev-parse HEAD)"
+          test -z "$(git status --porcelain)"
+      - name: Verify Story Journey reviewed glyph exceptions
+        run: node --test tests/v5-story-journey-artwork-exceptions.mjs
+      - name: Run Phase 3 whole-app glyph inventory
+        env:
+          V5_GLYPH_REPORT_PATH: artifacts/v5-glyph-diagnostics.json
+        run: node --test tests/v5-whole-app-glyph-inventory.test.mjs
+      - name: Verify source clean
+        run: test -z "$(git status --porcelain)"

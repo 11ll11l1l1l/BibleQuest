@@ -29,13 +29,21 @@ assert.ok(/action==='suspend_account'\|\|action==='reactivate_account'/.test(src
 assert.ok(/target===u\.id\)return json\(req,\{error:'You cannot suspend or reactivate your own account'/.test(src), 'An admin/owner must not suspend or reactivate their own account.');
 assert.ok(/suspend_account'&&targetAccess\.data\?\.role==='owner'/.test(src), 'Another owner account must be immune to suspension.');
 assert.ok(src.includes("await audit(a,u.id,target,action,"), 'Suspend/reactivate must be recorded in the audit log.');
-assert.ok(/suspend_account'\)\{try\{await forceSignOutUser\(target\)/.test(src), 'Suspending an account must immediately attempt to revoke its active sessions.');
+// The original swallow-errors pattern (try/catch around forceSignOutUser)
+// was superseded by a stricter fail-closed helper (requireSessionRevocation)
+// that lets a real revocation failure fail the whole suspend operation -
+// a deliberate hardening, not a regression. Check for that pattern instead.
+assert.ok(src.includes("if(action==='suspend_account')await requireSessionRevocation(a,target);"), 'Suspending an account must immediately attempt to revoke its active sessions (fail-closed).');
+assert.ok(src.includes('function requireSessionRevocation') && src.includes('await forceSignOutUser(a,targetUserId)'), 'requireSessionRevocation must genuinely call the session-revocation helper, not just be a no-op wrapper.');
 
 // Force sign-out and session revocation implementation.
 assert.ok(src.includes("action==='force_sign_out'"), 'force_sign_out action must exist.');
 assert.ok(src.includes("await audit(a,u.id,target,'force_sign_out'"), 'force_sign_out must be recorded in the audit log.');
-assert.ok(src.includes('/auth/v1/admin/users/${targetUserId}/logout'), 'Session revocation must use the per-user GoTrue admin logout endpoint.');
-assert.ok(/res\.status!==404\)throw new Error/.test(src), 'Session revocation must distinguish no-session 404 from a real backend failure.');
+// Session revocation was re-architected from a raw GoTrue admin REST fetch
+// to a Postgres RPC (bible_revoke_auth_sessions) - a real, deliberate change
+// by a later hardening pass, not a regression. Check for the RPC mechanism.
+assert.ok(src.includes("a.rpc('bible_revoke_auth_sessions'"), 'Session revocation must call the dedicated bible_revoke_auth_sessions RPC.');
+assert.ok(src.includes('if(r.error)throw new Error(`Session revocation failed'), 'A real session-revocation RPC failure must throw, not be silently swallowed.');
 
 // Admin Console must expose the emergency controls through the existing
 // createAdminOperationsService owner rather than inventing a second API path.

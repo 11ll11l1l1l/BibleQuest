@@ -17,7 +17,7 @@ try{
 
   const result=await page.evaluate(async()=>{
     const {progressPage}=await import(`/src/features/progress/index.js?phaseb=${Date.now()}`);
-    const calls={transform:0,profile:0,psychometrics:0,avatar:0};
+    const calls={transform:0,profile:0,psychometrics:0,avatar:0,myJourney:0};
     const progress={
       getState:()=>({xp:120,streak:3,totalActivities:8,counters:{chaptersRead:5},badges:['first-step']}),
       badges:[
@@ -28,7 +28,7 @@ try{
     const host=document.createElement('main');
     host.dataset.progressPhaseBHost='';
     document.body.appendChild(host);
-    const def=progressPage({progress,onTransform:()=>calls.transform++,onPersonalityProfile:()=>calls.profile++,onPsychometrics:()=>calls.psychometrics++,onAvatarVault:()=>calls.avatar++});
+    const def=progressPage({progress,onTransform:()=>calls.transform++,onPersonalityProfile:()=>calls.profile++,onPsychometrics:()=>calls.psychometrics++,onAvatarVault:()=>calls.avatar++,onMyJourney:()=>calls.myJourney++});
     host.innerHTML=def.html;
     const cleanup=def.mount(host);
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -54,6 +54,7 @@ try{
     host.querySelector('[data-open-personality-profile]')?.click();
     host.querySelector('[data-open-psychometrics]')?.click();
     host.querySelector('[data-open-avatar-vault]')?.click();
+    host.querySelector('[data-open-my-journey]')?.click();
 
     const output={
       heroUse,achievementsUse,heroBox,
@@ -75,13 +76,13 @@ try{
     assert(result[key].value===expectedValue,`Progress ${key} value changed during Phase B rendering.`);
     assert(result[key].href===`assets/progress-feature-icons.svg#${expectedIcon}`,`Progress ${key} semantic artwork is wrong.`);
   }
-  const expectedActions=[['Open Transformation','growth'],['Personality Profile','profile'],['Psychometrics Lab','psychometrics'],['Avatar Vault','avatar']];
-  assert(result.buttons.length===4,'Progress Phase B changed the existing action count.');
+  const expectedActions=[['Open Transformation','growth'],['Personality Profile','profile'],['Psychometrics Lab','psychometrics'],['Avatar Vault','avatar'],['My Journey','activity']];
+  assert(result.buttons.length===5,'Progress Phase B changed the existing action count.');
   for(const [text,id] of expectedActions){const button=result.buttons.find(item=>item.text===text);assert(button,`Progress action disappeared: ${text}`);assert(button.href===`assets/progress-feature-icons.svg#${id}`,`Progress action artwork is wrong: ${text}`);assert(button.height>=44,`Progress action target below 44px: ${text}`);}
   assert(result.unlockedUse==='assets/progress-feature-icons.svg#badge','Unlocked Progress badge must use earned badge artwork.');
   assert(result.lockedUse==='assets/progress-feature-icons.svg#badge-locked','Locked Progress badge must use locked badge artwork.');
   assert(result.unlockedUse!==result.lockedUse,'Locked and unlocked Progress badge artwork must be distinct.');
-  assert(result.calls.transform===1&&result.calls.profile===1&&result.calls.psychometrics===1&&result.calls.avatar===1,'Progress navigation callbacks changed.');
+  assert(result.calls.transform===1&&result.calls.profile===1&&result.calls.psychometrics===1&&result.calls.avatar===1&&result.calls.myJourney===1,'Progress navigation callbacks changed.');
   assert(!result.visibleText.includes('✓')&&!result.visibleText.includes('○'),'Generic legacy badge glyphs remain rendered on Progress Phase B.');
   assert(result.innerWidth===390,'Progress Phase B acceptance did not execute at 390px.');
   assert(result.scrollWidth<=result.innerWidth+1,`Progress Phase B introduced horizontal overflow: ${result.scrollWidth}px > ${result.innerWidth}px.`);

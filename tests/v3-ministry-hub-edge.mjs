@@ -34,7 +34,8 @@ assert.equal(state.congregations.find(row=>row.congregationId==='c2').canMinistr
 assert.equal(state.congregations.find(row=>row.congregationId==='c3').canRead,false,'Unsupported role must fail closed for readable congregation tools.');
 assert.equal(state.congregations.find(row=>row.congregationId==='c3').canMinistry,false,'Unsupported role must fail closed for ministry tools.');
 assert.equal(state.memberTools.find(tool=>tool.id==='live-room').available,false,'Live Room must remain deferred.');
-assert.equal(state.ministryTools.find(tool=>tool.id==='leader-dashboard').available,false,'Leader Dashboard must remain deferred.');
+assert.equal(state.ministryTools.find(tool=>tool.id==='leader-dashboard').available,true,'Leader Center (V5 Phase 1) is no longer deferred.');
+assert.equal(state.ministryTools.find(tool=>tool.id==='leader-dashboard').route,'leader-center','Leader Center tool must route to the real leader-center page.');
 
 rows=[{congregation_id:'c1',user_id:'u1',role:'member',congregation:{id:'c1',name:'Member Church'}}];
 state=await hub.load();

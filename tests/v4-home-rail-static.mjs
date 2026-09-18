@@ -1,5 +1,7 @@
 // BibleQuest V4 Home shortcut rail contract
 // (V4_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md Section A).
+// V5 may localize visible labels, but the rail structure, compatibility labels,
+// actions, accessibility and interaction contract remain certified here.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -11,26 +13,28 @@ const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
 assert.ok(index.includes('href="src/ui/home-rail-v4.css"'), 'home-rail-v4.css must be linked from index.html.');
 
-// Rail markup: a nav landmark with a labeled scroll track.
-assert.ok(home.includes('data-home-rail') && home.includes('aria-label="Quick shortcuts"'), 'Rail must be an accessible, labeled navigation landmark.');
+// Rail markup: a nav landmark with a localized accessible name and labeled scroll track.
+assert.ok(home.includes('data-home-rail') && home.includes("tx('home.shortcut.ariaLabel')"), 'Rail must be an accessible, localized navigation landmark.');
 assert.ok(home.includes('data-home-rail-track'), 'Rail must expose its scroll track for wiring.');
+assert.ok(home.includes("import { localization } from '../../app/localization.js'"), 'Home rail labels must use the integrated localization owner.');
 
-// Exactly the 5 requested initial shortcuts, each with icon + text label + a route action.
+// Exactly the 5 requested initial shortcuts, each with icon + text-label key + a route action.
 const expected = [
-  ['daily', 'Daily Journey', 'onMission'],
-  ['reader', 'Reader', 'onReader'],
-  ['assignments', 'Assignments', 'onAssignments'],
-  ['calendar', 'Calendar', 'onCalendar'],
-  ['grow', 'Progress', 'onGrow']
+  ['daily', 'Daily Journey', 'home.shortcut.daily', 'onMission'],
+  ['reader', 'Reader', 'home.shortcut.reader', 'onReader'],
+  ['assignments', 'Assignments', 'home.shortcut.assignments', 'onAssignments'],
+  ['calendar', 'Calendar', 'home.shortcut.calendar', 'onCalendar'],
+  ['grow', 'Progress', 'home.shortcut.progress', 'onGrow']
 ];
-for (const [id, label, action] of expected) {
-  const entryRe = new RegExp(`id: '${id}'[^}]*label: '${label}'[^}]*action: '${action}'`);
-  assert.ok(entryRe.test(home) || new RegExp(`id: '${id}'`).test(home), `Rail data model is missing the '${id}' shortcut with expected label/action.`);
-  assert.ok(home.includes(`label: '${label}'`), `Shortcut '${id}' must show the text label "${label}", not icon-only.`);
+for (const [id, compatibilityLabel, labelKey, action] of expected) {
+  assert.ok(home.includes(`id: '${id}'`), `Rail data model is missing the '${id}' shortcut.`);
+  assert.ok(home.includes(`label: '${compatibilityLabel}'`), `Shortcut '${id}' must retain its compatibility label metadata.`);
+  assert.ok(home.includes(`labelKey: '${labelKey}'`), `Shortcut '${id}' must expose the localized text-label key '${labelKey}'.`);
   assert.ok(home.includes(`action: '${action}'`), `Shortcut '${id}' must route through '${action}'.`);
 }
 assert.equal((home.match(/id: '[a-z]+', icon:/g) || []).length, 5, 'Rail must contain exactly 5 initial shortcuts.');
 assert.ok(home.includes("iconSvg(item.icon"), 'Every rail item must render a real icon, not an emoji/unicode placeholder.');
+assert.ok(home.includes('tx(item.labelKey)'), 'Every rail item must render visible text through its localization key, not become icon-only.');
 
 // homePage must accept and use all 3 new route callbacks.
 for (const param of ['onReader', 'onCalendar', 'onGrow']) {

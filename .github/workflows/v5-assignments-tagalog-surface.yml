@@ -1,0 +1,66 @@
+name: V5 Assignments Tagalog surface
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'src/features/assignments/index.js'
+      - 'src/content/locales/**'
+      - 'src/app/localization.js'
+      - 'tests/v5-assignments-tagalog-surface.test.mjs'
+      - 'tests/v5-assignments-tagalog-browser.mjs'
+      - '.github/workflows/v5-assignments-tagalog-surface.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  assignments-tagalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+      - name: Build current application
+        run: bash build.sh
+      - name: Run focused and accumulated Assignments/localization contracts
+        run: |
+          node --check src/features/assignments/index.js
+          node --check tests/v5-assignments-tagalog-surface.test.mjs
+          node --check tests/v5-assignments-tagalog-browser.mjs
+          node --test tests/v5-assignments-tagalog-surface.test.mjs tests/v5-localization-foundation.test.mjs tests/v5-shared-shell-localization.test.mjs tests/v5-transform-localization.test.mjs tests/v5-home-tagalog-surface.test.mjs tests/v5-calendar-tagalog-surface.test.mjs
+          node tests/v5-localization-qa-current-surfaces.mjs
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-assignments-tl-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-assignments-tl-http.log
+          exit 1
+      - name: Prove Tagalog Assignments at 390px
+        run: timeout 240s node tests/v5-assignments-tagalog-browser.mjs
+      - name: Run accumulated localized mobile regressions
+        run: |
+          timeout 240s node tests/v5-shared-shell-localization-browser.mjs
+          timeout 240s node tests/v5-transform-localization-browser.mjs
+          timeout 240s node tests/v5-calendar-tagalog-browser.mjs
+          timeout 240s node tests/v3-final-mobile-widths-smoke.mjs
+      - name: Verify exact source head remained unchanged
+        run: |
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          git diff --exit-code
+          git diff --cached --exit-code

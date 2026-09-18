@@ -1,0 +1,81 @@
+name: V5 Section E integration sweep
+# 2026-09-16 current-head certification refresh; assertions unchanged.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - v5/feature-completion
+    paths:
+      - 'tests/v5-section-e-integration-sweep.mjs'
+      - '.github/workflows/v5-section-e-integration-sweep.yml'
+      - 'docs/v5/phase7-section-e-integration-sweep.md'
+
+permissions:
+  contents: read
+
+jobs:
+  section-e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exact candidate
+        run: |
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+      - name: Build current application
+        run: bash build.sh
+      - name: Verify maintained Section E inventory
+        run: node tests/v5-section-e-integration-sweep.mjs
+      - name: Run Section E static integration contracts
+        run: |
+          for test in \
+            tests/v4-whole-app-audit-static.mjs \
+            tests/v4-bootstrap-order-edge.mjs \
+            tests/v4-primary-family-static.mjs \
+            tests/v4-home-assignments-edge.mjs \
+            tests/v4-community-family-static.mjs \
+            tests/v4-couples-journey-edge.mjs \
+            tests/v3-congregation-membership-edge.mjs \
+            tests/v3-notification-center-edge.mjs \
+            tests/v3-reader-edge.mjs \
+            tests/v3-games-edge.mjs; do node "$test"; done
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local application
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/bq-v5-section-e-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/bq-v5-section-e-http.log
+          exit 1
+      - name: Run Section E browser and mobile integration contracts
+        run: |
+          for test in \
+            tests/v3-shell-smoke.mjs \
+            tests/v4-bootstrap-safety-net-smoke.mjs \
+            tests/v4-primary-family-smoke.mjs \
+            tests/v4-home-rail-smoke.mjs \
+            tests/v4-assignments-page-smoke.mjs \
+            tests/v4-daily-journey-page-smoke.mjs \
+            tests/v4-couples-journey-smoke.mjs \
+            tests/v3-notification-center-smoke.mjs \
+            tests/v3-reader-smoke.mjs \
+            tests/v3-games-smoke.mjs \
+            tests/v3-final-mobile-widths-smoke.mjs; do timeout 240s node "$test"; done
+      - name: Verify exact source head remained unchanged
+        run: |
+          EXPECTED="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$EXPECTED"
+          test -z "$(git status --porcelain --untracked-files=no)"
