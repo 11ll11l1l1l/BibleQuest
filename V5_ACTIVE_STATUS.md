@@ -3,8 +3,8 @@
 Updated: 2026-09-18 JST
 Execution model: coordinated five-agent feature-completion program with serialized integration
 Official V5 integration branch: `v5/feature-completion`
-Runtime/source candidate after localization closeout: `04034d8749695d272f532ecc3e848b7ebf600a46` (later branch commits are evidence/documentation-only)
-Formal acceptance coverage after 2026-09-18 genuine push-provider BACKEND-E2E: **119/122 = 97.5%**
+Final certified runtime/source candidate: `c0772d458e9d17ab1728c47c568e99857c7d67a1` (later commits are evidence/documentation-only)
+Formal acceptance coverage after physical Web Push DEVICE/FIELD closeout: **122/122 = 100%**
 Production fallback: V4 on `main` until an exact V5 candidate is explicitly accepted and promoted
 
 ## 1. Authority and conflict resolution
@@ -32,11 +32,11 @@ A small helper needed to complete an accepted V5 feature is allowed only when it
 
 ## 3. Current reconciliation state
 
-Integration stability: **GREEN on runtime/source candidate `04034d87`**. Localization verification PR #445 tested the same runtime/source tree plus a CI-only comment marker and passed localization QA `35281386346`, collision guard `35281386338`, Section G `35281386331`, Cloudflare preview smoke `35281386515`, and accumulated browser/mobile regression `35281386502`. PR #445 was closed without merge and its branch reset to the source candidate.
+Integration stability: **GREEN on final runtime/source candidate `c0772d45`**. Exact-head accumulated regression run `35302198022` passed, including the authenticated notification deep-link hydration browser regression. Section G, collision guard, deployed Cloudflare preview smoke, Push Delivery Security, Ministry Calendar, Home Today, glyph inventory, Media retirement and field-harness readiness companions are green on the same candidate line.
 
 The earlier concurrent-work collision damage remains repaired. Recent Home, weekly-journey, Recordings correction, and Leader Center tranches all passed focused merge-candidate gates together with the relevant collision/state/browser guards before serialized merge.
 
-Formal checklist coverage is **119/122 = 97.5%**. The prior backend/Gate C, localization, and Admin evidence remains valid. The genuine push-provider invalidation gate is now BACKEND-E2E PASS from exact source head `618ce3cde7730925a3c3373a484e88987470d380`, run `35288009361` / job `105424531705`: the exact sender posted a signed/encrypted request to Mozilla Autopush, removed exactly the matching invalid assignment subscription on the terminal provider response, and preserved an unrelated calendar control row. This is an evidence-acceptance ratio, not a weighted implementation-progress estimate.
+Formal checklist coverage is **122/122 = 100%**. Prior backend/Gate C, localization, Admin, and genuine-provider evidence remains valid. The two physical Web Push gates are now closed by `docs/v5/V5_PUSH_DEVICE_FIELD_EVIDENCE_2026-09-18.md`. Physical delivery was exercised on immutable candidate `35da53900fef8842a8d75187e4a4efaa1c5adc0e`; all push-critical owners are byte-identical on final runtime candidate `c0772d458e9d17ab1728c47c568e99857c7d67a1`, whose only later runtime correction is the separately-proven authenticated deep-link hydration fix.
 
 ### Phase 1 — Leader Center
 
@@ -80,7 +80,7 @@ On #427 exact head `bf93a9796b039203757e95dedf5315ea10e99824`, workflow run `351
 
 ### Phase 4 — minimum real Web Push
 
-Status: **IN PROGRESS / 9 OF 11 ACCEPTED — PROVIDER CLEANUP BACKEND-E2E PASS; 2 DEVICE/FIELD GATES OPEN**.
+Status: **COMPLETE / 11 OF 11 ACCEPTED — PROVIDER + DEVICE/FIELD PASS**.
 
 Accepted/integrated:
 
@@ -95,14 +95,14 @@ Accepted/integrated:
 - same-origin notification click routing;
 - no private VAPID/service secret shipped to the client.
 
-Still open:
+Physical closeout:
 
-- app-closed receive/open proof — DEVICE/FIELD;
-- push-disabled final device proof — DEVICE/FIELD.
+- app closed + push enabled: real Android OS notification received; provider sender counters attempted=1/delivered=1/failed=0; notification tap opened the same V5 preview at Assignments;
+- push disabled: browser/persisted subscription count 0; sender attempted=0/delivered=0; no Android notification arrived during the required 90-second closed-app observation;
+- the field tap exposed a pre-session guest rendering race, corrected on final runtime candidate `c0772d45` and locked by exact browser regression;
+- accepted `bq-assignment` automatic dispatch is now live as Edge Function v7 after device/provider proof, with JWT verification enabled and zero persisted subscriptions at activation.
 
-The live `bq-assignment` deployment remains intentionally unchanged, so automatic assignment-triggered push fanout to real users is still OFF.
-
-Required closed-app and disabled behavior remains **DEVICE/FIELD** work. Provider-response cleanup is no longer a blocker. See `docs/v5/V5_PUSH_PROVIDER_INVALIDATION_E2E_2026-09-18.md`.
+See `docs/v5/V5_PUSH_PROVIDER_INVALIDATION_E2E_2026-09-18.md` and `docs/v5/V5_PUSH_DEVICE_FIELD_EVIDENCE_2026-09-18.md`.
 
 ### Phase 5 — baseline offline Scripture
 
@@ -198,9 +198,9 @@ Current evidence proves composition over existing Progress/Assignments owners, n
 
 ### Phase 8 — final certification / promotion
 
-Status: **NOT STARTED AS A FINAL CANDIDATE FREEZE**.
+Status: **CERTIFIED / 122 OF 122 ACCEPTED — EXACT RUNTIME CANDIDATE FROZEN**.
 
-Do not begin final promotion until required implementation sections and real backend/device gates are complete enough to freeze one exact candidate.
+Runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`. Physical device evidence is explicitly bound to this candidate as documented. Later commits on the closeout branch are evidence/documentation-only unless explicitly identified otherwise.
 
 Required final actions include:
 
@@ -236,11 +236,13 @@ Required final actions include:
 - 2026-09-18 localization closeout: **111/122 -> 117/122 (95.9%)** on runtime/source candidate `04034d8749695d272f532ecc3e848b7ebf600a46`; final Tagalog completeness and all four Cebuano/Bisaya acceptance items closed. Verification PR #445 passed localization, collision, Section G, preview, Cloudflare, and accumulated regression companions and was closed without merge.
 - 2026-09-18 isolated-local Admin evidence: **117/122 -> 118/122 (96.7%)**; run `35283763923` / job `105411397336` passed the real email-change BACKEND-E2E against a disposable loopback Supabase CLI stack with restoration and cleanup.
 - 2026-09-18 genuine push-provider evidence: **118/122 -> 119/122 (97.5%)**; run `35288009361` / job `105424531705` passed terminal invalid-endpoint cleanup against Mozilla Autopush while preserving an unrelated control subscription.
+- 2026-09-18 physical Web Push closeout: **119/122 -> 122/122 (100%)**. Android/Brave closed-app delivery/open and disabled/no-push behavior passed. The notification deep-link hydration race discovered during the field run was corrected and exact-head regression-proven on final runtime candidate `c0772d458e9d17ab1728c47c568e99857c7d67a1`; accumulated regression run `35302198022` passed.
 
 ## 5. Highest-priority remaining certification/development path
 
-1. Complete the two remaining Web Push DEVICE/FIELD gates: app closed + push enabled receives/opens a real notification, and push disabled preserves pre-push behavior.
-2. Re-run the exact candidate after those device results are bound, freeze the resulting SHA, and make the explicit promotion decision only if every required release gate passes.
+1. Preserve `c0772d458e9d17ab1728c47c568e99857c7d67a1` as the certified V5 runtime/source freeze.
+2. Reconcile the six documentation-only commits currently unique to `main` without importing stale/conflicting V5 acceptance scope.
+3. Promote the certified V5 runtime to production with V4 retained as rollback, then verify the exact production SHA/site before beginning V6 runtime work.
 
 ## 6. Evidence rules
 
@@ -262,4 +264,4 @@ Rules:
 
 ## 7. Release boundary
 
-The current public production site remains the V4 fallback until V5 is explicitly accepted. No documentation reconciliation, scheduled agent, or verification-only PR authorizes promotion to `main` or production by itself.
+V5 is now explicitly accepted by its active 122-item contract. The current public production site remains the V4 fallback until the controlled `main`/Cloudflare promotion completes. Production promotion must preserve the certified runtime/source freeze, reconcile main-only documentation without reviving superseded V5 scope, and retain the V4 rollback ref.
