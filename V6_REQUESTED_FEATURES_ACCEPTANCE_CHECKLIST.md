@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-13 JST
+Updated: 2026-09-18 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -8,14 +8,15 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 
 ## A. Phase 0 — V6 authority and baseline
 
-- [ ] `V6_ACTIVE_STATUS.md` accepted as current authority.
-- [ ] `DEVELOPMENT_PLAN_V6.md` accepted.
-- [ ] V6 integration branch created from cleaned `main` `ef5d46485f9e7138b969777d34de585cfd9ecbd1`.
-- [ ] V3/V4 archives remain unchanged/read-only by policy.
-- [ ] ADR index/template exists.
-- [ ] Initial build/client architecture ADR accepted.
-- [ ] Initial real-database-CI ADR accepted.
-- [ ] Full inherited baseline green on exact Phase 0 V6 head.
+- [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
+- [x] `DEVELOPMENT_PLAN_V6.md` accepted and bound to released V5.
+- [x] V6 integration branch recreated from released V5 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70`.
+- [x] Obsolete pre-V5 V6 history preserved at `archive/v6-pre-v5-experiment-20260913` (`8a5c09b7...`).
+- [x] ADR index/template exists.
+- [x] ADR-0001 build/client architecture accepted.
+- [x] ADR-0002 reproducible database-CI strategy accepted without requiring paid infrastructure.
+- [x] Inherited static/governance baseline green on Phase-0 candidate.
+- [ ] Inherited browser baseline re-run on a Chromium-capable CI/workspace before affected runtime tranches are certified. This evidence requirement does not block starting bounded implementation.
 
 ## B. Build/toolchain
 
