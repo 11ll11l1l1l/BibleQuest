@@ -34,6 +34,23 @@ const HOME_COMPOSITION_COPY = Object.freeze({
   })
 });
 
+const HOME_DAILY_TITLES = Object.freeze({
+  en: Object.freeze({
+    'JHN:15':'Remain in Christ','MAT:5':'Kingdom Character','LUK:10':'Love Your Neighbor','PHP:2':'The Mind of Christ','JAS:1':'Hear and Do',
+    'ROM:12':'A Living Sacrifice','PSA:23':'The Shepherd','PRO:3':'Trust the Lord','1CO:13':'The Way of Love','GAL:5':'Walk by the Spirit'
+  }),
+  tl: Object.freeze({
+    'JHN:15':'Manatili kay Cristo','MAT:5':'Ugali ng Kaharian','LUK:10':'Ibigin ang Iyong Kapwa','PHP:2':'Ang Kaisipan ni Cristo','JAS:1':'Makinig at Gawin',
+    'ROM:12':'Isang Buhay na Handog','PSA:23':'Ang Pastol','PRO:3':'Magtiwala sa Panginoon','1CO:13':'Ang Daan ng Pag-ibig','GAL:5':'Lumakad ayon sa Espiritu'
+  }),
+  ceb: Object.freeze({
+    'JHN:15':'Pabilin kang Cristo','MAT:5':'Kinaiya sa Gingharian','LUK:10':'Higugmaa ang Imong Isigkatawo','PHP:2':'Ang Hunahuna ni Cristo','JAS:1':'Paminaw ug Buhata',
+    'ROM:12':'Buhi nga Halad','PSA:23':'Ang Magbalantay','PRO:3':'Salig sa Ginoo','1CO:13':'Ang Dalan sa Gugma','GAL:5':'Paglakaw pinaagi sa Espiritu'
+  })
+});
+
+const dailyPassageTitle=(passage,locale)=>HOME_DAILY_TITLES[locale]?.[`${passage?.code}:${passage?.chapter}`]||passage?.title||'';
+
 function shortcutRailHtml(locale) {
   const tx = (key, values) => localization.t(key, { locale, values });
   return `<nav class="bq-home-rail" data-home-rail aria-label="${escapeHtml(tx('home.shortcut.ariaLabel'))}"><ul class="bq-home-rail-track" data-home-rail-track>${HOME_SHORTCUTS.map(item => `<li><button type="button" class="bq-home-rail-item" data-home-rail-item="${item.id}" data-home-rail-action="${item.action}"><span class="bq-home-rail-icon" aria-hidden="true">${iconSvg(item.icon, { size: 22 })}</span><span class="bq-home-rail-label">${escapeHtml(tx(item.labelKey))}</span></button></li>`).join('')}</ul></nav>`;
@@ -76,7 +93,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </div>
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
-      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
+      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(dailyPassageTitle(daily.passage,locale))}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">${escapeHtml(tx('home.progress.eyebrow'))}</p>
         <div class="bq-progress-stats">
