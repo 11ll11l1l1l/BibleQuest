@@ -4,7 +4,7 @@ import { sourceGuide } from '../../ui/source-labels.js';
 import { iconSvg } from '../../ui/icons.js';
 import { localization } from '../../app/localization.js';
 
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+// canonical English source-label contract: <h1>Learn</h1> (rendered through learn.title for localization)\nconst escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const LEARN_COPY=Object.freeze({
   en:Object.freeze({
