@@ -8,6 +8,8 @@ on:
       - 'v5-push-device-field.js'
       - 'tests/v5-push-device-field-harness-static.mjs'
       - 'docs/v5/V5_PUSH_DEVICE_FIELD_RUNBOOK.md'
+      - 'src/app/bootstrap.js'
+      - 'tests/v5-auth-deeplink-hydration-contract.mjs'
       - '.github/workflows/v5-push-device-field-readiness.yml'
 
 permissions:
@@ -29,6 +31,8 @@ jobs:
         run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
       - name: Harness static safety contract
         run: node tests/v5-push-device-field-harness-static.mjs
+      - name: Authenticated deep-link hydration contract
+        run: node tests/v5-auth-deeplink-hydration-contract.mjs
       - name: Syntax check field harness
         run: node --check v5-push-device-field.js
       - name: Source remains clean
