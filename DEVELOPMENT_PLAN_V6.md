@@ -1,14 +1,14 @@
 # BibleQuest V6 Development Plan
 
-Updated: 2026-09-17 JST
+Updated: 2026-09-18 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
-Starting baseline: **TBD — exact accepted V5 production SHA after V5 Phase 9**
+Starting baseline: released V5 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
 Depends on: completed/certified V5 feature-completion release
 
 ## 1. V6 line in the sand
 
-V5 finishes the product on the current architecture. **V6 replaces and strengthens the engine underneath that completed product.**
+V5 is released and certified on the current architecture. **V6 replaces and strengthens the engine underneath that completed product.**
 
 V6 is allowed to change build tooling, module boundaries, state ownership, app shell/router ownership, data/repository boundaries, database test infrastructure, service-worker/storage architecture, media ownership, notification delivery infrastructure, security/test tooling and feature internals.
 
@@ -36,7 +36,7 @@ V6 should prove these systems on representative surfaces, but **not redesign eve
 
 ## 3. Handoff from V5
 
-Phase 0 cannot start until V5 Phase 9 closes.
+V5 certification and production promotion are complete. Phase 0 starts from the released V5 production baseline above.
 
 Required V5 handoff evidence:
 
@@ -79,7 +79,7 @@ No valid security/privacy/behavior test may be removed merely to obtain green st
 
 ## Exit gate
 
-Exact V5 baseline is frozen, inherited evidence is green and the first engine ADRs are accepted.
+Exact V5 baseline is frozen, inherited static/governance evidence is green, and ADR-0001/0002 are accepted. Browser parity that could not execute because a workspace lacked Chromium is deferred to CI/runtime acceptance and does not block starting bounded implementation; it remains mandatory before certification/merge of affected runtime tranches.
 
 ---
 
