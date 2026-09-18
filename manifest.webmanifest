@@ -9,7 +9,10 @@
   "display": "standalone",
   "background_color": "#f6f7f2",
   "theme_color": "#f6f7f2",
-  "categories": ["education", "lifestyle"],
+  "categories": [
+    "education",
+    "lifestyle"
+  ],
   "prefer_related_applications": false,
   "icons": [
     {
@@ -35,6 +38,32 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Journey",
+      "short_name": "Journey",
+      "description": "Continue today's BibleQuest journey.",
+      "url": "./#/my-journey"
+    },
+    {
+      "name": "Read Bible",
+      "short_name": "Bible",
+      "description": "Open the Bible reader.",
+      "url": "./#/reader"
+    },
+    {
+      "name": "Assignments",
+      "short_name": "Tasks",
+      "description": "Open current BibleQuest assignments.",
+      "url": "./#/assignments"
+    },
+    {
+      "name": "Calendar",
+      "short_name": "Calendar",
+      "description": "Open the BibleQuest calendar.",
+      "url": "./#/calendar"
     }
   ]
 }
