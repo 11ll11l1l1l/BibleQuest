@@ -26,6 +26,11 @@ const HOME_COMPOSITION_COPY = Object.freeze({
     'home.composition.noUpcomingEvents': 'Wala pang paparating na event.',
     'home.composition.noContinueReading': 'Buksan ang Biblia para magsimula o magpatuloy sa pagbabasa.',
     'home.composition.noLatestService': 'Wala pang kumpirmadong pinakabagong recording ng service.'
+  }),
+  ceb: Object.freeze({
+    'home.composition.noUpcomingEvents': 'Wala pay umaabot nga kalihokan.',
+    'home.composition.noContinueReading': 'Ablihi ang Bibliya aron magsugod o mopadayon sa pagbasa.',
+    'home.composition.noLatestService': 'Wala pay kumpirmadong pinakabag-ong recording sa service.'
   })
 });
 
