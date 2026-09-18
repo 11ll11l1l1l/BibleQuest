@@ -11,7 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const HOME_SHORTCUTS = Object.freeze([
   Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', labelKey: 'home.shortcut.daily', action: 'onMission' }),
   Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', labelKey: 'home.shortcut.reader', action: 'onReader' }),
-  Object.freeze({ id: 'assignments', icon: 'guide', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
+  Object.freeze({ id: 'assignments', icon: 'assignments', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
   Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
   Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
 ]);
@@ -111,13 +111,13 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </section>
         <section class="bq-panel bq-home-tile" data-home-transformation-prompt>
           <button type="button" class="bq-home-tile-button" data-open-home-transformation aria-label="${escapeHtml(tx('nav.transformation'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('grow', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('transform', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.transformation'))}</b><small>${escapeHtml(transformationDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-unread-notifications>
           <button type="button" class="bq-home-tile-button" data-open-home-notifications aria-label="${escapeHtml(tx('nav.notifications'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('notifications', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.notifications'))}</b><small data-home-unread-notifications-count aria-live="polite">${Number(notificationState?.unread || 0)}</small></span>
           </button>
         </section>
@@ -126,7 +126,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
           <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="${escapeHtml(tx('home.tutorial.ariaLabel'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('tutorial', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('home.tutorial.title'))}</b><small>${escapeHtml(tx('home.tutorial.description'))}</small></span>
           </button>
         </section>
