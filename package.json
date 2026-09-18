@@ -1,0 +1,22 @@
+{
+  "name": "biblequest",
+  "private": true,
+  "version": "6.0.0-dev",
+  "type": "module",
+  "engines": {
+    "node": "22.23.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:v6": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "validate:v5": "node scripts/validate-release.mjs",
+    "check:v6-toolchain": "node scripts/v6-toolchain-smoke.mjs"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vite": "8.3.0"
+  }
+}
