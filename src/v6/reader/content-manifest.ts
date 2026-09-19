@@ -94,9 +94,9 @@ export function packageNeedsUpdate(
 }
 
 export async function sha256Hex(data: ArrayBuffer | ArrayBufferView, subtle: SubtleCrypto = globalThis.crypto.subtle): Promise<string> {
-  const source = ArrayBuffer.isView(data)
-    ? data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-    : data;
+  const source: ArrayBuffer = data instanceof ArrayBuffer
+    ? data
+    : new Uint8Array(data.buffer, data.byteOffset, data.byteLength).slice().buffer;
   const digest = await subtle.digest('SHA-256', source);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
