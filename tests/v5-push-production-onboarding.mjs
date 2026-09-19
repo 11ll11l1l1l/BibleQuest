@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises';
 
 const bootstrap=await readFile(new URL('../src/app/bootstrap.js',import.meta.url),'utf8');
 const api=await readFile(new URL('../src/core/api.js',import.meta.url),'utf8');
-const more=await readFile(new URL('../src/features/more/index.js',import.meta.url),'utf8');
 const onboarding=await readFile(new URL('../src/ui/push-onboarding.js',import.meta.url),'utf8');
 const index=await readFile(new URL('../index.html',import.meta.url),'utf8');
 
