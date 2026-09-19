@@ -29,7 +29,8 @@ The overhaul must achieve all of the following together:
 - motion/sound/haptics used intentionally and accessibly;
 - consistent loading/empty/offline/error/unauthorized experiences;
 - preserved privacy, security, data and feature behavior from V5/V6;
-- measurable performance and accessibility budgets.
+- measurable performance and accessibility budgets;
+- congregation-safe photo and file hosting/sharing without using Supabase Storage as the primary blob store and without requiring a paid storage plan.
 
 ## 3. V7 freedom and limits
 
@@ -56,6 +57,21 @@ The overhaul must achieve all of the following together:
 - engine contracts merely to solve one page's cosmetic problem.
 
 Any intentional product-contract change requires explicit acceptance and corresponding tests/evidence.
+
+### V7 free media/file-storage contract
+
+V7 adds a provider-agnostic attachment/media layer for user- and congregation-uploaded photos and files. Supabase remains the authority for metadata, ownership, congregation/group/couple scope, permissions and audit state; binary file bytes live in an external media/object-storage provider.
+
+The default V7 production policy is **strict zero-cost**:
+- no provider that requires automatic paid overage may be the default;
+- no credit-card-dependent pay-as-you-go tier may be required for normal operation;
+- hitting a free quota must fail closed by pausing new uploads/delivery as the provider defines, never by silently upgrading;
+- provider limits must be visible to Admin with local soft-quota warnings and upload throttles;
+- storage providers are adapters, not embedded into feature logic, so BibleQuest can switch provider later without rewriting Community/Media/Ministry surfaces.
+
+The initial preferred provider is ImageKit Free because it supports image/audio/raw-file uploads, private files and signed delivery URLs while its free plan has fixed storage/bandwidth limits. Cloudinary Free is the supported secondary adapter. Cloudflare R2/Backblaze B2 may be evaluated later but are not strict-zero-cost defaults because usage beyond their included free allowance can become billable.
+
+Detailed contract: `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md`.
 
 ## 4. Execution model
 
@@ -85,7 +101,9 @@ No tranche should preserve an outdated V4/V5 page structure merely because it ex
 - define family-specific visual registers: Explore/Journey, Play, Learn/Read, Grow/Reflect, Community, Ministry/Admin;
 - complete motion/sound/haptic moment-to-preset registry using V6 engine capabilities;
 - define accessibility/performance budgets and visual-regression strategy;
-- identify every legacy UI pattern to retire.
+- identify every legacy UI pattern to retire;
+- lock the V7 attachment/media-storage adapter contract, permitted file types, privacy scopes, signed-URL rules, quota policy and provider portability;
+- verify the selected default provider still has a suitable forever-free/no-paid-overage-required plan before V7 activation.
 
 ## Exit gate
 
@@ -172,6 +190,10 @@ Redesign relational surfaces around people and context:
 - Couples/Family/Cloud features;
 - Recognition/Encouragements;
 - community notification/deep-link flows;
+- congregation/event/group photo galleries with responsive thumbnails and full-screen viewing;
+- safe member photo/file sharing using external private blob storage plus Supabase metadata/RLS;
+- attachment scopes for congregation, Journey Group/Team, Couple/Family and explicitly public content;
+- upload progress, retry, quota-full, deleted/missing-file and permission-denied states;
 - warm but non-gamified relational motion/sound language.
 
 ## Exit gate
@@ -188,6 +210,8 @@ Use the V6 engine to give operational surfaces a mature professional treatment:
 - Assignments/review/follow-up;
 - group/team management;
 - Content Review/moderation;
+- attachment/photo moderation and deletion controls without exposing private provider credentials;
+- Admin storage/quota dashboard showing estimated stored bytes, provider state and safe upload-disable controls;
 - Admin Console and privileged actions;
 - role/tenant context clarity;
 - restrained functional micro-feedback only.
@@ -203,6 +227,8 @@ Operational tools are efficient, trustworthy and clear without game-like decorat
 Redesign cross-cutting utility experiences:
 
 - Videos/Recordings/player surfaces using V6 media engine;
+- Photos/Files hub for authorized galleries, uploads, downloads and shared attachments;
+- external-media provider status, quota/error recovery and signed-access flows;
 - playlists/resume/PiP presentation;
 - Notification Center and push preferences;
 - offline/download/storage management;
@@ -244,6 +270,10 @@ A whole-app audit finds no major legacy UI, unregistered motion/sound, inconsist
 - reduced-motion and sound-off/on matrices;
 - physical-device audio-unlock/haptic verification where applicable;
 - performance/bundle/runtime budgets;
+- photo/file upload/download/delete/authorization matrix across public, congregation, group/team and private scopes;
+- signed-URL expiry and unauthorized-access tests;
+- strict-zero-cost quota behavior proving uploads stop safely rather than requiring a paid upgrade;
+- provider-outage/missing-object recovery and metadata/blob consistency checks;
 - exact-SHA candidate freeze and rollback plan.
 
 ## Exit gate
@@ -260,5 +290,7 @@ V7 is complete only when:
 - **Appropriate** — Play can be expressive, Reader calm, Community warm and Ministry/Admin restrained without becoming visually disconnected.
 - **Accessible** — motion, sound, haptics and visual complexity remain controllable and understandable.
 - **Safe** — all V5/V6 privacy/security/data guarantees still hold.
+- **Shareable** — authorized users can upload, display and share photos/files without storing the binary payload in Supabase Storage.
+- **Zero-cost by default** — normal V7 media/file operation does not require a paid storage plan or silent usage overages.
 
 V7 is the product transformation version. V6 builds the engine that makes this breadth safe.
