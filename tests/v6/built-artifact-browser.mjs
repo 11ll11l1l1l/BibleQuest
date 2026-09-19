@@ -55,8 +55,14 @@ async function assertRoute(page, route, label) {
   await page.goto(`${baseUrl}/#/${route}`, { waitUntil: 'networkidle' });
   await page.locator('#app').waitFor({ state: 'attached' });
   await page.waitForFunction(() => document.querySelector('#app')?.textContent?.trim().length > 0);
+  await page.waitForFunction(() => {
+    const lazyRoute = document.querySelector('[data-lazy-route]');
+    return !lazyRoute || lazyRoute.getAttribute('aria-busy') !== 'true';
+  });
   const startupFailure = await page.locator('[data-startup-failure]').count();
   if (startupFailure) throw new Error(`${label} #/${route}: startup failure rendered`);
+  const lazyFailure = await page.locator('[data-lazy-route] [role="alert"]').count();
+  if (lazyFailure) throw new Error(`${label} #/${route}: lazy route module failed to load`);
   const resolvedHash = await page.evaluate(() => location.hash);
   if (resolvedHash !== `#/${route}`) throw new Error(`${label} #/${route}: resolved ${resolvedHash}`);
 }
