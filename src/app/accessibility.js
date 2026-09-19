@@ -1,3 +1,9 @@
+import { createFeatureCompatibilitySeam } from '../v6/kernel/app-contracts.ts';
+import {
+  ACCESSIBILITY_PREFERENCES_FEATURE,
+  createAccessibilityPreferencesService,
+} from '../v6/features/accessibility-preferences.ts';
+
 const STORAGE_KEY = 'accessibility-settings';
 const TEXT_OPTIONS = new Set(['normal', 'large', 'xlarge']);
 const MOTION_OPTIONS = new Set(['system', 'reduce', 'full']);
@@ -20,7 +26,7 @@ const defaultMediaQuery = () => {
   }
 };
 
-export function createAccessibilityService({ storage, mediaQuery = defaultMediaQuery() } = {}) {
+function createLegacyAccessibilityService({ storage, mediaQuery = defaultMediaQuery() } = {}) {
   if (!storage?.read || !storage?.write) throw new Error('Accessibility requires the shared storage service.');
   const subscribers = new Set();
   let disposed = false;
@@ -72,5 +78,25 @@ export function createAccessibilityService({ storage, mediaQuery = defaultMediaQ
       subscribers.clear();
       mediaQuery?.removeEventListener?.('change', onMotionPreferenceChange);
     }
+  });
+}
+
+// Phase-3 low-risk live cutover: keep the released storage/runtime owner while
+// routing page-facing preference commands through the typed V6 feature boundary.
+// This is intentionally local to accessibility and does not alter global routing.
+export function createAccessibilityService(options = {}) {
+  const legacy = createLegacyAccessibilityService(options);
+  const migrated = createAccessibilityPreferencesService(
+    legacy,
+    createFeatureCompatibilitySeam({ [ACCESSIBILITY_PREFERENCES_FEATURE]: true }),
+  );
+  return Object.freeze({
+    getState: () => legacy.getState(),
+    subscribe: listener => migrated.subscribe(listener),
+    setText: value => migrated.setText(value),
+    setMotion: value => migrated.setMotion(value),
+    setContrast: value => migrated.setContrast(value),
+    reset: () => migrated.reset(),
+    dispose: () => legacy.dispose(),
   });
 }
