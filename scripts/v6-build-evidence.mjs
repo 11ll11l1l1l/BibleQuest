@@ -18,6 +18,7 @@ const budgets = Object.freeze({
 });
 const imageExtensions = new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
 const javascriptExtensions = new Set(['.js', '.mjs']);
+const sourceMapReferenceExtensions = new Set(['.css', '.js', '.mjs']);
 
 async function walk(directory) {
   const files = [];
@@ -52,6 +53,8 @@ const featureDynamicChunks = manifestEntries
 
 const files = await walk(outDir);
 const inventory = [];
+const deployableSourceMaps = [];
+const sourceMapReferences = [];
 let totalBytes = 0;
 let largestJavaScript = { path: null, bytes: 0 };
 let largestImage = { path: null, bytes: 0 };
@@ -68,12 +71,29 @@ for (const file of files) {
   if (imageExtensions.has(extension) && size > largestImage.bytes) {
     largestImage = { path, bytes: size };
   }
+
+  // Production-equivalent dist-v6 is directly deployable. Keep source maps
+  // private by default: no .map payloads and no browser-discoverable map URLs
+  // may ship in this artifact. A future diagnostics uploader can generate maps
+  // in an isolated non-deployable job without weakening this deployment gate.
+  if (extension === '.map') {
+    deployableSourceMaps.push(path);
+  }
+  if (sourceMapReferenceExtensions.has(extension)) {
+    const contents = await readFile(file, 'utf8');
+    if (/sourceMappingURL\s*=/.test(contents)) sourceMapReferences.push(path);
+  }
 }
 
 inventory.sort((a, b) => b.bytes - a.bytes || a.path.localeCompare(b.path));
 const report = {
   build: identity,
   budgets,
+  sourceMapPrivacy: {
+    policy: 'deployable-dist-must-not-contain-source-maps-or-sourceMappingURL-references',
+    deployableSourceMaps,
+    sourceMapReferences,
+  },
   routeSplitting: {
     browserEntrySource,
     browserEntry: { path: browserEntryPath, bytes: browserEntryBytes },
@@ -92,6 +112,8 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const failures = [];
+if (deployableSourceMaps.length) failures.push(`deployable source maps present: ${deployableSourceMaps.join(', ')}`);
+if (sourceMapReferences.length) failures.push(`browser source-map references present: ${sourceMapReferences.join(', ')}`);
 if (totalBytes > budgets.totalBytes) failures.push(`total artifact ${totalBytes} > ${budgets.totalBytes}`);
 if (largestJavaScript.bytes > budgets.javascriptBytes) failures.push(`largest JS ${largestJavaScript.bytes} > ${budgets.javascriptBytes}`);
 if (browserEntryBytes > budgets.entryJavascriptBytes) failures.push(`browser entry JS ${browserEntryBytes} > ${budgets.entryJavascriptBytes}`);
@@ -99,4 +121,4 @@ if (featureDynamicChunks.length < budgets.minimumFeatureDynamicChunks) {
   failures.push(`feature dynamic chunks ${featureDynamicChunks.length} < ${budgets.minimumFeatureDynamicChunks}`);
 }
 if (largestImage.bytes > budgets.imageBytes) failures.push(`largest image ${largestImage.bytes} > ${budgets.imageBytes}`);
-if (failures.length) throw new Error(`V6 build budget exceeded: ${failures.join('; ')}`);
+if (failures.length) throw new Error(`V6 build evidence failed: ${failures.join('; ')}`);
