@@ -69,3 +69,29 @@ jobs:
         run: |
           test -d dist-v6
           find dist-v6 -type f -printf '%s %p\n' | sort -nr | sed -n '1,100p'
+
+      - name: Install pinned browser harness outside application lockfile
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start built artifact preview
+        shell: bash
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/bq-v6-preview.log 2>&1 &
+          echo $! > /tmp/bq-v6-preview.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v6-preview.log
+          exit 1
+
+      - name: Built artifact Chromium parity
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/built-artifact-browser.mjs
+
+      - name: Preview diagnostics
+        if: always()
+        run: cat /tmp/bq-v6-preview.log || true
