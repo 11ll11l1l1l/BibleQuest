@@ -13,6 +13,33 @@ create table if not exists public.bible_profiles (
   updated_at timestamptz not null default now()
 );
 
+-- Released V5 platform-role access contract, verified read-only against production.
+create table if not exists public.bible_app_access (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  role text not null default 'member'
+    check (role in ('member','leader','pastor','admin','owner')),
+  active boolean not null default true,
+  granted_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists bible_app_access_role_idx
+  on public.bible_app_access(role) where active;
+create index if not exists bible_app_access_granted_by_idx
+  on public.bible_app_access(granted_by) where granted_by is not null;
+
+alter table public.bible_app_access enable row level security;
+revoke all on table public.bible_app_access from anon, authenticated;
+grant select on table public.bible_app_access to authenticated;
+grant all on table public.bible_app_access to service_role;
+
+drop policy if exists "app access read own" on public.bible_app_access;
+create policy "app access read own"
+on public.bible_app_access for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
 create table if not exists public.bible_questions (
   id uuid primary key default gen_random_uuid(), external_id text unique,
   question_type text not null, book text, chapter integer, verse_start integer, verse_end integer,
