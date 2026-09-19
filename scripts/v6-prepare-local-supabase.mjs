@@ -143,6 +143,16 @@ const baselineParts = [
   '-- END RELEASED V5 PREREQUISITE PARITY: CI release overlay',
 ];
 
+for (const name of parityExtraMigrations) {
+  baselineParts.push(
+    '',
+    `-- BEGIN RELEASED V5 STATE PARITY PREREQUISITE: ${name}`,
+    `-- Reason: ${releasedStateParityExtras[name]}`,
+    fs.readFileSync(path.join(sourceMigrations, name), 'utf8'),
+    `-- END RELEASED V5 STATE PARITY PREREQUISITE: ${name}`,
+  );
+}
+
 for (const name of orderedHistoricalMigrations) {
   const productionName = productionLogicalName(name);
   const productionVersion = releasedOrder.get(productionName).version;
@@ -151,16 +161,6 @@ for (const name of orderedHistoricalMigrations) {
     `-- BEGIN RELEASED V5 MIGRATION SQL: ${productionVersion}_${productionName} (repo: ${name})`,
     fs.readFileSync(path.join(sourceMigrations, name), 'utf8'),
     `-- END RELEASED V5 MIGRATION SQL: ${productionVersion}_${productionName}`,
-  );
-}
-
-for (const name of parityExtraMigrations) {
-  baselineParts.push(
-    '',
-    `-- BEGIN RELEASED V5 STATE PARITY SQL: ${name}`,
-    `-- Reason: ${releasedStateParityExtras[name]}`,
-    fs.readFileSync(path.join(sourceMigrations, name), 'utf8'),
-    `-- END RELEASED V5 STATE PARITY SQL: ${name}`,
   );
 }
 
@@ -215,6 +215,6 @@ console.log(`Prepared isolated V6 Supabase project: ${destination}`);
 console.log(`Released V5 baseline + V6 forward migrations: 1 + ${v6ForwardMigrations.length}`);
 console.log('Released-object prerequisite parity injected before historical hardening.');
 console.log(`Released-history SQL folded into baseline: ${orderedHistoricalMigrations.length}`);
-console.log(`Released-state parity extras folded into baseline: ${parityExtraMigrations.length}`);
+console.log(`Released-state parity prerequisites folded into baseline: ${parityExtraMigrations.length}`);
 console.log(`Repository historical SQL excluded from released V5 baseline: ${excludedHistoricalMigrations.length}`);
 console.log(`pgTAP suites: ${testFiles.length}`);
