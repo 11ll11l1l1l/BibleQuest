@@ -43,6 +43,9 @@ jobs:
         run: |
           node --check src/app/push-subscription.js
           node --check src/app/push-subscription-persistence.js
+          node --check src/app/bootstrap.js
+          node --check src/core/api.js
+          node --check src/features/more/index.js
           node --check tests/v5-push-subscription-lifecycle.mjs
           node --check tests/v5-push-subscription-persistence.mjs
           node --check tests/v5-push-production-onboarding.mjs
