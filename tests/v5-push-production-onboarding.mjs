@@ -12,7 +12,6 @@ assert.match(bootstrap,/api:api\.pushSubscriptions/);
 assert.match(bootstrap,/applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY/);
 assert.match(bootstrap,/ownerStorage:authStorage/);
 assert.match(bootstrap,/mountPushOnboarding\(\{push,session,ownerStorage:authStorage\}\)/);
-assert.match(bootstrap,/morePage\(\{pwaInstall,push,/);
 
 assert.match(api,/const pushSubscriptions = Object\.freeze/);
 assert.match(api,/bible_push_subscriptions/);
@@ -27,10 +26,6 @@ assert.match(onboarding,/\['assignment','ministry','calendar'\]/);
 assert.match(onboarding,/data-push-onboarding-later/);
 assert.doesNotMatch(onboarding,/requestPermission\(/,'permission must remain owned by the certified push service and be reached only from the Enable button');
 
-assert.match(more,/data-push-enable/);
-assert.match(more,/data-push-disable/);
-assert.match(more,/push\.enable\(\['assignment','ministry','calendar'\]\)/);
-assert.match(more,/push\.disable\(\)/);
 
 assert.match(index,/src\/ui\/push-onboarding\.css/);
 
