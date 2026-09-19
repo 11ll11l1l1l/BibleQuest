@@ -50,12 +50,11 @@ test('live cutover routes preference mutations to released storage and subscribe
   assert.equal(snapshots.at(-1)?.contrast, 'strong');
 });
 
-test('live cutover preserves validation and reset defaults', async () => {
+test('live cutover preserves synchronous validation and reset defaults', async () => {
   const { storage, mediaQuery, writes } = harness();
   const service = createAccessibilityService({ storage, mediaQuery });
 
-  service.setText('invalid');
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.throws(() => service.setText('invalid'), /Unsupported accessibility text/);
   assert.equal(writes.length, 0);
 
   service.setText('large');
