@@ -52,9 +52,18 @@ export function createFeatureCompatibilitySeam(
   return Object.freeze({ enabled: (feature: string) => snapshot[String(feature ?? '').trim()] === true });
 }
 
+function sessionOwnsActiveCongregation(session: SessionSnapshot, tenant: TenantSnapshot): boolean {
+  if (session.status !== 'authenticated' || !tenant.activeCongregationId) return false;
+  const activeCongregationId = tenant.activeCongregationId;
+  const userId = session.identity.userId;
+  return session.memberships.some(
+    (membership) => membership.userId === userId && membership.congregationId === activeCongregationId,
+  );
+}
+
 export function routeAllowed(route: AppRouteContract, shell: Pick<AppShellSnapshot, 'session' | 'tenant'>): boolean {
   if (route.access === 'public') return true;
   if (shell.session.status !== 'authenticated') return false;
   if (route.access === 'authenticated') return true;
-  return Boolean(shell.tenant.activeCongregationId);
+  return sessionOwnsActiveCongregation(shell.session, shell.tenant);
 }
