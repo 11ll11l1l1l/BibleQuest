@@ -34,6 +34,27 @@ test('route contract keeps public, authenticated and congregation access distinc
   assert.equal(routeAllowed(tenantRoute, { session: authenticated, tenant: tenant.snapshot() }), false);
 });
 
+test('congregation route fails closed when tenant context drifts from authenticated memberships', () => {
+  const tenant = createTenantContextStore();
+  const memberships = [Object.freeze({ congregationId: 'cong-a', userId: 'user-a', role: 'member' as const })];
+  tenant.reconcile('user-a', memberships);
+  const staleTenant = Object.freeze({ ...tenant.snapshot(), activeCongregationId: 'cong-b' });
+  const authenticated: SessionSnapshot = Object.freeze({
+    status: 'authenticated',
+    identity: Object.freeze({ userId: 'user-a' }),
+    memberships,
+  });
+
+  assert.equal(routeAllowed(tenantRoute, { session: authenticated, tenant: staleTenant }), false);
+
+  const mismatchedOwner: SessionSnapshot = Object.freeze({
+    status: 'authenticated',
+    identity: Object.freeze({ userId: 'user-b' }),
+    memberships,
+  });
+  assert.equal(routeAllowed(tenantRoute, { session: mismatchedOwner, tenant: tenant.snapshot() }), false);
+});
+
 test('feature compatibility seam is explicit and fail-closed', () => {
   const compatibility = createFeatureCompatibilitySeam({ 'v6-simple-slice': true, reader: false });
   assert.equal(compatibility.enabled('v6-simple-slice'), true);
