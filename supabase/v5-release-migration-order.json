@@ -1,0 +1,288 @@
+{
+  "format": 1,
+  "source": "BibleQuest released V5 Supabase migration history (read-only capture)",
+  "capturedFor": "V6 disposable database reconstruction",
+  "releaseCutoff": "20260918235959",
+  "migrations": [
+    {
+      "version": "20260904000742",
+      "name": "biblequest_shared_backend_core"
+    },
+    {
+      "version": "20260904000809",
+      "name": "biblequest_shared_backend_cloud_stage"
+    },
+    {
+      "version": "20260904001240",
+      "name": "biblequest_shared_backend_indexes"
+    },
+    {
+      "version": "20260904034647",
+      "name": "biblequest_accounts_profiles_notes_devices"
+    },
+    {
+      "version": "20260904035040",
+      "name": "biblequest_member_profile_self_update"
+    },
+    {
+      "version": "20260904041244",
+      "name": "biblequest_church_group_and_signup_limits"
+    },
+    {
+      "version": "20260904043623",
+      "name": "biblequest_live_rooms_challenges_workspace"
+    },
+    {
+      "version": "20260904044011",
+      "name": "harden_live_room_response_privacy"
+    },
+    {
+      "version": "20260904045545",
+      "name": "move_room_poll_totals_to_edge"
+    },
+    {
+      "version": "20260904091638",
+      "name": "biblequest_release_hardening"
+    },
+    {
+      "version": "20260904095809",
+      "name": "assignments_presence_unlocks"
+    },
+    {
+      "version": "20260904112303",
+      "name": "journey_groups_daily_loop"
+    },
+    {
+      "version": "20260904113933",
+      "name": "journey_presence_indexes"
+    },
+    {
+      "version": "20260904131408",
+      "name": "biblequest_admin_access_controls"
+    },
+    {
+      "version": "20260904132214",
+      "name": "biblequest_admin_fk_indexes"
+    },
+    {
+      "version": "20260904133639",
+      "name": "add_bible_password_reset_codes"
+    },
+    {
+      "version": "20260904133657",
+      "name": "bind_reset_codes_to_registered_email"
+    },
+    {
+      "version": "20260904155407",
+      "name": "production_permission_hardening"
+    },
+    {
+      "version": "20260904155937",
+      "name": "admin_auth_schema_parity"
+    },
+    {
+      "version": "20260904161300",
+      "name": "browser_grant_parity"
+    },
+    {
+      "version": "20260904171600",
+      "name": "congregation_member_column_hardening"
+    },
+    {
+      "version": "20260904181520",
+      "name": "live_room_session_type_parity"
+    },
+    {
+      "version": "20260904181556",
+      "name": "live_room_update_role_hardening"
+    },
+    {
+      "version": "20260904191640",
+      "name": "poll_vote_integrity"
+    },
+    {
+      "version": "20260904201513",
+      "name": "live_room_score_authority_hardening"
+    },
+    {
+      "version": "20260904211711",
+      "name": "poll_vote_rls_initplan"
+    },
+    {
+      "version": "20260904221326",
+      "name": "couple_shared_write_hardening"
+    },
+    {
+      "version": "20260904230510",
+      "name": "account_recovery_code_v2"
+    },
+    {
+      "version": "20260905041336",
+      "name": "pastor_community_rls_parity"
+    },
+    {
+      "version": "20260905090852",
+      "name": "linked_activity_assignment_groups"
+    },
+    {
+      "version": "20260905091721",
+      "name": "team_creation_role_hardening"
+    },
+    {
+      "version": "20260905091845",
+      "name": "pair_link_couples_challenges"
+    },
+    {
+      "version": "20260905101514",
+      "name": "community_write_scope_hardening"
+    },
+    {
+      "version": "20260905120000",
+      "name": "bible_content_review_and_reports"
+    },
+    {
+      "version": "20260905120826",
+      "name": "bible_content_reviewer_member_read"
+    },
+    {
+      "version": "20260905121245",
+      "name": "bible_content_review_policy_consolidation"
+    },
+    {
+      "version": "20260905121351",
+      "name": "content_report_review_integrity"
+    },
+    {
+      "version": "20260905122741",
+      "name": "content_review_revisions_and_retirement"
+    },
+    {
+      "version": "20260905125617",
+      "name": "bible_ministry_messages_and_scoped_polls"
+    },
+    {
+      "version": "20260905130025",
+      "name": "bible_poll_totals_rpc"
+    },
+    {
+      "version": "20260905131205",
+      "name": "bible_account_deletion_fk_cleanup"
+    },
+    {
+      "version": "20260905131357",
+      "name": "bible_poll_totals_revoke_anon"
+    },
+    {
+      "version": "20260905134206",
+      "name": "biblequest_production_upgrade_v1"
+    },
+    {
+      "version": "20260905134253",
+      "name": "biblequest_notification_triggers_v1"
+    },
+    {
+      "version": "20260905134531",
+      "name": "biblequest_advanced_poll_aggregate_v1"
+    },
+    {
+      "version": "20260905134556",
+      "name": "biblequest_scheduled_ministry_visibility_v1"
+    },
+    {
+      "version": "20260905134900",
+      "name": "biblequest_content_escalation_v1"
+    },
+    {
+      "version": "20260905135600",
+      "name": "biblequest_scheduled_assignment_visibility_v1"
+    },
+    {
+      "version": "20260905135849",
+      "name": "biblequest_account_deletion_requests_v1"
+    },
+    {
+      "version": "20260905141825",
+      "name": "bible_congregation_media_library"
+    },
+    {
+      "version": "20260905142212",
+      "name": "bible_media_library_updated_at_trigger"
+    },
+    {
+      "version": "20260905142231",
+      "name": "bible_media_publish_roles_guard"
+    },
+    {
+      "version": "20260905142657",
+      "name": "revoke_notification_trigger_rpc_execution"
+    },
+    {
+      "version": "20260905142802",
+      "name": "biblequest_upgrade_performance_cleanup"
+    },
+    {
+      "version": "20260905142917",
+      "name": "bible_media_reviewer_read"
+    },
+    {
+      "version": "20260905143011",
+      "name": "bible_media_table_grant_hardening"
+    },
+    {
+      "version": "20260905143323",
+      "name": "bible_ministry_media_storage_update_hardening"
+    },
+    {
+      "version": "20260911144939",
+      "name": "assignment_response_presence"
+    },
+    {
+      "version": "20260911144950",
+      "name": "calendar_events"
+    },
+    {
+      "version": "20260911145003",
+      "name": "calendar_congregation_sharing"
+    },
+    {
+      "version": "20260912162631",
+      "name": "assignment_presence_self_only"
+    },
+    {
+      "version": "20260912162641",
+      "name": "presence_active_count"
+    },
+    {
+      "version": "20260912162919",
+      "name": "presence_active_count_grant_hardening"
+    },
+    {
+      "version": "20260912182043",
+      "name": "presence_active_count_private_definer"
+    },
+    {
+      "version": "20260912182731",
+      "name": "poll_aggregates_private_definers"
+    },
+    {
+      "version": "20260917142514",
+      "name": "calendar_congregation_write_isolation"
+    },
+    {
+      "version": "20260917210238",
+      "name": "push_subscriptions"
+    },
+    {
+      "version": "20260917210247",
+      "name": "push_delivery_idempotency"
+    },
+    {
+      "version": "20260917210257",
+      "name": "admin_session_revocation"
+    },
+    {
+      "version": "20260918043632",
+      "name": "add_media_categories"
+    }
+  ]
+}
