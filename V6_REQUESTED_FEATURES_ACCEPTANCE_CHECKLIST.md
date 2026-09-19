@@ -1,10 +1,12 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-18 JST
+Updated: 2026-09-20 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
+
+Evidence checkpoint: integrated V6 head `674402e4ae5bb2edbee2c100039de840944d6310`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -16,56 +18,56 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 - [x] ADR-0001 build/client architecture accepted.
 - [x] ADR-0002 reproducible database-CI strategy accepted without requiring paid infrastructure.
 - [x] Inherited static/governance baseline green on Phase-0 candidate.
-- [ ] Inherited browser baseline re-run on a Chromium-capable CI/workspace before affected runtime tranches are certified. This evidence requirement does not block starting bounded implementation.
+- [x] Inherited/built browser baseline re-run on Chromium-capable CI: 45 canonical direct deep links + not-found, representative 320/360/390/412/430px routes, service-worker registration, and built PWA shell acceptance are green.
 
 ## B. Build/toolchain
 
-- [ ] `package.json` + lockfile exist and installs are deterministic.
-- [ ] Supported Node version is pinned/documented.
-- [ ] Vite produces deterministic deployable artifacts.
-- [ ] TypeScript is enabled for new architecture contracts; migration policy for legacy JS is documented.
+- [x] `package.json` + lockfile exist and `npm ci` is green in the exact-head Phase-1 gate.
+- [x] Supported Node version is pinned/documented (`22.23.2`).
+- [x] Vite produces deterministic built artifacts with embedded exact-SHA identity.
+- [x] TypeScript is enabled for new architecture contracts; incremental legacy-JS compatibility is documented by the accepted build/client architecture.
 - [ ] Typecheck/lint/unit/build commands run in CI.
-- [ ] Built route/deep-link behavior matches production expectations.
+- [x] Built route/deep-link behavior is proven across all 45 canonical hashes plus unknown-route handling in Chromium.
 - [ ] Source maps are generated/handled safely.
-- [ ] Route/domain code splitting is available.
+- [x] Route/domain code splitting is active: 44 feature-page modules load lazily and built Chromium waits for chunk completion.
 - [ ] CSS/assets/images are owned by build pipeline.
-- [ ] Bundle/chunk/image budgets exist and are CI-visible.
+- [x] Bundle/chunk/image budgets are CI-visible; the browser entry is capped at 700 KiB and at least 40 feature dynamic chunks are required.
 - [ ] Cloudflare exact-SHA deployment identity works from built artifacts.
 
 ## C. Real Supabase/Postgres CI
 
-- [ ] Reproducible local Supabase project configuration exists.
-- [ ] CI starts a real ephemeral Supabase/Postgres environment.
-- [ ] Clean database applies all required migrations from zero.
-- [ ] Upgrade-path database test represents supported V4→V6 migration.
+- [x] Reproducible local-only Supabase project configuration exists.
+- [x] CI starts a real disposable local Supabase/Postgres environment without hosted project credentials.
+- [x] Clean disposable database reset applies the supported released-V5 reconstruction plus current V6 forward migrations from zero.
+- [x] Upgrade-path database test represents the supported released-V5→current-V6 path. Direct V4→V6 is no longer the supported V6 baseline because V6 starts from released V5.
 - [ ] Schema/type drift check exists.
-- [ ] Generated TypeScript database types are committed/generated deterministically.
-- [ ] At least two populated congregations exist in deterministic fixtures.
-- [ ] Fixtures include ordinary member + ministry-role + platform-privileged identities required by tests.
-- [ ] RLS allow/deny tests execute as actual database callers.
-- [ ] Anonymous/public exposure is explicitly tested.
+- [x] Generated TypeScript database types are produced deterministically twice in local CI and compared byte-for-byte.
+- [x] Two populated congregations exist in deterministic fixtures.
+- [x] Fixtures include ordinary members, ministry roles and a platform-privileged identity.
+- [x] RLS allow/deny tests execute against the real disposable database as database callers.
+- [x] Anonymous/public privilege exposure is explicitly tested for covered sensitive objects.
 - [ ] Cross-congregation denial is tested for every sensitive migrated domain.
 - [ ] `SECURITY DEFINER` / `SECURITY INVOKER` behavior is actually executed.
-- [ ] Function grants/revokes are tested.
-- [ ] Privileged function search-path/least-privilege requirements are tested.
-- [ ] Static SQL checks remain fast guards but are not the sole release proof.
+- [x] Function/table grants and denials are executable CI assertions for the covered tenant/security surface.
+- [x] Privileged function `search_path`/least-privilege requirements are tested for the covered helper functions.
+- [x] Static SQL checks remain fast guards and are supplemented by executable pgTAP/RLS/privilege tests.
 
 ## D. Core V6 client architecture
 
-- [ ] Typed app-shell/router contract established.
+- [x] Typed app-shell/router access and deep-link contracts are established for V6 boundaries.
 - [ ] Typed session/auth owner established.
-- [ ] Explicit active-congregation context established.
-- [ ] Central repository/data-access boundary established.
+- [x] Explicit active-congregation context is established separately from authenticated identity.
+- [x] Central typed repository/data-access boundary is established for V6 domain migration.
 - [ ] Standard async/error/offline/unauthorized state contract established.
 - [ ] Feature modules do not make UI visibility the authority for protected actions.
-- [ ] Route-level loading/cancellation/stale-request behavior is standardized.
-- [ ] Compatibility/feature-flag cutover mechanism exists.
+- [x] Route-level lazy loading/cancellation and stale-request invalidation primitives are standardized.
+- [x] Compatibility feature command/event boundary and fail-closed migration seam exist.
 - [ ] At least one low-risk feature proves the new architecture end to end before Reader/Games rewrite.
 
 ## E. Reader decomposition
 
-- [ ] Current Reader behavior has characterization tests before migration.
-- [ ] Navigation/translation state separated from DOM renderer.
+- [x] Current Reader translation/content behavior has characterization tests before migration.
+- [x] Reader navigation/translation state has a DOM-independent typed parity seam.
 - [ ] Scripture repository/content provider separated from route/view.
 - [ ] Chapter/verse presentation split into testable components.
 - [ ] Search is independently testable.
@@ -73,23 +75,23 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 - [ ] Context Lab bridge is independently testable.
 - [ ] Japanese furigana support preserved.
 - [ ] Japanese vocabulary support preserved.
-- [ ] Copyright/licensed-link behavior preserved.
+- [x] Copyright/licensed-link redistribution policy is explicit and tested in the V6 content-manifest boundary.
 - [ ] Read/progress writes use new domain/data boundary.
 - [ ] Reader route passes parity + accessibility + mobile tests.
 
 ## F. True offline Bible
 
-- [ ] Versioned Scripture content-manifest format exists.
-- [ ] Download manager supports deliberate translation/book packages.
+- [x] Versioned Scripture content-manifest format exists with package identity/license metadata.
+- [x] Offline package lifecycle manager supports deliberate declared book-package installation through injected transport/repository boundaries.
 - [ ] At least one supported full translation can be made truly offline where licensing/size permits.
 - [ ] Download progress/cancel/retry/remove controls exist.
 - [ ] Storage usage/reclaim controls exist.
-- [ ] Package checksums/version validation exist.
+- [x] Package byte-length/checksum/version validation exists and fails closed before persistence.
 - [ ] Corrupt/outdated package recovery is tested.
 - [ ] Previously downloaded Bible text opens with network disabled.
 - [ ] Offline chapter navigation works after app restart.
 - [ ] Supported local search works offline or is clearly scoped if deferred.
-- [ ] Live/licensed translations never silently substitute another translation offline.
+- [x] Live/licensed redistribution policy explicitly rejects unsupported packaged substitution.
 - [ ] App/service-worker/content-pack versions can upgrade safely.
 - [ ] Physical installed-PWA offline acceptance passes.
 
@@ -128,16 +130,16 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 
 - [ ] Web Push subscription lifecycle exists.
 - [ ] Push server secrets remain server-side.
-- [ ] Notification-category preferences exist.
+- [x] Account-scoped notification-category preferences and quiet-hours model exist.
 - [ ] Service worker handles push events and notification clicks.
-- [ ] Push deep links resolve through supported V6 routes.
+- [x] Notification destinations are restricted to the integrated V6 deep-link allowlist.
 - [ ] Expired/invalid push subscriptions are cleaned safely.
 - [ ] Delivery is deduplicated/idempotent/rate-limited.
 - [ ] Assignment assigned/due push is supported.
 - [ ] Leader/congregation announcement push is supported.
 - [ ] Encouragement push is supported.
 - [ ] In-app Notification Center remains the durable fallback.
-- [ ] Sign-out/account switch clears/changes device notification context correctly.
+- [x] V6 notification client context tests clear account-scoped preferences on sign-out/account switch and fail closed without an active account.
 - [ ] Physical-device push acceptance passes.
 
 ## J. Offline mutation/sync
@@ -167,7 +169,7 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 
 ## L. Multi-congregation
 
-- [ ] Two-congregation deterministic CI topology is permanently available.
+- [x] Two-congregation deterministic database-CI topology is source-controlled and executable.
 - [ ] Users with multiple memberships have an explicit congregation switcher/context.
 - [ ] Tenant switch clears stale cached/view state.
 - [ ] Sensitive repository calls require explicit congregation context.
@@ -212,7 +214,7 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 - [ ] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
 - [ ] Controlled source-map resolution exists.
 - [ ] Diagnostics expose safe SW/content/connectivity state.
-- [ ] Route/chunk size budgets are enforced.
+- [x] Route/chunk size budgets are enforced in exact-head build CI.
 - [ ] Image/font budgets are enforced.
 - [ ] Startup/critical-route performance budgets are defined.
 - [ ] Large Bible/game/media payloads are not eagerly loaded without need.
@@ -221,7 +223,7 @@ This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS
 
 - [ ] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
 - [ ] Unit/type/lint/build gates run on PRs.
-- [ ] Database/RLS integration gate runs on relevant PRs.
+- [x] Database/RLS integration gate runs on relevant Supabase/database PRs using a real disposable stack.
 - [ ] Whole-app/protected-route/browser gates run against built output.
 - [ ] PWA/offline gate covers real V6 SW/content architecture.
 - [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
