@@ -18,10 +18,13 @@ const destinationTests = path.join(destinationSupabase, 'tests');
 
 const V5_BASELINE_CUTOFF = '20260918235959';
 
+const releaseOrderPath = path.join(sourceSupabase, 'v5-release-migration-order.json');
+
 const required = [
   path.join(sourceSupabase, 'schema.sql'),
   path.join(sourceSupabase, 'config.toml'),
   path.join(sourceSupabase, 'seed-v6-ci.sql'),
+  releaseOrderPath,
 ];
 
 for (const file of required) {
@@ -42,6 +45,28 @@ const migrationFiles = fs
 
 const historicalPreV6Migrations = migrationFiles.filter((name) => migrationVersion(name) <= V5_BASELINE_CUTOFF);
 const v6ForwardMigrations = migrationFiles.filter((name) => migrationVersion(name) > V5_BASELINE_CUTOFF);
+
+const releaseOrderManifest = JSON.parse(fs.readFileSync(releaseOrderPath, 'utf8'));
+if (releaseOrderManifest?.releaseCutoff !== V5_BASELINE_CUTOFF || !Array.isArray(releaseOrderManifest?.migrations)) {
+  throw new Error('V5 release migration-order manifest is invalid or has the wrong cutoff.');
+}
+const releasedOrder = new Map(
+  releaseOrderManifest.migrations.map((entry, index) => [String(entry.name), { index, version: String(entry.version) }]),
+);
+const migrationLogicalName = (filename) => filename.replace(/^\d{8}(?:\d{6})?_/, '').replace(/\.sql$/, '');
+
+for (const filename of historicalPreV6Migrations) {
+  const logicalName = migrationLogicalName(filename);
+  if (!releasedOrder.has(logicalName)) {
+    throw new Error(`Historical migration is not present in released V5 order manifest: ${filename}`);
+  }
+}
+
+historicalPreV6Migrations.sort((a, b) => {
+  const ai = releasedOrder.get(migrationLogicalName(a)).index;
+  const bi = releasedOrder.get(migrationLogicalName(b)).index;
+  return ai - bi;
+});
 
 for (const name of v6ForwardMigrations) {
   if (!/^\d{14}_/.test(name)) {
@@ -113,7 +138,11 @@ const manifest = Object.freeze({
   baseline: 'supabase/schema.sql',
   baselineCutoff: V5_BASELINE_CUTOFF,
   syntheticBaseline: baselineName,
-  historicalPreV6Migrations,
+  releaseOrderManifest: 'supabase/v5-release-migration-order.json',
+  historicalPreV6Migrations: historicalPreV6Migrations.map((filename) => ({
+    filename,
+    productionVersion: releasedOrder.get(migrationLogicalName(filename)).version,
+  })),
   v6ForwardMigrations,
   tests: testFiles,
   seed: 'supabase/seed-v6-ci.sql',
