@@ -20,6 +20,8 @@ const V5_BASELINE_CUTOFF = '20260918235959';
 
 const releaseOrderPath = path.join(sourceSupabase, 'v5-release-migration-order.json');
 const repositoryMappingPath = path.join(sourceSupabase, 'v5-release-repository-mapping.json');
+const releasePrerequisitesPath = path.join(sourceSupabase, 'v6-ci-release-prerequisites.sql');
+const adminAuthParityPath = path.join(sourceMigrations, '20260905_admin_auth_schema_parity.sql');
 
 const required = [
   path.join(sourceSupabase, 'schema.sql'),
@@ -27,6 +29,8 @@ const required = [
   path.join(sourceSupabase, 'seed-v6-ci.sql'),
   releaseOrderPath,
   repositoryMappingPath,
+  releasePrerequisitesPath,
+  adminAuthParityPath,
 ];
 
 for (const file of required) {
@@ -124,10 +128,19 @@ fs.copyFileSync(path.join(sourceSupabase, 'seed-v6-ci.sql'), path.join(destinati
 const baselineName = '00000000000000_biblequest_v5_release_baseline.sql';
 const baselineParts = [
   '-- BibleQuest V5 released database baseline synthesized for disposable V6 CI.',
-  '-- Source: checked-in schema snapshot + historical pre-V6 SQL in lexical order.',
+  '-- Source: checked-in schema snapshot + explicit released-object prerequisites + available historical pre-V6 SQL.',
+  '-- This is a disposable V6 contract reconstruction, not a claim that every historical production migration is replayable.',
   '-- Historical files are not renamed or registered individually in migration history.',
   '',
   fs.readFileSync(path.join(sourceSupabase, 'schema.sql'), 'utf8'),
+  '',
+  '-- BEGIN RELEASED V5 PREREQUISITE PARITY: admin/auth objects',
+  fs.readFileSync(adminAuthParityPath, 'utf8'),
+  '-- END RELEASED V5 PREREQUISITE PARITY: admin/auth objects',
+  '',
+  '-- BEGIN RELEASED V5 PREREQUISITE PARITY: CI release overlay',
+  fs.readFileSync(releasePrerequisitesPath, 'utf8'),
+  '-- END RELEASED V5 PREREQUISITE PARITY: CI release overlay',
 ];
 
 for (const name of orderedHistoricalMigrations) {
@@ -175,6 +188,10 @@ const manifest = Object.freeze({
   syntheticBaseline: baselineName,
   releaseOrderManifest: 'supabase/v5-release-migration-order.json',
   repositoryMapping: 'supabase/v5-release-repository-mapping.json',
+  releasePrerequisites: [
+    'supabase/migrations/20260905_admin_auth_schema_parity.sql',
+    'supabase/v6-ci-release-prerequisites.sql',
+  ],
   historicalPreV6Migrations: orderedHistoricalMigrations.map((filename) => ({
     filename,
     productionName: productionLogicalName(filename),
@@ -196,6 +213,7 @@ fs.writeFileSync(path.join(destination, 'v6-db-ci-manifest.json'), JSON.stringif
 
 console.log(`Prepared isolated V6 Supabase project: ${destination}`);
 console.log(`Released V5 baseline + V6 forward migrations: 1 + ${v6ForwardMigrations.length}`);
+console.log('Released-object prerequisite parity injected before historical hardening.');
 console.log(`Released-history SQL folded into baseline: ${orderedHistoricalMigrations.length}`);
 console.log(`Released-state parity extras folded into baseline: ${parityExtraMigrations.length}`);
 console.log(`Repository historical SQL excluded from released V5 baseline: ${excludedHistoricalMigrations.length}`);
