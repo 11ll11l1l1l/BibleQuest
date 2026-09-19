@@ -8,6 +8,7 @@ test('V6 database CI is local-only, pinned, and uses released V5 baseline plus V
   const workflow = read('.github/workflows/v6-database-ci.yml');
   const prepare = read('scripts/v6-prepare-local-supabase.mjs');
   const config = read('supabase/config.toml');
+  const prerequisites = read('supabase/v6-ci-release-prerequisites.sql');
 
   assert.match(workflow, /version:\s*2\.117\.0/);
   assert.match(workflow, /node scripts\/v6-prepare-local-supabase\.mjs/);
@@ -22,6 +23,11 @@ test('V6 database CI is local-only, pinned, and uses released V5 baseline plus V
   assert.match(prepare, /v6ForwardMigrations/);
   assert.match(prepare, /V6 forward migrations must use unique 14-digit versions/);
   assert.match(prepare, /schema\.sql/);
+  assert.match(prepare, /v6-ci-release-prerequisites\.sql/);
+  assert.match(prepare, /20260905_admin_auth_schema_parity\.sql/);
+  assert.match(prerequisites, /create table if not exists public\.bible_congregation_invites/);
+  assert.match(prerequisites, /enable row level security/);
+  assert.match(prerequisites, /revoke all on table public\.bible_congregation_invites from anon, authenticated/);
   assert.match(config, /project_id = "biblequest-v6-local"/);
   assert.doesNotMatch(config, /env\(|secret|password|token/i);
 });
