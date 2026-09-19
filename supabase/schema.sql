@@ -180,6 +180,26 @@ revoke all on function private.is_bible_congregation_member(uuid) from public;
 grant usage on schema private to authenticated;
 grant execute on function private.is_bible_congregation_member(uuid) to authenticated;
 
+-- Released V5 parity helper. This exists in the production BibleQuest database and is
+-- part of the versioned baseline required for truthful fresh V6 reconstruction.
+create or replace function private.bible_role_in_congregation(target_congregation uuid)
+returns text
+language sql
+stable
+security definer
+set search_path = ''
+as $bq$
+  select m.role
+  from public.bible_congregation_members m
+  where m.congregation_id = target_congregation
+    and m.user_id = (select auth.uid())
+    and m.active
+  limit 1;
+$bq$;
+
+revoke all on function private.bible_role_in_congregation(uuid) from public;
+grant execute on function private.bible_role_in_congregation(uuid) to authenticated;
+
 alter table public.bible_profiles enable row level security;
 alter table public.bible_questions enable row level security;
 alter table public.bible_attempts enable row level security;
