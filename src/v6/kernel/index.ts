@@ -1,3 +1,4 @@
+export * from './app-contracts.ts';
 export * from './async-state.ts';
 export * from './errors.ts';
 export * from './repository.ts';
