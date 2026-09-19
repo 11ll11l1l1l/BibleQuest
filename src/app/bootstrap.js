@@ -2,6 +2,7 @@ import { createStore } from './store.js';
 import { createMyJourneyService } from './my-journey.js';
 import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
 import { createRouter } from './router.js';
+import { createLazyPage } from './lazy-page.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
 import { createBackupService } from './backup.js';
@@ -65,51 +66,69 @@ import { storage, privateStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
 import { mountContentReportingRuntime } from '../ui/content-reporting.js';
-import { homePage } from '../features/home/index.js';
-import { accountPage } from '../features/account/index.js';
-import { backupPage } from '../features/backup/index.js';
-import { accessibilityPage } from '../features/accessibility/index.js';
-import { learnPage } from '../features/learn/index.js';
-import { guidedStudyPage } from '../features/study/index.js';
-import { deepQuestionsPage } from '../features/deep-questions/index.js';
-import { storyJourneyPage } from '../features/story-journey/index.js';
-import { wisdomSituationsPage } from '../features/wisdom-situations/index.js';
-import { adaptiveLearningPage } from '../features/adaptive-learning/index.js';
-import { bibleWorldPage } from '../features/bible-world/index.js';
-import { openReviewPage } from '../features/open-review/index.js';
-import { privateNotesPage } from '../features/private-notes/index.js';
-import { cloudNotesPage } from '../features/cloud-notes/index.js';
-import { couplesFamilyPage } from '../features/couples-family/index.js';
-import { couplesCloudPage } from '../features/couples-cloud/index.js';
-import { journeyGroupsPage } from '../features/journey-groups/index.js';
-import { encouragementsPage } from '../features/encouragements/index.js';
-import { liveRoomsPage } from '../features/live-rooms/index.js';
-import { communityPage } from '../features/community/index.js';
-import { ministryHubPage } from '../features/ministry-hub/index.js';
-import { myJourneyPage } from '../features/my-journey/index.js';
-import { leaderCenterPage } from '../features/leader-center/index.js';
-import { notificationCenterPage } from '../features/notification-center/index.js';
-import { workspacePage } from '../features/workspace/index.js';
-import { teamCenterPage } from '../features/team-center/index.js';
-import { leaderboardsPage } from '../features/leaderboards/index.js';
-import { congregationRecognitionPage } from '../features/congregation-recognition/index.js';
-import { assignmentsPage } from '../features/assignments/index.js';
-import { contentReviewPage } from '../features/content-review/index.js';
-import { readerPage } from '../features/reader/index.js';
-import { progressPage } from '../features/progress/index.js';
-import { dailyMissionPage } from '../features/daily-mission/index.js';
-import { transformPage } from '../features/transform/index.js';
-import { personalityProfilePage } from '../features/personality-profile/index.js';
-import { psychometricsPage } from '../features/psychometrics/index.js';
-import { avatarVaultPage } from '../features/avatar-vault/index.js';
-import { missionPage } from '../features/mission/index.js';
-import { calendarPage } from '../features/calendar/index.js';
-import { recordingsPage } from '../features/recordings/index.js';
-import { gamesPage } from '../features/games/index.js';
-import { congregationPage } from '../features/congregation/index.js';
-import { morePage } from '../features/more/index.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
-import { helpCenterPage } from '../features/help-center/index.js';
+
+const featurePageModules = import.meta.glob('../features/*/index.js');
+
+function lazyFeaturePage(feature, exportName, args) {
+  const path = `../features/${feature}/index.js`;
+  const load = featurePageModules[path];
+  if (typeof load !== 'function') throw new Error(`Missing lazy feature module: ${path}`);
+  return createLazyPage({
+    key: feature,
+    load,
+    create(module) {
+      const factory = module?.[exportName];
+      if (typeof factory !== 'function') throw new Error(`Missing ${exportName} export from ${path}`);
+      return factory(args);
+    },
+  });
+}
+
+const homePage = args => lazyFeaturePage('home', 'homePage', args);
+const accountPage = args => lazyFeaturePage('account', 'accountPage', args);
+const backupPage = args => lazyFeaturePage('backup', 'backupPage', args);
+const accessibilityPage = args => lazyFeaturePage('accessibility', 'accessibilityPage', args);
+const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
+const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
+const deepQuestionsPage = args => lazyFeaturePage('deep-questions', 'deepQuestionsPage', args);
+const storyJourneyPage = args => lazyFeaturePage('story-journey', 'storyJourneyPage', args);
+const wisdomSituationsPage = args => lazyFeaturePage('wisdom-situations', 'wisdomSituationsPage', args);
+const adaptiveLearningPage = args => lazyFeaturePage('adaptive-learning', 'adaptiveLearningPage', args);
+const bibleWorldPage = args => lazyFeaturePage('bible-world', 'bibleWorldPage', args);
+const openReviewPage = args => lazyFeaturePage('open-review', 'openReviewPage', args);
+const privateNotesPage = args => lazyFeaturePage('private-notes', 'privateNotesPage', args);
+const cloudNotesPage = args => lazyFeaturePage('cloud-notes', 'cloudNotesPage', args);
+const couplesFamilyPage = args => lazyFeaturePage('couples-family', 'couplesFamilyPage', args);
+const couplesCloudPage = args => lazyFeaturePage('couples-cloud', 'couplesCloudPage', args);
+const journeyGroupsPage = args => lazyFeaturePage('journey-groups', 'journeyGroupsPage', args);
+const encouragementsPage = args => lazyFeaturePage('encouragements', 'encouragementsPage', args);
+const liveRoomsPage = args => lazyFeaturePage('live-rooms', 'liveRoomsPage', args);
+const communityPage = args => lazyFeaturePage('community', 'communityPage', args);
+const ministryHubPage = args => lazyFeaturePage('ministry-hub', 'ministryHubPage', args);
+const myJourneyPage = args => lazyFeaturePage('my-journey', 'myJourneyPage', args);
+const leaderCenterPage = args => lazyFeaturePage('leader-center', 'leaderCenterPage', args);
+const notificationCenterPage = args => lazyFeaturePage('notification-center', 'notificationCenterPage', args);
+const workspacePage = args => lazyFeaturePage('workspace', 'workspacePage', args);
+const teamCenterPage = args => lazyFeaturePage('team-center', 'teamCenterPage', args);
+const leaderboardsPage = args => lazyFeaturePage('leaderboards', 'leaderboardsPage', args);
+const congregationRecognitionPage = args => lazyFeaturePage('congregation-recognition', 'congregationRecognitionPage', args);
+const assignmentsPage = args => lazyFeaturePage('assignments', 'assignmentsPage', args);
+const contentReviewPage = args => lazyFeaturePage('content-review', 'contentReviewPage', args);
+const readerPage = args => lazyFeaturePage('reader', 'readerPage', args);
+const progressPage = args => lazyFeaturePage('progress', 'progressPage', args);
+const dailyMissionPage = args => lazyFeaturePage('daily-mission', 'dailyMissionPage', args);
+const transformPage = args => lazyFeaturePage('transform', 'transformPage', args);
+const personalityProfilePage = args => lazyFeaturePage('personality-profile', 'personalityProfilePage', args);
+const psychometricsPage = args => lazyFeaturePage('psychometrics', 'psychometricsPage', args);
+const avatarVaultPage = args => lazyFeaturePage('avatar-vault', 'avatarVaultPage', args);
+const missionPage = args => lazyFeaturePage('mission', 'missionPage', args);
+const calendarPage = args => lazyFeaturePage('calendar', 'calendarPage', args);
+const recordingsPage = args => lazyFeaturePage('recordings', 'recordingsPage', args);
+const gamesPage = args => lazyFeaturePage('games', 'gamesPage', args);
+const congregationPage = args => lazyFeaturePage('congregation', 'congregationPage', args);
+const morePage = args => lazyFeaturePage('more', 'morePage', args);
+const helpCenterPage = args => lazyFeaturePage('help-center', 'helpCenterPage', args);
 
 function escapeStartupMessage(value){
   return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
