@@ -13,6 +13,7 @@ on:
       - "src/v6/**"
       - "tests/v6/**"
       - "scripts/v6-toolchain-smoke.mjs"
+      - "scripts/v6-build-evidence.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
@@ -53,8 +54,15 @@ jobs:
       - name: V6 unit tests
         run: npm run unit:v6
 
-      - name: Build V6 artifact
+      - name: Build V6 artifact with exact commit identity
+        env:
+          BQ_BUILD_SHA: ${{ github.sha }}
         run: npm run build:v6
+
+      - name: Verify exact-SHA identity and build budgets
+        env:
+          BQ_BUILD_SHA: ${{ github.sha }}
+        run: npm run check:v6-build-evidence
 
       - name: Record build artifact inventory
         shell: bash
