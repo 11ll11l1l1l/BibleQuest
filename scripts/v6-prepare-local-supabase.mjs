@@ -19,12 +19,14 @@ const destinationTests = path.join(destinationSupabase, 'tests');
 const V5_BASELINE_CUTOFF = '20260918235959';
 
 const releaseOrderPath = path.join(sourceSupabase, 'v5-release-migration-order.json');
+const repositoryMappingPath = path.join(sourceSupabase, 'v5-release-repository-mapping.json');
 
 const required = [
   path.join(sourceSupabase, 'schema.sql'),
   path.join(sourceSupabase, 'config.toml'),
   path.join(sourceSupabase, 'seed-v6-ci.sql'),
   releaseOrderPath,
+  repositoryMappingPath,
 ];
 
 for (const file of required) {
@@ -53,23 +55,41 @@ if (releaseOrderManifest?.releaseCutoff !== V5_BASELINE_CUTOFF || !Array.isArray
 const releasedOrder = new Map(
   releaseOrderManifest.migrations.map((entry, index) => [String(entry.name), { index, version: String(entry.version) }]),
 );
+const repositoryMapping = JSON.parse(fs.readFileSync(repositoryMappingPath, 'utf8'));
+const aliases = repositoryMapping?.aliases ?? {};
+const releasedStateParityExtras = repositoryMapping?.releasedStateParityExtras ?? {};
+const excludedFromReleasedV5Baseline = repositoryMapping?.excludedFromReleasedV5Baseline ?? {};
 const migrationLogicalName = (filename) => filename.replace(/^\d{8}(?:\d{6})?_/, '').replace(/\.sql$/, '');
+const productionLogicalName = (filename) => aliases[filename] ?? migrationLogicalName(filename);
 
-const unmatchedHistoricalMigrations = historicalPreV6Migrations.filter(
-  (filename) => !releasedOrder.has(migrationLogicalName(filename)),
+const orderedHistoricalMigrations = historicalPreV6Migrations.filter(
+  (filename) =>
+    !Object.prototype.hasOwnProperty.call(releasedStateParityExtras, filename) &&
+    !Object.prototype.hasOwnProperty.call(excludedFromReleasedV5Baseline, filename),
+);
+const parityExtraMigrations = historicalPreV6Migrations.filter(
+  (filename) => Object.prototype.hasOwnProperty.call(releasedStateParityExtras, filename),
+);
+const excludedHistoricalMigrations = historicalPreV6Migrations.filter(
+  (filename) => Object.prototype.hasOwnProperty.call(excludedFromReleasedV5Baseline, filename),
+);
+
+const unmatchedHistoricalMigrations = orderedHistoricalMigrations.filter(
+  (filename) => !releasedOrder.has(productionLogicalName(filename)),
 );
 if (unmatchedHistoricalMigrations.length) {
   throw new Error(
-    'Historical migrations are not present in released V5 order manifest:\n' +
+    'Historical migrations are not mapped to released V5 production history:\n' +
     unmatchedHistoricalMigrations.map((filename) => `- ${filename}`).join('\n'),
   );
 }
 
-historicalPreV6Migrations.sort((a, b) => {
-  const ai = releasedOrder.get(migrationLogicalName(a)).index;
-  const bi = releasedOrder.get(migrationLogicalName(b)).index;
+orderedHistoricalMigrations.sort((a, b) => {
+  const ai = releasedOrder.get(productionLogicalName(a)).index;
+  const bi = releasedOrder.get(productionLogicalName(b)).index;
   return ai - bi;
 });
+parityExtraMigrations.sort();
 
 for (const name of v6ForwardMigrations) {
   if (!/^\d{14}_/.test(name)) {
@@ -110,12 +130,24 @@ const baselineParts = [
   fs.readFileSync(path.join(sourceSupabase, 'schema.sql'), 'utf8'),
 ];
 
-for (const name of historicalPreV6Migrations) {
+for (const name of orderedHistoricalMigrations) {
+  const productionName = productionLogicalName(name);
+  const productionVersion = releasedOrder.get(productionName).version;
   baselineParts.push(
     '',
-    `-- BEGIN HISTORICAL PRE-V6 SQL: ${name}`,
+    `-- BEGIN RELEASED V5 MIGRATION SQL: ${productionVersion}_${productionName} (repo: ${name})`,
     fs.readFileSync(path.join(sourceMigrations, name), 'utf8'),
-    `-- END HISTORICAL PRE-V6 SQL: ${name}`,
+    `-- END RELEASED V5 MIGRATION SQL: ${productionVersion}_${productionName}`,
+  );
+}
+
+for (const name of parityExtraMigrations) {
+  baselineParts.push(
+    '',
+    `-- BEGIN RELEASED V5 STATE PARITY SQL: ${name}`,
+    `-- Reason: ${releasedStateParityExtras[name]}`,
+    fs.readFileSync(path.join(sourceMigrations, name), 'utf8'),
+    `-- END RELEASED V5 STATE PARITY SQL: ${name}`,
   );
 }
 
@@ -142,9 +174,19 @@ const manifest = Object.freeze({
   baselineCutoff: V5_BASELINE_CUTOFF,
   syntheticBaseline: baselineName,
   releaseOrderManifest: 'supabase/v5-release-migration-order.json',
-  historicalPreV6Migrations: historicalPreV6Migrations.map((filename) => ({
+  repositoryMapping: 'supabase/v5-release-repository-mapping.json',
+  historicalPreV6Migrations: orderedHistoricalMigrations.map((filename) => ({
     filename,
-    productionVersion: releasedOrder.get(migrationLogicalName(filename)).version,
+    productionName: productionLogicalName(filename),
+    productionVersion: releasedOrder.get(productionLogicalName(filename)).version,
+  })),
+  releasedStateParityExtras: parityExtraMigrations.map((filename) => ({
+    filename,
+    reason: releasedStateParityExtras[filename],
+  })),
+  excludedHistoricalMigrations: excludedHistoricalMigrations.map((filename) => ({
+    filename,
+    reason: excludedFromReleasedV5Baseline[filename],
   })),
   v6ForwardMigrations,
   tests: testFiles,
@@ -154,5 +196,7 @@ fs.writeFileSync(path.join(destination, 'v6-db-ci-manifest.json'), JSON.stringif
 
 console.log(`Prepared isolated V6 Supabase project: ${destination}`);
 console.log(`Released V5 baseline + V6 forward migrations: 1 + ${v6ForwardMigrations.length}`);
-console.log(`Historical pre-V6 SQL folded into one released baseline migration: ${historicalPreV6Migrations.length}`);
+console.log(`Released-history SQL folded into baseline: ${orderedHistoricalMigrations.length}`);
+console.log(`Released-state parity extras folded into baseline: ${parityExtraMigrations.length}`);
+console.log(`Repository historical SQL excluded from released V5 baseline: ${excludedHistoricalMigrations.length}`);
 console.log(`pgTAP suites: ${testFiles.length}`);
