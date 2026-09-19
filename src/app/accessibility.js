@@ -81,6 +81,11 @@ function createLegacyAccessibilityService({ storage, mediaQuery = defaultMediaQu
   });
 }
 
+function requirePreference(field, value, allowed) {
+  if (!allowed.has(value)) throw new Error(`Unsupported accessibility ${field}: ${value}.`);
+  return value;
+}
+
 // Phase-3 low-risk live cutover: keep the released storage/runtime owner while
 // routing page-facing preference commands through the typed V6 feature boundary.
 // This is intentionally local to accessibility and does not alter global routing.
@@ -93,9 +98,9 @@ export function createAccessibilityService(options = {}) {
   return Object.freeze({
     getState: () => legacy.getState(),
     subscribe: listener => migrated.subscribe(listener),
-    setText: value => migrated.setText(value),
-    setMotion: value => migrated.setMotion(value),
-    setContrast: value => migrated.setContrast(value),
+    setText: value => migrated.setText(requirePreference('text', value, TEXT_OPTIONS)),
+    setMotion: value => migrated.setMotion(requirePreference('motion', value, MOTION_OPTIONS)),
+    setContrast: value => migrated.setContrast(requirePreference('contrast', value, CONTRAST_OPTIONS)),
     reset: () => migrated.reset(),
     dispose: () => legacy.dispose(),
   });
