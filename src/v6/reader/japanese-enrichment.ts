@@ -1,4 +1,6 @@
-import type { ScriptureReference, TranslationId } from './contracts.ts';
+import type { ReaderLocation, ReaderTranslationId } from './contracts.ts';
+
+export type ScriptureReference = Readonly<Omit<ReaderLocation, 'translationId'>>;
 
 export type JapaneseReadingSegment = Readonly<{
   surface: string;
@@ -23,7 +25,7 @@ export interface JapaneseEnrichmentProvider {
   getVerseEnrichment(reference: ScriptureReference): Promise<JapaneseVerseEnrichment | null>;
 }
 
-export function canUseJapaneseEnrichment(translationId: TranslationId): translationId is 'jko' {
+export function canUseJapaneseEnrichment(translationId: ReaderTranslationId): translationId is 'jko' {
   return translationId === 'jko';
 }
 
