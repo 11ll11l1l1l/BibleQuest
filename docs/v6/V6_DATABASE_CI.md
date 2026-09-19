@@ -7,21 +7,22 @@ Architecture: ADR-0002
 
 BibleQuest V5 shipped with a checked-in `supabase/schema.sql` snapshot that represents the released database baseline, while the older `supabase/migrations/` directory is not a valid standalone Supabase replay chain. In particular, multiple historical files share date-only migration versions such as `20260904`, which Supabase correctly rejects as duplicate migration versions.
 
-V6 therefore uses an explicit **released-V5 baseline + V6-forward-migrations** model.
+V6 therefore uses an explicit **released-V5 contract reconstruction + V6-forward-migrations** model. The disposable baseline is intentionally scoped to source-controlled V5 contracts needed for V6 database/security verification; it is not presented as a byte-for-byte replay of every historical production migration.
 
 The disposable CI project:
 
-1. copies `supabase/schema.sql` to `00000000000000_biblequest_v5_release_baseline.sql`;
-2. does **not** replay pre-V6 historical SQL that is already represented by that released baseline;
-3. copies only migrations newer than the V5 release cutoff;
-4. requires every V6 forward migration to use a unique 14-digit timestamp prefix;
-5. applies deterministic test data from `supabase/seed-v6-ci.sql`;
-6. runs pgTAP suites from `supabase/tests/v6-*.test.sql`;
-7. discards the local database.
+1. starts `00000000000000_biblequest_v5_release_baseline.sql` from `supabase/schema.sql`;
+2. injects the idempotent admin/auth parity SQL plus `supabase/v6-ci-release-prerequisites.sql` before historical hardening that depends on those released objects;
+3. folds the available source-controlled pre-V6 SQL in captured production order, while preserving explicit parity/exclusion metadata;
+4. copies only migrations newer than the V5 release cutoff;
+5. requires every V6 forward migration to use a unique 14-digit timestamp prefix;
+6. applies deterministic test data from `supabase/seed-v6-ci.sql`;
+7. runs pgTAP suites from `supabase/tests/v6-*.test.sql`;
+8. discards the local database.
 
-Historical pre-V6 migration files remain in the repository as audit evidence. They are not rewritten or renamed merely to satisfy CI.
+Historical pre-V6 migration files remain in the repository as audit evidence. They are not rewritten or renamed merely to satisfy CI. Where hosted V5 migration history contains an early object-creation migration whose original SQL is no longer represented one-to-one in the repository, the CI reconstruction must use an explicit reviewed prerequisite/parity source rather than silently reordering or inventing production history.
 
-The V5 baseline snapshot must match the released BibleQuest database contract. During this tranche, live read-only verification confirmed that production contains `private.bible_role_in_congregation(uuid)` with authenticated execute and no anon execute; the checked-in snapshot omitted that released helper, so the baseline snapshot was corrected. Production was not mutated.
+The V5 contract reconstruction must match every database surface it claims to certify. During this tranche, live read-only verification confirmed `private.bible_role_in_congregation(uuid)` and the server-only admin/auth/invite prerequisites used by later hardening SQL. Those prerequisites are now explicit in the disposable baseline inputs. Production was not mutated. Domains not represented by this CI proof surface are not certified merely because they exist in hosted V5.
 
 ## Current proof surface
 
