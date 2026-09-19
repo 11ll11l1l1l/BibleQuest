@@ -54,10 +54,7 @@ export function mountPushOnboarding({push,session,ownerStorage,eventTarget=globa
         if(later)later.disabled=false;
       }finally{busy=false}
     });
-    later?.addEventListener('click',()=>{
-      markSeen(userId);
-      close();
-    });
+    later?.addEventListener('click',()=>{ close(); });
     documentRef.body.appendChild(wrap);
     enable?.focus?.();
     node=wrap;
