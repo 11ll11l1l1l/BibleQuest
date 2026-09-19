@@ -1,0 +1,63 @@
+name: V6 Phase 1 Build Gate
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - "tsconfig.json"
+      - "vite.config.mjs"
+      - "src/v6/**"
+      - "tests/v6/**"
+      - "scripts/v6-toolchain-smoke.mjs"
+      - ".github/workflows/v6-phase1-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-phase1-build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact PR commit
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Require committed lockfile
+        run: test -f package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: V6 toolchain smoke
+        run: npm run check:v6-toolchain
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: V6 unit tests
+        run: npm run unit:v6
+
+      - name: Build V6 artifact
+        run: npm run build:v6
+
+      - name: Record build artifact inventory
+        shell: bash
+        run: |
+          test -d dist-v6
+          find dist-v6 -type f -printf '%s %p\n' | sort -nr | sed -n '1,100p'
