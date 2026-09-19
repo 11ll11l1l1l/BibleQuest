@@ -1,0 +1,80 @@
+name: V6 Phase 1 Build Gate
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - "tsconfig.json"
+      - "vite.config.mjs"
+      - "src/v6/**"
+      - "tests/v6/**"
+      - "scripts/v6-toolchain-smoke.mjs"
+      - ".github/workflows/v6-phase1-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-phase1-build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact PR commit
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Bootstrap lockfile only when absent
+        id: lock
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then
+            echo "generated=false" >> "$GITHUB_OUTPUT"
+          else
+            npm install --package-lock-only --ignore-scripts
+            echo "generated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload generated lockfile evidence
+        if: steps.lock.outputs.generated == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: V6 toolchain smoke
+        run: npm run check:v6-toolchain
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: V6 unit tests
+        run: npm run unit:v6
+
+      - name: Build V6 artifact
+        run: npm run build:v6
+
+      - name: Record build artifact inventory
+        shell: bash
+        run: |
+          test -d dist-v6
+          find dist-v6 -type f -printf '%s %p\n' | sort -nr | head -100
