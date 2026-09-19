@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: v6-phase1-build-${{ github.event.pull_request.number || github.ref }}
@@ -28,8 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout exact PR commit
+      - name: Checkout exact PR branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Use pinned Node
         uses: actions/setup-node@v4
@@ -47,14 +49,15 @@ jobs:
             echo "generated=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Upload generated lockfile evidence
-        if: steps.lock.outputs.generated == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: v6-package-lock
-          path: package-lock.json
-          if-no-files-found: error
-          retention-days: 3
+      - name: Commit generated lockfile to PR branch
+        if: steps.lock.outputs.generated == 'true' && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "build(v6): lock Phase 1 toolchain"
+          git push origin "HEAD:${{ github.head_ref }}"
 
       - name: Deterministic install
         run: npm ci
