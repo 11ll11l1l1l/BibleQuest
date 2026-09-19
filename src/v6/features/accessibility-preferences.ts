@@ -76,9 +76,9 @@ export function createAccessibilityPreferencesService(
   return Object.freeze({
     migrated: true as const,
     subscribe: legacy.subscribe,
-    setText: (value) => execute({ action: 'set-text', value }),
-    setMotion: (value) => execute({ action: 'set-motion', value }),
-    setContrast: (value) => execute({ action: 'set-contrast', value }),
+    setText: (value: AccessibilityTextSize) => execute({ action: 'set-text', value }),
+    setMotion: (value: AccessibilityMotion) => execute({ action: 'set-motion', value }),
+    setContrast: (value: AccessibilityContrast) => execute({ action: 'set-contrast', value }),
     reset: () => execute({ action: 'reset' }),
   });
 }
