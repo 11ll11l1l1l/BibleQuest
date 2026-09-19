@@ -55,11 +55,14 @@ const releasedOrder = new Map(
 );
 const migrationLogicalName = (filename) => filename.replace(/^\d{8}(?:\d{6})?_/, '').replace(/\.sql$/, '');
 
-for (const filename of historicalPreV6Migrations) {
-  const logicalName = migrationLogicalName(filename);
-  if (!releasedOrder.has(logicalName)) {
-    throw new Error(`Historical migration is not present in released V5 order manifest: ${filename}`);
-  }
+const unmatchedHistoricalMigrations = historicalPreV6Migrations.filter(
+  (filename) => !releasedOrder.has(migrationLogicalName(filename)),
+);
+if (unmatchedHistoricalMigrations.length) {
+  throw new Error(
+    'Historical migrations are not present in released V5 order manifest:\n' +
+    unmatchedHistoricalMigrations.map((filename) => `- ${filename}`).join('\n'),
+  );
 }
 
 historicalPreV6Migrations.sort((a, b) => {
