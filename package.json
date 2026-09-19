@@ -14,7 +14,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "unit:v6": "node --experimental-strip-types --test tests/v6/*.test.ts",
     "validate:v5": "node scripts/validate-release.mjs",
-    "check:v6-toolchain": "node scripts/v6-toolchain-smoke.mjs"
+    "check:v6-toolchain": "node scripts/v6-toolchain-smoke.mjs",
+    "check:v6-build-evidence": "node scripts/v6-build-evidence.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",
