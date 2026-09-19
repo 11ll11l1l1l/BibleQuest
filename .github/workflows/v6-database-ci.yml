@@ -1,0 +1,86 @@
+name: V6 Database CI
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - 'supabase/**'
+      - 'scripts/v6-prepare-local-supabase.mjs'
+      - 'tests/v6/database-ci-contract.test.mjs'
+      - '.github/workflows/v6-database-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  local-database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify exact clean candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Run no-Docker database CI contract
+        run: node --test tests/v6/database-ci-contract.test.mjs
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+
+      - name: Prepare disposable V5-baseline-to-current V6 database
+        run: node scripts/v6-prepare-local-supabase.mjs /tmp/bq-v6-db
+
+      - name: Start disposable Supabase stack
+        working-directory: /tmp/bq-v6-db
+        run: supabase start
+
+      - name: Prove V5-baseline-to-current V6 replay
+        working-directory: /tmp/bq-v6-db
+        run: supabase db reset
+
+      - name: Run executable RLS and privilege tests
+        working-directory: /tmp/bq-v6-db
+        run: supabase test db
+
+      - name: Check database functions for errors
+        working-directory: /tmp/bq-v6-db
+        run: supabase db lint --level error
+
+      - name: Prove local generated database types are deterministic
+        working-directory: /tmp/bq-v6-db
+        run: |
+          set -euo pipefail
+          supabase gen types typescript --local > /tmp/bq-v6-db-types-a.ts
+          supabase gen types typescript --local > /tmp/bq-v6-db-types-b.ts
+          cmp /tmp/bq-v6-db-types-a.ts /tmp/bq-v6-db-types-b.ts
+          test -s /tmp/bq-v6-db-types-a.ts
+          echo "Generated local DB types are deterministic."
+
+      - name: Verify source tree remains unchanged
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        working-directory: /tmp/bq-v6-db
+        run: supabase stop || true

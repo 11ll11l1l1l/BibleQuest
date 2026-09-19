@@ -1,0 +1,20 @@
+{
+  "format": 1,
+  "purpose": "Map date-collapsed/rollup repository SQL to released V5 production history for disposable V6 reconstruction.",
+  "aliases": {
+    "20260904_church_group_signup_limits.sql": "biblequest_church_group_and_signup_limits",
+    "20260904_innovation_stage.sql": "biblequest_live_rooms_challenges_workspace",
+    "20260904_release_hardening.sql": "biblequest_release_hardening",
+    "20260904_room_poll_edge.sql": "move_room_poll_totals_to_edge",
+    "20260905_biblequest_production_workflows_v1.sql": "biblequest_notification_triggers_v1",
+    "20260905_content_review_and_reports.sql": "bible_content_review_and_reports",
+    "20260905_content_reviewer_member_read.sql": "bible_content_reviewer_member_read"
+  },
+  "releasedStateParityExtras": {
+    "20260904_personality_profiles.sql": "Live released V5 contains public.bible_personality_profiles although no matching migration-history row is recorded.",
+    "20260910_avatar_vault_visibility.sql": "Live released V5 contains public.bible_congregation_members.avatar although no matching migration-history row is recorded."
+  },
+  "excludedFromReleasedV5Baseline": {
+    "20260909_encouragement_duplicate_guard.sql": "Read-only live V5 verification found neither bible_group_encouragements.dedupe_bucket nor bible_group_encouragements_daily_unique_idx; this repository SQL is not part of released V5 state."
+  }
+}
