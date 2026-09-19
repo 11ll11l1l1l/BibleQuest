@@ -38,7 +38,7 @@ export function createConnectivityStore(environment: ConnectivityEnvironment): C
 
   return Object.freeze({
     snapshot: () => current,
-    subscribe(listener) {
+    subscribe(listener: (snapshot: ConnectivitySnapshot) => void) {
       if (typeof listener !== 'function') throw new Error('Connectivity subscriber must be a function.');
       if (disposed) throw new Error('Connectivity store is disposed.');
       listeners.add(listener);
