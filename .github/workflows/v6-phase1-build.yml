@@ -92,6 +92,11 @@ jobs:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/built-artifact-browser.mjs
 
+      - name: Built artifact PWA acceptance
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/pwa-built-artifact-browser.mjs
+
       - name: Preview diagnostics
         if: always()
         run: cat /tmp/bq-v6-preview.log || true
