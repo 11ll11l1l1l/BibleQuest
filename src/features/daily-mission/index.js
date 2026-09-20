@@ -53,7 +53,7 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
           return;
         }
         const step = state.currentStep;
-        const related=`<div class="bq-external-links" data-daily-related-scripture><span>Related Scripture</span><button type="button" class="bq-secondary-button" data-daily-open-reader>Open in BibleQuest Reader</button>${links.map(link=>`<a ${EXTERNAL_ATTRS} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
+        const related=`<div class="bq-external-links" data-daily-related-scripture><span>Related Scripture</span><button type="button" class="bq-secondary-button" data-daily-related-reader>Open in BibleQuest Reader</button>${links.map(link=>`<a ${EXTERNAL_ATTRS} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
         host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p>${related}<div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
       };
 
@@ -76,7 +76,7 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
         if (choice) return answer(Number(choice.dataset.dailyChoice));
         if (target.closest('[data-daily-confirm]')) return answer(true);
         if (target.closest('[data-daily-next]')) return next();
-        if (target.closest('[data-daily-open-reader]') || target.closest('[data-daily-reader]')) return openReader();
+        if (target.closest('[data-daily-open-reader]') || target.closest('[data-daily-related-reader]') || target.closest('[data-daily-reader]')) return openReader();
         if (target.closest('[data-daily-home]')) return onHome();
       };
       const onSubmit = event => {
