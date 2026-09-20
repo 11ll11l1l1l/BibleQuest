@@ -1,3 +1,5 @@
+import { localization } from '../../app/localization.js';
+
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const COPY=Object.freeze({
   en:Object.freeze({
@@ -24,7 +26,7 @@ const externalAttrs='target="_blank" rel="noopener noreferrer"';
 
 function referenceLabel(target){return target?`${target.book} ${target.chapter}`:''}
 
-export function bibleQuestPage({bibleQuest,reader,onContinue,onFreeRead,onBack,locale='en'}={}){
+export function bibleQuestPage({bibleQuest,reader,onContinue,onFreeRead,onBack,locale=localization.getLocale()}={}){
   if(!bibleQuest?.snapshot)throw new Error('Bible Quest page requires the Bible Quest owner.');
   return {
     title:'Bible Quest',
