@@ -68,7 +68,8 @@ for(const token of[
   assert.ok(api.includes(token),`Progress snapshot API missing optimistic account-sync contract: ${token}`);
 }
 assert.ok(api.includes("progressSnapshots"),'Core API must expose account progress snapshots.');
-assert.ok(bootstrap.includes('createBibleQuestCloudSyncService'),'Bootstrap must compose Main Bible Quest account auto-resume.');
+assert.ok(bootstrap.includes('createProgressCloudSyncService({api:api.progressSnapshots,session,progress,ownerStorage:authStorage,cacheStorage:privateStorage})'),'Bootstrap must inject account-isolated owner/cache storage into global progress sync.');
+assert.ok(bootstrap.includes('createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage})'),'Bootstrap must inject account-isolated owner/cache storage into Main Bible Quest sync.');
 
 for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(bible.includes(provider),`Bible data service must retain ${provider} related-reference support used by Bible Quest.`);
 assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
