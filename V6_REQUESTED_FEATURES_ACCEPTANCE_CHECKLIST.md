@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `7c8041e3d54682ed69c5030ff84ce5d9336758c4`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
+Evidence checkpoint: integrated V6 head `f21fb51c03f23a221b2e73301c52483df0e1616f`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -128,10 +128,10 @@ Evidence checkpoint: integrated V6 head `7c8041e3d54682ed69c5030ff84ce5d9336758c
 
 ## I. Push notifications and background delivery
 
-- [ ] Web Push subscription lifecycle exists.
+- [x] Web Push subscription lifecycle exists and the released V5 lifecycle/persistence contracts run in the V6 exact-head build gate.
 - [ ] Push server secrets remain server-side.
 - [x] Account-scoped notification-category preferences and quiet-hours model exist.
-- [ ] Service worker handles push events and notification clicks.
+- [x] Service worker handles push events and notification clicks; the V5 lifecycle contract verifies both listeners and same-origin click handling against the V6 candidate.
 - [x] Notification destinations are restricted to the integrated V6 deep-link allowlist.
 - [ ] Expired/invalid push subscriptions are cleaned safely.
 - [ ] Delivery is deduplicated/idempotent/rate-limited.
