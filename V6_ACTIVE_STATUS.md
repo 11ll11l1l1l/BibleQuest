@@ -6,7 +6,7 @@ Official V6 integration branch: `v6/architecture-upgrade`
 Released V5 production baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
 Certified V5 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
-Current integrated checkpoint: `f21fb51c03f23a221b2e73301c52483df0e1616f`
+Current integrated checkpoint: `58635bde2e0753c47af74380b9b39408240feb75`
 
 ## Authority
 
@@ -44,7 +44,7 @@ Immediate remaining READY work includes:
 
 1. finish the remaining Phase-1 build-owned legacy asset/CSS migration and exact-SHA deployment-path evidence;
 2. expand the already-green disposable Supabase/Postgres gate to additional sensitive domains and drift checks;
-3. complete one low-risk live feature migration through the V6 kernel before wider Reader/Games cutover;
+3. expand live V6 kernel migration from the proven Accessibility-preferences cutover into bounded Reader/data surfaces without broad rewrites;
 4. connect the Reader offline package engine to user-facing download/storage controls and prove network-disabled reopen/navigation;
 5. continue Phase-7 notification/push integration from the preserved V5 production onboarding/lifecycle baseline while keeping backend/security changes serialized;
 6. add authenticated role/browser evidence for Member, Leader, Pastor and Admin without treating signed-out route smoke as protected-route proof;
@@ -68,7 +68,7 @@ High-risk changes to global auth, RLS strategy, destructive schema, global routi
 - Phase 0 — Authority, ADRs, released-V5 baseline: **COMPLETE**.
 - Phase 1 — Vite/TypeScript/build/test toolchain: **ACTIVE, MAJOR FOUNDATION GREEN**. Deterministic build/install, lint/format/typecheck/unit/build CI, exact-SHA identity, privacy-safe private source maps, route splitting, bundle budgets and built Chromium/PWA acceptance are integrated; fuller build ownership and deployment-path evidence remain.
 - Phase 2 — executable Supabase/Postgres CI + fixtures: **ACTIVE, FOUNDATION GREEN**. Disposable local Supabase, released-V5→V6 replay, two-congregation fixtures, executable RLS/privilege checks, DB lint and deterministic local type generation are integrated; domain coverage/drift expansion remains.
-- Phase 3 — application kernel/state/data/tenant: **ACTIVE**. Typed tenant/repository/async/request boundaries, feature command/event seam and session→tenant coordination are integrated; a live low-risk end-to-end cutover is still required.
+- Phase 3 — application kernel/state/data/tenant: **ACTIVE, FIRST LIVE CUTOVER GREEN**. Typed tenant/repository/async/request boundaries, feature command/event seam and session→tenant coordination are integrated. Accessibility preferences now run live through the V6 feature-command boundary while retaining V5 local persistence/UI behavior; exact-head Chromium proves mutation, runtime application and persistence after reload.
 - Phase 4 — Reader/content/offline engine: **ACTIVE IN BOUNDED TRANCHES**. Content manifests/licensing policy, navigation/progress/Japanese seams and offline package lifecycle exist; UI integration and true offline acceptance remain.
 - Phase 5 — Games engine: **NOT STARTED**.
 - Phase 6 — Media engine: **NOT STARTED**.
