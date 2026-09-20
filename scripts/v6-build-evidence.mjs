@@ -88,8 +88,13 @@ try {
 
   for (const mapFile of privateSourceMapFiles) {
     const sourceMap = JSON.parse(await readFile(mapFile, 'utf8'));
-    if (Object.prototype.hasOwnProperty.call(sourceMap, 'sourcesContent')) {
-      privateSourceMapFailures.push(`${relative(privateSourceMapDir, mapFile)} embeds sourcesContent`);
+    const embeddedSources = Array.isArray(sourceMap.sourcesContent)
+      ? sourceMap.sourcesContent.filter((source) => typeof source === 'string' && source.length > 0)
+      : [];
+    if (embeddedSources.length) {
+      privateSourceMapFailures.push(
+        `${relative(privateSourceMapDir, mapFile)} embeds ${embeddedSources.length} source payload(s)`,
+      );
     }
   }
 } catch (error) {
