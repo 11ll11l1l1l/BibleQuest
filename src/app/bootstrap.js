@@ -17,6 +17,7 @@ import { createAdaptiveLearningService } from './adaptive-learning.js';
 import { createBibleWorldService } from './bible-world.js';
 import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
+import { createBibleQuestService } from './bible-quest.js';
 import { createWeeklyJourneyService } from './weekly-journey.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
@@ -70,6 +71,7 @@ import { mountAccessibilityRuntime } from '../ui/accessibility.js';
 import { mountContentReportingRuntime } from '../ui/content-reporting.js';
 import { mountPushOnboarding } from '../ui/push-onboarding.js';
 import { homePage } from '../features/home/index.js';
+import { bibleQuestPage } from '../features/bible-quest/index.js';
 import { accountPage } from '../features/account/index.js';
 import { backupPage } from '../features/backup/index.js';
 import { accessibilityPage } from '../features/accessibility/index.js';
@@ -159,6 +161,7 @@ function boot(root){
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
+  const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
   const reader=createReaderService({bible,storage,progress});
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
@@ -199,7 +202,7 @@ function boot(root){
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
-  const myJourney=createMyJourneyService({progress,assignments});
+  const myJourney=createMyJourneyService({progress,assignments,bibleQuest});
   const leaderCenter=createLeaderCenterService({assignments,presence});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
@@ -215,8 +218,15 @@ function boot(root){
   let router,shell,tutorialOverlay,accessibilityRuntime,contentReportingRuntime;
   const reloadAfterLocalDataChange=()=>location.reload();
   const openCouplesScripture=card=>{reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
+  const openBibleQuestNext=()=>{
+    const quest=bibleQuest.activateNext(),target=quest.next;
+    if(!target){router.navigate('bible-quest');return}
+    reader.setBook(target.code,target.chapter);
+    router.navigate('reader');
+  };
   const routes=Object.freeze({
-    home:()=>homePage({progress,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:()=>router.navigate('reader'),onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
+    home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:()=>router.navigate('reader'),onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
+    'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:()=>router.navigate('reader'),onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:()=>router.navigate('reader'),onHome:()=>router.navigate('home')}),
     learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:()=>router.navigate('reader'),onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:()=>router.navigate('reader'),onLearn:()=>router.navigate('learn')}),
@@ -243,9 +253,9 @@ function boot(root){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary,furigana,bibleQuest}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
-    'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow')}),
+    'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
     psychometrics:()=>psychometricsPage({psychometrics,onBack:()=>router.navigate('grow'),onQuickTransform:()=>router.navigate('transform')}),
