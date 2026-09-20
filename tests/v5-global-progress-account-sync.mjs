@@ -25,15 +25,25 @@ function session(userId='11111111-1111-1111-1111-111111111111'){
   };
 }
 function cloudApi(){
-  let tick=0;
+  let tick=0,beforeNextSave=null;
   let row={user_id:'11111111-1111-1111-1111-111111111111',state:{legacy_progress:{keep:true}},schema_version:1,updated_at:'2026-09-20T00:00:00.000Z'};
+  const stamp=()=>`2026-09-20T00:00:${String(++tick).padStart(2,'0')}.000Z`;
   return {
     async load(){return structuredClone(row)},
-    async saveSlice(userId,key,value){
-      tick+=1;
-      row={user_id:userId,state:{...row.state,[key]:structuredClone(value)},schema_version:1,updated_at:`2026-09-20T00:00:${String(tick).padStart(2,'0')}.000Z`};
+    async saveSlice(userId,key,value,{expectedUpdatedAt=undefined}={}){
+      if(beforeNextSave){
+        row={...row,state:{...row.state,[key]:structuredClone(beforeNextSave)},updated_at:stamp()};
+        beforeNextSave=null;
+      }
+      const actual=row.updated_at||null;
+      const expected=expectedUpdatedAt===undefined?undefined:(expectedUpdatedAt||null);
+      if(expected!==undefined&&expected!==actual){
+        const error=new Error('simulated concurrent snapshot update');error.code='BQ_PROGRESS_SNAPSHOT_CONFLICT';throw error;
+      }
+      row={user_id:userId,state:{...row.state,[key]:structuredClone(value)},schema_version:1,updated_at:stamp()};
       return structuredClone(row);
     },
+    conflictNextSaveWith(value){beforeNextSave=structuredClone(value)},
     inspect(){return structuredClone(row)}
   };
 }
@@ -89,6 +99,21 @@ assert.equal(b.progress.getState().xp,25);
 assert.equal(Object.keys(a.progress.getState().events).length,4);
 assert.equal(Object.keys(b.progress.getState().events).length,4);
 assert.equal(api.inspect().state.biblequest_global_progress_v1.xp,25);
+
+// A same-slice update arriving after load but before save must force re-read +
+// semantic merge, never stale overwrite.
+const cDevice=makeProgress('2026-09-23'),dDevice=makeProgress('2026-09-23');
+cDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
+dDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
+cDevice.progress.record({id:'device-c:race',type:'test.activity',xp:2,meaningful:false});
+dDevice.progress.record({id:'device-d:race',type:'test.activity',xp:4,meaningful:false});
+const syncC=createProgressCloudSyncService({api,session:account,progress:cDevice.progress});
+api.conflictNextSaveWith(dDevice.progress.exportAccountState());
+await syncC.syncNow();
+assert.equal(cDevice.progress.getState().xp,31,'Snapshot conflict retry must merge the competing device event before saving.');
+assert.ok(cDevice.progress.hasEvent('device-c:race')&&cDevice.progress.hasEvent('device-d:race'),'Concurrent account progress events must both survive stale-write rejection.');
+assert.equal(api.inspect().state.biblequest_global_progress_v1.xp,31,'Cloud snapshot must contain the merged concurrent progress result.');
+syncC.dispose();
 
 syncA.dispose();syncB.dispose();
 console.log('BibleQuest V5 global progress account auto-resume regression passed.');
