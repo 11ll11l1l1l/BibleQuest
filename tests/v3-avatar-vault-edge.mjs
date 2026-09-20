@@ -90,6 +90,26 @@ const failedSync = await acctVault.select('crown');
 assert.equal(failedSync.selected.id, 'crown', 'Device state stays authoritative even when cloud sync fails.');
 assert.equal(failedSync.synced, false, 'A failed cloud sync must be visibly reported, not silently swallowed.');
 
+// A failed account save must remain pending and retry before an older cloud row can overwrite it.
+const retryStorage=fakeStorage();
+let retryRemote='starter',retryFail=false,retryOrder=[];
+const retryApi={avatarVault:{
+  async load(){retryOrder.push('load');return{selected_style:retryRemote}},
+  async save(_userId,selected){retryOrder.push(`save:${selected}`);if(retryFail)throw new Error('network down');retryRemote=selected}
+}};
+const retryVault=createAvatarVaultService({session:acctSession,privateStorage:retryStorage,api:retryApi,progress:richProgress});
+await retryVault.load();
+retryFail=true;
+const pendingSelection=await retryVault.select('crown');
+assert.equal(pendingSelection.selected.id,'crown');
+assert.equal(pendingSelection.synced,false);
+retryFail=false;retryOrder=[];
+const recoveredSelection=await retryVault.load();
+assert.deepEqual(retryOrder.slice(0,2),['save:crown','load'],'Pending avatar intent must retry before accepting remote selection.');
+assert.equal(retryRemote,'crown','Pending avatar selection must be promoted to the account on reconnect.');
+assert.equal(recoveredSelection.selected.id,'crown','Older cloud state must never overwrite a newer pending avatar selection.');
+assert.equal(recoveredSelection.synced,true,'Recovered avatar selection must clear its pending-sync state.');
+
 // --- app owner: account and guest owners are isolated ---
 const sharedStorage = fakeStorage();
 const okApi = { avatarVault: { load: async () => null, save: async () => {} } };
