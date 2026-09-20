@@ -74,9 +74,16 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   function markRead() {
     const translation = bible.getTranslation(state.translation);
     if (translation.mode === 'licensed-link') throw new Error(`${translation.label} opens externally; BibleQuest cannot mark unseen Scripture text as read.`);
-    const key = readKey();
-    if (state.read[key]) return Object.freeze({ newlyRead: false, progress: null, state: getState() });
-    const award = progress.record({ id: `reader.read:${key}`, type: 'reader.chapter.read', xp: 10, meaningful: true, metrics: { chaptersRead: 1 } });
+    const key = readKey(),eventId=`reader.read:${key}`;
+    if (state.read[key] || progress.hasEvent?.(eventId)) {
+      if(!state.read[key]){
+        const date=progress.getState?.().events?.[eventId]?.date||'';
+        const next={...state,read:{...state.read,[key]:date}};
+        storage.write(STORAGE_KEY,next);state=next;
+      }
+      return Object.freeze({ newlyRead: false, progress: null, state: getState() });
+    }
+    const award = progress.record({ id:eventId, type: 'reader.chapter.read', xp: 10, meaningful: true, metrics: { chaptersRead: 1 } });
     const next = { ...state, read: { ...state.read, [key]: award.date } };
     storage.write(STORAGE_KEY, next);
     state = next;
@@ -84,7 +91,8 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   function isRead() {
-    return Boolean(state.read[readKey()]);
+    const key=readKey();
+    return Boolean(state.read[key]||progress.hasEvent?.(`reader.read:${key}`));
   }
 
   async function search(query, options) {
