@@ -62,7 +62,7 @@ function fakeApi(){
   const calls={updates:0,removals:0};
   return { calendar:{
     async list(){ return rows.slice(); },
-    async create(userId,ev){ const row={id:`cloud-${rows.length+1}`,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay}; rows.push(row); return row; },
+    async create(userId,ev){ const row={id:ev.id,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay}; rows.push(row); return row; },
     async remove(userId,id){ const i=rows.findIndex(r=>r.id===id&&r.user_id===userId); if(i>=0)rows.splice(i,1); return true; },
     async listCongregation(congregationId){ return congregationRows.filter(r=>r.congregation_id===congregationId); },
     async createCongregation(userId,congregationId,ev){ const row={id:`cong-${congregationRows.length+1}`,congregation_id:congregationId,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0}; congregationRows.push(row); return row; },
