@@ -758,9 +758,19 @@ export function createApi() {
     },
     async create(userId,event) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_calendar_events').insert({user_id:userId,title:event.title,notes:event.notes||'',event_date:event.date,all_day:event.allDay!==false}).select(CALENDAR_EVENT_FIELDS).single();
-      if(error)throw error;
-      return data;
+      const payload={user_id:userId,title:event.title,notes:event.notes||'',event_date:event.date,all_day:event.allDay!==false};
+      if(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(event?.id||'')))payload.id=String(event.id);
+      const {data,error}=await client.from('bible_calendar_events').insert(payload).select(CALENDAR_EVENT_FIELDS).single();
+      if(!error)return data;
+      // Personal event creation is idempotent by client UUID. If the first
+      // request committed but its response was lost, a retry sees 23505 and
+      // resolves the already-owned row rather than creating a duplicate.
+      if(error.code==='23505'&&payload.id){
+        const {data:existing,error:existingError}=await client.from('bible_calendar_events').select(CALENDAR_EVENT_FIELDS).eq('id',payload.id).eq('user_id',userId).is('congregation_id',null).maybeSingle();
+        if(existingError)throw existingError;
+        if(existing)return existing;
+      }
+      throw error;
     },
     async remove(userId,id) {
       const client=await getClient();
