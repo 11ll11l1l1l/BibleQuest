@@ -302,7 +302,7 @@ export function createBrowserScripturePackageController({
       } catch (error) {
         return Object.freeze({
           supported: true,
-          downloadable: Boolean(installed),
+          downloadable: true,
           translationId: id,
           bookCode: code,
           installed,
