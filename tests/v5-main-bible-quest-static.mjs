@@ -39,7 +39,8 @@ for(const token of[
   "createBibleQuestService",
   "'bible-quest':()=>bibleQuestPage",
   'onBibleQuestContinue:openBibleQuestNext',
-  'readerPage({reader,vocabulary,furigana,bibleQuest})',
+  'createReaderService({bible,storage,progress,bibleQuest})',
+  'readerPage({reader,vocabulary,furigana})',
   'createMyJourneyService({progress,assignments,bibleQuest})'
 ]) assert.ok(bootstrap.includes(token),`Bootstrap missing Main Bible Quest composition: ${token}`);
 
@@ -47,6 +48,7 @@ assert.ok(reader.includes('data-reader-quest-complete'),'Reader must explicitly 
 assert.ok(reader.includes('data-reader-quest-away'),'Free reading must be visibly separate while a Quest chapter is active.');
 assert.ok(reader.includes('Free reading elsewhere does not skip this required chapter.'),'Reader must explain ordered Quest semantics.');
 assert.ok(readerService.includes('referenceLinks(code, chapter, verse = null)'),'Reader must expose exact related-Scripture links.');
+assert.ok(readerService.includes('questSnapshot()'),'Reader service must expose Main Quest state without changing the Reader page API.');
 
 for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(page.includes(provider)||readerService.includes(provider.toLowerCase()),`Bible Quest related links should support ${provider}.`);
 assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
