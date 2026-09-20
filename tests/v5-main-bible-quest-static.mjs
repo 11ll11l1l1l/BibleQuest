@@ -72,7 +72,8 @@ assert.ok(bootstrap.includes('createProgressCloudSyncService({api:api.progressSn
 assert.ok(bootstrap.includes('createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage})'),'Bootstrap must inject account-isolated owner/cache storage into Main Bible Quest sync.');
 
 for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(bible.includes(provider),`Bible data service must retain ${provider} related-reference support used by Bible Quest.`);
-assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
+assert.ok(page.includes("openReader:'Open in BibleQuest Reader'")&&page.includes("openReader:'Buksan sa BibleQuest Reader'")&&page.includes("openReader:'Ablihi sa BibleQuest Reader'"),'Main Bible Quest page chrome must remain localized in EN, TL, and CEB.');
+assert.ok(page.includes("esc(t.openReader)"),'Bible Quest Reader CTA must render through localized copy.');
 
 assert.ok(mission.includes('referenceLinks?.(activePassage.code,activePassage.chapter,activePassage.from)'),'Daily Journey must attach exact related Scripture links.');
 assert.ok(missionUi.includes('data-daily-related-scripture'),'Daily Journey must render related Scripture links.');
