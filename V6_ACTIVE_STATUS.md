@@ -6,7 +6,7 @@ Official V6 integration branch: `v6/architecture-upgrade`
 Released V5 production baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
 Certified V5 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
-Current integrated checkpoint: `674402e4ae5bb2edbee2c100039de840944d6310`
+Current integrated checkpoint: `7c8041e3d54682ed69c5030ff84ce5d9336758c4`
 
 ## Authority
 
@@ -28,7 +28,7 @@ Inherited static/governance gates reported green on the Phase-0 candidate for bu
 
 Chromium-capable GitHub CI is now operational for V6 built artifacts. The integrated Phase-1 gate has proven all 45 canonical direct deep links plus not-found behavior, the 320/360/390/412/430px representative route matrix, service-worker registration, PWA manifest/icons/shortcuts, and an offline Home-shell reopen. This remains signed-out/browser evidence rather than authenticated role E2E or physical-device acceptance.
 
-The route-page build has also moved from one ~915.21 kB JavaScript entry (~252.71 kB gzip) to a ~557.11 kB entry (~166.19 kB gzip) plus lazy feature chunks. CI now fails if the browser entry exceeds 700 KiB or if fewer than 40 feature route modules remain dynamic chunks.
+The route-page build has also moved from one ~915.21 kB JavaScript entry (~252.71 kB gzip) to a ~557.11 kB entry (~166.19 kB gzip) plus lazy feature chunks. CI now fails if the browser entry exceeds 700 KiB or if fewer than 40 feature route modules remain dynamic chunks. Phase-1 CI now also runs deterministic lint, format, typecheck, unit and build commands. Vite source maps are generated as hidden diagnostics, exclude embedded source text, are moved outside `dist-v6` into ignored exact-SHA private output, and CI proves the public artifact contains neither `.map` files nor `sourceMappingURL` references.
 
 ## V6 product decision
 
@@ -42,7 +42,7 @@ Terra/Sol development may start immediately on READY Phase-1 and other bounded V
 
 Immediate remaining READY work includes:
 
-1. finish remaining Phase-1 gaps such as lint/format policy, privacy-safe source-map handling and build-owned legacy asset migration;
+1. finish the remaining Phase-1 build-owned legacy asset/CSS migration and exact-SHA deployment-path evidence;
 2. expand the already-green disposable Supabase/Postgres gate to additional sensitive domains and drift checks;
 3. complete one low-risk live feature migration through the V6 kernel before wider Reader/Games cutover;
 4. connect the Reader offline package engine to user-facing download/storage controls and prove network-disabled reopen/navigation;
@@ -66,7 +66,7 @@ High-risk changes to global auth, RLS strategy, destructive schema, global routi
 ## Phase state
 
 - Phase 0 — Authority, ADRs, released-V5 baseline: **COMPLETE**.
-- Phase 1 — Vite/TypeScript/build/test toolchain: **ACTIVE, MAJOR FOUNDATION GREEN**. Deterministic build/install, exact-SHA identity, route splitting, bundle budgets and built Chromium/PWA acceptance are integrated; lint/format, source-map policy and fuller build ownership remain.
+- Phase 1 — Vite/TypeScript/build/test toolchain: **ACTIVE, MAJOR FOUNDATION GREEN**. Deterministic build/install, lint/format/typecheck/unit/build CI, exact-SHA identity, privacy-safe private source maps, route splitting, bundle budgets and built Chromium/PWA acceptance are integrated; fuller build ownership and deployment-path evidence remain.
 - Phase 2 — executable Supabase/Postgres CI + fixtures: **ACTIVE, FOUNDATION GREEN**. Disposable local Supabase, released-V5→V6 replay, two-congregation fixtures, executable RLS/privilege checks, DB lint and deterministic local type generation are integrated; domain coverage/drift expansion remains.
 - Phase 3 — application kernel/state/data/tenant: **ACTIVE**. Typed tenant/repository/async/request boundaries, feature command/event seam and session→tenant coordination are integrated; a live low-risk end-to-end cutover is still required.
 - Phase 4 — Reader/content/offline engine: **ACTIVE IN BOUNDED TRANCHES**. Content manifests/licensing policy, navigation/progress/Japanese seams and offline package lifecycle exist; UI integration and true offline acceptance remain.
