@@ -167,13 +167,89 @@ function addSafe(left, right, label) {
   return value;
 }
 
+const cloneJson = value => JSON.parse(JSON.stringify(value));
+
+function deriveFromEvents(events, preservedBadges = []) {
+  let xp=0,stars=0,coins=0,totalActivities=0;
+  const counters=normalizeMetrics(null),meaningfulDates=new Set();
+  for(const row of Object.values(events||{})){
+    xp=addSafe(xp,integer(row?.xp,0),'XP');
+    const rewards=normalizeRewards(row?.rewards);
+    stars=addSafe(stars,rewards.stars,'Stars');
+    coins=addSafe(coins,rewards.coins,'Coins');
+    const metrics=normalizeMetrics(row?.metrics);
+    for(const key of COUNTER_KEYS)counters[key]=addSafe(counters[key],metrics[key],`Progress metric ${key}`);
+    if(row?.meaningful!==false){totalActivities=addSafe(totalActivities,1,'Activity count');if(validDateKey(row?.date))meaningfulDates.add(row.date)}
+  }
+  const dates=[...meaningfulDates].sort(),lastActivityDate=dates.at(-1)||null;
+  let streak=0;
+  if(lastActivityDate){
+    streak=1;
+    for(let index=dates.length-2;index>=0;index-=1){
+      if(dayDistance(dates[index],dates[index+1])!==1)break;
+      streak=addSafe(streak,1,'Streak');
+    }
+  }
+  return applyBadgeRules({
+    version:VERSION,xp,stars,coins,streak,lastActivityDate,totalActivities,counters,
+    badges:[...new Set((preservedBadges||[]).filter(id=>PROGRESS_BADGES.some(item=>item.id===id)))],
+    events:{...events}
+  });
+}
+
+function mergeProgressStates(leftInput,rightInput){
+  const left=normalize(leftInput),right=normalize(rightInput),events={...left.events};
+  for(const [id,row] of Object.entries(right.events)){
+    if(events[id]){
+      if(JSON.stringify(events[id])!==JSON.stringify(row))throw new Error(`Progress event identity conflict during account merge: ${id}`);
+      continue;
+    }
+    events[id]=row;
+  }
+  const leftDerived=deriveFromEvents(left.events,left.badges),rightDerived=deriveFromEvents(right.events,right.badges);
+  const merged=deriveFromEvents(events,[...left.badges,...right.badges]);
+  const legacy={
+    xp:Math.max(0,left.xp-leftDerived.xp,right.xp-rightDerived.xp),
+    stars:Math.max(0,left.stars-leftDerived.stars,right.stars-rightDerived.stars),
+    coins:Math.max(0,left.coins-leftDerived.coins,right.coins-rightDerived.coins),
+    totalActivities:Math.max(0,left.totalActivities-leftDerived.totalActivities,right.totalActivities-rightDerived.totalActivities),
+    counters:Object.fromEntries(COUNTER_KEYS.map(key=>[key,Math.max(0,left.counters[key]-leftDerived.counters[key],right.counters[key]-rightDerived.counters[key])]))
+  };
+  const counters={...merged.counters};
+  for(const key of COUNTER_KEYS)counters[key]=addSafe(counters[key],legacy.counters[key],`Progress metric ${key}`);
+  let lastActivityDate=merged.lastActivityDate,streak=merged.streak;
+  for(const candidate of[left,right]){
+    if(candidate.lastActivityDate&&(!lastActivityDate||candidate.lastActivityDate>lastActivityDate)){
+      lastActivityDate=candidate.lastActivityDate;streak=candidate.streak;
+    }else if(candidate.lastActivityDate&&candidate.lastActivityDate===lastActivityDate){
+      streak=Math.max(streak,candidate.streak);
+    }
+  }
+  return applyBadgeRules({
+    ...merged,
+    xp:addSafe(merged.xp,legacy.xp,'XP'),
+    stars:addSafe(merged.stars,legacy.stars,'Stars'),
+    coins:addSafe(merged.coins,legacy.coins,'Coins'),
+    totalActivities:addSafe(merged.totalActivities,legacy.totalActivities,'Activity count'),
+    counters,lastActivityDate,streak
+  });
+}
+
 export function createProgressService({ storage, store, clock = () => new Date(), timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC' }) {
   if (!storage || !store) throw new Error('Progress service requires storage and global store boundaries.');
   formatter(timeZone);
   let state = normalize(storage.read(STORAGE_KEY, defaultState()));
+  const listeners=new Set();
 
   const getState = () => freezeState(state);
   const publish = () => store.setState(current => ({ ...current, progress: getState() }));
+  const notify = source => {
+    const snapshot=getState();
+    for(const listener of listeners){
+      try{listener(Object.freeze({source,state:snapshot}))}
+      catch(error){console.warn('Progress state listener failed',error)}
+    }
+  };
   publish();
 
   function record(input) {
@@ -228,8 +304,32 @@ export function createProgressService({ storage, store, clock = () => new Date()
     storage.write(STORAGE_KEY, next);
     state = next;
     publish();
+    notify('local');
     return Object.freeze({ applied: true, duplicate: false, date, awardedXp: xp, awardedRewards: Object.freeze({ ...rewards }), newlyUnlocked: Object.freeze(newlyUnlocked), state: getState() });
   }
 
-  return Object.freeze({ getState, record, hasEvent(id) { return Boolean(state.events[String(id || '')]); }, getDateKey(value = clock()) { return civilDateKey(value, timeZone); }, badges: PROGRESS_BADGES, timeZone });
+  function exportAccountState(){return cloneJson(state)}
+  function mergeFromAccount(remoteInput){
+    const next=mergeProgressStates(state,remoteInput);
+    const changed=JSON.stringify(next)!==JSON.stringify(state);
+    if(changed){
+      storage.write(STORAGE_KEY,next);
+      state=next;
+      publish();
+      notify('account');
+    }
+    return Object.freeze({changed,state:getState()});
+  }
+  function subscribe(listener){
+    if(typeof listener!=='function')throw new Error('Progress subscription requires a function.');
+    listeners.add(listener);
+    return()=>listeners.delete(listener);
+  }
+
+  return Object.freeze({
+    getState,record,exportAccountState,mergeFromAccount,subscribe,
+    hasEvent(id) { return Boolean(state.events[String(id || '')]); },
+    getDateKey(value = clock()) { return civilDateKey(value, timeZone); },
+    badges: PROGRESS_BADGES,timeZone
+  });
 }
