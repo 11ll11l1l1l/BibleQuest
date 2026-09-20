@@ -10,7 +10,7 @@ const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a
 function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
 function freezeLocal(event,pendingSync=false){return Object.freeze({...event,pendingSync:pendingSync===true})}
 
-export function createCalendarService({ session, privateStorage, api, assignments, congregation, clock = () => new Date(), uuid = () => crypto.randomUUID() }) {
+export function createCalendarService({ session, privateStorage, api, assignments, congregation, clock = () => new Date() }) {
   if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.calendar) {
     throw new Error('Calendar requires Session, private storage and the API boundary.');
   }
@@ -27,7 +27,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
   };
   const key = current => `calendar-events:${current}`;
   const nextId=()=>{
-    const id=String(uuid());
+    const id=String(crypto.randomUUID());
     if(!UUID_RE.test(id))throw new Error('Calendar could not create a valid event identity.');
     return id;
   };
