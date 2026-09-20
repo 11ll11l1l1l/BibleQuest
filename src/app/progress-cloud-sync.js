@@ -1,5 +1,7 @@
 const SLICE_KEY='biblequest_global_progress_v1';
 
+const canonicalText=value=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
+
 export function createProgressCloudSyncService({api,session,progress}={}){
   if(!api?.load||!api?.saveSlice)throw new Error('Progress cloud sync requires progress snapshot API ownership.');
   if(!session?.getState||!session?.beforeSignOut)throw new Error('Progress cloud sync requires the account session owner.');
@@ -23,8 +25,8 @@ export function createProgressCloudSyncService({api,session,progress}={}){
       if(remote)progress.mergeFromAccount(remote);
 
       const local=progress.exportAccountState();
-      const remoteText=remote?JSON.stringify(remote):'';
-      const localText=JSON.stringify(local);
+      const remoteText=remote?canonicalText(remote):'';
+      const localText=canonicalText(local);
       if(remote&&remoteText===localText){
         return publish({status:'synced',userId,updatedAt:String(row?.updated_at||''),error:''});
       }
