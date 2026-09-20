@@ -21,22 +21,26 @@ export function createBibleQuestCloudSyncService({api,session,bibleQuest}={}){
     if(current?.authenticated!==true||!userId)return publish({status:'local',userId:'',winner:'same',error:''});
 
     publish({status:'syncing',userId,error:''});
-    const row=await api.load(userId);
-    const remote=row?.state?.[SLICE_KEY]||null;
-    const merge=remote?bibleQuest.mergeFromAccount(remote):Object.freeze({winner:'local'});
-    let saved=row;
-
-    if(!remote||merge.winner==='local'){
-      saved=await api.saveSlice(userId,SLICE_KEY,bibleQuest.exportAccountState());
+    for(let attempt=0;attempt<4;attempt+=1){
+      const row=await api.load(userId);
+      const remote=row?.state?.[SLICE_KEY]||null;
+      const merge=remote?bibleQuest.mergeFromAccount(remote):Object.freeze({winner:'local'});
+      const local=bibleQuest.exportAccountState();
+      if(remote&&JSON.stringify(remote)===JSON.stringify(local)){
+        return publish({status:'synced',userId,updatedAt:String(row?.updated_at||''),winner:merge.winner,error:''});
+      }
+      try{
+        const saved=await api.saveSlice(userId,SLICE_KEY,local,{expectedUpdatedAt:row?.updated_at||null});
+        return publish({
+          status:'synced',userId,updatedAt:String(saved?.updated_at||row?.updated_at||''),
+          winner:remote?merge.winner:'local',error:''
+        });
+      }catch(error){
+        if(error?.code==='BQ_PROGRESS_SNAPSHOT_CONFLICT'&&attempt<3)continue;
+        throw error;
+      }
     }
-
-    return publish({
-      status:'synced',
-      userId,
-      updatedAt:String(saved?.updated_at||row?.updated_at||''),
-      winner:remote?merge.winner:'local',
-      error:''
-    });
+    throw new Error('Bible Quest account sync could not settle after concurrent updates.');
   }
 
   function syncNow(){
