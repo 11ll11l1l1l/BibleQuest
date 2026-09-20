@@ -15,7 +15,10 @@
     "unit:v6": "node --experimental-strip-types --test tests/v6/*.test.ts",
     "validate:v5": "node scripts/validate-release.mjs",
     "check:v6-toolchain": "node scripts/v6-toolchain-smoke.mjs",
-    "check:v6-build-evidence": "node scripts/v6-build-evidence.mjs"
+    "check:v6-build-evidence": "node scripts/v6-build-evidence.mjs",
+    "lint": "node scripts/v6-lint.mjs",
+    "format:check": "node scripts/v6-format-check.mjs",
+    "unit": "npm run unit:v6"
   },
   "devDependencies": {
     "typescript": "7.0.2",
