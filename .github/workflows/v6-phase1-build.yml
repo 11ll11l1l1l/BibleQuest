@@ -13,6 +13,8 @@ on:
       - "src/v6/**"
       - "tests/v6/**"
       - "scripts/v6-toolchain-smoke.mjs"
+      - "scripts/v6-lint.mjs"
+      - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
@@ -48,11 +50,17 @@ jobs:
       - name: V6 toolchain smoke
         run: npm run check:v6-toolchain
 
+      - name: Lint V6 client boundaries
+        run: npm run lint
+
+      - name: Verify V6 formatting policy
+        run: npm run format:check
+
       - name: Typecheck
         run: npm run typecheck
 
       - name: V6 unit tests
-        run: npm run unit:v6
+        run: npm run unit
 
       - name: Build V6 artifact with exact commit identity
         env:
