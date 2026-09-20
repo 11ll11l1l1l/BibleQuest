@@ -151,6 +151,10 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
     return Object.freeze({...item});
   }
   function exportAccountState(){return clone(state)}
+  function replaceAccountState(input){
+    persist(input||empty(),{source:'account',touch:false});
+    return snapshot();
+  }
   function mergeFromAccount(remoteInput){
     const remote=normalize(remoteInput);
     const localCount=Object.keys(state.completed).length;
@@ -173,7 +177,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
   }
 
   return Object.freeze({
-    snapshot,setPace,activateNext,deactivate,completeActive,reference,exportAccountState,mergeFromAccount,subscribe,
+    snapshot,setPace,activateNext,deactivate,completeActive,reference,exportAccountState,replaceAccountState,mergeFromAccount,subscribe,
     isActiveTarget(code,chapter){return state.activeKey===keyOf(code,chapter)},
     isQuestComplete(code,chapter){return Boolean(state.completed[keyOf(code,chapter)])},
     nextRequired,
