@@ -258,7 +258,10 @@ export function createApi() {
         throw conflict;
       }
 
-      const now=new Date().toISOString();
+      const candidate=new Date();
+      const priorMs=current?.updated_at?Date.parse(current.updated_at):0;
+      const candidateMs=candidate.getTime();
+      const now=new Date(candidateMs>priorMs?candidateMs:priorMs+1).toISOString();
       const mergedState={...((current?.state&&typeof current.state==='object'&&!Array.isArray(current.state))?current.state:{}),[key]:serialized};
       if(current){
         const {data,error}=await client.from('bible_progress_snapshots')
