@@ -17,6 +17,7 @@ const page=fs.readFileSync('src/features/bible-quest/index.js','utf8');
 const home=fs.readFileSync('src/features/home/index.js','utf8');
 const reader=fs.readFileSync('src/features/reader/index.js','utf8');
 const readerService=fs.readFileSync('src/app/reader.js','utf8');
+const bible=fs.readFileSync('src/core/bible.js','utf8');
 const bootstrap=fs.readFileSync('src/app/bootstrap.js','utf8');
 const mission=fs.readFileSync('src/app/daily-mission.js','utf8');
 const missionUi=fs.readFileSync('src/features/daily-mission/index.js','utf8');
@@ -50,7 +51,7 @@ assert.ok(reader.includes('Free reading elsewhere does not skip this required ch
 assert.ok(readerService.includes('referenceLinks(code, chapter, verse = null)'),'Reader must expose exact related-Scripture links.');
 assert.ok(readerService.includes('questSnapshot()'),'Reader service must expose Main Quest state without changing the Reader page API.');
 
-for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(page.includes(provider)||readerService.includes(provider.toLowerCase()),`Bible Quest related links should support ${provider}.`);
+for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(bible.includes(provider),`Bible data service must retain ${provider} related-reference support used by Bible Quest.`);
 assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
 
 assert.ok(mission.includes('referenceLinks?.(activePassage.code,activePassage.chapter,activePassage.from)'),'Daily Journey must attach exact related Scripture links.');
