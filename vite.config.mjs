@@ -8,7 +8,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { extname, join, resolve } from 'node:path';
+import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
@@ -118,7 +118,7 @@ function collectPrivateSourceMaps() {
       for (const source of sourceMaps) {
         const relativePath = source.slice(outDir.length + 1);
         const target = join(privateSourceMapDir, relativePath);
-        mkdirSync(resolve(target, '..'), { recursive: true });
+        mkdirSync(dirname(target), { recursive: true });
         renameSync(source, target);
       }
 
@@ -130,7 +130,7 @@ function collectPrivateSourceMaps() {
             publicArtifact: 'dist-v6',
             publicSourceMaps: false,
             sourcesEmbedded: false,
-            maps: sourceMaps.map((file) => file.slice(outDir.length + 1).replaceAll('\\\\', '/')),
+            maps: sourceMaps.map((file) => file.slice(outDir.length + 1).replaceAll('\\', '/')),
           },
           null,
           2,
