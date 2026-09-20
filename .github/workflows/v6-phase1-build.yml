@@ -16,6 +16,7 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-generate-scripture-manifests.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
