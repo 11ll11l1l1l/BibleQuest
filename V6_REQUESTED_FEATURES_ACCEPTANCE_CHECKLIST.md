@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `f21fb51c03f23a221b2e73301c52483df0e1616f`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
+Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb75`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -62,7 +62,7 @@ Evidence checkpoint: integrated V6 head `f21fb51c03f23a221b2e73301c52483df0e1616
 - [ ] Feature modules do not make UI visibility the authority for protected actions.
 - [x] Route-level lazy loading/cancellation and stale-request invalidation primitives are standardized.
 - [x] Compatibility feature command/event boundary and fail-closed migration seam exist.
-- [ ] At least one low-risk feature proves the new architecture end to end before Reader/Games rewrite.
+- [x] At least one low-risk feature proves the new architecture end to end before Reader/Games rewrite: Accessibility preferences mutate through the V6 command seam and built Chromium proves runtime application plus V5-compatible persistence after reload.
 
 ## E. Reader decomposition
 
@@ -222,7 +222,7 @@ Evidence checkpoint: integrated V6 head `f21fb51c03f23a221b2e73301c52483df0e1616
 ## P. CI/release architecture
 
 - [ ] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
-- [ ] Unit/type/lint/build gates run on PRs.
+- [x] Unit/type/lint/build gates run on V6 PRs.
 - [x] Database/RLS integration gate runs on relevant Supabase/database PRs using a real disposable stack.
 - [ ] Whole-app/protected-route/browser gates run against built output.
 - [ ] PWA/offline gate covers real V6 SW/content architecture.
