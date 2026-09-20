@@ -12,7 +12,7 @@ const offlineStatusHtml = status => {
   return `<div class="bq-reader-note bq-reader-offline-status" data-reader-offline-status data-offline-available="${status.available ? 'true' : 'false'}"><b>${escapeHtml(label)}</b><span>${escapeHtml(status.reason || '')}</span></div>`;
 };
 
-export function readerPage({ reader, vocabulary = null, furigana = null, bibleQuest = null }) {
+export function readerPage({ reader, vocabulary = null, furigana = null }) {
   return {
     title: 'Bible Reader',
     html: '<section data-reader-page><div class="bq-panel"><p>Loading Bible Reader…</p></div></section>',
@@ -32,7 +32,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, bibleQu
         const vocabularyControl = japanese && vocabulary ? japaneseVocabularyControl(vocabulary.getState()) : '';
         const searchControl = licensed ? '<p class="bq-reader-note bq-licensed-search-note" data-licensed-search-note>NLT search stays in the licensed external reader. Choose the book and chapter here, then open that passage externally.</p>' : '<form class="bq-reader-search" data-reader-search><label>Search this translation<input name="query" minlength="3" placeholder="John 3:16 or a phrase" required></label><button type="submit" class="bq-primary-button">Search</button></form>';
         const externalControl = licensed ? '' : `<div class="bq-external-links"><span>Open this passage externally</span>${links.map(link => `<a ${externalAttrs} data-external-reader="${escapeHtml(link.id)}" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
-        const questState=bibleQuest?.snapshot?.()||null;
+        const questState=reader.questSnapshot?.()||null;
         const questTarget=questState?.next||null;
         const questMatches=Boolean(questState?.active&&questTarget&&questTarget.code===state.book&&questTarget.chapter===state.chapter);
         const questBanner=!questState?.active||questState?.complete?'':questMatches
@@ -70,17 +70,17 @@ export function readerPage({ reader, vocabulary = null, furigana = null, bibleQu
         if (target.closest('[data-reader-use-bsb]')) { reader.setTranslation('bsb'); searchResults = null; highlightVerse = null; return load('Loading BSB…'); }
         if (target.closest('[data-reader-prev]')) { searchResults = null; highlightVerse = null; reader.move(-1); return load(); }
         if (target.closest('[data-reader-next]')) { searchResults = null; highlightVerse = null; reader.move(1); return load(); }
-        if (target.closest('[data-reader-quest-return]') && bibleQuest) {
-          const quest=bibleQuest.activateNext(), next=quest.next;
+        if (target.closest('[data-reader-quest-return]') && reader.activateQuestNext) {
+          const quest=reader.activateQuestNext(), next=quest?.next;
           if(next){ searchResults=null; highlightVerse=null; reader.setBook(next.code,next.chapter); return load('Returning to Bible Quest…'); }
           return;
         }
-        if (target.closest('[data-reader-quest-complete]') && bibleQuest) {
+        if (target.closest('[data-reader-quest-complete]') && reader.completeQuestChapter) {
           try {
             const state=reader.getState();
             const source=currentChapter?.translation?.mode==='licensed-link'?'external-self-report':'reader';
-            bibleQuest.completeActive({code:state.book,chapter:state.chapter,translation:state.translation,source});
-            const quest=bibleQuest.activateNext(), next=quest.next;
+            reader.completeQuestChapter(source);
+            const quest=reader.activateQuestNext(), next=quest?.next;
             if(next){ searchResults=null; highlightVerse=null; reader.setBook(next.code,next.chapter); return load('Opening next Bible Quest chapter…'); }
             return load('Bible Quest complete.');
           } catch(error) { message(error?.message || 'Could not advance Bible Quest.'); }
