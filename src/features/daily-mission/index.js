@@ -4,6 +4,7 @@ import { sourceLabel } from '../../ui/source-labels.js';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const LABELS = Object.freeze({ retrieve:'Retrieve', context:'Context', learn:'Learn', apply:'Apply', reflect:'Reflect' });
 const JOURNEY_SOURCE=sourceLabel(getContentProvenance('bq-study'),{compact:true});
+const EXTERNAL_ATTRS='target="_blank" rel="noopener noreferrer"';
 
 export function dailyMissionPage({ mission, onReader, onHome }) {
   return {
@@ -45,14 +46,15 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
 
       const render = next => {
         snapshot = next;
-        const { state, passage, dateKey } = snapshot;
+        const { state, passage, dateKey, links=[] } = snapshot;
         const reference = `${passage.book} ${passage.chapter}:${passage.from}–${passage.to}`;
         if (state.status === 'complete') {
           host.innerHTML = `<section class="bq-panel bq-daily-complete" data-daily-complete><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>Journey complete</h1><p><b>${escapeHtml(passage.title)}</b> · ${escapeHtml(reference)}</p><p>You completed Retrieve → Context → Learn → Apply → Reflect. The completion bonus is idempotent, so reopening today cannot award it twice.</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-daily-reader>Read passage</button><button type="button" class="bq-secondary-button" data-daily-home>Home</button></div></section>`;
           return;
         }
         const step = state.currentStep;
-        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p><div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
+        const related=`<div class="bq-external-links" data-daily-related-scripture><span>Related Scripture</span><button type="button" class="bq-secondary-button" data-daily-open-reader>Open in BibleQuest Reader</button>${links.map(link=>`<a ${EXTERNAL_ATTRS} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
+        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p>${related}<div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
       };
 
       const answer = value => {
