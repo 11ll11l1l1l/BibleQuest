@@ -162,7 +162,7 @@ function boot(root){
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
-  const reader=createReaderService({bible,storage,progress});
+  const reader=createReaderService({bible,storage,progress,bibleQuest});
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
   const furigana=createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer});
@@ -253,7 +253,7 @@ function boot(root){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary,furigana,bibleQuest}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
