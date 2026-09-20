@@ -115,5 +115,22 @@ assert.ok(cDevice.progress.hasEvent('device-c:race')&&cDevice.progress.hasEvent(
 assert.equal(api.inspect().state.biblequest_global_progress_v1.xp,31,'Cloud snapshot must contain the merged concurrent progress result.');
 syncC.dispose();
 
+// The same stable event completed independently at different device times is a
+// duplicate, not an identity conflict. Preserve the earliest first occurrence.
+const eDevice=makeProgress('2026-09-24'),fDevice=makeProgress('2026-09-25');
+eDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
+fDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
+eDevice.progress.record({id:'shared-offline-reader',type:'reader.chapter.read',xp:10,meaningful:true,metrics:{chaptersRead:1}});
+fDevice.progress.record({id:'shared-offline-reader',type:'reader.chapter.read',xp:10,meaningful:true,metrics:{chaptersRead:1}});
+const syncE=createProgressCloudSyncService({api,session:account,progress:eDevice.progress});
+const syncF=createProgressCloudSyncService({api,session:account,progress:fDevice.progress});
+await syncF.syncNow();
+await syncE.syncNow();
+assert.equal(eDevice.progress.getState().xp,41,'Same stable event from two devices must award only once after merge.');
+assert.equal(api.inspect().state.biblequest_global_progress_v1.events['shared-offline-reader'].date,'2026-09-24','Account merge must retain the earliest occurrence date for a duplicated stable event.');
+await syncF.syncNow();
+assert.equal(fDevice.progress.getState().xp,41);
+syncE.dispose();syncF.dispose();
+
 syncA.dispose();syncB.dispose();
 console.log('BibleQuest V5 global progress account auto-resume regression passed.');
