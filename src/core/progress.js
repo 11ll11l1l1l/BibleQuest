@@ -164,12 +164,18 @@ function sameRewards(a, b) {
 function sameProgressEvent(a,b){
   return Boolean(a&&b)
     && a.type===b.type
-    && a.date===b.date
-    && String(a.at||'')===String(b.at||'')
     && integer(a.xp,0)===integer(b.xp,0)
     && (a.meaningful!==false)===(b.meaningful!==false)
     && sameMetrics(a.metrics,b.metrics)
     && sameRewards(a.rewards,b.rewards);
+}
+
+function firstOccurrence(a,b){
+  const aTime=Date.parse(String(a?.at||'')),bTime=Date.parse(String(b?.at||''));
+  if(Number.isFinite(aTime)&&Number.isFinite(bTime))return aTime<=bTime?a:b;
+  if(Number.isFinite(aTime))return a;
+  if(Number.isFinite(bTime))return b;
+  return String(a?.date||'')<=String(b?.date||'')?a:b;
 }
 
 function addSafe(left, right, label) {
@@ -179,6 +185,7 @@ function addSafe(left, right, label) {
 }
 
 const cloneJson = value => JSON.parse(JSON.stringify(value));
+const canonicalProgressText=value=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
 
 function deriveFromEvents(events, preservedBadges = []) {
   let xp=0,stars=0,coins=0,totalActivities=0;
@@ -213,6 +220,7 @@ function mergeProgressStates(leftInput,rightInput){
   for(const [id,row] of Object.entries(right.events)){
     if(events[id]){
       if(!sameProgressEvent(events[id],row))throw new Error(`Progress event identity conflict during account merge: ${id}`);
+      events[id]=firstOccurrence(events[id],row);
       continue;
     }
     events[id]=row;
@@ -322,7 +330,7 @@ export function createProgressService({ storage, store, clock = () => new Date()
   function exportAccountState(){return cloneJson(state)}
   function mergeFromAccount(remoteInput){
     const next=mergeProgressStates(state,remoteInput);
-    const changed=JSON.stringify(next)!==JSON.stringify(state);
+    const changed=canonicalProgressText(next)!==canonicalProgressText(state);
     if(changed){
       storage.write(STORAGE_KEY,next);
       state=next;
