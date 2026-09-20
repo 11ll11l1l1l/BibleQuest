@@ -1,6 +1,7 @@
 // BibleQuest V4 Daily Journey page acceptance contract.
-// Daily Journey keeps the existing service/content owners while V4 presentation
-// is certified and unknown runtime errors are bounded at the page boundary.
+// Daily Journey keeps the existing service owner while V4 presentation is certified.
+// V5 may intentionally evolve authored Daily Journey content; that content is guarded
+// by the current Daily Journey edge and V5 variety regressions instead of this V4 freeze.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -9,8 +10,7 @@ import {execFileSync} from 'node:child_process';
 const root=path.resolve(import.meta.dirname,'..');
 const baselineSha='42f2bfbc9dba73088a4a996edf61c0b7787578a8';
 for(const relative of[
-  'src/app/daily-mission.js',
-  'src/features/daily-mission/content.js'
+  'src/app/daily-mission.js'
 ]){
   const current=fs.readFileSync(path.join(root,relative),'utf8');
   const baseline=execFileSync('git',['show',`${baselineSha}:${relative}`],{cwd:root,encoding:'utf8'});
@@ -71,5 +71,6 @@ assert.ok(workflow.includes('tests/v4-daily-journey-static.mjs'),'Accumulated ed
 assert.ok(workflow.includes('tests/v4-daily-journey-page-smoke.mjs'),'Accumulated browser CI must run the V4 Daily Journey page acceptance smoke.');
 assert.ok(workflow.includes('tests/v3-daily-mission-edge.mjs'),'Accumulated edge CI must retain Daily Journey service/reward regression coverage.');
 assert.ok(workflow.includes('tests/v3-daily-mission-smoke.mjs'),'Accumulated browser CI must retain full Daily Journey end-to-end coverage.');
+assert.ok(workflow.includes('tests/v5-journey-variety-static.mjs'),'Accumulated V5 CI must guard intentional Daily Journey content evolution.');
 
 console.log('BibleQuest v4 Daily Journey static acceptance contract passed.');
