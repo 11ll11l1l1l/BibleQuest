@@ -6,7 +6,7 @@ Official V6 integration branch: `v6/architecture-upgrade`
 Released V5 production baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
 Certified V5 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
-Current integrated checkpoint: `7c8041e3d54682ed69c5030ff84ce5d9336758c4`
+Current integrated checkpoint: `f21fb51c03f23a221b2e73301c52483df0e1616f`
 
 ## Authority
 
@@ -46,7 +46,7 @@ Immediate remaining READY work includes:
 2. expand the already-green disposable Supabase/Postgres gate to additional sensitive domains and drift checks;
 3. complete one low-risk live feature migration through the V6 kernel before wider Reader/Games cutover;
 4. connect the Reader offline package engine to user-facing download/storage controls and prove network-disabled reopen/navigation;
-5. continue notification/push client integration while keeping service-worker/backend/security changes serialized;
+5. continue Phase-7 notification/push integration from the preserved V5 production onboarding/lifecycle baseline while keeping backend/security changes serialized;
 6. add authenticated role/browser evidence for Member, Leader, Pastor and Admin without treating signed-out route smoke as protected-route proof;
 7. continue tests, localization, accessibility and responsive regression work.
 
@@ -72,7 +72,7 @@ High-risk changes to global auth, RLS strategy, destructive schema, global routi
 - Phase 4 — Reader/content/offline engine: **ACTIVE IN BOUNDED TRANCHES**. Content manifests/licensing policy, navigation/progress/Japanese seams and offline package lifecycle exist; UI integration and true offline acceptance remain.
 - Phase 5 — Games engine: **NOT STARTED**.
 - Phase 6 — Media engine: **NOT STARTED**.
-- Phase 7 — Notification/push/background-sync engine: **ACTIVE IN BOUNDED TRANCHES**. Preferences, client cleanup, presentation/status and safe deep-link/shortcut primitives exist; high-risk SW/backend architecture and physical delivery remain separately gated.
+- Phase 7 — Notification/push/background-sync engine: **ACTIVE IN BOUNDED TRANCHES**. V6 now also carries the released V5 installed-app notification onboarding, account-safe browser subscription lifecycle and push/notification-click service-worker behavior, with the V5 lifecycle/persistence contracts running inside the V6 build gate. V6 preferences, client cleanup, presentation/status and safe deep-link/shortcut primitives remain in parallel; high-risk backend delivery/deduplication/rate controls and V6 physical-device certification remain separately gated.
 - Phase 8 — Ministry/admin migration: **NOT STARTED**.
 - Phase 9 — tenant/multi-congregation engine: **FOUNDATION ONLY** through Phase-2/3 tenant/RLS work; broader domain migration remains.
 - Phase 10 — auth/admin/security hardening: **NOT STARTED** beyond inherited V5 protections and current CI guards.
