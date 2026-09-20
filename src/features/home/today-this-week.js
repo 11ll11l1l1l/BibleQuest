@@ -82,7 +82,7 @@ function localText(locale, key) {
   return localization.t(key, { locale, dictionaries: HOME_WEEK_COPY });
 }
 
-function weeklyJourneyHtml(locale, weeklyState = null) {
+export function weeklyJourneyHtml(locale, weeklyState = null) {
   const progress = weeklyState ? `<p class="bq-eyebrow" data-weekly-journey-progress>${weeklyState.completed}/${weeklyState.total} ${escapeHtml(localText(locale, 'home.week.progressSuffix'))}</p>` : '';
   return `<nav class="bq-panel bq-home-weekly-journey" data-home-weekly-journey aria-label="${escapeHtml(localText(locale, 'home.week.journeyLabel'))}">
     ${progress}
