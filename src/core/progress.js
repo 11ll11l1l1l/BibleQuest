@@ -328,6 +328,14 @@ export function createProgressService({ storage, store, clock = () => new Date()
   }
 
   function exportAccountState(){return cloneJson(state)}
+  function replaceAccountState(input){
+    const next=normalize(input||defaultState());
+    storage.write(STORAGE_KEY,next);
+    state=next;
+    publish();
+    notify('account');
+    return getState();
+  }
   function mergeFromAccount(remoteInput){
     const next=mergeProgressStates(state,remoteInput);
     const changed=canonicalProgressText(next)!==canonicalProgressText(state);
@@ -346,7 +354,7 @@ export function createProgressService({ storage, store, clock = () => new Date()
   }
 
   return Object.freeze({
-    getState,record,exportAccountState,mergeFromAccount,subscribe,
+    getState,record,exportAccountState,replaceAccountState,mergeFromAccount,subscribe,
     hasEvent(id) { return Boolean(state.events[String(id || '')]); },
     getDateKey(value = clock()) { return civilDateKey(value, timeZone); },
     badges: PROGRESS_BADGES,timeZone
