@@ -97,6 +97,47 @@ try {
   if (deepLinkErrors.length) throw new Error(`390px canonical deep-link browser errors: ${deepLinkErrors.join(' | ')}`);
   await deepLinkContext.close();
 
+  // Prove the first live V6 feature migration end to end. Accessibility keeps
+  // the released local-storage/UI contract while mutations pass through the
+  // V6 feature-command seam.
+  const accessibilityContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const accessibilityPage = await accessibilityContext.newPage();
+  const accessibilityErrors = [];
+  accessibilityPage.on('pageerror', error => accessibilityErrors.push(String(error?.message || error)));
+  await assertRoute(accessibilityPage, 'accessibility', '390px V6 accessibility migration');
+  await accessibilityPage.selectOption('[data-accessibility-setting="text"]', 'xlarge');
+  await accessibilityPage.selectOption('[data-accessibility-setting="motion"]', 'reduce');
+  await accessibilityPage.selectOption('[data-accessibility-setting="contrast"]', 'strong');
+  await accessibilityPage.waitForFunction(() => {
+    const root = document.documentElement;
+    return root.dataset.bqText === 'xlarge'
+      && root.dataset.bqMotion === 'reduce'
+      && root.dataset.bqContrast === 'strong'
+      && root.dataset.bqEffectiveMotion === 'reduce';
+  });
+  const savedAccessibility = await accessibilityPage.evaluate(() => {
+    const raw = localStorage.getItem('biblequest.v3.accessibility-settings');
+    return raw ? JSON.parse(raw) : null;
+  });
+  if (
+    savedAccessibility?.text !== 'xlarge'
+    || savedAccessibility?.motion !== 'reduce'
+    || savedAccessibility?.contrast !== 'strong'
+  ) {
+    throw new Error(`390px V6 accessibility migration: persisted state mismatch ${JSON.stringify(savedAccessibility)}`);
+  }
+  await accessibilityPage.reload({ waitUntil: 'networkidle' });
+  await accessibilityPage.waitForFunction(() => {
+    const text = document.querySelector('[data-accessibility-setting="text"]');
+    const motion = document.querySelector('[data-accessibility-setting="motion"]');
+    const contrast = document.querySelector('[data-accessibility-setting="contrast"]');
+    return text?.value === 'xlarge' && motion?.value === 'reduce' && contrast?.value === 'strong';
+  });
+  if (accessibilityErrors.length) {
+    throw new Error(`390px V6 accessibility migration browser errors: ${accessibilityErrors.join(' | ')}`);
+  }
+  await accessibilityContext.close();
+
   // Unknown routes must resolve through the application's not-found owner
   // while retaining the requested hash for refresh/deep-link diagnostics.
   const notFoundContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
