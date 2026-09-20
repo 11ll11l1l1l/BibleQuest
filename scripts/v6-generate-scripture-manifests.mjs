@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const SOURCES = Object.freeze([
+export const SCRIPTURE_PACKAGE_SOURCES = Object.freeze([
   Object.freeze({
     translationId: 'bsb',
     label: 'English · BSB',
@@ -78,7 +78,7 @@ export function generateScripturePackageManifests({
   outputDirectory = resolve(root, 'dist-v6', 'data', 'v6-scripture-manifests'),
 } = {}) {
   mkdirSync(outputDirectory, { recursive: true });
-  const manifests = SOURCES.map(source => buildScripturePackageManifest(root, source));
+  const manifests = SCRIPTURE_PACKAGE_SOURCES.map(source => buildScripturePackageManifest(root, source));
   for (const manifest of manifests) {
     writeFileSync(
       join(outputDirectory, `${manifest.translationId}.json`),
