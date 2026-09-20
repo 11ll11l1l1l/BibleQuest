@@ -9,6 +9,14 @@ function memoryStorage(){
     write(key,value){map.set(key,structuredClone(value));return value}
   };
 }
+function memoryOwnerStorage(){
+  const map=new Map();
+  return {
+    getItem(key){return map.has(key)?map.get(key):null},
+    setItem(key,value){map.set(key,String(value));return value},
+    removeItem(key){map.delete(key)}
+  };
+}
 function memoryStore(){
   let state={};
   return {
@@ -56,8 +64,8 @@ function makeProgress(day){
 
 const api=cloudApi(),account=session();
 const a=makeProgress('2026-09-20'),b=makeProgress('2026-09-20');
-const syncA=createProgressCloudSyncService({api,session:account,progress:a.progress});
-const syncB=createProgressCloudSyncService({api,session:account,progress:b.progress});
+const syncA=createProgressCloudSyncService({api,session:account,progress:a.progress,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
+const syncB=createProgressCloudSyncService({api,session:account,progress:b.progress,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 
 a.progress.record({id:'device-a:first',type:'test.activity',xp:10,meaningful:true,rewards:{stars:2,coins:4}});
 await syncA.flush();
@@ -107,7 +115,7 @@ cDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress
 dDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
 cDevice.progress.record({id:'device-c:race',type:'test.activity',xp:2,meaningful:false});
 dDevice.progress.record({id:'device-d:race',type:'test.activity',xp:4,meaningful:false});
-const syncC=createProgressCloudSyncService({api,session:account,progress:cDevice.progress});
+const syncC=createProgressCloudSyncService({api,session:account,progress:cDevice.progress,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 api.conflictNextSaveWith(dDevice.progress.exportAccountState());
 await syncC.syncNow();
 assert.equal(cDevice.progress.getState().xp,31,'Snapshot conflict retry must merge the competing device event before saving.');
@@ -122,8 +130,8 @@ eDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress
 fDevice.progress.mergeFromAccount(api.inspect().state.biblequest_global_progress_v1);
 eDevice.progress.record({id:'shared-offline-reader',type:'reader.chapter.read',xp:10,meaningful:true,metrics:{chaptersRead:1}});
 fDevice.progress.record({id:'shared-offline-reader',type:'reader.chapter.read',xp:10,meaningful:true,metrics:{chaptersRead:1}});
-const syncE=createProgressCloudSyncService({api,session:account,progress:eDevice.progress});
-const syncF=createProgressCloudSyncService({api,session:account,progress:fDevice.progress});
+const syncE=createProgressCloudSyncService({api,session:account,progress:eDevice.progress,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
+const syncF=createProgressCloudSyncService({api,session:account,progress:fDevice.progress,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 await syncF.syncNow();
 await syncE.syncNow();
 assert.equal(eDevice.progress.getState().xp,41,'Same stable event from two devices must award only once after merge.');
