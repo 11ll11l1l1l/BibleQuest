@@ -3,7 +3,7 @@ import { createOfflineScriptureAvailability } from './offline-scripture-status.j
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
 
-export function createReaderService({ bible, storage, progress }) {
+export function createReaderService({ bible, storage, progress, bibleQuest = null }) {
   if (!bible || !storage || !progress) throw new Error('Reader service requires Bible data, storage and progress boundaries.');
 
   const offlineScripture = createOfflineScriptureAvailability({ bibleService: bible });
@@ -138,6 +138,12 @@ export function createReaderService({ bible, storage, progress }) {
     lexicalContext,
     externalLinks() { return bible.externalLinks(state.book, state.chapter); },
     referenceLinks(code, chapter, verse = null) { return bible.externalLinks(code, chapter, verse); },
+    questSnapshot() { return bibleQuest?.snapshot?.() || null; },
+    activateQuestNext() { return bibleQuest?.activateNext?.() || null; },
+    completeQuestChapter(source = 'reader') {
+      if (!bibleQuest?.completeActive) throw new Error('Main Bible Quest is unavailable.');
+      return bibleQuest.completeActive({ code:state.book, chapter:state.chapter, translation:state.translation, source });
+    },
     books: bible.books,
     translations: bible.translations
   });
