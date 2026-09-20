@@ -26,7 +26,11 @@ const HOME_COMPOSITION_COPY = Object.freeze({
     'home.quest.body': 'Read the whole Bible in order. Free reading stays separate.',
     'home.quest.continue': 'Continue Bible Quest',
     'home.quest.view': 'View Quest',
-    'home.quest.complete': 'Bible Quest complete'
+    'home.quest.complete': 'Bible Quest complete',
+    'home.quest.chapters': 'chapters',
+    'home.quest.books': 'books',
+    'home.quest.completeLabel': 'complete',
+    'home.quest.next': 'Next'
   }),
   tl: Object.freeze({
     'home.composition.noUpcomingEvents': 'Wala pang paparating na event.',
@@ -37,7 +41,11 @@ const HOME_COMPOSITION_COPY = Object.freeze({
     'home.quest.body': 'Basahin ang buong Biblia nang sunod-sunod. Hiwalay ang malayang pagbabasa.',
     'home.quest.continue': 'Ipagpatuloy ang Bible Quest',
     'home.quest.view': 'Tingnan ang Quest',
-    'home.quest.complete': 'Tapos ang Bible Quest'
+    'home.quest.complete': 'Tapos ang Bible Quest',
+    'home.quest.chapters': 'kabanata',
+    'home.quest.books': 'aklat',
+    'home.quest.completeLabel': 'kumpleto',
+    'home.quest.next': 'Susunod'
   }),
   ceb: Object.freeze({
     'home.composition.noUpcomingEvents': 'Wala pay umaabot nga kalihokan.',
@@ -48,7 +56,11 @@ const HOME_COMPOSITION_COPY = Object.freeze({
     'home.quest.body': 'Basaha ang tibuok Bibliya sa hustong han-ay. Bulag ang libre nga pagbasa.',
     'home.quest.continue': 'Padayon sa Bible Quest',
     'home.quest.view': 'Tan-awa ang Quest',
-    'home.quest.complete': 'Nahuman ang Bible Quest'
+    'home.quest.complete': 'Nahuman ang Bible Quest',
+    'home.quest.chapters': 'kapitulo',
+    'home.quest.books': 'libro',
+    'home.quest.completeLabel': 'nahuman',
+    'home.quest.next': 'Sunod'
   })
 });
 
@@ -101,13 +113,13 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         <h2>${escapeHtml(homeTx('home.quest.title'))}</h2>
         <p>${escapeHtml(homeTx('home.quest.body'))}</p>
         <div class="bq-progress-stats">
-          <div><b>${quest.completedChapters}/${quest.totalChapters}</b><span>chapters</span></div>
-          <div><b>${quest.completedBooks}/${quest.totalBooks}</b><span>books</span></div>
-          <div><b>${quest.percent}%</b><span>complete</span></div>
+          <div><b>${quest.completedChapters}/${quest.totalChapters}</b><span>${escapeHtml(homeTx('home.quest.chapters'))}</span></div>
+          <div><b>${quest.completedBooks}/${quest.totalBooks}</b><span>${escapeHtml(homeTx('home.quest.books'))}</span></div>
+          <div><b>${quest.percent}%</b><span>${escapeHtml(homeTx('home.quest.completeLabel'))}</span></div>
         </div>
         ${quest.complete
           ? `<p><b>${escapeHtml(homeTx('home.quest.complete'))}</b></p>`
-          : `<p><b>Next:</b> ${escapeHtml(quest.next?.book || '')} ${escapeHtml(quest.next?.chapter || '')}</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-open-bible-quest-continue>${escapeHtml(homeTx('home.quest.continue'))}</button><button type="button" class="bq-secondary-button" data-open-bible-quest>${escapeHtml(homeTx('home.quest.view'))}</button></div>`}
+          : `<p><b>${escapeHtml(homeTx('home.quest.next'))}:</b> ${escapeHtml(quest.next?.book || '')} ${escapeHtml(quest.next?.chapter || '')}</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-open-bible-quest-continue>${escapeHtml(homeTx('home.quest.continue'))}</button><button type="button" class="bq-secondary-button" data-open-bible-quest>${escapeHtml(homeTx('home.quest.view'))}</button></div>`}
       </section>` : ''}
       ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
       <section class="bq-panel" data-home-progress>
