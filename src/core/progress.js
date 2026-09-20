@@ -161,6 +161,17 @@ function sameRewards(a, b) {
   return REWARD_KEYS.every(key => integer(a?.[key], 0) === integer(b?.[key], 0));
 }
 
+function sameProgressEvent(a,b){
+  return Boolean(a&&b)
+    && a.type===b.type
+    && a.date===b.date
+    && String(a.at||'')===String(b.at||'')
+    && integer(a.xp,0)===integer(b.xp,0)
+    && (a.meaningful!==false)===(b.meaningful!==false)
+    && sameMetrics(a.metrics,b.metrics)
+    && sameRewards(a.rewards,b.rewards);
+}
+
 function addSafe(left, right, label) {
   const value = left + right;
   if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${label} exceeded the supported progress range.`);
@@ -201,7 +212,7 @@ function mergeProgressStates(leftInput,rightInput){
   const left=normalize(leftInput),right=normalize(rightInput),events={...left.events};
   for(const [id,row] of Object.entries(right.events)){
     if(events[id]){
-      if(JSON.stringify(events[id])!==JSON.stringify(row))throw new Error(`Progress event identity conflict during account merge: ${id}`);
+      if(!sameProgressEvent(events[id],row))throw new Error(`Progress event identity conflict during account merge: ${id}`);
       continue;
     }
     events[id]=row;
