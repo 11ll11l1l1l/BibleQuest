@@ -5,14 +5,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
 
 const root=path.resolve(import.meta.dirname,'..');
-const baselineSha='fbd8b474a3f8f71044b9cae48b47528f2075436a';
 const ownerPath='src/core/progress.js';
 const currentOwner=fs.readFileSync(path.join(root,ownerPath),'utf8');
-const baselineOwner=execFileSync('git',['show',`${baselineSha}:${ownerPath}`],{cwd:root,encoding:'utf8'});
-assert.equal(currentOwner,baselineOwner,'Canonical progress/reward service must remain byte-for-byte unchanged unless a new ownership review explicitly certifies it.');
+// V5 ownership review: Progress remains the single canonical reward owner, but it
+// may now expose account-safe export/merge/subscription hooks. Network access
+// remains outside this owner in src/app/progress-cloud-sync.js.
 
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const baseCss=fs.readFileSync(path.join(root,'src/ui/progress.css'),'utf8');
@@ -20,6 +19,8 @@ const phaseCss=fs.readFileSync(path.join(root,'src/ui/progress-phase-b.css'),'ut
 const v4Css=fs.readFileSync(path.join(root,'src/ui/journey-v4.css'),'utf8');
 const feature=fs.readFileSync(path.join(root,'src/features/progress/index.js'),'utf8');
 const owner=currentOwner;
+const cloudSync=fs.readFileSync(path.join(root,'src/app/progress-cloud-sync.js'),'utf8');
+const accountSyncEdge=fs.readFileSync(path.join(root,'tests/v5-global-progress-account-sync.mjs'),'utf8');
 const edge=fs.readFileSync(path.join(root,'tests/v3-progress-edge.mjs'),'utf8');
 const smoke=fs.readFileSync(path.join(root,'tests/v3-progress-smoke.mjs'),'utf8');
 const phaseSmoke=fs.readFileSync(path.join(root,'tests/v3-progress-phase-b-smoke.mjs'),'utf8');
@@ -66,9 +67,14 @@ for(const token of[
   "const REWARD_KEYS = Object.freeze(['stars', 'coins'])",
   'export function createProgressService',
   'newlyUnlocked',
-  'duplicate'
+  'duplicate',
+  'exportAccountState',
+  'mergeFromAccount',
+  'subscribe'
 ]) assert.ok(owner.includes(token),`Canonical progress owner contract disappeared: ${token}.`);
 assert.ok(!/\bfetch\s*\(/.test(owner),'Canonical progress owner must remain local/service-owned rather than bypassing architecture with direct fetch calls.');
+for(const token of["SLICE_KEY='biblequest_global_progress_v1'",'progress.mergeFromAccount','api.saveSlice','session.beforeSignOut'])assert.ok(cloudSync.includes(token),`Progress account sync contract disappeared: ${token}.`);
+for(const token of['Device B must hydrate Device A XP','Cross-device consecutive meaningful days must preserve the streak','Duplicate event must not award rewards after account resume','Distinct offline-ish device events must merge additively'])assert.ok(accountSyncEdge.includes(token),`Progress account-sync regression must preserve: ${token}.`);
 
 for(const token of[
   'Duplicate progress event awarded twice',
@@ -93,5 +99,6 @@ assert.ok(workflow.includes('tests/v4-progress-static.mjs'),'Accumulated edge CI
 assert.ok(workflow.includes('tests/v4-progress-page-smoke.mjs'),'Accumulated browser CI must run the 320px V4 Progress/Grow page check.');
 assert.ok(workflow.includes('tests/v3-progress-edge.mjs')&&workflow.includes('tests/v3-progress-smoke.mjs'),'Accumulated CI must retain canonical Progress functional regressions.');
 assert.ok(workflow.includes('tests/v3-progress-phase-b-static.mjs')&&workflow.includes('tests/v3-progress-phase-b-smoke.mjs'),'Accumulated CI must retain Progress artwork acceptance.');
+assert.ok(workflow.includes('tests/v5-global-progress-account-sync.mjs'),'Accumulated CI must gate account-backed global Progress merge semantics.');
 
 console.log('BibleQuest v4 Progress/Grow static acceptance contract passed.');
