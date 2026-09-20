@@ -19,6 +19,7 @@ import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createBibleQuestService } from './bible-quest.js';
 import { createBibleQuestCloudSyncService } from './bible-quest-cloud-sync.js';
+import { createProgressCloudSyncService } from './progress-cloud-sync.js';
 import { createWeeklyJourneyService } from './weekly-journey.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
@@ -158,6 +159,7 @@ function boot(root){
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
+  const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress});
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
   const account=createAccountService({api,session,storage});
@@ -302,22 +304,23 @@ function boot(root){
     pushSessionKey=key;
     if(current.authenticated===true)void pushOnboarding.maybePrompt();
   };
-  let bibleQuestSessionKey='';
-  const syncBibleQuestAccount=state=>{
+  let accountProgressSessionKey='';
+  const syncAccountProgress=state=>{
     const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
-    if(key===bibleQuestSessionKey)return;
-    bibleQuestSessionKey=key;
+    if(key===accountProgressSessionKey)return;
+    accountProgressSessionKey=key;
     if(current.authenticated!==true)return;
-    void bibleQuestCloudSync.syncNow()
+    void progressCloudSync.syncNow()
+      .then(()=>bibleQuestCloudSync.syncNow())
       .then(()=>router.navigate(router.current()))
-      .catch(error=>console.warn('Bible Quest account resume unavailable; using local progress',error));
+      .catch(error=>console.warn('Account progress resume unavailable; using local progress',error));
   };
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},
     unsubscribeStore=store.subscribe(syncShell),
     unsubscribeModeration=store.subscribe(syncModeration),
     unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
-    unsubscribeBibleQuestAccount=store.subscribe(syncBibleQuestAccount);
-  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncBibleQuestAccount(store.getState());router.start();
+    unsubscribeBibleQuestAccount=store.subscribe(syncAccountProgress);
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Main Quest account resume is driven by the session store subscriber above.
@@ -325,6 +328,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();bibleQuestCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
