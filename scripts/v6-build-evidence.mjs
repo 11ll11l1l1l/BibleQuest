@@ -9,6 +9,9 @@ if (!expectedSha) {
   throw new Error('BQ_BUILD_SHA or GITHUB_SHA is required for exact-SHA build evidence');
 }
 
+const safeExpectedSha = String(expectedSha).replace(/[^a-z0-9._-]/gi, '_');
+const privateSourceMapDir = resolve(root, '.v6-source-maps', safeExpectedSha);
+
 const budgets = Object.freeze({
   totalBytes: 250 * 1024 * 1024,
   javascriptBytes: 5 * 1024 * 1024,
@@ -51,6 +54,48 @@ const featureDynamicChunks = manifestEntries
   .sort((a, b) => a.source.localeCompare(b.source));
 
 const files = await walk(outDir);
+const publicSourceMapFiles = files.filter((file) => file.endsWith('.map'));
+const publicSourceMapReferences = [];
+for (const file of files) {
+  const path = relative(outDir, file).replaceAll('\\', '/');
+  const extension = extname(file).toLowerCase();
+  if (!path.startsWith('_v6/') || !new Set(['.js', '.mjs', '.css']).has(extension)) continue;
+  const content = await readFile(file, 'utf8');
+  if (/sourceMappingURL\s*=/.test(content)) publicSourceMapReferences.push(path);
+}
+
+let privateSourceMapMetadata;
+let privateSourceMapFiles = [];
+const privateSourceMapFailures = [];
+try {
+  privateSourceMapMetadata = JSON.parse(await readFile(join(privateSourceMapDir, 'bq-source-maps.json'), 'utf8'));
+  privateSourceMapFiles = (await walk(privateSourceMapDir))
+    .filter((file) => file.endsWith('.map'))
+    .sort();
+
+  if (privateSourceMapMetadata.sha !== expectedSha) {
+    privateSourceMapFailures.push(`private source-map identity ${privateSourceMapMetadata.sha} != ${expectedSha}`);
+  }
+  if (privateSourceMapMetadata.publicSourceMaps !== false) {
+    privateSourceMapFailures.push('private source-map metadata must declare publicSourceMaps=false');
+  }
+  if (privateSourceMapMetadata.sourcesEmbedded !== false) {
+    privateSourceMapFailures.push('private source-map metadata must declare sourcesEmbedded=false');
+  }
+  if (!privateSourceMapFiles.length) {
+    privateSourceMapFailures.push('private source-map directory contains no map files');
+  }
+
+  for (const mapFile of privateSourceMapFiles) {
+    const sourceMap = JSON.parse(await readFile(mapFile, 'utf8'));
+    if (Object.prototype.hasOwnProperty.call(sourceMap, 'sourcesContent')) {
+      privateSourceMapFailures.push(`${relative(privateSourceMapDir, mapFile)} embeds sourcesContent`);
+    }
+  }
+} catch (error) {
+  privateSourceMapFailures.push(`private source-map evidence unavailable: ${error?.message || error}`);
+}
+
 const inventory = [];
 let totalBytes = 0;
 let largestJavaScript = { path: null, bytes: 0 };
@@ -80,6 +125,14 @@ const report = {
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
   },
+  sourceMaps: {
+    privateDirectory: relative(root, privateSourceMapDir).replaceAll('\\', '/'),
+    privateMapCount: privateSourceMapFiles.length,
+    publicMapCount: publicSourceMapFiles.length,
+    publicReferenceCount: publicSourceMapReferences.length,
+    publicReferences: publicSourceMapReferences,
+    metadata: privateSourceMapMetadata ?? null,
+  },
   totals: {
     files: inventory.length,
     totalBytes,
@@ -92,6 +145,9 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const failures = [];
+if (publicSourceMapFiles.length) failures.push(`public artifact contains ${publicSourceMapFiles.length} source-map file(s)`);
+if (publicSourceMapReferences.length) failures.push(`public V6 chunks expose sourceMappingURL references: ${publicSourceMapReferences.join(', ')}`);
+failures.push(...privateSourceMapFailures);
 if (totalBytes > budgets.totalBytes) failures.push(`total artifact ${totalBytes} > ${budgets.totalBytes}`);
 if (largestJavaScript.bytes > budgets.javascriptBytes) failures.push(`largest JS ${largestJavaScript.bytes} > ${budgets.javascriptBytes}`);
 if (browserEntryBytes > budgets.entryJavascriptBytes) failures.push(`browser entry JS ${browserEntryBytes} > ${budgets.entryJavascriptBytes}`);
