@@ -54,6 +54,8 @@ import { createCommunityBridgeService } from './community-bridge.js';
 import { createOperationalRecoveryService } from './operational-recovery.js';
 import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
 import { createPwaInstallService } from './pwa-install.js';
+import { createPushSubscriptionService } from './push-subscription.js';
+import { createPushSubscriptionPersistence } from './push-subscription-persistence.js';
 import { createOfflineShellService } from './offline-shell.js';
 import { createApi } from '../core/api.js';
 import { createBibleDataService } from '../core/bible.js';
@@ -62,10 +64,11 @@ import { createRecallPackService } from '../core/recall-packs.js';
 import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
 import { createPsychometricsEngine } from '../engines/psychometrics.js';
-import { storage, privateStorage } from '../core/storage.js';
+import { storage, privateStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
 import { mountContentReportingRuntime } from '../ui/content-reporting.js';
+import { mountPushOnboarding } from '../ui/push-onboarding.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
 
 const featurePageModules = import.meta.glob('../features/*/index.js');
@@ -130,6 +133,8 @@ const congregationPage = args => lazyFeaturePage('congregation', 'congregationPa
 const morePage = args => lazyFeaturePage('more', 'morePage', args);
 const helpCenterPage = args => lazyFeaturePage('help-center', 'helpCenterPage', args);
 
+const V5_PUSH_VAPID_PUBLIC_KEY='BKxJ2WXSqmiA9ZEmx8bItafM4fp_R4NkTC4F45BGZjjDqnfK-C3Goqb25CVgWsSSwMZsvOczx8LNv2vstkdqRmI';
+
 function escapeStartupMessage(value){
   return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 }
@@ -168,6 +173,8 @@ function boot(root){
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
+  const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
+  const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
   const reader=createReaderService({bible,storage,progress});
@@ -281,6 +288,7 @@ function boot(root){
     if(!result.ok)showRecovery(result.failure);
   }});
   shell=mountShell(root,{onNavigate:route=>router.navigate(route),onAccountOpen:()=>router.navigate('account')});
+  const pushOnboarding=mountPushOnboarding({push,session,ownerStorage:authStorage});
   contentReportingRuntime=mountContentReportingRuntime({reporting:contentReporting,getRoute:()=>store.getState().route,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')});
   accessibilityRuntime=mountAccessibilityRuntime({accessibility});
   tutorialOverlay=mountTutorialOverlay({tutorial,onNavigate:route=>router.navigate(route)});
@@ -292,7 +300,14 @@ function boot(root){
     if(!sessionState.authenticated){contentModeration.clear();return}
     void contentModeration.refresh().catch(error=>console.warn('Content moderation unavailable',error));
   };
-  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration);syncShell(store.getState());syncModeration(store.getState());router.start();
+  let pushSessionKey='';
+  const syncPushOnboarding=state=>{
+    const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
+    if(key===pushSessionKey)return;
+    pushSessionKey=key;
+    if(current.authenticated===true)void pushOnboarding.maybePrompt();
+  };
+  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration),unsubscribePushOnboarding=store.subscribe(syncPushOnboarding);syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Router starts immediately so public/local-first surfaces stay responsive.
@@ -303,6 +318,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

@@ -387,6 +387,37 @@ export function createApi() {
     }
   });
 
+  const pushSubscriptions = Object.freeze({
+    async upsert(row) {
+      const client = await getClient();
+      const payload = {
+        user_id: String(row?.user_id || '').trim(),
+        endpoint: String(row?.endpoint || '').trim(),
+        p256dh: String(row?.p256dh || '').trim(),
+        auth: String(row?.auth || '').trim(),
+        enabled_categories: Array.isArray(row?.categories) ? [...row.categories] : []
+      };
+      if (!payload.user_id || !payload.endpoint || !payload.p256dh || !payload.auth) {
+        throw new Error('Push subscription payload is incomplete.');
+      }
+      const { data, error } = await client.from('bible_push_subscriptions')
+        .upsert(payload, { onConflict: 'endpoint' })
+        .select('id,user_id,endpoint,p256dh,auth,enabled_categories,created_at,updated_at')
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    async remove(userId, endpoint) {
+      const client = await getClient();
+      const { error } = await client.from('bible_push_subscriptions')
+        .delete()
+        .eq('user_id', String(userId || '').trim())
+        .eq('endpoint', String(endpoint || '').trim());
+      if (error) throw error;
+      return true;
+    }
+  });
+
   const notifications = Object.freeze({
     async list(userId,nowIso=new Date().toISOString()) {
       const client=await getClient();
@@ -711,5 +742,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }

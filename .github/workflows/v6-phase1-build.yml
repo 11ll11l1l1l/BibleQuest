@@ -62,6 +62,11 @@ jobs:
       - name: V6 unit tests
         run: npm run unit
 
+      - name: Released V5 push lifecycle parity
+        run: |
+          node tests/v5-push-subscription-persistence.mjs
+          node tests/v5-push-subscription-lifecycle.mjs
+
       - name: Build V6 artifact with exact commit identity
         env:
           BQ_BUILD_SHA: ${{ github.sha }}
