@@ -2,7 +2,7 @@ import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
 import { iconSvg } from '../../ui/icons.js';
 import { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
-import { homeThisWeekIntroHtml } from './today-this-week.js';
+import { homeThisWeekIntroHtml, weeklyJourneyHtml } from './today-this-week.js';
 
 export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
 
@@ -43,7 +43,7 @@ const readerSummary = reader => {
 };
 const eventSummary = event => event ? `${event.date || ''}${event.date && event.title ? ' · ' : ''}${event.title || ''}` : '';
 
-export function homePage({ progress, dailyMission, assignments, presence, calendar, reader, recordings, transform, notifications, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
+export function homePage({ progress, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
   const locale = localization.getLocale();
   const tx = (key, values) => localization.t(key, { locale, values });
   const homeTx = (key, values) => localization.t(key, { locale, values, dictionaries: HOME_COMPOSITION_COPY });
@@ -56,6 +56,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
   const transformationState = transform?.getState?.();
   const notificationState = notifications?.snapshot?.();
   const leaderAnchor=(assignments?.snapshot?.()?.assignments||[]).find(row=>row?.progress?.status!=='completed'&&row?.dueState!=='scheduled')||null;
+  const weeklyState=weeklyJourney?.snapshot?.()||null;
   const transformationDetail = transformationState?.spiritual?.result ? tx('transform.basic.viewReflection') : tx('transform.mode.prompt');
   const nextEventDetail = eventSummary(nextEvent) || homeTx('home.composition.noUpcomingEvents');
   const continueReadingDetail = continueReading || homeTx('home.composition.noContinueReading');
@@ -82,7 +83,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </div>
       </section>
       <section class="bq-home-week" data-home-this-week>
-        ${homeThisWeekIntroHtml(locale,{leaderAnchor})}
+        ${homeThisWeekIntroHtml(locale,{leaderAnchor,weeklyState})}
         <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
           <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
           <span class="bq-home-congregation-copy"><span class="bq-eyebrow">${escapeHtml(tx('home.congregation.eyebrow'))}</span><b>${escapeHtml(tx('home.congregation.heading'))}</b><small data-home-congregation-caption>${escapeHtml(tx('home.congregation.joinCaption'))}</small><small data-home-active-count></small></span>
@@ -149,6 +150,17 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       const notificationsButton = root.querySelector('[data-open-home-notifications]');
       const congregationButton = root.querySelector('[data-open-congregation-assignments]');
       const railTrack = root.querySelector('[data-home-rail-track]');
+      const onWeeklyToggle = event => {
+        const button = event.target.closest?.('[data-weekly-journey-toggle]');
+        if (!button || !root.contains(button) || !weeklyJourney?.toggle) return;
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+          const next = weeklyJourney.toggle(button.dataset.weeklyJourneyToggle).state;
+          const current = root.querySelector('[data-home-weekly-journey]');
+          if (current) current.outerHTML = weeklyJourneyHtml(locale, next);
+        } catch { /* keep the current weekly journey state visible if persistence fails */ }
+      };
       const congregationCaption = root.querySelector('[data-home-congregation-caption]');
       const assignmentHost = root.querySelector('[data-home-assignments]');
       const nextEventHost = root.querySelector('[data-home-next-event-detail]');
@@ -237,6 +249,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       congregationButton?.addEventListener('click', openCongregationAssignments);
       railTrack?.addEventListener('click', onRailClick);
       railTrack?.addEventListener('keydown', onRailKeydown);
+      root.addEventListener('click', onWeeklyToggle);
       bindAssignmentActions();
       void loadAssignments();
       void refreshHomeComposition();
@@ -269,6 +282,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         congregationButton?.removeEventListener('click', openCongregationAssignments);
         railTrack?.removeEventListener('click', onRailClick);
         railTrack?.removeEventListener('keydown', onRailKeydown);
+        root.removeEventListener('click', onWeeklyToggle);
       };
     }
   };
