@@ -8,6 +8,8 @@ function iso(value){
   return date.toISOString();
 }
 function keyOf(code,chapter){return `${String(code||'').toUpperCase()}:${Number(chapter)}`}
+function clone(value){return JSON.parse(JSON.stringify(value))}
+function timeValue(value){const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?parsed:0}
 
 export function createBibleQuestService({storage,books,progress=null,clock=()=>new Date()}={}){
   if(!storage?.read||!storage?.write)throw new Error('Bible Quest requires the shared storage boundary.');
@@ -20,7 +22,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
   const totalChapters=canonical.length;
   if(totalChapters!==1189)throw new Error(`Bible Quest canonical chapter count mismatch: expected 1189, got ${totalChapters}.`);
 
-  function empty(){return {version:VERSION,pace:1,startedAt:'',completedAt:'',activeKey:'',completed:{}}}
+  function empty(){return {version:VERSION,pace:1,startedAt:'',completedAt:'',updatedAt:'',activeKey:'',completed:{}}}
   function normalize(input){
     const raw=input&&typeof input==='object'&&!Array.isArray(input)&&Number(input.version)===VERSION?input:empty();
     const pace=ALLOWED_PACES.includes(Number(raw.pace))?Number(raw.pace):1;
@@ -42,13 +44,28 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
       pace,
       startedAt:typeof raw.startedAt==='string'?raw.startedAt:'',
       completedAt:complete&&typeof raw.completedAt==='string'?raw.completedAt:'',
+      updatedAt:typeof raw.updatedAt==='string'?raw.updatedAt:'',
       activeKey,
       completed
     };
   }
 
   let state=normalize(storage.read(STORAGE_KEY,empty()));
-  const persist=next=>{storage.write(STORAGE_KEY,next);state=next;return next};
+  const listeners=new Set();
+  const notify=(source)=>{
+    const exported=clone(state);
+    for(const listener of listeners){
+      try{listener(Object.freeze({source,state:exported}))}catch(error){console.warn('Bible Quest state listener failed',error)}
+    }
+  };
+  const persist=(next,{source='local',touch=true}={})=>{
+    const normalized=normalize(next);
+    const saved=touch?{...normalized,updatedAt:iso(clock())}:normalized;
+    storage.write(STORAGE_KEY,saved);
+    state=saved;
+    notify(source);
+    return state;
+  };
 
   function currentIndex(){return Object.keys(state.completed).length}
   function nextRequired(){return canonical[currentIndex()]||null}
@@ -84,6 +101,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
       pace:state.pace,
       startedAt:state.startedAt,
       completedAt:state.completedAt,
+      updatedAt:state.updatedAt,
       active:Boolean(state.activeKey),
       activeKey:state.activeKey,
       next,
@@ -102,6 +120,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
   function activateNext(){
     const next=nextRequired();
     if(!next)return snapshot();
+    if(state.activeKey===next.key)return snapshot();
     const now=iso(clock());
     persist({...state,activeKey:next.key,startedAt:state.startedAt||now});
     return snapshot();
@@ -130,9 +149,30 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
     if(!item)throw new Error('Bible Quest reference is outside the canonical Bible.');
     return Object.freeze({...item});
   }
+  function exportAccountState(){return clone(state)}
+  function mergeFromAccount(remoteInput){
+    const remote=normalize(remoteInput);
+    const localCount=Object.keys(state.completed).length;
+    const remoteCount=Object.keys(remote.completed).length;
+    const localTime=timeValue(state.updatedAt);
+    const remoteTime=timeValue(remote.updatedAt);
+    let winner='same';
+    if(remoteCount>localCount)winner='remote';
+    else if(localCount>remoteCount)winner='local';
+    else if(remoteTime>localTime)winner='remote';
+    else if(localTime>remoteTime)winner='local';
+    else if(JSON.stringify(remote)!==JSON.stringify(state))winner='local';
+    if(winner==='remote')persist(remote,{source:'account',touch:false});
+    return Object.freeze({winner,localCount,remoteCount,state:snapshot()});
+  }
+  function subscribe(listener){
+    if(typeof listener!=='function')throw new Error('Bible Quest subscription requires a function.');
+    listeners.add(listener);
+    return()=>listeners.delete(listener);
+  }
 
   return Object.freeze({
-    snapshot,setPace,activateNext,deactivate,completeActive,reference,
+    snapshot,setPace,activateNext,deactivate,completeActive,reference,exportAccountState,mergeFromAccount,subscribe,
     isActiveTarget(code,chapter){return state.activeKey===keyOf(code,chapter)},
     isQuestComplete(code,chapter){return Boolean(state.completed[keyOf(code,chapter)])},
     nextRequired,
