@@ -137,6 +137,7 @@ export function createReaderService({ bible, storage, progress }) {
     contextChapter,
     lexicalContext,
     externalLinks() { return bible.externalLinks(state.book, state.chapter); },
+    referenceLinks(code, chapter, verse = null) { return bible.externalLinks(code, chapter, verse); },
     books: bible.books,
     translations: bible.translations
   });
