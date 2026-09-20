@@ -17,18 +17,26 @@ export function createProgressCloudSyncService({api,session,progress}={}){
     if(current?.authenticated!==true||!userId)return publish({status:'local',userId:'',error:''});
 
     publish({status:'syncing',userId,error:''});
-    const row=await api.load(userId);
-    const remote=row?.state?.[SLICE_KEY]||null;
-    if(remote)progress.mergeFromAccount(remote);
+    for(let attempt=0;attempt<4;attempt+=1){
+      const row=await api.load(userId);
+      const remote=row?.state?.[SLICE_KEY]||null;
+      if(remote)progress.mergeFromAccount(remote);
 
-    const local=progress.exportAccountState();
-    const remoteText=remote?JSON.stringify(remote):'';
-    const localText=JSON.stringify(local);
-    const saved=(!remote||remoteText!==localText)
-      ?await api.saveSlice(userId,SLICE_KEY,local)
-      :row;
-
-    return publish({status:'synced',userId,updatedAt:String(saved?.updated_at||row?.updated_at||''),error:''});
+      const local=progress.exportAccountState();
+      const remoteText=remote?JSON.stringify(remote):'';
+      const localText=JSON.stringify(local);
+      if(remote&&remoteText===localText){
+        return publish({status:'synced',userId,updatedAt:String(row?.updated_at||''),error:''});
+      }
+      try{
+        const saved=await api.saveSlice(userId,SLICE_KEY,local,{expectedUpdatedAt:row?.updated_at||null});
+        return publish({status:'synced',userId,updatedAt:String(saved?.updated_at||row?.updated_at||''),error:''});
+      }catch(error){
+        if(error?.code==='BQ_PROGRESS_SNAPSHOT_CONFLICT'&&attempt<3)continue;
+        throw error;
+      }
+    }
+    throw new Error('Progress account sync could not settle after concurrent updates.');
   }
 
   function syncNow(){
