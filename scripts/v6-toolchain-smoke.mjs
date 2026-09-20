@@ -34,6 +34,7 @@ assert(viteConfig.includes('compatibilityBaseline'), 'build identity metadata mu
 assert(viteConfig.includes("sourcemap: 'hidden'"), 'V6 source maps must be hidden from public bundle references');
 assert(viteConfig.includes('sourcemapExcludeSources: true'), 'private source maps must exclude embedded source text');
 assert(viteConfig.includes('.v6-source-maps'), 'private source maps must be moved outside dist-v6');
+assert(viteConfig.includes('generateScripturePackageManifests'), 'V6 build must generate verified Scripture package manifests');
 assert(fs.existsSync(path.join(root, 'scripts', 'validate-release.mjs')), 'inherited V5 release validator must remain present');
 
 console.log('✓ V6 Phase-1 toolchain bootstrap contract');
