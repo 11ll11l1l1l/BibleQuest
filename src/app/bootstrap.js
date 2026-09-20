@@ -18,6 +18,7 @@ import { createBibleWorldService } from './bible-world.js';
 import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createBibleQuestService } from './bible-quest.js';
+import { createBibleQuestCloudSyncService } from './bible-quest-cloud-sync.js';
 import { createWeeklyJourneyService } from './weekly-journey.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
@@ -162,6 +163,7 @@ function boot(root){
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
+  const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest});
   const reader=createReaderService({bible,storage,progress,bibleQuest});
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
@@ -300,17 +302,29 @@ function boot(root){
     pushSessionKey=key;
     if(current.authenticated===true)void pushOnboarding.maybePrompt();
   };
-  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},unsubscribeStore=store.subscribe(syncShell),unsubscribeModeration=store.subscribe(syncModeration),unsubscribePushOnboarding=store.subscribe(syncPushOnboarding);syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());router.start();
+  let bibleQuestSessionKey='';
+  const syncBibleQuestAccount=state=>{
+    const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
+    if(key===bibleQuestSessionKey)return;
+    bibleQuestSessionKey=key;
+    if(current.authenticated!==true)return;
+    void bibleQuestCloudSync.syncNow()
+      .then(()=>router.navigate(router.current()))
+      .catch(error=>console.warn('Bible Quest account resume unavailable; using local progress',error));
+  };
+  const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},
+    unsubscribeStore=store.subscribe(syncShell),
+    unsubscribeModeration=store.subscribe(syncModeration),
+    unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
+    unsubscribeBibleQuestAccount=store.subscribe(syncBibleQuestAccount);
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncBibleQuestAccount(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
-    // Router starts immediately so public/local-first surfaces stay responsive.
-    // Only a successfully restored authenticated session needs a forced
-    // re-resolve: signed-out/local-first routes already rendered correctly and
-    // must not be remounted just because Auth boot completed.
-    if(session.isAuthenticated())router.navigate(router.current());
+    // Main Quest account resume is driven by the session store subscriber above.
+    // The app remains local-first if the cloud snapshot cannot be reached.
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();bibleQuestCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
