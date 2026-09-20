@@ -23,11 +23,13 @@ export interface AccessibilityPreferencesSnapshot {
  * It deliberately contains no DOM or storage implementation details.
  */
 export interface LegacyAccessibilityPreferencesPort {
+  readonly getState: () => AccessibilityPreferencesSnapshot;
   readonly subscribe: (listener: (snapshot: AccessibilityPreferencesSnapshot) => void) => () => void;
   readonly setText: (value: AccessibilityTextSize) => void;
   readonly setMotion: (value: AccessibilityMotion) => void;
   readonly setContrast: (value: AccessibilityContrast) => void;
   readonly reset: () => void;
+  readonly dispose: () => void;
 }
 
 type AccessibilityCommand = FeatureCommand<Readonly<{
@@ -75,10 +77,12 @@ export function createAccessibilityPreferencesService(
 
   return Object.freeze({
     migrated: true as const,
+    getState: legacy.getState,
     subscribe: legacy.subscribe,
     setText: (value: AccessibilityTextSize) => execute({ action: 'set-text', value }),
     setMotion: (value: AccessibilityMotion) => execute({ action: 'set-motion', value }),
     setContrast: (value: AccessibilityContrast) => execute({ action: 'set-contrast', value }),
     reset: () => execute({ action: 'reset' }),
+    dispose: legacy.dispose,
   });
 }
