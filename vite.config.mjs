@@ -4,6 +4,8 @@ import {
   existsSync,
   mkdirSync,
   readdirSync,
+  renameSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
 import { extname, join, resolve } from 'node:path';
@@ -17,6 +19,8 @@ const buildSha =
   process.env.CF_PAGES_COMMIT_SHA ||
   process.env.GITHUB_SHA ||
   'development';
+const safeBuildSha = String(buildSha).replace(/[^a-z0-9._-]/gi, '_');
+const privateSourceMapDir = resolve(root, '.v6-source-maps', safeBuildSha);
 
 const compatibilityDirectories = new Set(['assets', 'data', 'kids-games']);
 const compatibilityExtensions = new Set([
@@ -41,6 +45,17 @@ const compatibilityExtensions = new Set([
   '.xml',
 ]);
 const compatibilityRootFiles = new Set(['_headers', '_redirects']);
+
+function walkFiles(directory) {
+  const files = [];
+  if (!existsSync(directory)) return files;
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const absolute = join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...walkFiles(absolute));
+    else if (entry.isFile()) files.push(absolute);
+  }
+  return files;
+}
 
 function copyLegacyRuntime() {
   return {
@@ -87,19 +102,63 @@ function copyLegacyRuntime() {
   };
 }
 
+function collectPrivateSourceMaps() {
+  return {
+    name: 'biblequest-v6-private-source-maps',
+    closeBundle() {
+      rmSync(privateSourceMapDir, { recursive: true, force: true });
+      const sourceMaps = walkFiles(outDir)
+        .filter((file) => file.endsWith('.map'))
+        .sort();
+
+      if (!sourceMaps.length) {
+        throw new Error('V6 build produced no source maps for private diagnostics.');
+      }
+
+      for (const source of sourceMaps) {
+        const relativePath = source.slice(outDir.length + 1);
+        const target = join(privateSourceMapDir, relativePath);
+        mkdirSync(resolve(target, '..'), { recursive: true });
+        renameSync(source, target);
+      }
+
+      writeFileSync(
+        join(privateSourceMapDir, 'bq-source-maps.json'),
+        JSON.stringify(
+          {
+            sha: buildSha,
+            publicArtifact: 'dist-v6',
+            publicSourceMaps: false,
+            sourcesEmbedded: false,
+            maps: sourceMaps.map((file) => file.slice(outDir.length + 1).replaceAll('\\\\', '/')),
+          },
+          null,
+          2,
+        ) + '\n',
+        'utf8',
+      );
+    },
+  };
+}
+
 export default defineConfig({
   root,
   publicDir: false,
   define: {
     __BQ_BUILD_SHA__: JSON.stringify(buildSha),
   },
-  plugins: [copyLegacyRuntime()],
+  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps()],
   build: {
     outDir,
     emptyOutDir: true,
     assetsDir: '_v6',
     manifest: 'vite-manifest.json',
-    sourcemap: false,
+    sourcemap: 'hidden',
     target: 'es2022',
+    rollupOptions: {
+      output: {
+        sourcemapExcludeSources: true,
+      },
+    },
   },
 });
