@@ -10,6 +10,14 @@ function memoryStorage(){
     write(key,value){map.set(key,structuredClone(value));return value}
   };
 }
+function memoryOwnerStorage(){
+  const map=new Map();
+  return {
+    getItem(key){return map.has(key)?map.get(key):null},
+    setItem(key,value){map.set(key,String(value));return value},
+    removeItem(key){map.delete(key)}
+  };
+}
 function session(userId='11111111-1111-1111-1111-111111111111'){
   const state={authenticated:true,user:{id:userId}};
   const signOutListeners=new Set();
@@ -56,8 +64,8 @@ function makeQuest(storage,startMs){
 const api=cloudApi(),account=session();
 const a=makeQuest(memoryStorage(),Date.parse('2026-09-20T01:00:00Z'));
 const b=makeQuest(memoryStorage(),Date.parse('2026-09-20T02:00:00Z'));
-const syncA=createBibleQuestCloudSyncService({api,session:account,bibleQuest:a.quest});
-const syncB=createBibleQuestCloudSyncService({api,session:account,bibleQuest:b.quest});
+const syncA=createBibleQuestCloudSyncService({api,session:account,bibleQuest:a.quest,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
+const syncB=createBibleQuestCloudSyncService({api,session:account,bibleQuest:b.quest,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 
 a.advance();
 await syncA.flush();
@@ -77,7 +85,7 @@ assert.equal(a.quest.snapshot().completedChapters,2,'Device A should resume the 
 assert.equal(a.quest.snapshot().next.key,'GEN:3');
 
 const stale=makeQuest(memoryStorage(),Date.parse('2026-09-20T03:00:00Z'));
-const staleSync=createBibleQuestCloudSyncService({api,session:account,bibleQuest:stale.quest});
+const staleSync=createBibleQuestCloudSyncService({api,session:account,bibleQuest:stale.quest,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 stale.advance();
 assert.equal(stale.quest.snapshot().completedChapters,1);
 await staleSync.syncNow();
@@ -93,7 +101,7 @@ raceB.quest.mergeFromAccount(api.inspect().state.biblequest_main_bible_quest_v1)
 raceA.advance(); // GEN 3
 raceB.advance(); // GEN 3
 raceB.advance(); // GEN 4
-const raceSync=createBibleQuestCloudSyncService({api,session:account,bibleQuest:raceA.quest});
+const raceSync=createBibleQuestCloudSyncService({api,session:account,bibleQuest:raceA.quest,ownerStorage:memoryOwnerStorage(),cacheStorage:memoryStorage()});
 api.conflictNextSaveWith(raceB.quest.exportAccountState());
 await raceSync.syncNow();
 assert.equal(raceA.quest.snapshot().completedChapters,4,'Concurrent farther Main Quest progress must win after stale-write rejection.');
