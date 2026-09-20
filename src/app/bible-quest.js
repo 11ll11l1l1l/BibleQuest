@@ -10,6 +10,7 @@ function iso(value){
 function keyOf(code,chapter){return `${String(code||'').toUpperCase()}:${Number(chapter)}`}
 function clone(value){return JSON.parse(JSON.stringify(value))}
 function timeValue(value){const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?parsed:0}
+function canonicalText(value){return JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item)}
 
 export function createBibleQuestService({storage,books,progress=null,clock=()=>new Date()}={}){
   if(!storage?.read||!storage?.write)throw new Error('Bible Quest requires the shared storage boundary.');
@@ -161,7 +162,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
     else if(localCount>remoteCount)winner='local';
     else if(remoteTime>localTime)winner='remote';
     else if(localTime>remoteTime)winner='local';
-    else if(JSON.stringify(remote)!==JSON.stringify(state))winner='local';
+    else if(canonicalText(remote)!==canonicalText(state))winner='local';
     if(winner==='remote')persist(remote,{source:'account',touch:false});
     return Object.freeze({winner,localCount,remoteCount,state:snapshot()});
   }
