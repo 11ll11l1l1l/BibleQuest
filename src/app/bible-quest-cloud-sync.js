@@ -1,5 +1,7 @@
 const SLICE_KEY='biblequest_main_bible_quest_v1';
 
+const canonicalText=value=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
+
 export function createBibleQuestCloudSyncService({api,session,bibleQuest}={}){
   if(!api?.load||!api?.saveSlice)throw new Error('Bible Quest cloud sync requires progress snapshot API ownership.');
   if(!session?.getState)throw new Error('Bible Quest cloud sync requires the account session owner.');
@@ -26,7 +28,7 @@ export function createBibleQuestCloudSyncService({api,session,bibleQuest}={}){
       const remote=row?.state?.[SLICE_KEY]||null;
       const merge=remote?bibleQuest.mergeFromAccount(remote):Object.freeze({winner:'local'});
       const local=bibleQuest.exportAccountState();
-      if(remote&&JSON.stringify(remote)===JSON.stringify(local)){
+      if(remote&&canonicalText(remote)===canonicalText(local)){
         return publish({status:'synced',userId,updatedAt:String(row?.updated_at||''),winner:merge.winner,error:''});
       }
       try{
