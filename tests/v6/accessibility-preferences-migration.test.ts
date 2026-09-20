@@ -18,6 +18,10 @@ function legacyHarness() {
     effectiveMotion: 'full',
   };
   const port: LegacyAccessibilityPreferencesPort = {
+    getState() {
+      calls.push('get-state');
+      return snapshot;
+    },
     subscribe(listener) {
       calls.push('subscribe');
       listener(snapshot);
@@ -27,6 +31,7 @@ function legacyHarness() {
     setMotion(value) { calls.push(`motion:${value}`); },
     setContrast(value) { calls.push(`contrast:${value}`); },
     reset() { calls.push('reset'); },
+    dispose() { calls.push('dispose'); },
   };
   return { calls, port, snapshot };
 }
@@ -43,6 +48,17 @@ test('migrated service preserves the released page-facing subscribe contract', (
   assert.equal(service.migrated, true);
   assert.deepEqual(received, snapshot);
   assert.deepEqual(calls, ['subscribe', 'unsubscribe']);
+});
+
+test('migrated service preserves released getState and dispose lifecycle', () => {
+  const { calls, port, snapshot } = legacyHarness();
+  const service = createAccessibilityPreferencesService(
+    port,
+    createFeatureCompatibilitySeam({ [ACCESSIBILITY_PREFERENCES_FEATURE]: true }),
+  );
+  assert.deepEqual(service.getState(), snapshot);
+  service.dispose();
+  assert.deepEqual(calls, ['get-state', 'dispose']);
 });
 
 test('enabled migration delegates all released accessibility mutations through the kernel boundary', async () => {

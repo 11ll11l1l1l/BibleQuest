@@ -58,6 +58,11 @@ import { createPushSubscriptionService } from './push-subscription.js';
 import { createPushSubscriptionPersistence } from './push-subscription-persistence.js';
 import { createOfflineShellService } from './offline-shell.js';
 import { createApi } from '../core/api.js';
+import { createFeatureCompatibilitySeam } from '../v6/kernel/app-contracts.ts';
+import {
+  ACCESSIBILITY_PREFERENCES_FEATURE,
+  createAccessibilityPreferencesService,
+} from '../v6/features/accessibility-preferences.ts';
 import { createBibleDataService } from '../core/bible.js';
 import { createProgressService } from '../core/progress.js';
 import { createRecallPackService } from '../core/recall-packs.js';
@@ -162,6 +167,7 @@ function start(){
 
 function boot(root){
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
+  const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
   const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe});
   const pwaInstall=createPwaInstallService();
@@ -201,7 +207,8 @@ function boot(root){
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const mission=createMissionService({openReview});
   const tutorial=createTutorialService({storage});
-  const accessibility=createAccessibilityService({storage});
+  const legacyAccessibility=createAccessibilityService({storage});
+  const accessibility=createAccessibilityPreferencesService(legacyAccessibility,featureCompatibility);
   const privateNotes=createPrivateNotesService({storage});
   const cloudNotes=createCloudNotesService({api:api.cloudNotes,session});
   const couplesFamily=createCouplesFamilyService({storage});
