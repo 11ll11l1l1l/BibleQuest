@@ -1,0 +1,58 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+
+for(const file of[
+  'src/app/bible-quest.js',
+  'src/features/bible-quest/index.js',
+  'src/features/home/index.js',
+  'src/features/reader/index.js',
+  'src/app/bootstrap.js',
+  'src/app/daily-mission.js',
+  'src/features/daily-mission/index.js'
+]) execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
+
+const service=fs.readFileSync('src/app/bible-quest.js','utf8');
+const page=fs.readFileSync('src/features/bible-quest/index.js','utf8');
+const home=fs.readFileSync('src/features/home/index.js','utf8');
+const reader=fs.readFileSync('src/features/reader/index.js','utf8');
+const readerService=fs.readFileSync('src/app/reader.js','utf8');
+const bootstrap=fs.readFileSync('src/app/bootstrap.js','utf8');
+const mission=fs.readFileSync('src/app/daily-mission.js','utf8');
+const missionUi=fs.readFileSync('src/features/daily-mission/index.js','utf8');
+
+for(const token of[
+  "STORAGE_KEY='bible-quest-state'",
+  'expected 1189',
+  'activeKey',
+  'completeActive',
+  'must continue in order',
+  'completedBooks',
+  'remainingChapters'
+]) assert.ok(service.includes(token),`Main Bible Quest owner missing contract token: ${token}`);
+
+assert.ok(home.includes('data-home-bible-quest'),'Home must expose Main Bible Quest as a primary card.');
+assert.ok(home.indexOf('data-home-bible-quest')<home.indexOf('data-home-daily'),'Main Bible Quest must appear before Daily Journey on Home.');
+assert.ok(home.includes('data-open-bible-quest-continue'),'Home must provide one-tap continuation of the ordered Quest.');
+
+for(const token of[
+  "createBibleQuestService",
+  "'bible-quest':()=>bibleQuestPage",
+  'onBibleQuestContinue:openBibleQuestNext',
+  'readerPage({reader,vocabulary,furigana,bibleQuest})',
+  'createMyJourneyService({progress,assignments,bibleQuest})'
+]) assert.ok(bootstrap.includes(token),`Bootstrap missing Main Bible Quest composition: ${token}`);
+
+assert.ok(reader.includes('data-reader-quest-complete'),'Reader must explicitly complete the active Main Quest chapter.');
+assert.ok(reader.includes('data-reader-quest-away'),'Free reading must be visibly separate while a Quest chapter is active.');
+assert.ok(reader.includes('Free reading elsewhere does not skip this required chapter.'),'Reader must explain ordered Quest semantics.');
+assert.ok(readerService.includes('referenceLinks(code, chapter, verse = null)'),'Reader must expose exact related-Scripture links.');
+
+for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(page.includes(provider)||readerService.includes(provider.toLowerCase()),`Bible Quest related links should support ${provider}.`);
+assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
+
+assert.ok(mission.includes('referenceLinks?.(activePassage.code,activePassage.chapter,activePassage.from)'),'Daily Journey must attach exact related Scripture links.');
+assert.ok(missionUi.includes('data-daily-related-scripture'),'Daily Journey must render related Scripture links.');
+assert.ok(missionUi.includes('Open in BibleQuest Reader'),'Daily Journey must link related Scripture into the internal Reader.');
+
+console.log('BibleQuest V5 Main Bible Quest static integration regression passed.');
