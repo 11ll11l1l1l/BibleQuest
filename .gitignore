@@ -6,3 +6,4 @@ data/library/translation_notes.jsonl
 node_modules/
 dist-v6/
 .vite/
+.v6-source-maps/
