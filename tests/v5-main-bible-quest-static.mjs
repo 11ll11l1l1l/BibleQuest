@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 
 for(const file of[
   'src/app/bible-quest.js',
+  'src/app/bible-quest-cloud-sync.js',
   'src/features/bible-quest/index.js',
   'src/features/home/index.js',
   'src/features/reader/index.js',
@@ -13,12 +14,14 @@ for(const file of[
 ]) execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
 
 const service=fs.readFileSync('src/app/bible-quest.js','utf8');
+const cloudSync=fs.readFileSync('src/app/bible-quest-cloud-sync.js','utf8');
 const page=fs.readFileSync('src/features/bible-quest/index.js','utf8');
 const home=fs.readFileSync('src/features/home/index.js','utf8');
 const reader=fs.readFileSync('src/features/reader/index.js','utf8');
 const readerService=fs.readFileSync('src/app/reader.js','utf8');
 const bible=fs.readFileSync('src/core/bible.js','utf8');
 const bootstrap=fs.readFileSync('src/app/bootstrap.js','utf8');
+const api=fs.readFileSync('src/core/api.js','utf8');
 const mission=fs.readFileSync('src/app/daily-mission.js','utf8');
 const missionUi=fs.readFileSync('src/features/daily-mission/index.js','utf8');
 
@@ -50,6 +53,22 @@ assert.ok(reader.includes('data-reader-quest-away'),'Free reading must be visibl
 assert.ok(reader.includes('Free reading elsewhere does not skip this required chapter.'),'Reader must explain ordered Quest semantics.');
 assert.ok(readerService.includes('referenceLinks(code, chapter, verse = null)'),'Reader must expose exact related-Scripture links.');
 assert.ok(readerService.includes('questSnapshot()'),'Reader service must expose Main Quest state without changing the Reader page API.');
+for(const token of[
+  "SLICE_KEY='biblequest_main_bible_quest_v1'",
+  'mergeFromAccount',
+  'saveSlice',
+  'authenticated'
+]) assert.ok(cloudSync.includes(token)||service.includes(token),`Main Bible Quest account resume missing contract token: ${token}`);
+for(const token of[
+  "from('bible_progress_snapshots')",
+  "eq('updated_at',current.updated_at)",
+  "onConflict"
+]) {
+  if(token==='onConflict') continue;
+  assert.ok(api.includes(token),`Progress snapshot API missing optimistic account-sync contract: ${token}`);
+}
+assert.ok(api.includes("progressSnapshots"),'Core API must expose account progress snapshots.');
+assert.ok(bootstrap.includes('createBibleQuestCloudSyncService'),'Bootstrap must compose Main Bible Quest account auto-resume.');
 
 for(const provider of['NLT','ESV','NIV','AMP','STEP']) assert.ok(bible.includes(provider),`Bible data service must retain ${provider} related-reference support used by Bible Quest.`);
 assert.ok(page.includes('Open in BibleQuest Reader'),'Bible Quest must link the required chapter into the internal Reader.');
