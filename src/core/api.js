@@ -223,6 +223,58 @@ export function createApi() {
     }
   });
 
+  const progressSnapshots = Object.freeze({
+    async load(userId) {
+      const id=String(userId||'').trim();
+      if(!id)throw new Error('Progress snapshot user is required.');
+      const client=await getClient();
+      const {data,error}=await client.from('bible_progress_snapshots')
+        .select('user_id,state,schema_version,updated_at')
+        .eq('user_id',id)
+        .maybeSingle();
+      if(error)throw error;
+      return data||null;
+    },
+    async saveSlice(userId,sliceKey,value) {
+      const id=String(userId||'').trim();
+      const key=String(sliceKey||'').trim();
+      if(!id)throw new Error('Progress snapshot user is required.');
+      if(!/^biblequest_[a-z0-9_]+_v\d+$/.test(key))throw new Error('Progress snapshot slice key is invalid.');
+      let serialized;
+      try{serialized=JSON.parse(JSON.stringify(value))}
+      catch{throw new Error('Progress snapshot slice is not JSON-safe.')}
+      const client=await getClient();
+      for(let attempt=0;attempt<3;attempt+=1){
+        const {data:current,error:loadError}=await client.from('bible_progress_snapshots')
+          .select('user_id,state,schema_version,updated_at')
+          .eq('user_id',id)
+          .maybeSingle();
+        if(loadError)throw loadError;
+        const now=new Date().toISOString();
+        const mergedState={...((current?.state&&typeof current.state==='object'&&!Array.isArray(current.state))?current.state:{}),[key]:serialized};
+        if(current){
+          const {data,error}=await client.from('bible_progress_snapshots')
+            .update({state:mergedState,schema_version:Number(current.schema_version)||1,updated_at:now})
+            .eq('user_id',id)
+            .eq('updated_at',current.updated_at)
+            .select('user_id,state,schema_version,updated_at')
+            .maybeSingle();
+          if(error)throw error;
+          if(data)return data;
+          continue;
+        }
+        const {data,error}=await client.from('bible_progress_snapshots')
+          .insert({user_id:id,state:mergedState,schema_version:1,updated_at:now})
+          .select('user_id,state,schema_version,updated_at')
+          .maybeSingle();
+        if(!error&&data)return data;
+        if(error?.code==='23505')continue;
+        if(error)throw error;
+      }
+      throw new Error('Progress changed on another device. Retry sync.');
+    }
+  });
+
   const congregation = Object.freeze({
     async listMemberships(userId) {
       const client = await getClient();
@@ -742,5 +794,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ auth, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }
