@@ -1,20 +1,16 @@
-// Calendar lifecycle/persistence owner (v1: personal events + read-only
-// Assignment due-date aggregation; v1.5: congregation-shared leader-authored
-// events with weekly recurrence; owner edit/delete follow-up). Reuses Session
-// (owner identity), Assignments (dueAt/dueState, never written by Calendar),
-// Congregation Membership (role check + active congregation, never duplicated),
-// and the API boundary (all network access through src/core/api.js). Persists
-// personal events locally through privateStorage; congregation events are
-// never cached locally — they are always server-authoritative, matching
-// their shared-visibility/notification contract.
+// Calendar lifecycle/persistence owner (v2: personal events use an
+// account-cloud cache with durable pending creates/deletes; congregation
+// events remain server-authoritative). Reuses Session, Assignments,
+// Congregation Membership and the centralized API boundary.
 import { normalizeEvent, fromAssignmentDue, buildAgenda } from '../engines/calendar.js';
 
-const SCHEMA = 1;
+const SCHEMA = 2;
+const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
-function makeId() { return `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; }
+function freezeLocal(event,pendingSync=false){return Object.freeze({...event,pendingSync:pendingSync===true})}
 
-export function createCalendarService({ session, privateStorage, api, assignments, congregation, clock = () => new Date() }) {
+export function createCalendarService({ session, privateStorage, api, assignments, congregation, clock = () => new Date(), uuid = () => crypto.randomUUID() }) {
   if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.calendar) {
     throw new Error('Calendar requires Session, private storage and the API boundary.');
   }
@@ -30,18 +26,49 @@ export function createCalendarService({ session, privateStorage, api, assignment
     return id ? `account:${id}` : 'guest';
   };
   const key = current => `calendar-events:${current}`;
+  const nextId=()=>{
+    const id=String(uuid());
+    if(!UUID_RE.test(id))throw new Error('Calendar could not create a valid event identity.');
+    return id;
+  };
 
-  function readLocal(current) {
+  function normalizeLocal(raw,{legacyPending=false}={}){
+    const event=normalizeEvent(raw);
+    if(!event)return null;
+    return freezeLocal(event,raw?.pendingSync===true||legacyPending);
+  }
+
+  function readCache(current) {
     const saved = privateStorage.read(key(current), null);
-    if (!saved || typeof saved !== 'object' || Number(saved.schema) !== SCHEMA || saved.owner !== current || !Array.isArray(saved.events)) {
-      return [];
+    if (!saved || typeof saved !== 'object' || saved.owner !== current || !Array.isArray(saved.events)) {
+      return {events:[],pendingDeletes:[]};
     }
-    return saved.events.map(normalizeEvent).filter(Boolean);
+    const schema=Number(saved.schema);
+    if(schema!==1&&schema!==SCHEMA)return {events:[],pendingDeletes:[]};
+    const legacyAccount=schema===1&&current.startsWith('account:');
+    const events=saved.events.map(row=>normalizeLocal(row,{legacyPending:legacyAccount&&String(row?.id||'').startsWith('local-')})).filter(Boolean);
+    const pendingDeletes=schema===SCHEMA&&Array.isArray(saved.pendingDeletes)
+      ?[...new Set(saved.pendingDeletes.map(String).filter(id=>UUID_RE.test(id)))]
+      :[];
+    return {events,pendingDeletes};
   }
 
-  function writeLocal(current, events) {
-    privateStorage.write(key(current), { schema: SCHEMA, owner: current, events });
+  function writeCache(current,{events=[],pendingDeletes=[]}={}) {
+    const normalizedEvents=events.map(row=>normalizeLocal(row)).filter(Boolean);
+    const deletes=[...new Set(pendingDeletes.map(String).filter(id=>UUID_RE.test(id)))];
+    privateStorage.write(key(current), {
+      schema:SCHEMA,
+      owner:current,
+      events:normalizedEvents.map(row=>({...row,pendingSync:row.pendingSync===true})),
+      pendingDeletes:deletes
+    });
   }
+
+  function readLocal(current) { return readCache(current).events; }
+
+  const personalFromRemote=row=>normalizeLocal({
+    id:row.id,source:'personal',ownerId:row.user_id,eventDate:row.event_date,title:row.title,notes:row.notes,allDay:row.all_day
+  });
 
   function assignmentEvents() {
     const rows = assignments?.snapshot?.()?.assignments || [];
@@ -68,17 +95,43 @@ export function createCalendarService({ session, privateStorage, api, assignment
     } catch { congregationState = { congregationId: '', congregationName: '', canShare: false, events: [] }; }
   }
 
+  async function flushPending(current,userId){
+    let cache=readCache(current);
+    let events=[...cache.events],pendingDeletes=[...cache.pendingDeletes];
+
+    for(const id of [...pendingDeletes]){
+      try{
+        await api.calendar.remove(userId,id);
+        pendingDeletes=pendingDeletes.filter(value=>value!==id);
+      }catch{}
+    }
+
+    for(const event of [...events]){
+      if(!event.pendingSync||pendingDeletes.includes(event.id))continue;
+      try{
+        const saved=await api.calendar.create(userId,event);
+        const synced=personalFromRemote(saved);
+        if(!synced)continue;
+        events=events.map(row=>row.id===event.id?synced:row);
+      }catch{}
+    }
+
+    writeCache(current,{events,pendingDeletes});
+    return readCache(current);
+  }
+
   function getAgenda({ startDate = clock(), days = 30 } = {}) {
     return buildAgenda(combinedEvents(), { today: startDate, days });
   }
 
   function present() {
     const current = owner();
-    const personal = readLocal(current);
+    const cache=readCache(current),personal=cache.events;
     return Object.freeze({
       owner: current,
       accountUserId: sessionUserId(),
       scope: current.startsWith('account:') ? 'account-cloud' : 'guest-device',
+      pendingSync:personal.filter(event=>event.pendingSync).length+cache.pendingDeletes.length,
       canShareWithCongregation: congregationState.canShare,
       congregationId: congregationState.congregationId,
       congregationName: congregationState.congregationName,
@@ -91,13 +144,16 @@ export function createCalendarService({ session, privateStorage, api, assignment
     const s = session.getState();
     const current = owner();
     if (s?.authenticated && s?.user?.id) {
+      await flushPending(current,String(s.user.id));
       try {
         const remote = await api.calendar.list(s.user.id);
-        const events = (Array.isArray(remote) ? remote : []).map(row => normalizeEvent({
-          id: row.id, source: 'personal', ownerId: row.user_id, eventDate: row.event_date, title: row.title, notes: row.notes, allDay: row.all_day
-        })).filter(Boolean);
-        writeLocal(current, events);
-      } catch { /* device state remains authoritative until cloud reachable */ }
+        const cache=readCache(current);
+        const blocked=new Set(cache.pendingDeletes);
+        const remoteEvents=(Array.isArray(remote)?remote:[]).map(personalFromRemote).filter(Boolean).filter(event=>!blocked.has(event.id));
+        const remoteIds=new Set(remoteEvents.map(event=>event.id));
+        const pendingLocal=cache.events.filter(event=>event.pendingSync&&!remoteIds.has(event.id)&&!blocked.has(event.id));
+        writeCache(current,{events:[...remoteEvents,...pendingLocal],pendingDeletes:cache.pendingDeletes});
+      } catch { /* pending/local cache stays authoritative until cloud reachable */ }
     }
     await loadCongregation();
     return present();
@@ -108,27 +164,31 @@ export function createCalendarService({ session, privateStorage, api, assignment
       if (!congregationState.congregationId) fail('BQ_CALENDAR_NO_CONGREGATION', 'Join a congregation to share an event.');
       congregation.assert(congregationState.congregationId, 'ministry');
       const s = session.getState();
-      const event = normalizeEvent({ id: makeId(), source: 'congregation', ownerId: s?.user?.id, eventDate, title, notes, allDay, recurrenceWeeks });
+      const event = normalizeEvent({ id: nextId(), source: 'congregation', ownerId: s?.user?.id, eventDate, title, notes, allDay, recurrenceWeeks });
       if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
       await api.calendar.createCongregation(s.user.id, congregationState.congregationId, event);
       await loadCongregation();
       return present();
     }
-    const event = normalizeEvent({ id: makeId(), source: 'personal', eventDate, title, notes, allDay });
+
+    const event = normalizeEvent({ id: nextId(), source: 'personal', eventDate, title, notes, allDay });
     if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
-    const current = owner();
-    const s = session.getState();
-    let synced = true;
-    if (s?.authenticated && s?.user?.id) {
-      try {
-        const saved = await api.calendar.create(s.user.id, event);
-        const withId = normalizeEvent({ ...event, id: saved?.id || event.id, ownerId: saved?.user_id || s.user.id });
-        writeLocal(current, [...readLocal(current), withId]);
-        return { ...present(), synced };
-      } catch { synced = false; }
+    const current = owner(),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id),cache=readCache(current);
+    writeCache(current,{events:[...cache.events,freezeLocal(event,accountOwned)],pendingDeletes:cache.pendingDeletes});
+    if(!accountOwned)return {...present(),synced:true};
+
+    try {
+      const saved = await api.calendar.create(s.user.id, event);
+      const syncedEvent=personalFromRemote(saved);
+      const latest=readCache(current);
+      writeCache(current,{
+        events:latest.events.map(row=>row.id===event.id?(syncedEvent||freezeLocal(event,false)):row),
+        pendingDeletes:latest.pendingDeletes
+      });
+      return { ...present(), synced:true };
+    } catch {
+      return { ...present(), synced:false };
     }
-    writeLocal(current, [...readLocal(current), event]);
-    return { ...present(), synced };
   }
 
   async function updateCongregationEvent(id, { title, eventDate, notes, allDay, recurrenceWeeks } = {}) {
@@ -167,14 +227,21 @@ export function createCalendarService({ session, privateStorage, api, assignment
   }
 
   async function removeEvent(id) {
-    const current = owner();
-    writeLocal(current, readLocal(current).filter(event => event.id !== id));
-    const s = session.getState();
-    let synced = true;
-    if (s?.authenticated && s?.user?.id && !String(id).startsWith('local-')) {
-      try { await api.calendar.remove(s.user.id, id); } catch { synced = false; }
+    const current=owner(),targetId=String(id),cache=readCache(current),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id);
+    const events=cache.events.filter(event=>event.id!==targetId);
+    let pendingDeletes=[...cache.pendingDeletes];
+    if(accountOwned&&UUID_RE.test(targetId))pendingDeletes=[...new Set([...pendingDeletes,targetId])];
+    writeCache(current,{events,pendingDeletes});
+
+    if(!accountOwned||!UUID_RE.test(targetId))return {...present(),synced:true};
+    try{
+      await api.calendar.remove(s.user.id,targetId);
+      const latest=readCache(current);
+      writeCache(current,{events:latest.events,pendingDeletes:latest.pendingDeletes.filter(value=>value!==targetId)});
+      return {...present(),synced:true};
+    }catch{
+      return {...present(),synced:false};
     }
-    return { ...present(), synced };
   }
 
   return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present });
