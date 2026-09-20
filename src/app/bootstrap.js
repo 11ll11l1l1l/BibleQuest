@@ -159,13 +159,13 @@ function boot(root){
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
-  const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress});
+  const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress,ownerStorage:authStorage,cacheStorage:privateStorage});
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
   const account=createAccountService({api,session,storage});
   const backup=createBackupService({storage});
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
-  const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest});
+  const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage});
   const reader=createReaderService({bible,storage,progress,bibleQuest});
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
