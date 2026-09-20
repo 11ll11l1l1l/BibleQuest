@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `674402e4ae5bb2edbee2c100039de840944d6310`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
+Evidence checkpoint: integrated V6 head `7c8041e3d54682ed69c5030ff84ce5d9336758c4`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -26,9 +26,9 @@ Evidence checkpoint: integrated V6 head `674402e4ae5bb2edbee2c100039de840944d631
 - [x] Supported Node version is pinned/documented (`22.23.2`).
 - [x] Vite produces deterministic built artifacts with embedded exact-SHA identity.
 - [x] TypeScript is enabled for new architecture contracts; incremental legacy-JS compatibility is documented by the accepted build/client architecture.
-- [ ] Typecheck/lint/unit/build commands run in CI.
+- [x] Typecheck/lint/unit/build commands run in CI.
 - [x] Built route/deep-link behavior is proven across all 45 canonical hashes plus unknown-route handling in Chromium.
-- [ ] Source maps are generated/handled safely.
+- [x] Source maps are generated/handled safely: hidden maps are generated without embedded source text, moved outside `dist-v6`, and public-map/reference absence is CI-enforced.
 - [x] Route/domain code splitting is active: 44 feature-page modules load lazily and built Chromium waits for chunk completion.
 - [ ] CSS/assets/images are owned by build pipeline.
 - [x] Bundle/chunk/image budgets are CI-visible; the browser entry is capped at 700 KiB and at least 40 feature dynamic chunks are required.
