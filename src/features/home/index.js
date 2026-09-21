@@ -11,7 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const HOME_SHORTCUTS = Object.freeze([
   Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', labelKey: 'home.shortcut.daily', action: 'onMission' }),
   Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', labelKey: 'home.shortcut.reader', action: 'onReader' }),
-  Object.freeze({ id: 'assignments', icon: 'guide', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
+  Object.freeze({ id: 'assignments', icon: 'assignments', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
   Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
   Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
 ]);
@@ -63,6 +63,23 @@ const HOME_COMPOSITION_COPY = Object.freeze({
     'home.quest.next': 'Sunod'
   })
 });
+
+const HOME_DAILY_TITLES = Object.freeze({
+  en: Object.freeze({
+    'JHN:15':'Remain in Christ','MAT:5':'Kingdom Character','LUK:10':'Love Your Neighbor','PHP:2':'The Mind of Christ','JAS:1':'Hear and Do',
+    'ROM:12':'A Living Sacrifice','PSA:23':'The Shepherd','PRO:3':'Trust the Lord','1CO:13':'The Way of Love','GAL:5':'Walk by the Spirit'
+  }),
+  tl: Object.freeze({
+    'JHN:15':'Manatili kay Cristo','MAT:5':'Ugali ng Kaharian','LUK:10':'Ibigin ang Iyong Kapwa','PHP:2':'Ang Kaisipan ni Cristo','JAS:1':'Makinig at Gawin',
+    'ROM:12':'Isang Buhay na Handog','PSA:23':'Ang Pastol','PRO:3':'Magtiwala sa Panginoon','1CO:13':'Ang Daan ng Pag-ibig','GAL:5':'Lumakad ayon sa Espiritu'
+  }),
+  ceb: Object.freeze({
+    'JHN:15':'Pabilin kang Cristo','MAT:5':'Kinaiya sa Gingharian','LUK:10':'Higugmaa ang Imong Isigkatawo','PHP:2':'Ang Hunahuna ni Cristo','JAS:1':'Paminaw ug Buhata',
+    'ROM:12':'Buhi nga Halad','PSA:23':'Ang Magbalantay','PRO:3':'Salig sa Ginoo','1CO:13':'Ang Dalan sa Gugma','GAL:5':'Paglakaw pinaagi sa Espiritu'
+  })
+});
+
+const dailyPassageTitle=(passage,locale)=>HOME_DAILY_TITLES[locale]?.[`${passage?.code}:${passage?.chapter}`]||passage?.title||'';
 
 function shortcutRailHtml(locale) {
   const tx = (key, values) => localization.t(key, { locale, values });
@@ -121,7 +138,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           ? `<p><b>${escapeHtml(homeTx('home.quest.complete'))}</b></p>`
           : `<p><b>${escapeHtml(homeTx('home.quest.next'))}:</b> ${escapeHtml(quest.next?.book || '')} ${escapeHtml(quest.next?.chapter || '')}</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-open-bible-quest-continue>${escapeHtml(homeTx('home.quest.continue'))}</button><button type="button" class="bq-secondary-button" data-open-bible-quest>${escapeHtml(homeTx('home.quest.view'))}</button></div>`}
       </section>` : ''}
-      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
+      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(dailyPassageTitle(daily.passage,locale))}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">${escapeHtml(tx('home.progress.eyebrow'))}</p>
         <div class="bq-progress-stats">
@@ -161,13 +178,13 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         </section>
         <section class="bq-panel bq-home-tile" data-home-transformation-prompt>
           <button type="button" class="bq-home-tile-button" data-open-home-transformation aria-label="${escapeHtml(tx('nav.transformation'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('grow', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('transform', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.transformation'))}</b><small>${escapeHtml(transformationDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-unread-notifications>
           <button type="button" class="bq-home-tile-button" data-open-home-notifications aria-label="${escapeHtml(tx('nav.notifications'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('notifications', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.notifications'))}</b><small data-home-unread-notifications-count aria-live="polite">${Number(notificationState?.unread || 0)}</small></span>
           </button>
         </section>
@@ -176,7 +193,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
           <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="${escapeHtml(tx('home.tutorial.ariaLabel'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('tutorial', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('home.tutorial.title'))}</b><small>${escapeHtml(tx('home.tutorial.description'))}</small></span>
           </button>
         </section>
