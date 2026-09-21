@@ -11,6 +11,8 @@ const warmSentinels=[
   '/src/features/more/index.js',
   '/src/app/personal-challenges.js',
   '/src/features/challenges/index.js',
+  '/src/app/explorer.js',
+  '/src/features/explorer/index.js',
   '/src/features/games/memory.js',
   '/src/features/psychometrics/via-content.js',
   '/src/ui/content-reporting.css'
