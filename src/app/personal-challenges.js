@@ -133,7 +133,12 @@ export function createPersonalChallengesService({storage,clock=()=>new Date()}={
     return Object.freeze({applied:true,duplicate:false,state:snapshot(template.key)});
   }
 
-  function exportAccountState(){return clone(state)}
+  function exportAccountState(){
+    return Object.fromEntries(Object.entries(state).map(([key,row])=>[key,{
+      ...clone(row),
+      done:Object.keys(row.completedAt||{}).sort((a,b)=>Number(a)-Number(b))
+    }]));
+  }
   function replaceAccountState(input){persist(normalize(input),{source:'account'});return list()}
   function mergeFromAccount(remoteInput){
     const merged=mergeStates(state,remoteInput);
