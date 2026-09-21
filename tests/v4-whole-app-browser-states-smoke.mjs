@@ -20,8 +20,12 @@ const ready=(rows=[])=>({
 try{
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];
-  page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
-  page.on('pageerror',error=>errors.push(error.message));
+  page.on('console',message=>{
+    if(message.type()!=='error')return;
+    const location=message.location();
+    errors.push(`console: ${message.text()} @ ${location?.url||'unknown'}:${location?.lineNumber??''}:${location?.columnNumber??''}`);
+  });
+  page.on('pageerror',error=>errors.push(`pageerror: ${error.stack||error.message}`));
   await page.goto(BASE,{waitUntil:'networkidle'});
 
   const result=await page.evaluate(async({assignment})=>{
