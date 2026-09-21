@@ -41,6 +41,25 @@ const ICONS = Object.freeze({
     <rect x="13" y="4" width="7.5" height="16" rx="1.6"/>
     <path d="M7.25 8h0M16.75 8h0"/>
   `,
+  assignments: `
+    <rect x="5" y="4" width="14" height="17" rx="2"/>
+    <path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h4M8.5 17h6"/>
+  `,
+  transform: `
+    <path d="M12 21v-8"/>
+    <path d="M12 14c-3.8 0-6.5-2.5-6.5-6.5 3.8 0 6.5 2.5 6.5 6.5Z"/>
+    <path d="M12 16c3.8 0 6.5-2.5 6.5-6.5-3.8 0-6.5 2.5-6.5 6.5Z"/>
+    <path d="m18.5 3 .5 1.5L20.5 5 19 5.5 18.5 7 18 5.5 16.5 5 18 4.5 18.5 3Z"/>
+  `,
+  notifications: `
+    <path d="M6.5 17.5h11l-1.4-2.1V11a4.1 4.1 0 0 0-8.2 0v4.4l-1.4 2.1Z"/>
+    <path d="M10 20h4M12 5V3.5"/>
+  `,
+  tutorial: `
+    <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v16H6.5A2.5 2.5 0 0 0 4 21.5v-16Z"/>
+    <path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v16h4.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"/>
+    <path d="M15.2 8.5a1.8 1.8 0 0 1 3.5.6c0 1.2-1.7 1.4-1.7 2.5M17 14.5h.01"/>
+  `,
   calendar: `
     <rect x="3.5" y="5" width="17" height="15" rx="2"/>
     <path d="M3.5 9.5h17M8 3v4M16 3v4"/>
