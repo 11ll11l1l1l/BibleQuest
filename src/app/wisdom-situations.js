@@ -57,13 +57,18 @@ function publicSituation(item,state,reveal=false,locale='en'){
 }
 
 export function createWisdomSituationsService({lesson,progress,storage,random=Math.random,getLocale=()=> 'en'}){
-  if(!lesson||!progress||!storage?.read||!storage?.write)throw new Error('Wisdom Situations requires Lesson, Progress, and Storage boundaries.');
+  if(!lesson||!progress)throw new Error('Wisdom Situations requires Lesson and Progress boundaries.');
+  const volatile={value:emptySelector()};
+  const selectorStorage=storage?.read&&storage?.write?storage:{
+    read(_key,fallback=null){return volatile.value??fallback},
+    write(_key,value){volatile.value=value;return value}
+  };
   let activeId=null;
-  let selector=normalizeSelector(storage.read(SELECTOR_KEY,emptySelector()));
+  let selector=normalizeSelector(selectorStorage.read(SELECTOR_KEY,emptySelector()));
 
   const persistSelector=next=>{
     selector=normalizeSelector(next);
-    storage.write(SELECTOR_KEY,selector);
+    selectorStorage.write(SELECTOR_KEY,selector);
     return selector;
   };
   const requireActive=()=>{
