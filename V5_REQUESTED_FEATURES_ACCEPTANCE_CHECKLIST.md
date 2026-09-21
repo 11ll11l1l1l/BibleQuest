@@ -1,5 +1,10 @@
 # BibleQuest V5 Requested Features Acceptance Checklist
 
+> **FROZEN RELEASE RECORD — 2026-09-22 JST**
+>
+> This checklist records V5 certification history and must not be reused as an active implementation queue. V5.0 certification was completed before release; later V5.1 post-release stabilization is documented in `V5_ACTIVE_STATUS.md`. Any future V5 change requires a reproduced production defect and focused regression evidence; new platform/architecture work belongs to V6.
+
+
 Updated: 2026-09-17 JST
 Scope: feature completion on the current architecture
 Authority: `V5_ACTIVE_STATUS.md`
