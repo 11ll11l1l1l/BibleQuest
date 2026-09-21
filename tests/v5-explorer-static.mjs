@@ -66,7 +66,7 @@ for(const token of[
   'createExplorerCloudSyncService',
   "onExplorer:()=>router.navigate('explorer')",
   "explorer:()=>explorerPage",
-  '.then(()=>explorerCloudSync.syncNow())',
+  "['explorer',explorerCloudSync]",
   'explorerCloudSync.dispose()'
 ]) assert.ok(bootstrap.includes(token),'Bootstrap missing Bible Explorer composition: '+token);
 
