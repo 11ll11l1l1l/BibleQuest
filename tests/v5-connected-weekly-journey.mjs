@@ -48,6 +48,26 @@ test('weekly journey includes one optional non-interactive Ask at Dinner prompt 
   }
 });
 
+
+test('weekly journey renders persisted completion controls and next-step resume target without owning persistence', () => {
+  const weeklyState = {
+    weekKey:'2026-09-14',
+    completed:2,
+    total:6,
+    complete:false,
+    nextRoute:'transform',
+    done:{recordings:true,reader:true,transform:false,'journey-groups':false,assignments:false,calendar:false}
+  };
+  const html = homeThisWeekIntroHtml('en',{weeklyState});
+  assert.match(html,/data-weekly-journey-progress>2\/6 complete/);
+  assert.match(html,/data-weekly-journey-status="done"/);
+  assert.match(html,/data-weekly-journey-status="next"/);
+  assert.match(html,/data-weekly-journey-next>Continue here/);
+  assert.equal((html.match(/data-weekly-journey-toggle=/g)||[]).length,6);
+  assert.match(html,/data-weekly-journey-toggle="recordings"[^>]*aria-pressed="true"[^>]*>Undo</);
+  assert.match(html,/data-weekly-journey-toggle="transform"[^>]*aria-pressed="false"[^>]*>Mark done</);
+});
+
 test('weekly journey language does not claim automatic sermon-to-passage inference', async () => {
   const source = await readFile(weekPath, 'utf8');
   assert.match(source, /Open the Bible to read the passage or context connected to what you heard/);

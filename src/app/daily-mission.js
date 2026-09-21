@@ -22,7 +22,8 @@ export function createDailyMissionService({ lesson, progress, reader, clock = ()
     requireOpen();
     const completedSteps = Object.keys(state.responses || {}).length;
     const safety=state.status!=='complete'&&state.currentStep?.id==='retrieve'?retrieveSafety(activePassage):null;
-    return Object.freeze({ dateKey:activeDate, passage:activePassage, completedSteps, percent:Math.round((completedSteps / state.totalSteps) * 100), safety, state });
+    const links=reader.referenceLinks?.(activePassage.code,activePassage.chapter,activePassage.from)||[];
+    return Object.freeze({ dateKey:activeDate, passage:activePassage, completedSteps, percent:Math.round((completedSteps / state.totalSteps) * 100), safety, links, state });
   };
   const reconcile = state => {
     requireOpen();
@@ -39,7 +40,8 @@ export function createDailyMissionService({ lesson, progress, reader, clock = ()
     const key = dateKey();
     const passage=selectDailyPassage(key);
     retrieveSafety(passage);
-    return Object.freeze({ dateKey:key, passage });
+    const links=reader.referenceLinks?.(passage.code,passage.chapter,passage.from)||[];
+    return Object.freeze({ dateKey:key, passage, links });
   }
 
   function open() {

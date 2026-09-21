@@ -62,7 +62,7 @@ function fakeApi(){
   const calls={updates:0,removals:0};
   return { calendar:{
     async list(){ return rows.slice(); },
-    async create(userId,ev){ const row={id:`cloud-${rows.length+1}`,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay}; rows.push(row); return row; },
+    async create(userId,ev){ const row={id:ev.id,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay}; rows.push(row); return row; },
     async remove(userId,id){ const i=rows.findIndex(r=>r.id===id&&r.user_id===userId); if(i>=0)rows.splice(i,1); return true; },
     async listCongregation(congregationId){ return congregationRows.filter(r=>r.congregation_id===congregationId); },
     async createCongregation(userId,congregationId,ev){ const row={id:`cong-${congregationRows.length+1}`,congregation_id:congregationId,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0}; congregationRows.push(row); return row; },
@@ -117,6 +117,51 @@ await calendar.load();
 const failResult=await calendar.addEvent({title:'Offline add',eventDate:'2026-09-17'});
 assert.equal(failResult.events.length,1,'Local add must still apply when cloud sync fails.');
 assert.equal(failResult.synced,false,'Failed cloud sync must be reported, not swallowed.');
+
+// Offline personal mutations must survive reload and reconcile when connectivity returns.
+const recoveryStorage=memoryPrivateStorage();
+let recoveryOnline=false;
+const recoveryRows=[];
+const recoveryApi={calendar:{
+  async list(){if(!recoveryOnline)throw new Error('down');return recoveryRows.slice()},
+  async create(userId,ev){
+    if(!recoveryOnline)throw new Error('down');
+    let row=recoveryRows.find(item=>item.id===ev.id&&item.user_id===userId);
+    if(!row){row={id:ev.id,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay};recoveryRows.push(row)}
+    return {...row};
+  },
+  async remove(userId,id){
+    if(!recoveryOnline)throw new Error('down');
+    const index=recoveryRows.findIndex(item=>item.id===id&&item.user_id===userId);
+    if(index>=0)recoveryRows.splice(index,1);
+    return true;
+  },
+  async listCongregation(){return[]}
+}};
+const recoveryCalendar=createCalendarService({session:acctSession,privateStorage:recoveryStorage,api:recoveryApi,assignments:acctAssignments,clock:()=>new Date('2026-09-11T00:00:00.000Z')});
+await recoveryCalendar.load();
+const offlineAdded=await recoveryCalendar.addEvent({title:'Persist through outage',eventDate:'2026-09-18'});
+assert.equal(offlineAdded.synced,false);
+assert.equal(offlineAdded.pendingSync,1,'Offline add must be retained as pending account work.');
+const pendingId=offlineAdded.events[0].id;
+recoveryOnline=true;
+const afterReconnect=await recoveryCalendar.load();
+assert.equal(recoveryRows.length,1,'Pending offline add must upload exactly once after reconnect.');
+assert.equal(recoveryRows[0].id,pendingId,'Calendar retry must preserve the client UUID for idempotency.');
+assert.equal(afterReconnect.events.length,1,'Remote refresh must not erase a pending/recovered offline add.');
+assert.equal(afterReconnect.pendingSync,0,'Successful reconnect must clear pending calendar work.');
+
+recoveryOnline=false;
+const offlineRemoved=await recoveryCalendar.removeEvent(pendingId);
+assert.equal(offlineRemoved.synced,false);
+assert.equal(offlineRemoved.events.length,0,'Offline delete must disappear locally immediately.');
+assert.equal(offlineRemoved.pendingSync,1,'Offline delete must remain queued until confirmed remotely.');
+assert.equal(recoveryRows.length,1,'Remote row should still exist while delete is offline.');
+recoveryOnline=true;
+const afterDeleteReconnect=await recoveryCalendar.load();
+assert.equal(recoveryRows.length,0,'Queued offline delete must be applied after reconnect.');
+assert.equal(afterDeleteReconnect.events.length,0,'Deleted event must not resurrect after remote reload.');
+assert.equal(afterDeleteReconnect.pendingSync,0,'Confirmed delete must clear its pending tombstone.');
 
 // --- service: congregation-shared events, leader can share and only the creator can mutate ---
 const leaderSession = { getState: () => ({ authenticated: true, user: { id: 'leader-1' } }) };

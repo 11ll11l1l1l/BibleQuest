@@ -22,15 +22,17 @@ assert(guards.includes("document.addEventListener('invalid'"),'BQ-001 must handl
 // BQ-002: Ministry Hub Calendar must delegate directly to the verified
 // Calendar route, and the bootstrap route table must still own that route.
 assert(/id:'calendar',[^\n]*route:'calendar',available:true/.test(ministry),'BQ-002 Ministry Hub Calendar must remain available at the calendar route');
-assert(bootstrap.includes("'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:route=>router.navigate(route)"),'BQ-002 Ministry Hub must delegate tool routes to the app router');
+assert(bootstrap.includes("'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:navigateGeneral"),'BQ-002 Ministry Hub must delegate tool routes to the app router');
 assert(bootstrap.includes("calendar:()=>calendarPage({calendar,onBack:()=>router.navigate('more')"),'BQ-002 verified Calendar route must remain registered');
 
-// BQ-003: an active standard quiz must no longer disappear silently on a
-// browser refresh. V5 uses the bounded accepted alternative: a native leave
-// confirmation rather than introducing V6-wide game-state architecture.
-assert(guards.includes("const ACTIVE_GAME_QUESTION = '[data-games-page] [data-game-question]'"),'BQ-003 guard must detect an active quiz question');
-assert(guards.includes("window.addEventListener('beforeunload'"),'BQ-003 must protect browser refresh/navigation');
-assert(guards.includes("event.returnValue = ''"),'BQ-003 must request the browser leave/reload confirmation');
+// BQ-003 now has real state recovery rather than a warning-only workaround.
+const games=read('src/app/games.js');
+const gamesView=read('src/features/games/index.js');
+assert(games.includes("const ACTIVE_ROUND_KEY='games-active-round'"),'BQ-003 must persist the active standard quiz round.');
+assert(games.includes('restoreActiveRound(storage.read(ACTIVE_ROUND_KEY,null))'),'BQ-003 must restore an active quiz during service recreation.');
+assert(games.includes('persistActiveRound();'),'BQ-003 must checkpoint quiz transitions.');
+assert(gamesView.includes('render(games.getState())'),'BQ-003 Play mount must render restored state instead of clearing it.');
+assert(!guards.includes("window.addEventListener('beforeunload'"),'BQ-003 must not retain the obsolete reload-warning workaround.');
 
 // Integration: the architecture requires exactly one script entry
 // (index.html boots only bootstrap.js). These guards must be imported and
@@ -43,4 +45,4 @@ assert(bootstrap.includes("import { installV5LunaRegressionGuards } from './v5-l
 assert(bootstrap.includes('installV5LunaRegressionGuards();'),'bootstrap.js must actually call the Luna regression guards installer during boot.');
 assert(!guards.includes("if (typeof window !== 'undefined' && typeof document !== 'undefined')"),'The guards module must not self-install on import - bootstrap.js is the single, explicit caller.');
 
-console.log('V5 Luna regression static checks passed: BQ-001 validation, BQ-002 Calendar route, BQ-003 refresh warning.');
+console.log('V5 Luna regression static checks passed: BQ-001 validation, BQ-002 Calendar route, BQ-003 exact quiz resume.');

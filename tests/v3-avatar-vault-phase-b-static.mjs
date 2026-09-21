@@ -25,7 +25,7 @@ assert(!vaultUi.includes('🔒'),'Avatar Vault page must not render a literal lo
 assert(vaultUi.includes('vault.select(id)'),'Avatar Vault Equip behavior must retain the selection service owner.');
 assert(vaultUi.includes('onBack?.()'),'Avatar Vault Back callback contract changed.');
 for(const marker of["id: 'starter'","id: 'tea'",'export function unlockedIds','export function progressFor','export function iconFor'])assert(vaultEngine.includes(marker),`Avatar Vault engine ownership marker missing: ${marker}`);
-for(const marker of['writeLocal(current, style.id, earned)','api.avatarVault.save','return Object.freeze({ load, select, getState: present })'])assert(vaultService.includes(marker),`Avatar Vault persistence/API ownership marker missing: ${marker}`);
+for(const marker of['writeLocal(current, style.id, earned, accountOwned)','local.pending','api.avatarVault.save','return Object.freeze({ load, select, getState: present })'])assert(vaultService.includes(marker),`Avatar Vault persistence/API ownership marker missing: ${marker}`);
 assert(index.includes('href="src/ui/avatar-vault.css"'),'Avatar Vault base stylesheet must remain loaded.');
 assert(index.includes('href="src/ui/avatar-vault-phase-b.css"'),'Avatar Vault Phase B stylesheet must be loaded.');
 assert(index.indexOf('src/ui/avatar-vault-phase-b.css')>index.indexOf('src/ui/avatar-vault.css'),'Avatar Vault Phase B layer must load after base stylesheet.');

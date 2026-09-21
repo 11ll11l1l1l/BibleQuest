@@ -94,7 +94,7 @@ export function gamesPage({games,onHome}){
       };
       const onInput=event=>{const target=event.target instanceof Element?event.target:null;if(target?.matches('[data-recall-search]'))render(games.setRecallQuery(target.value))};
       const onSubmit=event=>{const form=event.target instanceof HTMLFormElement?event.target:null;if(!form?.matches('[data-detective-form]'))return;event.preventDefault();try{const input=form.querySelector('[data-detective-answer]');render(games.answerDetective(input?.value||''))}catch(error){showError(error)}};
-      host.addEventListener('click',onClick);host.addEventListener('input',onInput);host.addEventListener('submit',onSubmit);render(games.showLauncher());
+      host.addEventListener('click',onClick);host.addEventListener('input',onInput);host.addEventListener('submit',onSubmit);render(games.getState());
       return()=>{disposed=true;clearMemoryTimer();host.removeEventListener('click',onClick);host.removeEventListener('input',onInput);host.removeEventListener('submit',onSubmit);games.leave()};
     }
   };

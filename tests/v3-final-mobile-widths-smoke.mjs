@@ -19,6 +19,7 @@ async function verifyWidth(width) {
   await page.goto(`${BASE}#/home`, { waitUntil: 'networkidle' });
   await page.locator('[data-bq-shell="v3"]').waitFor();
   await page.locator('[data-session-label]', { hasText: 'Guest' }).waitFor();
+  await page.locator('[data-home-bible-quest]').waitFor();
   await page.locator('[data-home-daily]').waitFor();
 
   const home = await page.evaluate(() => {
@@ -47,10 +48,14 @@ async function verifyWidth(width) {
       navLabels: navLabels.map(node => node?.textContent?.trim() || ''),
       firstNav: rect(navLinks[0]),
       lastNav: rect(navLinks.at(-1)),
+      quest: rect(document.querySelector('[data-home-bible-quest]')),
+      questButton: rect(document.querySelector('[data-open-bible-quest-continue]')),
+      questHeading: document.querySelector('[data-home-bible-quest] h2')?.textContent?.trim() || '',
       daily: rect(document.querySelector('[data-home-daily]')),
       dailyButton: rect(document.querySelector('[data-open-daily]')),
       dailyHeading: document.querySelector('[data-home-daily] h2')?.textContent?.trim() || '',
       heroSupportFont: font(document.querySelector('.bq-hero p:not(.bq-eyebrow)')),
+      questSupportFont: font(document.querySelector('[data-home-bible-quest] p:not(.bq-eyebrow)')),
       dailySupportFont: font(document.querySelector('[data-home-daily] p:not(.bq-eyebrow)')),
       bodyFont: font(document.body)
     };
@@ -70,11 +75,16 @@ async function verifyWidth(width) {
   assert(home.navLabelFonts.every(value => value >= 10), `${width}px primary navigation label fell below 10px: ${home.navLabelFonts.join(', ')}.`);
   assert(home.firstNav?.left >= -1 && home.lastNav?.right <= width + 1, `${width}px primary navigation is clipped.`);
 
+  assert(home.quest && home.questButton, `${width}px Main Bible Quest surface/CTA is missing.`);
+  assert(/Genesis/i.test(home.questHeading) && /Revelation|Pahayag|Pinadayag/i.test(home.questHeading), `${width}px Main Bible Quest heading lost its Genesis-to-Revelation hierarchy.`);
+  assert(home.quest.top < home.innerHeight && home.questButton.top < home.innerHeight, `${width}px Main Bible Quest CTA is not discoverable in the initial viewport.`);
+  assert(home.questButton.height >= 44, `${width}px Main Bible Quest CTA is below practical 44px target.`);
+
   assert(home.daily && home.dailyButton, `${width}px Daily Journey surface/CTA is missing.`);
-  assert(/Continue My Journey/i.test(home.dailyHeading), `${width}px Daily Journey heading lost its primary hierarchy.`);
-  assert(home.daily.top < home.innerHeight && home.dailyButton.top < home.innerHeight, `${width}px Daily Journey CTA is not discoverable in the initial viewport.`);
+  assert(/Continue My Journey/i.test(home.dailyHeading), `${width}px Daily Journey heading lost its supporting hierarchy.`);
   assert(home.dailyButton.height >= 44, `${width}px Daily Journey CTA is below practical 44px target.`);
-  assert(home.heroSupportFont >= 12 && home.dailySupportFont >= 12 && home.bodyFont >= 14, `${width}px critical supporting/body text is too small: hero=${home.heroSupportFont}, daily=${home.dailySupportFont}, body=${home.bodyFont}.`);
+  assert(home.quest.top <= home.daily.top, `${width}px Main Bible Quest must appear before Daily Journey.`);
+  assert(home.heroSupportFont >= 12 && home.questSupportFont >= 12 && home.dailySupportFont >= 12 && home.bodyFont >= 14, `${width}px critical supporting/body text is too small: hero=${home.heroSupportFont}, quest=${home.questSupportFont}, daily=${home.dailySupportFont}, body=${home.bodyFont}.`);
 
   for (const route of PRIMARY_ROUTES) {
     await page.goto(`${BASE}#/${route}`, { waitUntil: 'networkidle' });

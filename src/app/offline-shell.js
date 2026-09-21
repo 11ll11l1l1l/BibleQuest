@@ -44,9 +44,21 @@ export function createOfflineShellService({
     subscribers.forEach(subscriber=>subscriber(value));
     return value;
   };
+  const settleShellUrls=async()=>{
+    let previous=[],stable=0;
+    for(let attempt=0;attempt<8;attempt++){
+      const current=collectShellUrls({performanceRef,locationRef});
+      if(current.length===previous.length&&current.every((url,index)=>url===previous[index]))stable+=1;
+      else stable=0;
+      previous=current;
+      if(stable>=1)break;
+      await new Promise(resolve=>setTimeout(resolve,125));
+    }
+    return previous;
+  };
   const warm=async worker=>{
     if(!worker?.postMessage)throw new Error('Offline shell worker is unavailable.');
-    const urls=collectShellUrls({performanceRef,locationRef});
+    const urls=await settleShellUrls();
     if(!urls.length)return;
     const message={type:'BIBLEQUEST_WARM_SHELL',urls};
     if(typeof MessageChannelCtor!=='function'){
