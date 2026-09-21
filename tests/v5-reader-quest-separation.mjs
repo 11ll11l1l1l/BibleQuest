@@ -86,6 +86,24 @@ assert.equal(quest.snapshot().completedChapters,1);
 assert.equal(quest.snapshot().next.key,'GEN:2');
 assert.equal(quest.snapshot().active,false);
 
+// Account/cloud state must not carry Reader/Quest UI mode between devices.
+// A legacy remote snapshot that still contains activeKey cannot force this
+// free-reading device back into Quest mode.
+const legacyRemote={...quest.exportAccountState(),activeKey:'GEN:2',updatedAt:'2026-09-22T00:00:00.000Z'};
+quest.mergeFromAccount(legacyRemote);
+assert.equal(quest.snapshot().active,false);
+assert.equal(quest.snapshot().next.key,'GEN:2');
+
+// Conversely, an account refresh with the same canonical progress must not
+// kick a device out of an explicitly active Quest session.
+quest.activateNext();
+assert.equal(quest.snapshot().activeKey,'GEN:2');
+const sameProgressRemote={...quest.exportAccountState(),updatedAt:'2026-09-23T00:00:00.000Z'};
+quest.mergeFromAccount(sameProgressRemote);
+assert.equal(quest.snapshot().active,true);
+assert.equal(quest.snapshot().activeKey,'GEN:2');
+assert.equal(quest.exportAccountState().activeKey,'','Cloud-exported Main Quest state must never contain device-local UI mode.');
+
 // Reader XP/history and Main Quest completion remain independently identifiable.
 assert.ok(progress.hasEvent('reader.read:bsb:JHN:3'));
 assert.ok(progress.hasEvent('reader.read:bsb:JHN:4'));
