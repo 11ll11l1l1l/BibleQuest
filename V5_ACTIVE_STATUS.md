@@ -1,11 +1,44 @@
 # BibleQuest V5 Official Active Status
 
-Updated: 2026-09-18 JST
-Execution model: coordinated five-agent feature-completion program with serialized integration
-Official V5 integration branch: `v5/feature-completion`
-Final certified runtime/source candidate: `c0772d458e9d17ab1728c47c568e99857c7d67a1` (later commits are evidence/documentation-only)
-Formal acceptance coverage after physical Web Push DEVICE/FIELD closeout: **122/122 = 100%**
-Production: **V5 RELEASED** on `main` at `f6a0cff0e63ddf676b77b8470d84678958fe9d70`; V4 rollback preserved at `rollback/v4-pre-v5-production-20260918`
+Updated: 2026-09-22 JST
+Execution model: V5 released; post-release fixes are emergency/stabilization only while V6 owns new architecture work
+Official historical V5 integration branch: `v5/feature-completion`
+Certified V5.0 runtime/source candidate: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
+V5.0 formal acceptance coverage after physical Web Push DEVICE/FIELD closeout: **122/122 = 100%**
+V5.0 production release: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`; V4 rollback preserved at `rollback/v4-pre-v5-production-20260918`
+Current V5.1 post-release hotfix runtime/source merge: `c84fcc28e7b2c433d99b0553b1a14301fbe217d3` (PR #508; exact tested head `759fdb08196f4d00fa5400dfef67a311f272629c`)
+
+## 0. Post-release V5.1 stabilization — 2026-09-22
+
+Status: **MERGED / EXACT-HEAD CI GREEN**.
+
+After the September 18 V5.0 release and the September 21 emergency functionality corrections / Wisdom Situations expansion, a fresh audit of current `main` reproduced remaining user-visible V5 defects: substantial hard-coded English remained on Transformation, Grow, Learn and More for Tagalog/Cebuano users, and Home still lacked several intended semantic inline icons.
+
+PR #508 rebuilt only the still-valid parts of stale emergency PR #451 on top of current `main` instead of merging the stale branch. It:
+
+- completes Tagalog/Cebuano Transformation presentation across Basic and Full Transform, including Scripture -> understand -> reflect -> apply -> pray, personality, thinking-pattern, practice, journal and status surfaces;
+- localizes Grow, Learn and More while preserving later Admin Console reachability, Personal Challenges, Characters & Places, and the 72-case difficulty-8 Wisdom Situations expansion;
+- restores semantic Assignments, Transformation, Notifications and Tutorial Home icons;
+- localizes the Home Daily Journey passage titles without changing Journey state/data ownership;
+- adds dedicated V5.1 static and 390px browser language-switch regression coverage;
+- leaves auth, RLS, Supabase ownership, router architecture, service worker, push architecture and V6 implementation untouched.
+
+Certification found and fixed one browser-only template syntax defect in the reconciled More page before merge. The final exact tested PR head was `759fdb08196f4d00fa5400dfef67a311f272629c`.
+
+All eight required pull-request workflows passed on that exact head:
+
+- BibleQuest v3 accumulated regression — run `35657321168`;
+- BibleQuest V4 whole-app browser audit — run `35657321143`;
+- BibleQuest V4 protected-page audit — run `35657321123`;
+- BibleQuest V4 Section H release gates — run `35657321187`;
+- BibleQuest V4 Section I security/privacy gates — run `35657321147`;
+- BibleQuest V4 Cloudflare preview smoke — run `35657321004`;
+- V5 push subscription lifecycle verify — run `35657321155`;
+- BibleQuest V4 Phase 6 field-evidence gate — run `35657321118`.
+
+PR #508 merged to `main` as `c84fcc28e7b2c433d99b0553b1a14301fbe217d3`. Stale PR #451 was closed as superseded. The exact tested PR preview deployed successfully. This record does **not** independently claim that the post-merge production Cloudflare deployment has been externally observed; production-live verification remains a deployment observation, not a reason to reopen V5 feature development.
+
+The sections below preserve the original V5.0 certification history. For current runtime/source truth, this V5.1 section supersedes older statements that describe `c0772d45` or `f6a0cff0` as the latest V5 code.
 
 ## 1. Authority and conflict resolution
 
