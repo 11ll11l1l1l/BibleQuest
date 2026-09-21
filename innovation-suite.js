@@ -43,13 +43,117 @@
     {key:'serve7',title:'7 Days of Quiet Service',type:'service',days:7,desc:'Practice one small act of Christlike service each day without needing recognition.',steps:['Notice a need','Encourage someone','Help at home','Give time','Listen well','Serve your church/community','Reflect & continue']}
   ];
   const PERSONAL_CHALLENGE_KEY='biblequest_personal_challenges_v1';
+  const PERSONAL_CHALLENGE_SLICE='biblequest_personal_challenges_v1';
+  const PERSONAL_CHALLENGE_OWNER_KEY='biblequest_personal_challenges_owner_v1';
+  const PERSONAL_CHALLENGE_CACHE_PREFIX='biblequest_personal_challenges_cache_v1:';
+  const PERSONAL_CHALLENGE_GUEST='guest';
   const EXPLORER_RECENT_KEY='biblequest_explorer_recent_v1';
   const EXPLORER_SESSION_KEY='biblequest_explorer_session_v1';
   function readLocal(key,fallback={}){try{const value=JSON.parse(localStorage.getItem(key)||'null');return value&&typeof value==='object'?value:fallback}catch{return fallback}}
   function writeLocal(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}}
-  function personalChallenges(){return readLocal(PERSONAL_CHALLENGE_KEY,{})}
-  function personalProgress(template){const row=personalChallenges()[template.key]||{};const done=Array.isArray(row.done)?row.done.map(String):[];return {done:new Set(done),startedAt:row.startedAt||'',updatedAt:row.updatedAt||''}}
-  function savePersonalProgress(template,done,startedAt=''){const all=personalChallenges(),now=new Date().toISOString();all[template.key]={done:[...done].map(String),startedAt:startedAt||all[template.key]?.startedAt||now,updatedAt:now};writeLocal(PERSONAL_CHALLENGE_KEY,all);return all[template.key]}
+  function validPersonalIso(value){if(typeof value!=='string'||!value)return '';const d=new Date(value);return Number.isFinite(d.getTime())?d.toISOString():''}
+  function personalTime(value){const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?parsed:0}
+  function earliestPersonalIso(...values){return values.map(validPersonalIso).filter(Boolean).sort((a,b)=>personalTime(a)-personalTime(b))[0]||''}
+  function latestPersonalIso(...values){return values.map(validPersonalIso).filter(Boolean).sort((a,b)=>personalTime(b)-personalTime(a))[0]||''}
+  function normalizePersonalChallenges(input){
+    const source=input&&typeof input==='object'&&!Array.isArray(input)?input:{},out={};
+    for(const template of challengeTemplates){
+      const row=source[template.key];
+      if(!row||typeof row!=='object'||Array.isArray(row))continue;
+      const done=[...new Set((Array.isArray(row.done)?row.done:[]).map(String).filter(day=>{const n=Number(day);return Number.isInteger(n)&&n>=1&&n<=template.steps.length}))].sort((a,b)=>Number(a)-Number(b));
+      const completedAt={};
+      for(const day of done){const at=validPersonalIso(row.completedAt?.[day])||validPersonalIso(row.updatedAt)||validPersonalIso(row.startedAt);if(at)completedAt[day]=at}
+      const startedAt=validPersonalIso(row.startedAt)||validPersonalIso(row.updatedAt)||latestPersonalIso(...Object.values(completedAt));
+      const updatedAt=latestPersonalIso(row.updatedAt,startedAt,...Object.values(completedAt));
+      if(startedAt||done.length)out[template.key]={done,completedAt,startedAt,updatedAt};
+    }
+    return out;
+  }
+  function mergePersonalChallenges(localInput,remoteInput){
+    const local=normalizePersonalChallenges(localInput),remote=normalizePersonalChallenges(remoteInput),out={};
+    for(const template of challengeTemplates){
+      const a=local[template.key]||{},b=remote[template.key]||{};
+      const done=[...new Set([...(a.done||[]),...(b.done||[])])].sort((x,y)=>Number(x)-Number(y));
+      const startedAt=earliestPersonalIso(a.startedAt,b.startedAt);
+      const completedAt={};
+      for(const day of done){const at=earliestPersonalIso(a.completedAt?.[day],b.completedAt?.[day]);if(at)completedAt[day]=at}
+      const updatedAt=latestPersonalIso(a.updatedAt,b.updatedAt,startedAt,...Object.values(completedAt));
+      if(startedAt||done.length)out[template.key]={done,completedAt,startedAt,updatedAt};
+    }
+    return out;
+  }
+  function personalCanonicalText(value){return JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item)}
+  function personalUserId(){return String(window.BQAccount?.session?.()?.user?.id||'')}
+  function personalOwner(){try{return String(localStorage.getItem(PERSONAL_CHALLENGE_OWNER_KEY)||'')}catch{return ''}}
+  function setPersonalOwner(value){try{localStorage.setItem(PERSONAL_CHALLENGE_OWNER_KEY,String(value||''))}catch{}}
+  function personalCacheKey(owner){return `${PERSONAL_CHALLENGE_CACHE_PREFIX}${owner}`}
+  function rawPersonalChallenges(){return normalizePersonalChallenges(readLocal(PERSONAL_CHALLENGE_KEY,{}))}
+  function persistPersonalChallenges(value){
+    const normalized=normalizePersonalChallenges(value);
+    writeLocal(PERSONAL_CHALLENGE_KEY,normalized);
+    const owner=personalOwner();
+    if(owner)writeLocal(personalCacheKey(owner),normalized);
+    return normalized;
+  }
+  function preparePersonalChallengeOwner(){
+    const userId=personalUserId(),nextOwner=userId||PERSONAL_CHALLENGE_GUEST,prior=personalOwner(),current=rawPersonalChallenges();
+    if(prior===nextOwner)return current;
+    if(!prior){setPersonalOwner(nextOwner);writeLocal(personalCacheKey(nextOwner),current);return current}
+    writeLocal(personalCacheKey(prior),current);
+    const restored=normalizePersonalChallenges(readLocal(personalCacheKey(nextOwner),{}));
+    writeLocal(PERSONAL_CHALLENGE_KEY,restored);
+    setPersonalOwner(nextOwner);
+    return restored;
+  }
+  function personalChallenges(){preparePersonalChallengeOwner();return rawPersonalChallenges()}
+  function personalProgress(template){const row=personalChallenges()[template.key]||{};const done=Array.isArray(row.done)?row.done.map(String):[];return {done:new Set(done),completedAt:{...(row.completedAt||{})},startedAt:row.startedAt||'',updatedAt:row.updatedAt||''}}
+  function savePersonalProgress(template,done,startedAt='',completedAt={}){
+    const all=personalChallenges(),now=new Date().toISOString(),prior=all[template.key]||{};
+    all[template.key]={
+      done:[...done].map(String).sort((a,b)=>Number(a)-Number(b)),
+      completedAt:{...(prior.completedAt||{}),...completedAt},
+      startedAt:startedAt||prior.startedAt||now,
+      updatedAt:now
+    };
+    persistPersonalChallenges(all);
+    return all[template.key];
+  }
+  function startPersonalChallenge(template){
+    const state=personalProgress(template);
+    if(state.startedAt)return state;
+    savePersonalProgress(template,state.done,new Date().toISOString(),state.completedAt);
+    return personalProgress(template);
+  }
+  function nextPersonalChallengeDay(template,state=personalProgress(template)){
+    for(let index=0;index<template.steps.length;index++){const day=String(index+1);if(!state.done.has(day))return day}
+    return null;
+  }
+  async function syncPersonalChallenges(){
+    const client=window.BQAccount?.client?.(),userId=personalUserId();
+    preparePersonalChallengeOwner();
+    if(!client||!userId)return {status:'local'};
+    for(let attempt=0;attempt<4;attempt++){
+      const loaded=await client.from('bible_progress_snapshots').select('user_id,state,schema_version,updated_at').eq('user_id',userId).maybeSingle();
+      if(loaded.error)throw loaded.error;
+      const row=loaded.data||null,remoteRaw=row?.state?.[PERSONAL_CHALLENGE_SLICE]||null;
+      const local=personalChallenges(),merged=mergePersonalChallenges(local,remoteRaw||{});
+      persistPersonalChallenges(merged);
+      if(!remoteRaw&&!Object.keys(merged).length)return {status:'synced',updatedAt:row?.updated_at||''};
+      if(remoteRaw&&personalCanonicalText(normalizePersonalChallenges(remoteRaw))===personalCanonicalText(merged))return {status:'synced',updatedAt:row?.updated_at||''};
+      const priorMs=row?.updated_at?Date.parse(row.updated_at):0,candidateMs=Date.now(),updatedAt=new Date(candidateMs>priorMs?candidateMs:priorMs+1).toISOString();
+      const state={...((row?.state&&typeof row.state==='object'&&!Array.isArray(row.state))?row.state:{}),[PERSONAL_CHALLENGE_SLICE]:merged};
+      if(row){
+        const saved=await client.from('bible_progress_snapshots').update({state,schema_version:Number(row.schema_version)||1,updated_at:updatedAt}).eq('user_id',userId).eq('updated_at',row.updated_at).select('user_id,state,schema_version,updated_at').maybeSingle();
+        if(saved.error)throw saved.error;
+        if(saved.data)return {status:'synced',updatedAt:saved.data.updated_at||updatedAt};
+      }else{
+        const saved=await client.from('bible_progress_snapshots').insert({user_id:userId,state,schema_version:1,updated_at:updatedAt}).select('user_id,state,schema_version,updated_at').maybeSingle();
+        if(!saved.error&&saved.data)return {status:'synced',updatedAt:saved.data.updated_at||updatedAt};
+        if(saved.error?.code!=='23505')throw saved.error;
+      }
+    }
+    throw new Error('Personal Challenge account sync could not settle after concurrent updates.');
+  }
   function layer(id){let x=document.getElementById(id);if(!x){x=document.createElement('div');x.id=id;x.className='innovation-layer hidden';document.body.appendChild(x)}return x}
   function show(id,html,bind){const x=layer(id);x.innerHTML=`<main class="innovation-app">${html}</main>`;x.classList.remove('hidden');document.body.classList.add('innovation-open');bind?.(x);x.scrollTop=0}
   function close(id){layer(id).classList.add('hidden');if(!document.querySelector('.innovation-layer:not(.hidden)'))document.body.classList.remove('innovation-open')}
