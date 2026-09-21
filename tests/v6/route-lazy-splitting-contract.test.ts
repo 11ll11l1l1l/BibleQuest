@@ -23,12 +23,17 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     .split('\n')
     .filter(line => line.startsWith('const ') && line.includes(" = args => lazyFeaturePage('"));
 
-  assert.equal(lazyProxyLines.length, 47);
+  assert.equal(lazyProxyLines.length, 46);
   for (const route of [
     "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);",
     "const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);",
     "const challengesPage = args => lazyFeaturePage('challenges', 'challengesPage', args);",
   ]) assert.ok(lazyProxyLines.includes(route), `V5.1 parity route must remain lazy: ${route}`);
+  assert.equal(source.includes("import { createWisdomSituationsService } from './wisdom-situations.js';"), false);
+  assert.equal(source.includes("import('./wisdom-situations.js')"), true);
+  assert.equal(source.includes("featurePageModules['../features/wisdom-situations/index.js']"), true);
+  assert.equal(source.includes("'wisdom-situations':()=>wisdomSituationsPage({lesson,progress,storage"), true);
+
   for (const line of lazyProxyLines) {
     const name = line.slice('const '.length, line.indexOf(' = args'));
     assert.equal(line.includes(`, '${name}', args);`), true);
