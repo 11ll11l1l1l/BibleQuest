@@ -62,7 +62,9 @@ assert.equal(resumed.state.session.item.id,first.session.item.id,'Reload must pr
 assert.equal(resumed.state.session.clueIndex,2,'Reload must preserve the exact revealed clue position.');
 
 reloaded.reveal('person');
-assert.throws(()=>reloaded.nextClue('person'),/|/,'Revealed case should remain stable when another clue is requested.');
+const revealedStable=reloaded.nextClue('person');
+assert.equal(revealedStable.session.revealed,true,'A revealed Explorer case must remain revealed when another clue is requested.');
+assert.equal(revealedStable.session.clueIndex,2,'A revealed Explorer case must not advance its clue position.');
 const afterReveal=reloaded.snapshot('person');
 assert.equal(afterReveal.session.revealed,true);
 assert.equal(afterReveal.session.item.reader.code.length>=3,true,'Every Explorer item must expose a Reader target.');
