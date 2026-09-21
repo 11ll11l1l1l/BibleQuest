@@ -20,30 +20,56 @@ async function put(cache,request,response){
   return response;
 }
 
+function staticImportUrls(source,baseUrl){
+  const urls=new Set(),patterns=[
+    /\b(?:import|export)\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/g,
+    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g
+  ];
+  for(const pattern of patterns){
+    for(const match of source.matchAll(pattern)){
+      const specifier=String(match[1]||'').trim();
+      if(!specifier||(!specifier.startsWith('.')&&!specifier.startsWith('/')))continue;
+      try{
+        const url=new URL(specifier,baseUrl);
+        if(sameOriginInScope(url)&&!isNetworkProbe(url))urls.add(url.href);
+      }catch{}
+    }
+  }
+  return [...urls];
+}
+
 async function warmOne(cache,raw){
   let url;
-  try{url=new URL(raw,self.registration.scope)}catch{return}
-  if(!sameOriginInScope(url)||isNetworkProbe(url))return;
+  try{url=new URL(raw,self.registration.scope)}catch{return[]}
+  if(!sameOriginInScope(url)||isNetworkProbe(url))return[];
   try{
     const request=new Request(url.href,{method:'GET',credentials:'same-origin',cache:'reload'});
     const response=await fetch(request);
+    let imports=[];
+    if(response?.ok&&/\.m?js$/i.test(url.pathname)){
+      try{imports=staticImportUrls(await response.clone().text(),url.href)}catch{}
+    }
     await put(cache,request,response);
-  }catch{}
+    return imports;
+  }catch{return[]}
 }
 
 async function warmShell(urls){
   const cache=await caches.open(CACHE_NAME);
-  const queue=Array.isArray(urls)?urls:[];
-  if(!queue.length)return;
-  let cursor=0;
-  const drain=async()=>{
-    while(cursor<queue.length){
-      const raw=queue[cursor++];
-      await warmOne(cache,raw);
-    }
+  const pending=[],seen=new Set();
+  const enqueue=raw=>{
+    let url;
+    try{url=new URL(raw,self.registration.scope)}catch{return}
+    if(!sameOriginInScope(url)||isNetworkProbe(url)||seen.has(url.href))return;
+    seen.add(url.href);
+    pending.push(url.href);
   };
-  const workers=Array.from({length:Math.min(WARM_CONCURRENCY,queue.length)},()=>drain());
-  await Promise.all(workers);
+  for(const raw of Array.isArray(urls)?urls:[])enqueue(raw);
+  while(pending.length){
+    const batch=pending.splice(0,WARM_CONCURRENCY);
+    const discovered=await Promise.all(batch.map(raw=>warmOne(cache,raw)));
+    for(const imports of discovered)for(const imported of imports)enqueue(imported);
+  }
 }
 
 self.addEventListener('install',event=>{

@@ -39,6 +39,9 @@ jobs:
       - name: Run V5 final static gates
         run: |
           set -euo pipefail
+          node tests/v5-required-route-release-gate.mjs
+          node tests/v5-auth-deeplink-hydration-contract.mjs
+          node tests/v5-account-progress-independent-sync-contract.mjs
           node tests/v5-mission-artwork-verification.test.mjs
           node --test tests/v5-whole-app-glyph-inventory.test.mjs
           node tests/v5-section-g-state-sweep.mjs

@@ -1,9 +1,10 @@
 # BibleQuest V6 Development Plan
 
-Updated: 2026-09-18 JST
+Updated: 2026-09-22 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
-Starting baseline: released V5 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
+Starting ancestry baseline: V5.0 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
+Current product parity baseline: V5.1 post-release runtime/source `c84fcc28e7b2c433d99b0553b1a14301fbe217d3`
 Depends on: completed/certified V5 feature-completion release
 
 ## 1. V6 line in the sand
@@ -36,7 +37,7 @@ V6 should prove these systems on representative surfaces, but **not redesign eve
 
 ## 3. Handoff from V5
 
-V5 certification and production promotion are complete. Phase 0 starts from the released V5 production baseline above.
+V5 certification and production promotion are complete. V6 originally started from the V5.0 production ancestry baseline above. Certified post-release V5.1 corrections are now part of the V6 product-parity contract and must be absorbed without discarding integrated V6 engine work.
 
 Required V5 handoff evidence:
 
@@ -46,7 +47,7 @@ Required V5 handoff evidence:
 4. V4 and V5 rollback refs;
 5. explicit known limitations that are architecture debt rather than unfinished features.
 
-The V6 branch must be rebased/recreated from that V5 production SHA. The old V4 cleanup SHA is historical only and is not a valid V6 runtime baseline.
+The V6 branch was recreated from the V5.0 production SHA. Later certified V5 post-release corrections are merged forward as parity reconciliations; they do not reset V6 architecture history. The old V4 cleanup SHA remains historical only and is not a valid V6 runtime baseline.
 
 ## 4. Execution model
 
@@ -70,7 +71,7 @@ No valid security/privacy/behavior test may be removed merely to obtain green st
 
 ## Work
 
-- Record the exact accepted V5 production SHA as V6 baseline.
+- Record the exact V5.0 production ancestry SHA and the current certified V5.1 parity SHA.
 - Rebase/create `v6/architecture-upgrade` from that SHA.
 - Re-run inherited V5 regression/security/browser/PWA gates on the exact V6 baseline.
 - Confirm ADR process under `docs/v6/adr/`.
@@ -79,7 +80,7 @@ No valid security/privacy/behavior test may be removed merely to obtain green st
 
 ## Exit gate
 
-Exact V5 baseline is frozen, inherited static/governance evidence is green, and ADR-0001/0002 are accepted. Browser parity that could not execute because a workspace lacked Chromium is deferred to CI/runtime acceptance and does not block starting bounded implementation; it remains mandatory before certification/merge of affected runtime tranches.
+The V5.0 ancestry baseline and current V5.1 parity baseline are frozen, inherited static/governance evidence is green, and ADR-0001/0002 are accepted. Browser parity that could not execute because a workspace lacked Chromium is deferred to CI/runtime acceptance and does not block starting bounded implementation; it remains mandatory before certification/merge of affected runtime tranches.
 
 ---
 

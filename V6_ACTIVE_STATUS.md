@@ -1,12 +1,13 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-09-20 JST
+Updated: 2026-09-22 JST
 Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
-Released V5 production baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
-Certified V5 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
+V5.0 production ancestry baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
+Certified V5.0 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
+Current V5.1 product parity baseline: `c84fcc28e7b2c433d99b0553b1a14301fbe217d3`
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
-Current integrated checkpoint: `58635bde2e0753c47af74380b9b39408240feb75`
+Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084a`
 
 ## Authority
 
@@ -16,8 +17,9 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 
 **Phase 0 — COMPLETE.**
 **Phase 1 — BUILD/CLIENT ENGINE: ACTIVE.**
+**V5.1 parity reconciliation — ACTIVE / integration gate before additional V6 runtime merges.**
 
-The active V6 line starts from the exact released V5 production commit `f6a0cff0...`. The obsolete pre-V5 V6 experiment is preserved separately and is not part of active V6 history.
+The active V6 line originally forked from V5.0 production `f6a0cff0...`. The product parity contract now includes certified V5.1 post-release behavior through `c84fcc28...`; those corrections are being merged forward while preserving the integrated V6 engine history. The obsolete pre-V5 V6 experiment remains archived and is not part of active V6 history.
 
 ADR-0001 and ADR-0002 are ACCEPTED:
 
@@ -29,6 +31,12 @@ Inherited static/governance gates reported green on the Phase-0 candidate for bu
 Chromium-capable GitHub CI is now operational for V6 built artifacts. The integrated Phase-1 gate has proven all 45 canonical direct deep links plus not-found behavior, the 320/360/390/412/430px representative route matrix, service-worker registration, PWA manifest/icons/shortcuts, and an offline Home-shell reopen. This remains signed-out/browser evidence rather than authenticated role E2E or physical-device acceptance.
 
 The route-page build has also moved from one ~915.21 kB JavaScript entry (~252.71 kB gzip) to a ~557.11 kB entry (~166.19 kB gzip) plus lazy feature chunks. CI now fails if the browser entry exceeds 700 KiB or if fewer than 40 feature route modules remain dynamic chunks. Phase-1 CI now also runs deterministic lint, format, typecheck, unit and build commands. Vite source maps are generated as hidden diagnostics, exclude embedded source text, are moved outside `dist-v6` into ignored exact-SHA private output, and CI proves the public artifact contains neither `.map` files nor `sourceMappingURL` references.
+
+## V5.1 parity reconciliation details
+
+Before additional V6 runtime tranches are integrated, V6 must preserve the accepted post-release V5 behavior added after the original V6 fork: Personal Challenges, Bible Explorer/Characters & Places, recursive offline module warming, Admin reachability, Daily Journey required-response validation, Ministry Hub Calendar routing, Quick Recall resume/duplicate-XP protection, independent account progress restoration, 72-case multilingual Wisdom Situations through level 8, and V5.1 Tagalog/Cebuano localization/icon corrections.
+
+The reconciliation must preserve V6 lazy route loading, the live Accessibility feature-command seam, V6 database CI, Reader/offline contracts, notification/platform primitives, and all accepted ADRs. Existing open V6 PRs #491, #502 and #503 remain useful work but must be rebased/revalidated on the resulting integration head before merge.
 
 ## V6 product decision
 

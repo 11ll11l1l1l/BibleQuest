@@ -7,6 +7,9 @@ const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE,TIMELINE_MODE]);
 const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3,timelineCorrect:20,timelineIncorrect:4});
 const RESULTS_KEY='games-results';
 const RECALL_KEY='games-recall';
+const ACTIVE_ROUND_KEY='games-active-round';
+const ACTIVE_ROUND_VERSION=1;
+const RESUMABLE_MODES=new Set(['quick-recall','context-challenge','mixed-quest']);
 const modeById=id=>ALL_MODES.find(mode=>mode.id===id)||null;
 const freezeQuestion=question=>question?Object.freeze({...question,choices:Object.freeze([...question.choices])}):null;
 const freezeResult=result=>result?Object.freeze({...result}):null;
@@ -62,7 +65,19 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   const makeRoundId=typeof roundIdFactory==='function'?roundIdFactory:(mode,roundSequence)=>`${bootNonce}-${mode}-${roundSequence}`;
   let results=normalizeResults(storage.read(RESULTS_KEY,{}));
   let recallState=normalizeRecall(storage.read(RECALL_KEY,{}));
-  let state=emptyState();
+  const restoreActiveRound=input=>{
+    if(!input||typeof input!=='object'||Array.isArray(input)||input.version!==ACTIVE_ROUND_VERSION||input.phase!=='question'||!RESUMABLE_MODES.has(input.mode))return emptyState();
+    const roundId=String(input.roundId||'').trim(),base=[...buildGameRound(input.mode)],bank=moderation?[...moderation.applyCore(base)]:base;
+    const ids=Array.isArray(input.questionIds)?input.questionIds.map(String):[];
+    const index=Number(input.index),score=Number(input.score),gained=Number(input.gained),selected=input.selected===null?null:Number(input.selected);
+    if(!roundId||roundId.length>100||!bank.length||ids.length!==bank.length||ids.some((id,position)=>id!==bank[position].id))return emptyState();
+    if(!Number.isSafeInteger(index)||index<0||index>=bank.length||!Number.isSafeInteger(score)||score<0||score>index+(input.locked===true?1:0)||!Number.isSafeInteger(gained)||gained<0)return emptyState();
+    const locked=input.locked===true,question=bank[index];
+    if(locked&&(!Number.isSafeInteger(selected)||selected<0||selected>=question.choices.length||input.correct!==(selected===question.answer)))return emptyState();
+    if(!locked&&(selected!==null||input.correct!==null))return emptyState();
+    return {...emptyState(),phase:'question',mode:input.mode,roundId,bank,index,score,gained,locked,selected,correct:locked?input.correct:null};
+  };
+  let state=restoreActiveRound(storage.read(ACTIVE_ROUND_KEY,null));
   let sameRoom=emptySameRoom();
   const kidsMemory=createKidsMemoryGame({progress,roundIdFactory:makeRoundId});
 
@@ -76,6 +91,11 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   };
 
   function persistRecall(){storage.write(RECALL_KEY,recallState)}
+  function persistActiveRound(){
+    if(state.phase!=='question'||!RESUMABLE_MODES.has(state.mode))return;
+    storage.write(ACTIVE_ROUND_KEY,{version:ACTIVE_ROUND_VERSION,phase:'question',mode:state.mode,roundId:state.roundId,questionIds:state.bank.map(question=>question.id),index:state.index,score:state.score,gained:state.gained,locked:state.locked,selected:state.selected,correct:state.correct});
+  }
+  function clearActiveRound(){if(typeof storage.remove==='function')storage.remove(ACTIVE_ROUND_KEY);else storage.write(ACTIVE_ROUND_KEY,null)}
   function validRoundId(mode){sequence+=1;const roundId=String(makeRoundId(mode,sequence)||'').trim();if(!roundId||roundId.length>100)throw new Error('Game round identity is invalid.');return roundId}
   function completionTime(){const raw=clock(),date=raw instanceof Date?raw:new Date(raw);if(!Number.isFinite(date.getTime()))throw new Error('Game completion time is invalid.');return date.toISOString()}
   function persistResult(mode,score,total,gained){const result={score,total,gained,completedAt:completionTime()};results={...results,[mode]:result};storage.write(RESULTS_KEY,results);return result}
@@ -129,6 +149,7 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
     const base=[...buildGameRound(mode)],bank=moderation?[...moderation.applyCore(base)]:base;
     if(!bank.length)throw new Error(moderation?'This BibleQuest game has no questions available under the current content policy.':'This BibleQuest game has no verified questions.');
     state={...emptyState(),phase:'question',mode,roundId:validRoundId(mode),bank};
+    persistActiveRound();
     return snapshot();
   }
 
@@ -140,14 +161,15 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
     const correct=choice===question.answer,xp=correct?XP.correct:XP.incorrect;
     progress.record({id:`game:${state.roundId}:question:${question.id}`,type:'game.question',xp,meaningful:false,metrics:correct?{quizCorrect:1}:{}});
     state={...state,score:state.score+(correct?1:0),gained:state.gained+xp,locked:true,selected:choice,correct};
+    persistActiveRound();
     return Object.freeze({applied:true,duplicate:false,...snapshot()});
   }
 
   function next(){
     if(state.phase!=='question')throw new Error('There is no active BibleQuest question.');
     if(!state.locked)throw new Error('Answer the current question before continuing.');
-    if(state.index+1>=state.bank.length){progress.record({id:`game:${state.roundId}:complete`,type:'game.round.complete',xp:0,meaningful:true});persistResult(state.mode,state.score,state.bank.length,state.gained);state={...state,phase:'complete',index:state.bank.length,locked:false,selected:null,correct:null};return snapshot()}
-    state={...state,index:state.index+1,locked:false,selected:null,correct:null};return snapshot();
+    if(state.index+1>=state.bank.length){progress.record({id:`game:${state.roundId}:complete`,type:'game.round.complete',xp:0,meaningful:true});persistResult(state.mode,state.score,state.bank.length,state.gained);state={...state,phase:'complete',index:state.bank.length,locked:false,selected:null,correct:null};clearActiveRound();return snapshot()}
+    state={...state,index:state.index+1,locked:false,selected:null,correct:null};persistActiveRound();return snapshot();
   }
 
   function replay(){if(state.mode==='character-detective')return startDetective();if(state.mode==='timeline-challenge')return startTimeline();if(!state.mode)throw new Error('Choose a BibleQuest game before replaying.');return start(state.mode)}
@@ -263,8 +285,8 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   async function returnRecallLibrary(){return openRecallLibrary()}
   async function replayRecall(){if(!state.recallBook)throw new Error('Choose a Per-book Recall book before replaying.');return startRecallBook(state.recallBook.code)}
   function lastResult(mode){if(!modeById(mode))throw new Error('Unknown BibleQuest game mode.');return freezeResult(results[mode]||null)}
-  function showLauncher(){kidsMemory.leave();sameRoom=emptySameRoom();state=emptyState();return snapshot()}
-  function leave(){return showLauncher()}
+  function showLauncher(){kidsMemory.leave();sameRoom=emptySameRoom();state=emptyState();clearActiveRound();return snapshot()}
+  function leave(){return snapshot()}
 
   return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),kidsMemory,start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallDeckReps,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
 }

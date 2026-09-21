@@ -12,7 +12,7 @@ const contract='VISUAL_PHASE_B_MORE_V3.md';
 const workflowPath='.github/workflows/v3-regression.yml';
 for(const file of[asset,css,ui,contract,'index.html',workflowPath])assert(fs.existsSync(path.join(root,file)),`Missing More Phase B file: ${file}`);
 
-const symbols=['workspace','notifications','community','ministry','review','couples','couples-cloud','journey-groups','team','accessibility','install','backup','mission','calendar','congregation'];
+const symbols=['workspace','notifications','community','ministry','review','couples','couples-cloud','journey-groups','team','accessibility','install','backup','mission','challenge','calendar','congregation'];
 const sprite=read(asset),more=read(ui),phase=read(css),index=read('index.html'),scope=read(contract),workflow=read(workflowPath);
 for(const id of symbols){
   assert(sprite.includes(`id="${id}"`),`More icon sprite missing symbol: ${id}`);

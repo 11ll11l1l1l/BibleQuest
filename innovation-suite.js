@@ -35,8 +35,125 @@
     {key:'proverbs30',title:'30-Day Proverbs Challenge',type:'wisdom',days:30,desc:'A chapter of Proverbs most days, with one practical wisdom takeaway.',steps:Array.from({length:30},(_,i)=>`Proverbs ${i+1}`)},
     {key:'acts28',title:'Acts Month',type:'reading',days:28,desc:'Walk through the growth, conflicts, mission, and expansion of the early church.',steps:Array.from({length:28},(_,i)=>`Acts ${i+1}`)},
     {key:'couples7',title:'Couples Week',type:'couples',days:7,desc:'Seven short Christ-centered conversations and listening practices.',steps:['Gratitude','Listen First','Prayer','Repair','Dreams','Service','Us & God']},
-    {key:'family7',title:'Family Bible Night Week',type:'group',days:7,desc:'Seven simple family prompts mixing reading, discussion, and prayer.',steps:['Creation','Courage','Wisdom','Kindness','Forgiveness','Service','Hope']}
+    {key:'family7',title:'Family Bible Night Week',type:'group',days:7,desc:'Seven simple family prompts mixing reading, discussion, and prayer.',steps:['Creation','Courage','Wisdom','Kindness','Forgiveness','Service','Hope']},
+    {key:'john21',title:'21 Days in John',type:'reading',days:21,desc:'Read one chapter of John each day and note what it shows about Jesus.',steps:Array.from({length:21},(_,i)=>`John ${i+1}`)},
+    {key:'psalms14',title:'14 Days of Psalms',type:'prayer',days:14,desc:'Read, pray, and carry one line from a Psalm into the day.',steps:['Psalm 1','Psalm 8','Psalm 16','Psalm 23','Psalm 27','Psalm 34','Psalm 46','Psalm 63','Psalm 84','Psalm 91','Psalm 103','Psalm 121','Psalm 130','Psalm 139']},
+    {key:'james5',title:'5 Days in James',type:'wisdom',days:5,desc:'Read one chapter each day and choose one concrete act of obedience.',steps:['James 1','James 2','James 3','James 4','James 5']},
+    {key:'prayer7',title:'7-Day Prayer Practice',type:'prayer',days:7,desc:'Build a simple Scripture-shaped prayer rhythm without chasing a score.',steps:['Praise','Confession','Thanks','Needs','Others','Listen & Read','Review & Continue']},
+    {key:'serve7',title:'7 Days of Quiet Service',type:'service',days:7,desc:'Practice one small act of Christlike service each day without needing recognition.',steps:['Notice a need','Encourage someone','Help at home','Give time','Listen well','Serve your church/community','Reflect & continue']}
   ];
+  const PERSONAL_CHALLENGE_KEY='biblequest_personal_challenges_v1';
+  const PERSONAL_CHALLENGE_SLICE='biblequest_personal_challenges_v1';
+  const PERSONAL_CHALLENGE_OWNER_KEY='biblequest_personal_challenges_owner_v1';
+  const PERSONAL_CHALLENGE_CACHE_PREFIX='biblequest_personal_challenges_cache_v1:';
+  const PERSONAL_CHALLENGE_GUEST='guest';
+  const EXPLORER_RECENT_KEY='biblequest_explorer_recent_v1';
+  const EXPLORER_SESSION_KEY='biblequest_explorer_session_v1';
+  function readLocal(key,fallback={}){try{const value=JSON.parse(localStorage.getItem(key)||'null');return value&&typeof value==='object'?value:fallback}catch{return fallback}}
+  function writeLocal(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}}
+  function validPersonalIso(value){if(typeof value!=='string'||!value)return '';const d=new Date(value);return Number.isFinite(d.getTime())?d.toISOString():''}
+  function personalTime(value){const parsed=Date.parse(String(value||''));return Number.isFinite(parsed)?parsed:0}
+  function earliestPersonalIso(...values){return values.map(validPersonalIso).filter(Boolean).sort((a,b)=>personalTime(a)-personalTime(b))[0]||''}
+  function latestPersonalIso(...values){return values.map(validPersonalIso).filter(Boolean).sort((a,b)=>personalTime(b)-personalTime(a))[0]||''}
+  function normalizePersonalChallenges(input){
+    const source=input&&typeof input==='object'&&!Array.isArray(input)?input:{},out={};
+    for(const template of challengeTemplates){
+      const row=source[template.key];
+      if(!row||typeof row!=='object'||Array.isArray(row))continue;
+      const done=[...new Set((Array.isArray(row.done)?row.done:[]).map(String).filter(day=>{const n=Number(day);return Number.isInteger(n)&&n>=1&&n<=template.steps.length}))].sort((a,b)=>Number(a)-Number(b));
+      const completedAt={};
+      for(const day of done){const at=validPersonalIso(row.completedAt?.[day])||validPersonalIso(row.updatedAt)||validPersonalIso(row.startedAt);if(at)completedAt[day]=at}
+      const startedAt=validPersonalIso(row.startedAt)||validPersonalIso(row.updatedAt)||latestPersonalIso(...Object.values(completedAt));
+      const updatedAt=latestPersonalIso(row.updatedAt,startedAt,...Object.values(completedAt));
+      if(startedAt||done.length)out[template.key]={done,completedAt,startedAt,updatedAt};
+    }
+    return out;
+  }
+  function mergePersonalChallenges(localInput,remoteInput){
+    const local=normalizePersonalChallenges(localInput),remote=normalizePersonalChallenges(remoteInput),out={};
+    for(const template of challengeTemplates){
+      const a=local[template.key]||{},b=remote[template.key]||{};
+      const done=[...new Set([...(a.done||[]),...(b.done||[])])].sort((x,y)=>Number(x)-Number(y));
+      const startedAt=earliestPersonalIso(a.startedAt,b.startedAt);
+      const completedAt={};
+      for(const day of done){const at=earliestPersonalIso(a.completedAt?.[day],b.completedAt?.[day]);if(at)completedAt[day]=at}
+      const updatedAt=latestPersonalIso(a.updatedAt,b.updatedAt,startedAt,...Object.values(completedAt));
+      if(startedAt||done.length)out[template.key]={done,completedAt,startedAt,updatedAt};
+    }
+    return out;
+  }
+  function personalCanonicalText(value){return JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item)}
+  function personalUserId(){return String(window.BQAccount?.session?.()?.user?.id||'')}
+  function personalOwner(){try{return String(localStorage.getItem(PERSONAL_CHALLENGE_OWNER_KEY)||'')}catch{return ''}}
+  function setPersonalOwner(value){try{localStorage.setItem(PERSONAL_CHALLENGE_OWNER_KEY,String(value||''))}catch{}}
+  function personalCacheKey(owner){return `${PERSONAL_CHALLENGE_CACHE_PREFIX}${owner}`}
+  function rawPersonalChallenges(){return normalizePersonalChallenges(readLocal(PERSONAL_CHALLENGE_KEY,{}))}
+  function persistPersonalChallenges(value){
+    const normalized=normalizePersonalChallenges(value);
+    writeLocal(PERSONAL_CHALLENGE_KEY,normalized);
+    const owner=personalOwner();
+    if(owner)writeLocal(personalCacheKey(owner),normalized);
+    return normalized;
+  }
+  function preparePersonalChallengeOwner(){
+    const userId=personalUserId(),nextOwner=userId||PERSONAL_CHALLENGE_GUEST,prior=personalOwner(),current=rawPersonalChallenges();
+    if(prior===nextOwner)return current;
+    if(!prior){setPersonalOwner(nextOwner);writeLocal(personalCacheKey(nextOwner),current);return current}
+    writeLocal(personalCacheKey(prior),current);
+    const restored=normalizePersonalChallenges(readLocal(personalCacheKey(nextOwner),{}));
+    writeLocal(PERSONAL_CHALLENGE_KEY,restored);
+    setPersonalOwner(nextOwner);
+    return restored;
+  }
+  function personalChallenges(){preparePersonalChallengeOwner();return rawPersonalChallenges()}
+  function personalProgress(template){const row=personalChallenges()[template.key]||{};const done=Array.isArray(row.done)?row.done.map(String):[];return {done:new Set(done),completedAt:{...(row.completedAt||{})},startedAt:row.startedAt||'',updatedAt:row.updatedAt||''}}
+  function savePersonalProgress(template,done,startedAt='',completedAt={}){
+    const all=personalChallenges(),now=new Date().toISOString(),prior=all[template.key]||{};
+    all[template.key]={
+      done:[...done].map(String).sort((a,b)=>Number(a)-Number(b)),
+      completedAt:{...(prior.completedAt||{}),...completedAt},
+      startedAt:startedAt||prior.startedAt||now,
+      updatedAt:now
+    };
+    persistPersonalChallenges(all);
+    return all[template.key];
+  }
+  function startPersonalChallenge(template){
+    const state=personalProgress(template);
+    if(state.startedAt)return state;
+    savePersonalProgress(template,state.done,new Date().toISOString(),state.completedAt);
+    return personalProgress(template);
+  }
+  function nextPersonalChallengeDay(template,state=personalProgress(template)){
+    for(let index=0;index<template.steps.length;index++){const day=String(index+1);if(!state.done.has(day))return day}
+    return null;
+  }
+  async function syncPersonalChallenges(){
+    const client=window.BQAccount?.client?.(),userId=personalUserId();
+    preparePersonalChallengeOwner();
+    if(!client||!userId)return {status:'local'};
+    for(let attempt=0;attempt<4;attempt++){
+      const loaded=await client.from('bible_progress_snapshots').select('user_id,state,schema_version,updated_at').eq('user_id',userId).maybeSingle();
+      if(loaded.error)throw loaded.error;
+      const row=loaded.data||null,remoteRaw=row?.state?.[PERSONAL_CHALLENGE_SLICE]||null;
+      const local=personalChallenges(),merged=mergePersonalChallenges(local,remoteRaw||{});
+      persistPersonalChallenges(merged);
+      if(!remoteRaw&&!Object.keys(merged).length)return {status:'synced',updatedAt:row?.updated_at||''};
+      if(remoteRaw&&personalCanonicalText(normalizePersonalChallenges(remoteRaw))===personalCanonicalText(merged))return {status:'synced',updatedAt:row?.updated_at||''};
+      const priorMs=row?.updated_at?Date.parse(row.updated_at):0,candidateMs=Date.now(),updatedAt=new Date(candidateMs>priorMs?candidateMs:priorMs+1).toISOString();
+      const state={...((row?.state&&typeof row.state==='object'&&!Array.isArray(row.state))?row.state:{}),[PERSONAL_CHALLENGE_SLICE]:merged};
+      if(row){
+        const saved=await client.from('bible_progress_snapshots').update({state,schema_version:Number(row.schema_version)||1,updated_at:updatedAt}).eq('user_id',userId).eq('updated_at',row.updated_at).select('user_id,state,schema_version,updated_at').maybeSingle();
+        if(saved.error)throw saved.error;
+        if(saved.data)return {status:'synced',updatedAt:saved.data.updated_at||updatedAt};
+      }else{
+        const saved=await client.from('bible_progress_snapshots').insert({user_id:userId,state,schema_version:1,updated_at:updatedAt}).select('user_id,state,schema_version,updated_at').maybeSingle();
+        if(!saved.error&&saved.data)return {status:'synced',updatedAt:saved.data.updated_at||updatedAt};
+        if(saved.error?.code!=='23505')throw saved.error;
+      }
+    }
+    throw new Error('Personal Challenge account sync could not settle after concurrent updates.');
+  }
   function layer(id){let x=document.getElementById(id);if(!x){x=document.createElement('div');x.id=id;x.className='innovation-layer hidden';document.body.appendChild(x)}return x}
   function show(id,html,bind){const x=layer(id);x.innerHTML=`<main class="innovation-app">${html}</main>`;x.classList.remove('hidden');document.body.classList.add('innovation-open');bind?.(x);x.scrollTop=0}
   function close(id){layer(id).classList.add('hidden');if(!document.querySelector('.innovation-layer:not(.hidden)'))document.body.classList.remove('innovation-open')}
@@ -60,12 +177,49 @@
   // Characters & Places
   let explorerItem=null,clue=0;
   function explorer(){show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-close>← BibleQuest</button><b>Characters & Places</b><span>🧭</span></header><section class="innovation-hero"><small>SCRIPTURE-GROUNDED EXPLORATION</small><h1>People, places, relationships.</h1><p>Curated from Scripture with STEPBible/OpenBible resources used as reference data. The game avoids inventing hidden facts.</p></section><div class="innovation-card-grid"><button data-explorer-mode="person"><span>🕵️</span><b>Who Am I?</b><small>Reveal clues about a Bible person.</small></button><button data-explorer-mode="place"><span>📍</span><b>Where Is It?</b><small>Identify a biblical place from clues.</small></button><button data-explorer-mode="connections"><span>🔗</span><b>Connections</b><small>See people, places, and Scripture references together.</small></button></div>`,x=>{x.querySelector('[data-explorer-close]').onclick=()=>close('bqExplorerLayer');x.querySelectorAll('[data-explorer-mode]').forEach(b=>b.onclick=()=>explorerMode(b.dataset.explorerMode))})}
-  function explorerMode(kind){if(kind==='connections'){show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>Connections</b><span>🔗</span></header><div class="connection-list">${people.map(p=>`<article><span>${p.kind==='person'?'👤':'📍'}</span><div><b>${esc(p.name)}</b><small>${esc(p.place)} · ${esc(p.refs)}</small><p>${esc(p.clues[1])}</p></div></article>`).join('')}</div>`,x=>x.querySelector('[data-explorer-back]').onclick=explorer);return}const pool=people.filter(p=>p.kind===kind);explorerItem=pool[Math.floor(Math.random()*pool.length)];clue=0;renderExplorerQuiz()}
-  function renderExplorerQuiz(){const p=explorerItem;show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>${p.kind==='person'?'Who Am I?':'Where Is It?'}</b><span>${p.kind==='person'?'🕵️':'📍'}</span></header><section class="explorer-quiz"><small>CLUE ${clue+1} OF ${p.clues.length}</small><h1>${esc(p.clues[clue])}</h1>${clue<p.clues.length-1?'<button data-explorer-clue>Another clue</button>':''}<button class="secondary" data-explorer-answer>Reveal answer</button></section>`,x=>{x.querySelector('[data-explorer-back]').onclick=explorer;x.querySelector('[data-explorer-clue]')?.addEventListener('click',()=>{clue++;renderExplorerQuiz()});x.querySelector('[data-explorer-answer]').onclick=()=>show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>Answer</b><span>✓</span></header><section class="explorer-answer"><small>${p.kind.toUpperCase()}</small><h1>${esc(p.name)}</h1><p>${esc(p.clues.join(' · '))}</p><div><b>Scripture</b><span>${esc(p.refs)}</span></div><div><b>Place</b><span>${esc(p.place)}</span></div><button data-explorer-next>Next one</button></section>`,y=>{award(2,'knowledge','Bible Explorer',{completed:1});y.querySelector('[data-explorer-back]').onclick=explorer;y.querySelector('[data-explorer-next]').onclick=()=>explorerMode(p.kind)})})}
+  function chooseExplorerItem(kind){const pool=people.filter(p=>p.kind===kind),recentState=readLocal(EXPLORER_RECENT_KEY,{}),stored=recentState[kind],legacySeen=Array.isArray(stored)?stored:[],seen=[...new Set((Array.isArray(stored?.seen)?stored.seen:legacySeen).filter(name=>pool.some(p=>p.name===name)))],last=pool.some(p=>p.name===stored?.last)?stored.last:(seen.at(-1)||''),cycle=Math.max(0,Number(stored?.cycle)||0);let nextCycle=cycle,nextSeen=seen,available=pool.filter(p=>!seen.includes(p.name));if(!available.length){nextCycle=cycle+1;nextSeen=[];available=pool.filter(p=>pool.length<2||p.name!==last);if(!available.length)available=pool}const chosen=available[Math.floor(Math.random()*available.length)]||available[0];recentState[kind]={cycle:nextCycle,seen:[...nextSeen,chosen.name],last:chosen.name};writeLocal(EXPLORER_RECENT_KEY,recentState);return chosen}
+  function explorerMode(kind){if(kind==='connections'){show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>Connections</b><span>🔗</span></header><div class="connection-list">${people.map(p=>`<article><span>${p.kind==='person'?'👤':'📍'}</span><div><b>${esc(p.name)}</b><small>${esc(p.place)} · ${esc(p.refs)}</small><p>${esc(p.clues[1])}</p></div></article>`).join('')}</div>`,x=>x.querySelector('[data-explorer-back]').onclick=explorer);return}const saved=readLocal(EXPLORER_SESSION_KEY,{}),resume=saved.kind===kind&&!saved.revealed&&people.find(p=>p.kind===kind&&p.name===saved.name);explorerItem=resume||chooseExplorerItem(kind);clue=resume?Math.max(0,Math.min(explorerItem.clues.length-1,Number(saved.clue)||0)):0;writeLocal(EXPLORER_SESSION_KEY,{kind,name:explorerItem.name,clue,revealed:false});renderExplorerQuiz()}
+  function renderExplorerQuiz(){const p=explorerItem;show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>${p.kind==='person'?'Who Am I?':'Where Is It?'}</b><span>${p.kind==='person'?'🕵️':'📍'}</span></header><section class="explorer-quiz"><small>CLUE ${clue+1} OF ${p.clues.length}</small><h1>${esc(p.clues[clue])}</h1>${clue<p.clues.length-1?'<button data-explorer-clue>Another clue</button>':''}<button class="secondary" data-explorer-answer>Reveal answer</button></section>`,x=>{x.querySelector('[data-explorer-back]').onclick=explorer;x.querySelector('[data-explorer-clue]')?.addEventListener('click',()=>{clue++;writeLocal(EXPLORER_SESSION_KEY,{kind:p.kind,name:p.name,clue,revealed:false});renderExplorerQuiz()});x.querySelector('[data-explorer-answer]').onclick=()=>{writeLocal(EXPLORER_SESSION_KEY,{kind:p.kind,name:p.name,clue,revealed:true});show('bqExplorerLayer',`<header class="innovation-top"><button data-explorer-back>← Explorer</button><b>Answer</b><span>✓</span></header><section class="explorer-answer"><small>${p.kind.toUpperCase()}</small><h1>${esc(p.name)}</h1><p>${esc(p.clues.join(' · '))}</p><div><b>Scripture</b><span>${esc(p.refs)}</span></div><div><b>Place</b><span>${esc(p.place)}</span></div><button data-explorer-next>Next one</button></section>`,y=>{award(2,'knowledge','Bible Explorer',{completed:1});y.querySelector('[data-explorer-back]').onclick=explorer;y.querySelector('[data-explorer-next]').onclick=()=>{writeLocal(EXPLORER_SESSION_KEY,{});explorerMode(p.kind)}})}})}
 
   // Congregation challenges
-  async function challenges(){const c=window.BQAccount?.client?.(),s=window.BQAccount?.session?.(),cid=(()=>{try{return JSON.parse(localStorage.getItem('biblequest_cloud_v1')||'{}').activeCongregationId||''}catch{return ''}})();let active=[];if(c&&s&&cid){const r=await c.from('bible_challenges').select('*').eq('congregation_id',cid).eq('active',true).order('starts_on',{ascending:false}).limit(20);active=r.data||[]}show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-close>← BibleQuest</button><b>Church Challenges</b><span>🏁</span></header><section class="innovation-hero"><small>SEASONS · HABITS · SHARED MOMENTUM</small><h1>Grow together without turning faith into a score.</h1><p>Leaders can launch a challenge. Completion can be celebrated; private reflections remain private.</p></section>${active.length?`<h3 class="innovation-section-title">Active in your congregation</h3><div class="challenge-list">${active.map(a=>`<button data-challenge-open="${a.id}"><span>🏁</span><div><b>${esc(a.title)}</b><small>${esc(a.challenge_type)} · starts ${esc(a.starts_on)}</small></div></button>`).join('')}</div>`:''}<h3 class="innovation-section-title">Ready-made challenges</h3><div class="challenge-list">${challengeTemplates.map((t,i)=>`<button data-challenge-template="${i}"><span>${t.type==='couples'?'💞':t.type==='wisdom'?'🧭':'📖'}</span><div><b>${esc(t.title)}</b><small>${t.days} days · ${esc(t.desc)}</small></div></button>`).join('')}</div>`,x=>{x.querySelector('[data-challenge-close]').onclick=()=>close('bqChallengeLayer');x.querySelectorAll('[data-challenge-template]').forEach(b=>b.onclick=()=>challengeTemplate(+b.dataset.challengeTemplate));x.querySelectorAll('[data-challenge-open]').forEach(b=>b.onclick=()=>openCloudChallenge(b.dataset.challengeOpen))})}
-  function challengeTemplate(i){const t=challengeTemplates[i];const c=window.BQAccount?.client?.(),s=window.BQAccount?.session?.(),cid=(()=>{try{return JSON.parse(localStorage.getItem('biblequest_cloud_v1')||'{}').activeCongregationId||''}catch{return ''}})();show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-back>← Challenges</button><b>${esc(t.title)}</b><span>🏁</span></header><section class="challenge-detail"><small>${t.days}-DAY TEMPLATE</small><h1>${esc(t.title)}</h1><p>${esc(t.desc)}</p><div class="challenge-days">${t.steps.slice(0,14).map((v,n)=>`<span><b>${n+1}</b>${esc(v)}</span>`).join('')}${t.steps.length>14?`<span><b>+${t.steps.length-14}</b>more days</span>`:''}</div>${c&&s&&cid?'<button data-challenge-launch>Launch for congregation</button>':'<div class="innovation-note">Join a cloud congregation to launch this for everyone. You can still use the plan personally.</div>'}</section>`,x=>{x.querySelector('[data-challenge-back]').onclick=challenges;x.querySelector('[data-challenge-launch]')?.addEventListener('click',async()=>{const role=await c.from('bible_congregation_members').select('role').eq('congregation_id',cid).eq('user_id',s.user.id).eq('active',true).maybeSingle();if(!['facilitator','leader','pastor','admin'].includes(role.data?.role||'')){alert('Only a facilitator, leader, pastor, or admin can launch a congregation challenge.');return}const end=new Date();end.setDate(end.getDate()+t.days-1);const r=await c.from('bible_challenges').insert({congregation_id:cid,created_by:s.user.id,title:t.title,challenge_type:t.type,template_key:t.key,starts_on:new Date().toISOString().slice(0,10),ends_on:end.toISOString().slice(0,10),metadata:{days:t.days,steps:t.steps}});if(r.error)alert(r.error.message);else challenges()})})}
+  async function challenges(){
+    await syncPersonalChallenges().catch(error=>console.warn('Personal Challenge account resume unavailable; using local progress',error));
+    const c=window.BQAccount?.client?.(),s=window.BQAccount?.session?.(),cid=(()=>{try{return JSON.parse(localStorage.getItem('biblequest_cloud_v1')||'{}').activeCongregationId||''}catch{return ''}})();
+    let active=[];
+    if(c&&s&&cid){const r=await c.from('bible_challenges').select('*').eq('congregation_id',cid).eq('active',true).order('starts_on',{ascending:false}).limit(20);active=r.data||[]}
+    const personal=personalChallenges(),ordered=challengeTemplates.map((t,i)=>({t,i,row:personal[t.key]||{}})).sort((a,b)=>Number(Boolean(a.row.updatedAt))-Number(Boolean(b.row.updatedAt))||String(a.row.updatedAt||'').localeCompare(String(b.row.updatedAt||'')));
+    const resumeCopy=personalUserId()?'Personal challenges resume with your signed-in BibleQuest account.':'Personal challenges stay on this device until you sign in.';
+    show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-close>← BibleQuest</button><b>Church Challenges</b><span>🏁</span></header><section class="innovation-hero"><small>SEASONS · HABITS · SHARED MOMENTUM</small><h1>Grow together without turning faith into a score.</h1><p>Leaders can launch a congregation challenge. You can also work through a personal challenge in order. ${esc(resumeCopy)}</p></section>${active.length?`<h3 class="innovation-section-title">Active in your congregation</h3><div class="challenge-list">${active.map(a=>`<button data-challenge-open="${a.id}"><span>🏁</span><div><b>${esc(a.title)}</b><small>${esc(a.challenge_type)} · starts ${esc(a.starts_on)}</small></div></button>`).join('')}</div>`:''}<h3 class="innovation-section-title">Ready-made challenges</h3><div class="challenge-list">${ordered.map(({t,i,row})=>{const done=Array.isArray(row.done)?row.done.length:0,complete=done>=t.steps.length,started=Boolean(row.startedAt);const status=complete?`${done}/${t.steps.length} complete`:started?`${done}/${t.steps.length} complete · Resume`:`${t.days} days · ${esc(t.desc)}`;return `<button data-challenge-template="${i}"><span>${t.type==='couples'?'💞':t.type==='wisdom'?'🧭':t.type==='prayer'?'🙏':t.type==='service'?'🤝':'📖'}</span><div><b>${esc(t.title)}</b><small>${status}</small></div></button>`}).join('')}</div>`,x=>{x.querySelector('[data-challenge-close]').onclick=()=>close('bqChallengeLayer');x.querySelectorAll('[data-challenge-template]').forEach(b=>b.onclick=()=>challengeTemplate(+b.dataset.challengeTemplate));x.querySelectorAll('[data-challenge-open]').forEach(b=>b.onclick=()=>openCloudChallenge(b.dataset.challengeOpen))})
+  }
+  function challengeTemplate(i){
+    const t=challengeTemplates[i],c=window.BQAccount?.client?.(),s=window.BQAccount?.session?.(),cid=(()=>{try{return JSON.parse(localStorage.getItem('biblequest_cloud_v1')||'{}').activeCongregationId||''}catch{return ''}})(),local=personalProgress(t),complete=local.done.size===t.steps.length;
+    const personalAction=complete?'View completed challenge':local.startedAt?'Resume personal challenge':'Start personal challenge';
+    const personalNote=personalUserId()?'Personal progress is saved locally first and resumes through your signed-in BibleQuest account.':'Personal progress is saved on this device. Sign in to resume it on other devices.';
+    show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-back>← Challenges</button><b>${esc(t.title)}</b><span>🏁</span></header><section class="challenge-detail"><small>${t.days}-DAY TEMPLATE</small><h1>${esc(t.title)}</h1><p>${esc(t.desc)}</p><div class="challenge-days">${t.steps.slice(0,14).map((v,n)=>`<span><b>${n+1}</b>${esc(v)}</span>`).join('')}${t.steps.length>14?`<span><b>+${t.steps.length-14}</b>more days</span>`:''}</div><button data-challenge-personal>${personalAction}</button>${c&&s&&cid?'<button class="secondary" data-challenge-launch>Launch for congregation</button>':''}<div class="innovation-note">${esc(personalNote)}</div></section>`,x=>{
+      x.querySelector('[data-challenge-back]').onclick=challenges;
+      x.querySelector('[data-challenge-personal]').onclick=()=>{if(!local.startedAt&&!complete)startPersonalChallenge(t);void syncPersonalChallenges().catch(error=>console.warn('Personal Challenge sync unavailable',error));personalChallenge(t)};
+      x.querySelector('[data-challenge-launch]')?.addEventListener('click',async()=>{const role=await c.from('bible_congregation_members').select('role').eq('congregation_id',cid).eq('user_id',s.user.id).eq('active',true).maybeSingle();if(!['facilitator','leader','pastor','admin'].includes(role.data?.role||'')){alert('Only a facilitator, leader, pastor, or admin can launch a congregation challenge.');return}const end=new Date();end.setDate(end.getDate()+t.days-1);const r=await c.from('bible_challenges').insert({congregation_id:cid,created_by:s.user.id,title:t.title,challenge_type:t.type,template_key:t.key,starts_on:new Date().toISOString().slice(0,10),ends_on:end.toISOString().slice(0,10),metadata:{days:t.days,steps:t.steps}});if(r.error)alert(r.error.message);else challenges()})
+    })
+  }
+  function personalChallenge(t){
+    let state=personalProgress(t);
+    if(!state.startedAt){state=startPersonalChallenge(t)}
+    const done=state.done,nextDay=nextPersonalChallengeDay(t,state),accountCopy=personalUserId()?'Progress will resume with your BibleQuest account.':'Progress is stored on this device until you sign in.';
+    show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-back>← ${esc(t.title)}</button><b>Personal challenge</b><span>${done.size}/${t.steps.length}</span></header><section class="challenge-detail"><h1>${esc(t.title)}</h1><p>Complete the next unfinished day in order. Later days unlock as you progress; completed days cannot be completed twice. ${esc(accountCopy)}</p><div class="challenge-progress-days">${t.steps.map((v,i)=>{const day=String(i+1),isDone=done.has(day),isNext=!isDone&&day===nextDay,locked=!isDone&&!isNext;return `<button class="${isDone?'done':isNext?'next':'locked'}" data-personal-challenge-day="${day}" data-personal-challenge-state="${isDone?'done':isNext?'next':'locked'}" ${isDone||locked?'disabled':''} aria-disabled="${isDone||locked?'true':'false'}"><b>${isDone?'✓':i+1}</b><span>${esc(v)}</span></button>`}).join('')}</div>${done.size===t.steps.length?'<div class="innovation-note">Challenge complete. Your completed challenge remains saved in your history.</div>':''}</section>`,x=>{
+      x.querySelector('[data-challenge-back]').onclick=()=>challengeTemplate(challengeTemplates.findIndex(row=>row.key===t.key));
+      x.querySelectorAll('[data-personal-challenge-day]').forEach(b=>b.onclick=()=>{
+        const day=b.dataset.personalChallengeDay;
+        if(done.has(day)||day!==nextPersonalChallengeDay(t,state))return;
+        const at=new Date().toISOString();
+        done.add(day);
+        state={...state,done,completedAt:{...state.completedAt,[day]:at},updatedAt:at};
+        savePersonalProgress(t,done,state.startedAt,state.completedAt);
+        award(3,t.type==='couples'?'couples':'consistency','Personal Challenge',{completed:1,template_key:t.key,day});
+        void syncPersonalChallenges().catch(error=>console.warn('Personal Challenge sync unavailable',error));
+        personalChallenge(t)
+      })
+    })
+  }
   async function openCloudChallenge(id){const c=window.BQAccount?.client?.(),s=window.BQAccount?.session?.();if(!c||!s)return;const r=await c.from('bible_challenges').select('*').eq('id',id).single();if(r.error)return;const t=r.data,steps=t.metadata?.steps||[],p=await c.from('bible_challenge_progress').select('day_key').eq('challenge_id',id).eq('user_id',s.user.id),done=new Set((p.data||[]).map(x=>x.day_key));show('bqChallengeLayer',`<header class="innovation-top"><button data-challenge-back>← Challenges</button><b>${esc(t.title)}</b><span>${done.size}/${steps.length}</span></header><section class="challenge-detail"><h1>${esc(t.title)}</h1><p>Tap a day after you actually complete it. Completion is shared; your private notes are not.</p><div class="challenge-progress-days">${steps.map((v,i)=>`<button class="${done.has(String(i+1))?'done':''}" data-challenge-day="${i+1}"><b>${done.has(String(i+1))?'✓':i+1}</b><span>${esc(v)}</span></button>`).join('')}</div></section>`,x=>{x.querySelector('[data-challenge-back]').onclick=challenges;x.querySelectorAll('[data-challenge-day]').forEach(b=>b.onclick=async()=>{const day=b.dataset.challengeDay;const q=await c.from('bible_challenge_progress').upsert({challenge_id:id,user_id:s.user.id,day_key:day,completed_at:new Date().toISOString()},{onConflict:'challenge_id,user_id,day_key'});if(!q.error){award(3,t.challenge_type==='couples'?'couples':'consistency','Church Challenge',{completed:1,challenge_id:id,day});openCloudChallenge(id)}})})}
 
   window.BQStudy={open:openStudy};window.BQMission={open:mission};window.BQWorld={open:world};window.BQExplorer={open:explorer};window.BQChallenges={open:challenges};

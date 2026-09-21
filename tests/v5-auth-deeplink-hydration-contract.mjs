@@ -17,7 +17,7 @@ assert.match(
 );
 
 const rerenders = (bootstrap.match(/router\.navigate\(router\.current\(\)\);/g) || []).length;
-assert.equal(rerenders, 1, 'bootstrap must contain exactly one current-route hydration re-render');
+assert.equal(rerenders, 1, 'bootstrap must contain exactly one direct authenticated-session hydration re-render');
 assert.doesNotMatch(
   hydrationBlock,
   /\n\s*router\.navigate\(router\.current\(\)\);/,

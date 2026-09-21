@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-20 JST
+Updated: 2026-09-22 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -19,6 +19,7 @@ Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb7
 - [x] ADR-0002 reproducible database-CI strategy accepted without requiring paid infrastructure.
 - [x] Inherited static/governance baseline green on Phase-0 candidate.
 - [x] Inherited/built browser baseline re-run on Chromium-capable CI: 45 canonical direct deep links + not-found, representative 320/360/390/412/430px routes, service-worker registration, and built PWA shell acceptance are green.
+- [ ] V5.1 post-release parity baseline `c84fcc28e7b2c433d99b0553b1a14301fbe217d3` is merged forward into V6 with inherited V5.1 regression/browser evidence green on the exact reconciliation head.
 
 ## B. Build/toolchain
 

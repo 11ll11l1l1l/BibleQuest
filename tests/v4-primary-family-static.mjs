@@ -37,12 +37,13 @@ assert.ok(shell.includes('aria-current'),'Primary shell must preserve active-rou
 for(const route of['home','learn','play','grow','more']) assert.ok(bootstrap.includes(`${route}:()=>`)||bootstrap.includes(`${route}: () =>`),`Bootstrap lost the ${route} route owner.`);
 for(const token of[
   "onAssignments:()=>router.navigate('assignments')",
-  "onReader:()=>router.navigate('reader')",
+  "onReader:openFreeReader",
   "onCalendar:()=>router.navigate('calendar')",
   "onGrow:()=>router.navigate('grow')",
   "onCommunity:()=>router.navigate('community')",
   "onMinistryHub:()=>router.navigate('ministry-hub')"
 ]) assert.ok(bootstrap.includes(token),`Primary family wiring disappeared: ${token}.`);
+assert.ok(bootstrap.includes("const openFreeReader=()=>navigateGeneral('reader')"),'Primary-family Reader wiring must preserve the V5 free-reading/Main-Quest separation boundary.');
 
 for(const sheet of['src/ui/home-v4.css','src/ui/learn-v4.css','src/ui/games-v4.css','src/ui/journey-v4.css','src/ui/more-v4.css','src/ui/family-accents-v4.css'])
   assert.ok(index.includes(`href="${sheet}"`),`Primary V4 family stylesheet is not active: ${sheet}.`);

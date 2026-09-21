@@ -2,7 +2,7 @@ import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
 import { iconSvg } from '../../ui/icons.js';
 import { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
-import { homeThisWeekIntroHtml } from './today-this-week.js';
+import { homeThisWeekIntroHtml, weeklyJourneyHtml } from './today-this-week.js';
 
 export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
 
@@ -11,7 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const HOME_SHORTCUTS = Object.freeze([
   Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', labelKey: 'home.shortcut.daily', action: 'onMission' }),
   Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', labelKey: 'home.shortcut.reader', action: 'onReader' }),
-  Object.freeze({ id: 'assignments', icon: 'guide', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
+  Object.freeze({ id: 'assignments', icon: 'assignments', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
   Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
   Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
 ]);
@@ -20,14 +20,66 @@ const HOME_COMPOSITION_COPY = Object.freeze({
   en: Object.freeze({
     'home.composition.noUpcomingEvents': 'No upcoming events yet.',
     'home.composition.noContinueReading': 'Open the Bible to start or continue reading.',
-    'home.composition.noLatestService': 'No confirmed latest service yet.'
+    'home.composition.noLatestService': 'No confirmed latest service yet.',
+    'home.quest.eyebrow': 'MAIN BIBLE QUEST',
+    'home.quest.title': 'Genesis → Revelation',
+    'home.quest.body': 'Read the whole Bible in order. Free reading stays separate.',
+    'home.quest.continue': 'Continue Bible Quest',
+    'home.quest.view': 'View Quest',
+    'home.quest.complete': 'Bible Quest complete',
+    'home.quest.chapters': 'chapters',
+    'home.quest.books': 'books',
+    'home.quest.completeLabel': 'complete',
+    'home.quest.next': 'Next'
   }),
   tl: Object.freeze({
     'home.composition.noUpcomingEvents': 'Wala pang paparating na event.',
     'home.composition.noContinueReading': 'Buksan ang Biblia para magsimula o magpatuloy sa pagbabasa.',
-    'home.composition.noLatestService': 'Wala pang kumpirmadong pinakabagong recording ng service.'
+    'home.composition.noLatestService': 'Wala pang kumpirmadong pinakabagong recording ng service.',
+    'home.quest.eyebrow': 'PANGUNAHING BIBLE QUEST',
+    'home.quest.title': 'Genesis → Pahayag',
+    'home.quest.body': 'Basahin ang buong Biblia nang sunod-sunod. Hiwalay ang malayang pagbabasa.',
+    'home.quest.continue': 'Ipagpatuloy ang Bible Quest',
+    'home.quest.view': 'Tingnan ang Quest',
+    'home.quest.complete': 'Tapos ang Bible Quest',
+    'home.quest.chapters': 'kabanata',
+    'home.quest.books': 'aklat',
+    'home.quest.completeLabel': 'kumpleto',
+    'home.quest.next': 'Susunod'
+  }),
+  ceb: Object.freeze({
+    'home.composition.noUpcomingEvents': 'Wala pay umaabot nga kalihokan.',
+    'home.composition.noContinueReading': 'Ablihi ang Bibliya aron magsugod o mopadayon sa pagbasa.',
+    'home.composition.noLatestService': 'Wala pay kumpirmadong pinakabag-ong recording sa service.',
+    'home.quest.eyebrow': 'PANGUNAHING BIBLE QUEST',
+    'home.quest.title': 'Genesis → Pinadayag',
+    'home.quest.body': 'Basaha ang tibuok Bibliya sa hustong han-ay. Bulag ang libre nga pagbasa.',
+    'home.quest.continue': 'Padayon sa Bible Quest',
+    'home.quest.view': 'Tan-awa ang Quest',
+    'home.quest.complete': 'Nahuman ang Bible Quest',
+    'home.quest.chapters': 'kapitulo',
+    'home.quest.books': 'libro',
+    'home.quest.completeLabel': 'nahuman',
+    'home.quest.next': 'Sunod'
   })
 });
+
+const HOME_DAILY_TITLES = Object.freeze({
+  en: Object.freeze({
+    'JHN:15':'Remain in Christ','MAT:5':'Kingdom Character','LUK:10':'Love Your Neighbor','PHP:2':'The Mind of Christ','JAS:1':'Hear and Do',
+    'ROM:12':'A Living Sacrifice','PSA:23':'The Shepherd','PRO:3':'Trust the Lord','1CO:13':'The Way of Love','GAL:5':'Walk by the Spirit'
+  }),
+  tl: Object.freeze({
+    'JHN:15':'Manatili kay Cristo','MAT:5':'Ugali ng Kaharian','LUK:10':'Ibigin ang Iyong Kapwa','PHP:2':'Ang Kaisipan ni Cristo','JAS:1':'Makinig at Gawin',
+    'ROM:12':'Isang Buhay na Handog','PSA:23':'Ang Pastol','PRO:3':'Magtiwala sa Panginoon','1CO:13':'Ang Daan ng Pag-ibig','GAL:5':'Lumakad ayon sa Espiritu'
+  }),
+  ceb: Object.freeze({
+    'JHN:15':'Pabilin kang Cristo','MAT:5':'Kinaiya sa Gingharian','LUK:10':'Higugmaa ang Imong Isigkatawo','PHP:2':'Ang Hunahuna ni Cristo','JAS:1':'Paminaw ug Buhata',
+    'ROM:12':'Buhi nga Halad','PSA:23':'Ang Magbalantay','PRO:3':'Salig sa Ginoo','1CO:13':'Ang Dalan sa Gugma','GAL:5':'Paglakaw pinaagi sa Espiritu'
+  })
+});
+
+const dailyPassageTitle=(passage,locale)=>HOME_DAILY_TITLES[locale]?.[`${passage?.code}:${passage?.chapter}`]||passage?.title||'';
 
 function shortcutRailHtml(locale) {
   const tx = (key, values) => localization.t(key, { locale, values });
@@ -43,11 +95,12 @@ const readerSummary = reader => {
 };
 const eventSummary = event => event ? `${event.date || ''}${event.date && event.title ? ' · ' : ''}${event.title || ''}` : '';
 
-export function homePage({ progress, dailyMission, assignments, presence, calendar, reader, recordings, transform, notifications, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
+export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onBibleQuest, onBibleQuestContinue, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
   const locale = localization.getLocale();
   const tx = (key, values) => localization.t(key, { locale, values });
   const homeTx = (key, values) => localization.t(key, { locale, values, dictionaries: HOME_COMPOSITION_COPY });
   const state = progress?.getState?.() || { xp: 0, streak: 0, totalActivities: 0, badges: [] };
+  const quest = bibleQuest?.snapshot?.() || null;
   const daily = dailyMission?.today?.();
   const reference = daily ? `${daily.passage.book} ${daily.passage.chapter}:${daily.passage.from}–${daily.passage.to}` : '';
   const nextEvent = firstAgendaEvent(calendar?.getState?.());
@@ -56,6 +109,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
   const transformationState = transform?.getState?.();
   const notificationState = notifications?.snapshot?.();
   const leaderAnchor=(assignments?.snapshot?.()?.assignments||[]).find(row=>row?.progress?.status!=='completed'&&row?.dueState!=='scheduled')||null;
+  const weeklyState=weeklyJourney?.snapshot?.()||null;
   const transformationDetail = transformationState?.spiritual?.result ? tx('transform.basic.viewReflection') : tx('transform.mode.prompt');
   const nextEventDetail = eventSummary(nextEvent) || homeTx('home.composition.noUpcomingEvents');
   const continueReadingDetail = continueReading || homeTx('home.composition.noContinueReading');
@@ -71,7 +125,20 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </div>
         <img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
       </section>
-      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(daily.passage.title)}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
+      ${quest ? `<section class="bq-panel bq-home-daily" data-home-bible-quest>
+        <p class="bq-eyebrow">${escapeHtml(homeTx('home.quest.eyebrow'))}</p>
+        <h2>${escapeHtml(homeTx('home.quest.title'))}</h2>
+        <p>${escapeHtml(homeTx('home.quest.body'))}</p>
+        <div class="bq-progress-stats">
+          <div><b>${quest.completedChapters}/${quest.totalChapters}</b><span>${escapeHtml(homeTx('home.quest.chapters'))}</span></div>
+          <div><b>${quest.completedBooks}/${quest.totalBooks}</b><span>${escapeHtml(homeTx('home.quest.books'))}</span></div>
+          <div><b>${quest.percent}%</b><span>${escapeHtml(homeTx('home.quest.completeLabel'))}</span></div>
+        </div>
+        ${quest.complete
+          ? `<p><b>${escapeHtml(homeTx('home.quest.complete'))}</b></p>`
+          : `<p><b>${escapeHtml(homeTx('home.quest.next'))}:</b> ${escapeHtml(quest.next?.book || '')} ${escapeHtml(quest.next?.chapter || '')}</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-open-bible-quest-continue>${escapeHtml(homeTx('home.quest.continue'))}</button><button type="button" class="bq-secondary-button" data-open-bible-quest>${escapeHtml(homeTx('home.quest.view'))}</button></div>`}
+      </section>` : ''}
+      ${daily ? `<section class="bq-panel bq-home-daily" data-home-daily><p class="bq-eyebrow">${escapeHtml(tx('home.today.eyebrow', { date: daily.dateKey }))}</p><h2>${escapeHtml(tx('home.today.heading'))}</h2><p><b>${escapeHtml(dailyPassageTitle(daily.passage,locale))}</b> · ${escapeHtml(reference)}</p><p>${escapeHtml(tx('home.today.steps'))}</p><button type="button" class="bq-primary-button" data-open-daily>${escapeHtml(tx('home.today.open'))}</button></section>` : ''}
       <section class="bq-panel" data-home-progress>
         <p class="bq-eyebrow">${escapeHtml(tx('home.progress.eyebrow'))}</p>
         <div class="bq-progress-stats">
@@ -82,7 +149,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </div>
       </section>
       <section class="bq-home-week" data-home-this-week>
-        ${homeThisWeekIntroHtml(locale,{leaderAnchor})}
+        ${homeThisWeekIntroHtml(locale,{leaderAnchor,weeklyState})}
         <section class="bq-panel bq-home-congregation" data-home-congregation-assignments>
           <span class="bq-home-congregation-icon" aria-hidden="true">${iconSvg('home', { size: 22 })}</span>
           <span class="bq-home-congregation-copy"><span class="bq-eyebrow">${escapeHtml(tx('home.congregation.eyebrow'))}</span><b>${escapeHtml(tx('home.congregation.heading'))}</b><small data-home-congregation-caption>${escapeHtml(tx('home.congregation.joinCaption'))}</small><small data-home-active-count></small></span>
@@ -111,13 +178,13 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         </section>
         <section class="bq-panel bq-home-tile" data-home-transformation-prompt>
           <button type="button" class="bq-home-tile-button" data-open-home-transformation aria-label="${escapeHtml(tx('nav.transformation'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('grow', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('transform', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.transformation'))}</b><small>${escapeHtml(transformationDetail)}</small></span>
           </button>
         </section>
         <section class="bq-panel bq-home-tile" data-home-unread-notifications>
           <button type="button" class="bq-home-tile-button" data-open-home-notifications aria-label="${escapeHtml(tx('nav.notifications'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('notifications', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('nav.notifications'))}</b><small data-home-unread-notifications-count aria-live="polite">${Number(notificationState?.unread || 0)}</small></span>
           </button>
         </section>
@@ -126,7 +193,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
           <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="${escapeHtml(tx('home.tutorial.ariaLabel'))}">
-            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('guide', { size: 20 })}</span>
+            <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('tutorial', { size: 20 })}</span>
             <span class="bq-home-tile-text"><b>${escapeHtml(tx('home.tutorial.title'))}</b><small>${escapeHtml(tx('home.tutorial.description'))}</small></span>
           </button>
         </section>
@@ -139,6 +206,8 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       </div>`,
     mount(root) {
       const dailyButton = root.querySelector('[data-open-daily]');
+      const bibleQuestButton = root.querySelector('[data-open-bible-quest]');
+      const bibleQuestContinueButton = root.querySelector('[data-open-bible-quest-continue]');
       const tutorialButton = root.querySelector('[data-open-tutorial]');
       const recordingsButtons = root.querySelectorAll('[data-open-recordings]');
       const mediaButton = root.querySelector('[data-open-media]');
@@ -149,6 +218,17 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       const notificationsButton = root.querySelector('[data-open-home-notifications]');
       const congregationButton = root.querySelector('[data-open-congregation-assignments]');
       const railTrack = root.querySelector('[data-home-rail-track]');
+      const onWeeklyToggle = event => {
+        const button = event.target.closest?.('[data-weekly-journey-toggle]');
+        if (!button || !root.contains(button) || !weeklyJourney?.toggle) return;
+        event.preventDefault();
+        event.stopPropagation();
+        try {
+          const next = weeklyJourney.toggle(button.dataset.weeklyJourneyToggle).state;
+          const current = root.querySelector('[data-home-weekly-journey]');
+          if (current) current.outerHTML = weeklyJourneyHtml(locale, next);
+        } catch { /* keep the current weekly journey state visible if persistence fails */ }
+      };
       const congregationCaption = root.querySelector('[data-home-congregation-caption]');
       const assignmentHost = root.querySelector('[data-home-assignments]');
       const nextEventHost = root.querySelector('[data-home-next-event-detail]');
@@ -157,6 +237,8 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       let disposed = false;
       let congregationRoute = 'congregation';
       const openDaily = () => onMission?.();
+      const openBibleQuest = () => onBibleQuest?.();
+      const continueBibleQuest = () => onBibleQuestContinue?.();
       const openTutorial = () => onTutorial?.();
       const openRecordings = () => onRecordings?.();
       const openMedia = () => onMedia?.();
@@ -226,6 +308,8 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         }
       };
       dailyButton?.addEventListener('click', openDaily);
+      bibleQuestButton?.addEventListener('click', openBibleQuest);
+      bibleQuestContinueButton?.addEventListener('click', continueBibleQuest);
       tutorialButton?.addEventListener('click', openTutorial);
       recordingsButtons.forEach(button => button.addEventListener('click', openRecordings));
       mediaButton?.addEventListener('click', openMedia);
@@ -237,6 +321,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       congregationButton?.addEventListener('click', openCongregationAssignments);
       railTrack?.addEventListener('click', onRailClick);
       railTrack?.addEventListener('keydown', onRailKeydown);
+      root.addEventListener('click', onWeeklyToggle);
       bindAssignmentActions();
       void loadAssignments();
       void refreshHomeComposition();
@@ -258,6 +343,8 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
       return () => {
         disposed = true;
         dailyButton?.removeEventListener('click', openDaily);
+        bibleQuestButton?.removeEventListener('click', openBibleQuest);
+        bibleQuestContinueButton?.removeEventListener('click', continueBibleQuest);
         tutorialButton?.removeEventListener('click', openTutorial);
         recordingsButtons.forEach(button => button.removeEventListener('click', openRecordings));
         mediaButton?.removeEventListener('click', openMedia);
@@ -269,6 +356,7 @@ export function homePage({ progress, dailyMission, assignments, presence, calend
         congregationButton?.removeEventListener('click', openCongregationAssignments);
         railTrack?.removeEventListener('click', onRailClick);
         railTrack?.removeEventListener('keydown', onRailKeydown);
+        root.removeEventListener('click', onWeeklyToggle);
       };
     }
   };

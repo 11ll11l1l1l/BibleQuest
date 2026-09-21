@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import {createOfflineShellService} from '../src/app/offline-shell.js';
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
@@ -56,5 +57,11 @@ const delayedReady=await delayedStart;
 assert(delayedReady.ready,'Delayed first-load warmup must become ready after page load.');
 assert(posted?.urls.includes('https://example.test/app/src/features/games/index.js'),'Warm snapshot must include shell modules that finished loading after DOMContentLoaded.');
 delayed.dispose();
+
+const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
+for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
+  assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
+}
+assert(/specifier\.startsWith\('\.'\).*specifier\.startsWith\('\/'\)/s.test(workerSource),'Offline shell recursive warm must only follow relative or scope-rooted module imports.');
 
 console.log('BibleQuest v3 offline shell edge regression passed.');

@@ -47,16 +47,17 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
   function readLocal(current) {
     const saved = privateStorage.read(key(current), null);
     if (!saved || typeof saved !== 'object' || Number(saved.schema) !== SCHEMA || saved.owner !== current) {
-      return { selected: 'starter', earned: ['starter'] };
+      return { selected: 'starter', earned: ['starter'], pending: false };
     }
     return {
       selected: typeof saved.selected === 'string' ? saved.selected : 'starter',
-      earned: Array.isArray(saved.earned) ? saved.earned : ['starter']
+      earned: Array.isArray(saved.earned) ? saved.earned : ['starter'],
+      pending: saved.pending === true
     };
   }
 
-  function writeLocal(current, selected, earnedSet) {
-    privateStorage.write(key(current), { schema: SCHEMA, owner: current, selected, earned: [...earnedSet] });
+  function writeLocal(current, selected, earnedSet, pending = false) {
+    privateStorage.write(key(current), { schema: SCHEMA, owner: current, selected, earned: [...earnedSet], pending: pending === true });
   }
 
   function present() {
@@ -64,11 +65,12 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const m = metrics();
     const local = readLocal(current);
     const earned = unlockedIds(m, local.earned);
-    writeLocal(current, local.selected, earned);
+    writeLocal(current, local.selected, earned, local.pending);
     return Object.freeze({
       owner: current,
       scope: current.startsWith('account:') ? 'account-cloud' : 'guest-device',
       selected: findStyle(local.selected),
+      synced: current.startsWith('account:') ? !local.pending : true,
       styles: Object.freeze(STYLES.map(style => Object.freeze({
         ...style,
         unlocked: earned.has(style.id),
@@ -82,13 +84,25 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const s = session.getState();
     if (!s?.authenticated || !s?.user?.id) return present();
     const current = owner();
+    let local = readLocal(current);
+    const earned = unlockedIds(metrics(), local.earned);
+
+    // A failed prior save represents newer user intent than the last cloud row.
+    // Retry it before accepting remote state so an older cloud selection cannot
+    // silently overwrite a choice made while connectivity was unavailable.
+    if (local.pending) {
+      try {
+        await api.avatarVault.save(s.user.id, local.selected);
+        writeLocal(current, local.selected, earned, false);
+        local = readLocal(current);
+      } catch {
+        return present();
+      }
+    }
+
     try {
       const remote = await api.avatarVault.load(s.user.id);
-      if (remote?.selected_style) {
-        const local = readLocal(current);
-        const earned = unlockedIds(metrics(), local.earned);
-        writeLocal(current, remote.selected_style, earned);
-      }
+      if (remote?.selected_style) writeLocal(current, remote.selected_style, earned, false);
     } catch { /* device state remains authoritative until cloud reachable */ }
     return present();
   }
@@ -99,12 +113,15 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const local = readLocal(current);
     const earned = unlockedIds(metrics(), local.earned);
     if (!earned.has(style.id)) fail('BQ_AVATAR_VAULT_LOCKED', 'This avatar style is not unlocked yet.');
-    writeLocal(current, style.id, earned);
     const s = session.getState();
+    const accountOwned=Boolean(s?.authenticated && s?.user?.id);
+    writeLocal(current, style.id, earned, accountOwned);
     let synced = true;
-    if (s?.authenticated && s?.user?.id) {
-      try { await api.avatarVault.save(s.user.id, style.id); }
-      catch { synced = false; }
+    if (accountOwned) {
+      try {
+        await api.avatarVault.save(s.user.id, style.id);
+        writeLocal(current, style.id, earned, false);
+      } catch { synced = false; }
     }
     return Object.freeze({ ...present(), synced });
   }

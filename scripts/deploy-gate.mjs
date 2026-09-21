@@ -44,6 +44,40 @@ for(const entry of entries){
 }
 console.log('✓ Production entry-point assets exist');
 
+const v5Bootstrap=read('src/app/bootstrap.js');
+const requiredV5Routes=[
+  {
+    route:'bible-quest',
+    files:['src/app/bible-quest.js','src/features/bible-quest/index.js'],
+    import:"import { bibleQuestPage } from '../features/bible-quest/index.js';",
+    registration:"'bible-quest':()=>bibleQuestPage(",
+    entry:"onBibleQuest:()=>router.navigate('bible-quest')"
+  },
+  {
+    route:'explorer',
+    files:['src/app/explorer.js','src/features/explorer/index.js'],
+    import:"import { explorerPage } from '../features/explorer/index.js';",
+    registration:'explorer:()=>explorerPage(',
+    entry:"onExplorer:()=>router.navigate('explorer')"
+  },
+  {
+    route:'challenges',
+    files:['src/app/personal-challenges.js','src/features/challenges/index.js'],
+    import:"import { challengesPage } from '../features/challenges/index.js';",
+    registration:'challenges:()=>challengesPage(',
+    entry:"onChallenges:()=>router.navigate('challenges')"
+  }
+];
+for(const contract of requiredV5Routes){
+  for(const file of contract.files){
+    if(!exists(file))fail(`Required V5 route ${contract.route} is missing implementation file: ${file}`);
+  }
+  for(const [label,needle] of Object.entries({import:contract.import,registration:contract.registration,'navigation entry':contract.entry})){
+    if(!v5Bootstrap.includes(needle))fail(`Required V5 route ${contract.route} is missing ${label}`);
+  }
+}
+console.log(`✓ Required V5 routes are reachable: ${requiredV5Routes.map(item=>item.route).join(', ')}`);
+
 if(!exists('offline-shell-sw.js')||!exists('src/app/offline-shell.js'))fail('Missing v3 offline-shell owner or worker');
 const offlineShellOwner=read('src/app/offline-shell.js');
 const offlineShellWorker=read('offline-shell-sw.js');

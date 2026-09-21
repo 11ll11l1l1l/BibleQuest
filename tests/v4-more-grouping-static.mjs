@@ -19,7 +19,7 @@ const hooks = [
   'data-open-workspace', 'data-open-notification-center', 'data-open-community', 'data-open-ministry-hub',
   'data-open-content-review', 'data-open-couples-family', 'data-open-couples-cloud', 'data-open-journey-groups',
   'data-open-team-center', 'data-open-accessibility', 'data-install-app', 'data-open-backup',
-  'data-open-mission', 'data-open-calendar', 'data-open-congregation'
+  'data-open-mission', 'data-open-challenges', 'data-open-calendar', 'data-open-congregation'
 ];
 for (const hook of hooks) {
   assert.ok(more.includes(hook), `More must preserve the existing hook: ${hook}`);
@@ -28,7 +28,7 @@ for (const hook of hooks) {
 // Grouping: 5 labeled categories, each containing the right destinations.
 const groups = {
   ministry: ['data-more-ministry-hub', 'data-more-congregation', 'data-more-team-center', 'data-more-content-review', 'data-more-community'],
-  planning: ['data-more-calendar', 'data-more-mission'],
+  planning: ['data-more-calendar', 'data-more-mission', 'data-more-challenges'],
   together: ['data-more-couples>', 'data-more-couples-cloud', 'data-more-journey-groups'],
   'workspace-inbox': ['data-more-workspace', 'data-more-notifications'],
   device: ['data-more-accessibility', 'data-more-backup', 'data-more-install']
@@ -46,15 +46,7 @@ for (const label of ['MINISTRY &amp; CONGREGATION', 'PERSONAL PLANNING', 'TOGETH
   assert.ok(more.includes(label), `More is missing the expected group label: ${label}`);
 }
 
-// The mount() function - all event wiring - must be byte-for-byte identical
-// to the pre-tranche baseline. Only the html template may have changed.
-let baseline = null;
-try {
-  baseline = execFileSync('git', ['show', 'release/v4-games-avatar:src/features/more/index.js'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
-} catch { /* baseline unavailable in shallow checkout - hook checks above still enforced */ }
-if (baseline !== null) {
-  const extractMount = source => source.slice(source.indexOf('mount(root)'));
-  assert.equal(extractMount(more), extractMount(baseline), 'More hub grouping tranche must not touch mount() event-wiring logic - only the html template may change.');
-}
+// V5 intentionally extends mount() with the Personal Challenges destination.
+assert.ok(more.includes("data-open-challenges")&&more.includes("openChallenges=()=>onChallenges?.()"),'V5 More must wire Personal Challenges without removing prior hooks.');
 
 console.log('BibleQuest v4 More hub grouping contract passed.');
