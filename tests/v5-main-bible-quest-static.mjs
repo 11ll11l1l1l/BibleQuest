@@ -32,7 +32,9 @@ for(const token of[
   'completeActive',
   'must continue in order',
   'completedBooks',
-  'remainingChapters'
+  'remainingChapters',
+  "return {...normalized,activeKey:''}",
+  "canonicalText(accountState(state))"
 ]) assert.ok(service.includes(token),`Main Bible Quest owner missing contract token: ${token}`);
 
 assert.ok(home.includes('data-home-bible-quest'),'Home must expose Main Bible Quest as a primary card.');
