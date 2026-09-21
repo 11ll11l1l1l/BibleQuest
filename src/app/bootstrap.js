@@ -80,12 +80,6 @@ import {
   ACCESSIBILITY_PREFERENCES_FEATURE,
   createAccessibilityPreferencesService,
 } from '../v6/features/accessibility-preferences.ts';
-import { createBibleDataService } from '../core/bible.js';
-import { createProgressService } from '../core/progress.js';
-import { createRecallPackService } from '../core/recall-packs.js';
-import { createLessonEngine } from '../engines/lesson.js';
-import { createTransformEngine } from '../engines/transform.js';
-import { createPsychometricsEngine } from '../engines/psychometrics.js';
 import { storage, privateStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
