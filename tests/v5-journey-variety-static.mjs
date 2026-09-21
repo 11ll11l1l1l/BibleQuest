@@ -24,7 +24,7 @@ for(const token of [
   'writeLocal(EXPLORER_SESSION_KEY'
 ]) assert(suite.includes(token),`Missing V5 variety/resume contract token: ${token}`);
 
-assert(/if\(done\.has\(day\)\)return/.test(suite),'Personal challenge completion must reject duplicate day completion in the UI path.');
+assert(/if\(done\.has\(day\)\|\|day!==nextPersonalChallengeDay\(t,state\)\)return/.test(suite),'Personal challenge completion must reject duplicate and out-of-order day completion in the UI path.');
 assert(/disabled/.test(suite)&&/isDone/.test(suite),'Completed personal challenge days must render disabled.');
 assert(/available=pool\.filter\(p=>!exclude\.has\(p\.name\)\)/.test(suite),'Explorer selection must exclude recently seen items before choosing the next question.');
 
