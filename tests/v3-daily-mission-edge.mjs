@@ -33,7 +33,7 @@ assert(storage.read('lesson-sessions', null) === null, 'Home/today preview must 
 const passage6 = selectDailyPassage('2026-09-06');
 const passage7 = selectDailyPassage('2026-09-07');
 assert(passage6 !== passage7, 'Adjacent civil dates should advance deterministic Daily Journey rotation.');
-assert(DAILY_PASSAGES.length >= 30, 'Daily Journey should have at least a 30-day content pool after the V5 variety hotfix.');
+assert(DAILY_PASSAGES.length >= 60, 'Daily Journey should have at least a 60-day authored content pool after the V5 freshness pass.');
 const cutoverStart = new Date(`${DAILY_VARIETY_CUTOVER}T00:00:00Z`);
 const rotationKeys = [];
 const answerPositions = new Set();
@@ -51,6 +51,8 @@ for (let offset = 0; offset < DAILY_PASSAGES.length; offset++) {
   reflectPrompts.add(first.steps[4].prompt);
 }
 assert(new Set(rotationKeys).size === DAILY_PASSAGES.length, 'Daily Journey must not repeat a passage before the full rotation pool is exhausted.');
+assert(new Set(DAILY_PASSAGES.map(p=>p.retrieve.q)).size === DAILY_PASSAGES.length, 'Daily Journey must not repeat its authored retrieval question before the full passage pool is exhausted.');
+assert(new Set(DAILY_PASSAGES.map(p=>`${p.code}:${p.chapter}:${p.from}:${p.to}`)).size === DAILY_PASSAGES.length, 'Daily Journey authored passage inventory must not contain duplicate Scripture ranges.');
 assert(answerPositions.size > 1, 'Daily Journey retrieval answers must not always occupy the same choice position.');
 assert(applyPrompts.size > 1 && reflectPrompts.size > 1, 'Daily Journey Apply/Reflect prompts should vary across the rotation.');
 let invalidDate = '';
