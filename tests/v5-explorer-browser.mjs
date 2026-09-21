@@ -6,15 +6,16 @@ const assert=(ok,message)=>{if(!ok)throw new Error(message)};
 
 async function run(){
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-  await context.addInitScript(()=>{
-    localStorage.removeItem('biblequest.v3.explorer-state-v1');
-    localStorage.removeItem('biblequest.v3.auth.bq-explorer-sync-owner-v1');
-  });
   const page=await context.newPage();
   const errors=[];
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
   page.on('pageerror',error=>errors.push(error.message));
 
+  await page.goto(BASE,{waitUntil:'domcontentloaded'});
+  await page.evaluate(()=>{
+    localStorage.removeItem('biblequest.v3.explorer-state-v1');
+    localStorage.removeItem('biblequest.v3.auth.bq-explorer-sync-owner-v1');
+  });
   await page.goto(BASE+'#/learn',{waitUntil:'networkidle'});
   await page.locator('[data-open-explorer]').waitFor();
   await page.locator('[data-open-explorer]').click();
