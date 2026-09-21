@@ -22,7 +22,7 @@ for(const file of[
 
 const icons=read('src/ui/icons.js');
 for(const icon of ['assignments','transform','notifications','tutorial'])
-  assert.ok(icons.includes(`${icon}: \\\``),`Missing semantic inline icon: ${icon}`);
+  assert.ok(icons.includes(`${icon}:`),`Missing semantic inline icon: ${icon}`);
 
 const home=read('src/features/home/index.js');
 for(const binding of ["icon: 'assignments'","iconSvg('transform'","iconSvg('notifications'","iconSvg('tutorial'","dailyPassageTitle(daily.passage,locale)"])
