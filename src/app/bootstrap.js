@@ -13,6 +13,7 @@ import { createGuidedStudyService } from './study.js';
 import { createDeepQuestionsService } from './deep-questions.js';
 import { createStoryJourneyService } from './story-journey.js';
 import { createWisdomSituationsService } from './wisdom-situations.js';
+import { localization } from './localization.js';
 import { createAdaptiveLearningService } from './adaptive-learning.js';
 import { createBibleWorldService } from './bible-world.js';
 import { createExplorerService } from './explorer.js';
@@ -180,7 +181,7 @@ function boot(root){
   const study=createGuidedStudyService({lesson,progress,reader});
   const deepQuestions=createDeepQuestionsService({lesson,reader});
   const storyJourney=createStoryJourneyService({lesson,progress,reader});
-  const wisdomSituations=createWisdomSituationsService({lesson,progress});
+  const wisdomSituations=createWisdomSituationsService({lesson,progress,storage,getLocale:localization.getLocale});
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
   const bibleWorld=createBibleWorldService({adaptive:adaptiveLearning,reader});
   const explorer=createExplorerService({storage});
