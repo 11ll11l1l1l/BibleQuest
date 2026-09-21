@@ -14,7 +14,6 @@ import { createJapaneseFuriganaTokenizerRuntime } from './japanese-furigana-toke
 import { createGuidedStudyService } from './study.js';
 import { createDeepQuestionsService } from './deep-questions.js';
 import { createStoryJourneyService } from './story-journey.js';
-import { createWisdomSituationsService } from './wisdom-situations.js';
 import { localization } from './localization.js';
 import { createAdaptiveLearningService } from './adaptive-learning.js';
 import { createBibleWorldService } from './bible-world.js';
@@ -113,7 +112,26 @@ const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
 const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
 const deepQuestionsPage = args => lazyFeaturePage('deep-questions', 'deepQuestionsPage', args);
 const storyJourneyPage = args => lazyFeaturePage('story-journey', 'storyJourneyPage', args);
-const wisdomSituationsPage = args => lazyFeaturePage('wisdom-situations', 'wisdomSituationsPage', args);
+const wisdomSituationsPage = ({ lesson, progress, storage, getLocale, onLearn }) => createLazyPage({
+  key: 'wisdom-situations',
+  async load() {
+    const loadPage = featurePageModules['../features/wisdom-situations/index.js'];
+    if (typeof loadPage !== 'function') throw new Error('Missing lazy feature module: ../features/wisdom-situations/index.js');
+    const [pageModule, serviceModule] = await Promise.all([
+      loadPage(),
+      import('./wisdom-situations.js'),
+    ]);
+    return { pageModule, serviceModule };
+  },
+  create({ pageModule, serviceModule }) {
+    const pageFactory = pageModule?.wisdomSituationsPage;
+    const serviceFactory = serviceModule?.createWisdomSituationsService;
+    if (typeof pageFactory !== 'function') throw new Error('Missing wisdomSituationsPage export.');
+    if (typeof serviceFactory !== 'function') throw new Error('Missing createWisdomSituationsService export.');
+    const wisdom = serviceFactory({ lesson, progress, storage, getLocale });
+    return pageFactory({ wisdom, onLearn });
+  },
+});
 const adaptiveLearningPage = args => lazyFeaturePage('adaptive-learning', 'adaptiveLearningPage', args);
 const bibleWorldPage = args => lazyFeaturePage('bible-world', 'bibleWorldPage', args);
 const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);
@@ -208,7 +226,6 @@ function boot(root){
   const study=createGuidedStudyService({lesson,progress,reader});
   const deepQuestions=createDeepQuestionsService({lesson,reader});
   const storyJourney=createStoryJourneyService({lesson,progress,reader});
-  const wisdomSituations=createWisdomSituationsService({lesson,progress,storage,getLocale:localization.getLocale});
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
   const bibleWorld=createBibleWorldService({adaptive:adaptiveLearning,reader});
   const explorer=createExplorerService({storage});
@@ -281,7 +298,7 @@ function boot(root){
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
-    'wisdom-situations':()=>wisdomSituationsPage({wisdom:wisdomSituations,onLearn:()=>router.navigate('learn')}),
+    'wisdom-situations':()=>wisdomSituationsPage({lesson,progress,storage,getLocale:localization.getLocale,onLearn:()=>router.navigate('learn')}),
     'adaptive-learning':()=>adaptiveLearningPage({adaptive:adaptiveLearning,onLearn:()=>router.navigate('learn')}),
     'bible-world':()=>bibleWorldPage({world:bibleWorld,onNavigate:navigateGeneral,onLearn:()=>router.navigate('learn')}),
     explorer:()=>explorerPage({explorer,onBack:()=>router.navigate('learn'),onReader:openExplorerScripture}),
