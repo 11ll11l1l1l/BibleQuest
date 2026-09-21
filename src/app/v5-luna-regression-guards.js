@@ -7,7 +7,6 @@ const DAILY_SAVE = '[data-daily-save]';
 const DAILY_MESSAGE = '[data-daily-message]';
 const DAILY_ERROR_ID = 'bq-daily-response-required';
 const DAILY_ERROR_TEXT = 'Please enter a response before saving this step.';
-const ACTIVE_GAME_QUESTION = '[data-games-page] [data-game-question]';
 
 function dailyTextareaFromForm(form) {
   return form?.querySelector?.(DAILY_TEXTAREA) || null;
@@ -101,21 +100,6 @@ function installDailyJourneyValidation() {
   });
 }
 
-function hasActiveQuizRound() {
-  return Boolean(document.querySelector(ACTIVE_GAME_QUESTION));
-}
-
-function installQuizRefreshWarning() {
-  window.addEventListener('beforeunload', event => {
-    if (!hasActiveQuizRound()) return;
-    // Browsers deliberately ignore custom beforeunload text, but setting
-    // returnValue requests the standard leave/reload confirmation dialog.
-    event.preventDefault();
-    event.returnValue = '';
-  });
-}
-
 export function installV5LunaRegressionGuards() {
   installDailyJourneyValidation();
-  installQuizRefreshWarning();
 }

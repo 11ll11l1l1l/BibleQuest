@@ -4,6 +4,7 @@ import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
 import { createAccountService } from './account.js';
+import { createAdminAccessService } from './admin-access.js';
 import { createBackupService } from './backup.js';
 import { createReaderService } from './reader.js';
 import { createJapaneseVocabularyService } from './japanese-vocabulary.js';
@@ -170,6 +171,7 @@ function boot(root){
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
   const account=createAccountService({api,session,storage});
+  const adminAccess=createAdminAccessService({api:api.adminConsole,session});
   const backup=createBackupService({storage});
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
   const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage});
@@ -284,7 +286,7 @@ function boot(root){
     'my-mission':()=>missionPage({mission,onBack:()=>router.navigate('more'),onReview:()=>router.navigate('open-review'),onStudy:()=>router.navigate('study')}),
     calendar:()=>calendarPage({calendar,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onChallenges:()=>router.navigate('challenges'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar'),onHelp:()=>router.navigate('help')}),
+    more:()=>morePage({pwaInstall,adminAccess,onAdmin:()=>{location.href='./admin'},onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onChallenges:()=>router.navigate('challenges'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar'),onHelp:()=>router.navigate('help')}),
     help:()=>helpCenterPage({onBack:()=>router.navigate('more'),onTutorial:()=>tutorial.open({force:true})}),
     accessibility:()=>accessibilityPage({accessibility,onBack:()=>router.navigate('more')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
@@ -322,32 +324,48 @@ function boot(root){
     if(current.authenticated===true)void pushOnboarding.maybePrompt();
   };
   let accountProgressSessionKey='';
+  const accountProgressSyncOwners=[
+    ['general',progressCloudSync],
+    ['bible-quest',bibleQuestCloudSync],
+    ['weekly-journey',weeklyJourneyCloudSync],
+    ['personal-challenges',personalChallengesCloudSync],
+    ['explorer',explorerCloudSync]
+  ];
   const syncAccountProgress=state=>{
     const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
     if(key===accountProgressSessionKey)return;
     accountProgressSessionKey=key;
     if(current.authenticated!==true)return;
-    void progressCloudSync.syncNow()
-      .then(()=>bibleQuestCloudSync.syncNow())
-      .then(()=>weeklyJourneyCloudSync.syncNow())
-      .then(()=>personalChallengesCloudSync.syncNow())
-      .then(()=>explorerCloudSync.syncNow())
+    void Promise.allSettled(accountProgressSyncOwners.map(([owner,service])=>
+      Promise.resolve().then(()=>service.syncNow()).catch(error=>{
+        console.warn(`Account progress resume unavailable for ${owner}; using local progress`,error);
+        throw error;
+      })
+    ))
       .then(()=>router.navigate(router.current()))
-      .catch(error=>console.warn('Account progress resume unavailable; using local progress',error));
+      .catch(error=>console.warn('Account progress refresh unavailable',error));
+  };
+  let adminAccessSessionKey='';
+  const syncAdminAccess=state=>{
+    const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
+    if(key===adminAccessSessionKey)return;
+    adminAccessSessionKey=key;
+    if(current.authenticated===true)void adminAccess.refresh();else adminAccess.clear();
   };
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},
     unsubscribeStore=store.subscribe(syncShell),
     unsubscribeModeration=store.subscribe(syncModeration),
     unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
-    unsubscribeBibleQuestAccount=store.subscribe(syncAccountProgress);
-  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());router.start();
+    unsubscribeBibleQuestAccount=store.subscribe(syncAccountProgress),
+    unsubscribeAdminAccess=store.subscribe(syncAdminAccess);
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());syncAdminAccess(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
-    // Main Quest account resume is driven by the session store subscriber above.
-    // The app remains local-first if the cloud snapshot cannot be reached.
+    // Authentication must hydrate the requested route independently of cloud progress.
+    if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();adminAccess.clear();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

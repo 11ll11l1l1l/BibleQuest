@@ -75,6 +75,12 @@ assert(readerCalls.length === 1 && readerCalls[0].code === opened.passage.code &
 mission.respond(true); mission.advance();
 assert(mission.getState().state.currentStep.id === 'learn' && progress.getState().xp === 20, 'Context completion contract failed.');
 mission.respond(true); mission.advance();
+const xpBeforeRequiredResponse=progress.getState().xp;
+let requiredResponseError='';
+try { mission.respond('   '); } catch (error) { requiredResponseError=error.message; }
+assert(/required/i.test(requiredResponseError), 'Daily Journey must reject an empty required Apply response.');
+assert(mission.getState().state.currentStep.id === 'apply' && !(mission.getState().state.currentStep.id in mission.getState().state.responses), 'Rejected Apply response must not advance or persist.');
+assert(progress.getState().xp === xpBeforeRequiredResponse, 'Rejected Apply response must not award XP.');
 mission.respond('Take one concrete action today.'); mission.advance();
 mission.respond('Remember and obey the passage today.');
 assert(progress.getState().xp === 44 && progress.getState().totalActivities === 5, 'Five Daily Journey steps must total 44 XP and five meaningful activities.');

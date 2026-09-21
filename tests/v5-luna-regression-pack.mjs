@@ -15,8 +15,8 @@ async function proveStaticContract() {
   assert(guard.includes('Please enter a response before saving this step.'), 'BQ-002 must retain canonical required-response guidance.');
   assert(guard.includes("textarea.setAttribute('aria-invalid', 'true')"), 'BQ-002 must expose invalid state accessibly.');
   assert(guard.includes('textarea.focus()'), 'BQ-002 must recover focus to the invalid field.');
-  assert(guard.includes("window.addEventListener('beforeunload'"), 'BQ-003 must retain a leave/reload warning for active quiz rounds.');
-  assert(guard.includes("const ACTIVE_GAME_QUESTION = '[data-games-page] [data-game-question]'"), 'BQ-003 must bind to the current quiz marker.');
+  assert(!guard.includes("window.addEventListener('beforeunload'"), 'BQ-003 must remove the obsolete warning after real quiz recovery ships.');
+  assert(games.includes('render(games.getState())'), 'BQ-003 Play mount must render the restored quiz state.');
   assert(games.includes('data-game-question="${escapeHtml(q.id)}"'), 'Games UI must expose the marker consumed by BQ-003.');
 }
 
@@ -57,23 +57,13 @@ async function proveBrowserBehavior() {
     await save.click();
     assert((await page.evaluate(() => window.__bqLunaPack.submitCount)) === 1, 'BQ-002 valid response must preserve normal submission.');
 
-    const warningState = await page.evaluate(() => {
-      const answerHeight = document.querySelector('[data-quick-recall-answer]')?.getBoundingClientRect().height || 0;
-      const active = new Event('beforeunload', { cancelable: true });
-      window.dispatchEvent(active);
-      document.querySelector('[data-game-question]')?.remove();
-      const inactive = new Event('beforeunload', { cancelable: true });
-      window.dispatchEvent(inactive);
-      return { activePrevented: active.defaultPrevented, inactivePrevented: inactive.defaultPrevented, answerHeight };
-    });
-    assert(warningState.activePrevented === true, 'BQ-003 active quiz must request standard browser leave/reload confirmation.');
-    assert(warningState.inactivePrevented === false, 'BQ-003 must not warn without an active quiz question.');
+    const answerHeight = await page.locator('[data-quick-recall-answer]').evaluate(node=>node.getBoundingClientRect().height);
 
     const metrics = await page.evaluate(() => ({ width: innerWidth, scrollWidth: document.documentElement.scrollWidth, saveHeight: document.querySelector('[data-daily-save]')?.getBoundingClientRect().height || 0 }));
     assert(metrics.width === 390, `Expected 390px viewport, got ${metrics.width}.`);
     assert(metrics.scrollWidth <= metrics.width + 1, `Horizontal overflow: ${metrics.scrollWidth}px > ${metrics.width}px.`);
     assert(metrics.saveHeight >= 44, `Daily Journey Save control is below 44px: ${metrics.saveHeight}px.`);
-    assert(warningState.answerHeight >= 44, `Quick Recall control is below 44px: ${warningState.answerHeight}px.`);
+    assert(answerHeight >= 44, `Quick Recall control is below 44px: ${answerHeight}px.`);
     assert(errors.length === 0, `Unexpected browser/page errors: ${errors.join(' | ')}`);
   } finally {
     await browser.close();
@@ -82,4 +72,4 @@ async function proveBrowserBehavior() {
 
 await proveStaticContract();
 await proveBrowserBehavior();
-console.log('V5 Luna regression pack passed: BQ-002 canonical validation + BQ-003 active-quiz leave warning (STATIC + BROWSER-AUTO).');
+console.log('V5 Luna regression pack passed: BQ-002 canonical validation + BQ-003 exact quiz resume (STATIC + BROWSER-AUTO).');
