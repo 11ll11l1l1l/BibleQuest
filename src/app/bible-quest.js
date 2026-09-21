@@ -150,13 +150,19 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
     if(!item)throw new Error('Bible Quest reference is outside the canonical Bible.');
     return Object.freeze({...item});
   }
-  function exportAccountState(){return clone(state)}
+  function accountState(input=state){
+    const normalized=normalize(input);
+    // activeKey is transient Reader/Quest UI intent for this device. It is not
+    // canonical reading progress and must never move between accounts/devices.
+    return {...normalized,activeKey:''};
+  }
+  function exportAccountState(){return clone(accountState(state))}
   function replaceAccountState(input){
-    persist(input||empty(),{source:'account',touch:false});
+    persist(accountState(input||empty()),{source:'account',touch:false});
     return snapshot();
   }
   function mergeFromAccount(remoteInput){
-    const remote=normalize(remoteInput);
+    const remote=accountState(remoteInput);
     const localCount=Object.keys(state.completed).length;
     const remoteCount=Object.keys(remote.completed).length;
     const localTime=timeValue(state.updatedAt);
@@ -166,8 +172,11 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
     else if(localCount>remoteCount)winner='local';
     else if(remoteTime>localTime)winner='remote';
     else if(localTime>remoteTime)winner='local';
-    else if(canonicalText(remote)!==canonicalText(state))winner='local';
-    if(winner==='remote')persist(remote,{source:'account',touch:false});
+    else if(canonicalText(remote)!==canonicalText(accountState(state)))winner='local';
+    if(winner==='remote'){
+      const localActive=state.activeKey&&canonical[remoteCount]?.key===state.activeKey?state.activeKey:'';
+      persist({...remote,activeKey:localActive},{source:'account',touch:false});
+    }
     return Object.freeze({winner,localCount,remoteCount,state:snapshot()});
   }
   function subscribe(listener){
