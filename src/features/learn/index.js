@@ -17,7 +17,7 @@ export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, 
         `<button type="button" class="bq-learning-card" data-open-study><b>Guided Study</b><span>Passage · context · observation · reflection · application</span></button>` +
         `<button type="button" class="bq-learning-card" data-open-deep-questions><b>Deep Questions</b><span>Question · Scripture · open reflection · private note</span></button>` +
         `<button type="button" class="bq-learning-card" data-open-story-journey><b>Story Journey</b><span>Five Bible scenes · Scripture checkpoint · replay</span></button>` +
-        `<button type="button" class="bq-learning-card" data-open-wisdom-situations><b>Wisdom Situations</b><span>Complex scenario · strongest judgment · rationale · Scripture</span></button>` +
+        `<button type="button" class="bq-learning-card" data-open-wisdom-situations><b>Wisdom Situations</b><span>72 realistic cases · difficulty 4–8 · four plausible judgments · Scripture</span></button>` +
       `</div></div>` +
       `<div class="bq-learn-group"><p class="bq-eyebrow">EXPLORE &amp; REVIEW</p><div class="bq-learning-grid">` +
         `<button type="button" class="bq-learning-card" data-open-bible-world><b>Bible World</b><span>Nine story regions · exploration evidence · Scripture routes</span></button>` +

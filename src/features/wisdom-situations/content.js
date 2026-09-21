@@ -1,4 +1,13 @@
-const rows = [
+import { ADVANCED_WISDOM_ROWS } from './advanced-content.js';
+import { EXPERT_WISDOM_ROWS } from './expert-content.js';
+import { TL_WISDOM_BASE } from './locales/tl-base.js';
+import { TL_WISDOM_ADVANCED } from './locales/tl-advanced.js';
+import { TL_WISDOM_EXPERT } from './locales/tl-expert.js';
+import { CEB_WISDOM_BASE } from './locales/ceb-base.js';
+import { CEB_WISDOM_ADVANCED } from './locales/ceb-advanced.js';
+import { CEB_WISDOM_EXPERT } from './locales/ceb-expert.js';
+
+const foundationRows = [
   {id:'hw01',title:'Confidentiality or protection?',tension:'Confidentiality × preventing harm',scenario:'A close friend tells you in confidence that another person is being pressured and threatened at home. Your friend insists that you promise not to tell anyone because disclosure may destroy the relationship and make the situation worse. You do not know whether there is immediate physical danger.',options:['Keep the confidence completely unless the threatened person personally asks for help.','Immediately tell as many trusted people as possible so responsibility is shared.','Clarify the level of danger, encourage direct help-seeking, and involve appropriate support if credible risk remains even if confidentiality must be limited.','Confront the suspected aggressor privately first so they have a chance to explain before anyone else is involved.'],best:2,why:'Confidentiality matters, but it is not absolute when credible harm may be occurring. The strongest response preserves truth, limits unnecessary disclosure, checks urgency, and seeks proportionate help rather than choosing secrecy or uncontrolled exposure.',rationales:['Protects trust, but may turn confidentiality into complicity if real danger is present.','Takes danger seriously, but broad disclosure can create new harm and ignore proportionality.','Balances care, truth, safety, and limited disclosure according to the actual risk.','Could be appropriate in lower-risk conflict, but may increase danger when coercion or threats are involved.'],refs:['Proverbs 11:13','Proverbs 24:11–12','Matthew 18:15–16'],difficulty:5},
   {id:'hw02',title:'Loyalty to your employer',tension:'Loyalty × integrity × livelihood',scenario:'You discover a reporting practice at work that is technically allowed by an internal procedure but makes performance look better than the underlying reality. Your manager says everyone does it, changing it could damage the team, and your family depends heavily on your income.',options:['Follow the procedure because obeying your employer is normally part of faithful work.','Refuse immediately and publicly expose the practice so nobody can accuse you of participating.','Document the concern, verify the facts and rules, raise it through an appropriate channel, and avoid personally making claims you believe are false.','Continue temporarily while quietly looking for another job, because protecting your family is the more immediate duty.'],best:2,why:'The difficult point is that loyalty, prudence, provision, and truthfulness all matter. The strongest course verifies the issue and uses proportionate internal correction while setting a personal boundary against deception.',rationales:['Respects authority, but procedure does not automatically make a misleading claim truthful.','Protects integrity, but public escalation before verification and internal remedy can be reckless.','Preserves evidence, seeks correction, and refuses direct deception without assuming the most destructive escalation first.','Recognizes family duty, but knowingly continuing deceptive conduct is difficult to justify merely because leaving is costly.'],refs:['Ephesians 4:25','Colossians 3:22–24','Proverbs 18:13'],difficulty:5},
   {id:'hw03',title:'A generous loan that may enable harm',tension:'Generosity × stewardship × boundaries',scenario:'A relative asks you for a large loan after several financial emergencies. This time the need is real, but their repeated choices contributed to the crisis. Refusing may create serious hardship for their children. Giving the money will strain your own household.',options:['Give the full amount because family need creates a special obligation.','Refuse all help because repeated bad decisions should have consequences.','Separate urgent protection from long-term financing: help with essential needs within your capacity, but attach boundaries and avoid funding the same destructive pattern.','Borrow money yourself so you can help without reducing your household cash immediately.'],best:2,why:'The strongest response distinguishes compassion from unlimited financing. It protects vulnerable dependents where possible while respecting your own responsibilities and not reinforcing the same pattern.',rationales:['Takes family duty seriously, but may ignore your own household and the repeated pattern.','Protects boundaries, but can treat consequences as more important than urgent human need.','Combines concrete mercy, proportionality, accountability, and stewardship.','Expands the problem by transferring risk to your own household without addressing the underlying behavior.'],refs:['1 Timothy 5:8','Galatians 6:2,5','Proverbs 22:3'],difficulty:5},
@@ -25,6 +34,28 @@ const rows = [
   {id:'hw24',title:'A good cause with bad methods',tension:'Ends × means × urgency',scenario:'A group is campaigning for a cause you strongly support. Their message is broadly true, but they knowingly use exaggerated examples because accurate nuance does not attract attention. They argue that the urgency of the cause justifies persuasive simplification.',options:['Support the campaign because the overall cause is true and the exaggerations point in the right direction.','Reject the entire cause because dishonest advocacy discredits it.','Support the legitimate goal but refuse claims you know are exaggerated, press for accurate advocacy, and separate loyalty to the cause from loyalty to every tactic.','Stay publicly silent about the exaggeration until the campaign succeeds, then push for better standards afterward.'],best:2,why:'A worthy end does not make knowingly misleading means harmless. The stronger response protects the cause without allowing urgency to erase truthfulness.',rationales:['Recognizes urgency and the broader truth, but normalizes deception as strategy.','Protects integrity, but wrongly treats a flawed campaign as proof the underlying cause is false.','Separates the truth of the goal from the morality and accuracy of the method.','Avoids weakening the campaign now, but knowingly benefits from tactics you believe are wrong.'],refs:['Romans 3:8','Ephesians 4:25','2 Corinthians 4:2'],difficulty:5}
 ];
 
+const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS]);
+const TL_BY_ID=Object.freeze({...TL_WISDOM_BASE,...TL_WISDOM_ADVANCED,...TL_WISDOM_EXPERT});
+const CEB_BY_ID=Object.freeze({...CEB_WISDOM_BASE,...CEB_WISDOM_ADVANCED,...CEB_WISDOM_EXPERT});
+const LOCALES=Object.freeze({tl:TL_BY_ID,ceb:CEB_BY_ID});
+
+function freezeLocalized(raw){
+  return Object.freeze({
+    title:String(raw.title||''),tension:String(raw.tension||''),scenario:String(raw.scenario||''),
+    options:Object.freeze([...(raw.options||[])]),why:String(raw.why||''),
+    rationales:Object.freeze([...(raw.rationales||[])])
+  });
+}
+
+export function localizeWisdomSituation(item,locale='en'){
+  const normalized=String(locale||'en').toLowerCase().split(/[-_]/)[0];
+  if(normalized==='en')return item;
+  const translated=LOCALES[normalized]?.[item.id];
+  if(!translated)return item;
+  const copy=freezeLocalized(translated);
+  return Object.freeze({...item,...copy});
+}
+
 function freezeSituation(raw) {
   const options=Object.freeze([...raw.options]);
   const rationales=Object.freeze([...raw.rationales]);
@@ -33,13 +64,21 @@ function freezeSituation(raw) {
     id:'judgment',type:'choice',prompt:raw.scenario,choices:options,answer:raw.best,
     reference:refs.join(' · '),feedback:Object.freeze({correct:'Strong judgment.',incorrect:'A stronger judgment is available.'})
   });
+  const number=Number(String(raw.id).replace(/^hw/,''));
+  const pack=number<=24?'foundation':number<=48?'advanced':'expert';
   return Object.freeze({
-    id:raw.id,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
+    id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
     definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:1,title:raw.title,steps:Object.freeze([step])})
   });
 }
 
 export const WISDOM_SITUATIONS=Object.freeze(rows.map(freezeSituation));
+
+if(WISDOM_SITUATIONS.length!==72)throw new Error(`Wisdom Situations content invariant failed: expected 72, found ${WISDOM_SITUATIONS.length}.`);
+for(const locale of ['tl','ceb'])for(const item of WISDOM_SITUATIONS){
+  const translated=LOCALES[locale]?.[item.id];
+  if(!translated||translated.options?.length!==4||translated.rationales?.length!==4)throw new Error(`Wisdom Situations ${locale} translation incomplete for ${item.id}.`);
+}
 
 export function getWisdomSituation(id){
   const item=WISDOM_SITUATIONS.find(row=>row.id===String(id||''));
