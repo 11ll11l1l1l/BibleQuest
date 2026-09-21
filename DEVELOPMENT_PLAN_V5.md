@@ -1,5 +1,10 @@
 # BibleQuest V5 Development Plan
 
+> **ARCHIVED / FROZEN — 2026-09-22 JST**
+>
+> V5 feature development is complete. This plan is retained only as historical release evidence. Do **not** start new V5 implementation tranches, claims, or agent branches from this document. Current V5 runtime/source truth is recorded in `V5_ACTIVE_STATUS.md`; post-release V5 changes are limited to reproduced production defects. New architecture or feature-platform work belongs to V6.
+
+
 Updated: 2026-09-13 JST
 Authority: `V5_ACTIVE_STATUS.md`
 Integration branch: `v5/feature-completion`
