@@ -19,7 +19,7 @@ for(const token of [
   "EXPLORER_RECENT_KEY='biblequest_explorer_recent_v1'",
   "EXPLORER_SESSION_KEY='biblequest_explorer_session_v1'",
   'function chooseExplorerItem(kind)',
-  'seen:[...new Set',
+  'recentState[kind]={cycle:nextCycle,seen:[...nextSeen,chosen.name],last:chosen.name}',
   'saved.kind===kind&&!saved.revealed',
   'writeLocal(EXPLORER_SESSION_KEY'
 ]) assert(suite.includes(token),`Missing V5 variety/resume contract token: ${token}`);
