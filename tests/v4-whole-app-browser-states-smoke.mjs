@@ -28,6 +28,32 @@ try{
   page.on('pageerror',error=>errors.push(`pageerror: ${error.stack||error.message}`));
   await page.goto(BASE,{waitUntil:'networkidle'});
 
+  if(errors.length){
+    const moduleDiagnostics=await page.evaluate(async modules=>{
+      const rows=[];
+      for(const module of modules){
+        try{
+          await import(`${module}?v5diag=${Date.now()}-${rows.length}`);
+          rows.push({module,ok:true});
+        }catch(error){
+          rows.push({module,ok:false,error:String(error?.stack||error?.message||error)});
+        }
+      }
+      return rows;
+    },[
+      '/src/ui/icons.js',
+      '/src/content/locales/tl.js',
+      '/src/content/locales/ceb.js',
+      '/src/features/home/index.js',
+      '/src/features/learn/index.js',
+      '/src/features/more/index.js',
+      '/src/features/progress/index.js',
+      '/src/features/transform/localization.js',
+      '/src/features/transform/index.js'
+    ]);
+    errors.push(`module diagnostics: ${JSON.stringify(moduleDiagnostics)}`);
+  }
+
   const result=await page.evaluate(async({assignment})=>{
     const {assignmentsPage}=await import(`/src/features/assignments/index.js?v4wholeappstates=${Date.now()}`);
     const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
