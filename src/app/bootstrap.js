@@ -22,6 +22,8 @@ import { createBibleQuestCloudSyncService } from './bible-quest-cloud-sync.js';
 import { createProgressCloudSyncService } from './progress-cloud-sync.js';
 import { createWeeklyJourneyService } from './weekly-journey.js';
 import { createWeeklyJourneyCloudSyncService } from './weekly-journey-cloud-sync.js';
+import { createPersonalChallengesService } from './personal-challenges.js';
+import { createPersonalChallengesCloudSyncService } from './personal-challenges-cloud-sync.js';
 import { createTransformService } from './transform.js';
 import { createPersonalityProfileService } from './personality-profile.js';
 import { createPsychometricsService } from './psychometrics.js';
@@ -117,6 +119,7 @@ import { recordingsPage } from '../features/recordings/index.js';
 import { gamesPage } from '../features/games/index.js';
 import { congregationPage } from '../features/congregation/index.js';
 import { morePage } from '../features/more/index.js';
+import { challengesPage } from '../features/challenges/index.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
 import { helpCenterPage } from '../features/help-center/index.js';
 
@@ -180,6 +183,8 @@ function boot(root){
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const weeklyJourney=createWeeklyJourneyService({storage,getDateKey:progress.getDateKey});
   const weeklyJourneyCloudSync=createWeeklyJourneyCloudSyncService({api:api.progressSnapshots,session,weeklyJourney,ownerStorage:authStorage,cacheStorage:privateStorage});
+  const personalChallenges=createPersonalChallengesService({storage});
+  const personalChallengesCloudSync=createPersonalChallengesCloudSyncService({api:api.progressSnapshots,session,challenges:personalChallenges,ownerStorage:authStorage,cacheStorage:privateStorage});
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
@@ -226,6 +231,7 @@ function boot(root){
   const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)};
   const openFreeReader=()=>navigateGeneral('reader');
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
+  const openChallengeScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
   const openBibleQuestNext=()=>{
     const quest=bibleQuest.activateNext(),target=quest.next;
     if(!target){router.navigate('bible-quest');return}
@@ -261,7 +267,7 @@ function boot(root){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary,furigana}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary,furigana}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
@@ -271,7 +277,7 @@ function boot(root){
     'my-mission':()=>missionPage({mission,onBack:()=>router.navigate('more'),onReview:()=>router.navigate('open-review'),onStudy:()=>router.navigate('study')}),
     calendar:()=>calendarPage({calendar,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     recordings:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),media:()=>recordingsPage({recordings,onHome:()=>router.navigate('home'),onAccount:()=>router.navigate('account')}),
-    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar'),onHelp:()=>router.navigate('help')}),
+    more:()=>morePage({pwaInstall,onCommunity:()=>router.navigate('community'),onMinistryHub:()=>router.navigate('ministry-hub'),onNotificationCenter:()=>router.navigate('notification-center'),onWorkspace:()=>router.navigate('workspace'),onContentReview:()=>router.navigate('content-review'),onCouplesFamily:()=>router.navigate('couples-family'),onCouplesCloud:()=>router.navigate('couples-cloud'),onCongregation:()=>router.navigate('congregation'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onChallenges:()=>router.navigate('challenges'),onBackup:()=>router.navigate('backup'),onMission:()=>router.navigate('my-mission'),onAccessibility:()=>router.navigate('accessibility'),onCalendar:()=>router.navigate('calendar'),onHelp:()=>router.navigate('help')}),
     help:()=>helpCenterPage({onBack:()=>router.navigate('more'),onTutorial:()=>tutorial.open({force:true})}),
     accessibility:()=>accessibilityPage({accessibility,onBack:()=>router.navigate('more')}),
     backup:()=>backupPage({backup,onBack:()=>router.navigate('more'),onApplied:reloadAfterLocalDataChange}),
@@ -317,6 +323,7 @@ function boot(root){
     void progressCloudSync.syncNow()
       .then(()=>bibleQuestCloudSync.syncNow())
       .then(()=>weeklyJourneyCloudSync.syncNow())
+      .then(()=>personalChallengesCloudSync.syncNow())
       .then(()=>router.navigate(router.current()))
       .catch(error=>console.warn('Account progress resume unavailable; using local progress',error));
   };
@@ -333,6 +340,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
