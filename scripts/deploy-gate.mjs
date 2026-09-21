@@ -49,21 +49,30 @@ const requiredV5Routes=[
   {
     route:'bible-quest',
     files:['src/app/bible-quest.js','src/features/bible-quest/index.js'],
-    import:"import { bibleQuestPage } from '../features/bible-quest/index.js';",
+    owner:[
+      "import { bibleQuestPage } from '../features/bible-quest/index.js';",
+      "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);"
+    ],
     registration:"'bible-quest':()=>bibleQuestPage(",
     entry:"onBibleQuest:()=>router.navigate('bible-quest')"
   },
   {
     route:'explorer',
     files:['src/app/explorer.js','src/features/explorer/index.js'],
-    import:"import { explorerPage } from '../features/explorer/index.js';",
+    owner:[
+      "import { explorerPage } from '../features/explorer/index.js';",
+      "const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);"
+    ],
     registration:'explorer:()=>explorerPage(',
     entry:"onExplorer:()=>router.navigate('explorer')"
   },
   {
     route:'challenges',
     files:['src/app/personal-challenges.js','src/features/challenges/index.js'],
-    import:"import { challengesPage } from '../features/challenges/index.js';",
+    owner:[
+      "import { challengesPage } from '../features/challenges/index.js';",
+      "const challengesPage = args => lazyFeaturePage('challenges', 'challengesPage', args);"
+    ],
     registration:'challenges:()=>challengesPage(',
     entry:"onChallenges:()=>router.navigate('challenges')"
   }
@@ -72,7 +81,10 @@ for(const contract of requiredV5Routes){
   for(const file of contract.files){
     if(!exists(file))fail(`Required V5 route ${contract.route} is missing implementation file: ${file}`);
   }
-  for(const [label,needle] of Object.entries({import:contract.import,registration:contract.registration,'navigation entry':contract.entry})){
+  if(!contract.owner.some(needle=>v5Bootstrap.includes(needle))){
+    fail(`Required V5 route ${contract.route} is missing static-or-lazy page ownership`);
+  }
+  for(const [label,needle] of Object.entries({registration:contract.registration,'navigation entry':contract.entry})){
     if(!v5Bootstrap.includes(needle))fail(`Required V5 route ${contract.route} is missing ${label}`);
   }
 }
