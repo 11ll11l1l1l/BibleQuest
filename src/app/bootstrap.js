@@ -112,26 +112,28 @@ const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
 const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
 const deepQuestionsPage = args => lazyFeaturePage('deep-questions', 'deepQuestionsPage', args);
 const storyJourneyPage = args => lazyFeaturePage('story-journey', 'storyJourneyPage', args);
-const wisdomSituationsPage = ({ lesson, progress, storage, getLocale, onLearn }) => createLazyPage({
-  key: 'wisdom-situations',
-  async load() {
-    const loadPage = featurePageModules['../features/wisdom-situations/index.js'];
-    if (typeof loadPage !== 'function') throw new Error('Missing lazy feature module: ../features/wisdom-situations/index.js');
-    const [pageModule, serviceModule] = await Promise.all([
-      loadPage(),
-      import('./wisdom-situations.js'),
-    ]);
-    return { pageModule, serviceModule };
-  },
-  create({ pageModule, serviceModule }) {
-    const pageFactory = pageModule?.wisdomSituationsPage;
-    const serviceFactory = serviceModule?.createWisdomSituationsService;
-    if (typeof pageFactory !== 'function') throw new Error('Missing wisdomSituationsPage export.');
-    if (typeof serviceFactory !== 'function') throw new Error('Missing createWisdomSituationsService export.');
-    const wisdom = serviceFactory({ lesson, progress, storage, getLocale });
-    return pageFactory({ wisdom, onLearn });
-  },
-});
+function wisdomSituationsPage({ lesson, progress, storage, getLocale, onLearn }) {
+  return createLazyPage({
+    key: 'wisdom-situations',
+    async load() {
+      const loadPage = featurePageModules['../features/wisdom-situations/index.js'];
+      if (typeof loadPage !== 'function') throw new Error('Missing lazy feature module: ../features/wisdom-situations/index.js');
+      const [pageModule, serviceModule] = await Promise.all([
+        loadPage(),
+        import('./wisdom-situations.js'),
+      ]);
+      return { pageModule, serviceModule };
+    },
+    create({ pageModule, serviceModule }) {
+      const pageFactory = pageModule?.wisdomSituationsPage;
+      const serviceFactory = serviceModule?.createWisdomSituationsService;
+      if (typeof pageFactory !== 'function') throw new Error('Missing wisdomSituationsPage export.');
+      if (typeof serviceFactory !== 'function') throw new Error('Missing createWisdomSituationsService export.');
+      const wisdom = serviceFactory({ lesson, progress, storage, getLocale });
+      return pageFactory({ wisdom, onLearn });
+    },
+  });
+}
 const adaptiveLearningPage = args => lazyFeaturePage('adaptive-learning', 'adaptiveLearningPage', args);
 const bibleWorldPage = args => lazyFeaturePage('bible-world', 'bibleWorldPage', args);
 const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);
