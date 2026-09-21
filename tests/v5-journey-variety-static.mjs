@@ -19,13 +19,15 @@ for(const token of [
   "EXPLORER_RECENT_KEY='biblequest_explorer_recent_v1'",
   "EXPLORER_SESSION_KEY='biblequest_explorer_session_v1'",
   'function chooseExplorerItem(kind)',
-  'recent.slice(-Math.min(4',
+  'seen:[...new Set',
   'saved.kind===kind&&!saved.revealed',
   'writeLocal(EXPLORER_SESSION_KEY'
 ]) assert(suite.includes(token),`Missing V5 variety/resume contract token: ${token}`);
 
 assert(/if\(done\.has\(day\)\|\|day!==nextPersonalChallengeDay\(t,state\)\)return/.test(suite),'Personal challenge completion must reject duplicate and out-of-order day completion in the UI path.');
 assert(/disabled/.test(suite)&&/isDone/.test(suite),'Completed personal challenge days must render disabled.');
-assert(/available=pool\.filter\(p=>!exclude\.has\(p\.name\)\)/.test(suite),'Explorer selection must exclude recently seen items before choosing the next question.');
+assert(/available=pool\.filter\(p=>!seen\.includes\(p\.name\)\)/.test(suite),'Explorer selection must exhaust the full current pool before choosing a repeat.');
+assert(/if\(!available\.length\)\{nextCycle=cycle\+1;nextSeen=\[\]/.test(suite),'Explorer fallback must advance to a new cycle only after the full pool is exhausted.');
+assert(/p\.name!==last/.test(suite),'Explorer fallback must avoid an immediate repeat at cycle rollover when alternatives exist.');
 
 console.log('BibleQuest V5 journey/challenge variety static regression passed.');
