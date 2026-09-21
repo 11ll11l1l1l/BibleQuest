@@ -50,6 +50,9 @@ for(const token of[
 
 assert.ok(reader.includes('data-reader-quest-complete'),'Reader must explicitly complete the active Main Quest chapter.');
 assert.ok(reader.includes('data-reader-quest-away'),'Free reading must be visibly separate while a Quest chapter is active.');
+assert.ok(bootstrap.includes("const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)}"),'Generic Reader navigation must explicitly leave Main Quest mode.');
+assert.ok(bootstrap.includes("const openFreeReader=()=>navigateGeneral('reader')"),'Free Reader entry must use the generic navigation boundary.');
+assert.ok(bootstrap.includes("onBibleQuestContinue:openBibleQuestNext"),'Only the dedicated Main Quest continuation path may enter Reader without deactivating Quest mode.');
 assert.ok(reader.includes('Free reading elsewhere does not skip this required chapter.'),'Reader must explain ordered Quest semantics.');
 assert.ok(readerService.includes('referenceLinks(code, chapter, verse = null)'),'Reader must expose exact related-Scripture links.');
 assert.ok(readerService.includes('questSnapshot()'),'Reader service must expose Main Quest state without changing the Reader page API.');
