@@ -1,5 +1,11 @@
 # BibleQuest v3 Offline Shell Contract
 
+
+
+### Static module graph warmup
+
+The runtime warmup begins with same-origin shell resources observed by the page, then the service worker follows **relative/rooted static JavaScript imports recursively** with bounded concurrency. This closes timing gaps where a nested ES-module dependency may not yet appear in Performance resource timing when the initial warm message is sent. The traversal remains same-origin and in-scope, does not follow bare-package imports, does not cache network probes, and does not cross into Bible-pack/API ownership.
+
 ## Scope
 
 #98 makes the already-loaded v3 application shell reloadable without network access. It does not make Bible content packs, account/cloud operations, media, or arbitrary fetch responses offline-capable.
