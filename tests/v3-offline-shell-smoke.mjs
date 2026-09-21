@@ -9,6 +9,8 @@ const warmSentinels=[
   '/src/app/bootstrap.js',
   '/src/app/offline-shell.js',
   '/src/features/more/index.js',
+  '/src/app/personal-challenges.js',
+  '/src/features/challenges/index.js',
   '/src/features/games/memory.js',
   '/src/features/psychometrics/via-content.js',
   '/src/ui/content-reporting.css'
