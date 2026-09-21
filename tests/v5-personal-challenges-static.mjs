@@ -2,33 +2,68 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 
-const suite=fs.readFileSync('innovation-suite.js','utf8');
-execFileSync(process.execPath,['--check','innovation-suite.js'],{stdio:'pipe'});
+for(const file of[
+  'src/features/challenges/content.js',
+  'src/app/personal-challenges.js',
+  'src/app/personal-challenges-cloud-sync.js',
+  'src/features/challenges/index.js',
+  'src/features/more/index.js',
+  'src/app/bootstrap.js'
+]) execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
+
+const contentSource=fs.readFileSync('src/features/challenges/content.js','utf8');
+const service=fs.readFileSync('src/app/personal-challenges.js','utf8');
+const cloud=fs.readFileSync('src/app/personal-challenges-cloud-sync.js','utf8');
+const page=fs.readFileSync('src/features/challenges/index.js','utf8');
+const more=fs.readFileSync('src/features/more/index.js','utf8');
+const bootstrap=fs.readFileSync('src/app/bootstrap.js','utf8');
+const sprite=fs.readFileSync('assets/more-feature-icons.svg','utf8');
+
+for(const key of['gospel7','proverbs30','acts28','couples7','family7','john21','psalms14','james5','prayer7','serve7']){
+  assert.ok(contentSource.includes("key:'"+key+"'"),'Active Personal Challenge definitions missing '+key);
+}
+for(const token of[
+  "STORAGE_KEY='personal-challenges-state-v1'",
+  'function start(key)',
+  'function completeNext(key,day)',
+  "target!==current.nextDay",
+  'function exportAccountState()',
+  'function mergeFromAccount(remoteInput)',
+  'done:Object.keys(row.completedAt||{})'
+]) assert.ok(service.includes(token),'Personal Challenge owner missing contract: '+token);
+assert.ok(!service.includes('progress.record'),'Personal Challenge habit completion must not silently become XP/score.');
 
 for(const token of[
-  "PERSONAL_CHALLENGE_SLICE='biblequest_personal_challenges_v1'",
-  "PERSONAL_CHALLENGE_OWNER_KEY='biblequest_personal_challenges_owner_v1'",
-  "PERSONAL_CHALLENGE_CACHE_PREFIX='biblequest_personal_challenges_cache_v1:'",
-  "function normalizePersonalChallenges(input)",
-  "function mergePersonalChallenges(localInput,remoteInput)",
-  "function preparePersonalChallengeOwner()",
-  "async function syncPersonalChallenges()",
-  "from('bible_progress_snapshots')",
-  ".eq('updated_at',row.updated_at)",
-  "saved.error?.code!=='23505'",
-  "function startPersonalChallenge(template)",
-  "function nextPersonalChallengeDay(template,state=personalProgress(template))",
-  "data-personal-challenge-state=",
-  "day!==nextPersonalChallengeDay(t,state)",
-  "View completed challenge",
-  "Progress will resume with your BibleQuest account."
-]) assert.ok(suite.includes(token),'Missing Personal Challenge lifecycle/account-resume contract: '+token);
+  "SLICE_KEY='biblequest_personal_challenges_v1'",
+  "OWNER_KEY='bq-personal-challenges-sync-owner-v1'",
+  'accountCacheKey',
+  'BQ_PROGRESS_SNAPSHOT_CONFLICT',
+  'saveSlice',
+  'switchToGuest'
+]) assert.ok(cloud.includes(token),'Personal Challenge account sync missing contract: '+token);
 
-assert.ok(/isDone\|\|locked\?'disabled'/.test(suite),'Completed and future Personal Challenge days must render disabled.');
-assert.ok(/isNext=!isDone&&day===nextDay/.test(suite),'Only the earliest unfinished Personal Challenge day may be actionable.');
-assert.ok(/if\(done\.has\(day\)\|\|day!==nextPersonalChallengeDay\(t,state\)\)return/.test(suite),'Personal Challenge completion handler must reject duplicate and out-of-order days.');
-assert.ok(/if\(!local\.startedAt&&!complete\)startPersonalChallenge\(t\)/.test(suite),'Pressing Start must persist a started challenge before opening it.');
-assert.ok(suite.includes("complete?")&&suite.includes("View completed challenge"),'Completed challenge must have a distinct completed lifecycle.');
-assert.ok(suite.includes("[PERSONAL_CHALLENGE_SLICE]:merged"),'Personal Challenge sync must merge its slice without replacing unrelated account state.');
+for(const token of[
+  'data-personal-challenges-page',
+  'data-personal-challenge-open',
+  'data-personal-challenge-start',
+  'data-personal-challenge-complete',
+  'data-personal-challenge-state',
+  'data-personal-challenge-reader'
+]) assert.ok(page.includes(token),'Active Personal Challenge page missing UI contract: '+token);
+assert.ok(page.includes("locked:!done&&!isNext")||service.includes("locked:!done&&!isNext"),'Future Personal Challenge days must remain locked.');
+assert.ok(page.includes('BibleQuest does not treat these habits as a spiritual score.'),'Challenge page must state the non-scoring product rule.');
 
-console.log('BibleQuest V5 Personal Challenge lifecycle/account-resume static regression passed.');
+assert.ok(more.includes('data-more-challenges')&&more.includes('data-open-challenges'),'More must expose Personal Challenges.');
+assert.ok(more.includes("featureIcon('challenge')"),'More must use the semantic Challenges icon.');
+assert.ok(sprite.includes('id="challenge"'),'More icon sprite must include the Challenges symbol.');
+
+for(const token of[
+  "createPersonalChallengesService",
+  "createPersonalChallengesCloudSyncService",
+  "challenges:()=>challengesPage",
+  "onChallenges:()=>router.navigate('challenges')",
+  ".then(()=>personalChallengesCloudSync.syncNow())",
+  "personalChallengesCloudSync.dispose()"
+]) assert.ok(bootstrap.includes(token),'Bootstrap missing active Personal Challenges composition: '+token);
+
+console.log('BibleQuest V5 active Personal Challenges static regression passed.');
