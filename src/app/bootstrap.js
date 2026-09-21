@@ -15,6 +15,8 @@ import { createStoryJourneyService } from './story-journey.js';
 import { createWisdomSituationsService } from './wisdom-situations.js';
 import { createAdaptiveLearningService } from './adaptive-learning.js';
 import { createBibleWorldService } from './bible-world.js';
+import { createExplorerService } from './explorer.js';
+import { createExplorerCloudSyncService } from './explorer-cloud-sync.js';
 import { createOpenReviewService } from './open-review.js';
 import { createDailyMissionService } from './daily-mission.js';
 import { createBibleQuestService } from './bible-quest.js';
@@ -87,6 +89,7 @@ import { storyJourneyPage } from '../features/story-journey/index.js';
 import { wisdomSituationsPage } from '../features/wisdom-situations/index.js';
 import { adaptiveLearningPage } from '../features/adaptive-learning/index.js';
 import { bibleWorldPage } from '../features/bible-world/index.js';
+import { explorerPage } from '../features/explorer/index.js';
 import { openReviewPage } from '../features/open-review/index.js';
 import { privateNotesPage } from '../features/private-notes/index.js';
 import { cloudNotesPage } from '../features/cloud-notes/index.js';
@@ -180,6 +183,8 @@ function boot(root){
   const wisdomSituations=createWisdomSituationsService({lesson,progress});
   const adaptiveLearning=createAdaptiveLearningService({storage,lesson,progress});
   const bibleWorld=createBibleWorldService({adaptive:adaptiveLearning,reader});
+  const explorer=createExplorerService({storage});
+  const explorerCloudSync=createExplorerCloudSyncService({api:api.progressSnapshots,session,explorer,ownerStorage:authStorage,cacheStorage:privateStorage});
   const dailyMission=createDailyMissionService({lesson,progress,reader});
   const weeklyJourney=createWeeklyJourneyService({storage,getDateKey:progress.getDateKey});
   const weeklyJourneyCloudSync=createWeeklyJourneyCloudSyncService({api:api.progressSnapshots,session,weeklyJourney,ownerStorage:authStorage,cacheStorage:privateStorage});
@@ -232,6 +237,7 @@ function boot(root){
   const openFreeReader=()=>navigateGeneral('reader');
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const openChallengeScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
+  const openExplorerScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
   const openBibleQuestNext=()=>{
     const quest=bibleQuest.activateNext(),target=quest.next;
     if(!target){router.navigate('bible-quest');return}
@@ -242,13 +248,14 @@ function boot(root){
     home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
+    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'wisdom-situations':()=>wisdomSituationsPage({wisdom:wisdomSituations,onLearn:()=>router.navigate('learn')}),
     'adaptive-learning':()=>adaptiveLearningPage({adaptive:adaptiveLearning,onLearn:()=>router.navigate('learn')}),
     'bible-world':()=>bibleWorldPage({world:bibleWorld,onNavigate:navigateGeneral,onLearn:()=>router.navigate('learn')}),
+    explorer:()=>explorerPage({explorer,onBack:()=>router.navigate('learn'),onReader:openExplorerScripture}),
     'open-review':()=>openReviewPage({review:openReview,onLearn:()=>router.navigate('learn')}),
     'private-notes':()=>privateNotesPage({notes:privateNotes,onLearn:()=>router.navigate('learn')}),
     'cloud-notes':()=>cloudNotesPage({notes:cloudNotes,onLearn:()=>router.navigate('learn'),onAccount:()=>router.navigate('account')}),
@@ -324,6 +331,7 @@ function boot(root){
       .then(()=>bibleQuestCloudSync.syncNow())
       .then(()=>weeklyJourneyCloudSync.syncNow())
       .then(()=>personalChallengesCloudSync.syncNow())
+      .then(()=>explorerCloudSync.syncNow())
       .then(()=>router.navigate(router.current()))
       .catch(error=>console.warn('Account progress resume unavailable; using local progress',error));
   };
@@ -340,6 +348,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
