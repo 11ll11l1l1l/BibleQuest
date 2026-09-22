@@ -1,4 +1,5 @@
 import { createCouplesFamilyService } from '../src/app/couples-family.js';
+import { COUPLES_CARDS } from '../src/content/couples-family.js';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const clone=value=>value===undefined?undefined:structuredClone(value);
@@ -8,6 +9,8 @@ let now=new Date('2026-09-08T03:00:00.000Z');
 const couples=createCouplesFamilyService({storage,clock:()=>new Date(now),rng:()=>0});
 
 assert(couples.categories().length===8,'Couples local source must expose the eight recovered categories.');
+assert(COUPLES_CARDS.length===64,'Couples connection bank must expose 64 cards.');
+for(const category of couples.categories())assert(COUPLES_CARDS.filter(card=>card.cat===category.id).length===8,`Couples category ${category.id} must expose eight cards.`);
 assert(couples.pickCard().id==='c01','Deterministic Couples card selection did not begin at c01.');
 assert(couples.pickCard({categoryId:'communication'}).id==='c05','Communication category did not recover c05 as its first card.');
 assert(couples.pickCard({categories:['gratitude','intimacy','mission']}).id==='c13','Date-night subset selection is incorrect.');
@@ -17,6 +20,7 @@ assert(couples.toggleFavorite('c05')===true&&couples.isFavorite('c05'),'Saved-ca
 assert(memory.size===1&&memory.has('couples-family-local'),'Couples local state must persist through exactly one shared storage key.');
 now=new Date('2026-09-08T04:00:00.000Z');
 couples.markDiscussed('c05');
+assert(couples.pickCard({categoryId:'communication'}).id==='c06','Couples selection should prefer an unseen communication card after c05 is discussed.');
 const practice=couples.startPractice('c05');
 assert(practice.id==='practice-1'&&practice.cardId==='c05'&&practice.text==='For one conversation, summarize before giving your opinion.','7-day practice did not preserve recovered card action text.');
 assert(couples.activePractice()?.id==='practice-1','Latest active 7-day practice was not recoverable.');

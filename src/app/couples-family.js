@@ -85,6 +85,12 @@ export function createCouplesFamilyService({storage,clock=()=>new Date(),rng=Mat
   };
   function pickCard({categoryId='',categories=[],excludeId=''}={}){
     let pool=poolFor({categoryId,categories});if(excludeId&&pool.length>1)pool=pool.filter(item=>item.id!==String(excludeId));
+    const discussed=new Set(state.history.map(item=>item.cardId)),unseen=pool.filter(item=>!discussed.has(item.id));
+    if(unseen.length)pool=unseen;
+    else{
+      const recentWindow=Math.max(1,Math.min(12,pool.length-1)),recent=new Set(state.history.slice(-recentWindow).map(item=>item.cardId)),lessRecent=pool.filter(item=>!recent.has(item.id));
+      if(lessRecent.length)pool=lessRecent;
+    }
     const raw=Number(rng());const ratio=Number.isFinite(raw)?Math.min(Math.max(raw,0),0.999999999):0;return pool[Math.floor(ratio*pool.length)];
   }
   function toggleFavorite(id){const target=card(id).id;state={...state,favorites:state.favorites.includes(target)?state.favorites.filter(item=>item!==target):[...state.favorites,target]};save();return state.favorites.includes(target)}
