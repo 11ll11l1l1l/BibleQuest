@@ -1,6 +1,20 @@
 import { createCouplesFamilyService } from '../src/app/couples-family.js';
+import { COUPLES_CARDS } from '../src/content/couples-family.js';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+
+// Canonical references below were reviewed against the surrounding passage, not by keyword alone.
+// Any future reference change must re-audit the passage context before this contract is updated.
+const SCRIPTURE_CONTEXT_AUDIT=Object.freeze({
+  c01:'Colossians 3:12–17',c02:'Psalm 139:23–24',c03:'Philippians 1:9–11',c04:'Ephesians 4:1–3',
+  c05:'Proverbs 18:13',c06:'1 Thessalonians 5:14–15',c07:'Romans 12:15–16',c08:'Ephesians 4:25–29',
+  c09:'James 4:1–3',c10:'Matthew 7:1–5',c11:'Proverbs 28:13',c12:'Proverbs 17:14',
+  c13:'1 Thessalonians 5:11',c14:'Genesis 2:18–24',c15:'Romans 12:9–10',c16:'Philippians 1:3–5',
+  c17:'Matthew 6:19–24',c18:'Galatians 6:2–5',c19:'1 Timothy 6:6–10',c20:'2 Corinthians 9:6–8',
+  c21:'1 Corinthians 13:4–7',c22:'Colossians 3:12–14',c23:'Philippians 2:3–4',c24:'Genesis 2:18–24',
+  c25:'Proverbs 20:7',c26:'Deuteronomy 6:4–9',c27:'Genesis 2:23–24',c28:'Colossians 3:12–17',
+  c29:'Psalm 127:1–2',c30:'Galatians 5:13–14',c31:'Proverbs 20:5',c32:'James 1:5–8'
+});
 const clone=value=>value===undefined?undefined:structuredClone(value);
 const memory=new Map();
 const storage={read(key,fallback=null){return memory.has(key)?clone(memory.get(key)):clone(fallback)},write(key,value){memory.set(key,clone(value));return value}};
@@ -8,6 +22,12 @@ let now=new Date('2026-09-08T03:00:00.000Z');
 const couples=createCouplesFamilyService({storage,clock:()=>new Date(now),rng:()=>0});
 
 assert(couples.categories().length===8,'Couples local source must expose the eight recovered categories.');
+assert(COUPLES_CARDS.length===32,'Released V5 Couples bank must expose 32 cards.');
+for(const card of COUPLES_CARDS){
+  assert(SCRIPTURE_CONTEXT_AUDIT[card.id],`Missing contextual Scripture audit for ${card.id}.`);
+  assert(card.ref===SCRIPTURE_CONTEXT_AUDIT[card.id],`${card.id} Scripture reference changed without a contextual re-audit: ${card.ref}.`);
+}
+
 assert(couples.pickCard().id==='c01','Deterministic Couples card selection did not begin at c01.');
 assert(couples.pickCard({categoryId:'communication'}).id==='c05','Communication category did not recover c05 as its first card.');
 assert(couples.pickCard({categories:['gratitude','intimacy','mission']}).id==='c13','Date-night subset selection is incorrect.');
