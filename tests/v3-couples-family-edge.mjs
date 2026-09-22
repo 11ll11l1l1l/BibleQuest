@@ -31,7 +31,7 @@ const approvedReferences=Object.freeze({
   c61:'Proverbs 16:9',c62:'Romans 12:9–13',c63:'Ecclesiastes 4:9–12',c64:'Matthew 5:14–16'
 });
 assert(Object.keys(approvedReferences).length===COUPLES_CARDS.length,'Every Couples card must have a context-reviewed Scripture reference.');
-for(const card of COUPLES_CARDS)assert(card.ref===approvedReferences[card.id],\`Couples Scripture reference drifted without context review: \${card.id} -> \${card.ref}.\`);
+for(const card of COUPLES_CARDS)assert(card.ref===approvedReferences[card.id],`Couples Scripture reference drifted without context review: ${card.id} -> ${card.ref}.`);
 assert(COUPLES_CARDS.find(card=>card.id==='c16')?.code==='ECC'&&COUPLES_CARDS.find(card=>card.id==='c16')?.chapter===9,'Best small memory must hand off to Ecclesiastes 9 after contextual review.');
 assert(couples.pickCard().id==='c01','Deterministic Couples card selection did not begin at c01.');
 assert(couples.pickCard({categoryId:'communication'}).id==='c05','Communication category did not recover c05 as its first card.');
