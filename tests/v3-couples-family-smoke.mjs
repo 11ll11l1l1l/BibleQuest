@@ -21,7 +21,7 @@ async function run(){
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Couples overview mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Couples overview touch target below 44px: ${metrics.minTarget}px.`);
 
   await page.locator('[data-couples-category="communication"]').click();await page.locator('[data-couples-card-id]').waitFor();
-  const cardId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');assert(/^c0[5-8]$/.test(cardId||''),'Communication category opened a card outside the recovered communication deck.');
+  const cardId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');assert(/^c(?:0[5-8]|3[7-9]|40)$/.test(cardId||''),'Communication category opened a card outside the expanded communication deck.');
   await page.locator('[data-couples-favorite]').click();await page.locator('[data-couples-favorite]').waitFor();assert((await page.locator('[data-couples-favorite]').textContent())?.includes('Saved'),'Saved-card UI did not update.');
   await page.locator('[data-couples-practice]').click();await page.locator('[data-couples-complete-practice]').waitFor();
   let stored=await localState(page);assert(stored.favorites?.includes(cardId)&&stored.commitments?.length===1&&!stored.commitments[0]?.done,'Saved card/practice did not persist through shared browser storage.');
