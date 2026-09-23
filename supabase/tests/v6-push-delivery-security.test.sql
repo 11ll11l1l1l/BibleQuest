@@ -37,14 +37,15 @@ select ok(
 );
 
 insert into public.bible_notifications (
-  id, user_id, title, body, category, created_at
+  id, user_id, congregation_id, notification_type, title, body, created_at
 )
 values (
   'd1000000-0000-4000-8000-000000000001',
   '11111111-1111-4111-8111-111111111112',
+  '10000000-0000-4000-8000-000000000001',
+  'assignment',
   'V6 CI push',
   'Synthetic disposable fixture',
-  'assignment',
   now()
 );
 
