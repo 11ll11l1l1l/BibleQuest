@@ -183,9 +183,10 @@ try {
     await context.close();
   }
 
-  if (representativeFailures.length) {
-    throw new Error(`Representative browser matrix failures:\n- ${representativeFailures.join('\n- ')}`);
-  }
+  // Do not fail immediately on representative-route findings. Continue the
+  // independent deep-link/accessibility/PWA-registration probes so one known
+  // cross-lane defect does not hide unrelated release evidence. The collected
+  // representative failures are still fatal at the end of this harness.
 
   // Exercise every canonical route as a fresh built-artifact deep link. This
   // catches missing compatibility assets/imports and startup-only route
@@ -265,6 +266,10 @@ try {
   });
   if (!sw?.active) throw new Error('390px #/home: PWA service worker registration missing');
   await context.close();
+
+  if (representativeFailures.length) {
+    throw new Error(`Representative browser matrix failures:\n- ${representativeFailures.join('\n- ')}`);
+  }
 } finally {
   await browser.close();
 }
