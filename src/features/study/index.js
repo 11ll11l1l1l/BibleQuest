@@ -4,6 +4,49 @@ import { sourceLabel } from '../../ui/source-labels.js';
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 const STUDY_SOURCE=sourceLabel(getContentProvenance('bq-study'),{compact:true});
 
+export const EXTERNAL_STUDY_RESOURCES=Object.freeze([
+  Object.freeze({
+    id:'tyndale-notes',
+    icon:'📘',
+    title:'Tyndale Open Study Notes',
+    provider:'Tyndale / STEPBible',
+    description:'Modern book introductions, profiles, themes, background, and verse-by-verse study notes.',
+    url:'https://www.stepbible.org/version.jsp?version=TNotes'
+  }),
+  Object.freeze({
+    id:'tyndale-dictionary',
+    icon:'📚',
+    title:'Tyndale Open Bible Dictionary',
+    provider:'Tyndale Open Resources',
+    description:'People, places, Bible concepts, cultural background, and theological terms.',
+    url:'https://tyndaleopenresources.com/'
+  }),
+  Object.freeze({
+    id:'stepbible',
+    icon:'🔎',
+    title:'STEPBible',
+    provider:'Tyndale House, Cambridge',
+    description:'Deep Bible study with original-language tools, cross-references, dictionaries, and commentaries.',
+    url:'https://www.stepbible.org/'
+  }),
+  Object.freeze({
+    id:'matthew-henry',
+    icon:'📜',
+    title:"Matthew Henry's Concise Commentary",
+    provider:'STEPBible',
+    description:'A classic whole-Bible commentary. Use as historical commentary rather than Scripture itself.',
+    url:'https://www.stepbible.org/version.jsp?version=MHCC'
+  }),
+  Object.freeze({
+    id:'naves-topical',
+    icon:'🧭',
+    title:"Nave's Topical Bible",
+    provider:'Christian Classics Ethereal Library',
+    description:'A topical Scripture-reference library covering thousands of Bible subjects.',
+    url:'https://www.ccel.org/ccel/nave/bible'
+  })
+]);
+
 export function guidedStudyPage({study,onReader,onLearn}){
   return{
     title:'Guided Study',
@@ -15,7 +58,7 @@ export function guidedStudyPage({study,onReader,onLearn}){
       const renderLibrary=()=>{
         if(disposed)return;
         const items=study.library();
-        host.innerHTML=`<section class="bq-panel bq-study-head"><p class="bq-eyebrow">GUIDED STUDY</p><h1>Study Scripture in context</h1><p>Move from the passage and its context to observation, meaning, private reflection, and one concrete response. Personal reflection is not graded as spiritual quality.</p></section><section class="bq-study-library" aria-label="Guided studies">${items.map(item=>`<article class="bq-panel bq-study-card"><span>${escapeHtml(item.kicker)}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description)}</p><div class="bq-study-card-meta"><b>Passage: ${escapeHtml(item.passage.label)}</b><small>${escapeHtml(item.duration)}</small></div><button type="button" class="bq-primary-button" data-study-open="${escapeHtml(item.id)}">Start or resume</button></article>`).join('')}</section><div class="bq-study-footer"><button type="button" class="bq-secondary-button" data-study-learn>Back to Learn</button></div>`;
+        host.innerHTML=`<section class="bq-panel bq-study-head"><p class="bq-eyebrow">GUIDED STUDY</p><h1>Study Scripture in context</h1><p>Move from the passage and its context to observation, meaning, private reflection, and one concrete response. Personal reflection is not graded as spiritual quality.</p></section><section class="bq-study-library" aria-label="Guided studies">${items.map(item=>`<article class="bq-panel bq-study-card"><span>${escapeHtml(item.kicker)}</span><h2>${escapeHtml(item.title)}</h2><p>${escapeHtml(item.description)}</p><div class="bq-study-card-meta"><b>Passage: ${escapeHtml(item.passage.label)}</b><small>${escapeHtml(item.duration)}</small></div><button type="button" class="bq-primary-button" data-study-open="${escapeHtml(item.id)}">Start or resume</button></article>`).join('')}</section><section class="bq-study-external" aria-labelledby="bqExternalStudyHeading"><div class="bq-study-external-head"><p class="bq-eyebrow">EXTERNAL STUDY LIBRARY</p><h2 id="bqExternalStudyHeading">Trusted resources for deeper study</h2><p>These resources open outside BibleQuest. They are reference and commentary tools, not BibleQuest Scripture text. Check each source directly for its wording and interpretation.</p></div><div class="bq-study-external-grid">${EXTERNAL_STUDY_RESOURCES.map(item=>`<article class="bq-panel bq-study-external-card" data-external-study-resource="${escapeHtml(item.id)}"><span class="bq-study-external-icon" aria-hidden="true">${escapeHtml(item.icon)}</span><div><small>EXTERNAL RESOURCE · ${escapeHtml(item.provider)}</small><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></div><a class="bq-secondary-button bq-study-external-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(item.title)} in a new tab">Open resource ↗</a></article>`).join('')}</div></section><div class="bq-study-footer"><button type="button" class="bq-secondary-button" data-study-learn>Back to Learn</button></div>`;
       };
 
       const feedbackHtml=(feedback)=>feedback?`<div class="bq-study-feedback" role="status"><strong>${feedback.correct===true?'Correct':feedback.correct===false?'Review this':'Saved'}</strong>${feedback.message?`<p>${escapeHtml(feedback.message)}</p>`:''}${feedback.reference?`<span>Reference: ${escapeHtml(feedback.reference)}</span>`:''}</div>`:'';
