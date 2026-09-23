@@ -94,6 +94,29 @@ test('rejects wrong translation, passage, blank Scripture, and provider failure'
   );
 });
 
+test('rejects empty, overlapping, out-of-order, and impossible chapter payloads', async () => {
+  const request = { translationId: 'bsb', bookCode: 'JHN', chapter: 3 } as const;
+  const malformed: ReaderChapter[] = [
+    { ...chapter(), verses: [] },
+    { ...chapter(), verses: [
+      { chapter: 3, verse: 15, verseEnd: 16, text: 'grouped fixture' },
+      { chapter: 3, verse: 16, text: 'overlap fixture' },
+    ] },
+    { ...chapter(), verses: [
+      { chapter: 3, verse: 17, text: 'later fixture' },
+      { chapter: 3, verse: 16, text: 'out-of-order fixture' },
+    ] },
+    { ...chapter(), book: { ...book, chapters: 2 } },
+  ];
+  for (const payload of malformed) {
+    const repository = new ScriptureRepository(provider({ loadChapter: async () => payload }));
+    assert.deepEqual(
+      await repository.loadChapter(request),
+      { status: 'failed', reason: 'mismatched-content', retryable: true },
+    );
+  }
+});
+
 test('routes Context Lab through the repository and preserves exact requested passage', async () => {
   const seen: unknown[] = [];
   const repository = new ScriptureRepository(provider({
