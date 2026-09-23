@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-20 JST
+Updated: 2026-09-23 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -94,6 +94,24 @@ Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb7
 - [x] Live/licensed redistribution policy explicitly rejects unsupported packaged substitution.
 - [ ] App/service-worker/content-pack versions can upgrade safely.
 - [ ] Physical installed-PWA offline acceptance passes.
+
+## F2. BSB Audio Bible
+
+- [ ] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
+- [ ] Canonical chapter audio is hosted in BibleQuest-controlled Cloudflare R2 Standard storage; no dependency on another app's private streaming URLs.
+- [ ] All BibleQuest-hosted BSB audio assets plus retained derived copies remain **below 10 GB total**.
+- [ ] A deterministic release/CI inventory calculates hosted BSB audio bytes and fails at or above the 10 GB ceiling.
+- [ ] A speech-optimized canonical encoding is used; redundant high-bitrate copies are not retained without explicit budget proof.
+- [ ] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
+- [ ] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
+- [ ] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
+- [ ] Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.
+- [ ] Pause/resume, playback speed, auto-next chapter, sleep timer and persisted resume position work.
+- [ ] Background/lock-screen media controls work where supported and degrade safely where unsupported.
+- [ ] Selective offline audio download is bounded by explicit user choice; the app does not silently cache the complete Audio Bible.
+- [ ] Audio binaries are excluded from Git and Supabase bulk storage; object storage owns the large media payloads.
+- [ ] Audio provider abstraction allows future narrators/languages without coupling Reader state to one host/provider.
+- [ ] Built browser/mobile/PWA regression verifies BSB text/audio translation match and playback state recovery.
 
 ## G. Games engine and Games UI
 
