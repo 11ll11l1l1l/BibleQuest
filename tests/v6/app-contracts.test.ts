@@ -3,10 +3,12 @@ import test from 'node:test';
 
 import {
   createFeatureCompatibilitySeam,
+  projectSurfaceState,
   routeAllowed,
   type AppRouteContract,
   type SessionSnapshot,
 } from '../../src/v6/kernel/app-contracts.ts';
+import { beginAsync, idleAsync, rejectAsync, resolveAsync } from '../../src/v6/kernel/async-state.ts';
 import { createTenantContextStore } from '../../src/v6/kernel/tenant-context.ts';
 
 const publicRoute: AppRouteContract = Object.freeze({ id: 'sign-in', path: '/login', access: 'public' });
@@ -61,4 +63,52 @@ test('feature compatibility seam is explicit and fail-closed', () => {
   assert.equal(compatibility.enabled('reader'), false);
   assert.equal(compatibility.enabled('unknown'), false);
   assert.equal(compatibility.enabled(''), false);
+});
+
+test('surface projection standardizes empty, loading and ready states', () => {
+  const tenant = createTenantContextStore();
+  const shell = { session: anonymous, tenant: tenant.snapshot(), route: publicRoute, online: true } as const;
+
+  assert.deepEqual(projectSurfaceState(idleAsync<string>(), shell), { kind: 'empty', data: null });
+  const loading = beginAsync(idleAsync<string>(), 1);
+  assert.deepEqual(projectSurfaceState(loading, shell), { kind: 'loading', data: null });
+  assert.deepEqual(projectSurfaceState(resolveAsync(loading, 1, 'ready'), shell), { kind: 'ready', data: 'ready' });
+});
+
+test('surface projection fails closed before exposing cached protected data', () => {
+  const tenant = createTenantContextStore();
+  const cached = resolveAsync(beginAsync(idleAsync<string>('cached'), 1), 1, 'cached');
+  const state = projectSurfaceState(cached, {
+    session: anonymous,
+    tenant: tenant.snapshot(),
+    route: accountRoute,
+    online: true,
+  });
+
+  assert.equal(state.kind, 'unauthorized');
+  assert.equal(state.data, null);
+});
+
+test('surface projection standardizes offline and request failures', () => {
+  const tenant = createTenantContextStore();
+  const shell = { session: anonymous, tenant: tenant.snapshot(), route: publicRoute, online: false } as const;
+  const loading = beginAsync(idleAsync<string>('cached'), 1);
+  const offline = projectSurfaceState(loading, shell);
+  assert.equal(offline.kind, 'offline');
+  assert.equal(offline.data, 'cached');
+
+  const onlineShell = { ...shell, online: true } as const;
+  const forbidden = rejectAsync(loading, 1, {
+    kind: 'forbidden',
+    message: 'Denied',
+    retryable: false,
+  });
+  assert.equal(projectSurfaceState(forbidden, onlineShell).kind, 'unauthorized');
+
+  const remote = rejectAsync(loading, 1, {
+    kind: 'remote',
+    message: 'Remote failure',
+    retryable: true,
+  });
+  assert.equal(projectSurfaceState(remote, onlineShell).kind, 'error');
 });
