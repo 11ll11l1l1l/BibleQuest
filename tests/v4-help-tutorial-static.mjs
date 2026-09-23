@@ -43,7 +43,11 @@ assert.ok(helpSrc.includes('export function helpCenterPage'), 'Help Center must 
 // --- Wiring: reachable from both Home... (via the guided tour's final step
 // and) More, and routed in bootstrap.js. ---
 const bootstrap = read('src/app/bootstrap.js');
-assert.ok(bootstrap.includes("import { helpCenterPage } from '../features/help-center/index.js';"), 'bootstrap.js must import the Help Center page.');
+assert.ok(
+  bootstrap.includes("import { helpCenterPage } from '../features/help-center/index.js';") ||
+  bootstrap.includes("const helpCenterPage = args => lazyFeaturePage('help-center', 'helpCenterPage', args);"),
+  'bootstrap.js must bind the Help Center page through a direct or V6 lazy feature owner.'
+);
 assert.ok(bootstrap.includes("help:()=>helpCenterPage("), 'bootstrap.js must register the help route.');
 assert.ok(bootstrap.includes('onHelp:()=>router.navigate(\'help\')'), 'More must be wired to navigate to the Help Center.');
 
