@@ -1,5 +1,6 @@
 import type {
   ReaderChapter,
+  ReaderContext,
   ReaderLocation,
   ReaderSearchResult,
   ReaderTranslationId,
@@ -20,6 +21,11 @@ function validLocation(location: ReaderLocation): boolean {
   return Boolean(location.bookCode.trim()) && positiveInteger(location.chapter);
 }
 
+function containsVerse(candidate: Readonly<{ verse: number; verseEnd?: number }>, verse: number): boolean {
+  const end = candidate.verseEnd ?? candidate.verse;
+  return positiveInteger(candidate.verse) && positiveInteger(end) && candidate.verse <= verse && verse <= end;
+}
+
 function chapterMatches(location: ReaderLocation, chapter: ReaderChapter): boolean {
   if (chapter.translationId !== location.translationId) return false;
   if (chapter.book.code.trim().toUpperCase() !== location.bookCode.trim().toUpperCase()) return false;
@@ -32,6 +38,14 @@ function chapterMatches(location: ReaderLocation, chapter: ReaderChapter): boole
       && end >= verse.verse
       && Boolean(verse.text.trim());
   });
+}
+
+function contextMatches(location: ReaderLocation & Readonly<{ verse: number }>, context: ReaderContext): boolean {
+  if (!context.available) return true;
+  if (context.book.code.trim().toUpperCase() !== location.bookCode.trim().toUpperCase()) return false;
+  if (context.chapter !== location.chapter || context.verse !== location.verse) return false;
+  if (context.scripture.chapter !== location.chapter || !containsVerse(context.scripture, location.verse)) return false;
+  return Boolean(context.scripture.text.trim());
 }
 
 /**
@@ -56,6 +70,23 @@ export class ScriptureRepository {
         return Object.freeze({ status: 'failed', reason: 'mismatched-content', retryable: true });
       }
       return Object.freeze({ status: 'ready', value: chapter });
+    } catch {
+      return Object.freeze({ status: 'failed', reason: 'unavailable', retryable: true });
+    }
+  }
+
+  async loadContext(
+    location: ReaderLocation & Readonly<{ verse: number }>,
+  ): Promise<ScriptureRepositoryResult<ReaderContext>> {
+    if (!validLocation(location) || !positiveInteger(location.verse)) {
+      return Object.freeze({ status: 'failed', reason: 'invalid-location', retryable: false });
+    }
+    try {
+      const context = await this.provider.loadContext(location);
+      if (!contextMatches(location, context)) {
+        return Object.freeze({ status: 'failed', reason: 'mismatched-content', retryable: true });
+      }
+      return Object.freeze({ status: 'ready', value: context });
     } catch {
       return Object.freeze({ status: 'failed', reason: 'unavailable', retryable: true });
     }
