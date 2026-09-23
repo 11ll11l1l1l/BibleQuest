@@ -54,8 +54,18 @@ describe('legacy account resume runtime', () => {
     let release!: () => void;
     const wait = new Promise<void>((resolve) => { release = resolve; });
     const failures: string[] = [];
+    let calls = 0;
     const runtime = createLegacyAccountResumeRuntime([
-      { key: 'progress', syncNow: async () => { await wait; throw new Error('old account offline'); } },
+      {
+        key: 'progress',
+        syncNow: async () => {
+          calls += 1;
+          if (calls === 1) {
+            await wait;
+            throw new Error('old account offline');
+          }
+        },
+      },
     ], undefined, (key) => { failures.push(key); });
 
     runtime.syncSession(authenticated('user-a'));
@@ -63,6 +73,7 @@ describe('legacy account resume runtime', () => {
     release();
     await new Promise((resolve) => setTimeout(resolve, 0));
 
+    assert.equal(calls, 2);
     assert.deepEqual(failures, []);
     runtime.dispose();
   });
