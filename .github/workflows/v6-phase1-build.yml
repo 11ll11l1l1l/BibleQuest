@@ -101,6 +101,23 @@ jobs:
           npm install --no-save --package-lock=false playwright@1.55.0
           npx playwright install --with-deps chromium
 
+      - name: Start V6 source browser target
+        shell: bash
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4174 > /tmp/bq-v6-dev.log 2>&1 &
+          echo $! > /tmp/bq-v6-dev.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4174/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v6-dev.log
+          exit 1
+
+      - name: Rendered notification settings Chromium acceptance
+        env:
+          BQ_V6_DEV_URL: http://127.0.0.1:4174
+        run: node tests/v6/notification-settings-browser.mjs
+
       - name: Start built artifact preview
         shell: bash
         run: |
@@ -125,4 +142,6 @@ jobs:
 
       - name: Preview diagnostics
         if: always()
-        run: cat /tmp/bq-v6-preview.log || true
+        run: |
+          cat /tmp/bq-v6-preview.log || true
+          cat /tmp/bq-v6-dev.log || true
