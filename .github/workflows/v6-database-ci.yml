@@ -64,15 +64,18 @@ jobs:
         working-directory: /tmp/bq-v6-db
         run: supabase db lint --level error
 
-      - name: Prove local generated database types are deterministic
+      - name: Prove generated database types are deterministic and drift-free
         working-directory: /tmp/bq-v6-db
         run: |
           set -euo pipefail
-          supabase gen types typescript --local > /tmp/bq-v6-db-types-a.ts
-          supabase gen types typescript --local > /tmp/bq-v6-db-types-b.ts
-          cmp /tmp/bq-v6-db-types-a.ts /tmp/bq-v6-db-types-b.ts
-          test -s /tmp/bq-v6-db-types-a.ts
-          echo "Generated local DB types are deterministic."
+          supabase gen types typescript --local > /tmp/database.types.ts
+          supabase gen types typescript --local > /tmp/database.types.second.ts
+          cmp /tmp/database.types.ts /tmp/database.types.second.ts
+          test -s /tmp/database.types.ts
+          cp "$GITHUB_WORKSPACE/supabase/database.types.sha256" /tmp/database.types.sha256
+          cd /tmp
+          sha256sum --check database.types.sha256
+          echo "Generated local DB types are deterministic and match the reviewed canonical digest."
 
       - name: Verify source tree remains unchanged
         run: |
