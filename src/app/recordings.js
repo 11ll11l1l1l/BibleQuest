@@ -25,11 +25,15 @@ function normalizeRow(row){
   return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),category,createdAt:String(row.created_at||row.createdAt||'')};
 }
 
-function latestConfirmedService(rows){
-  return rows.filter(row=>row.featured).slice().sort((a,b)=>{
-    const byDate=String(b.createdAt||'').localeCompare(String(a.createdAt||''));
-    return byDate||String(b.id).localeCompare(String(a.id));
-  })[0]||null;
+const newestFirst=(a,b)=>{
+  const byDate=String(b.createdAt||'').localeCompare(String(a.createdAt||''));
+  return byDate||String(b.id).localeCompare(String(a.id));
+};
+
+function latestServiceFromRows(rows){
+  const sundayServices=rows.filter(row=>row.category==='sunday-service');
+  const candidates=sundayServices.length?sundayServices:rows;
+  return candidates.slice().sort(newestFirst)[0]||null;
 }
 
 export function createRecordingsService({media,audio,session,congregation}){
@@ -45,8 +49,9 @@ export function createRecordingsService({media,audio,session,congregation}){
     try{
       const input=await media.listLiveRecordings();
       const seen=new Set();
-      const rows=(Array.isArray(input)?input:[]).map(normalizeRow).filter(row=>row&&!seen.has(row.youtubeId)&&seen.add(row.youtubeId));
-      return set({status:'ready',rows,selectedId:null,error:'',access:'granted',latestService:latestConfirmedService(rows)});
+      const normalized=(Array.isArray(input)?input:[]).map(normalizeRow).filter(Boolean).sort(newestFirst);
+      const rows=normalized.filter(row=>!seen.has(row.youtubeId)&&seen.add(row.youtubeId));
+      return set({status:'ready',rows,selectedId:null,error:'',access:'granted',latestService:latestServiceFromRows(rows)});
     }catch(error){
       return set({status:'error',rows:[],selectedId:null,error:error?.message||'Could not load recordings.',access:'granted',latestService:null});
     }
