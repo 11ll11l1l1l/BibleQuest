@@ -102,8 +102,9 @@ const ledger=storage.inspect('progress-leaderboard-delivery-v1');
 assert(ledger&&Object.keys(ledger.pending).length===0&&Object.keys(ledger.settled).length>=4,'Leaderboard bridge delivery ledger did not settle expected claims.');
 
 const scoreSource=fs.readFileSync(path.join(root,'supabase/functions/bq-score/index.ts'),'utf8');
-assert(scoreSource.includes("case 'Bible Chapter Read':category='reading';points=10;break;"),'Trusted scorer is missing the fixed Bible Chapter Read rule.');
-assert(scoreSource.includes("case 'Transformation Complete':category='mastery';"),'Trusted scorer is missing the Transformation completion rule.');
+assert(scoreSource.includes("case 'Bible Chapter Read':if(!validChapterClaim(claim,m))return null;category='reading';points=10;break;"),'Trusted scorer is missing the validated Bible Chapter Read rule.');
+assert(scoreSource.includes("String(claim.sourceEventId||'').trim()===\`reading.chapter:\${code}:\${chapter}\`"),'Trusted scorer must bind a chapter score to its canonical event identity.');
+assert(scoreSource.includes("case 'Transformation Complete':if(!['spiritual','full'].includes(String(m.depth||'')))return null;category='mastery';"),'Trusted scorer is missing the validated Transformation completion rule.');
 
 bridge.dispose();
 console.log('BibleQuest V5 progress-to-leaderboard bridge regression passed.');
