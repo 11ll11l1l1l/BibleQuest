@@ -80,6 +80,7 @@ import {
   ACCESSIBILITY_PREFERENCES_FEATURE,
   createAccessibilityPreferencesService,
 } from '../v6/features/accessibility-preferences.ts';
+import { createNotificationSettingsController } from '../v6/notifications/index.ts';
 import { storage, privateStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
@@ -260,6 +261,7 @@ function boot(root){
   const contentReporting=createContentReportingService({api:api.contentReports,session,congregation});
   const ministryHub=createMinistryHubService({congregation});
   const notifications=createNotificationCenterService({api:api.notifications,session});
+  const notificationSettings=createNotificationSettingsController(authStorage);
   const workspace=createWorkspaceService({session,cloudNotes,congregation,reader,storage});
   const presence=createPresenceService({api:api.presence,session,congregation,store});
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
@@ -316,7 +318,7 @@ function boot(root){
     'live-rooms':()=>liveRoomsPage({liveRooms,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onCongregation:()=>router.navigate('congregation')}),
-    'notification-center':()=>notificationCenterPage({notifications,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
+    'notification-center':()=>notificationCenterPage({notifications,notificationSettings,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     workspace:()=>workspacePage({workspace,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     leaderboards:()=>leaderboardsPage({leaderboards,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
@@ -400,13 +402,27 @@ function boot(root){
     adminAccessSessionKey=key;
     if(current.authenticated===true)void adminAccess.refresh();else adminAccess.clear();
   };
+  let notificationSettingsUserId='';
+  const syncNotificationSettings=state=>{
+    const current=state?.session||{},userId=current.authenticated===true&&current.user?.id?String(current.user.id):'';
+    if(userId===notificationSettingsUserId)return;
+    if(!userId){
+      if(notificationSettingsUserId)notificationSettings.signOut();
+      notificationSettingsUserId='';
+      return;
+    }
+    if(notificationSettingsUserId)notificationSettings.switchAccount(userId);
+    else notificationSettings.activate(userId);
+    notificationSettingsUserId=userId;
+  };
   const syncShell=state=>{shell.updateSession(state.session);shell.updateProgress(state.progress)},
     unsubscribeStore=store.subscribe(syncShell),
     unsubscribeModeration=store.subscribe(syncModeration),
     unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
     unsubscribeBibleQuestAccount=store.subscribe(syncAccountProgress),
-    unsubscribeAdminAccess=store.subscribe(syncAdminAccess);
-  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());syncAdminAccess(store.getState());router.start();
+    unsubscribeAdminAccess=store.subscribe(syncAdminAccess),
+    unsubscribeNotificationSettings=store.subscribe(syncNotificationSettings);
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
@@ -414,6 +430,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();unsubscribeNotificationSettings();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
