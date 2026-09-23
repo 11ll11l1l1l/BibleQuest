@@ -26,6 +26,23 @@ test('preserves the exact Japanese Scripture reference and provenance-bearing vo
   }
 });
 
+test('normalizes whitespace-only readings away without inventing furigana', async () => {
+  const provider: JapaneseEnrichmentProvider = {
+    getVerseEnrichment: async () => ({
+      translationId: 'jko',
+      reference,
+      segments: [{ surface: ' 神 ', reading: '   ' }],
+      vocabulary: [{ surface: ' 神 ', reading: '   ', gloss: ' God ', source: ' fixture-provenance ' }],
+    }),
+  };
+  const state = await loadJapaneseEnrichment(provider, { translationId: 'jko', ...reference });
+  assert.equal(state.status, 'ready');
+  if (state.status === 'ready') {
+    assert.deepEqual(state.enrichment.segments, [{ surface: '神' }]);
+    assert.deepEqual(state.enrichment.vocabulary, [{ surface: '神', gloss: 'God', source: 'fixture-provenance' }]);
+  }
+});
+
 test('fails closed without provider I/O for non-Japanese translations', async () => {
   let calls = 0;
   const getVerseEnrichment = async () => {
@@ -77,6 +94,19 @@ test('rejects mismatched provider references as retryable unavailable content', 
       translationId: 'jko',
       reference: { bookCode: 'JHN', chapter: 3, verse: 17 },
       segments: [],
+      vocabulary: [],
+    }),
+  };
+  const state = await loadJapaneseEnrichment(provider, { translationId: 'jko', ...reference });
+  assert.deepEqual(state, { status: 'failed', reason: 'unavailable', retryable: true });
+});
+
+test('rejects invalid provider verse metadata instead of exposing malformed enrichment', async () => {
+  const provider: JapaneseEnrichmentProvider = {
+    getVerseEnrichment: async () => ({
+      translationId: 'jko',
+      reference: { bookCode: 'JHN', chapter: 3, verse: 0 },
+      segments: [{ surface: '神', reading: 'かみ' }],
       vocabulary: [],
     }),
   };
