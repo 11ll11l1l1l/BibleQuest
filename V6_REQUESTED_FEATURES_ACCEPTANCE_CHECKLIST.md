@@ -254,3 +254,17 @@ Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb7
 - [ ] Production promotion uses the exact certified candidate.
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [ ] V4 rollback reference remains available through V6 production acceptance.
+
+## Q. Cross-cutting safety gates
+
+- [ ] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
+- [ ] No content/media asset is hosted or transformed without verified redistribution rights/provenance.
+- [ ] BSB hosted-audio inventory remains below 10 GB and the release gate fails at or above the ceiling.
+- [ ] Bulk audio remains outside Git and Supabase Storage; object storage owns media payloads.
+- [ ] Large offline downloads require explicit user action and provide storage/removal controls.
+- [ ] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
+- [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
+- [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
+- [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
+- [ ] Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.
+- [ ] One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion.
