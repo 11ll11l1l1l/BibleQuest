@@ -29,15 +29,24 @@ function containsVerse(candidate: Readonly<{ verse: number; verseEnd?: number }>
 function chapterMatches(location: ReaderLocation, chapter: ReaderChapter): boolean {
   if (chapter.translationId !== location.translationId) return false;
   if (chapter.book.code.trim().toUpperCase() !== location.bookCode.trim().toUpperCase()) return false;
+  if (!positiveInteger(chapter.book.chapters) || chapter.chapter > chapter.book.chapters) return false;
   if (chapter.chapter !== location.chapter || !positiveInteger(chapter.chapter)) return false;
-  return chapter.verses.every((verse) => {
+  if (chapter.verses.length === 0) return false;
+
+  let previousEnd = 0;
+  for (const verse of chapter.verses) {
     const end = verse.verseEnd ?? verse.verse;
-    return verse.chapter === chapter.chapter
-      && positiveInteger(verse.verse)
-      && positiveInteger(end)
-      && end >= verse.verse
-      && Boolean(verse.text.trim());
-  });
+    if (
+      verse.chapter !== chapter.chapter
+      || !positiveInteger(verse.verse)
+      || !positiveInteger(end)
+      || end < verse.verse
+      || verse.verse <= previousEnd
+      || !verse.text.trim()
+    ) return false;
+    previousEnd = end;
+  }
+  return true;
 }
 
 function contextMatches(location: ReaderLocation & Readonly<{ verse: number }>, context: ReaderContext): boolean {
