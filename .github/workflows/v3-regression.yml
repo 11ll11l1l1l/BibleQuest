@@ -44,15 +44,26 @@ jobs:
           node --check tests/v3-field-validation-harness.mjs
           node --check tests/v3-field-linked-assignment-harness.mjs
           node --check tests/v3-field-live-room-harness.mjs
+      - name: Build V6 browser target
+        if: github.base_ref == 'v6/architecture-upgrade'
+        env:
+          BQ_BUILD_SHA: ${{ github.sha }}
+        run: |
+          npm ci
+          npm run build:v6
       - name: Install Playwright
         run: npm install --no-save playwright
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Start BibleQuest v3 locally
+      - name: Start browser regression target
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v3-http.log 2>&1 &
+          if [ "${{ github.base_ref }}" = "v6/architecture-upgrade" ]; then
+            npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v3-http.log 2>&1 &
+          else
+            python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v3-http.log 2>&1 &
+          fi
           echo $! > /tmp/biblequest-v3-http.pid
-          for i in {1..20}; do
+          for i in {1..30}; do
             curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
             sleep 1
           done
