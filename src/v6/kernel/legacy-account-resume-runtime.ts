@@ -7,6 +7,11 @@ export interface LegacyAccountResumeRuntime {
   readonly dispose: () => void;
 }
 
+export interface LegacyAccountResumeStore {
+  readonly getState: () => Readonly<{ session?: LegacySessionState | null }>;
+  readonly subscribe: (listener: (state: Readonly<{ session?: LegacySessionState | null }>) => void) => () => void;
+}
+
 /**
  * Bounded V5 -> V6 composition seam for account-backed product state.
  *
@@ -41,4 +46,34 @@ export function createLegacyAccountResumeRuntime(
   }
 
   return Object.freeze({ syncSession, dispose });
+}
+
+/**
+ * Owns the narrow legacy-store subscription needed by the live bootstrap
+ * cutover. The store remains the V5 session authority; only its session slice
+ * is projected into the V6 runtime. Subscribing before the initial snapshot
+ * prevents an auth transition from being missed between setup steps, while the
+ * bridge's publication deduplication prevents duplicate resume work.
+ */
+export function bindLegacyAccountResumeRuntime(
+  store: LegacyAccountResumeStore,
+  owners: readonly AccountResumeOwner[],
+  onCurrentResume?: () => void | Promise<unknown>,
+): LegacyAccountResumeRuntime {
+  if (!store?.getState || !store?.subscribe) throw new Error('Legacy account resume binding requires a store owner.');
+  const runtime = createLegacyAccountResumeRuntime(owners, onCurrentResume);
+  let disposed = false;
+  const sync = (state: Readonly<{ session?: LegacySessionState | null }>) => runtime.syncSession(state?.session);
+  const unsubscribe = store.subscribe(sync);
+  sync(store.getState());
+
+  return Object.freeze({
+    syncSession: runtime.syncSession,
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      unsubscribe();
+      runtime.dispose();
+    },
+  });
 }
