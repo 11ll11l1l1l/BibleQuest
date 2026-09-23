@@ -18,6 +18,22 @@ const chapter = (translationId: ReaderTranslationId = 'bsb'): ReaderChapter => (
   chapter: 3,
   verses: [{ chapter: 3, verse: 16, text: 'fixture Scripture text' }],
 });
+const context = (): ReaderContext => ({
+  available: true,
+  reason: '',
+  book,
+  chapter: 3,
+  verse: 16,
+  reference: 'John 3:16',
+  scripture: { chapter: 3, verse: 16, text: 'fixture Scripture text' },
+  previous: { chapter: 3, verse: 15, text: 'previous fixture' },
+  next: { chapter: 3, verse: 17, text: 'next fixture' },
+  entries: [],
+  source: 'fixture',
+  license: 'fixture',
+  note: '',
+  external: [],
+});
 
 function provider(overrides: Partial<ScriptureContentProvider> = {}): ScriptureContentProvider {
   return {
@@ -28,7 +44,7 @@ function provider(overrides: Partial<ScriptureContentProvider> = {}): ScriptureC
       results: [],
       skippedBooks: [],
     }),
-    loadContext: async (): Promise<ReaderContext> => { throw new Error('not used'); },
+    loadContext: async (): Promise<ReaderContext> => context(),
     ...overrides,
   };
 }
@@ -75,6 +91,44 @@ test('rejects wrong translation, passage, blank Scripture, and provider failure'
   assert.deepEqual(
     await unavailable.loadChapter({ translationId: 'jko', bookCode: 'JHN', chapter: 3 }),
     { status: 'failed', reason: 'unavailable', retryable: true },
+  );
+});
+
+test('routes Context Lab through the repository and preserves exact requested passage', async () => {
+  const seen: unknown[] = [];
+  const repository = new ScriptureRepository(provider({
+    loadContext: async (location) => { seen.push(location); return context(); },
+  }));
+  const result = await repository.loadContext({ translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 });
+  assert.equal(result.status, 'ready');
+  assert.deepEqual(seen, [{ translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 }]);
+});
+
+test('Context Lab fails closed before I/O and rejects mismatched or blank Scripture', async () => {
+  let invalidCalls = 0;
+  const invalid = new ScriptureRepository(provider({
+    loadContext: async () => { invalidCalls += 1; return context(); },
+  }));
+  assert.deepEqual(
+    await invalid.loadContext({ translationId: 'bsb', bookCode: '', chapter: 3, verse: 0 }),
+    { status: 'failed', reason: 'invalid-location', retryable: false },
+  );
+  assert.equal(invalidCalls, 0);
+
+  const mismatch = new ScriptureRepository(provider({
+    loadContext: async () => ({ ...context(), book: { ...book, code: 'GEN', name: 'Genesis' } }),
+  }));
+  assert.deepEqual(
+    await mismatch.loadContext({ translationId: 'tl', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    { status: 'failed', reason: 'mismatched-content', retryable: true },
+  );
+
+  const blank = new ScriptureRepository(provider({
+    loadContext: async () => ({ ...context(), scripture: { chapter: 3, verse: 16, text: '   ' } }),
+  }));
+  assert.deepEqual(
+    await blank.loadContext({ translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    { status: 'failed', reason: 'mismatched-content', retryable: true },
   );
 });
 
