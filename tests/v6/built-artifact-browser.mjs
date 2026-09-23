@@ -154,6 +154,7 @@ async function assertNoHorizontalOverflow(page, label) {
 
 const browser = await chromium.launch({ headless: true });
 try {
+  const representativeFailures = [];
   for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 } });
     const page = await context.newPage();
@@ -161,21 +162,29 @@ try {
     page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
 
     for (const route of representativeRoutes) {
-      const routeStartedAt = Date.now();
-      await assertRoute(page, route, `${width}px`);
-      const routeReadyMs = Date.now() - routeStartedAt;
-      if (routeReadyMs > performanceBudgets.criticalRouteReadyMs) {
-        throw new Error(
-          `${width}px #/${route}: route ready ${routeReadyMs}ms exceeds ${performanceBudgets.criticalRouteReadyMs}ms budget`,
-        );
+      try {
+        const routeStartedAt = Date.now();
+        await assertRoute(page, route, `${width}px`);
+        const routeReadyMs = Date.now() - routeStartedAt;
+        if (routeReadyMs > performanceBudgets.criticalRouteReadyMs) {
+          throw new Error(
+            `${width}px #/${route}: route ready ${routeReadyMs}ms exceeds ${performanceBudgets.criticalRouteReadyMs}ms budget`,
+          );
+        }
+        await assertPerformanceBudget(page, route, `${width}px`);
+        await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
+        await assertAutomatedAccessibility(page, `${width}px #/${route}`);
+      } catch (error) {
+        representativeFailures.push(String(error?.message || error));
       }
-      await assertPerformanceBudget(page, route, `${width}px`);
-      await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
-      await assertAutomatedAccessibility(page, `${width}px #/${route}`);
     }
 
-    if (pageErrors.length) throw new Error(`${width}px browser errors: ${pageErrors.join(' | ')}`);
+    if (pageErrors.length) representativeFailures.push(`${width}px browser errors: ${pageErrors.join(' | ')}`);
     await context.close();
+  }
+
+  if (representativeFailures.length) {
+    throw new Error(`Representative browser matrix failures:\n- ${representativeFailures.join('\n- ')}`);
   }
 
   // Exercise every canonical route as a fresh built-artifact deep link. This
