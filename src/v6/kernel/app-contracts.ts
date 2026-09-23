@@ -1,4 +1,4 @@
-import type { AppFailure } from './async-state.ts';
+import type { AppFailure, AsyncState } from './async-state.ts';
 import type { TenantMembership, TenantSnapshot } from './tenant-context.ts';
 
 export type SessionStatus = 'anonymous' | 'authenticating' | 'authenticated';
@@ -66,4 +66,49 @@ export function routeAllowed(route: AppRouteContract, shell: Pick<AppShellSnapsh
   if (shell.session.status !== 'authenticated') return false;
   if (route.access === 'authenticated') return true;
   return sessionOwnsActiveCongregation(shell.session, shell.tenant);
+}
+
+const unauthorizedFailure: AppFailure = Object.freeze({
+  kind: 'unauthorized',
+  message: 'This surface is not available for the current session and congregation.',
+  retryable: false,
+});
+
+const offlineFailure: AppFailure = Object.freeze({
+  kind: 'offline',
+  message: 'This surface is unavailable while offline.',
+  retryable: true,
+});
+
+/**
+ * Projects kernel request state into the complete UI-facing state contract.
+ * Access is checked before request state so stale cached data can never make a
+ * protected surface visible after sign-out or tenant drift.
+ */
+export function projectSurfaceState<T>(
+  state: AsyncState<T>,
+  shell: Pick<AppShellSnapshot, 'session' | 'tenant' | 'route' | 'online'>,
+): SurfaceState<T> {
+  if (!routeAllowed(shell.route, shell)) {
+    return Object.freeze({ kind: 'unauthorized', data: null, failure: unauthorizedFailure });
+  }
+
+  if (state.status === 'error') {
+    if (state.failure.kind === 'offline') {
+      return Object.freeze({ kind: 'offline', data: state.data, failure: state.failure });
+    }
+    if (state.failure.kind === 'unauthorized' || state.failure.kind === 'forbidden') {
+      return Object.freeze({ kind: 'unauthorized', data: null, failure: state.failure });
+    }
+    return Object.freeze({ kind: 'error', data: state.data, failure: state.failure });
+  }
+
+  if (!shell.online && state.status !== 'ready') {
+    return Object.freeze({ kind: 'offline', data: state.data, failure: offlineFailure });
+  }
+
+  if (state.status === 'loading') return Object.freeze({ kind: 'loading', data: state.data });
+  if (state.status === 'ready') return Object.freeze({ kind: 'ready', data: state.data });
+  if (state.data !== null) return Object.freeze({ kind: 'ready', data: state.data });
+  return Object.freeze({ kind: 'empty', data: null });
 }
