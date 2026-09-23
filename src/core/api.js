@@ -740,9 +740,9 @@ export function createApi() {
         .eq('active', true)
         .eq('media_type', 'youtube_video')
         .lte('publish_at', now)
+        .order('created_at', { ascending: false })
         .order('featured', { ascending: false })
         .order('display_order', { ascending: true })
-        .order('created_at', { ascending: false })
         .limit(80);
       const { data, error } = await withTimeout(request, 10000, 'Videos took too long to load. Please try again.');
       if (error) throw error;
