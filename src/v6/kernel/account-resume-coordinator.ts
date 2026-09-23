@@ -26,7 +26,9 @@ export interface AccountResumeCoordinator {
  * Binds independent account-backed product owners to the typed V6 session
  * lifecycle. Owners settle independently so one unavailable slice never blocks
  * the others. Generation checks prevent a slow response for a previous account
- * from being reported as current after an account switch/sign-out.
+ * from being reported as current after an account switch/sign-out. Concurrent
+ * requests for the same authenticated generation share one owner-sync pass so
+ * session restoration and an eager consumer cannot duplicate remote work.
  */
 export function createAccountResumeCoordinator(
   session: SessionContextStore,
@@ -42,31 +44,41 @@ export function createAccountResumeCoordinator(
 
   let disposed = false;
   let generation = 0;
+  let inFlight: { userId: string; generation: number; promise: Promise<AccountResumeResult> } | null = null;
 
   const currentUserId = (): string => {
     const snapshot = session.snapshot();
     return snapshot.status === 'authenticated' ? snapshot.identity.userId : '';
   };
 
-  async function resumeCurrentAccount(): Promise<AccountResumeResult | null> {
-    if (disposed) return null;
+  function resumeCurrentAccount(): Promise<AccountResumeResult | null> {
+    if (disposed) return Promise.resolve(null);
     const userId = currentUserId();
-    if (!userId) return null;
+    if (!userId) return Promise.resolve(null);
     const runGeneration = generation;
-    const results = await Promise.allSettled(owners.map((owner) => owner.syncNow()));
-    const settled = results.map((result, index) =>
-      Object.freeze(
-        result.status === 'fulfilled'
-          ? { key: owners[index].key, status: 'fulfilled' as const }
-          : { key: owners[index].key, status: 'rejected' as const, reason: result.reason },
-      ),
-    );
-    const current = !disposed && runGeneration === generation && currentUserId() === userId;
-    return Object.freeze({ userId, generation: runGeneration, settled: Object.freeze(settled), current });
+    if (inFlight?.userId === userId && inFlight.generation === runGeneration) return inFlight.promise;
+
+    const promise = Promise.allSettled(owners.map((owner) => owner.syncNow())).then((results) => {
+      const settled = results.map((result, index) =>
+        Object.freeze(
+          result.status === 'fulfilled'
+            ? { key: owners[index].key, status: 'fulfilled' as const }
+            : { key: owners[index].key, status: 'rejected' as const, reason: result.reason },
+        ),
+      );
+      const current = !disposed && runGeneration === generation && currentUserId() === userId;
+      return Object.freeze({ userId, generation: runGeneration, settled: Object.freeze(settled), current });
+    });
+    inFlight = { userId, generation: runGeneration, promise };
+    void promise.finally(() => {
+      if (inFlight?.promise === promise) inFlight = null;
+    });
+    return promise;
   }
 
   const unsubscribe = session.subscribe((snapshot) => {
     generation += 1;
+    inFlight = null;
     if (snapshot.status !== 'authenticated') {
       for (const owner of owners) owner.switchToGuest?.();
       return;
@@ -78,6 +90,7 @@ export function createAccountResumeCoordinator(
     if (disposed) return;
     disposed = true;
     generation += 1;
+    inFlight = null;
     unsubscribe();
   }
 
