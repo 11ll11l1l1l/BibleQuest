@@ -7,3 +7,4 @@ export * from './request-coordinator.ts';
 export * from './session-context.ts';
 export * from './session-tenant-coordinator.ts';
 export * from './tenant-context.ts';
+export * from './view-state.ts';
