@@ -29,6 +29,11 @@ export function canUseJapaneseEnrichment(translationId: ReaderTranslationId): tr
   return translationId === 'jko';
 }
 
+function normalizedOptionalText(value: unknown): string | undefined {
+  const normalized = String(value ?? '').trim();
+  return normalized || undefined;
+}
+
 export function normalizeJapaneseEnrichment(
   value: JapaneseVerseEnrichment,
 ): JapaneseVerseEnrichment {
@@ -36,16 +41,25 @@ export function normalizeJapaneseEnrichment(
   if (!value.reference.bookCode || !Number.isInteger(value.reference.chapter) || value.reference.chapter < 1) {
     throw new Error('Japanese enrichment requires a valid Scripture reference.');
   }
-  const segments = value.segments.map(segment => Object.freeze({
-    surface: String(segment.surface || '').trim(),
-    ...(segment.reading ? { reading: String(segment.reading).trim() } : {}),
-  })).filter(segment => segment.surface);
-  const vocabulary = value.vocabulary.map(entry => Object.freeze({
-    surface: String(entry.surface || '').trim(),
-    ...(entry.reading ? { reading: String(entry.reading).trim() } : {}),
-    gloss: String(entry.gloss || '').trim(),
-    source: String(entry.source || '').trim(),
-  })).filter(entry => entry.surface && entry.gloss && entry.source);
+  if (value.reference.verse !== undefined && (!Number.isInteger(value.reference.verse) || value.reference.verse < 1)) {
+    throw new Error('Japanese enrichment requires a valid Scripture verse.');
+  }
+  const segments = value.segments.map(segment => {
+    const reading = normalizedOptionalText(segment.reading);
+    return Object.freeze({
+      surface: String(segment.surface || '').trim(),
+      ...(reading ? { reading } : {}),
+    });
+  }).filter(segment => segment.surface);
+  const vocabulary = value.vocabulary.map(entry => {
+    const reading = normalizedOptionalText(entry.reading);
+    return Object.freeze({
+      surface: String(entry.surface || '').trim(),
+      ...(reading ? { reading } : {}),
+      gloss: String(entry.gloss || '').trim(),
+      source: String(entry.source || '').trim(),
+    });
+  }).filter(entry => entry.surface && entry.gloss && entry.source);
   return Object.freeze({
     translationId: 'jko',
     reference: Object.freeze({ ...value.reference }),
