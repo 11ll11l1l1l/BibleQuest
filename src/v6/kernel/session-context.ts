@@ -11,8 +11,9 @@ export interface SessionContextStore {
   readonly subscribe: (listener: (snapshot: SessionSnapshot) => void) => () => void;
 }
 
+const emptyAnonymousMemberships: readonly [] = Object.freeze([]);
 const anonymousSession = (): SessionSnapshot =>
-  Object.freeze({ status: 'anonymous', identity: null, memberships: Object.freeze([]) });
+  Object.freeze({ status: 'anonymous', identity: null, memberships: emptyAnonymousMemberships });
 
 function normalizeUserId(userId: string): string {
   const normalized = String(userId ?? '').trim();
