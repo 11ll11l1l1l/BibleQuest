@@ -40,7 +40,11 @@ function chapterMatches(location: ReaderLocation, chapter: ReaderChapter): boole
  * translation instead of silently presenting mismatched Scripture.
  */
 export class ScriptureRepository {
-  constructor(private readonly provider: ScriptureContentProvider) {}
+  private readonly provider: ScriptureContentProvider;
+
+  constructor(provider: ScriptureContentProvider) {
+    this.provider = provider;
+  }
 
   async loadChapter(location: ReaderLocation): Promise<ScriptureRepositoryResult<ReaderChapter>> {
     if (!validLocation(location)) {
