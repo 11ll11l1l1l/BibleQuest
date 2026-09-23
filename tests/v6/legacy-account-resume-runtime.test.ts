@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { createLegacyAccountResumeRuntime } from '../../src/v6/kernel/legacy-account-resume-runtime.ts';
+import {
+  bindLegacyAccountResumeRuntime,
+  createLegacyAccountResumeRuntime,
+} from '../../src/v6/kernel/legacy-account-resume-runtime.ts';
 
 const authenticated = (id: string) => ({
   status: 'authenticated',
@@ -56,5 +59,44 @@ describe('legacy account resume runtime', () => {
 
     assert.equal(guestSwitches, 1);
     runtime.dispose();
+  });
+
+  it('binds the live legacy store without duplicate initial resume work', async () => {
+    let state: Readonly<{ session: ReturnType<typeof authenticated> }> = { session: authenticated('user-a') };
+    const listeners = new Set<(value: typeof state) => void>();
+    let progressCalls = 0;
+    let refreshCalls = 0;
+    const store = {
+      getState: () => state,
+      subscribe(listener: (value: typeof state) => void) {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+    };
+    const runtime = bindLegacyAccountResumeRuntime(store, [
+      { key: 'progress', syncNow: async () => { progressCalls += 1; } },
+    ], () => { refreshCalls += 1; });
+
+    for (const listener of listeners) listener(state);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(progressCalls, 1);
+    assert.equal(refreshCalls, 1);
+
+    state = { session: authenticated('user-b') };
+    for (const listener of listeners) listener(state);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.equal(progressCalls, 2);
+    assert.equal(refreshCalls, 2);
+
+    runtime.dispose();
+    for (const listener of listeners) listener(state);
+    assert.equal(progressCalls, 2);
+  });
+
+  it('fails closed when the legacy store contract is missing', () => {
+    assert.throws(
+      () => bindLegacyAccountResumeRuntime({} as never, []),
+      /requires a store owner/,
+    );
   });
 });
