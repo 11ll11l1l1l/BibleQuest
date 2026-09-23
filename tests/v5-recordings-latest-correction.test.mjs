@@ -16,7 +16,7 @@ test('Recordings UI delegates correction to the existing service owner and not d
   assert.doesNotMatch(source, /media\.updateVideo|createClient|supabase|localStorage|sessionStorage|fetch\(/i);
 });
 
-test('existing Recordings service can unconfirm, re-confirm and archive the surfaced latest service', async () => {
+test('existing Recordings service can update featured curation and archive recordings', async () => {
   const rows = [
     { id: 'old', youtube_id: 'OLDER123456', title: 'Older service', featured: true, active: true, created_at: '2026-09-01T01:00:00Z' },
     { id: 'latest', youtube_id: 'LATEST12345', title: 'Wrong latest service', featured: true, active: true, created_at: '2026-09-08T01:00:00Z' },
@@ -38,15 +38,15 @@ test('existing Recordings service can unconfirm, re-confirm and archive the surf
   const session = { isAuthenticated() { return true; }, getState() { return { authenticated: true, user: { id: 'leader-1' } }; } };
   const service = createRecordingsService({ media, audio, session });
 
-  assert.equal((await service.load()).latestService?.id, 'latest');
+  assert.equal((await service.load()).latestService?.id, 'ordinary', 'legacy uncategorized libraries surface the newest recording');
   await service.setFeatured('latest', false);
-  assert.equal(service.getLatestService()?.id, 'old', 'unconfirming an incorrectly surfaced row must reveal the next confirmed service');
+  assert.equal(service.getLatestService()?.id, 'ordinary', 'changing featured curation must not make Home regress to an older recording');
 
   await service.setFeatured('ordinary', true);
-  assert.equal(service.getLatestService()?.id, 'ordinary', 'confirming a newer existing row must make it the latest service without duplicate insertion');
+  assert.equal(service.getLatestService()?.id, 'ordinary', 'featuring the newest recording preserves the latest-service selection');
 
   await service.archive('ordinary');
-  assert.equal(service.getLatestService()?.id, 'old', 'archiving the corrected row must remove it from active latest-service selection');
+  assert.equal(service.getLatestService()?.id, 'latest', 'archiving the newest row reveals the next-newest active legacy recording');
   assert.deepEqual(updates, [
     { id: 'latest', patch: { featured: false } },
     { id: 'ordinary', patch: { featured: true } },
