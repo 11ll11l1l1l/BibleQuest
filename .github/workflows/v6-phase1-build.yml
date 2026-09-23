@@ -10,6 +10,14 @@ on:
       - ".nvmrc"
       - "tsconfig.json"
       - "vite.config.mjs"
+      - "assets/**"
+      - "app-icon.svg"
+      - "manifest.webmanifest"
+      - "pwa-icon-192.png"
+      - "pwa-icon-512.png"
+      - "pwa-icon-maskable-512.png"
+      - "_headers"
+      - "_redirects"
       - "src/v6/**"
       - "src/app/**"
       - "src/core/**"
@@ -26,6 +34,8 @@ on:
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-static-asset-ownership.mjs"
+      - "scripts/v6-root-static-ownership.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
@@ -43,64 +53,53 @@ jobs:
     steps:
       - name: Checkout exact PR commit
         uses: actions/checkout@v4
-
       - name: Use pinned Node and npm cache
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
-
       - name: Require committed lockfile
         run: test -f package-lock.json
-
       - name: Deterministic install
         run: npm ci
-
       - name: V6 toolchain smoke
         run: npm run check:v6-toolchain
-
       - name: Lint V6 client boundaries
         run: npm run lint
-
       - name: Verify V6 formatting policy
         run: npm run format:check
-
       - name: Typecheck
         run: npm run typecheck
-
       - name: V6 unit tests
         run: npm run unit
-
       - name: Released V5 push lifecycle parity
         run: |
           node tests/v5-push-subscription-persistence.mjs
           node tests/v5-push-subscription-lifecycle.mjs
-
       - name: Build V6 artifact with exact commit identity
         env:
           BQ_BUILD_SHA: ${{ github.sha }}
         run: npm run build:v6
-
       - name: Verify exact-SHA identity and build budgets
         env:
           BQ_BUILD_SHA: ${{ github.sha }}
         run: npm run check:v6-build-evidence
-
       - name: Verify Vite owns legacy stylesheet output
         run: node scripts/v6-css-build-ownership.mjs
-
+      - name: Verify compatibility asset ownership
+        run: node scripts/v6-static-asset-ownership.mjs
+      - name: Verify root PWA/static ownership
+        run: node scripts/v6-root-static-ownership.mjs
       - name: Record build artifact inventory
         shell: bash
         run: |
           test -d dist-v6
           find dist-v6 -type f -printf '%s %p\n' | sort -nr | sed -n '1,100p'
-
       - name: Install pinned browser harness outside application lockfile
         run: |
           npm install --no-save --package-lock=false playwright@1.55.0
           npx playwright install --with-deps chromium
-
       - name: Start built artifact preview
         shell: bash
         run: |
@@ -112,17 +111,14 @@ jobs:
           done
           cat /tmp/bq-v6-preview.log
           exit 1
-
       - name: Built artifact Chromium parity
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/built-artifact-browser.mjs
-
       - name: Built artifact PWA acceptance
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/pwa-built-artifact-browser.mjs
-
       - name: Preview diagnostics
         if: always()
         run: cat /tmp/bq-v6-preview.log || true
