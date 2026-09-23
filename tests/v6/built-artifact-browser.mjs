@@ -3,6 +3,10 @@ import { chromium } from 'playwright';
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
 const widths = [320, 360, 390, 412, 430, 1280];
 const representativeRoutes = ['home', 'reader', 'assignments', 'calendar', 'more'];
+const performanceBudgets = {
+  startupDomContentLoadedMs: 4000,
+  criticalRouteReadyMs: 4000,
+};
 const canonicalRoutes = [
   'home',
   'mission',
@@ -50,6 +54,20 @@ const canonicalRoutes = [
   'congregation',
   'account',
 ];
+
+async function assertPerformanceBudget(page, route, label) {
+  const metrics = await page.evaluate(() => {
+    const navigation = performance.getEntriesByType('navigation')[0];
+    return {
+      domContentLoadedMs: navigation?.domContentLoadedEventEnd || 0,
+    };
+  });
+  if (metrics.domContentLoadedMs > performanceBudgets.startupDomContentLoadedMs) {
+    throw new Error(
+      `${label} #/${route}: DOMContentLoaded ${Math.round(metrics.domContentLoadedMs)}ms exceeds ${performanceBudgets.startupDomContentLoadedMs}ms budget`,
+    );
+  }
+}
 
 async function assertRoute(page, route, label) {
   await page.goto(`${baseUrl}/#/${route}`, { waitUntil: 'networkidle' });
@@ -143,7 +161,15 @@ try {
     page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
 
     for (const route of representativeRoutes) {
+      const routeStartedAt = Date.now();
       await assertRoute(page, route, `${width}px`);
+      const routeReadyMs = Date.now() - routeStartedAt;
+      if (routeReadyMs > performanceBudgets.criticalRouteReadyMs) {
+        throw new Error(
+          `${width}px #/${route}: route ready ${routeReadyMs}ms exceeds ${performanceBudgets.criticalRouteReadyMs}ms budget`,
+        );
+      }
+      await assertPerformanceBudget(page, route, `${width}px`);
       await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
       await assertAutomatedAccessibility(page, `${width}px #/${route}`);
     }
@@ -235,5 +261,5 @@ try {
 }
 
 console.log(
-  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with no document-level horizontal overflow and automated accessibility smoke; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
+  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with startup/critical-route performance budgets, no document-level horizontal overflow and automated accessibility smoke; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
 );
