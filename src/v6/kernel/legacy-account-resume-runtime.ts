@@ -12,6 +12,8 @@ export interface LegacyAccountResumeStore {
   readonly subscribe: (listener: (state: Readonly<{ session?: LegacySessionState | null }>) => void) => () => void;
 }
 
+export type AccountResumeFailureObserver = (key: string, reason: unknown) => void;
+
 /**
  * Bounded V5 -> V6 composition seam for account-backed product state.
  *
@@ -19,11 +21,14 @@ export interface LegacyAccountResumeStore {
  * that identity into the typed V6 session context and lets the account resume
  * coordinator invoke the existing cloud-sync owners exactly once per session
  * generation. It does not own remote merge/conflict algorithms, scoring,
- * tenant membership, or backend authorization.
+ * tenant membership, or backend authorization. Rejected owners remain isolated
+ * but are surfaced to the caller so the live bootstrap can preserve existing
+ * operational diagnostics instead of silently hiding an offline product slice.
  */
 export function createLegacyAccountResumeRuntime(
   owners: readonly AccountResumeOwner[],
   onCurrentResume?: () => void | Promise<unknown>,
+  onOwnerFailure?: AccountResumeFailureObserver,
 ): LegacyAccountResumeRuntime {
   const context = createSessionContextStore();
   const coordinator = createAccountResumeCoordinator(context, owners);
@@ -31,7 +36,12 @@ export function createLegacyAccountResumeRuntime(
 
   const bridge = createLegacySessionBridge(context, async () => {
     const result = await coordinator.resumeCurrentAccount();
-    if (!disposed && result?.current) await onCurrentResume?.();
+    if (!disposed && result?.current) {
+      for (const owner of result.settled) {
+        if (owner.status === 'rejected') onOwnerFailure?.(owner.key, owner.reason);
+      }
+      await onCurrentResume?.();
+    }
   });
 
   function syncSession(state: LegacySessionState | null | undefined): void {
@@ -59,9 +69,10 @@ export function bindLegacyAccountResumeRuntime(
   store: LegacyAccountResumeStore,
   owners: readonly AccountResumeOwner[],
   onCurrentResume?: () => void | Promise<unknown>,
+  onOwnerFailure?: AccountResumeFailureObserver,
 ): LegacyAccountResumeRuntime {
   if (!store?.getState || !store?.subscribe) throw new Error('Legacy account resume binding requires a store owner.');
-  const runtime = createLegacyAccountResumeRuntime(owners, onCurrentResume);
+  const runtime = createLegacyAccountResumeRuntime(owners, onCurrentResume, onOwnerFailure);
   let disposed = false;
   const sync = (state: Readonly<{ session?: LegacySessionState | null }>) => runtime.syncSession(state?.session);
   const unsubscribe = store.subscribe(sync);
