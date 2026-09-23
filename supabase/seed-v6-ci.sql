@@ -6,6 +6,7 @@ insert into auth.users (id, email, raw_app_meta_data, raw_user_meta_data)
 values
   ('11111111-1111-4111-8111-111111111111', 'leader-a@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb),
   ('11111111-1111-4111-8111-111111111112', 'member-a@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb),
+  ('11111111-1111-4111-8111-111111111113', 'pastor-a@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb),
   ('22222222-2222-4222-8222-222222222221', 'admin-b@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb),
   ('22222222-2222-4222-8222-222222222222', 'member-b@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb),
   ('99999999-9999-4999-8999-999999999999', 'platform-owner@bq-v6.invalid', '{}'::jsonb, '{}'::jsonb)
@@ -21,6 +22,7 @@ insert into public.bible_congregation_members (congregation_id, user_id, role, d
 values
   ('10000000-0000-4000-8000-000000000001', '11111111-1111-4111-8111-111111111111', 'leader', 'Leader A', true),
   ('10000000-0000-4000-8000-000000000001', '11111111-1111-4111-8111-111111111112', 'member', 'Member A', true),
+  ('10000000-0000-4000-8000-000000000001', '11111111-1111-4111-8111-111111111113', 'pastor', 'Pastor A', true),
   ('20000000-0000-4000-8000-000000000002', '22222222-2222-4222-8222-222222222221', 'admin', 'Admin B', true),
   ('20000000-0000-4000-8000-000000000002', '22222222-2222-4222-8222-222222222222', 'member', 'Member B', true)
 on conflict (congregation_id, user_id) do nothing;
@@ -29,6 +31,7 @@ insert into public.bible_app_access (user_id, role, active)
 values
   ('11111111-1111-4111-8111-111111111111', 'leader', true),
   ('11111111-1111-4111-8111-111111111112', 'member', true),
+  ('11111111-1111-4111-8111-111111111113', 'pastor', true),
   ('22222222-2222-4222-8222-222222222221', 'admin', true),
   ('22222222-2222-4222-8222-222222222222', 'member', true),
   ('99999999-9999-4999-8999-999999999999', 'owner', true)
