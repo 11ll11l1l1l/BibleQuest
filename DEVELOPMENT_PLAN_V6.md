@@ -1,10 +1,10 @@
 # BibleQuest V6 Development Plan
 
-Updated: 2026-09-22 JST
+Updated: 2026-09-23 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
 Starting ancestry baseline: V5.0 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
-Current product parity baseline: V5.1 post-release runtime/source `c84fcc28e7b2c433d99b0553b1a14301fbe217d3`
+Current product parity baseline: production `main` `7420bbba789ce21e02ac667f98558681e71d2a28`
 Depends on: completed/certified V5 feature-completion release
 
 ## 1. V6 line in the sand
@@ -165,7 +165,7 @@ V5 already provides baseline offline re-open behavior. V6 replaces that minimum 
 
 ## Required outcomes
 
-- decompose Reader controller, content provider, navigation state, search, verse/context helpers, Japanese pipelines, progress command owner and external/licensed adapters;
+- decompose Reader controller, content provider, navigation state, search, verse/context helpers, Japanese pipelines, progress command owner and external/licensed adapters;\n- preserve canonical translation-independent chapter-read identity, account/device progress idempotency, and the trusted Progress → leaderboard bridge so Reader/Main Quest cannot double-score the same chapter;
 - versioned Scripture manifests with checksums/version/license metadata;
 - deliberate book/full-translation downloads where licensing permits;
 - IndexedDB/Cache Storage chosen by content shape;
