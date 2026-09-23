@@ -3,6 +3,7 @@ export * from './app-contracts.ts';
 export * from './async-state.ts';
 export * from './errors.ts';
 export * from './feature-boundary.ts';
+export * from './legacy-account-resume-runtime.ts';
 export * from './legacy-session-bridge.ts';
 export * from './repository.ts';
 export * from './request-coordinator.ts';
