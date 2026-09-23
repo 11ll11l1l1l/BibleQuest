@@ -1,3 +1,4 @@
+export * from './audio-policy.ts';
 export * from './content-manifest.ts';
 export * from './context-helpers.ts';
 export * from './contracts.ts';
