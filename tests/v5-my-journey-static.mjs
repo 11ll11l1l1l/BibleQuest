@@ -14,7 +14,11 @@ assert.ok(!/label:\s*['"]/.test(service), 'The service must return localization 
 
 const bootstrap = read('src/app/bootstrap.js');
 assert.ok(bootstrap.includes("import { createMyJourneyService } from './my-journey.js';"), 'bootstrap.js must import the My Journey service.');
-assert.ok(bootstrap.includes("import { myJourneyPage } from '../features/my-journey/index.js';"), 'bootstrap.js must import the My Journey page.');
+assert.ok(
+  bootstrap.includes("import { myJourneyPage } from '../features/my-journey/index.js';") ||
+  bootstrap.includes("const myJourneyPage = args => lazyFeaturePage('my-journey', 'myJourneyPage', args);"),
+  'bootstrap.js must bind the My Journey page through a direct or V6 lazy feature owner.'
+);
 assert.ok(bootstrap.includes("'my-journey':()=>myJourneyPage("), 'bootstrap.js must register the my-journey route.');
 const progressLine = bootstrap.split('\n').findIndex(line => line.includes('const progress=createProgressService'));
 const assignmentsLine = bootstrap.split('\n').findIndex(line => line.includes('const assignments=createAssignmentsService'));

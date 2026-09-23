@@ -5,10 +5,18 @@ on:
   pull_request:
     branches:
       - v5/feature-completion
+      - main
     paths:
       - 'offline-shell-sw.js'
       - 'src/app/push-subscription.js'
       - 'src/app/push-subscription-persistence.js'
+      - 'src/app/bootstrap.js'
+      - 'src/core/api.js'
+      - 'src/features/more/index.js'
+      - 'src/ui/push-onboarding.js'
+      - 'src/ui/push-onboarding.css'
+      - 'index.html'
+      - 'tests/v5-push-production-onboarding.mjs'
       - 'tests/v5-push-subscription-lifecycle.mjs'
       - 'tests/v5-push-subscription-persistence.mjs'
       - '.github/workflows/v5-push-subscription-lifecycle.yml'
@@ -35,13 +43,19 @@ jobs:
         run: |
           node --check src/app/push-subscription.js
           node --check src/app/push-subscription-persistence.js
+          node --check src/app/bootstrap.js
+          node --check src/core/api.js
+          node --check src/features/more/index.js
           node --check tests/v5-push-subscription-lifecycle.mjs
           node --check tests/v5-push-subscription-persistence.mjs
+          node --check tests/v5-push-production-onboarding.mjs
+          node --check src/ui/push-onboarding.js
           node --check offline-shell-sw.js
       - name: Run focused push lifecycle and persistence contracts
         run: |
           node tests/v5-push-subscription-persistence.mjs
           node tests/v5-push-subscription-lifecycle.mjs
+          node tests/v5-push-production-onboarding.mjs
       - name: Verify no V6-style background sync or client secret regression
         run: |
           ! grep -Eiq 'backgroundsync|periodicsync' offline-shell-sw.js

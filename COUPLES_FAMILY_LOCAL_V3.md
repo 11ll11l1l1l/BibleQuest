@@ -4,7 +4,7 @@ Milestone #62 rebuilds the loaded legacy `couples.js` local experience without c
 
 ## Recovered source
 
-The retained classic shell loads `couples.js` and `couples.css` separately from `couple-cloud.js`. The local module contains exactly eight categories and 32 conversation cards, plus One Card Tonight, Listen First, Couple Check-in, Repair Room, Us & God, Date Night, saved cards, discussed history, 7-day practices, and local completion/check-in counters.
+The retained classic shell loads `couples.js` and `couples.css` separately from `couple-cloud.js`. The local module contains exactly eight categories and 64 conversation cards, plus One Card Tonight, Listen First, Couple Check-in, Repair Room, Us & God, Date Night, saved cards, discussed history, 7-day practices, and local completion/check-in counters.
 
 The recovered local categories are: Us & God; Listen & Understand; Repair & Forgive; Friendship & Gratitude; Money & Responsibilities; Closeness & Affection; Parenting & Family; Purpose & Future.
 
@@ -27,7 +27,7 @@ The v3 owner does not read or mutate the classic unprefixed `biblequest_couples_
 ## Behavioral parity
 
 - Dashboard exposes all six recovered local modes and eight recovered categories.
-- One Card Tonight/category/Us & God/Date Night use the recovered 32-card source.
+- One Card Tonight/category/Us & God/Date Night use the expanded 64-card source while preserving the same local-only ownership and safety boundaries.
 - Saved-card state, discussed history, and a selected 7-day practice persist and survive reload.
 - Listen First retains the five-step speaker/listener/mirror/switch/finish flow and records completion locally.
 - Couple Check-in remains pass-the-phone, 1–5, explicitly non-competitive, stores only local ratings, and compares shared strength/perception gap without declaring a winner.

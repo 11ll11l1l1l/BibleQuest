@@ -65,10 +65,15 @@ assert(marked.newlyRead && marked.progress.awardedXp === 10 && reader.isRead(), 
 assert(progress.getState().xp === 10 && progress.getState().counters.chaptersRead === 1, 'Reader progress did not flow through progress service.');
 const duplicateMark = reader.markRead();
 assert(!duplicateMark.newlyRead && progress.getState().xp === 10, 'Repeated reader mark duplicated progress.');
+reader.setTranslation('bsb');
+const crossTranslationMark=reader.markRead();
+assert(!crossTranslationMark.newlyRead&&progress.getState().xp===10&&progress.getState().counters.chaptersRead===1,'The same canonical Bible chapter must not award XP/progress again in another translation.');
+assert(reader.isRead(),'Canonical chapter read state must remain visible after switching translations.');
+reader.setTranslation('tl');
 const reloadedProgress = createProgressService({ storage, store: makeStore(), clock: () => new Date('2026-09-06T12:00:00+09:00'), timeZone: 'Asia/Tokyo' });
 const reloaded = createReaderService({ bible, storage, progress: reloadedProgress });
 assert(reloaded.getState().translation === 'tl' && reloaded.getState().book === 'GEN' && reloaded.getState().chapter === 1 && reloaded.isRead(), 'Reader state/read mark did not persist through storage boundary.');
-assert(reloadedProgress.getState().xp === 10 && reloadedProgress.hasEvent('reader.read:tl:GEN:1'), 'Reader progress idempotency did not survive reload.');
+assert(reloadedProgress.getState().xp === 10 && reloadedProgress.hasEvent('reader.read:GEN:1'), 'Reader progress idempotency did not survive reload.');
 
 const flakyMemory = new Map();
 let failReaderWrite = false;
@@ -82,9 +87,31 @@ flakyReader.setBook('GEN', 1);
 failReaderWrite = true;
 let transactionError = '';
 try { flakyReader.markRead(); } catch (error) { transactionError = error.message; }
-assert(/simulated/i.test(transactionError) && !flakyReader.isRead(), 'Failed reader-state write must leave reader state uncommitted.');
-assert(flakyProgress.getState().xp === 10 && flakyProgress.hasEvent('reader.read:bsb:GEN:1'), 'Progress event must survive a later reader-state write failure.');
+assert(/simulated/i.test(transactionError), 'Simulated reader-state cache failure must still surface to the caller.');
+assert(flakyProgress.getState().xp === 10 && flakyProgress.hasEvent('reader.read:GEN:1'), 'Progress event must survive a later reader-state cache write failure.');
+assert(flakyReader.isRead(), 'Canonical progress must remain the read-state source of truth after a local Reader cache write failure.');
 const healed = flakyReader.markRead();
-assert(healed.newlyRead && healed.progress.duplicate && flakyReader.isRead(), 'Retry must heal reader state using the existing idempotent progress event.');
-assert(flakyProgress.getState().xp === 10, 'Retry after partial reader transaction duplicated XP.');
+assert(!healed.newlyRead && flakyReader.isRead(), 'Retry must heal Reader cache from the existing canonical progress event without a second award.');
+assert(flakyReader.getState().read['bsb:GEN:1'], 'Retry must mirror the canonical account progress event back into the local Reader cache.');
+assert(flakyProgress.getState().xp === 10, 'Retry after partial Reader cache failure duplicated XP.');
+
+// Account hydration may restore the stable read event before this device has any
+// Reader read map. The button/state must still show Marked read and self-heal.
+const accountMemory=new Map([['progress-state',{
+  version:1,xp:10,stars:0,coins:0,streak:1,lastActivityDate:'2026-09-06',totalActivities:1,
+  counters:{chaptersRead:1,quizCorrect:0,reflections:0,assessments:0,situations:0},
+  badges:['first-step'],events:{
+    'reader.read:tl:GEN:1':{type:'reader.chapter.read',date:'2026-09-06',at:'2026-09-06T03:00:00.000Z',xp:10,meaningful:true,metrics:{chaptersRead:1},rewards:{}}
+  }
+}],['reader-state',{translation:'tl',book:'GEN',chapter:1,read:{}}]]);
+const accountStorage={
+  read(key,fallback=null){return accountMemory.has(key)?structuredClone(accountMemory.get(key)):structuredClone(fallback)},
+  write(key,value){accountMemory.set(key,structuredClone(value));return value}
+};
+const accountProgress=createProgressService({storage:accountStorage,store:makeStore(),clock:()=>new Date('2026-09-06T12:00:00+09:00'),timeZone:'Asia/Tokyo'});
+const accountReader=createReaderService({bible,storage:accountStorage,progress:accountProgress});
+assert(accountReader.isRead(),'Account-restored reader.read event must render the chapter as already read on a fresh device.');
+const accountHeal=accountReader.markRead();
+assert(!accountHeal.newlyRead&&accountProgress.getState().xp===10,'Healing account-restored Reader state must not duplicate XP.');
+assert(accountReader.getState().read['tl:GEN:1']==='2026-09-06','Account-restored read event must populate the local Reader cache date.');
 console.log('BibleQuest v3 Bible-data/reader edge regression passed.');

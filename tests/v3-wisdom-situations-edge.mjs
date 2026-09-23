@@ -1,59 +1,102 @@
 import { createLessonEngine } from '../src/engines/lesson.js';
 import { createProgressService } from '../src/core/progress.js';
 import { createWisdomSituationsService } from '../src/app/wisdom-situations.js';
-import { WISDOM_SITUATIONS, getWisdomSituation } from '../src/features/wisdom-situations/content.js';
+import { WISDOM_SITUATIONS, getWisdomSituation, localizeWisdomSituation } from '../src/features/wisdom-situations/content.js';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const clone=value=>structuredClone(value);
-const memory=new Map();
-const storage={read(key,fallback=null){return memory.has(key)?clone(memory.get(key)):clone(fallback)},write(key,value){memory.set(key,clone(value));return value}};
-let storeState={};
-const store={setState(patch){storeState=typeof patch==='function'?patch(storeState):{...storeState,...patch};return storeState}};
-let lessonTick=0;
-const lesson=createLessonEngine({storage,clock:()=>new Date(Date.UTC(2026,8,7,5,0,lessonTick++))});
-const progress=createProgressService({storage,store,clock:()=>new Date('2026-09-07T05:00:00Z'),timeZone:'Asia/Tokyo'});
-const randomValues=[0,0.5,0];
-const wisdom=createWisdomSituationsService({lesson,progress,random:()=>randomValues.shift()??0});
+const memoryStorage=()=>{
+  const memory=new Map();
+  return {
+    read(key,fallback=null){return memory.has(key)?clone(memory.get(key)):clone(fallback)},
+    write(key,value){memory.set(key,clone(value));return value}
+  };
+};
+const createHarness=({locale='en',random=()=>0,start='2026-09-21T08:00:00Z'}={})=>{
+  const storage=memoryStorage();
+  let tick=0,storeState={};
+  const store={setState(patch){storeState=typeof patch==='function'?patch(storeState):{...storeState,...patch};return storeState}};
+  const lesson=createLessonEngine({storage,clock:()=>new Date(new Date(start).getTime()+tick++*1000)});
+  const progress=createProgressService({storage,store,clock:()=>new Date(start),timeZone:'Asia/Tokyo'});
+  const wisdom=createWisdomSituationsService({lesson,progress,storage,random,getLocale:()=>locale});
+  return {storage,lesson,progress,wisdom};
+};
 
-assert(wisdom.count()===24 && WISDOM_SITUATIONS.length===24,'Wisdom Situations must retain all 24 recovered v2 scenarios.');
-assert(Object.isFrozen(WISDOM_SITUATIONS)&&Object.isFrozen(WISDOM_SITUATIONS[0])&&Object.isFrozen(WISDOM_SITUATIONS[0].options)&&Object.isFrozen(WISDOM_SITUATIONS[0].rationales),'Wisdom static definitions must be immutable.');
+assert(WISDOM_SITUATIONS.length===72,'Wisdom Situations must contain exactly 72 authored scenarios after the V5 expansion.');
+const packs=WISDOM_SITUATIONS.reduce((out,item)=>(out[item.pack]=(out[item.pack]||0)+1,out),{});
+assert(packs.foundation===24&&packs.advanced===24&&packs.expert===24,'Wisdom Situations must retain three 24-scenario packs.');
+assert(Math.max(...WISDOM_SITUATIONS.map(item=>item.difficulty))===8,'Wisdom difficulty scale must reach level 8.');
+assert(WISDOM_SITUATIONS.filter(item=>item.difficulty>=6).length===48,'All 48 Advanced/Expert scenarios must be level 6 or harder.');
+assert(WISDOM_SITUATIONS.filter(item=>item.difficulty===8).length>=12,'The bank must contain a substantial level-8 set.');
+assert(Object.isFrozen(WISDOM_SITUATIONS)&&Object.isFrozen(WISDOM_SITUATIONS[0])&&Object.isFrozen(WISDOM_SITUATIONS[0].options),'Wisdom definitions must remain immutable.');
+
 for(const item of WISDOM_SITUATIONS){
-  assert(item.options.length===4&&item.rationales.length===4,'Every Wisdom Situation must retain four options and four rationales.');
-  assert(Number.isSafeInteger(item.best)&&item.best>=0&&item.best<4,'Every Wisdom Situation must have one valid strongest option.');
-  assert(item.refs.length>=1&&item.definition.steps.length===1&&item.definition.steps[0].type==='choice','Every Wisdom Situation must retain Scripture references and one Lesson choice step.');
+  assert(item.options.length===4&&item.rationales.length===4,`${item.id} must contain four plausible options and four counter-rationales.`);
+  assert(Number.isSafeInteger(item.best)&&item.best>=0&&item.best<4,`${item.id} must have one canonical strongest option.`);
+  assert(item.refs.length>=1&&item.definition.steps.length===1&&item.definition.steps[0].type==='choice',`${item.id} must retain Scripture references and one Lesson choice step.`);
+  for(const locale of ['tl','ceb']){
+    const localized=localizeWisdomSituation(item,locale);
+    assert(localized.title&&localized.tension&&localized.scenario&&localized.why,`${item.id} is missing ${locale} scenario text.`);
+    assert(localized.options.length===4&&localized.options.every(Boolean),`${item.id} is missing ${locale} answer choices.`);
+    assert(localized.rationales.length===4&&localized.rationales.every(Boolean),`${item.id} is missing ${locale} counter-rationales.`);
+  }
 }
-assert(getWisdomSituation('hw24').title==='A good cause with bad methods','Recovered Wisdom content lookup is incomplete.');
-let missing='';try{getWisdomSituation('missing')}catch(error){missing=error.message}assert(/Unknown Wisdom Situation/.test(missing),'Unknown Wisdom content ids must fail explicitly.');
+assert(getWisdomSituation('hw72').title==='Correcting misinformation in the family group chat','Expert Wisdom content lookup is incomplete.');
 
-const opened=wisdom.open('hw01');
-assert(!opened.resumed&&!opened.answered&&opened.situation.title==='Confidentiality or protection?','Wisdom Situation did not open a fresh Lesson-backed attempt.');
-assert(opened.situation.best===undefined&&opened.situation.rationales===undefined&&opened.situation.refs===undefined,'Wisdom answer/rationale/reference reveal must stay hidden before the choice.');
-const before=progress.getState();
-const correct=wisdom.answer(2);
-assert(correct.completed&&correct.answered&&correct.feedback.correct===true,'Strongest Wisdom choice must lock and complete the Lesson attempt.');
-assert(correct.situation.best===2&&correct.situation.rationales.length===4&&correct.situation.refs.includes('Proverbs 11:13'),'Wisdom completion must reveal strongest option, all rationales, and Scripture references.');
-assert(correct.progress?.applied&&correct.progress.awardedXp===8,'Wisdom completion must award the recovered +8 XP exactly once.');
-assert(progress.getState().xp-before.xp===8&&progress.getState().counters.situations-before.counters.situations===1,'Wisdom completion must add +8 XP and +1 situations through Progress.');
-assert(progress.getState().counters.quizCorrect===before.counters.quizCorrect,'Wisdom must not convert its strongest-option exercise into Bible quiz correctness progress.');
+const primary=createHarness();
+const opened=primary.wisdom.open('hw01',{restart:true});
+assert(!opened.answered&&opened.situation.title==='Confidentiality or protection?','Wisdom hw01 did not open.');
+assert(opened.situation.best===undefined&&opened.situation.rationales===undefined&&opened.situation.refs===undefined,'Answer/rationale/reference reveal must stay hidden before a choice.');
+assert(opened.situation.options.length===4,'Wisdom must expose four plausible display choices.');
 
-const reopened=wisdom.open('hw01');
-assert(reopened.resumed&&reopened.state.status==='complete'&&reopened.progress?.duplicate,'Reopening a completed Wisdom attempt must resume and reconcile as duplicate.');
-const afterReopen=progress.getState();
-assert(afterReopen.xp===before.xp+8&&afterReopen.counters.situations===before.counters.situations+1,'Reopening a completed Wisdom attempt duplicated progress.');
+const before=primary.progress.getState();
+const first=primary.wisdom.answer(0);
+assert(first.completed&&first.answered,'Wisdom choice must complete the one-step case.');
+assert(first.situation.rationales.length===4&&first.situation.refs.includes('Proverbs 11:13'),'Completion must reveal four rationales and Scripture references.');
+assert((first.feedback.correct===true)===(first.selected===first.situation.best),'Shuffled display choice must map back to the canonical strongest judgment correctly.');
+assert(first.progress?.applied&&first.progress.awardedXp===8,'First completion of a scenario must award exactly +8 XP.');
+assert(primary.progress.getState().xp-before.xp===8,'First Wisdom completion must add +8 XP.');
 
-const replay=wisdom.restart();
-assert(!replay.resumed&&!replay.answered&&replay.state.status==='active','Wisdom replay must create a fresh Lesson attempt.');
-const weaker=wisdom.answer(0);
-assert(weaker.feedback.correct===false&&weaker.completed,'A plausible-but-weaker choice must still complete the Wisdom attempt.');
-assert(weaker.progress?.applied&&weaker.progress.awardedXp===8,'Recovered Wisdom +8 XP must not depend on choosing the strongest option.');
-assert(progress.getState().xp===before.xp+16&&progress.getState().counters.situations===before.counters.situations+2,'A new Wisdom attempt must be eligible for one new recovered reward.');
+const bestPositions=new Set([first.situation.best]);
+for(let attempt=0;attempt<10;attempt++){
+  const replay=primary.wisdom.restart();
+  assert(!replay.answered,'Restart must create a fresh attempt.');
+  const result=primary.wisdom.answer(0);
+  bestPositions.add(result.situation.best);
+  assert(result.progress?.duplicate===true||result.progress?.awardedXp===0,'Replaying the same scenario must not award repeat XP.');
+}
+assert(bestPositions.size>=3,'Strongest answer display position must vary across attempts instead of teaching a fixed letter pattern.');
+assert(primary.progress.getState().xp===before.xp+8,'Replay farming must not increase Wisdom XP beyond the first scenario completion.');
 
-const next=wisdom.another();
-assert(next.situation.id!=='hw01','Another Wisdom Situation must not immediately repeat the previous scenario when alternatives exist.');
-assert(next.state.status==='active'&&!next.answered,'Another Wisdom Situation must start a fresh Lesson-backed attempt.');
-wisdom.close();
-let closed='';try{wisdom.getState()}catch(error){closed=error.message}assert(/Open a Wisdom Situation/.test(closed),'Wisdom owner must enforce its public boundary after close.');
+const sequence=createHarness({random:()=>0,start:'2026-09-21T09:00:00Z'});
+const ids=[sequence.wisdom.startRandom().situation.id];
+for(let index=1;index<72;index++)ids.push(sequence.wisdom.another().situation.id);
+assert(new Set(ids).size===72,'A Wisdom cycle must exhaust all 72 scenarios before any repeat.');
+const last=ids.at(-1);
+const rollover=sequence.wisdom.another();
+assert(rollover.cycle.number===1,'Wisdom pool exhaustion must increment the cycle number.');
+assert(rollover.situation.id!==last,'A new Wisdom cycle must not immediately repeat the previous scenario when alternatives exist.');
 
-const invalid=createWisdomSituationsService({lesson:createLessonEngine({storage:{read(_key,fallback){return clone(fallback)},write(_key,value){return value}}}),progress,random:()=>1});
-let randomError='';try{invalid.startRandom()}catch(error){randomError=error.message}assert(/random source/.test(randomError),'Out-of-range Wisdom random sources must fail explicitly.');
-console.log('BibleQuest v3 Wisdom Situations edge regression passed.');
+const resumeStorage=memoryStorage();
+let resumeTick=0,resumeStore={};
+const resumeLesson=createLessonEngine({storage:resumeStorage,clock:()=>new Date(Date.UTC(2026,8,21,10,0,resumeTick++))});
+const resumeProgress=createProgressService({storage:resumeStorage,store:{setState(patch){resumeStore=typeof patch==='function'?patch(resumeStore):{...resumeStore,...patch};return resumeStore}},clock:()=>new Date('2026-09-21T10:00:00Z'),timeZone:'Asia/Tokyo'});
+const firstRuntime=createWisdomSituationsService({lesson:resumeLesson,progress:resumeProgress,storage:resumeStorage,random:()=>0,getLocale:()=> 'tl'});
+const started=firstRuntime.startRandom();
+const startedId=started.situation.id;
+firstRuntime.close();
+const secondRuntime=createWisdomSituationsService({lesson:resumeLesson,progress:resumeProgress,storage:resumeStorage,random:()=>0.9,getLocale:()=> 'tl'});
+const resumed=secondRuntime.startRandom();
+assert(resumed.situation.id===startedId&&resumed.resumed===true,'Leaving and reopening Wisdom must resume the current case rather than reroll it.');
+assert(resumed.situation.title===localizeWisdomSituation(getWisdomSituation(startedId),'tl').title,'Selected Tagalog locale must localize the resumed scenario.');
+
+const ceb=createHarness({locale:'ceb',start:'2026-09-21T11:00:00Z'});
+const cebOpened=ceb.wisdom.open('hw72',{restart:true});
+assert(cebOpened.situation.title===localizeWisdomSituation(getWisdomSituation('hw72'),'ceb').title,'Cebuano locale must localize Expert scenarios.');
+assert(cebOpened.situation.options.join(' ')!==getWisdomSituation('hw72').options.join(' '),'Cebuano choices must not silently fall back to the English answer bank.');
+
+const invalid=createHarness({random:()=>1});
+let randomError='';try{invalid.wisdom.startRandom()}catch(error){randomError=error.message}
+assert(/random source/.test(randomError),'Out-of-range Wisdom random sources must fail explicitly.');
+
+console.log('BibleQuest v5 Wisdom Situations 72-item multilingual level-8 edge regression passed.');

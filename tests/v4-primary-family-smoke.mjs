@@ -46,21 +46,25 @@ async function verify(width,height,isMobile=false){
 
   await page.locator('[data-route-link="learn"]').click();
   await page.waitForURL(/#\/learn$/);
+  await page.locator('[data-open-reader]').waitFor();
   for(const hook of['[data-open-reader]','[data-open-study]','[data-open-bible-world]','[data-open-open-review]'])
     assert(await page.locator(hook).count()===1,`Learn entry point disappeared at ${width}px: ${hook}`);
 
   await page.locator('[data-route-link="play"]').click();
   await page.waitForURL(/#\/play$/);
+  await page.locator('[data-games-page] .bq-games-head').waitFor();
   assert((await page.locator('[data-games-page] .bq-games-head h1').textContent())?.trim()==='Bible games for every kind of practice',`Play launcher exposed stale heading at ${width}px.`);
   assert(await page.locator('[data-memory-open]').count()===1&&await page.locator('[data-same-room-open]').count()===1,`Play family entry points disappeared at ${width}px.`);
 
   await page.locator('[data-route-link="grow"]').click();
   await page.waitForURL(/#\/grow$/);
+  await page.locator('[data-open-transform]').waitFor();
   for(const hook of['[data-open-transform]','[data-open-personality-profile]','[data-open-psychometrics]','[data-open-avatar-vault]'])
     assert(await page.locator(hook).count()===1,`Grow entry point disappeared at ${width}px: ${hook}`);
 
   await page.locator('[data-route-link="more"]').click();
   await page.waitForURL(/#\/more$/);
+  await page.locator('[data-more-group]').first().waitFor();
   assert(await page.locator('[data-more-group]').count()===5,`More must retain five grouped families at ${width}px.`);
   const moreText=(await page.locator('#bq-view').innerText()).toLowerCase();
   for(const banned of['active rebuild path','still being rebuilt','later admin surfaces remain intentionally unavailable'])

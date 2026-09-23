@@ -15,7 +15,7 @@ async function run(){
     const calls={updates:0,removals:0};
     const api={calendar:{
       async list(){return[]},
-      async create(userId,ev){const row={id:`cloud-${saved.length+1}`,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay};saved.push(row);return row},
+      async create(userId,ev){const row={id:ev.id,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay};saved.push(row);return row},
       async remove(){return true},
       async listCongregation(){return congregationSaved.slice()},
       async createCongregation(userId,congregationId,ev){const row={id:`cong-${congregationSaved.length+1}`,congregation_id:congregationId,user_id:userId,title:ev.title,notes:ev.notes,event_date:ev.date,all_day:ev.allDay,recurrence_weeks:ev.recurrenceWeeks||0};congregationSaved.push(row);return row},

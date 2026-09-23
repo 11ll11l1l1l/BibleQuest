@@ -33,7 +33,8 @@ for(const icon of [icon192,icon512,maskable]){
   assert(stat.size>0,`Manifest icon ${icon.src} is missing or empty.`);
 }
 
-assert(offlineShell.includes("serviceWorker.register('offline-shell-sw.js',{scope:'./'})"),'Offline shell must register the scoped BibleQuest service worker.');
+assert(offlineShell.includes("serviceWorker.register('offline-shell-sw.js',{scope:'./',updateViaCache:'none'})"),'Offline shell must register the scoped BibleQuest service worker without trusting stale worker HTTP cache.');
+assert(offlineShell.includes('registration.update?.()'),'Installed PWA startup must explicitly check for a newer service worker.');
 assert(offlineShell.includes("publish('ready')")&&offlineShell.includes('BIBLEQUEST_WARM_SHELL'),'Offline shell must expose ready state and warm the rendered shell.');
 for(const eventName of ["'install'","'activate'","'fetch'","'message'"]){
   assert(worker.includes(`addEventListener(${eventName}`),`Offline worker is missing ${eventName} handling.`);

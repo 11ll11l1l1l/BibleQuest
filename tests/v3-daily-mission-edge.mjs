@@ -2,7 +2,7 @@ import { createStore } from '../src/app/store.js';
 import { createProgressService } from '../src/core/progress.js';
 import { createLessonEngine } from '../src/engines/lesson.js';
 import { createDailyMissionService } from '../src/app/daily-mission.js';
-import { selectDailyPassage } from '../src/features/daily-mission/content.js';
+import { DAILY_PASSAGES, DAILY_VARIETY_CUTOVER, buildDailyMissionDefinition, selectDailyPassage } from '../src/features/daily-mission/content.js';
 
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const clone = value => structuredClone(value);
@@ -33,6 +33,28 @@ assert(storage.read('lesson-sessions', null) === null, 'Home/today preview must 
 const passage6 = selectDailyPassage('2026-09-06');
 const passage7 = selectDailyPassage('2026-09-07');
 assert(passage6 !== passage7, 'Adjacent civil dates should advance deterministic Daily Journey rotation.');
+assert(DAILY_PASSAGES.length >= 60, 'Daily Journey should have at least a 60-day authored content pool after the V5 freshness pass.');
+const cutoverStart = new Date(`${DAILY_VARIETY_CUTOVER}T00:00:00Z`);
+const rotationKeys = [];
+const answerPositions = new Set();
+const applyPrompts = new Set();
+const reflectPrompts = new Set();
+for (let offset = 0; offset < DAILY_PASSAGES.length; offset++) {
+  const day = new Date(cutoverStart.getTime() + offset * 86400000).toISOString().slice(0,10);
+  const selected = selectDailyPassage(day);
+  rotationKeys.push(`${selected.code}:${selected.chapter}:${selected.from}:${selected.to}`);
+  const first = buildDailyMissionDefinition(day);
+  const second = buildDailyMissionDefinition(day);
+  assert(JSON.stringify(first) === JSON.stringify(second), 'Daily Journey definition must be deterministic for resume/reload safety.');
+  answerPositions.add(first.steps[0].answer);
+  applyPrompts.add(first.steps[3].prompt);
+  reflectPrompts.add(first.steps[4].prompt);
+}
+assert(new Set(rotationKeys).size === DAILY_PASSAGES.length, 'Daily Journey must not repeat a passage before the full rotation pool is exhausted.');
+assert(new Set(DAILY_PASSAGES.map(p=>p.retrieve.q)).size === DAILY_PASSAGES.length, 'Daily Journey must not repeat its authored retrieval question before the full passage pool is exhausted.');
+assert(new Set(DAILY_PASSAGES.map(p=>`${p.code}:${p.chapter}:${p.from}:${p.to}`)).size === DAILY_PASSAGES.length, 'Daily Journey authored passage inventory must not contain duplicate Scripture ranges.');
+assert(answerPositions.size > 1, 'Daily Journey retrieval answers must not always occupy the same choice position.');
+assert(applyPrompts.size > 1 && reflectPrompts.size > 1, 'Daily Journey Apply/Reflect prompts should vary across the rotation.');
 let invalidDate = '';
 try { selectDailyPassage('2026-02-31'); } catch (error) { invalidDate = error.message; }
 assert(/invalid/i.test(invalidDate), 'Invalid civil dates must be rejected deterministically.');
@@ -53,6 +75,12 @@ assert(readerCalls.length === 1 && readerCalls[0].code === opened.passage.code &
 mission.respond(true); mission.advance();
 assert(mission.getState().state.currentStep.id === 'learn' && progress.getState().xp === 20, 'Context completion contract failed.');
 mission.respond(true); mission.advance();
+const xpBeforeRequiredResponse=progress.getState().xp;
+let requiredResponseError='';
+try { mission.respond('   '); } catch (error) { requiredResponseError=error.message; }
+assert(/required/i.test(requiredResponseError), 'Daily Journey must reject an empty required Apply response.');
+assert(mission.getState().state.currentStep.id === 'apply' && !(mission.getState().state.currentStep.id in mission.getState().state.responses), 'Rejected Apply response must not advance or persist.');
+assert(progress.getState().xp === xpBeforeRequiredResponse, 'Rejected Apply response must not award XP.');
 mission.respond('Take one concrete action today.'); mission.advance();
 mission.respond('Remember and obey the passage today.');
 assert(progress.getState().xp === 44 && progress.getState().totalActivities === 5, 'Five Daily Journey steps must total 44 XP and five meaningful activities.');

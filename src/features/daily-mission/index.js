@@ -4,6 +4,7 @@ import { sourceLabel } from '../../ui/source-labels.js';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const LABELS = Object.freeze({ retrieve:'Retrieve', context:'Context', learn:'Learn', apply:'Apply', reflect:'Reflect' });
 const JOURNEY_SOURCE=sourceLabel(getContentProvenance('bq-study'),{compact:true});
+const EXTERNAL_ATTRS='target="_blank" rel="noopener noreferrer"';
 
 export function dailyMissionPage({ mission, onReader, onHome }) {
   return {
@@ -16,8 +17,8 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
       const showError = (message = 'Could not update today’s journey. Retry the action.') => {
         const safeMessage = String(message || 'Could not update today’s journey. Retry the action.');
         const node = host.querySelector('[data-daily-message]');
-        if (node) node.textContent = safeMessage;
-        else host.insertAdjacentHTML('afterbegin', `<p class="bq-form-message" data-daily-message role="alert">${escapeHtml(safeMessage)}</p>`);
+        if (node) { node.id='daily-response-error'; node.setAttribute('role','alert'); node.textContent = safeMessage; }
+        else host.insertAdjacentHTML('afterbegin', `<p class="bq-form-message" id="daily-response-error" data-daily-message role="alert">${escapeHtml(safeMessage)}</p>`);
       };
 
       const stepList = state => ['retrieve','context','learn','apply','reflect'].map((id, index) => {
@@ -39,20 +40,21 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
         const response = state.responses[step.id];
         if (step.type === 'choice') return `<h2>${escapeHtml(step.prompt)}</h2><div class="bq-daily-choices">${step.choices.map((choice,index) => `<button type="button" data-daily-choice="${index}" ${answered ? 'disabled' : ''} class="${answered && Number(response) === index ? 'is-selected' : ''}">${escapeHtml(choice)}</button>`).join('')}</div>${feedbackBlock(state, step)}${answered ? '<button type="button" class="bq-primary-button" data-daily-next>Continue</button>' : ''}`;
         if (step.type === 'confirm') return `<h2>${escapeHtml(step.prompt)}</h2>${step.id === 'context' ? '<button type="button" class="bq-secondary-button" data-daily-open-reader>Open Bible passage</button>' : ''}${feedbackBlock(state, step)}${answered ? '<button type="button" class="bq-primary-button" data-daily-next>Continue</button>' : `<button type="button" class="bq-primary-button" data-daily-confirm>${step.id === 'context' ? 'I read the passage' : 'I reviewed this connection'}</button>`}`;
-        if (step.type === 'text') return `<h2>${escapeHtml(step.prompt)}</h2><form data-daily-text-form><textarea name="response" rows="5" maxlength="${step.maxLength}" ${answered ? 'disabled' : ''} required>${escapeHtml(answered ? response : '')}</textarea>${feedbackBlock(state, step)}${answered ? `<button type="button" class="bq-primary-button" data-daily-next>${step.id === 'reflect' ? 'Complete journey' : 'Continue'}</button>` : `<button type="submit" class="bq-primary-button" data-daily-save>${step.id === 'reflect' ? 'Save reflection' : 'Save action'}</button>`}</form>`;
+        if (step.type === 'text') return `<h2>${escapeHtml(step.prompt)}</h2><form data-daily-text-form novalidate><textarea name="response" rows="5" maxlength="${step.maxLength}" aria-required="true" aria-describedby="daily-response-error" ${answered ? 'disabled' : ''} required>${escapeHtml(answered ? response : '')}</textarea>${feedbackBlock(state, step)}${answered ? `<button type="button" class="bq-primary-button" data-daily-next>${step.id === 'reflect' ? 'Complete journey' : 'Continue'}</button>` : `<button type="submit" class="bq-primary-button" data-daily-save>${step.id === 'reflect' ? 'Save reflection' : 'Save action'}</button>`}</form>`;
         return '<p>This Daily Journey step is unavailable.</p>';
       };
 
       const render = next => {
         snapshot = next;
-        const { state, passage, dateKey } = snapshot;
+        const { state, passage, dateKey, links=[] } = snapshot;
         const reference = `${passage.book} ${passage.chapter}:${passage.from}–${passage.to}`;
         if (state.status === 'complete') {
           host.innerHTML = `<section class="bq-panel bq-daily-complete" data-daily-complete><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>Journey complete</h1><p><b>${escapeHtml(passage.title)}</b> · ${escapeHtml(reference)}</p><p>You completed Retrieve → Context → Learn → Apply → Reflect. The completion bonus is idempotent, so reopening today cannot award it twice.</p><div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-daily-reader>Read passage</button><button type="button" class="bq-secondary-button" data-daily-home>Home</button></div></section>`;
           return;
         }
         const step = state.currentStep;
-        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p><div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" data-daily-message aria-live="polite"></p></section>`;
+        const related=`<div class="bq-external-links" data-daily-related-scripture><span>Related Scripture</span><button type="button" class="bq-secondary-button" data-daily-related-reader>Open in BibleQuest Reader</button>${links.map(link=>`<a ${EXTERNAL_ATTRS} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
+        host.innerHTML = `<section class="bq-panel bq-daily-head"><p class="bq-eyebrow">DAILY JOURNEY · ${escapeHtml(dateKey)}</p><h1>${escapeHtml(passage.title)}</h1><p>${escapeHtml(reference)} · Step ${state.index + 1} of ${state.totalSteps}</p>${related}<div class="bq-daily-progress" aria-label="${snapshot.percent}% complete"><span style="width:${snapshot.percent}%"></span></div><ol class="bq-daily-steps">${stepList(state)}</ol></section><section class="bq-panel bq-daily-card" data-daily-step="${escapeHtml(step.id)}"><p class="bq-eyebrow">${escapeHtml(LABELS[step.id] || step.id)}</p>${renderStep(state)}${JOURNEY_SOURCE}<p class="bq-form-message" id="daily-response-error" data-daily-message aria-live="polite"></p></section>`;
       };
 
       const answer = value => {
@@ -74,14 +76,23 @@ export function dailyMissionPage({ mission, onReader, onHome }) {
         if (choice) return answer(Number(choice.dataset.dailyChoice));
         if (target.closest('[data-daily-confirm]')) return answer(true);
         if (target.closest('[data-daily-next]')) return next();
-        if (target.closest('[data-daily-open-reader]') || target.closest('[data-daily-reader]')) return openReader();
+        if (target.closest('[data-daily-open-reader]') || target.closest('[data-daily-related-reader]') || target.closest('[data-daily-reader]')) return openReader();
         if (target.closest('[data-daily-home]')) return onHome();
       };
       const onSubmit = event => {
         const form = event.target instanceof HTMLFormElement ? event.target : null;
         if (!form?.matches('[data-daily-text-form]')) return;
         event.preventDefault();
-        answer(String(new FormData(form).get('response') || '').trim());
+        const field=form.elements.namedItem('response');
+        const response=String(new FormData(form).get('response') || '').trim();
+        if(!response){
+          field?.setAttribute?.('aria-invalid','true');
+          showError('Write a response before saving this step.');
+          field?.focus?.();
+          return;
+        }
+        field?.removeAttribute?.('aria-invalid');
+        answer(response);
       };
 
       host.addEventListener('click', onClick);

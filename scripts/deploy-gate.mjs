@@ -44,10 +44,56 @@ for(const entry of entries){
 }
 console.log('✓ Production entry-point assets exist');
 
+const v5Bootstrap=read('src/app/bootstrap.js');
+const requiredV5Routes=[
+  {
+    route:'bible-quest',
+    files:['src/app/bible-quest.js','src/features/bible-quest/index.js'],
+    owner:[
+      "import { bibleQuestPage } from '../features/bible-quest/index.js';",
+      "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);"
+    ],
+    registration:"'bible-quest':()=>bibleQuestPage(",
+    entry:"onBibleQuest:()=>router.navigate('bible-quest')"
+  },
+  {
+    route:'explorer',
+    files:['src/app/explorer.js','src/features/explorer/index.js'],
+    owner:[
+      "import { explorerPage } from '../features/explorer/index.js';",
+      "const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);"
+    ],
+    registration:'explorer:()=>explorerPage(',
+    entry:"onExplorer:()=>router.navigate('explorer')"
+  },
+  {
+    route:'challenges',
+    files:['src/app/personal-challenges.js','src/features/challenges/index.js'],
+    owner:[
+      "import { challengesPage } from '../features/challenges/index.js';",
+      "const challengesPage = args => lazyFeaturePage('challenges', 'challengesPage', args);"
+    ],
+    registration:'challenges:()=>challengesPage(',
+    entry:"onChallenges:()=>router.navigate('challenges')"
+  }
+];
+for(const contract of requiredV5Routes){
+  for(const file of contract.files){
+    if(!exists(file))fail(`Required V5 route ${contract.route} is missing implementation file: ${file}`);
+  }
+  if(!contract.owner.some(needle=>v5Bootstrap.includes(needle))){
+    fail(`Required V5 route ${contract.route} is missing static-or-lazy page ownership`);
+  }
+  for(const [label,needle] of Object.entries({registration:contract.registration,'navigation entry':contract.entry})){
+    if(!v5Bootstrap.includes(needle))fail(`Required V5 route ${contract.route} is missing ${label}`);
+  }
+}
+console.log(`✓ Required V5 routes are reachable: ${requiredV5Routes.map(item=>item.route).join(', ')}`);
+
 if(!exists('offline-shell-sw.js')||!exists('src/app/offline-shell.js'))fail('Missing v3 offline-shell owner or worker');
 const offlineShellOwner=read('src/app/offline-shell.js');
 const offlineShellWorker=read('offline-shell-sw.js');
-for(const contract of ["register('offline-shell-sw.js',{scope:'./'})",'BIBLEQUEST_WARM_SHELL',"getEntriesByType?.('resource')"]){
+for(const contract of ["register('offline-shell-sw.js',{scope:'./',updateViaCache:'none'})",'BIBLEQUEST_WARM_SHELL',"getEntriesByType?.('resource')"]){
   if(!offlineShellOwner.includes(contract))fail(`v3 offline-shell owner missing contract: ${contract}`);
 }
 for(const contract of ['BIBLEQUEST_WARM_SHELL',"addEventListener('fetch'","request.mode==='navigate'",'SHELL_DESTINATIONS']){

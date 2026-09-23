@@ -17,7 +17,8 @@ const TYPE_KEYS = Object.freeze({
   'adaptive.learning.complete': 'myjourney.type.adaptive',
   'wisdom.situations.complete': 'myjourney.type.wisdom',
   'games.round.complete': 'myjourney.type.game',
-  'kids.memory.complete': 'myjourney.type.memoryGame'
+  'kids.memory.complete': 'myjourney.type.memoryGame',
+  'bible.quest.chapter.complete': 'myjourney.type.reader'
 });
 const FALLBACK_TYPE_KEY = 'myjourney.type.generic';
 
@@ -25,7 +26,7 @@ function labelKeyFor(type) {
   return TYPE_KEYS[type] || FALLBACK_TYPE_KEY;
 }
 
-export function createMyJourneyService({ progress, assignments } = {}) {
+export function createMyJourneyService({ progress, assignments, bibleQuest = null } = {}) {
   if (!progress?.getState) throw new Error('My Journey requires the existing Progress owner.');
 
   function timeline({ limit = 60 } = {}) {
@@ -87,7 +88,8 @@ export function createMyJourneyService({ progress, assignments } = {}) {
       days: groupByDay(merged),
       totalMoments: merged.length,
       streakCurrent: state.streak ?? 0,
-      badgeCount: (state.badges || []).length
+      badgeCount: (state.badges || []).length,
+      bibleQuest: bibleQuest?.snapshot?.() || null
     });
   }
 

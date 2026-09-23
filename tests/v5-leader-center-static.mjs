@@ -8,7 +8,11 @@ const read = rel => fs.readFileSync(path.join(root, rel), 'utf8');
 
 const bootstrap = read('src/app/bootstrap.js');
 assert.ok(bootstrap.includes("import { createLeaderCenterService } from './leader-center.js';"), 'bootstrap.js must import the Leader Center service.');
-assert.ok(bootstrap.includes("import { leaderCenterPage } from '../features/leader-center/index.js';"), 'bootstrap.js must import the Leader Center page.');
+assert.ok(
+  bootstrap.includes("import { leaderCenterPage } from '../features/leader-center/index.js';") ||
+  bootstrap.includes("const leaderCenterPage = args => lazyFeaturePage('leader-center', 'leaderCenterPage', args);"),
+  'bootstrap.js must bind the Leader Center page through a direct or V6 lazy feature owner.'
+);
 assert.ok(bootstrap.includes("'leader-center':()=>leaderCenterPage("), 'bootstrap.js must register the leader-center route.');
 // TDZ ordering guard: this exact class of bug has broken app startup multiple
 // times this project (Calendar, Avatar Vault v2, Home rail). Assert the

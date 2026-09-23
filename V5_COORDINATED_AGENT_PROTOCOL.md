@@ -1,5 +1,10 @@
 # BibleQuest V5 Coordinated Five-Agent Protocol
 
+> **ARCHIVED / INACTIVE — 2026-09-22 JST**
+>
+> The V5 five-agent protocol is no longer active. Issue #185 is closed as completed and no new `V5-CLAIM`, worker branch, or V5 integration PR should be created from this protocol. Preserve it only as historical coordination evidence. V6 work follows the current V6 authority/status and Issue #452.
+
+
 Updated: 2026-09-13 JST
 Applies to: `v5/feature-completion`
 Tracker: Issue #185
