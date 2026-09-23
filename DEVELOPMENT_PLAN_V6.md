@@ -1,6 +1,6 @@
 # BibleQuest V6 Development Plan
 
-Updated: 2026-09-18 JST
+Updated: 2026-09-23 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Integration branch: `v6/architecture-upgrade`
 Starting baseline: released V5 production `f6a0cff0e63ddf676b77b8470d84678958fe9d70` (certified runtime/source freeze `c0772d458e9d17ab1728c47c568e99857c7d67a1`)
@@ -26,6 +26,7 @@ The V6 engine is the reusable technical platform that V7 will later use for the 
 - explicit session/tenant/data ownership;
 - component and design-token primitives;
 - structured Reader/content/offline engine;
+- BSB Audio Bible delivery with verse synchronization and a hard free-tier storage budget;
 - deterministic Games engine;
 - modern media session engine;
 - notification/push/background-sync engine;
@@ -33,6 +34,28 @@ The V6 engine is the reusable technical platform that V7 will later use for the 
 - motion/sound registry/preferences/unlock/accessibility infrastructure.
 
 V6 should prove these systems on representative surfaces, but **not redesign every page**. V7 owns the full product overhaul.
+
+## 2.1 V6 implementation priority order
+
+This order is the default product prioritization for V6. Security, parity, database/RLS, build and release gates remain mandatory dependencies even when they are not the most visible user-facing features.
+
+| Rank | V6 capability | Priority | User/product effect | Difficulty | Rationale |
+|---|---|---|---|---|---|
+| 1 | Core Reader, progress/resume and true offline Scripture | P0 | Very high | High | Directly serves BibleQuest's primary Bible-reading mission and establishes the content/offline owner required by later features. |
+| 2 | BSB Audio Bible | P1 | Very high | Medium | High-value Reader upgrade with public-domain BSB narration, exact translation match and relatively bounded implementation. |
+| 3 | Push notifications + Notification Center | P1 | Very high | Medium-high | Drives return usage for assignments, reading, events and congregation communication. |
+| 4 | PWA/install/offline reliability | P1 | Very high | High | Makes BibleQuest behave like an installable app and underpins offline Reader, push and background behavior. |
+| 5 | Today/Home + Calendar/reminder integration | P1 | High | Medium | Converts existing journeys, assignments and events into a clear daily action surface. |
+| 6 | Sharing/deep links/resume continuity | P1 | High | Medium-low | Strong usability/discovery gain with lower implementation risk once route/content contracts are stable. |
+| 7 | Leader/Admin migration | P1 | High | High | Required for ministry workflows to survive the V6 engine with equivalent-or-stronger authorization/privacy. |
+| 8 | Multi-congregation/tenant engine | P1 | High | High | Critical for correct isolation and future congregation scale, but cross-domain migration is substantial. |
+| 9 | Community Quests / group progress | P2 | High | Medium-high | High engagement potential but depends on progress, tenant and Leader/assignment foundations. |
+| 10 | Media engine | P2 | Medium-high | Medium-high | Improves recordings/video lifecycle, resume and playback but is secondary to Scripture/engagement core. |
+| 11 | Games engine | P2 | Medium | High | Important for long-term engagement, but the rewrite is broad and less central than Reader/ministry reliability. |
+| 12 | Seasonal/church experiences | P2 | Medium | Medium | Useful content layer after Calendar, notifications and congregation context are stable. |
+| 13 | Design/runtime motion/sound platform | P2 | Medium | Medium-high | Primarily prepares V7; V6 should prove primitives without spending release time on a full visual overhaul. |
+
+The implementation order may shift when a dependency is blocked, but P0/P1 work should be exhausted before optional P2 expansion unless parallel work is demonstrably non-overlapping.
 
 ## 3. Handoff from V5
 
@@ -173,9 +196,30 @@ V5 already provides baseline offline re-open behavior. V6 replaces that minimum 
 - explicit unavailable state for live/licensed translations offline;
 - independently versioned app/service-worker/content migrations.
 
+### BSB Audio Bible — V6 Reader feature
+
+English Bible audio is part of V6 and must use the same BSB translation shown in the Reader. The preferred initial source is one public-domain/CC0 BSB human narration, hosted under BibleQuest-controlled storage rather than depending on another application's private delivery URLs.
+
+Required outcomes:
+
+- one complete BSB narration available through the Reader with chapter playback;
+- BibleQuest-controlled Cloudflare R2 Standard storage for canonical audio assets;
+- **hard release budget: all BibleQuest-hosted BSB audio assets and retained derived copies combined remain below 10 GB**;
+- prefer one canonical speech-optimized encoding and avoid redundant high-bitrate copies unless the storage budget remains proven green;
+- CI/release inventory calculates total hosted audio bytes and fails the audio release gate at or above 10 GB;
+- chapter/verse timing manifest aligned to the exact BSB text version used by BibleQuest;
+- current-verse highlighting, tap-verse-to-seek and auto-scroll behavior;
+- playback speed, pause/resume, auto-next chapter, sleep timer and persistent resume position;
+- background/lock-screen media behavior where the browser/PWA platform supports it;
+- selective offline chapter/book audio downloads may be offered, but the app must not silently pre-cache the whole Audio Bible;
+- audio source/provenance and public-domain/CC0 status are recorded in the repository;
+- the player uses a provider boundary so alternate narrators/languages can be added later without rewriting Reader state.
+
+Audio files must not be committed to the Git repository. Large binary delivery belongs in R2/object storage; Supabase remains the owner for account/progress metadata, not bulk audio.
+
 ## Exit gate
 
-Installed app can launch offline, read downloaded supported content, navigate and recover after close/reopen without corrupting state.
+Installed app can launch offline, read downloaded supported content, navigate and recover after close/reopen without corrupting state. The BSB Audio Bible can play the exact displayed translation with synchronized chapter/verse behavior while the hosted BSB audio inventory remains below the 10 GB hard budget.
 
 ---
 
