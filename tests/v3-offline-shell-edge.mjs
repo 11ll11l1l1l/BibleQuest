@@ -85,6 +85,15 @@ assert(reloadCalls===1,'Disposed offline-shell owner must not trigger an additio
 
 const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
 assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v2`;"),'Offline shell cache generation must rotate after the PWA update hotfix.');
+for(const token of[
+  "const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME)",
+  "const upgrading=staleNames.length>0",
+  "if(!upgrading)return",
+  "self.clients.matchAll?.({type:'window',includeUncontrolled:true})",
+  "await client.navigate(client.url)"
+]){
+  assert(workerSource.includes(token),'Offline shell worker missing installed-client upgrade refresh contract: '+token);
+}
 for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
   assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
 }
