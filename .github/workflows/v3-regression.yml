@@ -65,7 +65,8 @@ jobs:
           done
           cat /tmp/biblequest-v3-http.log
           exit 1
-      # Legacy source-layout offline smokes are not valid against the V6 Vite graph.
+      # Legacy source-layout offline smokes are not valid against the V6 Vite graph:
+      # tests/v3-offline-shell-smoke.mjs and tests/v3-offline-bible-packs-smoke.mjs.
       # V6 offline/PWA behavior is enforced by the dedicated Phase 1 build gate.
       - name: Run accumulated browser/mobile regressions
         run: |
