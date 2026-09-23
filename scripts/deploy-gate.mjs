@@ -81,7 +81,7 @@ console.log(`✓ Required V5 routes are reachable: ${requiredV5Routes.map(item=>
 if(!exists('offline-shell-sw.js')||!exists('src/app/offline-shell.js'))fail('Missing v3 offline-shell owner or worker');
 const offlineShellOwner=read('src/app/offline-shell.js');
 const offlineShellWorker=read('offline-shell-sw.js');
-for(const contract of ["register('offline-shell-sw.js',{scope:'./'})",'BIBLEQUEST_WARM_SHELL',"getEntriesByType?.('resource')"]){
+for(const contract of ["register('offline-shell-sw.js',{scope:'./',updateViaCache:'none'})",'BIBLEQUEST_WARM_SHELL',"getEntriesByType?.('resource')"]){
   if(!offlineShellOwner.includes(contract))fail(`v3 offline-shell owner missing contract: ${contract}`);
 }
 for(const contract of ['BIBLEQUEST_WARM_SHELL',"addEventListener('fetch'","request.mode==='navigate'",'SHELL_DESTINATIONS']){
