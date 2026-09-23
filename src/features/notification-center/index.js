@@ -3,7 +3,7 @@ import { localization } from '../../app/localization.js';
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const icons=Object.freeze({assignment:'📮',feedback:'💬',devotional:'📖',announcement:'📣',activity:'🧭',encouragement:'💛',poll:'📊',award:'🏅',media:'🎬',info:'🔔'});
 
-export function notificationCenterPage({notifications,onNavigate,onBack,onAccount}){
+export function notificationCenterPage({notifications,notificationSettings,onNavigate,onBack,onAccount}){
   const locale=localization.getLocale();
   const tr=(key,values)=>localization.t(key,{locale,values});
   const relativeTime=iso=>{
@@ -15,13 +15,26 @@ export function notificationCenterPage({notifications,onNavigate,onBack,onAccoun
     return `<article class="bq-panel notification-center-item${item.isRead?'':' is-unread'}" data-notification-item="${escapeHtml(item.id)}"><div class="notification-center-row"><span class="notification-center-icon" data-notification-type="${escapeHtml(item.type)}" aria-hidden="true">${icons[item.type]||'🔔'}</span><div class="notification-center-copy"><div class="notification-center-heading"><h3>${escapeHtml(item.title)}</h3>${item.isRead?'':`<span class="notification-center-dot" aria-label="${escapeHtml(tr('notificationCenter.unread'))}">${escapeHtml(tr('notificationCenter.unread'))}</span>`}</div>${item.body?`<p>${escapeHtml(item.body)}</p>`:''}<small>${escapeHtml(relativeTime(item.createdAt))} · ${escapeHtml(item.type)}</small></div></div><div class="notification-center-actions">${open}<button type="button" class="bq-secondary-button" data-notification-read="${escapeHtml(item.id)}" data-read-next="${item.isRead?'0':'1'}">${escapeHtml(tr(item.isRead?'notificationCenter.markUnread':'notificationCenter.markRead'))}</button></div></article>`;
   };
   const frame=(heading,message,action='')=>`<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(tr('notificationCenter.eyebrow'))}</p><h1>${escapeHtml(heading)}</h1><p>${message}</p>${action}</section>`;
+  const settingsLocale=locale==='tl'||locale==='ceb'?locale:'en';
+  let settingsUserId='';
+  const settingsHtml=surface=>{
+    const timeDisabled=surface.quietHours.disabled||!surface.quietHours.enabled;
+    return `<section class="bq-panel notification-settings" data-v6-notification-settings><p class="bq-eyebrow">${escapeHtml(surface.categoriesLabel)}</p><h2>${escapeHtml(surface.title)}</h2><label class="notification-settings-toggle"><input type="checkbox" data-notification-setting-master aria-label="${escapeHtml(surface.master.ariaLabel)}" ${surface.master.checked?'checked':''}> <span>${escapeHtml(surface.master.label)}</span></label><fieldset data-notification-settings-categories ${surface.master.checked?'':'disabled'}><legend>${escapeHtml(surface.categoriesLabel)}</legend>${surface.categories.map(row=>`<label class="notification-settings-toggle"><input type="checkbox" data-notification-setting-category="${escapeHtml(row.id.replace('notification-category-',''))}" aria-label="${escapeHtml(row.ariaLabel)}" ${row.checked?'checked':''} ${row.disabled?'disabled':''}> <span>${escapeHtml(row.label)}</span></label>`).join('')}</fieldset><fieldset data-notification-settings-quiet ${surface.quietHours.disabled?'disabled':''}><legend>${escapeHtml(surface.quietHours.label)}</legend><label class="notification-settings-toggle"><input type="checkbox" data-notification-setting-quiet-enabled aria-label="${escapeHtml(surface.quietHours.label)}" ${surface.quietHours.enabled?'checked':''} ${surface.quietHours.disabled?'disabled':''}> <span>${escapeHtml(surface.quietHours.label)}</span></label><p id="notification-quiet-hours-help">${escapeHtml(surface.quietHours.description)}</p><div class="notification-settings-times"><label>${escapeHtml(surface.quietHours.startLabel)} <input type="time" data-notification-setting-quiet-start aria-label="${escapeHtml(surface.quietHours.startLabel)}" value="${escapeHtml(surface.quietHours.start)}" ${timeDisabled?'disabled':''}></label><label>${escapeHtml(surface.quietHours.endLabel)} <input type="time" data-notification-setting-quiet-end aria-label="${escapeHtml(surface.quietHours.endLabel)}" value="${escapeHtml(surface.quietHours.end)}" ${timeDisabled?'disabled':''}></label></div></fieldset></section>`;
+  };
+  const settingsPanel=state=>{
+    if(!notificationSettings||state?.authenticated!==true||!state?.userId)return '';
+    const userId=String(state.userId);
+    if(settingsUserId!==userId){notificationSettings.activate(userId,settingsLocale);settingsUserId=userId}
+    return settingsHtml(notificationSettings.setLocale(settingsLocale));
+  };
   const renderState=state=>{
     if(state.status==='signed-out')return frame(tr('notificationCenter.heading'),escapeHtml(tr('notificationCenter.signedOut')),`<button type="button" class="bq-primary-button" data-notification-account>${escapeHtml(tr('notificationCenter.openAccount'))}</button>`);
     if(state.status==='unavailable')return frame(tr('notificationCenter.heading'),escapeHtml(state.error||tr('notificationCenter.inboxUnavailable')));
     if(state.status==='error')return frame(tr('notificationCenter.unavailableHeading'),escapeHtml(state.error||tr('notificationCenter.loadError')),`<button type="button" class="bq-primary-button" data-notification-refresh>${escapeHtml(tr('common.retry'))}</button>`);
     if(state.status==='loading'||state.status==='idle')return frame(tr('notificationCenter.heading'),`<span aria-live="polite">${escapeHtml(tr('notificationCenter.loading'))}</span>`);
     const items=state.items||[];
-    return `<section class="bq-panel notification-center-header"><p class="bq-eyebrow">${escapeHtml(tr('notificationCenter.eyebrow'))}</p><h1>${escapeHtml(tr('notificationCenter.heading'))}</h1><p>${tr('notificationCenter.summary',{unread:Number(state.unread||0),count:items.length})}</p><div class="notification-center-actions"><button type="button" class="bq-secondary-button" data-notification-refresh>${escapeHtml(tr('notificationCenter.refresh'))}</button><button type="button" class="bq-secondary-button" data-notification-read-all ${state.unread?'':'disabled'}>${escapeHtml(tr('notificationCenter.markAllRead'))}</button></div></section>${items.length?`<section class="notification-center-list" aria-label="${escapeHtml(tr('nav.notifications'))}">${items.map(itemHtml).join('')}</section>`:`<section class="bq-panel"><h2>${escapeHtml(tr('notificationCenter.emptyHeading'))}</h2><p>${escapeHtml(tr('notificationCenter.emptyDescription'))}</p></section>`}`;
+    const inbox=`<section class="bq-panel notification-center-header"><p class="bq-eyebrow">${escapeHtml(tr('notificationCenter.eyebrow'))}</p><h1>${escapeHtml(tr('notificationCenter.heading'))}</h1><p>${tr('notificationCenter.summary',{unread:Number(state.unread||0),count:items.length})}</p><div class="notification-center-actions"><button type="button" class="bq-secondary-button" data-notification-refresh>${escapeHtml(tr('notificationCenter.refresh'))}</button><button type="button" class="bq-secondary-button" data-notification-read-all ${state.unread?'':'disabled'}>${escapeHtml(tr('notificationCenter.markAllRead'))}</button></div></section>${items.length?`<section class="notification-center-list" aria-label="${escapeHtml(tr('nav.notifications'))}">${items.map(itemHtml).join('')}</section>`:`<section class="bq-panel"><h2>${escapeHtml(tr('notificationCenter.emptyHeading'))}</h2><p>${escapeHtml(tr('notificationCenter.emptyDescription'))}</p></section>`}`;
+    return `${inbox}${settingsPanel(state)}`;
   };
 
   return {
@@ -38,6 +51,13 @@ export function notificationCenterPage({notifications,onNavigate,onBack,onAccoun
         root.querySelector('[data-notification-read-all]')?.addEventListener('click',()=>void run(()=>notifications.markAllRead()),{once:true});
         root.querySelectorAll('[data-notification-read]').forEach(button=>button.addEventListener('click',()=>void run(()=>notifications.setRead(button.dataset.notificationRead,button.dataset.readNext==='1')),{once:true}));
         root.querySelectorAll('[data-notification-open]').forEach(button=>button.addEventListener('click',()=>void run(async()=>{const route=await notifications.openTarget(button.dataset.notificationOpen);if(active&&route)onNavigate?.(route)}),{once:true}));
+        const applySettings=operation=>{try{operation()}catch{}paint()};
+        root.querySelector('[data-notification-setting-master]')?.addEventListener('change',event=>applySettings(()=>notificationSettings.setMaster(Boolean(event.currentTarget.checked))),{once:true});
+        root.querySelectorAll('[data-notification-setting-category]').forEach(input=>input.addEventListener('change',event=>applySettings(()=>notificationSettings.setCategory(String(event.currentTarget.dataset.notificationSettingCategory||''),Boolean(event.currentTarget.checked))),{once:true}));
+        const quietEnabled=root.querySelector('[data-notification-setting-quiet-enabled]'),quietStart=root.querySelector('[data-notification-setting-quiet-start]'),quietEnd=root.querySelector('[data-notification-setting-quiet-end]');
+        quietEnabled?.addEventListener('change',event=>applySettings(()=>notificationSettings.setQuietHours(Boolean(event.currentTarget.checked),quietStart?.value||'22:00',quietEnd?.value||'07:00')),{once:true});
+        quietStart?.addEventListener('change',()=>applySettings(()=>notificationSettings.setQuietHours(Boolean(quietEnabled?.checked),quietStart.value,quietEnd?.value||'07:00')),{once:true});
+        quietEnd?.addEventListener('change',()=>applySettings(()=>notificationSettings.setQuietHours(Boolean(quietEnabled?.checked),quietStart?.value||'22:00',quietEnd.value)),{once:true});
       };
       paint();
       void run(()=>notifications.load());
