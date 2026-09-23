@@ -57,6 +57,22 @@ This order is the default product prioritization for V6. Security, parity, datab
 
 The implementation order may shift when a dependency is blocked, but P0/P1 work should be exhausted before optional P2 expansion unless parallel work is demonstrably non-overlapping.
 
+### Priority execution safety gates
+
+The priority ranking never overrides release safety. Before a V6 feature is accepted:
+
+- preserve server-side authorization, RLS and tenant isolation; UI visibility is never an authorization boundary;
+- verify content/media redistribution rights before importing, transforming, caching or hosting assets;
+- keep BSB audio under the hard <10 GB hosted-audio ceiling and fail the release gate before crossing it;
+- do not place bulk audio in Git or Supabase Storage; use object storage and keep only metadata/progress in Supabase;
+- require explicit user action for large offline downloads and provide removal/storage controls;
+- never queue privileged, destructive, auth or admin mutations for blind offline replay;
+- keep secrets server-side and exclude tokens/private content from logs and diagnostics;
+- preserve accessibility, localization and mobile behavior while migrating features;
+- require exact-head automated evidence plus the appropriate browser/backend/device evidence before marking an acceptance item PASS;
+- integrate overlapping runtime work serially and rebase/revalidate after parity or foundation changes;
+- do not promote V6 until one exact RC SHA passes the full security, tenant, offline, PWA, push and regression matrix.
+
 ## 3. Handoff from V5
 
 V5 certification and production promotion are complete. Phase 0 starts from the released V5 production baseline above.
