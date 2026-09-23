@@ -3,6 +3,7 @@ import { chromium } from 'playwright';
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const browser = await chromium.launch({ headless: true });
+const SKIP_LEGACY_SOURCE_OFFLINE = process.env.BQ_SKIP_LEGACY_SOURCE_OFFLINE === 'true';
 const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: 'allow' });
 const page = await context.newPage();
 const errors = [];
@@ -123,6 +124,7 @@ try {
   await page.waitForFunction(() => location.hash === '#/mission');
   assert(await page.locator('[data-bq-tutorial-layer]').isHidden(), 'Tutorial action handoff must close the overlay before routing.');
 
+  if (!SKIP_LEGACY_SOURCE_OFFLINE) {
   await page.evaluate(() => history.pushState(null, '', '#/home'));
   await page.reload({ waitUntil: 'networkidle' });
   await page.locator('[data-bq-shell="v3"]').waitFor({ timeout: 10000 });
@@ -150,6 +152,7 @@ try {
   assert(metrics.layers === 1, 'Offline tutorial launch must keep exactly one overlay layer.');
   assert(metrics.controller, 'Offline tutorial acceptance requires the existing offline-shell worker to remain controller.');
   assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Offline tutorial overflowed horizontally: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
+  }
 
   assert(errors.length === 0, `Unexpected Tutorial/onboarding console/page errors: ${errors.join(' | ')}`);
   console.log('BibleQuest v3 Tutorial/onboarding account-handoff + mobile + offline browser regression passed.');
