@@ -31,19 +31,39 @@ describe('legacy account resume runtime', () => {
     runtime.dispose();
   });
 
-  it('keeps successful account owners resumable when another owner is offline', async () => {
+  it('keeps successful account owners resumable and reports only the failed owner', async () => {
     let progressCalls = 0;
     let refreshCalls = 0;
+    const failures: Array<{ key: string; reason: unknown }> = [];
+    const offline = new Error('offline');
     const runtime = createLegacyAccountResumeRuntime([
       { key: 'progress', syncNow: async () => { progressCalls += 1; } },
-      { key: 'weekly-journey', syncNow: async () => { throw new Error('offline'); } },
-    ], () => { refreshCalls += 1; });
+      { key: 'weekly-journey', syncNow: async () => { throw offline; } },
+    ], () => { refreshCalls += 1; }, (key, reason) => { failures.push({ key, reason }); });
 
     runtime.syncSession(authenticated('user-a'));
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     assert.equal(progressCalls, 1);
     assert.equal(refreshCalls, 1);
+    assert.deepEqual(failures, [{ key: 'weekly-journey', reason: offline }]);
+    runtime.dispose();
+  });
+
+  it('does not report stale previous-account failures after an account switch', async () => {
+    let release!: () => void;
+    const wait = new Promise<void>((resolve) => { release = resolve; });
+    const failures: string[] = [];
+    const runtime = createLegacyAccountResumeRuntime([
+      { key: 'progress', syncNow: async () => { await wait; throw new Error('old account offline'); } },
+    ], undefined, (key) => { failures.push(key); });
+
+    runtime.syncSession(authenticated('user-a'));
+    runtime.syncSession(authenticated('user-b'));
+    release();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    assert.deepEqual(failures, []);
     runtime.dispose();
   });
 
