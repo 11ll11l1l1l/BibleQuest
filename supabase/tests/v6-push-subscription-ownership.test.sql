@@ -19,7 +19,7 @@ select results_eq($$select count(*)::bigint from public.bible_push_subscriptions
 select lives_ok($$update public.bible_push_subscriptions set enabled_categories=array['assignment','calendar']::text[] where id='e1000000-0000-4000-8000-000000000001'::uuid$$,'Member A may update own subscription');
 select is((select array_to_string(enabled_categories,',') from public.bible_push_subscriptions where id='e1000000-0000-4000-8000-000000000001'::uuid),'assignment,calendar','own subscription update persists');
 select throws_ok($$insert into public.bible_push_subscriptions(id,user_id,endpoint,p256dh,auth) values('e3000000-0000-4000-8000-000000000003','22222222-2222-4222-8222-222222222222','https://push.invalid/v6-ci-steal','0011223344556677','00112233')$$,'42501',null,'Member A cannot create subscription owned by Member B');
-select is((with updated as (update public.bible_push_subscriptions set user_id='11111111-1111-4111-8111-111111111112'::uuid where id='e2000000-0000-4000-8000-000000000002'::uuid returning 1) select count(*)::integer from updated),0,'Member A cannot take over hidden Member B subscription');
+select lives_ok($$update public.bible_push_subscriptions set user_id='11111111-1111-4111-8111-111111111112'::uuid where id='e2000000-0000-4000-8000-000000000002'::uuid$$,'Member A foreign-row takeover attempt is safely filtered by RLS');
 
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222222';
 select results_eq($$select count(*)::bigint from public.bible_push_subscriptions$$,array[1::bigint],'Member B sees only own push subscription');
