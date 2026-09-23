@@ -30,7 +30,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
         currentChapter=chapter;
         const furiganaControl = japanese && furigana ? japaneseFuriganaControl(furigana.getState()) : '';
         const vocabularyControl = japanese && vocabulary ? japaneseVocabularyControl(vocabulary.getState()) : '';
-        const searchControl = licensed ? '<p class="bq-reader-note bq-licensed-search-note" data-licensed-search-note>NLT search stays in the licensed external reader. Choose the book and chapter here, then open that passage externally.</p>' : '<form class="bq-reader-search" data-reader-search><label>Search this translation<input name="query" minlength="3" placeholder="John 3:16 or a phrase" required></label><button type="submit" class="bq-primary-button">Search</button></form>';
+        const searchControl = licensed ? '<p class="bq-reader-note bq-licensed-search-note" data-licensed-search-note>NLT search stays in the licensed external reader. Choose the book and chapter here, then open that passage externally.</p>' : '<form class="bq-reader-search" data-reader-search><label>Search this translation<input name="query" minlength="3" aria-label="Search this translation" placeholder="John 3:16 or a phrase" required></label><button type="submit" class="bq-primary-button">Search</button></form>';
         const externalControl = licensed ? '' : `<div class="bq-external-links"><span>Open this passage externally</span>${links.map(link => `<a ${externalAttrs} data-external-reader="${escapeHtml(link.id)}" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
         const questState=reader.questSnapshot?.()||null;
         const questTarget=questState?.next||null;
