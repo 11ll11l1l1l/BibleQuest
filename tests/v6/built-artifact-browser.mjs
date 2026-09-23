@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
-const widths = [320, 360, 390, 412, 430];
+const widths = [320, 360, 390, 412, 430, 1280];
 const representativeRoutes = ['home', 'reader', 'assignments', 'calendar', 'more'];
 const canonicalRoutes = [
   'home',
@@ -67,6 +67,21 @@ async function assertRoute(page, route, label) {
   if (resolvedHash !== `#/${route}`) throw new Error(`${label} #/${route}: resolved ${resolvedHash}`);
 }
 
+async function assertNoHorizontalOverflow(page, label) {
+  const overflow = await page.evaluate(() => {
+    const root = document.documentElement;
+    return {
+      clientWidth: root.clientWidth,
+      scrollWidth: root.scrollWidth,
+    };
+  });
+  if (overflow.scrollWidth > overflow.clientWidth + 1) {
+    throw new Error(
+      `${label}: horizontal overflow ${overflow.scrollWidth}px > ${overflow.clientWidth}px viewport`,
+    );
+  }
+}
+
 const browser = await chromium.launch({ headless: true });
 try {
   for (const width of widths) {
@@ -77,6 +92,7 @@ try {
 
     for (const route of representativeRoutes) {
       await assertRoute(page, route, `${width}px`);
+      await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
     }
 
     if (pageErrors.length) throw new Error(`${width}px browser errors: ${pageErrors.join(' | ')}`);
@@ -166,5 +182,5 @@ try {
 }
 
 console.log(
-  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
+  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with no document-level horizontal overflow; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
 );
