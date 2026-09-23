@@ -1,4 +1,5 @@
 import { createCouplesFamilyService } from '../src/app/couples-family.js';
+import { COUPLES_CARDS } from '../src/content/couples-family.js';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const clone=value=>value===undefined?undefined:structuredClone(value);
@@ -8,6 +9,22 @@ let now=new Date('2026-09-08T03:00:00.000Z');
 const couples=createCouplesFamilyService({storage,clock:()=>new Date(now),rng:()=>0});
 
 assert(couples.categories().length===8,'Couples local source must expose the eight recovered categories.');
+assert(COUPLES_CARDS.length===32,'V5 Couples hotfix must preserve the existing 32-card scope.');
+// Passage-level context allowlist. Reference changes require a fresh contextual review.
+const approvedReferences=Object.freeze({
+  c01:'Colossians 3:12–17',c02:'Psalm 139:23–24',c03:'Philippians 1:9–11',c04:'Ephesians 4:1–3',
+  c05:'Proverbs 18:13',c06:'1 Thessalonians 5:14–15',c07:'Romans 12:15–16',c08:'Ephesians 4:25–29',
+  c09:'James 4:1–3',c10:'Matthew 7:1–5',c11:'Proverbs 28:13',c12:'Proverbs 17:14',
+  c13:'1 Thessalonians 5:11',c14:'Genesis 2:18–24',c15:'Romans 12:9–10',c16:'Ecclesiastes 9:7–9',
+  c17:'Matthew 6:19–24',c18:'Galatians 6:2–5',c19:'1 Timothy 6:6–10',c20:'2 Corinthians 9:6–8',
+  c21:'1 Corinthians 13:4–7',c22:'Colossians 3:12–14',c23:'Philippians 2:3–4',c24:'Genesis 2:18–24',
+  c25:'Proverbs 20:7',c26:'Deuteronomy 6:4–9',c27:'Genesis 2:23–24',c28:'Colossians 3:12–17',
+  c29:'Psalm 127:1–2',c30:'Galatians 5:13–14',c31:'Proverbs 20:5',c32:'James 1:5–8'
+});
+assert(Object.keys(approvedReferences).length===COUPLES_CARDS.length,'Every V5 Couples card must have a context-reviewed Scripture reference.');
+for(const card of COUPLES_CARDS)assert(card.ref===approvedReferences[card.id],`V5 Couples Scripture reference drifted without context review: ${card.id} -> ${card.ref}.`);
+const memoryCard=COUPLES_CARDS.find(card=>card.id==='c16');
+assert(memoryCard?.ref==='Ecclesiastes 9:7–9'&&memoryCard?.code==='ECC'&&memoryCard?.chapter===9,'Best small memory must use the context-reviewed Ecclesiastes 9 passage and Reader handoff.');
 assert(couples.pickCard().id==='c01','Deterministic Couples card selection did not begin at c01.');
 assert(couples.pickCard({categoryId:'communication'}).id==='c05','Communication category did not recover c05 as its first card.');
 assert(couples.pickCard({categories:['gratitude','intimacy','mission']}).id==='c13','Date-night subset selection is incorrect.');
