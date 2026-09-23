@@ -65,10 +65,15 @@ assert(marked.newlyRead && marked.progress.awardedXp === 10 && reader.isRead(), 
 assert(progress.getState().xp === 10 && progress.getState().counters.chaptersRead === 1, 'Reader progress did not flow through progress service.');
 const duplicateMark = reader.markRead();
 assert(!duplicateMark.newlyRead && progress.getState().xp === 10, 'Repeated reader mark duplicated progress.');
+reader.setTranslation('bsb');
+const crossTranslationMark=reader.markRead();
+assert(!crossTranslationMark.newlyRead&&progress.getState().xp===10&&progress.getState().counters.chaptersRead===1,'The same canonical Bible chapter must not award XP/progress again in another translation.');
+assert(reader.isRead(),'Canonical chapter read state must remain visible after switching translations.');
+reader.setTranslation('tl');
 const reloadedProgress = createProgressService({ storage, store: makeStore(), clock: () => new Date('2026-09-06T12:00:00+09:00'), timeZone: 'Asia/Tokyo' });
 const reloaded = createReaderService({ bible, storage, progress: reloadedProgress });
 assert(reloaded.getState().translation === 'tl' && reloaded.getState().book === 'GEN' && reloaded.getState().chapter === 1 && reloaded.isRead(), 'Reader state/read mark did not persist through storage boundary.');
-assert(reloadedProgress.getState().xp === 10 && reloadedProgress.hasEvent('reader.read:tl:GEN:1'), 'Reader progress idempotency did not survive reload.');
+assert(reloadedProgress.getState().xp === 10 && reloadedProgress.hasEvent('reader.read:GEN:1'), 'Reader progress idempotency did not survive reload.');
 
 const flakyMemory = new Map();
 let failReaderWrite = false;
@@ -83,7 +88,7 @@ failReaderWrite = true;
 let transactionError = '';
 try { flakyReader.markRead(); } catch (error) { transactionError = error.message; }
 assert(/simulated/i.test(transactionError), 'Simulated reader-state cache failure must still surface to the caller.');
-assert(flakyProgress.getState().xp === 10 && flakyProgress.hasEvent('reader.read:bsb:GEN:1'), 'Progress event must survive a later reader-state cache write failure.');
+assert(flakyProgress.getState().xp === 10 && flakyProgress.hasEvent('reader.read:GEN:1'), 'Progress event must survive a later reader-state cache write failure.');
 assert(flakyReader.isRead(), 'Canonical progress must remain the read-state source of truth after a local Reader cache write failure.');
 const healed = flakyReader.markRead();
 assert(!healed.newlyRead && flakyReader.isRead(), 'Retry must heal Reader cache from the existing canonical progress event without a second award.');
