@@ -105,10 +105,10 @@ assert.equal(quest.snapshot().activeKey,'GEN:2');
 assert.equal(quest.exportAccountState().activeKey,'','Cloud-exported Main Quest state must never contain device-local UI mode.');
 
 // Reader XP/history and Main Quest completion remain independently identifiable.
-assert.ok(progress.hasEvent('reader.read:bsb:JHN:3'));
-assert.ok(progress.hasEvent('reader.read:bsb:JHN:4'));
-assert.ok(progress.hasEvent('reader.read:bsb:GEN:1'));
-assert.ok(progress.hasEvent('reader.read:bsb:GEN:2'));
+assert.ok(progress.hasEvent('reader.read:JHN:3'));
+assert.ok(progress.hasEvent('reader.read:JHN:4'));
+assert.ok(progress.hasEvent('reader.read:GEN:1'));
+assert.ok(progress.hasEvent('reader.read:GEN:2'));
 assert.ok(progress.hasEvent('bible-quest:GEN:1'));
 assert.equal(progress.getState().xp,40,'Four free Reader chapter marks should award Reader XP; Quest completion adds zero XP.');
 
