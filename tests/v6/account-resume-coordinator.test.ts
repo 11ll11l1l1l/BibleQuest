@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
 import { createAccountResumeCoordinator, createSessionContextStore } from '../../src/v6/kernel/index.ts';
 
 const identity = (userId: string) => ({ userId, email: `${userId}@example.test` });
@@ -6,18 +7,20 @@ const identity = (userId: string) => ({ userId, email: `${userId}@example.test` 
 describe('account resume coordinator', () => {
   it('resumes owners independently when one owner rejects', async () => {
     const session = createSessionContextStore();
-    const good = { key: 'progress', syncNow: vi.fn(async () => 'ok') };
-    const bad = { key: 'journey', syncNow: vi.fn(async () => Promise.reject(new Error('offline'))) };
+    let goodCalls = 0;
+    let badCalls = 0;
+    const good = { key: 'progress', syncNow: async () => { goodCalls += 1; return 'ok'; } };
+    const bad = { key: 'journey', syncNow: async () => { badCalls += 1; throw new Error('offline'); } };
     const coordinator = createAccountResumeCoordinator(session, [good, bad]);
 
     session.setAuthenticated(identity('user-a'));
     const result = await coordinator.resumeCurrentAccount();
 
-    expect(result?.userId).toBe('user-a');
-    expect(result?.current).toBe(true);
-    expect(result?.settled.map((row) => row.status)).toEqual(['fulfilled', 'rejected']);
-    expect(good.syncNow).toHaveBeenCalled();
-    expect(bad.syncNow).toHaveBeenCalled();
+    assert.equal(result?.userId, 'user-a');
+    assert.equal(result?.current, true);
+    assert.deepEqual(result?.settled.map((row) => row.status), ['fulfilled', 'rejected']);
+    assert.equal(goodCalls, 1);
+    assert.equal(badCalls, 1);
     coordinator.dispose();
   });
 
@@ -25,7 +28,7 @@ describe('account resume coordinator', () => {
     const session = createSessionContextStore();
     let release!: () => void;
     const wait = new Promise<void>((resolve) => { release = resolve; });
-    const owner = { key: 'weekly-journey', syncNow: vi.fn(() => wait) };
+    const owner = { key: 'weekly-journey', syncNow: () => wait };
     const coordinator = createAccountResumeCoordinator(session, [owner]);
 
     session.setAuthenticated(identity('user-a'));
@@ -34,28 +37,31 @@ describe('account resume coordinator', () => {
     release();
 
     const result = await pending;
-    expect(result?.userId).toBe('user-a');
-    expect(result?.current).toBe(false);
+    assert.equal(result?.userId, 'user-a');
+    assert.equal(result?.current, false);
     coordinator.dispose();
   });
 
   it('clears account-owned local slices on sign-out without remote writes', () => {
     const session = createSessionContextStore();
-    const switchToGuest = vi.fn();
+    let guestSwitches = 0;
     const coordinator = createAccountResumeCoordinator(session, [
-      { key: 'progress', syncNow: vi.fn(async () => undefined), switchToGuest },
+      { key: 'progress', syncNow: async () => undefined, switchToGuest: () => { guestSwitches += 1; } },
     ]);
 
     session.setAuthenticated(identity('user-a'));
     session.clear();
 
-    expect(switchToGuest).toHaveBeenCalledTimes(1);
+    assert.equal(guestSwitches, 1);
     coordinator.dispose();
   });
 
   it('rejects duplicate owner keys to keep durable slices unambiguous', () => {
     const session = createSessionContextStore();
-    const owner = { key: 'progress', syncNow: vi.fn(async () => undefined) };
-    expect(() => createAccountResumeCoordinator(session, [owner, owner])).toThrow(/Duplicate account resume owner key/);
+    const owner = { key: 'progress', syncNow: async () => undefined };
+    assert.throws(
+      () => createAccountResumeCoordinator(session, [owner, owner]),
+      /Duplicate account resume owner key/,
+    );
   });
 });
