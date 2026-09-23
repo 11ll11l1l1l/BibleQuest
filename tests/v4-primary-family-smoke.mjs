@@ -46,6 +46,7 @@ async function verify(width,height,isMobile=false){
 
   await page.locator('[data-route-link="learn"]').click();
   await page.waitForURL(/#\/learn$/);
+  await page.locator('[data-open-reader]').waitFor();
   for(const hook of['[data-open-reader]','[data-open-study]','[data-open-bible-world]','[data-open-open-review]'])
     assert(await page.locator(hook).count()===1,`Learn entry point disappeared at ${width}px: ${hook}`);
 
