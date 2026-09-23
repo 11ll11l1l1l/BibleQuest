@@ -88,12 +88,26 @@ export function toContextLabRequest(location: ReaderLocation): ReaderContextLabR
   });
 }
 
-/** Read-only bridge for migration tests; Scripture provider remains the owner. */
+function contextMatchesRequest(context: ReaderContext, request: ReaderContextLabRequest): boolean {
+  if (!context.available) return true;
+  if (context.book.code.trim().toUpperCase() !== request.bookCode.trim().toUpperCase()) return false;
+  if (context.chapter !== request.chapter || context.verse !== request.verse) return false;
+  if (context.scripture.chapter !== request.chapter || !containsVerse(context.scripture, request.verse)) return false;
+  if (!context.scripture.text.trim()) return false;
+  return true;
+}
+
+/**
+ * Read-only bridge for migration tests; Scripture provider remains the owner.
+ * A provider response for a different Scripture location is rejected rather
+ * than being displayed as context for the requested verse.
+ */
 export async function loadContextLab(
   provider: ScriptureContentProvider,
   location: ReaderLocation,
 ): Promise<ReaderContext | null> {
   const request = toContextLabRequest(location);
   if (!request) return null;
-  return provider.loadContext(request);
+  const context = await provider.loadContext(request);
+  return contextMatchesRequest(context, request) ? context : null;
 }
