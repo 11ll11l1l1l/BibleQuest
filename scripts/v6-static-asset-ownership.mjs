@@ -6,6 +6,13 @@ const outDir = resolve(root, 'dist-v6');
 const sourceAssets = resolve(root, 'assets');
 const builtAssets = resolve(outDir, 'assets');
 const imageExtensions = new Set(['.avif', '.gif', '.ico', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
+const fontExtensions = new Set(['.otf', '.ttf', '.woff', '.woff2']);
+const budgets = Object.freeze({
+  totalImageBytes: 20 * 1024 * 1024,
+  largestImageBytes: 2 * 1024 * 1024,
+  totalFontBytes: 5 * 1024 * 1024,
+  largestFontBytes: 1024 * 1024,
+});
 
 async function walk(directory) {
   const files = [];
@@ -26,6 +33,9 @@ let totalBytes = 0;
 let imageBytes = 0;
 let imageCount = 0;
 let largestImage = null;
+let fontBytes = 0;
+let fontCount = 0;
+let largestFont = null;
 
 for (let index = 0; index < sourceFiles.length; index += 1) {
   const source = sourceFiles[index];
@@ -46,10 +56,16 @@ for (let index = 0; index < sourceFiles.length; index += 1) {
     if (!sourceBytes.equals(targetBytes)) changed.push(`${relativePath} (content)`);
   }
 
-  if (imageExtensions.has(extname(relativePath).toLowerCase())) {
+  const extension = extname(relativePath).toLowerCase();
+  if (imageExtensions.has(extension)) {
     imageCount += 1;
     imageBytes += targetInfo.size;
     if (!largestImage || targetInfo.size > largestImage.bytes) largestImage = { path: relativePath, bytes: targetInfo.size };
+  }
+  if (fontExtensions.has(extension)) {
+    fontCount += 1;
+    fontBytes += targetInfo.size;
+    if (!largestFont || targetInfo.size > largestFont.bytes) largestFont = { path: relativePath, bytes: targetInfo.size };
   }
 }
 
@@ -62,9 +78,13 @@ const report = {
   sourceAssetCount: sourceRelative.length,
   builtAssetCount: builtFiles.length,
   totalBytes,
+  budgets,
   imageCount,
   imageBytes,
   largestImage,
+  fontCount,
+  fontBytes,
+  largestFont,
   missing,
   changed,
   unexpected,
@@ -77,4 +97,8 @@ if (missing.length) failures.push(`assets missing from dist-v6: ${missing.join('
 if (changed.length) failures.push(`compatibility-copied assets differ from source: ${changed.join(', ')}`);
 if (unexpected.length) failures.push(`unexpected files in dist-v6/assets: ${unexpected.join(', ')}`);
 if (!imageCount) failures.push('no image assets were inventoried');
+if (imageBytes > budgets.totalImageBytes) failures.push(`image assets exceed total budget: ${imageBytes} > ${budgets.totalImageBytes} bytes`);
+if (largestImage?.bytes > budgets.largestImageBytes) failures.push(`largest image exceeds budget: ${largestImage.path} ${largestImage.bytes} > ${budgets.largestImageBytes} bytes`);
+if (fontBytes > budgets.totalFontBytes) failures.push(`font assets exceed total budget: ${fontBytes} > ${budgets.totalFontBytes} bytes`);
+if (largestFont?.bytes > budgets.largestFontBytes) failures.push(`largest font exceeds budget: ${largestFont.path} ${largestFont.bytes} > ${budgets.largestFontBytes} bytes`);
 if (failures.length) throw new Error(`V6 static asset ownership failed: ${failures.join('; ')}`);
