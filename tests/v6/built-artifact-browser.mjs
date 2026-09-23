@@ -67,6 +67,58 @@ async function assertRoute(page, route, label) {
   if (resolvedHash !== `#/${route}`) throw new Error(`${label} #/${route}: resolved ${resolvedHash}`);
 }
 
+async function assertAutomatedAccessibility(page, label) {
+  const violations = await page.evaluate(() => {
+    const issues = [];
+    const lang = document.documentElement.getAttribute('lang')?.trim();
+    if (!lang) issues.push('document <html> is missing lang');
+
+    const ids = [...document.querySelectorAll('[id]')].map(node => node.id).filter(Boolean);
+    const duplicates = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+    if (duplicates.length) issues.push(`duplicate ids: ${duplicates.join(', ')}`);
+
+    for (const image of document.querySelectorAll('img')) {
+      if (!image.hasAttribute('alt')) issues.push(`img missing alt: ${image.currentSrc || image.src || '<inline>'}`);
+    }
+
+    const interactive = document.querySelectorAll('button, a[href], input, select, textarea, [role="button"], [role="link"]');
+    for (const element of interactive) {
+      if (element.matches('[aria-hidden="true"], [hidden]')) continue;
+      const labelledBy = element.getAttribute('aria-labelledby');
+      const labelledText = labelledBy
+        ? labelledBy.split(/\s+/).map(id => document.getElementById(id)?.textContent?.trim() || '').join(' ').trim()
+        : '';
+      const name = (
+        element.getAttribute('aria-label')
+        || labelledText
+        || element.getAttribute('title')
+        || element.getAttribute('alt')
+        || element.textContent
+        || element.getAttribute('value')
+        || ''
+      ).trim();
+      if (!name) issues.push(`unnamed interactive element: ${element.outerHTML.slice(0, 180)}`);
+    }
+
+    for (const control of document.querySelectorAll('input:not([type="hidden"]), select, textarea')) {
+      if (control.matches('[aria-hidden="true"], [hidden]')) continue;
+      const id = control.id;
+      const labelled = Boolean(
+        control.getAttribute('aria-label')
+        || control.getAttribute('aria-labelledby')
+        || (id && document.querySelector(`label[for="${CSS.escape(id)}"]`))
+        || control.closest('label')
+      );
+      if (!labelled) issues.push(`form control missing label: ${control.outerHTML.slice(0, 180)}`);
+    }
+
+    return issues;
+  });
+  if (violations.length) {
+    throw new Error(`${label}: automated accessibility violations: ${violations.join(' | ')}`);
+  }
+}
+
 async function assertNoHorizontalOverflow(page, label) {
   const overflow = await page.evaluate(() => {
     const root = document.documentElement;
@@ -93,6 +145,7 @@ try {
     for (const route of representativeRoutes) {
       await assertRoute(page, route, `${width}px`);
       await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
+      await assertAutomatedAccessibility(page, `${width}px #/${route}`);
     }
 
     if (pageErrors.length) throw new Error(`${width}px browser errors: ${pageErrors.join(' | ')}`);
@@ -182,5 +235,5 @@ try {
 }
 
 console.log(
-  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with no document-level horizontal overflow; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
+  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with no document-level horizontal overflow and automated accessibility smoke; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
 );
