@@ -181,14 +181,41 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
 
   const unsubscribe=progress.subscribe(({source,state})=>{
     const ids=Object.keys(state?.events||{}),fresh=ids.filter(id=>!known.has(id));
-    known=new Set(ids);
-    if(disposed||source!=='local'||!fresh.length)return;
-    schedule(async()=>{await queueFresh(fresh,state);await flushPending()});
+    if(disposed||!fresh.length)return;
+    if(source!=='local'){
+      known=new Set(ids);
+      return;
+    }
+    const sessionState=session.getState();
+    if(sessionState.authenticated!==true||sessionState.remoteAvailable===false||!sessionState.user?.id){
+      known=new Set(ids);
+      return;
+    }
+    schedule(async()=>{
+      await queueFresh(fresh,state);
+      known=new Set(ids);
+      await flushPending();
+    });
   });
+
+  async function queueUnseenCurrent(){
+    const state=progress.getState(),ids=Object.keys(state?.events||{}),fresh=ids.filter(id=>!known.has(id));
+    if(!fresh.length)return;
+    const sessionState=session.getState();
+    if(sessionState.authenticated!==true||sessionState.remoteAvailable===false||!sessionState.user?.id){
+      known=new Set(ids);
+      return;
+    }
+    await queueFresh(fresh,state);
+    known=new Set(ids);
+  }
 
   async function syncNow(){
     await chain;
-    try{return await flushPending()}
+    try{
+      await queueUnseenCurrent();
+      return await flushPending();
+    }
     catch(error){
       publish('error',error?.message||'Leaderboard score sync failed.');
       throw error;
