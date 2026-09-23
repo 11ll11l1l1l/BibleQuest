@@ -75,6 +75,7 @@ jobs:
           test -s /tmp/bq-v6-db-types-a.ts
           echo "Generated local DB types are deterministic."
 
+      # Bootstrap canonical types from the exact replayed disposable database.
       - name: Stage generated database types for canonical drift baseline
         run: cp /tmp/bq-v6-db-types-a.ts /tmp/database.types.ts
 
