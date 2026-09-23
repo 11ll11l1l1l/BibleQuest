@@ -11,7 +11,11 @@ async function run(){
   assert((await page.locator('[data-open-study]').textContent())?.includes('Guided Study'),'Learn page does not expose Guided Study.');
   await page.locator('[data-open-study]').click();await page.waitForURL(/#\/study$/);await page.locator('[data-study-open="good-samaritan"]').waitFor();
   assert(await page.locator('[data-study-open]').count()===3,'Guided Study library must expose three initial Scripture-first studies.');
-  let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-study-page] button')].map(node=>node.getBoundingClientRect().height))}));
+  assert(await page.locator('[data-external-study-resource]').count()===5,'Guided Study must expose five bounded external study resources.');
+  const externalLinks=await page.locator('.bq-study-external-link').evaluateAll(nodes=>nodes.map(node=>({href:node.href,target:node.target,rel:node.rel})));
+  assert(externalLinks.every(link=>link.target==='_blank'&&link.rel.includes('noopener')&&link.rel.includes('noreferrer')),'External study links must open outside BibleQuest with safe rel attributes.');
+  assert(externalLinks.every(link=>['www.stepbible.org','tyndaleopenresources.com','www.ccel.org'].includes(new URL(link.href).hostname)),'External study library contains an unexpected host.');
+  let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-study-page] button, [data-study-page] a')].map(node=>node.getBoundingClientRect().height))}));
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Guided Study library mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Guided Study library touch target below 44px: ${metrics.minTarget}px.`);
 
   await page.locator('[data-study-open="good-samaritan"]').click();await page.locator('[data-study-session="good-samaritan"]').waitFor();assert((await page.locator('.bq-study-prompt').textContent())?.includes('Luke 10:25–37'),'Guided Study did not open the retained passage context.');
