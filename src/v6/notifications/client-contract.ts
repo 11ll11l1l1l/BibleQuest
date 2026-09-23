@@ -24,6 +24,9 @@ export const NOTIFICATION_SETTINGS_TEXT = Object.freeze({
     master: 'Allow notifications',
     quietHours: 'Quiet hours',
     quietHoursHelp: 'Pause non-urgent notifications during these hours.',
+    categoriesLabel: 'Notification categories',
+    start: 'Start',
+    end: 'End',
     categories: Object.freeze({
       reading: 'Bible reading', assignments: 'Assignments', ministry: 'Ministry',
       announcements: 'Announcements', encouragement: 'Encouragement', streaks: 'Streaks',
@@ -34,6 +37,9 @@ export const NOTIFICATION_SETTINGS_TEXT = Object.freeze({
     master: 'Payagan ang mga notification',
     quietHours: 'Tahimik na oras',
     quietHoursHelp: 'I-pause ang mga hindi agarang notification sa mga oras na ito.',
+    categoriesLabel: 'Mga uri ng notification',
+    start: 'Simula',
+    end: 'Wakas',
     categories: Object.freeze({
       reading: 'Pagbabasa ng Biblia', assignments: 'Mga assignment', ministry: 'Ministry',
       announcements: 'Mga anunsyo', encouragement: 'Pagpapalakas-loob', streaks: 'Mga streak',
@@ -44,6 +50,9 @@ export const NOTIFICATION_SETTINGS_TEXT = Object.freeze({
     master: 'Tugoti ang mga pahibalo',
     quietHours: 'Hilom nga oras',
     quietHoursHelp: 'Hunonga una ang dili dinalian nga mga pahibalo niining mga orasa.',
+    categoriesLabel: 'Mga klase sa pahibalo',
+    start: 'Pagsugod',
+    end: 'Katapusan',
     categories: Object.freeze({
       reading: 'Pagbasa sa Biblia', assignments: 'Mga buluhaton', ministry: 'Ministeryo',
       announcements: 'Mga pahibalo', encouragement: 'Pagdasig', streaks: 'Mga streak',

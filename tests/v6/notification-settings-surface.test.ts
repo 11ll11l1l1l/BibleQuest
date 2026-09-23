@@ -54,6 +54,9 @@ test('locale changes keep settings state while replacing visible and aria text',
   const ceb = controller.setLocale('ceb');
   assert.notEqual(en.title, ceb.title);
   assert.notEqual(en.master.ariaLabel, ceb.master.ariaLabel);
+  assert.notEqual(en.categoriesLabel, ceb.categoriesLabel);
+  assert.notEqual(en.quietHours.startLabel, ceb.quietHours.startLabel);
+  assert.notEqual(en.quietHours.endLabel, ceb.quietHours.endLabel);
   assert.deepEqual(en.categories.map((row) => row.checked), ceb.categories.map((row) => row.checked));
 });
 

@@ -22,6 +22,7 @@ export interface NotificationSettingsControl {
 
 export interface NotificationSettingsSurface {
   readonly title: string;
+  readonly categoriesLabel: string;
   readonly master: NotificationSettingsControl;
   readonly categories: readonly NotificationSettingsControl[];
   readonly quietHours: Readonly<{
@@ -30,6 +31,8 @@ export interface NotificationSettingsSurface {
     end: string;
     label: string;
     description: string;
+    startLabel: string;
+    endLabel: string;
     disabled: boolean;
   }>;
 }
@@ -42,6 +45,7 @@ export function createNotificationSettingsSurface(model: NotificationSettingsMod
   const disabled = !model.preferences.masterEnabled;
   return Object.freeze({
     title: model.text.title,
+    categoriesLabel: model.text.categoriesLabel,
     master: control('notification-master', model.text.master, model.preferences.masterEnabled, false),
     categories: Object.freeze(model.categoryRows.map((row) => control(
       `notification-category-${row.category}`,
@@ -56,6 +60,8 @@ export function createNotificationSettingsSurface(model: NotificationSettingsMod
       end: model.preferences.quietHours.end,
       label: model.text.quietHours,
       description: model.text.quietHoursHelp,
+      startLabel: model.text.start,
+      endLabel: model.text.end,
       disabled,
     }),
   });
