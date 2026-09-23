@@ -11,9 +11,11 @@ function derive(claim:Claim){
   switch(source){
     case 'Solo Bible Game':category='knowledge';points=num(m.correct,1,10)*8;break;
     case 'Learning Attempt':category='knowledge';points=num(m.attempts,1,20)*2;break;
-    case 'Recall Deck':category='reading';points=num(m.cards,1,20)*4+num(m.remembered,0,20)*2;break;\n    case 'Bible Chapter Read':category='reading';points=10;break;
+    case 'Recall Deck':category='reading';points=num(m.cards,1,20)*4+num(m.remembered,0,20)*2;break;
+    case 'Bible Chapter Read':category='reading';points=10;break;
     case 'Situations & Wisdom':category='wisdom';points=num(m.completed,1,10)*5;break;
-    case 'Journey Mastery':category='mastery';points=Math.max(1,Math.round(num(m.growth,1,100)/2));break;\n    case 'Transformation Complete':category='mastery';points=String(m.depth||'')==='full'?12:8;break;
+    case 'Journey Mastery':category='mastery';points=Math.max(1,Math.round(num(m.growth,1,100)/2));break;
+    case 'Transformation Complete':category='mastery';points=String(m.depth||'')==='full'?12:8;break;
     case 'Learning Streak':category='consistency';points=3;break;
     case 'Couples Conversation':category='couples';points=num(m.completed,1,10)*4;break;
     case 'Listen First':category='couples';points=num(m.completed,1,10)*5;break;
