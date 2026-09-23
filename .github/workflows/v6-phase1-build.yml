@@ -25,6 +25,7 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-css-build-ownership.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
@@ -85,6 +86,9 @@ jobs:
         env:
           BQ_BUILD_SHA: ${{ github.sha }}
         run: npm run check:v6-build-evidence
+
+      - name: Verify Vite owns legacy stylesheet output
+        run: node scripts/v6-css-build-ownership.mjs
 
       - name: Record build artifact inventory
         shell: bash
