@@ -79,8 +79,20 @@ self.addEventListener('install',event=>{
 self.addEventListener('activate',event=>{
   event.waitUntil((async()=>{
     const names=await caches.keys();
-    await Promise.all(names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME).map(name=>caches.delete(name)));
+    const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME);
+    const upgrading=staleNames.length>0;
+    await Promise.all(staleNames.map(name=>caches.delete(name)));
     await self.clients.claim();
+    if(!upgrading)return;
+    const windows=await self.clients.matchAll?.({type:'window',includeUncontrolled:true})||[];
+    await Promise.all(windows.map(async client=>{
+      if(typeof client?.navigate!=='function')return;
+      try{
+        const url=new URL(client.url);
+        if(url.origin!==self.location.origin||!url.href.startsWith(self.registration.scope))return;
+        await client.navigate(client.url);
+      }catch{}
+    }));
   })());
 });
 
