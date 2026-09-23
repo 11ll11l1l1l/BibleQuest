@@ -5,6 +5,7 @@ export * from './errors.ts';
 export * from './feature-boundary.ts';
 export * from './legacy-account-resume-runtime.ts';
 export * from './legacy-session-bridge.ts';
+export * from './product-account-resume-owners.ts';
 export * from './repository.ts';
 export * from './request-coordinator.ts';
 export * from './session-context.ts';
