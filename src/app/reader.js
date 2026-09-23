@@ -71,13 +71,23 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
     return `${translation}:${code}:${chapter}`;
   }
 
+  function chapterReadProgress(code=state.book,chapter=state.chapter) {
+    const events=progress.getState?.().events||{},canonicalId=`reader.read:${code}:${chapter}`;
+    if(events[canonicalId]?.type==='reader.chapter.read')return Object.freeze({id:canonicalId,row:events[canonicalId]});
+    const suffix=`:${code}:${chapter}`;
+    for(const [id,row] of Object.entries(events)){
+      if(row?.type==='reader.chapter.read'&&id.startsWith('reader.read:')&&id.endsWith(suffix))return Object.freeze({id,row});
+    }
+    return null;
+  }
+
   function markRead() {
     const translation = bible.getTranslation(state.translation);
     if (translation.mode === 'licensed-link') throw new Error(`${translation.label} opens externally; BibleQuest cannot mark unseen Scripture text as read.`);
-    const key = readKey(),eventId=`reader.read:${key}`;
-    if (state.read[key] || progress.hasEvent?.(eventId)) {
+    const key = readKey(),eventId=`reader.read:${state.book}:${state.chapter}`,existing=chapterReadProgress();
+    if (state.read[key] || existing) {
       if(!state.read[key]){
-        const date=progress.getState?.().events?.[eventId]?.date||'';
+        const date=existing?.row?.date||'';
         const next={...state,read:{...state.read,[key]:date}};
         storage.write(STORAGE_KEY,next);state=next;
       }
@@ -92,7 +102,7 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
 
   function isRead() {
     const key=readKey();
-    return Boolean(state.read[key]||progress.hasEvent?.(`reader.read:${key}`));
+    return Boolean(state.read[key]||chapterReadProgress());
   }
 
   async function search(query, options) {

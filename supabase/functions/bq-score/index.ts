@@ -5,6 +5,11 @@ const facilitatorRoles=new Set(['facilitator','leader','pastor','admin']);
 const delegatedSources=new Set(['Team Bible Sprint','Detective Hot Seat','Verse Hunt','Conversation Circle','Wisdom Table','Pair & Share','Live Room Participation']);
 const dailyCaps:Record<string,number>={knowledge:1000,reading:600,wisdom:400,mastery:300,consistency:120,group:600,couples:500};
 const num=(v:unknown,min=0,max=100)=>Math.min(max,Math.max(min,Math.round(Number(v)||0)));
+const BIBLE_CHAPTERS:Record<string,number>={GEN:50,EXO:40,LEV:27,NUM:36,DEU:34,JOS:24,JDG:21,RUT:4,'1SA':31,'2SA':24,'1KI':22,'2KI':25,'1CH':29,'2CH':36,EZR:10,NEH:13,EST:10,JOB:42,PSA:150,PRO:31,ECC:12,SNG:8,ISA:66,JER:52,LAM:5,EZK:48,DAN:12,HOS:14,JOL:3,AMO:9,OBA:1,JON:4,MIC:7,NAM:3,HAB:3,ZEP:3,HAG:2,ZEC:14,MAL:4,MAT:28,MRK:16,LUK:24,JHN:21,ACT:28,ROM:16,'1CO':16,'2CO':13,GAL:6,EPH:6,PHP:4,COL:4,'1TH':5,'2TH':3,'1TI':6,'2TI':4,TIT:3,PHM:1,HEB:13,JAS:5,'1PE':5,'2PE':3,'1JN':5,'2JN':1,'3JN':1,JUD:1,REV:22};
+const validChapterClaim=(claim:Claim,m:Record<string,unknown>)=>{
+  const code=String(m.code||'').trim().toUpperCase(),chapter=Number(m.chapter);
+  return Boolean(BIBLE_CHAPTERS[code]&&Number.isInteger(chapter)&&chapter>=1&&chapter<=BIBLE_CHAPTERS[code]&&String(claim.sourceEventId||'').trim()===`reading.chapter:${code}:${chapter}`);
+};
 
 function derive(claim:Claim){
   const m=claim.meta||{};const source=String(claim.source||'');let category='';let points=0;
@@ -12,8 +17,10 @@ function derive(claim:Claim){
     case 'Solo Bible Game':category='knowledge';points=num(m.correct,1,10)*8;break;
     case 'Learning Attempt':category='knowledge';points=num(m.attempts,1,20)*2;break;
     case 'Recall Deck':category='reading';points=num(m.cards,1,20)*4+num(m.remembered,0,20)*2;break;
+    case 'Bible Chapter Read':if(!validChapterClaim(claim,m))return null;category='reading';points=10;break;
     case 'Situations & Wisdom':category='wisdom';points=num(m.completed,1,10)*5;break;
     case 'Journey Mastery':category='mastery';points=Math.max(1,Math.round(num(m.growth,1,100)/2));break;
+    case 'Transformation Complete':if(!['spiritual','full'].includes(String(m.depth||'')))return null;category='mastery';points=String(m.depth)==='full'?12:8;break;
     case 'Learning Streak':category='consistency';points=3;break;
     case 'Couples Conversation':category='couples';points=num(m.completed,1,10)*4;break;
     case 'Listen First':category='couples';points=num(m.completed,1,10)*5;break;

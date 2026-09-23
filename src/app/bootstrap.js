@@ -55,6 +55,7 @@ import { createWorkspaceService } from './workspace.js';
 import { createPresenceService } from './presence.js';
 import { createTeamCenterService } from './team-center.js';
 import { createTrustedScoreEventsService } from './trusted-score-events.js';
+import { createProgressLeaderboardBridgeService } from './progress-leaderboard-bridge.js';
 import { createLeaderboardsService } from './leaderboards.js';
 import { createCongregationRecognitionService } from './congregation-recognition.js';
 import { createAssignmentsService } from './assignments.js';
@@ -218,6 +219,7 @@ function boot(root){
   const presence=createPresenceService({api:api.presence,session,congregation,store});
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
   const scoreEvents=createTrustedScoreEventsService({api:api.scoreEvents,session,congregation});
+  const progressLeaderboardBridge=createProgressLeaderboardBridgeService({progress,scoreEvents,session,congregation,storage:privateStorage});
   const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
@@ -228,7 +230,6 @@ function boot(root){
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});
-  void scoreEvents;
   let recovery;
   recovery=createOperationalRecoveryService({report:(error,context)=>diagnostics.classify(error,{kind:'module',route:context.route}).then(diagnostic=>{
     if(recovery.getState()?.id===context.id)shell?.updateRecoveryDiagnostic(context.id,diagnostic);
@@ -330,7 +331,8 @@ function boot(root){
     ['bible-quest',bibleQuestCloudSync],
     ['weekly-journey',weeklyJourneyCloudSync],
     ['personal-challenges',personalChallengesCloudSync],
-    ['explorer',explorerCloudSync]
+    ['explorer',explorerCloudSync],
+    ['leaderboard-delivery',progressLeaderboardBridge]
   ];
   const syncAccountProgress=state=>{
     const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
@@ -367,6 +369,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();adminAccess.clear();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();wisdomSituations.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
