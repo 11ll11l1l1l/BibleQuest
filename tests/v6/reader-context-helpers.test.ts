@@ -21,6 +21,23 @@ const john: ReaderChapter = {
   ],
 };
 
+const johnContext: ReaderContext = {
+  available: true,
+  reason: '',
+  book: john.book,
+  chapter: 3,
+  verse: 16,
+  reference: 'John 3:16',
+  scripture: john.verses[1]!,
+  previous: john.verses[0]!,
+  next: john.verses[2]!,
+  entries: [],
+  source: 'fixture',
+  license: 'fixture',
+  note: 'fixture',
+  external: [],
+};
+
 test('Verse Peek preserves exact translation/location and adjacent Scripture without provider I/O', () => {
   const peek = deriveVersePeek(john, 16);
   assert.ok(peek);
@@ -80,30 +97,45 @@ test('Context Lab performs zero provider I/O for invalid locations', async () =>
 
 test('Context Lab delegates one exact translation/location request without keyword substitution', async () => {
   const requests: unknown[] = [];
-  const context: ReaderContext = {
-    available: true,
-    reason: '',
-    book: john.book,
-    chapter: 3,
-    verse: 16,
-    reference: 'John 3:16',
-    scripture: john.verses[1]!,
-    previous: john.verses[0]!,
-    next: john.verses[2]!,
-    entries: [],
-    source: 'fixture',
-    license: 'fixture',
-    note: 'fixture',
-    external: [],
-  };
   const provider = {
     loadContext: async (request: unknown) => {
       requests.push(request);
-      return context;
+      return johnContext;
     },
   } as unknown as ScriptureContentProvider;
 
   const result = await loadContextLab(provider, { translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 });
-  assert.equal(result, context);
+  assert.equal(result, johnContext);
   assert.deepEqual(requests, [{ translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 }]);
+});
+
+test('Context Lab rejects a provider payload from a different book, chapter, or verse', async () => {
+  for (const context of [
+    { ...johnContext, book: { code: 'GEN', name: 'Genesis', chapters: 50 } },
+    { ...johnContext, chapter: 4, scripture: { ...johnContext.scripture, chapter: 4 } },
+    { ...johnContext, verse: 17, scripture: john.verses[2]! },
+  ]) {
+    const provider = { loadContext: async () => context } as unknown as ScriptureContentProvider;
+    assert.equal(
+      await loadContextLab(provider, { translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+      null,
+    );
+  }
+});
+
+test('Context Lab rejects blank or out-of-range Scripture while preserving explicit unavailable state', async () => {
+  const blankProvider = {
+    loadContext: async () => ({ ...johnContext, scripture: { ...johnContext.scripture, text: '   ' } }),
+  } as unknown as ScriptureContentProvider;
+  assert.equal(
+    await loadContextLab(blankProvider, { translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    null,
+  );
+
+  const unavailable = { ...johnContext, available: false, reason: 'not-supported' };
+  const unavailableProvider = { loadContext: async () => unavailable } as unknown as ScriptureContentProvider;
+  assert.equal(
+    await loadContextLab(unavailableProvider, { translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    unavailable,
+  );
 });
