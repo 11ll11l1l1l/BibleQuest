@@ -1,5 +1,5 @@
-import { access, readFile, stat } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { access, readFile, readdir, stat } from 'node:fs/promises';
+import { basename, extname, resolve } from 'node:path';
 
 const root = process.cwd();
 const outDir = resolve(root, 'dist-v6');
@@ -17,6 +17,17 @@ async function outputRefExists(ref) {
   const relativePath = withoutHash.replace(/^\.\//, '').replace(/^\//, '');
   if (!relativePath || relativePath.includes('..')) return false;
   try { await access(resolve(outDir, relativePath)); return true; } catch { return false; }
+}
+
+async function listFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const path = resolve(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await listFiles(path));
+    else if (entry.isFile()) files.push(path);
+  }
+  return files;
 }
 
 const missingSource = [], missingBuilt = [], changed = [];
@@ -62,7 +73,26 @@ for (const [role, ref] of Object.entries(builtIndexRefs)) {
   if (!(await outputRefExists(ref))) missingIndexRefs.push(`${role}: ${ref} (missing target)`);
 }
 
-const report = { ownership:'vite-root-static-compatibility-copy', requiredFiles:requiredRootStatic.map((path)=>basename(path)), totalBytes, manifestIconCount:Array.isArray(manifest.icons)?manifest.icons.length:0, manifestShortcutCount:Array.isArray(manifest.shortcuts)?manifest.shortcuts.length:0, missingSource, missingBuilt, changed, missingManifestTargets, builtIndexRefs, missingIndexRefs };
+// Public client artifacts must never contain privileged server credentials. Scan
+// emitted text, not source, so this guards the actual deployable Vite artifact.
+const privilegedSecretPatterns = [
+  ['Supabase service-role env name', /SUPABASE_SERVICE_ROLE_KEY/i],
+  ['generic service-role key name', /SERVICE_ROLE_KEY/i],
+  ['private key PEM', /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
+  ['VAPID private key name', /VAPID_PRIVATE_KEY/i],
+  ['database password env name', /(?:POSTGRES|DATABASE)_PASSWORD/i],
+];
+const textExtensions = new Set(['.css', '.html', '.js', '.json', '.mjs', '.svg', '.txt', '.webmanifest']);
+const privilegedSecretMarkers = [];
+for (const path of await listFiles(outDir)) {
+  if (!textExtensions.has(extname(path).toLowerCase()) && basename(path) !== '_headers' && basename(path) !== '_redirects') continue;
+  const content = await readFile(path, 'utf8');
+  for (const [label, pattern] of privilegedSecretPatterns) {
+    if (pattern.test(content)) privilegedSecretMarkers.push(`${path.slice(outDir.length + 1)}: ${label}`);
+  }
+}
+
+const report = { ownership:'vite-root-static-compatibility-copy', requiredFiles:requiredRootStatic.map((path)=>basename(path)), totalBytes, manifestIconCount:Array.isArray(manifest.icons)?manifest.icons.length:0, manifestShortcutCount:Array.isArray(manifest.shortcuts)?manifest.shortcuts.length:0, missingSource, missingBuilt, changed, missingManifestTargets, builtIndexRefs, missingIndexRefs, privilegedSecretMarkers };
 console.log(JSON.stringify(report, null, 2));
 const failures = [];
 if (missingSource.length) failures.push(`required source files missing: ${missingSource.join(', ')}`);
@@ -70,6 +100,7 @@ if (missingBuilt.length) failures.push(`required files missing from dist-v6: ${m
 if (changed.length) failures.push(`root static output differs from source: ${changed.join(', ')}`);
 if (missingManifestTargets.length) failures.push(`manifest targets missing/unsafe: ${missingManifestTargets.join(', ')}`);
 if (missingIndexRefs.length) failures.push(`built index PWA links invalid: ${missingIndexRefs.join(', ')}`);
+if (privilegedSecretMarkers.length) failures.push(`privileged secret markers present in public client artifact: ${privilegedSecretMarkers.join(', ')}`);
 if (!Array.isArray(manifest.icons) || manifest.icons.length < 3) failures.push('manifest icon inventory is incomplete');
 if (!Array.isArray(manifest.shortcuts) || manifest.shortcuts.length < 4) failures.push('manifest shortcut inventory is incomplete');
 if (failures.length) throw new Error(`V6 root static ownership failed: ${failures.join('; ')}`);
