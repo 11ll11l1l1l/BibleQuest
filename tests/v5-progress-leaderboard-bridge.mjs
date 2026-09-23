@@ -38,9 +38,9 @@ assert(canonical?.source==='Bible Chapter Read'&&canonical?.category==='reading'
 const progress=makeProgress(),storage=memoryStorage();
 let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}};
 const session={getState:()=>sessionState};
-let active={congregationId:'c1'};
+let active={congregationId:'c1'},failLoadOnce=false;
 const congregation={
-  async load(){return [{congregationId:'c1',userId:'u1'}]},
+  async load(){if(failLoadOnce){failLoadOnce=false;throw new Error('simulated congregation lookup failure')}return [{congregationId:'c1',userId:'u1'}]},
   getActive(){return active},
   can(id,capability){return capability==='read'&&id==='c1'}
 };
@@ -85,6 +85,12 @@ progress.add('wisdom:scenario-1:complete',row('wisdom-situation.complete',{xp:8,
 await bridge.syncNow();
 assert(bridge.getState().pending===0,'A transient trusted-score failure must remain queued and flush on the next explicit sync.');
 assert(calls.filter(call=>call.claims.some(claim=>claim.source==='Situations & Wisdom')).length===2,'Transient failure should retry the same trusted score claim once.');
+
+const beforeScopeRetry=calls.length;
+failLoadOnce=true;
+progress.add('reader.read:EXO:2',row('reader.chapter.read',{xp:10,metrics:{chaptersRead:1}}));
+await bridge.syncNow();
+assert(calls.length===beforeScopeRetry+1&&calls.at(-1).claims[0].sourceEventId==='reading.chapter:EXO:2','Authenticated progress must retry after a transient congregation lookup failure instead of losing leaderboard credit.');
 
 const beforeGuest=calls.length;
 sessionState={authenticated:false,remoteAvailable:true,user:null};
