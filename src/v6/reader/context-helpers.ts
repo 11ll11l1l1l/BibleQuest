@@ -25,9 +25,15 @@ function positiveInteger(value: number): boolean {
   return Number.isInteger(value) && value > 0;
 }
 
-function containsVerse(candidate: ReaderVerse, verse: number): boolean {
+function containsVerse(candidate: ReaderVerse, verse: number, chapter?: number): boolean {
   const end = candidate.verseEnd ?? candidate.verse;
-  return candidate.verse <= verse && verse <= end;
+  return positiveInteger(candidate.chapter)
+    && (chapter === undefined || candidate.chapter === chapter)
+    && positiveInteger(candidate.verse)
+    && positiveInteger(end)
+    && end >= candidate.verse
+    && candidate.verse <= verse
+    && verse <= end;
 }
 
 function referenceLabel(chapter: ReaderChapter, verse: ReaderVerse): string {
@@ -45,9 +51,16 @@ export function deriveVersePeek(
   chapter: ReaderChapter,
   requestedVerse: number,
 ): ReaderVersePeek | null {
-  if (!positiveInteger(requestedVerse) || !positiveInteger(chapter.chapter)) return null;
+  if (
+    !positiveInteger(requestedVerse)
+    || !positiveInteger(chapter.chapter)
+    || !chapter.book.code.trim()
+    || !chapter.book.name.trim()
+    || !positiveInteger(chapter.book.chapters)
+    || chapter.chapter > chapter.book.chapters
+  ) return null;
 
-  const index = chapter.verses.findIndex((candidate) => containsVerse(candidate, requestedVerse));
+  const index = chapter.verses.findIndex((candidate) => containsVerse(candidate, requestedVerse, chapter.chapter));
   if (index < 0) return null;
 
   const scripture = chapter.verses[index];
@@ -89,11 +102,20 @@ export function toContextLabRequest(location: ReaderLocation): ReaderContextLabR
 }
 
 function contextMatchesRequest(context: ReaderContext, request: ReaderContextLabRequest): boolean {
-  if (!context.available) return true;
-  if (context.book.code.trim().toUpperCase() !== request.bookCode.trim().toUpperCase()) return false;
-  if (context.chapter !== request.chapter || context.verse !== request.verse) return false;
-  if (context.scripture.chapter !== request.chapter || !containsVerse(context.scripture, request.verse)) return false;
-  if (!context.scripture.text.trim()) return false;
+  if (
+    !context.book.code.trim()
+    || !context.book.name.trim()
+    || !positiveInteger(context.book.chapters)
+    || context.book.code.trim().toUpperCase() !== request.bookCode.trim().toUpperCase()
+    || context.chapter !== request.chapter
+    || context.verse !== request.verse
+    || context.chapter > context.book.chapters
+    || !containsVerse(context.scripture, request.verse, request.chapter)
+    || !context.scripture.text.trim()
+    || !context.reference.trim()
+  ) return false;
+
+  if (!context.available) return Boolean(context.reason.trim());
   return true;
 }
 
