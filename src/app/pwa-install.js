@@ -1,11 +1,25 @@
-const snapshot = state => Object.freeze({
+const snapshot = (state, guidance) => Object.freeze({
   status: state.status,
-  canPrompt: state.status === 'available'
+  canPrompt: state.status === 'available',
+  guidance: state.status === 'unavailable' ? guidance : null
 });
 
 const defaultDisplayMode = query => typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(query) : { matches: false };
+const IOS_DEVICE = /iPad|iPhone|iPod/i;
 
-export function createPwaInstallService({ eventTarget = globalThis.window, displayMode = defaultDisplayMode } = {}) {
+export function detectPwaInstallGuidance({
+  userAgent = globalThis.navigator?.userAgent || '',
+  standalone = globalThis.navigator?.standalone === true
+} = {}) {
+  if (standalone) return null;
+  return IOS_DEVICE.test(String(userAgent)) ? 'ios-a2hs' : null;
+}
+
+export function createPwaInstallService({
+  eventTarget = globalThis.window,
+  displayMode = defaultDisplayMode,
+  guidance = detectPwaInstallGuidance()
+} = {}) {
   if (!eventTarget?.addEventListener || !eventTarget?.removeEventListener) throw new Error('PWA install requires an event target.');
   const subscribers = new Set();
   let promptEvent = null;
@@ -18,7 +32,7 @@ export function createPwaInstallService({ eventTarget = globalThis.window, displ
 
   const publish = status => {
     state = { status };
-    const value = snapshot(state);
+    const value = snapshot(state, guidance);
     subscribers.forEach(subscriber => subscriber(value));
     return value;
   };
@@ -36,11 +50,11 @@ export function createPwaInstallService({ eventTarget = globalThis.window, displ
   eventTarget.addEventListener('appinstalled', installed);
 
   return Object.freeze({
-    getState() { return snapshot(state); },
+    getState() { return snapshot(state, guidance); },
     subscribe(subscriber) {
       if (typeof subscriber !== 'function') throw new Error('PWA install subscriber must be a function.');
       subscribers.add(subscriber);
-      subscriber(snapshot(state));
+      subscriber(snapshot(state, guidance));
       return () => subscribers.delete(subscriber);
     },
     async prompt() {
