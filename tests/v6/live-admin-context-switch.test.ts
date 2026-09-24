@@ -85,7 +85,7 @@ describe('Live Rooms and admin account-switch isolation', () => {
     const fresh = await rooms.load();
     assert.deepEqual(fresh.memberships.map((row: any) => row.congregationId), ['cong-b']);
     releaseA.resolve();
-    await stale;
+    await assert.rejects(() => stale, (error: any) => error?.code === 'BQ_LIVE_ROOMS_CONTEXT_STALE');
     assert.deepEqual(rooms.snapshot().memberships.map((row: any) => row.congregationId), ['cong-b']);
 
     session.setUser('user-a');
