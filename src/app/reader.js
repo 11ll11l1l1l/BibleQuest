@@ -115,10 +115,23 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
     const chapter = Number(result?.chapter);
     const verse = Number(result?.verse);
     if (!Number.isInteger(chapter) || chapter < 1 || chapter > book.chapters || !Number.isInteger(verse) || verse < 1) throw new Error('Invalid search result.');
+
+    const loaded = await bible.loadChapter(state.translation, book.code, chapter);
+    if (loaded?.translation?.id !== state.translation) throw new Error('Search result content does not match the selected translation.');
+    const projection = deriveVersePeek({
+      translationId: state.translation,
+      book: loaded.book,
+      chapter: loaded.chapter,
+      verses: loaded.verses,
+    }, verse);
+    if (
+      !projection
+      || projection.bookCode.trim().toUpperCase() !== book.code.trim().toUpperCase()
+      || projection.chapter !== chapter
+    ) throw new Error('Search result verse is unavailable.');
+
     state = { ...state, book: book.code, chapter };
     persist();
-    const loaded = await load();
-    if (!loaded.verses.some(item => item.verse <= verse && (item.verseEnd || item.verse) >= verse)) throw new Error('Search result verse is unavailable.');
     return Object.freeze({ chapter: loaded, verse });
   }
 
