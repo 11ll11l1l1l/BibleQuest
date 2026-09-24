@@ -132,6 +132,14 @@ jobs:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/notification-settings-browser.mjs
 
+      - name: Reject Vite dependency scan failures
+        shell: bash
+        run: |
+          if grep -Fq "Failed to run dependency scan" /tmp/bq-v6-dev.log; then
+            cat /tmp/bq-v6-dev.log
+            exit 1
+          fi
+
       - name: Start built artifact preview
         shell: bash
         run: |
