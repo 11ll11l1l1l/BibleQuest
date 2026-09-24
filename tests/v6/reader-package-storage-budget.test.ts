@@ -12,7 +12,7 @@ import {
 
 const abcSha = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
 
-function manifest(bytes: number | undefined = 3): ScriptureTranslationManifest {
+function manifest(bytes: number | null = 3): ScriptureTranslationManifest {
   return {
     schemaVersion: 1,
     translationId: 'bsb',
@@ -25,7 +25,7 @@ function manifest(bytes: number | undefined = 3): ScriptureTranslationManifest {
       attribution: 'BibleQuest attribution',
       redistribution: 'allowed',
     },
-    books: [{ bookCode: 'GEN', url: '/packs/bsb/GEN.json', sha256: abcSha, ...(bytes === undefined ? {} : { bytes }) }],
+    books: [{ bookCode: 'GEN', url: '/packs/bsb/GEN.json', sha256: abcSha, ...(bytes === null ? {} : { bytes }) }],
   };
 }
 
@@ -80,7 +80,7 @@ test('unknown-size package is rechecked against actual verified bytes before per
   });
 
   await assert.rejects(
-    manager.install(manifest(undefined), 'GEN'),
+    manager.install(manifest(null), 'GEN'),
     (error: unknown) => error instanceof ScripturePackageStorageLimitError,
   );
   assert.equal(downloads, 1);
