@@ -40,19 +40,27 @@ function normalizeRecognition(row,congregationId,directory){
 export function createCongregationRecognitionService({api,session,congregation}={}){
   if(!api?.load||!api?.award||!session||!congregation)throw new Error('Congregation Recognition requires shared API, session and congregation owners.');
   let current=Object.freeze({authenticated:false,remoteAvailable:true,status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[],presets:PRESETS});
+  let contextUserId='',loadRequest=0;
   const sessionState=()=>session.getState?.()||{};
-  const snapshot=()=>current;
+  const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
+  const snapshot=()=>contextUserId&&contextUserId!==currentUserId()?Object.freeze({...current,status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]}):current;
   const setState=patch=>{current=Object.freeze({...current,...patch});return current};
   const requireAccount=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw recognitionError('Sign in to view congregation recognition.','BQ_RECOGNITION_AUTH_REQUIRED');if(state.remoteAvailable===false)throw recognitionError('Congregation recognition is unavailable in local preview.','BQ_RECOGNITION_REMOTE_DISABLED');return state};
 
   async function load({congregationId=current.congregationId}={}){
-    requireAccount();
-    const memberships=await congregation.load();
+    const account=requireAccount(),userId=String(account.user.id),request=++loadRequest;
+    if(contextUserId&&contextUserId!==userId)setState({status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]});
+    contextUserId=userId;
+    let memberships;
+    try{memberships=await congregation.load()}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
+    if(request!==loadRequest||currentUserId()!==userId)return snapshot();
     const congregations=memberships.map(row=>Object.freeze({id:String(row.congregationId),name:cleanText(row.congregation?.name,100)||'Congregation',role:String(row.role||''),roleLabel:cleanText(row.roleLabel,40)||'Member',canAward:AWARD_ROLES.has(String(row.role||''))}));
     if(!congregations.length)return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]});
     const selected=congregations.find(row=>row.id===String(congregationId||''))||congregations[0];
     congregation.assert(selected.id,'read');
-    const result=await api.load(selected.id);
+    let result;
+    try{result=await api.load(selected.id)}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
+    if(request!==loadRequest||currentUserId()!==userId)return snapshot();
     const members=(Array.isArray(result?.directory)?result.directory:[]).map(row=>normalizeDirectory(row,selected.id));
     const directory=new Map(members.map(row=>[row.userId,row])),memberIds=new Set(directory.keys());
     const catalogRows=(Array.isArray(result?.catalog)?result.catalog:[]).map(normalizeCatalog),catalog=new Map(catalogRows.map(row=>[row.id,row]));
@@ -64,7 +72,7 @@ export function createCongregationRecognitionService({api,session,congregation}=
   }
 
   async function award({targetUserId,awardCode,title='',note=''}={}){
-    const state=requireAccount(),scope=current.congregations.find(row=>row.id===current.congregationId);
+    const state=requireAccount(),userId=String(state.user.id);if(contextUserId!==userId)throw recognitionError('Reload congregation recognition after changing accounts.','BQ_RECOGNITION_CONTEXT_STALE');const scope=current.congregations.find(row=>row.id===current.congregationId);
     if(!scope)throw recognitionError('Load an active congregation before giving recognition.','BQ_RECOGNITION_SCOPE');
     if(!scope.canAward||!AWARD_ROLES.has(scope.role))throw recognitionError('Only congregation leaders, pastors and admins can give special recognition.','BQ_RECOGNITION_PERMISSION');
     congregation.assert(scope.id,'read');
@@ -72,10 +80,11 @@ export function createCongregationRecognitionService({api,session,congregation}=
     const preset=PRESETS.find(row=>row.code===String(awardCode||''));if(!preset)throw recognitionError('Choose a supported recognition award.','BQ_RECOGNITION_AWARD');
     const payload={congregation_id:scope.id,user_id:target.userId,awarded_by:String(state.user.id),award_code:preset.code,title:cleanText(title,120)||preset.title,note:cleanText(note,1200)||null,icon:preset.icon};
     const saved=await api.award(payload);
-    if(!saved||String(saved.congregation_id||'')!==scope.id||String(saved.user_id||'')!==target.userId||String(saved.awarded_by||'')!==String(state.user.id))throw recognitionError('Recognition response did not match the requested congregation award.','BQ_RECOGNITION_RESPONSE');
+    if(currentUserId()!==userId)throw recognitionError('The account changed while recognition was being saved. Reload before continuing.','BQ_RECOGNITION_CONTEXT_STALE');
+    if(!saved||String(saved.congregation_id||'')!==scope.id||String(saved.user_id||'')!==target.userId||String(saved.awarded_by||'')!==userId)throw recognitionError('Recognition response did not match the requested congregation award.','BQ_RECOGNITION_RESPONSE');
     return load({congregationId:scope.id});
   }
-  function clear(){const state=sessionState();current=Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[],presets:PRESETS})}
+  function clear(){loadRequest++;contextUserId='';const state=sessionState();current=Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[],presets:PRESETS})}
   return Object.freeze({snapshot,load,award,clear,presets:()=>PRESETS.slice()});
 }
 
