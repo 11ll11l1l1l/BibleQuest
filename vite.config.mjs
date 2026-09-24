@@ -169,6 +169,9 @@ export default defineConfig({
   define: {
     __BQ_BUILD_SHA__: JSON.stringify(buildSha),
   },
+  optimizeDeps: {
+    entries: ['index.html'],
+  },
   plugins: [copyLegacyRuntime(), collectPrivateSourceMaps()],
   build: {
     outDir,
