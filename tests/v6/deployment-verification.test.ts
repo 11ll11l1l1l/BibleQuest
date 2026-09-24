@@ -107,7 +107,8 @@ test('deployment verification workflow binds PR previews and manual URLs to the 
     '<code>${expected}</code>',
     'Deploy successful!',
     'steps.preview.outputs.url',
-    'BQ_EXPECTED_SHA: ${{ github.sha }}',
+    "github.event.pull_request.head.sha",
+    "BQ_EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}",
     'node scripts/v6-deployment-verify.mjs',
   ]) {
     assert.ok(workflow.includes(token), `deployment verification workflow missing: ${token}`);
