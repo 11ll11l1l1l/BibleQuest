@@ -1,49 +1,50 @@
-import { describe, expect, it, vi } from 'vitest';
+import assert from 'node:assert/strict';
+import test from 'node:test';
+
 import { appBadgeCapability, clearAppBadge, setAppBadge } from '../../src/app/app-badge.js';
 
-describe('app badge client seam', () => {
-  it('reports native capability without assuming support', () => {
-    expect(appBadgeCapability({})).toEqual({ set: false, clear: false });
-    expect(appBadgeCapability({ setAppBadge() {}, clearAppBadge() {} })).toEqual({
-      set: true,
-      clear: true,
-    });
+test('app badge reports native capability without assuming support', () => {
+  assert.deepEqual(appBadgeCapability({}), { set: false, clear: false });
+  assert.deepEqual(appBadgeCapability({ setAppBadge() {}, clearAppBadge() {} }), {
+    set: true,
+    clear: true,
   });
+});
 
-  it('sets a normalized positive badge count', async () => {
-    const setAppBadgeNative = vi.fn().mockResolvedValue(undefined);
-    const result = await setAppBadge(3.9, { setAppBadge: setAppBadgeNative });
+test('app badge sets a normalized positive badge count', async () => {
+  const calls: number[] = [];
+  const setAppBadgeNative = async (count: number) => { calls.push(count); };
+  const result = await setAppBadge(3.9, { setAppBadge: setAppBadgeNative });
 
-    expect(setAppBadgeNative).toHaveBeenCalledWith(3);
-    expect(result).toEqual({ status: 'set', count: 3 });
-  });
+  assert.deepEqual(calls, [3]);
+  assert.deepEqual(result, { status: 'set', count: 3 });
+});
 
-  it('clears for zero or invalid counts without calling setAppBadge', async () => {
-    const setAppBadgeNative = vi.fn().mockResolvedValue(undefined);
-    const clearAppBadgeNative = vi.fn().mockResolvedValue(undefined);
-    const navigatorLike = {
-      setAppBadge: setAppBadgeNative,
-      clearAppBadge: clearAppBadgeNative,
-    };
+test('app badge clears for zero or invalid counts without calling setAppBadge', async () => {
+  const setCalls: number[] = [];
+  let clearCalls = 0;
+  const navigatorLike = {
+    setAppBadge: async (count: number) => { setCalls.push(count); },
+    clearAppBadge: async () => { clearCalls += 1; },
+  };
 
-    expect(await setAppBadge(0, navigatorLike)).toEqual({ status: 'cleared', count: 0 });
-    expect(await setAppBadge(Number.NaN, navigatorLike)).toEqual({ status: 'cleared', count: 0 });
-    expect(setAppBadgeNative).not.toHaveBeenCalled();
-    expect(clearAppBadgeNative).toHaveBeenCalledTimes(2);
-  });
+  assert.deepEqual(await setAppBadge(0, navigatorLike), { status: 'cleared', count: 0 });
+  assert.deepEqual(await setAppBadge(Number.NaN, navigatorLike), { status: 'cleared', count: 0 });
+  assert.deepEqual(setCalls, []);
+  assert.equal(clearCalls, 2);
+});
 
-  it('fails closed when badge APIs are unsupported', async () => {
-    expect(await setAppBadge(4, {})).toEqual({ status: 'unsupported', count: 4 });
-    expect(await clearAppBadge({})).toEqual({ status: 'unsupported' });
-  });
+test('app badge fails closed when badge APIs are unsupported', async () => {
+  assert.deepEqual(await setAppBadge(4, {}), { status: 'unsupported', count: 4 });
+  assert.deepEqual(await clearAppBadge({}), { status: 'unsupported' });
+});
 
-  it('contains native failures and does not invent badge state', async () => {
-    const navigatorLike = {
-      setAppBadge: vi.fn().mockRejectedValue(new Error('denied')),
-      clearAppBadge: vi.fn().mockRejectedValue(new Error('denied')),
-    };
+test('app badge contains native failures and does not invent badge state', async () => {
+  const navigatorLike = {
+    setAppBadge: async () => { throw new Error('denied'); },
+    clearAppBadge: async () => { throw new Error('denied'); },
+  };
 
-    expect(await setAppBadge(2, navigatorLike)).toEqual({ status: 'failed', count: 2 });
-    expect(await clearAppBadge(navigatorLike)).toEqual({ status: 'failed' });
-  });
+  assert.deepEqual(await setAppBadge(2, navigatorLike), { status: 'failed', count: 2 });
+  assert.deepEqual(await clearAppBadge(navigatorLike), { status: 'failed' });
 });
