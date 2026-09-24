@@ -153,4 +153,58 @@ describe('Calendar account-context isolation', () => {
     assert.equal(accountA.pendingSync, 1, 'Account A must retain retry state after its late response is ignored.');
     assert.equal(accountA.events.length, 1);
   });
+
+  it('suppresses a late congregation A response after the same account switches to congregation B', async () => {
+    const session = mutableSession();
+    const storage = memoryStorage();
+    let activeId = 'congregation-a';
+    const startedA = deferred();
+    const releaseA = deferred<any[]>();
+    const memberships = [
+      { congregationId: 'congregation-a', congregation: { name: 'A' } },
+      { congregationId: 'congregation-b', congregation: { name: 'B' } },
+    ];
+    const congregation = {
+      async load() { return memberships; },
+      getActive() { return memberships.find(row => row.congregationId === activeId); },
+      can() { return true; },
+      assert() {},
+    };
+    const api = {
+      calendar: {
+        async list() { return []; },
+        async create() { throw new Error('unused'); },
+        async remove() { return true; },
+        async listCongregation(congregationId: string) {
+          if (congregationId === 'congregation-a') {
+            startedA.resolve();
+            return releaseA.promise;
+          }
+          return [{ id: 'b-event', user_id: 'user-a', event_date: '2026-09-28', title: 'B event', notes: '', all_day: true }];
+        },
+      },
+    };
+    const calendar = createCalendarService({
+      session,
+      privateStorage: storage,
+      api,
+      assignments: { snapshot: () => ({ assignments: [] }) },
+      congregation,
+      clock: () => new Date('2026-09-24T00:00:00.000Z'),
+    });
+
+    const loadingA = calendar.load();
+    await startedA.promise;
+    activeId = 'congregation-b';
+    releaseA.resolve([{ id: 'a-event', user_id: 'user-a', event_date: '2026-09-27', title: 'A event', notes: '', all_day: true }]);
+
+    const staleResult = await loadingA;
+    assert.equal(staleResult.congregationId, '', 'Late congregation A data must not remain visible after switching to B.');
+    assert.ok(!staleResult.agenda.some((row: any) => row.events?.some((event: any) => event.title === 'A event')));
+
+    const refreshed = await calendar.load();
+    assert.equal(refreshed.congregationId, 'congregation-b');
+    assert.ok(refreshed.agenda.some((row: any) => row.events?.some((event: any) => event.title === 'B event')));
+    assert.ok(!refreshed.agenda.some((row: any) => row.events?.some((event: any) => event.title === 'A event')));
+  });
 });
