@@ -9,8 +9,11 @@ const ROOT_HOST = 'mybiblequest.pages.dev';
 const MAX_FILES = 1000;
 const MAX_TOTAL_BYTES = 50 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
+const METADATA_ATTEMPTS = 18;
+const METADATA_RETRY_MS = 5000;
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+const sleep = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms));
 
 export function normalizeDeploymentUrl(value) {
   let url;
@@ -76,6 +79,21 @@ async function fetchJson(baseUrl, path, fetchImpl) {
   }
 }
 
+async function fetchDeploymentMetadata(baseUrl, path, fetchImpl) {
+  let lastError;
+  for (let attempt = 1; attempt <= METADATA_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchJson(baseUrl, path, fetchImpl);
+    } catch (error) {
+      lastError = error;
+      if (attempt < METADATA_ATTEMPTS) await sleep(METADATA_RETRY_MS);
+    }
+  }
+  throw new Error(
+    `Deployment metadata did not become readable after ${METADATA_ATTEMPTS} attempts (${path}): ${lastError?.message || lastError}`,
+  );
+}
+
 function validateInventory(manifest) {
   if (manifest?.schemaVersion !== 1) throw new Error('Deployment artifact integrity schemaVersion must be 1.');
   if (manifest?.algorithm !== 'sha256') throw new Error('Deployment artifact integrity algorithm must be sha256.');
@@ -134,9 +152,12 @@ export async function verifyDeployedArtifact({
   }
 
   const baseUrl = normalizeDeploymentUrl(deploymentUrl);
+  // A Pages bot success comment can precede edge propagation by several seconds.
+  // Retry only the two immutable metadata files; once both are readable, every
+  // declared artifact is still verified exactly once against its recorded bytes.
   const [build, integrity] = await Promise.all([
-    fetchJson(baseUrl, 'bq-build.json', fetchImpl),
-    fetchJson(baseUrl, 'bq-artifact-integrity.json', fetchImpl),
+    fetchDeploymentMetadata(baseUrl, 'bq-build.json', fetchImpl),
+    fetchDeploymentMetadata(baseUrl, 'bq-artifact-integrity.json', fetchImpl),
   ]);
 
   if (String(build?.sha || '').toLowerCase() !== sourceSha) {
