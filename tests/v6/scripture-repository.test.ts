@@ -180,3 +180,51 @@ test('normalizes search input and rejects mismatched provider query or invalid l
   assert.deepEqual(await invalid.search('bsb', '   ', 0), { status: 'failed', reason: 'invalid-location', retryable: false });
   assert.equal(invalidCalls, 0);
 });
+
+test('search rejects malformed, impossible, blank, and over-limit provider hits', async () => {
+  const query = 'love';
+  const validHit = {
+    book,
+    chapter: 3,
+    verse: 16,
+    text: 'fixture Scripture text',
+    reference: 'John 3:16',
+  } as const;
+  const malformed: ReaderSearchResult[] = [
+    { query, type: 'text', results: [{ ...validHit, book: { ...book, chapters: 2 } }], skippedBooks: [] },
+    { query, type: 'text', results: [{ ...validHit, verse: 0 }], skippedBooks: [] },
+    { query, type: 'text', results: [{ ...validHit, verse: 17, verseEnd: 16 }], skippedBooks: [] },
+    { query, type: 'text', results: [{ ...validHit, text: '   ' }], skippedBooks: [] },
+    { query, type: 'text', results: [{ ...validHit, reference: '   ' }], skippedBooks: [] },
+    { query, type: 'text', results: [validHit, { ...validHit, verse: 17, reference: 'John 3:17' }], skippedBooks: [] },
+    { query, type: 'text', results: [], skippedBooks: [{ code: 'JHN', message: '   ' }] },
+  ];
+  for (const payload of malformed) {
+    const repository = new ScriptureRepository(provider({ search: async () => payload }));
+    assert.deepEqual(
+      await repository.search('bsb', query, 1),
+      { status: 'failed', reason: 'mismatched-content', retryable: true },
+    );
+  }
+});
+
+test('search provider failures are retryable and a later EN/TL/JA request can recover cleanly', async () => {
+  for (const translationId of ['bsb', 'tl', 'jko'] as const) {
+    let attempts = 0;
+    const repository = new ScriptureRepository(provider({
+      search: async (_translationId, query) => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('temporary provider failure');
+        return { query, type: 'text', results: [], skippedBooks: [] };
+      },
+    }));
+
+    assert.deepEqual(
+      await repository.search(translationId, 'grace', 10),
+      { status: 'failed', reason: 'unavailable', retryable: true },
+    );
+    const recovered = await repository.search(translationId, 'grace', 10);
+    assert.equal(recovered.status, 'ready');
+    assert.equal(attempts, 2);
+  }
+});

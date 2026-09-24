@@ -1,4 +1,5 @@
 import { JAPANESE_VOCABULARY_TERMS } from '../features/reader/vocabulary-content.js';
+import { selectJapaneseVocabularyNotes } from '../v6/reader/japanese-vocabulary.ts';
 
 const STORAGE_KEY='japanese-vocabulary';
 const DEFAULT_STATE=Object.freeze({version:1,enabled:true});
@@ -13,10 +14,7 @@ export function createJapaneseVocabularyService({storage}){
   function setEnabled(value){state={...state,enabled:Boolean(value)};return persist()}
 
   function notesFor(text){
-    const source=String(text||'');
-    if(!source) return Object.freeze([]);
-    const notes=JAPANESE_VOCABULARY_TERMS.filter(item=>source.includes(item.term)).slice(0,3).map(item=>Object.freeze({...item}));
-    return Object.freeze(notes);
+    return selectJapaneseVocabularyNotes(String(text||''),JAPANESE_VOCABULARY_TERMS,3);
   }
 
   return Object.freeze({
