@@ -41,47 +41,79 @@ const emptyDashboard=()=>normalizeDashboard();
 export function createAdminOperationsService({api,session}={}){
   const required=['status','dashboard','frontendHealth','deleteUser','suspendAccount','reactivateAccount','forceSignOut','setTempPassword','changeEmail'];
   if(!api||required.some(name=>typeof api[name]!=='function')||!session?.getState)throw new Error('Admin Operations requires the shared API and Session owners.');
-  let state={status:'idle',role:'',currentUserId:'',dashboard:emptyDashboard(),frontend:emptyFrontend(),busy:false,error:'',lastAction:null};
-  const snapshot=()=>Object.freeze({...state});
-  const reset=(status,error='')=>{state={status,role:'',currentUserId:'',dashboard:emptyDashboard(),frontend:emptyFrontend(),busy:false,error,lastAction:null};return snapshot()};
-  const currentUser=()=>{const value=session.getState();return value?.authenticated&&value?.user?.id?value.user:null};
-  const ensureAuthorized=()=>{if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role))throw fail('Admin Operations requires verified Owner/Admin access.','BQ_ADMIN_OPS_NOT_READY')};
+  const emptyState=(status='idle',error='')=>Object.freeze({status,role:'',currentUserId:'',dashboard:emptyDashboard(),frontend:emptyFrontend(),busy:false,error,lastAction:null});
+  let state=emptyState(),contextUserId='',refreshRequest=0,mutationRequest=0;
+  const currentUserId=()=>{const value=session.getState();return value?.authenticated&&value?.user?.id?String(value.user.id):''};
+  const contextCurrent=userId=>Boolean(userId)&&contextUserId===String(userId)&&currentUserId()===String(userId);
+  const snapshot=()=>contextUserId&&currentUserId()!==contextUserId?emptyState(currentUserId()?'idle':'signed-out'):Object.freeze({...state});
+  const reset=(status,error='',userId='')=>{state=emptyState(status,error);contextUserId=String(userId||'');return snapshot()};
+  const staleError=()=>fail('The account changed. Reload Admin Operations before continuing.','BQ_ADMIN_OPS_CONTEXT_STALE');
+  const ensureAuthorized=()=>{const userId=currentUserId();if(!contextCurrent(userId))throw staleError();if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role))throw fail('Admin Operations requires verified Owner/Admin access.','BQ_ADMIN_OPS_NOT_READY');return userId};
 
   async function authorize(){
-    const user=currentUser();if(!user)return reset('signed-out');
-    state={...state,status:'loading',busy:true,error:''};
+    const userId=currentUserId(),request=++refreshRequest;
+    if(!userId){mutationRequest++;return reset('signed-out')}
+    if(contextUserId!==userId){mutationRequest++;reset('idle','',userId)}
+    contextUserId=userId;
+    state=Object.freeze({...state,status:'loading',busy:true,error:''});
     try{
-      const result=await api.status(),role=clean(result?.role).toLowerCase(),userId=clean(result?.userId||user.id);
-      if(!PLATFORM_ROLES.has(role))return reset('unauthorized','BibleQuest admin access required');
-      state={...state,status:'ready',role,currentUserId:userId,busy:false,error:''};return snapshot();
+      const result=await api.status();
+      if(request!==refreshRequest)return snapshot();
+      if(!contextCurrent(userId))return reset(currentUserId()?'idle':'signed-out','',currentUserId());
+      const role=clean(result?.role).toLowerCase(),confirmedUserId=clean(result?.userId||userId);
+      if(confirmedUserId!==userId)return reset('unauthorized','BibleQuest admin access required',userId);
+      if(!PLATFORM_ROLES.has(role))return reset('unauthorized','BibleQuest admin access required',userId);
+      state=Object.freeze({...state,status:'ready',role,currentUserId:userId,busy:false,error:''});return snapshot();
     }catch(error){
-      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required');
-      state={...state,status:'error',busy:false,error:error?.message||'Admin Operations could not load.'};return snapshot();
+      if(request!==refreshRequest)return snapshot();
+      if(!contextCurrent(userId))return reset(currentUserId()?'idle':'signed-out','',currentUserId());
+      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required',userId);
+      state=Object.freeze({...state,status:'error',busy:false,error:error?.message||'Admin Operations could not load.'});return snapshot();
     }
   }
 
   async function refresh(){
     const access=await authorize();if(access.status!=='ready')return access;
-    state={...state,status:'loading',busy:true,error:''};
+    const userId=contextUserId,request=refreshRequest;
+    state=Object.freeze({...state,status:'loading',busy:true,error:''});
     try{
       const [data,frontend]=await Promise.all([api.dashboard(),Promise.resolve(api.frontendHealth()).catch(()=>emptyFrontend())]);
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const confirmed=clean(data?.role||state.role).toLowerCase();
-      if(!PLATFORM_ROLES.has(confirmed))return reset('unauthorized','BibleQuest admin access required');
-      state={...state,status:'ready',role:confirmed,dashboard:normalizeDashboard(data),frontend:normalizeFrontend(frontend),busy:false,error:'',lastAction:'refresh'};return snapshot();
+      if(!PLATFORM_ROLES.has(confirmed))return reset('unauthorized','BibleQuest admin access required',userId);
+      state=Object.freeze({...state,status:'ready',role:confirmed,currentUserId:userId,dashboard:normalizeDashboard(data),frontend:normalizeFrontend(frontend),busy:false,error:'',lastAction:'refresh'});return snapshot();
     }catch(error){
-      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required');
-      state={...state,status:'error',busy:false,error:error?.message||'Admin Operations could not load.'};return snapshot();
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
+      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required',userId);
+      state=Object.freeze({...state,status:'error',busy:false,error:error?.message||'Admin Operations could not load.'});return snapshot();
     }
   }
+
+  const beginMutation=(action)=>{
+    const userId=ensureAuthorized();
+    if(state.busy)throw fail('Another Admin Operations action is still running.','BQ_ADMIN_OPS_BUSY');
+    const request=++mutationRequest;
+    state=Object.freeze({...state,busy:true,error:'',lastAction:action});
+    return {userId,request};
+  };
+  const mutationStillCurrent=({userId,request})=>request===mutationRequest&&contextCurrent(userId);
+  const mutationFailure=(ctx,error,message,action)=>{
+    if(!mutationStillCurrent(ctx)){if(contextUserId===ctx.userId)reset(currentUserId()?'idle':'signed-out','',currentUserId());throw staleError()}
+    state=Object.freeze({...state,busy:false,error:error?.message||message,lastAction:action});throw error;
+  };
+  const mutationSuccess=(ctx,result,action)=>{
+    if(!mutationStillCurrent(ctx))throw staleError();
+    state=Object.freeze({...state,busy:false,lastAction:action});
+    return Object.freeze({ok:true,result,state:snapshot()});
+  };
 
   async function deleteUser(targetUserId){
     ensureAuthorized();if(state.role!=='owner')throw fail('Only the BibleQuest owner can delete accounts.','BQ_ADMIN_OPS_OWNER_REQUIRED');
     const target=clean(targetUserId);if(!target)throw fail('A valid account is required.','BQ_ADMIN_OPS_TARGET_INVALID');
     if(target===state.currentUserId)throw fail('The active owner account cannot delete itself.','BQ_ADMIN_OPS_SELF_DELETE');
-    if(state.busy)throw fail('Another Admin Operations action is still running.','BQ_ADMIN_OPS_BUSY');
-    state={...state,busy:true,error:'',lastAction:'delete_user'};
-    try{const result=await api.deleteUser(target);if(result?.deleted!==true)throw fail('The server did not confirm account deletion.','BQ_ADMIN_OPS_DELETE_UNCONFIRMED');state={...state,busy:false,lastAction:'delete_user'};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Account deletion failed.',lastAction:'delete_user'};throw error}
+    const ctx=beginMutation('delete_user');
+    try{const result=await api.deleteUser(target);if(result?.deleted!==true)throw fail('The server did not confirm account deletion.','BQ_ADMIN_OPS_DELETE_UNCONFIRMED');return mutationSuccess(ctx,result,'delete_user')}
+    catch(error){return mutationFailure(ctx,error,'Account deletion failed.','delete_user')}
   }
 
   function guardTarget(targetUserId,selfMessage,selfCode){
@@ -93,25 +125,22 @@ export function createAdminOperationsService({api,session}={}){
   }
 
   async function suspendAccount(targetUserId,reason=''){
-    const target=guardTarget(targetUserId,'You cannot suspend your own account.','BQ_ADMIN_OPS_SELF_SUSPEND');
-    state={...state,busy:true,error:'',lastAction:'suspend_account'};
-    try{const result=await api.suspendAccount(target,clean(reason).slice(0,500));if(result?.active!==false)throw fail('The server did not confirm the suspension.','BQ_ADMIN_OPS_SUSPEND_UNCONFIRMED');state={...state,busy:false,lastAction:'suspend_account'};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Account suspension failed.',lastAction:'suspend_account'};throw error}
+    const target=guardTarget(targetUserId,'You cannot suspend your own account.','BQ_ADMIN_OPS_SELF_SUSPEND'),ctx=beginMutation('suspend_account');
+    try{const result=await api.suspendAccount(target,clean(reason).slice(0,500));if(result?.active!==false)throw fail('The server did not confirm the suspension.','BQ_ADMIN_OPS_SUSPEND_UNCONFIRMED');return mutationSuccess(ctx,result,'suspend_account')}
+    catch(error){return mutationFailure(ctx,error,'Account suspension failed.','suspend_account')}
   }
 
   async function reactivateAccount(targetUserId){
-    const target=guardTarget(targetUserId,'This is already your active account.','BQ_ADMIN_OPS_SELF_REACTIVATE');
-    state={...state,busy:true,error:'',lastAction:'reactivate_account'};
-    try{const result=await api.reactivateAccount(target);if(result?.active!==true)throw fail('The server did not confirm reactivation.','BQ_ADMIN_OPS_REACTIVATE_UNCONFIRMED');state={...state,busy:false,lastAction:'reactivate_account'};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Account reactivation failed.',lastAction:'reactivate_account'};throw error}
+    const target=guardTarget(targetUserId,'This is already your active account.','BQ_ADMIN_OPS_SELF_REACTIVATE'),ctx=beginMutation('reactivate_account');
+    try{const result=await api.reactivateAccount(target);if(result?.active!==true)throw fail('The server did not confirm reactivation.','BQ_ADMIN_OPS_REACTIVATE_UNCONFIRMED');return mutationSuccess(ctx,result,'reactivate_account')}
+    catch(error){return mutationFailure(ctx,error,'Account reactivation failed.','reactivate_account')}
   }
 
   async function forceSignOut(targetUserId){
     const target=clean(targetUserId);ensureAuthorized();if(!target)throw fail('A valid account is required.','BQ_ADMIN_OPS_TARGET_INVALID');
-    if(state.busy)throw fail('Another Admin Operations action is still running.','BQ_ADMIN_OPS_BUSY');
-    state={...state,busy:true,error:'',lastAction:'force_sign_out'};
-    try{const result=await api.forceSignOut(target);state={...state,busy:false,lastAction:'force_sign_out'};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Force sign-out failed.',lastAction:'force_sign_out'};throw error}
+    const ctx=beginMutation('force_sign_out');
+    try{const result=await api.forceSignOut(target);return mutationSuccess(ctx,result,'force_sign_out')}
+    catch(error){return mutationFailure(ctx,error,'Force sign-out failed.','force_sign_out')}
   }
 
   async function setTempPassword(targetUserId,password){
@@ -119,21 +148,21 @@ export function createAdminOperationsService({api,session}={}){
     if(state.role!=='owner')throw fail('Only the BibleQuest owner can set a temporary password.','BQ_ADMIN_OPS_OWNER_REQUIRED');
     const target=guardTarget(targetUserId,'Use your own account recovery flow, not this emergency tool.','BQ_ADMIN_OPS_SELF_TEMP_PASSWORD');
     const value=String(password||'');if(value.length<12)throw fail('Temporary password must be at least 12 characters.','BQ_ADMIN_OPS_PASSWORD_TOO_SHORT');
-    state={...state,busy:true,error:'',lastAction:'set_temp_password'};
-    try{const result=await api.setTempPassword(target,value);state={...state,busy:false,lastAction:'set_temp_password'};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Setting the temporary password failed.',lastAction:'set_temp_password'};throw error}
+    const ctx=beginMutation('set_temp_password');
+    try{const result=await api.setTempPassword(target,value);return mutationSuccess(ctx,result,'set_temp_password')}
+    catch(error){return mutationFailure(ctx,error,'Setting the temporary password failed.','set_temp_password')}
   }
 
   async function changeEmail(targetUserId,email){
-  ensureAuthorized();
-  if(state.role!=='owner')throw fail('Only the BibleQuest owner can change an account email.','BQ_ADMIN_OPS_OWNER_REQUIRED');
-  const target=guardTarget(targetUserId,'Use your own Account page for this active owner account.','BQ_ADMIN_OPS_SELF_EMAIL_CHANGE');
-  const value=clean(email).toLowerCase();
-  if(value.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw fail('A valid recovery email is required.','BQ_ADMIN_OPS_EMAIL_INVALID');
-  state={...state,busy:true,error:'',lastAction:'change_email'};
-  try{const result=await api.changeEmail(target,value);if(result?.changed!==true)throw fail('The server did not confirm the email change.','BQ_ADMIN_OPS_EMAIL_UNCONFIRMED');state={...state,busy:false,lastAction:'change_email'};return Object.freeze({ok:true,result,state:snapshot()})}
-  catch(error){state={...state,busy:false,error:error?.message||'Changing the account email failed.',lastAction:'change_email'};throw error}
-}
+    ensureAuthorized();
+    if(state.role!=='owner')throw fail('Only the BibleQuest owner can change an account email.','BQ_ADMIN_OPS_OWNER_REQUIRED');
+    const target=guardTarget(targetUserId,'Use your own Account page for this active owner account.','BQ_ADMIN_OPS_SELF_EMAIL_CHANGE');
+    const value=clean(email).toLowerCase();
+    if(value.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw fail('A valid recovery email is required.','BQ_ADMIN_OPS_EMAIL_INVALID');
+    const ctx=beginMutation('change_email');
+    try{const result=await api.changeEmail(target,value);if(result?.changed!==true)throw fail('The server did not confirm the email change.','BQ_ADMIN_OPS_EMAIL_UNCONFIRMED');return mutationSuccess(ctx,result,'change_email')}
+    catch(error){return mutationFailure(ctx,error,'Changing the account email failed.','change_email')}
+  }
 
-return Object.freeze({authorize,refresh,deleteUser,suspendAccount,reactivateAccount,forceSignOut,setTempPassword,changeEmail,getState:snapshot,clear:()=>reset('idle')});
+  return Object.freeze({authorize,refresh,deleteUser,suspendAccount,reactivateAccount,forceSignOut,setTempPassword,changeEmail,getState:snapshot,clear:()=>{refreshRequest++;mutationRequest++;return reset('idle')}});
 }
