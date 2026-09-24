@@ -224,7 +224,7 @@ describe('legacy Session stale auth callbacks', () => {
       async getSession() { return { session: null }; },
       async getUser() { return { user: current }; },
       async signIn(email: string) {
-        if (email.startsWith('a@')) {
+        if (email.startsWith('user-a@')) {
           aStarted.resolve();
           await releaseA.promise;
           const session = authSession('user-a');
@@ -240,9 +240,9 @@ describe('legacy Session stale auth callbacks', () => {
     const service = createSessionService({ auth, store: store() });
     await service.boot();
 
-    const older = service.signIn('a@example.test', 'password');
+    const older = service.signIn('user-a@example.test', 'password');
     await aStarted.promise;
-    await service.signIn('b@example.test', 'password');
+    await service.signIn('user-b@example.test', 'password');
     assert.equal(service.getState().user?.id, 'user-b');
 
     releaseA.resolve();
