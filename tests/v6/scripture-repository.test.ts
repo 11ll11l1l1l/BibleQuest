@@ -207,3 +207,24 @@ test('search rejects malformed, impossible, blank, and over-limit provider hits'
     );
   }
 });
+
+test('search provider failures are retryable and a later EN/TL/JA request can recover cleanly', async () => {
+  for (const translationId of ['bsb', 'tl', 'jko'] as const) {
+    let attempts = 0;
+    const repository = new ScriptureRepository(provider({
+      search: async (_translationId, query) => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('temporary provider failure');
+        return { query, type: 'text', results: [], skippedBooks: [] };
+      },
+    }));
+
+    assert.deepEqual(
+      await repository.search(translationId, 'grace', 10),
+      { status: 'failed', reason: 'unavailable', retryable: true },
+    );
+    const recovered = await repository.search(translationId, 'grace', 10);
+    assert.equal(recovered.status, 'ready');
+    assert.equal(attempts, 2);
+  }
+});
