@@ -69,7 +69,7 @@ export function createContentReportingService({api,session,congregation}={}){
     const normalizedNote=bounded(note,1200,'Report note');
     const row={
       congregation_id:id,
-      reporter_id:userId,
+      reporter_id:String(user.id),
       content_key:normalized.contentKey,
       content_type:normalized.contentType,
       content_source:normalized.contentSource,
