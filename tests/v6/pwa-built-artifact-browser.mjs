@@ -132,6 +132,58 @@ try {
   assert(pageErrors.length === 0, `PWA browser errors: ${pageErrors.join(' | ')}`);
   await context.close();
 
+  // Web Share is progressive enhancement. Prove the built More surface uses
+  // native sharing when available and copies the same route-neutral app URL
+  // when native sharing is unavailable.
+  const nativeShareContext = await browser.newContext({ viewport: { width: 360, height: 844 } });
+  const nativeSharePage = await nativeShareContext.newPage();
+  await nativeSharePage.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async payload => { globalThis.__BQ_NATIVE_SHARE_PAYLOAD__ = payload; },
+    });
+  });
+  await nativeSharePage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
+  await nativeSharePage.locator('#app').waitFor({ state: 'attached' });
+  await waitForResolvedLazyRoute(nativeSharePage, '360px native Web Share');
+  const nativeShareButton = nativeSharePage.locator('[data-share-app]');
+  assert(await nativeShareButton.isVisible(), '360px native Web Share button is hidden');
+  await nativeShareButton.click();
+  await nativeSharePage.waitForFunction(() => Boolean(globalThis.__BQ_NATIVE_SHARE_PAYLOAD__));
+  const nativePayload = await nativeSharePage.evaluate(() => globalThis.__BQ_NATIVE_SHARE_PAYLOAD__);
+  assert(nativePayload?.title === 'BibleQuest', `native Web Share title mismatch: ${nativePayload?.title || '<missing>'}`);
+  assert(nativePayload?.text === 'Open BibleQuest', `native Web Share text mismatch: ${nativePayload?.text || '<missing>'}`);
+  assert(nativePayload?.url === `${baseUrl}/`, `native Web Share URL mismatch: ${nativePayload?.url || '<missing>'}`);
+  assert(!(await nativeShareButton.isDisabled()), 'native Web Share button remained disabled after completion');
+  await nativeShareContext.close();
+
+  const clipboardShareContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const clipboardSharePage = await clipboardShareContext.newPage();
+  await clipboardSharePage.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async value => { globalThis.__BQ_CLIPBOARD_SHARE_URL__ = value; },
+      },
+    });
+  });
+  await clipboardSharePage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
+  await clipboardSharePage.locator('#app').waitFor({ state: 'attached' });
+  await waitForResolvedLazyRoute(clipboardSharePage, '390px Web Share clipboard fallback');
+  const clipboardShareButton = clipboardSharePage.locator('[data-share-app]');
+  await clipboardShareButton.click();
+  await clipboardSharePage.waitForFunction(() => Boolean(globalThis.__BQ_CLIPBOARD_SHARE_URL__));
+  const copiedShareUrl = await clipboardSharePage.evaluate(() => globalThis.__BQ_CLIPBOARD_SHARE_URL__);
+  assert(copiedShareUrl === `${baseUrl}/`, `clipboard Web Share URL mismatch: ${copiedShareUrl || '<missing>'}`);
+  await clipboardSharePage.locator('[data-share-status]').waitFor({ state: 'visible' });
+  assert(
+    (await clipboardSharePage.locator('[data-share-status]').textContent())?.includes('copied'),
+    'clipboard Web Share fallback must confirm the copied link',
+  );
+  assert(!(await clipboardShareButton.isDisabled()), 'clipboard Web Share button remained disabled after completion');
+  await clipboardShareContext.close();
+
   // iOS does not expose beforeinstallprompt in the same way as Chromium
   // desktop/Android. Prove the built UI provides explicit Safari
   // Add-to-Home-Screen guidance at every required narrow-phone width.
@@ -200,4 +252,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required PNG icon payloads/dimensions, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery at 390px, iOS Safari Add-to-Home-Screen guidance at 320/360/390/412/430px, and iOS standalone installed-state handling at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required PNG icon payloads/dimensions, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery at 390px, native Web Share at 360px, clipboard share fallback at 390px, iOS Safari Add-to-Home-Screen guidance at 320/360/390/412/430px, and iOS standalone installed-state handling at 390px.');
