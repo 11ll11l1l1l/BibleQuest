@@ -7,7 +7,7 @@ import { createMediaSessionManager } from '../../src/v6/media/session-manager.ts
 function mockProvider(log: string[]): MediaProviderAdapter {
   return {
     id: 'youtube',
-    canHandle(source: MediaSource) { return source.provider === 'youtube'; },
+    canHandle(source: MediaSource) { return source.provider === 'youtube' && /^[A-Za-z0-9_-]{6,20}$/.test(source.mediaId); },
     create({ instanceId, source }): MediaPlayerInstance {
       let status: any = 'ready';
       return {
