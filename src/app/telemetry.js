@@ -61,12 +61,6 @@ function storageRead(storage,key,fallback=''){
 function storageWrite(storage,key,value){
   try{storage?.write?.(key,value)}catch{}
 }
-function sessionRead(runtime,key){
-  try{return runtime?.sessionStorage?.getItem?.(key)||''}catch{return ''}
-}
-function sessionWrite(runtime,key,value){
-  try{runtime?.sessionStorage?.setItem?.(key,value)}catch{}
-}
 
 function stableElementAction(element){
   if(!element)return {action:'',element:''};
@@ -84,6 +78,7 @@ export function createTelemetryService({
   api,
   session,
   storage,
+  transientStorage,
   getRoute=()=> 'home',
   runtime=globalThis,
   uuid=()=>runtime.crypto?.randomUUID?.()||'',
@@ -93,7 +88,7 @@ export function createTelemetryService({
   setIntervalFn=(fn,ms)=>runtime.setInterval(fn,ms),
   clearIntervalFn=id=>runtime.clearInterval(id)
 }={}){
-  if(!api||!session||!storage)throw new Error('Telemetry service requires API, session and private storage boundaries.');
+  if(!api||!session||!storage||!transientStorage)throw new Error('Telemetry service requires API, session and storage boundaries.');
 
   const enabled=api.enabled?.()!==false;
   let visitorId=String(storageRead(storage,'telemetry-visitor-id',''));
@@ -102,11 +97,11 @@ export function createTelemetryService({
     if(UUID_RE.test(visitorId))storageWrite(storage,'telemetry-visitor-id',visitorId);
   }
 
-  const sessionKey='bq.telemetry.session';
-  let sessionId=String(sessionRead(runtime,sessionKey));
+  const sessionKey='telemetry-session-id';
+  let sessionId=String(storageRead(transientStorage,sessionKey,''));
   if(!UUID_RE.test(sessionId)){
     sessionId=String(uuid());
-    if(UUID_RE.test(sessionId))sessionWrite(runtime,sessionKey,sessionId);
+    if(UUID_RE.test(sessionId))storageWrite(transientStorage,sessionKey,sessionId);
   }
 
   let queue=[];
