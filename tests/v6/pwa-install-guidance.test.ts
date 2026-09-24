@@ -35,7 +35,7 @@ test('PWA install guidance identifies iOS Add to Home Screen fallback', () => {
   );
 });
 
-test('PWA install service exposes iOS guidance only while native prompting is unavailable', () => {
+test('PWA install service keeps iOS guidance authoritative over stray native prompt events', () => {
   const target = new EventTarget();
   const service = createPwaInstallService({
     eventTarget: target,
@@ -55,8 +55,11 @@ test('PWA install service exposes iOS guidance only while native prompting is un
     userChoice: Promise.resolve({ outcome: 'dismissed' }),
   });
   target.dispatchEvent(eligible);
-  assert.equal(service.getState().status, 'available');
-  assert.equal(service.getState().guidance, null);
+  assert.deepEqual(service.getState(), {
+    status: 'unavailable',
+    canPrompt: false,
+    guidance: 'ios-a2hs',
+  });
 
   target.dispatchEvent(new Event('appinstalled'));
   assert.equal(service.getState().status, 'installed');
