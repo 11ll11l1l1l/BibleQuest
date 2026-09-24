@@ -8,5 +8,6 @@ export * from './license-policy.ts';
 export * from './navigation.ts';
 export * from './package-manager.ts';
 export * from './progress-policy.ts';
+export * from './presentation.ts';
 export * from './scripture-repository.ts';
 export * from './search.ts';
