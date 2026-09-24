@@ -32,35 +32,58 @@ function normalizeOptions(options={}){
 export function createAdminConsoleService({api,session}={}){
   const required=['status','listUsers','setRole','setCongregation','removeCongregation','setCongregationRole','createCongregation','createSmallGroup','setGroupMembership','setGroupOwner'];
   if(!api||required.some(name=>typeof api[name]!=='function')||!session?.getState)throw new Error('Admin Console requires the shared API and Session owners.');
-  let state={status:'idle',role:'',users:Object.freeze([]),options:normalizeOptions(),busy:false,error:'',lastAction:null};
-  const snapshot=()=>Object.freeze({...state});
-  const reset=(status,error='')=>{state={status,role:'',users:Object.freeze([]),options:normalizeOptions(),busy:false,error,lastAction:null};return snapshot()};
-  const currentUser=()=>session.getState()?.authenticated&&session.getState()?.user?.id?session.getState().user:null;
-  const ensureReady=()=>{if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role))throw fail('Admin Console requires verified Owner/Admin access.','BQ_ADMIN_NOT_READY')};
+  const emptyState=(status='idle',error='')=>Object.freeze({status,role:'',users:Object.freeze([]),options:normalizeOptions(),busy:false,error,lastAction:null});
+  let state=emptyState(),contextUserId='',refreshRequest=0,mutationRequest=0;
+  const currentUserId=()=>{const value=session.getState();return value?.authenticated&&value?.user?.id?String(value.user.id):''};
+  const contextCurrent=userId=>Boolean(userId)&&contextUserId===String(userId)&&currentUserId()===String(userId);
+  const snapshot=()=>contextUserId&&currentUserId()!==contextUserId?emptyState(currentUserId()?'idle':'signed-out'):Object.freeze({...state});
+  const reset=(status,error='',userId='')=>{state=emptyState(status,error);contextUserId=String(userId||'');return snapshot()};
+  const staleError=()=>fail('The account changed. Reload Admin Console before continuing.','BQ_ADMIN_CONTEXT_STALE');
+  const ensureReady=()=>{const userId=currentUserId();if(contextUserId&&contextUserId!==userId)throw staleError();if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role)||!userId||contextUserId!==userId)throw fail('Admin Console requires verified Owner/Admin access.','BQ_ADMIN_NOT_READY');return userId};
 
   async function refresh(){
-    if(!currentUser())return reset('signed-out');
-    state={...state,status:'loading',busy:true,error:''};
+    const userId=currentUserId(),request=++refreshRequest;
+    if(!userId){mutationRequest++;return reset('signed-out')}
+    if(contextUserId!==userId){mutationRequest++;reset('idle','',userId)}
+    contextUserId=userId;
+    state=Object.freeze({...state,status:'loading',busy:true,error:''});
     try{
       const access=await api.status();
+      if(request!==refreshRequest)return snapshot();
+      if(!contextCurrent(userId))return reset(currentUserId()?'idle':'signed-out','',currentUserId());
       const role=clean(access?.role).toLowerCase();
-      if(!PLATFORM_ROLES.has(role))return reset('unauthorized','BibleQuest admin access required');
+      if(!PLATFORM_ROLES.has(role))return reset('unauthorized','BibleQuest admin access required',userId);
       const data=await api.listUsers({page:1,perPage:200});
+      if(request!==refreshRequest)return snapshot();
+      if(!contextCurrent(userId))return reset(currentUserId()?'idle':'signed-out','',currentUserId());
       const confirmed=clean(data?.role||role).toLowerCase();
-      if(!PLATFORM_ROLES.has(confirmed))return reset('unauthorized','BibleQuest admin access required');
-      state={status:'ready',role:confirmed,users:freezeRows((Array.isArray(data?.users)?data.users:[]).map(normalizeUser).filter(Boolean)),options:normalizeOptions(data?.options),busy:false,error:'',lastAction:null};
+      if(!PLATFORM_ROLES.has(confirmed))return reset('unauthorized','BibleQuest admin access required',userId);
+      state=Object.freeze({status:'ready',role:confirmed,users:freezeRows((Array.isArray(data?.users)?data.users:[]).map(normalizeUser).filter(Boolean)),options:normalizeOptions(data?.options),busy:false,error:'',lastAction:null});
       return snapshot();
     }catch(error){
-      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required');
-      state={...state,status:'error',busy:false,error:error?.message||'Admin Console could not load.'};return snapshot();
+      if(request!==refreshRequest)return snapshot();
+      if(!contextCurrent(userId))return reset(currentUserId()?'idle':'signed-out','',currentUserId());
+      if(denied(error))return reset('unauthorized',error?.message||'BibleQuest admin access required',userId);
+      state=Object.freeze({...state,status:'error',busy:false,error:error?.message||'Admin Console could not load.'});return snapshot();
     }
   }
 
   async function mutate(action,operation){
-    ensureReady();if(state.busy)throw fail('Another Admin Console action is still running.','BQ_ADMIN_BUSY');
-    state={...state,busy:true,error:'',lastAction:action};
-    try{const result=await operation();await refresh();state={...state,lastAction:action};return Object.freeze({ok:true,result,state:snapshot()})}
-    catch(error){state={...state,busy:false,error:error?.message||'Admin action failed.',lastAction:action};throw error}
+    const userId=ensureReady();if(state.busy)throw fail('Another Admin Console action is still running.','BQ_ADMIN_BUSY');
+    const request=++mutationRequest;
+    state=Object.freeze({...state,busy:true,error:'',lastAction:action});
+    try{
+      const result=await operation();
+      if(request!==mutationRequest||!contextCurrent(userId))throw staleError();
+      await refresh();
+      if(!contextCurrent(userId))throw staleError();
+      state=Object.freeze({...state,lastAction:action});
+      return Object.freeze({ok:true,result,state:snapshot()});
+    }catch(error){
+      if(request!==mutationRequest)return Promise.reject(error);
+      if(!contextCurrent(userId)){reset(currentUserId()?'idle':'signed-out','',currentUserId());throw staleError()}
+      state=Object.freeze({...state,busy:false,error:error?.message||'Admin action failed.',lastAction:action});throw error;
+    }
   }
 
   const setRole=(targetUserId,role)=>{const id=clean(targetUserId),next=clean(role).toLowerCase();if(!id||!SITE_ROLES.has(next))throw fail('Choose a valid member, admin, or owner platform role.','BQ_ADMIN_ROLE_INVALID');return mutate('set_role',()=>api.setRole(id,next))};
@@ -72,5 +95,5 @@ export function createAdminConsoleService({api,session}={}){
   const setGroupMembership=({targetUserId,groupId,role='member',active=true}={})=>{const userId=clean(targetUserId),id=clean(groupId),next=clean(role).toLowerCase();if(!userId||!id||!GROUP_ROLES.has(next))throw fail('Choose a valid small-group membership.','BQ_ADMIN_GROUP_MEMBERSHIP_INVALID');return mutate('set_group_membership',()=>api.setGroupMembership({targetUserId:userId,groupId:id,role:next,active:active!==false}))};
   const setGroupOwner=(targetUserId,groupId)=>{const userId=clean(targetUserId),id=clean(groupId);if(!userId||!id)throw fail('Valid user and small group are required.','BQ_ADMIN_GROUP_OWNER_INVALID');return mutate('set_group_owner',()=>api.setGroupOwner(userId,id))};
 
-  return Object.freeze({refresh,setRole,setCongregation,removeCongregation,setCongregationRole,createCongregation,createSmallGroup,setGroupMembership,setGroupOwner,getState:snapshot,clear:()=>reset('idle'),siteRoles:Object.freeze([...SITE_ROLES]),congregationRoles:Object.freeze([...CONGREGATION_ROLES]),groupRoles:Object.freeze([...GROUP_ROLES])});
+  return Object.freeze({refresh,setRole,setCongregation,removeCongregation,setCongregationRole,createCongregation,createSmallGroup,setGroupMembership,setGroupOwner,getState:snapshot,clear:()=>{refreshRequest++;mutationRequest++;return reset('idle')},siteRoles:Object.freeze([...SITE_ROLES]),congregationRoles:Object.freeze([...CONGREGATION_ROLES]),groupRoles:Object.freeze([...GROUP_ROLES])});
 }

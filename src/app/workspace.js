@@ -33,8 +33,14 @@ export function createWorkspaceService({session,cloudNotes,congregation,reader,s
   if(!session||!cloudNotes||!congregation||!reader||!storage?.read||!storage?.write)throw new Error('Workspace requires session, Cloud Notes, congregation, Reader and storage owners.');
   const persisted=storage.read(STORAGE_KEY,{version:1,view:'overview'});
   let current=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,view:safeView(persisted?.view),notes:Object.freeze([]),memberships:Object.freeze([]),membershipError:'',readerContext:Object.freeze({...reader.getState()}),error:''});
-  const snapshot=()=>current;
+  let contextUserId='',loadRequest=0;
   const sessionState=()=>session.getState?.()||{};
+  const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
+  const snapshot=()=>{
+    const userId=currentUserId();
+    if(contextUserId&&contextUserId!==userId)return Object.freeze({...current,status:userId?'idle':'signed-out',authenticated:Boolean(userId),notes:Object.freeze([]),memberships:Object.freeze([]),membershipError:'',error:''});
+    return current;
+  };
   const setState=patch=>{current=Object.freeze({...current,...patch});return current};
 
   function saveView(view){
@@ -44,12 +50,14 @@ export function createWorkspaceService({session,cloudNotes,congregation,reader,s
   }
 
   async function load(){
-    const state=sessionState(),readerContext=Object.freeze({...reader.getState()});
-    if(!state.authenticated||!state.user?.id){
+    const request=++loadRequest,state=sessionState(),userId=state.authenticated&&state.user?.id?String(state.user.id):'',readerContext=Object.freeze({...reader.getState()});
+    if(!userId){
+      contextUserId='';
       cloudNotes.clear?.();
       congregation.clear?.();
       return setState({status:'signed-out',authenticated:false,remoteAvailable:state.remoteAvailable!==false,notes:Object.freeze([]),memberships:Object.freeze([]),membershipError:'',readerContext,error:''});
     }
+    contextUserId=userId;
     if(state.remoteAvailable===false){
       cloudNotes.clear?.();
       congregation.clear?.();
@@ -58,10 +66,13 @@ export function createWorkspaceService({session,cloudNotes,congregation,reader,s
     setState({status:'loading',authenticated:true,remoteAvailable:true,readerContext,error:''});
     try{
       const notes=(await cloudNotes.load()).map(noteView);
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       let memberships=[],membershipError='';
-      try{memberships=(await congregation.load()).map(membershipView)}catch(error){membershipError=clean(error?.message||'Congregation role context is unavailable.',240)||'Congregation role context is unavailable.'}
+      try{memberships=(await congregation.load()).map(membershipView)}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();membershipError=clean(error?.message||'Congregation role context is unavailable.',240)||'Congregation role context is unavailable.'}
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       return setState({status:'ready',authenticated:true,remoteAvailable:true,notes:Object.freeze(notes),memberships:Object.freeze(memberships),membershipError,readerContext,error:''});
     }catch(error){
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       setState({status:'error',authenticated:true,remoteAvailable:true,notes:Object.freeze([]),memberships:Object.freeze([]),membershipError:'',readerContext,error:clean(error?.message||'Workspace could not load.',300)});
       throw error;
     }
@@ -70,18 +81,19 @@ export function createWorkspaceService({session,cloudNotes,congregation,reader,s
   function search(term){
     const query=clean(term,120).toLowerCase();
     if(!query)return Object.freeze([]);
-    return Object.freeze(current.notes.filter(note=>[note.title,note.content,note.book,note.noteType,...note.tags].join(' ').toLowerCase().includes(query)));
+    return Object.freeze(snapshot().notes.filter(note=>[note.title,note.content,note.book,note.noteType,...note.tags].join(' ').toLowerCase().includes(query)));
   }
 
   function openScripture(noteId){
-    const note=current.notes.find(item=>item.id===String(noteId||''));
+    const note=snapshot().notes.find(item=>item.id===String(noteId||''));
     if(!note)throw new Error('Choose a note from the current Workspace.');
     reader.setBook(note.book,note.chapter);
     return 'reader';
   }
 
   function clear(){
-    const state=sessionState();
+    loadRequest++;
+    const state=sessionState();contextUserId=state.authenticated&&state.user?.id?String(state.user.id):'';
     current=Object.freeze({status:'idle',authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,view:safeView(storage.read(STORAGE_KEY,{version:1,view:'overview'})?.view),notes:Object.freeze([]),memberships:Object.freeze([]),membershipError:'',readerContext:Object.freeze({...reader.getState()}),error:''});
   }
 

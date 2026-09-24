@@ -19,6 +19,18 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? `account:${s.user.id}` : 'guest';
   };
+  const currentAccountId = () => {
+    const s = session.getState();
+    return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
+  };
+  const contextError = () => {
+    const error = new Error('The account changed. Reopen Avatar Vault before continuing.');
+    error.code = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
+    return error;
+  };
+  const assertAccountContext = userId => {
+    if (!userId || currentAccountId() !== String(userId)) throw contextError();
+  };
   const key = current => `avatar-vault:${current}`;
 
   function metrics() {
@@ -83,6 +95,7 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
   async function load() {
     const s = session.getState();
     if (!s?.authenticated || !s?.user?.id) return present();
+    const userId = String(s.user.id);
     const current = owner();
     let local = readLocal(current);
     const earned = unlockedIds(metrics(), local.earned);
@@ -92,18 +105,26 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     // silently overwrite a choice made while connectivity was unavailable.
     if (local.pending) {
       try {
+        assertAccountContext(userId);
         await api.avatarVault.save(s.user.id, local.selected);
+        assertAccountContext(userId);
         writeLocal(current, local.selected, earned, false);
         local = readLocal(current);
-      } catch {
+      } catch (error) {
+        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
         return present();
       }
     }
 
     try {
+      assertAccountContext(userId);
       const remote = await api.avatarVault.load(s.user.id);
+      assertAccountContext(userId);
       if (remote?.selected_style) writeLocal(current, remote.selected_style, earned, false);
-    } catch { /* device state remains authoritative until cloud reachable */ }
+    } catch (error) {
+      if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
+      /* device state remains authoritative until cloud reachable */
+    }
     return present();
   }
 
@@ -115,13 +136,19 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     if (!earned.has(style.id)) fail('BQ_AVATAR_VAULT_LOCKED', 'This avatar style is not unlocked yet.');
     const s = session.getState();
     const accountOwned=Boolean(s?.authenticated && s?.user?.id);
+    const userId=accountOwned?String(s.user.id):'';
     writeLocal(current, style.id, earned, accountOwned);
     let synced = true;
     if (accountOwned) {
       try {
+        assertAccountContext(userId);
         await api.avatarVault.save(s.user.id, style.id);
+        assertAccountContext(userId);
         writeLocal(current, style.id, earned, false);
-      } catch { synced = false; }
+      } catch (error) {
+        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
+        synced = false;
+      }
     }
     return Object.freeze({ ...present(), synced });
   }
