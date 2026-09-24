@@ -1,9 +1,15 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
 import webpush from 'npm:web-push@3.6.7';
 import postgres from 'npm:postgres@3.4.7';
+import { isPermanentPushEndpointFailure } from '../_shared/push-delivery-policy.ts';
 
 type Db = ReturnType<typeof db>;
 type PushCategory = 'assignment' | 'ministry' | 'recognition' | 'calendar' | 'media';
+type V6PushCategory = 'reading' | 'assignments' | 'ministry' | 'announcements' | 'encouragement' | 'streaks';
+
+const V6_PUSH_CATEGORIES = new Set<V6PushCategory>([
+  'reading', 'assignments', 'ministry', 'announcements', 'encouragement', 'streaks',
+]);
 
 const MAX_SUBSCRIPTIONS_PER_USER = 20;
 const MAX_NOTIFICATION_AGE_MS = 15 * 60 * 1000;
@@ -78,12 +84,26 @@ function categoryFor(notificationType: string, actionKind: string): PushCategory
   return 'ministry';
 }
 
-function routeFor(category: PushCategory) {
-  if (category === 'assignment') return '/#/assignments';
+function canonicalV6Category(value: unknown): V6PushCategory | null {
+  const category = String(value || '').trim() as V6PushCategory;
+  return V6_PUSH_CATEGORIES.has(category) ? category : null;
+}
+
+function routeFor(category: PushCategory | V6PushCategory) {
+  if (category === 'assignment' || category === 'assignments') return '/#/assignments';
   if (category === 'calendar') return '/#/calendar';
   if (category === 'media') return '/#/media';
   if (category === 'recognition') return '/#/recognition';
+  if (category === 'reading' || category === 'streaks') return '/#/my-journey';
+  if (category === 'ministry') return '/#/ministry-hub';
   return '/#/notification-center';
+}
+
+function localMinuteForUtcOffset(offset: unknown, now = new Date()): number | null {
+  const minutes = Number(offset);
+  if (!Number.isInteger(minutes) || minutes < -840 || minutes > 840) return null;
+  const utcMinute = now.getUTCHours() * 60 + now.getUTCMinutes();
+  return ((utcMinute + minutes) % 1440 + 1440) % 1440;
 }
 
 async function vaultVapidConfig() {
@@ -143,13 +163,42 @@ function isNotificationFresh(createdAt: unknown, nowMs = Date.now()) {
   return ageMs >= -MAX_FUTURE_SKEW_MS && ageMs <= MAX_NOTIFICATION_AGE_MS;
 }
 
-async function claimDelivery(adminDb: Db, notificationId: string, subscriptionId: string) {
-  const claim = await adminDb.rpc('bible_claim_push_delivery', {
+async function claimDelivery(
+  adminDb: Db,
+  notificationId: string,
+  subscriptionId: string,
+  serverEnforced: boolean,
+  localMinute: number | null,
+) {
+  const claim = serverEnforced
+    ? await adminDb.rpc('bible_claim_push_delivery_v6_rate_limited', {
+        target_notification: notificationId,
+        target_subscription: subscriptionId,
+        target_local_minute: localMinute,
+      })
+    : await adminDb.rpc('bible_claim_push_delivery_rate_limited', {
+        target_notification: notificationId,
+        target_subscription: subscriptionId,
+      });
+  if (claim.error) throw claim.error;
+  return claim.data === true;
+}
+
+async function recordRetryFailure(adminDb: Db, notificationId: string, subscriptionId: string) {
+  const recorded = await adminDb.rpc('bible_record_push_retry_failure', {
     target_notification: notificationId,
     target_subscription: subscriptionId,
   });
-  if (claim.error) throw claim.error;
-  return claim.data === true;
+  if (recorded.error) throw recorded.error;
+  return Number(recorded.data || 0);
+}
+
+async function clearRetryState(adminDb: Db, notificationId: string, subscriptionId: string) {
+  const cleared = await adminDb.rpc('bible_clear_push_retry_state', {
+    target_notification: notificationId,
+    target_subscription: subscriptionId,
+  });
+  if (cleared.error) throw cleared.error;
 }
 
 async function markDeliveryComplete(adminDb: Db, notificationId: string, subscriptionId: string) {
@@ -173,6 +222,21 @@ async function releaseFailedDeliveryClaim(adminDb: Db, notificationId: string, s
     .eq('subscription_id', subscriptionId)
     .is('delivered_at', null);
   if (released.error) throw released.error;
+}
+
+async function retireInvalidSubscription(
+  adminDb: Db,
+  subscription: { id: string; user_id: string; endpoint: string; p256dh: string; auth: string },
+) {
+  const retired = await adminDb.rpc('bible_retire_push_subscription', {
+    target_subscription: subscription.id,
+    target_user: subscription.user_id,
+    expected_endpoint: subscription.endpoint,
+    expected_p256dh: subscription.p256dh,
+    expected_auth: subscription.auth,
+  });
+  if (retired.error) throw retired.error;
+  return retired.data === true;
 }
 
 function ipv4Octets(hostname: string) {
@@ -267,7 +331,7 @@ Deno.serve(async (req: Request) => {
 
     const notificationResult = await adminDb
       .from('bible_notifications')
-      .select('id,user_id,notification_type,title,body,action_kind,created_at')
+      .select('id,user_id,notification_type,delivery_category,title,body,action_kind,created_at')
       .eq('id', notificationId)
       .maybeSingle();
     if (notificationResult.error) throw notificationResult.error;
@@ -278,17 +342,40 @@ Deno.serve(async (req: Request) => {
       return response({ error: 'Notification is outside the push delivery window' }, 409);
     }
 
-    const category = categoryFor(String(notification.notification_type || ''), String(notification.action_kind || ''));
-    const subscriptions = await adminDb
-      .from('bible_push_subscriptions')
-      .select('id,user_id,endpoint,p256dh,auth,enabled_categories')
+    const preferenceResult = await adminDb
+      .from('bible_notification_delivery_preferences')
+      .select('server_enforcement_enabled,quiet_hours_enabled,utc_offset_minutes')
       .eq('user_id', notification.user_id)
-      .contains('enabled_categories', [category])
+      .maybeSingle();
+    if (preferenceResult.error) throw preferenceResult.error;
+
+    const serverEnforced = preferenceResult.data?.server_enforcement_enabled === true;
+    const explicitV6Category = canonicalV6Category(notification.delivery_category);
+    if (serverEnforced && !explicitV6Category) {
+      return response({ ok: true, category: null, attempted: 0, delivered: 0, removed: 0, failed: 0, skipped: 1 });
+    }
+
+    const category: PushCategory | V6PushCategory = serverEnforced
+      ? explicitV6Category!
+      : categoryFor(String(notification.notification_type || ''), String(notification.action_kind || ''));
+
+    let subscriptionsQuery = adminDb
+      .from('bible_push_subscriptions')
+      .select('id,user_id,endpoint,p256dh,auth,enabled_categories,v6_enabled_categories')
+      .eq('user_id', notification.user_id)
       .limit(MAX_SUBSCRIPTIONS_PER_USER);
+    subscriptionsQuery = serverEnforced
+      ? subscriptionsQuery.contains('v6_enabled_categories', [category])
+      : subscriptionsQuery.contains('enabled_categories', [category]);
+    const subscriptions = await subscriptionsQuery;
     if (subscriptions.error) throw subscriptions.error;
 
     const rows = subscriptions.data || [];
     if (!rows.length) return response({ ok: true, category, attempted: 0, delivered: 0, removed: 0, failed: 0, skipped: 0 });
+
+    const localMinute = serverEnforced && preferenceResult.data?.quiet_hours_enabled
+      ? localMinuteForUtcOffset(preferenceResult.data.utc_offset_minutes)
+      : null;
 
     await vapid();
     const payload = JSON.stringify({
@@ -319,7 +406,7 @@ Deno.serve(async (req: Request) => {
         continue;
       }
 
-      const claimed = await claimDelivery(adminDb, notification.id, subscription.id);
+      const claimed = await claimDelivery(adminDb, notification.id, subscription.id, serverEnforced, localMinute);
       if (!claimed) {
         skipped += 1;
         continue;
@@ -337,6 +424,7 @@ Deno.serve(async (req: Request) => {
         );
         remoteAccepted = true;
         await markDeliveryComplete(adminDb, notification.id, subscription.id);
+        await clearRetryState(adminDb, notification.id, subscription.id);
         delivered += 1;
       } catch (error) {
         const statusCode = Number((error as { statusCode?: number })?.statusCode || 0);
@@ -349,18 +437,18 @@ Deno.serve(async (req: Request) => {
         if (statusCode >= 300 && statusCode < 400) {
           failed += 1;
           console.error('push delivery redirect rejected', { statusCode });
-        } else if (statusCode === 404 || statusCode === 410) {
-          const cleanup = await adminDb
-            .from('bible_push_subscriptions')
-            .delete()
-            .eq('id', subscription.id)
-            .eq('user_id', notification.user_id);
-          if (cleanup.error) {
+        } else if (isPermanentPushEndpointFailure(statusCode)) {
+          try {
+            const retired = await retireInvalidSubscription(adminDb, subscription);
+            if (retired) {
+              removed += 1;
+              continue;
+            }
+            failed += 1;
+            console.error('push cleanup skipped stale subscription material', { statusCode });
+          } catch {
             failed += 1;
             console.error('push cleanup failed', { statusCode });
-          } else {
-            removed += 1;
-            continue;
           }
         } else {
           failed += 1;
@@ -368,9 +456,16 @@ Deno.serve(async (req: Request) => {
         }
 
         try {
+          const failureCount = await recordRetryFailure(adminDb, notification.id, subscription.id);
+          if (failureCount < 1) {
+            console.error('push retry throttle rejected failure record');
+            continue;
+          }
           await releaseFailedDeliveryClaim(adminDb, notification.id, subscription.id);
         } catch {
-          console.error('push delivery claim release failed');
+          // Fail closed: if throttle recording or claim release fails, keep the
+          // existing delivery claim locked instead of permitting rapid replay.
+          console.error('push retry throttle or claim release failed');
         }
       }
     }
