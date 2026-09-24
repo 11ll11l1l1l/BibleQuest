@@ -94,8 +94,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
       if(request!==congregationRequest||sessionUserId()!==userId)return;
       const active = congregation.getActive?.() || memberships[0];
       if (!active) { congregationState=emptyCongregationState(); return; }
+      const canShare = congregation.can(active.congregationId, 'ministry');
       const congregationId=String(active.congregationId||'');
-      const canShare = congregation.can(congregationId, 'ministry');
       const rows = await api.calendar.listCongregation(congregationId);
       if(request!==congregationRequest||sessionUserId()!==userId)return;
       const events = (Array.isArray(rows) ? rows : []).map(row => normalizeEvent({
@@ -176,7 +176,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
     if (shareWithCongregation) {
       const shared=visibleCongregationState();
       if (!shared.congregationId) fail('BQ_CALENDAR_NO_CONGREGATION', 'Join a congregation to share an event.');
-      congregation.assert(shared.congregationId, 'ministry');
+      congregation.assert(congregationState.congregationId, 'ministry');
       const s = session.getState(),userId=String(s?.user?.id||''),congregationId=shared.congregationId;
       const event = normalizeEvent({ id: nextId(), source: 'congregation', ownerId: userId, eventDate, title, notes, allDay, recurrenceWeeks });
       if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
