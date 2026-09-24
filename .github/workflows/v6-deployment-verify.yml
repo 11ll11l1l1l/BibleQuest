@@ -46,6 +46,8 @@ jobs:
     steps:
       - name: Checkout exact selected commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
 
       - name: Use pinned Node
         uses: actions/setup-node@v4
@@ -58,7 +60,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          EXPECTED_SHA: ${{ github.sha }}
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
         shell: bash
         run: |
           set -euo pipefail
@@ -81,5 +83,5 @@ jobs:
       - name: Verify deployed bytes and exact source identity
         env:
           BQ_DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || steps.preview.outputs.url }}
-          BQ_EXPECTED_SHA: ${{ github.sha }}
+          BQ_EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
         run: node scripts/v6-deployment-verify.mjs
