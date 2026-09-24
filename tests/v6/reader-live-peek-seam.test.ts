@@ -263,3 +263,80 @@ test('search-result navigation rejects a late response after newer Reader naviga
   await assert.rejects(pending, /passage changed while opening the search result/);
   assert.equal(reader.getState().chapter, 5);
 });
+
+
+test('live Reader search rejects a provider payload for a different query', async () => {
+  const { reader } = createHarness(
+    () => ({
+      book,
+      chapter: 3,
+      translation: { id: 'bsb' },
+      verses: [{ chapter: 3, verse: 16, text: 'fixture' }],
+    }),
+    () => ({
+      query: 'different query',
+      type: 'text',
+      results: [],
+      skippedBooks: [],
+    }),
+  );
+
+  await assert.rejects(
+    reader.search('love', { limit: 10 }),
+    /search response does not match the Reader request/,
+  );
+});
+
+test('live Reader search rejects malformed Scripture hit metadata before UI rendering', async () => {
+  const { reader } = createHarness(
+    () => ({
+      book,
+      chapter: 3,
+      translation: { id: 'bsb' },
+      verses: [{ chapter: 3, verse: 16, text: 'fixture' }],
+    }),
+    (_translationId, query) => ({
+      query,
+      type: 'text',
+      results: [{
+        book: { code: 'JHN', name: 'John', chapters: 21 },
+        chapter: 22,
+        verse: 1,
+        text: 'impossible fixture',
+        reference: 'John 22:1',
+      }],
+      skippedBooks: [],
+    }),
+  );
+
+  await assert.rejects(
+    reader.search('love', { limit: 10 }),
+    /search response does not match the Reader request/,
+  );
+});
+
+test('live Reader search preserves a valid provider result unchanged', async () => {
+  const expected = {
+    query: 'love',
+    type: 'text',
+    results: [{
+      book: { code: 'JHN', name: 'John', chapters: 21 },
+      chapter: 3,
+      verse: 16,
+      text: 'fixture Scripture',
+      reference: 'John 3:16',
+    }],
+    skippedBooks: [],
+  };
+  const { reader } = createHarness(
+    () => ({
+      book,
+      chapter: 3,
+      translation: { id: 'bsb' },
+      verses: [{ chapter: 3, verse: 16, text: 'fixture' }],
+    }),
+    () => expected,
+  );
+
+  assert.equal(await reader.search('love', { limit: 10 }), expected);
+});
