@@ -125,22 +125,10 @@ function copyLegacyRuntime() {
   };
 }
 
-function writeArtifactIntegrity() {
+function collectPrivateSourceMapsAndWriteIntegrity() {
   return {
-    name: 'biblequest-v6-artifact-integrity',
-    async writeBundle() {
-      // Cloudflare Pages can begin upload as soon as Vite's build command exits.
-      // Generate the integrity inventory during writeBundle so it is guaranteed to
-      // exist in dist-v6 before later closeBundle diagnostics move source maps.
-      await writeArtifactIntegrityManifest(outDir, buildSha);
-    },
-  };
-}
-
-function collectPrivateSourceMaps() {
-  return {
-    name: 'biblequest-v6-private-source-maps',
-    closeBundle() {
+    name: 'biblequest-v6-private-source-maps-and-integrity',
+    async closeBundle() {
       rmSync(privateSourceMapDir, { recursive: true, force: true });
       const sourceMaps = walkFiles(outDir)
         .filter((file) => file.endsWith('.map'))
@@ -172,6 +160,10 @@ function collectPrivateSourceMaps() {
         ) + '\n',
         'utf8',
       );
+
+      // Keep the public integrity manifest in the final post-source-map artifact.
+      // One awaited hook removes ordering ambiguity between closeBundle plugins.
+      await writeArtifactIntegrityManifest(outDir, buildSha);
     },
   };
 }
@@ -185,7 +177,7 @@ export default defineConfig({
   optimizeDeps: {
     entries: ['index.html'],
   },
-  plugins: [copyLegacyRuntime(), writeArtifactIntegrity(), collectPrivateSourceMaps()],
+  plugins: [copyLegacyRuntime(), collectPrivateSourceMapsAndWriteIntegrity()],
   build: {
     outDir,
     emptyOutDir: true,
