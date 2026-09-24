@@ -1,6 +1,6 @@
 import { createContextLab } from './context.js';
 import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary.js';
-import { japaneseFuriganaControl } from './furigana.js';
+import { japaneseFuriganaControl, japaneseFuriganaRecoveryStatus } from './furigana.js';
 import { presentReaderChapter, readerChapterHeading } from '../../v6/reader/presentation.ts';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -30,7 +30,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
         const heading = readerChapterHeading(chapter.book, chapter.chapter);
         const presentation = licensed ? null : presentReaderChapter(chapter);
         currentChapter=chapter;
-        const furiganaControl = japanese && furigana ? japaneseFuriganaControl(furigana.getState()) : '';
+        const furiganaControl = japanese && furigana ? `${japaneseFuriganaControl(furigana.getState())}<div data-jp-furigana-status aria-live="polite"></div>` : '';
         const vocabularyControl = japanese && vocabulary ? japaneseVocabularyControl(vocabulary.getState()) : '';
         const searchControl = licensed ? '<p class="bq-reader-note bq-licensed-search-note" data-licensed-search-note>NLT search stays in the licensed external reader. Choose the book and chapter here, then open that passage externally.</p>' : '<form class="bq-reader-search" data-reader-search><label>Search this translation<input name="query" minlength="3" aria-label="Search this translation" placeholder="John 3:16 or a phrase" required></label><button type="submit" class="bq-primary-button">Search</button></form>';
         const externalControl = licensed ? '' : `<div class="bq-external-links"><span>Open this passage externally</span>${links.map(link => `<a ${externalAttrs} data-external-reader="${escapeHtml(link.id)}" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
@@ -45,12 +45,16 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
         void applyFurigana(chapter,japanese);
         if (highlightVerse && !licensed) queueMicrotask(() => host.querySelector(`[data-verse="${highlightVerse}"]`)?.scrollIntoView({ block: 'center' }));
       };
-      const applyFurigana = async (chapter,japanese) => {
+      const applyFurigana = async (chapter,japanese,{retrying=false}={}) => {
         const pass=++furiganaPass;
         if(!japanese||!furigana||chapter.translation.mode==='licensed-link') return;
+        const status=host.querySelector('[data-jp-furigana-status]');
+        if(status) status.innerHTML=japaneseFuriganaRecoveryStatus({retrying});
         const rendered=await Promise.all(chapter.verses.map(async verse=>{try{return {verse:verse.verse,...await furigana.render(verse.text)}}catch{return {verse:verse.verse,html:escapeHtml(verse.text),fallback:true}}}));
         if(pass!==furiganaPass||reader.getState().translation!=='jko') return;
-        for(const row of rendered){const node=host.querySelector(`[data-verse="${row.verse}"] [data-reader-verse-text]`);if(node) node.innerHTML=row.html}
+        let fallback=false;
+        for(const row of rendered){fallback=Boolean(fallback||row.fallback);const node=host.querySelector(`[data-verse="${row.verse}"] [data-reader-verse-text]`);if(node) node.innerHTML=row.html}
+        if(status) status.innerHTML=japaneseFuriganaRecoveryStatus({fallback});
       };
       const load = async (message = 'Loading chapter…') => { const id = ++operation; renderLoading(message); try { const chapter = await reader.load(); const offlineStatus = await getOfflineStatus(); if (id === operation) renderChapter(chapter, offlineStatus); } catch (error) { const offlineStatus = await getOfflineStatus(); if (id === operation) renderError(error, offlineStatus); } };
       const message = text => { const node = host.querySelector('[data-reader-message]'); if (node) node.textContent = text || ''; };
@@ -70,6 +74,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
         const target = event.target instanceof Element ? event.target : null; if (!target) return;
         if (target.closest('[data-reader-retry]')) return load();
         if (target.closest('[data-reader-use-bsb]')) { reader.setTranslation('bsb'); searchResults = null; highlightVerse = null; return load('Loading BSB…'); }
+        if (target.closest('[data-reader-furigana-retry]') && currentChapter && reader.getState().translation === 'jko') { await applyFurigana(currentChapter, true, { retrying: true }); return; }
         if (target.closest('[data-reader-prev]')) { searchResults = null; highlightVerse = null; reader.move(-1); return load(); }
         if (target.closest('[data-reader-next]')) { searchResults = null; highlightVerse = null; reader.move(1); return load(); }
         if (target.closest('[data-reader-quest-return]') && reader.activateQuestNext) {
