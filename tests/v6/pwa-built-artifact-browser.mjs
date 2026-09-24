@@ -17,6 +17,15 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function readPngDimensions(bytes, label) {
+  const signature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  assert(bytes.length >= 24, `${label}: PNG payload is too small`);
+  assert(signature.every((value, index) => bytes[index] === value), `${label}: invalid PNG signature`);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  assert(String.fromCharCode(...bytes.slice(12, 16)) === 'IHDR', `${label}: PNG IHDR chunk missing`);
+  return { width: view.getUint32(16), height: view.getUint32(20) };
+}
+
 async function waitForResolvedLazyRoute(page, label) {
   await page.waitForFunction(() => {
     const lazyRoute = document.querySelector('[data-lazy-route]');
@@ -55,7 +64,16 @@ try {
     assert(icon, `required manifest icon missing: ${src} ${sizes} ${purpose}`);
     const iconResponse = await context.request.get(new URL(src, manifestUrl).href);
     assert(iconResponse.ok(), `manifest icon unavailable: ${src} (${iconResponse.status()})`);
-    assert((await iconResponse.body()).byteLength > 0, `manifest icon empty: ${src}`);
+    const iconContentType = iconResponse.headers()['content-type'] || '';
+    assert(iconContentType.includes('image/png'), `manifest icon has unexpected content type: ${src} -> ${iconContentType || '<missing>'}`);
+    const iconBytes = await iconResponse.body();
+    assert(iconBytes.byteLength > 0, `manifest icon empty: ${src}`);
+    const [expectedWidth, expectedHeight] = sizes.split('x').map(Number);
+    const actual = readPngDimensions(iconBytes, src);
+    assert(
+      actual.width === expectedWidth && actual.height === expectedHeight,
+      `manifest icon dimensions mismatch: ${src} expected ${sizes}, got ${actual.width}x${actual.height}`,
+    );
   }
 
   const shortcuts = Array.isArray(manifest.shortcuts) ? manifest.shortcuts : [];
@@ -146,4 +164,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery, and iOS Safari Add-to-Home-Screen guidance verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required PNG icon payloads/dimensions, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery, and iOS Safari Add-to-Home-Screen guidance verified at 390px.');
