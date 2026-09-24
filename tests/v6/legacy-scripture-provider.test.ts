@@ -85,7 +85,7 @@ test('legacy provider maps repository search limit to the existing Bible service
   assert.deepEqual(calls, [['search', 'tl', 'John 3:16', { limit: 25 }]]);
 });
 
-test('legacy provider preserves exact Context Lab location delegation', async () => {
+test('legacy provider delegates Context Lab only when the caller explicitly requests its BSB Scripture source', async () => {
   const calls: unknown[] = [];
   const expected = context();
   const bible: LegacyBibleDataService = {
@@ -99,8 +99,14 @@ test('legacy provider preserves exact Context Lab location delegation', async ()
   const provider = createLegacyBibleScriptureProvider(bible);
 
   assert.equal(
-    await provider.loadContext({ translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    await provider.loadContext({ translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
     expected,
+  );
+  assert.deepEqual(calls, [['lexicalContext', 'JHN', 3, 16]]);
+
+  await assert.rejects(
+    provider.loadContext({ translationId: 'jko', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    /Context Lab Scripture is BSB-only/,
   );
   assert.deepEqual(calls, [['lexicalContext', 'JHN', 3, 16]]);
 });
