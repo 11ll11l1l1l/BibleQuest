@@ -122,26 +122,43 @@ export const assignmentsContract=Object.freeze({types:ASSIGNMENT_TYPES.slice(),t
 
 export function createAssignmentsService({api,session,congregation,now=()=>new Date()}){
   if(!api?.load||!api?.start||!api?.complete||!api?.subscribe||!session||!congregation)throw new Error('Assignments require API, Session and Congregation owners.');
-  let state=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,userId:'',congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});
-  let stopRemote=null,targetRequest=0,reviewRequest=0;
-  const snapshot=()=>state;
-  const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
+  const emptyState=(userId='',authenticated=false,remoteAvailable=true,status='idle')=>Object.freeze({status,authenticated,remoteAvailable,userId:String(userId||''),congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});
+  let state=emptyState();
+  let stopRemote=null,targetRequest=0,reviewRequest=0,loadRequest=0;
   const sessionState=()=>session.getState();
-  const resetAccountState=(userId='',authenticated=false,remoteAvailable=true,status='idle')=>{stopSync();targetRequest++;reviewRequest++;state=Object.freeze({status,authenticated,remoteAvailable,userId:String(userId||''),congregations:[],congregationId:'',congregationName:'',role:'',assignments:[],activeId:'',publishTargets:emptyTargets(),activeReview:emptyReview()});return state};
-  const assertMemberResponse=()=>{if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
-  const assertPublisher=()=>{if(state.status!=='ready'||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','An active ministry role is required to publish assignments.');congregation.assert(state.congregationId,'ministry');};
+  const liveUserId=()=>{const current=sessionState();return current?.authenticated===true&&current.user?.id?String(current.user.id):''};
+  const snapshot=()=>{
+    const userId=liveUserId();
+    if(state.userId&&state.userId!==userId){
+      const current=sessionState();
+      return emptyState(userId,Boolean(current?.authenticated),current?.remoteAvailable!==false,current?.authenticated?'idle':'signed-out');
+    }
+    return state;
+  };
+  const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
+  const resetAccountState=(userId='',authenticated=false,remoteAvailable=true,status='idle',invalidateLoad=true)=>{if(invalidateLoad)loadRequest++;stopSync();targetRequest++;reviewRequest++;state=emptyState(userId,authenticated,remoteAvailable,status);return state};
+  const currentContext=()=>Boolean(state.userId)&&liveUserId()===state.userId;
+  const assertCurrentContext=()=>{if(!currentContext())fail('BQ_ASSIGNMENT_CONTEXT_STALE','The account changed. Reload Assignments before continuing.');};
+  const assertMemberResponse=()=>{assertCurrentContext();if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
+  const assertPublisher=()=>{assertCurrentContext();if(state.status!=='ready'||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','An active ministry role is required to publish assignments.');congregation.assert(state.congregationId,'ministry');};
 
   async function load({congregationId,activeId}={}){
-    const current=sessionState(),currentUserId=String(current?.user?.id||'');
-    if(state.userId&&currentUserId&&state.userId!==currentUserId)resetAccountState(currentUserId,true,current?.remoteAvailable!==false,'idle');
-    if(!current?.remoteAvailable)return resetAccountState(currentUserId,Boolean(current?.authenticated),false,'local-preview');
-    if(!current?.authenticated||!currentUserId)return resetAccountState('',false,true,'signed-out');
-    const memberships=await congregation.load();
-    if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation');
+    const request=++loadRequest,current=sessionState(),currentUserId=String(current?.user?.id||'');
+    if(state.userId&&currentUserId&&state.userId!==currentUserId)resetAccountState(currentUserId,true,current?.remoteAvailable!==false,'idle',false);
+    if(!current?.remoteAvailable)return resetAccountState(currentUserId,Boolean(current?.authenticated),false,'local-preview',false);
+    if(!current?.authenticated||!currentUserId)return resetAccountState('',false,true,'signed-out',false);
+    let memberships;
+    try{memberships=await congregation.load()}
+    catch(error){if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();throw error}
+    if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();
+    if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation',false);
     const activeMembership=typeof congregation.getActive==='function'?congregation.getActive():null;
     const selected=memberships.find(row=>row.congregationId===String(congregationId||activeMembership?.congregationId||state.congregationId))||memberships[0];
     congregation.assert(selected.congregationId,'read');
-    const payload=await api.load(selected.congregationId,currentUserId);
+    let payload;
+    try{payload=await api.load(selected.congregationId,currentUserId)}
+    catch(error){if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();throw error}
+    if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();
     const assignments=(Array.isArray(payload?.assignments)?payload.assignments:[]).map(row=>normalizeAssignment(row,selected.congregationId));
     const visibleIds=new Set(assignments.map(row=>row.id)),progressMap=new Map();
     for(const raw of Array.isArray(payload?.progress)?payload.progress:[]){const progress=normalizeProgress(raw,currentUserId,visibleIds);if(progress&&!progressMap.has(progress.assignmentId))progressMap.set(progress.assignmentId,progress)}
@@ -218,7 +235,7 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
   }
 
   function close(){if(state.activeId){reviewRequest++;state=Object.freeze({...state,activeId:'',activeReview:emptyReview()})}return state}
-  const currentAssignment=id=>{if(state.status!=='ready')fail('BQ_ASSIGNMENT_NOT_READY','Assignments are not ready yet.');const assignment=state.assignments.find(row=>row.id===String(id||state.activeId));if(!assignment)fail('BQ_ASSIGNMENT_NOT_FOUND','This assignment is no longer available.');return assignment};
+  const currentAssignment=id=>{assertCurrentContext();if(state.status!=='ready')fail('BQ_ASSIGNMENT_NOT_READY','Assignments are not ready yet.');const assignment=state.assignments.find(row=>row.id===String(id||state.activeId));if(!assignment)fail('BQ_ASSIGNMENT_NOT_FOUND','This assignment is no longer available.');return assignment};
   const assertOpen=assignment=>{if(assignment.dueState==='scheduled')fail('BQ_ASSIGNMENT_NOT_OPEN','This assignment has not opened yet.');};
 
   async function start(assignmentId){
