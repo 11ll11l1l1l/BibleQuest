@@ -1,4 +1,4 @@
-export type JapaneseVocabularyEntry = Readonly<{
+export type CuratedJapaneseVocabularyEntry = Readonly<{
   term: string;
   reading: string;
   meaning: string;
@@ -10,7 +10,7 @@ function text(value: unknown): string {
   return String(value ?? '').trim();
 }
 
-function validEntry(entry: JapaneseVocabularyEntry): boolean {
+function validEntry(entry: CuratedJapaneseVocabularyEntry): boolean {
   return Boolean(
     text(entry.term)
     && text(entry.reading)
@@ -30,9 +30,9 @@ export function canUseJapaneseVocabulary(translationId: string): boolean {
  */
 export function selectJapaneseVocabularyNotes(
   scriptureText: string,
-  vocabulary: readonly JapaneseVocabularyEntry[],
+  vocabulary: readonly CuratedJapaneseVocabularyEntry[],
   limit = 3,
-): readonly JapaneseVocabularyEntry[] {
+): readonly CuratedJapaneseVocabularyEntry[] {
   const source = String(scriptureText ?? '');
   if (!source || !Number.isSafeInteger(limit) || limit < 1 || limit > 10) return Object.freeze([]);
 
@@ -44,7 +44,7 @@ export function selectJapaneseVocabularyNotes(
       return byLength || a.index - b.index;
     });
 
-  const selected: JapaneseVocabularyEntry[] = [];
+  const selected: CuratedJapaneseVocabularyEntry[] = [];
   const seen = new Set<string>();
   for (const { entry } of valid) {
     const term = text(entry.term);
