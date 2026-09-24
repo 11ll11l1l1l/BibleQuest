@@ -21,13 +21,16 @@ export function detectPwaInstallGuidance({
 export function createPwaInstallService({
   eventTarget = globalThis.window,
   displayMode = defaultDisplayMode,
+  standalone = globalThis.navigator?.standalone === true,
   guidance = detectPwaInstallGuidance()
 } = {}) {
   if (!eventTarget?.addEventListener || !eventTarget?.removeEventListener) throw new Error('PWA install requires an event target.');
   const subscribers = new Set();
   let promptEvent = null;
-  let launchedStandalone = false;
-  try { launchedStandalone = Boolean(displayMode?.('(display-mode: standalone)')?.matches); } catch {}
+  let launchedStandalone = Boolean(standalone);
+  if (!launchedStandalone) {
+    try { launchedStandalone = Boolean(displayMode?.('(display-mode: standalone)')?.matches); } catch {}
+  }
   let state = {
     status: launchedStandalone ? 'installed' : 'unavailable'
   };
