@@ -143,9 +143,9 @@ test('multi-congregation switching is explicit and invalidates stale tenant auth
     {userId:'user-a',congregationId:'church-a',role:'member'},
     {userId:'user-a',congregationId:'church-b',role:'leader'},
   ];
-  coordinator.applySession({status:'authenticated',identity:{userId:'user-a'},memberships,preferredCongregationId:'church-a'});
+  coordinator.applySession({status:'authenticated',identity:{userId:'user-a'},memberships},'church-a');
   const oldScope=tenant.scope();
-  coordinator.applySession({status:'authenticated',identity:{userId:'user-a'},memberships,preferredCongregationId:'church-b'});
+  coordinator.applySession({status:'authenticated',identity:{userId:'user-a'},memberships},'church-b');
   assert.throws(()=>tenant.assertCurrent(oldScope),/active congregation changed/);
 
   const membership=read('src/app/congregation-membership.js');
