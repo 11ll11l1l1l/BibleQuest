@@ -33,10 +33,12 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-deployment-verify.mjs"
       - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
       - "scripts/v6-static-asset-ownership.mjs"
       - "scripts/v6-root-static-ownership.mjs"
+      - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
