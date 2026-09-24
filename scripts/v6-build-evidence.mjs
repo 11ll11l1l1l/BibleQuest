@@ -1,5 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, join, relative, resolve } from 'node:path';
+import { verifyArtifactIntegrityManifest } from './v6-artifact-integrity.mjs';
 
 const root = process.cwd();
 const outDir = resolve(root, 'dist-v6');
@@ -33,6 +34,7 @@ async function walk(directory) {
 }
 
 const identity = JSON.parse(await readFile(join(outDir, 'bq-build.json'), 'utf8'));
+const artifactIntegrity = await verifyArtifactIntegrityManifest(outDir, expectedSha);
 if (identity.sha !== expectedSha) {
   throw new Error(`build identity mismatch: expected ${expectedSha}, got ${identity.sha}`);
 }
@@ -125,6 +127,12 @@ for (const file of files) {
 inventory.sort((a, b) => b.bytes - a.bytes || a.path.localeCompare(b.path));
 const report = {
   build: identity,
+  artifactIntegrity: {
+    sourceSha: artifactIntegrity.sourceSha,
+    artifactSha256: artifactIntegrity.artifactSha256,
+    fileCount: artifactIntegrity.fileCount,
+    totalBytes: artifactIntegrity.totalBytes,
+  },
   budgets,
   routeSplitting: {
     browserEntrySource,
