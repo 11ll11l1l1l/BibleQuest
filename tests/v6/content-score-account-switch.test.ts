@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
 import { createContentReportingService } from '../../src/app/content-reporting.js';
 import { createContentModerationService } from '../../src/app/content-moderation.js';
 import { createContentReviewService } from '../../src/app/content-review.js';
@@ -22,7 +23,7 @@ describe('V6 S3 content/score account-switch isolation', () => {
     const pending = service.prepare();
     userId = 'u2';
     load.resolve([{ congregationId: 'c1', congregation: { name: 'One' }, role: 'member' }]);
-    await expect(pending).rejects.toMatchObject({ code: 'BQ_CONTENT_REPORT_CONTEXT_STALE' });
+    await assert.rejects(() => pending, (error: any) => error?.code === 'BQ_CONTENT_REPORT_CONTEXT_STALE');
   });
 
   it('does not expose late moderation policy to the next account', async () => {
@@ -38,8 +39,8 @@ describe('V6 S3 content/score account-switch isolation', () => {
     userId = 'u2';
     list.resolve([{ congregation_id: 'c1', content_key: 'question:core:q1', content_type: 'question', origin: 'review', decision: 'remove' }]);
     await pending;
-    expect(service.snapshot().decisionCount).toBe(0);
-    expect(service.snapshot().congregationId).toBe('');
+    assert.equal(service.snapshot().decisionCount, 0);
+    assert.equal(service.snapshot().congregationId, '');
   });
 
   it('does not expose a late review queue to the next account', async () => {
@@ -62,8 +63,8 @@ describe('V6 S3 content/score account-switch isolation', () => {
     userId = 'u2';
     queue.resolve({ decisions: [], reports: [], members: [] });
     await pending;
-    expect(service.getState().congregationId).toBe('');
-    expect(service.getState().status).not.toBe('ready');
+    assert.equal(service.getState().congregationId, '');
+    assert.notEqual(service.getState().status, 'ready');
   });
 
   it('rejects a trusted-score response after an account switch', async () => {
@@ -77,6 +78,6 @@ describe('V6 S3 content/score account-switch isolation', () => {
     const pending = service.submit('c1', [{ sourceEventId: 'evt-1', source: 'Guided Study' }]);
     userId = 'u2';
     submit.resolve({ processed: [{ sourceEventId: 'evt-1', accepted: true, points: 5 }] });
-    await expect(pending).rejects.toMatchObject({ code: 'BQ_SCORE_EVENT_CONTEXT_STALE' });
+    await assert.rejects(() => pending, (error: any) => error?.code === 'BQ_SCORE_EVENT_CONTEXT_STALE');
   });
 });
