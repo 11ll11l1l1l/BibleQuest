@@ -108,27 +108,35 @@ export function createCalendarService({ session, privateStorage, api, assignment
     }
   }
 
+  const ownsAccountContext=(current,userId)=>Boolean(userId)&&sessionUserId()===String(userId)&&owner()===current;
+
   async function flushPending(current,userId){
     let cache=readCache(current);
     let events=[...cache.events],pendingDeletes=[...cache.pendingDeletes];
+    if(!ownsAccountContext(current,userId))return cache;
 
     for(const id of [...pendingDeletes]){
+      if(!ownsAccountContext(current,userId))return readCache(current);
       try{
         await api.calendar.remove(userId,id);
+        if(!ownsAccountContext(current,userId))return readCache(current);
         pendingDeletes=pendingDeletes.filter(value=>value!==id);
       }catch{}
     }
 
     for(const event of [...events]){
       if(!event.pendingSync||pendingDeletes.includes(event.id))continue;
+      if(!ownsAccountContext(current,userId))return readCache(current);
       try{
         const saved=await api.calendar.create(userId,event);
+        if(!ownsAccountContext(current,userId))return readCache(current);
         const synced=personalFromRemote(saved);
         if(!synced)continue;
         events=events.map(row=>row.id===event.id?synced:row);
       }catch{}
     }
 
+    if(!ownsAccountContext(current,userId))return readCache(current);
     writeCache(current,{events,pendingDeletes});
     return readCache(current);
   }
@@ -157,14 +165,18 @@ export function createCalendarService({ session, privateStorage, api, assignment
     const s = session.getState();
     const current = owner();
     if (s?.authenticated && s?.user?.id) {
-      await flushPending(current,String(s.user.id));
+      const userId=String(s.user.id);
+      await flushPending(current,userId);
+      if(!ownsAccountContext(current,userId))return present();
       try {
-        const remote = await api.calendar.list(s.user.id);
+        const remote = await api.calendar.list(userId);
+        if(!ownsAccountContext(current,userId))return present();
         const cache=readCache(current);
         const blocked=new Set(cache.pendingDeletes);
         const remoteEvents=(Array.isArray(remote)?remote:[]).map(personalFromRemote).filter(Boolean).filter(event=>!blocked.has(event.id));
         const remoteIds=new Set(remoteEvents.map(event=>event.id));
         const pendingLocal=cache.events.filter(event=>event.pendingSync&&!remoteIds.has(event.id)&&!blocked.has(event.id));
+        if(!ownsAccountContext(current,userId))return present();
         writeCache(current,{events:[...remoteEvents,...pendingLocal],pendingDeletes:cache.pendingDeletes});
       } catch { /* pending/local cache stays authoritative until cloud reachable */ }
     }
@@ -188,12 +200,13 @@ export function createCalendarService({ session, privateStorage, api, assignment
 
     const event = normalizeEvent({ id: nextId(), source: 'personal', eventDate, title, notes, allDay });
     if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
-    const current = owner(),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id),cache=readCache(current);
+    const current = owner(),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id),userId=accountOwned?String(s.user.id):'',cache=readCache(current);
     writeCache(current,{events:[...cache.events,freezeLocal(event,accountOwned)],pendingDeletes:cache.pendingDeletes});
     if(!accountOwned)return {...present(),synced:true};
 
     try {
-      const saved = await api.calendar.create(s.user.id, event);
+      const saved = await api.calendar.create(userId, event);
+      if(!ownsAccountContext(current,userId))return {...present(),synced:false};
       const syncedEvent=personalFromRemote(saved);
       const latest=readCache(current);
       writeCache(current,{
@@ -202,7 +215,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
       });
       return { ...present(), synced:true };
     } catch {
-      return { ...present(), synced:false };
+      return { ...present(),synced:false };
     }
   }
 
@@ -246,7 +259,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
   }
 
   async function removeEvent(id) {
-    const current=owner(),targetId=String(id),cache=readCache(current),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id);
+    const current=owner(),targetId=String(id),cache=readCache(current),s=session.getState(),accountOwned=Boolean(s?.authenticated&&s?.user?.id),userId=accountOwned?String(s.user.id):'';
     const events=cache.events.filter(event=>event.id!==targetId);
     let pendingDeletes=[...cache.pendingDeletes];
     if(accountOwned&&UUID_RE.test(targetId))pendingDeletes=[...new Set([...pendingDeletes,targetId])];
@@ -254,7 +267,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
 
     if(!accountOwned||!UUID_RE.test(targetId))return {...present(),synced:true};
     try{
-      await api.calendar.remove(s.user.id,targetId);
+      await api.calendar.remove(userId,targetId);
+      if(!ownsAccountContext(current,userId))return {...present(),synced:false};
       const latest=readCache(current);
       writeCache(current,{events:latest.events,pendingDeletes:latest.pendingDeletes.filter(value=>value!==targetId)});
       return {...present(),synced:true};
