@@ -15,7 +15,7 @@ export function legacyRoundQuestions(mode: string): readonly MultipleChoiceQuest
     Object.freeze({
       id: String(row.id),
       prompt: String(row.q),
-      choices: Object.freeze(row.choices.map((choice) => String(choice))),
+      choices: Object.freeze(row.choices.map((choice: unknown) => String(choice))),
       answerIndex: Number(row.answer),
       explanation: String(row.why ?? '').trim() || undefined,
       reference: String(row.ref ?? '').trim() || undefined,
