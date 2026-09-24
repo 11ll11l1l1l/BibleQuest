@@ -1,4 +1,5 @@
 import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
+import { deriveVersePeek } from '../v6/reader/context-helpers.ts';
 
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
@@ -125,10 +126,19 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
     const number = Number(verse);
     if (!Number.isInteger(number) || number < 1) throw new Error('Invalid verse.');
     const loaded = await load();
-    const found = loaded.verses.find(item => item.verse <= number && (item.verseEnd || item.verse) >= number);
-    if (!found) throw new Error('Verse is unavailable.');
-    const label=(found.verseEnd || found.verse)>found.verse?`${found.verse}–${found.verseEnd}`:String(found.verse);
-    return Object.freeze({ ...found, reference: `${loaded.book.name} ${loaded.chapter}:${label}`, links: bible.externalLinks(loaded.book.code, loaded.chapter, number) });
+    if (loaded?.translation?.id !== state.translation) throw new Error('Verse content does not match the selected translation.');
+    const projection = deriveVersePeek({
+      translationId: state.translation,
+      book: loaded.book,
+      chapter: loaded.chapter,
+      verses: loaded.verses,
+    }, number);
+    if (!projection) throw new Error('Verse is unavailable.');
+    return Object.freeze({
+      ...projection.scripture,
+      reference: projection.reference,
+      links: bible.externalLinks(projection.bookCode, projection.chapter, number),
+    });
   }
 
   async function contextChapter(code = state.book, chapter = state.chapter) {
