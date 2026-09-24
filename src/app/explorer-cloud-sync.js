@@ -16,6 +16,8 @@ export function createExplorerCloudSyncService({api,session,explorer,ownerStorag
   const accountCacheKey=userId=>'explorer-account-cache:'+userId;
   const owner=()=>String(ownerStorage.getItem(OWNER_KEY)||'');
   const setOwner=value=>ownerStorage.setItem(OWNER_KEY,String(value||''));
+  const currentUserId=()=>{const state=session.getState();return state?.authenticated===true?String(state.user?.id||''):''};
+  const isCurrentUser=userId=>Boolean(userId)&&!disposed&&currentUserId()===userId;
   const cacheCurrent=userId=>{if(userId)cacheStorage.write(accountCacheKey(userId),explorer.exportAccountState())};
 
   function prepareOwner(userId){
@@ -47,19 +49,26 @@ export function createExplorerCloudSyncService({api,session,explorer,ownerStorag
     publish({status:'syncing',userId,error:''});
 
     for(let attempt=0;attempt<4;attempt+=1){
-      const row=await api.load(userId);
+      if(!isCurrentUser(userId))return last;
+      let row;
+      try{row=await api.load(userId)}catch(error){if(!isCurrentUser(userId))return last;throw error}
+      if(!isCurrentUser(userId))return last;
       const remote=row?.state?.[SLICE_KEY]||null;
       if(remote)explorer.mergeFromAccount(remote);
+      if(!isCurrentUser(userId))return last;
       cacheCurrent(userId);
       const local=explorer.exportAccountState();
       if(remote&&canonicalText(remote)===canonicalText(local)){
         return publish({status:'synced',userId,updatedAt:String(row?.updated_at||''),error:''});
       }
+      if(!isCurrentUser(userId))return last;
       try{
         const saved=await api.saveSlice(userId,SLICE_KEY,local,{expectedUpdatedAt:row?.updated_at||null});
+        if(!isCurrentUser(userId))return last;
         cacheCurrent(userId);
         return publish({status:'synced',userId,updatedAt:String(saved?.updated_at||row?.updated_at||''),error:''});
       }catch(error){
+        if(!isCurrentUser(userId))return last;
         if(error?.code==='BQ_PROGRESS_SNAPSHOT_CONFLICT'&&attempt<3)continue;
         throw error;
       }

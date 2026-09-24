@@ -30,10 +30,19 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     }
     const congregationId = assignmentState.congregationId;
     const rows = assignmentState.assignments || [];
+    const contextStillCurrent=()=>{
+      const current=assignments.snapshot();
+      if(current?.status!=='ready'||current.congregationId!==congregationId||String(current.role||'')!==role)return false;
+      if(assignmentState.userId&&current.userId!==assignmentState.userId)return false;
+      return true;
+    };
+    const staleResult=()=>Object.freeze({status:'unauthorized',authorized:false});
+    if(!contextStillCurrent())return staleResult();
     let lifecycleStatus='unavailable',lifecycle=[];
     if(typeof assignments.loadLifecycle==='function'){
       try{lifecycle=await assignments.loadLifecycle();lifecycleStatus='ready'}catch{lifecycleStatus='unavailable'}
     }
+    if(!contextStillCurrent())return staleResult();
     const lifecycleById=new Map(lifecycle.map(row=>[row.assignmentId,row]));
     const projected=rows.map(row=>Object.freeze({...row,lifecycle:lifecycleById.get(row.id)||null}));
     const scheduled=projected.filter(row=>row.lifecycle?.status==='scheduled');
@@ -46,6 +55,7 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       const presenceResult = await presence.activeCount(congregationId, 30);
       activeCount = presenceResult ? presenceResult.count : null;
     } catch { activeCount = null; }
+    if(!contextStillCurrent())return staleResult();
 
     // Reuse the Assignments publishing directory because it is already scoped
     // to the active congregation and ministry-authorized. Only its public
@@ -63,6 +73,7 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
         directoryStatus = 'ready';
       } catch { directoryStatus = 'unavailable'; }
     }
+    if(!contextStillCurrent())return staleResult();
 
     return Object.freeze({
       status: 'ready',

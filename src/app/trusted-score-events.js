@@ -61,6 +61,13 @@ function normalizeResponse(data,claims){
 
 export function createTrustedScoreEventsService({api,session,congregation}={}){
   if(!api?.submit||!session?.getState||!congregation?.load||!congregation?.can)throw new Error('Trusted score events require API, session and congregation boundaries.');
+  const currentUserId=()=>{
+    const state=session.getState();
+    return state?.authenticated&&state.user?.id?clean(state.user.id):'';
+  };
+  const assertContext=userId=>{
+    if(!userId||currentUserId()!==String(userId))throw scoreError('BQ_SCORE_EVENT_CONTEXT_STALE','The account changed. Reload before submitting score events.');
+  };
 
   async function requireScope(congregationId){
     const state=session.getState(),id=clean(congregationId),userId=clean(state?.user?.id);
@@ -68,6 +75,7 @@ export function createTrustedScoreEventsService({api,session,congregation}={}){
     if(state?.remoteAvailable===false)throw scoreError('BQ_SCORE_EVENT_REMOTE_DISABLED','Trusted scoring is unavailable in local preview.');
     if(!id)throw scoreError('BQ_SCORE_EVENT_SCOPE','A congregation is required for trusted scoring.');
     if(!congregation.can(id,'read'))await congregation.load();
+    assertContext(userId);
     if(!congregation.can(id,'read'))throw scoreError('BQ_SCORE_EVENT_SCOPE','Trusted scoring is limited to your active congregation.');
     return Object.freeze({congregationId:id,userId});
   }
@@ -80,7 +88,9 @@ export function createTrustedScoreEventsService({api,session,congregation}={}){
       if(ids.has(claim.sourceEventId))throw scoreError('BQ_SCORE_EVENT_DUPLICATE','Duplicate score-event IDs are not allowed in one submission.');
       ids.add(claim.sourceEventId);
     }
+    assertContext(scope.userId);
     const data=await api.submit(scope.congregationId,normalized);
+    assertContext(scope.userId);
     return normalizeResponse(data,normalized);
   }
 

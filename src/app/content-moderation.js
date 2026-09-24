@@ -42,32 +42,64 @@ function restoredRecallItem(item){
 
 export function createContentModerationService({api,session,congregation}={}){
   if(!api?.list||!session?.getState||!congregation?.load)throw new Error('Content Moderation requires shared API, Session, and Congregation Membership owners.');
-  let state={status:'idle',congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error:''};
+  const emptyState=(status='idle',error='')=>({status,congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error});
+  let state=emptyState(),contextUserId='',refreshRequest=0;
 
-  const snapshot=()=>Object.freeze({
-    status:state.status,
-    congregationId:state.congregationId,
-    congregationName:state.congregationName,
-    scopes:state.scopes,
-    decisionCount:state.decisions.size,
-    loadedAt:state.loadedAt,
-    stale:state.status==='stale',
-    error:state.error
-  });
   const sessionState=()=>session.getState()||{};
-  const resetStatus=(status='inactive')=>{
-    state={status,congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error:''};
+  const currentUserId=()=>{
+    const account=sessionState();
+    return account.authenticated&&account.user?.id?String(account.user.id):'';
+  };
+  const contextCurrent=userId=>Boolean(userId)&&contextUserId===String(userId)&&currentUserId()===String(userId);
+  const resetStatus=(status='inactive',userId=currentUserId(),error='')=>{
+    state=emptyState(status,error);
+    contextUserId=String(userId||'');
     return snapshot();
+  };
+  const syncContext=()=>{
+    const userId=currentUserId();
+    if(contextUserId&&contextUserId!==userId){
+      refreshRequest++;
+      state=emptyState(userId?'idle':'inactive');
+      contextUserId=userId;
+    }
+    return userId;
+  };
+  const snapshot=()=>{
+    syncContext();
+    return Object.freeze({
+      status:state.status,
+      congregationId:state.congregationId,
+      congregationName:state.congregationName,
+      scopes:state.scopes,
+      decisionCount:state.decisions.size,
+      loadedAt:state.loadedAt,
+      stale:state.status==='stale',
+      error:state.error
+    });
   };
 
   async function refresh(preferredCongregationId=null){
-    const account=sessionState();
-    if(!account.authenticated||!account.user?.id)return resetStatus('inactive');
-    if(account.remoteAvailable===false)return resetStatus('local-preview');
+    const account=sessionState(),userId=account.authenticated&&account.user?.id?String(account.user.id):'',request=++refreshRequest;
+    if(!userId)return resetStatus('inactive','');
+    if(account.remoteAvailable===false)return resetStatus('local-preview',userId);
+    if(contextUserId!==userId){
+      state=emptyState('idle');
+      contextUserId=userId;
+    }
 
-    const memberships=await congregation.load();
+    let memberships;
+    try{memberships=await congregation.load()}
+    catch(error){
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
+      state=emptyState('unavailable',error?.message||'Content policy could not be refreshed.');
+      contextUserId=userId;
+      return snapshot();
+    }
+    if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
+
     const scopes=freezeScopes(Array.isArray(memberships)?memberships:[]);
-    if(!scopes.length)return resetStatus('no-membership');
+    if(!scopes.length)return resetStatus('no-membership',userId);
 
     const requested=clean(preferredCongregationId);
     if(requested&&!scopes.some(row=>row.id===requested))throw policyError('Choose one of your current congregations for content policy.','BQ_CONTENT_MODERATION_SCOPE_DENIED');
@@ -78,6 +110,7 @@ export function createContentModerationService({api,session,congregation}={}){
 
     try{
       const rows=await api.list(selected.id);
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const decisions=new Map();
       for(const raw of Array.isArray(rows)?rows:[]){
         const row=normalizeDecision(raw,selected.id);
@@ -86,16 +119,18 @@ export function createContentModerationService({api,session,congregation}={}){
       state={status:'ready',congregationId:selected.id,congregationName:selected.name,scopes,decisions,loadedAt:new Date().toISOString(),error:''};
       return snapshot();
     }catch(error){
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       state={status:previousLoadedAt?'stale':'unavailable',congregationId:selected.id,congregationName:selected.name,scopes,decisions:previous,loadedAt:previousLoadedAt,error:error?.message||'Content policy could not be refreshed.'};
       return snapshot();
     }
   }
 
   const select=congregationId=>refresh(congregationId);
-  const decisionFor=contentKey=>state.decisions.get(clean(contentKey))||null;
+  const decisionFor=contentKey=>{syncContext();return state.decisions.get(clean(contentKey))||null};
   const decisionValue=contentKey=>decisionFor(contentKey)?.decision||'';
 
   function hasRecallIncludes(code){
+    syncContext();
     const normalized=String(code||'').toUpperCase();
     if(!validCode(normalized))return false;
     const prefix=`question:${normalized}:`;
@@ -104,6 +139,7 @@ export function createContentModerationService({api,session,congregation}={}){
   }
 
   function applyCore(rows){
+    syncContext();
     const source=Array.isArray(rows)?rows:[];
     return Object.freeze(source.filter(item=>{
       const id=clean(item?.id);
@@ -114,6 +150,7 @@ export function createContentModerationService({api,session,congregation}={}){
   }
 
   function applyRecall(code,approvedRows,quarantinedRows=[]){
+    syncContext();
     const normalized=String(code||'').toUpperCase();
     if(!validCode(normalized))throw policyError('Choose a valid Recall book for content policy.','BQ_CONTENT_MODERATION_CODE_INVALID');
     const approved=Array.isArray(approvedRows)?approvedRows:[],quarantined=Array.isArray(quarantinedRows)?quarantinedRows:[];
@@ -133,8 +170,8 @@ export function createContentModerationService({api,session,congregation}={}){
   }
 
   function clear(){
-    state={status:'idle',congregationId:'',congregationName:'',scopes:Object.freeze([]),decisions:new Map(),loadedAt:null,error:''};
-    return snapshot();
+    refreshRequest++;
+    return resetStatus('idle',currentUserId());
   }
 
   return Object.freeze({refresh,select,snapshot,decisionFor,hasRecallIncludes,applyCore,applyRecall,clear});
