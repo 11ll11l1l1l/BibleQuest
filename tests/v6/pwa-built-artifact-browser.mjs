@@ -91,6 +91,25 @@ try {
   const startupFailure = await page.locator('[data-startup-failure]').count();
   assert(startupFailure === 0, 'offline shell reopen rendered startup failure');
   assert(await page.evaluate(() => location.hash) === '#/home', 'offline shell reopen lost the Home route');
+  assert(await page.evaluate(() => navigator.onLine === false), 'offline browser context did not report offline state');
+
+  // Recover the same installed-app context after connectivity returns. The
+  // bq-net-probe query is explicitly excluded from service-worker shell
+  // handling, so a successful navigation proves the network path recovered
+  // rather than silently satisfying the check from Cache Storage.
+  await context.setOffline(false);
+  await page.waitForFunction(() => navigator.onLine === true);
+  const reconnectResponse = await page.goto(
+    `${baseUrl}/?bq-net-probe=pwa-reconnect#/calendar`,
+    { waitUntil: 'networkidle' },
+  );
+  assert(reconnectResponse?.ok(), `PWA reconnect network probe failed: ${reconnectResponse?.status() ?? 'no response'}`);
+  await page.locator('#app').waitFor({ state: 'attached' });
+  await page.waitForFunction(() => document.querySelector('#app')?.textContent?.trim().length > 0);
+  await waitForResolvedLazyRoute(page, 'reconnected Calendar route');
+  assert(await page.evaluate(() => location.hash) === '#/calendar', 'PWA reconnect lost the Calendar route');
+  const reconnectStartupFailure = await page.locator('[data-startup-failure]').count();
+  assert(reconnectStartupFailure === 0, 'PWA reconnect rendered startup failure');
 
   assert(pageErrors.length === 0, `PWA browser errors: ${pageErrors.join(' | ')}`);
   await context.close();
@@ -98,4 +117,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, and offline shell reopen verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, offline shell reopen, and network reconnect recovery verified at 390px.');
