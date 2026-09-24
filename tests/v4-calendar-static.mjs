@@ -22,7 +22,7 @@ for(const token of[
   'assignments?.snapshot?.()',
   'congregation.getActive?.() || memberships[0]',
   "congregation.can(active.congregationId, 'ministry')",
-  "congregation.assert(congregationState.congregationId, 'ministry')",
+  "congregation.assert(shared.congregationId, 'ministry')",
   'current.ownerId !== userId',
   'api.calendar.listCongregation',
   'api.calendar.createCongregation',
