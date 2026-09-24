@@ -84,7 +84,7 @@ import {
   createAccessibilityPreferencesService,
 } from '../v6/features/accessibility-preferences.ts';
 import { createNotificationSettingsController } from '../v6/notifications/index.ts';
-import { storage, privateStorage, authStorage } from '../core/storage.js';
+import { storage, privateStorage, transientStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
 import { mountContentReportingRuntime } from '../ui/content-reporting.js';
@@ -218,7 +218,7 @@ function boot(root){
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
-  const telemetry=createTelemetryService({api:api.telemetry,session,storage:privateStorage,getRoute:()=>store.getState().route});
+  const telemetry=createTelemetryService({api:api.telemetry,session,storage:privateStorage,transientStorage,getRoute:()=>store.getState().route});
   const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress,ownerStorage:authStorage,cacheStorage:privateStorage});
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
