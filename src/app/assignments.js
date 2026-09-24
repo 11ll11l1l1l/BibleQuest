@@ -138,7 +138,7 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
   const stopSync=()=>{const stop=stopRemote;stopRemote=null;if(stop){try{stop()}catch{}}};
   const resetAccountState=(userId='',authenticated=false,remoteAvailable=true,status='idle',invalidateLoad=true)=>{if(invalidateLoad)loadRequest++;stopSync();targetRequest++;reviewRequest++;state=emptyState(userId,authenticated,remoteAvailable,status);return state};
   const currentContext=()=>Boolean(state.userId)&&liveUserId()===state.userId;
-  const assertCurrentContext=()=>{if(!currentContext())fail('BQ_ASSIGNMENT_CONTEXT_STALE','The account changed. Reload Assignments before continuing.');};
+  const assertCurrentContext=()=>{if(state.userId&&liveUserId()!==state.userId)fail('BQ_ASSIGNMENT_CONTEXT_STALE','The account changed. Reload Assignments before continuing.');};
   const assertMemberResponse=()=>{assertCurrentContext();if(MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_ROLE_READ_ONLY','Ministry-role assignment management belongs to the leader workflow.');};
   const assertPublisher=()=>{assertCurrentContext();if(state.status!=='ready'||!MINISTRY_ROLES.has(state.role))fail('BQ_ASSIGNMENT_PUBLISH_FORBIDDEN','An active ministry role is required to publish assignments.');congregation.assert(state.congregationId,'ministry');};
 
