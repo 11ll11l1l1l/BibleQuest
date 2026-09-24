@@ -23,6 +23,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
+  const activeCongregationId=()=>String(congregation?.getActive?.()?.congregationId||'');
+  const ownsCongregationContext=(userId,congregationId)=>Boolean(userId)&&sessionUserId()===String(userId)&&activeCongregationId()===String(congregationId||'');
   const owner = () => {
     const id = sessionUserId();
     return id ? `account:${id}` : 'guest';
@@ -78,8 +80,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
   }
 
   const visibleCongregationState=()=>{
-    const userId=sessionUserId();
-    return userId&&congregationState.userId===userId?congregationState:emptyCongregationState();
+    const userId=sessionUserId(),congregationId=activeCongregationId();
+    return userId&&congregationId&&congregationState.userId===userId&&congregationState.congregationId===congregationId?congregationState:emptyCongregationState();
   };
 
   function combinedEvents() {
@@ -97,7 +99,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
       const canShare = congregation.can(active.congregationId, 'ministry');
       const congregationId=String(active.congregationId||'');
       const rows = await api.calendar.listCongregation(congregationId);
-      if(request!==congregationRequest||sessionUserId()!==userId)return;
+      if(request!==congregationRequest||!ownsCongregationContext(userId,congregationId))return;
       const events = (Array.isArray(rows) ? rows : []).map(row => normalizeEvent({
         id: row.id, source: 'congregation', ownerId: row.user_id, eventDate: row.event_date, title: row.title,
         notes: row.notes, allDay: row.all_day, recurrenceWeeks: row.recurrence_weeks
@@ -193,7 +195,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
       const event = normalizeEvent({ id: nextId(), source: 'congregation', ownerId: userId, eventDate, title, notes, allDay, recurrenceWeeks });
       if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
       await api.calendar.createCongregation(userId, congregationId, event);
-      if(sessionUserId()!==userId)return present();
+      if(!ownsCongregationContext(userId,congregationId))return present();
       await loadCongregation();
       return present();
     }
@@ -238,8 +240,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
     });
     if (!event) fail('BQ_CALENDAR_INPUT', 'Enter a title and a valid date.');
     const saved = await api.calendar.updateCongregation(userId, congregationId, current.id, event);
+    if(!ownsCongregationContext(userId,congregationId))return present();
     if (!saved) fail('BQ_CALENDAR_NOT_OWNER', 'This shared event could not be edited by this account.');
-    if(sessionUserId()!==userId)return present();
     await loadCongregation();
     return present();
   }
@@ -252,8 +254,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
     const current = shared.events.find(event => event.id === String(id));
     if (!current || current.ownerId !== userId) fail('BQ_CALENDAR_NOT_OWNER', 'Only the person who created this shared event can delete it.');
     const removed = await api.calendar.removeCongregation(userId, congregationId, current.id);
+    if(!ownsCongregationContext(userId,congregationId))return present();
     if (!removed) fail('BQ_CALENDAR_NOT_OWNER', 'This shared event could not be deleted by this account.');
-    if(sessionUserId()!==userId)return present();
     await loadCongregation();
     return present();
   }
