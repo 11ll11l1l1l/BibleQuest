@@ -109,3 +109,52 @@ test('live Reader Verse Peek preserves the existing public result shape for vali
   assert.equal(Array.isArray(peek.links), true);
   assert.deepEqual(externalCalls, [['JHN', 3, 17]]);
 });
+
+
+test('search-result navigation does not persist a target chapter until the requested verse is proven present', async () => {
+  const { reader } = createHarness(() => ({
+    book,
+    chapter: 4,
+    translation: { id: 'bsb' },
+    verses: [{ chapter: 4, verse: 1, text: 'fixture one' }],
+  }));
+
+  assert.equal(reader.getState().chapter, 3);
+  await assert.rejects(
+    reader.openSearchResult({ book: { code: 'JHN' }, chapter: 4, verse: 16 }),
+    /Search result verse is unavailable/,
+  );
+  assert.equal(reader.getState().chapter, 3);
+});
+
+test('search-result navigation persists only after exact translation and verse validation succeeds', async () => {
+  const { reader } = createHarness(() => ({
+    book,
+    chapter: 4,
+    translation: { id: 'bsb' },
+    verses: [
+      { chapter: 4, verse: 15, text: 'fixture fifteen' },
+      { chapter: 4, verse: 16, text: 'fixture sixteen' },
+    ],
+  }));
+
+  const opened = await reader.openSearchResult({ book: { code: 'JHN' }, chapter: 4, verse: 16 });
+  assert.equal(opened.verse, 16);
+  assert.equal(opened.chapter.chapter, 4);
+  assert.equal(reader.getState().chapter, 4);
+});
+
+test('search-result navigation rejects cross-translation content without mutating Reader state', async () => {
+  const { reader } = createHarness(() => ({
+    book,
+    chapter: 4,
+    translation: { id: 'tl' },
+    verses: [{ chapter: 4, verse: 16, text: 'wrong translation fixture' }],
+  }));
+
+  await assert.rejects(
+    reader.openSearchResult({ book: { code: 'JHN' }, chapter: 4, verse: 16 }),
+    /does not match the selected translation/,
+  );
+  assert.equal(reader.getState().chapter, 3);
+});
