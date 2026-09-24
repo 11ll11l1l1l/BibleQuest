@@ -61,7 +61,23 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   async function load() {
-    return bible.loadChapter(state.translation, state.book, state.chapter);
+    const request = Object.freeze({
+      translation: state.translation,
+      book: state.book,
+      chapter: state.chapter,
+    });
+    const loaded = await bible.loadChapter(request.translation, request.book, request.chapter);
+    if (
+      state.translation !== request.translation
+      || state.book !== request.book
+      || state.chapter !== request.chapter
+    ) throw new Error('Reader passage changed while Scripture was loading.');
+    if (
+      loaded?.translation?.id !== request.translation
+      || loaded?.book?.code?.trim?.().toUpperCase() !== request.book.trim().toUpperCase()
+      || loaded?.chapter !== request.chapter
+    ) throw new Error('Scripture response does not match the requested Reader passage.');
+    return loaded;
   }
 
   async function getOfflineStatus() {
@@ -107,7 +123,12 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   async function search(query, options) {
-    return bible.search(state.translation, query, options);
+    const translation = state.translation;
+    const result = await bible.search(translation, query, options);
+    if (state.translation !== translation) {
+      throw new Error('Reader translation changed while Scripture search was running.');
+    }
+    return result;
   }
 
   async function openSearchResult(result) {
