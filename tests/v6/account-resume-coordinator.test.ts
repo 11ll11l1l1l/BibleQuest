@@ -42,6 +42,28 @@ describe('account resume coordinator', () => {
     coordinator.dispose();
   });
 
+  it('clears previous-account local slices before a direct authenticated account switch', async () => {
+    const session = createSessionContextStore();
+    let guestSwitches = 0;
+    let syncCalls = 0;
+    const coordinator = createAccountResumeCoordinator(session, [
+      {
+        key: 'progress',
+        syncNow: async () => { syncCalls += 1; },
+        switchToGuest: () => { guestSwitches += 1; },
+      },
+    ]);
+
+    session.setAuthenticated(identity('user-a'));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    session.setAuthenticated(identity('user-b'));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    assert.equal(guestSwitches, 1);
+    assert.equal(syncCalls, 2);
+    coordinator.dispose();
+  });
+
   it('clears account-owned local slices on sign-out without remote writes', () => {
     const session = createSessionContextStore();
     let guestSwitches = 0;

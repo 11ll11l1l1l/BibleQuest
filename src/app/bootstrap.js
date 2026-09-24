@@ -76,6 +76,8 @@ import { createLessonEngine } from '../engines/lesson.js';
 import { createTransformEngine } from '../engines/transform.js';
 import { createPsychometricsEngine } from '../engines/psychometrics.js';
 import { createFeatureCompatibilitySeam } from '../v6/kernel/app-contracts.ts';
+import { bindLegacyAccountResumeRuntime } from '../v6/kernel/legacy-account-resume-runtime.ts';
+import { createProductAccountResumeOwners } from '../v6/kernel/product-account-resume-owners.ts';
 import {
   ACCESSIBILITY_PREFERENCES_FEATURE,
   createAccessibilityPreferencesService,
@@ -372,29 +374,19 @@ function boot(root){
     pushSessionKey=key;
     if(current.authenticated===true)void pushOnboarding.maybePrompt();
   };
-  let accountProgressSessionKey='';
-  const accountProgressSyncOwners=[
-    ['general',progressCloudSync],
-    ['bible-quest',bibleQuestCloudSync],
-    ['weekly-journey',weeklyJourneyCloudSync],
-    ['personal-challenges',personalChallengesCloudSync],
-    ['explorer',explorerCloudSync],
-    ['leaderboard-delivery',progressLeaderboardBridge]
-  ];
-  const syncAccountProgress=state=>{
-    const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
-    if(key===accountProgressSessionKey)return;
-    accountProgressSessionKey=key;
-    if(current.authenticated!==true)return;
-    void Promise.allSettled(accountProgressSyncOwners.map(([owner,service])=>
-      Promise.resolve().then(()=>service.syncNow()).catch(error=>{
-        console.warn(`Account progress resume unavailable for ${owner}; using local progress`,error);
-        throw error;
-      })
-    ))
-      .then(()=>router.navigate(router.current()))
-      .catch(error=>console.warn('Account progress refresh unavailable',error));
-  };
+  const accountResumeRuntime=bindLegacyAccountResumeRuntime(
+    store,
+    createProductAccountResumeOwners({
+      general:progressCloudSync,
+      'bible-quest':bibleQuestCloudSync,
+      'weekly-journey':weeklyJourneyCloudSync,
+      'personal-challenges':personalChallengesCloudSync,
+      explorer:explorerCloudSync,
+      'leaderboard-delivery':progressLeaderboardBridge
+    }),
+    ()=>router.navigate(router.current()),
+    (owner,error)=>console.warn(`Account progress resume unavailable for ${owner}; using local progress`,error)
+  );
   let adminAccessSessionKey='';
   const syncAdminAccess=state=>{
     const current=state?.session||{},key=`${current.authenticated===true?'1':'0'}:${current.user?.id||''}`;
@@ -419,10 +411,9 @@ function boot(root){
     unsubscribeStore=store.subscribe(syncShell),
     unsubscribeModeration=store.subscribe(syncModeration),
     unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
-    unsubscribeBibleQuestAccount=store.subscribe(syncAccountProgress),
     unsubscribeAdminAccess=store.subscribe(syncAdminAccess),
     unsubscribeNotificationSettings=store.subscribe(syncNotificationSettings);
-  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAccountProgress(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());router.start();
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
@@ -430,6 +421,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();unsubscribeBibleQuestAccount();unsubscribeAdminAccess();unsubscribeNotificationSettings();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

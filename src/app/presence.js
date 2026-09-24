@@ -152,9 +152,10 @@ export function createPresenceService({
   }
 
   async function load(congregationId){
-    const id=await requireActiveScope(congregationId);
-    if(!id)return Object.freeze([]);
+    const userId=clean(session.getState()?.user?.id),id=await requireActiveScope(congregationId);
+    if(!id||!userId||clean(session.getState()?.user?.id)!==userId)return Object.freeze([]);
     const now=clock(),rows=await api.list(id);
+    if(clean(session.getState()?.user?.id)!==userId||clean(congregation.getActive()?.congregationId)!==id)return Object.freeze([]);
     const normalized=freezeList((Array.isArray(rows)?rows:[]).map(row=>normalizeRow(row,id,now,staleMs)));
     cache.set(id,normalized);
     return normalized;
@@ -193,9 +194,11 @@ export function createPresenceService({
   }
 
   async function activeCount(congregationId,windowMinutes=30){
-    const id=await requireActiveScope(congregationId);
-    if(!id)return null;
-    return Object.freeze({count:Math.max(0,Number(await api.activeCount(id,windowMinutes))||0),windowMinutes});
+    const userId=clean(session.getState()?.user?.id),id=await requireActiveScope(congregationId);
+    if(!id||!userId||clean(session.getState()?.user?.id)!==userId)return null;
+    const count=await api.activeCount(id,windowMinutes);
+    if(clean(session.getState()?.user?.id)!==userId||clean(congregation.getActive()?.congregationId)!==id)return null;
+    return Object.freeze({count:Math.max(0,Number(count)||0),windowMinutes});
   }
 
   return Object.freeze({start,heartbeat:()=>heartbeat(generation),load,snapshot,activeCount,leave,dispose,getState:()=>state,isOnline:row=>isPresenceOnline(row,clock(),staleMs),timing:()=>Object.freeze({heartbeatMs,staleMs})});

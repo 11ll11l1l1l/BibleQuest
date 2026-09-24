@@ -29,18 +29,21 @@ export function createCongregationMembershipService({api,session}){
   let memberships=[];
   let activeCongregationId='';
   let loadedUserId='';
+  let loadRequest=0;
+
+  const currentUserId=()=>{
+    const state=session.getState();
+    return state.authenticated&&state.user?.id?String(state.user.id):'';
+  };
+  const ownsLoadedContext=()=>Boolean(loadedUserId)&&currentUserId()===loadedUserId;
 
   const requireUser=()=>{
     const state=session.getState();
     if(!state.authenticated||!state.user?.id){const error=new Error('Sign in to use congregation membership.');error.code='BQ_CONGREGATION_AUTH_REQUIRED';throw error}
     return state.user;
   };
-  const list=()=>memberships.slice();
-  const get=congregationId=>memberships.find(row=>row.congregationId===String(congregationId))||null;
-  const currentUserId=()=>{
-    const state=session.getState();
-    return state.authenticated&&state.user?.id?String(state.user.id):'';
-  };
+  const list=()=>ownsLoadedContext()?memberships.slice():[];
+  const get=congregationId=>ownsLoadedContext()?memberships.find(row=>row.congregationId===String(congregationId))||null:null;
   const getActive=()=>{
     const userId=currentUserId();
     if(!userId||userId!==loadedUserId)return null;
@@ -50,8 +53,16 @@ export function createCongregationMembershipService({api,session}){
   async function load(){
     const user=requireUser();
     const userId=String(user.id);
-    if(loadedUserId&&loadedUserId!==userId)activeCongregationId='';
-    const rows=await api.congregation.listMemberships(user.id);
+    const request=++loadRequest;
+    if(loadedUserId&&loadedUserId!==userId){
+      memberships=[];
+      activeCongregationId='';
+      loadedUserId='';
+    }
+    let rows;
+    try{rows=await api.congregation.listMemberships(user.id)}
+    catch(error){if(request!==loadRequest||currentUserId()!==userId)return list();throw error}
+    if(request!==loadRequest||currentUserId()!==userId)return list();
     memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row.congregationId&&row.userId===userId);
     loadedUserId=userId;
     if(!get(activeCongregationId))activeCongregationId=memberships[0]?.congregationId||'';
@@ -92,7 +103,7 @@ export function createCongregationMembershipService({api,session}){
     throw error;
   }
 
-  function clear(){memberships=[];activeCongregationId='';loadedUserId=''}
+  function clear(){loadRequest++;memberships=[];activeCongregationId='';loadedUserId=''}
 
   return Object.freeze({load,join,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
 }

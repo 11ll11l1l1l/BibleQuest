@@ -5,6 +5,12 @@ function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
 }
 
+function accountError(message, code) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
 function deviceLabel(userAgent = navigator.userAgent || '') {
   if (/Android/i.test(userAgent)) return 'Android phone';
   if (/iPhone/i.test(userAgent)) return 'iPhone';
@@ -27,10 +33,21 @@ function devicePlatform(userAgent = navigator.userAgent || '') {
 export function createAccountService({ api, session, storage, uuid = () => crypto.randomUUID(), userAgent = () => navigator.userAgent || '' }) {
   if (!api?.account || !session || !storage) throw new Error('Account service requires API, session and storage boundaries.');
 
+  const currentUserId = () => {
+    const state = session.getState();
+    return state.authenticated && state.user?.id ? String(state.user.id) : '';
+  };
+
   const requireUser = () => {
     const state = session.getState();
     if (!state.authenticated || !state.user?.id) throw new Error('Sign in to use this account feature.');
     return state.user;
+  };
+
+  const assertContext = userId => {
+    if (!userId || currentUserId() !== String(userId)) {
+      throw accountError('The account changed. Reopen Account before continuing.', 'BQ_ACCOUNT_CONTEXT_STALE');
+    }
   };
 
   const currentDeviceKey = () => {
@@ -42,10 +59,11 @@ export function createAccountService({ api, session, storage, uuid = () => crypt
     return created;
   };
 
-  async function ensureCurrentDevice() {
-    const user = requireUser();
+  async function ensureCurrentDeviceFor(user) {
+    const userId = String(user?.id || '');
+    assertContext(userId);
     const agent = userAgent();
-    return api.account.upsertDevice({
+    const saved = await api.account.upsertDevice({
       user_id: user.id,
       device_key: currentDeviceKey(),
       label: deviceLabel(agent),
@@ -54,13 +72,25 @@ export function createAccountService({ api, session, storage, uuid = () => crypt
       trusted: true,
       last_seen_at: new Date().toISOString()
     });
+    assertContext(userId);
+    return saved;
+  }
+
+  async function ensureCurrentDevice() {
+    return ensureCurrentDeviceFor(requireUser());
   }
 
   async function signIn(email, password) {
     const signed = await session.signIn(email, password);
     let deviceWarning = '';
-    try { await ensureCurrentDevice(); }
-    catch (error) { deviceWarning = error?.message || 'This device could not be remembered.'; }
+    try {
+      const active = requireUser();
+      const signedUserId = String(signed?.user?.id || active.id);
+      if (String(active.id) !== signedUserId) throw accountError('The account changed before this device could be remembered.', 'BQ_ACCOUNT_CONTEXT_STALE');
+      await ensureCurrentDeviceFor(active);
+    } catch (error) {
+      deviceWarning = error?.message || 'This device could not be remembered.';
+    }
     return { session: signed, deviceWarning };
   }
 
@@ -91,9 +121,12 @@ export function createAccountService({ api, session, storage, uuid = () => crypt
     let signInWarning = '';
     let deviceWarning = '';
     try {
-      await session.signIn(email, password);
+      const signed = await session.signIn(email, password);
+      const active = requireUser();
+      const signedUserId = String(signed?.user?.id || active.id);
+      if (String(active.id) !== signedUserId) throw accountError('The account changed during automatic sign-in.', 'BQ_ACCOUNT_CONTEXT_STALE');
       signedIn = true;
-      try { await ensureCurrentDevice(); }
+      try { await ensureCurrentDeviceFor(active); }
       catch (error) { deviceWarning = error?.message || 'This device could not be remembered.'; }
     } catch (error) {
       signInWarning = error?.message || 'Your account was created, but automatic sign-in failed. Sign in manually after saving the recovery code.';
@@ -113,29 +146,47 @@ export function createAccountService({ api, session, storage, uuid = () => crypt
   }
 
   async function issueRecoveryCode() {
-    requireUser();
-    return api.account.issueRecoveryCode();
+    const user = requireUser();
+    const userId = String(user.id);
+    assertContext(userId);
+    const result = await api.account.issueRecoveryCode();
+    assertContext(userId);
+    return result;
   }
 
   async function changePassword(currentPassword, newPassword, confirmPassword) {
-    requireUser();
-    return session.changePassword(currentPassword, newPassword, confirmPassword);
+    const user = requireUser();
+    const userId = String(user.id);
+    assertContext(userId);
+    const result = await session.changePassword(currentPassword, newPassword, confirmPassword);
+    assertContext(userId);
+    return result;
+  }
+
+  async function listDevicesFor(user) {
+    const userId = String(user?.id || '');
+    assertContext(userId);
+    const current = currentDeviceKey();
+    const rows = await api.account.listDevices(user.id);
+    assertContext(userId);
+    return rows.map(row => Object.freeze({ ...row, current: String(row.device_key) === current }));
   }
 
   async function listDevices() {
-    const user = requireUser();
-    const current = currentDeviceKey();
-    const rows = await api.account.listDevices(user.id);
-    return rows.map(row => Object.freeze({ ...row, current: String(row.device_key) === current }));
+    return listDevicesFor(requireUser());
   }
 
   async function removeDevice(id) {
     const user = requireUser();
-    const devices = await listDevices();
+    const userId = String(user.id);
+    const devices = await listDevicesFor(user);
+    assertContext(userId);
     const target = devices.find(device => String(device.id) === String(id));
     if (!target) throw new Error('Remembered device was not found.');
     if (target.current) throw new Error('You cannot remove the device you are currently using.');
-    await api.account.removeDevice(user.id, target.id);
+    const result = await api.account.removeDevice(user.id, target.id);
+    assertContext(userId);
+    return result;
   }
 
   return Object.freeze({

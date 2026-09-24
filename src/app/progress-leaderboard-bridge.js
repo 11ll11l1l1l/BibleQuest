@@ -106,6 +106,8 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
   let disposed=false;
   let chain=Promise.resolve();
   let status=Object.freeze({state:'idle',pending:Object.keys(ledger.pending).length,lastError:''});
+  const currentUserId=()=>{const state=session.getState();return state?.authenticated===true?clean(state.user?.id):''};
+  const isCurrentUser=userId=>Boolean(userId)&&!disposed&&currentUserId()===userId;
 
   const publish=(state,lastError='')=>{
     status=Object.freeze({state,pending:Object.keys(ledger.pending).length,lastError:clean(lastError)});
@@ -127,9 +129,11 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
     if(!mapped.length)return;
     const sessionState=session.getState();
     if(sessionState.authenticated!==true||sessionState.remoteAvailable===false||!sessionState.user?.id)return;
+    const userId=clean(sessionState.user.id);
     await congregation.load();
+    if(!isCurrentUser(userId))return;
     const active=congregation.getActive();
-    const congregationId=clean(active?.congregationId),userId=clean(sessionState.user.id);
+    const congregationId=clean(active?.congregationId);
     if(!congregationId||!congregation.can(congregationId,'read'))return;
     for(const item of mapped){
       const key=deliveryKey(userId,congregationId,item.claim.sourceEventId);
@@ -145,6 +149,7 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
     if(sessionState.authenticated!==true||sessionState.remoteAvailable===false||!sessionState.user?.id)return publish('idle');
     const userId=clean(sessionState.user.id);
     await congregation.load();
+    if(!isCurrentUser(userId))return status;
     const grouped=new Map();
     for(const [key,row] of Object.entries(ledger.pending)){
       if(row.userId!==userId||!congregation.can(row.congregationId,'read'))continue;
@@ -155,8 +160,10 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
     publish('syncing');
     for(const [congregationId,items] of grouped){
       for(let offset=0;offset<items.length;offset+=50){
+        if(!isCurrentUser(userId))return status;
         const batch=items.slice(offset,offset+50);
         const result=await scoreEvents.submit(congregationId,batch.map(item=>item.row.claim));
+        if(!isCurrentUser(userId))return status;
         const byId=new Map(batch.map(item=>[item.row.claim.sourceEventId,item]));
         for(const processed of result.processed||[]){
           const sourceEventId=clean(processed?.sourceEventId),item=byId.get(sourceEventId);
@@ -222,11 +229,17 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
     }
   }
 
+  function switchToGuest(){
+    known=new Set(Object.keys(progress.getState()?.events||{}));
+    publish('idle');
+    return true;
+  }
+
   function dispose(){
     disposed=true;
     unsubscribe?.();
     publish('disposed');
   }
 
-  return Object.freeze({syncNow,flush:syncNow,getState:()=>status,dispose,claimForProgressEvent});
+  return Object.freeze({syncNow,flush:syncNow,switchToGuest,getState:()=>status,dispose,claimForProgressEvent});
 }

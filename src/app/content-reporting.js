@@ -29,15 +29,23 @@ function normalizeContext(value){
 export function createContentReportingService({api,session,congregation}={}){
   if(!api?.submit||!session?.getState||!congregation?.load||!congregation?.get)throw new Error('Content reporting requires shared API, session, and congregation owners.');
 
+  const currentUserId=()=>{
+    const state=session.getState();
+    return state?.authenticated&&state.user?.id?String(state.user.id):'';
+  };
   const requireUser=()=>{
     const state=session.getState();
     if(!state?.authenticated||!state.user?.id)throw codedError('Sign in to BibleQuest before submitting a report.','BQ_CONTENT_REPORT_AUTH_REQUIRED');
     return state.user;
   };
+  const assertContext=userId=>{
+    if(!userId||currentUserId()!==String(userId))throw codedError('The account changed. Reopen the report form before continuing.','BQ_CONTENT_REPORT_CONTEXT_STALE');
+  };
 
   async function memberships(){
-    requireUser();
+    const user=requireUser(),userId=String(user.id);
     const rows=await congregation.load();
+    assertContext(userId);
     return Object.freeze(rows.map(row=>Object.freeze({
       id:String(row.congregationId),
       name:String(row.congregation?.name||'Congregation'),
@@ -49,9 +57,10 @@ export function createContentReportingService({api,session,congregation}={}){
   async function prepare(){return Object.freeze({congregations:await memberships(),reasons:REASONS.slice()})}
 
   async function submit({congregationId,context,reason='other',note=''}={}){
-    const user=requireUser();
+    const user=requireUser(),userId=String(user.id);
     const id=bounded(congregationId,80,'Congregation',{required:true,min:1});
     await congregation.load();
+    assertContext(userId);
     const membership=congregation.get(id);
     if(!membership||String(membership.userId)!==String(user.id))throw codedError('Join or select a current congregation before submitting a report.','BQ_CONTENT_REPORT_MEMBERSHIP_REQUIRED');
     const normalized=normalizeContext(context);
@@ -70,7 +79,9 @@ export function createContentReportingService({api,session,congregation}={}){
       reason:normalizedReason,
       note:normalizedNote||null
     };
+    assertContext(userId);
     const saved=await api.submit(row);
+    assertContext(userId);
     if(!saved?.id)throw codedError('Report submission did not return a report ID.','BQ_CONTENT_REPORT_WRITE_FAILED');
     return Object.freeze({id:String(saved.id),congregationId:id,reason:normalizedReason});
   }

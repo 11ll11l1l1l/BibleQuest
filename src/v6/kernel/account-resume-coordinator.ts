@@ -76,13 +76,16 @@ export function createAccountResumeCoordinator(
     return promise;
   }
 
+  let lastUserId = currentUserId();
   const unsubscribe = session.subscribe((snapshot) => {
     generation += 1;
     inFlight = null;
-    if (snapshot.status !== 'authenticated') {
+    const nextUserId = snapshot.status === 'authenticated' ? snapshot.identity.userId : '';
+    if (lastUserId && nextUserId !== lastUserId) {
       for (const owner of owners) owner.switchToGuest?.();
-      return;
     }
+    lastUserId = nextUserId;
+    if (!nextUserId) return;
     void resumeCurrentAccount();
   });
 
