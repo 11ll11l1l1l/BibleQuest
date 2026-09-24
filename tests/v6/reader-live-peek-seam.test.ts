@@ -5,7 +5,15 @@ import { createReaderService } from '../../src/app/reader.js';
 
 const book = Object.freeze({ code: 'JHN', name: 'John', chapters: 21, index: 0 });
 
-function createHarness(chapterFactory: () => unknown) {
+function createHarness(
+  chapterFactory: () => unknown,
+  searchFactory: (translationId: string, query: string, options?: unknown) => unknown = () => ({
+    query: 'fixture',
+    type: 'text',
+    results: [],
+    skippedBooks: [],
+  }),
+) {
   const externalCalls: unknown[] = [];
   let stored = {
     translation: 'bsb',
@@ -23,17 +31,27 @@ function createHarness(chapterFactory: () => unknown) {
         bundled: true,
         mode: 'bundled',
       }),
+      Object.freeze({
+        id: 'tl',
+        label: 'Tagalog',
+        bundled: true,
+        mode: 'bundled',
+      }),
     ],
     getBook(code: string) {
       if (code !== 'JHN') throw new Error('unknown book');
       return book;
     },
     getTranslation(id: string) {
-      if (id !== 'bsb') throw new Error('unknown translation');
-      return this.translations[0];
+      const translation = this.translations.find((item) => item.id === id);
+      if (!translation) throw new Error('unknown translation');
+      return translation;
     },
     async loadChapter() {
       return chapterFactory();
+    },
+    async search(translationId: string, query: string, options?: unknown) {
+      return searchFactory(translationId, query, options);
     },
     externalLinks(code: string, chapter: number, verse: number) {
       externalCalls.push([code, chapter, verse]);
@@ -85,7 +103,7 @@ test('live Reader Verse Peek rejects a provider response for a different transla
     verses: [{ chapter: 3, verse: 16, text: 'wrong translation fixture' }],
   }));
 
-  await assert.rejects(reader.peek(16), /does not match the selected translation/);
+  await assert.rejects(reader.peek(16), /does not match the requested Reader passage/);
   assert.deepEqual(externalCalls, []);
 });
 
@@ -157,4 +175,70 @@ test('search-result navigation rejects cross-translation content without mutatin
     /does not match the selected translation/,
   );
   assert.equal(reader.getState().chapter, 3);
+});
+
+
+test('Reader load rejects a provider response for the wrong book without changing state', async () => {
+  const { reader } = createHarness(() => ({
+    book: { code: 'GEN', name: 'Genesis', chapters: 50, index: 0 },
+    chapter: 3,
+    translation: { id: 'bsb' },
+    verses: [{ chapter: 3, verse: 1, text: 'wrong book fixture' }],
+  }));
+
+  await assert.rejects(reader.load(), /does not match the requested Reader passage/);
+  assert.deepEqual(reader.getState(), {
+    translation: 'bsb',
+    book: 'JHN',
+    chapter: 3,
+    read: {},
+  });
+});
+
+test('Reader load rejects a late response after the passage changes', async () => {
+  let resolveChapter: ((value: unknown) => void) | undefined;
+  const gate = new Promise<unknown>((resolve) => {
+    resolveChapter = resolve;
+  });
+  const { reader } = createHarness(() => gate);
+
+  const pending = reader.load();
+  reader.setChapter(4);
+  resolveChapter?.({
+    book,
+    chapter: 3,
+    translation: { id: 'bsb' },
+    verses: [{ chapter: 3, verse: 16, text: 'late fixture' }],
+  });
+
+  await assert.rejects(pending, /passage changed while Scripture was loading/);
+  assert.equal(reader.getState().chapter, 4);
+});
+
+test('Reader search rejects a late result after the selected translation changes', async () => {
+  let resolveSearch: ((value: unknown) => void) | undefined;
+  const gate = new Promise<unknown>((resolve) => {
+    resolveSearch = resolve;
+  });
+  const { reader } = createHarness(
+    () => ({
+      book,
+      chapter: 3,
+      translation: { id: 'bsb' },
+      verses: [{ chapter: 3, verse: 16, text: 'fixture' }],
+    }),
+    () => gate,
+  );
+
+  const pending = reader.search('love', { limit: 10 });
+  reader.setTranslation('tl');
+  resolveSearch?.({
+    query: 'love',
+    type: 'text',
+    results: [],
+    skippedBooks: [],
+  });
+
+  await assert.rejects(pending, /translation changed while Scripture search was running/);
+  assert.equal(reader.getState().translation, 'tl');
 });
