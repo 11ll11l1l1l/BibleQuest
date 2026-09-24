@@ -201,3 +201,58 @@ test('remove and usage stay behind the package repository boundary', async () =>
   assert.deepEqual(await manager.usage(), { bytes: 0, packages: 0 });
   assert.equal(repo.state().removals, 1);
 });
+
+
+test('outdated package upgrades only after verified replacement bytes', async () => {
+  const stale: InstalledScripturePackage = {
+    key: `bsb:2026-09-18.1:GEN:${'0'.repeat(64)}`,
+    translationId: 'bsb',
+    contentVersion: '2026-09-18.1',
+    bookCode: 'GEN',
+    sha256: '0'.repeat(64),
+    bytes: 3,
+    installedAt: '2026-09-18T15:00:00.000Z',
+  };
+  const repo = repository(stale);
+  const manager = new ScripturePackageManager(
+    repo.value,
+    { async download() { return new TextEncoder().encode('abc').buffer; } },
+    () => '2026-09-24T08:30:00.000Z',
+  );
+
+  const result = await manager.install(manifest(), 'GEN');
+
+  assert.equal(result.status, 'installed');
+  assert.equal(result.package.sha256, abcSha);
+  assert.equal(result.package.contentVersion, '2026-09-19.1');
+  assert.equal(result.package.installedAt, '2026-09-24T08:30:00.000Z');
+  assert.equal(repo.state().writes, 1);
+  assert.equal(repo.state().installed?.sha256, abcSha);
+});
+
+test('corrupt replacement never destroys the previously installed package', async () => {
+  const stale: InstalledScripturePackage = {
+    key: `bsb:2026-09-18.1:GEN:${'0'.repeat(64)}`,
+    translationId: 'bsb',
+    contentVersion: '2026-09-18.1',
+    bookCode: 'GEN',
+    sha256: '0'.repeat(64),
+    bytes: 3,
+    installedAt: '2026-09-18T15:00:00.000Z',
+  };
+  const repo = repository(stale);
+  const manager = new ScripturePackageManager(repo.value, {
+    async download() {
+      return new TextEncoder().encode('abd').buffer;
+    },
+  });
+
+  await assert.rejects(
+    manager.install(manifest(), 'GEN'),
+    (error: unknown) => error instanceof ScripturePackageIntegrityError,
+  );
+
+  assert.equal(repo.state().writes, 0);
+  assert.equal(repo.state().installed, stale);
+  assert.equal(repo.state().installed?.sha256, '0'.repeat(64));
+});
