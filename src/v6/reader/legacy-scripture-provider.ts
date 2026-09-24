@@ -64,6 +64,9 @@ export function createLegacyBibleScriptureProvider(
     },
 
     async loadContext(location: ReaderLocation & Readonly<{ verse: number }>) {
+      if (location.translationId !== 'bsb') {
+        throw new Error('Context Lab Scripture is BSB-only; choose BSB explicitly for original-language context.');
+      }
       return bible.lexicalContext(
         location.bookCode,
         location.chapter,
