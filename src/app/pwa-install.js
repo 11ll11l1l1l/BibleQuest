@@ -40,7 +40,7 @@ export function createPwaInstallService({
     return value;
   };
   const beforeInstall = event => {
-    if (disposed || typeof event?.prompt !== 'function') return;
+    if (disposed || guidance === 'ios-a2hs' || typeof event?.prompt !== 'function') return;
     event.preventDefault?.();
     promptEvent = event;
     publish('available');
