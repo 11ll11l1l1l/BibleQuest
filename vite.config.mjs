@@ -128,7 +128,10 @@ function copyLegacyRuntime() {
 function writeArtifactIntegrity() {
   return {
     name: 'biblequest-v6-artifact-integrity',
-    async closeBundle() {
+    async writeBundle() {
+      // Cloudflare Pages can begin upload as soon as Vite's build command exits.
+      // Generate the integrity inventory during writeBundle so it is guaranteed to
+      // exist in dist-v6 before later closeBundle diagnostics move source maps.
       await writeArtifactIntegrityManifest(outDir, buildSha);
     },
   };
@@ -182,7 +185,7 @@ export default defineConfig({
   optimizeDeps: {
     entries: ['index.html'],
   },
-  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps(), writeArtifactIntegrity()],
+  plugins: [copyLegacyRuntime(), writeArtifactIntegrity(), collectPrivateSourceMaps()],
   build: {
     outDir,
     emptyOutDir: true,
