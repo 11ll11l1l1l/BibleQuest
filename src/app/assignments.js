@@ -201,6 +201,7 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
   }
 
   function open(assignmentId){
+    assertCurrentContext();
     if(state.status!=='ready')fail('BQ_ASSIGNMENT_NOT_READY','Assignments are not ready yet.');
     const id=String(assignmentId||'');
     if(!state.assignments.some(row=>row.id===id))fail('BQ_ASSIGNMENT_NOT_FOUND','This assignment is no longer available.');
