@@ -24,7 +24,12 @@ export function createCalendarService({ session, privateStorage, api, assignment
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
   const activeCongregationId=()=>String(congregation?.getActive?.()?.congregationId||'');
-  const ownsCongregationContext=(userId,congregationId)=>Boolean(userId)&&sessionUserId()===String(userId)&&activeCongregationId()===String(congregationId||'');
+  const ownsCongregationContext=(userId,congregationId)=>{
+    const targetId=String(congregationId||'');
+    if(!userId||sessionUserId()!==String(userId)||!targetId)return false;
+    const activeId=activeCongregationId();
+    return !activeId||activeId===targetId;
+  };
   const owner = () => {
     const id = sessionUserId();
     return id ? `account:${id}` : 'guest';
@@ -80,8 +85,10 @@ export function createCalendarService({ session, privateStorage, api, assignment
   }
 
   const visibleCongregationState=()=>{
-    const userId=sessionUserId(),congregationId=activeCongregationId();
-    return userId&&congregationId&&congregationState.userId===userId&&congregationState.congregationId===congregationId?congregationState:emptyCongregationState();
+    const userId=sessionUserId(),activeId=activeCongregationId();
+    const sameUser=Boolean(userId)&&congregationState.userId===userId;
+    const sameCongregation=!activeId||congregationState.congregationId===activeId;
+    return sameUser&&sameCongregation?congregationState:emptyCongregationState();
   };
 
   function combinedEvents() {
