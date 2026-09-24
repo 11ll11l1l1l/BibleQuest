@@ -82,7 +82,8 @@ export function createYouTubeIframeProviderAdapter({
         if (destroyed) throw new Error('Media player has been destroyed.');
       };
 
-      const player = createPlayer({
+      let player: YouTubeIframePlayerLike | null = null;
+      player = createPlayer({
         host: input.host,
         videoId: source.mediaId,
         title: source.title,
@@ -92,7 +93,7 @@ export function createYouTubeIframeProviderAdapter({
           },
           onStateChange: (youtubeState: number) => {
             if (!destroyed) {
-              const position = Number(player.getCurrentTime?.());
+              const position = Number(player?.getCurrentTime?.());
               publish({
                 status: statusFromYouTubeState(Number(youtubeState)),
                 positionSeconds: Number.isFinite(position) && position >= 0 ? position : state.positionSeconds,
@@ -111,17 +112,17 @@ export function createYouTubeIframeProviderAdapter({
         getState: () => state,
         play() {
           ensureAlive();
-          player.playVideo();
+          player!.playVideo();
           publish({ status: 'playing', error: '' });
         },
         pause() {
           ensureAlive();
-          player.pauseVideo();
+          player!.pauseVideo();
           publish({ status: 'paused', error: '' });
         },
         stop() {
           ensureAlive();
-          player.stopVideo();
+          player!.stopVideo();
           publish({ status: 'stopped', positionSeconds: 0, error: '' });
         },
         seek(seconds: number) {
@@ -130,13 +131,13 @@ export function createYouTubeIframeProviderAdapter({
           if (!Number.isFinite(value) || value < 0 || value > 86400) {
             throw new Error('Media seek position must be between 0 and 86400 seconds.');
           }
-          player.seekTo(value, true);
+          player!.seekTo(value, true);
           publish({ positionSeconds: value, error: '' });
         },
         destroy() {
           if (destroyed) return;
           destroyed = true;
-          player.destroy();
+          player!.destroy();
           publish({ status: 'destroyed', error: '' });
         },
       });
