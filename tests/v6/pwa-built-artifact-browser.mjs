@@ -113,8 +113,31 @@ try {
 
   assert(pageErrors.length === 0, `PWA browser errors: ${pageErrors.join(' | ')}`);
   await context.close();
+
+  // iOS does not expose beforeinstallprompt in the same way as Chromium
+  // desktop/Android. Prove the built UI provides explicit Safari
+  // Add-to-Home-Screen guidance instead of hiding the install surface.
+  const iosContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+  });
+  const iosPage = await iosContext.newPage();
+  await iosPage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
+  await iosPage.locator('#app').waitFor({ state: 'attached' });
+  await waitForResolvedLazyRoute(iosPage, 'iOS More install guidance');
+  const iosInstallPanel = iosPage.locator('[data-more-install]');
+  assert(await iosInstallPanel.isVisible(), 'iOS Add to Home Screen guidance panel is hidden');
+  const iosGuidance = iosPage.locator('[data-install-guidance]');
+  assert(await iosGuidance.isVisible(), 'iOS Add to Home Screen guidance text is hidden');
+  assert(
+    (await iosGuidance.textContent())?.includes('Safari')
+      && (await iosGuidance.textContent())?.includes('Add to Home Screen'),
+    'iOS install guidance must name Safari and Add to Home Screen',
+  );
+  assert(await iosPage.locator('[data-install-app]').isHidden(), 'iOS fallback must not show an unavailable native install prompt button');
+  await iosContext.close();
 } finally {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, offline shell reopen, and network reconnect recovery verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery, and iOS Safari Add-to-Home-Screen guidance verified at 390px.');
