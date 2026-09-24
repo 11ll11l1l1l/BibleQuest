@@ -33,6 +33,9 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
   let bootPromise = null;
   let operationSequence = 0;
   let authEventVersion = 0;
+  const pendingSignIns = new Map();
+  const pendingSignOuts = new Set();
+  const pendingAccountOperations = new Map();
   const beforeSignOutListeners = new Set();
 
   const publish = patch => {
@@ -76,8 +79,25 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
   const handleAuthEvent = (event, session) => {
     authEventVersion += 1;
     if (event === 'SIGNED_OUT' || !session) {
+      if (pendingSignIns.has(operationSequence)) return;
+      const staleSignOutPending = [...pendingSignOuts].some(operation => operation !== operationSequence);
+      if (staleSignOutPending && currentUserId()) return;
       toGuest();
       return;
+    }
+    const eventUser = cleanUser(session.user);
+    if (!eventUser) {
+      toGuest();
+      return;
+    }
+    const eventEmail = String(eventUser.email || '').trim().toLowerCase();
+    const latestSignInEmail = pendingSignIns.get(operationSequence) || '';
+    if (latestSignInEmail && eventEmail && eventEmail !== latestSignInEmail) return;
+    for (const [operation, email] of pendingSignIns) {
+      if (operation !== operationSequence && eventEmail && email === eventEmail) return;
+    }
+    for (const [operation, userId] of pendingAccountOperations) {
+      if (operation !== operationSequence && eventUser.id === userId && currentUserId() && currentUserId() !== userId) return;
     }
     toAuthenticated(session, session.user);
   };
@@ -133,6 +153,8 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
     if (!normalizedEmail || !normalizedEmail.includes('@')) throw new Error('Enter a valid email address.');
     if (!normalizedPassword) throw new Error('Enter your password.');
     const operation = beginOperation();
+    const requestedEmail = normalizedEmail.toLowerCase();
+    pendingSignIns.set(operation, requestedEmail);
     const startingAuthEventVersion = authEventVersion;
     publish({ status: 'authenticating', authenticated: false, user: EMPTY_USER, expiresAt: null, error: '' });
     try {
@@ -156,6 +178,8 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
         toGuest(error?.message || 'Could not sign in.');
       }
       throw error;
+    } finally {
+      pendingSignIns.delete(operation);
     }
   }
 
@@ -170,6 +194,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
     const userId = currentUserId();
     const email = state.user.email;
     const operation = beginOperation();
+    pendingAccountOperations.set(operation, userId);
     try {
       const verified = await auth.verifyPassword(email, current);
       assertUserContext(operation, userId);
@@ -187,6 +212,8 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
       if (error?.code === 'BQ_SESSION_CONTEXT_STALE' || !isCurrentOperation(operation) || currentUserId() !== userId) throw sessionContextError();
       publish({ status: 'authenticated', authenticated: true, error: error?.message || 'Could not change password.' });
       throw error;
+    } finally {
+      pendingAccountOperations.delete(operation);
     }
   }
 
@@ -198,21 +225,29 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
 
   async function signOut() {
     const operation = beginOperation();
-    const cleanups = [...beforeSignOutListeners].map(listener => Promise.resolve().then(listener));
-    if (cleanups.length) await Promise.allSettled(cleanups);
-    if (!isCurrentOperation(operation)) return state;
+    pendingSignOuts.add(operation);
     try {
-      await auth.signOut();
+      const cleanups = [...beforeSignOutListeners].map(listener => Promise.resolve().then(listener));
+      if (cleanups.length) await Promise.allSettled(cleanups);
+      if (!isCurrentOperation(operation)) return state;
+      try {
+        await auth.signOut();
+      } finally {
+        if (isCurrentOperation(operation)) toGuest();
+      }
+      return state;
     } finally {
-      if (isCurrentOperation(operation)) toGuest();
+      pendingSignOuts.delete(operation);
     }
-    return state;
   }
 
   function dispose() {
     operationSequence += 1;
     unsubscribeAuth?.();
     unsubscribeAuth = null;
+    pendingSignIns.clear();
+    pendingSignOuts.clear();
+    pendingAccountOperations.clear();
     beforeSignOutListeners.clear();
   }
 
