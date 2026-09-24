@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb75`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable.
+Evidence checkpoint: integrated V6 head `5a208d4c4ed6fd7d9b52ea992bbcb3a78d84d82c`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Newly reconciled Core V6 items below use merged PR #538 source plus exact-head V6 Phase 1 Build Gate `35961956126` SUCCESS; full inherited-regression convergence on the integrated line remains separately required by the parity/release gates.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -56,10 +56,10 @@ Evidence checkpoint: integrated V6 head `58635bde2e0753c47af74380b9b39408240feb7
 ## D. Core V6 client architecture
 
 - [x] Typed app-shell/router access and deep-link contracts are established for V6 boundaries.
-- [ ] Typed session/auth owner established.
+- [x] Typed session/auth owner established: `src/v6/kernel/session-context.ts` is the typed identity/membership owner, integrated with the legacy session/account-resume boundary; session ownership and account-switch failure behavior are covered by the merged V6 unit suite.
 - [x] Explicit active-congregation context is established separately from authenticated identity.
 - [x] Central typed repository/data-access boundary is established for V6 domain migration.
-- [ ] Standard async/error/offline/unauthorized state contract established.
+- [x] Standard async/error/offline/unauthorized state contract established: `async-state.ts`, `errors.ts`, and `view-state.ts` define the shared typed failure/view-state semantics with executable unit coverage for offline, unauthorized, forbidden, retryable remote and generic failures.
 - [ ] Feature modules do not make UI visibility the authority for protected actions.
 - [x] Route-level lazy loading/cancellation and stale-request invalidation primitives are standardized.
 - [x] Compatibility feature command/event boundary and fail-closed migration seam exist.
