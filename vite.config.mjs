@@ -12,6 +12,7 @@ import {
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -124,6 +125,15 @@ function copyLegacyRuntime() {
   };
 }
 
+function writeArtifactIntegrity() {
+  return {
+    name: 'biblequest-v6-artifact-integrity',
+    async closeBundle() {
+      await writeArtifactIntegrityManifest(outDir, buildSha);
+    },
+  };
+}
+
 function collectPrivateSourceMaps() {
   return {
     name: 'biblequest-v6-private-source-maps',
@@ -172,7 +182,7 @@ export default defineConfig({
   optimizeDeps: {
     entries: ['index.html'],
   },
-  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps()],
+  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps(), writeArtifactIntegrity()],
   build: {
     outDir,
     emptyOutDir: true,
