@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(26);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_assignments'::regclass),
@@ -70,8 +70,71 @@ select results_eq(
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_congregation_members$$,
-  array[2::bigint],
-  'Member A can read only memberships in its congregation'
+  array[3::bigint],
+  'Member A can read only memberships in its congregation, including its pastor'
+);
+select is(
+  private.bible_assignment_visible(
+    '10000000-0000-4000-8000-000000000001'::uuid,
+    'member',
+    '22222222-2222-4222-8222-222222222222'::uuid
+  ),
+  false,
+  'ordinary Member A cannot see an assignment targeted to another member'
+);
+
+set local "request.jwt.claim.sub" = '11111111-1111-4111-8111-111111111113';
+
+select results_eq(
+  $$select count(*)::bigint from public.bible_assignments$$,
+  array[1::bigint],
+  'Pastor A sees only its congregation assignment'
+);
+select results_eq(
+  $$select count(*)::bigint from public.bible_assignments where congregation_id='20000000-0000-4000-8000-000000000002'::uuid$$,
+  array[0::bigint],
+  'Pastor A cannot force a foreign assignment through a client filter'
+);
+select results_eq(
+  $$select count(*)::bigint from public.bible_calendar_events where congregation_id is not null$$,
+  array[1::bigint],
+  'Pastor A sees only its congregation shared calendar event'
+);
+select results_eq(
+  $$select count(*)::bigint from public.bible_congregation_members$$,
+  array[3::bigint],
+  'Pastor A can read only memberships in its congregation'
+);
+select is(
+  private.bible_assignment_visible(
+    '10000000-0000-4000-8000-000000000001'::uuid,
+    'member',
+    '11111111-1111-4111-8111-111111111112'::uuid
+  ),
+  true,
+  'Pastor A has leadership visibility for member-targeted assignments in congregation A'
+);
+
+set local "request.jwt.claim.sub" = '11111111-1111-4111-8111-111111111111';
+select is(
+  private.bible_assignment_visible(
+    '10000000-0000-4000-8000-000000000001'::uuid,
+    'member',
+    '11111111-1111-4111-8111-111111111112'::uuid
+  ),
+  true,
+  'Leader A has leadership visibility for member-targeted assignments in congregation A'
+);
+
+set local "request.jwt.claim.sub" = '22222222-2222-4222-8222-222222222221';
+select is(
+  private.bible_assignment_visible(
+    '20000000-0000-4000-8000-000000000002'::uuid,
+    'member',
+    '22222222-2222-4222-8222-222222222222'::uuid
+  ),
+  true,
+  'Admin B has leadership visibility for member-targeted assignments in congregation B'
 );
 
 set local "request.jwt.claim.sub" = '22222222-2222-4222-8222-222222222222';

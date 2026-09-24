@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `5a208d4c4ed6fd7d9b52ea992bbcb3a78d84d82c`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Newly reconciled Core V6 items below use merged PR #538 source plus exact-head V6 Phase 1 Build Gate `35961956126` SUCCESS; full inherited-regression convergence on the integrated line remains separately required by the parity/release gates.
+Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f805`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -41,14 +41,14 @@ Evidence checkpoint: integrated V6 head `5a208d4c4ed6fd7d9b52ea992bbcb3a78d84d82
 - [x] CI starts a real disposable local Supabase/Postgres environment without hosted project credentials.
 - [x] Clean disposable database reset applies the supported released-V5 reconstruction plus current V6 forward migrations from zero.
 - [x] Upgrade-path database test represents the supported released-V5→current-V6 path. Direct V4→V6 is no longer the supported V6 baseline because V6 starts from released V5.
-- [ ] Schema/type drift check exists.
+- [x] Schema/type drift check exists: Database CI generates local TypeScript database types twice, compares them byte-for-byte, and verifies the reviewed SHA-256 digest against the exact disposable V5→V6 replay.
 - [x] Generated TypeScript database types are produced deterministically twice in local CI and compared byte-for-byte.
 - [x] Two populated congregations exist in deterministic fixtures.
 - [x] Fixtures include ordinary members, ministry roles and a platform-privileged identity.
 - [x] RLS allow/deny tests execute against the real disposable database as database callers.
 - [x] Anonymous/public privilege exposure is explicitly tested for covered sensitive objects.
 - [ ] Cross-congregation denial is tested for every sensitive migrated domain.
-- [ ] `SECURITY DEFINER` / `SECURITY INVOKER` behavior is actually executed.
+- [x] `SECURITY DEFINER` / `SECURITY INVOKER` behavior is actually executed: pgTAP/RLS suites invoke covered privileged helpers under realistic authenticated/service-role caller contexts while asserting execute grants, pinned search paths, cross-account denial, and fail-closed behavior.
 - [x] Function/table grants and denials are executable CI assertions for the covered tenant/security surface.
 - [x] Privileged function `search_path`/least-privilege requirements are tested for the covered helper functions.
 - [x] Static SQL checks remain fast guards and are supplemented by executable pgTAP/RLS/privilege tests.
