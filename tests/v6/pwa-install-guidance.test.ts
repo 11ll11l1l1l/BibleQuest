@@ -20,6 +20,14 @@ test('PWA install guidance identifies iOS Add to Home Screen fallback', () => {
   );
   assert.equal(
     detectPwaInstallGuidance({
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15',
+      standalone: false,
+      maxTouchPoints: 5,
+    }),
+    'ios-a2hs',
+  );
+  assert.equal(
+    detectPwaInstallGuidance({
       userAgent: 'Mozilla/5.0 (Linux; Android 15; Pixel 9)',
       standalone: false,
     }),
