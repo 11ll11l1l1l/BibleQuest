@@ -204,7 +204,7 @@ revoke all on function public.bible_prune_telemetry(timestamptz) from public, an
 grant execute on function public.bible_prune_telemetry(timestamptz) to service_role;
 
 create or replace view public.bible_telemetry_daily with (security_invoker=true) as
-select date_trunc('day',started_at) day,count(*)::bigint sessions,count(distinct visitor_id)::bigint visitors,
+select date_trunc('day',started_at) as "day",count(*)::bigint sessions,count(distinct visitor_id)::bigint visitors,
 count(distinct user_id) filter(where user_id is not null)::bigint registered_users,
 count(*) filter(where started_user_id is null and user_id is null)::bigint guest_only_sessions,
 count(*) filter(where started_user_id is null and user_id is not null)::bigint guest_to_registered_sessions,
@@ -213,7 +213,7 @@ round(avg(extract(epoch from(last_seen_at-started_at))/60.0)::numeric,2) avg_ses
 from public.bible_telemetry_sessions group by 1;
 
 create or replace view public.bible_telemetry_feature_daily with (security_invoker=true) as
-select date_trunc('day',occurred_at) day,feature,event_name,count(*)::bigint events,count(distinct visitor_id)::bigint visitors,
+select date_trunc('day',occurred_at) as "day",feature,event_name,count(*)::bigint events,count(distinct visitor_id)::bigint visitors,
 count(distinct user_id) filter(where user_id is not null)::bigint registered_users
 from public.bible_telemetry_events group by 1,2,3;
 
