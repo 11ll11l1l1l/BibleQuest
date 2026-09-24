@@ -5,6 +5,8 @@ import { createAssignmentsService } from '../../src/app/assignments.js';
 import { createCalendarService } from '../../src/app/calendar.js';
 import { createJourneyGroupsService } from '../../src/app/journey-groups.js';
 import { createEncouragementsService } from '../../src/app/encouragements.js';
+import { createPresenceService } from '../../src/app/presence.js';
+import { createLeaderCenterService } from '../../src/app/leader-center.js';
 
 function deferred<T = void>() {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -295,4 +297,92 @@ describe('product account and tenant stale-response isolation', () => {
     session.setUser('user-a');
     assert.deepEqual(encouragements.snapshot().items, []);
   });
+  it('Presence and Leader Center suppress a congregation-A aggregate that resolves after account switch', async () => {
+    const session = mutableSession();
+    let active = { congregationId: 'cong-a', userId: 'user-a' };
+    const countStarted = deferred();
+    const releaseCount = deferred();
+    const congregation = {
+      async load() { return [active]; },
+      getActive() { return active; },
+      can(id: string, capability: string) {
+        return capability === 'read' && id === active.congregationId && active.userId === session.getState().user?.id;
+      },
+    };
+    const store = {
+      setState() { return {}; },
+      subscribe() { return () => undefined; },
+    };
+    const presence = createPresenceService({
+      api: {
+        async touch() { return {}; },
+        async list() { return []; },
+        async leave() { return {}; },
+        async activeCount() {
+          countStarted.resolve();
+          await releaseCount.promise;
+          return 7;
+        },
+      },
+      session,
+      congregation,
+      store,
+      setIntervalFn: () => 1,
+      clearIntervalFn: () => undefined,
+    });
+
+    const staleCount = presence.activeCount('cong-a', 30);
+    await countStarted.promise;
+    session.setUser('user-b');
+    active = { congregationId: 'cong-b', userId: 'user-b' };
+    releaseCount.resolve();
+    assert.equal(await staleCount, null);
+
+    session.setUser('user-a');
+    active = { congregationId: 'cong-a', userId: 'user-a' };
+    let assignmentSnapshot: any = {
+      status: 'ready',
+      userId: 'user-a',
+      role: 'leader',
+      congregationId: 'cong-a',
+      congregationName: 'Church A',
+      assignments: [],
+    };
+    const leaderCountStarted = deferred();
+    const releaseLeaderCount = deferred();
+    const assignments = {
+      async load() { return assignmentSnapshot; },
+      snapshot() { return assignmentSnapshot; },
+      async loadLifecycle() { return []; },
+      async loadPublishTargets() { return { ...assignmentSnapshot, publishTargets: { members: [], groups: [], teams: [] } }; },
+    };
+    const leaderCenter = createLeaderCenterService({
+      assignments,
+      presence: {
+        async activeCount() {
+          leaderCountStarted.resolve();
+          await releaseLeaderCount.promise;
+          return { count: 4, windowMinutes: 30 };
+        },
+      },
+    });
+
+    const staleLeader = leaderCenter.load();
+    await leaderCountStarted.promise;
+    assignmentSnapshot = {
+      status: 'ready',
+      userId: 'user-b',
+      role: 'member',
+      congregationId: 'cong-b',
+      congregationName: 'Church B',
+      assignments: [],
+    };
+    releaseLeaderCount.resolve();
+    const result = await staleLeader;
+    assert.equal(result.authorized, false);
+    assert.equal(result.status, 'unauthorized');
+    assert.equal((result as any).congregationId, undefined);
+  });
+
+
 });
