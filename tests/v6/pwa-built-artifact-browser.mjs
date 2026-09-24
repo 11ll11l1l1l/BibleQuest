@@ -134,34 +134,70 @@ try {
 
   // iOS does not expose beforeinstallprompt in the same way as Chromium
   // desktop/Android. Prove the built UI provides explicit Safari
-  // Add-to-Home-Screen guidance instead of hiding the install surface.
-  const iosContext = await browser.newContext({
+  // Add-to-Home-Screen guidance at every required narrow-phone width.
+  const iosWidths = [320, 360, 390, 412, 430];
+  const iosUserAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1';
+  for (const width of iosWidths) {
+    const iosContext = await browser.newContext({
+      viewport: { width, height: 844 },
+      userAgent: iosUserAgent,
+    });
+    const iosPage = await iosContext.newPage();
+    await iosPage.addInitScript(() => {
+      // Chromium may still synthesize beforeinstallprompt even when the UA is
+      // iPhone-like. Safari does not expose that event, so suppress it here to
+      // exercise the real iOS fallback branch deterministically.
+      window.addEventListener('beforeinstallprompt', event => event.stopImmediatePropagation(), true);
+    });
+    await iosPage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
+    await iosPage.locator('#app').waitFor({ state: 'attached' });
+    await waitForResolvedLazyRoute(iosPage, `iOS ${width}px More install guidance`);
+    const iosInstallPanel = iosPage.locator('[data-more-install]');
+    assert(await iosInstallPanel.isVisible(), `iOS ${width}px Add to Home Screen guidance panel is hidden`);
+    const iosGuidance = iosPage.locator('[data-install-guidance]');
+    assert(await iosGuidance.isVisible(), `iOS ${width}px Add to Home Screen guidance text is hidden`);
+    assert(
+      (await iosGuidance.textContent())?.includes('Safari')
+        && (await iosGuidance.textContent())?.includes('Add to Home Screen'),
+      `iOS ${width}px install guidance must name Safari and Add to Home Screen`,
+    );
+    assert(
+      await iosPage.locator('[data-install-app]').isHidden(),
+      `iOS ${width}px fallback must not show an unavailable native install prompt button`,
+    );
+    const overflow = await iosPage.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }));
+    assert(
+      overflow.scrollWidth <= overflow.clientWidth + 1,
+      `iOS ${width}px install guidance overflows horizontally: ${overflow.scrollWidth}px > ${overflow.clientWidth}px`,
+    );
+    await iosContext.close();
+  }
+
+  // Safari exposes navigator.standalone for an app launched from the Home
+  // Screen. Prove that path is treated as already installed even when
+  // Chromium's display-mode emulation does not report standalone.
+  const iosStandaloneContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+    userAgent: iosUserAgent,
   });
-  const iosPage = await iosContext.newPage();
-  await iosPage.addInitScript(() => {
-    // Chromium may still synthesize beforeinstallprompt even when the UA is
-    // iPhone-like. Safari does not expose that event, so suppress it here to
-    // exercise the real iOS fallback branch deterministically.
+  const iosStandalonePage = await iosStandaloneContext.newPage();
+  await iosStandalonePage.addInitScript(() => {
+    Object.defineProperty(navigator, 'standalone', { configurable: true, value: true });
     window.addEventListener('beforeinstallprompt', event => event.stopImmediatePropagation(), true);
   });
-  await iosPage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
-  await iosPage.locator('#app').waitFor({ state: 'attached' });
-  await waitForResolvedLazyRoute(iosPage, 'iOS More install guidance');
-  const iosInstallPanel = iosPage.locator('[data-more-install]');
-  assert(await iosInstallPanel.isVisible(), 'iOS Add to Home Screen guidance panel is hidden');
-  const iosGuidance = iosPage.locator('[data-install-guidance]');
-  assert(await iosGuidance.isVisible(), 'iOS Add to Home Screen guidance text is hidden');
+  await iosStandalonePage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
+  await iosStandalonePage.locator('#app').waitFor({ state: 'attached' });
+  await waitForResolvedLazyRoute(iosStandalonePage, 'iOS standalone More install state');
   assert(
-    (await iosGuidance.textContent())?.includes('Safari')
-      && (await iosGuidance.textContent())?.includes('Add to Home Screen'),
-    'iOS install guidance must name Safari and Add to Home Screen',
+    await iosStandalonePage.locator('[data-more-install]').isHidden(),
+    'iOS standalone launch must not offer installation again',
   );
-  assert(await iosPage.locator('[data-install-app]').isHidden(), 'iOS fallback must not show an unavailable native install prompt button');
-  await iosContext.close();
+  await iosStandaloneContext.close();
 } finally {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required PNG icon payloads/dimensions, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery, and iOS Safari Add-to-Home-Screen guidance verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required PNG icon payloads/dimensions, four shortcuts/routes, service-worker registration, offline shell reopen, network reconnect recovery at 390px, iOS Safari Add-to-Home-Screen guidance at 320/360/390/412/430px, and iOS standalone installed-state handling at 390px.');
