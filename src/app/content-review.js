@@ -101,7 +101,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
   };
 
   async function refresh(preferredCongregationId=null){
-    const userId=currentUserId(),request=++refreshRequest;
+    const userId=currentUserId(),user=userId?{id:userId}:null,request=++refreshRequest;
     operationRequest++;
     stateGeneration++;
     if(!userId)return reset('signed-out','', '');
@@ -116,7 +116,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       const membershipScopes=(Array.isArray(memberships)?memberships:[]).map(scopeFromMembership).filter(Boolean);
       let access=null,accessError='';
       try{
-        access=await api.platformAccess(userId);
+        access=await api.platformAccess(user.id);
         if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       }catch(error){
         if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
