@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(44);
+select plan(46);
 
 insert into public.bible_media_library (
   id, congregation_id, created_by, media_type, title, youtube_url,
@@ -160,6 +160,33 @@ select is(
   'media producer creates no cross-congregation notification rows'
 );
 
+-- Distinguish congregation-scoped admin authority from the existing Admin B
+-- fixture, which is intentionally also a platform-level bible_app_access admin.
+insert into auth.users (id, email, raw_app_meta_data, raw_user_meta_data)
+values (
+  '22222222-2222-4222-8222-222222222223',
+  'tenant-admin-b@bq-v6.invalid',
+  '{}'::jsonb,
+  '{}'::jsonb
+)
+on conflict (id) do nothing;
+
+insert into public.bible_app_access (user_id, role, active)
+values ('22222222-2222-4222-8222-222222222223','member',true)
+on conflict (user_id) do update set role=excluded.role, active=excluded.active;
+
+insert into public.bible_congregation_members (
+  congregation_id,user_id,role,display_name,active
+) values (
+  '20000000-0000-4000-8000-000000000002',
+  '22222222-2222-4222-8222-222222222223',
+  'admin',
+  'Tenant Admin B',
+  true
+)
+on conflict (congregation_id,user_id) do update
+set role=excluded.role,display_name=excluded.display_name,active=excluded.active;
+
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
 
@@ -314,36 +341,49 @@ select results_eq(
   'Pastor A cannot update congregation B media'
 );
 
-set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222221';
+set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222223';
 
 select results_eq(
-  $$select id from public.bible_media_library order by id$$,
+  $select id from public.bible_media_library order by id$,
   array['d2000000-0000-4000-8000-000000000002'::uuid],
-  'Admin B reads only congregation B media'
+  'congregation-only Admin B reads only congregation B media'
 );
 select lives_ok(
-  $$insert into public.bible_media_library(
+  $insert into public.bible_media_library(
       id,congregation_id,created_by,media_type,title,youtube_url,youtube_id,category
     ) values (
       'd2200000-0000-4000-8000-000000000022',
       '20000000-0000-4000-8000-000000000002',
-      '22222222-2222-4222-8222-222222222221',
-      'youtube_video','Admin B media','https://www.youtube.com/watch?v=admin-b',
+      '22222222-2222-4222-8222-222222222223',
+      'youtube_video','Tenant Admin B media','https://www.youtube.com/watch?v=admin-b',
       'admin-b','bible-study'
-    )$$,
-  'Admin B can curate media inside congregation B'
+    )$,
+  'congregation-only Admin B can curate media inside congregation B'
 );
 select throws_ok(
-  $$insert into public.bible_media_library(
+  $insert into public.bible_media_library(
       congregation_id,created_by,media_type,title,youtube_url,category
     ) values (
       '10000000-0000-4000-8000-000000000001',
-      '22222222-2222-4222-8222-222222222221',
-      'youtube_video','Foreign admin media','https://www.youtube.com/watch?v=foreign-b','other'
-    )$$,
+      '22222222-2222-4222-8222-222222222223',
+      'youtube_video','Foreign tenant-admin media','https://www.youtube.com/watch?v=foreign-b','other'
+    )$,
   '42501',
   null,
-  'Admin B cannot curate media inside congregation A'
+  'congregation-only Admin B cannot curate media inside congregation A'
+);
+
+set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222221';
+
+select results_eq(
+  $select count(*)::bigint from public.bible_media_library$,
+  array[4::bigint],
+  'platform Admin B has intentional reviewer visibility across both congregations'
+);
+select ok(
+  private.bible_can_review_content('10000000-0000-4000-8000-000000000001'::uuid)
+  and private.bible_can_review_content('20000000-0000-4000-8000-000000000002'::uuid),
+  'platform Admin B cross-congregation reviewer authority is explicit'
 );
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111114';
