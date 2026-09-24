@@ -28,8 +28,14 @@ function normalizeRow(row,userId,nowMs=Date.now()){
 export function createNotificationCenterService({api,session}={}){
   if(!api?.list||!api?.setReadState||!api?.markAllRead||!session)throw new Error('Notification Center requires shared API and session owners.');
   let current=Object.freeze({status:'idle',authenticated:false,remoteAvailable:true,userId:'',items:Object.freeze([]),unread:0,error:''});
+  let loadRequest=0;
   const sessionState=()=>session.getState?.()||{};
-  const snapshot=()=>current;
+  const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
+  const snapshot=()=>{
+    const state=sessionState(),userId=currentUserId();
+    if(current.userId&&current.userId!==userId)return Object.freeze({status:userId?'idle':'signed-out',authenticated:Boolean(userId),remoteAvailable:state.remoteAvailable!==false,userId,items:Object.freeze([]),unread:0,error:''});
+    return current;
+  };
   const setState=patch=>{current=Object.freeze({...current,...patch});return current};
   const requireAccount=()=>{
     const state=sessionState();
@@ -38,28 +44,36 @@ export function createNotificationCenterService({api,session}={}){
     return state;
   };
   const publishItems=(items,extra={})=>setState({...extra,items:Object.freeze(items),unread:items.filter(item=>!item.isRead).length,error:''});
+  const assertCurrentContext=userId=>{
+    if(current.userId&&current.userId!==userId)throw notificationError('The account changed. Reload your BibleQuest inbox.','BQ_NOTIFICATION_CONTEXT_STALE');
+  };
 
   async function load(){
-    const state=sessionState();
+    const request=++loadRequest,state=sessionState();
     if(!state.authenticated||!state.user?.id)return setState({status:'signed-out',authenticated:false,remoteAvailable:state.remoteAvailable!==false,userId:'',items:Object.freeze([]),unread:0,error:''});
     if(state.remoteAvailable===false)return setState({status:'unavailable',authenticated:true,remoteAvailable:false,userId:String(state.user.id),items:Object.freeze([]),unread:0,error:'BibleQuest inbox is unavailable in local preview.'});
     const userId=String(state.user.id),now=Date.now();
     setState({status:'loading',authenticated:true,remoteAvailable:true,userId,error:''});
     try{
       const rows=await api.list(userId,new Date(now).toISOString());
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       const items=(Array.isArray(rows)?rows:[]).map(row=>normalizeRow(row,userId,now)).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       return publishItems(items,{status:'ready',authenticated:true,remoteAvailable:true,userId});
     }catch(error){
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
       setState({status:'error',authenticated:true,remoteAvailable:true,userId,error:cleanText(error?.message||error,300)||'Inbox could not be loaded.'});
       throw error;
     }
   }
 
   async function setRead(id,read=true){
-    const state=requireAccount(),userId=String(state.user.id),target=current.items.find(item=>item.id===String(id||''));
+    const state=requireAccount(),userId=String(state.user.id);assertCurrentContext(userId);
+    const target=current.items.find(item=>item.id===String(id||''));
     if(!target)throw notificationError('Choose a notification from the current inbox.','BQ_NOTIFICATION_NOT_FOUND');
     const requestedReadAt=read?new Date().toISOString():null;
     const saved=await api.setReadState(userId,target.id,requestedReadAt);
+    if(currentUserId()!==userId||current.userId!==userId)throw notificationError('The account changed while notification state was saving. Reload your BibleQuest inbox.','BQ_NOTIFICATION_CONTEXT_STALE');
     const normalized=normalizeRow(saved,userId);
     if(normalized.id!==target.id||Boolean(normalized.readAt)!==Boolean(read))throw notificationError('Notification read state did not match the requested update.','BQ_NOTIFICATION_RESPONSE');
     const items=current.items.map(item=>item.id===target.id?normalized:item);
@@ -67,21 +81,25 @@ export function createNotificationCenterService({api,session}={}){
   }
 
   async function markAllRead(){
-    const state=requireAccount(),userId=String(state.user.id);
-    if(!current.items.some(item=>!item.isRead))return current;
+    const state=requireAccount(),userId=String(state.user.id);assertCurrentContext(userId);
+    if(!current.items.some(item=>!item.isRead))return snapshot();
     await api.markAllRead(userId,new Date().toISOString());
+    if(currentUserId()!==userId||current.userId!==userId)throw notificationError('The account changed while notification state was saving. Reload your BibleQuest inbox.','BQ_NOTIFICATION_CONTEXT_STALE');
     return load();
   }
 
   async function openTarget(id){
+    const state=requireAccount(),userId=String(state.user.id);assertCurrentContext(userId);
     const target=current.items.find(item=>item.id===String(id||''));
     if(!target)throw notificationError('Choose a notification from the current inbox.','BQ_NOTIFICATION_NOT_FOUND');
     if(!target.route)throw notificationError('This notification does not have a migrated BibleQuest destination yet.','BQ_NOTIFICATION_TARGET_UNAVAILABLE');
     if(!target.isRead)await setRead(target.id,true);
+    if(currentUserId()!==userId||current.userId!==userId)throw notificationError('The account changed before the notification destination opened. Reload your BibleQuest inbox.','BQ_NOTIFICATION_CONTEXT_STALE');
     return target.route;
   }
 
   function clear(){
+    loadRequest++;
     const state=sessionState();
     current=Object.freeze({status:'idle',authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,userId:state.user?.id?String(state.user.id):'',items:Object.freeze([]),unread:0,error:''});
   }
