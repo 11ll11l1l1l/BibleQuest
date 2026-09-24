@@ -39,7 +39,7 @@ export function createAdminConsoleService({api,session}={}){
   const snapshot=()=>contextUserId&&currentUserId()!==contextUserId?emptyState(currentUserId()?'idle':'signed-out'):Object.freeze({...state});
   const reset=(status,error='',userId='')=>{state=emptyState(status,error);contextUserId=String(userId||'');return snapshot()};
   const staleError=()=>fail('The account changed. Reload Admin Console before continuing.','BQ_ADMIN_CONTEXT_STALE');
-  const ensureReady=()=>{const userId=currentUserId();if(!contextCurrent(userId))throw staleError();if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role))throw fail('Admin Console requires verified Owner/Admin access.','BQ_ADMIN_NOT_READY');return userId};
+  const ensureReady=()=>{const userId=currentUserId();if(contextUserId&&contextUserId!==userId)throw staleError();if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role)||!userId||contextUserId!==userId)throw fail('Admin Console requires verified Owner/Admin access.','BQ_ADMIN_NOT_READY');return userId};
 
   async function refresh(){
     const userId=currentUserId(),request=++refreshRequest;
