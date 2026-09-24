@@ -77,8 +77,10 @@ test('Scripture source/licensing metadata is owned by Bible data, separate from 
 
 test('release checklist never represents WAIVED as PASS', () => {
   const checklist=read('V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md');
+  const policy='- [x] No WAIVED item is represented as PASS.';
   for(const line of checklist.split(/\r?\n/)){
-    if(/^- \[[xX]\]/.test(line)) assert.doesNotMatch(line,/\bWAIVED\b/i);
+    if(/^- \[[xX]\]/.test(line)&&line!==policy) assert.doesNotMatch(line,/\bWAIVED\b/i);
   }
+  assert.ok(checklist.includes(policy));
   assert.match(checklist,/A waiver is not a PASS/);
 });
