@@ -3,6 +3,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   renameSync,
   rmSync,
@@ -11,6 +12,7 @@ import {
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -57,6 +59,17 @@ function walkFiles(directory) {
   return files;
 }
 
+function rewriteIndexLinkHref(html, rel, href) {
+  return html.replace(/<link\b[^>]*>/gi, (tag) => {
+    const relValue = tag.match(/\brel=["']([^"']+)["']/i)?.[1] || '';
+    if (!relValue.split(/\s+/).includes(rel)) return tag;
+    if (/\bhref=["'][^"']*["']/i.test(tag)) {
+      return tag.replace(/\bhref=["'][^"']*["']/i, `href="${href}"`);
+    }
+    return tag.replace(/\s*\/>$|>$/, (ending) => ` href="${href}"${ending}`);
+  });
+}
+
 function copyLegacyRuntime() {
   return {
     name: 'biblequest-v5-runtime-compatibility-copy',
@@ -85,6 +98,16 @@ function copyLegacyRuntime() {
         }
       }
 
+      const builtIndexPath = join(outDir, 'index.html');
+      if (!existsSync(builtIndexPath)) {
+        throw new Error('V6 build produced no index.html for root PWA link normalization.');
+      }
+      let builtIndex = readFileSync(builtIndexPath, 'utf8');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'manifest', 'manifest.webmanifest');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'icon', 'app-icon.svg');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'apple-touch-icon', 'pwa-icon-192.png');
+      writeFileSync(builtIndexPath, builtIndex, 'utf8');
+
       writeFileSync(
         join(outDir, 'bq-build.json'),
         JSON.stringify(
@@ -98,6 +121,15 @@ function copyLegacyRuntime() {
         ) + '\n',
         'utf8',
       );
+    },
+  };
+}
+
+function writeArtifactIntegrity() {
+  return {
+    name: 'biblequest-v6-artifact-integrity',
+    async closeBundle() {
+      await writeArtifactIntegrityManifest(outDir, buildSha);
     },
   };
 }
@@ -147,7 +179,10 @@ export default defineConfig({
   define: {
     __BQ_BUILD_SHA__: JSON.stringify(buildSha),
   },
-  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps()],
+  optimizeDeps: {
+    entries: ['index.html'],
+  },
+  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps(), writeArtifactIntegrity()],
   build: {
     outDir,
     emptyOutDir: true,

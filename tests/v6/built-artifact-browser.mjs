@@ -1,8 +1,12 @@
 import { chromium } from 'playwright';
 
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
-const widths = [320, 360, 390, 412, 430];
+const widths = [320, 360, 390, 412, 430, 1280];
 const representativeRoutes = ['home', 'reader', 'assignments', 'calendar', 'more'];
+const performanceBudgets = {
+  startupDomContentLoadedMs: 4000,
+  criticalRouteReadyMs: 4000,
+};
 const canonicalRoutes = [
   'home',
   'mission',
@@ -51,6 +55,20 @@ const canonicalRoutes = [
   'account',
 ];
 
+async function assertPerformanceBudget(page, route, label) {
+  const metrics = await page.evaluate(() => {
+    const navigation = performance.getEntriesByType('navigation')[0];
+    return {
+      domContentLoadedMs: navigation?.domContentLoadedEventEnd || 0,
+    };
+  });
+  if (metrics.domContentLoadedMs > performanceBudgets.startupDomContentLoadedMs) {
+    throw new Error(
+      `${label} #/${route}: DOMContentLoaded ${Math.round(metrics.domContentLoadedMs)}ms exceeds ${performanceBudgets.startupDomContentLoadedMs}ms budget`,
+    );
+  }
+}
+
 async function assertRoute(page, route, label) {
   await page.goto(`${baseUrl}/#/${route}`, { waitUntil: 'networkidle' });
   await page.locator('#app').waitFor({ state: 'attached' });
@@ -67,8 +85,76 @@ async function assertRoute(page, route, label) {
   if (resolvedHash !== `#/${route}`) throw new Error(`${label} #/${route}: resolved ${resolvedHash}`);
 }
 
+async function assertAutomatedAccessibility(page, label) {
+  const violations = await page.evaluate(() => {
+    const issues = [];
+    const lang = document.documentElement.getAttribute('lang')?.trim();
+    if (!lang) issues.push('document <html> is missing lang');
+
+    const ids = [...document.querySelectorAll('[id]')].map(node => node.id).filter(Boolean);
+    const duplicates = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+    if (duplicates.length) issues.push(`duplicate ids: ${duplicates.join(', ')}`);
+
+    for (const image of document.querySelectorAll('img')) {
+      if (!image.hasAttribute('alt')) issues.push(`img missing alt: ${image.currentSrc || image.src || '<inline>'}`);
+    }
+
+    const interactive = document.querySelectorAll('button, a[href], input, select, textarea, [role="button"], [role="link"]');
+    for (const element of interactive) {
+      if (element.matches('[aria-hidden="true"], [hidden]')) continue;
+      const labelledBy = element.getAttribute('aria-labelledby');
+      const labelledText = labelledBy
+        ? labelledBy.split(/\s+/).map(id => document.getElementById(id)?.textContent?.trim() || '').join(' ').trim()
+        : '';
+      const name = (
+        element.getAttribute('aria-label')
+        || labelledText
+        || element.getAttribute('title')
+        || element.getAttribute('alt')
+        || element.textContent
+        || element.getAttribute('value')
+        || ''
+      ).trim();
+      if (!name) issues.push(`unnamed interactive element: ${element.outerHTML.slice(0, 180)}`);
+    }
+
+    for (const control of document.querySelectorAll('input:not([type="hidden"]), select, textarea')) {
+      if (control.matches('[aria-hidden="true"], [hidden]')) continue;
+      const id = control.id;
+      const labelled = Boolean(
+        control.getAttribute('aria-label')
+        || control.getAttribute('aria-labelledby')
+        || (id && document.querySelector(`label[for="${CSS.escape(id)}"]`))
+        || control.closest('label')
+      );
+      if (!labelled) issues.push(`form control missing label: ${control.outerHTML.slice(0, 180)}`);
+    }
+
+    return issues;
+  });
+  if (violations.length) {
+    throw new Error(`${label}: automated accessibility violations: ${violations.join(' | ')}`);
+  }
+}
+
+async function assertNoHorizontalOverflow(page, label) {
+  const overflow = await page.evaluate(() => {
+    const root = document.documentElement;
+    return {
+      clientWidth: root.clientWidth,
+      scrollWidth: root.scrollWidth,
+    };
+  });
+  if (overflow.scrollWidth > overflow.clientWidth + 1) {
+    throw new Error(
+      `${label}: horizontal overflow ${overflow.scrollWidth}px > ${overflow.clientWidth}px viewport`,
+    );
+  }
+}
+
 const browser = await chromium.launch({ headless: true });
 try {
+  const representativeFailures = [];
   for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 } });
     const page = await context.newPage();
@@ -76,12 +162,31 @@ try {
     page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
 
     for (const route of representativeRoutes) {
-      await assertRoute(page, route, `${width}px`);
+      try {
+        const routeStartedAt = Date.now();
+        await assertRoute(page, route, `${width}px`);
+        const routeReadyMs = Date.now() - routeStartedAt;
+        if (routeReadyMs > performanceBudgets.criticalRouteReadyMs) {
+          throw new Error(
+            `${width}px #/${route}: route ready ${routeReadyMs}ms exceeds ${performanceBudgets.criticalRouteReadyMs}ms budget`,
+          );
+        }
+        await assertPerformanceBudget(page, route, `${width}px`);
+        await assertNoHorizontalOverflow(page, `${width}px #/${route}`);
+        await assertAutomatedAccessibility(page, `${width}px #/${route}`);
+      } catch (error) {
+        representativeFailures.push(String(error?.message || error));
+      }
     }
 
-    if (pageErrors.length) throw new Error(`${width}px browser errors: ${pageErrors.join(' | ')}`);
+    if (pageErrors.length) representativeFailures.push(`${width}px browser errors: ${pageErrors.join(' | ')}`);
     await context.close();
   }
+
+  // Do not fail immediately on representative-route findings. Continue the
+  // independent deep-link/accessibility/PWA-registration probes so one known
+  // cross-lane defect does not hide unrelated release evidence. The collected
+  // representative failures are still fatal at the end of this harness.
 
   // Exercise every canonical route as a fresh built-artifact deep link. This
   // catches missing compatibility assets/imports and startup-only route
@@ -161,10 +266,14 @@ try {
   });
   if (!sw?.active) throw new Error('390px #/home: PWA service worker registration missing');
   await context.close();
+
+  if (representativeFailures.length) {
+    throw new Error(`Representative browser matrix failures:\n- ${representativeFailures.join('\n- ')}`);
+  }
 } finally {
   await browser.close();
 }
 
 console.log(
-  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
+  `Built-artifact browser parity passed: ${widths.join('/')}px representative routes with startup/critical-route performance budgets, no document-level horizontal overflow and automated accessibility smoke; ${canonicalRoutes.length} canonical direct deep links + not-found at 390px; PWA registration verified at 390px.`,
 );

@@ -6,15 +6,19 @@ export const CLIENT_DIAGNOSTIC_CODES = Object.freeze({
 });
 
 const safeRoute=value=>String(value||'feature').trim().replace(/[^a-z0-9_-]/gi,'').slice(0,80)||'feature';
+const normalizeBuildSha=value=>String(value??'development').trim().slice(0,128)||'development';
+const defaultBuildSha=()=>normalizeBuildSha(typeof __BQ_BUILD_SHA__==='undefined'?'development':__BQ_BUILD_SHA__);
 
-export function createClientDiagnosticsService({ probe, online=()=>globalThis.navigator?.onLine!==false, clock=()=>Date.now(), cacheMilliseconds=5000 }={}){
+export function createClientDiagnosticsService({ probe, online=()=>globalThis.navigator?.onLine!==false, clock=()=>Date.now(), cacheMilliseconds=5000, buildSha=defaultBuildSha() }={}){
   if(typeof probe!=='function'||typeof online!=='function'||typeof clock!=='function')throw new Error('Client diagnostics requires probe, online, and clock boundaries.');
   let probeCache=null;
+  const release=Object.freeze({sha:normalizeBuildSha(buildSha)});
 
   const view=(definition,{route,reachable=null}={})=>Object.freeze({
     ...definition,
     route:safeRoute(route),
     serverReachable:reachable,
+    buildSha:release.sha,
     at:new Date(clock()).toISOString()
   });
 
@@ -45,5 +49,5 @@ export function createClientDiagnosticsService({ probe, online=()=>globalThis.na
     return view(CLIENT_DIAGNOSTIC_CODES.UNKNOWN,{route});
   };
 
-  return Object.freeze({classify,probeConnection:({force=false}={})=>connection(force),codes:CLIENT_DIAGNOSTIC_CODES});
+  return Object.freeze({classify,probeConnection:({force=false}={})=>connection(force),codes:CLIENT_DIAGNOSTIC_CODES,release});
 }

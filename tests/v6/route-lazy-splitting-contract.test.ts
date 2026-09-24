@@ -8,7 +8,8 @@ const bootstrapPath = fileURLToPath(new URL('../../src/app/bootstrap.js', import
 test('V6 route pages are discovered lazily instead of statically bundled into bootstrap', async () => {
   const source = await readFile(bootstrapPath, 'utf8');
 
-  assert.equal(source.includes("import.meta.glob('../features/*/index.js')"), true);
+  assert.equal(source.includes("'../features/*/index.js'"), true);
+  assert.equal(source.includes("'!../features/tutorial/index.js'"), true);
   assert.equal(source.includes("createLazyPage"), true);
 
   const staticFeatureImports = source
