@@ -33,8 +33,9 @@ export function createCouplesCloudService({api,session}){
     if(contextUserId!==userId)clearState(userId);
     return userId;
   };
+  const account=()=>{const userId=identity();if(contextUserId!==userId){pair=null;shared=[];inviteCode='';contextUserId=userId}return userId};
   const beginOperation=()=>{
-    const userId=identity();
+    const userId=account();
     return Object.freeze({userId,generation:contextGeneration,request:++operationRequest});
   };
   const assertOperation=ctx=>{
