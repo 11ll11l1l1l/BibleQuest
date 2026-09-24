@@ -56,12 +56,14 @@ const featureDynamicChunks = manifestEntries
 const files = await walk(outDir);
 const publicSourceMapFiles = files.filter((file) => file.endsWith('.map'));
 const publicSourceMapReferences = [];
+const clientBuildIdentityFiles = [];
 for (const file of files) {
   const path = relative(outDir, file).replaceAll('\\', '/');
   const extension = extname(file).toLowerCase();
   if (!path.startsWith('_v6/') || !new Set(['.js', '.mjs', '.css']).has(extension)) continue;
   const content = await readFile(file, 'utf8');
   if (/sourceMappingURL\s*=/.test(content)) publicSourceMapReferences.push(path);
+  if (javascriptExtensions.has(extension) && content.includes(expectedSha)) clientBuildIdentityFiles.push(path);
 }
 
 let privateSourceMapMetadata;
@@ -130,6 +132,11 @@ const report = {
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
   },
+  releaseIdentity: {
+    expectedSha,
+    clientChunkCount: clientBuildIdentityFiles.length,
+    clientChunks: clientBuildIdentityFiles,
+  },
   sourceMaps: {
     privateDirectory: relative(root, privateSourceMapDir).replaceAll('\\', '/'),
     privateMapCount: privateSourceMapFiles.length,
@@ -150,6 +157,7 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const failures = [];
+if (!clientBuildIdentityFiles.length) failures.push('generated client JavaScript does not embed the exact build SHA for diagnostics');
 if (publicSourceMapFiles.length) failures.push(`public artifact contains ${publicSourceMapFiles.length} source-map file(s)`);
 if (publicSourceMapReferences.length) failures.push(`public V6 chunks expose sourceMappingURL references: ${publicSourceMapReferences.join(', ')}`);
 failures.push(...privateSourceMapFailures);
