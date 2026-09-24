@@ -7,6 +7,11 @@ import { createJourneyGroupsService } from '../../src/app/journey-groups.js';
 import { createEncouragementsService } from '../../src/app/encouragements.js';
 import { createPresenceService } from '../../src/app/presence.js';
 import { createLeaderCenterService } from '../../src/app/leader-center.js';
+import { createCloudNotesService } from '../../src/app/cloud-notes.js';
+import { createWorkspaceService } from '../../src/app/workspace.js';
+import { createLeaderboardsService } from '../../src/app/leaderboards.js';
+import { createCongregationRecognitionService } from '../../src/app/congregation-recognition.js';
+import { createTeamCenterService } from '../../src/app/team-center.js';
 
 function deferred<T = void>() {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -382,6 +387,169 @@ describe('product account and tenant stale-response isolation', () => {
     assert.equal(result.authorized, false);
     assert.equal(result.status, 'unauthorized');
     assert.equal((result as any).congregationId, undefined);
+  });
+
+
+  it('Cloud Notes and Workspace keep Account A private notes out of Account B after a late response', async () => {
+    const session = mutableSession();
+    const aStarted = deferred();
+    const releaseA = deferred();
+    const noteRow = (userId: string) => ({
+      id: `note-${userId}`,
+      user_id: userId,
+      book: 'JHN',
+      chapter: 3,
+      verse_start: 16,
+      verse_end: null,
+      title: `Title ${userId}`,
+      content: `Private ${userId}`,
+      tags: [],
+      note_type: 'study',
+      is_pinned: false,
+      created_at: '2026-09-24T00:00:00.000Z',
+      updated_at: '2026-09-24T00:00:00.000Z',
+    });
+    const noteApi = {
+      async list(userId: string) {
+        if (userId === 'user-a') {
+          aStarted.resolve();
+          await releaseA.promise;
+        }
+        return [noteRow(userId)];
+      },
+      async create() { throw new Error('unused'); },
+      async update() { throw new Error('unused'); },
+      async remove() { throw new Error('unused'); },
+    };
+    const cloudNotes = createCloudNotesService({ api: noteApi, session });
+    const stale = cloudNotes.load();
+    await aStarted.promise;
+    session.setUser('user-b');
+    await cloudNotes.load();
+    releaseA.resolve();
+    await stale;
+    assert.deepEqual(cloudNotes.list().map((row: any) => row.userId), ['user-b']);
+
+    session.setUser('user-a');
+    assert.deepEqual(cloudNotes.list(), []);
+    session.setUser('user-b');
+
+    const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    const reader = { getState: () => ({ translation: 'bsb', book: 'JHN', chapter: 1 }), setBook() {} };
+    const storage = { read: (_key: string, fallback: unknown) => fallback, write: (_key: string, value: unknown) => value };
+    const workspace = createWorkspaceService({ session, cloudNotes, congregation, reader, storage });
+    const ready = await workspace.load();
+    assert.equal(ready.status, 'ready');
+    assert.deepEqual(ready.notes.map((row: any) => row.id), ['note-user-b']);
+
+    session.setUser('user-a');
+    assert.deepEqual(workspace.snapshot().notes, []);
+    assert.deepEqual(workspace.search('Private'), []);
+  });
+
+  it('Leaderboard and Recognition read models cannot commit Account A congregation data after B becomes current', async () => {
+    const session = mutableSession();
+    const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+
+    const boardStarted = deferred();
+    const releaseBoard = deferred();
+    const boardApi = {
+      async load(congregationId: string) {
+        if (congregationId === 'cong-a') {
+          boardStarted.resolve();
+          await releaseBoard.promise;
+        }
+        const userId = congregationId === 'cong-a' ? 'user-a' : 'user-b';
+        return {
+          directory: [{ congregation_id: congregationId, user_id: userId, display_name: userId, active: true }],
+          scores: [{ user_id: userId, category: 'reading', points: congregationId === 'cong-a' ? 99 : 3 }],
+        };
+      },
+    };
+    const board = createLeaderboardsService({ api: boardApi, session, congregation, clock: () => new Date('2026-09-24T00:00:00.000Z') });
+    const staleBoard = board.load();
+    await boardStarted.promise;
+    session.setUser('user-b');
+    const freshBoard = await board.load();
+    assert.equal(freshBoard.congregationId, 'cong-b');
+    assert.deepEqual(freshBoard.rows.map((row: any) => row.userId), ['user-b']);
+    releaseBoard.resolve();
+    await staleBoard;
+    assert.deepEqual(board.snapshot().rows.map((row: any) => row.userId), ['user-b']);
+
+    const recognitionStarted = deferred();
+    const releaseRecognition = deferred();
+    const recognitionApi = {
+      async load(congregationId: string) {
+        if (congregationId === 'cong-a') {
+          recognitionStarted.resolve();
+          await releaseRecognition.promise;
+        }
+        const userId = congregationId === 'cong-a' ? 'user-a' : 'user-b';
+        return {
+          directory: [{ congregation_id: congregationId, user_id: userId, display_name: userId, role: congregationId === 'cong-a' ? 'leader' : 'member', active: true, joined_at: '2026-09-24T00:00:00.000Z' }],
+          catalog: [],
+          badges: [],
+          recognitions: [],
+        };
+      },
+      async award() { throw new Error('unused'); },
+    };
+    session.setUser('user-a');
+    const recognition = createCongregationRecognitionService({ api: recognitionApi, session, congregation });
+    const staleRecognition = recognition.load();
+    await recognitionStarted.promise;
+    session.setUser('user-b');
+    const freshRecognition = await recognition.load();
+    assert.equal(freshRecognition.congregationId, 'cong-b');
+    assert.deepEqual(freshRecognition.members.map((row: any) => row.userId), ['user-b']);
+    releaseRecognition.resolve();
+    await staleRecognition;
+    assert.deepEqual(recognition.snapshot().members.map((row: any) => row.userId), ['user-b']);
+
+    session.setUser('user-a');
+    assert.deepEqual(recognition.snapshot().members, []);
+    assert.deepEqual(board.snapshot().rows, []);
+  });
+
+  it('Team Center keeps the newer account team and directory after a stale A list resolves', async () => {
+    const session = mutableSession();
+    const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    const aStarted = deferred();
+    const releaseA = deferred();
+    const api = {
+      async list(ids: string[]) {
+        const congregationId = ids[0];
+        if (congregationId === 'cong-a') {
+          aStarted.resolve();
+          await releaseA.promise;
+        }
+        const userId = congregationId === 'cong-a' ? 'user-a' : 'user-b';
+        const teamId = congregationId === 'cong-a' ? 'team-a' : 'team-b';
+        return {
+          teams: [{ id: teamId, congregation_id: congregationId, created_by: userId, team_type: 'game_team', name: teamId, active: true, created_at: '2026-09-24T00:00:00.000Z' }],
+          members: [{ team_id: teamId, user_id: userId, joined_at: '2026-09-24T00:00:00.000Z' }],
+          directory: [{ congregation_id: congregationId, user_id: userId, display_name: userId, role: congregationId === 'cong-a' ? 'leader' : 'member', active: true, joined_at: '2026-09-24T00:00:00.000Z' }],
+        };
+      },
+      async create() { return {}; },
+      async add() { return {}; },
+      async remove() { return {}; },
+      async rename() { return {}; },
+      async archive() { return {}; },
+    };
+    const teamCenter = createTeamCenterService({ api, session, congregation });
+    const stale = teamCenter.load();
+    await aStarted.promise;
+    session.setUser('user-b');
+    const fresh = await teamCenter.load();
+    assert.deepEqual(fresh.teams.map((row: any) => row.id), ['team-b']);
+    releaseA.resolve();
+    await stale;
+    assert.deepEqual(teamCenter.snapshot().teams.map((row: any) => row.id), ['team-b']);
+
+    session.setUser('user-a');
+    assert.deepEqual(teamCenter.snapshot().teams, []);
   });
 
 
