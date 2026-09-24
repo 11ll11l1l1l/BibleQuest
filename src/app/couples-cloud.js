@@ -21,7 +21,8 @@ function normalizeShared(row,pairId){
 
 export function createCouplesCloudService({api,session}){
   if(!api||!session)throw new Error('Couples cloud requires shared API and session owners.');
-  let pair=null,shared=[],inviteCode='',contextUserId='',contextGeneration=0,operationRequest=0;
+  let pair=null,shared=[],inviteCode='',contextUserId='';
+  let contextGeneration=0,operationRequest=0;
   const sessionState=()=>session.getState?.()||{};
   const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
   const clearState=(userId='')=>{pair=null;shared=[];inviteCode='';contextUserId=String(userId||'');contextGeneration++;operationRequest++};
@@ -127,6 +128,6 @@ export function createCouplesCloudService({api,session}){
     pair=null;shared=[];inviteCode='';
     return snapshot();
   }
-  function clear(){clearState('')}
+  function clear(){pair=null;shared=[];inviteCode='';contextUserId=''}
   return Object.freeze({snapshot,load,createPair,join,refreshShared,completeJourney,leave,clear});
 }
