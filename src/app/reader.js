@@ -1,5 +1,6 @@
 import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
 import { deriveVersePeek } from '../v6/reader/context-helpers.ts';
+import { readerSearchResponseMatches } from '../v6/reader/scripture-repository.ts';
 
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
@@ -124,9 +125,13 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
 
   async function search(query, options) {
     const translation = state.translation;
+    const limit = options?.limit ?? 30;
     const result = await bible.search(translation, query, options);
     if (state.translation !== translation) {
       throw new Error('Reader translation changed while Scripture search was running.');
+    }
+    if (!readerSearchResponseMatches(String(query ?? ''), Number(limit), result)) {
+      throw new Error('Scripture search response does not match the Reader request.');
     }
     return result;
   }
