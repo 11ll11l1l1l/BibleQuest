@@ -1,0 +1,31 @@
+name: V6 Deployed Artifact Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: Exact BibleQuest Cloudflare Pages preview or production base URL
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact selected commit
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify deployed bytes and exact source identity
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}
+          BQ_EXPECTED_SHA: ${{ github.sha }}
+        run: node scripts/v6-deployment-verify.mjs
