@@ -84,6 +84,16 @@ function searchResultMatches(query: string, limit: number, result: ReaderSearchR
   return true;
 }
 
+export function readerSearchResponseMatches(
+  query: string,
+  limit: number,
+  result: ReaderSearchResult,
+): boolean {
+  const normalized = query.trim().replace(/\s+/g, ' ');
+  if (!normalized || !Number.isSafeInteger(limit) || limit < 1 || limit > 100) return false;
+  return searchResultMatches(normalized, limit, result);
+}
+
 /**
  * DOM-independent Reader repository seam. It keeps the route/view from owning
  * Scripture transport and rejects provider payloads for a different passage or
@@ -139,7 +149,7 @@ export class ScriptureRepository {
     }
     try {
       const result = await this.provider.search(translationId, normalized, limit);
-      if (!searchResultMatches(normalized, limit, result)) {
+      if (!readerSearchResponseMatches(normalized, limit, result)) {
         return Object.freeze({ status: 'failed', reason: 'mismatched-content', retryable: true });
       }
       return Object.freeze({ status: 'ready', value: result });
