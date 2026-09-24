@@ -139,3 +139,52 @@ test('Context Lab rejects blank or out-of-range Scripture while preserving expli
     unavailable,
   );
 });
+
+
+test('Verse Peek rejects internally mismatched chapter and book metadata', () => {
+  assert.equal(
+    deriveVersePeek({ ...john, verses: [{ chapter: 4, verse: 16, text: 'wrong chapter fixture' }] }, 16),
+    null,
+  );
+  assert.equal(
+    deriveVersePeek({ ...john, book: { ...john.book, code: '   ' } }, 16),
+    null,
+  );
+  assert.equal(
+    deriveVersePeek({ ...john, book: { ...john.book, chapters: 2 } }, 16),
+    null,
+  );
+});
+
+test('Context Lab rejects mismatched unavailable payloads instead of trusting their unavailable flag', async () => {
+  const mismatchedUnavailable = {
+    ...johnContext,
+    available: false,
+    reason: 'pack unavailable',
+    book: { code: 'GEN', name: 'Genesis', chapters: 50 },
+  };
+  const provider = {
+    loadContext: async () => mismatchedUnavailable,
+  } as unknown as ScriptureContentProvider;
+
+  assert.equal(
+    await loadContextLab(provider, { translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    null,
+  );
+});
+
+test('Context Lab preserves a well-formed unavailable state for the exact requested verse', async () => {
+  const unavailable = {
+    ...johnContext,
+    available: false,
+    reason: 'context pack unavailable',
+  };
+  const provider = {
+    loadContext: async () => unavailable,
+  } as unknown as ScriptureContentProvider;
+
+  assert.equal(
+    await loadContextLab(provider, { translationId: 'bsb', bookCode: 'JHN', chapter: 3, verse: 16 }),
+    unavailable,
+  );
+});
