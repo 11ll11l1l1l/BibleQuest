@@ -2,6 +2,7 @@ import type {
   ReaderBookRef,
   ReaderContext,
   ReaderSearchResult,
+  ReaderLocation,
   ReaderTranslationId,
   ReaderVerse,
   ScriptureContentProvider,
@@ -42,7 +43,7 @@ export function createLegacyBibleScriptureProvider(
   bible: LegacyBibleDataService,
 ): ScriptureContentProvider {
   return Object.freeze({
-    async loadChapter(location) {
+    async loadChapter(location: ReaderLocation) {
       const loaded = await bible.loadChapter(
         location.translationId,
         location.bookCode,
@@ -62,7 +63,7 @@ export function createLegacyBibleScriptureProvider(
       );
     },
 
-    async loadContext(location) {
+    async loadContext(location: ReaderLocation & Readonly<{ verse: number }>) {
       return bible.lexicalContext(
         location.bookCode,
         location.chapter,
