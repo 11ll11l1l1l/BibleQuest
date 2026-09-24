@@ -10,6 +10,8 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
+Second certification reconciliation from integrated head `0e00188c3144a137ca48dd927faa954bfc7a361a`: previously integrated Database CI covers Presence, Journey Group/team/Live Room and media/notification tenant boundaries; inherited Leader Center contracts plus a focused stale-tenant unit regression prove the composition fails closed after an active-congregation change; per-book Recall uses demand-loaded pack fetches; Scripture source/license/attribution metadata remains in the Bible data owner; and the release checklist itself is regression-guarded so WAIVED is never counted as PASS.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -111,7 +113,7 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [x] Shared question/feedback/result/scoreboard primitives exist.
 - [ ] Raw decorative emoji are removed where intentional art assets exist.
 - [x] Accessible labels remain independent from decorative art.
-- [ ] Recall/game content is lazy-loaded where appropriate.
+- [x] Recall/game content is lazy-loaded where appropriate.
 - [x] Representative engine sessions are deterministic/replayable in unit tests.
 - [ ] All existing game launcher→result flows pass browser regression.
 
@@ -126,7 +128,7 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [ ] Continue-watching/resume state exists where accepted.
 - [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
 - [ ] Background/foreground lifecycle is tested.
-- [ ] Media curation remains server-authorized.
+- [x] Media curation remains server-authorized.
 - [ ] Old dead Media Library owner is removed only after live routes have parity/evidence.
 
 ## I. Push notifications and background delivery
@@ -165,7 +167,7 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [x] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
 - [ ] Upcoming due items/events surface is available.
 - [ ] Leader announcement/notification publishing is integrated.
-- [ ] Journey Group/team management entry points are integrated where applicable.
+- [x] Journey Group/team management entry points are integrated where applicable.
 - [ ] Moderation/review entry points preserve existing server authority.
 - [ ] Role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
@@ -181,9 +183,9 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [ ] Congregation profile/settings workflow exists as accepted.
 - [ ] Congregation provisioning workflow exists as accepted.
 - [ ] Assignments/responses cross-tenant isolation passes.
-- [ ] Presence cross-tenant isolation passes.
-- [ ] Groups/teams/rooms cross-tenant isolation passes.
-- [ ] Media/notifications/Leader Center cross-tenant isolation passes.
+- [x] Presence cross-tenant isolation passes.
+- [x] Groups/teams/rooms cross-tenant isolation passes.
+- [x] Media/notifications/Leader Center cross-tenant isolation passes.
 - [ ] Any inter-congregation directory/shared-resource feature is opt-in and separately approved, not implied by tenancy support.
 
 ## M. Auth/admin/security hardening
@@ -206,7 +208,7 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [ ] Icon/art registry replaces scattered decorative symbols where applicable.
 - [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
 - [x] Existing supported-language and Japanese/furigana behavior is preserved.
-- [ ] Scripture licensing/source metadata remains separate from UI localization.
+- [x] Scripture licensing/source metadata remains separate from UI localization.
 - [ ] Automated accessibility checks run on built artifacts.
 - [ ] Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.
 
@@ -235,7 +237,7 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 - [ ] V4→V6 route/feature parity matrix is complete.
 - [ ] One exact V6 RC SHA passes all applicable automated gates.
 - [ ] Required field/device evidence is attached to exact candidate.
-- [ ] No WAIVED item is represented as PASS.
+- [x] No WAIVED item is represented as PASS.
 - [ ] Production promotion uses the exact certified candidate.
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [ ] V4 rollback reference remains available through V6 production acceptance.
