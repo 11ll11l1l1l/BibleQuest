@@ -1,6 +1,7 @@
 import { createContextLab } from './context.js';
 import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary.js';
-import { japaneseFuriganaControl, japaneseFuriganaRecoveryStatus } from './furigana.js';
+import { japaneseFuriganaControl } from './furigana.js';
+import { japaneseFuriganaRecoveryStatus } from './furigana.js';
 import { presentReaderChapter, readerChapterHeading } from '../../v6/reader/presentation.ts';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
