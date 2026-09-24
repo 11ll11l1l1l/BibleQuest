@@ -5,6 +5,10 @@
 -- rows by user_id, but the generic browser-grant parity migration grants the
 -- whole UPDATE operation whenever an UPDATE policy exists. Narrow the table
 -- privilege to the single field the released client actually writes.
+-- Anonymous users have no inbox use case. Remove any inherited/default grant
+-- before narrowing authenticated mutation privileges.
+revoke all privileges on table public.bible_notifications from anon;
+
 revoke update on table public.bible_notifications from authenticated;
 grant update (read_at) on table public.bible_notifications to authenticated;
 
