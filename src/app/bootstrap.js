@@ -64,6 +64,7 @@ import { createEncouragementsService } from './encouragements.js';
 import { createCommunityBridgeService } from './community-bridge.js';
 import { createOperationalRecoveryService } from './operational-recovery.js';
 import { createClientDiagnosticsService } from '../core/client-diagnostics.js';
+import { createTelemetryService } from './telemetry.js';
 import { createPwaInstallService } from './pwa-install.js';
 import { createPushSubscriptionService } from './push-subscription.js';
 import { createPushSubscriptionPersistence } from './push-subscription-persistence.js';
@@ -217,6 +218,7 @@ function boot(root){
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
   const session=createSessionService({auth:api.auth,store});
+  const telemetry=createTelemetryService({api:api.telemetry,session,storage:privateStorage,getRoute:()=>store.getState().route});
   const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress,ownerStorage:authStorage,cacheStorage:privateStorage});
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
   const push=createPushSubscriptionService({session,persistence:pushPersistence,serviceWorker:globalThis.navigator?.serviceWorker,notification:globalThis.Notification,applicationServerKey:V5_PUSH_VAPID_PUBLIC_KEY,ownerStorage:authStorage});
@@ -348,7 +350,7 @@ function boot(root){
   router=createRouter({routes,onRoute(route,renderPage){
     const result=recovery.run({
       route,
-      operation:()=>{store.setState(current=>({...current,route}));shell.render(route,renderPage());contentReportingRuntime?.refresh()},
+      operation:()=>{store.setState(current=>({...current,route}));telemetry.trackRoute(route);shell.render(route,renderPage());contentReportingRuntime?.refresh()},
       retry:()=>router.navigate(route),
       home:()=>router.navigate('home')
     });
@@ -412,8 +414,9 @@ function boot(root){
     unsubscribeModeration=store.subscribe(syncModeration),
     unsubscribePushOnboarding=store.subscribe(syncPushOnboarding),
     unsubscribeAdminAccess=store.subscribe(syncAdminAccess),
-    unsubscribeNotificationSettings=store.subscribe(syncNotificationSettings);
-  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());router.start();
+    unsubscribeNotificationSettings=store.subscribe(syncNotificationSettings),
+    unsubscribeTelemetry=store.subscribe(state=>telemetry.syncSession(state?.session));
+  syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
@@ -421,6 +424,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
