@@ -30,7 +30,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
         const heading = readerChapterHeading(chapter.book, chapter.chapter);
         const presentation = licensed ? null : presentReaderChapter(chapter);
         currentChapter=chapter;
-        const furiganaControl = japanese && furigana ? `${japaneseFuriganaControl(furigana.getState())}<div data-jp-furigana-status aria-live="polite"></div>` : '';
+        const furiganaControl = japanese && furigana ? `${japaneseFuriganaControl(furigana.getState())}<div data-reader-furigana-status aria-live="polite"></div>` : '';
         const vocabularyControl = japanese && vocabulary ? japaneseVocabularyControl(vocabulary.getState()) : '';
         const searchControl = licensed ? '<p class="bq-reader-note bq-licensed-search-note" data-licensed-search-note>NLT search stays in the licensed external reader. Choose the book and chapter here, then open that passage externally.</p>' : '<form class="bq-reader-search" data-reader-search><label>Search this translation<input name="query" minlength="3" aria-label="Search this translation" placeholder="John 3:16 or a phrase" required></label><button type="submit" class="bq-primary-button">Search</button></form>';
         const externalControl = licensed ? '' : `<div class="bq-external-links"><span>Open this passage externally</span>${links.map(link => `<a ${externalAttrs} data-external-reader="${escapeHtml(link.id)}" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
@@ -48,7 +48,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null }) {
       const applyFurigana = async (chapter,japanese,{retrying=false}={}) => {
         const pass=++furiganaPass;
         if(!japanese||!furigana||chapter.translation.mode==='licensed-link') return;
-        const status=host.querySelector('[data-jp-furigana-status]');
+        const status=host.querySelector('[data-reader-furigana-status]');
         if(status) status.innerHTML=japaneseFuriganaRecoveryStatus({retrying});
         const rendered=await Promise.all(chapter.verses.map(async verse=>{try{return {verse:verse.verse,...await furigana.render(verse.text)}}catch{return {verse:verse.verse,html:escapeHtml(verse.text),fallback:true}}}));
         if(pass!==furiganaPass||reader.getState().translation!=='jko') return;
