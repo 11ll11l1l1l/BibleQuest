@@ -4,10 +4,10 @@ import test from 'node:test';
 import {
   canUseJapaneseVocabulary,
   selectJapaneseVocabularyNotes,
-  type JapaneseVocabularyEntry,
+  type CuratedJapaneseVocabularyEntry,
 } from '../../src/v6/reader/japanese-vocabulary.ts';
 
-const vocabulary: readonly JapaneseVocabularyEntry[] = Object.freeze([
+const vocabulary: readonly CuratedJapaneseVocabularyEntry[] = Object.freeze([
   Object.freeze({ term: '預言', reading: 'よげん', meaning: '神から託されたことばを伝えること', simple: '神のことばを伝えること', en: 'prophecy' }),
   Object.freeze({ term: '預言者', reading: 'よげんしゃ', meaning: '神から託されたことばを伝える人', simple: '神のメッセージを伝える人', en: 'prophet' }),
   Object.freeze({ term: '神の国', reading: 'かみのくに', meaning: '神の支配・統治', simple: '神が王として治められること', en: 'kingdom of God' }),
@@ -52,7 +52,7 @@ test('retains the accepted maximum-three Reader behavior with exact curated fiel
 });
 
 test('fails closed for malformed reviewed entries and invalid limits', () => {
-  const malformed: readonly JapaneseVocabularyEntry[] = [
+  const malformed: readonly CuratedJapaneseVocabularyEntry[] = [
     ...vocabulary,
     { term: '偽語', reading: '', meaning: 'must not surface', simple: 'must not surface', en: 'invalid' },
   ];
