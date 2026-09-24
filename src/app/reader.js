@@ -1,4 +1,6 @@
 import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
+import { deriveVersePeek } from '../v6/reader/context-helpers.ts';
+import { readerSearchResponseMatches } from '../v6/reader/scripture-repository.ts';
 
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
@@ -60,7 +62,23 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   async function load() {
-    return bible.loadChapter(state.translation, state.book, state.chapter);
+    const request = Object.freeze({
+      translation: state.translation,
+      book: state.book,
+      chapter: state.chapter,
+    });
+    const loaded = await bible.loadChapter(request.translation, request.book, request.chapter);
+    if (
+      state.translation !== request.translation
+      || state.book !== request.book
+      || state.chapter !== request.chapter
+    ) throw new Error('Reader passage changed while Scripture was loading.');
+    if (
+      loaded?.translation?.id !== request.translation
+      || loaded?.book?.code?.trim?.().toUpperCase() !== request.book.trim().toUpperCase()
+      || loaded?.chapter !== request.chapter
+    ) throw new Error('Scripture response does not match the requested Reader passage.');
+    return loaded;
   }
 
   async function getOfflineStatus() {
@@ -106,7 +124,16 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   async function search(query, options) {
-    return bible.search(state.translation, query, options);
+    const translation = state.translation;
+    const limit = options?.limit ?? 30;
+    const result = await bible.search(translation, query, options);
+    if (state.translation !== translation) {
+      throw new Error('Reader translation changed while Scripture search was running.');
+    }
+    if (!readerSearchResponseMatches(String(query ?? ''), Number(limit), result)) {
+      throw new Error('Scripture search response does not match the Reader request.');
+    }
+    return result;
   }
 
   async function openSearchResult(result) {
@@ -114,10 +141,33 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
     const chapter = Number(result?.chapter);
     const verse = Number(result?.verse);
     if (!Number.isInteger(chapter) || chapter < 1 || chapter > book.chapters || !Number.isInteger(verse) || verse < 1) throw new Error('Invalid search result.');
+
+    const requestState = Object.freeze({
+      translation: state.translation,
+      book: state.book,
+      chapter: state.chapter,
+    });
+    const loaded = await bible.loadChapter(requestState.translation, book.code, chapter);
+    if (
+      state.translation !== requestState.translation
+      || state.book !== requestState.book
+      || state.chapter !== requestState.chapter
+    ) throw new Error('Reader passage changed while opening the search result.');
+    if (loaded?.translation?.id !== requestState.translation) throw new Error('Search result content does not match the selected translation.');
+    const projection = deriveVersePeek({
+      translationId: requestState.translation,
+      book: loaded.book,
+      chapter: loaded.chapter,
+      verses: loaded.verses,
+    }, verse);
+    if (
+      !projection
+      || projection.bookCode.trim().toUpperCase() !== book.code.trim().toUpperCase()
+      || projection.chapter !== chapter
+    ) throw new Error('Search result verse is unavailable.');
+
     state = { ...state, book: book.code, chapter };
     persist();
-    const loaded = await load();
-    if (!loaded.verses.some(item => item.verse <= verse && (item.verseEnd || item.verse) >= verse)) throw new Error('Search result verse is unavailable.');
     return Object.freeze({ chapter: loaded, verse });
   }
 
@@ -125,10 +175,19 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
     const number = Number(verse);
     if (!Number.isInteger(number) || number < 1) throw new Error('Invalid verse.');
     const loaded = await load();
-    const found = loaded.verses.find(item => item.verse <= number && (item.verseEnd || item.verse) >= number);
-    if (!found) throw new Error('Verse is unavailable.');
-    const label=(found.verseEnd || found.verse)>found.verse?`${found.verse}–${found.verseEnd}`:String(found.verse);
-    return Object.freeze({ ...found, reference: `${loaded.book.name} ${loaded.chapter}:${label}`, links: bible.externalLinks(loaded.book.code, loaded.chapter, number) });
+    if (loaded?.translation?.id !== state.translation) throw new Error('Verse content does not match the selected translation.');
+    const projection = deriveVersePeek({
+      translationId: state.translation,
+      book: loaded.book,
+      chapter: loaded.chapter,
+      verses: loaded.verses,
+    }, number);
+    if (!projection) throw new Error('Verse is unavailable.');
+    return Object.freeze({
+      ...projection.scripture,
+      reference: projection.reference,
+      links: bible.externalLinks(projection.bookCode, projection.chapter, number),
+    });
   }
 
   async function contextChapter(code = state.book, chapter = state.chapter) {
