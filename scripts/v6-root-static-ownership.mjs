@@ -67,6 +67,10 @@ function linkHrefForRel(rel) {
   return tag?.match(/\bhref=["']([^"']+)["']/i)?.[1] || null;
 }
 const builtIndexRefs = { manifest: linkHrefForRel('manifest'), icon: linkHrefForRel('icon'), appleTouchIcon: linkHrefForRel('apple-touch-icon') };
+const expectedIndexRefs = { manifest: 'manifest.webmanifest', icon: 'app-icon.svg', appleTouchIcon: 'pwa-icon-192.png' };
+const mismatchedIndexRefs = Object.entries(expectedIndexRefs)
+  .filter(([role, expected]) => builtIndexRefs[role] !== expected)
+  .map(([role, expected]) => `${role}: expected ${expected}, got ${builtIndexRefs[role] || '<missing>'}`);
 const missingIndexRefs = [];
 for (const [role, ref] of Object.entries(builtIndexRefs)) {
   if (!ref) { missingIndexRefs.push(`${role} (missing link)`); continue; }
@@ -92,7 +96,7 @@ for (const path of await listFiles(outDir)) {
   }
 }
 
-const report = { ownership:'vite-root-static-compatibility-copy', requiredFiles:requiredRootStatic.map((path)=>basename(path)), totalBytes, manifestIconCount:Array.isArray(manifest.icons)?manifest.icons.length:0, manifestShortcutCount:Array.isArray(manifest.shortcuts)?manifest.shortcuts.length:0, missingSource, missingBuilt, changed, missingManifestTargets, builtIndexRefs, missingIndexRefs, privilegedSecretMarkers };
+const report = { ownership:'vite-root-static-compatibility-copy', requiredFiles:requiredRootStatic.map((path)=>basename(path)), totalBytes, manifestIconCount:Array.isArray(manifest.icons)?manifest.icons.length:0, manifestShortcutCount:Array.isArray(manifest.shortcuts)?manifest.shortcuts.length:0, missingSource, missingBuilt, changed, missingManifestTargets, builtIndexRefs, expectedIndexRefs, mismatchedIndexRefs, missingIndexRefs, privilegedSecretMarkers };
 console.log(JSON.stringify(report, null, 2));
 const failures = [];
 if (missingSource.length) failures.push(`required source files missing: ${missingSource.join(', ')}`);
@@ -100,6 +104,7 @@ if (missingBuilt.length) failures.push(`required files missing from dist-v6: ${m
 if (changed.length) failures.push(`root static output differs from source: ${changed.join(', ')}`);
 if (missingManifestTargets.length) failures.push(`manifest targets missing/unsafe: ${missingManifestTargets.join(', ')}`);
 if (missingIndexRefs.length) failures.push(`built index PWA links invalid: ${missingIndexRefs.join(', ')}`);
+if (mismatchedIndexRefs.length) failures.push(`built index PWA links do not use root-owned assets: ${mismatchedIndexRefs.join(', ')}`);
 if (privilegedSecretMarkers.length) failures.push(`privileged secret markers present in public client artifact: ${privilegedSecretMarkers.join(', ')}`);
 if (!Array.isArray(manifest.icons) || manifest.icons.length < 3) failures.push('manifest icon inventory is incomplete');
 if (!Array.isArray(manifest.shortcuts) || manifest.shortcuts.length < 4) failures.push('manifest shortcut inventory is incomplete');
