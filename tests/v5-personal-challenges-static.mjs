@@ -62,7 +62,8 @@ for(const token of[
   "createPersonalChallengesCloudSyncService",
   "challenges:()=>challengesPage",
   "onChallenges:()=>router.navigate('challenges')",
-  "['personal-challenges',personalChallengesCloudSync]",
+  "createProductAccountResumeOwners({",
+  "'personal-challenges':personalChallengesCloudSync",
   "personalChallengesCloudSync.dispose()"
 ]) assert.ok(bootstrap.includes(token),'Bootstrap missing active Personal Challenges composition: '+token);
 
