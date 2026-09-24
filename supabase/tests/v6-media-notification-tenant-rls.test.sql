@@ -344,12 +344,12 @@ select results_eq(
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222223';
 
 select results_eq(
-  $select id from public.bible_media_library order by id$,
+  $$select id from public.bible_media_library order by id$$,
   array['d2000000-0000-4000-8000-000000000002'::uuid],
   'congregation-only Admin B reads only congregation B media'
 );
 select lives_ok(
-  $insert into public.bible_media_library(
+  $$insert into public.bible_media_library(
       id,congregation_id,created_by,media_type,title,youtube_url,youtube_id,category
     ) values (
       'd2200000-0000-4000-8000-000000000022',
@@ -357,17 +357,17 @@ select lives_ok(
       '22222222-2222-4222-8222-222222222223',
       'youtube_video','Tenant Admin B media','https://www.youtube.com/watch?v=admin-b',
       'admin-b','bible-study'
-    )$,
+    )$$,
   'congregation-only Admin B can curate media inside congregation B'
 );
 select throws_ok(
-  $insert into public.bible_media_library(
+  $$insert into public.bible_media_library(
       congregation_id,created_by,media_type,title,youtube_url,category
     ) values (
       '10000000-0000-4000-8000-000000000001',
       '22222222-2222-4222-8222-222222222223',
       'youtube_video','Foreign tenant-admin media','https://www.youtube.com/watch?v=foreign-b','other'
-    )$,
+    )$$,
   '42501',
   null,
   'congregation-only Admin B cannot curate media inside congregation A'
@@ -376,7 +376,7 @@ select throws_ok(
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222221';
 
 select results_eq(
-  $select count(*)::bigint from public.bible_media_library$,
+  $$select count(*)::bigint from public.bible_media_library$$,
   array[4::bigint],
   'platform Admin B has intentional reviewer visibility across both congregations'
 );
