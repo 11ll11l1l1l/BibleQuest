@@ -10,6 +10,7 @@ export * from './legacy-scripture-provider.ts';
 export * from './navigation.ts';
 export * from './package-manager.ts';
 export * from './offline-availability.ts';
+export * from './offline-search.ts';
 export * from './progress-policy.ts';
 export * from './presentation.ts';
 export * from './scripture-repository.ts';
