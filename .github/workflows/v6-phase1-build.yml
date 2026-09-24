@@ -49,13 +49,22 @@ concurrency:
   group: v6-phase1-build-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout exact PR commit
+      - name: Checkout exact selected commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
 
       - name: Use pinned Node and npm cache
         uses: actions/setup-node@v4
@@ -92,12 +101,12 @@ jobs:
 
       - name: Build V6 artifact with exact commit identity
         env:
-          BQ_BUILD_SHA: ${{ github.sha }}
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
         run: npm run build:v6
 
       - name: Verify exact-SHA identity and build budgets
         env:
-          BQ_BUILD_SHA: ${{ github.sha }}
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
         run: npm run check:v6-build-evidence
 
       - name: Verify Vite owns legacy stylesheet output
