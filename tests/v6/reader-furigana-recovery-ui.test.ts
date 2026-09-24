@@ -33,7 +33,7 @@ test('retrying state is announced and successful recovery clears the status', ()
 });
 
 test('live Reader wires the fallback status and retries in place on the same Japanese chapter', () => {
-  assert.match(readerSource, /data-jp-furigana-status aria-live="polite"/);
+  assert.match(readerSource, /data-reader-furigana-status aria-live="polite"/);
   assert.match(readerSource, /data-reader-furigana-retry/);
   assert.match(
     readerSource,
