@@ -134,6 +134,22 @@ export function createApi() {
     }
   });
 
+  const telemetry = Object.freeze({
+    enabled() { return !localPreview(); },
+    async recordBatch({ visitorId, sessionId, events, context = {} }) {
+      if (localPreview()) return { ok:false, accepted:0, requested:Array.isArray(events)?events.length:0, local:true };
+      const client = await getClient();
+      const { data, error } = await client.rpc('bible_record_telemetry_batch', {
+        p_visitor_id: String(visitorId || ''),
+        p_session_id: String(sessionId || ''),
+        p_events: Array.isArray(events) ? events.slice(0, 25) : [],
+        p_context: context && typeof context === 'object' ? context : {}
+      });
+      if (error) throw error;
+      return data || { ok:true };
+    }
+  });
+
   const auth = Object.freeze({
     enabled() { return !localPreview(); },
     async getSession() {
@@ -821,5 +837,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }
