@@ -101,7 +101,7 @@ export function toContextLabRequest(location: ReaderLocation): ReaderContextLabR
   });
 }
 
-function contextMatchesRequest(context: ReaderContext, request: ReaderContextLabRequest): boolean {
+export function contextLabResponseMatchesRequest(context: ReaderContext, request: ReaderContextLabRequest): boolean {
   if (
     !context.book.code.trim()
     || !context.book.name.trim()
@@ -131,5 +131,5 @@ export async function loadContextLab(
   const request = toContextLabRequest(location);
   if (!request) return null;
   const context = await provider.loadContext(request);
-  return contextMatchesRequest(context, request) ? context : null;
+  return contextLabResponseMatchesRequest(context, request) ? context : null;
 }
