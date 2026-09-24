@@ -35,6 +35,24 @@ test('PWA install guidance identifies iOS Add to Home Screen fallback', () => {
   );
 });
 
+test('PWA install service reports iOS Home Screen launches as installed', () => {
+  const target = new EventTarget();
+  const service = createPwaInstallService({
+    eventTarget: target,
+    displayMode: () => ({ matches: false }),
+    standalone: true,
+    guidance: null,
+  });
+
+  assert.deepEqual(service.getState(), {
+    status: 'installed',
+    canPrompt: false,
+    guidance: null,
+  });
+
+  service.dispose();
+});
+
 test('PWA install service keeps iOS guidance authoritative over stray native prompt events', () => {
   const target = new EventTarget();
   const service = createPwaInstallService({
