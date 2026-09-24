@@ -242,3 +242,24 @@ test('Reader search rejects a late result after the selected translation changes
   await assert.rejects(pending, /translation changed while Scripture search was running/);
   assert.equal(reader.getState().translation, 'tl');
 });
+
+
+test('search-result navigation rejects a late response after newer Reader navigation wins', async () => {
+  let resolveChapter: ((value: unknown) => void) | undefined;
+  const gate = new Promise<unknown>((resolve) => {
+    resolveChapter = resolve;
+  });
+  const { reader } = createHarness(() => gate);
+
+  const pending = reader.openSearchResult({ book: { code: 'JHN' }, chapter: 4, verse: 16 });
+  reader.setChapter(5);
+  resolveChapter?.({
+    book,
+    chapter: 4,
+    translation: { id: 'bsb' },
+    verses: [{ chapter: 4, verse: 16, text: 'late search target fixture' }],
+  });
+
+  await assert.rejects(pending, /passage changed while opening the search result/);
+  assert.equal(reader.getState().chapter, 5);
+});
