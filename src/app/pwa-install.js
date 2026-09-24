@@ -9,10 +9,13 @@ const IOS_DEVICE = /iPad|iPhone|iPod/i;
 
 export function detectPwaInstallGuidance({
   userAgent = globalThis.navigator?.userAgent || '',
-  standalone = globalThis.navigator?.standalone === true
+  standalone = globalThis.navigator?.standalone === true,
+  maxTouchPoints = Number(globalThis.navigator?.maxTouchPoints || 0)
 } = {}) {
   if (standalone) return null;
-  return IOS_DEVICE.test(String(userAgent)) ? 'ios-a2hs' : null;
+  const ua = String(userAgent);
+  const ipadDesktopMode = /Macintosh/i.test(ua) && Number(maxTouchPoints) > 1;
+  return IOS_DEVICE.test(ua) || ipadDesktopMode ? 'ios-a2hs' : null;
 }
 
 export function createPwaInstallService({
