@@ -77,8 +77,15 @@ select ok(
 );
 
 select ok(
-  has_table_privilege('authenticated','public.bible_room_responses','UPDATE'),
-  'authenticated response owners retain the intended UPDATE table privilege'
+  not has_table_privilege('authenticated','public.bible_room_responses','UPDATE')
+  and has_column_privilege('authenticated','public.bible_room_responses','response','UPDATE')
+  and has_column_privilege('authenticated','public.bible_room_responses','updated_at','UPDATE')
+  and has_column_privilege('authenticated','public.bible_room_responses','session_id','INSERT')
+  and has_column_privilege('authenticated','public.bible_room_responses','user_id','INSERT')
+  and has_column_privilege('authenticated','public.bible_room_responses','round_no','INSERT')
+  and has_column_privilege('authenticated','public.bible_room_responses','response','INSERT')
+  and not has_column_privilege('authenticated','public.bible_room_responses','points','UPDATE'),
+  'authenticated response owners have bounded column-level mutation privileges'
 );
 
 select ok(
@@ -141,9 +148,8 @@ select lives_ok(
 );
 
 select throws_ok(
-  $$insert into public.bible_room_responses(id,session_id,user_id,round_no,response)
+  $$insert into public.bible_room_responses(session_id,user_id,round_no,response)
     values(
-      '93000000-0000-4000-8000-000000000001',
       '82000000-0000-4000-8000-000000000002',
       '11111111-1111-4111-8111-111111111111',
       2,
@@ -189,9 +195,8 @@ select lives_ok(
 );
 
 select lives_ok(
-  $$insert into public.bible_room_responses(id,session_id,user_id,round_no,response)
+  $$insert into public.bible_room_responses(session_id,user_id,round_no,response)
     values(
-      '91000000-0000-4000-8000-000000000002',
       '81000000-0000-4000-8000-000000000001',
       '11111111-1111-4111-8111-111111111112',
       1,
@@ -201,9 +206,8 @@ select lives_ok(
 );
 
 select throws_ok(
-  $$insert into public.bible_room_responses(id,session_id,user_id,round_no,response)
+  $$insert into public.bible_room_responses(session_id,user_id,round_no,response)
     values(
-      '93000000-0000-4000-8000-000000000002',
       '82000000-0000-4000-8000-000000000002',
       '11111111-1111-4111-8111-111111111112',
       1,
@@ -241,9 +245,8 @@ select results_eq(
 );
 
 select throws_ok(
-  $$insert into public.bible_room_responses(id,session_id,user_id,round_no,response)
+  $$insert into public.bible_room_responses(session_id,user_id,round_no,response)
     values(
-      '93000000-0000-4000-8000-000000000004',
       '81000000-0000-4000-8000-000000000001',
       '11111111-1111-4111-8111-111111111114',
       2,
@@ -270,7 +273,9 @@ select is(
   (
     select response->>'choice'
     from public.bible_room_responses
-    where id='91000000-0000-4000-8000-000000000002'::uuid
+    where session_id='81000000-0000-4000-8000-000000000001'::uuid
+      and user_id='11111111-1111-4111-8111-111111111112'::uuid
+      and round_no=1
   ),
   'member-a',
   'Leader A can verify the active Member A response'
@@ -279,12 +284,8 @@ select is(
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111113';
 
 select results_eq(
-  $$select id from public.bible_room_responses order by id$$,
-  array[
-    '91000000-0000-4000-8000-000000000001'::uuid,
-    '91000000-0000-4000-8000-000000000002'::uuid,
-    '91000000-0000-4000-8000-000000000004'::uuid
-  ],
+  $select count(*)::bigint from public.bible_room_responses$,
+  array[3::bigint],
   'Pastor A has leadership response visibility only inside congregation A'
 );
 
