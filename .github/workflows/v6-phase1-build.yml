@@ -10,6 +10,14 @@ on:
       - ".nvmrc"
       - "tsconfig.json"
       - "vite.config.mjs"
+      - "assets/**"
+      - "app-icon.svg"
+      - "manifest.webmanifest"
+      - "pwa-icon-192.png"
+      - "pwa-icon-512.png"
+      - "pwa-icon-maskable-512.png"
+      - "_headers"
+      - "_redirects"
       - "src/v6/**"
       - "src/app/**"
       - "src/core/**"
@@ -25,7 +33,10 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-static-asset-ownership.mjs"
+      - "scripts/v6-root-static-ownership.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
@@ -89,6 +100,10 @@ jobs:
 
       - name: Verify Vite owns legacy stylesheet output
         run: node scripts/v6-css-build-ownership.mjs
+      - name: Verify compatibility asset ownership
+        run: node scripts/v6-static-asset-ownership.mjs
+      - name: Verify root PWA/static ownership
+        run: node scripts/v6-root-static-ownership.mjs
 
       - name: Record build artifact inventory
         shell: bash
@@ -117,6 +132,14 @@ jobs:
         env:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/notification-settings-browser.mjs
+
+      - name: Reject Vite dependency scan failures
+        shell: bash
+        run: |
+          if grep -Fq "Failed to run dependency scan" /tmp/bq-v6-dev.log; then
+            cat /tmp/bq-v6-dev.log
+            exit 1
+          fi
 
       - name: Start built artifact preview
         shell: bash
