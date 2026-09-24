@@ -51,8 +51,8 @@ export function createAdminOperationsService({api,session}={}){
   const ensureAuthorized=()=>{const userId=currentUserId();if(!contextCurrent(userId))throw staleError();if(state.status!=='ready'||!PLATFORM_ROLES.has(state.role))throw fail('Admin Operations requires verified Owner/Admin access.','BQ_ADMIN_OPS_NOT_READY');return userId};
 
   async function authorize(){
-    const userId=currentUserId(),request=++refreshRequest;
-    if(!userId){mutationRequest++;return reset('signed-out')}
+    const user=currentUserId(),userId=user,request=++refreshRequest;
+    if(!user)return reset('signed-out');
     if(contextUserId!==userId){mutationRequest++;reset('idle','',userId)}
     contextUserId=userId;
     state=Object.freeze({...state,status:'loading',busy:true,error:''});
