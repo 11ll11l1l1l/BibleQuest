@@ -96,12 +96,17 @@ test('deployed artifact verifier rejects bytes changed after the integrity manif
   );
 });
 
-test('deployment verification workflow is manual, exact-SHA-bound, and invokes the verifier', async () => {
+test('deployment verification workflow binds PR previews and manual URLs to the exact commit SHA', async () => {
   const workflow = await readFile(new URL('../../.github/workflows/v6-deployment-verify.yml', import.meta.url), 'utf8');
   for (const token of [
+    'pull_request:',
     'workflow_dispatch:',
     'deployment_url:',
-    'BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}',
+    'issues: read',
+    'cloudflare-workers-and-pages[bot]',
+    '<code>${expected}</code>',
+    'Deploy successful!',
+    'steps.preview.outputs.url',
     'BQ_EXPECTED_SHA: ${{ github.sha }}',
     'node scripts/v6-deployment-verify.mjs',
   ]) {
