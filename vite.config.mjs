@@ -3,6 +3,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   renameSync,
   rmSync,
@@ -57,6 +58,17 @@ function walkFiles(directory) {
   return files;
 }
 
+function rewriteIndexLinkHref(html, rel, href) {
+  return html.replace(/<link\b[^>]*>/gi, (tag) => {
+    const relValue = tag.match(/\brel=["']([^"']+)["']/i)?.[1] || '';
+    if (!relValue.split(/\s+/).includes(rel)) return tag;
+    if (/\bhref=["'][^"']*["']/i.test(tag)) {
+      return tag.replace(/\bhref=["'][^"']*["']/i, `href="${href}"`);
+    }
+    return tag.replace(/\s*\/>$|>$/, (ending) => ` href="${href}"${ending}`);
+  });
+}
+
 function copyLegacyRuntime() {
   return {
     name: 'biblequest-v5-runtime-compatibility-copy',
@@ -84,6 +96,16 @@ function copyLegacyRuntime() {
           copyFileSync(join(root, entry.name), join(outDir, entry.name));
         }
       }
+
+      const builtIndexPath = join(outDir, 'index.html');
+      if (!existsSync(builtIndexPath)) {
+        throw new Error('V6 build produced no index.html for root PWA link normalization.');
+      }
+      let builtIndex = readFileSync(builtIndexPath, 'utf8');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'manifest', 'manifest.webmanifest');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'icon', 'app-icon.svg');
+      builtIndex = rewriteIndexLinkHref(builtIndex, 'apple-touch-icon', 'pwa-icon-192.png');
+      writeFileSync(builtIndexPath, builtIndex, 'utf8');
 
       writeFileSync(
         join(outDir, 'bq-build.json'),
