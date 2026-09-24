@@ -12,11 +12,6 @@ function harness(){
     navigator:{language:'en-PH',userAgent:'Android',onLine:true},
     innerWidth:390,
     matchMedia:()=>({matches:false}),
-    sessionStorage:{
-      values:new Map<string,string>(),
-      getItem(key:string){return this.values.get(key)||null},
-      setItem(key:string,value:string){this.values.set(key,value)}
-    },
     document:{visibilityState:'visible',addEventListener(){},removeEventListener(){}},
     addEventListener(){},removeEventListener(){}
   };
@@ -26,6 +21,10 @@ function harness(){
     storage:{
       read:(key:string,fallback:any)=>data.has(key)?data.get(key):fallback,
       write:(key:string,value:any)=>{data.set(key,value);return value}
+    },
+    transientStorage:{
+      read:(_key:string,fallback:any)=>fallback,
+      write:(_key:string,value:any)=>value
     },
     getRoute:()=> 'reader',
     runtime,
