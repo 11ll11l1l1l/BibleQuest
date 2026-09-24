@@ -57,6 +57,43 @@ function contextMatches(location: ReaderLocation & Readonly<{ verse: number }>, 
   return Boolean(context.scripture.text.trim());
 }
 
+function searchResultMatches(query: string, limit: number, result: ReaderSearchResult): boolean {
+  if (result.query.trim().replace(/\s+/g, ' ') !== query) return false;
+  if (result.type !== 'reference' && result.type !== 'text') return false;
+  if (result.results.length > limit) return false;
+
+  for (const hit of result.results) {
+    const end = hit.verseEnd ?? hit.verse;
+    if (
+      !hit.book.code.trim()
+      || !hit.book.name.trim()
+      || !positiveInteger(hit.book.chapters)
+      || !positiveInteger(hit.chapter)
+      || hit.chapter > hit.book.chapters
+      || !positiveInteger(hit.verse)
+      || !positiveInteger(end)
+      || end < hit.verse
+      || !hit.text.trim()
+      || !hit.reference.trim()
+    ) return false;
+  }
+
+  for (const skipped of result.skippedBooks) {
+    if (!skipped.code.trim() || !skipped.message.trim()) return false;
+  }
+  return true;
+}
+
+export function readerSearchResponseMatches(
+  query: string,
+  limit: number,
+  result: ReaderSearchResult,
+): boolean {
+  const normalized = query.trim().replace(/\s+/g, ' ');
+  if (!normalized || !Number.isSafeInteger(limit) || limit < 1 || limit > 100) return false;
+  return searchResultMatches(normalized, limit, result);
+}
+
 /**
  * DOM-independent Reader repository seam. It keeps the route/view from owning
  * Scripture transport and rejects provider payloads for a different passage or
@@ -112,7 +149,7 @@ export class ScriptureRepository {
     }
     try {
       const result = await this.provider.search(translationId, normalized, limit);
-      if (result.query.trim().replace(/\s+/g, ' ') !== normalized) {
+      if (!readerSearchResponseMatches(normalized, limit, result)) {
         return Object.freeze({ status: 'failed', reason: 'mismatched-content', retryable: true });
       }
       return Object.freeze({ status: 'ready', value: result });
