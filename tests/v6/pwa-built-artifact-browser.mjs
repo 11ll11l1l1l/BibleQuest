@@ -122,6 +122,12 @@ try {
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
   });
   const iosPage = await iosContext.newPage();
+  await iosPage.addInitScript(() => {
+    // Chromium may still synthesize beforeinstallprompt even when the UA is
+    // iPhone-like. Safari does not expose that event, so suppress it here to
+    // exercise the real iOS fallback branch deterministically.
+    window.addEventListener('beforeinstallprompt', event => event.stopImmediatePropagation(), true);
+  });
   await iosPage.goto(`${baseUrl}/#/more`, { waitUntil: 'networkidle' });
   await iosPage.locator('#app').waitFor({ state: 'attached' });
   await waitForResolvedLazyRoute(iosPage, 'iOS More install guidance');
