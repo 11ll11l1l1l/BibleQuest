@@ -1,5 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, join, relative, resolve } from 'node:path';
+import { verifyArtifactIntegrityManifest } from './v6-artifact-integrity.mjs';
 
 const root = process.cwd();
 const outDir = resolve(root, 'dist-v6');
@@ -33,6 +34,7 @@ async function walk(directory) {
 }
 
 const identity = JSON.parse(await readFile(join(outDir, 'bq-build.json'), 'utf8'));
+const artifactIntegrity = await verifyArtifactIntegrityManifest(outDir, expectedSha);
 if (identity.sha !== expectedSha) {
   throw new Error(`build identity mismatch: expected ${expectedSha}, got ${identity.sha}`);
 }
@@ -56,12 +58,14 @@ const featureDynamicChunks = manifestEntries
 const files = await walk(outDir);
 const publicSourceMapFiles = files.filter((file) => file.endsWith('.map'));
 const publicSourceMapReferences = [];
+const clientBuildIdentityFiles = [];
 for (const file of files) {
   const path = relative(outDir, file).replaceAll('\\', '/');
   const extension = extname(file).toLowerCase();
   if (!path.startsWith('_v6/') || !new Set(['.js', '.mjs', '.css']).has(extension)) continue;
   const content = await readFile(file, 'utf8');
   if (/sourceMappingURL\s*=/.test(content)) publicSourceMapReferences.push(path);
+  if (javascriptExtensions.has(extension) && content.includes(expectedSha)) clientBuildIdentityFiles.push(path);
 }
 
 let privateSourceMapMetadata;
@@ -123,12 +127,23 @@ for (const file of files) {
 inventory.sort((a, b) => b.bytes - a.bytes || a.path.localeCompare(b.path));
 const report = {
   build: identity,
+  artifactIntegrity: {
+    sourceSha: artifactIntegrity.sourceSha,
+    artifactSha256: artifactIntegrity.artifactSha256,
+    fileCount: artifactIntegrity.fileCount,
+    totalBytes: artifactIntegrity.totalBytes,
+  },
   budgets,
   routeSplitting: {
     browserEntrySource,
     browserEntry: { path: browserEntryPath, bytes: browserEntryBytes },
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
+  },
+  releaseIdentity: {
+    expectedSha,
+    clientChunkCount: clientBuildIdentityFiles.length,
+    clientChunks: clientBuildIdentityFiles,
   },
   sourceMaps: {
     privateDirectory: relative(root, privateSourceMapDir).replaceAll('\\', '/'),
@@ -150,6 +165,7 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const failures = [];
+if (!clientBuildIdentityFiles.length) failures.push('generated client JavaScript does not embed the exact build SHA for diagnostics');
 if (publicSourceMapFiles.length) failures.push(`public artifact contains ${publicSourceMapFiles.length} source-map file(s)`);
 if (publicSourceMapReferences.length) failures.push(`public V6 chunks expose sourceMappingURL references: ${publicSourceMapReferences.join(', ')}`);
 failures.push(...privateSourceMapFailures);

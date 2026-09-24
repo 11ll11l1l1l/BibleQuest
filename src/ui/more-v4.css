@@ -16,3 +16,5 @@
   .bq-more-group-label{grid-column:1/-1;margin-bottom:0}
   .bq-more-group>.bq-panel{margin-top:0}
 }
+
+[data-more-install][hidden],[data-install-app][hidden],[data-install-guidance][hidden]{display:none!important}
