@@ -30,6 +30,8 @@ export function createCongregationMembershipService({api,session}){
   let activeCongregationId='';
   let loadedUserId='';
   let loadRequest=0;
+  let publicationKey='';
+  const listeners=new Set();
 
   const currentUserId=()=>{
     const state=session.getState();
@@ -49,6 +51,27 @@ export function createCongregationMembershipService({api,session}){
     if(!userId||userId!==loadedUserId)return null;
     return get(activeCongregationId);
   };
+  const snapshot=()=>{
+    const userId=currentUserId(),owned=userId&&userId===loadedUserId;
+    return Object.freeze({
+      userId:owned?userId:'',
+      activeCongregationId:owned?(getActive()?.congregationId||''):'',
+      memberships:Object.freeze(owned?memberships.slice():[])
+    });
+  };
+  const publish=()=>{
+    const next=snapshot(),key=`${next.userId}:${next.activeCongregationId}:${next.memberships.map(row=>`${row.congregationId}:${row.role||''}`).sort().join('|')}`;
+    if(key===publicationKey)return next;
+    publicationKey=key;
+    for(const listener of listeners)listener(next);
+    return next;
+  };
+  const subscribe=listener=>{
+    if(typeof listener!=='function')return()=>{};
+    listeners.add(listener);
+    listener(snapshot());
+    return()=>listeners.delete(listener);
+  };
 
   async function load(){
     const user=requireUser();
@@ -66,6 +89,7 @@ export function createCongregationMembershipService({api,session}){
     memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row.congregationId&&row.userId===userId);
     loadedUserId=userId;
     if(!get(activeCongregationId))activeCongregationId=memberships[0]?.congregationId||'';
+    publish();
     return list();
   }
 
@@ -83,7 +107,10 @@ export function createCongregationMembershipService({api,session}){
     if(!loadedUserId||loadedUserId!==userId){const error=new Error('Reload congregation memberships before switching congregation.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
     const membership=get(congregationId);
     if(!membership||membership.userId!==userId){const error=new Error('You are not a member of that congregation.');error.code='BQ_CONGREGATION_NOT_MEMBER';throw error}
-    activeCongregationId=membership.congregationId;
+    if(activeCongregationId!==membership.congregationId){
+      activeCongregationId=membership.congregationId;
+      publish();
+    }
     return membership;
   }
 
@@ -103,7 +130,7 @@ export function createCongregationMembershipService({api,session}){
     throw error;
   }
 
-  function clear(){loadRequest++;memberships=[];activeCongregationId='';loadedUserId=''}
+  function clear(){loadRequest++;memberships=[];activeCongregationId='';loadedUserId='';publish()}
 
-  return Object.freeze({load,join,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
+  return Object.freeze({load,join,list,get,getActive,setActive,can,assert,clear,snapshot,subscribe,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
 }
