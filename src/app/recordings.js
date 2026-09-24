@@ -25,10 +25,7 @@ function normalizeRow(row){
   return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),category,createdAt:String(row.created_at||row.createdAt||'')};
 }
 
-const newestFirst=(a,b)=>{
-  const byDate=String(b.createdAt||'').localeCompare(String(a.createdAt||''));
-  return byDate||String(b.id).localeCompare(String(a.id));
-};
+const newestFirst=(a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''));
 
 function latestServiceFromRows(rows){
   const sundayServices=rows.filter(row=>row.category==='sunday-service');
