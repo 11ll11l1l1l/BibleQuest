@@ -6,6 +6,7 @@ export * from './japanese-enrichment.ts';
 export * from './japanese-vocabulary.ts';
 export * from './japanese-enrichment-state.ts';
 export * from './license-policy.ts';
+export * from './legacy-scripture-provider.ts';
 export * from './navigation.ts';
 export * from './package-manager.ts';
 export * from './progress-policy.ts';
