@@ -284,7 +284,7 @@ select is(
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111113';
 
 select results_eq(
-  $select count(*)::bigint from public.bible_room_responses$,
+  $$select count(*)::bigint from public.bible_room_responses$$,
   array[3::bigint],
   'Pastor A has leadership response visibility only inside congregation A'
 );
