@@ -98,6 +98,83 @@ try {
   });
   await page.waitForFunction(async () => Boolean(await navigator.serviceWorker.ready));
 
+  // Prove stale shell cache cleanup during worker replacement. Seed one obsolete
+  // BibleQuest shell cache plus an unrelated cache, replace the active worker
+  // with the same built worker under a cache-busted script URL, and wait for
+  // activation. The activate handler must delete only stale BibleQuest shell
+  // caches while preserving unrelated storage and the current shell cache.
+  const workerUpgrade = await page.evaluate(async () => {
+    const currentRegistration = await navigator.serviceWorker.ready;
+    const staleCacheName = 'biblequest-v3-offline-shell-v1-browser-upgrade-test';
+    const unrelatedCacheName = 'bq-unrelated-browser-upgrade-test';
+    const currentCacheName = 'biblequest-v3-offline-shell-v2';
+
+    await Promise.all([
+      caches.delete(staleCacheName),
+      caches.delete(unrelatedCacheName),
+    ]);
+
+    const staleCache = await caches.open(staleCacheName);
+    await staleCache.put(
+      new Request(new URL('./bq-stale-cache-probe', currentRegistration.scope).href),
+      new Response('stale'),
+    );
+    const unrelatedCache = await caches.open(unrelatedCacheName);
+    await unrelatedCache.put(
+      new Request(new URL('./bq-unrelated-cache-probe', currentRegistration.scope).href),
+      new Response('keep'),
+    );
+
+    const updateScriptUrl = new URL(
+      './offline-shell-sw.js?bq-sw-update-probe=1',
+      currentRegistration.scope,
+    ).href;
+    const scopePath = new URL(currentRegistration.scope).pathname;
+    const updatedRegistration = await navigator.serviceWorker.register(updateScriptUrl, {
+      scope: scopePath,
+      updateViaCache: 'none',
+    });
+
+    const deadline = Date.now() + 10000;
+    while (
+      Date.now() < deadline
+      && (
+        updatedRegistration.active?.state !== 'activated'
+        || updatedRegistration.active?.scriptURL !== updateScriptUrl
+      )
+    ) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    const activeScriptUrl = updatedRegistration.active?.scriptURL || '';
+    const cacheNames = await caches.keys();
+    await caches.delete(unrelatedCacheName);
+
+    return {
+      activeScriptUrl,
+      staleCachePresent: cacheNames.includes(staleCacheName),
+      unrelatedCachePresent: cacheNames.includes(unrelatedCacheName),
+      currentCachePresent: cacheNames.includes(currentCacheName),
+    };
+  });
+
+  assert(
+    workerUpgrade.activeScriptUrl.includes('bq-sw-update-probe=1'),
+    `service-worker replacement did not activate the updated built worker: ${workerUpgrade.activeScriptUrl || '<missing>'}`,
+  );
+  assert(
+    !workerUpgrade.staleCachePresent,
+    'service-worker activation did not remove the obsolete BibleQuest shell cache',
+  );
+  assert(
+    workerUpgrade.unrelatedCachePresent,
+    'service-worker activation removed an unrelated cache',
+  );
+  assert(
+    workerUpgrade.currentCachePresent,
+    'service-worker activation removed the current BibleQuest shell cache',
+  );
+
   // Prove the installed-app shell can reopen without network after one online
   // load. This is browser automation for shell availability only; it does not
   // claim physical-device install UI or offline Scripture-package acceptance.
