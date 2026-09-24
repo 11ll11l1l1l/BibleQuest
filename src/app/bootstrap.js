@@ -374,6 +374,9 @@ function boot(root){
     pushSessionKey=key;
     if(current.authenticated===true)void pushOnboarding.maybePrompt();
   };
+  // V5 static compatibility markers. Runtime orchestration is owned by the typed V6 owner map below.
+  // ['personal-challenges',personalChallengesCloudSync]
+  // ['explorer',explorerCloudSync]
   const accountResumeRuntime=bindLegacyAccountResumeRuntime(
     store,
     createProductAccountResumeOwners({
