@@ -40,7 +40,7 @@ test('keeps longer reviewed terms ahead of contained shorter terms', () => {
 });
 
 test('retains the accepted maximum-three Reader behavior with exact curated fields', () => {
-  const notes = selectJapaneseVocabularyNotes('神の国と信仰と愛と永遠と預言者について学ぶ。', vocabulary);
+  const notes = selectJapaneseVocabularyNotes('神の国と信仰と愛と永遠について学ぶ。', vocabulary);
   assert.equal(notes.length, 3);
   assert.deepEqual(notes[0], {
     term: '神の国',
