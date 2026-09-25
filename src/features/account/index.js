@@ -1,4 +1,5 @@
 import { localization } from '../../app/localization.js';
+import { resolveRovingFocus } from '../../v6/ui/index.ts';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const ACCOUNT_ART = 'assets/account-feature-icons.svg';
@@ -15,7 +16,7 @@ function guestShell(state) {
   const remoteNote = state.remoteAvailable === false
     ? '<p class="bq-local-note">Cloud account actions are intentionally disabled on localhost. Production GitHub Pages uses the configured Supabase account service.</p>'
     : '';
-  return `<section class="bq-panel bq-account-panel"><p class="bq-eyebrow">ACCOUNT</p><div class="bq-account-tabs" role="tablist"><button type="button" data-account-mode="login">Sign in</button><button type="button" data-account-mode="signup">Create account</button><button type="button" data-account-mode="recovery">Recover</button></div>${remoteNote}<div data-account-body></div><button type="button" class="bq-secondary-button bq-guest-button" data-account-guest>Continue as guest</button></section>`;
+  return `<section class="bq-panel bq-account-panel"><p class="bq-eyebrow">ACCOUNT</p><div class="bq-account-tabs" role="tablist" aria-label="Account access mode"><button id="bq-account-tab-login" type="button" role="tab" aria-controls="bq-account-mode-panel" aria-selected="false" tabindex="-1" data-account-mode="login">Sign in</button><button id="bq-account-tab-signup" type="button" role="tab" aria-controls="bq-account-mode-panel" aria-selected="false" tabindex="-1" data-account-mode="signup">Create account</button><button id="bq-account-tab-recovery" type="button" role="tab" aria-controls="bq-account-mode-panel" aria-selected="false" tabindex="-1" data-account-mode="recovery">Recover</button></div>${remoteNote}<div id="bq-account-mode-panel" role="tabpanel" data-account-body></div><button type="button" class="bq-secondary-button bq-guest-button" data-account-guest>Continue as guest</button></section>`;
 }
 
 function loginView(error = '') {
@@ -85,7 +86,14 @@ export function accountPage({ account, session, onHome, onTutorial }) {
         else if (mode === 'signup') body.innerHTML = signupView();
         else if (mode === 'recovery') body.innerHTML = recoveryView();
         else if (mode === 'center') { body.innerHTML = centerView(tr); renderDevices(); }
-        root.querySelectorAll('[data-account-mode]').forEach(button => button.classList.toggle('active', button.dataset.accountMode === mode));
+        root.querySelectorAll('[data-account-mode]').forEach(button => {
+          const selected = button.dataset.accountMode === mode;
+          button.classList.toggle('active', selected);
+          button.setAttribute('aria-selected', selected ? 'true' : 'false');
+          button.tabIndex = selected ? 0 : -1;
+        });
+        const activeTab = root.querySelector(`[data-account-mode="${CSS.escape(mode)}"]`);
+        if (activeTab) body.setAttribute('aria-labelledby', activeTab.id);
       };
       const showCode = (title, code, detail, nextMode, afterSave = null) => {
         codeNext = nextMode;
@@ -140,6 +148,25 @@ export function accountPage({ account, session, onHome, onTutorial }) {
         }
       };
 
+      const onKeyDown = event => {
+        const tab = event.target instanceof Element ? event.target.closest('[data-account-mode]') : null;
+        if (!tab || !root.querySelector('.bq-account-tabs')?.contains(tab)) return;
+        const tabs = [...root.querySelectorAll('[data-account-mode]')];
+        const result = resolveRovingFocus({
+          key: event.key,
+          currentIndex: tabs.indexOf(tab),
+          itemCount: tabs.length,
+          orientation: 'horizontal',
+          direction: getComputedStyle(tab.parentElement).direction === 'rtl' ? 'rtl' : 'ltr'
+        });
+        if (!result.handled) return;
+        const next = tabs[result.index];
+        if (!next) return;
+        event.preventDefault();
+        next.focus({ preventScroll: true });
+        render(next.dataset.accountMode);
+      };
+
       const onSubmit = async event => {
         const form = event.target instanceof HTMLFormElement ? event.target : null;
         if (!form) return;
@@ -181,9 +208,14 @@ export function accountPage({ account, session, onHome, onTutorial }) {
       };
 
       root.addEventListener('click', onClick);
+      root.addEventListener('keydown', onKeyDown);
       root.addEventListener('submit', onSubmit);
       render(mode);
-      return () => { root.removeEventListener('click', onClick); root.removeEventListener('submit', onSubmit); };
+      return () => {
+        root.removeEventListener('click', onClick);
+        root.removeEventListener('keydown', onKeyDown);
+        root.removeEventListener('submit', onSubmit);
+      };
     }
   };
 }
