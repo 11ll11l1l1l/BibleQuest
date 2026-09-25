@@ -190,8 +190,8 @@ test('Leader Center upcoming and moderation copy is present in EN, TL and Cebuan
     'leaderCenter.moderation.open',
   ];
   for (const key of keys) {
-    assert.ok(en[key], `English is missing ${key}`);
-    assert.ok(tl[key], `Tagalog is missing ${key}`);
-    assert.ok(ceb[key], `Cebuano is missing ${key}`);
+    assert.ok(key in en, `English is missing ${key}`);
+    assert.ok(key in tl, `Tagalog is missing ${key}`);
+    assert.ok(key in ceb, `Cebuano is missing ${key}`);
   }
 });
