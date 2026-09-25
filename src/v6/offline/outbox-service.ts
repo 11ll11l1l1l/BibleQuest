@@ -8,6 +8,7 @@ import {
   type OfflineMutationRequest,
 } from './outbox.ts';
 import {
+  parsePersistedOfflineMutation,
   recoverOfflineOutbox,
   toPersistedOfflineMutation,
   type OfflineOutboxPersistence,
@@ -32,6 +33,16 @@ function assertActiveEnvelopeIdentity(
   }
 }
 
+function matchesLogicalMutation(
+  record: PersistedOfflineMutation,
+  envelope: OfflineMutationEnvelope,
+): boolean {
+  return envelopeMatchesActiveIdentity(record, envelope.identity)
+    && record.domain === envelope.domain
+    && record.operation === envelope.operation
+    && record.idempotencyKey === envelope.idempotencyKey;
+}
+
 export class OfflineOutboxService {
   readonly #persistence: OfflineOutboxPersistence;
   readonly #policies: readonly OfflineMutationPolicy[];
@@ -50,6 +61,21 @@ export class OfflineOutboxService {
   async enqueue<TPayload>(request: OfflineMutationRequest<TPayload>): Promise<PersistedOfflineMutation<TPayload>> {
     const policy = findPolicy(this.#policies, request.domain, request.operation);
     const envelope = createOfflineMutationEnvelope(request, policy);
+
+    for (const candidate of await this.#persistence.list()) {
+      const existing = parsePersistedOfflineMutation(candidate);
+      if (!existing) continue;
+      if (existing.id === envelope.id) {
+        if (!matchesLogicalMutation(existing, envelope)) {
+          throw new Error('Offline mutation id conflicts with an existing queued mutation.');
+        }
+        return existing as PersistedOfflineMutation<TPayload>;
+      }
+      if (matchesLogicalMutation(existing, envelope)) {
+        throw new Error('Offline mutation idempotency key conflicts with an existing queued mutation.');
+      }
+    }
+
     const persisted = toPersistedOfflineMutation(envelope);
     await this.#persistence.put(persisted);
     return persisted;
@@ -68,7 +94,6 @@ export class OfflineOutboxService {
     assertActiveEnvelopeIdentity(envelope, active);
 
     const policy = findPolicy(this.#policies, envelope.domain, envelope.operation);
-    // Re-create the durable policy gate before persisting another attempt.
     createOfflineMutationEnvelope({
       id: envelope.id,
       domain: envelope.domain,
