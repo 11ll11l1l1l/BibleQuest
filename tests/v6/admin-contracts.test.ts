@@ -112,11 +112,19 @@ test('typed Admin transport inventory stays aligned with the existing client and
 
   for (const action of consoleActions) {
     assert.match(adminSource, new RegExp(`['"]${action}['"]`), `bq-admin is missing ${action}`);
-    assert.match(clientSource, new RegExp(`action:['"]${action}['"]`), `client API is missing ${action}`);
+    assert.match(
+      clientSource,
+      new RegExp(`invokeAdminMutation\\([^\\n]+['"]${action}['"]`),
+      `client API is missing typed Admin bridge for ${action}`,
+    );
   }
   for (const action of operationsActions) {
     assert.match(adminOpsSource, new RegExp(`['"]${action}['"]`), `bq-admin-ops is missing ${action}`);
-    assert.match(clientSource, new RegExp(`action:['"]${action}['"]`), `client API is missing ${action}`);
+    assert.match(
+      clientSource,
+      new RegExp(`invokeAdminMutation\\([^\\n]+['"]${action}['"]`),
+      `client API is missing typed Admin bridge for ${action}`,
+    );
   }
 
   for (const policy of ADMIN_ACTION_POLICIES) {
