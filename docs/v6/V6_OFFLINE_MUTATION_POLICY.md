@@ -28,6 +28,13 @@ BibleQuest V6 is fail-closed for offline writes. A mutation is never queued mere
 
 No row marked DEFERRED is an implementation approval. It becomes queueable only after its domain has executable tests for the requirements below and this policy is updated in a reviewed tranche.
 
+
+## Executable policy registry
+
+The reviewed code inventory is `src/v6/offline/policy-registry.ts`. `resolveV6OfflineMutationPolicy(domain, operation)` fails closed for unknown pairs, and the registry rejects duplicate entries or any queueable policy whose risk is not `safe-idempotent`. Its focused tests are in `tests/v6/offline-policy-registry.test.ts`.
+
+The current executable registry deliberately certifies **zero production server mutations as queueable**. It explicitly denies Leader announcement publishing, server notification publishing, assignment publishing/deletion, Admin role/suspension/deletion/temporary-password actions, and account recovery/password changes. Reader progress recording and ordinary assignment-response submission remain explicit non-queueable/unknown-risk entries until their domain-specific idempotency, privacy, tenant and server-authority contracts are proven.
+
 ## Mandatory outbox contract before enabling any server mutation
 
 A queueable mutation must carry an immutable schema version, operation kind, opaque idempotency key, authenticated account ID, explicit congregation ID when tenant-scoped, entity ID, creation time, bounded retry metadata, and the minimum non-sensitive payload required by that operation.
