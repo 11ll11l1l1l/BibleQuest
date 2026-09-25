@@ -121,6 +121,10 @@ test('completion is tenant-bound so stale contexts cannot delete queued work', a
     () => service.complete(queued, { accountId: 'user-1', congregationId: 'congregation-b' }),
     /active account and congregation/i,
   );
+  await assert.rejects(
+    () => service.complete(queued, null),
+    /active account and congregation/i,
+  );
   assert.equal(storage.records.has('mutation-1'), true);
 
   await service.complete(queued, activeA);
