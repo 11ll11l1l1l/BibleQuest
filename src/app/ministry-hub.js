@@ -20,6 +20,8 @@ export function createMinistryHubService({congregation}={}){
   async function load(){
     if(!congregation.isAuthenticated())return Object.freeze({status:'signed-out',congregations:EMPTY,hasReadableMembership:false,canMinistry:false,memberTools:EMPTY,ministryTools:EMPTY});
     const memberships=await congregation.load();
+    const activeMembership=typeof congregation.getActive==='function'?congregation.getActive():null;
+    const activeCongregationId=String(activeMembership?.congregationId||'');
     const rows=(Array.isArray(memberships)?memberships:[]).map(row=>{
       const congregationId=String(row?.congregationId||'');
       const canRead=Boolean(congregationId&&congregation.can(congregationId,'read'));
@@ -31,14 +33,19 @@ export function createMinistryHubService({congregation}={}){
         roleKnown:Boolean(row?.roleKnown),
         roleLabel:String(row?.roleLabel||'Unsupported role'),
         canRead,
-        canMinistry
+        canMinistry,
+        isActive:Boolean(activeCongregationId&&congregationId===activeCongregationId)
       });
     }).filter(row=>row.congregationId);
-    const hasReadableMembership=rows.some(row=>row.canRead);
-    const canMinistry=rows.some(row=>row.canMinistry);
+    const activeRow=activeCongregationId
+      ?rows.find(row=>row.congregationId===activeCongregationId)||null
+      :rows.find(row=>row.canRead)||null;
+    const hasReadableMembership=Boolean(activeRow?.canRead);
+    const canMinistry=Boolean(activeRow?.canMinistry);
     return Object.freeze({
       status:'ready',
       congregations:Object.freeze(rows),
+      activeCongregationId:activeRow?.congregationId||'',
       hasReadableMembership,
       canMinistry,
       memberTools:hasReadableMembership?Object.freeze(exposeTools(MEMBER_TOOLS)):EMPTY,
