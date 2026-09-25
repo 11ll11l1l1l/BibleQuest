@@ -12,6 +12,15 @@ import {
   type ScriptureTranslationManifest,
 } from './content-manifest.ts';
 import { translationPackagingPolicy } from './license-policy.ts';
+import {
+  OfflineScriptureSearch,
+  type InstalledScriptureSearchRepository,
+} from './offline-search.ts';
+import type {
+  ReaderBookRef,
+  ReaderSearchResult,
+  ReaderTranslationId,
+} from './contracts.ts';
 
 const PAYLOAD_CACHE = 'biblequest-v3-opened-bible-packs-v1';
 const METADATA_CACHE = 'biblequest-v6-scripture-package-metadata-v1';
@@ -41,6 +50,7 @@ export interface BrowserScripturePackageController {
   ): ReturnType<ScripturePackageManager['install']>;
   cancel(translationId: string, bookCode: string): boolean;
   remove(translationId: string, bookCode: string): Promise<void>;
+  searchInstalled(translationId: string, query: string, limit?: number): Promise<ReaderSearchResult>;
 }
 
 function clean(value: unknown): string {
@@ -83,7 +93,7 @@ export function createBrowserScripturePackageRepository({
   cacheStorage?: CacheStorage;
   ResponseCtor?: typeof Response;
   locationRef?: Location;
-} = {}): ScripturePackageRepository {
+} = {}): ScripturePackageRepository & InstalledScriptureSearchRepository {
   if (!cacheStorage?.open || typeof ResponseCtor !== 'function' || !locationRef?.href) {
     throw new Error('Managed offline Scripture storage is not supported on this device.');
   }
@@ -173,6 +183,60 @@ export function createBrowserScripturePackageRepository({
       }
       return Object.freeze({ bytes, packages });
     },
+
+    async listInstalled(translationId: string) {
+      const id = clean(translationId);
+      const metadataCache = await cacheStorage.open(METADATA_CACHE);
+      const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
+      const keys = await metadataCache.keys();
+      const installed: InstalledScripturePackage[] = [];
+
+      for (const request of keys) {
+        const response = await metadataCache.match(request);
+        if (!response) continue;
+        try {
+          const record = await response.json() as InstalledScripturePackage;
+          if (clean(record?.translationId) !== id) continue;
+          const code = normalizeBookCode(record?.bookCode);
+          if (!(await payloadCache.match(payloadKey(id, code)))) {
+            await metadataCache.delete(request);
+            continue;
+          }
+          installed.push(Object.freeze({ ...record, translationId: id, bookCode: code }));
+        } catch {
+          await metadataCache.delete(request);
+        }
+      }
+      installed.sort((a, b) => a.bookCode.localeCompare(b.bookCode));
+      return Object.freeze(installed);
+    },
+
+    async readInstalledPayload(translationId: string, bookCode: string) {
+      const id = clean(translationId);
+      const code = normalizeBookCode(bookCode);
+      const metadataCache = await cacheStorage.open(METADATA_CACHE);
+      const metadata = await metadataCache.match(metadataKey(id, code));
+      if (!metadata) return null;
+
+      try {
+        const record = await metadata.json() as InstalledScripturePackage;
+        if (clean(record?.translationId) !== id || normalizeBookCode(record?.bookCode) !== code) {
+          await metadataCache.delete(metadataKey(id, code));
+          return null;
+        }
+      } catch {
+        await metadataCache.delete(metadataKey(id, code));
+        return null;
+      }
+
+      const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
+      const payload = await payloadCache.match(payloadKey(id, code));
+      if (!payload) {
+        await metadataCache.delete(metadataKey(id, code));
+        return null;
+      }
+      return payload.arrayBuffer();
+    },
   });
 }
 
@@ -226,13 +290,21 @@ export function createBrowserScripturePackageController({
   transport = createFetchScripturePackageTransport(),
   fetcher = globalThis.fetch,
   manifestBase = 'data/v6-scripture-manifests',
+  books = [],
 }: {
-  repository?: ScripturePackageRepository;
+  repository?: ScripturePackageRepository & Partial<InstalledScriptureSearchRepository>;
   transport?: ScripturePackageTransport;
   fetcher?: typeof fetch;
   manifestBase?: string;
+  books?: readonly ReaderBookRef[];
 } = {}): BrowserScripturePackageController {
   const manager = new ScripturePackageManager(repository, transport);
+  const searchRepository = typeof repository.listInstalled === 'function' && typeof repository.readInstalledPayload === 'function'
+    ? repository as ScripturePackageRepository & InstalledScriptureSearchRepository
+    : null;
+  const offlineSearch = searchRepository && books.length
+    ? new OfflineScriptureSearch(searchRepository, books)
+    : null;
   const manifestCache = new Map<string, Promise<ScriptureTranslationManifest>>();
 
   const loadManifest = async (translationId: string): Promise<ScriptureTranslationManifest> => {
@@ -326,6 +398,11 @@ export function createBrowserScripturePackageController({
 
     async remove(translationId: string, bookCode: string) {
       await manager.remove(clean(translationId), normalizeBookCode(bookCode));
+    },
+
+    async searchInstalled(translationId: string, query: string, limit = 30) {
+      if (!offlineSearch) throw new Error('Installed Scripture search is unavailable on this device.');
+      return offlineSearch.searchText(clean(translationId) as ReaderTranslationId, query, limit);
     },
   });
 }
