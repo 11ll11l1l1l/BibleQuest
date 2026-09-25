@@ -7,7 +7,7 @@ const bootstrap = await readFile('src/app/bootstrap.js', 'utf8');
 test('bootstrap hands the live Recordings service to the V6 media runtime', () => {
   assert.match(
     bootstrap,
-    /import \{ createRecordingsMediaRuntime \} from '\.\.\/v6\/media\/recordings-runtime\.ts';/,
+    /import \{ createRecordingsMediaRuntime \} from '\.\.\/v6\/media\/index\.ts';/,
   );
   assert.doesNotMatch(
     bootstrap,
