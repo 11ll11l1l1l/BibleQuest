@@ -109,13 +109,13 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Turn/timer rules are isolated where applicable.
 - [x] Progress/result contract is shared.
 - [ ] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
-- [ ] Individual game views/components replace one monolithic all-game renderer.
+- [x] Individual game views/components replace one monolithic all-game renderer.
 - [x] Shared question/feedback/result/scoreboard primitives exist.
 - [ ] Raw decorative emoji are removed where intentional art assets exist.
 - [x] Accessible labels remain independent from decorative art.
 - [x] Recall/game content is lazy-loaded where appropriate.
 - [x] Representative engine sessions are deterministic/replayable in unit tests.
-- [ ] All existing game launcher→result flows pass browser regression.
+- [x] All existing game launcher→result flows pass browser regression.
 
 ## H. Media subsystem
 
