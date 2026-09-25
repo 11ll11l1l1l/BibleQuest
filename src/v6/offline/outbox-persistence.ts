@@ -163,8 +163,9 @@ export class IndexedDbOfflineOutboxPersistence implements OfflineOutboxPersisten
   async list(): Promise<readonly unknown[]> {
     const db = await this.#dbPromise;
     const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readonly');
+    const completed = transactionComplete(transaction);
     const values = await requestResult(transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME).getAll());
-    await transactionComplete(transaction);
+    await completed;
     return Object.freeze(values);
   }
 
@@ -173,8 +174,9 @@ export class IndexedDbOfflineOutboxPersistence implements OfflineOutboxPersisten
     if (!valid) throw new Error('Refusing to persist an invalid offline mutation record.');
     const db = await this.#dbPromise;
     const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readwrite');
+    const completed = transactionComplete(transaction);
     transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME).put(valid);
-    await transactionComplete(transaction);
+    await completed;
   }
 
   async delete(id: string): Promise<void> {
@@ -182,14 +184,16 @@ export class IndexedDbOfflineOutboxPersistence implements OfflineOutboxPersisten
     if (!key) throw new Error('Offline mutation id is required.');
     const db = await this.#dbPromise;
     const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readwrite');
+    const completed = transactionComplete(transaction);
     transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME).delete(key);
-    await transactionComplete(transaction);
+    await completed;
   }
 
   async clear(): Promise<void> {
     const db = await this.#dbPromise;
     const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readwrite');
+    const completed = transactionComplete(transaction);
     transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME).clear();
-    await transactionComplete(transaction);
+    await completed;
   }
 }
