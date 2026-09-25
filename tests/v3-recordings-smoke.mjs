@@ -291,4 +291,75 @@ async function v6RecordingsRuntimeBrowser(){
   await page.close();
 }
 
-try{await desktop();await deniedCuration();await mobile();await v6MediaEngineBrowser();await v6RecordingsRuntimeBrowser();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}
+
+async function v6LiveCutoverBrowser(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  await page.evaluate(async()=>{
+    const [{createRecordingsMediaRuntime},{createRecordingsService},{recordingsPage}]=await Promise.all([
+      import('/src/v6/media/recordings-runtime.ts'),
+      import('/src/app/recordings.js'),
+      import('/src/features/recordings/index.js')
+    ]);
+    class Player{
+      constructor(target,options){
+        this.frame=document.createElement('iframe');
+        this.frame.dataset.bqRuntimePlayer='1';
+        target.replaceWith(this.frame);
+        queueMicrotask(()=>options?.events?.onReady?.({target:this}));
+      }
+      cueVideoById(){}
+      loadVideoById(){}
+      playVideo(){}
+      pauseVideo(){}
+      stopVideo(){}
+      seekTo(){}
+      destroy(){this.frame.remove()}
+    }
+    const runtime=createRecordingsMediaRuntime({
+      document,
+      global:{YT:{Player}},
+      enableVisibilityLifecycle:false,
+      playerReadyTimeoutMs:1000
+    });
+    const media={
+      async listLiveRecordings(){return[
+        {id:'rec-v6',youtube_id:'abcDEF12345',title:'V6 Sunday Service',description:'Live cutover proof',featured:true}
+      ]},
+      async createVideo(){throw new Error('not used in live cutover harness')},
+      async updateVideo(){throw new Error('not used in live cutover harness')}
+    };
+    const session={getState:()=>({authenticated:true,user:{id:'u-v6'}}),isAuthenticated:()=>true};
+    const congregation={load:async()=>[{congregationId:'c-v6'}]};
+    const recordings=createRecordingsService({media,audio:runtime.audio,session,congregation});
+    const root=document.createElement('div');
+    root.id='recordings-v6-live-root';
+    document.body.append(root);
+    const definition=recordingsPage({recordings,onHome:()=>{},onAccount:()=>{}});
+    root.innerHTML=definition.html;
+    const cleanup=definition.mount(root);
+    window.__recordingsV6Live={runtime,recordings,cleanup,root};
+  });
+
+  const root=page.locator('#recordings-v6-live-root');
+  await root.locator('[data-video-select="rec-v6"]').waitFor();
+  await root.locator('[data-video-select="rec-v6"]').click();
+  await root.locator('iframe[data-bq-runtime-player]').waitFor();
+  assert(await root.locator('iframe[data-bq-runtime-player]').count()===1,'Live V6 Recordings cutover did not create exactly one provider player.');
+  assert(await root.locator('iframe[data-bq-audio-player]').count()===0,'Live V6 Recordings cutover recreated the legacy Audio owner.');
+  assert(await root.locator('[data-recording-frame]').getAttribute('data-bq-media-host-owner')==='recordings-player','Live V6 Recordings cutover did not establish deterministic V6 host ownership.');
+  assert(await page.evaluate(()=>window.__recordingsV6Live.recordings.getPlayerCount())===1,'Live V6 Recordings service did not report exactly one V6 player.');
+  assert(await root.locator('[data-video-select="rec-v6"].is-selected').count()===1,'Live V6 Recordings cutover did not preserve selected-card state.');
+
+  await page.evaluate(async()=>{
+    const harness=window.__recordingsV6Live;
+    harness.cleanup?.();
+    await harness.runtime.dispose();
+    harness.root.remove();
+    delete window.__recordingsV6Live;
+  });
+  assert(await page.locator('#recordings-v6-live-root').count()===0,'Live V6 Recordings harness did not clean up its route root.');
+  await page.close();
+}
+
+try{await desktop();await deniedCuration();await mobile();await v6MediaEngineBrowser();await v6RecordingsRuntimeBrowser();await v6LiveCutoverBrowser();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}
