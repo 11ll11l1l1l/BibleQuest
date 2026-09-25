@@ -93,7 +93,7 @@ export function accountPage({ account, session, onHome, onTutorial }) {
           button.tabIndex = selected ? 0 : -1;
         });
         const activeTab = root.querySelector(`[data-account-mode="${CSS.escape(mode)}"]`);
-        body.setAttribute('aria-labelledby', activeTab?.id || '');
+        if (activeTab) body.setAttribute('aria-labelledby', activeTab.id);
       };
       const showCode = (title, code, detail, nextMode, afterSave = null) => {
         codeNext = nextMode;
