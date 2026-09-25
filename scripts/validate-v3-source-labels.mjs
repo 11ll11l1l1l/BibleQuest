@@ -8,7 +8,7 @@ const required=[
   'src/core/content-provenance.js','src/ui/source-labels.js','src/ui/source-labels.css','src/features/learn/index.js',
   'src/features/study/index.js','src/features/deep-questions/index.js','src/features/story-journey/index.js',
   'src/features/wisdom-situations/index.js','src/features/adaptive-learning/index.js','src/features/daily-mission/index.js',
-  'src/features/games/index.js','src/core/bible.js','src/core/recall-packs.js','src/app/bootstrap.js','index.html'
+  'src/features/games/index.js','src/features/games/views/recall.js','src/core/bible.js','src/core/recall-packs.js','src/app/bootstrap.js','index.html'
 ];
 for(const file of required)if(!fs.existsSync(path.join(root,file)))fail(`Missing #90 source-provenance file: ${file}`);
 
@@ -42,9 +42,9 @@ const surfaceContracts=[
 ];
 for(const [file,id] of surfaceContracts){const text=read(file);if(!text.includes('sourceLabel')||!text.includes(`'${id}'`))fail(`${file} must render provenance ${id} through the shared helper.`)}
 const story=read('src/features/story-journey/index.js');for(const id of['bq-retelling','bq-recall'])if(!story.includes(`'${id}'`))fail(`Story Journey must distinguish ${id}.`);if(!story.includes('sourceLabel'))fail('Story Journey must use shared sourceLabel().');
-const games=read('src/features/games/index.js');for(const id of['bq-game','bq-recall'])if(!games.includes(`'${id}'`))fail(`Games UI must distinguish ${id}.`);if(!games.includes('state.source')||!games.includes('state.license'))fail('Per-book Recall must retain source/license from its data owner.');
+const games=read('src/features/games/index.js');for(const id of['bq-game','bq-recall'])if(!games.includes(`'${id}'`))fail(`Games UI must distinguish ${id}.`);const recallView=read('src/features/games/views/recall.js');if(!recallView.includes('state.source')||!recallView.includes('state.license'))fail('Per-book Recall view must retain source/license from its data owner.');
 
-for(const file of['src/features/study/index.js','src/features/deep-questions/index.js','src/features/story-journey/index.js','src/features/wisdom-situations/index.js','src/features/adaptive-learning/index.js','src/features/daily-mission/index.js','src/features/games/index.js']){
+for(const file of['src/features/study/index.js','src/features/deep-questions/index.js','src/features/story-journey/index.js','src/features/wisdom-situations/index.js','src/features/adaptive-learning/index.js','src/features/daily-mission/index.js','src/features/games/index.js','src/features/games/views/recall.js']){
   const text=read(file);
   if(/MutationObserver|window\.BQ|localStorage|sessionStorage/.test(text))fail(`Legacy source-label injection/storage pattern forbidden in ${file}.`);
 }

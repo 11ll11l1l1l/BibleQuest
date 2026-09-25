@@ -17,6 +17,8 @@ const bootstrap=read('src/app/bootstrap.js');
 const home=read('src/features/home/index.js');
 const learn=read('src/features/learn/index.js');
 const games=read('src/features/games/index.js');
+const gamesViews=['launcher-memory','same-room','challenges','recall','solo'].map(name=>read(`src/features/games/views/${name}.js`)).join('\n');
+const gamesSurface=[games,gamesViews].join('\n');
 const progress=read('src/features/progress/index.js');
 const more=read('src/features/more/index.js');
 const index=read('index.html');
@@ -61,8 +63,8 @@ for(const hook of['data-open-reader','data-open-study','data-open-deep-questions
   assert.ok(learn.includes(hook),`Learn hub lost required entry point ${hook}.`);
 
 for(const hook of['data-games-page','data-game-launch','data-memory-open','data-same-room-open'])
-  assert.ok(games.includes(hook),`Play hub lost required entry point ${hook}.`);
-assert.ok(games.includes('Bible games for every kind of practice'),'Play launcher must use user-facing V4 copy.');
+  assert.ok(gamesSurface.includes(hook),`Play hub lost required entry point ${hook}.`);
+assert.ok(gamesSurface.includes('Bible games for every kind of practice'),'Play launcher must use user-facing V4 copy.');
 
 for(const hook of['data-progress-page','data-open-transform','data-open-personality-profile','data-open-psychometrics','data-open-avatar-vault'])
   assert.ok(progress.includes(hook),`Grow hub lost required entry point ${hook}.`);
@@ -74,7 +76,7 @@ for(const hook of[
   'data-open-backup','data-open-mission','data-open-accessibility','data-open-calendar','data-install-app'
 ]) assert.ok(more.includes(hook),`More hub lost required destination ${hook}.`);
 
-const primaryCopy=[games,progress,more].join('\n').toLowerCase();
+const primaryCopy=[gamesSurface,progress,more].join('\n').toLowerCase();
 for(const banned of[
   'active rebuild path',
   'still being rebuilt',

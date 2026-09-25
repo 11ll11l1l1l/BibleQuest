@@ -139,16 +139,26 @@
   background-size:contain;
 }
 
+.bq-detective-mark > img,
+.bq-recall-icon > img,
+.bq-memory-mark > img,
+.bq-game-result[data-memory-complete] .bq-game-medal > img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
 .bq-detective-mark {
   width:88px;
   height:88px;
   margin:0 auto 8px;
-  background-image:url("../../assets/v4/games/game-character-detective.png");
+  background-image:none;
 }
 
 .bq-recall-icon {
   background-color:transparent;
-  background-image:url("../../assets/v4/games/game-recall-deck.png");
+  background-image:none;
 }
 
 .bq-timeline-card::before {
@@ -166,7 +176,7 @@
   width:84px;
   height:84px;
   margin:0 auto 4px;
-  background-image:url("../../assets/v4/games/game-memory-meadow.png");
+  background-image:none;
 }
 
 .bq-memory-card > span {
@@ -203,7 +213,7 @@
   height:72px;
   margin:0 auto;
   font-size:0;
-  background:url("../../assets/v4/memory-meadow/memory-complete-medal.png") center/contain no-repeat;
+  background:none;
 }
 
 .bq-game-result[data-memory-complete] .bq-game-stats > div:nth-child(1)::before,
