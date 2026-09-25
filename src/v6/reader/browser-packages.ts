@@ -94,7 +94,7 @@ export function createBrowserScripturePackageRepository({
     metadataUrl(translationId, bookCode, locationRef);
 
   return Object.freeze({
-    async readInstalled(translationId, bookCode) {
+    async readInstalled(translationId: string, bookCode: string) {
       const metadataCache = await cacheStorage.open(METADATA_CACHE);
       const response = await metadataCache.match(metadataKey(translationId, bookCode));
       if (!response) return null;
@@ -119,7 +119,7 @@ export function createBrowserScripturePackageRepository({
       }
     },
 
-    async replaceInstalled(record, payload) {
+    async replaceInstalled(record: InstalledScripturePackage, payload: ArrayBuffer) {
       const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
       const metadataCache = await cacheStorage.open(METADATA_CACHE);
       const bodyKey = payloadKey(record.translationId, record.bookCode);
@@ -145,7 +145,7 @@ export function createBrowserScripturePackageRepository({
       }
     },
 
-    async removeInstalled(translationId, bookCode) {
+    async removeInstalled(translationId: string, bookCode: string) {
       const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
       const metadataCache = await cacheStorage.open(METADATA_CACHE);
       await Promise.all([
@@ -184,7 +184,7 @@ export function createFetchScripturePackageTransport({
   if (typeof fetcher !== 'function') throw new Error('Scripture package transport requires fetch().');
 
   return Object.freeze({
-    async download(url, { signal, onProgress }) {
+    async download(url: string, { signal, onProgress }: { signal: AbortSignal; onProgress?: (receivedBytes: number, totalBytes?: number) => void }) {
       const response = await fetcher(url, { signal, cache: 'no-store', credentials: 'same-origin' });
       if (!response.ok) throw new Error(`Scripture package request failed with HTTP ${response.status}.`);
 
@@ -261,7 +261,7 @@ export function createBrowserScripturePackageController({
   };
 
   return Object.freeze({
-    async snapshot(translationId, bookCode) {
+    async snapshot(translationId: string, bookCode: string) {
       const id = clean(translationId);
       const code = normalizeBookCode(bookCode);
       const policy = translationPackagingPolicy(id);
@@ -315,16 +315,16 @@ export function createBrowserScripturePackageController({
       }
     },
 
-    async install(translationId, bookCode, onProgress) {
+    async install(translationId: string, bookCode: string, onProgress?: (progress: ScripturePackageProgress) => void) {
       const manifest = await loadManifest(clean(translationId));
       return manager.install(manifest, normalizeBookCode(bookCode), { onProgress });
     },
 
-    cancel(translationId, bookCode) {
+    cancel(translationId: string, bookCode: string) {
       return manager.cancel(clean(translationId), normalizeBookCode(bookCode));
     },
 
-    async remove(translationId, bookCode) {
+    async remove(translationId: string, bookCode: string) {
       await manager.remove(clean(translationId), normalizeBookCode(bookCode));
     },
   });
