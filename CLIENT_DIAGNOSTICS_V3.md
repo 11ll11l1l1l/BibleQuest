@@ -22,7 +22,7 @@ The recovered sources are `client-diagnostics.js`, `runtime-recovery.js`, `ERROR
 3. A failed/throwing probe classifies as `BQ-NET-002`; a successful probe classifies the route failure as `BQ-MOD-001`.
 4. Unknown non-module failures without connectivity evidence classify as `BQ-UNK-001`.
 5. Successful probe results are cached briefly to avoid repeated recovery traffic; callers may explicitly force a fresh probe.
-6. Public diagnostics are immutable and contain only stable code, category, title, safe message, route, reachability, and timestamp. Arbitrary error text, stack, email, token, URL, and credential data are excluded.
+6. Public diagnostics are immutable and contain only stable code, category, title, safe message, route, reachability, the V6 build identity, and timestamp. The build identity comes from the existing `src/v6/build-identity.ts` compile-time SHA contract; diagnostics do not invent or persist another version source. Arbitrary error text, stack, email, token, URL, and credential data are excluded.
 7. An async classification/reporting failure cannot produce an unhandled rejection or replace a newer recovery view.
 8. Recovery UI displays the stable code and whether the host probe succeeded while retaining Retry, Home, the shell, and primary navigation.
 9. The diagnostic path has no persistence, remote error-table write, account/session requirement, Progress, Lesson, reward, doctrinal, provenance, or congregation side effect.
@@ -39,7 +39,7 @@ The #95 functional verification gate completed with:
 
 1. architecture validation confirms one classifier and API-owned probe;
 2. edge regression covers offline, reachable module failure, unreachable host, unknown failure, cache/forced refresh, immutable safe output, and async reporting failure isolation;
-3. real 390px browser regression proves diagnostic code/reachability presentation composes with #96 Retry/Home recovery without losing the shell;
+3. real 390px browser regression proves diagnostic code/reachability presentation composes with #96 Retry/Home recovery without losing the shell and that the runtime diagnostic view carries the V6 build identity;
 4. the complete accumulated suite passes on the exact functional candidate;
 5. the independent bookkeeping candidate passes the same complete suite before `release/v3.31-client-diagnostics` is frozen.
 
