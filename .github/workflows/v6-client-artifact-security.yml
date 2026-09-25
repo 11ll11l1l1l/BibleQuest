@@ -1,0 +1,56 @@
+name: V6 Client Artifact Security
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - index.html
+      - 'src/**'
+      - 'public/**'
+      - 'vite.config.*'
+      - scripts/v6-client-artifact-policy.mjs
+      - tests/v6/client-artifact-policy.test.ts
+      - package.json
+      - package-lock.json
+      - .github/workflows/v6-client-artifact-security.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-client-artifact-security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Build and scan client artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+
+      - name: Install exact dependencies
+        run: npm ci
+
+      - name: Run focused policy regression
+        run: node --experimental-strip-types --test tests/v6/client-artifact-policy.test.ts
+
+      - name: Build V6 client
+        run: npm run build
+
+      - name: Require built artifact
+        run: test -d dist-v6
+
+      - name: Scan browser inputs and built client artifact
+        run: node scripts/v6-client-artifact-policy.mjs
