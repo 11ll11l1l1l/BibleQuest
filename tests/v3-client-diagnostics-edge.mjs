@@ -6,7 +6,8 @@ const diagnostics=createClientDiagnosticsService({probe:async()=>{calls++;if(res
 online=false;
 let diagnosis=await diagnostics.classify(new Error('secret@example.com token ABCDEF0123456789ABCDEF0123456789'),{kind:'module',route:'reader'});
 assert(diagnosis.code==='BQ-NET-001'&&diagnosis.serverReachable===false&&calls===0,'Offline diagnosis must not issue a probe.');
-assert(Object.isFrozen(diagnosis)&&!JSON.stringify(diagnosis).includes('secret@example.com')&&!JSON.stringify(diagnosis).includes('ABCDEF'),'Public diagnostics must be immutable and exclude arbitrary error data.');
+assert(Object.isFrozen(diagnosis)&&Object.isFrozen(diagnosis.build)&&!JSON.stringify(diagnosis).includes('secret@example.com')&&!JSON.stringify(diagnosis).includes('ABCDEF'),'Public diagnostics must be immutable and exclude arbitrary error data.');
+assert(diagnosis.build.sha==='development'&&diagnosis.build.development===true,'Direct-source diagnostics must expose the V6 development build identity without inventing a release SHA.');
 
 online=true;
 diagnosis=await diagnostics.classify(new Error('module failure'),{kind:'module',route:'deep-questions'});
