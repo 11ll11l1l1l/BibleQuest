@@ -120,4 +120,97 @@ async function mobile(){
   await page.evaluate(()=>window.__removeRecordingHarness());await page.close();
 }
 
-try{await desktop();await deniedCuration();await mobile();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}
+async function v6MediaEngineBrowser(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  const result=await page.evaluate(async()=>{
+    const [{createMediaProviderRegistry},{createMediaSessionManager},{createYouTubeIframeAdapter},{createMediaVisibilityLifecycle}]=await Promise.all([
+      import('/src/v6/media/registry.ts'),
+      import('/src/v6/media/session.ts'),
+      import('/src/v6/media/youtube-iframe-adapter.ts'),
+      import('/src/v6/media/visibility-lifecycle.ts')
+    ]);
+    const calls=[],events=[];
+    class Player{
+      constructor(target){this.target=String(target);calls.push(`yt:${this.target}:construct`)}
+      cueVideoById(input){calls.push(`yt:${this.target}:cue:${input.videoId}@${input.startSeconds??0}`)}
+      loadVideoById(input){calls.push(`yt:${this.target}:load:${input.videoId}@${input.startSeconds??0}`)}
+      playVideo(){calls.push(`yt:${this.target}:play`)}
+      pauseVideo(){calls.push(`yt:${this.target}:pause`)}
+      stopVideo(){calls.push(`yt:${this.target}:stop`)}
+      seekTo(seconds,allowSeekAhead){calls.push(`yt:${this.target}:seek:${seconds}:${allowSeekAhead}`)}
+      destroy(){calls.push(`yt:${this.target}:destroy`)}
+    }
+    const youtube=createYouTubeIframeAdapter({
+      api:{Player},
+      resolveElement:instanceId=>`engine-${instanceId}`
+    });
+    const native={
+      kind:'native',
+      capabilities:{seek:true,pictureInPicture:true},
+      create(instanceId){return{
+        load(source,startAtSeconds){calls.push(`native:${instanceId}:load:${source.id}@${startAtSeconds}`)},
+        play(){calls.push(`native:${instanceId}:play`)},
+        pause(){calls.push(`native:${instanceId}:pause`)},
+        stop(){calls.push(`native:${instanceId}:stop`)},
+        seek(seconds){calls.push(`native:${instanceId}:seek:${seconds}`)},
+        unload(){calls.push(`native:${instanceId}:unload`)},
+        requestPictureInPicture(){calls.push(`native:${instanceId}:pip`)}
+      }}
+    };
+    const providers=createMediaProviderRegistry([youtube,native]);
+    const manager=createMediaSessionManager({providers,maxInstances:4});
+    manager.subscribe(event=>events.push(event.type));
+    const source=(id,provider,externalId)=>({id,provider,externalId,title:id,durationSeconds:600});
+    await manager.register('engine-player','recordings');
+    await manager.register('engine-preview','home');
+    await manager.setQueue('engine-player',[
+      {source:source('service-one','youtube','abcdefghijk'),resumeSeconds:12},
+      {source:source('service-two','native','native-service-two'),resumeSeconds:5}
+    ]);
+    await manager.setQueue('engine-preview',[
+      {source:source('preview','youtube','ZYXWVUTsrqp'),resumeSeconds:0}
+    ]);
+    await manager.play('engine-preview');
+    await manager.play('engine-player');
+    const afterAudibleSwitch=manager.snapshot();
+    await manager.seek('engine-player',34);
+    await manager.next('engine-player');
+    await manager.play('engine-player');
+    await manager.previous('engine-player');
+    await manager.play('engine-player');
+
+    class FakeTarget{
+      constructor(){this.visibilityState='visible';this.listeners=new Map()}
+      addEventListener(type,listener){const set=this.listeners.get(type)||new Set();set.add(listener);this.listeners.set(type,set)}
+      removeEventListener(type,listener){this.listeners.get(type)?.delete(listener)}
+      dispatch(type){for(const listener of this.listeners.get(type)||[])listener()}
+    }
+    const target=new FakeTarget();
+    const lifecycle=createMediaVisibilityLifecycle({session:manager,visibilityTarget:target});
+    target.visibilityState='hidden';target.dispatch('visibilitychange');target.dispatch('pagehide');await lifecycle.flush();
+    const afterBackground=manager.snapshot();
+    target.visibilityState='visible';target.dispatch('visibilitychange');target.dispatch('pageshow');await lifecycle.flush();
+    const resumeCandidate=lifecycle.consumeResumeCandidate();
+    lifecycle.dispose();
+
+    await manager.teardownRoute('recordings');
+    const afterRouteTeardown=manager.snapshot();
+    await manager.teardownRoute('home');
+    const afterAllTeardown=manager.snapshot();
+    return{calls,events,afterAudibleSwitch,afterBackground,resumeCandidate,afterRouteTeardown,afterAllTeardown};
+  });
+  assert(result.afterAudibleSwitch.activeAudibleInstanceId==='engine-player','V6 Media browser harness did not enforce one audible owner.');
+  assert(result.afterAudibleSwitch.instances.find(row=>row.instanceId==='engine-preview')?.status==='paused','V6 Media browser harness did not pause the previous audible instance.');
+  assert(result.calls.includes('native:engine-player:load:service-two@5'),'V6 Media browser harness did not load the queued native provider at its resume position.');
+  assert(result.calls.includes('yt:engine-engine-player:cue:abcdefghijk@34'),'V6 Media browser harness did not restore the YouTube resume position after provider switching.');
+  assert(result.events.includes('provider-switched'),'V6 Media browser harness did not emit provider-switch lifecycle evidence.');
+  assert(result.afterBackground.activeAudibleInstanceId===null,'V6 Media browser harness left audible ownership active in the background.');
+  assert(result.afterBackground.instances.find(row=>row.instanceId==='engine-player')?.status==='paused','V6 Media browser harness did not pause playback on background transition.');
+  assert(result.resumeCandidate==='engine-player','V6 Media browser harness did not preserve an explicit foreground resume candidate.');
+  assert(result.afterRouteTeardown.instances.length===1&&result.afterRouteTeardown.instances[0].instanceId==='engine-preview','V6 Media route teardown removed the wrong registered instance set.');
+  assert(result.afterAllTeardown.instances.length===0,'V6 Media teardown left registered player resources behind.');
+  await page.close();
+}
+
+try{await desktop();await deniedCuration();await mobile();await v6MediaEngineBrowser();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}
