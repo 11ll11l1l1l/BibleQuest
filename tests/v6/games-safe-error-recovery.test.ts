@@ -2,17 +2,37 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 
-const source = await readFile(new URL('../../src/features/games/index.js', import.meta.url), 'utf8');
+import { renderGamesErrorView, renderGamesLoadingView } from '../../src/features/games/views/status.js';
 
-test('Games route maps thrown failures through the shared safe V6 taxonomy', () => {
-  assert.match(source, /import \{ toSafeFailure \} from '\.\.\/\.\.\/v6\/kernel\/errors\.ts';/);
-  assert.match(source, /const failure=toSafeFailure\(error\)/);
-  assert.match(source, /data-game-error=/);
-  assert.match(source, /escapeHtml\(failure\.message\)/);
-  assert.doesNotMatch(source, /error\?\.message/);
+const escapeHtml=(value:unknown)=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]??char));
+const routeSource=await readFile(new URL('../../src/features/games/index.js',import.meta.url),'utf8');
+
+test('Games route delegates loading and error presentation to bounded status views',()=>{
+  assert.match(routeSource,/renderGamesLoadingView/);
+  assert.match(routeSource,/renderGamesErrorView/);
+  assert.doesNotMatch(routeSource,/error\?\.message/);
+  assert.doesNotMatch(routeSource,/toSafeFailure\(error\)/);
 });
 
-test('Games failure view keeps an explicit recovery route', () => {
-  assert.match(source, /role="alert"/);
-  assert.match(source, /data-game-launcher>Back to games/);
+test('Games loading view keeps status semantics and escapes activity text',()=>{
+  const html=renderGamesLoadingView({text:'Loading <secret>',escapeHtml});
+  assert.match(html,/role="status"/);
+  assert.match(html,/Loading &lt;secret&gt;/);
+  assert.doesNotMatch(html,/Loading <secret>/);
+});
+
+test('Games error view does not expose arbitrary thrown error text',()=>{
+  const html=renderGamesErrorView({error:new Error('token=private-secret'),escapeHtml});
+  assert.match(html,/role="alert"/);
+  assert.match(html,/data-game-error="unknown"/);
+  assert.match(html,/Something went wrong\. Try again\./);
+  assert.doesNotMatch(html,/private-secret/);
+  assert.match(html,/data-game-launcher>Back to games/);
+});
+
+test('Games error view uses shared status-specific safe copy',()=>{
+  const html=renderGamesErrorView({error:{status:401,message:'backend detail'},escapeHtml});
+  assert.match(html,/data-game-error="unauthorized"/);
+  assert.match(html,/Sign in again to continue\./);
+  assert.doesNotMatch(html,/backend detail/);
 });
