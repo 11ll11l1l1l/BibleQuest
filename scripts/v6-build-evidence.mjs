@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, join, relative, resolve } from 'node:path';
 
@@ -56,6 +57,48 @@ const featureDynamicChunks = manifestEntries
   .filter(([source]) => source.startsWith('src/features/') && source.endsWith('/index.js'))
   .map(([source, chunk]) => Object.freeze({ source, file: String(chunk.file || '') }))
   .sort((a, b) => a.source.localeCompare(b.source));
+
+const scriptureManifestFailures = [];
+const scriptureManifestEvidence = [];
+for (const translationId of ['bsb', 'tl', 'cebocb']) {
+  const manifestPath = join(outDir, 'data', 'v6-scripture-manifests', `${translationId}.json`);
+  try {
+    const scriptureManifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+    if (scriptureManifest.translationId !== translationId) {
+      scriptureManifestFailures.push(`${translationId}: manifest identity mismatch`);
+      continue;
+    }
+    if (scriptureManifest.delivery !== 'downloadable' || scriptureManifest.license?.redistribution !== 'allowed') {
+      scriptureManifestFailures.push(`${translationId}: manifest packaging policy is not explicitly downloadable/allowed`);
+    }
+    if (!Array.isArray(scriptureManifest.books) || scriptureManifest.books.length !== 66) {
+      scriptureManifestFailures.push(`${translationId}: expected 66 book packages, found ${scriptureManifest.books?.length ?? 0}`);
+      continue;
+    }
+
+    let bytes = 0;
+    for (const book of scriptureManifest.books) {
+      const relativePath = String(book.url || '').replace(/^\\/+/, '');
+      const payload = await readFile(join(outDir, relativePath));
+      const digest = createHash('sha256').update(payload).digest('hex');
+      if (digest !== String(book.sha256 || '').toLowerCase()) {
+        scriptureManifestFailures.push(`${translationId}:${book.bookCode}: sha256 mismatch`);
+      }
+      if (payload.byteLength !== Number(book.bytes)) {
+        scriptureManifestFailures.push(`${translationId}:${book.bookCode}: byte-length mismatch`);
+      }
+      bytes += payload.byteLength;
+    }
+    scriptureManifestEvidence.push({
+      translationId,
+      contentVersion: scriptureManifest.contentVersion,
+      books: scriptureManifest.books.length,
+      bytes,
+    });
+  } catch (error) {
+    scriptureManifestFailures.push(`${translationId}: ${error?.message || error}`);
+  }
+}
 
 const files = await walk(outDir);
 const publicSourceMapFiles = files.filter((file) => file.endsWith('.map'));
@@ -142,6 +185,7 @@ const report = {
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
   },
+  scripturePackages: scriptureManifestEvidence,
   sourceMaps: {
     privateDirectory: relative(root, privateSourceMapDir).replaceAll('\\', '/'),
     privateMapCount: privateSourceMapFiles.length,
@@ -168,6 +212,7 @@ const failures = [];
 if (publicSourceMapFiles.length) failures.push(`public artifact contains ${publicSourceMapFiles.length} source-map file(s)`);
 if (publicSourceMapReferences.length) failures.push(`public V6 chunks expose sourceMappingURL references: ${publicSourceMapReferences.join(', ')}`);
 failures.push(...privateSourceMapFailures);
+failures.push(...scriptureManifestFailures);
 if (totalBytes > budgets.totalBytes) failures.push(`total artifact ${totalBytes} > ${budgets.totalBytes}`);
 if (largestJavaScript.bytes > budgets.javascriptBytes) failures.push(`largest JS ${largestJavaScript.bytes} > ${budgets.javascriptBytes}`);
 if (browserEntryBytes > budgets.entryJavascriptBytes) failures.push(`browser entry JS ${browserEntryBytes} > ${budgets.entryJavascriptBytes}`);
