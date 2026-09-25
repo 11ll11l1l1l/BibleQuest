@@ -1,3 +1,5 @@
+import { getBibleQuestBuildIdentity } from '../v6/build-identity.ts';
+
 export const CLIENT_DIAGNOSTIC_CODES = Object.freeze({
   OFFLINE: Object.freeze({ code:'BQ-NET-001',category:'Connection',title:'Device is offline',message:'BibleQuest cannot reach the internet from this device.' }),
   UNREACHABLE: Object.freeze({ code:'BQ-NET-002',category:'Connection',title:'BibleQuest host is unreachable',message:'This device reports a connection, but the BibleQuest host could not be reached.' }),
@@ -10,11 +12,13 @@ const safeRoute=value=>String(value||'feature').trim().replace(/[^a-z0-9_-]/gi,'
 export function createClientDiagnosticsService({ probe, online=()=>globalThis.navigator?.onLine!==false, clock=()=>Date.now(), cacheMilliseconds=5000 }={}){
   if(typeof probe!=='function'||typeof online!=='function'||typeof clock!=='function')throw new Error('Client diagnostics requires probe, online, and clock boundaries.');
   let probeCache=null;
+  const build=getBibleQuestBuildIdentity();
 
   const view=(definition,{route,reachable=null}={})=>Object.freeze({
     ...definition,
     route:safeRoute(route),
     serverReachable:reachable,
+    build,
     at:new Date(clock()).toISOString()
   });
 
