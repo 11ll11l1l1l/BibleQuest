@@ -15,7 +15,11 @@ for(const forbidden of['createClient','supabase.','client.from','client.function
 for(const requiredToken of['status','dashboard','frontendHealth','deleteUser','BQ_ADMIN_OPS_SELF_DELETE','BQ_ADMIN_OPS_OWNER_REQUIRED','clientErrors24h'])if(!service.includes(requiredToken))fail(`service missing ${requiredToken}`);
 if(!service.includes("if(!currentUser())")&&!service.includes("if(!user)return reset('signed-out')"))fail('service must fail signed-out before privileged calls');
 if(service.includes('user_id:')&&service.includes('clientErrors24h'))fail('service must not project privileged client-error user identifiers');
-for(const requiredToken of["invoke('bq-admin-ops',{action:'status'})","invoke('bq-admin-ops',{action:'health'})","invoke('bq-admin-ops',{action:'dashboard'})","invoke('bq-admin-ops',{action:'delete_user',targetUserId})",'frontendHealth'])if(!api.includes(requiredToken))fail(`central API missing ${requiredToken}`);
+for(const requiredToken of["invoke('bq-admin-ops',{action:'status'})","invoke('bq-admin-ops',{action:'health'})","invoke('bq-admin-ops',{action:'dashboard'})",'frontendHealth'])if(!api.includes(requiredToken))fail(`central API missing ${requiredToken}`);
+for(const action of ['delete_user','suspend_account','reactivate_account','force_sign_out','set_temp_password','change_email']){
+  const pattern=new RegExp(`invokeAdminMutation\\([^\\n]+['"]${action}['"]`);
+  if(!pattern.test(api))fail(`central API missing typed Admin Operations mutation bridge: ${action}`);
+}
 for(const forbiddenPath of['src/app/admin-operations.js','src/features/admin-operations/index.js','src/app/admin-operations-entry.js','src/features/admin-console/index.js']){const text=read(forbiddenPath);if(text.includes("functions.invoke('bq-admin-ops")||text.includes('/functions/v1/bq-admin-ops'))fail(`${forbiddenPath} invokes bq-admin-ops directly`)}
 for(const requiredToken of['System health','Who is online','Leader / pastor assignments','Devotionals & announcements','Congregation polls','Handpicked videos & channels','Live rooms & live polls','individual voter records are not displayed','data-ops-filter','data-ops-refresh'])if(!view.includes(requiredToken))fail(`dashboard rendering missing ${requiredToken}`);
 if(!css.includes('@media(max-width:620px)')||!css.includes('grid-template-columns:repeat(2'))fail('responsive Admin Operations contract is missing');
