@@ -64,16 +64,26 @@ function rank(directory,scores,lane){
 export function createLeaderboardsService({api,session,congregation,clock=()=>new Date()}={}){
   if(!api?.load||!session||!congregation)throw new Error('Leaderboards require shared API, session and congregation owners.');
   let current=Object.freeze({authenticated:false,remoteAvailable:true,status:'idle',congregations:[],congregationId:'',congregationName:'',period:'week',lane:'overall',rows:[],periods:PERIODS,lanes:LANES});
-  let contextUserId='',loadRequest=0;
+  let contextUserId='',loadRequest=0,followsActiveCongregation=false;
   const sessionState=()=>session.getState?.()||{};
   const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
-  const snapshot=()=>contextUserId&&contextUserId!==currentUserId()?Object.freeze({...current,status:'idle',congregations:[],congregationId:'',congregationName:'',rows:[]}):current;
+  const supportsActiveCongregation=()=>typeof congregation.getActive==='function';
+  const activeCongregationId=()=>String(congregation.getActive?.()?.congregationId||'');
+  const hiddenState=()=>Object.freeze({...current,status:'idle',congregations:[],congregationId:'',congregationName:'',rows:[]});
+  const snapshot=()=>{
+    if(contextUserId&&contextUserId!==currentUserId())return hiddenState();
+    if(followsActiveCongregation&&supportsActiveCongregation()&&current.congregationId!==activeCongregationId())return hiddenState();
+    return current;
+  };
   const setState=patch=>{current=Object.freeze({...current,...patch});return current};
   const requireAccount=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw boardError('Sign in to view congregation leaderboards.','BQ_LEADERBOARD_AUTH_REQUIRED');if(state.remoteAvailable===false)throw boardError('Leaderboards are unavailable in local preview.','BQ_LEADERBOARD_REMOTE_DISABLED');return state};
 
   async function load({congregationId,period=current.period,lane=current.lane}={}){
-    const sessionNow=requireAccount(),userId=String(sessionNow.user.id),request=++loadRequest;
-    if(contextUserId&&contextUserId!==userId)setState({status:'idle',congregations:[],congregationId:'',congregationName:'',rows:[]});
+    const sessionNow=requireAccount(),userId=String(sessionNow.user.id),request=++loadRequest,requestedId=String(congregationId||'');
+    if(contextUserId&&contextUserId!==userId){
+      followsActiveCongregation=false;
+      setState({status:'idle',congregations:[],congregationId:'',congregationName:'',rows:[]});
+    }
     contextUserId=userId;
     if(!PERIODS.some(row=>row.id===period))throw boardError('Choose a supported leaderboard period.','BQ_LEADERBOARD_PERIOD');
     if(!LANES.some(row=>row.id===lane))throw boardError('Choose a supported leaderboard lane.','BQ_LEADERBOARD_LANE');
@@ -81,17 +91,31 @@ export function createLeaderboardsService({api,session,congregation,clock=()=>ne
     try{memberships=await congregation.load()}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
     if(request!==loadRequest||currentUserId()!==userId)return snapshot();
     const congregations=memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,roleLabel:row.roleLabel,timeZone:cleanText(row.congregation.timezone,80)}));
-    if(!congregations.length)return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',period,lane,rows:[]});
-    const selected=congregations.find(row=>row.id===String(congregationId||''))||congregations[0];
+    if(!congregations.length){
+      followsActiveCongregation=false;
+      return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',period,lane,rows:[]});
+    }
+    const activeId=supportsActiveCongregation()?activeCongregationId():'';
+    const inheritedImplicit=followsActiveCongregation&&requestedId&&requestedId===current.congregationId;
+    const explicitRequest=Boolean(requestedId)&&!inheritedImplicit;
+    const selectedId=explicitRequest?requestedId:(activeId||requestedId);
+    const selected=congregations.find(row=>row.id===selectedId)||congregations[0];
+    const requestFollowsActive=!explicitRequest&&Boolean(activeId)&&selected.id===activeId;
     congregation.assert(selected.id,'read');
     let result;
-    try{result=await api.load(selected.id,sinceFor(period,clock(),selected.timeZone||browserTimeZone()))}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
+    try{result=await api.load(selected.id,sinceFor(period,clock(),selected.timeZone||browserTimeZone()))}catch(error){
+      if(request!==loadRequest||currentUserId()!==userId)return snapshot();
+      if(requestFollowsActive&&activeCongregationId()!==selected.id)return snapshot();
+      throw error;
+    }
     if(request!==loadRequest||currentUserId()!==userId)return snapshot();
+    if(requestFollowsActive&&activeCongregationId()!==selected.id)return snapshot();
     const directory=(Array.isArray(result?.directory)?result.directory:[]).map(row=>normalizeDirectory(row,selected.id));
     const scores=(Array.isArray(result?.scores)?result.scores:[]).map(normalizeScore);
+    followsActiveCongregation=requestFollowsActive;
     return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:selected.id,congregationName:selected.name,period,lane,rows:rank(directory,scores,lane)});
   }
-  function clear(){loadRequest++;contextUserId='';const state=sessionState();current=Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,status:'idle',congregations:[],congregationId:'',congregationName:'',period:'week',lane:'overall',rows:[],periods:PERIODS,lanes:LANES})}
+  function clear(){loadRequest++;contextUserId='';followsActiveCongregation=false;const state=sessionState();current=Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,status:'idle',congregations:[],congregationId:'',congregationName:'',period:'week',lane:'overall',rows:[],periods:PERIODS,lanes:LANES})}
   return Object.freeze({snapshot,load,clear,periods:()=>PERIODS.slice(),lanes:()=>LANES.slice()});
 }
 
