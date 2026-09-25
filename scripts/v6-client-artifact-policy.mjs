@@ -2,7 +2,15 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const DEFAULT_TARGETS = ['index.html', 'src', 'public', 'vite.config.js', 'vite.config.mjs', 'vite.config.ts'];
+const DEFAULT_TARGETS = [
+  'index.html',
+  'src',
+  'public',
+  'dist-v6',
+  'vite.config.js',
+  'vite.config.mjs',
+  'vite.config.ts',
+];
 const TEXT_EXTENSIONS = new Set(['.html', '.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx', '.json', '.css', '.svg']);
 
 const FORBIDDEN_MARKERS = [
@@ -13,8 +21,9 @@ const FORBIDDEN_MARKERS = [
 
 const CREDENTIAL_LITERALS = [
   /(?:service[_-]?role|secret)[_-]?(?:key|token)\s*[:=]\s*["'`][^"'`\r\n]{20,}["'`]/i,
-  /["'`]eyJ[a-zA-Z0-9_-]{16,}\.[a-zA-Z0-9_-]{16,}\.[a-zA-Z0-9_-]{16,}["'`]/,
 ];
+
+const JWT_LITERAL_PATTERN = /["'`](eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+)["'`]/g;
 
 function isTextCandidate(filePath) {
   return TEXT_EXTENSIONS.has(path.extname(filePath).toLowerCase());
@@ -39,12 +48,34 @@ async function collectFiles(targetPath) {
   return nested.flat();
 }
 
+function jwtPayload(token) {
+  try {
+    const encoded = token.split('.')[1];
+    if (!encoded) return null;
+    const parsed = JSON.parse(Buffer.from(encoded, 'base64url').toString('utf8'));
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function jwtExposureLabel(token) {
+  const payload = jwtPayload(token);
+  if (payload?.role === 'anon') return null;
+  const role = typeof payload?.role === 'string' && payload.role.trim() ? payload.role.trim() : 'unknown';
+  return `jwt-literal:${role}`;
+}
+
 export function findClientCredentialExposure(source) {
   const matches = [];
   for (const pattern of [...FORBIDDEN_MARKERS, ...CREDENTIAL_LITERALS]) {
     if (pattern.test(source)) matches.push(pattern.source);
   }
-  return matches;
+  for (const match of source.matchAll(JWT_LITERAL_PATTERN)) {
+    const label = jwtExposureLabel(match[1]);
+    if (label) matches.push(label);
+  }
+  return [...new Set(matches)];
 }
 
 export async function scanClientArtifactInputs(rootDir, targets = DEFAULT_TARGETS) {
@@ -67,7 +98,7 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  console.log('V6 client artifact policy PASS: no privileged credential material found in browser-shipped inputs.');
+  console.log('V6 client artifact policy PASS: no privileged credential material found in browser-shipped inputs or built artifacts.');
 }
 
 const isDirect = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
