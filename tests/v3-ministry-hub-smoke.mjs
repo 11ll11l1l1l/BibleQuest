@@ -16,6 +16,23 @@ async function run(){
     const view=ministryHubPage({hub,onNavigate:route=>window.__bqMinistryRoutes.push(route),onBack:()=>window.__bqMinistryRoutes.push('more'),onAccount:()=>window.__bqMinistryRoutes.push('account'),onCongregation:()=>window.__bqMinistryRoutes.push('congregation')});host.innerHTML=view.html;window.__bqMinistryCleanup=view.mount(host);await new Promise(resolve=>setTimeout(resolve,25));
   },role);
 
+  const mountForActiveCongregation=async activeId=>page.evaluate(async activeId=>{
+    window.__bqMinistryCleanup?.();
+    const stamp=Date.now(),[{createMinistryHubService},{ministryHubPage}]=await Promise.all([import(`/src/app/ministry-hub.js?active=${stamp}`),import(`/src/features/ministry-hub/index.js?active=${stamp}`)]);
+    const memberships=[
+      {congregationId:'c1',role:'member',roleKnown:true,roleLabel:'Member',congregation:{id:'c1',name:'Member Church'}},
+      {congregationId:'c2',role:'leader',roleKnown:true,roleLabel:'Leader',congregation:{id:'c2',name:'Leader Church'}}
+    ];
+    const congregation={
+      isAuthenticated:()=>true,
+      load:async()=>memberships,
+      getActive:()=>memberships.find(row=>row.congregationId===activeId)||null,
+      can:(id,capability)=>capability==='read'?['c1','c2'].includes(id):capability==='ministry'?id==='c2':false
+    };
+    const hub=createMinistryHubService({congregation}),host=document.querySelector('#bq-view');
+    const view=ministryHubPage({hub,onNavigate:()=>{},onBack:()=>{},onAccount:()=>{},onCongregation:()=>{}});host.innerHTML=view.html;window.__bqMinistryCleanup=view.mount(host);await new Promise(resolve=>setTimeout(resolve,25));
+  },activeId);
+
   await mountForRole('member');
   assert(await page.locator('[data-ministry-tool="assignments"] [data-ministry-route="assignments"]').count()===1,'Member must be able to open Assignments.');
   assert(await page.locator('[data-ministry-tool="calendar"] [data-ministry-route="calendar"]').count()===1,'Member must be able to open the verified Calendar.');
@@ -31,6 +48,14 @@ async function run(){
   assert(await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').count()===1,'Leader assignment publishing must delegate to existing Assignments route.');
   assert(await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').count()===1,'Leader Center (V5 Phase 1) must now be a real, available tool, not deferred.');
   await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').click();await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').click();routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments,leader-center','Ministry tool navigation did not delegate to Assignments and the new Leader Center route.');
+
+  await mountForActiveCongregation('c1');
+  assert(await page.locator('[data-ministry-membership="c1"]').count()===1&&await page.locator('[data-ministry-membership="c2"]').count()===1,'Multi-membership Ministry Hub must keep both congregation memberships visible.');
+  assert(await page.locator('[data-ministry-privileged]').count()===0,'Active member congregation must not inherit ministry tools from another leader congregation.');
+
+  await mountForActiveCongregation('c2');
+  assert(await page.locator('[data-ministry-privileged]').count()===1,'Switching active context to the leader congregation must expose ministry tools.');
+  assert(await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').count()===1,'Leader Center must be visible after the leader congregation becomes active.');
 
   await mountForRole('bishop');
   assert(await page.locator('[data-ministry-route]').count()===0,'Unsupported role must receive no congregation navigation controls.');
