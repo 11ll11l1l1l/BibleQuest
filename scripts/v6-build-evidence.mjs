@@ -17,9 +17,13 @@ const budgets = Object.freeze({
   javascriptBytes: 5 * 1024 * 1024,
   entryJavascriptBytes: 700 * 1024,
   imageBytes: 10 * 1024 * 1024,
+  imageTotalBytes: 32 * 1024 * 1024,
+  fontBytes: 1 * 1024 * 1024,
+  fontTotalBytes: 4 * 1024 * 1024,
   minimumFeatureDynamicChunks: 40,
 });
 const imageExtensions = new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp']);
+const fontExtensions = new Set(['.eot', '.otf', '.ttf', '.woff', '.woff2']);
 const javascriptExtensions = new Set(['.js', '.mjs']);
 
 async function walk(directory) {
@@ -103,8 +107,11 @@ try {
 
 const inventory = [];
 let totalBytes = 0;
+let imageTotalBytes = 0;
+let fontTotalBytes = 0;
 let largestJavaScript = { path: null, bytes: 0 };
 let largestImage = { path: null, bytes: 0 };
+let largestFont = { path: null, bytes: 0 };
 
 for (const file of files) {
   const { size } = await stat(file);
@@ -115,8 +122,13 @@ for (const file of files) {
   if (javascriptExtensions.has(extension) && size > largestJavaScript.bytes) {
     largestJavaScript = { path, bytes: size };
   }
-  if (imageExtensions.has(extension) && size > largestImage.bytes) {
-    largestImage = { path, bytes: size };
+  if (imageExtensions.has(extension)) {
+    imageTotalBytes += size;
+    if (size > largestImage.bytes) largestImage = { path, bytes: size };
+  }
+  if (fontExtensions.has(extension)) {
+    fontTotalBytes += size;
+    if (size > largestFont.bytes) largestFont = { path, bytes: size };
   }
 }
 
@@ -141,8 +153,11 @@ const report = {
   totals: {
     files: inventory.length,
     totalBytes,
+    imageTotalBytes,
+    fontTotalBytes,
     largestJavaScript,
     largestImage,
+    largestFont,
   },
   largestFiles: inventory.slice(0, 25),
 };
@@ -160,4 +175,7 @@ if (featureDynamicChunks.length < budgets.minimumFeatureDynamicChunks) {
   failures.push(`feature dynamic chunks ${featureDynamicChunks.length} < ${budgets.minimumFeatureDynamicChunks}`);
 }
 if (largestImage.bytes > budgets.imageBytes) failures.push(`largest image ${largestImage.bytes} > ${budgets.imageBytes}`);
+if (imageTotalBytes > budgets.imageTotalBytes) failures.push(`image total ${imageTotalBytes} > ${budgets.imageTotalBytes}`);
+if (largestFont.bytes > budgets.fontBytes) failures.push(`largest font ${largestFont.bytes} > ${budgets.fontBytes}`);
+if (fontTotalBytes > budgets.fontTotalBytes) failures.push(`font total ${fontTotalBytes} > ${budgets.fontTotalBytes}`);
 if (failures.length) throw new Error(`V6 build budget exceeded: ${failures.join('; ')}`);
