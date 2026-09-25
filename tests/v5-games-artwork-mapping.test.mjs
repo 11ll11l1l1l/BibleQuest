@@ -9,6 +9,7 @@ const gamesPaths = [
   path.join(repoRoot, 'src/features/games/index.js'),
   path.join(repoRoot, 'src/features/games/views/launcher-memory.js'),
   path.join(repoRoot, 'src/features/games/views/same-room.js'),
+  path.join(repoRoot, 'src/features/games/views/challenges.js'),
 ];
 const readGamesSurface=async()=>{const parts=[];for(const file of gamesPaths)parts.push(await readFile(file,'utf8'));return parts.join('\n')};
 
