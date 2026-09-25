@@ -137,6 +137,25 @@ export const privateStorage = Object.freeze({
   }
 });
 
+export const transientStorage = Object.freeze({
+  read(name, fallback = null) {
+    try {
+      const raw = globalThis.sessionStorage?.getItem(privateKey('transient.' + name));
+      return raw === null || raw === undefined ? fallback : JSON.parse(raw);
+    } catch {
+      return fallback;
+    }
+  },
+  write(name, value) {
+    globalThis.sessionStorage?.setItem(privateKey('transient.' + name), JSON.stringify(value));
+    return value;
+  },
+  remove(name) {
+    try { globalThis.sessionStorage?.removeItem(privateKey('transient.' + name)); }
+    catch {}
+  }
+});
+
 export const authStorage = Object.freeze({
   getItem(name) {
     try { return localStorage.getItem(authKey(name)); }
