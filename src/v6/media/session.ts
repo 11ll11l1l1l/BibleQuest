@@ -126,11 +126,10 @@ export function createMediaSessionManager(input: {
     emit('error', entry);
   };
 
-  const unloadHandle = async (entry: MutableInstance) => {
-    if (!entry.handle) return;
-    await entry.handle.unload();
+  const unloadHandle = async (entry: MutableInstance, preserveProvider = false) => {
+    if (entry.handle) await entry.handle.unload();
     entry.handle = null;
-    entry.providerKind = null;
+    if (!preserveProvider) entry.providerKind = null;
   };
 
   const ensureProvider = async (entry: MutableInstance, provider: MediaProviderKind) => {
@@ -321,7 +320,7 @@ export function createMediaSessionManager(input: {
     if (nextIndex < 0 || nextIndex >= entry.queue.length) return freezeInstance(entry);
 
     if (activeAudibleInstanceId === entry.instanceId) activeAudibleInstanceId = null;
-    await unloadHandle(entry);
+    await unloadHandle(entry, true);
     entry.index = nextIndex;
     entry.positionSeconds = entry.queue[nextIndex].resumeSeconds;
     entry.status = 'idle';
