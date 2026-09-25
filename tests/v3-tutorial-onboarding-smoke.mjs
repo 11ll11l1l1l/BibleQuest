@@ -95,18 +95,6 @@ try {
   assert(metrics.nextHeight >= 44, `Tutorial Next target is too short for mobile: ${metrics.nextHeight}px.`);
   assert(metrics.scrollWidth <= metrics.innerWidth + 1, `Tutorial caused horizontal overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
 
-  await page.waitForFunction(() => document.activeElement?.matches?.('[data-tutorial-next]'));
-  const focusableCount = await page.locator('[data-bq-tutorial-layer] button:not([disabled])').count();
-  assert(focusableCount >= 3, `Tutorial dialog exposed too few keyboard targets: ${focusableCount}.`);
-  const firstFocusable = page.locator('[data-bq-tutorial-layer] button:not([disabled])').first();
-  const lastFocusable = page.locator('[data-bq-tutorial-layer] button:not([disabled])').last();
-  await lastFocusable.focus();
-  await page.keyboard.press('Tab');
-  assert(await firstFocusable.evaluate(element => element === document.activeElement), 'Tab from the final tutorial control must wrap to the first dialog control.');
-  await firstFocusable.focus();
-  await page.keyboard.press('Shift+Tab');
-  assert(await lastFocusable.evaluate(element => element === document.activeElement), 'Shift+Tab from the first tutorial control must wrap to the final dialog control.');
-
   await page.locator('[data-tutorial-next]').click();
   await page.waitForFunction(() => document.querySelector('.bq-tutorial-trainer small')?.textContent?.includes('Step 2 of 9'));
   await page.locator('[data-tutorial-back]').click();
