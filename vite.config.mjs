@@ -11,6 +11,7 @@ import {
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -84,6 +85,11 @@ function copyLegacyRuntime() {
           copyFileSync(join(root, entry.name), join(outDir, entry.name));
         }
       }
+
+      generateScripturePackageManifests({
+        root,
+        outputDirectory: join(outDir, 'data', 'v6-scripture-manifests'),
+      });
 
       writeFileSync(
         join(outDir, 'bq-build.json'),

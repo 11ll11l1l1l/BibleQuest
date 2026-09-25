@@ -138,6 +138,84 @@ try {
   }
   await accessibilityContext.close();
 
+  // Prove the V6 managed Scripture package UI against the built application.
+  // Download one verified BSB book, disable the network, reload the Reader,
+  // navigate within that book offline, then reconnect and reclaim storage.
+  const offlineReaderContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const offlineReaderPage = await offlineReaderContext.newPage();
+  const offlineReaderErrors = [];
+  offlineReaderPage.on('pageerror', error => offlineReaderErrors.push(String(error?.message || error)));
+  await assertRoute(offlineReaderPage, 'reader', '390px V6 managed offline Reader');
+
+  await offlineReaderPage.locator('[data-reader-offline-download]').waitFor({ state: 'visible' });
+  const downloadLabel = await offlineReaderPage.locator('[data-reader-offline-manager]').textContent();
+  if (!/Download this book/i.test(downloadLabel || '')) {
+    throw new Error('390px V6 managed offline Reader: download control missing for BSB John');
+  }
+  await offlineReaderPage.locator('[data-reader-offline-download]').click();
+  await offlineReaderPage.locator('[data-reader-offline-remove]').waitFor({ state: 'visible' });
+
+  const managedBeforeOffline = await offlineReaderPage.evaluate(async () => {
+    const metadata = await caches.open('biblequest-v6-scripture-package-metadata-v1');
+    const payload = await caches.open('biblequest-v3-opened-bible-packs-v1');
+    const metadataKeys = await metadata.keys();
+    const payloadMatch = await payload.match(new URL('data/packs/bible/JHN.json', location.href).href);
+    return {
+      metadataEntries: metadataKeys.length,
+      payloadPresent: Boolean(payloadMatch),
+      managerText: document.querySelector('[data-reader-offline-manager]')?.textContent || '',
+    };
+  });
+  if (managedBeforeOffline.metadataEntries < 1 || !managedBeforeOffline.payloadPresent) {
+    throw new Error(`390px V6 managed offline Reader: verified package did not reach cache storage ${JSON.stringify(managedBeforeOffline)}`);
+  }
+  if (!/Managed offline copy/i.test(managedBeforeOffline.managerText)) {
+    throw new Error('390px V6 managed offline Reader: installed state not rendered');
+  }
+
+  await offlineReaderPage.waitForFunction(async () => {
+    if (!('serviceWorker' in navigator)) return false;
+    const registration = await navigator.serviceWorker.getRegistration('./');
+    return Boolean(registration?.active || registration?.waiting);
+  });
+  await offlineReaderContext.setOffline(true);
+  await offlineReaderPage.reload({ waitUntil: 'domcontentloaded' });
+  await offlineReaderPage.waitForSelector('[data-reader-verse-text]');
+  const offlineChapterOne = await offlineReaderPage.locator('.bq-reader-title h2').first().textContent();
+  if (!/John 1/i.test(offlineChapterOne || '')) {
+    throw new Error(`390px V6 managed offline Reader: expected John 1 after offline reload, got ${offlineChapterOne}`);
+  }
+
+  await offlineReaderPage.locator('[data-reader-next]').click();
+  await offlineReaderPage.waitForFunction(() => {
+    const headings = [...document.querySelectorAll('.bq-reader-title h2')].map(node => node.textContent || '');
+    return headings.some(text => /John 2/i.test(text));
+  });
+  const offlineStatus = await offlineReaderPage.locator('[data-reader-offline-status]').textContent();
+  if (!/Available offline/i.test(offlineStatus || '')) {
+    throw new Error(`390px V6 managed offline Reader: offline availability was not retained: ${offlineStatus}`);
+  }
+
+  await offlineReaderContext.setOffline(false);
+  await offlineReaderPage.locator('[data-reader-offline-remove]').waitFor({ state: 'visible' });
+  await offlineReaderPage.locator('[data-reader-offline-remove]').click();
+  await offlineReaderPage.locator('[data-reader-offline-download]').waitFor({ state: 'visible' });
+  const managedAfterRemove = await offlineReaderPage.evaluate(async () => {
+    const metadata = await caches.open('biblequest-v6-scripture-package-metadata-v1');
+    const payload = await caches.open('biblequest-v3-opened-bible-packs-v1');
+    return {
+      metadataEntries: (await metadata.keys()).length,
+      payloadPresent: Boolean(await payload.match(new URL('data/packs/bible/JHN.json', location.href).href)),
+    };
+  });
+  if (managedAfterRemove.metadataEntries !== 0 || managedAfterRemove.payloadPresent) {
+    throw new Error(`390px V6 managed offline Reader: remove did not reclaim managed storage ${JSON.stringify(managedAfterRemove)}`);
+  }
+  if (offlineReaderErrors.length) {
+    throw new Error(`390px V6 managed offline Reader browser errors: ${offlineReaderErrors.join(' | ')}`);
+  }
+  await offlineReaderContext.close();
+
   // Unknown routes must resolve through the application's not-found owner
   // while retaining the requested hash for refresh/deep-link diagnostics.
   const notFoundContext = await browser.newContext({ viewport: { width: 390, height: 900 } });

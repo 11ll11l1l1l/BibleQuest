@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import {
+  buildScripturePackageManifest,
+  SCRIPTURE_PACKAGE_SOURCES,
+} from '../../scripts/v6-generate-scripture-manifests.mjs';
 import type { ScriptureTranslationManifest } from '../../src/v6/reader/content-manifest.ts';
 import {
   createBrowserScripturePackageController,
@@ -12,6 +16,23 @@ import type {
 } from '../../src/v6/reader/package-manager.ts';
 
 const abcSha = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
+
+test('source-derived downloadable manifests cover all 66 books with immutable metadata', () => {
+  assert.deepEqual(SCRIPTURE_PACKAGE_SOURCES.map(source => source.translationId), ['bsb', 'tl', 'cebocb']);
+  for (const source of SCRIPTURE_PACKAGE_SOURCES) {
+    const generated = buildScripturePackageManifest(process.cwd(), source);
+    assert.equal(generated.translationId, source.translationId);
+    assert.equal(generated.delivery, 'downloadable');
+    assert.equal(generated.license.redistribution, 'allowed');
+    assert.equal(generated.books.length, 66);
+    assert.match(generated.contentVersion, /^sha256-[a-f0-9]{20}$/);
+    for (const book of generated.books) {
+      assert.match(book.sha256, /^[a-f0-9]{64}$/);
+      assert.ok(book.bytes > 0);
+      assert.match(book.url, /^data\/packs\//);
+    }
+  }
+});
 
 function manifest(): ScriptureTranslationManifest {
   return {
