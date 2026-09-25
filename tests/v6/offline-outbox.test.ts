@@ -8,6 +8,8 @@ import {
   envelopeMatchesActiveIdentity,
   nextOfflineMutationAttempt,
   selectReplayableOfflineMutations,
+  offlineReplayDelayMs,
+  scheduleOfflineMutationRetry,
   type OfflineMutationPolicy,
 } from '../../src/v6/offline/outbox.ts';
 
@@ -71,4 +73,22 @@ test('retry attempt increments without mutating the queued envelope', () => {
   assert.equal(original.attempt, 0);
   assert.equal(retried.attempt, 1);
   assert.notEqual(retried, original);
+});
+
+
+test('retry scheduling uses deterministic bounded exponential backoff', () => {
+  assert.equal(offlineReplayDelayMs(0), 1_000);
+  assert.equal(offlineReplayDelayMs(1), 2_000);
+  assert.equal(offlineReplayDelayMs(10), 60_000);
+  assert.throws(() => offlineReplayDelayMs(-1), /attempt counter/i);
+
+  const original = createOfflineMutationEnvelope(request(), safe);
+  const scheduled = scheduleOfflineMutationRetry(original, new Date('2026-09-25T00:00:00.000Z'));
+  assert.equal(original.attempt, 0);
+  assert.equal(scheduled.envelope.attempt, 1);
+  assert.equal(scheduled.retryAt, '2026-09-25T00:00:01.000Z');
+
+  const second = scheduleOfflineMutationRetry(scheduled.envelope, new Date(scheduled.retryAt));
+  assert.equal(second.envelope.attempt, 2);
+  assert.equal(second.retryAt, '2026-09-25T00:00:03.000Z');
 });

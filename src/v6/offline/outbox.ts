@@ -112,3 +112,32 @@ export function nextOfflineMutationAttempt<TPayload>(
   if (!Number.isSafeInteger(envelope.attempt) || envelope.attempt < 0) throw new Error('Invalid offline mutation attempt counter.');
   return Object.freeze({ ...envelope, attempt: envelope.attempt + 1 });
 }
+
+
+export type OfflineReplayOutcome = 'succeeded' | 'retryable-failure' | 'permanent-failure';
+
+export interface OfflineReplayDecision {
+  readonly outcome: OfflineReplayOutcome;
+  readonly retryAt?: string;
+}
+
+export function offlineReplayDelayMs(attempt: number, baseMs = 1_000, maxMs = 60_000): number {
+  if (!Number.isSafeInteger(attempt) || attempt < 0) throw new Error('Invalid offline mutation attempt counter.');
+  if (!Number.isSafeInteger(baseMs) || baseMs <= 0) throw new Error('Offline replay base delay must be a positive integer.');
+  if (!Number.isSafeInteger(maxMs) || maxMs < baseMs) throw new Error('Offline replay max delay must be an integer at least as large as base delay.');
+  return Math.min(maxMs, baseMs * (2 ** Math.min(attempt, 30)));
+}
+
+export function scheduleOfflineMutationRetry<TPayload>(
+  envelope: OfflineMutationEnvelope<TPayload>,
+  now: Date,
+  baseMs = 1_000,
+  maxMs = 60_000,
+): { readonly envelope: OfflineMutationEnvelope<TPayload>; readonly retryAt: string } {
+  if (!(now instanceof Date) || Number.isNaN(now.getTime())) throw new Error('Offline replay scheduling requires a valid clock value.');
+  const next = nextOfflineMutationAttempt(envelope);
+  return Object.freeze({
+    envelope: next,
+    retryAt: new Date(now.getTime() + offlineReplayDelayMs(envelope.attempt, baseMs, maxMs)).toISOString(),
+  });
+}
