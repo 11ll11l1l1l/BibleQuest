@@ -3,6 +3,7 @@ import { extname, join, relative, resolve } from 'node:path';
 
 const root = process.cwd();
 const sourceRoot = resolve(root, 'src/v6');
+const testRoot = resolve(root, 'tests/v6');
 const extensions = new Set(['.ts', '.tsx']);
 const forbiddenRuntimePatterns = Object.freeze([
   { pattern: /\beval\s*\(/, label: 'eval() is forbidden in V6 client source' },
@@ -26,6 +27,7 @@ async function walk(directory) {
 }
 
 const files = (await walk(sourceRoot)).sort();
+const testFiles = (await walk(testRoot)).sort();
 const failures = [];
 
 for (const file of files) {
@@ -36,6 +38,14 @@ for (const file of files) {
   }
 }
 
+for (const file of testFiles) {
+  const content = await readFile(file, 'utf8');
+  const display = relative(root, file).replaceAll('\\', '/');
+  if (/\bfrom\s+['"]vitest['"]|\brequire\s*\(\s*['"]vitest['"]\s*\)/.test(content)) {
+    failures.push(`${display}: Vitest is not installed in the deterministic V6 CI environment; use node:test and node:assert/strict`);
+  }
+}
+
 if (!files.length) failures.push('src/v6 must contain lintable TypeScript source files');
 
 if (failures.length) {
@@ -43,5 +53,5 @@ if (failures.length) {
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exitCode = 1;
 } else {
-  console.log(`PASS V6 lint policy (${files.length} TypeScript source files)`);
+  console.log(`PASS V6 lint policy (${files.length} source files; ${testFiles.length} V6 test files)`);
 }
