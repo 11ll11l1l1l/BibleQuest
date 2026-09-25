@@ -92,10 +92,10 @@ export function createReaderChapterReadBoundary(progress: LegacyProgressOwner): 
   return Object.freeze({
     canonicalEventId: canonicalReaderChapterReadEventId,
     canonicalScoreEventId: canonicalReadingScoreEventId,
-    find(bookCode, chapter) {
+    find(bookCode: string, chapter: number) {
       return findReaderChapterReadEvent(progress.getState()?.events, bookCode, chapter);
     },
-    record(bookCode, chapter) {
+    record(bookCode: string, chapter: number) {
       const id = canonicalReaderChapterReadEventId(bookCode, chapter);
       return progress.record(Object.freeze({
         id,
