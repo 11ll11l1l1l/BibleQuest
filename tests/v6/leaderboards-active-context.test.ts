@@ -23,6 +23,26 @@ describe('Leaderboards active congregation context',()=>{
     assert.equal(fresh.congregationId,'cong-b');
   });
 
+
+  it('keeps implicit page reloads bound to the active congregation even when the page echoes the previous id',async()=>{
+    let active='cong-a';
+    const memberships=[member('cong-a','Alpha'),member('cong-b','Beta')];
+    const congregation={load:async()=>memberships,getActive:()=>memberships.find(x=>x.congregationId===active),assert:()=>true};
+    const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:'user-1'}})};
+    const calls=[];
+    const api={load:async cid=>{calls.push(cid);return{directory:[row(cid,'user-1')],scores:[]}}};
+    const service=createLeaderboardsService({api,session,congregation});
+
+    const first=await service.load();
+    assert.equal(first.congregationId,'cong-a');
+    active='cong-b';
+    assert.equal(service.snapshot().congregationId,'','stale implicit congregation state must hide immediately after the global switch');
+
+    const refreshed=await service.load({congregationId:'cong-a',period:'today'});
+    assert.equal(refreshed.congregationId,'cong-b','an echoed previous id must not pin a board that was implicitly following active context');
+    assert.deepEqual(calls,['cong-a','cong-b']);
+  });
+
   it('preserves explicit congregation selection independently of global active selection',async()=>{
     let active='cong-b';
     const memberships=[member('cong-a','Alpha'),member('cong-b','Beta')];
