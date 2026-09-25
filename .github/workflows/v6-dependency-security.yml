@@ -9,6 +9,16 @@ on:
       - "package-lock.json"
       - "scripts/v6-dependency-security.mjs"
       - ".github/workflows/v6-dependency-security.yml"
+  push:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/v6-dependency-security.mjs"
+      - ".github/workflows/v6-dependency-security.yml"
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
 
 permissions:
