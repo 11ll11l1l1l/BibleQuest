@@ -23,10 +23,13 @@ rows=[
 state=await hub.load();
 assert.equal(state.status,'ready');
 assert.equal(state.congregations.length,3);
+assert.equal(state.activeCongregationId,'c1');
+assert.equal(state.congregations.find(row=>row.congregationId==='c1').isActive,true);
+assert.equal(state.congregations.find(row=>row.congregationId==='c2').isActive,false);
 assert.equal(state.hasReadableMembership,true);
-assert.equal(state.canMinistry,true);
+assert.equal(state.canMinistry,false,'Ministry tools must follow the active congregation, not another congregation where this account has a ministry role.');
 assert.deepEqual(state.memberTools.map(tool=>tool.id),['assignments','calendar','journey-groups','live-room']);
-assert.deepEqual(state.ministryTools.map(tool=>tool.id),['assignment-publishing','leader-dashboard']);
+assert.equal(state.ministryTools.length,0,'Active ordinary-member context must not advertise ministry-only tools.');
 assert.equal(state.memberTools.find(tool=>tool.id==='calendar')?.route,'calendar','Calendar must delegate to the verified Calendar route.');
 assert.equal(state.memberTools.find(tool=>tool.id==='calendar')?.available,true,'Calendar must be available to valid congregation members.');
 assert.equal(state.congregations.find(row=>row.congregationId==='c1').canMinistry,false);
@@ -34,11 +37,20 @@ assert.equal(state.congregations.find(row=>row.congregationId==='c2').canMinistr
 assert.equal(state.congregations.find(row=>row.congregationId==='c3').canRead,false,'Unsupported role must fail closed for readable congregation tools.');
 assert.equal(state.congregations.find(row=>row.congregationId==='c3').canMinistry,false,'Unsupported role must fail closed for ministry tools.');
 assert.equal(state.memberTools.find(tool=>tool.id==='live-room').available,false,'Live Room must remain deferred.');
+
+congregation.setActive('c2');
+state=await hub.load();
+assert.equal(state.activeCongregationId,'c2');
+assert.equal(state.hasReadableMembership,true);
+assert.equal(state.canMinistry,true,'Switching to the leader congregation must expose ministry tools for that active context.');
+assert.deepEqual(state.ministryTools.map(tool=>tool.id),['assignment-publishing','leader-dashboard']);
 assert.equal(state.ministryTools.find(tool=>tool.id==='leader-dashboard').available,true,'Leader Center (V5 Phase 1) is no longer deferred.');
 assert.equal(state.ministryTools.find(tool=>tool.id==='leader-dashboard').route,'leader-center','Leader Center tool must route to the real leader-center page.');
 
+congregation.setActive('c1');
 rows=[{congregation_id:'c1',user_id:'u1',role:'member',congregation:{id:'c1',name:'Member Church'}}];
 state=await hub.load();
+assert.equal(state.activeCongregationId,'c1');
 assert.equal(state.hasReadableMembership,true);
 assert.equal(state.canMinistry,false);
 assert.equal(state.ministryTools.length,0,'Ordinary member must receive no ministry-only tools.');
@@ -47,6 +59,7 @@ assert.equal(state.memberTools.some(tool=>tool.id==='calendar'&&tool.route==='ca
 
 rows=[{congregation_id:'c9',user_id:'u1',role:'unknown',congregation:{id:'c9',name:'Unsupported Church'}}];
 state=await hub.load();
+assert.equal(state.activeCongregationId,'c9');
 assert.equal(state.hasReadableMembership,false);
 assert.equal(state.canMinistry,false);
 assert.equal(state.memberTools.length,0);
