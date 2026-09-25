@@ -132,7 +132,7 @@ async function v6MediaEngineBrowser(){
     ]);
     const calls=[],events=[];
     class Player{
-      constructor(target){this.target=String(target);calls.push(`yt:${this.target}:construct`)}
+      constructor(target,options){this.target=String(target);calls.push(`yt:${this.target}:construct`);queueMicrotask(()=>options?.events?.onReady?.({target:this}))}
       cueVideoById(input){calls.push(`yt:${this.target}:cue:${input.videoId}@${input.startSeconds??0}`)}
       loadVideoById(input){calls.push(`yt:${this.target}:load:${input.videoId}@${input.startSeconds??0}`)}
       playVideo(){calls.push(`yt:${this.target}:play`)}
