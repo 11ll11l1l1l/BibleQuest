@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
 const games = fs.readFileSync(path.join(root, 'src', 'features', 'games', 'index.js'), 'utf8');
-const gamesViews = ['launcher-memory.js','same-room.js','challenges.js'].map(name=>fs.readFileSync(path.join(root,'src','features','games','views',name),'utf8')).join('\n');
+const gamesViews = ['launcher-memory.js','same-room.js','challenges.js','recall.js','solo.js'].map(name=>fs.readFileSync(path.join(root,'src','features','games','views',name),'utf8')).join('\n');
 const gamesSurface = games+'\n'+gamesViews;
 const avatarVault = fs.readFileSync(path.join(root, 'src', 'features', 'avatar-vault', 'index.js'), 'utf8');
 const gamesCss = fs.readFileSync(path.join(root, 'src', 'ui', 'games-v4.css'), 'utf8');
