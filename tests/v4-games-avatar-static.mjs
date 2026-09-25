@@ -1,9 +1,7 @@
 // BibleQuest V4 Games + Avatar Vault visual-kit contract. Both tranches are
-// deliberately CSS-only, matching the Reader precedent: games/index.js is a
-// single phase-based render function with ~15 phases and dozens of data-*
-// hooks; avatar-vault/index.js already has real SVG art and its own
-// established Play-family identity from an earlier Phase-B pass. Neither
-// file's markup/logic was touched.
+// preserves the certified visual and interaction hooks across the V6 Games
+// renderer decomposition. Avatar Vault remains byte-locked to its V4 visual
+// tranche while Games hooks may live in the route owner or bounded views.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -11,6 +9,8 @@ import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(import.meta.dirname, '..');
 const games = fs.readFileSync(path.join(root, 'src', 'features', 'games', 'index.js'), 'utf8');
+const gamesViews = ['launcher-memory.js','same-room.js'].map(name=>fs.readFileSync(path.join(root,'src','features','games','views',name),'utf8')).join('\n');
+const gamesSurface = games+'\n'+gamesViews;
 const avatarVault = fs.readFileSync(path.join(root, 'src', 'features', 'avatar-vault', 'index.js'), 'utf8');
 const gamesCss = fs.readFileSync(path.join(root, 'src', 'ui', 'games-v4.css'), 'utf8');
 const avatarCss = fs.readFileSync(path.join(root, 'src', 'ui', 'avatar-vault-v4.css'), 'utf8');
@@ -28,13 +28,12 @@ function assertByteExact(label, current, filePath) {
     assert.equal(current, baseline, `${label} tranche is scoped to CSS only - ${filePath} must be byte-for-byte unchanged from the prior certified checkpoint.`);
   }
 }
-assertByteExact('Games', games, 'src/features/games/index.js');
 assertByteExact('Avatar Vault', avatarVault, 'src/features/avatar-vault/index.js');
 
 // Spot-check critical Games interaction hooks remain present (defense in
 // depth alongside the byte-exact check above).
 for (const hook of ['data-game-launch', 'data-game-launcher', 'data-game-home', 'data-memory-open', 'data-memory-index', 'data-same-room-open', 'data-detective-form', 'data-timeline-move', 'data-recall-reveal', 'data-recall-rate']) {
-  assert.ok(games.includes(hook), `Games must preserve the existing interaction hook: ${hook}`);
+  assert.ok(gamesSurface.includes(hook), `Games must preserve the existing interaction hook: ${hook}`);
 }
 for (const hook of ['data-avatar-style', 'data-avatar-select', 'data-avatar-back', 'data-avatar-art']) {
   assert.ok(avatarVault.includes(hook), `Avatar Vault must preserve the existing interaction hook: ${hook}`);
@@ -47,7 +46,7 @@ for (const rule of ['.bq-game-card{border-color:var(--line-200)', '.bq-question-
 // Non-color-only: correct/wrong answer states must keep a background-color
 // change AND their own left/right context (the A/B/C letter span, unchanged
 // in markup) rather than color alone.
-assert.ok(games.includes("String.fromCharCode(65+index)"), 'Answer choices must keep their letter labels (non-color-only correctness signal).');
+assert.ok(gamesSurface.includes("String.fromCharCode(65+index)"), 'Answer choices must keep their letter labels (non-color-only correctness signal).');
 
 // Avatar Vault: foundation shadow tokens layered on top of its existing
 // Phase-B identity without replacing that identity.

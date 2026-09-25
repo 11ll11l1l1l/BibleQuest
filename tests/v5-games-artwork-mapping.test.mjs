@@ -5,7 +5,12 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const gamesPath = path.join(repoRoot, 'src/features/games/index.js');
+const gamesPaths = [
+  path.join(repoRoot, 'src/features/games/index.js'),
+  path.join(repoRoot, 'src/features/games/views/launcher-memory.js'),
+  path.join(repoRoot, 'src/features/games/views/same-room.js'),
+];
+const readGamesSurface=async()=>{const parts=[];for(const file of gamesPaths)parts.push(await readFile(file,'utf8'));return parts.join('\n')};
 
 const mappings = [
   {
@@ -41,7 +46,7 @@ test('Phase 3 Games genuine-match artwork assets exist', async () => {
 });
 
 test('Phase 3 Games HUD markers stay on an explicit legacy-or-wired migration path', async () => {
-  const source = await readFile(gamesPath, 'utf8');
+  const source = await readGamesSurface();
   for (const mapping of mappings) {
     const stillLegacy = source.includes(mapping.legacy);
     const wired = mapping.wired.test(source);
@@ -50,7 +55,7 @@ test('Phase 3 Games HUD markers stay on an explicit legacy-or-wired migration pa
 });
 
 test('Phase 3 Games mapping does not pretend unmatched reward glyphs have assets', async () => {
-  const source = await readFile(gamesPath, 'utf8');
+  const source = await readGamesSurface();
   assert.match(source, /stars earned/);
   assert.match(source, /coins earned/);
   assert.match(source, /⭐/);
@@ -58,7 +63,7 @@ test('Phase 3 Games mapping does not pretend unmatched reward glyphs have assets
 });
 
 test('decorative migration markers stay accessibility-independent', async () => {
-  const source = await readFile(gamesPath, 'utf8');
+  const source = await readGamesSurface();
   for (const mapping of mappings) {
     if (source.includes(mapping.legacy)) assert.match(mapping.legacy, /aria-hidden="true"/, `${mapping.id}: decorative legacy marker must remain hidden from accessibility tree`);
   }

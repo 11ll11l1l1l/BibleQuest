@@ -48,7 +48,7 @@ test('Memory Meadow card faces and HUD use exact existing artwork without changi
 
 test('Detective, Recall, Timeline and round-result chrome use purpose-matched existing assets',async()=>{
   const [css,finalCss,games]=await Promise.all([
-    read('src/ui/v4-custom-art.css'),read('src/ui/games-art-final-v4.css'),read('src/features/games/index.js')
+    read('src/ui/v4-custom-art.css'),read('src/ui/games-art-final-v4.css'),Promise.all([read('src/features/games/index.js'),read('src/features/games/views/launcher-memory.js'),read('src/features/games/views/same-room.js')]).then(parts=>parts.join('\n'))
   ]);
   assert.match(css,/\.bq-detective-mark,\s*\.bq-recall-icon,\s*\.bq-memory-mark\s*\{[^}]*font-size:0 !important;/s,'decorative Detective/Recall/Memory legacy tokens must be hidden by the shared art layer');
   assert.match(css,/\.bq-detective-mark\s*\{[^}]*game-character-detective\.png/s);
