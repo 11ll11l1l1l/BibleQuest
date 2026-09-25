@@ -235,7 +235,7 @@ function boot(root){
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
   const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage});
   const reader=createReaderService({bible,storage,progress,bibleQuest});
-  const offlineScripturePackages=createBrowserScripturePackageController();
+  const offlineScripturePackages=createBrowserScripturePackageController({books:bible.books});
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
   const furigana=createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer});
