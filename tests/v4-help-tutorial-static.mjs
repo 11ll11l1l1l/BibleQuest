@@ -37,6 +37,10 @@ for (const id of requiredCategories) {
   assert.ok(helpSrc.includes(`id: '${id}'`), `Help Center is missing the required category: ${id}`);
 }
 assert.ok(helpSrc.includes('Your submitted assignment answers are private. Other ordinary members cannot see your answer or whether you responded. Authorized ministry leaders may see responses when they need to review the assignment.'), 'Help Center must state the exact required assignment-privacy disclosure.');
+assert.ok(helpSrc.includes('Open Account → Recover') && helpSrc.includes('private recovery code'), 'Help Center must describe the implemented recovery-code account recovery flow.');
+assert.ok(helpSrc.includes('replacement recovery code'), 'Help Center must warn that successful password recovery rotates the recovery code.');
+assert.ok(!/password-reset link|link by email|reset link/i.test(helpSrc), 'Help Center must not advertise the retired email-link password recovery flow.');
+assert.ok(helpSrc.includes('Only actions explicitly supported for offline use can be queued for later retry'), 'Help Center must not imply that every offline mutation automatically syncs.');
 assert.ok(helpSrc.includes("data-help-replay-tutorial"), 'Help Center must offer a way back into the guided tour.');
 assert.ok(helpSrc.includes('export function helpCenterPage'), 'Help Center must export its page factory.');
 
