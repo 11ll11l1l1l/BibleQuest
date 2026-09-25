@@ -10,6 +10,7 @@ import { renderSoloCompleteView, renderSoloQuestionView } from './views/solo.js'
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 const GAME_SOURCE=sourceLabel(getContentProvenance('bq-game'),{compact:true});
 const RECALL_SOURCE=sourceLabel(getContentProvenance('bq-recall'),{compact:true});
+const requireRecallProvenance=state=>{if(typeof state?.source!=='string'||!state.source.trim()||typeof state?.license!=='string'||!state.license.trim())throw new Error('Recall source metadata is unavailable.');return state};
 
 export function gamesPage({games,onHome}){
   return{
@@ -28,9 +29,9 @@ export function gamesPage({games,onHome}){
         if(state.phase==='same-room-complete'){host.innerHTML=renderSameRoomCompleteView({state,escapeHtml});return;}
         if(state.phase==='detective'){host.innerHTML=renderDetectiveView({state,escapeHtml,gameSource:GAME_SOURCE});return;}
         if(state.phase==='timeline'){host.innerHTML=renderTimelineView({state,escapeHtml,gameSource:GAME_SOURCE});return;}
-        if(state.phase==='recall-library'){host.innerHTML=renderRecallLibraryView({state,games,escapeHtml});return;}
-        if(state.phase==='recall-question'){host.innerHTML=renderRecallQuestionView({state,escapeHtml});return;}
-        if(state.phase==='recall-complete'){host.innerHTML=renderRecallCompleteView({state,escapeHtml});return;}
+        if(state.phase==='recall-library'){host.innerHTML=renderRecallLibraryView({state:requireRecallProvenance(state),games,escapeHtml});return;}
+        if(state.phase==='recall-question'){host.innerHTML=renderRecallQuestionView({state:requireRecallProvenance(state),escapeHtml});return;}
+        if(state.phase==='recall-complete'){host.innerHTML=renderRecallCompleteView({state:requireRecallProvenance(state),escapeHtml});return;}
         if(state.phase==='complete'){host.innerHTML=renderSoloCompleteView({state,escapeHtml,resultView:legacyLiveResultPresentation(state)});return;}
         host.innerHTML=renderSoloQuestionView({state,escapeHtml,presentation:legacyLiveQuestionPresentation(state),recallSource:RECALL_SOURCE});
       };
