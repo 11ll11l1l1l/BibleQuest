@@ -83,7 +83,7 @@ import {
   createAccessibilityPreferencesService,
 } from '../v6/features/accessibility-preferences.ts';
 import { createNotificationSettingsController } from '../v6/notifications/index.ts';
-import { createRecordingsMediaRuntime } from '../v6/media/recordings-runtime.ts';
+import { createRecordingsMediaRuntime } from '../v6/media/index.ts';
 import { storage, privateStorage, transientStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
