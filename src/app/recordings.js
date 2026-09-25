@@ -40,7 +40,7 @@ export function createRecordingsService({media,audio,session,congregation}){
   const set=patch=>{state={...state,...patch};return getState()};
 
   async function load(){
-    audio.unload();
+    await audio.unload();
     if(!session.isAuthenticated())return set({status:'locked',rows:[],selectedId:null,error:'',access:'signin',latestService:null});
     set({status:'loading',rows:[],selectedId:null,error:'',access:'granted',latestService:null});
     try{
@@ -54,17 +54,17 @@ export function createRecordingsService({media,audio,session,congregation}){
     }
   }
 
+  const afterAudio=(result,done)=>result&&typeof result.then==='function'?result.then(done):done();
   function select(id,host){
     const row=state.rows.find(item=>item.id===String(id||''));
     if(!row)throw new Error('Recording is no longer available.');
-    audio.mount(host,{kind:'youtube',id:row.youtubeId,title:row.title});
-    return set({selectedId:row.id,error:''});
+    return afterAudio(audio.mount(host,{kind:'youtube',id:row.youtubeId,title:row.title}),()=>set({selectedId:row.id,error:''}));
   }
   const requireSelection=()=>{if(!state.selectedId)throw new Error('Choose a recording first.');};
-  function play(){requireSelection();audio.play();return getState()}
-  function pause(){requireSelection();audio.pause();return getState()}
-  function stop(){requireSelection();audio.stop();return getState()}
-  function seek(seconds){requireSelection();audio.seek(seconds);return getState()}
+  function play(){requireSelection();return afterAudio(audio.play(),()=>getState())}
+  function pause(){requireSelection();return afterAudio(audio.pause(),()=>getState())}
+  function stop(){requireSelection();return afterAudio(audio.stop(),()=>getState())}
+  function seek(seconds){requireSelection();return afterAudio(audio.seek(seconds),()=>getState())}
   function leave(){audio.unload();return set({selectedId:null,error:''})}
   function dispose(){audio.dispose();state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null}}
 
