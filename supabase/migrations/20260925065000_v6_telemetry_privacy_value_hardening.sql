@@ -1,6 +1,6 @@
 -- V6 telemetry privacy hardening.
 -- Reject exact Scripture locations and sensitive/free-form property values server-side.
--- Derived from the integrated telemetry hardening function to avoid duplicated function fragments.
+-- Derived from the integrated telemetry hardening function.
 
 create index if not exists bible_telemetry_events_session_idx
   on public.bible_telemetry_events (session_id);
@@ -24,7 +24,7 @@ returns jsonb
 language plpgsql
 security definer
 set search_path = pg_catalog, public, private
-as $bqtelemetry$
+as $$
 declare
   v_user_id uuid := auth.uid();
   v_now timestamptz := now();
@@ -117,58 +117,8 @@ begin
         or (
           jsonb_typeof(value)='string'
           and char_length(value #>> '{}') <= 120
-          and (value #>> '{}') ~ '^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}
-
-    insert into public.bible_telemetry_events(visitor_id,session_id,user_id,event_name,feature,route,properties,occurred_at)
-    values(p_visitor_id,p_session_id,v_user_id,v_name,v_feature,v_route,v_props,v_now);
-    v_accepted := v_accepted + 1;
-    if v_name='session_start' then v_has_session_start := true; end if;
-    if v_name='session_end' then v_has_session_end := true; end if;
-  end loop;
-
-  update public.bible_telemetry_sessions set
-    last_seen_at=v_now,last_route=v_last_route,event_count=event_count+v_accepted,
-    ended_at=case when v_has_session_start then null when v_has_session_end then v_now else ended_at end,
-    user_id=coalesce(v_user_id,user_id),
-    authenticated_at=coalesce(authenticated_at,case when v_user_id is not null then v_now else null end)
-  where session_id=p_session_id;
-
-  update public.bible_telemetry_visitors set last_seen_at=v_now,last_route=v_last_route,last_user_id=coalesce(v_user_id,last_user_id)
-  where visitor_id=p_visitor_id;
-
-  return jsonb_build_object('ok',true,'accepted',v_accepted,'requested',v_requested,'authenticated',v_user_id is not null);
-end;
-$bqtelemetry$;
-
-revoke all on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) from public, anon, authenticated;
-grant execute on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) to anon, authenticated, service_role;
-
-          and (value #>> '{}') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}
-
-    insert into public.bible_telemetry_events(visitor_id,session_id,user_id,event_name,feature,route,properties,occurred_at)
-    values(p_visitor_id,p_session_id,v_user_id,v_name,v_feature,v_route,v_props,v_now);
-    v_accepted := v_accepted + 1;
-    if v_name='session_start' then v_has_session_start := true; end if;
-    if v_name='session_end' then v_has_session_end := true; end if;
-  end loop;
-
-  update public.bible_telemetry_sessions set
-    last_seen_at=v_now,last_route=v_last_route,event_count=event_count+v_accepted,
-    ended_at=case when v_has_session_start then null when v_has_session_end then v_now else ended_at end,
-    user_id=coalesce(v_user_id,user_id),
-    authenticated_at=coalesce(authenticated_at,case when v_user_id is not null then v_now else null end)
-  where session_id=p_session_id;
-
-  update public.bible_telemetry_visitors set last_seen_at=v_now,last_route=v_last_route,last_user_id=coalesce(v_user_id,last_user_id)
-  where visitor_id=p_visitor_id;
-
-  return jsonb_build_object('ok',true,'accepted',v_accepted,'requested',v_requested,'authenticated',v_user_id is not null);
-end;
-$bqtelemetry$;
-
-revoke all on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) from public, anon, authenticated;
-grant execute on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) to anon, authenticated, service_role;
-
+          and (value #>> '{}') ~ '^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$'
+          and (value #>> '{}') !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
           and position('@' in (value #>> '{}')) = 0
         )
       );
@@ -192,7 +142,7 @@ grant execute on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,js
 
   return jsonb_build_object('ok',true,'accepted',v_accepted,'requested',v_requested,'authenticated',v_user_id is not null);
 end;
-$bqtelemetry$;
+$$;
 
 revoke all on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) from public, anon, authenticated;
 grant execute on function public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb) to anon, authenticated, service_role;
