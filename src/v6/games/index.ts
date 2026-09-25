@@ -3,6 +3,7 @@ export * from './contracts.ts';
 export * from './legacy-adapters.ts';
 export * from './legacy-question-adapter.ts';
 export * from './legacy-registry.ts';
+export * from './live-presentation.ts';
 export * from './presentation.ts';
 export * from './registry.ts';
 export * from './scoring.ts';
