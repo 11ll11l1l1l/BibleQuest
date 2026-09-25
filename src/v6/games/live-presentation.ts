@@ -103,6 +103,9 @@ function currentQuestionState(input: LegacyLiveQuestionState): MultipleChoiceSes
   if (!input.locked && (selectedIndex !== null || input.correct !== null)) {
     throw new Error('Unlocked live game question cannot expose answer feedback.');
   }
+  if (input.locked && input.correct !== (selectedIndex === answerIndex)) {
+    throw new Error('Locked live game feedback contradicts the selected answer.');
+  }
 
   const question: MultipleChoiceQuestion = Object.freeze({
     id,
