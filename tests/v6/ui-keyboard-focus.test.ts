@@ -6,6 +6,7 @@ import {
   createFocusReturn,
   isKeyboardActivationKey,
   resolveRovingFocus,
+  resolveTabFocus,
   restoreFocus,
   type FocusReturnTarget,
 } from '../../src/v6/ui/index.ts';
@@ -146,4 +147,43 @@ test('focus return contains focus exceptions instead of breaking close/navigatio
   });
 
   assert.equal(restoreFocus(throwing.value), false);
+});
+
+
+test('Tab focus resolver contains forward and reverse focus inside a bounded dialog', () => {
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', currentIndex: 0, itemCount: 4 }), {
+    handled: true,
+    index: 1,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', currentIndex: 3, itemCount: 4 }), {
+    handled: true,
+    index: 0,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', shiftKey: true, currentIndex: 0, itemCount: 4 }), {
+    handled: true,
+    index: 3,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', shiftKey: true, currentIndex: 2, itemCount: 4 }), {
+    handled: true,
+    index: 1,
+  });
+});
+
+test('Tab focus resolver recovers missing focus and fails closed for invalid state', () => {
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', currentIndex: -1, itemCount: 3 }), {
+    handled: true,
+    index: 0,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', shiftKey: true, currentIndex: -1, itemCount: 3 }), {
+    handled: true,
+    index: 2,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Escape', currentIndex: 0, itemCount: 3 }), {
+    handled: false,
+    index: 0,
+  });
+  assert.deepEqual(resolveTabFocus({ key: 'Tab', currentIndex: 0, itemCount: 0 }), {
+    handled: false,
+    index: 0,
+  });
 });
