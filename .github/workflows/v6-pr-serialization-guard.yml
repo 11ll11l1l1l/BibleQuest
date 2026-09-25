@@ -1,0 +1,76 @@
+name: V6 PR Serialization Guard
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, edited]
+  push:
+    branches:
+      - v6/architecture-upgrade
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: write
+
+jobs:
+  validate-pr:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject reverse integration refresh PRs
+        if: github.event.pull_request.head.ref == 'v6/architecture-upgrade' && github.event.pull_request.base.ref != 'main'
+        shell: bash
+        run: |
+          echo "::error::Do not use v6/architecture-upgrade as the PR head to refresh a feature branch. Refresh the feature branch from integration, push that feature branch, and keep one canonical integration PR."
+          exit 1
+
+      - name: Require current V6 integration ancestry
+        if: github.event.pull_request.base.ref == 'v6/architecture-upgrade'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          status="$(gh api "repos/$REPO/compare/$BASE_SHA...$HEAD_SHA" --jq '.status')"
+          case "$status" in
+            ahead|identical)
+              echo "PR contains current V6 integration head $BASE_SHA."
+              ;;
+            *)
+              echo "::error::PR head $HEAD_SHA is stale or diverged from current V6 integration $BASE_SHA (compare status: $status). Refresh the feature branch once from v6/architecture-upgrade and push it. Do not open a reverse synchronization PR."
+              exit 1
+              ;;
+          esac
+
+  revalidate-open-v6-prs:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Revalidate every open V6 integration PR after integration moves
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          gh pr list             --repo "$REPO"             --base v6/architecture-upgrade             --state open             --limit 100             --json number,headRefOid             --jq '.[] | [.number, .headRefOid] | @tsv' |
+          while IFS=$'\t' read -r number head_sha; do
+            [ -n "$head_sha" ] || continue
+
+            compare_status="$(gh api "repos/$REPO/compare/$BASE_SHA...$head_sha" --jq '.status' 2>/dev/null || echo error)"
+            if [ "$compare_status" = "ahead" ] || [ "$compare_status" = "identical" ]; then
+              state=success
+              description="Contains current V6 integration head"
+            else
+              state=failure
+              description="Stale vs V6 integration; refresh feature branch"
+            fi
+
+            gh api               --method POST               "repos/$REPO/statuses/$head_sha"               -f state="$state"               -f context="V6 Serialization"               -f description="$description" >/dev/null
+
+            echo "PR #$number $head_sha -> $state ($compare_status)"
+          done
