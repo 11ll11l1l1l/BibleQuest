@@ -1,12 +1,16 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-23 JST
+Updated: 2026-09-25 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
 Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f805`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
+
+Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
+
+Second certification reconciliation from integrated head `0e00188c3144a137ca48dd927faa954bfc7a361a`: previously integrated Database CI covers Presence, Journey Group/team/Live Room and media/notification tenant boundaries; inherited Leader Center contracts plus a focused stale-tenant unit regression prove the composition fails closed after an active-congregation change; per-book Recall uses demand-loaded pack fetches; Scripture source/license/attribution metadata remains in the Bible data owner; and the release checklist itself is regression-guarded so WAIVED is never counted as PASS.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -19,7 +23,7 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 - [x] ADR-0002 reproducible database-CI strategy accepted without requiring paid infrastructure.
 - [x] Inherited static/governance baseline green on Phase-0 candidate.
 - [x] Inherited/built browser baseline re-run on Chromium-capable CI: 45 canonical direct deep links + not-found, representative 320/360/390/412/430px routes, service-worker registration, and built PWA shell acceptance are green.
-- [ ] Current production parity baseline `7420bbba789ce21e02ac667f98558681e71d2a28` is merged forward into `v6/architecture-upgrade` with inherited regression/browser evidence green on the exact reconciliation head. PR #515 has already merged this baseline into the parity-candidate branch used by PR #510.
+- [x] Current production parity baseline `7420bbba789ce21e02ac667f98558681e71d2a28` is merged forward into `v6/architecture-upgrade` with inherited regression/browser evidence green on the exact reconciliation head. PR #515 has already merged this baseline into the parity-candidate branch used by PR #510.
 
 ## B. Build/toolchain
 
@@ -31,7 +35,7 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 - [x] Built route/deep-link behavior is proven across all 45 canonical hashes plus unknown-route handling in Chromium.
 - [x] Source maps are generated/handled safely: hidden maps are generated without embedded source text, moved outside `dist-v6`, and public-map/reference absence is CI-enforced.
 - [x] Route/domain code splitting is active: 44 feature-page modules load lazily and built Chromium waits for chunk completion.
-- [ ] CSS/assets/images are owned by build pipeline.
+- [x] CSS/assets/images are owned by build pipeline.
 - [x] Bundle/chunk/image budgets are CI-visible; the browser entry is capped at 700 KiB and at least 40 feature dynamic chunks are required.
 - [ ] Cloudflare exact-SHA deployment identity works from built artifacts.
 
@@ -98,19 +102,19 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 
 ## G. Games engine and Games UI
 
-- [ ] Existing games have characterization/parity inventory.
-- [ ] Common game registry/metadata contract exists.
-- [ ] Game session logic can run without DOM rendering.
-- [ ] Scoring/reward policies are isolated and testable.
-- [ ] Turn/timer rules are isolated where applicable.
-- [ ] Progress/result contract is shared.
+- [x] Existing games have characterization/parity inventory.
+- [x] Common game registry/metadata contract exists.
+- [x] Game session logic can run without DOM rendering.
+- [x] Scoring/reward policies are isolated and testable.
+- [x] Turn/timer rules are isolated where applicable.
+- [x] Progress/result contract is shared.
 - [ ] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
 - [ ] Individual game views/components replace one monolithic all-game renderer.
-- [ ] Shared question/feedback/result/scoreboard primitives exist.
+- [x] Shared question/feedback/result/scoreboard primitives exist.
 - [ ] Raw decorative emoji are removed where intentional art assets exist.
-- [ ] Accessible labels remain independent from decorative art.
-- [ ] Recall/game content is lazy-loaded where appropriate.
-- [ ] Representative engine sessions are deterministic/replayable in unit tests.
+- [x] Accessible labels remain independent from decorative art.
+- [x] Recall/game content is lazy-loaded where appropriate.
+- [x] Representative engine sessions are deterministic/replayable in unit tests.
 - [ ] All existing game launcher→result flows pass browser regression.
 
 ## H. Media subsystem
@@ -124,22 +128,22 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 - [ ] Continue-watching/resume state exists where accepted.
 - [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
 - [ ] Background/foreground lifecycle is tested.
-- [ ] Media curation remains server-authorized.
+- [x] Media curation remains server-authorized.
 - [ ] Old dead Media Library owner is removed only after live routes have parity/evidence.
 
 ## I. Push notifications and background delivery
 
 - [x] Web Push subscription lifecycle exists and the released V5 lifecycle/persistence contracts run in the V6 exact-head build gate.
-- [ ] Push server secrets remain server-side.
+- [x] Push server secrets remain server-side.
 - [x] Account-scoped notification-category preferences and quiet-hours model exist.
 - [x] Service worker handles push events and notification clicks; the V5 lifecycle contract verifies both listeners and same-origin click handling against the V6 candidate.
 - [x] Notification destinations are restricted to the integrated V6 deep-link allowlist.
-- [ ] Expired/invalid push subscriptions are cleaned safely.
-- [ ] Delivery is deduplicated/idempotent/rate-limited.
+- [x] Expired/invalid push subscriptions are cleaned safely.
+- [x] Delivery is deduplicated/idempotent/rate-limited.
 - [ ] Assignment assigned/due push is supported.
-- [ ] Leader/congregation announcement push is supported.
-- [ ] Encouragement push is supported.
-- [ ] In-app Notification Center remains the durable fallback.
+- [x] Leader/congregation announcement push is supported.
+- [x] Encouragement push is supported.
+- [x] In-app Notification Center remains the durable fallback.
 - [x] V6 notification client context tests clear account-scoped preferences on sign-out/account switch and fail closed without an active account.
 - [ ] Physical-device push acceptance passes.
 
@@ -155,15 +159,15 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 
 ## K. Leader Center
 
-- [ ] Leader Center is restored as an explicit V6 feature, not an unavailable placeholder.
-- [ ] Server-authorized role gate is enforced.
-- [ ] Active congregation is visible/explicit.
-- [ ] Assignment publishing/review/follow-up workflows are available as accepted.
-- [ ] Privacy-safe member/group activity summaries are available.
-- [ ] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
+- [x] Leader Center is restored as an explicit V6 feature, not an unavailable placeholder.
+- [x] Server-authorized role gate is enforced.
+- [x] Active congregation is visible/explicit.
+- [x] Assignment publishing/review/follow-up workflows are available as accepted.
+- [x] Privacy-safe member/group activity summaries are available.
+- [x] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
 - [ ] Upcoming due items/events surface is available.
 - [ ] Leader announcement/notification publishing is integrated.
-- [ ] Journey Group/team management entry points are integrated where applicable.
+- [x] Journey Group/team management entry points are integrated where applicable.
 - [ ] Moderation/review entry points preserve existing server authority.
 - [ ] Role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
@@ -171,17 +175,17 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 ## L. Multi-congregation
 
 - [x] Two-congregation deterministic database-CI topology is source-controlled and executable.
-- [ ] Users with multiple memberships have an explicit congregation switcher/context.
-- [ ] Tenant switch clears stale cached/view state.
+- [x] Users with multiple memberships have an explicit congregation switcher/context.
+- [x] Tenant switch clears stale cached/view state.
 - [ ] Sensitive repository calls require explicit congregation context.
-- [ ] Invitation/join flow is preserved/migrated.
+- [x] Invitation/join flow is preserved/migrated.
 - [ ] Membership/role management is preserved/migrated.
 - [ ] Congregation profile/settings workflow exists as accepted.
 - [ ] Congregation provisioning workflow exists as accepted.
 - [ ] Assignments/responses cross-tenant isolation passes.
-- [ ] Presence cross-tenant isolation passes.
-- [ ] Groups/teams/rooms cross-tenant isolation passes.
-- [ ] Media/notifications/Leader Center cross-tenant isolation passes.
+- [x] Presence cross-tenant isolation passes.
+- [x] Groups/teams/rooms cross-tenant isolation passes.
+- [x] Media/notifications/Leader Center cross-tenant isolation passes.
 - [ ] Any inter-congregation directory/shared-resource feature is opt-in and separately approved, not implied by tenancy support.
 
 ## M. Auth/admin/security hardening
@@ -203,17 +207,17 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 - [ ] Focus/keyboard contracts are componentized/tested.
 - [ ] Icon/art registry replaces scattered decorative symbols where applicable.
 - [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
-- [ ] Existing supported-language and Japanese/furigana behavior is preserved.
-- [ ] Scripture licensing/source metadata remains separate from UI localization.
+- [x] Existing supported-language and Japanese/furigana behavior is preserved.
+- [x] Scripture licensing/source metadata remains separate from UI localization.
 - [ ] Automated accessibility checks run on built artifacts.
 - [ ] Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.
 
 ## O. Observability and performance
 
 - [ ] Release SHA/build identity is available in diagnostics.
-- [ ] Privacy-safe structured error reporting exists.
-- [ ] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
-- [ ] Controlled source-map resolution exists.
+- [x] Privacy-safe structured error reporting exists.
+- [x] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
+- [x] Controlled source-map resolution exists.
 - [ ] Diagnostics expose safe SW/content/connectivity state.
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
 - [ ] Image/font budgets are enforced.
@@ -233,7 +237,7 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 - [ ] V4→V6 route/feature parity matrix is complete.
 - [ ] One exact V6 RC SHA passes all applicable automated gates.
 - [ ] Required field/device evidence is attached to exact candidate.
-- [ ] No WAIVED item is represented as PASS.
+- [x] No WAIVED item is represented as PASS.
 - [ ] Production promotion uses the exact certified candidate.
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [ ] V4 rollback reference remains available through V6 production acceptance.
