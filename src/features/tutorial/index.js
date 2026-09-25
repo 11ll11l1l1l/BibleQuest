@@ -1,8 +1,6 @@
 import { trainerStateClass, trainerStateForStep } from './trainer.js';
 import { STEPS } from './steps.js';
-import { createFocusReturn, resolveTabFocus } from '../../v6/ui/index.ts';
-
-const TUTORIAL_FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+import { createFocusReturn } from '../../v6/ui/index.ts';
 
 function template(state) {
   const step = STEPS[state.step] || STEPS[0];
@@ -50,9 +48,6 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
   let renderedActive = false;
   let restoreAfterClose = null;
   let suppressRestore = false;
-
-  const focusableElements = () => [...layer.querySelectorAll(TUTORIAL_FOCUSABLE)]
-    .filter(element => element.hidden !== true && element.getAttribute?.('aria-hidden') !== 'true');
 
   const render = state => {
     const wasActive = renderedActive;
@@ -106,26 +101,10 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
   };
 
   const onKeyDown = event => {
-    if (!current.active) return;
-
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && current.active) {
       event.preventDefault();
       tutorial.skip();
-      return;
     }
-
-    if (event.key !== 'Tab') return;
-    const focusable = focusableElements();
-    const result = resolveTabFocus({
-      key: event.key,
-      shiftKey: event.shiftKey,
-      currentIndex: focusable.indexOf(documentRef.activeElement),
-      itemCount: focusable.length
-    });
-    const next = result.handled ? focusable[result.index] : null;
-    if (!next) return;
-    event.preventDefault();
-    next.focus?.({ preventScroll: true });
   };
 
   layer.addEventListener('click', onClick);
