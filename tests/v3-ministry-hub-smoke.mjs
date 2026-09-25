@@ -49,6 +49,12 @@ async function run(){
   assert(await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').count()===1,'Leader Center (V5 Phase 1) must now be a real, available tool, not deferred.');
   await page.locator('[data-ministry-tool="assignment-publishing"] [data-ministry-route="assignments"]').click();await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').click();routes=await page.evaluate(()=>window.__bqMinistryRoutes);assert(routes.join(',')==='assignments,leader-center','Ministry tool navigation did not delegate to Assignments and the new Leader Center route.');
 
+  for(const role of ['pastor','admin']){
+    await mountForRole(role);
+    assert(await page.locator('[data-ministry-privileged]').count()===1,`${role} must receive ministry-role presentation.`);
+    assert(await page.locator('[data-ministry-tool="leader-dashboard"] [data-ministry-route="leader-center"]').count()===1,`${role} must retain Leader Center access.`);
+  }
+
   await mountForActiveCongregation('c1');
   assert(await page.locator('[data-ministry-membership="c1"]').count()===1&&await page.locator('[data-ministry-membership="c2"]').count()===1,'Multi-membership Ministry Hub must keep both congregation memberships visible.');
   assert(await page.locator('[data-ministry-privileged]').count()===0,'Active member congregation must not inherit ministry tools from another leader congregation.');
