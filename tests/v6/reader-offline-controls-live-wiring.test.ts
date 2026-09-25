@@ -52,3 +52,11 @@ test('managed controls preserve existing Reader advanced surfaces', () => {
     assert.ok(readerPage.includes(contract), `Reader regression lost existing contract: ${contract}`);
   }
 });
+
+test('Reader uses installed-only search while offline and preserves online provider search', () => {
+  assert.match(readerPage, /globalThis\.navigator\?\.onLine === false/);
+  assert.match(readerPage, /offlinePackages\.searchInstalled\(state\.translation, query, 30\)/);
+  assert.match(readerPage, /reader\.search\(query, \{ limit: 30 \}\)/);
+  assert.match(readerPage, /Searching downloaded Scripture/);
+  assert.match(readerPage, /No matches in downloaded books\. Reconnect to search the full Scripture source\./);
+});
