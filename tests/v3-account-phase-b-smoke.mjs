@@ -28,6 +28,23 @@ try{
     const loginUse=useHref(guestHost);
     const loginArt=box(guestHost.querySelector('.bq-account-art-wrap'));
     const tabHeight=box(guestHost.querySelector('[data-account-mode="login"]')).height;
+    const modeTabs=[...guestHost.querySelectorAll('[data-account-mode]')];
+    const panel=guestHost.querySelector('[data-account-body]');
+    const initialTabContract={
+      tablistRole:guestHost.querySelector('.bq-account-tabs')?.getAttribute('role')||'',
+      panelRole:panel?.getAttribute('role')||'',
+      selected:modeTabs.map(tab=>tab.getAttribute('aria-selected')),
+      tabIndex:modeTabs.map(tab=>tab.tabIndex),
+      labelledBy:panel?.getAttribute('aria-labelledby')||''
+    };
+    modeTabs[0]?.focus();
+    modeTabs[0]?.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true}));
+    const arrowRightMode=document.activeElement?.getAttribute?.('data-account-mode')||'';
+    const arrowSelected=modeTabs.map(tab=>tab.getAttribute('aria-selected'));
+    document.activeElement?.dispatchEvent?.(new KeyboardEvent('keydown',{key:'End',bubbles:true,cancelable:true}));
+    const endMode=document.activeElement?.getAttribute?.('data-account-mode')||'';
+    document.activeElement?.dispatchEvent?.(new KeyboardEvent('keydown',{key:'Home',bubbles:true,cancelable:true}));
+    const homeMode=document.activeElement?.getAttribute?.('data-account-mode')||'';
     guestHost.querySelector('[data-account-mode="signup"]')?.click();
     const signupUse=useHref(guestHost);
     guestHost.querySelector('[data-account-mode="recovery"]')?.click();
@@ -52,7 +69,7 @@ try{
     signedHost.querySelector('[data-account-home]')?.click();
     signedCleanup?.();signedHost.remove();
 
-    return{loginUse,signupUse,recoveryUse,loginArt,tabHeight,guestHeight,guestText,guestHome,signedUses,heroArt,homeHeight,signoutHeight,signedText,signedHome,innerWidth,scrollWidth:document.documentElement.scrollWidth};
+    return{loginUse,signupUse,recoveryUse,loginArt,tabHeight,initialTabContract,arrowRightMode,arrowSelected,endMode,homeMode,guestHeight,guestText,guestHome,signedUses,heroArt,homeHeight,signoutHeight,signedText,signedHome,innerWidth,scrollWidth:document.documentElement.scrollWidth};
   });
 
   assert(result.loginUse==='assets/account-feature-icons.svg#sign-in','Account login state must render sign-in artwork.');
@@ -60,6 +77,14 @@ try{
   assert(result.recoveryUse==='assets/account-feature-icons.svg#recovery','Account recovery state must render recovery artwork.');
   assert(new Set([result.loginUse,result.signupUse,result.recoveryUse]).size===3,'Account guest states must use distinct semantic artwork.');
   assert(result.loginArt.width>=48&&result.loginArt.height>=48,'Account guest artwork is not visibly rendered.');
+  assert(result.initialTabContract.tablistRole==='tablist'&&result.initialTabContract.panelRole==='tabpanel','Account mode switcher must expose tablist/tabpanel semantics.');
+  assert(result.initialTabContract.selected.join(',')==='true,false,false','Account must expose Sign in as the initially selected tab.');
+  assert(result.initialTabContract.tabIndex.join(',')==='0,-1,-1','Account tabs must use one roving keyboard tab stop.');
+  assert(result.initialTabContract.labelledBy==='bq-account-tab-login','Account tabpanel must be labelled by the selected tab.');
+  assert(result.arrowRightMode==='signup','ArrowRight must move Account tab focus to Create account.');
+  assert(result.arrowSelected.join(',')==='false,true,false','ArrowRight must automatically activate the newly focused Account tab.');
+  assert(result.endMode==='recovery','End must move Account tab focus to Recover.');
+  assert(result.homeMode==='login','Home must move Account tab focus to Sign in.');
   assert(result.tabHeight>=44&&result.guestHeight>=44,'Account guest controls fell below 44px.');
   assert(result.guestHome===1,'Continue as guest callback changed.');
   for(const text of['Recover account','Recovery code','Reset password'])assert(result.guestText.includes(text),`Account recovery text disappeared: ${text}`);
