@@ -35,7 +35,7 @@ select ok(
 
 set local role anon;
 select lives_ok(
-  $$telemetry$select public.bible_record_telemetry_batch(
+  $$select public.bible_record_telemetry_batch(
     '33333333-3333-4333-8333-333333333333'::uuid,
     '44444444-4444-4444-8444-444444444444'::uuid,
     '[{"event_name":"route_view","feature":"reader","route":"reader","properties":{"action":"open","note":"must-not-store","email":"private@example.invalid"}}]'::jsonb,
@@ -80,13 +80,13 @@ select is(
 
 
 set local role anon;
-select lives_ok(
-  $select public.bible_record_telemetry_batch(
+select ok(
+  (public.bible_record_telemetry_batch(
     '77777777-7777-4777-8777-777777777777'::uuid,
     '88888888-8888-4888-8888-888888888888'::uuid,
     '[{"event_name":"feature_complete","feature":"reader","route":"reader","properties":{"action":"complete","result":"private@example.invalid","book_code":"JHN","chapter":3}}]'::jsonb,
     '{"platform":"Web","locale":"en-PH","app_version":"v6","screen_bucket":"sm","is_pwa":false}'::jsonb
-  )$telemetry$,
+  )->>'ok')::boolean,
   'telemetry ingestion tolerates rejected sensitive property values'
 );
 reset role;
