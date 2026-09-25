@@ -210,8 +210,8 @@ test('Recordings compatibility rejects malformed sources, invalid seek and use a
     host: host.owner,
   });
 
-  await assert.rejects(
-    audio.mount('host', { kind: 'youtube', id: 'bad id', title: 'Bad' }),
+  assert.throws(
+    () => audio.mount('host', { kind: 'youtube', id: 'bad id', title: 'Bad' }),
     /valid YouTube source/,
   );
 
