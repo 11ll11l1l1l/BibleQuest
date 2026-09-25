@@ -252,7 +252,7 @@ function boot(root){
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
-  const recordingsMediaRuntime=createRecordingsMediaRuntime();
+  const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window});
   const congregation=createCongregationMembershipService({api,session});
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
