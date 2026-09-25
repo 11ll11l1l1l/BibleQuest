@@ -1,5 +1,6 @@
 import { trainerStateClass, trainerStateForStep } from './trainer.js';
 import { STEPS } from './steps.js';
+import { createFocusReturn } from '../../v6/ui/index.ts';
 
 function template(state) {
   const step = STEPS[state.step] || STEPS[0];
@@ -44,15 +45,35 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
   documentRef.body.appendChild(layer);
 
   let current = tutorial.getState();
+  let renderedActive = false;
+  let restoreAfterClose = null;
+  let suppressRestore = false;
 
   const render = state => {
+    const wasActive = renderedActive;
     current = state;
+
+    if (state.active && !wasActive) {
+      restoreAfterClose = createFocusReturn(documentRef.activeElement);
+      suppressRestore = false;
+    }
+
+    renderedActive = state.active;
     layer.hidden = !state.active;
     documentRef.body.classList.toggle('bq-tutorial-open', state.active);
+
     if (!state.active) {
       layer.innerHTML = '';
+      if (wasActive) {
+        const restore = restoreAfterClose;
+        const shouldRestore = !suppressRestore;
+        restoreAfterClose = null;
+        suppressRestore = false;
+        if (shouldRestore && restore) queueMicrotask(() => restore());
+      }
       return;
     }
+
     layer.innerHTML = template(state);
     queueMicrotask(() => layer.querySelector('[data-tutorial-next]')?.focus?.({ preventScroll: true }));
   };
@@ -65,12 +86,14 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
     const action = target.closest('[data-tutorial-action]');
     if (action) {
       const route = action.dataset.tutorialAction;
+      suppressRestore = true;
       tutorial.skip();
       onNavigate?.(route);
       return;
     }
     if (target.closest('[data-tutorial-next]')) {
       if (current.isLast) {
+        suppressRestore = true;
         tutorial.finish();
         onNavigate?.('home');
       } else tutorial.next();
@@ -78,7 +101,10 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
   };
 
   const onKeyDown = event => {
-    if (event.key === 'Escape' && current.active) tutorial.skip();
+    if (event.key === 'Escape' && current.active) {
+      event.preventDefault();
+      tutorial.skip();
+    }
   };
 
   layer.addEventListener('click', onClick);
@@ -92,6 +118,9 @@ export function mountTutorialOverlay({ tutorial, onNavigate, documentRef = docum
       layer.removeEventListener('click', onClick);
       documentRef.removeEventListener('keydown', onKeyDown);
       documentRef.body.classList.remove('bq-tutorial-open');
+      renderedActive = false;
+      restoreAfterClose = null;
+      suppressRestore = true;
       layer.remove();
     }
   });
