@@ -3,7 +3,7 @@ import test from 'node:test';
 
 import type { OfflineMutationPolicy } from '../../src/v6/offline/outbox.ts';
 import type { OfflineOutboxPersistence, PersistedOfflineMutation } from '../../src/v6/offline/outbox-persistence.ts';
-import { OfflineOutboxService } from '../../src/v6/offline/outbox-service.ts';
+import { OfflineOutboxService, createV6OfflineOutboxService } from '../../src/v6/offline/outbox-service.ts';
 
 const safe: OfflineMutationPolicy = {
   domain: 'example-progress',
@@ -311,4 +311,38 @@ test('malformed durable rows do not create false idempotency conflicts', async (
   const queued = await service.enqueue(request());
   assert.equal(queued.id, 'mutation-1');
   assert.equal(storage.records.has('mutation-1'), true);
+});
+
+
+test('production V6 outbox factory fails closed for uncertified and privileged domain writes', async () => {
+  const storage = new MemoryPersistence();
+  const service = createV6OfflineOutboxService(storage);
+
+  await assert.rejects(
+    () => service.enqueue({
+      id: 'reader-1',
+      domain: 'reader-progress',
+      operation: 'record-read',
+      idempotencyKey: 'reader:user-1:GEN:1',
+      identity: activeA,
+      createdAt: '2026-09-25T00:00:00.000Z',
+      payload: { bookCode: 'GEN', chapter: 1 },
+    }),
+    /not explicitly allowlisted/i,
+  );
+
+  await assert.rejects(
+    () => service.enqueue({
+      id: 'admin-1',
+      domain: 'admin-user',
+      operation: 'suspend',
+      idempotencyKey: 'admin:user-1:suspend:user-2',
+      identity: activeA,
+      createdAt: '2026-09-25T00:00:00.000Z',
+      payload: { targetUserId: 'user-2' },
+    }),
+    /not explicitly allowlisted/i,
+  );
+
+  assert.equal(storage.records.size, 0);
 });
