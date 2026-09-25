@@ -1,10 +1,10 @@
 const UUID_RE=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const SAFE_TOKEN_RE=/^[a-z0-9][a-z0-9._:/-]{0,79}$/i;
+const SAFE_TOKEN_RE=/^[a-z0-9][a-z0-9._:/-]{0,119}$/i;
 const PROPERTY_KEYS=new Set([
   'action','element','source','status','result','error_name','visibility',
   'install_state','offline','duration_bucket','count','content_type',
   'difficulty','completion','reason_code','language','role','assignment_type',
-  'book_code','chapter','game','mode'
+  'game','mode'
 ]);
 
 function stableToken(value,max=80){
@@ -18,8 +18,9 @@ function safeProperties(input){
   const output={};
   for(const [key,value] of Object.entries(input)){
     if(!PROPERTY_KEYS.has(key))continue;
-    if(value===null||typeof value==='boolean'||typeof value==='number'){output[key]=value;continue}
-    if(typeof value==='string'&&value.length<=120)output[key]=value;
+    if(value===null||typeof value==='boolean'){output[key]=value;continue}
+    if(typeof value==='number'&&Number.isFinite(value)&&Math.abs(value)<=1_000_000_000){output[key]=value;continue}
+    if(typeof value==='string'){const token=stableToken(value,120);if(token)output[key]=token}
   }
   return output;
 }

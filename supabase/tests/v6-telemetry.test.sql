@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(14);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_telemetry_visitors'::regclass),
@@ -76,6 +76,26 @@ select is(
    where visitor_id='55555555-5555-4555-8555-555555555555'::uuid limit 1),
   '11111111-1111-4111-8111-111111111112'::uuid,
   'authenticated telemetry identity is derived from auth context'
+);
+
+
+set local role anon;
+select ok(
+  (public.bible_record_telemetry_batch(
+    '77777777-7777-4777-8777-777777777777'::uuid,
+    '88888888-8888-4888-8888-888888888888'::uuid,
+    '[{"event_name":"feature_complete","feature":"reader","route":"reader","properties":{"action":"complete","result":"private@example.invalid","book_code":"JHN","chapter":3}}]'::jsonb,
+    '{"platform":"Web","locale":"en-PH","app_version":"v6","screen_bucket":"sm","is_pwa":false}'::jsonb
+  )->>'ok')::boolean,
+  'telemetry ingestion tolerates rejected sensitive property values'
+);
+reset role;
+
+select is(
+  (select properties from public.bible_telemetry_events
+   where visitor_id='77777777-7777-4777-8777-777777777777'::uuid limit 1),
+  '{"action":"complete"}'::jsonb,
+  'server strips email-like values and exact Scripture-location properties'
 );
 
 select * from finish();
