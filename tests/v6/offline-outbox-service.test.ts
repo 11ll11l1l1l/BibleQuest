@@ -140,3 +140,91 @@ test('policy revocation blocks retry persistence for the still-active tenant', a
   await assert.rejects(() => revoked.retry(queued, activeA), /not explicitly allowlisted/i);
   assert.equal(storage.records.get('mutation-1')?.attempt, 0);
 });
+
+
+test('duplicate enqueue preserves the already-durable retry state instead of resetting it', async () => {
+  const storage = new MemoryPersistence();
+  const clock = { now: new Date('2026-09-25T00:00:00.000Z') };
+  const service = new OfflineOutboxService(storage, [safe], () => clock.now);
+  const queued = await service.enqueue(request());
+  const retried = await service.retry(queued, activeA);
+  assert.equal(retried.attempt, 1);
+
+  const duplicate = await service.enqueue(request());
+  assert.equal(duplicate.id, queued.id);
+  assert.equal(duplicate.attempt, 1);
+  assert.equal(duplicate.retryAt, '2026-09-25T00:00:01.000Z');
+  assert.equal(storage.records.size, 1);
+});
+
+test('conflicting reuse of an idempotency key fails closed without replacing queued work', async () => {
+  const storage = new MemoryPersistence();
+  const service = new OfflineOutboxService(storage, [safe]);
+  const original = await service.enqueue(request());
+
+  await assert.rejects(
+    () => service.enqueue({ ...request('mutation-2'), idempotencyKey: original.idempotencyKey }),
+    /idempotency key conflicts/i,
+  );
+
+  assert.equal(storage.records.size, 1);
+  assert.equal(storage.records.has(original.id), true);
+  assert.equal(storage.records.has('mutation-2'), false);
+});
+
+test('conflicting reuse of a durable mutation id with a different idempotency key fails closed', async () => {
+  const storage = new MemoryPersistence();
+  const service = new OfflineOutboxService(storage, [safe]);
+  const original = await service.enqueue(request());
+
+  await assert.rejects(
+    () => service.enqueue({ ...request(original.id), idempotencyKey: 'progress:user-1:replacement-logical-write' }),
+    /mutation id conflicts/i,
+  );
+
+  assert.equal(storage.records.size, 1);
+  assert.equal(storage.records.get(original.id)?.idempotencyKey, original.idempotencyKey);
+  assert.deepEqual(storage.records.get(original.id)?.payload, original.payload);
+});
+
+test('idempotency conflict scope is isolated by tenant, domain and operation', async () => {
+  const storage = new MemoryPersistence();
+  const otherOperation = { ...safe, operation: 'replace' };
+  const service = new OfflineOutboxService(storage, [safe, otherOperation]);
+  const original = await service.enqueue(request());
+
+  const otherTenant = await service.enqueue({
+    ...request('tenant-b', 'congregation-b'),
+    idempotencyKey: original.idempotencyKey,
+  });
+  const otherOperationRecord = await service.enqueue({
+    ...request('other-operation'),
+    operation: 'replace',
+    idempotencyKey: original.idempotencyKey,
+  });
+
+  assert.equal(otherTenant.id, 'tenant-b');
+  assert.equal(otherOperationRecord.id, 'other-operation');
+  assert.equal(storage.records.size, 3);
+});
+
+test('malformed durable rows do not create false idempotency conflicts', async () => {
+  const storage = new MemoryPersistence();
+  storage.records.set('broken', {
+    id: 'broken',
+    schemaVersion: 1,
+    domain: safe.domain,
+    operation: safe.operation,
+    idempotencyKey: 'progress:user-1:mutation-1',
+    identity: activeA,
+    createdAt: 'not-an-iso-date',
+    attempt: 0,
+    payload: null,
+    retryAt: null,
+  } as unknown as PersistedOfflineMutation);
+
+  const service = new OfflineOutboxService(storage, [safe]);
+  const queued = await service.enqueue(request());
+  assert.equal(queued.id, 'mutation-1');
+  assert.equal(storage.records.has('mutation-1'), true);
+});
