@@ -1,0 +1,42 @@
+name: V6 Dependency Security
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "scripts/v6-dependency-security.mjs"
+      - ".github/workflows/v6-dependency-security.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-dependency-security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Use pinned Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Validate pinned lockfile sources and integrity
+        run: npm run check:v6-dependency-security
+
+      - name: Audit npm advisories at high or critical severity
+        run: npm audit --audit-level=high
