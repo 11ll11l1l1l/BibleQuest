@@ -132,7 +132,7 @@ async function v6MediaEngineBrowser(){
     ]);
     const calls=[],events=[];
     class Player{
-      constructor(target){this.target=String(target);calls.push(`yt:${this.target}:construct`)}
+      constructor(target,options){this.target=String(target);calls.push(`yt:${this.target}:construct`);queueMicrotask(()=>options?.events?.onReady?.({target:this}))}
       cueVideoById(input){calls.push(`yt:${this.target}:cue:${input.videoId}@${input.startSeconds??0}`)}
       loadVideoById(input){calls.push(`yt:${this.target}:load:${input.videoId}@${input.startSeconds??0}`)}
       playVideo(){calls.push(`yt:${this.target}:play`)}
@@ -213,4 +213,153 @@ async function v6MediaEngineBrowser(){
   await page.close();
 }
 
-try{await desktop();await deniedCuration();await mobile();await v6MediaEngineBrowser();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}
+async function v6RecordingsRuntimeBrowser(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  const result=await page.evaluate(async()=>{
+    const {createRecordingsMediaRuntime}=await import('/src/v6/media/recordings-runtime.ts');
+    const calls=[];
+    class Player{
+      constructor(target,options){
+        this.frame=document.createElement('iframe');
+        this.frame.dataset.bqRuntimePlayer='1';
+        target.replaceWith(this.frame);
+        calls.push('construct');
+        queueMicrotask(()=>options?.events?.onReady?.({target:this}));
+      }
+      cueVideoById(input){calls.push(`cue:${input.videoId}@${input.startSeconds??0}`)}
+      loadVideoById(input){calls.push(`load:${input.videoId}@${input.startSeconds??0}`)}
+      playVideo(){calls.push('play')}
+      pauseVideo(){calls.push('pause')}
+      stopVideo(){calls.push('stop')}
+      seekTo(seconds,allowSeekAhead){calls.push(`seek:${seconds}:${allowSeekAhead}`)}
+      destroy(){calls.push('destroy');this.frame.remove()}
+    }
+    const runtime=createRecordingsMediaRuntime({
+      document,
+      global:{YT:{Player}},
+      enableVisibilityLifecycle:false,
+      playerReadyTimeoutMs:1000
+    });
+    const host=document.createElement('div');
+    host.dataset.bqRuntimeHost='1';
+    document.body.append(host);
+
+    await runtime.audio.mount(host,{kind:'youtube',id:'abcDEF12345',title:'First'});
+    const first={
+      status:runtime.audio.getState().status,
+      playerCount:runtime.audio.getPlayerCount(),
+      iframeCount:host.querySelectorAll('iframe[data-bq-runtime-player]').length,
+      hostOwner:host.getAttribute('data-bq-media-host-owner'),
+      sessionCount:runtime.session.snapshot().instances.length
+    };
+    await runtime.audio.play();
+    await runtime.audio.seek(22);
+
+    await runtime.audio.mount(host,{kind:'youtube',id:'ZYXWV987654',title:'Second'});
+    const second={
+      source:runtime.audio.getState().source?.id||'',
+      playerCount:runtime.audio.getPlayerCount(),
+      iframeCount:host.querySelectorAll('iframe[data-bq-runtime-player]').length,
+      sessionCount:runtime.session.snapshot().instances.length,
+      activeExternalId:runtime.session.snapshot().instances[0]?.activeSource?.externalId||''
+    };
+
+    await runtime.audio.unload();
+    const unloaded={
+      playerCount:runtime.audio.getPlayerCount(),
+      iframeCount:host.querySelectorAll('iframe[data-bq-runtime-player]').length,
+      childCount:host.childElementCount,
+      hostOwner:host.getAttribute('data-bq-media-host-owner'),
+      sessionCount:runtime.session.snapshot().instances.length
+    };
+    await runtime.dispose();
+    host.remove();
+    return{calls,first,second,unloaded};
+  });
+
+  assert(result.first.status==='ready','Concrete V6 Recordings runtime did not reach ready after YouTube onReady.');
+  assert(result.first.playerCount===1&&result.first.iframeCount===1&&result.first.sessionCount===1,'Concrete V6 Recordings runtime did not establish exactly one player/session.');
+  assert(result.first.hostOwner==='recordings-player','Concrete V6 Recordings runtime did not own the DOM host deterministically.');
+  assert(result.calls.indexOf('construct')<result.calls.indexOf('cue:abcDEF12345@0'),'Concrete V6 Recordings runtime cued before player construction.');
+  assert(result.calls.includes('play')&&result.calls.includes('seek:22:true'),'Concrete V6 Recordings runtime did not route playback controls through the provider.');
+  assert(result.second.source==='ZYXWV987654'&&result.second.activeExternalId==='ZYXWV987654','Concrete V6 Recordings runtime did not switch to the requested source.');
+  assert(result.second.playerCount===1&&result.second.iframeCount===1&&result.second.sessionCount===1,'Concrete V6 Recordings runtime retained duplicate players after source switch.');
+  assert(result.calls.filter(call=>call==='destroy').length>=1,'Concrete V6 Recordings runtime did not destroy the replaced player.');
+  assert(result.unloaded.playerCount===0&&result.unloaded.iframeCount===0&&result.unloaded.childCount===0&&result.unloaded.sessionCount===0,'Concrete V6 Recordings runtime did not release player/session/DOM resources on unload.');
+  assert(result.unloaded.hostOwner===null,'Concrete V6 Recordings runtime left stale DOM ownership metadata after unload.');
+  await page.close();
+}
+
+
+async function v6LiveCutoverBrowser(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  await page.evaluate(async()=>{
+    const [{createRecordingsMediaRuntime},{createRecordingsService},{recordingsPage}]=await Promise.all([
+      import('/src/v6/media/recordings-runtime.ts'),
+      import('/src/app/recordings.js'),
+      import('/src/features/recordings/index.js')
+    ]);
+    class Player{
+      constructor(target,options){
+        this.frame=document.createElement('iframe');
+        this.frame.dataset.bqRuntimePlayer='1';
+        target.replaceWith(this.frame);
+        queueMicrotask(()=>options?.events?.onReady?.({target:this}));
+      }
+      cueVideoById(){}
+      loadVideoById(){}
+      playVideo(){}
+      pauseVideo(){}
+      stopVideo(){}
+      seekTo(){}
+      destroy(){this.frame.remove()}
+    }
+    const runtime=createRecordingsMediaRuntime({
+      document,
+      global:{YT:{Player}},
+      enableVisibilityLifecycle:false,
+      playerReadyTimeoutMs:1000
+    });
+    const media={
+      async listLiveRecordings(){return[
+        {id:'rec-v6',youtube_id:'abcDEF12345',title:'V6 Sunday Service',description:'Live cutover proof',featured:true}
+      ]},
+      async createVideo(){throw new Error('not used in live cutover harness')},
+      async updateVideo(){throw new Error('not used in live cutover harness')}
+    };
+    const session={getState:()=>({authenticated:true,user:{id:'u-v6'}}),isAuthenticated:()=>true};
+    const congregation={load:async()=>[{congregationId:'c-v6'}]};
+    const recordings=createRecordingsService({media,audio:runtime.audio,session,congregation});
+    const root=document.createElement('div');
+    root.id='recordings-v6-live-root';
+    document.body.append(root);
+    const definition=recordingsPage({recordings,onHome:()=>{},onAccount:()=>{}});
+    root.innerHTML=definition.html;
+    const cleanup=definition.mount(root);
+    window.__recordingsV6Live={runtime,recordings,cleanup,root};
+  });
+
+  const root=page.locator('#recordings-v6-live-root');
+  await root.locator('[data-video-select="rec-v6"]').waitFor();
+  await root.locator('[data-video-select="rec-v6"]').click();
+  await root.locator('iframe[data-bq-runtime-player]').waitFor();
+  assert(await root.locator('iframe[data-bq-runtime-player]').count()===1,'Live V6 Recordings cutover did not create exactly one provider player.');
+  assert(await root.locator('iframe[data-bq-audio-player]').count()===0,'Live V6 Recordings cutover recreated the legacy Audio owner.');
+  assert(await root.locator('[data-recording-frame]').getAttribute('data-bq-media-host-owner')==='recordings-player','Live V6 Recordings cutover did not establish deterministic V6 host ownership.');
+  assert(await page.evaluate(()=>window.__recordingsV6Live.recordings.getPlayerCount())===1,'Live V6 Recordings service did not report exactly one V6 player.');
+  assert(await root.locator('[data-video-select="rec-v6"].is-selected').count()===1,'Live V6 Recordings cutover did not preserve selected-card state.');
+
+  await page.evaluate(async()=>{
+    const harness=window.__recordingsV6Live;
+    harness.cleanup?.();
+    await harness.runtime.dispose();
+    harness.root.remove();
+    delete window.__recordingsV6Live;
+  });
+  assert(await page.locator('#recordings-v6-live-root').count()===0,'Live V6 Recordings harness did not clean up its route root.');
+  await page.close();
+}
+
+try{await desktop();await deniedCuration();await mobile();await v6MediaEngineBrowser();await v6RecordingsRuntimeBrowser();await v6LiveCutoverBrowser();console.log('BibleQuest v3 Videos (formerly Live Recordings) browser regression passed.')}finally{await browser.close()}

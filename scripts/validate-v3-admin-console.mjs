@@ -30,7 +30,11 @@ if(!failures.length){
   for(const token of ['createStore','createSessionService','createAdminConsoleService','createApi','api.adminConsole','await session.boot()','adminConsolePage'])if(!entry.includes(token))fail(`Standalone Admin Console entry missing composition token: ${token}`);
   for(const token of ['id="admin-app"','src/ui/app.css','src/app/admin-entry.js','noindex,nofollow'])if(!shell.includes(token))fail(`v3 admin.html missing standalone contract token: ${token}`);
 
-  for(const token of ["const adminConsole=Object.freeze", "invoke('bq-admin',{action:'status'})", "action:'list_users'", "action:'set_role'", "action:'set_congregation'", "action:'remove_congregation'", "action:'set_congregation_role'", "invoke('bq-create-congregation',{name})", "action:'create_small_group'", "action:'set_group_membership'", "action:'set_group_owner'"])if(!api.includes(token))fail(`Shared API missing Admin Console facade contract: ${token}`);
+  for(const token of ["const adminConsole=Object.freeze", "invoke('bq-admin',{action:'status'})", "action:'list_users'", "invoke('bq-create-congregation',{name})"])if(!api.includes(token))fail(`Shared API missing Admin Console facade contract: ${token}`);
+  for(const action of ['set_role','set_congregation','remove_congregation','set_congregation_role','create_small_group','set_group_membership','set_group_owner']){
+    const pattern=new RegExp(`invokeAdminMutation\\([^\\n]+['"]${action}['"]`);
+    if(!pattern.test(api))fail(`Shared API missing typed Admin Console mutation bridge: ${action}`);
+  }
   const exportMatch=api.match(/return Object\.freeze\(\{([^}]*)\}\);\s*\n\}/m);
   const exports=new Set((exportMatch?.[1]||'').split(',').map(value=>value.trim()).filter(Boolean));
   for(const name of ['contentReview','adminConsole','media'])if(!exports.has(name))fail(`Shared API return contract must retain ${name}.`);

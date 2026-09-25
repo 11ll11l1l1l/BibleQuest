@@ -1,4 +1,5 @@
 import { authStorage } from './storage.js';
+import { assertAdminMutationAllowed } from '../v6/admin/contracts.ts';
 
 const SUPABASE_MODULE = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4/+esm';
 const CONFIG = Object.freeze({
@@ -117,6 +118,13 @@ export function createApi() {
     if (error) throw new Error(await functionMessage(error, `${name} failed.`));
     if (data?.error) throw new Error(String(data.error));
     return data || {};
+  };
+
+  const invokeAdminMutation = async (name, action, body = {}) => {
+    const policy = assertAdminMutationAllowed(action, {
+      online: typeof navigator === 'undefined' || navigator.onLine !== false
+    });
+    return invoke(name, { action: policy.transportAction, ...body });
   };
 
   const diagnostics = Object.freeze({
@@ -719,26 +727,26 @@ export function createApi() {
   const adminConsole=Object.freeze({
     async status(){return invoke('bq-admin',{action:'status'});},
     async listUsers({page=1,perPage=200}={}){return invoke('bq-admin',{action:'list_users',page,perPage});},
-    async setRole(targetUserId,role){return invoke('bq-admin',{action:'set_role',targetUserId,role});},
-    async setCongregation(targetUserId,congregationId,{replace=true}={}){return invoke('bq-admin',{action:'set_congregation',targetUserId,congregationId,replace});},
-    async removeCongregation(targetUserId,congregationId){return invoke('bq-admin',{action:'remove_congregation',targetUserId,congregationId});},
-    async setCongregationRole(targetUserId,congregationId,role){return invoke('bq-admin',{action:'set_congregation_role',targetUserId,congregationId,role});},
+    async setRole(targetUserId,role){return invokeAdminMutation('bq-admin','set_role',{targetUserId,role});},
+    async setCongregation(targetUserId,congregationId,{replace=true}={}){return invokeAdminMutation('bq-admin','set_congregation',{targetUserId,congregationId,replace});},
+    async removeCongregation(targetUserId,congregationId){return invokeAdminMutation('bq-admin','remove_congregation',{targetUserId,congregationId});},
+    async setCongregationRole(targetUserId,congregationId,role){return invokeAdminMutation('bq-admin','set_congregation_role',{targetUserId,congregationId,role});},
     async createCongregation(name){return invoke('bq-create-congregation',{name});},
-    async createSmallGroup(payload){return invoke('bq-admin',{action:'create_small_group',...payload});},
-    async setGroupMembership(payload){return invoke('bq-admin',{action:'set_group_membership',...payload});},
-    async setGroupOwner(targetUserId,groupId){return invoke('bq-admin',{action:'set_group_owner',targetUserId,groupId});}
+    async createSmallGroup(payload){return invokeAdminMutation('bq-admin','create_small_group',payload);},
+    async setGroupMembership(payload){return invokeAdminMutation('bq-admin','set_group_membership',payload);},
+    async setGroupOwner(targetUserId,groupId){return invokeAdminMutation('bq-admin','set_group_owner',{targetUserId,groupId});}
   });
 
   const adminOperations=Object.freeze({
     async status(){return invoke('bq-admin-ops',{action:'status'});},
     async health(){return invoke('bq-admin-ops',{action:'health'});},
     async dashboard(){return invoke('bq-admin-ops',{action:'dashboard'});},
-    async deleteUser(targetUserId){return invoke('bq-admin-ops',{action:'delete_user',targetUserId});},
-    async suspendAccount(targetUserId,reason=''){return invoke('bq-admin-ops',{action:'suspend_account',targetUserId,reason});},
-    async reactivateAccount(targetUserId){return invoke('bq-admin-ops',{action:'reactivate_account',targetUserId});},
-    async forceSignOut(targetUserId){return invoke('bq-admin-ops',{action:'force_sign_out',targetUserId});},
-    async setTempPassword(targetUserId,password){return invoke('bq-admin-ops',{action:'set_temp_password',targetUserId,password});},
-    async changeEmail(targetUserId,email){return invoke('bq-admin-ops',{action:'change_email',targetUserId,email});},
+    async deleteUser(targetUserId){return invokeAdminMutation('bq-admin-ops','delete_user',{targetUserId});},
+    async suspendAccount(targetUserId,reason=''){return invokeAdminMutation('bq-admin-ops','suspend_account',{targetUserId,reason});},
+    async reactivateAccount(targetUserId){return invokeAdminMutation('bq-admin-ops','reactivate_account',{targetUserId});},
+    async forceSignOut(targetUserId){return invokeAdminMutation('bq-admin-ops','force_sign_out',{targetUserId});},
+    async setTempPassword(targetUserId,password){return invokeAdminMutation('bq-admin-ops','set_temp_password',{targetUserId,password});},
+    async changeEmail(targetUserId,email){return invokeAdminMutation('bq-admin-ops','change_email',{targetUserId,email});},
     async frontendHealth(){
       const loadText=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.text()};
       const loadJson=async path=>{const response=await withTimeout(fetch(new URL(path,location.href),{cache:'no-store',credentials:'same-origin'}),3500,`Admin Operations health check timed out for ${path}.`);if(!response.ok)throw new Error(`Admin Operations health check failed for ${path}.`);return response.json()};
