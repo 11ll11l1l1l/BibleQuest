@@ -36,7 +36,6 @@ import { createMissionService } from './mission.js';
 import { createCalendarService } from './calendar.js';
 import { createTutorialService } from './tutorial.js';
 import { createAccessibilityService } from './accessibility.js';
-import { createAudioManager } from './audio.js';
 import { createRecordingsService } from './recordings.js';
 import { createGameLauncherService } from './games.js';
 import { createPrivateNotesService } from './private-notes.js';
@@ -84,6 +83,7 @@ import {
   createAccessibilityPreferencesService,
 } from '../v6/features/accessibility-preferences.ts';
 import { createNotificationSettingsController } from '../v6/notifications/index.ts';
+import { createRecordingsMediaRuntime } from '../v6/media/recordings-runtime.ts';
 import { storage, privateStorage, transientStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
@@ -252,9 +252,9 @@ function boot(root){
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
-  const audio=createAudioManager();
+  const recordingsMedia=createRecordingsMediaRuntime();
   const congregation=createCongregationMembershipService({api,session});
-  const recordings=createRecordingsService({media:api.media,audio,session,congregation});
+  const recordings=createRecordingsService({media:api.media,audio:recordingsMedia.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
   const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
   const contentReview=createContentReviewService({api:api.contentReview,session,congregation,recall});
