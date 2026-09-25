@@ -84,6 +84,7 @@ import {
 } from '../v6/features/accessibility-preferences.ts';
 import { createNotificationSettingsController } from '../v6/notifications/index.ts';
 import { createRecordingsMediaRuntime } from '../v6/media/recordings-runtime.ts';
+import { createBrowserScripturePackageController } from '../v6/reader/browser-packages.ts';
 import { storage, privateStorage, transientStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
@@ -234,6 +235,7 @@ function boot(root){
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
   const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage});
   const reader=createReaderService({bible,storage,progress,bibleQuest});
+  const offlineScripturePackages=createBrowserScripturePackageController();
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
   const furigana=createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer});
@@ -335,7 +337,7 @@ function boot(root){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary,furigana}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    reader:()=>readerPage({reader,vocabulary,furigana,offlinePackages:offlineScripturePackages}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
