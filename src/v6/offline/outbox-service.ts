@@ -15,6 +15,7 @@ import {
   type PersistedOfflineMutation,
   type RecoveredOfflineOutbox,
 } from './outbox-persistence.ts';
+import { V6_OFFLINE_MUTATION_POLICIES } from './policy-registry.ts';
 
 function findPolicy(
   policies: readonly OfflineMutationPolicy[],
@@ -171,4 +172,12 @@ export class OfflineOutboxService {
       return;
     }
   }
+}
+
+
+export function createV6OfflineOutboxService(
+  persistence: OfflineOutboxPersistence,
+  now: () => Date = () => new Date(),
+): OfflineOutboxService {
+  return new OfflineOutboxService(persistence, V6_OFFLINE_MUTATION_POLICIES, now);
 }
