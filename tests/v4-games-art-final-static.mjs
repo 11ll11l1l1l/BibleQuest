@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const html=fs.readFileSync('index.html','utf8');
 const css=fs.readFileSync('src/ui/games-art-final-v4.css','utf8');
 const games=fs.readFileSync('src/features/games/index.js','utf8');
-const gamesSurface=games+'\n'+['launcher-memory.js','same-room.js','challenges.js'].map(name=>fs.readFileSync('src/features/games/views/'+name,'utf8')).join('\n');
+const gamesSurface=games+'\n'+['launcher-memory.js','same-room.js','challenges.js','recall.js','solo.js'].map(name=>fs.readFileSync('src/features/games/views/'+name,'utf8')).join('\n');
 
 assert.ok(html.includes('<link rel="stylesheet" href="src/ui/games-art-final-v4.css">'),'final Games artwork stylesheet must load');
 assert.ok(html.indexOf('src/ui/games-art-final-v4.css')>html.indexOf('src/ui/v4-custom-art.css'),'final Games artwork layer must load after prior custom-art wiring');
