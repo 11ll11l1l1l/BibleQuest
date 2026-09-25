@@ -30,6 +30,10 @@ assert(tsconfig.compilerOptions?.allowJs === true, 'legacy JS compatibility must
 assert(viteConfig.includes("outDir = resolve(root, 'dist-v6')"), 'V6 build must remain shadowed in dist-v6');
 assert(viteConfig.includes("'assets', 'data', 'kids-games'"), 'legacy runtime directories must be preserved');
 assert(viteConfig.includes('__BQ_BUILD_SHA__'), 'exact build SHA must be injectable');
+assert(
+  viteConfig.includes("entries: ['index.html']"),
+  'Vite dev dependency scan must remain scoped to the source index entry',
+);
 assert(viteConfig.includes('compatibilityBaseline'), 'build identity metadata must record compatibility baseline');
 assert(viteConfig.includes("sourcemap: 'hidden'"), 'V6 source maps must be hidden from public bundle references');
 assert(viteConfig.includes('sourcemapExcludeSources: true'), 'private source maps must exclude embedded source text');

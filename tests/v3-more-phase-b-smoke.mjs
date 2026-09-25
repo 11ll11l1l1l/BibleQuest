@@ -13,14 +13,15 @@ try{
   const asset=await page.request.get(`${BASE}assets/more-feature-icons.svg`);
   assert(asset.ok(),`More Phase B icon sprite failed to load: ${asset.status()}`);
   const assetText=await asset.text();
-  assert(assetText.includes('id="calendar"')&&assetText.includes('id="workspace"')&&assetText.includes('id="admin"'),'Loaded More Phase B sprite is missing expected symbols.');
+  assert(assetText.includes('id="calendar"')&&assetText.includes('id="workspace"')&&assetText.includes('id="admin"')&&assetText.includes('id="share"'),'Loaded More Phase B sprite is missing expected symbols.');
 
   const icons=page.locator('.bq-more-icon');
-  assert(await icons.count()===18,`Expected 18 More feature icons, found ${await icons.count()}.`);
+  assert(await icons.count()===19,`Expected 19 More feature icons, found ${await icons.count()}.`);
   const hrefs=await page.locator('.bq-more-icon use').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('href')));
-  assert(hrefs.length===18,'Every More icon must contain one external sprite reference.');
+  assert(hrefs.length===19,'Every More icon must contain one external sprite reference.');
   assert(hrefs.every(href=>href?.startsWith('assets/more-feature-icons.svg#')),'More icon reference escaped the committed sprite.');
-  assert(new Set(hrefs).size===18,'More feature cards must use distinct semantic sprite symbols.');
+  assert(new Set(hrefs).size===19,'More feature cards must use distinct semantic sprite symbols.');
+  assert(hrefs.includes('assets/more-feature-icons.svg#share'),'More Share action must use the semantic share sprite symbol.');
 
   const visibleIconMetrics=await page.locator('[data-more-workspace] .bq-more-icon').evaluate(node=>{const box=node.getBoundingClientRect(),style=getComputedStyle(node);return{width:box.width,height:box.height,color:style.color,display:style.display}});
   assert(visibleIconMetrics.display!=='none','More feature icon must be rendered.');

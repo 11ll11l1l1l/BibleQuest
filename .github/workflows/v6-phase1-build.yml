@@ -10,6 +10,14 @@ on:
       - ".nvmrc"
       - "tsconfig.json"
       - "vite.config.mjs"
+      - "assets/**"
+      - "app-icon.svg"
+      - "manifest.webmanifest"
+      - "pwa-icon-192.png"
+      - "pwa-icon-512.png"
+      - "pwa-icon-maskable-512.png"
+      - "_headers"
+      - "_redirects"
       - "src/v6/**"
       - "src/app/**"
       - "src/core/**"
@@ -25,7 +33,12 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-deployment-verify.mjs"
+      - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-static-asset-ownership.mjs"
+      - "scripts/v6-root-static-ownership.mjs"
+      - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
@@ -36,13 +49,22 @@ concurrency:
   group: v6-phase1-build-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout exact PR commit
+      - name: Checkout exact selected commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
 
       - name: Use pinned Node and npm cache
         uses: actions/setup-node@v4
@@ -79,16 +101,20 @@ jobs:
 
       - name: Build V6 artifact with exact commit identity
         env:
-          BQ_BUILD_SHA: ${{ github.sha }}
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
         run: npm run build:v6
 
       - name: Verify exact-SHA identity and build budgets
         env:
-          BQ_BUILD_SHA: ${{ github.sha }}
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
         run: npm run check:v6-build-evidence
 
       - name: Verify Vite owns legacy stylesheet output
         run: node scripts/v6-css-build-ownership.mjs
+      - name: Verify compatibility asset ownership
+        run: node scripts/v6-static-asset-ownership.mjs
+      - name: Verify root PWA/static ownership
+        run: node scripts/v6-root-static-ownership.mjs
 
       - name: Record build artifact inventory
         shell: bash
@@ -117,6 +143,14 @@ jobs:
         env:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/notification-settings-browser.mjs
+
+      - name: Reject Vite dependency scan failures
+        shell: bash
+        run: |
+          if grep -Fq "Failed to run dependency scan" /tmp/bq-v6-dev.log; then
+            cat /tmp/bq-v6-dev.log
+            exit 1
+          fi
 
       - name: Start built artifact preview
         shell: bash
