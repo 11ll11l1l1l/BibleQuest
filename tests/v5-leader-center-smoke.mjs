@@ -4,39 +4,46 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch({headless:true});
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
-async function installHarness(page,{role='leader',directoryFails=false}={}){
-  await page.evaluate(async({role,directoryFails})=>{
+async function installHarness(page,{role='leader',directoryFails=false,switchDuringLifecycle=false}={}){
+  await page.evaluate(async({role,directoryFails,switchDuringLifecycle})=>{
     const [{createLeaderCenterService},{leaderCenterPage}]=await Promise.all([
       import('/src/app/leader-center.js'),import('/src/features/leader-center/index.js')
     ]);
     window.__removeLeaderCenterHarness?.();
     window.__lcReviewCalls=[];
-    const baseState={status:'ready',role,congregationId:'c1',congregationName:'Harness Congregation',assignments:[{id:'a1',scheduleAt:null,title:'Open task'},{id:'a2',scheduleAt:'2999-01-01T00:00:00.000Z',title:'Future task'}]};
+    const baseState={status:'ready',role,userId:'leader-a',congregationId:'c1',congregationName:'Harness Congregation',assignments:[{id:'a1',scheduleAt:null,title:'Open task'},{id:'a2',scheduleAt:'2999-01-01T00:00:00.000Z',title:'Future task'}]};
+    let currentState=baseState;
     const assignments={
-      async load(){return baseState},
-      snapshot(){return baseState},
+      async load(){return currentState},
+      snapshot(){return currentState},
       async loadPublishTargets(){
         if(directoryFails)throw new Error('directory unavailable');
-        return {...baseState,publishTargets:{
+        return {...currentState,publishTargets:{
           members:[{id:'m1',label:'Ana Member',role:'member'},{id:'m2',label:'Ben Leader',role:'leader'}],
           groups:[{id:'g1',label:'Young Adults'}],
           teams:[{id:'t1',label:'Worship Team',type:'ministry'}]
         }};
       },
-      async loadLifecycle(){return[
-        {assignmentId:'a1',status:'completed',recipientCount:2,completedCount:2},
-        {assignmentId:'a2',status:'scheduled',recipientCount:2,completedCount:0}
-      ]},
+      async loadLifecycle(){
+        if(switchDuringLifecycle){
+          currentState={...currentState,congregationId:'c2',congregationName:'Other Congregation',assignments:[]};
+          return [];
+        }
+        return[
+          {assignmentId:'a1',status:'completed',recipientCount:2,completedCount:2},
+          {assignmentId:'a2',status:'scheduled',recipientCount:2,completedCount:0}
+        ];
+      },
       open(id){window.__lcReviewCalls.push(['open',id])},
       async loadReview(id){window.__lcReviewCalls.push(['loadReview',id]);return{activeId:id,activeReview:{status:'ready'}}}
     };
-    const presence={async activeCount(){return{count:4,windowMinutes:30}}};
+    const presence={async activeCount(){if(switchDuringLifecycle)throw new Error('Stale tenant must stop before presence.');return{count:4,windowMinutes:30}}};
     const leaderCenter=createLeaderCenterService({assignments,presence});
     const root=document.createElement('div');root.id='leader-center-test-root';document.body.append(root);
     const definition=leaderCenterPage({leaderCenter,onBack:()=>{},onAccount:()=>{},onAssignments:()=>{window.__lcNav='assignments'},onJourneyGroups:()=>{window.__lcNav='journey-groups'},onTeamCenter:()=>{window.__lcNav='team-center'},onCongregation:()=>{window.__lcNav='congregation'}});
     root.innerHTML=definition.html;const cleanup=definition.mount(root);
     window.__removeLeaderCenterHarness=()=>{cleanup?.();root.remove();delete window.__lcNav};
-  },{role,directoryFails});
+  },{role,directoryFails,switchDuringLifecycle});
 }
 
 async function leaderSeesComposedCenter(){
@@ -95,6 +102,33 @@ async function memberIsDenied(){
   await page.close();
 }
 
+async function ministryRoleMatrix(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  for(const role of ['facilitator','leader','pastor','admin']){
+    await installHarness(page,{role});
+    const root=page.locator('#leader-center-test-root');
+    await root.locator('[data-leader-overview]').waitFor();
+    assert(await root.locator('[data-leader-center-denied]').count()===0,`Ministry role '${role}' must be authorized in the Leader Center browser matrix.`);
+    assert((await root.locator('[data-leader-overview]').innerText()).includes(role),`Leader Center did not render the verified '${role}' role.`);
+  }
+  await page.evaluate(()=>window.__removeLeaderCenterHarness());
+  await page.close();
+}
+
+async function tenantSwitchFailsClosed(){
+  const page=await browser.newPage({viewport:{width:1280,height:900}});
+  await page.goto(BASE,{waitUntil:'networkidle'});
+  await installHarness(page,{role:'leader',switchDuringLifecycle:true});
+  const root=page.locator('#leader-center-test-root');
+  await root.locator('[data-leader-center-denied]').waitFor();
+  assert(await root.locator('[data-leader-overview]').count()===0,'Leader Center must not render stale congregation A overview after A→B switch.');
+  assert(await root.locator('[data-leader-people]').count()===0,'Leader Center must not render stale congregation A directory after A→B switch.');
+  assert(!((await root.innerText())||'').includes('Harness Congregation'),'Stale congregation A identity leaked after active tenant switch.');
+  await page.evaluate(()=>window.__removeLeaderCenterHarness());
+  await page.close();
+}
+
 async function mobile(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
@@ -107,4 +141,4 @@ async function mobile(){
   await page.evaluate(()=>window.__removeLeaderCenterHarness());await page.close();
 }
 
-try{await leaderSeesComposedCenter();await directoryFailureIsTruthful();await memberIsDenied();await mobile();console.log('BibleQuest v5 Leader Center browser regression passed.')}finally{await browser.close()}
+try{await leaderSeesComposedCenter();await directoryFailureIsTruthful();await memberIsDenied();await ministryRoleMatrix();await tenantSwitchFailsClosed();await mobile();console.log('BibleQuest v5 Leader Center browser regression passed.')}finally{await browser.close()}
