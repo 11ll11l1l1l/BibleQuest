@@ -40,7 +40,7 @@ for (const file of files) {
 
 for (const file of testFiles) {
   const content = await readFile(file, 'utf8');
-  const display = relative(root, file).replaceAll('\\\\', '/');
+  const display = relative(root, file).replaceAll('\\', '/');
   if (/\bfrom\s+['"]vitest['"]|\brequire\s*\(\s*['"]vitest['"]\s*\)/.test(content)) {
     failures.push(`${display}: Vitest is not installed in the deterministic V6 CI environment; use node:test and node:assert/strict`);
   }
