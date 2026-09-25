@@ -76,6 +76,15 @@ test('live Games presentation fails closed for inconsistent answer state', () =>
     /requires answer feedback/,
   );
   assert.throws(
+    () => legacyLiveQuestionPresentation({
+      ...questionState,
+      locked: true,
+      selected: 0,
+      correct: true,
+    }),
+    /contradicts the selected answer/,
+  );
+  assert.throws(
     () => legacyLiveResultPresentation({
       phase: 'complete',
       mode: 'quick-recall',
