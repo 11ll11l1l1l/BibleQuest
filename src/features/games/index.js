@@ -1,12 +1,12 @@
 import { getContentProvenance } from '../../core/content-provenance.js';
 import { sourceLabel } from '../../ui/source-labels.js';
 import { legacyLiveQuestionPresentation, legacyLiveResultPresentation } from '../../v6/games/live-presentation.ts';
-import { toSafeFailure } from '../../v6/kernel/errors.ts';
 import { renderLauncherView, renderMemoryView, renderMemoryCompleteView } from './views/launcher-memory.js';
 import { renderSameRoomSetupView, renderSameRoomQuestionView, renderSameRoomCompleteView } from './views/same-room.js';
 import { renderDetectiveView, renderTimelineView } from './views/challenges.js';
 import { renderRecallLibraryView, renderRecallQuestionView, renderRecallCompleteView } from './views/recall.js';
 import { renderSoloCompleteView, renderSoloQuestionView } from './views/solo.js';
+import { renderGamesLoadingView, renderGamesErrorView } from './views/status.js';
 
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 const GAME_SOURCE=sourceLabel(getContentProvenance('bq-game'),{compact:true});
@@ -36,8 +36,8 @@ export function gamesPage({games,onHome}){
         if(state.phase==='complete'){host.innerHTML=renderSoloCompleteView({state,escapeHtml,resultView:legacyLiveResultPresentation(state)});return;}
         host.innerHTML=renderSoloQuestionView({state,escapeHtml,presentation:legacyLiveQuestionPresentation(state),recallSource:RECALL_SOURCE});
       };
-      const loading=text=>{host.innerHTML=`<section class="bq-panel" role="status"><p class="bq-eyebrow">PLAY</p><h1>${escapeHtml(text)}</h1><p>Loading only the content this activity needs.</p></section>`};
-      const showError=error=>{clearMemoryTimer();const failure=toSafeFailure(error);host.innerHTML=`<section class="bq-panel" role="alert" data-game-error="${escapeHtml(failure.kind)}"><h1>Game could not continue</h1><p>${escapeHtml(failure.message)}</p><button type="button" class="bq-secondary-button" data-game-launcher>Back to games</button></section>`};
+      const loading=text=>{host.innerHTML=renderGamesLoadingView({text,escapeHtml})};
+      const showError=error=>{clearMemoryTimer();host.innerHTML=renderGamesErrorView({error,escapeHtml})};
       const scheduleMemory=pending=>{clearMemoryTimer();if(!pending)return;memoryTimer=setTimeout(()=>{memoryTimer=null;if(disposed)return;try{const result=games.kidsMemory.resolve(pending.token);if(result.applied)render(result.state)}catch(error){showError(error)}},pending.delayMs)};
       const onClick=async event=>{
         const target=event.target instanceof Element?event.target:null;if(!target)return;
