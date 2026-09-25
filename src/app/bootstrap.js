@@ -91,7 +91,13 @@ import { mountContentReportingRuntime } from '../ui/content-reporting.js';
 import { mountPushOnboarding } from '../ui/push-onboarding.js';
 import { mountTutorialOverlay } from '../features/tutorial/index.js';
 
-const featurePageModules = import.meta.glob('../features/*/index.js');
+// Tutorial is mounted eagerly as the global overlay below; excluding it from
+// the lazy page registry prevents Vite from owning the same module through
+// both static and dynamic import paths.
+const featurePageModules = import.meta.glob([
+  '../features/*/index.js',
+  '!../features/tutorial/index.js',
+]);
 
 function lazyFeaturePage(feature, exportName, args) {
   const path = `../features/${feature}/index.js`;
