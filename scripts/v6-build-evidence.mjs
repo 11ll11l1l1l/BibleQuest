@@ -78,7 +78,7 @@ for (const translationId of ['bsb', 'tl', 'cebocb']) {
 
     let bytes = 0;
     for (const book of scriptureManifest.books) {
-      const relativePath = String(book.url || '').replace(/^\\/+/, '');
+      const relativePath = String(book.url || '').replace(/^\/+/, '');
       const payload = await readFile(join(outDir, relativePath));
       const digest = createHash('sha256').update(payload).digest('hex');
       if (digest !== String(book.sha256 || '').toLowerCase()) {
