@@ -55,3 +55,17 @@ test('client telemetry drops arbitrary user-authored properties before transport
   await h.service.flush();
   assert.deepEqual(h.batches[0].events[0].properties,{action:'complete',result:'passed'});
 });
+
+
+test('client telemetry strips exact Scripture locations and free-form values from allowlisted keys',async()=>{
+  const h=harness();
+  h.service.track('feature_complete','reader',{
+    action:'complete',
+    result:'private@example.invalid',
+    book_code:'JHN',
+    chapter:3,
+    source:'private reflection text'
+  });
+  await h.service.flush();
+  assert.deepEqual(h.batches[0].events[0].properties,{action:'complete'});
+});
