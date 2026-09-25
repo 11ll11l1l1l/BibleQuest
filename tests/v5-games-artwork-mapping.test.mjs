@@ -24,9 +24,9 @@ const mappings = [
   },
   {
     id: 'memory-meadow-result-medal',
-    asset: 'assets/v4/games/game-memory-meadow.png',
+    asset: 'assets/v4/memory-meadow/memory-complete-medal.png',
     legacy: '<div class="bq-game-medal" aria-hidden="true">🦊</div>',
-    wired: /<div class="bq-game-medal"[^>]*>\s*<img[^>]+assets\/v4\/games\/game-memory-meadow\.png/i,
+    wired: /<div class="bq-game-medal"[^>]*>\s*<img[^>]+assets\/v4\/memory-meadow\/memory-complete-medal\.png/i,
   },
   {
     id: 'character-detective-mark',
