@@ -10,6 +10,8 @@ const gamesPaths = [
   path.join(repoRoot, 'src/features/games/views/launcher-memory.js'),
   path.join(repoRoot, 'src/features/games/views/same-room.js'),
   path.join(repoRoot, 'src/features/games/views/challenges.js'),
+  path.join(repoRoot, 'src/features/games/views/recall.js'),
+  path.join(repoRoot, 'src/features/games/views/solo.js'),
 ];
 const readGamesSurface=async()=>{const parts=[];for(const file of gamesPaths)parts.push(await readFile(file,'utf8'));return parts.join('\n')};
 
