@@ -21,6 +21,17 @@ test('Admin mutation policy fails closed while offline', () => {
   }
 });
 
+test('Admin mutation policy rejects unknown actions before connectivity handling', () => {
+  assert.throws(
+    () => assertAdminMutationAllowed('not_an_admin_action', { online: false }),
+    /Unknown V6 Admin transport action/,
+  );
+  assert.throws(
+    () => assertAdminMutationAllowed('', { online: true }),
+    /Unknown V6 Admin transport action/,
+  );
+});
+
 test('Admin mutation policy returns the canonical transport action while online', () => {
   for (const policy of ADMIN_ACTION_POLICIES) {
     assert.equal(
