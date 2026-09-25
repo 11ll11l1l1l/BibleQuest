@@ -7,15 +7,27 @@ on:
     paths:
       - "package.json"
       - "package-lock.json"
+      - ".nvmrc"
       - "scripts/v6-dependency-security.mjs"
       - ".github/workflows/v6-dependency-security.yml"
+  push:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - "scripts/v6-dependency-security.mjs"
+      - ".github/workflows/v6-dependency-security.yml"
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: v6-dependency-security-${{ github.event.pull_request.number || github.ref }}
+  group: v6-dependency-security-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:

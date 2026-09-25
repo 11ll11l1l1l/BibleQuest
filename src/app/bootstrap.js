@@ -214,9 +214,9 @@ function boot(root){
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
-  const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe});
-  const pwaInstall=createPwaInstallService();
   const offlineShell=createOfflineShellService();
+  const diagnostics=createClientDiagnosticsService({probe:api.diagnostics.probe,contentState:offlineShell.getState});
+  const pwaInstall=createPwaInstallService();
   const bible=createBibleDataService();
   const progress=createProgressService({storage,store});
   const recall=createRecallPackService();

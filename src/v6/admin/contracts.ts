@@ -210,6 +210,19 @@ export function auditActionForTransport(action: string): AdminAuditAction {
   return adminActionPolicy(action).auditAction;
 }
 
+export function assertAdminMutationAllowed(
+  action: string,
+  { online = true }: { readonly online?: boolean } = {},
+): AdminActionPolicy {
+  const policy = adminActionPolicy(action);
+  if (policy.offline === 'forbidden' && online !== true) {
+    const error = new Error('Admin changes require an online connection.');
+    (error as Error & { code?: string }).code = 'BQ_ADMIN_OFFLINE_FORBIDDEN';
+    throw error;
+  }
+  return policy;
+}
+
 const sensitiveAuditKeys = new Set([
   'password',
   'temppassword',

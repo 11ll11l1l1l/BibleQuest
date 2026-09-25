@@ -1,6 +1,7 @@
 export {
   ADMIN_ACTION_POLICIES,
   adminActionPolicy,
+  assertAdminMutationAllowed,
   assertSafeAdminAuditDetail,
   auditActionForTransport,
   parseAdminAuditRecord,
