@@ -194,10 +194,10 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [ ] Privileged Owner/Admin re-auth requirements are reviewed.
 - [ ] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
-- [ ] Client bundle contains no privileged secrets.
+- [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
 - [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
-- [ ] Secret scanning/client artifact scanning exists.
+- [x] Secret scanning/client artifact scanning exists.
 - [ ] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
 - [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
@@ -218,9 +218,9 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Privacy-safe structured error reporting exists.
 - [x] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
 - [x] Controlled source-map resolution exists.
-- [ ] Diagnostics expose safe SW/content/connectivity state.
+- [x] Diagnostics expose safe SW/content/connectivity state.
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
-- [ ] Image/font budgets are enforced.
+- [x] Image/font budgets are enforced.
 - [ ] Startup/critical-route performance budgets are defined.
 - [ ] Large Bible/game/media payloads are not eagerly loaded without need.
 
