@@ -169,7 +169,7 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
         if (select) {
           try {
             const frameHost = host.querySelector('[data-recording-frame]');
-            recordings.select(select.dataset.videoSelect, frameHost);
+            await recordings.select(select.dataset.videoSelect, frameHost);
             const state = recordings.getState(), row = state.rows.find(item => item.id === state.selectedId);
             host.querySelector('[data-recording-now]').innerHTML = `<p class="bq-eyebrow">${escapeHtml(tr('recordings.nowPlaying.eyebrow'))}</p><h2>${escapeHtml(row?.title || tr('recordings.videoFallback'))}</h2>${row?.description ? `<p>${escapeHtml(row.description)}</p>` : ''}${correctionControls(row, tr)}`;
             for (const card of host.querySelectorAll('[data-video-select]')) card.classList.toggle('is-selected', card.dataset.videoSelect === select.dataset.videoSelect);
