@@ -6,11 +6,30 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
 async function installHarness(page,{allowAdd=true}={}){
   await page.evaluate(async(allowAdd)=>{
-    const [{createAudioManager},{createRecordingsService},{recordingsPage}]=await Promise.all([
-      import('/src/app/audio.js'),import('/src/app/recordings.js'),import('/src/features/recordings/index.js')
+    const [{createRecordingsMediaRuntime},{createRecordingsService},{recordingsPage}]=await Promise.all([
+      import('/src/v6/media/recordings-runtime.ts'),import('/src/app/recordings.js'),import('/src/features/recordings/index.js')
     ]);
     window.__removeRecordingHarness?.();
-    const audio=createAudioManager();
+    class FakeYouTubePlayer{
+      constructor(element,options={}){
+        this.element=typeof element==='string'?document.getElementById(element):element;
+        this.frame=document.createElement('iframe');
+        this.frame.dataset.bqMediaPlayer='1';
+        this.element.append(this.frame);
+        this.events=options.events||{};
+        queueMicrotask(()=>this.events.onReady?.({target:this}));
+      }
+      cueVideoById(input){this.frame.dataset.videoId=String(input?.videoId||'')}
+      loadVideoById(input){this.frame.dataset.videoId=String(input?.videoId||'')}
+      playVideo(){}
+      pauseVideo(){}
+      stopVideo(){}
+      seekTo(){}
+      destroy(){this.frame.remove()}
+    }
+    window.YT={Player:FakeYouTubePlayer};
+    const mediaRuntime=createRecordingsMediaRuntime({visibilityTarget:null,pageTarget:null,enableVisibilityLifecycle:false,playerReadyTimeoutMs:1000});
+    const audio=mediaRuntime.audio;
     let mediaCalls=0,createCalls=0;
     const media={
       async listLiveRecordings(){mediaCalls++;return[
@@ -30,8 +49,8 @@ async function installHarness(page,{allowAdd=true}={}){
     const root=document.createElement('div');root.id='recordings-test-root';document.body.append(root);
     const definition=recordingsPage({recordings,onHome:()=>{},onAccount:()=>{}});root.innerHTML=definition.html;
     const cleanup=definition.mount(root);
-    window.__recordingHarness={recordings,get mediaCalls(){return mediaCalls},get createCalls(){return createCalls}};
-    window.__removeRecordingHarness=()=>{cleanup?.();root.remove();delete window.__recordingHarness};
+    window.__recordingHarness={recordings,mediaRuntime,get mediaCalls(){return mediaCalls},get createCalls(){return createCalls}};
+    window.__removeRecordingHarness=()=>{cleanup?.();recordings.dispose();root.remove();delete window.__recordingHarness;delete window.YT};
   },allowAdd);
 }
 
@@ -59,18 +78,18 @@ async function desktop(){
   for (const selector of ['[data-recording-play]','[data-recording-pause]','[data-recording-stop]','[data-recording-seek]']) {
     assert(await root.locator(selector).count()===0,`Videos page must not render the retired custom control: ${selector}`);
   }
-  assert(await root.locator('iframe[data-bq-audio-player]').count()===0,'No player should exist before a video is selected.');
+  assert(await root.locator('iframe[data-bq-media-player]').count()===0,'No player should exist before a video is selected.');
 
   await root.locator('[data-video-select="rec-1"]').click();
-  await root.locator('iframe[data-bq-audio-player]').waitFor();
-  assert(await root.locator('iframe[data-bq-audio-player]').count()===1,'Selecting a video must create exactly one player iframe (single-player Audio owner).');
-  assert((await root.locator('iframe[data-bq-audio-player]').getAttribute('src')).includes('abcDEF12345'),'First video loaded the wrong player source.');
+  await root.locator('iframe[data-bq-media-player]').waitFor();
+  assert(await root.locator('iframe[data-bq-media-player]').count()===1,'Selecting a video must create exactly one player iframe (single-player V6 Media owner).');
+  assert((await root.locator('iframe[data-bq-media-player]').getAttribute('data-video-id'))==='abcDEF12345','First video loaded the wrong player source.');
   assert(await root.locator('[data-video-select="rec-1"].is-selected').count()===1,'Selected video card must show a selected state.');
 
   await root.locator('[data-video-select="rec-2"]').click();
-  await page.waitForFunction(()=>document.querySelector('#recordings-test-root iframe[data-bq-audio-player]')?.src.includes('ZyxWV987654'));
-  assert(await root.locator('iframe[data-bq-audio-player]').count()===1,'Switching videos must not create duplicate player instances.');
-  assert(await page.evaluate(()=>window.__recordingHarness.recordings.getPlayerCount())===1,'Audio owner reports more than one active player.');
+  await page.waitForFunction(()=>document.querySelector('#recordings-test-root iframe[data-bq-media-player]')?.dataset.videoId==='ZyxWV987654');
+  assert(await root.locator('iframe[data-bq-media-player]').count()===1,'Switching videos must not create duplicate player instances.');
+  assert(await page.evaluate(()=>window.__recordingHarness.recordings.getPlayerCount())===1,'V6 Media owner reports more than one active player.');
 
   // Curation: leader/pastor/admin path.
   await root.locator('[data-video-curator-toggle]').click();
@@ -83,10 +102,10 @@ async function desktop(){
   assert(await page.evaluate(()=>window.__recordingHarness.mediaCalls)===2,'Adding a video must reload the list from the server, not just splice it in client-side.');
 
   await page.evaluate(()=>window.__removeRecordingHarness());
-  assert(await page.locator('#recordings-test-root iframe[data-bq-audio-player]').count()===0,'Leaving the feature failed to tear down the player.');
+  assert(await page.locator('#recordings-test-root iframe[data-bq-media-player]').count()===0,'Leaving the feature failed to tear down the player.');
   await installHarness(page);const reopened=page.locator('#recordings-test-root');await reopened.locator('[data-video-select]').first().waitFor();
-  await reopened.locator('[data-video-select="rec-1"]').click();await reopened.locator('iframe[data-bq-audio-player]').waitFor();
-  assert(await reopened.locator('iframe[data-bq-audio-player]').count()===1,'Returning to Videos did not create one clean player instance.');
+  await reopened.locator('[data-video-select="rec-1"]').click();await reopened.locator('iframe[data-bq-media-player]').waitFor();
+  assert(await reopened.locator('iframe[data-bq-media-player]').count()===1,'Returning to Videos did not create one clean player instance.');
   await page.evaluate(()=>window.__removeRecordingHarness());
   await page.close();
 }
@@ -112,11 +131,11 @@ async function mobile(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   await page.route('https://www.youtube-nocookie.com/**',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>mock player</title>'}));
   await page.goto(BASE,{waitUntil:'networkidle'});await installHarness(page);
-  const root=page.locator('#recordings-test-root');await root.locator('[data-video-select]').first().waitFor();await root.locator('[data-video-select="rec-1"]').click();await root.locator('iframe[data-bq-audio-player]').waitFor();
+  const root=page.locator('#recordings-test-root');await root.locator('[data-video-select]').first().waitFor();await root.locator('[data-video-select="rec-1"]').click();await root.locator('iframe[data-bq-media-player]').waitFor();
   const metrics=await page.evaluate(()=>{const scope=document.querySelector('#recordings-test-root');const controls=[...scope.querySelectorAll('button,input')];return{innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...controls.map(node=>node.getBoundingClientRect().height))}});
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Videos mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
   assert(metrics.minTarget>=44,'Videos mobile control target is below 44px.');
-  assert(await root.locator('iframe[data-bq-audio-player]').count()===1,'Mobile Videos page must keep one player.');
+  assert(await root.locator('iframe[data-bq-media-player]').count()===1,'Mobile Videos page must keep one player.');
   await page.evaluate(()=>window.__removeRecordingHarness());await page.close();
 }
 
