@@ -1,5 +1,6 @@
 import {
   createOfflineMutationEnvelope,
+  envelopeMatchesActiveIdentity,
   scheduleOfflineMutationRetry,
   type OfflineMutationEnvelope,
   type OfflineMutationIdentity,
@@ -20,6 +21,15 @@ function findPolicy(
   operation: string,
 ): OfflineMutationPolicy | undefined {
   return policies.find((policy) => policy.domain === domain && policy.operation === operation);
+}
+
+function assertActiveEnvelopeIdentity(
+  envelope: Pick<OfflineMutationEnvelope, 'schemaVersion' | 'identity'>,
+  active: OfflineMutationIdentity | null | undefined,
+): void {
+  if (!envelopeMatchesActiveIdentity(envelope, active)) {
+    throw new Error('Offline mutation no longer belongs to the active account and congregation.');
+  }
 }
 
 export class OfflineOutboxService {
@@ -51,9 +61,12 @@ export class OfflineOutboxService {
 
   async retry<TPayload>(
     envelope: OfflineMutationEnvelope<TPayload>,
+    active: OfflineMutationIdentity | null | undefined,
     baseMs = 1_000,
     maxMs = 60_000,
   ): Promise<PersistedOfflineMutation<TPayload>> {
+    assertActiveEnvelopeIdentity(envelope, active);
+
     const policy = findPolicy(this.#policies, envelope.domain, envelope.operation);
     // Re-create the durable policy gate before persisting another attempt.
     createOfflineMutationEnvelope({
@@ -72,7 +85,11 @@ export class OfflineOutboxService {
     return persisted;
   }
 
-  async complete(id: string): Promise<void> {
-    await this.#persistence.delete(id);
+  async complete(
+    envelope: Pick<OfflineMutationEnvelope, 'schemaVersion' | 'id' | 'identity'>,
+    active: OfflineMutationIdentity | null | undefined,
+  ): Promise<void> {
+    assertActiveEnvelopeIdentity(envelope, active);
+    await this.#persistence.delete(envelope.id);
   }
 }
