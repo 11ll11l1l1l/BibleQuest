@@ -102,10 +102,21 @@ try {
 
   await page.locator('[data-tutorial-skip]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'hidden' });
+  await page.waitForFunction(() => document.activeElement?.matches?.('[data-open-tutorial]'));
+  assert(await page.locator('[data-open-tutorial]').evaluate(element => element === document.activeElement), 'Closing the tutorial must restore focus to its launcher.');
+
   await page.locator('[data-open-tutorial]').click();
   await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'visible' });
   metrics = await page.evaluate(() => ({ layers: document.querySelectorAll('[data-bq-tutorial-layer]').length, dialogs: document.querySelectorAll('.bq-tutorial-dialog').length }));
   assert(metrics.layers === 1 && metrics.dialogs === 1, 'Force-open launcher must reuse the single mounted overlay.');
+
+  await page.keyboard.press('Escape');
+  await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'hidden' });
+  await page.waitForFunction(() => document.activeElement?.matches?.('[data-open-tutorial]'));
+  assert(await page.locator('[data-open-tutorial]').evaluate(element => element === document.activeElement), 'Escape-closing the tutorial must restore focus to its launcher.');
+
+  await page.locator('[data-open-tutorial]').click();
+  await page.locator('[data-bq-tutorial-layer]').waitFor({ state: 'visible' });
 
   for (let step = 1; step < 9; step += 1) await page.locator('[data-tutorial-next]').click();
   await page.locator('[data-tutorial-next]').click();

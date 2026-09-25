@@ -286,7 +286,11 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   async function replayRecall(){if(!state.recallBook)throw new Error('Choose a Per-book Recall book before replaying.');return startRecallBook(state.recallBook.code)}
   function lastResult(mode){if(!modeById(mode))throw new Error('Unknown BibleQuest game mode.');return freezeResult(results[mode]||null)}
   function showLauncher(){kidsMemory.leave();sameRoom=emptySameRoom();state=emptyState();clearActiveRound();return snapshot()}
-  function leave(){return snapshot()}
+  function leave(){
+    kidsMemory.leave();sameRoom=emptySameRoom();
+    if(state.phase==='question'&&RESUMABLE_MODES.has(state.mode)){persistActiveRound();return snapshot()}
+    state=emptyState();clearActiveRound();return snapshot()
+  }
 
   return Object.freeze({getState:snapshot,modes:Object.freeze(ALL_MODES.map(mode=>Object.freeze({...mode}))),kidsMemory,start,answer,next,replay,startDetective,answerDetective,replayDetective,startTimeline,moveTimeline,checkTimeline,replayTimeline,openRecallLibrary,setRecallQuery,visibleRecallBooks,startRecallBook,revealRecall,rateRecall,recallSummary,recallDeckReps,recallReviewQueue,syncRecallReviewItem,returnRecallLibrary,replayRecall,showLauncher,lastResult,leave,getSameRoomState:sameRoomSnapshot,startSameRoom,answerSameRoom,nextSameRoom,finishSameRoom,resetSameRoom,sameRoomLimits:Object.freeze({min:SAME_ROOM_MIN,max:SAME_ROOM_MAX}),xp:XP});
 }

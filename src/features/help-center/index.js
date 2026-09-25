@@ -20,7 +20,7 @@ const CATEGORIES = Object.freeze([
     id: 'getting-started', title: 'Getting Started',
     items: Object.freeze([
       ['Create or sign in to your account', 'Tap Account from More, then choose to sign in or create a new account with your email.'],
-      ['Forgot your password?', 'Use "Forgot password" on the sign-in screen. You will get a link by email to choose a new one.'],
+      ['Forgot your password?', 'Open Account → Recover and use your registered email plus the private recovery code you saved when your account was created or when you rotated it later. A successful reset gives you a replacement recovery code, so save the new code before leaving.'],
       ['Join a congregation', 'Ask your church leader for a join code, then enter it under Community &gt; Congregation.'],
       ['Main navigation', 'The bar at the bottom of the screen - Home, Learn, Play, Grow, More - is always available and gets you anywhere in three taps or fewer.']
     ])
@@ -120,7 +120,7 @@ const CATEGORIES = Object.freeze([
       ['Android Chrome installation', 'Open the browser menu and choose "Add to Home screen" or "Install app" to add BibleQuest like a regular app.'],
       ['Standalone app', 'Once installed, BibleQuest opens in its own window without browser address bars.'],
       ['Offline usage', 'BibleQuest can keep some information on this device so you can keep reading even when the internet is unavailable.'],
-      ['Reconnecting', 'When your connection returns, BibleQuest syncs any changes automatically - no action needed from you.']
+      ['Reconnecting', 'When your connection returns, online-only features become available again. Only actions explicitly supported for offline use can be queued for later retry; protected or destructive actions still require a live connection.']
     ])
   }),
   Object.freeze({
@@ -145,7 +145,7 @@ const CATEGORIES = Object.freeze([
     items: Object.freeze([
       ['Blank page', 'Reload the page. If it keeps happening, try closing and reopening the app.'],
       ['Offline', 'Some features need internet the first time you open them. Previously-opened content may still work offline.'],
-      ['Failed login', 'Double check your email and password, or use "Forgot password" to reset it.'],
+      ['Failed login', 'Double check your email and password. If you need a new password, open Account → Recover and use the recovery code you saved previously.'],
       ['Assignment missing', 'Make sure you are viewing the right congregation if you belong to more than one.'],
       ['Congregation missing', 'Ask your leader for a current join code if you have not joined yet.'],
       ['Stale data', 'Pull down to refresh, or use any visible Refresh/Retry button.'],
@@ -169,8 +169,8 @@ const ADMIN_GUIDE = Object.freeze({
   id: 'admin-guide', title: 'Admin Guide',
   items: Object.freeze([
     ['User management', 'The Admin Console lets an Owner/Admin search users and adjust platform or congregation roles.'],
-    ['Reset access', 'Send a password-reset link to a user who is locked out.'],
-    ['Temporary passwords', 'Owner-only emergency tool: sets a temporary password and revokes existing sessions. Use only when a reset link is not possible.'],
+    ['Account recovery', 'Users normally recover their own account with their saved recovery code. If self-recovery is impossible, the Owner has separate emergency credential tools; those actions are privileged and audited.'],
+    ['Temporary passwords', 'Owner-only emergency tool: sets a temporary password and revokes existing sessions where supported. Use it only when the user cannot complete the normal recovery-code flow.'],
     ['Suspending accounts', 'Suspending immediately blocks access and signs the account out everywhere, without deleting their data.'],
     ['Deletion', 'Account deletion is permanent, Owner-only, and requires transferring away any congregation/group ownership first.'],
     ['Emergency procedures', 'Every emergency action is logged with who did it, when, and to which account - review the audit log after any emergency action.']
