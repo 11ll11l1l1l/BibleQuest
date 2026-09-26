@@ -37,6 +37,52 @@ export interface AudioOfflineDecision {
 }
 
 const SHA256_HEX = /^[a-f0-9]{64}$/i;
+const TRANSLATION_ID = /^[a-z0-9][a-z0-9_-]{0,31}$/i;
+
+function nonBlank(value: unknown): boolean {
+  return String(value ?? '').trim().length > 0;
+}
+
+function validSourceMetadata(source: ScriptureAudioSourceMetadata): boolean {
+  if (
+    !TRANSLATION_ID.test(String(source.translationId ?? '').trim()) ||
+    !nonBlank(source.source) ||
+    !nonBlank(source.license)
+  ) {
+    return false;
+  }
+
+  if (source.sourceUrl !== undefined && !/^https:\/\//i.test(String(source.sourceUrl).trim())) {
+    return false;
+  }
+
+  return true;
+}
+
+function validSegments(segments: readonly ScriptureAudioSegment[]): boolean {
+  if (segments.length < 1) return false;
+
+  const ids = new Set<string>();
+  for (const segment of segments) {
+    const id = String(segment.id ?? '').trim();
+    if (
+      !id ||
+      ids.has(id) ||
+      !nonBlank(segment.book) ||
+      !Number.isInteger(segment.chapter) ||
+      segment.chapter < 1 ||
+      !Number.isSafeInteger(segment.byteLength) ||
+      segment.byteLength <= 0 ||
+      !SHA256_HEX.test(String(segment.sha256 ?? '').trim()) ||
+      !/^https:\/\//i.test(String(segment.url ?? '').trim())
+    ) {
+      return false;
+    }
+    ids.add(id);
+  }
+
+  return true;
+}
 
 /**
  * Audio packaging is deliberately fail-closed. A provider being playable online
@@ -48,16 +94,18 @@ export function audioOfflineEligibility(
   manifest: ScriptureAudioManifest,
   storageCeilingBytes = V6_READER_AUDIO_STORAGE_CEILING_BYTES,
 ): AudioOfflineDecision {
-  const segmentsValid = manifest.segments.length > 0 && manifest.segments.every((segment) =>
-    segment.id.trim().length > 0 &&
-    segment.book.trim().length > 0 &&
-    Number.isInteger(segment.chapter) && segment.chapter > 0 &&
-    Number.isSafeInteger(segment.byteLength) && segment.byteLength >= 0 &&
-    SHA256_HEX.test(segment.sha256) &&
-    /^https:\/\//i.test(segment.url),
-  );
+  const translationId = String(manifest.translationId ?? '').trim();
+  const sourceTranslationId = String(manifest.source?.translationId ?? '').trim();
 
-  if (!segmentsValid || manifest.translationId !== manifest.source.translationId || !Number.isSafeInteger(storageCeilingBytes) || storageCeilingBytes <= 0) {
+  if (
+    manifest.schemaVersion !== 1 ||
+    !TRANSLATION_ID.test(translationId) ||
+    !validSourceMetadata(manifest.source) ||
+    translationId !== sourceTranslationId ||
+    !validSegments(manifest.segments) ||
+    !Number.isSafeInteger(storageCeilingBytes) ||
+    storageCeilingBytes <= 0
+  ) {
     return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
   }
 
