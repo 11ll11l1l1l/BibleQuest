@@ -27,6 +27,7 @@ export interface OfflineConflictDecision {
   readonly resolution: OfflineConflictResolution;
   readonly reason:
     | 'unsafe-policy'
+    | 'invalid-facts'
     | 'equivalent'
     | 'local-only-change'
     | 'server-only-change'
@@ -46,6 +47,20 @@ function isAutomaticallyResolvablePolicy(
   );
 }
 
+function hasValidConflictFacts(
+  facts: OfflineConflictFacts | null | undefined,
+): facts is OfflineConflictFacts {
+  return Boolean(
+    facts
+      && typeof facts.localChanged === 'boolean'
+      && typeof facts.serverChanged === 'boolean'
+      && (
+        facts.semanticallyEquivalent === undefined
+        || typeof facts.semanticallyEquivalent === 'boolean'
+      ),
+  );
+}
+
 /**
  * Classifies a conflict without applying a mutation.
  *
@@ -56,12 +71,19 @@ function isAutomaticallyResolvablePolicy(
  */
 export function classifyOfflineConflict(
   policy: OfflineMutationPolicy | null | undefined,
-  facts: OfflineConflictFacts,
+  facts: OfflineConflictFacts | null | undefined,
 ): OfflineConflictDecision {
   if (!isAutomaticallyResolvablePolicy(policy)) {
     return Object.freeze({
       resolution: 'needs-user-resolution',
       reason: 'unsafe-policy',
+    });
+  }
+
+  if (!hasValidConflictFacts(facts)) {
+    return Object.freeze({
+      resolution: 'needs-user-resolution',
+      reason: 'invalid-facts',
     });
   }
 
