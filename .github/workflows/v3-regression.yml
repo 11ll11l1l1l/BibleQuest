@@ -22,6 +22,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Verify workflow invocation contract
+        run: node tests/v3-workflow-contract-edge.mjs
+
       - name: Run inherited static regression suite
         uses: ./.github/actions/inherited-regression-static
 
