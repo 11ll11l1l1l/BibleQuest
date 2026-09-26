@@ -77,7 +77,15 @@ export function answerLegacyPassAndPlaySession(
   current: LegacyPassAndPlayAdapterSession,
   choiceIndex: number,
 ): LegacyPassAndPlayTransition {
-  const transition = answerMultipleChoice(current.session, choiceIndex, LOCAL_ONLY_SCORE_POLICY);
+  let transition;
+  try {
+    transition = answerMultipleChoice(current.session, choiceIndex, LOCAL_ONLY_SCORE_POLICY);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Choose one of the available game answers.') {
+      throw new Error('Choose one of the available answers.');
+    }
+    throw error;
+  }
   const turns = transition.applied && transition.state.correct
     ? awardCurrentPlayer(current.turns, 1)
     : current.turns;
@@ -91,7 +99,15 @@ export function answerLegacyPassAndPlaySession(
 export function advanceLegacyPassAndPlaySession(
   current: LegacyPassAndPlayAdapterSession,
 ): LegacyPassAndPlayTransition {
-  const transition = advanceMultipleChoice(current.session);
+  let transition;
+  try {
+    transition = advanceMultipleChoice(current.session);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'Answer the current game question before continuing.') {
+      throw new Error('Answer the current Play Together question before continuing.');
+    }
+    throw error;
+  }
   const turns = transition.applied && transition.state.phase === 'question'
     ? advanceTurn(current.turns)
     : current.turns;
