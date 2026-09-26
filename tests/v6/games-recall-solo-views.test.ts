@@ -38,6 +38,7 @@ test('Recall completion preserves replay, library and launcher actions',()=>{
   assert.match(html,/data-recall-replay/);
   assert.match(html,/data-recall-library/);
   assert.match(html,/data-game-launcher/);
+  assert.match(html,/game-recall-deck\.png/);
 });
 
 test('Solo question preserves answer hooks, locked feedback and V6 presentation marker',()=>{
@@ -55,7 +56,7 @@ test('Solo question preserves answer hooks, locked feedback and V6 presentation 
 test('Solo completion keeps result presentation labels and navigation hooks',()=>{
   const html=renderSoloCompleteView({state:{modeTitle:'Quick',total:10},escapeHtml,resultView:{accuracyPercent:90,scoreLabel:'9/10',xpLabel:'+90 XP'}});
   assert.match(html,/data-v6-game-presentation="result"/);
-  assert.match(html,/🏆/);
+  assert.match(html,/game-winner-trophy\.png/);
   assert.match(html,/9\/10/);
   assert.match(html,/data-game-replay/);
   assert.match(html,/data-game-home/);
