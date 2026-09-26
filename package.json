@@ -18,7 +18,8 @@
     "check:v6-build-evidence": "node scripts/v6-build-evidence.mjs",
     "lint": "node scripts/v6-lint.mjs",
     "format:check": "node scripts/v6-format-check.mjs",
-    "unit": "npm run unit:v6"
+    "unit": "npm run unit:v6",
+    "check:v6-dependency-security": "node scripts/v6-dependency-security.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",

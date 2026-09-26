@@ -1,4 +1,5 @@
 import { createBibleDataService } from '../core/bible.js';
+import { offlineScriptureEligibility } from '../v6/reader/offline-availability.ts';
 
 const probeNetworkFailure = async () => {
   throw new TypeError('Offline Scripture availability probe does not use the network.');
@@ -25,13 +26,24 @@ export function createOfflineScriptureAvailability({
     const translation = bibleService.getTranslation(translationId);
     const book = bibleService.getBook(bookCode);
 
+    const eligibility = offlineScriptureEligibility(translation.id);
+    if (!eligibility.eligible) {
+      return frozenStatus(translation, book, {
+        available: false,
+        supported: false,
+        reason: eligibility.reason === 'external-only'
+          ? 'This translation opens in a licensed external reader and is not cached by BibleQuest.'
+          : eligibility.reason === 'live-only'
+            ? 'This live translation requires a network connection.'
+            : 'Offline Scripture is not approved for this translation.'
+      });
+    }
+
     if (!translation.bundled || translation.mode !== 'bundled') {
       return frozenStatus(translation, book, {
         available: false,
         supported: false,
-        reason: translation.mode === 'licensed-link'
-          ? 'This translation opens in a licensed external reader and is not cached by BibleQuest.'
-          : 'This live translation requires a network connection in V5.'
+        reason: 'Offline eligibility metadata does not match the current Reader delivery mode.'
       });
     }
 

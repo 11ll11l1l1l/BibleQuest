@@ -1,3 +1,6 @@
+import { contextLabResponseMatchesRequest, toContextLabRequest } from '../../v6/reader/context-helpers.ts';
+import { presentReaderChapter } from '../../v6/reader/presentation.ts';
+
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
 const optionList = (items, selected, value = item => item.code, label = item => item.name) => items.map(item => `<option value="${escapeHtml(value(item))}" ${value(item) === selected ? 'selected' : ''}>${escapeHtml(label(item))}</option>`).join('');
@@ -22,9 +25,45 @@ export function createContextLab({ reader, dialog }) {
   async function load({ code, chapter, verse }) {
     const id = ++operation; renderLoading();
     try {
-      const chapterResult = await reader.contextChapter(code, chapter); if (id !== operation) return; chapterData = chapterResult;
-      const validVerse = chapterResult.verses.some(item => item.verse === Number(verse)) ? Number(verse) : chapterResult.verses[0]?.verse; if (!validVerse) throw new Error('No BSB verses are available for this chapter.');
-      const snapshot = await reader.lexicalContext({ code, chapter, verse: validVerse }); if (id !== operation) return; current = { code: snapshot.book.code, chapter: snapshot.chapter, verse: snapshot.verse }; render(snapshot);
+      const request = toContextLabRequest({
+        translationId: 'bsb',
+        bookCode: String(code ?? ''),
+        chapter: Number(chapter),
+        verse: Number(verse),
+      });
+      if (!request) throw new Error('Context Lab requires an exact Bible book, chapter, and verse.');
+
+      const chapterResult = await reader.contextChapter(request.bookCode, request.chapter);
+      if (id !== operation) return;
+      const presentation = presentReaderChapter({
+        book: chapterResult.book,
+        chapter: chapterResult.chapter,
+        verses: chapterResult.verses,
+      });
+      if (
+        presentation.bookCode !== request.bookCode.trim().toUpperCase()
+        || presentation.chapter !== request.chapter
+      ) {
+        throw new Error('Context Lab chapter data does not match the requested passage.');
+      }
+      const requestedVerseExists = chapterResult.verses.some((item) => {
+        const end = item.verseEnd ?? item.verse;
+        return item.chapter === request.chapter && item.verse <= request.verse && request.verse <= end;
+      });
+      if (!requestedVerseExists) throw new Error('The requested BSB verse is unavailable for Context Lab.');
+      chapterData = chapterResult;
+
+      const snapshot = await reader.lexicalContext({
+        code: request.bookCode,
+        chapter: request.chapter,
+        verse: request.verse,
+      });
+      if (id !== operation) return;
+      if (!contextLabResponseMatchesRequest(snapshot, request)) {
+        throw new Error('Context Lab response does not match the requested BSB passage.');
+      }
+      current = { code: snapshot.book.code, chapter: snapshot.chapter, verse: snapshot.verse };
+      render(snapshot);
     } catch (error) { if (id === operation) renderError(error); }
   }
   function bind() {
@@ -35,6 +74,15 @@ export function createContextLab({ reader, dialog }) {
     dialog.querySelectorAll('[data-context-jump]').forEach(button => button.addEventListener('click', () => load({ code: current.code, chapter: current.chapter, verse: Number(button.dataset.contextJump) })));
     dialog.querySelectorAll('[data-context-ref]').forEach(button => button.addEventListener('click', () => { const [code, chapter, verse] = String(button.dataset.contextRef || '').split('.'); load({ code, chapter: Number(chapter), verse: Number(verse) }); }));
   }
-  async function open({ code, chapter, verse = 1 } = {}) { const state = reader.getState(), target = { code: code || state.book, chapter: Number(chapter || state.chapter), verse: Number(verse) || 1 }; if (!dialog.open) dialog.showModal(); await load(target); }
+  async function open({ code, chapter, verse } = {}) {
+    const state = reader.getState();
+    const target = {
+      code: code ?? state.book,
+      chapter: chapter === undefined ? state.chapter : Number(chapter),
+      verse: verse === undefined ? 1 : Number(verse),
+    };
+    if (!dialog.open) dialog.showModal();
+    await load(target);
+  }
   return Object.freeze({ open, close, destroy() { operation++; close(); dialog.replaceChildren(); } });
 }

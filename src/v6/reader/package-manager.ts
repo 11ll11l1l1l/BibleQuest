@@ -7,6 +7,8 @@ import {
   type ScriptureTranslationManifest,
 } from './content-manifest.ts';
 
+export const SCRIPTURE_OFFLINE_STORAGE_CEILING_BYTES = 10_000_000_000;
+
 export type ScripturePackagePhase = 'downloading' | 'verifying' | 'storing';
 
 export interface ScripturePackageProgress {
@@ -61,6 +63,18 @@ export class ScripturePackageIntegrityError extends Error {
   }
 }
 
+export class ScripturePackageStorageLimitError extends Error {
+  readonly projectedBytes: number;
+  readonly ceilingBytes: number;
+
+  constructor(projectedBytes: number, ceilingBytes = SCRIPTURE_OFFLINE_STORAGE_CEILING_BYTES) {
+    super(`Scripture offline storage would reach ${projectedBytes} bytes; packages must remain below the ${ceilingBytes}-byte ceiling.`);
+    this.name = 'ScripturePackageStorageLimitError';
+    this.projectedBytes = projectedBytes;
+    this.ceilingBytes = ceilingBytes;
+  }
+}
+
 function normalizedBookCode(bookCode: string): string {
   const value = String(bookCode ?? '').trim().toUpperCase();
   if (!value) throw new Error('Book code is required.');
@@ -86,6 +100,19 @@ function abortError(): Error {
   const error = new Error('Scripture package download cancelled.');
   error.name = 'AbortError';
   return error;
+}
+
+function projectedUsageBytes(usage: ScripturePackageUsage, current: InstalledScripturePackage | null, replacementBytes: number): number {
+  const installedBytes = Number.isFinite(usage.bytes) && usage.bytes >= 0 ? Math.floor(usage.bytes) : 0;
+  const replacedBytes = current && Number.isFinite(current.bytes) && current.bytes >= 0 ? Math.floor(current.bytes) : 0;
+  return Math.max(0, installedBytes - replacedBytes) + replacementBytes;
+}
+
+function assertBelowStorageCeiling(usage: ScripturePackageUsage, current: InstalledScripturePackage | null, replacementBytes: number): void {
+  const projectedBytes = projectedUsageBytes(usage, current, replacementBytes);
+  if (projectedBytes >= SCRIPTURE_OFFLINE_STORAGE_CEILING_BYTES) {
+    throw new ScripturePackageStorageLimitError(projectedBytes);
+  }
 }
 
 export class ScripturePackageManager {
@@ -143,6 +170,12 @@ export class ScripturePackageManager {
       return Object.freeze({ status: 'current' as const, package: current });
     }
 
+    // Known-size packages fail before transport. Unknown-size packages are checked again
+    // against their verified payload before any persistent replacement occurs.
+    if (book.bytes !== undefined) {
+      assertBelowStorageCeiling(await this.#repository.usage(), current, book.bytes);
+    }
+
     const key = operationKey(manifest.translationId, normalizedCode);
     if (this.#active.has(key)) throw new Error(`A Scripture package operation is already active for ${normalizedCode}.`);
 
@@ -189,6 +222,10 @@ export class ScripturePackageManager {
         throw new ScripturePackageIntegrityError(`Scripture package checksum mismatch for ${normalizedCode}.`);
       }
       if (controller.signal.aborted) throw abortError();
+
+      // Re-read usage immediately before storage so another completed package operation
+      // cannot make an earlier preflight budget decision stale.
+      assertBelowStorageCeiling(await this.#repository.usage(), current, payload.byteLength);
 
       const record = Object.freeze({
         key: scripturePackageKey(manifest, book),

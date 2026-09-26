@@ -109,25 +109,25 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Turn/timer rules are isolated where applicable.
 - [x] Progress/result contract is shared.
 - [ ] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
-- [ ] Individual game views/components replace one monolithic all-game renderer.
+- [x] Individual game views/components replace one monolithic all-game renderer.
 - [x] Shared question/feedback/result/scoreboard primitives exist.
 - [ ] Raw decorative emoji are removed where intentional art assets exist.
 - [x] Accessible labels remain independent from decorative art.
 - [x] Recall/game content is lazy-loaded where appropriate.
 - [x] Representative engine sessions are deterministic/replayable in unit tests.
-- [ ] All existing game launcher→result flows pass browser regression.
+- [x] All existing game launcher→result flows pass browser regression.
 
 ## H. Media subsystem
 
-- [ ] Provider-adapter architecture exists.
-- [ ] YouTube playback uses the official IFrame API or an equally explicit supported adapter, not command-only raw messaging as the primary abstraction.
+- [x] Provider-adapter architecture exists.
+- [x] YouTube playback uses the official IFrame API or an equally explicit supported adapter, not command-only raw messaging as the primary abstraction.
 - [ ] Multiple media instances can register without creating uncontrolled persistent iframes.
-- [ ] One-audible-session default policy is enforced/tested.
-- [ ] Player switching/route teardown is deterministic.
-- [ ] Queue/playlist behavior exists where accepted.
+- [x] One-audible-session default policy is enforced/tested.
+- [x] Player switching/route teardown is deterministic.
+- [x] Queue/playlist behavior exists where accepted.
 - [ ] Continue-watching/resume state exists where accepted.
 - [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
-- [ ] Background/foreground lifecycle is tested.
+- [x] Background/foreground lifecycle is tested.
 - [x] Media curation remains server-authorized.
 - [ ] Old dead Media Library owner is removed only after live routes have parity/evidence.
 
@@ -149,13 +149,13 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 ## J. Offline mutation/sync
 
-- [ ] Offline-write allowlist is documented per domain.
-- [ ] Versioned IndexedDB outbox exists for accepted safe mutations.
-- [ ] Idempotency/retry/backoff rules exist.
+- [x] Offline-write allowlist is documented per domain.
+- [x] Versioned IndexedDB outbox exists for accepted safe mutations.
+- [x] Idempotency/retry/backoff rules exist.
 - [ ] Conflict policy exists and is testable.
-- [ ] Reload/restart preserves queued safe writes.
-- [ ] Account/tenant switching does not leak queued writes across identities/tenants.
-- [ ] Privileged/destructive admin operations are never blindly queued offline.
+- [x] Reload/restart preserves queued safe writes.
+- [x] Account/tenant switching does not leak queued writes across identities/tenants.
+- [x] Privileged/destructive admin operations are never blindly queued offline.
 
 ## K. Leader Center
 
@@ -193,11 +193,11 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
 - [ ] Privileged Owner/Admin re-auth requirements are reviewed.
 - [ ] Real session revocation is tested.
-- [ ] Admin operation contracts/audit schema are typed/tested.
-- [ ] Client bundle contains no privileged secrets.
-- [ ] Dependency/security scanning exists after package management is introduced.
+- [x] Admin operation contracts/audit schema are typed/tested.
+- [x] Client bundle contains no privileged secrets.
+- [x] Dependency/security scanning exists after package management is introduced.
 - [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
-- [ ] Secret scanning/client artifact scanning exists.
+- [x] Secret scanning/client artifact scanning exists.
 - [ ] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
 - [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
@@ -214,13 +214,13 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 ## O. Observability and performance
 
-- [ ] Release SHA/build identity is available in diagnostics.
+- [x] Release SHA/build identity is available in diagnostics.
 - [x] Privacy-safe structured error reporting exists.
 - [x] Telemetry excludes auth tokens, private notes and sensitive Scripture/user content by default.
 - [x] Controlled source-map resolution exists.
-- [ ] Diagnostics expose safe SW/content/connectivity state.
+- [x] Diagnostics expose safe SW/content/connectivity state.
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
-- [ ] Image/font budgets are enforced.
+- [x] Image/font budgets are enforced.
 - [ ] Startup/critical-route performance budgets are defined.
 - [ ] Large Bible/game/media payloads are not eagerly loaded without need.
 
