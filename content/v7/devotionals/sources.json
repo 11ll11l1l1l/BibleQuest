@@ -77,6 +77,22 @@
       "bodyInRepo": false
     },
     {
+      "id": "miller-home-making-1882",
+      "title": "Home-Making",
+      "author": "J. R. Miller",
+      "authorLife": "1840-1912",
+      "originalPublicationYear": 1882,
+      "sourceHost": "Google Books (1882 full-view edition indexed)",
+      "sourceUrl": "https://books.google.com/books?id=yQ82AQAAMAAJ",
+      "sourceInfoUrl": "https://books.google.com/books/about/Home_making.html?id=yQ82AQAAMAAJ",
+      "rightsEvidence": "Original 1882 work; Google Books indexes a full-view 1882 edition. J. R. Miller died in 1912.",
+      "japanRightsNote": "Author died 1912; original work is beyond Japan's general life+70 term.",
+      "contentShape": "9 family/home-life chapters",
+      "preprocessingStatus": "indexed_and_tagged",
+      "bodyInRepo": false,
+      "note": "Use the original 1882 text for later vendoring; do not ingest wording/editorial matter from modern reprints."
+    },
+    {
       "id": "spurgeon-morning-evening",
       "title": "Morning and Evening: Daily Readings",
       "author": "C. H. Spurgeon",
