@@ -38,9 +38,14 @@ async function installHarness(page,{role='leader',directoryFails=false,switchDur
       async loadReview(id){window.__lcReviewCalls.push(['loadReview',id]);return{activeId:id,activeReview:{status:'ready'}}}
     };
     const presence={async activeCount(){if(switchDuringLifecycle)throw new Error('Stale tenant must stop before presence.');return{count:4,windowMinutes:30}}};
-    const leaderCenter=createLeaderCenterService({assignments,presence});
+    const calendar={async load(options){if(options?.scope!=='shared-agenda')throw new Error('Leader Center must request shared Calendar scope.');return{status:'ready',congregationId:'c1',agenda:[{date:'2026-09-27',events:[
+      {id:'due-a1',source:'assignment',date:'2026-09-27',title:'Due: Read Romans 8'},
+      {id:'event-c1',source:'congregation',date:'2026-09-28',title:'Prayer meeting'},
+      {id:'private-p1',source:'personal',date:'2026-09-29',title:'Private appointment',notes:'must never render'}
+    ]}]}}};
+    const leaderCenter=createLeaderCenterService({assignments,presence,calendar});
     const root=document.createElement('div');root.id='leader-center-test-root';document.body.append(root);
-    const definition=leaderCenterPage({leaderCenter,onBack:()=>{},onAccount:()=>{},onAssignments:()=>{window.__lcNav='assignments'},onJourneyGroups:()=>{window.__lcNav='journey-groups'},onTeamCenter:()=>{window.__lcNav='team-center'},onCongregation:()=>{window.__lcNav='congregation'}});
+    const definition=leaderCenterPage({leaderCenter,onBack:()=>{},onAccount:()=>{},onAssignments:()=>{window.__lcNav='assignments'},onCalendar:()=>{window.__lcNav='calendar'},onJourneyGroups:()=>{window.__lcNav='journey-groups'},onTeamCenter:()=>{window.__lcNav='team-center'},onCongregation:()=>{window.__lcNav='congregation'}});
     root.innerHTML=definition.html;const cleanup=definition.mount(root);
     window.__removeLeaderCenterHarness=()=>{cleanup?.();root.remove();delete window.__lcNav};
   },{role,directoryFails,switchDuringLifecycle});
@@ -66,6 +71,17 @@ async function leaderSeesComposedCenter(){
   assert(!peopleData.join(' ').match(/reflection|note|couples|personality|psychometric/i),'People data rows contain sensitive content.');
   const spaces=await root.locator('[data-leader-groups-teams]').innerText();
   assert(spaces.includes('Young Adults')&&spaces.includes('Worship Team'),'Groups/Teams composition did not render.');
+  const upcomingRows=root.locator('[data-leader-upcoming-row]');
+  assert(await upcomingRows.count()===2,'Leader Center upcoming surface must render only assignment and congregation rows.');
+  const upcomingText=await root.locator('[data-leader-upcoming]').innerText();
+  assert(upcomingText.includes('Due: Read Romans 8')&&upcomingText.includes('Prayer meeting'),'Leader Center upcoming rows are missing shared due/event content.');
+  assert(!upcomingText.includes('Private appointment')&&!upcomingText.includes('must never render'),'Personal Calendar content leaked into Leader Center upcoming surface.');
+  assert(await root.locator('[data-leader-upcoming-source="assignment"]').count()===1,'Assignment due row is not identified correctly.');
+  assert(await root.locator('[data-leader-upcoming-source="congregation"]').count()===1,'Congregation event row is not identified correctly.');
+
+  await page.evaluate(()=>{window.__lcNav='';});
+  await root.locator('[data-leader-open-calendar]').click();
+  assert(await page.evaluate(()=>window.__lcNav)==='calendar','Leader Center Calendar handoff failed.');
 
   await root.locator('[data-leader-review-assignment="a1"]').click();
   await page.waitForFunction(()=>window.__lcNav==='assignments');
