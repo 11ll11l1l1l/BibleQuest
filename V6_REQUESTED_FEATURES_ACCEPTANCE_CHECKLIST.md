@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-25 JST
+Updated: 2026-09-26 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -11,6 +11,8 @@ Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f80
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
 Second certification reconciliation from integrated head `0e00188c3144a137ca48dd927faa954bfc7a361a`: previously integrated Database CI covers Presence, Journey Group/team/Live Room and media/notification tenant boundaries; inherited Leader Center contracts plus a focused stale-tenant unit regression prove the composition fails closed after an active-congregation change; per-book Recall uses demand-loaded pack fetches; Scripture source/license/attribution metadata remains in the Bible data owner; and the release checklist itself is regression-guarded so WAIVED is never counted as PASS.
+
+Third certification reconciliation from integrated head `f4f98f861005f1b9b0039473a8b6fe6a1bf591b5`: merged Reader live-progress boundary PR #727 passed Client Artifact Security `36199644834`, Phase-1 `36199644766`, and inherited regression `36199644696`; merged speedtrack batch #737 passed Phase-1 `36205547820`, Database CI `36205547874`, and inherited regression `36205547836`, including deterministic startup/critical-route budgets; merged speedtrack batch #759 passed Database CI `36206770253`, Client Artifact Security `36206770277`, Phase-1 `36206770345`, and inherited regression `36206770324`, preserving the deterministic offline conflict policy and executable real Auth session-revocation proof. Only the directly evidenced items below are promoted by this reconciliation.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -81,7 +83,9 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [ ] Japanese furigana support preserved.
 - [ ] Japanese vocabulary support preserved.
 - [x] Copyright/licensed-link redistribution policy is explicit and tested in the V6 content-manifest boundary.
-- [ ] Read/progress writes use new domain/data boundary.\n- [ ] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.\n- [ ] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
+- [x] Read/progress writes use new domain/data boundary.
+- [x] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.
+- [x] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
 - [ ] Reader route passes parity + accessibility + mobile tests.
 
 ## F. True offline Bible
@@ -170,7 +174,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Offline-write allowlist is documented per domain.
 - [x] Versioned IndexedDB outbox exists for accepted safe mutations.
 - [x] Idempotency/retry/backoff rules exist.
-- [ ] Conflict policy exists and is testable.
+- [x] Conflict policy exists and is testable.
 - [x] Reload/restart preserves queued safe writes.
 - [x] Account/tenant switching does not leak queued writes across identities/tenants.
 - [x] Privileged/destructive admin operations are never blindly queued offline.
@@ -210,7 +214,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 - [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
 - [ ] Privileged Owner/Admin re-auth requirements are reviewed.
-- [ ] Real session revocation is tested.
+- [x] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
 - [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
@@ -239,7 +243,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Diagnostics expose safe SW/content/connectivity state.
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
 - [x] Image/font budgets are enforced.
-- [ ] Startup/critical-route performance budgets are defined.
+- [x] Startup/critical-route performance budgets are defined.
 - [ ] Large Bible/game/media payloads are not eagerly loaded without need.
 
 ## P. CI/release architecture
