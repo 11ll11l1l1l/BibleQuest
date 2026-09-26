@@ -17,6 +17,10 @@ const budgets = Object.freeze({
   totalBytes: 250 * 1024 * 1024,
   javascriptBytes: 5 * 1024 * 1024,
   entryJavascriptBytes: 700 * 1024,
+  initialJavaScriptBytes: 1250 * 1024,
+  initialStylesheetBytes: 1024 * 1024,
+  featureRouteJavaScriptBytes: 600 * 1024,
+  featureRouteStylesheetBytes: 512 * 1024,
   imageBytes: 10 * 1024 * 1024,
   imageTotalBytes: 32 * 1024 * 1024,
   fontBytes: 1 * 1024 * 1024,
@@ -57,6 +61,73 @@ const featureDynamicChunks = manifestEntries
   .filter(([source]) => source.startsWith('src/features/') && source.endsWith('/index.js'))
   .map(([source, chunk]) => Object.freeze({ source, file: String(chunk.file || '') }))
   .sort((a, b) => a.source.localeCompare(b.source));
+
+function collectStaticManifestResources(source) {
+  const visited = new Set();
+  const javascript = new Set();
+  const stylesheets = new Set();
+
+  function visit(key) {
+    if (!key || visited.has(key)) return;
+    visited.add(key);
+
+    const chunk = manifest[key];
+    if (!chunk) return;
+
+    const file = String(chunk.file || '');
+    if (file.endsWith('.js') || file.endsWith('.mjs')) javascript.add(file);
+    for (const stylesheet of chunk.css || []) stylesheets.add(String(stylesheet));
+    for (const imported of chunk.imports || []) visit(imported);
+  }
+
+  visit(source);
+  return Object.freeze({
+    javascript: Object.freeze([...javascript].sort()),
+    stylesheets: Object.freeze([...stylesheets].sort()),
+  });
+}
+
+async function sumBuiltBytes(paths) {
+  let bytes = 0;
+  for (const path of paths) bytes += (await stat(join(outDir, path))).size;
+  return bytes;
+}
+
+const startupResources = collectStaticManifestResources(browserEntrySource);
+const startupJavascriptSet = new Set(startupResources.javascript);
+const startupStylesheetSet = new Set(startupResources.stylesheets);
+const startupPerformance = Object.freeze({
+  javascriptBytes: await sumBuiltBytes(startupResources.javascript),
+  stylesheetBytes: await sumBuiltBytes(startupResources.stylesheets),
+  javascriptFiles: startupResources.javascript,
+  stylesheetFiles: startupResources.stylesheets,
+});
+
+const featureRoutePerformance = Object.freeze(
+  await Promise.all(
+    featureDynamicChunks.map(async ({ source }) => {
+      const resources = collectStaticManifestResources(source);
+      const javascriptFiles = resources.javascript.filter((path) => !startupJavascriptSet.has(path));
+      const stylesheetFiles = resources.stylesheets.filter((path) => !startupStylesheetSet.has(path));
+      return Object.freeze({
+        source,
+        javascriptBytes: await sumBuiltBytes(javascriptFiles),
+        stylesheetBytes: await sumBuiltBytes(stylesheetFiles),
+        javascriptFiles: Object.freeze(javascriptFiles),
+        stylesheetFiles: Object.freeze(stylesheetFiles),
+      });
+    }),
+  ),
+);
+
+const largestFeatureRouteJavaScript = featureRoutePerformance.reduce(
+  (largest, route) => (route.javascriptBytes > largest.javascriptBytes ? route : largest),
+  Object.freeze({ source: null, javascriptBytes: 0, stylesheetBytes: 0 }),
+);
+const largestFeatureRouteStylesheet = featureRoutePerformance.reduce(
+  (largest, route) => (route.stylesheetBytes > largest.stylesheetBytes ? route : largest),
+  Object.freeze({ source: null, javascriptBytes: 0, stylesheetBytes: 0 }),
+);
 
 const scriptureManifestFailures = [];
 const scriptureManifestEvidence = [];
@@ -185,6 +256,12 @@ const report = {
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
   },
+  performance: {
+    startup: startupPerformance,
+    featureRoutes: featureRoutePerformance,
+    largestFeatureRouteJavaScript,
+    largestFeatureRouteStylesheet,
+  },
   scripturePackages: scriptureManifestEvidence,
   sourceMaps: {
     privateDirectory: relative(root, privateSourceMapDir).replaceAll('\\', '/'),
@@ -216,6 +293,20 @@ failures.push(...scriptureManifestFailures);
 if (totalBytes > budgets.totalBytes) failures.push(`total artifact ${totalBytes} > ${budgets.totalBytes}`);
 if (largestJavaScript.bytes > budgets.javascriptBytes) failures.push(`largest JS ${largestJavaScript.bytes} > ${budgets.javascriptBytes}`);
 if (browserEntryBytes > budgets.entryJavascriptBytes) failures.push(`browser entry JS ${browserEntryBytes} > ${budgets.entryJavascriptBytes}`);
+if (startupPerformance.javascriptBytes > budgets.initialJavaScriptBytes) {
+  failures.push(`initial JS ${startupPerformance.javascriptBytes} > ${budgets.initialJavaScriptBytes}`);
+}
+if (startupPerformance.stylesheetBytes > budgets.initialStylesheetBytes) {
+  failures.push(`initial CSS ${startupPerformance.stylesheetBytes} > ${budgets.initialStylesheetBytes}`);
+}
+for (const route of featureRoutePerformance) {
+  if (route.javascriptBytes > budgets.featureRouteJavaScriptBytes) {
+    failures.push(`feature route JS ${route.source} ${route.javascriptBytes} > ${budgets.featureRouteJavaScriptBytes}`);
+  }
+  if (route.stylesheetBytes > budgets.featureRouteStylesheetBytes) {
+    failures.push(`feature route CSS ${route.source} ${route.stylesheetBytes} > ${budgets.featureRouteStylesheetBytes}`);
+  }
+}
 if (featureDynamicChunks.length < budgets.minimumFeatureDynamicChunks) {
   failures.push(`feature dynamic chunks ${featureDynamicChunks.length} < ${budgets.minimumFeatureDynamicChunks}`);
 }
