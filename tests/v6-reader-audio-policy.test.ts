@@ -89,7 +89,7 @@ describe('V6 Reader audio packaging policy', () => {
     }
   });
 
-  it('rejects unsupported schema versions and malformed source URLs at runtime', () => {
+  it('rejects unsupported schema versions and malformed source metadata at runtime', () => {
     const unsupportedSchema = {
       ...manifest(),
       schemaVersion: 2,
@@ -98,15 +98,22 @@ describe('V6 Reader audio packaging policy', () => {
       ...verified,
       sourceUrl: 'http://example.invalid/provenance',
     });
+    const missingSource = {
+      ...manifest(),
+      source: undefined,
+    } as unknown as ScriptureAudioManifest;
+    const missingSegments = {
+      ...manifest(),
+      segments: undefined,
+    } as unknown as ScriptureAudioManifest;
 
-    expect(audioOfflineEligibility(unsupportedSchema)).toMatchObject({
-      eligible: false,
-      reason: 'invalid-manifest',
-    });
-    expect(audioOfflineEligibility(insecureSourceUrl)).toMatchObject({
-      eligible: false,
-      reason: 'invalid-manifest',
-    });
+    for (const bad of [unsupportedSchema, insecureSourceUrl, missingSource, missingSegments]) {
+      expect(audioOfflineEligibility(bad)).toMatchObject({
+        eligible: false,
+        reason: 'invalid-manifest',
+        totalBytes: 0,
+      });
+    }
   });
 
   it('rejects empty audio payloads and duplicate segment identities', () => {
