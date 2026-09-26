@@ -8,6 +8,24 @@ const youtubeSource = fs.readFileSync(new URL('../../src/v6/media/youtube-iframe
 const headersSource = fs.readFileSync(new URL('../../_headers', import.meta.url), 'utf8');
 const inventory = fs.readFileSync(new URL('../../docs/v6/V6_CSP_COMPATIBILITY.md', import.meta.url), 'utf8');
 
+const standalonePages = Object.freeze({
+  index: fs.readFileSync(new URL('../../index.html', import.meta.url), 'utf8'),
+  transform: fs.readFileSync(new URL('../../transform.html', import.meta.url), 'utf8'),
+  psychometrics: fs.readFileSync(new URL('../../psychometrics.html', import.meta.url), 'utf8'),
+  admin: fs.readFileSync(new URL('../../admin.html', import.meta.url), 'utf8'),
+  adminOperations: fs.readFileSync(new URL('../../admin-operations.html', import.meta.url), 'utf8'),
+  contentReview: fs.readFileSync(new URL('../../content-review.html', import.meta.url), 'utf8'),
+});
+
+function hasInlineScript(source: string): boolean {
+  return [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+    .some((match) => !/\bsrc\s*=/.test(match[1]) && match[2].trim().length > 0);
+}
+
+function hasInlineStyleBlock(source: string): boolean {
+  return /<style\b[^>]*>[\s\S]*?<\/style>/i.test(source);
+}
+
 test('CSP inventory tracks the exact Supabase client, project HTTPS origin, and Realtime WSS origin', () => {
   assert.match(apiSource, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@[^'"]+\/\+esm/);
   const match = apiSource.match(/supabaseUrl:\s*['"](https:\/\/([a-z0-9]+)\.supabase\.co)['"]/);
@@ -61,4 +79,24 @@ test('provisional CSP shape is least-broad for currently evidenced remote origin
   assert.match(inventory, /frame-src 'self' https:\/\/www\.youtube\.com;/);
   assert.match(inventory, /object-src 'none';/);
   assert.match(inventory, /frame-ancestors 'self';/);
+});
+
+
+test('global CSP cannot enforce yet because two standalone routes still own inline script/style blocks', () => {
+  assert.equal(hasInlineScript(standalonePages.index), false);
+  assert.equal(hasInlineStyleBlock(standalonePages.index), false);
+  assert.equal(hasInlineScript(standalonePages.admin), false);
+  assert.equal(hasInlineStyleBlock(standalonePages.admin), false);
+  assert.equal(hasInlineScript(standalonePages.adminOperations), false);
+  assert.equal(hasInlineStyleBlock(standalonePages.adminOperations), false);
+
+  assert.equal(hasInlineScript(standalonePages.transform), true);
+  assert.equal(hasInlineStyleBlock(standalonePages.transform), true);
+  assert.equal(hasInlineScript(standalonePages.psychometrics), true);
+  assert.equal(hasInlineStyleBlock(standalonePages.psychometrics), true);
+
+  assert.match(standalonePages.contentReview, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\.112\.4/);
+  assert.match(inventory, /transform\.html.*inline script body.*inline <style>/is);
+  assert.match(inventory, /psychometrics\.html.*inline script body.*inline <style>/is);
+  assert.match(inventory, /not.*blanket.*unsafe-inline/is);
 });
