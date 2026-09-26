@@ -14,6 +14,7 @@ test('legacy regression check identity is preserved while static execution moves
   assert.match(workflow, /^name: BibleQuest v3 regression$/m);
   assert.match(workflow, /uses:\s*\.\/\.github\/actions\/inherited-regression-static\b/);
   assert.equal(workflowInvokesNode(workflow, 'tests/v3-workflow-contract-edge.mjs'), true);
+  assert.equal(workflowInvokesNode(workflow, 'tests/v3-private-notes-edge.mjs'), true);
   assert.doesNotMatch(workflow, /scripts\/validate-v3-architecture\.mjs/);
   assert.doesNotMatch(workflow, /tests\/v5-admin-reachability-edge\.mjs/);
 });
