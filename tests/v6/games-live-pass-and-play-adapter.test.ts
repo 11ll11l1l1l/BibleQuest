@@ -17,6 +17,7 @@ test('live Play Together delegates session and turn logic to the V6 adapter boun
     'startLegacyPassAndPlaySession',
     'answerLegacyPassAndPlaySession',
     'advanceLegacyPassAndPlaySession',
+    'finishLegacyPassAndPlaySession',
     'adaptLegacyQuestions',
   ]) assert.ok(source.includes(symbol), `missing live V6 pass-and-play delegation: ${symbol}`);
 
@@ -27,6 +28,7 @@ test('live Play Together delegates session and turn logic to the V6 adapter boun
 test('live Play Together no longer owns answer locking, scoring or turn-rotation mutations', () => {
   const answerSource=functionSlice('function answerSameRoom','function nextSameRoom');
   const nextSource=functionSlice('function nextSameRoom','function finishSameRoom');
+  const finishSource=functionSlice('function finishSameRoom','function resetSameRoom');
 
   assert.doesNotMatch(source, /sameRoom\.players\.map/);
   assert.doesNotMatch(source, /score:player\.score\+/);
@@ -37,4 +39,6 @@ test('live Play Together no longer owns answer locking, scoring or turn-rotation
 
   assert.match(answerSource,/answerLegacyPassAndPlaySession/);
   assert.match(nextSource,/advanceLegacyPassAndPlaySession/);
+  assert.match(finishSource,/finishLegacyPassAndPlaySession/);
+  assert.match(finishSource,/phase:'same-room-complete',session:transition\.state\.session,turns:transition\.state\.turns/);
 });
