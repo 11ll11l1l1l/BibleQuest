@@ -9,7 +9,7 @@
   height:88px;
   margin:0 auto 8px;
   font-size:0 !important;
-  background:url("../../assets/v4/games/game-recall-deck.png") center/contain no-repeat;
+  background:none;
   filter:drop-shadow(0 6px 10px rgb(38 91 58 / 12%));
 }
 
@@ -27,12 +27,18 @@
   filter:drop-shadow(0 7px 12px rgb(38 91 58 / 14%));
 }
 
-[data-recall-complete] .bq-game-medal {
-  background-image:url("../../assets/v4/games/game-recall-deck.png");
+[data-recall-complete] .bq-game-medal,
+[data-game-complete] .bq-game-medal {
+  background-image:none;
 }
 
-[data-game-complete] .bq-game-medal {
-  background-image:url("../../assets/v4/games/game-winner-trophy.png");
+[data-recall-question] .bq-recall-mark > img,
+[data-recall-complete] .bq-game-medal > img,
+[data-game-complete] .bq-game-medal > img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
 
 /* Pass-and-play completion previously had no dedicated visual result mark. */
@@ -85,9 +91,6 @@
   [data-recall-question] .bq-recall-mark,
   [data-recall-complete] .bq-game-medal,
   [data-game-complete] .bq-game-medal {
-    width:auto;
-    height:auto;
-    font-size:2.2rem !important;
     background:none;
     filter:none;
   }
