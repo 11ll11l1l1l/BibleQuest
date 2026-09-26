@@ -14,10 +14,12 @@ test('characterizes the remaining version-coupled inherited CI wrapper without c
   assert.equal(report.legacyConcurrencyGroup, true);
   assert.ok(report.legacyTempPaths.length >= 1);
   assert.ok(report.directBrowserTests.length >= 50);
-  assert.ok(
-    report.directStaticValidators.length > 0 || report.usesVersionNeutralStaticAction,
-    'static inherited regressions must remain either explicit or delegated to the version-neutral action',
-  );
+  if (report.usesVersionNeutralStaticAction) {
+    assert.equal(report.directStaticValidators.length, 0);
+    assert.ok(report.compatibilityStaticEntries.length >= 50);
+  } else {
+    assert.ok(report.directStaticValidators.length >= 50);
+  }
   assert.ok(report.remainingLegacyCoupling.includes('workflow-display-name'));
   assert.ok(report.remainingLegacyCoupling.includes('concurrency-group'));
   assert.ok(report.remainingLegacyCoupling.includes('temporary-paths'));
@@ -25,16 +27,29 @@ test('characterizes the remaining version-coupled inherited CI wrapper without c
   assert.equal(report.versionNeutral, false);
 });
 
-test('keeps browser naming debt visible after the planned static-cohort extraction lands', () => {
+test('keeps compatibility metadata separate from executable static coverage after the planned extraction lands', () => {
   const current = readCurrentInheritedRegressionWorkflow();
-  const withStaticAction = current.replace(
-    /      - name: Run accumulated architecture validators[\s\S]*?(?=      - name: Run accumulated edge regressions)/,
-    '      - uses: ./.github/actions/inherited-regression-static\n',
-  );
+  const withStaticAction = current.includes('./.github/actions/inherited-regression-static')
+    ? current
+    : current.replace(
+      /      - name: Run accumulated architecture validators[\s\S]*?(?=      - name: Run accumulated edge regressions)/,
+      [
+        '      - name: Declare inherited static compatibility index',
+        '        env:',
+        '          BQ_INHERITED_STATIC_COMPATIBILITY_INDEX: |',
+        '            node scripts/validate-v3-architecture.mjs',
+        '        run: ":"',
+        '      - name: Run inherited static regression suite',
+        '        uses: ./.github/actions/inherited-regression-static',
+        '',
+      ].join('\n'),
+    );
   const report = analyzeInheritedRegressionWorkflow(withStaticAction);
 
   assert.equal(report.usesVersionNeutralStaticAction, true);
   assert.equal(report.directStaticValidators.length, 0);
+  assert.ok(report.compatibilityStaticEntries.length >= 1);
+  assert.ok(report.remainingLegacyCoupling.includes('compatibility-static-index'));
   assert.ok(report.directBrowserTests.length >= 50);
   assert.ok(report.remainingLegacyCoupling.includes('inline-browser-cohort'));
   assert.equal(report.versionNeutral, false);
@@ -69,6 +84,7 @@ test('recognizes a future wrapper that delegates inherited cohorts without legac
   assert.equal(report.usesVersionNeutralStaticAction, true);
   assert.equal(report.usesVersionNeutralBrowserAction, true);
   assert.deepEqual(report.directStaticValidators, []);
+  assert.deepEqual(report.compatibilityStaticEntries, []);
   assert.deepEqual(report.directBrowserTests, []);
   assert.deepEqual(report.legacyTempPaths, []);
   assert.deepEqual(report.remainingLegacyCoupling, []);
