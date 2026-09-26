@@ -10,6 +10,7 @@ import {
   OFFLINE_OUTBOX_DB_VERSION,
   parsePersistedOfflineMutation,
   recoverOfflineOutbox,
+  samePersistedOfflineMutation,
   toPersistedOfflineMutation,
   type OfflineOutboxPersistence,
   type PersistedOfflineMutation,
@@ -49,6 +50,23 @@ class MemoryPersistence implements OfflineOutboxPersistence {
     this.records.delete(id);
   }
 
+  async compareAndPut(
+    expected: PersistedOfflineMutation,
+    record: PersistedOfflineMutation,
+  ): Promise<boolean> {
+    const current = parsePersistedOfflineMutation(this.records.get(expected.id));
+    if (!samePersistedOfflineMutation(current, expected)) return false;
+    this.records.set(record.id, structuredClone(record));
+    return true;
+  }
+
+  async compareAndDelete(expected: PersistedOfflineMutation): Promise<boolean> {
+    const current = parsePersistedOfflineMutation(this.records.get(expected.id));
+    if (!samePersistedOfflineMutation(current, expected)) return false;
+    this.records.delete(expected.id);
+    return true;
+  }
+
   async clear(): Promise<void> {
     this.records.clear();
   }
@@ -64,6 +82,25 @@ test('durable offline outbox schema is versioned and rejects corrupt records fai
   assert.equal(parsePersistedOfflineMutation({ ...valid, createdAt: 'not-a-date' }), null);
   assert.equal(parsePersistedOfflineMutation({ ...valid, retryAt: 'later' }), null);
   assert.equal(parsePersistedOfflineMutation({ ...valid, identity: { accountId: '', congregationId: 'congregation-a' } }), null);
+});
+
+test('durable record comparison includes retry version, immutable metadata and JSON-like payload', () => {
+  const original = toPersistedOfflineMutation(envelope('mutation-1'));
+  const reorderedPayload = {
+    ...original,
+    payload: { complete: true },
+  };
+
+  assert.equal(samePersistedOfflineMutation(original, reorderedPayload), true);
+  assert.equal(samePersistedOfflineMutation(original, { ...original, attempt: 1 }), false);
+  assert.equal(
+    samePersistedOfflineMutation(original, { ...original, retryAt: '2026-09-25T00:00:01.000Z' }),
+    false,
+  );
+  assert.equal(
+    samePersistedOfflineMutation(original, { ...original, payload: { complete: false } }),
+    false,
+  );
 });
 
 test('queued safe mutation survives a simulated app restart and remains identity-bound', async () => {

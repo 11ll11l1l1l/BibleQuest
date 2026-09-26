@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import type { OfflineMutationPolicy } from '../../src/v6/offline/outbox.ts';
-import type { OfflineOutboxPersistence, PersistedOfflineMutation } from '../../src/v6/offline/outbox-persistence.ts';
+import {
+  samePersistedOfflineMutation,
+  type OfflineOutboxPersistence,
+  type PersistedOfflineMutation,
+} from '../../src/v6/offline/outbox-persistence.ts';
 import { OfflineOutboxService, createV6OfflineOutboxService } from '../../src/v6/offline/outbox-service.ts';
 
 const safe: OfflineMutationPolicy = {
@@ -27,8 +31,45 @@ class MemoryPersistence implements OfflineOutboxPersistence {
     this.records.delete(id);
   }
 
+  async compareAndPut(
+    expected: PersistedOfflineMutation,
+    record: PersistedOfflineMutation,
+  ): Promise<boolean> {
+    const current = this.records.get(expected.id);
+    if (!samePersistedOfflineMutation(current, expected)) return false;
+    this.records.set(record.id, structuredClone(record));
+    return true;
+  }
+
+  async compareAndDelete(expected: PersistedOfflineMutation): Promise<boolean> {
+    const current = this.records.get(expected.id);
+    if (!samePersistedOfflineMutation(current, expected)) return false;
+    this.records.delete(expected.id);
+    return true;
+  }
+
   async clear(): Promise<void> {
     this.records.clear();
+  }
+}
+
+class RacingPersistence extends MemoryPersistence {
+  beforeCompareAndPut: (() => void) | null = null;
+  beforeCompareAndDelete: (() => void) | null = null;
+
+  override async compareAndPut(
+    expected: PersistedOfflineMutation,
+    record: PersistedOfflineMutation,
+  ): Promise<boolean> {
+    this.beforeCompareAndPut?.();
+    this.beforeCompareAndPut = null;
+    return super.compareAndPut(expected, record);
+  }
+
+  override async compareAndDelete(expected: PersistedOfflineMutation): Promise<boolean> {
+    this.beforeCompareAndDelete?.();
+    this.beforeCompareAndDelete = null;
+    return super.compareAndDelete(expected);
   }
 }
 
@@ -106,6 +147,43 @@ test('retry advances from the latest durable attempt instead of a stale caller e
   assert.equal(storage.records.get(queued.id)?.attempt, 2);
 });
 
+test('atomic retry cannot resurrect work completed after retry reads durable state', async () => {
+  const storage = new RacingPersistence();
+  const service = new OfflineOutboxService(storage, [safe], () => new Date('2026-09-25T00:00:01.000Z'));
+  const queued = await service.enqueue(request());
+
+  storage.beforeCompareAndPut = () => {
+    storage.records.delete(queued.id);
+  };
+
+  await assert.rejects(
+    () => service.retry(queued, activeA),
+    /changed concurrently before retry persistence/i,
+  );
+  assert.equal(storage.records.has(queued.id), false);
+});
+
+test('atomic retry refuses to overwrite a newer retry state from another worker', async () => {
+  const storage = new RacingPersistence();
+  const service = new OfflineOutboxService(storage, [safe], () => new Date('2026-09-25T00:00:01.000Z'));
+  const queued = await service.enqueue(request());
+
+  storage.beforeCompareAndPut = () => {
+    storage.records.set(queued.id, {
+      ...structuredClone(queued),
+      attempt: 1,
+      retryAt: '2026-09-25T00:00:02.000Z',
+    });
+  };
+
+  await assert.rejects(
+    () => service.retry(queued, activeA),
+    /changed concurrently before retry persistence/i,
+  );
+  assert.equal(storage.records.get(queued.id)?.attempt, 1);
+  assert.equal(storage.records.get(queued.id)?.retryAt, '2026-09-25T00:00:02.000Z');
+});
+
 test('retry cannot resurrect work that was already completed', async () => {
   const storage = new MemoryPersistence();
   const service = new OfflineOutboxService(storage, [safe]);
@@ -172,6 +250,27 @@ test('completion is tenant-bound so stale contexts cannot delete queued work', a
 
   await service.complete(queued, activeA);
   assert.equal(storage.records.size, 0);
+});
+
+test('atomic completion refuses to delete state retried by another worker after inspection', async () => {
+  const storage = new RacingPersistence();
+  const service = new OfflineOutboxService(storage, [safe]);
+  const queued = await service.enqueue(request());
+
+  storage.beforeCompareAndDelete = () => {
+    storage.records.set(queued.id, {
+      ...structuredClone(queued),
+      attempt: 1,
+      retryAt: '2026-09-25T00:00:02.000Z',
+    });
+  };
+
+  await assert.rejects(
+    () => service.complete(queued, activeA),
+    /changed concurrently before completion/i,
+  );
+  assert.equal(storage.records.get(queued.id)?.attempt, 1);
+  assert.equal(storage.records.get(queued.id)?.retryAt, '2026-09-25T00:00:02.000Z');
 });
 
 test('stale completion cannot delete a newer logical mutation that reuses the same durable id', async () => {

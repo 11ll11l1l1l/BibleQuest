@@ -151,7 +151,10 @@ export class OfflineOutboxService {
 
     const scheduled = scheduleOfflineMutationRetry(durable, this.#now(), baseMs, maxMs);
     const persisted = toPersistedOfflineMutation(scheduled.envelope, scheduled.retryAt);
-    await this.#persistence.put(persisted);
+    const applied = await this.#persistence.compareAndPut(durable, persisted);
+    if (!applied) {
+      throw new Error('Offline mutation changed concurrently before retry persistence; recover current outbox state before retrying.');
+    }
     return persisted;
   }
 
@@ -168,7 +171,10 @@ export class OfflineOutboxService {
         throw new Error('Offline mutation completion no longer matches the queued mutation.');
       }
       assertActiveEnvelopeIdentity(durable, active);
-      await this.#persistence.delete(durable.id);
+      const applied = await this.#persistence.compareAndDelete(durable);
+      if (!applied) {
+        throw new Error('Offline mutation changed concurrently before completion; recover current outbox state before completing.');
+      }
       return;
     }
   }
