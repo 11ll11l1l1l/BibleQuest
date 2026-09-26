@@ -185,7 +185,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
     });
   }
 
-  async function load() {
+  async function load(options={}) {
+    if(options?.scope==='shared-agenda')return loadSharedAgenda({startDate:options.startDate??clock(),days:options.days??30});
     const s = session.getState();
     const current = owner();
     if (s?.authenticated && s?.user?.id) {
@@ -301,5 +302,5 @@ export function createCalendarService({ session, privateStorage, api, assignment
     }
   }
 
-  return Object.freeze({ load, loadSharedAgenda, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present });
+  return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present })
 }
