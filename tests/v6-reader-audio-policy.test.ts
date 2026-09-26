@@ -80,6 +80,8 @@ describe('V6 Reader audio packaging policy', () => {
       { ...verified, source: '   ' },
       { ...verified, license: '' },
       { ...verified, translationId: 'not a valid id' },
+      { ...verified, translationId: 'BSB' },
+      { ...verified, translationId: ' bsb ' },
     ]) {
       expect(audioOfflineEligibility(manifest(source))).toMatchObject({
         eligible: false,
@@ -98,6 +100,10 @@ describe('V6 Reader audio packaging policy', () => {
       ...verified,
       sourceUrl: 'http://example.invalid/provenance',
     });
+    const malformedSourceUrl = manifest({
+      ...verified,
+      sourceUrl: 'https://',
+    });
     const missingSource = {
       ...manifest(),
       source: undefined,
@@ -107,7 +113,27 @@ describe('V6 Reader audio packaging policy', () => {
       segments: undefined,
     } as unknown as ScriptureAudioManifest;
 
-    for (const bad of [unsupportedSchema, insecureSourceUrl, missingSource, missingSegments]) {
+    for (const bad of [unsupportedSchema, insecureSourceUrl, malformedSourceUrl, missingSource, missingSegments]) {
+      expect(audioOfflineEligibility(bad)).toMatchObject({
+        eligible: false,
+        reason: 'invalid-manifest',
+        totalBytes: 0,
+      });
+    }
+  });
+
+  it('fails closed on absent manifests and malformed runtime segment rows or URLs', () => {
+    const absent = undefined as unknown as ScriptureAudioManifest;
+    const nullSegment = {
+      ...manifest(),
+      segments: [null],
+    } as unknown as ScriptureAudioManifest;
+    const malformedPayloadUrl = {
+      ...manifest(),
+      segments: [{ ...manifest().segments[0], url: 'https://' }],
+    };
+
+    for (const bad of [absent, nullSegment, malformedPayloadUrl]) {
       expect(audioOfflineEligibility(bad)).toMatchObject({
         eligible: false,
         reason: 'invalid-manifest',
