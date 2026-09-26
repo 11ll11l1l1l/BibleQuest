@@ -83,13 +83,17 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
   if (!Array.isArray(segments) || segments.length < 1) return false;
 
   const ids = new Set<string>();
+  const chapterKeys = new Set<string>();
   for (const segment of segments) {
     if (!segment || typeof segment !== 'object') return false;
     const id = String(segment.id ?? '').trim();
+    const book = String(segment.book ?? '').trim();
+    const chapterKey = `${book.toUpperCase()}:${segment.chapter}`;
     if (
       !id ||
       ids.has(id) ||
-      !nonBlank(segment.book) ||
+      !book ||
+      chapterKeys.has(chapterKey) ||
       !Number.isInteger(segment.chapter) ||
       segment.chapter < 1 ||
       !Number.isSafeInteger(segment.byteLength) ||
@@ -100,6 +104,7 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
       return false;
     }
     ids.add(id);
+    chapterKeys.add(chapterKey);
   }
 
   return true;
