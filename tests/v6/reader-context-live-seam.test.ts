@@ -81,6 +81,22 @@ function readerHarness(snapshotFactory = () => contextSnapshot()) {
   return { reader, getLexicalCalls: () => lexicalCalls };
 }
 
+test('Context Lab announces loading replacement as a polite atomic status and hides decorative glyphs', async () => {
+  const dialog = new FakeDialog();
+  const { reader } = readerHarness();
+  const lab = createContextLab({ reader, dialog });
+
+  const pending = lab.open({ code: 'JHN', chapter: 3, verse: 16 });
+
+  assert.match(dialog.innerHTML, /data-context-status="loading"/);
+  assert.match(dialog.innerHTML, /role="status"/);
+  assert.match(dialog.innerHTML, /aria-live="polite"/);
+  assert.match(dialog.innerHTML, /aria-atomic="true"/);
+  assert.match(dialog.innerHTML, /<span aria-hidden="true">אΩ<\/span>/);
+
+  await pending;
+});
+
 test('live Context Lab validates and renders an exact BSB passage while leaving Reader translation state untouched', async () => {
   const dialog = new FakeDialog();
   const { reader, getLexicalCalls } = readerHarness();
@@ -105,6 +121,11 @@ test('live Context Lab rejects a mismatched provider response instead of renderi
   await lab.open({ code: 'JHN', chapter: 3, verse: 16 });
 
   assert.match(dialog.innerHTML, /Could not load the context tools/);
+  assert.match(dialog.innerHTML, /data-context-status="error"/);
+  assert.match(dialog.innerHTML, /role="alert"/);
+  assert.match(dialog.innerHTML, /aria-live="assertive"/);
+  assert.match(dialog.innerHTML, /aria-atomic="true"/);
+  assert.match(dialog.innerHTML, /<span aria-hidden="true">אΩ<\/span>/);
   assert.match(dialog.innerHTML, /does not match the requested BSB passage/);
   assert.doesNotMatch(dialog.innerHTML, /Genesis 3:16/);
 });
@@ -129,4 +150,23 @@ test('live Context Lab rejects invalid numeric input instead of coercing it to v
 
   assert.equal(getLexicalCalls(), 0);
   assert.match(dialog.innerHTML, /requires an exact Bible book, chapter, and verse/);
+});
+
+test('live Context Lab announces an explicit unavailable-context state without changing the passage', async () => {
+  const dialog = new FakeDialog();
+  const { reader } = readerHarness(() => contextSnapshot({
+    available: false,
+    reason: 'Fixture context pack unavailable.',
+  }));
+  const lab = createContextLab({ reader, dialog });
+
+  await lab.open({ code: 'JHN', chapter: 3, verse: 16 });
+
+  assert.match(dialog.innerHTML, /BSB · John 3:16/);
+  assert.match(dialog.innerHTML, /fixture sixteen/);
+  assert.match(dialog.innerHTML, /data-context-status="unavailable"/);
+  assert.match(dialog.innerHTML, /role="status"/);
+  assert.match(dialog.innerHTML, /aria-live="polite"/);
+  assert.match(dialog.innerHTML, /aria-atomic="true"/);
+  assert.match(dialog.innerHTML, /Fixture context pack unavailable\./);
 });
