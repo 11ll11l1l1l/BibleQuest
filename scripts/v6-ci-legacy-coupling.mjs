@@ -21,8 +21,8 @@ function escapeRegExp(value) {
 function blockForStep(source, stepName) {
   const match = source.match(
     new RegExp(
-      '^\\s*- name:\\s*' + escapeRegExp(stepName) +
-        '\\s*$([\\s\\S]*?)(?=^\\s*- name:|^\\s*- uses:|^\\s{0,2}[A-Za-z0-9_-]+:|\\Z)',
+      '^[ \\t]*- name:[ \\t]*' + escapeRegExp(stepName) +
+        '[ \\t]*$([\\s\\S]*?)(?=^[ \\t]*- name:|^[ \\t]*- uses:|^[A-Za-z0-9_-]+:|(?![\\s\\S]))',
       'm',
     ),
   );
