@@ -1,6 +1,6 @@
 import type { MultipleChoiceQuestion, MultipleChoiceSessionState } from './contracts.ts';
 import { legacyRoundQuestions, type LegacyMultipleChoiceMode } from './legacy-question-adapter.ts';
-import { advanceMultipleChoice, answerMultipleChoice, startMultipleChoiceSession } from './session.ts';
+import { advanceMultipleChoice, answerMultipleChoice, finishMultipleChoice, startMultipleChoiceSession } from './session.ts';
 import { advanceTurn, awardCurrentPlayer, startTurnRotation, type TurnState } from './turns.ts';
 
 const LOCAL_ONLY_SCORE_POLICY = Object.freeze({ correctXp: 0, incorrectXp: 0 });
@@ -115,5 +115,16 @@ export function advanceLegacyPassAndPlaySession(
     applied: transition.applied,
     duplicate: transition.duplicate,
     state: passAndPlayState(transition.state, turns),
+  });
+}
+
+export function finishLegacyPassAndPlaySession(
+  current: LegacyPassAndPlayAdapterSession,
+): LegacyPassAndPlayTransition {
+  const transition = finishMultipleChoice(current.session);
+  return Object.freeze({
+    applied: transition.applied,
+    duplicate: transition.duplicate,
+    state: passAndPlayState(transition.state, current.turns),
   });
 }
