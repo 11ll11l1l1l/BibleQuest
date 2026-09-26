@@ -25,6 +25,7 @@ on:
       - "scripts/v6-lint.mjs"
       - "scripts/v6-format-check.mjs"
       - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
