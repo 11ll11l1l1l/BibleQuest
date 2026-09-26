@@ -130,3 +130,51 @@ test('live Context Lab rejects invalid numeric input instead of coercing it to v
   assert.equal(getLexicalCalls(), 0);
   assert.match(dialog.innerHTML, /requires an exact Bible book, chapter, and verse/);
 });
+
+
+test('live Context Lab announces loading state and hides decorative glyphs from assistive tech', async () => {
+  const dialog = new FakeDialog();
+  const { reader } = readerHarness();
+  const lab = createContextLab({ reader, dialog });
+
+  const pending = lab.open({ code: 'JHN', chapter: 3, verse: 16 });
+
+  assert.match(dialog.innerHTML, /role="status"/);
+  assert.match(dialog.innerHTML, /aria-live="polite"/);
+  assert.match(dialog.innerHTML, /aria-atomic="true"/);
+  assert.match(dialog.innerHTML, /<span aria-hidden="true">אΩ<\/span>/);
+
+  await pending;
+});
+
+test('live Context Lab announces load failures as alerts', async () => {
+  const dialog = new FakeDialog();
+  const { reader } = readerHarness(() => contextSnapshot({
+    book: { code: 'GEN', name: 'Genesis', chapters: 50 },
+    reference: 'Genesis 3:16',
+  }));
+  const lab = createContextLab({ reader, dialog });
+
+  await lab.open({ code: 'JHN', chapter: 3, verse: 16 });
+
+  assert.match(dialog.innerHTML, /role="alert"/);
+  assert.match(dialog.innerHTML, /aria-live="assertive"/);
+  assert.match(dialog.innerHTML, /aria-atomic="true"/);
+  assert.match(dialog.innerHTML, /<span aria-hidden="true">אΩ<\/span>/);
+});
+
+test('live Context Lab announces an explicit unavailable context pack without changing Scripture', async () => {
+  const dialog = new FakeDialog();
+  const { reader } = readerHarness(() => contextSnapshot({
+    available: false,
+    reason: 'context pack unavailable fixture',
+  }));
+  const lab = createContextLab({ reader, dialog });
+
+  await lab.open({ code: 'JHN', chapter: 3, verse: 16 });
+
+  assert.match(dialog.innerHTML, /role="status"/);
+  assert.match(dialog.innerHTML, /aria-live="polite"/);
+  assert.match(dialog.innerHTML, /context pack unavailable fixture/);
+  assert.match(dialog.innerHTML, /fixture sixteen/);
+});
