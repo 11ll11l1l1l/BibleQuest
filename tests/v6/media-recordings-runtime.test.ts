@@ -200,3 +200,38 @@ test('Recordings Media host ownership fails closed and does not clear a host it 
 
   await h.runtime.dispose();
 });
+
+test('Recordings Media runtime validates identity and can disable visibility ownership explicitly', async () => {
+  const lifecycle = new FakeLifecycleTarget();
+  const document = {
+    visibilityState: 'visible',
+    createElement() { return new FakeElement(); },
+    addEventListener: lifecycle.addEventListener.bind(lifecycle),
+    removeEventListener: lifecycle.removeEventListener.bind(lifecycle),
+  } as unknown as Document;
+
+  assert.throws(
+    () => createRecordingsMediaRuntime({
+      document,
+      global: { YT: { Player: class {} as unknown as YouTubePlayerApi['Player'] } },
+      instanceId: '   ',
+    }),
+    /instance and route identity/,
+  );
+
+  const h = harness();
+  await h.runtime.dispose();
+
+  const noLifecycle = createRecordingsMediaRuntime({
+    document,
+    global: { YT: { Player: class {} as unknown as YouTubePlayerApi['Player'] } },
+    visibilityTarget: lifecycle,
+    pageTarget: lifecycle,
+    enableVisibilityLifecycle: false,
+  });
+  assert.equal(noLifecycle.visibility, null);
+  assert.equal(lifecycle.count('visibilitychange'), 0);
+  assert.equal(lifecycle.count('pagehide'), 0);
+  assert.equal(lifecycle.count('pageshow'), 0);
+  await noLifecycle.dispose();
+});
