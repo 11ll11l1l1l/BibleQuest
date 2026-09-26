@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   advanceMultipleChoice,
   answerMultipleChoice,
+  finishMultipleChoice,
   gameResult,
   replayMultipleChoiceActions,
   startMultipleChoiceSession,
@@ -77,6 +78,41 @@ test('multiple-choice session is deterministic and duplicate answers cannot farm
     LEGACY_MULTIPLE_CHOICE_SCORE_POLICY,
   );
   assert.deepEqual(replayed, complete);
+});
+
+test('multiple-choice session supports deterministic early completion without inventing answers', () => {
+  const initial = startMultipleChoiceSession({
+    gameId: 'mixed-quest',
+    sessionId: 'early-finish-1',
+    questions,
+  });
+  const answered = answerMultipleChoice(initial, 1, LEGACY_MULTIPLE_CHOICE_SCORE_POLICY).state;
+  const finished = finishMultipleChoice(answered);
+
+  assert.equal(finished.applied, true);
+  assert.equal(finished.duplicate, false);
+  assert.equal(finished.state.phase, 'complete');
+  assert.equal(finished.state.index, questions.length);
+  assert.equal(finished.state.score, 1);
+  assert.equal(finished.state.xp, 10);
+  assert.equal(finished.state.answers.length, 1);
+  assert.equal(finished.state.locked, false);
+  assert.equal(finished.state.selectedIndex, null);
+  assert.equal(finished.state.correct, null);
+  assert.deepEqual(gameResult(finished.state), {
+    gameId: 'mixed-quest',
+    sessionId: 'early-finish-1',
+    score: 1,
+    total: 2,
+    xp: 10,
+    answered: 1,
+    completed: true,
+  });
+
+  const duplicate = finishMultipleChoice(finished.state);
+  assert.equal(duplicate.applied, false);
+  assert.equal(duplicate.duplicate, true);
+  assert.strictEqual(duplicate.state, finished.state);
 });
 
 test('multiple-choice session fails closed for invalid question and transition state', () => {
