@@ -76,9 +76,9 @@ export function createLeaderCenterService({ assignments, presence, calendar } = 
     if(!contextStillCurrent())return staleResult();
 
     let upcomingStatus='unavailable',upcoming=Object.freeze([]);
-    if(typeof calendar?.loadSharedAgenda==='function'){
+    if(typeof calendar?.load==='function'){
       try{
-        const sharedAgenda=await calendar.loadSharedAgenda({days:30});
+        const sharedAgenda=await calendar.load({scope:'shared-agenda',days:30});
         if(!contextStillCurrent())return staleResult();
         if(sharedAgenda?.status==='ready'&&String(sharedAgenda.congregationId||'')===String(congregationId||'')){
           const items=[];
