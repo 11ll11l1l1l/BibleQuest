@@ -3,7 +3,7 @@ import { DETECTIVE_MODE, DETECTIVES } from '../features/games/detectives.js';
 import { TIMELINE_MODE, TIMELINES } from '../features/games/timelines.js';
 import { createKidsMemoryGame } from './kids-memory.js';
 import { adaptLegacyQuestions } from '../v6/games/legacy-question-adapter.ts';
-import { advanceLegacyPassAndPlaySession, answerLegacyPassAndPlaySession, startLegacyPassAndPlaySession } from '../v6/games/legacy-adapters.ts';
+import { advanceLegacyPassAndPlaySession, answerLegacyPassAndPlaySession, finishLegacyPassAndPlaySession, startLegacyPassAndPlaySession } from '../v6/games/legacy-adapters.ts';
 
 const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE,TIMELINE_MODE]);
 const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3,timelineCorrect:20,timelineIncorrect:4});
@@ -152,8 +152,10 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
 
   function finishSameRoom(){
     if(sameRoom.phase==='same-room-complete')return sameRoomSnapshot();
-    if(sameRoom.phase!=='same-room-question')throw new Error('Start Play Together before finishing.');
-    sameRoom={...sameRoom,phase:'same-room-complete'};return sameRoomSnapshot();
+    if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('Start Play Together before finishing.');
+    const transition=finishLegacyPassAndPlaySession(sameRoomAdapter());
+    sameRoom={...sameRoom,phase:'same-room-complete',session:transition.state.session,turns:transition.state.turns};
+    return sameRoomSnapshot();
   }
   function resetSameRoom(){sameRoom=emptySameRoom();return sameRoomSnapshot()}
 
