@@ -16,8 +16,10 @@ test('live Play Together delegates session and turn logic to the V6 adapter boun
   assert.match(source, /startLegacyPassAndPlaySession\(validSameRoomId\(\),count,adaptLegacyQuestions\(bank\)\)/);
 });
 
-test('live Play Together no longer owns scoring or turn-rotation mutations', () => {
+test('live Play Together no longer owns answer locking, scoring or turn-rotation mutations', () => {
   assert.doesNotMatch(source, /sameRoom\.players\.map/);
   assert.doesNotMatch(source, /score:player\.score\+/);
   assert.doesNotMatch(source, /currentPlayerIndex:\(sameRoom\.currentPlayerIndex\+1\)/);
+  assert.doesNotMatch(source, /if\(sameRoom\.session\.locked\)/);
+  assert.doesNotMatch(source, /choice<0\|\|choice>=question\.choices\.length/);
 });
