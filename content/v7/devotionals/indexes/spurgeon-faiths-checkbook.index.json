@@ -10,17 +10,11 @@
       "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5"
     ]
   },
-  "entryCount": 336,
+  "entryCount": 366,
   "expectedEntryCount": 366,
-  "complete": false,
+  "complete": true,
   "bodyIncluded": false,
-  "failures": [
-    {
-      "month": "september",
-      "expected": 30,
-      "got": 0
-    }
-  ],
+  "failures": [],
   "integrationNotes": [
     "Titles and Scripture references are indexed from the CC0 markdown source.",
     "Devotional body is intentionally not copied in this metadata index.",
@@ -4820,6 +4814,595 @@
       "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
       "sourceRepo": "lyteword/chspurgeon-fcb",
       "sourcePath": "august/august-31.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-01",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-01",
+      "month": "september",
+      "day": 1,
+      "title": "Abiding In Obedience, In Love",
+      "sourceScripture": "John 15:10",
+      "scriptureRefs": [
+        "John 15:10"
+      ],
+      "suggestedLifeSituations": [
+        "obedience"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-1.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-02",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-02",
+      "month": "september",
+      "day": 2,
+      "title": "Follow To Know",
+      "sourceScripture": "Hosea 6:3",
+      "scriptureRefs": [
+        "Hosea 6:3"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-2.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-03",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-03",
+      "month": "september",
+      "day": 3,
+      "title": "Out Of Spiritual Death",
+      "sourceScripture": "Ezek. 37:13",
+      "scriptureRefs": [
+        "Ezek. 37:13"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-3.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-04",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-04",
+      "month": "september",
+      "day": 4,
+      "title": "Victory Without Battle",
+      "sourceScripture": "Hosea 1:7",
+      "scriptureRefs": [
+        "Hosea 1:7"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-4.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-05",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-05",
+      "month": "september",
+      "day": 5,
+      "title": "With Me Wherever I Am",
+      "sourceScripture": "II Chron. 20:17",
+      "scriptureRefs": [
+        "II Chron. 20:17"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-5.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-06",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-06",
+      "month": "september",
+      "day": 6,
+      "title": "A Strong Heart",
+      "sourceScripture": "Ps. 27:14",
+      "scriptureRefs": [
+        "Ps. 27:14"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-6.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-07",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-07",
+      "month": "september",
+      "day": 7,
+      "title": "The Reach Of Almighty Grace",
+      "sourceScripture": "Hosea 1:10",
+      "scriptureRefs": [
+        "Hosea 1:10"
+      ],
+      "suggestedLifeSituations": [
+        "spiritual-growth"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-7.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-08",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-08",
+      "month": "september",
+      "day": 8,
+      "title": "Broken And Smoking",
+      "sourceScripture": "Isa. 42:3",
+      "scriptureRefs": [
+        "Isa. 42:3"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-8.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-09",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-09",
+      "month": "september",
+      "day": 9,
+      "title": "Fear Has Its Place",
+      "sourceScripture": "Prov. 28:14",
+      "scriptureRefs": [
+        "Prov. 28:14"
+      ],
+      "suggestedLifeSituations": [
+        "anxiety-worry"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-9.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-10",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-10",
+      "month": "september",
+      "day": 10,
+      "title": "Coming In; Going Out",
+      "sourceScripture": "Deut. 28:6",
+      "scriptureRefs": [
+        "Deut. 28:6"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-10.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-11",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-11",
+      "month": "september",
+      "day": 11,
+      "title": "Sufferers Make Strong Believers",
+      "sourceScripture": "Lam. 3:27",
+      "scriptureRefs": [
+        "Lam. 3:27"
+      ],
+      "suggestedLifeSituations": [
+        "faith-trust",
+        "suffering-trials"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-11.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-12",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-12",
+      "month": "september",
+      "day": 12,
+      "title": "What Of My House?",
+      "sourceScripture": "Acts 16:31",
+      "scriptureRefs": [
+        "Acts 16:31"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-12.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-13",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-13",
+      "month": "september",
+      "day": 13,
+      "title": "The Dew Of Heaven",
+      "sourceScripture": "Deut. 33:28",
+      "scriptureRefs": [
+        "Deut. 33:28"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-13.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-14",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-14",
+      "month": "september",
+      "day": 14,
+      "title": "Mark Of Divine Approval",
+      "sourceScripture": "James 1:12",
+      "scriptureRefs": [
+        "James 1:12"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-14.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-15",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-15",
+      "month": "september",
+      "day": 15,
+      "title": "The Safest Shelter",
+      "sourceScripture": "Isa. 32:2",
+      "scriptureRefs": [
+        "Isa. 32:2"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-15.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-16",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-16",
+      "month": "september",
+      "day": 16,
+      "title": "Reward Is Certain",
+      "sourceScripture": "Matt. 10:42",
+      "scriptureRefs": [
+        "Matt. 10:42"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-16.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-17",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-17",
+      "month": "september",
+      "day": 17,
+      "title": "Like Palm And Cedar",
+      "sourceScripture": "Ps. 92:12",
+      "scriptureRefs": [
+        "Ps. 92:12"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-17.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-18",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-18",
+      "month": "september",
+      "day": 18,
+      "title": "Complete Safety",
+      "sourceScripture": "Deut. 33:12",
+      "scriptureRefs": [
+        "Deut. 33:12"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-18.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-19",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-19",
+      "month": "september",
+      "day": 19,
+      "title": "The Reason For Singing",
+      "sourceScripture": "Zeph. 3:17",
+      "scriptureRefs": [
+        "Zeph. 3:17"
+      ],
+      "suggestedLifeSituations": [
+        "failure-regret"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-19.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-20",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-20",
+      "month": "september",
+      "day": 20,
+      "title": "Perfect Willingness",
+      "sourceScripture": "Ps. 110:3",
+      "scriptureRefs": [
+        "Ps. 110:3"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-20.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-21",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-21",
+      "month": "september",
+      "day": 21,
+      "title": "Let Trials Bless",
+      "sourceScripture": "Rom. 5:3",
+      "scriptureRefs": [
+        "Rom. 5:3"
+      ],
+      "suggestedLifeSituations": [
+        "suffering-trials"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-21.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-22",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-22",
+      "month": "september",
+      "day": 22,
+      "title": "Broad Rivers Without Galleys",
+      "sourceScripture": "Isa. 33:21",
+      "scriptureRefs": [
+        "Isa. 33:21"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-22.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-23",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-23",
+      "month": "september",
+      "day": 23,
+      "title": "Deliverance From Dust And Chaff",
+      "sourceScripture": "Amos 9:9",
+      "scriptureRefs": [
+        "Amos 9:9"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-23.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-24",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-24",
+      "month": "september",
+      "day": 24,
+      "title": "The Life-giving Stream",
+      "sourceScripture": "Ezek. 47:9",
+      "scriptureRefs": [
+        "Ezek. 47:9"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-24.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-25",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-25",
+      "month": "september",
+      "day": 25,
+      "title": "The Sacrifice Has Been Accepted",
+      "sourceScripture": "Judges 13:23",
+      "scriptureRefs": [
+        "Judges 13:23"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-25.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-26",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-26",
+      "month": "september",
+      "day": 26,
+      "title": "Among The Redeemed",
+      "sourceScripture": "Num. 23:9",
+      "scriptureRefs": [
+        "Num. 23:9"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-26.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-27",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-27",
+      "month": "september",
+      "day": 27,
+      "title": "The Divine Light In Darkness",
+      "sourceScripture": "Ps. 18:28",
+      "scriptureRefs": [
+        "Ps. 18:28"
+      ],
+      "suggestedLifeSituations": [],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-27.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-28",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-28",
+      "month": "september",
+      "day": 28,
+      "title": "Work Is Done; Rest In Him",
+      "sourceScripture": "Heb. 4:9",
+      "scriptureRefs": [
+        "Heb. 4:9"
+      ],
+      "suggestedLifeSituations": [
+        "rest-peace"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-28.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-29",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-29",
+      "month": "september",
+      "day": 29,
+      "title": "To Glorify Christ Jesus",
+      "sourceScripture": "John 16:14",
+      "scriptureRefs": [
+        "John 16:14"
+      ],
+      "suggestedLifeSituations": [
+        "jesus-friendship"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-29.md",
+      "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
+      "bodyIncluded": false,
+      "reviewStatus": "needs-pastoral-review"
+    },
+    {
+      "id": "spurgeon-faiths-checkbook:09-30",
+      "sourceId": "spurgeon-faiths-checkbook",
+      "dateKey": "09-30",
+      "month": "september",
+      "day": 30,
+      "title": "Needs To Open Our Mouths",
+      "sourceScripture": "Ps. 81:10",
+      "scriptureRefs": [
+        "Ps. 81:10"
+      ],
+      "suggestedLifeSituations": [
+        "provision-finances"
+      ],
+      "taggingStatus": "machine-suggested-title-and-scripture-needs-pastoral-review",
+      "sourceRepo": "lyteword/chspurgeon-fcb",
+      "sourcePath": "september/september-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
       "reviewStatus": "needs-pastoral-review"
