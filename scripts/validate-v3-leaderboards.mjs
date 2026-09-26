@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 const read=path=>fs.readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const owner=read('src/app/leaderboards.js'),api=read('src/core/api.js'),bootstrap=read('src/app/bootstrap.js'),view=read('src/features/leaderboards/index.js'),community=read('src/features/community/index.js'),workflow=read('.github/workflows/v3-regression.yml');
 const fail=message=>{throw new Error(`Leaderboards architecture: ${message}`)};
@@ -12,5 +13,5 @@ const communityRouteRenderer=community.includes('data-community-route="${action.
 const communityRouteDispatch=community.includes('onNavigate?.(button.dataset.communityRoute)');
 if(!communityLeaderboardRoute||!communityRouteRenderer||!communityRouteDispatch)fail('Community must declare, render and dispatch the verified leaderboard route.');
 if(!view.includes('LOCAL CONGREGATION BOARD')||!view.includes('spiritual worth'))fail('view must retain congregation scope and non-spiritual-ranking copy.');
-if(!workflow.includes('scripts/validate-v3-leaderboards.mjs')||!workflow.includes('tests/v3-leaderboards-edge.mjs')||!workflow.includes('tests/v3-leaderboards-smoke.mjs'))fail('accumulated workflow must retain Leaderboards coverage.');
+for(const file of ['scripts/validate-v3-leaderboards.mjs','tests/v3-leaderboards-edge.mjs','tests/v3-leaderboards-smoke.mjs'])if(!workflowInvokesNode(workflow,file))fail(`accumulated workflow must retain Leaderboards coverage: ${file}`);
 console.log('BibleQuest v3 Leaderboards architecture boundary passed.');

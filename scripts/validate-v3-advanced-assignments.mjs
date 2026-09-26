@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const read=file=>fs.readFileSync(file,'utf8');
 const failures=[];
@@ -30,9 +31,9 @@ for(const token of['assignment.schedule_at','assignment.required_reflection','as
 if(!server.includes("'rule_saved_scheduler_not_enabled'"))fail('Retained server contract must preserve recurrence-without-scheduler boundary.');
 
 for(const phrase of['recurrenceGeneration','confirmation','#79','production Supabase'])if(!contract.includes(phrase))fail(`Advanced Assignments contract missing explicit boundary: ${phrase}`);
-if(!workflow.includes('scripts/validate-v3-advanced-assignments.mjs'))fail('Accumulated workflow must execute the #74 architecture validator.');
-if(!workflow.includes('tests/v3-advanced-assignments-edge.mjs'))fail('Accumulated workflow must execute the #74 edge regression.');
-if(!workflow.includes('tests/v3-advanced-assignments-smoke.mjs'))fail('Accumulated workflow must execute the #74 browser regression.');
+if(!workflowInvokesNode(workflow,'scripts/validate-v3-advanced-assignments.mjs'))fail('Accumulated workflow must execute the #74 architecture validator.');
+if(!workflowInvokesNode(workflow,'tests/v3-advanced-assignments-edge.mjs'))fail('Accumulated workflow must execute the #74 edge regression.');
+if(!workflowInvokesNode(workflow,'tests/v3-advanced-assignments-smoke.mjs'))fail('Accumulated workflow must execute the #74 browser regression.');
 
 if(failures.length){console.error(`BibleQuest v3 Advanced Assignments validation FAILED (${failures.length})`);for(const message of failures)console.error(`- ${message}`);process.exit(1)}
 console.log('BibleQuest v3 Advanced Assignments architecture validation passed.');

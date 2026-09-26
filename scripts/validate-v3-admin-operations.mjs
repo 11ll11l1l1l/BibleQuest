@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 const read=path=>fs.readFileSync(path,'utf8');
 const fail=message=>{console.error(`Admin Operations architecture violation: ${message}`);process.exitCode=1};
 const required=['ADMIN_OPERATIONS_V3.md','admin-operations.html','src/app/admin-operations.js','src/app/admin-operations-entry.js','src/features/admin-operations/index.js','src/ui/admin-operations.css','tests/v3-admin-operations-edge.mjs','tests/v3-admin-operations-smoke.mjs'];
@@ -27,7 +28,7 @@ for(const requiredToken of['delete_user','Only the BibleQuest owner can delete a
 if(!adminEntry.includes('createAdminOperationsService')||!adminEntry.includes('accountDeletion')||!adminEntry.includes('api.adminOperations'))fail('Admin Console entry must compose #93 deletion owner instead of duplicating it');
 for(const requiredToken of['data-admin-delete-user','accountDeletion.deleteUser','DELETE ${user.email||user.name}','accountDeletion.authorize'])if(!adminView.includes(requiredToken))fail(`Admin Console Owner deletion composition missing ${requiredToken}`);
 if(adminView.includes('bq-admin-ops')||adminView.includes('functions.invoke'))fail('Admin Console rendering must not own the #93 backend endpoint');
-if(!workflow.includes('validate-v3-admin-operations.mjs')||!workflow.includes('v3-admin-operations-edge.mjs')||!workflow.includes('v3-admin-operations-smoke.mjs'))fail('accumulated workflow must include all #93 permanent checks');
+for(const file of ['scripts/validate-v3-admin-operations.mjs','tests/v3-admin-operations-edge.mjs','tests/v3-admin-operations-smoke.mjs'])if(!workflowInvokesNode(workflow,file))fail(`accumulated workflow must include #93 permanent check: ${file}`);
 if(/\npush\s*:/.test(workflow)||/\npush\s*:/.test(workflow.replace(/workflow_dispatch\s*:/g,'')))fail('product v3 regression workflow must remain manual-only');
 if(!/^\| 93 \| Admin operations \| Yes \| Standalone old \| (?:Not started|Implemented|Verified|Regression-tested) \|/m.test(inventory))fail('inventory #93 row is missing or malformed');
 if(!/^\| 94 \| Reset\/recovery page \| Yes \| Standalone old \| (?:Not started|Implemented|Verified|Regression-tested) \|/m.test(inventory))fail('inventory #94 row is missing or malformed');
