@@ -1,6 +1,7 @@
 import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
 import { deriveVersePeek } from '../v6/reader/context-helpers.ts';
 import { readerSearchResponseMatches } from '../v6/reader/scripture-repository.ts';
+import { createReaderChapterReadBoundary } from '../v6/reader/live-progress.ts';
 
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
@@ -9,6 +10,7 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   if (!bible || !storage || !progress) throw new Error('Reader service requires Bible data, storage and progress boundaries.');
 
   const offlineScripture = createOfflineScriptureAvailability({ bibleService: bible });
+  const chapterProgress = createReaderChapterReadBoundary(progress);
   const normalize = input => {
     const translation = bible.translations.some(item => item.id === input?.translation) ? input.translation : DEFAULT_STATE.translation;
     let book;
@@ -90,19 +92,13 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   function chapterReadProgress(code=state.book,chapter=state.chapter) {
-    const events=progress.getState?.().events||{},canonicalId=`reader.read:${code}:${chapter}`;
-    if(events[canonicalId]?.type==='reader.chapter.read')return Object.freeze({id:canonicalId,row:events[canonicalId]});
-    const suffix=`:${code}:${chapter}`;
-    for(const [id,row] of Object.entries(events)){
-      if(row?.type==='reader.chapter.read'&&id.startsWith('reader.read:')&&id.endsWith(suffix))return Object.freeze({id,row});
-    }
-    return null;
+    return chapterProgress.find(code,chapter);
   }
 
   function markRead() {
     const translation = bible.getTranslation(state.translation);
     if (translation.mode === 'licensed-link') throw new Error(`${translation.label} opens externally; BibleQuest cannot mark unseen Scripture text as read.`);
-    const key = readKey(),eventId=`reader.read:${state.book}:${state.chapter}`,existing=chapterReadProgress();
+    const key = readKey(),existing=chapterReadProgress();
     if (state.read[key] || existing) {
       if(!state.read[key]){
         const date=existing?.row?.date||'';
@@ -111,7 +107,7 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
       }
       return Object.freeze({ newlyRead: false, progress: null, state: getState() });
     }
-    const award = progress.record({ id:eventId, type: 'reader.chapter.read', xp: 10, meaningful: true, metrics: { chaptersRead: 1 } });
+    const award = chapterProgress.record(state.book,state.chapter);
     const next = { ...state, read: { ...state.read, [key]: award.date } };
     storage.write(STORAGE_KEY, next);
     state = next;
