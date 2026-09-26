@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 
 const read=file=>fs.readFileSync(file,'utf8');
 const failures=[];
@@ -35,7 +36,7 @@ if(!contract.includes('linked_activity')||!contract.includes('#79'))fail('Assign
 if(!contract.includes('#77'))fail('Assignment Push contract must retain notification deferral.');
 if(rootLegacy.includes("from './src/app/assignments.js'")||rootLegacy.includes('src/features/assignments'))fail('Retained root assignment-advanced.js must remain reference-only, not compose the v3 owner.');
 
-for(const path of['scripts/validate-v3-assignment-push.mjs','tests/v3-assignment-push-edge.mjs','tests/v3-assignment-push-smoke.mjs'])if(!workflow.includes(path))fail(`Accumulated workflow must execute ${path}.`);
+for(const path of['scripts/validate-v3-assignment-push.mjs','tests/v3-assignment-push-edge.mjs','tests/v3-assignment-push-smoke.mjs'])if(!workflowInvokesNode(workflow,path))fail(`Accumulated workflow must execute ${path}.`);
 
 if(failures.length){console.error(`BibleQuest v3 Assignment Push validation FAILED (${failures.length})`);for(const message of failures)console.error(`- ${message}`);process.exit(1)}
 console.log('BibleQuest v3 Assignment Push architecture validation passed.');
