@@ -29,6 +29,12 @@ function blockForStep(source, stepName) {
   return match?.[0] ?? '';
 }
 
+function compatibilityIndexBlock(source) {
+  return source.match(
+    /BQ_INHERITED_STATIC_COMPATIBILITY_INDEX:\s*\|\n([\s\S]*?)\n[ \t]*run:\s*":"/,
+  )?.[1] ?? '';
+}
+
 function collect(source, expression) {
   return uniqueSorted([...source.matchAll(expression)].map((match) => match[0]));
 }
@@ -38,9 +44,15 @@ export function analyzeInheritedRegressionWorkflow(source) {
     throw new TypeError('Inherited regression workflow source must be a string.');
   }
 
+  const staticBlock = blockForStep(source, 'Run accumulated architecture validators');
   const browserBlock = blockForStep(source, 'Run accumulated browser/mobile regressions');
+  const compatibilityBlock = compatibilityIndexBlock(source);
   const directStaticValidators = collect(
-    source,
+    staticBlock,
+    /\bscripts\/validate-v3-[A-Za-z0-9._/-]+\.mjs\b/g,
+  );
+  const compatibilityStaticEntries = collect(
+    compatibilityBlock,
     /\bscripts\/validate-v3-[A-Za-z0-9._/-]+\.mjs\b/g,
   );
   const directBrowserTests = collect(
@@ -57,6 +69,7 @@ export function analyzeInheritedRegressionWorkflow(source) {
     usesVersionNeutralStaticAction: VERSION_NEUTRAL_STATIC_ACTION.test(source),
     usesVersionNeutralBrowserAction: VERSION_NEUTRAL_BROWSER_ACTION.test(source),
     directStaticValidators,
+    compatibilityStaticEntries,
     directBrowserTests,
     remainingLegacyCoupling: [],
   };
@@ -65,12 +78,14 @@ export function analyzeInheritedRegressionWorkflow(source) {
   if (report.legacyConcurrencyGroup) report.remainingLegacyCoupling.push('concurrency-group');
   if (report.legacyTempPaths.length) report.remainingLegacyCoupling.push('temporary-paths');
   if (report.directStaticValidators.length) report.remainingLegacyCoupling.push('inline-static-cohort');
+  if (report.compatibilityStaticEntries.length) report.remainingLegacyCoupling.push('compatibility-static-index');
   if (report.directBrowserTests.length) report.remainingLegacyCoupling.push('inline-browser-cohort');
 
   return Object.freeze({
     ...report,
     remainingLegacyCoupling: Object.freeze([...report.remainingLegacyCoupling]),
     directStaticValidators: Object.freeze([...report.directStaticValidators]),
+    compatibilityStaticEntries: Object.freeze([...report.compatibilityStaticEntries]),
     directBrowserTests: Object.freeze([...report.directBrowserTests]),
     legacyTempPaths: Object.freeze([...report.legacyTempPaths]),
     versionNeutral: report.remainingLegacyCoupling.length === 0,
