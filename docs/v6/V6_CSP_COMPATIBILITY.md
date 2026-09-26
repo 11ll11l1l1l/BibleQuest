@@ -70,6 +70,20 @@ worker-src 'self';
 
 Image, media, font and style directives are intentionally not frozen here. The current application still contains substantial inherited presentation/runtime code, so adding restrictive directives without browser evidence could break existing V5/V6 behavior.
 
+## Standalone-page compatibility findings
+
+The global Cloudflare `/*` header applies beyond the Vite root route, so standalone pages must be compatible before root enforcement.
+
+Current characterization:
+
+- `index.html`: external module script only; no inline `<script>` body or `<style>` block.
+- `admin.html` and `admin-operations.html`: external entry modules only; no inline script/style blocks.
+- `content-review.html`: external scripts only, but still directly loads the pinned Supabase browser client from jsDelivr.
+- `transform.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
+- `psychometrics.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
+
+Therefore the enforcement path is **not** to add blanket `'unsafe-inline'` permanently. The preferred migration is to externalize or nonce/hash the remaining inline blocks, then validate the resulting policy in report-only Chromium before enforcement.
+
 ## Required work before enforcement
 
 An enforcing CSP in root `_headers` is blocked until all of the following are complete:
