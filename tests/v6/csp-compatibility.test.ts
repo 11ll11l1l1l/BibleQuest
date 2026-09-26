@@ -18,13 +18,14 @@ const standalonePages = Object.freeze({
   contentReview: fs.readFileSync(new URL('../../content-review.html', import.meta.url), 'utf8'),
 });
 
-function hasInlineScript(source: string): boolean {
+function countInlineScripts(source: string): number {
   return [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-    .some((match) => !/\bsrc\s*=/.test(match[1]) && match[2].trim().length > 0);
+    .filter((match) => !/\bsrc\s*=/.test(match[1]) && match[2].trim().length > 0)
+    .length;
 }
 
-function hasInlineStyleBlock(source: string): boolean {
-  return /<style\b[^>]*>[\s\S]*?<\/style>/i.test(source);
+function countInlineStyleBlocks(source: string): number {
+  return [...source.matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi)].length;
 }
 
 test('CSP inventory tracks the exact Supabase client, project HTTPS origin, and Realtime WSS origin', () => {
