@@ -13,6 +13,7 @@ const inheritedAction = fs.readFileSync(
 test('legacy regression check identity is preserved while static execution moves behind a neutral seam', () => {
   assert.match(workflow, /^name: BibleQuest v3 regression$/m);
   assert.match(workflow, /uses:\s*\.\/\.github\/actions\/inherited-regression-static\b/);
+  assert.equal(workflowInvokesNode(workflow, 'tests/v3-workflow-contract-edge.mjs'), true);
   assert.doesNotMatch(workflow, /scripts\/validate-v3-architecture\.mjs/);
   assert.doesNotMatch(workflow, /tests\/v5-admin-reachability-edge\.mjs/);
 });
@@ -25,7 +26,6 @@ test('version-neutral inherited action preserves representative V3, V4, and V5 r
   for (const entry of [
     'scripts/validate-v3-architecture.mjs',
     'scripts/validate-v3-calendar.mjs',
-    'tests/v3-workflow-contract-edge.mjs',
     'tests/v4-assignment-self-only-edge.mjs',
     'tests/v5-leader-center-edge.mjs',
     'tests/v5-my-journey-static.mjs',
