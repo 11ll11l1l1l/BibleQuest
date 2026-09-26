@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { startLegacyPassAndPlaySession, startLegacySoloSession } from '../../src/v6/games/legacy-adapters.ts';
-import { legacyRoundQuestions } from '../../src/v6/games/legacy-question-adapter.ts';
+import {
+  advanceLegacyPassAndPlaySession,
+  answerLegacyPassAndPlaySession,
+  startLegacyPassAndPlaySession,
+  startLegacySoloSession,
+} from '../../src/v6/games/legacy-adapters.ts';
+import { adaptLegacyQuestions, legacyRoundQuestions } from '../../src/v6/games/legacy-question-adapter.ts';
+import { legacyGameRegistry } from '../../src/v6/games/legacy-registry.ts';
 import { advanceTurn, awardCurrentPlayer, startTurnRotation } from '../../src/v6/games/turns.ts';
 
 test('legacy question adapter preserves current verified question identity and references', () => {
@@ -29,6 +35,43 @@ test('solo and pass-and-play adapters share the same V6 multiple-choice engine/c
   assert.deepEqual(together.turns.players.map((player) => player.name), ['Player 1', 'Player 2', 'Player 3']);
 });
 
+test('pass-and-play adapter accepts a moderation-filtered bank without re-owning question logic', () => {
+  const filtered = adaptLegacyQuestions([
+    { id: 'safe-1', q: 'First?', choices: ['Yes', 'No'], answer: 0, why: 'First explanation.', ref: 'John 1:1' },
+    { id: 'safe-2', q: 'Second?', choices: ['Left', 'Right'], answer: 1, why: 'Second explanation.', ref: 'John 1:2' },
+  ]);
+  const together = startLegacyPassAndPlaySession('filtered-1', 2, filtered);
+
+  assert.deepEqual(together.session.questions.map((question) => question.id), ['safe-1', 'safe-2']);
+  assert.equal(together.session.xp, 0);
+
+  const answered = answerLegacyPassAndPlaySession(together, 0);
+  assert.equal(answered.applied, true);
+  assert.equal(answered.state.session.locked, true);
+  assert.equal(answered.state.session.correct, true);
+  assert.equal(answered.state.session.xp, 0, 'local Play Together must never award profile XP');
+  assert.deepEqual(answered.state.turns.players.map((player) => player.score), [1, 0]);
+
+  const duplicate = answerLegacyPassAndPlaySession(answered.state, 0);
+  assert.equal(duplicate.applied, false);
+  assert.equal(duplicate.duplicate, true);
+  assert.equal(duplicate.state.session.answers.length, 1);
+  assert.deepEqual(duplicate.state.turns.players.map((player) => player.score), [1, 0]);
+
+  const advanced = advanceLegacyPassAndPlaySession(answered.state);
+  assert.equal(advanced.state.session.index, 1);
+  assert.equal(advanced.state.turns.currentIndex, 1);
+
+  const wrong = answerLegacyPassAndPlaySession(advanced.state, 0);
+  assert.equal(wrong.state.session.correct, false);
+  assert.equal(wrong.state.session.xp, 0);
+  assert.deepEqual(wrong.state.turns.players.map((player) => player.score), [1, 0]);
+
+  const completed = advanceLegacyPassAndPlaySession(wrong.state);
+  assert.equal(completed.state.session.phase, 'complete');
+  assert.equal(completed.state.turns.currentIndex, 1, 'completion must not rotate to a phantom next turn');
+});
+
 test('turn rotation isolates score and rotates deterministically without a DOM or timer', () => {
   let turns = startTurnRotation([
     { id: 'a', name: 'A' },
@@ -47,4 +90,14 @@ test('turn rotation isolates score and rotates deterministically without a DOM o
 
   assert.throws(() => startTurnRotation([{ id: 'only', name: 'Only' }]), /2 to 6/);
   assert.throws(() => awardCurrentPlayer(turns, -1), /non-negative/);
+});
+
+test('remote Games capability remains fail-closed while local pass-and-play is explicit', () => {
+  const registry = legacyGameRegistry.list();
+  assert.equal(registry.some((game) => game.capabilities.remote), false);
+  const together = legacyGameRegistry.require('same-room');
+  assert.equal(together.capabilities.solo, false);
+  assert.equal(together.capabilities.passAndPlay, true);
+  assert.equal(together.capabilities.remote, false);
+  assert.equal(together.rewardAuthority, 'local-only');
 });
