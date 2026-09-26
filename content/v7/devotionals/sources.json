@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "generatedFor": "BibleQuest V7",
+  "policy": {
+    "runtimeIntegration": false,
+    "preserveOriginalText": true,
+    "storeBibleVerseText": false,
+    "bibleVerseHandling": "Store canonical references only; resolve verse text through BibleQuest Reader/translation layer.",
+    "aiUse": "AI/automation may classify, tag, search, and organize; devotional theology/content must remain sourced.",
+    "requiredBeforePublish": [
+      "source_provenance_verified",
+      "public_domain_or_license_verified",
+      "pastoral_theology_review",
+      "scripture_reference_review"
+    ]
+  },
+  "sources": [
+    {
+      "id": "murray-waiting-on-god-1894",
+      "title": "Waiting on God!",
+      "author": "Andrew Murray",
+      "authorLife": "1828-1917",
+      "originalPublicationYear": 1894,
+      "sourceHost": "CCEL",
+      "sourceUrl": "https://www.ccel.org/ccel/m/murray/waiting/cache/waiting.txt",
+      "sourceInfoUrl": "https://www.ccel.org/ccel/murray/waiting.html",
+      "rightsEvidence": "CCEL plain text metadata states Rights: Public Domain.",
+      "japanRightsNote": "Author died 1917; original work is beyond Japan's general life+70 term.",
+      "contentShape": "31 daily messages with Scripture references",
+      "preprocessingStatus": "indexed_and_tagged",
+      "bodyInRepo": false,
+      "note": "The CCEL contents OCR contains several malformed Psalm references; normalized references are stored with correction notes in the catalog."
+    },
+    {
+      "id": "smith-christians-secret-1885",
+      "title": "The Christian's Secret of a Happy Life",
+      "author": "Hannah Whitall Smith",
+      "authorLife": "1832-1911",
+      "originalPublicationYear": 1885,
+      "sourceHost": "CCEL / WHDL",
+      "sourceUrl": "https://www.ccel.org/ccel/s/smith_hw/secret/cache/secret.txt",
+      "sourceInfoUrl": "https://www.ccel.org/ccel/smith_hw/secret.html",
+      "rightsEvidence": "WHDL records the 1885 edition as public domain after due-diligence review.",
+      "japanRightsNote": "Author died 1911; original work is beyond Japan's general life+70 term.",
+      "contentShape": "22 practical Christian-life chapters",
+      "preprocessingStatus": "indexed_and_tagged",
+      "bodyInRepo": false
+    },
+    {
+      "id": "miller-making-most-life-1891",
+      "title": "Making the Most of Life",
+      "author": "J. R. Miller",
+      "authorLife": "1840-1912",
+      "originalPublicationYear": 1891,
+      "sourceHost": "Project Gutenberg",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/19193",
+      "sourceInfoUrl": "https://www.gutenberg.org/ebooks/19193",
+      "rightsEvidence": "Project Gutenberg marks eBook #19193 public domain in the USA.",
+      "japanRightsNote": "Author died 1912; original work is beyond Japan's general life+70 term.",
+      "contentShape": "25 practical Christian-life chapters",
+      "preprocessingStatus": "indexed_and_tagged",
+      "bodyInRepo": false
+    },
+    {
+      "id": "miller-personal-friendships-1897",
+      "title": "Personal Friendships of Jesus",
+      "author": "J. R. Miller",
+      "authorLife": "1840-1912",
+      "originalPublicationYear": 1897,
+      "sourceHost": "Project Gutenberg",
+      "sourceUrl": "https://www.gutenberg.org/ebooks/27349",
+      "sourceInfoUrl": "https://www.gutenberg.org/ebooks/27349",
+      "rightsEvidence": "Project Gutenberg marks eBook #27349 public domain in the USA.",
+      "japanRightsNote": "Author died 1912; original work is beyond Japan's general life+70 term.",
+      "contentShape": "15 chapters on relationships, friendship, comfort, and discipleship",
+      "preprocessingStatus": "indexed_and_tagged",
+      "bodyInRepo": false
+    },
+    {
+      "id": "spurgeon-morning-evening",
+      "title": "Morning and Evening: Daily Readings",
+      "author": "C. H. Spurgeon",
+      "authorLife": "1834-1892",
+      "originalPublicationYear": 1866,
+      "sourceHost": "CCEL",
+      "sourceUrl": "https://www.ccel.org/ccel/s/spurgeon/morneve/cache/morneve.txt",
+      "sourceInfoUrl": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+      "rightsEvidence": "CCEL labels the work 'Public Domain -- Copy Freely'.",
+      "japanRightsNote": "Author died 1892; original work is beyond Japan's general life+70 term.",
+      "contentShape": "Morning and evening readings for every day of the year",
+      "preprocessingStatus": "registered_for_entry_level_batch_tagging",
+      "bodyInRepo": false
+    },
+    {
+      "id": "spurgeon-faiths-checkbook",
+      "title": "Faith's Checkbook",
+      "author": "C. H. Spurgeon",
+      "authorLife": "1834-1892",
+      "originalPublicationYear": 1888,
+      "sourceHost": "CCEL",
+      "sourceUrl": "https://www.ccel.org/ccel/s/spurgeon/checkbook/cache/checkbook.txt",
+      "sourceInfoUrl": "https://www.ccel.org/ccel/spurgeon/checkbook.html",
+      "rightsEvidence": "Original work is out of copyright by term; CCEL hosts the complete text.",
+      "japanRightsNote": "Author died 1892; original work is beyond Japan's general life+70 term.",
+      "contentShape": "One promise-centered devotional per day of the year",
+      "preprocessingStatus": "registered_for_entry_level_batch_tagging",
+      "bodyInRepo": false
+    }
+  ]
+}
