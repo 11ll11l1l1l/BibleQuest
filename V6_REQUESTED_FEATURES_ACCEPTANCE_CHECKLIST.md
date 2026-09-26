@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-26 JST
+Updated: 2026-09-27 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -13,6 +13,8 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 Second certification reconciliation from integrated head `0e00188c3144a137ca48dd927faa954bfc7a361a`: previously integrated Database CI covers Presence, Journey Group/team/Live Room and media/notification tenant boundaries; inherited Leader Center contracts plus a focused stale-tenant unit regression prove the composition fails closed after an active-congregation change; per-book Recall uses demand-loaded pack fetches; Scripture source/license/attribution metadata remains in the Bible data owner; and the release checklist itself is regression-guarded so WAIVED is never counted as PASS.
 
 Third certification reconciliation from integrated head `f4f98f861005f1b9b0039473a8b6fe6a1bf591b5`: merged Reader live-progress boundary PR #727 passed Client Artifact Security `36199644834`, Phase-1 `36199644766`, and inherited regression `36199644696`; merged speedtrack batch #737 passed Phase-1 `36205547820`, Database CI `36205547874`, and inherited regression `36205547836`, including deterministic startup/critical-route budgets; merged speedtrack batch #759 passed Database CI `36206770253`, Client Artifact Security `36206770277`, Phase-1 `36206770345`, and inherited regression `36206770324`, preserving the deterministic offline conflict policy and executable real Auth session-revocation proof. Only the directly evidenced items below are promoted by this reconciliation.
+
+Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb955f0fc1f43868ede7e`: merged batch #770 passed Client Artifact Security `36210385282`, Phase-1 `36210385339`, and inherited regression `36210385312`, including the intentional Games decorative-art cleanup; merged canonical batch #783 passed Client Artifact Security `36219169398`, Phase-1 `36219169342`, and inherited regression `36219169485`, preserving the shared Games pass-and-play engine cutover, standalone CSP inline-block growth guard, Reader audio-provenance fail-closed hardening, and Context Lab async accessibility/resilience. Only requirements directly evidenced by these merged batches are promoted below; pending #789/#767/#784/#796 work is not counted as integrated acceptance.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -79,7 +81,7 @@ Third certification reconciliation from integrated head `f4f98f861005f1b9b003947
 - [ ] Chapter/verse presentation split into testable components.
 - [ ] Search is independently testable.
 - [ ] Verse Peek is independently testable.
-- [ ] Context Lab bridge is independently testable.
+- [x] Context Lab bridge is independently testable.
 - [ ] Japanese furigana support preserved.
 - [ ] Japanese vocabulary support preserved.
 - [x] Copyright/licensed-link redistribution policy is explicit and tested in the V6 content-manifest boundary.
@@ -130,10 +132,10 @@ Third certification reconciliation from integrated head `f4f98f861005f1b9b003947
 - [x] Scoring/reward policies are isolated and testable.
 - [x] Turn/timer rules are isolated where applicable.
 - [x] Progress/result contract is shared.
-- [ ] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
+- [x] Solo/pass-and-play/remote adapters do not duplicate game logic unnecessarily.
 - [x] Individual game views/components replace one monolithic all-game renderer.
 - [x] Shared question/feedback/result/scoreboard primitives exist.
-- [ ] Raw decorative emoji are removed where intentional art assets exist.
+- [x] Raw decorative emoji are removed where intentional art assets exist.
 - [x] Accessible labels remain independent from decorative art.
 - [x] Recall/game content is lazy-loaded where appropriate.
 - [x] Representative engine sessions are deterministic/replayable in unit tests.
