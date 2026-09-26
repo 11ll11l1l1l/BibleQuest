@@ -42,6 +42,17 @@ test('pass-and-play adapter accepts a moderation-filtered bank without re-owning
   ]);
   const together = startLegacyPassAndPlaySession('filtered-1', 2, filtered);
 
+  assert.throws(
+    () => answerLegacyPassAndPlaySession(together, -1),
+    /Choose one of the available answers\./,
+    'adapter must preserve the accepted Play Together validation copy',
+  );
+  assert.throws(
+    () => advanceLegacyPassAndPlaySession(together),
+    /Answer the current Play Together question before continuing\./,
+    'adapter must preserve the accepted unanswered-question validation copy',
+  );
+
   assert.deepEqual(together.session.questions.map((question) => question.id), ['safe-1', 'safe-2']);
   assert.equal(together.session.xp, 0);
 
