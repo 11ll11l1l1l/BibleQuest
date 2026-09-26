@@ -2,6 +2,8 @@ import { GAME_MODES, buildGameRound } from '../features/games/content.js';
 import { DETECTIVE_MODE, DETECTIVES } from '../features/games/detectives.js';
 import { TIMELINE_MODE, TIMELINES } from '../features/games/timelines.js';
 import { createKidsMemoryGame } from './kids-memory.js';
+import { adaptLegacyQuestions } from '../v6/games/legacy-question-adapter.ts';
+import { advanceLegacyPassAndPlaySession, answerLegacyPassAndPlaySession, finishLegacyPassAndPlaySession, startLegacyPassAndPlaySession } from '../v6/games/legacy-adapters.ts';
 
 const ALL_MODES=Object.freeze([...GAME_MODES,DETECTIVE_MODE,TIMELINE_MODE]);
 const XP=Object.freeze({correct:10,incorrect:3,recallGot:5,recallAgain:1,detectiveCorrect:12,detectiveIncorrect:3,timelineCorrect:20,timelineIncorrect:4});
@@ -20,7 +22,7 @@ const freezeTimeline=item=>item?Object.freeze({...item,items:Object.freeze([...i
 const validCode=value=>/^[0-9A-Z]{3}$/.test(String(value||''));
 const normalizeAnswer=value=>String(value||'').trim().toLocaleLowerCase();
 const SAME_ROOM_MIN=2,SAME_ROOM_MAX=6;
-const emptySameRoom=()=>({phase:'same-room-setup',players:[],bank:[],index:0,currentPlayerIndex:0,locked:false,selected:null,correct:null});
+const emptySameRoom=()=>({phase:'same-room-setup',bank:[],session:null,turns:null});
 
 function normalizeResults(input){
   const results={};
@@ -60,7 +62,7 @@ function emptyState(){return{phase:'launcher',mode:null,roundId:null,bank:[],ind
 export function createGameLauncherService({progress,storage,recall,moderation=null,roundIdFactory,clock=()=>new Date()}={}){
   if(!progress||!storage||!recall)throw new Error('Game launcher requires verified Progress, Storage, and Recall Pack owners.');
   if(moderation&&(!moderation.applyCore||!moderation.applyRecall||!moderation.hasRecallIncludes))throw new Error('Game launcher content policy must use the verified Content Moderation owner.');
-  let sequence=0,detectiveCursor=-1,timelineCursor=-1;
+  let sequence=0,sameRoomSequence=0,detectiveCursor=-1,timelineCursor=-1;
   const bootNonce=`${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`;
   const makeRoundId=typeof roundIdFactory==='function'?roundIdFactory:(mode,roundSequence)=>`${bootNonce}-${mode}-${roundSequence}`;
   let results=normalizeResults(storage.read(RESULTS_KEY,{}));
@@ -97,46 +99,63 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
   }
   function clearActiveRound(){if(typeof storage.remove==='function')storage.remove(ACTIVE_ROUND_KEY);else storage.write(ACTIVE_ROUND_KEY,null)}
   function validRoundId(mode){sequence+=1;const roundId=String(makeRoundId(mode,sequence)||'').trim();if(!roundId||roundId.length>100)throw new Error('Game round identity is invalid.');return roundId}
+  function validSameRoomId(){sameRoomSequence+=1;const roundId=String(makeRoundId('same-room',sameRoomSequence)||'').trim();if(!roundId||roundId.length>100)throw new Error('Play Together session identity is invalid.');return roundId}
   function completionTime(){const raw=clock(),date=raw instanceof Date?raw:new Date(raw);if(!Number.isFinite(date.getTime()))throw new Error('Game completion time is invalid.');return date.toISOString()}
   function persistResult(mode,score,total,gained){const result={score,total,gained,completedAt:completionTime()};results={...results,[mode]:result};storage.write(RESULTS_KEY,results);return result}
 
   function sameRoomSnapshot(){
-    const question=sameRoom.phase==='same-room-question'?sameRoom.bank[sameRoom.index]||null:null;
-    const players=Object.freeze(sameRoom.players.map((player,index)=>Object.freeze({...player,active:sameRoom.phase==='same-room-question'&&index===sameRoom.currentPlayerIndex})));
-    return Object.freeze({phase:sameRoom.phase,players,index:sameRoom.index,total:sameRoom.bank.length,currentPlayerIndex:sameRoom.currentPlayerIndex,currentPlayer:players[sameRoom.currentPlayerIndex]||null,question:freezeQuestion(question),locked:sameRoom.locked,selected:sameRoom.selected,correct:sameRoom.correct});
+    const session=sameRoom.session,turns=sameRoom.turns;
+    const active=sameRoom.phase==='same-room-question'&&session?.phase==='question';
+    const index=sameRoom.phase==='same-room-complete'&&session?.phase==='complete'?sameRoom.bank.length:Number(session?.index||0);
+    const question=active?sameRoom.bank[index]||null:null;
+    const currentPlayerIndex=Number(turns?.currentIndex||0);
+    const players=Object.freeze((turns?.players||[]).map((player,playerIndex)=>Object.freeze({...player,active:active&&playerIndex===currentPlayerIndex})));
+    return Object.freeze({
+      phase:sameRoom.phase,
+      players,
+      index,
+      total:sameRoom.bank.length,
+      currentPlayerIndex,
+      currentPlayer:players[currentPlayerIndex]||null,
+      question:freezeQuestion(question),
+      locked:active&&session?.locked===true,
+      selected:active?session?.selectedIndex??null:null,
+      correct:active?session?.correct??null:null
+    });
   }
+
+  const sameRoomAdapter=()=>Object.freeze({kind:'pass-and-play',mode:'mixed-quest',session:sameRoom.session,turns:sameRoom.turns});
 
   function startSameRoom(playerCount=2){
     const count=Number(playerCount);
     if(!Number.isInteger(count)||count<SAME_ROOM_MIN||count>SAME_ROOM_MAX)throw new Error('Play Together requires 2 to 6 players.');
     const base=[...buildGameRound('mixed-quest')],bank=moderation?[...moderation.applyCore(base)]:base;
     if(!bank.length)throw new Error(moderation?'Play Together has no questions available under the current content policy.':'Play Together has no verified questions.');
-    sameRoom={phase:'same-room-question',players:Array.from({length:count},(_,index)=>({id:`player-${index+1}`,name:`Player ${index+1}`,score:0})),bank,index:0,currentPlayerIndex:0,locked:false,selected:null,correct:null};
+    const adapter=startLegacyPassAndPlaySession(validSameRoomId(),count,adaptLegacyQuestions(bank));
+    sameRoom={phase:'same-room-question',bank,session:adapter.session,turns:adapter.turns};
     return sameRoomSnapshot();
   }
 
   function answerSameRoom(choiceIndex){
-    if(sameRoom.phase!=='same-room-question')throw new Error('Start Play Together before answering.');
-    if(sameRoom.locked)return Object.freeze({applied:false,duplicate:true,...sameRoomSnapshot()});
-    const question=sameRoom.bank[sameRoom.index],choice=Number(choiceIndex);
-    if(!Number.isInteger(choice)||choice<0||choice>=question.choices.length)throw new Error('Choose one of the available answers.');
-    const correct=choice===question.answer,players=sameRoom.players.map((player,index)=>index===sameRoom.currentPlayerIndex?{...player,score:player.score+(correct?1:0)}:player);
-    sameRoom={...sameRoom,players,locked:true,selected:choice,correct};
-    return Object.freeze({applied:true,duplicate:false,...sameRoomSnapshot()});
+    if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('Start Play Together before answering.');
+    const transition=answerLegacyPassAndPlaySession(sameRoomAdapter(),Number(choiceIndex));
+    sameRoom={...sameRoom,session:transition.state.session,turns:transition.state.turns};
+    return Object.freeze({applied:transition.applied,duplicate:transition.duplicate,...sameRoomSnapshot()});
   }
 
   function nextSameRoom(){
-    if(sameRoom.phase!=='same-room-question')throw new Error('There is no active Play Together question.');
-    if(!sameRoom.locked)throw new Error('Answer the current Play Together question before continuing.');
-    if(sameRoom.index+1>=sameRoom.bank.length){sameRoom={...sameRoom,phase:'same-room-complete',index:sameRoom.bank.length,locked:false,selected:null,correct:null};return sameRoomSnapshot()}
-    sameRoom={...sameRoom,index:sameRoom.index+1,currentPlayerIndex:(sameRoom.currentPlayerIndex+1)%sameRoom.players.length,locked:false,selected:null,correct:null};
+    if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('There is no active Play Together question.');
+    const transition=advanceLegacyPassAndPlaySession(sameRoomAdapter());
+    sameRoom={...sameRoom,phase:transition.state.session.phase==='complete'?'same-room-complete':'same-room-question',session:transition.state.session,turns:transition.state.turns};
     return sameRoomSnapshot();
   }
 
   function finishSameRoom(){
     if(sameRoom.phase==='same-room-complete')return sameRoomSnapshot();
-    if(sameRoom.phase!=='same-room-question')throw new Error('Start Play Together before finishing.');
-    sameRoom={...sameRoom,phase:'same-room-complete',locked:false,selected:null,correct:null};return sameRoomSnapshot();
+    if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('Start Play Together before finishing.');
+    const transition=finishLegacyPassAndPlaySession(sameRoomAdapter());
+    sameRoom={...sameRoom,phase:'same-room-complete',session:transition.state.session,turns:transition.state.turns};
+    return sameRoomSnapshot();
   }
   function resetSameRoom(){sameRoom=emptySameRoom();return sameRoomSnapshot()}
 
