@@ -43,8 +43,9 @@ function nonBlank(value: unknown): boolean {
   return String(value ?? '').trim().length > 0;
 }
 
-function validSourceMetadata(source: ScriptureAudioSourceMetadata): boolean {
+function validSourceMetadata(source: ScriptureAudioSourceMetadata | null | undefined): source is ScriptureAudioSourceMetadata {
   if (
+    !source ||
     !TRANSLATION_ID.test(String(source.translationId ?? '').trim()) ||
     !nonBlank(source.source) ||
     !nonBlank(source.license)
@@ -59,8 +60,8 @@ function validSourceMetadata(source: ScriptureAudioSourceMetadata): boolean {
   return true;
 }
 
-function validSegments(segments: readonly ScriptureAudioSegment[]): boolean {
-  if (segments.length < 1) return false;
+function validSegments(segments: readonly ScriptureAudioSegment[] | null | undefined): boolean {
+  if (!Array.isArray(segments) || segments.length < 1) return false;
 
   const ids = new Set<string>();
   for (const segment of segments) {
