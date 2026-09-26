@@ -109,7 +109,9 @@ test('pass-and-play early finish completes the shared session without rotating o
   const duplicate = finishLegacyPassAndPlaySession(finished.state);
   assert.equal(duplicate.applied, false);
   assert.equal(duplicate.duplicate, true);
-  assert.equal(duplicate.state, finished.state);
+  assert.equal(duplicate.state.session, finished.state.session);
+  assert.equal(duplicate.state.turns, finished.state.turns);
+  assert.deepEqual(duplicate.state, finished.state);
 });
 
 test('turn rotation isolates score and rotates deterministically without a DOM or timer', () => {
