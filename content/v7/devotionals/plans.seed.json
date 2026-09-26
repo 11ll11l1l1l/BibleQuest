@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "generatedFor": "BibleQuest V7",
+  "state": "preprocessed-plan-seeds",
+  "note": "These are BibleQuest discovery/grouping metadata over historical source units. They are not new devotional theology and require pastoral review before publication.",
+  "plans": [
+    {
+      "id": "waiting-for-an-answer",
+      "title": "When You're Waiting for an Answer",
+      "lifeSituation": "waiting",
+      "days": [
+        "murray-waiting-on-god-1894:day-11",
+        "murray-waiting-on-god-1894:day-15",
+        "murray-waiting-on-god-1894:day-17",
+        "murray-waiting-on-god-1894:day-20",
+        "murray-waiting-on-god-1894:day-22",
+        "murray-waiting-on-god-1894:day-25",
+        "murray-waiting-on-god-1894:day-31"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "difficult-decisions",
+      "title": "When You Don't Know What to Do",
+      "lifeSituation": "guidance-decisions",
+      "days": [
+        "smith-christians-secret-1885:chapter-11",
+        "smith-christians-secret-1885:chapter-07",
+        "murray-waiting-on-god-1894:day-05",
+        "murray-waiting-on-god-1894:day-15",
+        "murray-waiting-on-god-1894:day-13",
+        "miller-making-most-life-1891:chapter-19",
+        "murray-waiting-on-god-1894:day-31"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "after-failure",
+      "title": "After You Failed",
+      "lifeSituation": "failure-regret",
+      "days": [
+        "smith-christians-secret-1885:chapter-13",
+        "smith-christians-secret-1885:chapter-21",
+        "miller-personal-friendships-1897:chapter-07",
+        "miller-making-most-life-1891:chapter-08",
+        "murray-waiting-on-god-1894:day-14"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "when-you-doubt",
+      "title": "When Faith Feels Uncertain",
+      "lifeSituation": "doubt",
+      "days": [
+        "smith-christians-secret-1885:chapter-06",
+        "smith-christians-secret-1885:chapter-14",
+        "miller-personal-friendships-1897:chapter-08",
+        "murray-waiting-on-god-1894:day-22",
+        "murray-waiting-on-god-1894:day-31"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "grief-and-loss",
+      "title": "Walking Through Grief and Loss",
+      "lifeSituation": "grief-loss",
+      "days": [
+        "miller-making-most-life-1891:chapter-10",
+        "miller-personal-friendships-1897:chapter-11",
+        "miller-personal-friendships-1897:chapter-13",
+        "murray-waiting-on-god-1894:day-17",
+        "murray-waiting-on-god-1894:day-25",
+        "murray-waiting-on-god-1894:day-24",
+        "murray-waiting-on-god-1894:day-14"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "anxiety-and-worry",
+      "title": "When Worry Won't Let Go",
+      "lifeSituation": "anxiety-worry",
+      "days": [
+        "murray-waiting-on-god-1894:day-10",
+        "murray-waiting-on-god-1894:day-11",
+        "murray-waiting-on-god-1894:day-25",
+        "murray-waiting-on-god-1894:day-31",
+        "smith-christians-secret-1885:chapter-11",
+        "smith-christians-secret-1885:chapter-03",
+        "miller-making-most-life-1891:chapter-07"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "marriage-and-home",
+      "title": "Building a Faithful Marriage and Home",
+      "lifeSituation": "marriage",
+      "days": [
+        "miller-home-making-1882:chapter-01",
+        "miller-home-making-1882:chapter-02",
+        "miller-home-making-1882:chapter-03",
+        "miller-home-making-1882:chapter-07",
+        "miller-home-making-1882:chapter-08",
+        "miller-making-most-life-1891:chapter-21",
+        "miller-home-making-1882:chapter-09"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "parenting-and-family",
+      "title": "Faith at Home",
+      "lifeSituation": "parenting-family",
+      "days": [
+        "miller-home-making-1882:chapter-04",
+        "miller-home-making-1882:chapter-05",
+        "miller-home-making-1882:chapter-06",
+        "miller-home-making-1882:chapter-07",
+        "miller-home-making-1882:chapter-08",
+        "miller-personal-friendships-1897:chapter-02",
+        "miller-making-most-life-1891:chapter-21"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "loneliness",
+      "title": "When You Feel Alone",
+      "lifeSituation": "loneliness",
+      "days": [
+        "miller-personal-friendships-1897:chapter-09",
+        "miller-personal-friendships-1897:chapter-12",
+        "miller-personal-friendships-1897:chapter-15",
+        "miller-making-most-life-1891:chapter-16",
+        "smith-christians-secret-1885:chapter-22"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "work-and-purpose",
+      "title": "Work, Calling, and Purpose",
+      "lifeSituation": "work-vocation",
+      "days": [
+        "miller-making-most-life-1891:chapter-01",
+        "miller-making-most-life-1891:chapter-03",
+        "miller-making-most-life-1891:chapter-12",
+        "miller-making-most-life-1891:chapter-14",
+        "miller-making-most-life-1891:chapter-17",
+        "miller-making-most-life-1891:chapter-19",
+        "smith-christians-secret-1885:chapter-10"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "temptation",
+      "title": "When You're Facing Temptation",
+      "lifeSituation": "temptation",
+      "days": [
+        "smith-christians-secret-1885:chapter-12",
+        "smith-christians-secret-1885:chapter-05",
+        "smith-christians-secret-1885:chapter-06",
+        "murray-waiting-on-god-1894:day-08",
+        "murray-waiting-on-god-1894:day-12"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "hard-times",
+      "title": "Strength for Hard Times",
+      "lifeSituation": "suffering-trials",
+      "days": [
+        "miller-making-most-life-1891:chapter-06",
+        "miller-making-most-life-1891:chapter-24",
+        "miller-making-most-life-1891:chapter-22",
+        "murray-waiting-on-god-1894:day-17",
+        "murray-waiting-on-god-1894:day-21",
+        "murray-waiting-on-god-1894:day-14",
+        "smith-christians-secret-1885:chapter-18"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "prayer",
+      "title": "Learning to Wait and Pray",
+      "lifeSituation": "prayer",
+      "days": [
+        "miller-making-most-life-1891:chapter-04",
+        "murray-waiting-on-god-1894:day-07",
+        "murray-waiting-on-god-1894:day-05",
+        "murray-waiting-on-god-1894:day-15",
+        "murray-waiting-on-god-1894:day-18",
+        "murray-waiting-on-god-1894:day-29",
+        "murray-waiting-on-god-1894:day-31"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    },
+    {
+      "id": "spiritual-growth",
+      "title": "Growing Deeper in Faith",
+      "lifeSituation": "spiritual-growth",
+      "days": [
+        "smith-christians-secret-1885:chapter-09",
+        "smith-christians-secret-1885:chapter-16",
+        "smith-christians-secret-1885:chapter-17",
+        "miller-making-most-life-1891:chapter-05",
+        "miller-making-most-life-1891:chapter-09",
+        "miller-making-most-life-1891:chapter-23",
+        "murray-waiting-on-god-1894:day-30"
+      ],
+      "requiresPastoralReview": true,
+      "selectionType": "curated-source-units"
+    }
+  ]
+}
