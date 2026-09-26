@@ -24,7 +24,7 @@ export function adaptLegacyQuestions(
     Object.freeze({
       id: String(row?.id ?? ''),
       prompt: String(row?.q ?? ''),
-      choices: Object.freeze(Array.isArray(row?.choices) ? row.choices.map((choice) => String(choice)) : []),
+      choices: Object.freeze(Array.isArray(row?.choices) ? row.choices.map((choice: unknown) => String(choice)) : []),
       answerIndex: Number(row?.answer),
       explanation: String(row?.why ?? '').trim() || undefined,
       reference: String(row?.ref ?? '').trim() || undefined,
