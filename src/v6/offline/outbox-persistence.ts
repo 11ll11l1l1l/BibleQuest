@@ -19,6 +19,11 @@ export interface OfflineOutboxPersistence {
   list(): Promise<readonly unknown[]>;
   put(record: PersistedOfflineMutation): Promise<void>;
   delete(id: string): Promise<void>;
+  compareAndPut(
+    expected: PersistedOfflineMutation,
+    record: PersistedOfflineMutation,
+  ): Promise<boolean>;
+  compareAndDelete(expected: PersistedOfflineMutation): Promise<boolean>;
   clear(): Promise<void>;
 }
 
@@ -68,6 +73,50 @@ export function parsePersistedOfflineMutation(value: unknown): PersistedOfflineM
     payload: record.payload,
     retryAt: retryAt == null ? null : retryAt,
   });
+}
+
+function samePersistedPayload(left: unknown, right: unknown): boolean {
+  if (Object.is(left, right)) return true;
+  if (typeof left !== typeof right) return false;
+  if (left === null || right === null) return false;
+
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) return false;
+    return left.every((value, index) => samePersistedPayload(value, right[index]));
+  }
+
+  if (typeof left !== 'object' || typeof right !== 'object') return false;
+
+  const leftPrototype = Object.getPrototypeOf(left);
+  const rightPrototype = Object.getPrototypeOf(right);
+  if (leftPrototype !== Object.prototype || rightPrototype !== Object.prototype) return false;
+
+  const leftRecord = left as Record<string, unknown>;
+  const rightRecord = right as Record<string, unknown>;
+  const leftKeys = Object.keys(leftRecord).sort();
+  const rightKeys = Object.keys(rightRecord).sort();
+  if (leftKeys.length !== rightKeys.length) return false;
+  if (!leftKeys.every((key, index) => key === rightKeys[index])) return false;
+
+  return leftKeys.every((key) => samePersistedPayload(leftRecord[key], rightRecord[key]));
+}
+
+export function samePersistedOfflineMutation(
+  left: PersistedOfflineMutation | null | undefined,
+  right: PersistedOfflineMutation | null | undefined,
+): boolean {
+  if (!left || !right) return false;
+  return left.schemaVersion === right.schemaVersion
+    && left.id === right.id
+    && left.domain === right.domain
+    && left.operation === right.operation
+    && left.idempotencyKey === right.idempotencyKey
+    && left.identity.accountId === right.identity.accountId
+    && left.identity.congregationId === right.identity.congregationId
+    && left.createdAt === right.createdAt
+    && left.attempt === right.attempt
+    && left.retryAt === right.retryAt
+    && samePersistedPayload(left.payload, right.payload);
 }
 
 export function toPersistedOfflineMutation<TPayload>(
@@ -179,6 +228,34 @@ export class IndexedDbOfflineOutboxPersistence implements OfflineOutboxPersisten
     await completed;
   }
 
+  async compareAndPut(
+    expected: PersistedOfflineMutation,
+    record: PersistedOfflineMutation,
+  ): Promise<boolean> {
+    const validExpected = parsePersistedOfflineMutation(expected);
+    const validRecord = parsePersistedOfflineMutation(record);
+    if (!validExpected || !validRecord || validExpected.id !== validRecord.id) {
+      throw new Error('Offline outbox compare-and-put requires valid records with the same mutation id.');
+    }
+
+    const db = await this.#dbPromise;
+    const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readwrite');
+    const completed = transactionComplete(transaction);
+    const store = transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME);
+    const request = store.get(validExpected.id);
+    let applied = false;
+
+    request.onsuccess = () => {
+      const current = parsePersistedOfflineMutation(request.result);
+      if (!samePersistedOfflineMutation(current, validExpected)) return;
+      store.put(validRecord);
+      applied = true;
+    };
+
+    await completed;
+    return applied;
+  }
+
   async delete(id: string): Promise<void> {
     const key = required(id);
     if (!key) throw new Error('Offline mutation id is required.');
@@ -187,6 +264,30 @@ export class IndexedDbOfflineOutboxPersistence implements OfflineOutboxPersisten
     const completed = transactionComplete(transaction);
     transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME).delete(key);
     await completed;
+  }
+
+  async compareAndDelete(expected: PersistedOfflineMutation): Promise<boolean> {
+    const validExpected = parsePersistedOfflineMutation(expected);
+    if (!validExpected) {
+      throw new Error('Offline outbox compare-and-delete requires a valid mutation record.');
+    }
+
+    const db = await this.#dbPromise;
+    const transaction = db.transaction(OFFLINE_OUTBOX_STORE_NAME, 'readwrite');
+    const completed = transactionComplete(transaction);
+    const store = transaction.objectStore(OFFLINE_OUTBOX_STORE_NAME);
+    const request = store.get(validExpected.id);
+    let applied = false;
+
+    request.onsuccess = () => {
+      const current = parsePersistedOfflineMutation(request.result);
+      if (!samePersistedOfflineMutation(current, validExpected)) return;
+      store.delete(validExpected.id);
+      applied = true;
+    };
+
+    await completed;
+    return applied;
   }
 
   async clear(): Promise<void> {

@@ -27,6 +27,7 @@ The V6 engine is the reusable technical platform that V7 will later use for the 
 - explicit session/tenant/data ownership;
 - component and design-token primitives;
 - structured Reader/content/offline engine;
+- BSB Audio Bible delivery with verse synchronization and a hard free-tier storage budget;
 - deterministic Games engine;
 - modern media session engine;
 - notification/push/background-sync engine;
@@ -173,6 +174,27 @@ V5 already provides baseline offline re-open behavior. V6 replaces that minimum 
 - offline reading position and supported local search;
 - explicit unavailable state for live/licensed translations offline;
 - independently versioned app/service-worker/content migrations.
+
+### BSB Audio Bible — V6 Reader feature
+
+English Bible audio is part of V6 Reader scope and must use the same BSB translation shown in the Reader. The initial narration must have repository-recorded redistribution provenance and must be hosted through BibleQuest-controlled object storage rather than another application's private delivery URLs.
+
+Required outcomes:
+
+- one complete BSB narration available through the Reader with chapter playback;
+- BibleQuest-controlled Cloudflare R2 Standard storage for canonical audio assets;
+- **hard release budget: all BibleQuest-hosted BSB audio assets and retained derived copies combined remain below 10 GB**;
+- prefer one canonical speech-optimized encoding and avoid redundant high-bitrate copies unless the storage budget remains proven green;
+- deterministic release inventory calculates total hosted audio bytes and fails the audio release gate at or above 10 GB;
+- chapter/verse timing manifest is versioned against the exact BSB text/audio revision;
+- current-verse highlighting, tap-verse-to-seek and auto-scroll behavior;
+- playback speed, pause/resume, auto-next chapter, sleep timer and persistent resume position;
+- background/lock-screen media behavior where supported, with safe degradation elsewhere;
+- selective offline chapter/book downloads require explicit user action and must not silently pre-cache the whole Audio Bible;
+- audio source/provenance and public-domain/CC0 status are recorded in-repo;
+- a provider boundary allows future narrators/languages without coupling Reader state to one storage host.
+
+Audio binaries must not be committed to Git or bulk-stored in Supabase. Object storage owns large audio payloads; Supabase remains the system of record for account/progress metadata.
 
 ## Exit gate
 
