@@ -7,6 +7,7 @@ const pushSource = fs.readFileSync(new URL('../../src/app/push-subscription.js',
 const youtubeSource = fs.readFileSync(new URL('../../src/v6/media/youtube-iframe-adapter.ts', import.meta.url), 'utf8');
 const headersSource = fs.readFileSync(new URL('../../_headers', import.meta.url), 'utf8');
 const inventory = fs.readFileSync(new URL('../../docs/v6/V6_CSP_COMPATIBILITY.md', import.meta.url), 'utf8');
+const provisionalPolicy = inventory.match(/## Provisional report-only policy shape[\s\S]*?```\n([\s\S]*?)\n```/)?.[1] ?? '';
 
 const standalonePages = Object.freeze({
   index: fs.readFileSync(new URL('../../index.html', import.meta.url), 'utf8'),
@@ -37,7 +38,7 @@ test('CSP inventory tracks the exact Supabase client, project HTTPS origin, and 
   assert.ok(inventory.includes('https://cdn.jsdelivr.net'));
   assert.ok(inventory.includes(httpsOrigin));
   assert.ok(inventory.includes(`wss://${projectRef}.supabase.co`));
-  assert.doesNotMatch(inventory, /\*\.supabase\.co/);
+  assert.doesNotMatch(provisionalPolicy, /\*\.supabase\.co/);
 });
 
 test('CSP inventory preserves the official YouTube player contract without wildcarding provider origins', () => {
@@ -46,7 +47,7 @@ test('CSP inventory preserves the official YouTube player contract without wildc
   assert.match(youtubeSource, /enablejsapi:\s*1/);
 
   assert.ok(inventory.includes('https://www.youtube.com'));
-  assert.doesNotMatch(inventory, /https:\/\/\*\.youtube\.com/);
+  assert.doesNotMatch(provisionalPolicy, /https:\/\/\*\.youtube\.com/);
 });
 
 test('Web Push remains browser-managed and does not justify arbitrary connect-src endpoints', () => {
@@ -70,15 +71,16 @@ test('CSP tranche is characterization-only until report-only browser evidence ex
 });
 
 test('provisional CSP shape is least-broad for currently evidenced remote origins', () => {
-  assert.match(inventory, /default-src 'self';/);
-  assert.match(inventory, /script-src 'self' https:\/\/cdn\.jsdelivr\.net https:\/\/www\.youtube\.com;/);
+  assert.ok(provisionalPolicy, 'inventory must expose a provisional report-only policy block');
+  assert.match(provisionalPolicy, /default-src 'self';/);
+  assert.match(provisionalPolicy, /script-src 'self' https:\/\/cdn\.jsdelivr\.net https:\/\/www\.youtube\.com;/);
   assert.match(
-    inventory,
+    provisionalPolicy,
     /connect-src 'self' https:\/\/zkfmgezvzugchcwppreq\.supabase\.co wss:\/\/zkfmgezvzugchcwppreq\.supabase\.co;/,
   );
-  assert.match(inventory, /frame-src 'self' https:\/\/www\.youtube\.com;/);
-  assert.match(inventory, /object-src 'none';/);
-  assert.match(inventory, /frame-ancestors 'self';/);
+  assert.match(provisionalPolicy, /frame-src 'self' https:\/\/www\.youtube\.com;/);
+  assert.match(provisionalPolicy, /object-src 'none';/);
+  assert.match(provisionalPolicy, /frame-ancestors 'self';/);
 });
 
 
@@ -96,7 +98,7 @@ test('global CSP cannot enforce yet because two standalone routes still own inli
   assert.equal(hasInlineStyleBlock(standalonePages.psychometrics), true);
 
   assert.match(standalonePages.contentReview, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\.112\.4/);
-  assert.match(inventory, /transform\.html.*inline script body.*inline <style>/is);
-  assert.match(inventory, /psychometrics\.html.*inline script body.*inline <style>/is);
+  assert.match(inventory, /`transform\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
+  assert.match(inventory, /`psychometrics\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
   assert.match(inventory, /not.*blanket.*unsafe-inline/is);
 });
