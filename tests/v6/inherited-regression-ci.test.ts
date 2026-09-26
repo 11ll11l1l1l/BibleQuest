@@ -63,3 +63,24 @@ test('version-neutral inherited action preserves representative V3, V4, and V5 r
   assert.match(inheritedAction, /node --check tests\/v3-field-linked-assignment-harness\.mjs/);
   assert.match(inheritedAction, /node --check tests\/v3-field-live-room-harness\.mjs/);
 });
+
+
+test('legacy workflow validators resolve inherited coverage through the composite-aware contract', () => {
+  const validators = [
+    'validate-v3-admin-operations.mjs',
+    'validate-v3-advanced-assignments.mjs',
+    'validate-v3-assignment-push.mjs',
+    'validate-v3-assignments.mjs',
+    'validate-v3-bible-world-artwork.mjs',
+    'validate-v3-bible-world.mjs',
+    'validate-v3-leaderboards.mjs',
+    'validate-v3-live-rooms.mjs',
+    'validate-v3-same-room-play-together.mjs',
+  ];
+
+  for (const validator of validators) {
+    const source = fs.readFileSync(new URL(`../../scripts/${validator}`, import.meta.url), 'utf8');
+    assert.match(source, /workflowInvokesNode/,`${validator}: composite-aware workflow contract missing`);
+    assert.doesNotMatch(source, /workflow\.includes\(/,`${validator}: raw outer-workflow token scan must not gate inherited coverage`);
+  }
+});
