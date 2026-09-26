@@ -1,28 +1,28 @@
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-const LEGACY_WORKFLOW_NAME = /^name:\\s*BibleQuest v3 regression\\s*$/m;
-const LEGACY_CONCURRENCY = /\\bgroup:\\s*biblequest-v3-/;
-const LEGACY_TEMP_PATH = /\\/tmp\\/biblequest-v3-[A-Za-z0-9._/-]*/g;
-const V6_BRANCH = /^\\s*-\\s*v6\\/architecture-upgrade\\s*$/m;
+const LEGACY_WORKFLOW_NAME = /^name:\s*BibleQuest v3 regression\s*$/m;
+const LEGACY_CONCURRENCY = /\bgroup:\s*biblequest-v3-/;
+const LEGACY_TEMP_PATH = /\/tmp\/biblequest-v3-[A-Za-z0-9._/-]*/g;
+const V6_BRANCH = /^\s*-\s*v6\/architecture-upgrade\s*$/m;
 const VERSION_NEUTRAL_STATIC_ACTION =
-  /uses:\\s*\\.\\/\\.github\\/actions\\/inherited-regression-static(?:\\/action\\.yml)?\\s*$/m;
+  /uses:\s*\.\/\.github\/actions\/inherited-regression-static(?:\/action\.yml)?\s*$/m;
 const VERSION_NEUTRAL_BROWSER_ACTION =
-  /uses:\\s*\\.\\/\\.github\\/actions\\/inherited-regression-browser(?:\\/action\\.yml)?\\s*$/m;
+  /uses:\s*\.\/\.github\/actions\/inherited-regression-browser(?:\/action\.yml)?\s*$/m;
 
 function uniqueSorted(values) {
   return [...new Set(values)].sort();
 }
 
 function escapeRegExp(value) {
-  return value.replace(/[.*+?^$()|[\\]\\\\{}]/g, '\\\\$&');
+  return value.replace(/[.*+?^$()|[\]\\{}]/g, '\\$&');
 }
 
 function blockForStep(source, stepName) {
   const match = source.match(
     new RegExp(
-      '^\\\\s*- name:\\\\s*' + escapeRegExp(stepName) +
-        '\\\\s*$([\\\\s\\\\S]*?)(?=^\\\\s*- name:|^\\\\s*- uses:|^\\\\s{0,2}[A-Za-z0-9_-]+:|\\\\Z)',
+      '^\\s*- name:\\s*' + escapeRegExp(stepName) +
+        '\\s*$([\\s\\S]*?)(?=^\\s*- name:|^\\s*- uses:|^\\s{0,2}[A-Za-z0-9_-]+:|\\Z)',
       'm',
     ),
   );
@@ -41,11 +41,11 @@ export function analyzeInheritedRegressionWorkflow(source) {
   const browserBlock = blockForStep(source, 'Run accumulated browser/mobile regressions');
   const directStaticValidators = collect(
     source,
-    /\\bscripts\\/validate-v3-[A-Za-z0-9._/-]+\\.mjs\\b/g,
+    /\bscripts\/validate-v3-[A-Za-z0-9._/-]+\.mjs\b/g,
   );
   const directBrowserTests = collect(
     browserBlock,
-    /\\btests\\/v(?:3|4|5)[A-Za-z0-9._/-]+\\.mjs\\b/g,
+    /\btests\/v(?:3|4|5)[A-Za-z0-9._/-]+\.mjs\b/g,
   );
   const legacyTempPaths = collect(source, LEGACY_TEMP_PATH);
 
@@ -86,5 +86,5 @@ export function readCurrentInheritedRegressionWorkflow() {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const report = analyzeInheritedRegressionWorkflow(readCurrentInheritedRegressionWorkflow());
-  process.stdout.write(JSON.stringify(report, null, 2) + '\\n');
+  process.stdout.write(JSON.stringify(report, null, 2) + '\n');
 }
