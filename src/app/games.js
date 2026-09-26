@@ -138,17 +138,13 @@ export function createGameLauncherService({progress,storage,recall,moderation=nu
 
   function answerSameRoom(choiceIndex){
     if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('Start Play Together before answering.');
-    if(sameRoom.session.locked)return Object.freeze({applied:false,duplicate:true,...sameRoomSnapshot()});
-    const question=sameRoom.bank[sameRoom.session.index],choice=Number(choiceIndex);
-    if(!Number.isInteger(choice)||choice<0||choice>=question.choices.length)throw new Error('Choose one of the available answers.');
-    const transition=answerLegacyPassAndPlaySession(sameRoomAdapter(),choice);
+    const transition=answerLegacyPassAndPlaySession(sameRoomAdapter(),Number(choiceIndex));
     sameRoom={...sameRoom,session:transition.state.session,turns:transition.state.turns};
     return Object.freeze({applied:transition.applied,duplicate:transition.duplicate,...sameRoomSnapshot()});
   }
 
   function nextSameRoom(){
     if(sameRoom.phase!=='same-room-question'||!sameRoom.session||!sameRoom.turns)throw new Error('There is no active Play Together question.');
-    if(!sameRoom.session.locked)throw new Error('Answer the current Play Together question before continuing.');
     const transition=advanceLegacyPassAndPlaySession(sameRoomAdapter());
     sameRoom={...sameRoom,phase:transition.state.session.phase==='complete'?'same-room-complete':'same-room-question',session:transition.state.session,turns:transition.state.turns};
     return sameRoomSnapshot();
