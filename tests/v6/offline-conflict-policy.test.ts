@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { classifyOfflineConflict } from '../../src/v6/offline/conflict-policy.ts';
+import {
+  classifyOfflineConflict,
+  type OfflineConflictFacts,
+} from '../../src/v6/offline/conflict-policy.ts';
 
 const safe = {
   domain: 'example',
@@ -71,4 +74,23 @@ test('unapproved, privileged, destructive, unknown and incomplete policies all f
     classifyOfflineConflict({ ...safe, operation: '' }, facts),
     { resolution: 'needs-user-resolution', reason: 'unsafe-policy' },
   );
+});
+
+
+test('malformed runtime conflict facts fail closed instead of relying on JavaScript truthiness', () => {
+  const malformed = [
+    null,
+    undefined,
+    {},
+    { localChanged: 'false', serverChanged: false },
+    { localChanged: false, serverChanged: 1 },
+    { localChanged: true, serverChanged: false, semanticallyEquivalent: 'yes' },
+  ];
+
+  for (const facts of malformed) {
+    assert.deepEqual(
+      classifyOfflineConflict(safe, facts as OfflineConflictFacts | null | undefined),
+      { resolution: 'needs-user-resolution', reason: 'invalid-facts' },
+    );
+  }
 });
