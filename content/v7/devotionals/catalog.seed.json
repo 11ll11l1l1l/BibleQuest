@@ -1,0 +1,2251 @@
+{
+  "schemaVersion": 1,
+  "generatedFor": "BibleQuest V7",
+  "contentState": "preprocessed-metadata-only",
+  "entryCount": 102,
+  "disclaimer": "Tags are discovery metadata derived conservatively from source titles/TOCs and limited source review. They require pastoral/theological review before publication. Source devotional bodies are not included in this seed file.",
+  "entries": [
+    {
+      "id": "murray-waiting-on-god-1894:day-01",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-01",
+      "title": "The God of Our Salvation",
+      "lifeSituations": [
+        "faith-trust",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 62:1"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-02",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-02",
+      "title": "The Keynote of Life",
+      "lifeSituations": [
+        "waiting",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "patience"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Genesis 49:18"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-03",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-03",
+      "title": "The True Place of the Creature",
+      "lifeSituations": [
+        "identity-belonging",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 104:27-28"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-04",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-04",
+      "title": "For Supplies",
+      "lifeSituations": [
+        "provision-finances",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "normalized-from-ocr-verified",
+      "scriptureRefs": [
+        "Psalm 145:14-15"
+      ],
+      "sourceCorrections": [
+        {
+          "sourceDisplay": "Ps. 114:14, 15",
+          "normalized": "Psalm 145:14-15",
+          "reason": "CCEL contents OCR error; devotional body confirms Psalm 145."
+        }
+      ]
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-05",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-05",
+      "title": "For Instruction",
+      "lifeSituations": [
+        "guidance-decisions",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "wisdom"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 25:4-5"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-06",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-06",
+      "title": "For All Saints",
+      "lifeSituations": [
+        "church-community",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 25:3"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-07",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-07",
+      "title": "A Plea in Prayer",
+      "lifeSituations": [
+        "prayer",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 25:21"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-08",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-08",
+      "title": "Strong and of Good Courage",
+      "lifeSituations": [
+        "courage",
+        "discouragement"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 27:14"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-09",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-09",
+      "title": "With the Heart",
+      "lifeSituations": [
+        "faith-trust",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 31:24"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-10",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-10",
+      "title": "In Humble Fear and Hope",
+      "lifeSituations": [
+        "anxiety-worry",
+        "hope"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 33:18-22"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-11",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-11",
+      "title": "Patiently",
+      "lifeSituations": [
+        "waiting",
+        "anxiety-worry"
+      ],
+      "secondaryTags": [
+        "patience"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 37:7,9"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-12",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-12",
+      "title": "Keeping His Ways",
+      "lifeSituations": [
+        "obedience",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 37:34"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-13",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-13",
+      "title": "For More Than We Know",
+      "lifeSituations": [
+        "guidance-decisions",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 39:7-8"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-14",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-14",
+      "title": "The Way to the New Song",
+      "lifeSituations": [
+        "discouragement",
+        "hope"
+      ],
+      "secondaryTags": [
+        "worship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 40:1-3"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-15",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-15",
+      "title": "For His Counsel",
+      "lifeSituations": [
+        "guidance-decisions",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "wisdom"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "normalized-from-ocr-verified",
+      "scriptureRefs": [
+        "Psalm 106:13"
+      ],
+      "sourceCorrections": [
+        {
+          "sourceDisplay": "Ps. 56:12",
+          "normalized": "Psalm 106:13",
+          "reason": "CCEL contents OCR error; devotional body confirms Psalm 106:13."
+        }
+      ]
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-16",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-16",
+      "title": "And His Light in the Heart",
+      "lifeSituations": [
+        "waiting",
+        "hope",
+        "rest-peace"
+      ],
+      "secondaryTags": [
+        "scripture"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "normalized-from-ocr-verified",
+      "scriptureRefs": [
+        "Psalm 130:5-6"
+      ],
+      "sourceCorrections": [
+        {
+          "sourceDisplay": "Ps. 80:5, 6",
+          "normalized": "Psalm 130:5-6",
+          "reason": "CCEL contents OCR error; devotional body confirms Psalm 130:5-6."
+        }
+      ]
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-17",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-17",
+      "title": "In Times of Darkness",
+      "lifeSituations": [
+        "suffering-trials",
+        "discouragement",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 8:17"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-18",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-18",
+      "title": "To Reveal Himself",
+      "lifeSituations": [
+        "spiritual-growth",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 25:9"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-19",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-19",
+      "title": "As a God of Judgment",
+      "lifeSituations": [
+        "obedience",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 26:8-9"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-20",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-20",
+      "title": "Who Waits on Us",
+      "lifeSituations": [
+        "rest-peace",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 30:18"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-21",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-21",
+      "title": "The Almighty One",
+      "lifeSituations": [
+        "discouragement",
+        "courage",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 40:31"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-22",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-22",
+      "title": "Its Certainty of Blessing",
+      "lifeSituations": [
+        "faith-trust",
+        "hope"
+      ],
+      "secondaryTags": [
+        "patience"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 49:23"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-23",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-23",
+      "title": "For Unlooked-for Things",
+      "lifeSituations": [
+        "change-transition",
+        "waiting",
+        "hope"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Isaiah 64:4"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-24",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-24",
+      "title": "To Know His Goodness",
+      "lifeSituations": [
+        "faith-trust",
+        "gratitude"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Lamentations 3:25"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-25",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-25",
+      "title": "Quietly",
+      "lifeSituations": [
+        "rest-peace",
+        "anxiety-worry",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "patience"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Lamentations 3:26"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-26",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-26",
+      "title": "In Holy Expectancy",
+      "lifeSituations": [
+        "hope",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Micah 7:7"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-27",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-27",
+      "title": "For Redemption",
+      "lifeSituations": [
+        "faith-trust",
+        "hope"
+      ],
+      "secondaryTags": [
+        "redemption"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Luke 2:25,38"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-28",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-28",
+      "title": "For the Coming of His Son",
+      "lifeSituations": [
+        "hope",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "second-coming"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Luke 12:36"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-29",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-29",
+      "title": "For the Promise of the Father",
+      "lifeSituations": [
+        "waiting",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "holy-spirit"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Acts 1:4"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-30",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-30",
+      "title": "Continually",
+      "lifeSituations": [
+        "spiritual-growth",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Hosea 12:6"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "murray-waiting-on-god-1894:day-31",
+      "sourceId": "murray-waiting-on-god-1894",
+      "sourceUnit": "day-31",
+      "title": "Only",
+      "lifeSituations": [
+        "rest-peace",
+        "waiting",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "source-indexed",
+      "scriptureRefs": [
+        "Psalm 62:5-6"
+      ],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-01",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-01",
+      "title": "God's Side and Man's Side",
+      "lifeSituations": [
+        "faith-trust",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-02",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-02",
+      "title": "The Scripturalness of This Life",
+      "lifeSituations": [
+        "faith-trust",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "scripture"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-03",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-03",
+      "title": "The Life Defined",
+      "lifeSituations": [
+        "rest-peace",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-04",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-04",
+      "title": "How To Enter In",
+      "lifeSituations": [
+        "spiritual-growth",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "surrender"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-05",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-05",
+      "title": "Difficulties Concerning Consecration",
+      "lifeSituations": [
+        "obedience",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "consecration",
+        "surrender"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-06",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-06",
+      "title": "Difficulties Concerning Faith",
+      "lifeSituations": [
+        "doubt",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-07",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-07",
+      "title": "Difficulties Concerning The Will",
+      "lifeSituations": [
+        "guidance-decisions",
+        "obedience"
+      ],
+      "secondaryTags": [
+        "surrender"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-08",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-08",
+      "title": "Is God in Everything?",
+      "lifeSituations": [
+        "suffering-trials",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-09",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-09",
+      "title": "Growth",
+      "lifeSituations": [
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-10",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-10",
+      "title": "Service",
+      "lifeSituations": [
+        "service-ministry",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "calling"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-11",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-11",
+      "title": "Difficulties Concerning Guidance",
+      "lifeSituations": [
+        "guidance-decisions",
+        "anxiety-worry"
+      ],
+      "secondaryTags": [
+        "wisdom"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-12",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-12",
+      "title": "Concerning Temptation",
+      "lifeSituations": [
+        "temptation",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-13",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-13",
+      "title": "Failures",
+      "lifeSituations": [
+        "failure-regret",
+        "discouragement"
+      ],
+      "secondaryTags": [
+        "grace",
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-14",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-14",
+      "title": "Doubts",
+      "lifeSituations": [
+        "doubt",
+        "discouragement"
+      ],
+      "secondaryTags": [
+        "faith-trust"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-15",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-15",
+      "title": "Practical Results",
+      "lifeSituations": [
+        "spiritual-growth",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "daily-life"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-16",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-16",
+      "title": "The Joy of Obedience",
+      "lifeSituations": [
+        "obedience",
+        "gratitude"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-17",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-17",
+      "title": "Oneness With Christ",
+      "lifeSituations": [
+        "identity-belonging",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-18",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-18",
+      "title": "Although and Yet",
+      "lifeSituations": [
+        "suffering-trials",
+        "hope",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-19",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-19",
+      "title": "Kings and Their Kingdoms",
+      "lifeSituations": [
+        "purpose",
+        "obedience"
+      ],
+      "secondaryTags": [
+        "responsibility"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-20",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-20",
+      "title": "The Chariots of God",
+      "lifeSituations": [
+        "suffering-trials",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-21",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-21",
+      "title": "Without Me Ye Can Do Nothing",
+      "lifeSituations": [
+        "failure-regret",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "smith-christians-secret-1885:chapter-22",
+      "sourceId": "smith-christians-secret-1885",
+      "sourceUnit": "chapter-22",
+      "title": "God With Us; or, The One Hundred and Thirty-ninth Psalm",
+      "lifeSituations": [
+        "loneliness",
+        "identity-belonging",
+        "rest-peace"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-01",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-01",
+      "title": "Making the Most of Life",
+      "lifeSituations": [
+        "purpose",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "responsibility"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-02",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-02",
+      "title": "Laid on God's Altar",
+      "lifeSituations": [
+        "obedience",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "consecration",
+        "surrender"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-03",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-03",
+      "title": "Christ's Interest in Our Common Life",
+      "lifeSituations": [
+        "work-vocation",
+        "identity-belonging"
+      ],
+      "secondaryTags": [
+        "daily-life",
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-04",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-04",
+      "title": "The Possibilities of Prayer",
+      "lifeSituations": [
+        "prayer",
+        "hope"
+      ],
+      "secondaryTags": [
+        "faith-trust"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-05",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-05",
+      "title": "Getting Christ's Touch",
+      "lifeSituations": [
+        "jesus-friendship",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-06",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-06",
+      "title": "The Blessing of a Burden",
+      "lifeSituations": [
+        "suffering-trials",
+        "discouragement"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-07",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-07",
+      "title": "Heart-Peace Before Ministry",
+      "lifeSituations": [
+        "rest-peace",
+        "service-ministry"
+      ],
+      "secondaryTags": [
+        "dependence-on-god"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-08",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-08",
+      "title": "Moral Curvatures",
+      "lifeSituations": [
+        "failure-regret",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "character"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-09",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-09",
+      "title": "Transfigured Lives",
+      "lifeSituations": [
+        "change-transition",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "character"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-10",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-10",
+      "title": "The Interpretation of Sorrow",
+      "lifeSituations": [
+        "grief-loss",
+        "suffering-trials"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-11",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-11",
+      "title": "Other People",
+      "lifeSituations": [
+        "relationships-friendship",
+        "service-ministry"
+      ],
+      "secondaryTags": [
+        "generosity"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-12",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-12",
+      "title": "The Blessing of Faithfulness",
+      "lifeSituations": [
+        "work-vocation",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-13",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-13",
+      "title": "Without Axe or Hammer",
+      "lifeSituations": [
+        "spiritual-growth",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "patience"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-14",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-14",
+      "title": "Doing Things for Christ",
+      "lifeSituations": [
+        "service-ministry",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "calling"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-15",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-15",
+      "title": "Helping and Over-Helping",
+      "lifeSituations": [
+        "relationships-friendship",
+        "service-ministry"
+      ],
+      "secondaryTags": [
+        "wisdom"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-16",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-16",
+      "title": "The Only One",
+      "lifeSituations": [
+        "loneliness",
+        "identity-belonging"
+      ],
+      "secondaryTags": [
+        "god-presence"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-17",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-17",
+      "title": "Swiftness in Duty",
+      "lifeSituations": [
+        "obedience",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "responsibility"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-18",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-18",
+      "title": "The Shadows We Cast",
+      "lifeSituations": [
+        "relationships-friendship",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "character"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-19",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-19",
+      "title": "The Meaning of Opportunities",
+      "lifeSituations": [
+        "purpose",
+        "work-vocation"
+      ],
+      "secondaryTags": [
+        "calling"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-20",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-20",
+      "title": "The Sin of Ingratitude",
+      "lifeSituations": [
+        "gratitude",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "contentment"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-21",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-21",
+      "title": "Some Secrets of Happy Home Life",
+      "lifeSituations": [
+        "marriage",
+        "parenting-family"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-22",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-22",
+      "title": "God's Winter Plants",
+      "lifeSituations": [
+        "suffering-trials",
+        "waiting"
+      ],
+      "secondaryTags": [
+        "patience",
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-23",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-23",
+      "title": "Unfinished Life-Building",
+      "lifeSituations": [
+        "change-transition",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-24",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-24",
+      "title": "Iron Shoes for Rough Roads",
+      "lifeSituations": [
+        "suffering-trials",
+        "courage"
+      ],
+      "secondaryTags": [
+        "perseverance"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-making-most-life-1891:chapter-25",
+      "sourceId": "miller-making-most-life-1891",
+      "sourceUnit": "chapter-25",
+      "title": "The Shutting of Docks",
+      "lifeSituations": [
+        "change-transition",
+        "hope"
+      ],
+      "secondaryTags": [
+        "responsibility"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-01",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-01",
+      "title": "The Wedded Life",
+      "lifeSituations": [
+        "marriage",
+        "relationships-friendship"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "couple"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-02",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-02",
+      "title": "The Christian Husband",
+      "lifeSituations": [
+        "marriage",
+        "service-ministry"
+      ],
+      "secondaryTags": [
+        "home-life",
+        "responsibility"
+      ],
+      "audience": [
+        "couple"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-03",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-03",
+      "title": "The Christian Wife",
+      "lifeSituations": [
+        "marriage",
+        "service-ministry"
+      ],
+      "secondaryTags": [
+        "home-life",
+        "responsibility"
+      ],
+      "audience": [
+        "couple"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-04",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-04",
+      "title": "The Parent's Part",
+      "lifeSituations": [
+        "parenting-family"
+      ],
+      "secondaryTags": [
+        "home-life",
+        "responsibility"
+      ],
+      "audience": [
+        "parent"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-05",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-05",
+      "title": "The Children's Part",
+      "lifeSituations": [
+        "parenting-family",
+        "obedience"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "family"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-06",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-06",
+      "title": "Brothers and Sisters",
+      "lifeSituations": [
+        "relationships-friendship",
+        "parenting-family"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "family"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-07",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-07",
+      "title": "The Home-Life",
+      "lifeSituations": [
+        "parenting-family",
+        "marriage"
+      ],
+      "secondaryTags": [
+        "home-life",
+        "daily-life"
+      ],
+      "audience": [
+        "family",
+        "couple"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-08",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-08",
+      "title": "Religion in the Home",
+      "lifeSituations": [
+        "parenting-family",
+        "spiritual-growth"
+      ],
+      "secondaryTags": [
+        "home-life",
+        "discipleship"
+      ],
+      "audience": [
+        "family",
+        "parent"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-home-making-1882:chapter-09",
+      "sourceId": "miller-home-making-1882",
+      "sourceUnit": "chapter-09",
+      "title": "Home Memories",
+      "lifeSituations": [
+        "parenting-family",
+        "identity-belonging"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "family"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-01",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-01",
+      "title": "The Humanheartedness of Jesus",
+      "lifeSituations": [
+        "jesus-friendship",
+        "identity-belonging"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-02",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-02",
+      "title": "Jesus and His Mother",
+      "lifeSituations": [
+        "parenting-family",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-03",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-03",
+      "title": "Jesus and His Forerunner",
+      "lifeSituations": [
+        "purpose",
+        "relationships-friendship"
+      ],
+      "secondaryTags": [
+        "calling"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-04",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-04",
+      "title": "Jesus' Conditions of Friendship",
+      "lifeSituations": [
+        "relationships-friendship",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-05",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-05",
+      "title": "Jesus Choosing His Friends",
+      "lifeSituations": [
+        "relationships-friendship",
+        "identity-belonging"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-06",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-06",
+      "title": "Jesus and the Beloved Disciple",
+      "lifeSituations": [
+        "relationships-friendship",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-07",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-07",
+      "title": "Jesus and Peter",
+      "lifeSituations": [
+        "failure-regret",
+        "forgiveness"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-08",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-08",
+      "title": "Jesus and Thomas",
+      "lifeSituations": [
+        "doubt",
+        "faith-trust"
+      ],
+      "secondaryTags": [
+        "discipleship"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-09",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-09",
+      "title": "Jesus' Unrequited Friendships",
+      "lifeSituations": [
+        "loneliness",
+        "relationships-friendship"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-10",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-10",
+      "title": "Jesus and the Bethany Sisters",
+      "lifeSituations": [
+        "relationships-friendship",
+        "parenting-family"
+      ],
+      "secondaryTags": [
+        "home-life"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-11",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-11",
+      "title": "Jesus Comforting His Friends",
+      "lifeSituations": [
+        "grief-loss",
+        "suffering-trials"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-12",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-12",
+      "title": "Jesus and His Secret Friends",
+      "lifeSituations": [
+        "loneliness",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "faithfulness"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-13",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-13",
+      "title": "Jesus' Farewell to His Friends",
+      "lifeSituations": [
+        "grief-loss",
+        "change-transition",
+        "hope"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-14",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-14",
+      "title": "Jesus' Friendships After He Arose",
+      "lifeSituations": [
+        "hope",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "redemption"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    },
+    {
+      "id": "miller-personal-friendships-1897:chapter-15",
+      "sourceId": "miller-personal-friendships-1897",
+      "sourceUnit": "chapter-15",
+      "title": "Jesus as a Friend",
+      "lifeSituations": [
+        "loneliness",
+        "identity-belonging",
+        "jesus-friendship"
+      ],
+      "secondaryTags": [
+        "comfort"
+      ],
+      "audience": [
+        "general"
+      ],
+      "taggingBasis": "source title/table-of-contents plus source synopsis",
+      "reviewStatus": "needs-pastoral-review",
+      "scriptureReviewStatus": "not-indexed",
+      "scriptureRefs": [],
+      "sourceCorrections": []
+    }
+  ]
+}
