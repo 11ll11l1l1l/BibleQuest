@@ -11,6 +11,7 @@ import {
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
@@ -111,7 +112,7 @@ function copyLegacyRuntime() {
 function collectPrivateSourceMaps() {
   return {
     name: 'biblequest-v6-private-source-maps',
-    closeBundle() {
+    async closeBundle() {
       rmSync(privateSourceMapDir, { recursive: true, force: true });
       const sourceMaps = walkFiles(outDir)
         .filter((file) => file.endsWith('.map'))
@@ -143,6 +144,10 @@ function collectPrivateSourceMaps() {
         ) + '\n',
         'utf8',
       );
+
+      // Integrity is written after public source maps are removed so it describes
+      // the final deployable bytes rather than an intermediate build directory.
+      await writeArtifactIntegrityManifest(outDir, buildSha);
     },
   };
 }
