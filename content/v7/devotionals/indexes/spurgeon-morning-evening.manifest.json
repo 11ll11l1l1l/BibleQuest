@@ -5595,12 +5595,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0501am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Song of Solomon 5:13"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Song of Solomon 5:13",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "f85b574a216495813454a75d4bd5b5a1123eda17"
     },
     {
       "id": "spurgeon-morning-evening:05-01:evening",
@@ -5613,12 +5618,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0501pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Song of Solomon 2:1"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Song of Solomon 2:1",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "f85b574a216495813454a75d4bd5b5a1123eda17"
     },
     {
       "id": "spurgeon-morning-evening:05-02:morning",
@@ -5631,12 +5641,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0502am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 17:15"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 17:15",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "d7c4b4c8875d4a0c02ba8fc3feb3f6e962ab0955"
     },
     {
       "id": "spurgeon-morning-evening:05-02:evening",
@@ -5649,12 +5664,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0502pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Hebrews 11:13"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Hebrews 11:13",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "d7c4b4c8875d4a0c02ba8fc3feb3f6e962ab0955"
     },
     {
       "id": "spurgeon-morning-evening:05-03:morning",
@@ -5667,12 +5687,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0503am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 16:33"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 16:33",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "890a93d851ffd2a90a8c69ef7920f917fec3795b"
     },
     {
       "id": "spurgeon-morning-evening:05-03:evening",
@@ -5685,12 +5710,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0503pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Psalm 46:1"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Psalm 46:1",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "890a93d851ffd2a90a8c69ef7920f917fec3795b"
     },
     {
       "id": "spurgeon-morning-evening:05-04:morning",
@@ -5703,12 +5733,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0504am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Jeremiah 16:20"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Jeremiah 16:20",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "a3cdcba2ff350661d219b487f4c753d7d5871b6e"
     },
     {
       "id": "spurgeon-morning-evening:05-04:evening",
@@ -5721,12 +5756,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0504pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "1 Peter 1:23"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "1 Peter 1:23",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "a3cdcba2ff350661d219b487f4c753d7d5871b6e"
     },
     {
       "id": "spurgeon-morning-evening:05-05:morning",
@@ -5739,12 +5779,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0505am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "2 Corinthians 6:16"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "2 Corinthians 6:16",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "4b567134209d06603101ef4211d43c38205c9ed3"
     },
     {
       "id": "spurgeon-morning-evening:05-05:evening",
@@ -5757,12 +5802,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0505pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Proverbs 16:20"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Proverbs 16:20",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "4b567134209d06603101ef4211d43c38205c9ed3"
     },
     {
       "id": "spurgeon-morning-evening:05-06:morning",
@@ -5775,12 +5825,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0506am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "1 John 4:13"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "1 John 4:13",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "fecdaad5f07905423cbe2ca787bedf388c7b2df8"
     },
     {
       "id": "spurgeon-morning-evening:05-06:evening",
@@ -5793,12 +5848,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0506pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Job 14:14"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Job 14:14",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "fecdaad5f07905423cbe2ca787bedf388c7b2df8"
     },
     {
       "id": "spurgeon-morning-evening:05-07:morning",
@@ -5811,12 +5871,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0507am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Matthew 12:15"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Matthew 12:15",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "0f3ddaf064cae58025b7e8a0c3e06c5babbd9c40"
     },
     {
       "id": "spurgeon-morning-evening:05-07:evening",
@@ -5829,12 +5894,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0507pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 5:8"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 5:8",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "0f3ddaf064cae58025b7e8a0c3e06c5babbd9c40"
     },
     {
       "id": "spurgeon-morning-evening:05-08:morning",
@@ -5847,12 +5917,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0508am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 5:13"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 5:13",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "848435359e72b199d36b7858063706f3f22d7b3c"
     },
     {
       "id": "spurgeon-morning-evening:05-08:evening",
@@ -5865,12 +5940,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0508pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Job 22:21"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Job 22:21",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "848435359e72b199d36b7858063706f3f22d7b3c"
     },
     {
       "id": "spurgeon-morning-evening:05-09:morning",
@@ -5883,12 +5963,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0509am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Ephesians 1:3"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Ephesians 1:3",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "60db9428d029a5f7d1b33cdb2f9850e27fbe1de8"
     },
     {
       "id": "spurgeon-morning-evening:05-09:evening",
@@ -5901,12 +5986,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0509pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Song of Solomon 7:11,12"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Song of Solomon 7:11,12",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "60db9428d029a5f7d1b33cdb2f9850e27fbe1de8"
     },
     {
       "id": "spurgeon-morning-evening:05-10:morning",
@@ -5919,12 +6009,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0510am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "1 Corinthians 15:20"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "1 Corinthians 15:20",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "ee86da5fb635fd028ef39a39003b989bb2e90307"
     },
     {
       "id": "spurgeon-morning-evening:05-10:evening",
@@ -5937,12 +6032,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0510pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 1:14"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 1:14",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "ee86da5fb635fd028ef39a39003b989bb2e90307"
     },
     {
       "id": "spurgeon-morning-evening:05-11:morning",
@@ -5955,12 +6055,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0511am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Matthew 28:20"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Matthew 28:20",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "672ff83062dff7a1e5d53ad3ae12ba606ac79065"
     },
     {
       "id": "spurgeon-morning-evening:05-11:evening",
@@ -5973,12 +6078,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0511pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Joshua 1:7"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Joshua 1:7",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "672ff83062dff7a1e5d53ad3ae12ba606ac79065"
     },
     {
       "id": "spurgeon-morning-evening:05-12:morning",
@@ -5991,12 +6101,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0512am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "John 14:21"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "John 14:21",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "307006b95dae443c3f4d8611faafd68c039416dd"
     },
     {
       "id": "spurgeon-morning-evening:05-12:evening",
@@ -6009,12 +6124,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0512pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Genesis 46:3,4"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Genesis 46:3,4",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "307006b95dae443c3f4d8611faafd68c039416dd"
     },
     {
       "id": "spurgeon-morning-evening:05-13:morning",
@@ -6027,12 +6147,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0513am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Psalm 30:5"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Psalm 30:5",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "481b6a3f84b9e6b2d7d36899f3fd4decd95ad31f"
     },
     {
       "id": "spurgeon-morning-evening:05-13:evening",
@@ -6045,12 +6170,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0513pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Psalm 119:57"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Psalm 119:57",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "481b6a3f84b9e6b2d7d36899f3fd4decd95ad31f"
     },
     {
       "id": "spurgeon-morning-evening:05-14:morning",
@@ -6063,12 +6193,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0514am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Romans 8:17"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Romans 8:17",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "c748b5ee09e2cc1ea75c6d62d196383c951a82dc"
     },
     {
       "id": "spurgeon-morning-evening:05-14:evening",
@@ -6081,12 +6216,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0514pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Isaiah 40:11"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Isaiah 40:11",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "c748b5ee09e2cc1ea75c6d62d196383c951a82dc"
     },
     {
       "id": "spurgeon-morning-evening:05-15:morning",
@@ -6099,12 +6239,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0515am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Acts 13:39"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Acts 13:39",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "38c2d960bc35f1ca37449c91e567c932152506b6"
     },
     {
       "id": "spurgeon-morning-evening:05-15:evening",
@@ -6117,12 +6262,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0515pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "Hebrews 12:23"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "Hebrews 12:23",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "38c2d960bc35f1ca37449c91e567c932152506b6"
     },
     {
       "id": "spurgeon-morning-evening:05-16:morning",
@@ -6135,12 +6285,17 @@
       "sourceSection": "morning",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0516am.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "1 Timothy 6:17"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "1 Timothy 6:17",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "b023efcc00b213abb0a8a6a1024a84504c295041"
     },
     {
       "id": "spurgeon-morning-evening:05-16:evening",
@@ -6153,12 +6308,17 @@
       "sourceSection": "evening",
       "canonicalSourceUrl": "https://www.ccel.org/ccel/spurgeon/morneve.d0516pm.html",
       "referenceIndexUrl": "https://www.heartlight.org/spurgeon/archive.html",
-      "scriptureRefs": [],
-      "scriptureRefStatus": "pending-source-extraction",
+      "scriptureRefs": [
+        "2 Kings 3:16,17"
+      ],
+      "scriptureRefStatus": "extracted-from-pinned-source",
       "bodyIncluded": false,
       "bodyStatus": "available-in-public-domain-source-pending-vendoring",
       "taggingStatus": "pending-body-aware-tagging",
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "sourceScripture": "2 Kings 3:16,17",
+      "sourceCommitSha": "989b49141ef9bcb3721802054920840f7e2832f1",
+      "sourceBlobSha": "b023efcc00b213abb0a8a6a1024a84504c295041"
     },
     {
       "id": "spurgeon-morning-evening:05-17:morning",
