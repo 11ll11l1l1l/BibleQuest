@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://biblequest.local/schemas/v7/devotional-entry.schema.json",
+  "title": "BibleQuest V7 Devotional Entry",
+  "type": "object",
+  "required": [
+    "id",
+    "sourceId",
+    "sourceUnit",
+    "title",
+    "scriptureRefs",
+    "lifeSituations",
+    "source",
+    "review"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceUnit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dateKey": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(0[1-9]|1[0-2])-([0-2][0-9]|3[01])$"
+    },
+    "period": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "morning",
+        "evening",
+        null
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scriptureRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "lifeSituations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "secondaryTags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "body": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "repository",
+        "commitSha",
+        "path",
+        "license",
+        "underlyingRights"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "commitSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string"
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canonicalUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license": {
+          "type": "string"
+        },
+        "underlyingRights": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "provenance",
+        "rights",
+        "scripture",
+        "pastoral",
+        "publishable"
+      ],
+      "properties": {
+        "provenance": {
+          "enum": [
+            "pending",
+            "verified"
+          ]
+        },
+        "rights": {
+          "enum": [
+            "pending",
+            "verified"
+          ]
+        },
+        "scripture": {
+          "enum": [
+            "pending",
+            "verified"
+          ]
+        },
+        "pastoral": {
+          "enum": [
+            "pending",
+            "verified"
+          ]
+        },
+        "publishable": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
