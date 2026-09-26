@@ -38,7 +38,7 @@ async function installHarness(page,{role='leader',directoryFails=false,switchDur
       async loadReview(id){window.__lcReviewCalls.push(['loadReview',id]);return{activeId:id,activeReview:{status:'ready'}}}
     };
     const presence={async activeCount(){if(switchDuringLifecycle)throw new Error('Stale tenant must stop before presence.');return{count:4,windowMinutes:30}}};
-    const calendar={async loadSharedAgenda(){return{status:'ready',congregationId:'c1',agenda:[{date:'2026-09-27',events:[
+    const calendar={async load(options){if(options?.scope!=='shared-agenda')throw new Error('Leader Center must request shared Calendar scope.');return{status:'ready',congregationId:'c1',agenda:[{date:'2026-09-27',events:[
       {id:'due-a1',source:'assignment',date:'2026-09-27',title:'Due: Read Romans 8'},
       {id:'event-c1',source:'congregation',date:'2026-09-28',title:'Prayer meeting'},
       {id:'private-p1',source:'personal',date:'2026-09-29',title:'Private appointment',notes:'must never render'}
