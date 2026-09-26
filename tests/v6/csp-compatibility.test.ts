@@ -18,13 +18,14 @@ const standalonePages = Object.freeze({
   contentReview: fs.readFileSync(new URL('../../content-review.html', import.meta.url), 'utf8'),
 });
 
-function hasInlineScript(source: string): boolean {
+function countInlineScripts(source: string): number {
   return [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-    .some((match) => !/\bsrc\s*=/.test(match[1]) && match[2].trim().length > 0);
+    .filter((match) => !/\bsrc\s*=/.test(match[1]) && match[2].trim().length > 0)
+    .length;
 }
 
-function hasInlineStyleBlock(source: string): boolean {
-  return /<style\b[^>]*>[\s\S]*?<\/style>/i.test(source);
+function countInlineStyleBlocks(source: string): number {
+  return [...source.matchAll(/<style\b[^>]*>[\s\S]*?<\/style>/gi)].length;
 }
 
 test('CSP inventory tracks the exact Supabase client, project HTTPS origin, and Realtime WSS origin', () => {
@@ -84,18 +85,13 @@ test('provisional CSP shape is least-broad for currently evidenced remote origin
 });
 
 
-test('global CSP cannot enforce yet because two standalone routes still own inline script/style blocks', () => {
-  assert.equal(hasInlineScript(standalonePages.index), false);
-  assert.equal(hasInlineStyleBlock(standalonePages.index), false);
-  assert.equal(hasInlineScript(standalonePages.admin), false);
-  assert.equal(hasInlineStyleBlock(standalonePages.admin), false);
-  assert.equal(hasInlineScript(standalonePages.adminOperations), false);
-  assert.equal(hasInlineStyleBlock(standalonePages.adminOperations), false);
-
-  assert.equal(hasInlineScript(standalonePages.transform), true);
-  assert.equal(hasInlineStyleBlock(standalonePages.transform), true);
-  assert.equal(hasInlineScript(standalonePages.psychometrics), true);
-  assert.equal(hasInlineStyleBlock(standalonePages.psychometrics), true);
+test('standalone HTML inline-block budget fails closed on new CSP compatibility debt', () => {
+  const inlineBlockBudget = { index:[0,0], transform:[1,1], psychometrics:[1,1], admin:[0,0], adminOperations:[0,0], contentReview:[0,0] } as const;
+  for (const [page, source] of Object.entries(standalonePages)) {
+    const [scripts, styles] = inlineBlockBudget[page as keyof typeof inlineBlockBudget];
+    assert.equal(countInlineScripts(source), scripts, `${page}: inline script block count changed`);
+    assert.equal(countInlineStyleBlocks(source), styles, `${page}: inline style block count changed`);
+  }
 
   assert.match(standalonePages.contentReview, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\.112\.4/);
   assert.match(inventory, /`transform\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
