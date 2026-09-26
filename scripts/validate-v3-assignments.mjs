@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { workflowInvokesNode } from './v3-workflow-contract.mjs';
 const read=path=>fs.readFileSync(path,'utf8'),failures=[],fail=message=>failures.push(message);
 const required=['src/app/assignments.js','src/features/assignments/index.js','ASSIGNMENTS_V3.md','tests/v3-assignments-edge.mjs','tests/v3-assignments-smoke.mjs','src/core/api.js','src/app/bootstrap.js','src/features/community/index.js','.github/workflows/v3-regression.yml','FEATURE_INVENTORY_V3.md'];
 for(const file of required)if(!fs.existsSync(file))fail(`Missing Assignments v3 file: ${file}`);
@@ -19,6 +20,6 @@ if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(73)))fail('Invento
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(74))&&!/\| Not started \|/.test(row(74)))fail('Inventory #74 must use a valid lifecycle state while extending the existing Assignments owner.');
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(75))&&!/\| Not started \|/.test(row(75)))fail('Inventory #75 must use a valid lifecycle state while extending the existing Assignments owner.');
 if(!/\| (Implemented|Verified|Regression-tested) \|/.test(row(79))&&!/\| Not started \|/.test(row(79)))fail('Inventory #79 must use a valid lifecycle state while extending the existing Assignments owner.');
-for(const token of['scripts/validate-v3-assignments.mjs','tests/v3-assignments-edge.mjs','tests/v3-assignments-smoke.mjs'])if(!workflow.includes(token))fail(`Accumulated workflow missing Assignments coverage: ${token}`);
+for(const token of['scripts/validate-v3-assignments.mjs','tests/v3-assignments-edge.mjs','tests/v3-assignments-smoke.mjs'])if(!workflowInvokesNode(workflow,token))fail(`Accumulated workflow missing Assignments coverage: ${token}`);
 if(failures.length){console.error(`BibleQuest v3 Assignments validation FAILED (${failures.length})`);failures.forEach(message=>console.error(`- ${message}`));process.exit(1)}
 console.log('BibleQuest v3 Assignments architecture validation passed.');
