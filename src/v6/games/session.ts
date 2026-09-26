@@ -119,6 +119,19 @@ export function answerMultipleChoice(
   return Object.freeze({ applied: true, duplicate: false, state: next });
 }
 
+export function finishMultipleChoice(state: MultipleChoiceSessionState): GameSessionTransition {
+  if (state.phase === 'complete') return Object.freeze({ applied: false, duplicate: true, state });
+  const complete = freezeState({
+    ...state,
+    phase: 'complete',
+    index: state.questions.length,
+    locked: false,
+    selectedIndex: null,
+    correct: null,
+  });
+  return Object.freeze({ applied: true, duplicate: false, state: complete });
+}
+
 export function advanceMultipleChoice(state: MultipleChoiceSessionState): GameSessionTransition {
   if (state.phase !== 'question') return Object.freeze({ applied: false, duplicate: true, state });
   if (!state.locked) throw new Error('Answer the current game question before continuing.');
