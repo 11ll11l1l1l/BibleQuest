@@ -65,7 +65,7 @@ test('Calendar shared agenda never loads or exposes personal Calendar data', asy
     clock: fixedNow,
   });
 
-  const result = await calendar.loadSharedAgenda({ startDate: fixedNow(), days: 30 });
+  const result = await calendar.load({ scope: 'shared-agenda', startDate: fixedNow(), days: 30 });
 
   assert.equal(personalCalls, 0);
   assert.equal(result.status, 'ready');
@@ -103,7 +103,8 @@ function leaderAssignments(role = 'leader') {
 test('Leader Center publishes only assignment/congregation upcoming items and never trusts a personal row', async () => {
   const assignments = leaderAssignments('leader');
   const calendar = {
-    async loadSharedAgenda() {
+    async load(options?: any) {
+      assert.equal(options?.scope, 'shared-agenda');
       return {
         status: 'ready',
         congregationId: 'church-a',
@@ -134,7 +135,8 @@ test('Leader Center publishes only assignment/congregation upcoming items and ne
 test('Leader Center fails closed when active congregation changes during upcoming load', async () => {
   const assignments = leaderAssignments('leader');
   const calendar = {
-    async loadSharedAgenda() {
+    async load(options?: any) {
+      assert.equal(options?.scope, 'shared-agenda');
       assignments.switchToChurchB();
       return { status: 'ready', congregationId: 'church-a', agenda: [] };
     },
