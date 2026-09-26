@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   advanceLegacyPassAndPlaySession,
   answerLegacyPassAndPlaySession,
+  finishLegacyPassAndPlaySession,
   startLegacyPassAndPlaySession,
   startLegacySoloSession,
 } from '../../src/v6/games/legacy-adapters.ts';
@@ -81,6 +82,34 @@ test('pass-and-play adapter accepts a moderation-filtered bank without re-owning
   const completed = advanceLegacyPassAndPlaySession(wrong.state);
   assert.equal(completed.state.session.phase, 'complete');
   assert.equal(completed.state.turns.currentIndex, 1, 'completion must not rotate to a phantom next turn');
+});
+
+test('pass-and-play early finish completes the shared session without rotating or inventing answers', () => {
+  const filtered = adaptLegacyQuestions([
+    { id: 'finish-1', q: 'First?', choices: ['Yes', 'No'], answer: 0 },
+    { id: 'finish-2', q: 'Second?', choices: ['Left', 'Right'], answer: 1 },
+  ]);
+  const together = startLegacyPassAndPlaySession('finish-early-1', 2, filtered);
+  const answered = answerLegacyPassAndPlaySession(together, 0);
+  const finished = finishLegacyPassAndPlaySession(answered.state);
+
+  assert.equal(finished.applied, true);
+  assert.equal(finished.duplicate, false);
+  assert.equal(finished.state.session.phase, 'complete');
+  assert.equal(finished.state.session.index, filtered.length);
+  assert.equal(finished.state.session.answers.length, 1);
+  assert.equal(finished.state.session.score, 1);
+  assert.equal(finished.state.session.xp, 0);
+  assert.equal(finished.state.session.locked, false);
+  assert.equal(finished.state.session.selectedIndex, null);
+  assert.equal(finished.state.session.correct, null);
+  assert.equal(finished.state.turns.currentIndex, 0, 'early finish must not rotate players');
+  assert.deepEqual(finished.state.turns.players.map((player) => player.score), [1, 0]);
+
+  const duplicate = finishLegacyPassAndPlaySession(finished.state);
+  assert.equal(duplicate.applied, false);
+  assert.equal(duplicate.duplicate, true);
+  assert.equal(duplicate.state, finished.state);
 });
 
 test('turn rotation isolates score and rotates deterministically without a DOM or timer', () => {
