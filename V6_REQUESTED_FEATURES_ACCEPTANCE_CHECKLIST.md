@@ -12,6 +12,8 @@ Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d
 
 Second certification reconciliation from integrated head `0e00188c3144a137ca48dd927faa954bfc7a361a`: previously integrated Database CI covers Presence, Journey Group/team/Live Room and media/notification tenant boundaries; inherited Leader Center contracts plus a focused stale-tenant unit regression prove the composition fails closed after an active-congregation change; per-book Recall uses demand-loaded pack fetches; Scripture source/license/attribution metadata remains in the Bible data owner; and the release checklist itself is regression-guarded so WAIVED is never counted as PASS.
 
+Post-merge certification reconciliation from official V6 `f4f98f861005f1b9b0039473a8b6fe6a1bf591b5`: canonical Reader/content work is merged through #539, managed offline packages/build manifests through #720, canonical live progress/leaderboard identity through #727, deterministic startup/critical-route budgets through #737, and offline conflict policy + atomic outbox integrity + real Auth session-revocation proof through certified batch #759. #759 exact head passed V6 Phase 1 Build Gate `36206770345`, V6 Database CI `36206770253`, V6 Client Artifact Security `36206770277`, and inherited regression `36206770324`. Physical-device/install evidence, live offline-search wiring, Cloudflare exact-deployed-artifact proof, CSP enforcement, and exact-RC/promotion gates remain unchecked.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -73,26 +75,26 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 - [x] Current Reader translation/content behavior has characterization tests before migration.
 - [x] Reader navigation/translation state has a DOM-independent typed parity seam.
-- [ ] Scripture repository/content provider separated from route/view.
-- [ ] Chapter/verse presentation split into testable components.
-- [ ] Search is independently testable.
-- [ ] Verse Peek is independently testable.
-- [ ] Context Lab bridge is independently testable.
-- [ ] Japanese furigana support preserved.
-- [ ] Japanese vocabulary support preserved.
+- [x] Scripture repository/content provider separated from route/view.
+- [x] Chapter/verse presentation split into testable components.
+- [x] Search is independently testable.
+- [x] Verse Peek is independently testable.
+- [x] Context Lab bridge is independently testable.
+- [x] Japanese furigana support preserved.
+- [x] Japanese vocabulary support preserved.
 - [x] Copyright/licensed-link redistribution policy is explicit and tested in the V6 content-manifest boundary.
-- [ ] Read/progress writes use new domain/data boundary.\n- [ ] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.\n- [ ] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
+- [x] Read/progress writes use new domain/data boundary.\n- [x] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.\n- [x] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
 - [ ] Reader route passes parity + accessibility + mobile tests.
 
 ## F. True offline Bible
 
 - [x] Versioned Scripture content-manifest format exists with package identity/license metadata.
 - [x] Offline package lifecycle manager supports deliberate declared book-package installation through injected transport/repository boundaries.
-- [ ] At least one supported full translation can be made truly offline where licensing/size permits.
-- [ ] Download progress/cancel/retry/remove controls exist.
-- [ ] Storage usage/reclaim controls exist.
+- [x] At least one supported full translation can be made truly offline where licensing/size permits.
+- [x] Download progress/cancel/retry/remove controls exist.
+- [x] Storage usage/reclaim controls exist.
 - [x] Package byte-length/checksum/version validation exists and fails closed before persistence.
-- [ ] Corrupt/outdated package recovery is tested.
+- [x] Corrupt/outdated package recovery is tested.
 - [ ] Previously downloaded Bible text opens with network disabled.
 - [ ] Offline chapter navigation works after app restart.
 - [ ] Supported local search works offline or is clearly scoped if deferred.
@@ -170,7 +172,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Offline-write allowlist is documented per domain.
 - [x] Versioned IndexedDB outbox exists for accepted safe mutations.
 - [x] Idempotency/retry/backoff rules exist.
-- [ ] Conflict policy exists and is testable.
+- [x] Conflict policy exists and is testable.
 - [x] Reload/restart preserves queued safe writes.
 - [x] Account/tenant switching does not leak queued writes across identities/tenants.
 - [x] Privileged/destructive admin operations are never blindly queued offline.
@@ -210,7 +212,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 - [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
 - [ ] Privileged Owner/Admin re-auth requirements are reviewed.
-- [ ] Real session revocation is tested.
+- [x] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
 - [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
@@ -239,7 +241,7 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 - [x] Diagnostics expose safe SW/content/connectivity state.
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
 - [x] Image/font budgets are enforced.
-- [ ] Startup/critical-route performance budgets are defined.
+- [x] Startup/critical-route performance budgets are defined.
 - [ ] Large Bible/game/media payloads are not eagerly loaded without need.
 
 ## P. CI/release architecture
