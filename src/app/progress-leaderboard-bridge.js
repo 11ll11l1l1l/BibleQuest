@@ -1,3 +1,4 @@
+import { canonicalReadingScoreEventId } from '../v6/reader/live-progress.ts';
 const STORAGE_KEY='progress-leaderboard-delivery-v1';
 const VERSION=1;
 const SCORE_EVENT_ID_MAX=120;
@@ -72,12 +73,12 @@ export function claimForProgressEvent(id,row,state){
   if(row.type==='reader.chapter.read'){
     const chapter=chapterFromReaderEvent(id);
     if(!chapter)return null;
-    return Object.freeze({sourceEventId:`reading.chapter:${chapter.code}:${chapter.chapter}`,source:'Bible Chapter Read',category:'reading',meta:Object.freeze({...chapter,origin:'reader'})});
+    return Object.freeze({sourceEventId:canonicalReadingScoreEventId(chapter.code,chapter.chapter),source:'Bible Chapter Read',category:'reading',meta:Object.freeze({...chapter,origin:'reader'})});
   }
   if(row.type==='bible.quest.chapter.complete'){
     const chapter=chapterFromQuestEvent(id);
     if(!chapter)return null;
-    return Object.freeze({sourceEventId:`reading.chapter:${chapter.code}:${chapter.chapter}`,source:'Bible Chapter Read',category:'reading',meta:Object.freeze({...chapter,origin:'main-quest'})});
+    return Object.freeze({sourceEventId:canonicalReadingScoreEventId(chapter.code,chapter.chapter),source:'Bible Chapter Read',category:'reading',meta:Object.freeze({...chapter,origin:'main-quest'})});
   }
   if(row.type==='study.complete')return Object.freeze({sourceEventId:stableScoreEventId(id),source:'Guided Study',category:'reading',meta:Object.freeze({completed:1})});
   if(row.type==='wisdom-situation.complete')return Object.freeze({sourceEventId:stableScoreEventId(id),source:'Situations & Wisdom',category:'wisdom',meta:Object.freeze({completed:1})});
