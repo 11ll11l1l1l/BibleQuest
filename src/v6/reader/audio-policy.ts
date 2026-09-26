@@ -37,23 +37,42 @@ export interface AudioOfflineDecision {
 }
 
 const SHA256_HEX = /^[a-f0-9]{64}$/i;
-const TRANSLATION_ID = /^[a-z0-9][a-z0-9_-]{0,31}$/i;
+const TRANSLATION_ID = /^[a-z0-9][a-z0-9_-]{0,31}$/;
 
 function nonBlank(value: unknown): boolean {
   return String(value ?? '').trim().length > 0;
 }
 
+function normalizedTranslationId(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  return normalized === value && TRANSLATION_ID.test(normalized) ? normalized : null;
+}
+
+function validHttpsUrl(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim();
+  if (!normalized || normalized !== value) return false;
+  try {
+    const parsed = new URL(normalized);
+    return parsed.protocol === 'https:' && Boolean(parsed.hostname) && !parsed.username && !parsed.password;
+  } catch {
+    return false;
+  }
+}
+
 function validSourceMetadata(source: ScriptureAudioSourceMetadata | null | undefined): source is ScriptureAudioSourceMetadata {
   if (
     !source ||
-    !TRANSLATION_ID.test(String(source.translationId ?? '').trim()) ||
+    typeof source !== 'object' ||
+    normalizedTranslationId(source.translationId) === null ||
     !nonBlank(source.source) ||
     !nonBlank(source.license)
   ) {
     return false;
   }
 
-  if (source.sourceUrl !== undefined && !/^https:\/\//i.test(String(source.sourceUrl).trim())) {
+  if (source.sourceUrl !== undefined && !validHttpsUrl(source.sourceUrl)) {
     return false;
   }
 
@@ -65,6 +84,7 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
 
   const ids = new Set<string>();
   for (const segment of segments) {
+    if (!segment || typeof segment !== 'object') return false;
     const id = String(segment.id ?? '').trim();
     if (
       !id ||
@@ -75,7 +95,7 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
       !Number.isSafeInteger(segment.byteLength) ||
       segment.byteLength <= 0 ||
       !SHA256_HEX.test(String(segment.sha256 ?? '').trim()) ||
-      !/^https:\/\//i.test(String(segment.url ?? '').trim())
+      !validHttpsUrl(segment.url)
     ) {
       return false;
     }
@@ -92,15 +112,20 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
  * with the displayed Scripture text.
  */
 export function audioOfflineEligibility(
-  manifest: ScriptureAudioManifest,
+  manifest: ScriptureAudioManifest | null | undefined,
   storageCeilingBytes = V6_READER_AUDIO_STORAGE_CEILING_BYTES,
 ): AudioOfflineDecision {
-  const translationId = String(manifest.translationId ?? '').trim();
-  const sourceTranslationId = String(manifest.source?.translationId ?? '').trim();
+  if (!manifest || typeof manifest !== 'object') {
+    return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
+  }
+
+  const translationId = normalizedTranslationId(manifest.translationId);
+  const sourceTranslationId = normalizedTranslationId(manifest.source?.translationId);
 
   if (
     manifest.schemaVersion !== 1 ||
-    !TRANSLATION_ID.test(translationId) ||
+    translationId === null ||
+    sourceTranslationId === null ||
     !validSourceMetadata(manifest.source) ||
     translationId !== sourceTranslationId ||
     !validSegments(manifest.segments) ||
