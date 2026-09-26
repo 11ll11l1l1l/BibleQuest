@@ -4,6 +4,14 @@ import { readFile } from 'node:fs/promises';
 
 const source = await readFile(new URL('../../src/app/games.js', import.meta.url), 'utf8');
 
+function functionSlice(startMarker:string,endMarker:string){
+  const start=source.indexOf(startMarker);
+  const end=source.indexOf(endMarker,start);
+  assert.notEqual(start,-1,`missing source marker: ${startMarker}`);
+  assert.notEqual(end,-1,`missing source marker: ${endMarker}`);
+  return source.slice(start,end);
+}
+
 test('live Play Together delegates session and turn logic to the V6 adapter boundary', () => {
   for (const symbol of [
     'startLegacyPassAndPlaySession',
@@ -17,9 +25,16 @@ test('live Play Together delegates session and turn logic to the V6 adapter boun
 });
 
 test('live Play Together no longer owns answer locking, scoring or turn-rotation mutations', () => {
+  const answerSource=functionSlice('function answerSameRoom','function nextSameRoom');
+  const nextSource=functionSlice('function nextSameRoom','function finishSameRoom');
+
   assert.doesNotMatch(source, /sameRoom\.players\.map/);
   assert.doesNotMatch(source, /score:player\.score\+/);
   assert.doesNotMatch(source, /currentPlayerIndex:\(sameRoom\.currentPlayerIndex\+1\)/);
-  assert.doesNotMatch(source, /if\(sameRoom\.session\.locked\)/);
-  assert.doesNotMatch(source, /choice<0\|\|choice>=question\.choices\.length/);
+  assert.doesNotMatch(answerSource, /sameRoom\.session\.locked/);
+  assert.doesNotMatch(answerSource, /choice<0\|\|choice>=question\.choices\.length/);
+  assert.doesNotMatch(nextSource, /sameRoom\.session\.locked/);
+
+  assert.match(answerSource,/answerLegacyPassAndPlaySession/);
+  assert.match(nextSource,/advanceLegacyPassAndPlaySession/);
 });
