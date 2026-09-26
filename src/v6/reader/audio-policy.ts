@@ -37,6 +37,73 @@ export interface AudioOfflineDecision {
 }
 
 const SHA256_HEX = /^[a-f0-9]{64}$/i;
+const TRANSLATION_ID = /^[a-z0-9][a-z0-9_-]{0,31}$/;
+
+function nonBlank(value: unknown): boolean {
+  return String(value ?? '').trim().length > 0;
+}
+
+function normalizedTranslationId(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  return normalized === value && TRANSLATION_ID.test(normalized) ? normalized : null;
+}
+
+function validHttpsUrl(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim();
+  if (!normalized || normalized !== value) return false;
+  try {
+    const parsed = new URL(normalized);
+    return parsed.protocol === 'https:' && Boolean(parsed.hostname) && !parsed.username && !parsed.password;
+  } catch {
+    return false;
+  }
+}
+
+function validSourceMetadata(source: ScriptureAudioSourceMetadata | null | undefined): source is ScriptureAudioSourceMetadata {
+  if (
+    !source ||
+    typeof source !== 'object' ||
+    normalizedTranslationId(source.translationId) === null ||
+    !nonBlank(source.source) ||
+    !nonBlank(source.license)
+  ) {
+    return false;
+  }
+
+  if (source.sourceUrl !== undefined && !validHttpsUrl(source.sourceUrl)) {
+    return false;
+  }
+
+  return true;
+}
+
+function validSegments(segments: readonly ScriptureAudioSegment[] | null | undefined): boolean {
+  if (!Array.isArray(segments) || segments.length < 1) return false;
+
+  const ids = new Set<string>();
+  for (const segment of segments) {
+    if (!segment || typeof segment !== 'object') return false;
+    const id = String(segment.id ?? '').trim();
+    if (
+      !id ||
+      ids.has(id) ||
+      !nonBlank(segment.book) ||
+      !Number.isInteger(segment.chapter) ||
+      segment.chapter < 1 ||
+      !Number.isSafeInteger(segment.byteLength) ||
+      segment.byteLength <= 0 ||
+      !SHA256_HEX.test(String(segment.sha256 ?? '').trim()) ||
+      !validHttpsUrl(segment.url)
+    ) {
+      return false;
+    }
+    ids.add(id);
+  }
+
+  return true;
+}
 
 /**
  * Audio packaging is deliberately fail-closed. A provider being playable online
@@ -45,19 +112,26 @@ const SHA256_HEX = /^[a-f0-9]{64}$/i;
  * with the displayed Scripture text.
  */
 export function audioOfflineEligibility(
-  manifest: ScriptureAudioManifest,
+  manifest: ScriptureAudioManifest | null | undefined,
   storageCeilingBytes = V6_READER_AUDIO_STORAGE_CEILING_BYTES,
 ): AudioOfflineDecision {
-  const segmentsValid = manifest.segments.length > 0 && manifest.segments.every((segment) =>
-    segment.id.trim().length > 0 &&
-    segment.book.trim().length > 0 &&
-    Number.isInteger(segment.chapter) && segment.chapter > 0 &&
-    Number.isSafeInteger(segment.byteLength) && segment.byteLength >= 0 &&
-    SHA256_HEX.test(segment.sha256) &&
-    /^https:\/\//i.test(segment.url),
-  );
+  if (!manifest || typeof manifest !== 'object') {
+    return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
+  }
 
-  if (!segmentsValid || manifest.translationId !== manifest.source.translationId || !Number.isSafeInteger(storageCeilingBytes) || storageCeilingBytes <= 0) {
+  const translationId = normalizedTranslationId(manifest.translationId);
+  const sourceTranslationId = normalizedTranslationId(manifest.source?.translationId);
+
+  if (
+    manifest.schemaVersion !== 1 ||
+    translationId === null ||
+    sourceTranslationId === null ||
+    !validSourceMetadata(manifest.source) ||
+    translationId !== sourceTranslationId ||
+    !validSegments(manifest.segments) ||
+    !Number.isSafeInteger(storageCeilingBytes) ||
+    storageCeilingBytes <= 0
+  ) {
     return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
   }
 
