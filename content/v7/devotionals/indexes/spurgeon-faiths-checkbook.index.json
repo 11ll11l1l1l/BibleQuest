@@ -18,7 +18,8 @@
   "integrationNotes": [
     "Titles and Scripture references are indexed from the CC0 markdown source.",
     "Devotional body is intentionally not copied in this metadata index.",
-    "Suggested life-situation tags require pastoral review."
+    "Suggested life-situation tags require pastoral review.",
+    "canonicalScriptureRefs uses BibleQuest-friendly full book names while sourceScripture preserves the source spelling."
   ],
   "entries": [
     {
@@ -40,7 +41,10 @@
       "sourcePath": "january/january-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 3:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-02",
@@ -59,7 +63,10 @@
       "sourcePath": "january/january-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 16:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-03",
@@ -81,7 +88,10 @@
       "sourcePath": "january/january-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 28:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-04",
@@ -102,7 +112,10 @@
       "sourcePath": "january/january-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 2:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-05",
@@ -121,7 +134,10 @@
       "sourcePath": "january/january-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 41:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-06",
@@ -140,7 +156,10 @@
       "sourcePath": "january/january-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 41:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-07",
@@ -162,7 +181,10 @@
       "sourcePath": "january/january-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 1:50"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-08",
@@ -183,7 +205,10 @@
       "sourcePath": "january/january-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 5:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-09",
@@ -202,7 +227,10 @@
       "sourcePath": "january/january-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 11:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-10",
@@ -221,7 +249,10 @@
       "sourcePath": "january/january-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 11:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-11",
@@ -242,7 +273,10 @@
       "sourcePath": "january/january-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 9:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-12",
@@ -261,7 +295,10 @@
       "sourcePath": "january/january-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Lamentations 3:31"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-13",
@@ -280,7 +317,10 @@
       "sourcePath": "january/january-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 6:37"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-14",
@@ -301,7 +341,10 @@
       "sourcePath": "january/january-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 11:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-15",
@@ -322,7 +365,10 @@
       "sourcePath": "january/january-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 9:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-16",
@@ -344,7 +390,10 @@
       "sourcePath": "january/january-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joel 2:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-17",
@@ -365,7 +414,10 @@
       "sourcePath": "january/january-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 3:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-18",
@@ -387,7 +439,10 @@
       "sourcePath": "january/january-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 53:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-19",
@@ -408,7 +463,10 @@
       "sourcePath": "january/january-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 10:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-20",
@@ -427,7 +485,10 @@
       "sourcePath": "january/january-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 2:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-21",
@@ -446,7 +507,10 @@
       "sourcePath": "january/january-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 7:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-22",
@@ -467,7 +531,10 @@
       "sourcePath": "january/january-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 41:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-23",
@@ -486,7 +553,10 @@
       "sourcePath": "january/january-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Leviticus 1:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-24",
@@ -507,7 +577,10 @@
       "sourcePath": "january/january-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Samuel 2:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-25",
@@ -528,7 +601,10 @@
       "sourcePath": "january/january-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Job 33:27"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-26",
@@ -549,7 +625,10 @@
       "sourcePath": "january/january-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Numbers 23:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-27",
@@ -570,7 +649,10 @@
       "sourcePath": "january/january-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 20:43"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-28",
@@ -591,7 +673,10 @@
       "sourcePath": "january/january-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 21:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-29",
@@ -613,7 +698,10 @@
       "sourcePath": "january/january-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 12:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-30",
@@ -632,7 +720,10 @@
       "sourcePath": "january/january-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 28:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:01-31",
@@ -653,7 +744,10 @@
       "sourcePath": "january/january-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Micah 7:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-01",
@@ -672,7 +766,10 @@
       "sourcePath": "february/february-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Malachi 4:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-02",
@@ -693,7 +790,10 @@
       "sourcePath": "february/february-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Malachi 4:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-03",
@@ -712,7 +812,10 @@
       "sourcePath": "february/february-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 8:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-04",
@@ -731,7 +834,10 @@
       "sourcePath": "february/february-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 14:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-05",
@@ -750,7 +856,10 @@
       "sourcePath": "february/february-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 12:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-06",
@@ -771,7 +880,10 @@
       "sourcePath": "february/february-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-07",
@@ -790,7 +902,10 @@
       "sourcePath": "february/february-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Job 22:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-08",
@@ -809,7 +924,10 @@
       "sourcePath": "february/february-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 41:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-09",
@@ -828,7 +946,10 @@
       "sourcePath": "february/february-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 13:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-10",
@@ -847,7 +968,10 @@
       "sourcePath": "february/february-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 22:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-11",
@@ -868,7 +992,10 @@
       "sourcePath": "february/february-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 44:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-12",
@@ -887,7 +1014,10 @@
       "sourcePath": "february/february-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 13:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-13",
@@ -906,7 +1036,10 @@
       "sourcePath": "february/february-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-14",
@@ -927,7 +1060,10 @@
       "sourcePath": "february/february-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 32:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-15",
@@ -946,7 +1082,10 @@
       "sourcePath": "february/february-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 115:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-16",
@@ -965,7 +1104,10 @@
       "sourcePath": "february/february-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 11:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-17",
@@ -984,7 +1126,10 @@
       "sourcePath": "february/february-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Chronicles 15:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-18",
@@ -1003,7 +1148,10 @@
       "sourcePath": "february/february-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 145:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-19",
@@ -1022,7 +1170,10 @@
       "sourcePath": "february/february-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Nahum 1:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-20",
@@ -1043,7 +1194,10 @@
       "sourcePath": "february/february-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 58:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-21",
@@ -1064,7 +1218,10 @@
       "sourcePath": "february/february-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 115:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-22",
@@ -1085,7 +1242,10 @@
       "sourcePath": "february/february-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Samuel 17:37"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-23",
@@ -1104,7 +1264,10 @@
       "sourcePath": "february/february-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 15:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-24",
@@ -1123,7 +1286,10 @@
       "sourcePath": "february/february-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 15:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-25",
@@ -1142,7 +1308,10 @@
       "sourcePath": "february/february-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 61:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-26",
@@ -1161,7 +1330,10 @@
       "sourcePath": "february/february-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 12:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-27",
@@ -1182,7 +1354,10 @@
       "sourcePath": "february/february-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 112:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-28",
@@ -1201,7 +1376,10 @@
       "sourcePath": "february/february-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 10:34"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:02-29",
@@ -1220,7 +1398,10 @@
       "sourcePath": "february/february-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 23:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-01",
@@ -1239,7 +1420,10 @@
       "sourcePath": "march/march-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 66:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-02",
@@ -1258,7 +1442,10 @@
       "sourcePath": "march/march-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 6:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-03",
@@ -1277,7 +1464,10 @@
       "sourcePath": "march/march-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 16:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-04",
@@ -1296,7 +1486,10 @@
       "sourcePath": "march/march-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Samuel 2:30"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-05",
@@ -1317,7 +1510,10 @@
       "sourcePath": "march/march-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 3:33"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-06",
@@ -1336,7 +1532,10 @@
       "sourcePath": "march/march-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 14:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-07",
@@ -1355,7 +1554,10 @@
       "sourcePath": "march/march-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 146:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-08",
@@ -1374,7 +1576,10 @@
       "sourcePath": "march/march-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-09",
@@ -1396,7 +1601,10 @@
       "sourcePath": "march/march-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 29:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-10",
@@ -1415,7 +1623,10 @@
       "sourcePath": "march/march-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 12:46"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-11",
@@ -1434,7 +1645,10 @@
       "sourcePath": "march/march-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Samuel 17:47"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-12",
@@ -1453,7 +1667,10 @@
       "sourcePath": "march/march-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-13",
@@ -1472,7 +1689,10 @@
       "sourcePath": "march/march-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 1:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-14",
@@ -1491,7 +1711,10 @@
       "sourcePath": "march/march-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 66:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-15",
@@ -1510,7 +1733,10 @@
       "sourcePath": "march/march-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 11:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-16",
@@ -1529,7 +1755,10 @@
       "sourcePath": "march/march-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Philippians 4:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-17",
@@ -1550,7 +1779,10 @@
       "sourcePath": "march/march-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 1:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-18",
@@ -1569,7 +1801,10 @@
       "sourcePath": "march/march-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 15:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-19",
@@ -1588,7 +1823,10 @@
       "sourcePath": "march/march-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 84:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-20",
@@ -1607,7 +1845,10 @@
       "sourcePath": "march/march-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 6:30"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-21",
@@ -1626,7 +1867,10 @@
       "sourcePath": "march/march-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 3:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-22",
@@ -1647,7 +1891,10 @@
       "sourcePath": "march/march-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "James 4:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-23",
@@ -1668,7 +1915,10 @@
       "sourcePath": "march/march-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 42:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-24",
@@ -1687,7 +1937,10 @@
       "sourcePath": "march/march-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Thessalonians 3:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-25",
@@ -1706,7 +1959,10 @@
       "sourcePath": "march/march-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 3:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-26",
@@ -1728,7 +1984,10 @@
       "sourcePath": "march/march-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 41:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-27",
@@ -1747,7 +2006,10 @@
       "sourcePath": "march/march-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "James 4:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-28",
@@ -1768,7 +2030,10 @@
       "sourcePath": "march/march-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-29",
@@ -1789,7 +2054,10 @@
       "sourcePath": "march/march-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 18:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-30",
@@ -1811,7 +2079,10 @@
       "sourcePath": "march/march-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Philippians 4:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:03-31",
@@ -1830,7 +2101,10 @@
       "sourcePath": "march/march-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-01",
@@ -1851,7 +2125,10 @@
       "sourcePath": "april/april-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 35:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-02",
@@ -1870,7 +2147,10 @@
       "sourcePath": "april/april-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Timothy 4:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-03",
@@ -1889,7 +2169,10 @@
       "sourcePath": "april/april-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Kings 22:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-04",
@@ -1908,7 +2191,10 @@
       "sourcePath": "april/april-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 23:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-05",
@@ -1927,7 +2213,10 @@
       "sourcePath": "april/april-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 44:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-06",
@@ -1948,7 +2237,10 @@
       "sourcePath": "april/april-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 14:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-07",
@@ -1969,7 +2261,10 @@
       "sourcePath": "april/april-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-08",
@@ -1990,7 +2285,10 @@
       "sourcePath": "april/april-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 23:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-09",
@@ -2009,7 +2307,10 @@
       "sourcePath": "april/april-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 119:165"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-10",
@@ -2028,7 +2329,10 @@
       "sourcePath": "april/april-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Numbers 21:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-11",
@@ -2047,7 +2351,10 @@
       "sourcePath": "april/april-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 31:34"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-12",
@@ -2066,7 +2373,10 @@
       "sourcePath": "april/april-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 31:34"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-13",
@@ -2085,7 +2395,10 @@
       "sourcePath": "april/april-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Philippians 3:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-14",
@@ -2104,7 +2417,10 @@
       "sourcePath": "april/april-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 47:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-15",
@@ -2123,7 +2439,10 @@
       "sourcePath": "april/april-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 10:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-16",
@@ -2142,7 +2461,10 @@
       "sourcePath": "april/april-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 14:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-17",
@@ -2163,7 +2485,10 @@
       "sourcePath": "april/april-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 16:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-18",
@@ -2182,7 +2507,10 @@
       "sourcePath": "april/april-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joshua 1:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-19",
@@ -2201,7 +2529,10 @@
       "sourcePath": "april/april-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 34:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-20",
@@ -2222,7 +2553,10 @@
       "sourcePath": "april/april-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 1:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-21",
@@ -2241,7 +2575,10 @@
       "sourcePath": "april/april-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 19:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-22",
@@ -2260,7 +2597,10 @@
       "sourcePath": "april/april-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 146:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-23",
@@ -2281,7 +2621,10 @@
       "sourcePath": "april/april-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 2:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-24",
@@ -2302,7 +2645,10 @@
       "sourcePath": "april/april-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Malachi 3:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-25",
@@ -2323,7 +2669,10 @@
       "sourcePath": "april/april-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 20:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-26",
@@ -2342,7 +2691,10 @@
       "sourcePath": "april/april-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 15:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-27",
@@ -2361,7 +2713,10 @@
       "sourcePath": "april/april-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 138:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-28",
@@ -2380,7 +2735,10 @@
       "sourcePath": "april/april-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Corinthians 6:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-29",
@@ -2401,7 +2759,10 @@
       "sourcePath": "april/april-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 20:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:04-30",
@@ -2420,7 +2781,10 @@
       "sourcePath": "april/april-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 2:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-01",
@@ -2439,7 +2803,10 @@
       "sourcePath": "may/may-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 55:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-02",
@@ -2458,7 +2825,10 @@
       "sourcePath": "may/may-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Galatians 6:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-03",
@@ -2477,7 +2847,10 @@
       "sourcePath": "may/may-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Samuel 5:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-04",
@@ -2496,7 +2869,10 @@
       "sourcePath": "may/may-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Micah 7:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-05",
@@ -2515,7 +2891,10 @@
       "sourcePath": "may/may-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 30:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-06",
@@ -2534,7 +2913,10 @@
       "sourcePath": "may/may-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 23:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-07",
@@ -2553,7 +2935,10 @@
       "sourcePath": "may/may-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 13:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-08",
@@ -2572,7 +2957,10 @@
       "sourcePath": "may/may-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 20:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-09",
@@ -2591,7 +2979,10 @@
       "sourcePath": "may/may-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 33:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-10",
@@ -2610,7 +3001,10 @@
       "sourcePath": "may/may-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 13:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-11",
@@ -2631,7 +3025,10 @@
       "sourcePath": "may/may-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 49:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-12",
@@ -2650,7 +3047,10 @@
       "sourcePath": "may/may-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 27:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-13",
@@ -2669,7 +3069,10 @@
       "sourcePath": "may/may-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 2:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-14",
@@ -2688,7 +3091,10 @@
       "sourcePath": "may/may-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 6:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-15",
@@ -2707,7 +3113,10 @@
       "sourcePath": "may/may-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 91:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-16",
@@ -2726,7 +3135,10 @@
       "sourcePath": "may/may-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 5:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-17",
@@ -2747,7 +3159,10 @@
       "sourcePath": "may/may-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 28:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-18",
@@ -2766,7 +3181,10 @@
       "sourcePath": "may/may-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joel 2:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-19",
@@ -2785,7 +3203,10 @@
       "sourcePath": "may/may-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 15:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-20",
@@ -2806,7 +3227,10 @@
       "sourcePath": "may/may-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 45:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-21",
@@ -2825,7 +3249,10 @@
       "sourcePath": "may/may-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ecclesiastes 11:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-22",
@@ -2844,7 +3271,10 @@
       "sourcePath": "may/may-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 138:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-23",
@@ -2863,7 +3293,10 @@
       "sourcePath": "may/may-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 72:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-24",
@@ -2882,7 +3315,10 @@
       "sourcePath": "may/may-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joshua 23:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-25",
@@ -2901,7 +3337,10 @@
       "sourcePath": "may/may-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-26",
@@ -2920,7 +3359,10 @@
       "sourcePath": "may/may-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 23:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-27",
@@ -2939,7 +3381,10 @@
       "sourcePath": "may/may-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "II Peter 1:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-28",
@@ -2958,7 +3403,10 @@
       "sourcePath": "may/may-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 32:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-29",
@@ -2977,7 +3425,10 @@
       "sourcePath": "may/may-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Mark 1:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-30",
@@ -2998,7 +3449,10 @@
       "sourcePath": "may/may-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 26:64"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:05-31",
@@ -3017,7 +3471,10 @@
       "sourcePath": "may/may-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 16:33"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-01",
@@ -3038,7 +3495,10 @@
       "sourcePath": "june/june-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ecclesiastes 11:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-02",
@@ -3057,7 +3517,10 @@
       "sourcePath": "june/june-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Nahum 1:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-03",
@@ -3076,7 +3539,10 @@
       "sourcePath": "june/june-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Habakkuk 3:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-04",
@@ -3095,7 +3561,10 @@
       "sourcePath": "june/june-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Malachi 3:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-05",
@@ -3114,7 +3583,10 @@
       "sourcePath": "june/june-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 11:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-06",
@@ -3135,7 +3607,10 @@
       "sourcePath": "june/june-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 6:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-07",
@@ -3154,7 +3629,10 @@
       "sourcePath": "june/june-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 10:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-08",
@@ -3173,7 +3651,10 @@
       "sourcePath": "june/june-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "James 1:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-09",
@@ -3194,7 +3675,10 @@
       "sourcePath": "june/june-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zephaniah 3:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-10",
@@ -3213,7 +3697,10 @@
       "sourcePath": "june/june-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zephaniah 3:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-11",
@@ -3232,7 +3719,10 @@
       "sourcePath": "june/june-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 54:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-12",
@@ -3251,7 +3741,10 @@
       "sourcePath": "june/june-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-13",
@@ -3270,7 +3763,10 @@
       "sourcePath": "june/june-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 27:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-14",
@@ -3289,7 +3785,10 @@
       "sourcePath": "june/june-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Samuel 12:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-15",
@@ -3310,7 +3809,10 @@
       "sourcePath": "june/june-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 128:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-16",
@@ -3329,7 +3831,10 @@
       "sourcePath": "june/june-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 13:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-17",
@@ -3348,7 +3853,10 @@
       "sourcePath": "june/june-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 20:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-18",
@@ -3367,7 +3875,10 @@
       "sourcePath": "june/june-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 33:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-19",
@@ -3386,7 +3897,10 @@
       "sourcePath": "june/june-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 119:80"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-20",
@@ -3407,7 +3921,10 @@
       "sourcePath": "june/june-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 23:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-21",
@@ -3426,7 +3943,10 @@
       "sourcePath": "june/june-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Judges 4:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-22",
@@ -3445,7 +3965,10 @@
       "sourcePath": "june/june-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 10:27"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-23",
@@ -3466,7 +3989,10 @@
       "sourcePath": "june/june-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Kings 19:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-24",
@@ -3487,7 +4013,10 @@
       "sourcePath": "june/june-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Chronicles 25:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-25",
@@ -3506,7 +4035,10 @@
       "sourcePath": "june/june-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 1:51"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-26",
@@ -3525,7 +4057,10 @@
       "sourcePath": "june/june-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "James 5:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-27",
@@ -3546,7 +4081,10 @@
       "sourcePath": "june/june-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 140:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-28",
@@ -3567,7 +4105,10 @@
       "sourcePath": "june/june-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Judges 6:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-29",
@@ -3588,7 +4129,10 @@
       "sourcePath": "june/june-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 33:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:06-30",
@@ -3607,7 +4151,10 @@
       "sourcePath": "june/june-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 16:60"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-01",
@@ -3626,7 +4173,10 @@
       "sourcePath": "july/july-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 48:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-02",
@@ -3645,7 +4195,10 @@
       "sourcePath": "july/july-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 127:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-03",
@@ -3666,7 +4219,10 @@
       "sourcePath": "july/july-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 48:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-04",
@@ -3685,7 +4241,10 @@
       "sourcePath": "july/july-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 4:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-05",
@@ -3704,7 +4263,10 @@
       "sourcePath": "july/july-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 39:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-06",
@@ -3723,7 +4285,10 @@
       "sourcePath": "july/july-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 3:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-07",
@@ -3742,7 +4307,10 @@
       "sourcePath": "july/july-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 49:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-08",
@@ -3761,7 +4329,10 @@
       "sourcePath": "july/july-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 34:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-09",
@@ -3782,7 +4353,10 @@
       "sourcePath": "july/july-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 101:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-10",
@@ -3803,7 +4377,10 @@
       "sourcePath": "july/july-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 102:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-11",
@@ -3822,7 +4399,10 @@
       "sourcePath": "july/july-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 11:26"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-12",
@@ -3841,7 +4421,10 @@
       "sourcePath": "july/july-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "II Peter 2:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-13",
@@ -3862,7 +4445,10 @@
       "sourcePath": "july/july-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 39:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-14",
@@ -3883,7 +4469,10 @@
       "sourcePath": "july/july-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 55:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-15",
@@ -3902,7 +4491,10 @@
       "sourcePath": "july/july-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 5:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-16",
@@ -3921,7 +4513,10 @@
       "sourcePath": "july/july-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zephaniah 3:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-17",
@@ -3940,7 +4535,10 @@
       "sourcePath": "july/july-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Daniel 11:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-18",
@@ -3959,7 +4557,10 @@
       "sourcePath": "july/july-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 2:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-19",
@@ -3978,7 +4579,10 @@
       "sourcePath": "july/july-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-20",
@@ -3997,7 +4601,10 @@
       "sourcePath": "july/july-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 9:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-21",
@@ -4016,7 +4623,10 @@
       "sourcePath": "july/july-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Daniel 12:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-22",
@@ -4035,7 +4645,10 @@
       "sourcePath": "july/july-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 2:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-23",
@@ -4054,7 +4667,10 @@
       "sourcePath": "july/july-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 10:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-24",
@@ -4075,7 +4691,10 @@
       "sourcePath": "july/july-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 3:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-25",
@@ -4094,7 +4713,10 @@
       "sourcePath": "july/july-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Daniel 12:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-26",
@@ -4113,7 +4735,10 @@
       "sourcePath": "july/july-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 2:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-27",
@@ -4132,7 +4757,10 @@
       "sourcePath": "july/july-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 13:34"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-28",
@@ -4151,7 +4779,10 @@
       "sourcePath": "july/july-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "I Peter 5:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-29",
@@ -4172,7 +4803,10 @@
       "sourcePath": "july/july-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zephaniah 3:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-30",
@@ -4194,7 +4828,10 @@
       "sourcePath": "july/july-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 16:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:07-31",
@@ -4213,7 +4850,10 @@
       "sourcePath": "july/july-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 50:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-01",
@@ -4234,7 +4874,10 @@
       "sourcePath": "august/august-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 17:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-02",
@@ -4253,7 +4896,10 @@
       "sourcePath": "august/august-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 4:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-03",
@@ -4274,7 +4920,10 @@
       "sourcePath": "august/august-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Leviticus 22:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-04",
@@ -4293,7 +4942,10 @@
       "sourcePath": "august/august-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Numbers 6:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-05",
@@ -4312,7 +4964,10 @@
       "sourcePath": "august/august-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 37:31"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-06",
@@ -4331,7 +4986,10 @@
       "sourcePath": "august/august-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 1:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-07",
@@ -4350,7 +5008,10 @@
       "sourcePath": "august/august-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joshua 1:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-08",
@@ -4369,7 +5030,10 @@
       "sourcePath": "august/august-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 50:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-09",
@@ -4388,7 +5052,10 @@
       "sourcePath": "august/august-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 15:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-10",
@@ -4407,7 +5074,10 @@
       "sourcePath": "august/august-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "I Sam 2:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-11",
@@ -4428,7 +5098,10 @@
       "sourcePath": "august/august-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 62:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-12",
@@ -4447,7 +5120,10 @@
       "sourcePath": "august/august-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Samuel 22:29"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-13",
@@ -4468,7 +5144,10 @@
       "sourcePath": "august/august-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 65:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-14",
@@ -4489,7 +5168,10 @@
       "sourcePath": "august/august-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Kings 11:39"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-15",
@@ -4508,7 +5190,10 @@
       "sourcePath": "august/august-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 14:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-16",
@@ -4529,7 +5214,10 @@
       "sourcePath": "august/august-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 28:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-17",
@@ -4548,7 +5236,10 @@
       "sourcePath": "august/august-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Kings 6:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-18",
@@ -4567,7 +5258,10 @@
       "sourcePath": "august/august-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Chronicles 28:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-19",
@@ -4586,7 +5280,10 @@
       "sourcePath": "august/august-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ps 58:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-20",
@@ -4605,7 +5302,10 @@
       "sourcePath": "august/august-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Job 5:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-21",
@@ -4624,7 +5324,10 @@
       "sourcePath": "august/august-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 30:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-22",
@@ -4643,7 +5346,10 @@
       "sourcePath": "august/august-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 76:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-23",
@@ -4662,7 +5368,10 @@
       "sourcePath": "august/august-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 8:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-24",
@@ -4681,7 +5390,10 @@
       "sourcePath": "august/august-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Corinthians 1:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-25",
@@ -4702,7 +5414,10 @@
       "sourcePath": "august/august-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 34:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-26",
@@ -4721,7 +5436,10 @@
       "sourcePath": "august/august-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 34:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-27",
@@ -4740,7 +5458,10 @@
       "sourcePath": "august/august-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 48:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-28",
@@ -4759,7 +5480,10 @@
       "sourcePath": "august/august-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 55:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-29",
@@ -4778,7 +5502,10 @@
       "sourcePath": "august/august-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 31:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-30",
@@ -4797,7 +5524,10 @@
       "sourcePath": "august/august-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Samuel 23:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:08-31",
@@ -4816,7 +5546,10 @@
       "sourcePath": "august/august-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "I Peter 1:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-01",
@@ -4837,7 +5570,10 @@
       "sourcePath": "september/september-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 15:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-02",
@@ -4856,7 +5592,10 @@
       "sourcePath": "september/september-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 6:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-03",
@@ -4875,7 +5614,10 @@
       "sourcePath": "september/september-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 37:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-04",
@@ -4894,7 +5636,10 @@
       "sourcePath": "september/september-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 1:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-05",
@@ -4913,7 +5658,10 @@
       "sourcePath": "september/september-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Chronicles 20:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-06",
@@ -4932,7 +5680,10 @@
       "sourcePath": "september/september-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 27:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-07",
@@ -4953,7 +5704,10 @@
       "sourcePath": "september/september-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hosea 1:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-08",
@@ -4972,7 +5726,10 @@
       "sourcePath": "september/september-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 42:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-09",
@@ -4993,7 +5750,10 @@
       "sourcePath": "september/september-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 28:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-10",
@@ -5012,7 +5772,10 @@
       "sourcePath": "september/september-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-11",
@@ -5034,7 +5797,10 @@
       "sourcePath": "september/september-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Lamentations 3:27"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-12",
@@ -5053,7 +5819,10 @@
       "sourcePath": "september/september-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 16:31"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-13",
@@ -5072,7 +5841,10 @@
       "sourcePath": "september/september-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-14",
@@ -5091,7 +5863,10 @@
       "sourcePath": "september/september-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "James 1:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-15",
@@ -5110,7 +5885,10 @@
       "sourcePath": "september/september-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 32:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-16",
@@ -5129,7 +5907,10 @@
       "sourcePath": "september/september-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 10:42"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-17",
@@ -5148,7 +5929,10 @@
       "sourcePath": "september/september-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 92:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-18",
@@ -5167,7 +5951,10 @@
       "sourcePath": "september/september-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-19",
@@ -5188,7 +5975,10 @@
       "sourcePath": "september/september-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zephaniah 3:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-20",
@@ -5207,7 +5997,10 @@
       "sourcePath": "september/september-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 110:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-21",
@@ -5228,7 +6021,10 @@
       "sourcePath": "september/september-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 5:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-22",
@@ -5247,7 +6043,10 @@
       "sourcePath": "september/september-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 33:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-23",
@@ -5266,7 +6065,10 @@
       "sourcePath": "september/september-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Amos 9:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-24",
@@ -5285,7 +6087,10 @@
       "sourcePath": "september/september-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 47:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-25",
@@ -5304,7 +6109,10 @@
       "sourcePath": "september/september-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Judges 13:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-26",
@@ -5323,7 +6131,10 @@
       "sourcePath": "september/september-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Numbers 23:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-27",
@@ -5342,7 +6153,10 @@
       "sourcePath": "september/september-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 18:28"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-28",
@@ -5363,7 +6177,10 @@
       "sourcePath": "september/september-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 4:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-29",
@@ -5384,7 +6201,10 @@
       "sourcePath": "september/september-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 16:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:09-30",
@@ -5405,7 +6225,10 @@
       "sourcePath": "september/september-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 81:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-01",
@@ -5424,7 +6247,10 @@
       "sourcePath": "october/october-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 111:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-02",
@@ -5443,7 +6269,10 @@
       "sourcePath": "october/october-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Genesis 50:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-03",
@@ -5464,7 +6293,10 @@
       "sourcePath": "october/october-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 17:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-04",
@@ -5483,7 +6315,10 @@
       "sourcePath": "october/october-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 12:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-05",
@@ -5502,7 +6337,10 @@
       "sourcePath": "october/october-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Micah 5:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-06",
@@ -5523,7 +6361,10 @@
       "sourcePath": "october/october-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 16:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-07",
@@ -5544,7 +6385,10 @@
       "sourcePath": "october/october-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Mark 16:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-08",
@@ -5563,7 +6407,10 @@
       "sourcePath": "october/october-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 62:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-09",
@@ -5582,7 +6429,10 @@
       "sourcePath": "october/october-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Leviticus 4:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-10",
@@ -5601,7 +6451,10 @@
       "sourcePath": "october/october-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 3:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-11",
@@ -5620,7 +6473,10 @@
       "sourcePath": "october/october-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 10:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-12",
@@ -5641,7 +6497,10 @@
       "sourcePath": "october/october-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 30:6"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-13",
@@ -5662,7 +6521,10 @@
       "sourcePath": "october/october-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Chronicles 7:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-14",
@@ -5681,7 +6543,10 @@
       "sourcePath": "october/october-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 10:32"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-15",
@@ -5700,7 +6565,10 @@
       "sourcePath": "october/october-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 6:57"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-16",
@@ -5721,7 +6589,10 @@
       "sourcePath": "october/october-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 14:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-17",
@@ -5743,7 +6614,10 @@
       "sourcePath": "october/october-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 13:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-18",
@@ -5764,7 +6638,10 @@
       "sourcePath": "october/october-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 126:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-19",
@@ -5783,7 +6660,10 @@
       "sourcePath": "october/october-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 30:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-20",
@@ -5804,7 +6684,10 @@
       "sourcePath": "october/october-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 1:21"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-21",
@@ -5823,7 +6706,10 @@
       "sourcePath": "october/october-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 60:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-22",
@@ -5845,7 +6731,10 @@
       "sourcePath": "october/october-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Samuel 7:29"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-23",
@@ -5864,7 +6753,10 @@
       "sourcePath": "october/october-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 97:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-24",
@@ -5883,7 +6775,10 @@
       "sourcePath": "october/october-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 15:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-25",
@@ -5902,7 +6797,10 @@
       "sourcePath": "october/october-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 6:33"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-26",
@@ -5921,7 +6819,10 @@
       "sourcePath": "october/october-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 24:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-27",
@@ -5942,7 +6843,10 @@
       "sourcePath": "october/october-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 22:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-28",
@@ -5963,7 +6867,10 @@
       "sourcePath": "october/october-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Numbers 15:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-29",
@@ -5982,7 +6889,10 @@
       "sourcePath": "october/october-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 8:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-30",
@@ -6003,7 +6913,10 @@
       "sourcePath": "october/october-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 36:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:10-31",
@@ -6022,7 +6935,10 @@
       "sourcePath": "october/october-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 118:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-01",
@@ -6041,7 +6957,10 @@
       "sourcePath": "november/november-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Thessalonians 5:24"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-02",
@@ -6060,7 +6979,10 @@
       "sourcePath": "november/november-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 84:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-03",
@@ -6079,7 +7001,10 @@
       "sourcePath": "november/november-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Habakkuk 2:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-04",
@@ -6098,7 +7023,10 @@
       "sourcePath": "november/november-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Kings 3:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-05",
@@ -6117,7 +7045,10 @@
       "sourcePath": "november/november-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 57:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-06",
@@ -6136,7 +7067,10 @@
       "sourcePath": "november/november-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 37:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-07",
@@ -6155,7 +7089,10 @@
       "sourcePath": "november/november-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Luke 18:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-08",
@@ -6176,7 +7113,10 @@
       "sourcePath": "november/november-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "2 Corinthians 12:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-09",
@@ -6195,7 +7135,10 @@
       "sourcePath": "november/november-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 34:30"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-10",
@@ -6214,7 +7157,10 @@
       "sourcePath": "november/november-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 121:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-11",
@@ -6235,7 +7181,10 @@
       "sourcePath": "november/november-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Romans 6:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-12",
@@ -6254,7 +7203,10 @@
       "sourcePath": "november/november-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 31:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-13",
@@ -6273,7 +7225,10 @@
       "sourcePath": "november/november-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 121:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-14",
@@ -6292,7 +7247,10 @@
       "sourcePath": "november/november-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 14:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-15",
@@ -6311,7 +7269,10 @@
       "sourcePath": "november/november-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Philippians 4:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-16",
@@ -6330,7 +7291,10 @@
       "sourcePath": "november/november-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 54:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-17",
@@ -6349,7 +7313,10 @@
       "sourcePath": "november/november-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 94:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-18",
@@ -6368,7 +7335,10 @@
       "sourcePath": "november/november-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 12:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-19",
@@ -6390,7 +7360,10 @@
       "sourcePath": "november/november-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Haggai 2:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-20",
@@ -6409,7 +7382,10 @@
       "sourcePath": "november/november-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 107:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-21",
@@ -6428,7 +7404,10 @@
       "sourcePath": "november/november-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 45:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-22",
@@ -6447,7 +7426,10 @@
       "sourcePath": "november/november-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Jeremiah 50:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-23",
@@ -6466,7 +7448,10 @@
       "sourcePath": "november/november-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 7:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-24",
@@ -6487,7 +7472,10 @@
       "sourcePath": "november/november-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 103:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-25",
@@ -6506,7 +7494,10 @@
       "sourcePath": "november/november-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 4:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-26",
@@ -6525,7 +7516,10 @@
       "sourcePath": "november/november-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 16:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-27",
@@ -6546,7 +7540,10 @@
       "sourcePath": "november/november-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ex. 33:14"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-28",
@@ -6565,7 +7562,10 @@
       "sourcePath": "november/november-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 28:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-29",
@@ -6586,7 +7586,10 @@
       "sourcePath": "november/november-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 28:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:11-30",
@@ -6605,7 +7608,10 @@
       "sourcePath": "november/november-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 31:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-01",
@@ -6624,7 +7630,10 @@
       "sourcePath": "december/december-1.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Proverbs 10:9"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-02",
@@ -6643,7 +7652,10 @@
       "sourcePath": "december/december-2.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 16:8"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-03",
@@ -6664,7 +7676,10 @@
       "sourcePath": "december/december-3.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Ezekiel 34:25"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-04",
@@ -6683,7 +7698,10 @@
       "sourcePath": "december/december-4.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 91:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-05",
@@ -6702,7 +7720,10 @@
       "sourcePath": "december/december-5.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 33:16"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-06",
@@ -6721,7 +7742,10 @@
       "sourcePath": "december/december-6.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 43:2"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-07",
@@ -6742,7 +7766,10 @@
       "sourcePath": "december/december-7.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 29:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-08",
@@ -6763,7 +7790,10 @@
       "sourcePath": "december/december-8.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 12:26"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-09",
@@ -6782,7 +7812,10 @@
       "sourcePath": "december/december-9.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Mark 9:23"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-10",
@@ -6801,7 +7834,10 @@
       "sourcePath": "december/december-10.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Exodus 23:22"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-11",
@@ -6822,7 +7858,10 @@
       "sourcePath": "december/december-11.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 37:3"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-12",
@@ -6841,7 +7880,10 @@
       "sourcePath": "december/december-12.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 30:15"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-13",
@@ -6860,7 +7902,10 @@
       "sourcePath": "december/december-13.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Zechariah 14:7"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-14",
@@ -6879,7 +7924,10 @@
       "sourcePath": "december/december-14.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Revelation 21:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-15",
@@ -6898,7 +7946,10 @@
       "sourcePath": "december/december-15.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 2:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-16",
@@ -6917,7 +7968,10 @@
       "sourcePath": "december/december-16.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Joshua 17:18"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-17",
@@ -6938,7 +7992,10 @@
       "sourcePath": "december/december-17.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "1 Thessalonians 4:17"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-18",
@@ -6957,7 +8014,10 @@
       "sourcePath": "december/december-18.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 31:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-19",
@@ -6978,7 +8038,10 @@
       "sourcePath": "december/december-19.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 34:20"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-20",
@@ -6997,7 +8060,10 @@
       "sourcePath": "december/december-20.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 51:12"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-21",
@@ -7016,7 +8082,10 @@
       "sourcePath": "december/december-21.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Micah 7:19"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-22",
@@ -7035,7 +8104,10 @@
       "sourcePath": "december/december-22.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 46:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-23",
@@ -7054,7 +8126,10 @@
       "sourcePath": "december/december-23.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:13"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-24",
@@ -7075,7 +8150,10 @@
       "sourcePath": "december/december-24.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Deuteronomy 33:29"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-25",
@@ -7094,7 +8172,10 @@
       "sourcePath": "december/december-25.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Acts 1:11"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-26",
@@ -7115,7 +8196,10 @@
       "sourcePath": "december/december-26.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Matthew 26:33"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-27",
@@ -7134,7 +8218,10 @@
       "sourcePath": "december/december-27.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 54:10"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-28",
@@ -7153,7 +8240,10 @@
       "sourcePath": "december/december-28.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Hebrews 13:5"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-29",
@@ -7172,7 +8262,10 @@
       "sourcePath": "december/december-29.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Isaiah 46:4"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-30",
@@ -7191,7 +8284,10 @@
       "sourcePath": "december/december-30.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "John 13:1"
+      ]
     },
     {
       "id": "spurgeon-faiths-checkbook:12-31",
@@ -7210,7 +8306,10 @@
       "sourcePath": "december/december-31.md",
       "sourceCommitSha": "62968334253c0bb0bf4ffe16a4e2b0825e42d0c5",
       "bodyIncluded": false,
-      "reviewStatus": "needs-pastoral-review"
+      "reviewStatus": "needs-pastoral-review",
+      "canonicalScriptureRefs": [
+        "Psalms 73:24"
+      ]
     }
   ]
 }
