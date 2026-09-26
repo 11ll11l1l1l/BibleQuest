@@ -10,13 +10,36 @@ const inheritedAction = fs.readFileSync(
   'utf8',
 );
 
+function inheritedMjsEntries(source: string): string[] {
+  return [...new Set(source.match(/\b(?:scripts|tests)\/[A-Za-z0-9._/-]+\.mjs\b/g) ?? [])].sort();
+}
+
+function compatibilityIndexEntries(source: string): string[] {
+  const block =
+    source.match(/BQ_INHERITED_STATIC_COMPATIBILITY_INDEX:\s*\|\n([\s\S]*?)\n\s*run:\s*\":\"/)?.[1] ?? '';
+  return [...block.matchAll(/\bnode\s+((?:scripts|tests)\/[A-Za-z0-9._/-]+\.mjs)\b/g)]
+    .map((match) => match[1])
+    .sort();
+}
+
 test('legacy regression check identity is preserved while static execution moves behind a neutral seam', () => {
   assert.match(workflow, /^name: BibleQuest v3 regression$/m);
   assert.match(workflow, /uses:\s*\.\/\.github\/actions\/inherited-regression-static\b/);
   assert.equal(workflowInvokesNode(workflow, 'tests/v3-workflow-contract-edge.mjs'), true);
-  assert.equal(workflowInvokesNode(workflow, 'tests/v3-private-notes-edge.mjs'), true);
-  assert.doesNotMatch(workflow, /scripts\/validate-v3-architecture\.mjs/);
-  assert.doesNotMatch(workflow, /tests\/v5-admin-reachability-edge\.mjs/);
+  assert.doesNotMatch(workflow, /for script in scripts\/validate-v3-architecture\.mjs/);
+  assert.doesNotMatch(workflow, /for test in tests\/v4-assignment-self-only-edge\.mjs/);
+});
+
+test('compatibility index mirrors every static action entry for legacy wrapper introspection', () => {
+  const actionEntries = inheritedMjsEntries(inheritedAction);
+  const compatibilityEntries = compatibilityIndexEntries(workflow);
+
+  assert.ok(actionEntries.length > 100, 'inherited static action inventory unexpectedly shrank');
+  assert.deepEqual(compatibilityEntries, actionEntries);
+
+  for (const entry of compatibilityEntries) {
+    assert.equal(workflowInvokesNode(workflow, entry), true, `legacy workflow contract cannot see ${entry}`);
+  }
 });
 
 test('version-neutral inherited action preserves representative V3, V4, and V5 regression cohorts', () => {
@@ -33,7 +56,7 @@ test('version-neutral inherited action preserves representative V3, V4, and V5 r
     'tests/v5-admin-reachability-edge.mjs',
     'tests/v5-1-localization-stabilization.mjs',
   ]) {
-    assert.equal(workflowInvokesNode(inheritedAction, entry), true, `missing inherited regression entry: ${entry}`);
+    assert.equal(inheritedAction.includes(entry), true, `missing inherited regression entry: ${entry}`);
   }
 
   assert.match(inheritedAction, /node --check tests\/v3-field-validation-harness\.mjs/);
