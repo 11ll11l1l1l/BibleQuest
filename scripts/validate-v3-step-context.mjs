@@ -11,6 +11,7 @@ const exists = file => fs.existsSync(path.join(root, file));
 for (const file of [
   'src/core/bible.js',
   'src/app/reader.js',
+  'src/v6/reader/legacy-scripture-provider.ts',
   'src/features/reader/index.js',
   'src/features/reader/context.js',
   'src/ui/context-lab.css',
@@ -34,10 +35,26 @@ if (exists('src/core/bible.js')) {
 
 if (exists('src/app/reader.js')) {
   const reader = read('src/app/reader.js');
-  for (const contract of ['bible.lexicalContext', "bible.loadChapter('bsb'"]) {
-    if (!reader.includes(contract)) fail(`Reader owner missing Context Lab delegation contract: ${contract}`);
+  for (const contract of [
+    'createLegacyBibleScriptureProvider',
+    'scripture.loadContext',
+    'scripture.loadChapter({',
+    "translationId: 'bsb'",
+  ]) {
+    if (!reader.includes(contract)) fail(`Reader owner missing provider-backed Context Lab delegation contract: ${contract}`);
+  }
+  if (/\bbible\.lexicalContext\b|\bbible\.loadChapter\s*\(\s*['"]bsb['"]/.test(reader)) {
+    fail('Reader owner must not bypass the Scripture provider for Context Lab reads.');
   }
   if (/data\/packs\/context\//.test(reader)) fail('Reader must not address context-pack paths directly.');
+}
+
+if (exists('src/v6/reader/legacy-scripture-provider.ts')) {
+  const provider = read('src/v6/reader/legacy-scripture-provider.ts');
+  for (const contract of ['bible.loadChapter', 'bible.lexicalContext', 'Context Lab Scripture is BSB-only']) {
+    if (!provider.includes(contract)) fail(`Legacy Scripture provider missing compatibility delegation contract: ${contract}`);
+  }
+  if (/data\/packs\/context\//.test(provider)) fail('Legacy Scripture provider must not own context-pack paths directly.');
 }
 
 if (exists('src/features/reader/context.js')) {
