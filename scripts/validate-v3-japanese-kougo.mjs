@@ -6,6 +6,7 @@ const fail = message => { console.error(`Japanese Kougo architecture validation 
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const bible = read('src/core/bible.js');
 const reader = read('src/app/reader.js');
+const provider = read('src/v6/reader/legacy-scripture-provider.ts');
 const ui = read('src/features/reader/index.js');
 
 for (const contract of [
@@ -37,7 +38,13 @@ for (const contract of ["translation === 'jko'", 'data-jko-failure', 'data-reade
   if (!ui.includes(contract)) fail(`Reader UI missing Japanese recovery contract: ${contract}`);
 }
 if (/api\.getbible\.net|fetch\s*\(|localStorage|sessionStorage|MutationObserver|window\.BQ/.test(ui)) fail('Reader UI must not own Japanese networking/storage/global runtime behavior.');
-if (!reader.includes('bible.loadChapter')) fail('Reader service must continue delegating Scripture loading to the Bible service.');
-if (/api\.getbible\.net|japkougo/.test(reader)) fail('Reader state owner must not know the Japanese remote implementation.');
+if (!reader.includes('createLegacyBibleScriptureProvider') || !reader.includes('scripture.loadChapter')) {
+  fail('Reader service must delegate Scripture loading through the Scripture provider boundary.');
+}
+if (/\bbible\.loadChapter\b/.test(reader)) fail('Reader service must not bypass the Scripture provider for chapter loading.');
+if (!provider.includes('bible.loadChapter')) fail('Legacy Scripture provider must retain Bible-service compatibility delegation.');
+if (/api\.getbible\.net|japkougo/.test(reader) || /api\.getbible\.net|japkougo/.test(provider)) {
+  fail('Reader/provider state owners must not know the Japanese remote implementation.');
+}
 
 console.log('BibleQuest v3 Japanese Kougo architecture validation passed.');

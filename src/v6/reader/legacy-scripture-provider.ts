@@ -49,6 +49,9 @@ export function createLegacyBibleScriptureProvider(
         location.bookCode,
         location.chapter,
       );
+      if (loaded?.translation?.id !== location.translationId) {
+        throw new Error('Legacy Bible chapter translation does not match the selected translation and therefore does not match the requested Reader passage.');
+      }
       return Object.freeze({
         ...loaded,
         translationId: location.translationId,
