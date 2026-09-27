@@ -152,6 +152,11 @@ jobs:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/pwa-built-artifact-browser.mjs
 
+      - name: Reader parity accessibility and mobile acceptance
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/reader-route-acceptance-browser.mjs
+
       - name: Preview diagnostics
         if: always()
         run: |
