@@ -74,7 +74,7 @@ test('legacy provider fails closed instead of relabeling a mismatched chapter tr
 
   await assert.rejects(
     provider.loadChapter({ translationId: 'bsb', bookCode: 'JHN', chapter: 3 }),
-    /translation does not match the requested Scripture translation/,
+    /does not match the selected translation/,
   );
 });
 
