@@ -78,7 +78,6 @@ export function analyzeInheritedRegressionWorkflow(source) {
   if (report.legacyConcurrencyGroup) report.remainingLegacyCoupling.push('concurrency-group');
   if (report.legacyTempPaths.length) report.remainingLegacyCoupling.push('temporary-paths');
   if (report.directStaticValidators.length) report.remainingLegacyCoupling.push('inline-static-cohort');
-  if (report.compatibilityStaticEntries.length) report.remainingLegacyCoupling.push('compatibility-static-index');
   if (report.directBrowserTests.length) report.remainingLegacyCoupling.push('inline-browser-cohort');
 
   return Object.freeze({
