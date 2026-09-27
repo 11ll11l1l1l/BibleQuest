@@ -1,4 +1,5 @@
 import { createOfflineScriptureAvailability } from './offline-scripture-status.js';
+import { createLegacyBibleScriptureProvider } from '../v6/reader/legacy-scripture-provider.ts';
 import { deriveVersePeek } from '../v6/reader/context-helpers.ts';
 import { readerSearchResponseMatches } from '../v6/reader/scripture-repository.ts';
 import { createReaderChapterReadBoundary } from '../v6/reader/live-progress.ts';
@@ -6,11 +7,28 @@ import { createReaderChapterReadBoundary } from '../v6/reader/live-progress.ts';
 const STORAGE_KEY = 'reader-state';
 const DEFAULT_STATE = Object.freeze({ translation: 'bsb', book: 'JHN', chapter: 1, read: {} });
 
-export function createReaderService({ bible, storage, progress, bibleQuest = null }) {
+export function createReaderService({ bible, storage, progress, bibleQuest = null, scriptureProvider = null }) {
   if (!bible || !storage || !progress) throw new Error('Reader service requires Bible data, storage and progress boundaries.');
 
   const offlineScripture = createOfflineScriptureAvailability({ bibleService: bible });
+  const scripture = scriptureProvider || createLegacyBibleScriptureProvider(bible);
+  if (
+    typeof scripture?.loadChapter !== 'function'
+    || typeof scripture?.search !== 'function'
+    || typeof scripture?.loadContext !== 'function'
+  ) throw new Error('Reader service requires a Scripture content provider boundary.');
   const chapterProgress = createReaderChapterReadBoundary(progress);
+
+  const hydrateChapter = content => {
+    const book = bible.getBook(content?.book?.code || '');
+    const translation = bible.getTranslation(content?.translationId || '');
+    return Object.freeze({
+      ...content,
+      book,
+      translation,
+      verses: Object.freeze([...(content?.verses || [])]),
+    });
+  };
   const normalize = input => {
     const translation = bible.translations.some(item => item.id === input?.translation) ? input.translation : DEFAULT_STATE.translation;
     let book;
@@ -69,18 +87,22 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
       book: state.book,
       chapter: state.chapter,
     });
-    const loaded = await bible.loadChapter(request.translation, request.book, request.chapter);
+    const loaded = await scripture.loadChapter({
+      translationId: request.translation,
+      bookCode: request.book,
+      chapter: request.chapter,
+    });
     if (
       state.translation !== request.translation
       || state.book !== request.book
       || state.chapter !== request.chapter
     ) throw new Error('Reader passage changed while Scripture was loading.');
     if (
-      loaded?.translation?.id !== request.translation
+      loaded?.translationId !== request.translation
       || loaded?.book?.code?.trim?.().toUpperCase() !== request.book.trim().toUpperCase()
       || loaded?.chapter !== request.chapter
     ) throw new Error('Scripture response does not match the requested Reader passage.');
-    return loaded;
+    return hydrateChapter(loaded);
   }
 
   async function getOfflineStatus() {
@@ -122,7 +144,7 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   async function search(query, options) {
     const translation = state.translation;
     const limit = options?.limit ?? 30;
-    const result = await bible.search(translation, query, options);
+    const result = await scripture.search(translation, query, limit);
     if (state.translation !== translation) {
       throw new Error('Reader translation changed while Scripture search was running.');
     }
@@ -143,13 +165,17 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
       book: state.book,
       chapter: state.chapter,
     });
-    const loaded = await bible.loadChapter(requestState.translation, book.code, chapter);
+    const loaded = await scripture.loadChapter({
+      translationId: requestState.translation,
+      bookCode: book.code,
+      chapter,
+    });
     if (
       state.translation !== requestState.translation
       || state.book !== requestState.book
       || state.chapter !== requestState.chapter
     ) throw new Error('Reader passage changed while opening the search result.');
-    if (loaded?.translation?.id !== requestState.translation) throw new Error('Search result content does not match the selected translation.');
+    if (loaded?.translationId !== requestState.translation) throw new Error('Search result content does not match the selected translation.');
     const projection = deriveVersePeek({
       translationId: requestState.translation,
       book: loaded.book,
@@ -164,7 +190,7 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
 
     state = { ...state, book: book.code, chapter };
     persist();
-    return Object.freeze({ chapter: loaded, verse });
+    return Object.freeze({ chapter: hydrateChapter(loaded), verse });
   }
 
   async function peek(verse) {
@@ -187,11 +213,26 @@ export function createReaderService({ bible, storage, progress, bibleQuest = nul
   }
 
   async function contextChapter(code = state.book, chapter = state.chapter) {
-    return bible.loadChapter('bsb', code, chapter);
+    const loaded = await scripture.loadChapter({
+      translationId: 'bsb',
+      bookCode: code,
+      chapter,
+    });
+    if (
+      loaded?.translationId !== 'bsb'
+      || loaded?.book?.code?.trim?.().toUpperCase() !== String(code).trim().toUpperCase()
+      || loaded?.chapter !== Number(chapter)
+    ) throw new Error('Context Lab chapter data does not match the requested BSB passage.');
+    return hydrateChapter(loaded);
   }
 
   async function lexicalContext({ code = state.book, chapter = state.chapter, verse = 1 } = {}) {
-    return bible.lexicalContext(code, chapter, verse);
+    return scripture.loadContext({
+      translationId: 'bsb',
+      bookCode: code,
+      chapter,
+      verse,
+    });
   }
 
   return Object.freeze({
