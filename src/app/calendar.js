@@ -147,6 +147,28 @@ export function createCalendarService({ session, privateStorage, api, assignment
     return buildAgenda(combinedEvents(), { today: startDate, days });
   }
 
+  const safeSharedEvent=event=>Object.freeze({
+    id:String(event?.id||''),
+    source:event?.source==='assignment'?'assignment':'congregation',
+    date:String(event?.date||''),
+    title:String(event?.title||'').trim().slice(0,120)
+  });
+
+  async function loadSharedAgenda({startDate=clock(),days=30}={}){
+    const userId=sessionUserId();
+    if(!userId||!congregation)return Object.freeze({status:'unavailable',congregationId:'',agenda:Object.freeze([])});
+    await loadCongregation();
+    const shared=visibleCongregationState();
+    if(!shared.congregationId||!ownsCongregationContext(userId,shared.congregationId)){
+      return Object.freeze({status:'unavailable',congregationId:'',agenda:Object.freeze([])});
+    }
+    const agenda=buildAgenda([...assignmentEvents(),...shared.events],{today:startDate,days}).map(day=>Object.freeze({
+      date:day.date,
+      events:Object.freeze(day.events.filter(event=>event.source==='assignment'||event.source==='congregation').map(safeSharedEvent))
+    })).filter(day=>day.events.length);
+    return Object.freeze({status:'ready',congregationId:shared.congregationId,agenda:Object.freeze(agenda)});
+  }
+
   function present() {
     const current = owner();
     const cache=readCache(current),personal=cache.events,shared=visibleCongregationState();
@@ -163,7 +185,8 @@ export function createCalendarService({ session, privateStorage, api, assignment
     });
   }
 
-  async function load() {
+  async function load(options={}) {
+    if(options?.scope==='shared-agenda')return loadSharedAgenda({startDate:options.startDate??clock(),days:options.days??30});
     const s = session.getState();
     const current = owner();
     if (s?.authenticated && s?.user?.id) {
@@ -279,5 +302,5 @@ export function createCalendarService({ session, privateStorage, api, assignment
     }
   }
 
-  return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present });
+  return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present })
 }

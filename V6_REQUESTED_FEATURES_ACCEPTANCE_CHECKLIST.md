@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `a83120a3bf599a40b93a7ae3a1e2bd708f05f805`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
+Evidence checkpoint: integrated V6 head `2b779928582aa73d961db6b39de16319152a74cd`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
 
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
@@ -14,8 +14,10 @@ Second certification reconciliation from integrated head `0e00188c3144a137ca48dd
 
 Third certification reconciliation from integrated head `f4f98f861005f1b9b0039473a8b6fe6a1bf591b5`: merged Reader live-progress boundary PR #727 passed Client Artifact Security `36199644834`, Phase-1 `36199644766`, and inherited regression `36199644696`; merged speedtrack batch #737 passed Phase-1 `36205547820`, Database CI `36205547874`, and inherited regression `36205547836`, including deterministic startup/critical-route budgets; merged speedtrack batch #759 passed Database CI `36206770253`, Client Artifact Security `36206770277`, Phase-1 `36206770345`, and inherited regression `36206770324`, preserving the deterministic offline conflict policy and executable real Auth session-revocation proof. Only the directly evidenced items below are promoted by this reconciliation.
 
-Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb955f0fc1f43868ede7e`: merged batch #770 passed Client Artifact Security `36210385282`, Phase-1 `36210385339`, and inherited regression `36210385312`, including the intentional Games decorative-art cleanup; merged canonical batch #783 passed Client Artifact Security `36219169398`, Phase-1 `36219169342`, and inherited regression `36219169485`, preserving the shared Games pass-and-play engine cutover, standalone CSP inline-block growth guard, Reader audio-provenance fail-closed hardening, and Context Lab async accessibility/resilience. Only requirements directly evidenced by these merged batches are promoted below; pending #789/#767/#784/#796 work is not counted as integrated acceptance.
 
+Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb955f0fc1f43868ede7e`: merged batch #770 passed Client Artifact Security `36210385282`, Phase-1 `36210385339`, and inherited regression `36210385312`; merged canonical batch #783 passed Client Artifact Security `36219169398`, Phase-1 `36219169342`, and inherited regression `36219169485`, preserving the shared Games pass-and-play engine cutover, standalone CSP inline-block growth guard, Reader audio-provenance fail-closed hardening, and Context Lab async accessibility/resilience.
+
+Fifth certification reconciliation from integrated head `2b779928582aa73d961db6b39de16319152a74cd`: batch #804 passed Client Artifact Security `36275042207`, Phase-1 `36275042156`, and inherited regression `36275042176`; batch #810 passed Client Artifact Security `36297539457`, Phase-1 `36297539463`, inherited regression `36297539465`, and Cloudflare preview. Directly evidenced promotions from these merged batches are limited to the Leader Center upcoming agenda and preservation of Japanese furigana/vocabulary learning aids. CI version-neutralization, Verse Peek completion, exact deployed-artifact identity, authenticated role-browser coverage, and physical-device acceptance remain open.
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -82,8 +84,8 @@ Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb9
 - [ ] Search is independently testable.
 - [ ] Verse Peek is independently testable.
 - [x] Context Lab bridge is independently testable.
-- [ ] Japanese furigana support preserved.
-- [ ] Japanese vocabulary support preserved.
+- [x] Japanese furigana support preserved.
+- [x] Japanese vocabulary support preserved.
 - [x] Copyright/licensed-link redistribution policy is explicit and tested in the V6 content-manifest boundary.
 - [x] Read/progress writes use new domain/data boundary.
 - [x] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.
@@ -189,7 +191,7 @@ Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb9
 - [x] Assignment publishing/review/follow-up workflows are available as accepted.
 - [x] Privacy-safe member/group activity summaries are available.
 - [x] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
-- [ ] Upcoming due items/events surface is available.
+- [x] Upcoming due items/events surface is available.
 - [ ] Leader announcement/notification publishing is integrated.
 - [x] Journey Group/team management entry points are integrated where applicable.
 - [ ] Moderation/review entry points preserve existing server authority.

@@ -5,7 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp
 // BibleQuest V5 Phase 1: Leader Center. Presentation/navigation only - every
 // figure shown here is read directly from leader-center.js's composition of
 // already-authorized owners. This page never queries Supabase itself.
-export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onJourneyGroups, onTeamCenter, onCongregation } = {}) {
+export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onCongregation } = {}) {
   const locale = localization.getLocale();
   const tr = (key, values) => localization.t(key, { locale, values });
   return {
@@ -25,6 +25,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
         view.querySelector('[data-leader-congregation]')?.addEventListener('click', () => onCongregation?.(), { once: true });
         view.querySelector('[data-leader-retry]')?.addEventListener('click', load, { once: true });
         view.querySelector('[data-leader-open-assignments]')?.addEventListener('click', () => onAssignments?.(), { once: true });
+        view.querySelector('[data-leader-open-calendar]')?.addEventListener('click', () => onCalendar?.(), { once: true });
         view.querySelector('[data-leader-open-groups]')?.addEventListener('click', () => onJourneyGroups?.(), { once: true });
         view.querySelector('[data-leader-open-teams]')?.addEventListener('click', () => onTeamCenter?.(), { once: true });
         for (const button of view.querySelectorAll('[data-leader-review-assignment]')) {
@@ -56,6 +57,10 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
           const memberCopy = state.memberCount === null ? tr('leaderCenter.directory.unavailable') : tr(state.memberCount === 1 ? 'leaderCenter.members.one' : 'leaderCenter.members.many', { count: state.memberCount });
           const directoryReady = state.directoryStatus === 'ready';
           const rows = assignmentRows(state);
+          const upcoming = Array.isArray(state.upcoming?.items) ? state.upcoming.items : [];
+          const upcomingHtml = state.upcoming?.status !== 'ready'
+            ? `<p>${esc(tr('leaderCenter.upcoming.unavailable'))}</p>`
+            : listHtml(upcoming, tr('leaderCenter.upcoming.empty'), item => {const source=tr(item.source==='assignment'?'leaderCenter.upcoming.assignment':'leaderCenter.upcoming.congregation');return `<div class="bq-list-row" data-leader-upcoming-row data-leader-upcoming-source="${esc(item.source)}"><div><b>${esc(item.title)}</b><small>${esc(item.date)} · ${esc(source)}</small></div></div>`});
           view.innerHTML = `${intro}
             <section class="bq-panel" data-leader-overview>
               <p class="bq-eyebrow">${esc(state.congregationName)}</p>
@@ -67,6 +72,13 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
                 <div><b data-leader-scheduled-count>${state.assignments.scheduled.length}</b><span>${esc(tr('leaderCenter.status.scheduled'))}</span></div>
                 <div><b data-leader-completed-count>${state.assignments.completed.length}</b><span>${esc(tr('leaderCenter.status.completed'))}</span></div>
               </div>
+            </section>
+            <section class="bq-panel" data-leader-upcoming>
+              <p class="bq-eyebrow">${esc(tr('leaderCenter.upcoming.eyebrow'))}</p>
+              <h2>${esc(tr('leaderCenter.upcoming.heading'))}</h2>
+              <p><small>${esc(tr('leaderCenter.upcoming.privacy'))}</small></p>
+              ${upcomingHtml}
+              <button type="button" class="bq-secondary-button" data-leader-open-calendar>${esc(tr('leaderCenter.upcoming.openCalendar'))}</button>
             </section>
             <section class="bq-panel" data-leader-review>
               <p class="bq-eyebrow">${esc(tr('leaderCenter.review.eyebrow'))}</p>

@@ -14,7 +14,7 @@ const safePerson = row => Object.freeze({ id: String(row?.id || ''), label: Stri
 const safeGroup = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || '') });
 const safeTeam = row => Object.freeze({ id: String(row?.id || ''), label: String(row?.label || ''), type: String(row?.type || '') });
 
-export function createLeaderCenterService({ assignments, presence } = {}) {
+export function createLeaderCenterService({ assignments, presence, calendar } = {}) {
   if (!assignments?.load || !assignments?.snapshot || !presence?.activeCount) {
     throw new Error('Leader Center requires the existing Assignments and Presence owners.');
   }
@@ -75,6 +75,29 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
     }
     if(!contextStillCurrent())return staleResult();
 
+    let upcomingStatus='unavailable',upcoming=Object.freeze([]);
+    if(typeof calendar?.load==='function'){
+      try{
+        const sharedAgenda=await calendar.load({scope:'shared-agenda',days:30});
+        if(!contextStillCurrent())return staleResult();
+        if(sharedAgenda?.status==='ready'&&String(sharedAgenda.congregationId||'')===String(congregationId||'')){
+          const items=[];
+          for(const day of Array.isArray(sharedAgenda.agenda)?sharedAgenda.agenda:[]){
+            for(const event of Array.isArray(day?.events)?day.events:[]){
+              const source=String(event?.source||'');
+              if(source!=='assignment'&&source!=='congregation')continue;
+              const date=String(event?.date||day?.date||''),title=String(event?.title||'').trim();
+              if(!date||!title)continue;
+              items.push(Object.freeze({id:String(event?.id||''),source,date,title:title.slice(0,120)}));
+            }
+          }
+          upcoming=Object.freeze(items);
+          upcomingStatus='ready';
+        }
+      }catch{upcomingStatus='unavailable'}
+    }
+    if(!contextStillCurrent())return staleResult();
+
     return Object.freeze({
       status: 'ready',
       authorized: true,
@@ -87,6 +110,7 @@ export function createLeaderCenterService({ assignments, presence } = {}) {
       people,
       groups,
       teams,
+      upcoming:Object.freeze({status:upcomingStatus,days:30,items:upcoming}),
       assignments: Object.freeze({
         published: Object.freeze(published),
         scheduled: Object.freeze(scheduled),
