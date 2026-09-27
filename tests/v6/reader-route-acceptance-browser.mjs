@@ -44,6 +44,8 @@ async function verifyWidth(width) {
       previousHeight: height('[data-reader-prev]'),
       nextHeight: height('[data-reader-next]'),
       searchHeight: height('[data-reader-search] button[type="submit"]'),
+      markReadHeight: height('[data-reader-mark]'),
+      firstExternalHeight: height('[data-external-reader]'),
       firstVerseHeight: rect('[data-verse]')?.height || 0,
       contextLabel: document.querySelector('[data-context-dialog]')?.getAttribute('aria-label') || '',
     };
@@ -60,6 +62,8 @@ async function verifyWidth(width) {
     previous: metrics.previousHeight,
     next: metrics.nextHeight,
     search: metrics.searchHeight,
+    markRead: metrics.markReadHeight,
+    externalReader: metrics.firstExternalHeight,
   })) {
     assert(value >= 44, `${width}px Reader ${name} control is below the 44px practical target: ${value}px.`);
   }
