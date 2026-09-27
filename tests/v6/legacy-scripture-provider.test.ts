@@ -57,6 +57,27 @@ test('legacy provider preserves exact EN/TL/JA chapter delegation and legacy met
   }
 });
 
+test('legacy provider fails closed instead of relabeling a mismatched chapter translation', async () => {
+  const bible: LegacyBibleDataService = {
+    async loadChapter(_id, _code, chapter) {
+      return {
+        book,
+        chapter,
+        translation: { id: 'tl' },
+        verses: [{ chapter, verse: 16, text: 'wrong translation fixture' }],
+      };
+    },
+    async search() { throw new Error('not expected'); },
+    async lexicalContext() { throw new Error('not expected'); },
+  };
+  const provider = createLegacyBibleScriptureProvider(bible);
+
+  await assert.rejects(
+    provider.loadChapter({ translationId: 'bsb', bookCode: 'JHN', chapter: 3 }),
+    /translation does not match the requested Scripture translation/,
+  );
+});
+
 test('legacy provider maps repository search limit to the existing Bible service options object', async () => {
   const calls: unknown[] = [];
   const expected: ReaderSearchResult = {
