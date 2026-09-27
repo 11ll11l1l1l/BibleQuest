@@ -24,10 +24,10 @@ async function verifyWidth(width) {
   await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
   await page.locator('[data-verse]').first().waitFor();
 
-  assert(await page.getByLabel('Translation').count() === 1, `${width}px Reader translation control lacks an accessible label.`);
-  assert(await page.getByLabel('Book').count() === 1, `${width}px Reader book control lacks an accessible label.`);
-  assert(await page.getByLabel('Chapter').count() === 1, `${width}px Reader chapter control lacks an accessible label.`);
-  assert(await page.getByLabel('Search this translation').count() === 1, `${width}px Reader search input lacks an accessible label.`);
+  assert(await page.getByLabel('Translation', { exact: true }).count() === 1, `${width}px Reader translation control lacks an accessible label.`);
+  assert(await page.getByLabel('Book', { exact: true }).count() === 1, `${width}px Reader book control lacks an accessible label.`);
+  assert(await page.getByLabel('Chapter', { exact: true }).count() === 1, `${width}px Reader chapter control lacks an accessible label.`);
+  assert(await page.getByLabel('Search this translation', { exact: true }).count() === 1, `${width}px Reader search input lacks an accessible label.`);
 
   const metrics = await page.evaluate(() => {
     const rect = (selector) => document.querySelector(selector)?.getBoundingClientRect() || null;
@@ -84,7 +84,7 @@ async function verifyWidth(width) {
   await dialog.waitFor({ state: 'hidden' });
 
   if (width === 390) {
-    const search = page.getByLabel('Search this translation');
+    const search = page.getByLabel('Search this translation', { exact: true });
     await search.fill('John 3:16');
     await page.locator('[data-reader-search] button[type="submit"]').click();
     const result = page.locator('[data-search-result="0"]');
