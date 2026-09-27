@@ -1,6 +1,6 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-09-23 JST
+Updated: 2026-09-27 JST
 Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
 V5.0 production ancestry baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
@@ -21,12 +21,16 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 
 The active V6 line originally forked from V5.0 production `f6a0cff0...`. The product parity contract now includes all production behavior through `7420bbba...`; PR #515 merged that current `main` baseline into the existing V6 parity candidate while preserving the integrated V6 engine history. The obsolete pre-V5 V6 experiment remains archived and is not part of active V6 history.
 
-ADR-0001 and ADR-0002 are ACCEPTED:
+ADR-0001 through ADR-0004 are ACCEPTED:
 
 - `docs/v6/adr/ADR-0001-build-client-architecture.md`
 - `docs/v6/adr/ADR-0002-database-ci.md`
+- `docs/v6/adr/ADR-0003-active-congregation-data-boundary.md`
+- `docs/v6/adr/ADR-0004-offline-scripture-storage.md`
 
 Inherited static/governance gates reported green on the Phase-0 candidate for build/deployment, PWA/install, offline shell/Bible, assignment authorization, shell/Home/Assignments/Calendar, EN/TL localization, active-congregation, push lifecycle/persistence, glyph inventory and V5 state sweep.
+
+Current integrated V6 checkpoint: `2b779928582aa73d961db6b39de16319152a74cd`. Batch #804 is merged at `944b73a13f3c2831a105b4a4607616c79bae4775` with deterministic artifact-integrity foundations, a reusable inherited-static regression seam, App Badge/Web Share capability seams, a privacy-safe Leader Center upcoming agenda, and stale Reader-search suppression. Its exact source head `03cf6b215bd5fe472e0ed01d1471e70e3170a75c` passed Client Artifact Security `36275042207`, Phase-1 `36275042156`, and inherited regression `36275042176`. Batch #810 is merged at the current checkpoint with inherited-CI coupling characterization, Verse Peek safety characterization, iOS Add-to-Home-Screen guidance, and Japanese Reader learning-aid safety coverage; exact batch head `89fc327a2e8c9cb679fb5279414a1556c6e3948d` passed Client Artifact Security `36297539457`, Phase-1 `36297539463`, inherited regression `36297539465`, and Cloudflare preview.
 
 Chromium-capable GitHub CI is now operational for V6 built artifacts. The integrated Phase-1 gate has proven all 45 canonical direct deep links plus not-found behavior, the 320/360/390/412/430px representative route matrix, service-worker registration, PWA manifest/icons/shortcuts, and an offline Home-shell reopen. This remains signed-out/browser evidence rather than authenticated role E2E or physical-device acceptance.
 
@@ -77,8 +81,8 @@ High-risk changes to global auth, RLS strategy, destructive schema, global routi
 - Phase 1 — Vite/TypeScript/build/test toolchain: **ACTIVE, MAJOR FOUNDATION GREEN**. Deterministic build/install, lint/format/typecheck/unit/build CI, exact-SHA identity, privacy-safe private source maps, route splitting, bundle budgets and built Chromium/PWA acceptance are integrated; fuller build ownership and deployment-path evidence remain.
 - Phase 2 — executable Supabase/Postgres CI + fixtures: **ACTIVE, FOUNDATION GREEN**. Disposable local Supabase, released-V5→V6 replay, two-congregation fixtures, executable RLS/privilege checks, DB lint and deterministic local type generation are integrated; domain coverage/drift expansion remains.
 - Phase 3 — application kernel/state/data/tenant: **ACTIVE, FIRST LIVE CUTOVER GREEN**. Typed tenant/repository/async/request boundaries, feature command/event seam and session→tenant coordination are integrated. Accessibility preferences now run live through the V6 feature-command boundary while retaining V5 local persistence/UI behavior; exact-head Chromium proves mutation, runtime application and persistence after reload.
-- Phase 4 — Reader/content/offline engine: **ACTIVE IN BOUNDED TRANCHES**. Content manifests/licensing policy, navigation/progress/Japanese seams and offline package lifecycle exist; UI integration and true offline acceptance remain.
-- Phase 5 — Games engine: **NOT STARTED**.
+- Phase 4 — Reader/content/offline engine: **ACTIVE IN BOUNDED TRANCHES**. Content manifests/licensing policy, navigation/progress/Japanese seams and offline package lifecycle exist; Context Lab resilience, stale-search invalidation, Verse Peek safety characterization, and Japanese furigana/vocabulary learning-aid preservation now have integrated regression evidence. Broader Reader UI decomposition and true offline acceptance remain.
+- Phase 5 — Games engine: **ACTIVE, MAJOR FOUNDATION GREEN**. DOM-independent session/scoring/turn contracts, modular game views, shared pass-and-play logic, deterministic replay coverage, and intentional decorative-art cleanup are integrated; remaining remote/team expansion and certification depth remain.
 - Phase 6 — Media engine: **NOT STARTED**.
 - Phase 7 — Notification/push/background-sync engine: **ACTIVE IN BOUNDED TRANCHES**. V6 now also carries the released V5 installed-app notification onboarding, account-safe browser subscription lifecycle and push/notification-click service-worker behavior, with the V5 lifecycle/persistence contracts running inside the V6 build gate. V6 preferences, client cleanup, presentation/status and safe deep-link/shortcut primitives remain in parallel; high-risk backend delivery/deduplication/rate controls and V6 physical-device certification remain separately gated.
 - Phase 8 — Ministry/admin migration: **NOT STARTED**.
