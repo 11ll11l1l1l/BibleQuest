@@ -340,3 +340,25 @@ test('live Reader search preserves a valid provider result unchanged', async () 
 
   assert.equal(await reader.search('love', { limit: 10 }), expected);
 });
+
+
+test('live Reader Verse Peek rejects a late chapter response after newer navigation wins', async () => {
+  let resolveChapter: ((value: unknown) => void) | undefined;
+  const gate = new Promise<unknown>((resolve) => {
+    resolveChapter = resolve;
+  });
+  const { reader, externalCalls } = createHarness(() => gate);
+
+  const pending = reader.peek(16);
+  reader.setChapter(4);
+  resolveChapter?.({
+    book,
+    chapter: 3,
+    translation: { id: 'bsb' },
+    verses: [{ chapter: 3, verse: 16, text: 'late peek fixture' }],
+  });
+
+  await assert.rejects(pending, /passage changed while Scripture was loading/);
+  assert.equal(reader.getState().chapter, 4);
+  assert.deepEqual(externalCalls, []);
+});
