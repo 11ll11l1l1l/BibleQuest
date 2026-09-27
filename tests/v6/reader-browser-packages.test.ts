@@ -8,6 +8,7 @@ import {
 import type { ScriptureTranslationManifest } from '../../src/v6/reader/content-manifest.ts';
 import {
   createBrowserScripturePackageController,
+  createBrowserScripturePackageRepository,
 } from '../../src/v6/reader/browser-packages.ts';
 import type {
   InstalledScripturePackage,
@@ -80,6 +81,118 @@ function manifestFetcher({failFirst = false} = {}) {
     }) as typeof fetch,
   };
 }
+
+
+class MemoryCache {
+  readonly entries = new Map<string, Response>();
+
+  key(input: RequestInfo | URL): string {
+    if (input instanceof Request) return input.url;
+    if (input instanceof URL) return input.href;
+    return String(input);
+  }
+
+  async match(input: RequestInfo | URL): Promise<Response | undefined> {
+    return this.entries.get(this.key(input))?.clone();
+  }
+
+  async put(input: RequestInfo | URL, response: Response): Promise<void> {
+    this.entries.set(this.key(input), response.clone());
+  }
+
+  async delete(input: RequestInfo | URL): Promise<boolean> {
+    return this.entries.delete(this.key(input));
+  }
+
+  async keys(): Promise<Request[]> {
+    return [...this.entries.keys()].map(url => new Request(url));
+  }
+}
+
+function memoryCacheStorage() {
+  const caches = new Map<string, MemoryCache>();
+  const storage = {
+    async open(name: string) {
+      if (!caches.has(name)) caches.set(name, new MemoryCache());
+      return caches.get(name)!;
+    },
+  } as unknown as CacheStorage;
+  return { storage, cache: (name: string) => caches.get(name) };
+}
+
+test('browser repository evicts cached payload whose bytes no longer match verified metadata', async () => {
+  const memory = memoryCacheStorage();
+  const locationRef = { href: 'https://biblequest.test/#/reader' } as Location;
+  const repository = createBrowserScripturePackageRepository({
+    cacheStorage: memory.storage,
+    ResponseCtor: Response,
+    locationRef,
+  });
+
+  const record: InstalledScripturePackage = {
+    key: `bsb:sha256-test:JHN:${abcSha}`,
+    translationId: 'bsb',
+    contentVersion: 'sha256-test',
+    bookCode: 'JHN',
+    sha256: abcSha,
+    bytes: 3,
+    installedAt: '2026-09-27T08:00:00.000Z',
+  };
+
+  await repository.replaceInstalled(record, new TextEncoder().encode('abc').buffer);
+  assert.equal((await repository.readInstalled('bsb', 'JHN'))?.sha256, abcSha);
+
+  const payloadCache = memory.cache('biblequest-v3-opened-bible-packs-v1');
+  assert.ok(payloadCache);
+  await payloadCache.put(
+    'https://biblequest.test/data/packs/bible/JHN.json',
+    new Response('abd', { headers: { 'content-type': 'application/json' } }),
+  );
+
+  assert.equal(await repository.readInstalled('bsb', 'JHN'), null);
+  assert.equal(await payloadCache.match('https://biblequest.test/data/packs/bible/JHN.json'), undefined);
+  const metadataCache = memory.cache('biblequest-v6-scripture-package-metadata-v1');
+  assert.equal(
+    await metadataCache?.match('https://biblequest.test/__bq_v6_scripture_packages__/bsb/JHN.json'),
+    undefined,
+  );
+});
+
+test('browser repository evicts malformed installed metadata and orphaned payload together', async () => {
+  const memory = memoryCacheStorage();
+  const locationRef = { href: 'https://biblequest.test/#/reader' } as Location;
+  const repository = createBrowserScripturePackageRepository({
+    cacheStorage: memory.storage,
+    ResponseCtor: Response,
+    locationRef,
+  });
+
+  const payloadCache = await memory.storage.open('biblequest-v3-opened-bible-packs-v1');
+  const metadataCache = await memory.storage.open('biblequest-v6-scripture-package-metadata-v1');
+  await payloadCache.put(
+    'https://biblequest.test/data/packs/bible/JHN.json',
+    new Response('abc'),
+  );
+  await metadataCache.put(
+    'https://biblequest.test/__bq_v6_scripture_packages__/bsb/JHN.json',
+    new Response(JSON.stringify({
+      key: 'broken',
+      translationId: 'bsb',
+      contentVersion: 'broken',
+      bookCode: 'JHN',
+      sha256: 'not-a-digest',
+      bytes: 3,
+      installedAt: '2026-09-27T08:00:00.000Z',
+    })),
+  );
+
+  assert.equal(await repository.readInstalled('bsb', 'JHN'), null);
+  assert.equal(await payloadCache.match('https://biblequest.test/data/packs/bible/JHN.json'), undefined);
+  assert.equal(
+    await metadataCache.match('https://biblequest.test/__bq_v6_scripture_packages__/bsb/JHN.json'),
+    undefined,
+  );
+});
 
 test('browser package controller installs verified books, reports storage and removes them', async () => {
   const repo = memoryRepository();

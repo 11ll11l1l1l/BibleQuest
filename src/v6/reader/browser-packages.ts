@@ -9,6 +9,7 @@ import {
 } from './package-manager.ts';
 import {
   validateScriptureManifest,
+  verifyPackageChecksum,
   type ScriptureTranslationManifest,
 } from './content-manifest.ts';
 import { translationPackagingPolicy } from './license-policy.ts';
@@ -95,27 +96,50 @@ export function createBrowserScripturePackageRepository({
 
   return Object.freeze({
     async readInstalled(translationId: string, bookCode: string) {
+      const metaKey = metadataKey(translationId, bookCode);
+      const bodyKey = payloadKey(translationId, bookCode);
       const metadataCache = await cacheStorage.open(METADATA_CACHE);
-      const response = await metadataCache.match(metadataKey(translationId, bookCode));
+      const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
+      const removeCorrupt = async () => {
+        await Promise.all([
+          metadataCache.delete(metaKey),
+          payloadCache.delete(bodyKey),
+        ]);
+        return null;
+      };
+
+      const response = await metadataCache.match(metaKey);
       if (!response) return null;
+
       try {
         const record = await response.json() as InstalledScripturePackage;
         if (
           clean(record?.translationId) !== clean(translationId)
           || normalizeBookCode(record?.bookCode) !== normalizeBookCode(bookCode)
+          || !clean(record?.key)
+          || !clean(record?.contentVersion)
+          || !/^[a-f0-9]{64}$/i.test(clean(record?.sha256))
+          || !Number.isSafeInteger(record?.bytes)
+          || record.bytes <= 0
+          || !clean(record?.installedAt)
         ) {
-          await metadataCache.delete(metadataKey(translationId, bookCode));
-          return null;
+          return removeCorrupt();
         }
-        const payloadCache = await cacheStorage.open(PAYLOAD_CACHE);
-        if (!(await payloadCache.match(payloadKey(translationId, bookCode)))) {
-          await metadataCache.delete(metadataKey(translationId, bookCode));
-          return null;
+
+        const payloadResponse = await payloadCache.match(bodyKey);
+        if (!payloadResponse) return removeCorrupt();
+
+        const payload = await payloadResponse.arrayBuffer();
+        if (
+          payload.byteLength !== record.bytes
+          || !(await verifyPackageChecksum(payload, record.sha256))
+        ) {
+          return removeCorrupt();
         }
-        return Object.freeze({ ...record });
+
+        return Object.freeze({ ...record, sha256: record.sha256.toLowerCase() });
       } catch {
-        await metadataCache.delete(metadataKey(translationId, bookCode));
-        return null;
+        return removeCorrupt();
       }
     },
 
