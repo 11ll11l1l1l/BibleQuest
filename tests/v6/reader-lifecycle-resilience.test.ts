@@ -5,7 +5,7 @@ import test from 'node:test';
 const readerSource = readFileSync(new URL('../../src/features/reader/index.js', import.meta.url), 'utf8');
 
 test('Reader teardown invalidates chapter and furigana async work before detaching listeners', () => {
-  const cleanup = readerSource.match(/return \(\) => \{([\s\S]*?)\n\s*\};\n\s*}\n\s*};\n}$/)?.[1] ?? '';
+  const cleanup = readerSource.slice(readerSource.lastIndexOf('return () => {'));
 
   assert.ok(cleanup, 'Reader mount must expose an explicit cleanup boundary');
   const operationInvalidation = cleanup.indexOf('operation++');
