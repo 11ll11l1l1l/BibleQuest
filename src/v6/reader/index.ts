@@ -16,5 +16,7 @@ export * from './progress-policy.ts';
 export * from './presentation.ts';
 export * from './scripture-repository.ts';
 export * from './search.ts';
+export * from './search-presentation.ts';
+export * from './verse-peek-presentation.ts';
 
 export * from './live-progress.ts';

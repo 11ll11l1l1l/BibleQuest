@@ -3,6 +3,8 @@ import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary
 import { japaneseFuriganaControl } from './furigana.js';
 import { japaneseFuriganaRecoveryStatus } from './furigana.js';
 import { presentReaderChapter, readerChapterHeading } from '../../v6/reader/presentation.ts';
+import { presentReaderSearchResults } from '../../v6/reader/search-presentation.ts';
+import { presentReaderVersePeek } from '../../v6/reader/verse-peek-presentation.ts';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
@@ -76,7 +78,13 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const japanese = reader.getState().translation === 'jko';
         host.innerHTML = `<section class="bq-panel"><p class="bq-eyebrow">BIBLE READER</p><h1>Bible Reader</h1><p class="bq-form-message">${escapeHtml(error?.message || 'Could not load Scripture.')}</p>${offlineStatusHtml(offlineStatus)}${japanese ? '<p data-jko-failure>口語訳はライブの章データです。本文を推測したり別の訳で置き換えたりしません。接続を確認して再試行するか、明示的にBSBへ切り替えてください。</p>' : ''}<div class="bq-reader-nav"><button type="button" class="bq-secondary-button" data-reader-retry>Retry</button>${japanese ? '<button type="button" class="bq-secondary-button" data-reader-use-bsb>Use BSB</button>' : ''}</div></section>`;
       };
-      const renderSearch = () => { if (!searchResults) return ''; const warning = searchResults.skippedBooks?.length ? `<p class="bq-reader-note">${searchResults.skippedBooks.length} book pack(s) were unavailable during this search.</p>` : ''; if (!searchResults.results.length) return `<section class="bq-search-results"><h2>Search results</h2><p>No matches found.</p>${warning}</section>`; return `<section class="bq-search-results"><div class="bq-reader-title"><h2>Search results</h2><small>${searchResults.results.length} shown</small></div><div class="bq-search-list">${searchResults.results.map((result, index) => `<button type="button" data-search-result="${index}"><b>${escapeHtml(result.reference)}</b><span>${escapeHtml(result.text)}</span></button>`).join('')}</div>${warning}</section>`; };
+      const renderSearch = () => {
+        if (!searchResults) return '';
+        const presentation = presentReaderSearchResults(searchResults);
+        const warning = presentation.warning ? `<p class="bq-reader-note">${escapeHtml(presentation.warning)}</p>` : '';
+        if (!presentation.items.length) return `<section class="bq-search-results"><h2>${escapeHtml(presentation.heading)}</h2><p>${escapeHtml(presentation.emptyMessage || 'No matches found.')}</p>${warning}</section>`;
+        return `<section class="bq-search-results"><div class="bq-reader-title"><h2>${escapeHtml(presentation.heading)}</h2><small>${escapeHtml(presentation.countLabel || '')}</small></div><div class="bq-search-list">${presentation.items.map(item => `<button type="button" data-search-result="${item.index}"><b>${escapeHtml(item.reference)}</b><span>${escapeHtml(item.text)}</span></button>`).join('')}</div>${warning}</section>`;
+      };
       const renderChapter = (chapter, offlineStatus = null) => {
         const state = reader.getState(), links = reader.externalLinks(), japanese = state.translation === 'jko', licensed = chapter.translation.mode === 'licensed-link';
         const heading = readerChapterHeading(chapter.book, chapter.chapter);
@@ -115,7 +123,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
       const showPeek = async verse => {
         const dialog = host.querySelector('[data-verse-dialog]'), body = host.querySelector('[data-verse-dialog-body]'); if (!dialog || !body) return;
         try {
-          const peek = await reader.peek(verse), japanese = reader.getState().translation === 'jko', vocabularyState = vocabulary?.getState();
+          const peek = presentReaderVersePeek(await reader.peek(verse)), japanese = reader.getState().translation === 'jko', vocabularyState = vocabulary?.getState();
           const vocabularyHtml = japanese && vocabulary && vocabularyState?.enabled ? japaneseVocabularyBlock({notes:vocabulary.notesFor(peek.text)}) : '';
           dialog.dataset.peekVerse = String(peek.verse);
           body.innerHTML = `<p class="bq-eyebrow">VERSE PEEK</p><h2>${escapeHtml(peek.reference)}</h2><p class="bq-peek-text">${escapeHtml(peek.text)}</p>${vocabularyHtml}<button type="button" class="bq-secondary-button bq-peek-context-button" data-peek-context>אΩ Hebrew / Greek context</button><div class="bq-external-links">${peek.links.map(link => `<a ${externalAttrs} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
