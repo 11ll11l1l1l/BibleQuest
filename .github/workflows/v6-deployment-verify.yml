@@ -1,0 +1,47 @@
+name: V6 Deployed Artifact Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: Exact BibleQuest Cloudflare Pages preview or production base URL
+        required: true
+        type: string
+      expected_sha:
+        description: Full 40-character source SHA to verify; defaults to the selected workflow ref SHA
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-deployment-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BQ_EXPECTED_SHA: ${{ inputs.expected_sha || github.sha }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact selected commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXPECTED_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify deployed bytes and exact source identity
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}
+        run: node scripts/v6-deployment-verify.mjs
