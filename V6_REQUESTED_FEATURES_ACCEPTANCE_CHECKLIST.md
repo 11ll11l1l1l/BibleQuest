@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `2b779928582aa73d961db6b39de16319152a74cd`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
+Evidence checkpoint: integrated V6 head `dfff5bcf4fe73642cfb24393f03b6705adeb37df`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
 
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
@@ -18,6 +18,8 @@ Third certification reconciliation from integrated head `f4f98f861005f1b9b003947
 Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb955f0fc1f43868ede7e`: merged batch #770 passed Client Artifact Security `36210385282`, Phase-1 `36210385339`, and inherited regression `36210385312`; merged canonical batch #783 passed Client Artifact Security `36219169398`, Phase-1 `36219169342`, and inherited regression `36219169485`, preserving the shared Games pass-and-play engine cutover, standalone CSP inline-block growth guard, Reader audio-provenance fail-closed hardening, and Context Lab async accessibility/resilience.
 
 Fifth certification reconciliation from integrated head `2b779928582aa73d961db6b39de16319152a74cd`: batch #804 passed Client Artifact Security `36275042207`, Phase-1 `36275042156`, and inherited regression `36275042176`; batch #810 passed Client Artifact Security `36297539457`, Phase-1 `36297539463`, inherited regression `36297539465`, and Cloudflare preview. Directly evidenced promotions from these merged batches are limited to the Leader Center upcoming agenda and preservation of Japanese furigana/vocabulary learning aids. CI version-neutralization, Verse Peek completion, exact deployed-artifact identity, authenticated role-browser coverage, and physical-device acceptance remain open.
+Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb24393f03b6705adeb37df`: PR #811 corrected the Phase-1 exact-head checkout/build-identity path and landed the fail-closed deployed-artifact verifier, with Phase-1 `36298560863` and inherited regression `36298560896` SUCCESS. PR #812 replaced version-specific inherited CI execution ownership with reusable static/browser composite seams while preserving the accumulated V3/V4/V5 coverage; Phase-1 `36299094338` and inherited regression `36299094354` SUCCESS. The Cloudflare exact-deployed-artifact item remains OPEN because the current Git-integrated Pages project still needs to build/publish `dist-v6` before deployed-byte verification can pass.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -252,7 +254,7 @@ Fifth certification reconciliation from integrated head `2b779928582aa73d961db6b
 
 ## P. CI/release architecture
 
-- [ ] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
+- [x] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
 - [x] Unit/type/lint/build gates run on V6 PRs.
 - [x] Database/RLS integration gate runs on relevant Supabase/database PRs using a real disposable stack.
 - [ ] Whole-app/protected-route/browser gates run against built output.
