@@ -15,7 +15,9 @@ test('Reader search completion stays behind the Reader operation generation', ()
   const submit = readerSubmitSource();
 
   assert.match(submit, /const id = \+\+operation/);
-  assert.match(submit, /const results = await reader\.search/);
+  assert.match(submit, /const results = offline && typeof offlinePackages\?\.searchOfflineText === 'function'/);
+  assert.match(submit, /await offlinePackages\.searchOfflineText\(reader\.getState\(\)\.translation, query, 30\)/);
+  assert.match(submit, /await reader\.search\(query, \{ limit: 30 \}\)/);
   assert.match(submit, /const chapter = await reader\.load\(\)/);
   assert.match(submit, /const offlineStatus = await getOfflineStatus\(\)/);
   assert.ok((submit.match(/if \(id !== operation\) return;/g) ?? []).length >= 4);

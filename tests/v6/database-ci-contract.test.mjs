@@ -54,3 +54,22 @@ test('V6 database fixtures contain two distinct congregations and non-production
   assert.match(tests, /server-only admin audit log/);
   assert.match(tests, /SECURITY DEFINER/);
 });
+
+test('tenant-sensitive ministry challenges have executable cross-congregation RLS coverage', () => {
+  const tests = read('supabase/tests/v6-challenge-tenant-rls.test.sql');
+
+  assert.match(tests, /create extension if not exists pgtap/);
+  assert.match(tests, /Leader A cannot create a challenge inside congregation B/);
+  assert.match(tests, /Member A cannot attach progress to a congregation B challenge/);
+  assert.match(tests, /cannot reassign existing progress from challenge A to challenge B/);
+  assert.match(tests, /Admin B sees only congregation B challenges/);
+});
+
+test('assignment completion presence stays tenant-scoped and separate from private responses', () => {
+  const tests = read('supabase/tests/v6-assignment-response-presence-tenant-rls.test.sql');
+
+  assert.match(tests, /Member A cannot read congregation B completion presence/);
+  assert.match(tests, /Member B cannot read congregation A completion presence/);
+  assert.match(tests, /contains no private response-text column/);
+  assert.match(tests, /cannot forge a congregation A presence row/);
+});

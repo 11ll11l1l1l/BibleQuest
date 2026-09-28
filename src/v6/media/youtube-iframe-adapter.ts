@@ -7,6 +7,8 @@ export interface YouTubePlayer {
   pauseVideo(): void;
   stopVideo(): void;
   seekTo(seconds: number, allowSeekAhead: boolean): void;
+  getCurrentTime?(): number;
+  getIframe?(): HTMLIFrameElement;
   destroy(): void;
 }
 
@@ -56,6 +58,18 @@ function normalizeReadyTimeout(value: number | undefined): number {
     throw new Error(`YouTube player ready timeout must be from 1 to ${MAX_READY_TIMEOUT_MS} milliseconds.`);
   }
   return milliseconds;
+}
+
+function permitBrowserPictureInPicture(player: YouTubePlayer): void {
+  try {
+    const iframe = player.getIframe?.();
+    if (!iframe || typeof iframe.allow !== 'string') return;
+    const policies = iframe.allow.split(';').map(value => value.trim()).filter(Boolean);
+    if (policies.some(value => value.split(/[\s=]/, 1)[0] === 'picture-in-picture')) return;
+    iframe.allow = [...policies, 'picture-in-picture'].join('; ');
+  } catch {
+    // Native player startup must remain available if the browser locks iframe policy.
+  }
 }
 
 async function resolveApi(
@@ -154,6 +168,7 @@ export function createYouTubeIframeAdapter(
               cleanup();
               candidate = current;
               player = current;
+              permitBrowserPictureInPicture(current);
               resolve(current);
             };
 
@@ -211,6 +226,12 @@ export function createYouTubeIframeAdapter(
         },
         seek(seconds: number) {
           requirePlayer().seekTo(normalizeStart(seconds), true);
+        },
+        getPosition() {
+          const current = player;
+          if (!current || typeof current.getCurrentTime !== 'function') return null;
+          const seconds = Number(current.getCurrentTime());
+          return Number.isFinite(seconds) && seconds >= 0 ? seconds : null;
         },
         unload() {
           if (disposed) return;

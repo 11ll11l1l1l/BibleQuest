@@ -16,7 +16,7 @@ test('bootstrap hands the live Recordings service to the V6 media runtime', () =
   );
   assert.match(
     bootstrap,
-    /const recordingsMediaRuntime=createRecordingsMediaRuntime\(\{document,visibilityTarget:document,pageTarget:window\}\);/,
+    /const recordingsMediaRuntime=createRecordingsMediaRuntime\(\{document,visibilityTarget:document,pageTarget:window,sessionOwner:.*storage:privateStorage\}\);/,
   );
   assert.match(
     bootstrap,

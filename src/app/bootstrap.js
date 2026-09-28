@@ -49,6 +49,7 @@ import { createContentReviewService } from './content-review.js';
 import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
 import { createLeaderCenterService } from './leader-center.js';
+import { createMinistryAnnouncementsService } from './ministry-announcements.js';
 import { createNotificationCenterService } from './notification-center.js';
 import { createWorkspaceService } from './workspace.js';
 import { createPresenceService } from './presence.js';
@@ -84,7 +85,6 @@ import {
 } from '../v6/features/accessibility-preferences.ts';
 import { createNotificationSettingsController } from '../v6/notifications/index.ts';
 import { createRecordingsMediaRuntime } from '../v6/media/recordings-runtime.ts';
-import { createBrowserScripturePackageController } from '../v6/reader/browser-packages.ts';
 import { storage, privateStorage, transientStorage, authStorage } from '../core/storage.js';
 import { mountShell } from '../ui/shell.js';
 import { mountAccessibilityRuntime } from '../ui/accessibility.js';
@@ -159,6 +159,7 @@ const encouragementsPage = args => lazyFeaturePage('encouragements', 'encouragem
 const liveRoomsPage = args => lazyFeaturePage('live-rooms', 'liveRoomsPage', args);
 const communityPage = args => lazyFeaturePage('community', 'communityPage', args);
 const ministryHubPage = args => lazyFeaturePage('ministry-hub', 'ministryHubPage', args);
+const ministryAnnouncementsPage = args => lazyFeaturePage('ministry-announcements', 'ministryAnnouncementsPage', args);
 const myJourneyPage = args => lazyFeaturePage('my-journey', 'myJourneyPage', args);
 const leaderCenterPage = args => lazyFeaturePage('leader-center', 'leaderCenterPage', args);
 const notificationCenterPage = args => lazyFeaturePage('notification-center', 'notificationCenterPage', args);
@@ -168,7 +169,19 @@ const leaderboardsPage = args => lazyFeaturePage('leaderboards', 'leaderboardsPa
 const congregationRecognitionPage = args => lazyFeaturePage('congregation-recognition', 'congregationRecognitionPage', args);
 const assignmentsPage = args => lazyFeaturePage('assignments', 'assignmentsPage', args);
 const contentReviewPage = args => lazyFeaturePage('content-review', 'contentReviewPage', args);
-const readerPage = args => lazyFeaturePage('reader', 'readerPage', args);
+let disposeReaderAudioProvider = () => {};
+const readerPage = args => createLazyPage({
+  key: 'reader',
+  load: () => import('./reader-v6-page.js').then(module => {
+    disposeReaderAudioProvider = module.disposeReaderAudioProvider;
+    return module.loadReaderPage({
+      ...args,
+      books: args.reader.books,
+      loadPage: featurePageModules['../features/reader/index.js'],
+    });
+  }),
+  create: page => page,
+});
 const progressPage = args => lazyFeaturePage('progress', 'progressPage', args);
 const dailyMissionPage = args => lazyFeaturePage('daily-mission', 'dailyMissionPage', args);
 const transformPage = args => lazyFeaturePage('transform', 'transformPage', args);
@@ -235,7 +248,6 @@ function boot(root){
   const bibleQuest=createBibleQuestService({storage,books:bible.books,progress});
   const bibleQuestCloudSync=createBibleQuestCloudSyncService({api:api.progressSnapshots,session,bibleQuest,ownerStorage:authStorage,cacheStorage:privateStorage});
   const reader=createReaderService({bible,storage,progress,bibleQuest});
-  const offlineScripturePackages=createBrowserScripturePackageController();
   const vocabulary=createJapaneseVocabularyService({storage});
   const furiganaTokenizer=createJapaneseFuriganaTokenizerRuntime();
   const furigana=createJapaneseFuriganaService({storage,tokenizer:furiganaTokenizer});
@@ -254,7 +266,7 @@ function boot(root){
   const personalityProfile=createPersonalityProfileService({session,privateStorage});
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
-  const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window});
+  const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window,sessionOwner:()=>{const current=session.getState();return current?.authenticated&&current?.user?.id?`account:${current.user.id}`:'guest'},storage:privateStorage});
   const congregation=createCongregationMembershipService({api,session});
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
@@ -285,6 +297,7 @@ function boot(root){
   const myJourney=createMyJourneyService({progress,assignments,bibleQuest});
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
   const leaderCenter=createLeaderCenterService({assignments,presence,calendar});
+  const ministryAnnouncements=createMinistryAnnouncementsService({api:api.ministryAnnouncements,session,congregation});
   const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
@@ -329,7 +342,8 @@ function boot(root){
     community:()=>communityPage({bridge:communityBridge,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'live-rooms':()=>liveRoomsPage({liveRooms,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onCalendar:()=>router.navigate('calendar'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onCongregation:()=>router.navigate('congregation')}),
+    'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onCalendar:()=>router.navigate('calendar'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onAnnouncements:()=>router.navigate('ministry-announcements'),onCongregation:()=>router.navigate('congregation')}),
+    'ministry-announcements':()=>ministryAnnouncementsPage({announcements:ministryAnnouncements,onBack:()=>router.navigate('leader-center')}),
     'notification-center':()=>notificationCenterPage({notifications,notificationSettings,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     workspace:()=>workspacePage({workspace,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
@@ -337,7 +351,8 @@ function boot(root){
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
-    reader:()=>readerPage({reader,vocabulary,furigana,offlinePackages:offlineScripturePackages}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    // Lazy Reader adds managed offlinePackages and its gated audio provider when the feature opens.
+    reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
@@ -395,7 +410,7 @@ function boot(root){
       'leaderboard-delivery':progressLeaderboardBridge
     }),
     ()=>router.navigate(router.current()),
-    (owner,error)=>console.warn(`Account progress resume unavailable for ${owner}; using local progress`,error)
+    (owner,error)=>console.warn('Resume unavailable',owner,error)
   );
   let adminAccessSessionKey='';
   const syncAdminAccess=state=>{
@@ -432,6 +447,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

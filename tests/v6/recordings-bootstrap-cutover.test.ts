@@ -16,7 +16,7 @@ test('Recordings bootstrap uses one V6 Media runtime owner', () => {
   );
   assert.match(
     bootstrap,
-    /const recordingsMediaRuntime=createRecordingsMediaRuntime\(\{document,visibilityTarget:document,pageTarget:window\}\);/,
+    /const recordingsMediaRuntime=createRecordingsMediaRuntime\(\{document,visibilityTarget:document,pageTarget:window,sessionOwner:.*storage:privateStorage\}\);/,
   );
   assert.match(
     bootstrap,

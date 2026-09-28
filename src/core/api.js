@@ -336,7 +336,10 @@ export function createApi() {
       const byId = new Map((congregations || []).map(row => [String(row.id), row]));
       return rows.map(row => ({ ...row, congregation: byId.get(String(row.congregation_id)) || null })).filter(row => row.congregation);
     },
-    async join(code) { return invoke('bq-join', { code }); }
+    async join(code) { return invoke('bq-join', { code }); },
+    async updateSettings(congregationId,settings) { return invoke('bq-congregation-settings',{congregationId,name:settings.name,timezone:settings.timezone}); },
+    async listManagedMembers(congregationId) { return invoke('bq-congregation-members',{action:'list',congregationId}); },
+    async manageMember(congregationId,targetUserId,role,active) { return invoke('bq-congregation-members',{action:'manage',congregationId,targetUserId,role,active}); }
   });
 
   const presence = Object.freeze({
@@ -477,6 +480,21 @@ export function createApi() {
         .on('postgres_changes',{event:'*',schema:'public',table:'bible_assignment_progress',filter:`user_id=eq.${userId}`},()=>listener?.())
         .subscribe();
       return ()=>{if(closed)return;closed=true;void client.removeChannel(channel)};
+    }
+  });
+
+  const ministryAnnouncements = Object.freeze({
+    async list(congregationId) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_ministry_messages').select('id,congregation_id,created_by,title,body,publish_at').eq('congregation_id',String(congregationId)).eq('message_type','announcement').eq('active',true).order('publish_at',{ascending:false}).limit(50);
+      if(error)throw error;
+      return data||[];
+    },
+    async publish(userId,congregationId,payload) {
+      const client=await getClient();
+      const {data,error}=await client.from('bible_ministry_messages').insert({congregation_id:String(congregationId),created_by:String(userId),message_type:'announcement',title:payload.title,body:payload.body,publish_at:new Date().toISOString()}).select('id,title,publish_at').single();
+      if(error)throw error;
+      return data;
     }
   });
 
@@ -845,5 +863,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }

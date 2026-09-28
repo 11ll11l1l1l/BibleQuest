@@ -251,6 +251,13 @@ export function createMediaSessionManager(input: {
     if (!entry.handle) throw new Error('Media instance is not loaded.');
     try {
       await entry.handle.pause();
+      const sampledPosition = entry.handle.getPosition?.();
+      if (sampledPosition !== null && sampledPosition !== undefined && Number.isFinite(sampledPosition) && sampledPosition >= 0) {
+        const normalizedPosition = normalizePosition(sampledPosition, currentSource(entry));
+        entry.positionSeconds = normalizedPosition;
+        const current = entry.queue[entry.index];
+        if (current) entry.queue[entry.index] = freezeEntry({ ...current, resumeSeconds: normalizedPosition });
+      }
       entry.status = 'paused';
       entry.error = '';
       if (activeAudibleInstanceId === entry.instanceId) activeAudibleInstanceId = null;
@@ -314,6 +321,17 @@ export function createMediaSessionManager(input: {
     return freezeInstance(entry);
   }
 
+  function samplePosition(instanceId: string) {
+    const entry = requireInstance(instanceId);
+    const position = entry.handle?.getPosition?.();
+    if (position === null || position === undefined || !Number.isFinite(position) || position < 0) {
+      return freezeInstance(entry);
+    }
+    const updated = updatePosition(instanceId, position);
+    emit('position', entry);
+    return updated;
+  }
+
   async function move(instanceId: string, direction: 1 | -1) {
     const entry = requireInstance(instanceId);
     const nextIndex = entry.index + direction;
@@ -348,6 +366,7 @@ export function createMediaSessionManager(input: {
 
   async function unregister(instanceId: string, eventType: MediaLifecycleEventType = 'unregistered') {
     const entry = requireInstance(instanceId);
+    samplePosition(instanceId);
     if (activeAudibleInstanceId === entry.instanceId) activeAudibleInstanceId = null;
     try {
       await unloadHandle(entry);
@@ -380,6 +399,7 @@ export function createMediaSessionManager(input: {
     stop,
     seek,
     updatePosition,
+    samplePosition,
     next,
     previous,
     requestPictureInPicture,

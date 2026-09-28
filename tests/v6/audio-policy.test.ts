@@ -1,11 +1,19 @@
-import { describe, expect, it } from 'vitest';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
 import {
   audioOfflineEligibility,
+  audioStreamingEligibility,
   BSB_AUDIO_CANDIDATE_POLICY,
   V6_READER_AUDIO_STORAGE_CEILING_BYTES,
   type ScriptureAudioManifest,
   type ScriptureAudioSourceMetadata,
-} from '../src/v6/reader/audio-policy.ts';
+} from '../../src/v6/reader/audio-policy.ts';
+
+function assertMatches(actual: object, expected: Record<string, unknown>) {
+  for (const [key, value] of Object.entries(expected)) {
+    assert.deepEqual((actual as Record<string, unknown>)[key], value, `unexpected ${key}`);
+  }
+}
 
 const sha = 'a'.repeat(64);
 const verified: ScriptureAudioSourceMetadata = {
@@ -15,6 +23,11 @@ const verified: ScriptureAudioSourceMetadata = {
   rights: 'verified',
   delivery: 'downloadable',
   textAlignment: 'exact',
+  permissions: { stream: 'allowed', offlineCopy: 'allowed' },
+  rightsEvidence: 'https://fixture.example/license',
+  reviewedBy: 'V6 content reviewer',
+  reviewedAt: '2026-09-28T00:00:00Z',
+  scriptureContentVersion: 'bsb-fixture-1',
 };
 const manifest = (
   source: ScriptureAudioSourceMetadata = verified,
@@ -34,15 +47,25 @@ const manifest = (
 });
 
 describe('V6 Reader audio packaging policy', () => {
+  it('separates direct streaming permission from permission to keep offline copies', () => {
+    const streamOnly = manifest({
+      ...verified,
+      rights: 'review-required',
+      permissions: { stream: 'allowed', offlineCopy: 'review-required' },
+    });
+    assertMatches(audioStreamingEligibility(streamOnly), { eligible: true, reason: 'eligible' });
+    assertMatches(audioOfflineEligibility(streamOnly), { eligible: false, reason: 'rights-unverified' });
+  });
+
   it('keeps the current BSB candidate offline-ineligible until rights and alignment are proven', () => {
-    expect(audioOfflineEligibility(manifest(BSB_AUDIO_CANDIDATE_POLICY))).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest(BSB_AUDIO_CANDIDATE_POLICY)), {
       eligible: false,
       reason: 'rights-unverified',
     });
   });
 
   it('allows only verified downloadable exact-alignment audio below the 10 GB ceiling', () => {
-    expect(audioOfflineEligibility(manifest())).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest()), {
       eligible: true,
       reason: 'eligible',
       totalBytes: 1024,
@@ -50,18 +73,18 @@ describe('V6 Reader audio packaging policy', () => {
   });
 
   it('rejects a package at the ceiling rather than silently exceeding the agreed budget', () => {
-    expect(audioOfflineEligibility(manifest(verified, V6_READER_AUDIO_STORAGE_CEILING_BYTES))).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest(verified, V6_READER_AUDIO_STORAGE_CEILING_BYTES)), {
       eligible: false,
       reason: 'storage-ceiling-exceeded',
     });
   });
 
   it('rejects mismatched or merely unverified text alignment even with verified rights', () => {
-    expect(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'mismatch' }))).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'mismatch' })), {
       eligible: false,
       reason: 'text-mismatch',
     });
-    expect(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'unverified' }))).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'unverified' })), {
       eligible: false,
       reason: 'text-alignment-unverified',
     });
@@ -69,7 +92,7 @@ describe('V6 Reader audio packaging policy', () => {
 
   it('rejects malformed checksum metadata before caching', () => {
     const bad = { ...manifest(), segments: [{ ...manifest().segments[0], sha256: 'not-a-sha' }] };
-    expect(audioOfflineEligibility(bad)).toMatchObject({
+    assertMatches(audioOfflineEligibility(bad), {
       eligible: false,
       reason: 'invalid-manifest',
     });
@@ -79,11 +102,15 @@ describe('V6 Reader audio packaging policy', () => {
     for (const source of [
       { ...verified, source: '   ' },
       { ...verified, license: '' },
+      { ...verified, rightsEvidence: '' },
+      { ...verified, reviewedBy: '' },
+      { ...verified, reviewedAt: 'yesterday' },
+      { ...verified, scriptureContentVersion: '' },
       { ...verified, translationId: 'not a valid id' },
       { ...verified, translationId: 'BSB' },
       { ...verified, translationId: ' bsb ' },
     ]) {
-      expect(audioOfflineEligibility(manifest(source))).toMatchObject({
+      assertMatches(audioOfflineEligibility(manifest(source)), {
         eligible: false,
         reason: 'invalid-manifest',
         totalBytes: 0,
@@ -114,7 +141,7 @@ describe('V6 Reader audio packaging policy', () => {
     } as unknown as ScriptureAudioManifest;
 
     for (const bad of [unsupportedSchema, insecureSourceUrl, malformedSourceUrl, missingSource, missingSegments]) {
-      expect(audioOfflineEligibility(bad)).toMatchObject({
+      assertMatches(audioOfflineEligibility(bad), {
         eligible: false,
         reason: 'invalid-manifest',
         totalBytes: 0,
@@ -134,7 +161,7 @@ describe('V6 Reader audio packaging policy', () => {
     };
 
     for (const bad of [absent, nullSegment, malformedPayloadUrl]) {
-      expect(audioOfflineEligibility(bad)).toMatchObject({
+      assertMatches(audioOfflineEligibility(bad), {
         eligible: false,
         reason: 'invalid-manifest',
         totalBytes: 0,
@@ -143,7 +170,7 @@ describe('V6 Reader audio packaging policy', () => {
   });
 
   it('rejects empty audio payloads and duplicate segment identities', () => {
-    expect(audioOfflineEligibility(manifest(verified, 0))).toMatchObject({
+    assertMatches(audioOfflineEligibility(manifest(verified, 0)), {
       eligible: false,
       reason: 'invalid-manifest',
     });
@@ -156,7 +183,7 @@ describe('V6 Reader audio packaging policy', () => {
         { ...base.segments[0], chapter: 2, url: 'https://example.invalid/GEN-2.mp3' },
       ],
     };
-    expect(audioOfflineEligibility(duplicate)).toMatchObject({
+    assertMatches(audioOfflineEligibility(duplicate), {
       eligible: false,
       reason: 'invalid-manifest',
     });

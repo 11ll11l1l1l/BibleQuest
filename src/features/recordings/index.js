@@ -5,6 +5,18 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const normalizeSearch = value => String(value ?? '').trim().toLocaleLowerCase();
 export const RECORDING_CATEGORY_LABELS=Object.freeze({'sunday-service':'Sunday services','bible-study':'Bible studies',worship:'Worship',testimony:'Testimonies',kids:'Kids','family-couples':'Family & couples',other:'Other'});
 
+export function formatResumeTime(value) {
+  const seconds = Number(value);
+  if (!Number.isFinite(seconds) || seconds < 0 || seconds > 604800) return '';
+  const whole = Math.floor(seconds);
+  const hours = Math.floor(whole / 3600);
+  const minutes = Math.floor((whole % 3600) / 60);
+  const remainder = whole % 60;
+  return hours
+    ? `${hours}:${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
+    : `${minutes}:${String(remainder).padStart(2, '0')}`;
+}
+
 export function filterRecordingRows(rows, { query = '', featuredOnly = false, category = 'all' } = {}) {
   const needle = normalizeSearch(query);
   return (Array.isArray(rows) ? rows : []).filter(row => {
@@ -25,12 +37,13 @@ export function filterRecordingRows(rows, { query = '', featuredOnly = false, ca
 // authorization is server-side RLS (private.bible_can_review_content:
 // leader/pastor/admin congregation roles, or platform owner/admin) - this
 // page never assumes the controls being visible mean a mutation will succeed.
-function videoCard(row, isSelected, tr) {
-  return `<button type="button" class="bq-video-card${isSelected ? ' is-selected' : ''}" data-video-select="${escapeHtml(row.id)}">
+function videoCard(row, isSelected, tr, resumeSeconds = 0) {
+  const resumeTime = formatResumeTime(resumeSeconds);
+  return `<div class="bq-recording-card-group"><button type="button" class="bq-video-card${isSelected ? ' is-selected' : ''}" data-video-select="${escapeHtml(row.id)}">
     ${row.featured ? `<span class="bq-status-badge bq-status-badge--info">${escapeHtml(tr('recordings.featured'))}</span>` : ''}
     <span class="bq-status-badge">${escapeHtml(tr(`recordings.category.${row.category||'other'}`))}</span>
     <b>${escapeHtml(row.title)}</b>${row.description ? `<small>${escapeHtml(row.description)}</small>` : ''}
-  </button>`;
+  </button>${resumeTime ? `<button type="button" class="bq-secondary-button bq-recording-resume" data-video-resume="${escapeHtml(row.id)}">${escapeHtml(tr('recordings.resumeFrom', { time: resumeTime }))}</button>` : ''}</div>`;
 }
 
 function correctionControls(row, tr) {
@@ -81,7 +94,7 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
       const filterStatus = rows => tr('recordings.filter.results', { count: filteredRows(rows).length });
       const listHtml = (rows, selectedId) => {
         const visibleRows = filteredRows(rows);
-        if (visibleRows.length) return visibleRows.map(row => videoCard(row, row.id === selectedId, tr)).join('');
+        if (visibleRows.length) return visibleRows.map(row => videoCard(row, row.id === selectedId, tr, recordings.getResumePosition?.(row.id))).join('');
         return `<section class="bq-panel bq-recordings-empty"><h2>${escapeHtml(tr('recordings.filter.empty.heading'))}</h2><p>${escapeHtml(tr('recordings.filter.empty.description'))}</p></section>`;
       };
       const filterHtml = rows => `<section class="bq-panel bq-recordings-filter" aria-labelledby="recordings-filter-heading">
@@ -165,14 +178,16 @@ export function recordingsPage({ recordings, onHome, onAccount }) {
           await runCorrection(async () => { await recordings.archive(id); return tr('recordings.archived'); });
           return;
         }
-        const select = target.closest('[data-video-select]');
+        const select = target.closest('[data-video-select],[data-video-resume]');
         if (select) {
           try {
             const frameHost = host.querySelector('[data-recording-frame]');
-            await recordings.select(select.dataset.videoSelect, frameHost);
+            const recordingId = select.dataset.videoSelect || select.dataset.videoResume;
+            await recordings.select(recordingId, frameHost);
             const state = recordings.getState(), row = state.rows.find(item => item.id === state.selectedId);
             host.querySelector('[data-recording-now]').innerHTML = `<p class="bq-eyebrow">${escapeHtml(tr('recordings.nowPlaying.eyebrow'))}</p><h2>${escapeHtml(row?.title || tr('recordings.videoFallback'))}</h2>${row?.description ? `<p>${escapeHtml(row.description)}</p>` : ''}${correctionControls(row, tr)}`;
-            for (const card of host.querySelectorAll('[data-video-select]')) card.classList.toggle('is-selected', card.dataset.videoSelect === select.dataset.videoSelect);
+            for (const card of host.querySelectorAll('[data-video-select]')) card.classList.toggle('is-selected', card.dataset.videoSelect === recordingId);
+            for (const resumeButton of host.querySelectorAll('[data-video-resume]')) resumeButton.hidden = resumeButton.dataset.videoResume === recordingId;
           } catch (error) { message(error?.message || tr('recordings.openError')); }
           return;
         }

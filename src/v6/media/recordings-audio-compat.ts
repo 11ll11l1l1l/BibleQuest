@@ -27,6 +27,8 @@ export interface RecordingsMediaSession {
   readonly pause: (instanceId: string) => void | Promise<unknown>;
   readonly stop: (instanceId: string) => void | Promise<unknown>;
   readonly seek: (instanceId: string, seconds: number) => void | Promise<unknown>;
+  readonly updatePosition?: (instanceId: string, seconds: number) => unknown;
+  readonly samplePosition?: (instanceId: string) => unknown;
 }
 
 export interface RecordingsAudioState {
@@ -62,6 +64,7 @@ export function createRecordingsAudioCompatibility(input: {
   readonly host: RecordingsAudioHostOwner;
   readonly instanceId?: string;
   readonly routeKey?: string;
+  readonly getResumeSeconds?: (sourceId: string) => number;
 }) {
   const session = input?.session;
   const hostOwner = input?.host;
@@ -152,7 +155,7 @@ export function createRecordingsAudioCompatibility(input: {
               title: source.title || 'Recording',
               durationSeconds: null,
             }),
-            resumeSeconds: 0,
+            resumeSeconds: Math.max(0, Math.min(604800, Number(input.getResumeSeconds?.(source.id)) || 0)),
           }),
         ]);
 
@@ -217,6 +220,7 @@ export function createRecordingsAudioCompatibility(input: {
     return serialize(async () => {
       requireReady();
       await session.seek(instanceId, position);
+      session.updatePosition?.(instanceId, position);
       return publish({ position, error: '' });
     });
   }

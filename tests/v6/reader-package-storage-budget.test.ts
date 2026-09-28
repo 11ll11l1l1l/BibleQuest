@@ -36,6 +36,7 @@ function repository(options: Readonly<{ usageBytes: number; current?: InstalledS
     async readInstalled(translationId, bookCode) {
       return installed?.translationId === translationId && installed.bookCode === bookCode ? installed : null;
     },
+    async listInstalled() { return installed ? [installed] : []; },
     async replaceInstalled(record) {
       installed = record;
       writes += 1;

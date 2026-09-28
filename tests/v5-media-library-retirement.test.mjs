@@ -25,7 +25,8 @@ test('abandoned Media Library owners stay retired', async () => {
 
 test('media route remains an alias of the verified Recordings page', async () => {
   const bootstrap = await readFile('src/app/bootstrap.js', 'utf8');
-  assert.match(bootstrap, /import\s+\{\s*recordingsPage\s*\}\s+from\s+['"]\.\.\/features\/recordings\/index\.js['"]/);
+  assert.match(bootstrap, /const recordingsPage\s*=\s*args\s*=>\s*lazyFeaturePage\('recordings',\s*'recordingsPage',\s*args\)/,
+    'Recordings stays lazy-loaded behind its canonical feature page owner');
   assert.match(bootstrap, /recordings:\(\)=>recordingsPage\(/, 'recordings route must stay on Recordings');
   assert.match(bootstrap, /media:\(\)=>recordingsPage\(/, 'media alias must stay on Recordings');
   assert.match(bootstrap, /onMedia:\(\)=>router\.navigate\('media'\)/, 'Home media navigation must keep the media alias available');

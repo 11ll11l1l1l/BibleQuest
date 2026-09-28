@@ -46,6 +46,7 @@ function harness({ autoReady = true } = {}) {
   const calls: string[] = [];
   let target: HTMLElement | string | null = null;
   const players: Player[] = [];
+  const iframe = { allow: 'autoplay; encrypted-media; fullscreen' } as HTMLIFrameElement;
 
   class Player implements YouTubePlayer {
     readonly events: PlayerEvents;
@@ -57,6 +58,8 @@ function harness({ autoReady = true } = {}) {
       players.push(this);
       if (autoReady) queueMicrotask(() => this.events.onReady?.({ target: this }));
     }
+
+    getIframe() { return iframe; }
 
     cueVideoById(input: { videoId: string; startSeconds?: number }) {
       calls.push(`cue:${input.videoId}@${input.startSeconds ?? 0}`);
@@ -85,6 +88,7 @@ function harness({ autoReady = true } = {}) {
     calls,
     players,
     getTarget: () => target,
+    getIframe: () => iframe,
     ready(index = 0) {
       const current = players[index];
       if (!current) throw new Error('No fake YouTube player exists.');
@@ -124,6 +128,8 @@ test('YouTube adapter waits for onReady before issuing IFrame Player API command
   assert.equal(h.getTarget(), 'youtube-recordings-main');
   assert.equal(h.adapter.capabilities.seek, true);
   assert.equal(h.adapter.capabilities.pictureInPicture, false);
+  assert.match(h.getIframe().allow, /(?:^|;\s*)picture-in-picture(?:;|$)/);
+  assert.match(h.getIframe().allow, /autoplay/);
   assert.equal(h.calls.some((call) => call.includes('\"enablejsapi\":1')), true);
   assert.equal(h.calls.some((call) => call.includes('\"playsinline\":1')), true);
   assert.deepEqual(
@@ -142,6 +148,17 @@ test('YouTube adapter creates one ready player lazily and reuses it for subseque
   assert.equal(h.calls.filter((call) => call.startsWith('construct:')).length, 1);
   assert.equal(h.calls.includes('cue:abcdefghijk@0'), true);
   assert.equal(h.calls.includes('cue:ZYXWVUTsrqp@15'), true);
+});
+
+test('YouTube adapter preserves an existing iframe PiP policy without duplicating it', async () => {
+  const h = harness();
+  h.getIframe().allow = 'autoplay; picture-in-picture; fullscreen';
+  const handle = h.adapter.create('pip-enabled');
+
+  await handle.load(source(), 0);
+
+  assert.equal(h.getIframe().allow.split(';').filter(value => value.trim() === 'picture-in-picture').length, 1);
+  await handle.unload();
 });
 
 test('YouTube adapter rejects provider error before ready and destroys the half-created player', async () => {

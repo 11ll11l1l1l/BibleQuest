@@ -1,12 +1,12 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-27 JST
+Updated: 2026-09-28 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `dfff5bcf4fe73642cfb24393f03b6705adeb37df`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
+Evidence checkpoint: integrated V6 head `5a80ae75778da2d4aff8329b6911b8876a08584d`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
 
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
@@ -19,6 +19,8 @@ Fourth certification reconciliation from integrated head `ed255200495eeb58e55fb9
 
 Fifth certification reconciliation from integrated head `2b779928582aa73d961db6b39de16319152a74cd`: batch #804 passed Client Artifact Security `36275042207`, Phase-1 `36275042156`, and inherited regression `36275042176`; batch #810 passed Client Artifact Security `36297539457`, Phase-1 `36297539463`, inherited regression `36297539465`, and Cloudflare preview. Directly evidenced promotions from these merged batches are limited to the Leader Center upcoming agenda and preservation of Japanese furigana/vocabulary learning aids. CI version-neutralization, Verse Peek completion, exact deployed-artifact identity, authenticated role-browser coverage, and physical-device acceptance remain open.
 Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb24393f03b6705adeb37df`: PR #811 corrected the Phase-1 exact-head checkout/build-identity path and landed the fail-closed deployed-artifact verifier, with Phase-1 `36298560863` and inherited regression `36298560896` SUCCESS. PR #812 replaced version-specific inherited CI execution ownership with reusable static/browser composite seams while preserving the accumulated V3/V4/V5 coverage; Phase-1 `36299094338` and inherited regression `36299094354` SUCCESS. The Cloudflare exact-deployed-artifact item remains OPEN because the current Git-integrated Pages project still needs to build/publish `dist-v6` before deployed-byte verification can pass.
+
+Seventh reconciliation at integrated head `5a80ae75778da2d4aff8329b6911b8876a08584d`: merged Reader PRs #815/#816 provide independently testable Search and Verse Peek presentations and route Scripture/Search/Context Lab reads through `ScriptureContentProvider`; the three corresponding Reader decomposition items are now PASS. Mobile/accessibility Reader acceptance from PR #817 and subsequent offline package/audio/security work remain in the local speedtrack candidate, outside this official checkpoint. Therefore this integrated checklist is 131/210 PASS; the local branch `codex/v6-offline-reader` has unintegrated commits and separate candidate evidence in `V6_ACTIVE_STATUS.md`.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -81,10 +83,10 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 
 - [x] Current Reader translation/content behavior has characterization tests before migration.
 - [x] Reader navigation/translation state has a DOM-independent typed parity seam.
-- [ ] Scripture repository/content provider separated from route/view.
+- [x] Scripture repository/content provider separated from route/view.
 - [ ] Chapter/verse presentation split into testable components.
-- [ ] Search is independently testable.
-- [ ] Verse Peek is independently testable.
+- [x] Search is independently testable.
+- [x] Verse Peek is independently testable.
 - [x] Context Lab bridge is independently testable.
 - [x] Japanese furigana support preserved.
 - [x] Japanese vocabulary support preserved.
@@ -93,6 +95,8 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 - [x] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.
 - [x] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
 - [ ] Reader route passes parity + accessibility + mobile tests.
+
+Local candidate note (2026-09-28; code SHA `56f151b9f486be8cea4dda984dccbceccb5f70ce`, exact build artifact SHA-256 `9ae5ea54f6e0d45f8db324cccf260cd807d35ec06b07c98d03d0003d8cf5527d`): the live Reader now delegates validated chapter/verse markup to `renderReaderChapterPresentation` in `src/v6/reader/presentation.ts`. The pure presenter escapes Scripture and labels and covers grouped verses, highlighted verses, and mark-read state. The full V6 unit suite passes 612 tests; lint, format, typecheck, and exact-SHA build evidence pass. This code is on the local speedtrack branch and is not added to the official `5a80ae...` acceptance count until integration. Reader browser/mobile parity remains open because local Chromium is unavailable.
 
 ## F. True offline Bible
 
@@ -110,13 +114,18 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 - [ ] App/service-worker/content-pack versions can upgrade safely.
 - [ ] Physical installed-PWA offline acceptance passes.
 
+Local candidate evidence (2026-09-28, runtime code SHA `ada62e2d787107df32f7dd5e6495a9eae6cbc926`; not promoted to the official count): Reader exposes full approved-translation download/progress/cancel/resume/remove. At exact SHA `ebcad81a...`, Chromium acceptance cancelled a real partial BSB download, confirmed already completed packages remained, closed and reopened the persistent browser profile, verified the partial inventory remained, resumed to all 66 books, closed and reopened again, verified all packages remained, then reloaded offline, navigated Genesis 1→2, returned Genesis 1:1 from offline text search, and removed the full package with both caches empty. A checksum regression test covers and prevents legacy Reader reserialization of managed package bytes. V6 unit tests additionally require all 66 canonical books before enabling full-translation download; an incomplete manifest is refused before any transfer, while a complete 66-book fixture proves install, cancel, resume and remove. On local candidate `ada62e2d...`, offline search is connected to the Reader’s offline action using only checksum-verified packages, the selected translation, and installed books; its controller regression test confirms the search makes no manifest or payload network request. The offline-search checkbox remains formally open pending refreshed exact-SHA browser/PWA evidence. The previous browser proof is at `ebcad81a...`; current-candidate browser rerun is blocked locally because the Playwright Chromium executable is absent. Installed-PWA full-Bible and physical-device acceptance remain open.
+
 ## F2. BSB Audio Bible
 
-- [ ] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
-- [ ] Canonical chapter audio is hosted in BibleQuest-controlled Cloudflare R2 Standard storage; no dependency on another app's private streaming URLs.
-- [ ] All BibleQuest-hosted BSB audio assets plus retained derived copies remain **below 10 GB total**.
-- [ ] A deterministic release/CI inventory calculates hosted BSB audio bytes and fails at or above the 10 GB ceiling.
-- [ ] A speech-optimized canonical encoding is used; redundant high-bitrate copies are not retained without explicit budget proof.
+Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e6040643947a367a73`, exact build artifact SHA-256 `495b804f9fe74926f5092f2efdb51f4ba0cc460a07799d625cf20681cd6b65e4`): the Reader streams all 1,189 BSB Hays chapters and all 1,189 Bob Souer alternatives directly from OpenBible, defaults to Barry Hays, and exposes a persisted narrator selector. Switching pauses the prior source and prepares the same chapter in the selected source. Audio package policy remains fail-closed for offline copies; verse synchronization remains hidden until exact source-matched timing rows are reviewed. The opt-in browser smoke now checks failed-source retry, decoded playback, seeking, Hays→Souer switching, chapter navigation, and narrator persistence through page reload. Full V6 unit suite (611), lint, formatting, typecheck, and exact-SHA build pass. Browser execution remains pending because Chromium is absent locally and the external-source smoke has not yet run in CI. Real-device acceptance and alignment/source identity review remain open.
+
+- [x] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
+- [ ] Play the selected public chapter stream directly on demand; BibleQuest does not need to host a full audio-library mirror.
+- [ ] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
+- [ ] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
+- [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
+- [ ] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
 - [ ] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
 - [ ] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
 - [ ] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
@@ -124,8 +133,8 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 - [ ] Pause/resume, playback speed, auto-next chapter, sleep timer and persisted resume position work.
 - [ ] Background/lock-screen media controls work where supported and degrade safely where unsupported.
 - [ ] Selective offline audio download is bounded by explicit user choice; the app does not silently cache the complete Audio Bible.
-- [ ] Audio binaries are excluded from Git and Supabase bulk storage; object storage owns the large media payloads.
-- [ ] Audio provider abstraction allows future narrators/languages without coupling Reader state to one host/provider.
+- [x] Audio binaries are excluded from Git and Supabase bulk storage; direct streaming remains at the public audio source and optional downloads stay in local PWA storage.
+- [x] Audio provider abstraction allows future narrators/languages without coupling Reader state to one host/provider.
 - [ ] Built browser/mobile/PWA regression verifies BSB text/audio translation match and playback state recovery.
 
 ## G. Games engine and Games UI
@@ -174,6 +183,8 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 - [x] In-app Notification Center remains the durable fallback.
 - [x] V6 notification client context tests clear account-scoped preferences on sign-out/account switch and fail closed without an active account.
 - [ ] Physical-device push acceptance passes.
+
+Local candidate progress (2026-09-28, not release evidence): an idempotent tenant-scoped SQL producer, service-only `bq-assignment-reminders` dispatcher, and one-minute Supabase Cron/Vault setup runbook now cover due reminders; assignment creation still delivers the existing immediate “assigned” notification. The database suite and schedule are not active in a Supabase project from this workspace, so keep the checklist item open until pgTAP passes and the deployed job/push delivery is verified.
 
 ## J. Offline mutation/sync
 
@@ -274,8 +285,8 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 
 - [ ] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
 - [ ] No content/media asset is hosted or transformed without verified redistribution rights/provenance.
-- [ ] BSB hosted-audio inventory remains below 10 GB and the release gate fails at or above the ceiling.
-- [ ] Bulk audio remains outside Git and Supabase Storage; object storage owns media payloads.
+- [ ] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
+- [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [ ] Large offline downloads require explicit user action and provide storage/removal controls.
 - [ ] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
 - [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.

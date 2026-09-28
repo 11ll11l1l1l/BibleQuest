@@ -32,6 +32,7 @@ export interface MediaProviderHandle {
   readonly pause: () => void | Promise<void>;
   readonly stop: () => void | Promise<void>;
   readonly seek: (seconds: number) => void | Promise<void>;
+  readonly getPosition?: () => number | null;
   readonly unload: () => void | Promise<void>;
   readonly requestPictureInPicture?: () => void | Promise<void>;
 }
@@ -71,6 +72,7 @@ export type MediaLifecycleEventType =
   | 'paused'
   | 'stopped'
   | 'seeked'
+  | 'position'
   | 'advanced'
   | 'provider-switched'
   | 'picture-in-picture'

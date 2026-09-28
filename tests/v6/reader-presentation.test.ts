@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   presentReaderChapter,
   presentReaderVerse,
+  renderReaderChapterPresentation,
   readerChapterHeading,
 } from '../../src/v6/reader/presentation.ts';
 
@@ -39,6 +40,33 @@ test('preserves Japanese text and grouped verse labels without translation subst
   assert.equal(chapter.heading, 'ヨハネによる福音書 3');
   assert.equal(chapter.verses[0]?.label, '16–17');
   assert.equal(chapter.verses[0]?.text, japaneseFixture);
+});
+
+test('renders chapter and verse presentation as escaped, independently testable HTML', () => {
+  const chapter = presentReaderChapter({
+    book: { code: 'JHN', name: 'John <3>', chapters: 21 },
+    chapter: 3,
+    verses: [
+      { chapter: 3, verse: 16, verseEnd: 17, text: 'For God so loved <the world> & all.' },
+      { chapter: 3, verse: 18, text: 'Whoever believes.' },
+    ],
+  });
+  const html = renderReaderChapterPresentation(chapter, {
+    translationLabel: 'BSB & <English>', highlightedVerse: 16, isRead: false,
+  });
+  assert.match(html, /BSB &amp; &lt;English&gt;/);
+  assert.match(html, /John &lt;3&gt; 3/);
+  assert.match(html, /data-verse="16">/);
+  assert.match(html, /class="bq-verse is-highlighted"/);
+  assert.match(html, /16–17/);
+  assert.match(html, /For God so loved &lt;the world&gt; &amp; all\./);
+  assert.match(html, />Mark read</);
+  assert.doesNotMatch(html, /<the world>/);
+  const readHtml = renderReaderChapterPresentation(chapter, {
+    translationLabel: 'BSB', highlightedVerse: null, isRead: true,
+  });
+  assert.match(readHtml, />Marked read</);
+  assert.doesNotMatch(readHtml, /is-highlighted/);
 });
 
 test('chapter and verse presentation fail closed on malformed Scripture metadata', () => {
