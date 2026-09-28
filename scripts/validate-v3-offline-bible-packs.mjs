@@ -16,7 +16,12 @@ function jsFiles(dir){
 
 if(!failures.length){
   const owner=read('src/core/bible.js'),worker=read('offline-shell-sw.js'),reader=read('src/features/reader/index.js'),contract=read('OFFLINE_BIBLE_PACKS_V3.md'),inventory=read('FEATURE_INVENTORY_V3.md'),workflow=read('.github/workflows/v3-regression.yml');
-  for(const item of["OFFLINE_PACK_CACHE = 'biblequest-v3-opened-bible-packs-v1'",'createOpenedPackStore','cacheStorage.open(OFFLINE_PACK_CACHE)','persistOpenedPack','readOpenedPack','persistOffline = true','persistOffline: false','packStore.remove?.(path)','normalizeBundledPack'])if(!owner.includes(item))fail(`Bible data owner missing #99 contract: ${item}`);
+  const legacyCacheLiteral = owner.includes("OFFLINE_PACK_CACHE = 'biblequest-v3-opened-bible-packs-v1'");
+  const sharedCacheAlias = owner.includes('OFFLINE_PACK_CACHE = SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME')
+    && owner.includes("from '../v6/reader/package-storage.ts'")
+    && read('src/v6/reader/package-storage.ts').includes("SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME = 'biblequest-v3-opened-bible-packs-v1'");
+  if(!legacyCacheLiteral&&!sharedCacheAlias)fail('Bible data owner missing #99 cache name contract.');
+  for(const item of['createOpenedPackStore','cacheStorage.open(OFFLINE_PACK_CACHE)','persistOpenedPack','readOpenedPack','persistOffline = true','persistOffline: false','packStore.remove?.(path)','normalizeBundledPack'])if(!owner.includes(item))fail(`Bible data owner missing #99 contract: ${item}`);
   if(!owner.includes("path = `data/packs/${translation.folder}/${book.code}.json`"))fail('Bible data owner must remain the sole bundled Scripture pack-path constructor.');
   if(!owner.includes("translation.mode === 'licensed-link'")||!owner.includes('!translation.bundled'))fail('#99 must remain behind existing bundled-translation guards.');
   if(/localStorage|sessionStorage|document\.|window\.|navigator\.serviceWorker/.test(owner))fail('#99 Bible pack owner must not bypass storage/UI/service-worker ownership.');

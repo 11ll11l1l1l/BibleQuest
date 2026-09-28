@@ -24,6 +24,7 @@ test('V6 database CI is local-only, pinned, and uses released V5 baseline plus V
   assert.match(prepare, /V6 forward migrations must use unique 14-digit versions/);
   assert.match(prepare, /schema\.sql/);
   assert.match(prepare, /v6-ci-release-prerequisites\.sql/);
+  assert.match(prepare, /fs\.cpSync\(sourceFunctions, destinationFunctions, \{ recursive: true \}\)/);
   assert.match(prepare, /20260905_admin_auth_schema_parity\.sql/);
   assert.match(prerequisites, /create table if not exists public\.bible_congregation_invites/);
   assert.match(prerequisites, /enable row level security/);

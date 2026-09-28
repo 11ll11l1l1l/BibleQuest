@@ -26,7 +26,7 @@ if(/localStorage|sessionStorage|fetch\s*\(|MutationObserver|window\.BQ/.test(rea
 
 const createMatches=bootstrap.match(/createJapaneseVocabularyService/g)||[];
 if(createMatches.length!==2) fail(`Expected one Japanese vocabulary import plus one composition call in bootstrap, found ${createMatches.length} references.`);
-if(!bootstrap.includes('const vocabulary=createJapaneseVocabularyService({storage})')||!bootstrap.includes('reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage})')||!bootstrap.includes("import('../v6/reader/browser-packages.ts')")) fail('Bootstrap must compose vocabulary through Storage and inject it into the lazy Reader feature alongside its managed offline package boundary.');
+if(!bootstrap.includes('const vocabulary=createJapaneseVocabularyService({storage})')||!bootstrap.includes('reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage})')||!bootstrap.includes("import('./reader-v6-page.js')")||!read('src/app/reader-v6-page.js').includes("import('../v6/reader/browser-packages.ts')")) fail('Bootstrap must compose vocabulary through Storage and inject it into the lazy Reader feature alongside its managed offline package boundary.');
 if(!index.includes('src/ui/japanese-vocabulary.css')) fail('Japanese vocabulary stylesheet is not loaded.');
 if(!architecture.includes('src/app/japanese-vocabulary.js')) fail('Architecture contract must list the Japanese vocabulary owner.');
 
