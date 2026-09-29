@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(12);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_content_reports'::regclass),
