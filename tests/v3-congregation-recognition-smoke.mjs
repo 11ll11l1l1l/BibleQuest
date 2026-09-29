@@ -7,7 +7,7 @@ async function run(){
     const [{createCongregationRecognitionService},{congregationRecognitionPage}]=await Promise.all([import(`/src/app/congregation-recognition.js?smoke=${Date.now()}`),import(`/src/features/congregation-recognition/index.js?smoke=${Date.now()}`)]);
     let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},awardCalls=[];
     const session={getState:()=>sessionState};
-    const congregation={load:async()=>[{congregationId:'c1',role:'leader',roleLabel:'Leader',congregation:{name:'Test Church'}}],assert:()=>true};
+    const congregation={load:async()=>[{congregationId:'c1',role:'leader',roleLabel:'Leader',congregation:{name:'Test Church'}}],getActive:()=>({congregationId:'c1'}),assert:()=>true};
     const data={directory:[{congregation_id:'c1',user_id:'u1',display_name:'Amy',role:'leader',active:true},{congregation_id:'c1',user_id:'u2',display_name:'Ben',role:'member',active:true}],catalog:[{id:'first-study',name:'First Study',icon:'📘',category:'Learning',description:'Study badge'}],badges:[{congregation_id:'c1',user_id:'u2',badge_id:'first-study',earned_at:'2026-09-09T00:00:00Z'}],recognitions:[{id:'r1',congregation_id:'c1',user_id:'u2',awarded_by:'u1',award_code:'encourager',title:'Encourager',note:'Thank you',icon:'💛',visible:true,created_at:'2026-09-09T01:00:00Z'}]};
     const api={load:async()=>data,award:async row=>{awardCalls.push(row);return{...row,id:'r2',visible:true,created_at:'2026-09-09T02:00:00Z'}}};
     const recognition=createCongregationRecognitionService({api,session,congregation});
