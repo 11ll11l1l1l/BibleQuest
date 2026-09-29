@@ -68,7 +68,7 @@ export function createCongregationMembershipService({api,session}){
     if(request!==loadRequest||currentUserId()!==userId)return list();
     memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row&&row.userId===userId);
     loadedUserId=userId;
-    if(!get(activeCongregationId))activeCongregationId=memberships[0]?.congregationId||'';
+    if(!get(activeCongregationId))activeCongregationId='';
     return list();
   }
 
@@ -82,7 +82,7 @@ export function createCongregationMembershipService({api,session}){
 
   async function updateSettings({name,timezone}={}){
     const user=requireUser(),userId=String(user.id),active=getActive();
-    if(!active||!ownsLoadedContext()){const error=new Error('Load your congregation memberships before editing settings.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    if(!active||!ownsLoadedContext()){const error=new Error('Choose an active congregation before editing settings.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
     if(active.role!=='admin'){const error=new Error('Congregation admin permission is required to edit these settings.');error.code='BQ_CONGREGATION_PERMISSION_DENIED';throw error}
     const nextName=String(name??'').trim(),nextTimezone=String(timezone??'').trim();
     if(nextName.length<2||nextName.length>100){const error=new Error('Congregation name must be between 2 and 100 characters.');error.code='BQ_CONGREGATION_SETTINGS_NAME_INVALID';throw error}
@@ -95,7 +95,7 @@ export function createCongregationMembershipService({api,session}){
 
   function adminScope(){
     const user=requireUser(),active=getActive();
-    if(!active||!ownsLoadedContext()){const error=new Error('Load your congregation memberships before managing members.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    if(!active||!ownsLoadedContext()){const error=new Error('Choose an active congregation before managing members.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
     if(active.role!=='admin'){const error=new Error('Congregation admin permission is required to manage members.');error.code='BQ_CONGREGATION_PERMISSION_DENIED';throw error}
     return {userId:String(user.id),congregationId:active.congregationId};
   }

@@ -9,10 +9,13 @@ import { createTenantContextStore, TenantContextError } from '../../src/v6/kerne
 const member = (congregationId: string, userId = 'user-a', role: 'member' | 'leader' = 'member') =>
   Object.freeze({ congregationId, userId, role });
 
-test('tenant context preserves V5 first-membership fallback and valid active selection', () => {
+test('tenant context requires explicit selection and preserves a valid active choice', () => {
   const tenant = createTenantContextStore();
   tenant.reconcile('user-a', [member('cong-a'), member('cong-b', 'user-a', 'leader')]);
-  assert.equal(tenant.scope().congregationId, 'cong-a');
+  assert.equal(tenant.snapshot().activeCongregationId, null);
+  assert.throws(() => tenant.scope(), (error) => {
+    return error instanceof TenantContextError && error.code === 'BQ_TENANT_MEMBERSHIP_REQUIRED';
+  });
 
   tenant.setActive('cong-b');
   const before = tenant.scope();
@@ -21,27 +24,33 @@ test('tenant context preserves V5 first-membership fallback and valid active sel
   assert.equal(tenant.scope().generation, before.generation);
 });
 
-test('tenant context falls back when active membership disappears and rejects stale request scopes', () => {
+test('tenant context clears scope when active membership disappears and rejects stale request scopes', () => {
   const tenant = createTenantContextStore();
   tenant.reconcile('user-a', [member('cong-a'), member('cong-b')]);
   tenant.setActive('cong-b');
   const stale = tenant.scope();
 
   tenant.reconcile('user-a', [member('cong-a')]);
-  assert.equal(tenant.scope().congregationId, 'cong-a');
+  assert.equal(tenant.snapshot().activeCongregationId, null);
+  assert.throws(() => tenant.scope(), (error) => {
+    return error instanceof TenantContextError && error.code === 'BQ_TENANT_MEMBERSHIP_REQUIRED';
+  });
   assert.throws(() => tenant.assertCurrent(stale), (error) => {
     return error instanceof TenantContextError && error.code === 'BQ_TENANT_CONTEXT_STALE';
   });
 });
 
-test('account switch cannot inherit active congregation context', () => {
+test('account switch cannot inherit or infer active congregation context', () => {
   const tenant = createTenantContextStore();
   tenant.reconcile('user-a', [member('cong-a'), member('cong-b')]);
   tenant.setActive('cong-b');
   const oldScope = tenant.scope();
 
   tenant.reconcile('user-b', [member('cong-c', 'user-b')]);
-  assert.equal(tenant.scope().congregationId, 'cong-c');
+  assert.equal(tenant.snapshot().activeCongregationId, null);
+  assert.throws(() => tenant.scope(), (error) => {
+    return error instanceof TenantContextError && error.code === 'BQ_TENANT_MEMBERSHIP_REQUIRED';
+  });
   assert.throws(() => tenant.assertCurrent(oldScope));
   assert.throws(() => tenant.setActive('cong-b'), (error) => {
     return error instanceof TenantContextError && error.code === 'BQ_TENANT_MEMBERSHIP_REQUIRED';

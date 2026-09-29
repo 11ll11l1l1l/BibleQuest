@@ -41,6 +41,11 @@ try{
     const page=await context.newPage(),errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
+    await page.goto(`${BASE}#/congregation`,{waitUntil:'domcontentloaded'});
+    const selection=page.locator(`[data-congregation-switch="${congregationId}"]`);
+    await selection.waitFor({timeout:10000});
+    await selection.click();
+    await page.locator('[data-congregation-current="true"]').waitFor({timeout:10000});
     await page.goto(`${BASE}#/leader-center`,{waitUntil:'domcontentloaded'});
     await page.locator('[data-leader-center-view] h1').waitFor({timeout:10000});
     if(role==='member'){

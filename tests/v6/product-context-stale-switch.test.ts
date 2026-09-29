@@ -60,6 +60,11 @@ function membershipApi(session: ReturnType<typeof mutableSession>) {
   };
 }
 
+async function selectTenant(congregation: ReturnType<typeof createCongregationMembershipService>, congregationId: string) {
+  await congregation.load();
+  congregation.setActive(congregationId);
+}
+
 function assignmentRow(id: string, congregationId: string) {
   return {
     id,
@@ -97,6 +102,7 @@ describe('product account and tenant stale-response isolation', () => {
     const session = mutableSession();
     const first = createCongregationMembershipService({ api: membershipApi(session), session });
     await first.load();
+    assert.equal(first.getActive(), null);
     assert.equal(first.can('cong-a', 'ministry'), true);
 
     session.setUser('user-b');
@@ -104,6 +110,7 @@ describe('product account and tenant stale-response isolation', () => {
     assert.equal(first.getActive(), null);
     assert.equal(first.can('cong-a', 'ministry'), false);
     await first.load();
+    assert.equal(first.getActive(), null);
     assert.equal(first.list()[0]?.congregationId, 'cong-b');
     assert.equal(first.can('cong-b', 'ministry'), false);
 
@@ -139,6 +146,7 @@ describe('product account and tenant stale-response isolation', () => {
   it('Assignments keeps the newer account context when an older list finishes late', async () => {
     const session = mutableSession();
     const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    await selectTenant(congregation, 'cong-a');
     const aStarted = deferred();
     const releaseA = deferred();
     const api = {
@@ -159,6 +167,7 @@ describe('product account and tenant stale-response isolation', () => {
     const stale = assignments.load();
     await aStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const fresh = await assignments.load();
     assert.equal(fresh.userId, 'user-b');
     assert.equal(fresh.congregationId, 'cong-b');
@@ -178,6 +187,7 @@ describe('product account and tenant stale-response isolation', () => {
   it('Calendar never exposes a late congregation-A response under account B', async () => {
     const session = mutableSession();
     const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    await selectTenant(congregation, 'cong-a');
     const aStarted = deferred();
     const releaseA = deferred();
     const calendarApi = {
@@ -209,6 +219,7 @@ describe('product account and tenant stale-response isolation', () => {
     const stale = calendar.load();
     await aStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const fresh = await calendar.load();
     assert.equal(fresh.congregationId, 'cong-b');
     assert.ok(fresh.agenda.flatMap((day: any) => day.events).some((event: any) => event.id === 'event-b'));
@@ -227,6 +238,7 @@ describe('product account and tenant stale-response isolation', () => {
   it('Journey Groups and Encouragements keep late Account A results out of Account B community state', async () => {
     const session = mutableSession();
     const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    await selectTenant(congregation, 'cong-a');
     const groupAStarted = deferred();
     const releaseGroupA = deferred();
     const groupApi = {
@@ -252,6 +264,7 @@ describe('product account and tenant stale-response isolation', () => {
     const staleGroup = journeyGroups.load();
     await groupAStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const freshGroup = await journeyGroups.load();
     assert.deepEqual(freshGroup.groups.map((row: any) => row.id), ['group-b']);
     releaseGroupA.resolve();
@@ -290,9 +303,11 @@ describe('product account and tenant stale-response isolation', () => {
     const encouragements = createEncouragementsService({ api: encouragementApi, session, journeyGroups: fakeJourneyGroups });
 
     session.setUser('user-a');
+    await selectTenant(congregation, 'cong-a');
     const staleEncouragement = encouragements.load();
     await encouragementAStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const freshEncouragement = await encouragements.load();
     assert.deepEqual(freshEncouragement.items.map((row: any) => row.id), ['enc-b']);
     releaseEncouragementA.resolve();
@@ -450,6 +465,7 @@ describe('product account and tenant stale-response isolation', () => {
   it('Leaderboard and Recognition read models cannot commit Account A congregation data after B becomes current', async () => {
     const session = mutableSession();
     const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    await selectTenant(congregation, 'cong-a');
 
     const boardStarted = deferred();
     const releaseBoard = deferred();
@@ -470,6 +486,7 @@ describe('product account and tenant stale-response isolation', () => {
     const staleBoard = board.load();
     await boardStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const freshBoard = await board.load();
     assert.equal(freshBoard.congregationId, 'cong-b');
     assert.deepEqual(freshBoard.rows.map((row: any) => row.userId), ['user-b']);
@@ -496,10 +513,12 @@ describe('product account and tenant stale-response isolation', () => {
       async award() { throw new Error('unused'); },
     };
     session.setUser('user-a');
+    await selectTenant(congregation, 'cong-a');
     const recognition = createCongregationRecognitionService({ api: recognitionApi, session, congregation });
     const staleRecognition = recognition.load();
     await recognitionStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const freshRecognition = await recognition.load();
     assert.equal(freshRecognition.congregationId, 'cong-b');
     assert.deepEqual(freshRecognition.members.map((row: any) => row.userId), ['user-b']);
@@ -515,6 +534,7 @@ describe('product account and tenant stale-response isolation', () => {
   it('Team Center keeps the newer account team and directory after a stale A list resolves', async () => {
     const session = mutableSession();
     const congregation = createCongregationMembershipService({ api: membershipApi(session), session });
+    await selectTenant(congregation, 'cong-a');
     const aStarted = deferred();
     const releaseA = deferred();
     const api = {
@@ -542,6 +562,7 @@ describe('product account and tenant stale-response isolation', () => {
     const stale = teamCenter.load();
     await aStarted.promise;
     session.setUser('user-b');
+    await selectTenant(congregation, 'cong-b');
     const fresh = await teamCenter.load();
     assert.deepEqual(fresh.teams.map((row: any) => row.id), ['team-b']);
     releaseA.resolve();

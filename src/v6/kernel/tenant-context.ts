@@ -121,7 +121,7 @@ export function createTenantContextStore(): TenantContextStore {
       ? preferredCongregationId
       : validCurrent
         ? activeCongregationId
-        : memberships[0]?.congregationId ?? '';
+        : '';
 
     const activeChanged = activeCongregationId !== nextActive;
     activeCongregationId = nextActive;
