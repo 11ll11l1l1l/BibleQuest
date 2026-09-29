@@ -176,7 +176,7 @@ describe('content and trusted-event account-switch isolation', () => {
         }
         return queueFor(id);
       },
-      async saveDecision(row: any) { return row; },
+      async saveDecision(_congregationId: string, row: any) { return row; },
       async markReportsReviewed() { return []; },
     };
     const recall = {
@@ -228,7 +228,7 @@ describe('content and trusted-event account-switch isolation', () => {
           members: [],
         };
       },
-      async saveDecision(row: any) { saves++; return row; },
+      async saveDecision(_congregationId: string, row: any) { saves++; return row; },
       async markReportsReviewed() { return []; },
     };
     const recall = {
