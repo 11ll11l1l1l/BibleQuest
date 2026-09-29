@@ -26,6 +26,12 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 - The stale branch `agent-v6-c2/assignment-scheduler-contract-20260928` must not be integrated: it characterizes trusted due/reminder scheduling as absent, while the current V6 line already contains `bq-assignment-reminders`, the due-reminder migration/runbook, and pgTAP coverage. Live/deployed schedule and physical push delivery are still separate acceptance gates.
 - **Next safe work:** authenticated Member/Leader/Pastor/Admin role-browser coverage and remaining explicit-tenant repository audit; exact deployed Cloudflare artifact identity; installed-device PWA/offline/push proof; live OpenBible/browser audio behavior plus offline-copy/alignment rights gates; then CSP/security-advisor/auth-hardening and final RC certification. Do not promote device/live-service/release rows from synthetic or local evidence.
 
+## Current bounded tenant-safety candidate — 2026-09-29
+
+- Branch `codex/v6-calendar-fail-closed-active-context` contains a focused Calendar tenant-race fix on top of official head `8e175ac882523c0fb2328fcc17d70d1c36cbc2e7`. Calendar no longer treats a cached/prior congregation ID as active when `getActive()` becomes empty. A new deferred-response regression test reproduces a shared-calendar fetch completing after the active tenant is cleared and proves the response is not exposed.
+- Verification on this candidate: all 635 V6 unit tests pass; the focused Calendar suite passes 5/5; typecheck, lint, formatting and V6 build pass. The build emits the existing >500 kB entry-chunk warning. Run exact-SHA artifact evidence and CI after commit/push. This candidate is not integrated and does not change the official acceptance count.
+- Next: exact-SHA artifact check, push branch, open PR, and run required V6 CI. Continue the remaining tenant audit only after this serialized change is integrated.
+
 ## Historical local handoff archive — 2026-09-29
 
 The entries below are historical development notes retained for traceability. The integrated checkpoint above and repository/CI evidence override them when they conflict.

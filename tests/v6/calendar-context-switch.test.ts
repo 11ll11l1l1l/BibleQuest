@@ -208,6 +208,53 @@ describe('Calendar account-context isolation', () => {
     assert.ok(!refreshed.agenda.some((group: any) => group.events.some((row: any) => row.title === 'A event')));
   });
 
+  it('rejects a late shared-calendar response when the active congregation is cleared', async () => {
+    const session = mutableSession();
+    const started = deferred();
+    const release = deferred<any[]>();
+    let activeId: string | null = 'congregation-a';
+    let sharedReads = 0;
+    const congregation = {
+      async load() {
+        return [{ congregationId: 'congregation-a', congregation: { name: 'A' } }];
+      },
+      getActive() {
+        return activeId ? { congregationId: activeId, congregation: { name: 'A' } } : null;
+      },
+      can() { return true; },
+      assert() {},
+    };
+    const calendar = createCalendarService({
+      session,
+      privateStorage: memoryStorage(),
+      assignments: { snapshot: () => ({ assignments: [] }) },
+      congregation,
+      api: {
+        calendar: {
+          async list() { return []; },
+          async create() { throw new Error('unused'); },
+          async remove() { return true; },
+          async listCongregation() {
+            sharedReads += 1;
+            started.resolve();
+            return release.promise;
+          },
+        },
+      },
+      clock: () => new Date('2026-09-24T00:00:00.000Z'),
+    });
+
+    const loading = calendar.load();
+    await started.promise;
+    activeId = null;
+    release.resolve([{ id: 'a-event', user_id: 'user-a', event_date: '2026-09-27', title: 'A event', notes: '', all_day: true }]);
+
+    const state = await loading;
+    assert.equal(sharedReads, 1);
+    assert.equal(state.congregationId, '', 'A previous congregation must not substitute for a cleared active tenant.');
+    assert.ok(!state.agenda.some((group: any) => group.events.some((row: any) => row.title === 'A event')));
+  });
+
   it('never falls back to the first membership when there is no active congregation', async () => {
     const session = mutableSession();
     const memberships = [

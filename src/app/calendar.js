@@ -23,7 +23,7 @@ export function createCalendarService({ session, privateStorage, api, assignment
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
-  const activeCongregationId=(fallback='')=>String(congregation?.getActive?.()?.congregationId||fallback||congregationState.congregationId||'');
+  const activeCongregationId=()=>String(congregation?.getActive?.()?.congregationId||'');
   const ownsCongregationContext=(userId,congregationId)=>Boolean(userId)&&sessionUserId()===String(userId)&&activeCongregationId(congregationId)===String(congregationId||'');
   const owner = () => {
     const id = sessionUserId();
