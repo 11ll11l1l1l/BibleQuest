@@ -12,22 +12,22 @@ function fail(code, message) { const error = new Error(message); error.code = co
 
 export function createAvatarVaultService({ session, privateStorage, api, progress, bibleWorld, couplesFamily, games, assignments, congregation }) {
   if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault) {
-    throw new Error('Avatar Vault dependencies unavailable.');
+    throw Error('Avatar Vault dependencies unavailable.');
   }
 
-  const owner = () => {
-    const s = session.getState();
-    return s?.authenticated && s?.user?.id ? `account:${s.user.id}` : 'guest';
-  };
   const currentAccountId = () => {
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
+  };
+  const owner = () => {
+    const id = currentAccountId();
+    return id ? `account:${id}` : 'guest';
   };
   const currentCongregationId = () => String(congregation?.getActive?.()?.congregationId || '');
   const CONTEXT_STALE = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
   const contextCurrent = (userId, congregationId = '') => currentAccountId() === String(userId) && (!congregationId || currentCongregationId() === congregationId);
   const contextError = () => {
-    const error = new Error('Avatar context changed.');
+    const error = Error('Avatar context changed.');
     error.code = CONTEXT_STALE;
     return error;
   };
