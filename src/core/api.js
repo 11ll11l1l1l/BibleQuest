@@ -413,7 +413,7 @@ export function createApi() {
       return data||null;
     },
     async save(userId,congregationId,selectedStyle) {
-      if(!congregationId)throw new Error('Avatar scope required.');
+      if(!congregationId)throw Error();
       const client=await getClient();
       const avatar={cosmetic:selectedStyle};
       const updatedAt=new Date().toISOString();
