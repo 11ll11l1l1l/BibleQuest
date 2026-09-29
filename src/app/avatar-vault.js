@@ -23,21 +23,14 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
-  const currentCongregationId = () => {
-    const active = congregation.getActive();
-    return active?.congregationId ? String(active.congregationId) : '';
-  };
+  const currentCongregationId = () => String(congregation.getActive()?.congregationId || '');
   const contextError = () => {
-    const error = new Error('The account or active congregation changed. Reopen Avatar Vault before continuing.');
+    const error = new Error('Avatar context changed.');
     error.code = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
     return error;
   };
   const assertAccountContext = userId => {
     if (!userId || currentAccountId() !== String(userId)) throw contextError();
-  };
-  const assertCloudContext = (userId, congregationId) => {
-    assertAccountContext(userId);
-    if (!congregationId || currentCongregationId() !== String(congregationId)) throw contextError();
   };
   const key = current => `avatar-vault:${current}`;
 
@@ -115,13 +108,13 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
       const congregationId = currentCongregationId();
       if (!congregationId) return present();
       try {
-        assertCloudContext(userId, congregationId);
         await api.avatarVault.save(s.user.id, congregationId, local.selected);
-        assertCloudContext(userId, congregationId);
+        assertAccountContext(userId);
+        if (currentCongregationId() !== congregationId) throw contextError();
         writeLocal(current, local.selected, earned, false);
         local = readLocal(current);
       } catch (error) {
-        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
+        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId || currentCongregationId() !== congregationId) throw contextError();
         return present();
       }
     }
@@ -153,12 +146,12 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
       const congregationId = currentCongregationId();
       if (!congregationId) synced = false;
       else try {
-        assertCloudContext(userId, congregationId);
         await api.avatarVault.save(s.user.id, congregationId, style.id);
-        assertCloudContext(userId, congregationId);
+        assertAccountContext(userId);
+        if (currentCongregationId() !== congregationId) throw contextError();
         writeLocal(current, style.id, earned, false);
       } catch (error) {
-        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
+        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId || currentCongregationId() !== congregationId) throw contextError();
         synced = false;
       }
     }
