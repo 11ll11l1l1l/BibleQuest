@@ -163,8 +163,13 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();
     if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation',false);
     const activeMembership=typeof congregation.getActive==='function'?congregation.getActive():null;
-    const selected=memberships.find(row=>row.congregationId===String(requestedCongregationId||activeMembership?.congregationId||state.congregationId))||memberships[0];
-    const followsActive=!requestedCongregationId&&Boolean(activeMembership?.congregationId)&&selected.congregationId===String(activeMembership.congregationId);
+    const selectedId=String(requestedCongregationId||activeMembership?.congregationId||'');
+    const selected=memberships.find(row=>row.congregationId===selectedId);
+    if(!selected){
+      if(requestedCongregationId)fail('BQ_ASSIGNMENT_SCOPE','The requested congregation is not available to this account.');
+      return resetAccountState(currentUserId,true,true,'no-congregation',false);
+    }
+    const followsActive=!requestedCongregationId;
     const activeRequestCurrent=()=>!followsActive||liveCongregationId()===String(selected.congregationId);
     congregation.assert(selected.congregationId,'read');
     let payload;
