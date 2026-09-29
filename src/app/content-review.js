@@ -198,7 +198,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     const choice=clean(decision);if(!DECISIONS.has(choice))throw reviewError('Choose Include, Keep quarantined, or Remove.','BQ_CONTENT_REVIEW_DECISION_INVALID');
     const note=clean(rationale);if(note.length>1200)throw reviewError('Reviewer note must be 1,200 characters or fewer.','BQ_CONTENT_REVIEW_RATIONALE_INVALID');
     const target=findReviewTarget(contentKey);if(!target)throw reviewError('That review item is not in the current congregation queue.','BQ_CONTENT_REVIEW_ITEM_INVALID');
-    const stampRaw=clock(),stamp=stampRaw instanceof Date?stampRaw:new Date(stampRaw);if(!Number.isFinite(stamp.getTime()))throw new Error('Content Review timestamp is invalid.');
+    const stampRaw=clock(),stamp=stampRaw instanceof Date?stampRaw:new Date(stampRaw);if(!Number.isFinite(stamp.getTime()))throw Error('Invalid timestamp.');
     const reviewedAt=stamp.toISOString(),generation=stateGeneration,request=++operationRequest,congregationId=state.congregationId,selectedBook=state.selectedBook;
     const isQuarantine=target.origin==='quarantine';
     const contentType=isQuarantine?'question':target.contentType;
@@ -211,7 +211,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     state={...state,busy:true,error:''};
     let saved;
     try{
-      saved=await api.saveDecision(row);
+      saved=await api.saveDecision(congregationId,row);
       if(!operationCurrent(userId,generation,request)||state.congregationId!==congregationId)throw staleError();
     }catch(error){
       if(!operationCurrent(userId,generation,request))throw staleError();
