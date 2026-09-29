@@ -718,20 +718,20 @@ export function createApi() {
       return data||[];
     },
     async loadQueue(congregationId) {
-      const id=String(congregationId||'').trim();if(!id)throw new Error('Content Review congregation is required.');
+      const id=String(congregationId||'').trim();if(!id)throw Error();
       const client=await getClient();
       const request=Promise.all([
         client.from('bible_content_decisions').select(CONTENT_REVIEW_DECISION_FIELDS).eq('congregation_id',id).order('updated_at',{ascending:false}).limit(4000),
         client.from('bible_content_reports').select(CONTENT_REVIEW_REPORT_FIELDS).eq('congregation_id',id).order('created_at',{ascending:false}).limit(500),
         client.from('bible_congregation_members').select(CONTENT_REVIEW_MEMBER_FIELDS).eq('congregation_id',id).eq('active',true).order('joined_at',{ascending:true}).limit(3000)
       ]);
-      const [decisions,reports,members]=await withTimeout(request,6000,'Content Review queue took too long to load.');
+      const [decisions,reports,members]=await withTimeout(request,6000,'Content Review timeout.');
       for(const result of[decisions,reports,members])if(result.error)throw result.error;
       return {decisions:decisions.data||[],reports:reports.data||[],members:members.data||[]};
     },
-    async saveDecision(row) {
+    async saveDecision(congregationId,row) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_content_decisions').upsert(row,{onConflict:'congregation_id,content_key'}).select(CONTENT_REVIEW_DECISION_FIELDS).single();
+      const {data,error}=await client.from('bible_content_decisions').upsert({...row,congregation_id:congregationId},{onConflict:'congregation_id,content_key'}).select(CONTENT_REVIEW_DECISION_FIELDS).single();
       if(error)throw error;
       return data;
     },
