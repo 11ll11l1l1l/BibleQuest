@@ -10,9 +10,9 @@ const SCHEMA = 1;
 
 function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
 
-export function createAvatarVaultService({ session, privateStorage, api, progress, bibleWorld, couplesFamily, games, assignments }) {
-  if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault) {
-    throw new Error('Avatar Vault requires Session, private storage and the API boundary.');
+export function createAvatarVaultService({ session, privateStorage, api, progress, bibleWorld, couplesFamily, games, assignments, congregation }) {
+  if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault || !congregation?.getActive) {
+    throw new Error('Avatar Vault requires Session, Congregation Membership, private storage and the API boundary.');
   }
 
   const owner = () => {
@@ -23,13 +23,21 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
+  const currentCongregationId = () => {
+    const active = congregation.getActive();
+    return active?.congregationId ? String(active.congregationId) : '';
+  };
   const contextError = () => {
-    const error = new Error('The account changed. Reopen Avatar Vault before continuing.');
+    const error = new Error('The account or active congregation changed. Reopen Avatar Vault before continuing.');
     error.code = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
     return error;
   };
   const assertAccountContext = userId => {
     if (!userId || currentAccountId() !== String(userId)) throw contextError();
+  };
+  const assertCloudContext = (userId, congregationId) => {
+    assertAccountContext(userId);
+    if (!congregationId || currentCongregationId() !== String(congregationId)) throw contextError();
   };
   const key = current => `avatar-vault:${current}`;
 
@@ -104,10 +112,12 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     // Retry it before accepting remote state so an older cloud selection cannot
     // silently overwrite a choice made while connectivity was unavailable.
     if (local.pending) {
+      const congregationId = currentCongregationId();
+      if (!congregationId) return present();
       try {
-        assertAccountContext(userId);
-        await api.avatarVault.save(s.user.id, local.selected);
-        assertAccountContext(userId);
+        assertCloudContext(userId, congregationId);
+        await api.avatarVault.save(s.user.id, congregationId, local.selected);
+        assertCloudContext(userId, congregationId);
         writeLocal(current, local.selected, earned, false);
         local = readLocal(current);
       } catch (error) {
@@ -140,10 +150,12 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     writeLocal(current, style.id, earned, accountOwned);
     let synced = true;
     if (accountOwned) {
-      try {
-        assertAccountContext(userId);
-        await api.avatarVault.save(s.user.id, style.id);
-        assertAccountContext(userId);
+      const congregationId = currentCongregationId();
+      if (!congregationId) synced = false;
+      else try {
+        assertCloudContext(userId, congregationId);
+        await api.avatarVault.save(s.user.id, congregationId, style.id);
+        assertCloudContext(userId, congregationId);
         writeLocal(current, style.id, earned, false);
       } catch (error) {
         if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
