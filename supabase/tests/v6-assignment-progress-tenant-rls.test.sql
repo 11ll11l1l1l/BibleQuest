@@ -98,8 +98,8 @@ set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
 
 select results_eq(
   $$select submission from public.bible_assignment_progress order by submission$$,
-  array['former-member-a-progress'::text, 'member-a-progress'::text],
-  'Leader A can review congregation A assignment progress only'
+  array['foreign-team-progress'::text, 'former-member-a-progress'::text, 'member-a-progress'::text],
+  'Leader A can review congregation A assignment progress, including malformed same-tenant targets'
 );
 
 select results_eq(
@@ -112,8 +112,8 @@ set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111113';
 
 select results_eq(
   $$select submission from public.bible_assignment_progress order by submission$$,
-  array['former-member-a-progress'::text, 'member-a-progress'::text],
-  'Pastor A has same-congregation assignment-progress review visibility'
+  array['foreign-team-progress'::text, 'former-member-a-progress'::text, 'member-a-progress'::text],
+  'Pastor A has same-congregation assignment-progress review visibility, including malformed targets'
 );
 
 select results_eq(
