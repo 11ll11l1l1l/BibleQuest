@@ -133,6 +133,11 @@ async function verifyReaderAudioStateRecovery() {
         this.paused = true;
         this.dispatchEvent(new Event('pause'));
       }
+      finish() {
+        this.paused = true;
+        this.currentTime = this.duration;
+        this.dispatchEvent(new Event('ended'));
+      }
       load() {
         this.currentSrc = this.src;
       }
@@ -205,6 +210,25 @@ async function verifyReaderAudioStateRecovery() {
   `Reader did not recover the saved BSB playback position after reload: ${JSON.stringify(restored)}.`);
   assert(Math.abs(Number(await page.getByLabel('Audio position', { exact: true }).inputValue()) - 37) < 0.01,
     'Recovered BSB playback position is not reflected by the visible Reader control.');
+
+  await page.locator('[data-reader-audio-auto-next]').check();
+  await page.evaluate(() => {
+    const audio = [...(window.__bqFakeAudioInstances || [])].reverse()
+      .find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3' && !candidate.paused);
+    if (!audio) throw new Error('Active Genesis 1 audio owner was not found for auto-next.');
+    audio.finish();
+  });
+  await page.waitForFunction(() => document.querySelector('[data-reader-chapter]')?.value === '2'
+    && document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 2'), null, { timeout: 10000 });
+  const autoNextPlayback = await page.evaluate(() => {
+    const audio = [...(window.__bqFakeAudioInstances || [])].reverse()
+      .find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_002_H.mp3');
+    return audio ? { src: audio.src, paused: audio.paused } : null;
+  });
+  assert(autoNextPlayback?.src === 'https://openbible.com/audio/hays/BSB_01_Gen_002_H.mp3' && autoNextPlayback.paused === false,
+    `Reader audio did not continue with the displayed Genesis 2 passage: ${JSON.stringify(autoNextPlayback)}.`);
+  assert(await page.locator('[data-reader-audio-auto-next]').isChecked(),
+    'Reader lost the enabled auto-next setting while following audio to the next chapter.');
 
   await page.close();
 }
