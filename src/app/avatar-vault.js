@@ -11,8 +11,8 @@ const SCHEMA = 1;
 function fail(code, message) { const error = new Error(message); error.code = code; throw error; }
 
 export function createAvatarVaultService({ session, privateStorage, api, progress, bibleWorld, couplesFamily, games, assignments, congregation }) {
-  if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault || !congregation?.getActive) {
-    throw new Error('Avatar Vault requires Session, Congregation Membership, private storage and the API boundary.');
+  if (!session?.getState || !privateStorage?.read || !privateStorage?.write || !api?.avatarVault) {
+    throw new Error('Avatar Vault dependencies unavailable.');
   }
 
   const owner = () => {
@@ -23,14 +23,16 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
     const s = session.getState();
     return s?.authenticated && s?.user?.id ? String(s.user.id) : '';
   };
-  const currentCongregationId = () => String(congregation.getActive()?.congregationId || '');
+  const currentCongregationId = () => String(congregation?.getActive?.()?.congregationId || '');
+  const CONTEXT_STALE = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
+  const contextCurrent = (userId, congregationId = '') => currentAccountId() === String(userId) && (!congregationId || currentCongregationId() === congregationId);
   const contextError = () => {
     const error = new Error('Avatar context changed.');
-    error.code = 'BQ_AVATAR_VAULT_CONTEXT_STALE';
+    error.code = CONTEXT_STALE;
     return error;
   };
-  const assertAccountContext = userId => {
-    if (!userId || currentAccountId() !== String(userId)) throw contextError();
+  const assertContext = (userId, congregationId = '') => {
+    if (!userId || !contextCurrent(userId, congregationId)) throw contextError();
   };
   const key = current => `avatar-vault:${current}`;
 
@@ -109,23 +111,23 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
       if (!congregationId) return present();
       try {
         await api.avatarVault.save(s.user.id, congregationId, local.selected);
-        assertAccountContext(userId);
-        if (currentCongregationId() !== congregationId) throw contextError();
+        assertContext(userId);
+        assertContext(userId, congregationId);
         writeLocal(current, local.selected, earned, false);
         local = readLocal(current);
       } catch (error) {
-        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId || currentCongregationId() !== congregationId) throw contextError();
+        if (error?.code === CONTEXT_STALE || !contextCurrent(userId, congregationId)) throw contextError();
         return present();
       }
     }
 
     try {
-      assertAccountContext(userId);
+      assertContext(userId);
       const remote = await api.avatarVault.load(s.user.id);
-      assertAccountContext(userId);
+      assertContext(userId);
       if (remote?.selected_style) writeLocal(current, remote.selected_style, earned, false);
     } catch (error) {
-      if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId) throw contextError();
+      if (error?.code === CONTEXT_STALE || !contextCurrent(userId)) throw contextError();
       /* device state remains authoritative until cloud reachable */
     }
     return present();
@@ -147,11 +149,11 @@ export function createAvatarVaultService({ session, privateStorage, api, progres
       if (!congregationId) synced = false;
       else try {
         await api.avatarVault.save(s.user.id, congregationId, style.id);
-        assertAccountContext(userId);
-        if (currentCongregationId() !== congregationId) throw contextError();
+        assertContext(userId);
+        assertContext(userId, congregationId);
         writeLocal(current, style.id, earned, false);
       } catch (error) {
-        if (error?.code === 'BQ_AVATAR_VAULT_CONTEXT_STALE' || currentAccountId() !== userId || currentCongregationId() !== congregationId) throw contextError();
+        if (error?.code === CONTEXT_STALE || !contextCurrent(userId, congregationId)) throw contextError();
         synced = false;
       }
     }
