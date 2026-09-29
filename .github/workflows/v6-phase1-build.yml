@@ -133,7 +133,7 @@ jobs:
       - name: Start built artifact preview
         shell: bash
         run: |
-          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/bq-v6-preview.log 2>&1 &
+          npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/bq-v6-preview.log 2>&1 &
           echo $! > /tmp/bq-v6-preview.pid
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
@@ -151,6 +151,11 @@ jobs:
         env:
           BQ_BASE_URL: http://127.0.0.1:4173/
         run: node tests/v5-auth-deeplink-hydration-browser.mjs
+
+      - name: Built artifact Leader Center Member/Leader/Pastor/Admin role matrix
+        env:
+          BQ_BASE_URL: http://127.0.0.2:4173/
+        run: node tests/v6/leader-center-role-browser.mjs
 
       - name: Built artifact PWA acceptance
         env:
