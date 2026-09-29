@@ -34,8 +34,8 @@ test('avatar membership writes accept the congregation as an explicit scope', ()
   assert.match(source, /^async save\(userId,congregationId,selectedStyle\)/);
 });
 
-test('avatar membership writes filter both account and congregation and verify the affected row', () => {
+test('avatar membership writes require and filter an explicit congregation scope', () => {
   const source = methodSource('avatarVault', 'save');
   assert.match(source, /\.eq\('user_id',userId\)\.eq\('congregation_id',congregationId\)/);
-  assert.match(source, /if\(!congregationId\)throw new Error/);
+  assert.match(source, /if\(!congregationId\)throw Error\(\)/);
 });
