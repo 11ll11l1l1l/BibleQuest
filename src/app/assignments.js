@@ -163,7 +163,7 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
     if(request!==loadRequest||liveUserId()!==currentUserId)return snapshot();
     if(!memberships.length)return resetAccountState(currentUserId,true,true,'no-congregation',false);
     const selected=memberships.find(row=>row.congregationId===(requestedCongregationId||congregation.getActive?.()?.congregationId));
-    if(!selected){if(requestedCongregationId)fail('BQ_ASSIGNMENT_SCOPE','Congregation unavailable.');return resetAccountState(currentUserId,true,true,'no-congregation',false)}
+    if(!selected){if(requestedCongregationId)fail('BQ_ASSIGNMENT_SCOPE','Unavailable.');return resetAccountState(currentUserId,true,true,'no-congregation',false)}
     const followsActive=!requestedCongregationId;
     const activeRequestCurrent=()=>!followsActive||liveCongregationId()===String(selected.congregationId);
     congregation.assert(selected.congregationId,'read');
