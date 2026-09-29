@@ -139,6 +139,31 @@ test('audio auto-next advances only through the caller-approved chapter resolver
   player.dispose();
 });
 
+test('manual chapter selection supersedes a pending auto-next load without an error or unintended playback', async () => {
+  const audio = fixtureAudio();
+  let releaseAutoNext!: (url: string) => void;
+  const deferred = new Promise<string>(resolve => { releaseAutoNext = resolve; });
+  let delayNext = false;
+  const player = createChapterAudioPlayer({
+    translationId: 'bsb', manifest, createAudio: () => audio,
+    resolveNextChapter: (book, chapter) => book === 'GEN' && chapter === 1 ? { bookCode: 'GEN', chapter: 2 } : null,
+    resolveAudioUrl: segment => delayNext && segment.chapter === 2 ? deferred : segment.url,
+  });
+  await player.load('GEN', 1);
+  player.setAutoNext(true);
+  delayNext = true;
+  audio.emit('ended');
+  await player.load('GEN', 1);
+  releaseAutoNext('https://audio.example/GEN-2.mp3');
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(player.getState().chapter, 1);
+  assert.equal(player.getState().status, 'ready');
+  assert.equal(player.getState().error, '');
+  assert.equal(audio.src, 'https://audio.example/GEN-1.mp3');
+  assert.equal(audio.paused, true);
+  player.dispose();
+});
+
 test('audio sleep timer pauses playback, can be replaced, and is cleared on dispose', async () => {
   const audio = fixtureAudio();
   const timers = new Map<number, { callback: () => void; milliseconds: number }>();
