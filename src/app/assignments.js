@@ -240,7 +240,7 @@ export function createAssignmentsService({api,session,congregation,now=()=>new D
       if(MINISTRY_ROLES.has(role)){
         congregation.assert(cid,'ministry');
         if(typeof api.loadPrivateResponses!=='function')fail('BQ_ASSIGNMENT_REVIEW_UNAVAILABLE','Private assignment response review is not available yet.');
-        const privateRows=await api.loadPrivateResponses(assignment.id);
+        const privateRows=await api.loadPrivateResponses(cid,assignment.id);
         responses=Object.freeze((Array.isArray(privateRows)?privateRows:[]).map(row=>normalizePrivateResponse(row,assignment.id,names)));
       }
       const current=sessionState();
