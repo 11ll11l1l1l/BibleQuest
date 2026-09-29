@@ -6,6 +6,7 @@ let role='member',rows=[],progress=[],completeCalls=[];
 const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:'u1'}})};
 const congregation={
   load:async()=>[{congregationId:'c1',userId:'u1',role,roleKnown:true,roleLabel:role,congregation:{id:'c1',name:'Test Church',timezone:'Asia/Tokyo'}}],
+  getActive:()=>({congregationId:'c1'}),
   assert:(id,cap)=>{assert.equal(id,'c1');assert.equal(cap,'read')}
 };
 const base={id:'a74',congregation_id:'c1',created_by:'leader1',title:'Advanced reflection',instructions:'Complete the task.',assignment_type:'quiz',scripture_refs:['James 1:5'],target_scope:'all',target_id:null,due_at:'2026-09-10T04:00:00Z',schedule_at:'2026-09-10T01:00:00Z',reminder_at:'2026-09-10T03:00:00Z',recurrence_rule:'FREQ=WEEKLY',required_reflection:false,min_quiz_score:null,evidence_type:'none',points:10,active:true,created_at:'2026-09-09T00:00:00Z',updated_at:'2026-09-10T00:00:00Z'};
