@@ -3,8 +3,10 @@ import test from 'node:test';
 
 import type { ScriptureTranslationManifest } from '../../src/v6/reader/content-manifest.ts';
 import {
+  SCRIPTURE_OFFLINE_STORAGE_CEILING_BYTES,
   ScripturePackageIntegrityError,
   ScripturePackageManager,
+  ScripturePackageStorageLimitError,
   type InstalledScripturePackage,
   type ScripturePackageRepository,
   type ScripturePackageTransport,
@@ -41,6 +43,7 @@ function repository(initial: InstalledScripturePackage | null = null) {
       if (!installed) return null;
       return installed.translationId === translationId && installed.bookCode === bookCode ? installed : null;
     },
+    async listInstalled() { return installed ? [installed] : []; },
     async replaceInstalled(record, bytes) {
       installed = record;
       payload = bytes;
@@ -181,6 +184,79 @@ test('active downloads can be cancelled without storing partial data', async () 
   await assert.rejects(pending, (error: unknown) => error instanceof Error && error.name === 'AbortError');
   assert.equal(repo.state().writes, 0);
   assert.equal(manager.cancel('bsb', 'GEN'), false);
+});
+
+test('cancellation during the final storage-budget read prevents the verified payload from being written', async () => {
+  const base = repository();
+  let usageCalls = 0;
+  let finalUsageStarted!: () => void;
+  let releaseFinalUsage!: () => void;
+  const finalUsage = new Promise<void>((resolve) => { finalUsageStarted = resolve; });
+  const waitForRelease = new Promise<void>((resolve) => { releaseFinalUsage = resolve; });
+  const guardedRepository: ScripturePackageRepository = {
+    ...base.value,
+    async usage() {
+      usageCalls += 1;
+      if (usageCalls === 2) {
+        finalUsageStarted();
+        await waitForRelease;
+      }
+      return base.value.usage();
+    },
+  };
+  const manager = new ScripturePackageManager(guardedRepository, {
+    async download() { return new TextEncoder().encode('abc').buffer; },
+  });
+  const pending = manager.install(manifest(), 'GEN');
+
+  await finalUsage;
+  assert.equal(manager.cancel('bsb', 'GEN'), true);
+  releaseFinalUsage();
+  await assert.rejects(pending, (error: unknown) => error instanceof Error && error.name === 'AbortError');
+  assert.equal(base.state().writes, 0);
+  assert.equal(base.state().installed, null);
+});
+
+test('concurrent chapter installs serialize the final storage check and cannot exceed the shared ceiling', async () => {
+  const payload = new TextEncoder().encode('abc').buffer;
+  const stored = new Map<string, InstalledScripturePackage>();
+  const payloadByBook = new Map<string, ArrayBuffer>();
+  const repo: ScripturePackageRepository = {
+    async readInstalled(translationId, bookCode) { return stored.get(`${translationId}:${bookCode}`) ?? null; },
+    async listInstalled() { return [...stored.values()]; },
+    async replaceInstalled(record, bytes) { stored.set(`${record.translationId}:${record.bookCode}`, record); payloadByBook.set(record.bookCode, bytes); },
+    async removeInstalled(translationId, bookCode) { stored.delete(`${translationId}:${bookCode}`); payloadByBook.delete(bookCode); },
+    async usage() { return { bytes: SCRIPTURE_OFFLINE_STORAGE_CEILING_BYTES - 4 + [...stored.values()].reduce((sum, item) => sum + item.bytes, 0), packages: stored.size }; },
+  };
+  let startedCount = 0;
+  let releaseDownloads!: () => void;
+  const bothStarted = new Promise<void>((resolve) => { releaseDownloads = resolve; });
+  const manager = new ScripturePackageManager(repo, {
+    async download() {
+      startedCount += 1;
+      if (startedCount === 2) releaseDownloads();
+      await bothStarted;
+      return payload.slice(0);
+    },
+  });
+  const manifestWithTwoBooks = manifest({
+    books: [
+      { bookCode: 'GEN', url: '/packs/bsb/GEN.json', sha256: abcSha, bytes: 3 },
+      { bookCode: 'EXO', url: '/packs/bsb/EXO.json', sha256: abcSha, bytes: 3 },
+    ],
+  });
+
+  const results = await Promise.allSettled([
+    manager.install(manifestWithTwoBooks, 'GEN'),
+    manager.install(manifestWithTwoBooks, 'EXO'),
+  ]);
+
+  assert.equal(results.filter((result) => result.status === 'fulfilled').length, 1,
+    JSON.stringify(results.map((result) => result.status === 'rejected' ? String(result.reason) : result.status)));
+  const rejected = results.find((result): result is PromiseRejectedResult => result.status === 'rejected');
+  assert.ok(rejected?.reason instanceof ScripturePackageStorageLimitError);
+  assert.equal(stored.size, 1);
+  assert.equal([...stored.values()].reduce((sum, item) => sum + item.bytes, 0), 3);
 });
 
 test('remove and usage stay behind the package repository boundary', async () => {

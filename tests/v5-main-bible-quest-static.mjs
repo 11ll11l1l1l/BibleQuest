@@ -21,6 +21,7 @@ const reader=fs.readFileSync('src/features/reader/index.js','utf8');
 const readerService=fs.readFileSync('src/app/reader.js','utf8');
 const bible=fs.readFileSync('src/core/bible.js','utf8');
 const bootstrap=fs.readFileSync('src/app/bootstrap.js','utf8');
+const lazyReader=fs.readFileSync('src/app/reader-v6-page.js','utf8');
 const api=fs.readFileSync('src/core/api.js','utf8');
 const mission=fs.readFileSync('src/app/daily-mission.js','utf8');
 const missionUi=fs.readFileSync('src/features/daily-mission/index.js','utf8');
@@ -46,9 +47,15 @@ for(const token of[
   "'bible-quest':()=>bibleQuestPage",
   'onBibleQuestContinue:openBibleQuestNext',
   'createReaderService({bible,storage,progress,bibleQuest})',
-  'readerPage({reader,vocabulary,furigana,offlinePackages:offlineScripturePackages})',
+  'reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage})',
+  "import('./reader-v6-page.js')",
   'createMyJourneyService({progress,assignments,bibleQuest})'
 ]) assert.ok(bootstrap.includes(token),`Bootstrap missing Main Bible Quest composition: ${token}`);
+assert.ok(lazyReader.includes("import('../v6/reader/audio-provider.ts')")
+  && lazyReader.includes('return pageModule.readerPage({')
+  && lazyReader.includes('offlinePackages: packageModule.createBrowserScripturePackageController({ books: args.books })')
+  && lazyReader.includes('audio: readerAudioProvider'),
+  'Lazy Reader must preserve the offline/audio provider composition without taking Main Quest ownership.');
 
 assert.ok(reader.includes('data-reader-quest-complete'),'Reader must explicitly complete the active Main Quest chapter.');
 assert.ok(reader.includes('data-reader-quest-away'),'Free reading must be visibly separate while a Quest chapter is active.');

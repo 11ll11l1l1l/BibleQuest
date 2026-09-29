@@ -3,29 +3,42 @@ export const V6_READER_AUDIO_STORAGE_CEILING_BYTES = 10_000_000_000;
 export type AudioDelivery = 'stream' | 'downloadable' | 'external';
 export type AudioRights = 'verified' | 'review-required' | 'forbidden';
 
+export interface ScriptureAudioSourcePermissions {
+  readonly stream?: 'allowed' | 'review-required' | 'forbidden';
+  readonly offlineCopy?: 'allowed' | 'review-required' | 'forbidden';
+}
+
 export interface ScriptureAudioSourceMetadata {
   readonly translationId: string;
   readonly source: string;
   readonly sourceUrl?: string;
+  /** Immutable V6 Scripture-manifest version whose text the timing rows describe. */
+  readonly scriptureContentVersion?: string;
   readonly license: string;
   readonly rights: AudioRights;
   readonly delivery: AudioDelivery;
   readonly textAlignment: 'exact' | 'unverified' | 'mismatch';
   readonly attribution?: string;
+  readonly permissions?: ScriptureAudioSourcePermissions;
+  readonly rightsEvidence?: string;
+  readonly reviewedBy?: string;
+  readonly reviewedAt?: string;
 }
 
 export interface ScriptureAudioSegment {
   readonly id: string;
   readonly book: string;
   readonly chapter: number;
-  readonly byteLength: number;
-  readonly sha256: string;
+  readonly byteLength?: number;
+  readonly sha256?: string;
   readonly url: string;
 }
 
 export interface ScriptureAudioManifest {
   readonly schemaVersion: 1;
   readonly translationId: string;
+  readonly contentVersion?: string;
+  readonly alignmentSource?: string;
   readonly source: ScriptureAudioSourceMetadata;
   readonly segments: readonly ScriptureAudioSegment[];
 }
@@ -34,6 +47,11 @@ export interface AudioOfflineDecision {
   readonly eligible: boolean;
   readonly reason: 'eligible' | 'rights-unverified' | 'redistribution-forbidden' | 'text-alignment-unverified' | 'text-mismatch' | 'storage-ceiling-exceeded' | 'invalid-manifest';
   readonly totalBytes: number;
+}
+
+export interface AudioStreamingDecision {
+  readonly eligible: boolean;
+  readonly reason: 'eligible' | 'streaming-unverified' | 'streaming-forbidden' | 'invalid-manifest';
 }
 
 const SHA256_HEX = /^[a-f0-9]{64}$/i;
@@ -76,10 +94,57 @@ function validSourceMetadata(source: ScriptureAudioSourceMetadata | null | undef
     return false;
   }
 
+  if (source.permissions !== undefined && (!source.permissions || typeof source.permissions !== 'object'
+    || (source.permissions.stream !== undefined && !['allowed', 'review-required', 'forbidden'].includes(source.permissions.stream))
+    || (source.permissions.offlineCopy !== undefined && !['allowed', 'review-required', 'forbidden'].includes(source.permissions.offlineCopy)))) {
+    return false;
+  }
+
+  const reviewedAt = String(source.reviewedAt ?? '');
+  if (source.rights === 'verified' && (!nonBlank(source.rightsEvidence) || !nonBlank(source.reviewedBy)
+    || !nonBlank(source.scriptureContentVersion)
+    || !nonBlank(reviewedAt) || !Number.isFinite(Date.parse(reviewedAt)))) {
+    return false;
+  }
+
   return true;
 }
 
-function validSegments(segments: readonly ScriptureAudioSegment[] | null | undefined): boolean {
+/** Direct streaming and offline copying use separate permission gates. */
+export function audioStreamingEligibility(
+  manifest: ScriptureAudioManifest | null | undefined,
+): AudioStreamingDecision {
+  if (!manifest || typeof manifest !== 'object' || manifest.schemaVersion !== 1
+    || normalizedTranslationId(manifest.translationId) === null
+    || !validSourceMetadata(manifest.source)
+    || manifest.translationId !== manifest.source.translationId
+    || !Array.isArray(manifest.segments) || manifest.segments.length < 1) {
+    return { eligible: false, reason: 'invalid-manifest' };
+  }
+  const ids = new Set<string>();
+  const chapters = new Set<string>();
+  for (const segment of manifest.segments) {
+    if (!segment || typeof segment !== 'object' || !nonBlank(segment.id) || !nonBlank(segment.book)
+      || !Number.isSafeInteger(segment.chapter) || segment.chapter < 1 || !validHttpsUrl(segment.url)) {
+      return { eligible: false, reason: 'invalid-manifest' };
+    }
+    const id = segment.id.trim(), key = `${segment.book.toUpperCase()}:${segment.chapter}`;
+    if (ids.has(id) || chapters.has(key)) return { eligible: false, reason: 'invalid-manifest' };
+    ids.add(id); chapters.add(key);
+    if (segment.sha256 !== undefined && !SHA256_HEX.test(segment.sha256)) return { eligible: false, reason: 'invalid-manifest' };
+    if (segment.byteLength !== undefined && (!Number.isSafeInteger(segment.byteLength) || segment.byteLength <= 0)) {
+      return { eligible: false, reason: 'invalid-manifest' };
+    }
+  }
+  const permission = manifest.source.permissions?.stream;
+  if (permission === 'forbidden') return { eligible: false, reason: 'streaming-forbidden' };
+  if (permission !== 'allowed' || manifest.source.rights === 'forbidden') {
+    return { eligible: false, reason: 'streaming-unverified' };
+  }
+  return { eligible: true, reason: 'eligible' };
+}
+
+function validSegments(segments: readonly ScriptureAudioSegment[] | null | undefined): segments is readonly (ScriptureAudioSegment & Readonly<{ byteLength: number; sha256: string }>)[] {
   if (!Array.isArray(segments) || segments.length < 1) return false;
 
   const ids = new Set<string>();
@@ -135,9 +200,10 @@ export function audioOfflineEligibility(
     return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
   }
 
-  const totalBytes = manifest.segments.reduce((sum, segment) => sum + segment.byteLength, 0);
+  const totalBytes = manifest.segments.reduce((sum, segment) => sum + segment.byteLength!, 0);
   if (!Number.isSafeInteger(totalBytes)) return { eligible: false, reason: 'invalid-manifest', totalBytes: 0 };
   if (manifest.source.rights === 'forbidden') return { eligible: false, reason: 'redistribution-forbidden', totalBytes };
+  if (manifest.source.permissions?.offlineCopy !== 'allowed') return { eligible: false, reason: 'rights-unverified', totalBytes };
   if (manifest.source.rights !== 'verified' || manifest.source.delivery !== 'downloadable') return { eligible: false, reason: 'rights-unverified', totalBytes };
   if (manifest.source.textAlignment === 'mismatch') return { eligible: false, reason: 'text-mismatch', totalBytes };
   if (manifest.source.textAlignment !== 'exact') return { eligible: false, reason: 'text-alignment-unverified', totalBytes };
@@ -148,9 +214,12 @@ export function audioOfflineEligibility(
 /** A BSB audio candidate stays non-packageable until both rights and exact text alignment are evidenced. */
 export const BSB_AUDIO_CANDIDATE_POLICY: ScriptureAudioSourceMetadata = Object.freeze({
   translationId: 'bsb',
-  source: 'Unverified BSB-compatible audio candidate',
-  license: 'No redistribution permission recorded in V6 repository evidence yet',
+  source: 'Barry Hays BSB chapter audio candidate (OpenBible)',
+  sourceUrl: 'https://openbible.com/audio/hays/',
+  license: 'CC0 1.0 claimed by the BSB Audio Bible project; exact staged files still require review',
   rights: 'review-required',
-  delivery: 'stream',
+  delivery: 'downloadable',
   textAlignment: 'unverified',
+  attribution: 'Barry Hays narration; source evidence and limitations recorded in docs/v6/BSB_AUDIO_SOURCE_REVIEW.md',
+  permissions: Object.freeze({ stream: 'allowed', offlineCopy: 'review-required' }),
 });

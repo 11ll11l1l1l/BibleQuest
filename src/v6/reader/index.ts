@@ -1,5 +1,11 @@
 export * from './browser-packages.ts';
 export * from './audio-policy.ts';
+export * from './audio-packages.ts';
+export * from './audio-package-storage.ts';
+export * from './audio-player.ts';
+export * from './audio-alignment.ts';
+export * from './audio-provider.ts';
+export * from './openbible-hays-catalog.ts';
 export * from './content-manifest.ts';
 export * from './context-helpers.ts';
 export * from './contracts.ts';
@@ -17,6 +23,7 @@ export * from './presentation.ts';
 export * from './scripture-repository.ts';
 export * from './search.ts';
 export * from './search-presentation.ts';
+export * from './speech-synthesis.ts';
 export * from './verse-peek-presentation.ts';
 
 export * from './live-progress.ts';

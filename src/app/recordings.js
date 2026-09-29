@@ -95,5 +95,12 @@ export function createRecordingsService({media,audio,session,congregation}){
     return updated;
   }
 
-  return Object.freeze({getState,load,select,play,pause,stop,seek,leave,dispose,addVideo,setFeatured,archive,getLatestService:()=>getState().latestService,getAudioState:audio.getState,getPlayerCount:audio.getPlayerCount});
+  function getResumePosition(recordingId){
+    const row=state.rows.find(item=>item.id===String(recordingId||''));
+    if(!row||typeof audio.getSavedPosition!=='function')return 0;
+    const seconds=Number(audio.getSavedPosition(row.youtubeId));
+    return Number.isFinite(seconds)&&seconds>0&&seconds<=604800?seconds:0;
+  }
+
+  return Object.freeze({getState,load,select,play,pause,stop,seek,leave,dispose,addVideo,setFeatured,archive,getLatestService:()=>getState().latestService,getAudioState:audio.getState,getPlayerCount:audio.getPlayerCount,getResumePosition});
 }

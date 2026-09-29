@@ -1,3 +1,10 @@
+import {
+  SCRIPTURE_PACKAGE_METADATA_CACHE_NAME,
+  SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME,
+  scripturePackageIdentityForPath,
+  scripturePackageMetadataUrl,
+} from '../v6/reader/package-storage.ts';
+
 const BOOK_ROWS = [
   ['Genesis','GEN',50],['Exodus','EXO',40],['Leviticus','LEV',27],['Numbers','NUM',36],['Deuteronomy','DEU',34],
   ['Joshua','JOS',24],['Judges','JDG',21],['Ruth','RUT',4],['1 Samuel','1SA',31],['2 Samuel','2SA',24],['1 Kings','1KI',22],['2 Kings','2KI',25],['1 Chronicles','1CH',29],['2 Chronicles','2CH',36],['Ezra','EZR',10],['Nehemiah','NEH',13],['Esther','EST',10],
@@ -37,9 +44,9 @@ const verseLabel = verse => verseEnd(verse) > Number(verse?.verse) ? `${verse.ve
 const referenceText = (book, chapter, verse = null) => `${book.name} ${chapter}${verse ? `:${verse}` : ''}`;
 const verseReferenceText = (book, chapter, verse) => `${book.name} ${chapter}:${verseLabel(verse)}`;
 const plainString = value => typeof value === 'string' ? value.trim() : '';
-const OFFLINE_PACK_CACHE = 'biblequest-v3-opened-bible-packs-v1';
+const OFFLINE_PACK_CACHE = SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME;
 
-function createOpenedPackStore({ cacheStorage = globalThis.caches, ResponseCtor = globalThis.Response, locationRef = globalThis.location } = {}) {
+export function createOpenedPackStore({ cacheStorage = globalThis.caches, ResponseCtor = globalThis.Response, locationRef = globalThis.location } = {}) {
   const supported = Boolean(cacheStorage?.open && typeof ResponseCtor === 'function');
   const keyFor = path => {
     try { return new URL(path, locationRef?.href || 'http://localhost/').href; }
@@ -56,6 +63,17 @@ function createOpenedPackStore({ cacheStorage = globalThis.caches, ResponseCtor 
     },
     async write(path, payload) {
       if (!supported) return false;
+      const managedPackage = scripturePackageIdentityForPath(path);
+      if (managedPackage) {
+        const metadataCache = await cacheStorage.open(SCRIPTURE_PACKAGE_METADATA_CACHE_NAME);
+        const installed = await metadataCache.match(
+          scripturePackageMetadataUrl(managedPackage.translationId, managedPackage.bookCode, locationRef?.href || 'http://localhost/'),
+        );
+        // The managed package repository owns these exact payload bytes. The
+        // legacy chapter cache may read them, but must not reserialize them:
+        // package integrity is bound to the original manifest checksum.
+        if (installed) return true;
+      }
       const cache = await cacheStorage.open(OFFLINE_PACK_CACHE), key = keyFor(path);
       await cache.put(key, new ResponseCtor(JSON.stringify(payload), { headers: { 'content-type': 'application/json; charset=utf-8' } }));
       return true;

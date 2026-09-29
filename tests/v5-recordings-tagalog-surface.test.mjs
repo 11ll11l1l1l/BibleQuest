@@ -30,7 +30,9 @@ test('Videos keeps recording identity and content as escaped runtime data', () =
   assert.match(source, /data-video-select="\$\{escapeHtml\(row\.id\)\}"/);
   assert.match(source, /escapeHtml\(row\.title\)/);
   assert.match(source, /escapeHtml\(row\.description\)/);
-  assert.match(source, /recordings\.select\(select\.dataset\.videoSelect, frameHost\)/);
+  assert.match(source, /recordings\.select\(recordingId, frameHost\)/);
+  assert.match(source, /data-video-resume/);
+  assert.match(source, /recordings\.getResumePosition\?\.\(row\.id\)/);
   assert.match(source, /recordings\.addVideo\(/);
   assert.doesNotMatch(source, /YouTube Data API|webhook|scheduled external|ingestion daemon/i);
 });

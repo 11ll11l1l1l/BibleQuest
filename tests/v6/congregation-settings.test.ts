@@ -1,0 +1,59 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { createCongregationMembershipService } from '../../src/app/congregation-membership.js';
+
+function fixture(role='admin'){
+  const calls=[];
+  const session={getState:()=>({authenticated:true,user:{id:'u1'}})};
+  const api={congregation:{async listMemberships(userId){return [{user_id:userId,congregation_id:'c1',role,active:true,congregation:{id:'c1',name:'First Church',timezone:'Asia/Tokyo'}}]},async updateSettings(...args){calls.push(args);return {}},async listManagedMembers(){return {members:[{userId:'u2',displayName:'Second Member',role:'member',active:true}]}},async manageMember(...args){calls.push(args);return {}}}};
+  const owner=createCongregationMembershipService({api,session});
+  return {owner,calls};
+}
+
+test('only the active congregation admin may update validated profile settings',async()=>{
+  const {owner,calls}=fixture();
+  await owner.load();
+  await owner.updateSettings({name:' New name ',timezone:'America/Los_Angeles'});
+  assert.deepEqual(calls,[['c1',{name:'New name',timezone:'America/Los_Angeles'}]]);
+  await assert.rejects(owner.updateSettings({name:'x',timezone:'UTC'}),/between 2 and 100/);
+  await assert.rejects(owner.updateSettings({name:'Valid',timezone:'Not/A_Zone'}),/valid time zone/);
+});
+
+test('congregation admin member management remains tenant-scoped and validates returned identities',async()=>{
+  const {owner,calls}=fixture();
+  await owner.load();
+  assert.deepEqual(await owner.loadManagedMembers(),[{userId:'u2',displayName:'Second Member',role:'member',active:true,joinedAt:null}]);
+  assert.deepEqual(await owner.manageMember({userId:'u2',role:'pastor',active:true}),[{userId:'u2',displayName:'Second Member',role:'member',active:true,joinedAt:null}]);
+  assert.deepEqual(calls[0],['c1','u2','pastor',true]);
+  await assert.rejects(owner.manageMember({userId:'',role:'admin',active:true}),/Choose a member/);
+  const member=fixture('member');
+  await member.owner.load();
+  await assert.rejects(member.owner.loadManagedMembers(),/admin permission/);
+});
+
+test('members cannot edit settings and server endpoint rechecks role before service writes',async()=>{
+  const {owner}=fixture('leader');
+  await owner.load();
+  await assert.rejects(owner.updateSettings({name:'Valid Name',timezone:'Asia/Tokyo'}),/admin permission/);
+  const endpoint=await readFile(new URL('../../supabase/functions/bq-congregation-settings/index.ts',import.meta.url),'utf8');
+  assert.match(endpoint,/activeMembership\(admin,congregationId,user\.id\)/);
+  assert.match(endpoint,/member\.role!=='admin'/);
+  assert.match(endpoint,/update\(\{name,timezone\}\)/);
+});
+
+test('member admin writes run transactionally with audit and owner/last-admin guards',async()=>{
+  const migration=await readFile(new URL('../../supabase/migrations/20260928150000_congregation_member_management.sql',import.meta.url),'utf8');
+  const edge=await readFile(new URL('../../supabase/functions/bq-congregation-members/index.ts',import.meta.url),'utf8');
+  const page=await readFile(new URL('../../src/features/congregation/index.js',import.meta.url),'utf8');
+  const platformAdmin=await readFile(new URL('../../supabase/functions/bq-admin/index.ts',import.meta.url),'utf8');
+  assert.match(migration,/for update/);
+  assert.match(migration,/at least one active admin/);
+  assert.match(migration,/Transfer congregation ownership/);
+  assert.match(migration,/bible_congregation_membership_audit/);
+  assert.match(migration,/to service_role/);
+  assert.match(edge,/actor\.role!=='admin'/);
+  assert.match(edge,/admin\.rpc\('bible_manage_congregation_member_v6'/);
+  assert.match(platformAdmin,/rpc\('bible_manage_congregation_member_v6'/);
+  assert.match(page,/data-congregation-member-form/);
+});

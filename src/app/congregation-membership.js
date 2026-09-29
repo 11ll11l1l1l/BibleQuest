@@ -77,6 +77,48 @@ export function createCongregationMembershipService({api,session}){
     return load();
   }
 
+  async function updateSettings({name,timezone}={}){
+    const user=requireUser(),userId=String(user.id),active=getActive();
+    if(!active||!ownsLoadedContext()){const error=new Error('Load your congregation memberships before editing settings.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    if(active.role!=='admin'){const error=new Error('Congregation admin permission is required to edit these settings.');error.code='BQ_CONGREGATION_PERMISSION_DENIED';throw error}
+    const nextName=String(name??'').trim(),nextTimezone=String(timezone??'').trim();
+    if(nextName.length<2||nextName.length>100){const error=new Error('Congregation name must be between 2 and 100 characters.');error.code='BQ_CONGREGATION_SETTINGS_NAME_INVALID';throw error}
+    try{new Intl.DateTimeFormat('en-US',{timeZone:nextTimezone}).format(new Date(0))}catch{const error=new Error('Choose a valid time zone.');error.code='BQ_CONGREGATION_SETTINGS_TIMEZONE_INVALID';throw error}
+    await api.congregation.updateSettings(active.congregationId,{name:nextName,timezone:nextTimezone});
+    const currentUser=currentUserId(),current=getActive();
+    if(currentUser!==userId||current?.congregationId!==active.congregationId){const error=new Error('Account or active congregation changed while saving. Reload settings before continuing.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    return load();
+  }
+
+  function adminScope(){
+    const user=requireUser(),active=getActive();
+    if(!active||!ownsLoadedContext()){const error=new Error('Load your congregation memberships before managing members.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    if(active.role!=='admin'){const error=new Error('Congregation admin permission is required to manage members.');error.code='BQ_CONGREGATION_PERMISSION_DENIED';throw error}
+    return {userId:String(user.id),congregationId:active.congregationId};
+  }
+
+  async function loadManagedMembers(){
+    const scope=adminScope(),result=await api.congregation.listManagedMembers(scope.congregationId);
+    const current=adminScope();
+    if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while members were loading.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    const seen=new Set(),members=(Array.isArray(result?.members)?result.members:[]).map(row=>{
+      const userId=String(row?.userId||''),role=String(row?.role||'').trim().toLowerCase();
+      if(!userId||seen.has(userId)||!ROLES.includes(role)){const error=new Error('Congregation member list returned invalid or duplicate identities.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
+      seen.add(userId);
+      return Object.freeze({userId,displayName:String(row?.displayName||'Member').trim()||'Member',role,active:row?.active!==false,joinedAt:row?.joinedAt||null});
+    });
+    return Object.freeze(members);
+  }
+
+  async function manageMember({userId,role,active}={}){
+    const scope=adminScope(),targetUserId=String(userId||'').trim(),nextRole=String(role||'').trim().toLowerCase();
+    if(!targetUserId||!ROLES.includes(nextRole)||typeof active!=='boolean'){const error=new Error('Choose a member, valid congregation role, and active state.');error.code='BQ_CONGREGATION_MEMBER_INPUT';throw error}
+    await api.congregation.manageMember(scope.congregationId,targetUserId,nextRole,active);
+    const current=adminScope();
+    if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while saving member access.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    return loadManagedMembers();
+  }
+
   function setActive(congregationId){
     const user=requireUser();
     const userId=String(user.id);
@@ -105,5 +147,5 @@ export function createCongregationMembershipService({api,session}){
 
   function clear(){loadRequest++;memberships=[];activeCongregationId='';loadedUserId=''}
 
-  return Object.freeze({load,join,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
+  return Object.freeze({load,join,updateSettings,loadManagedMembers,manageMember,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
 }

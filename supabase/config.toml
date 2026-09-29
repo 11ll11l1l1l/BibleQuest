@@ -7,3 +7,14 @@ sql_paths = ["./seed.sql"]
 [auth]
 enabled = true
 site_url = "http://127.0.0.1:4173"
+
+# The reminder endpoint authenticates the caller against the service-role key
+# itself because scheduled requests are not user JWTs. Browser clients cannot
+# invoke it without that server-only key.
+[functions.bq-assignment-reminders]
+verify_jwt = false
+
+# These user-facing functions validate the caller's Supabase session themselves
+# through auth.getUser before using narrowly-scoped service-role operations.
+[functions.bq-congregation-settings]
+verify_jwt = false

@@ -7,6 +7,7 @@ const bootstrapPath = fileURLToPath(new URL('../../src/app/bootstrap.js', import
 
 test('V6 route pages are discovered lazily instead of statically bundled into bootstrap', async () => {
   const source = await readFile(bootstrapPath, 'utf8');
+  const readerBoot = await readFile(new URL('../../src/app/reader-v6-page.js', import.meta.url), 'utf8');
 
   assert.equal(source.includes('import.meta.glob(['), true);
   assert.equal(source.includes("'../features/*/index.js'"), true);
@@ -31,7 +32,11 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);",
     "const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);",
     "const challengesPage = args => lazyFeaturePage('challenges', 'challengesPage', args);",
+    "const ministryAnnouncementsPage = args => lazyFeaturePage('ministry-announcements', 'ministryAnnouncementsPage', args);",
   ]) assert.ok(lazyProxyLines.includes(route), `V5.1 parity route must remain lazy: ${route}`);
+  assert.match(source, /const readerPage = args => createLazyPage\(\{[\s\S]*?import\('\.\/reader-v6-page\.js'\)/);
+  assert.match(readerBoot, /import\('\.\.\/v6\/reader\/browser-packages\.ts'\)/);
+  assert.match(readerBoot, /import\('\.\.\/v6\/reader\/audio-provider\.ts'\)/);
   assert.equal(source.includes("import { createWisdomSituationsService } from './wisdom-situations.js';"), false);
   assert.equal(source.includes("import('./wisdom-situations.js')"), true);
   assert.equal(source.includes("featurePageModules['../features/wisdom-situations/index.js']"), true);

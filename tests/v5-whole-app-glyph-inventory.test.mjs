@@ -16,6 +16,18 @@ const pictograph = /\p{Extended_Pictographic}/gu;
 // incorrect. Focused contracts are rerun beside this collector so entries
 // cannot silently drift into unreviewed debt forgiveness.
 const documented = new Map([
+  ['src/features/games/views/challenges.js|📖', 'decorative Scripture marker beside an explicit Bible reference in Detective feedback'],
+  ['src/features/games/views/launcher-memory.js|⭐', 'reward unit is independently labelled stars earned or Total stars'],
+  ['src/features/games/views/launcher-memory.js|🪙', 'reward unit is independently labelled coins earned or Total coins'],
+  ['src/features/games/views/recall.js|📖', 'decorative Scripture marker beside an explicit reference in recall feedback'],
+  ['src/features/games/views/same-room.js|📖', 'decorative Scripture marker beside an explicit reference in same-room feedback'],
+  ['src/features/games/views/solo.js|📖', 'decorative Scripture marker beside an explicit reference in solo feedback'],
+  ['src/features/study/index.js|📘', 'external resource icon is aria-hidden and Tyndale Open Study Notes has a visible title'],
+  ['src/features/study/index.js|📚', 'external resource icon is aria-hidden and Tyndale Open Bible Dictionary has a visible title'],
+  ['src/features/study/index.js|🔎', 'external resource icon is aria-hidden and STEPBible has a visible title'],
+  ['src/features/study/index.js|📜', 'external resource icon is aria-hidden and Matthew Henry commentary has a visible title'],
+  ['src/features/study/index.js|🧭', 'external resource icon is aria-hidden and Nave topical reference has a visible title'],
+  ['src/features/study/index.js|↗', 'external link arrow follows the explicit Open resource label and new-tab accessible name'],
   ['src/features/games/index.js|🦊', 'Memory Meadow HUD/result legacy token is decorative; exact Memory artwork is the normal visual presentation'],
   ['src/features/games/index.js|🕵', 'Bible Detective legacy token is aria-hidden/font-hidden under the exact Character Detective asset'],
   ['src/features/games/index.js|📘', 'Recall Library legacy token is aria-hidden/font-hidden under the exact Recall Deck asset'],

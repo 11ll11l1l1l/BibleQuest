@@ -21,6 +21,18 @@ export type ReaderChapterPresentation = Readonly<{
   verses: readonly ReaderVersePresentation[];
 }>;
 
+export type ReaderChapterHtmlOptions = Readonly<{
+  translationLabel: string;
+  highlightedVerse?: number | null;
+  isRead: boolean;
+}>;
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[character]!);
+}
+
 function positiveInteger(value: number): boolean {
   return Number.isInteger(value) && value > 0;
 }
@@ -88,4 +100,28 @@ export function presentReaderChapter(input: ReaderPresentationChapterInput): Rea
     heading: readerChapterHeading(input.book, input.chapter),
     verses: Object.freeze(verses),
   });
+}
+
+/**
+ * Pure HTML presentation for the validated chapter/verse model. Scripture and labels
+ * are escaped here so the route only composes the chapter with its other Reader panels.
+ */
+export function renderReaderChapterPresentation(
+  chapter: ReaderChapterPresentation,
+  options: ReaderChapterHtmlOptions,
+): string {
+  if (!chapter || !Array.isArray(chapter.verses) || chapter.verses.length === 0) {
+    throw new Error('Reader chapter HTML requires a presented chapter.');
+  }
+  const translationLabel = requiredText(options.translationLabel, 'a translation label');
+  if (typeof options.isRead !== 'boolean') throw new Error('Reader chapter HTML requires read status.');
+  const highlightedVerse = options.highlightedVerse ?? null;
+  if (highlightedVerse !== null && !positiveInteger(highlightedVerse)) {
+    throw new Error('Reader chapter HTML requires a valid highlighted verse.');
+  }
+  const verses = chapter.verses.map((verse) => {
+    const highlighted = verse.verse === highlightedVerse ? ' is-highlighted' : '';
+    return `<button type="button" class="bq-verse${highlighted}" data-verse="${verse.verse}"><span>${escapeHtml(verse.label)}</span><p data-reader-verse-text>${escapeHtml(verse.text)}</p></button>`;
+  }).join('');
+  return `<div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(translationLabel)}</p><h2>${escapeHtml(chapter.heading)}</h2></div><button type="button" class="bq-secondary-button" data-reader-mark>${options.isRead ? 'Marked read' : 'Mark read'}</button></div><div class="bq-verse-list">${verses}</div>`;
 }

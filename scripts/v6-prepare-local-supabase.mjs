@@ -15,6 +15,8 @@ const sourceMigrations = path.join(sourceSupabase, 'migrations');
 const destinationSupabase = path.join(destination, 'supabase');
 const destinationMigrations = path.join(destinationSupabase, 'migrations');
 const destinationTests = path.join(destinationSupabase, 'tests');
+const sourceFunctions = path.join(sourceSupabase, 'functions');
+const destinationFunctions = path.join(destinationSupabase, 'functions');
 
 const V5_BASELINE_CUTOFF = '20260918235959';
 
@@ -124,6 +126,9 @@ fs.mkdirSync(destinationTests, { recursive: true });
 
 fs.copyFileSync(path.join(sourceSupabase, 'config.toml'), path.join(destinationSupabase, 'config.toml'));
 fs.copyFileSync(path.join(sourceSupabase, 'seed-v6-ci.sql'), path.join(destinationSupabase, 'seed.sql'));
+// Supabase start resolves configured Edge Function entrypoints relative to this
+// isolated project even though the database gate does not invoke the functions.
+if (fs.existsSync(sourceFunctions)) fs.cpSync(sourceFunctions, destinationFunctions, { recursive: true });
 
 const baselineName = '00000000000000_biblequest_v5_release_baseline.sql';
 const baselineParts = [

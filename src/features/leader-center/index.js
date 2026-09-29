@@ -5,7 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp
 // BibleQuest V5 Phase 1: Leader Center. Presentation/navigation only - every
 // figure shown here is read directly from leader-center.js's composition of
 // already-authorized owners. This page never queries Supabase itself.
-export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onCongregation } = {}) {
+export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onAnnouncements, onCongregation } = {}) {
   const locale = localization.getLocale();
   const tr = (key, values) => localization.t(key, { locale, values });
   return {
@@ -28,6 +28,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
         view.querySelector('[data-leader-open-calendar]')?.addEventListener('click', () => onCalendar?.(), { once: true });
         view.querySelector('[data-leader-open-groups]')?.addEventListener('click', () => onJourneyGroups?.(), { once: true });
         view.querySelector('[data-leader-open-teams]')?.addEventListener('click', () => onTeamCenter?.(), { once: true });
+        view.querySelector('[data-leader-open-announcements]')?.addEventListener('click', () => onAnnouncements?.(), { once: true });
         for (const button of view.querySelectorAll('[data-leader-review-assignment]')) {
           button.addEventListener('click', async () => {
             const message = view.querySelector('[data-leader-review-message]');
@@ -87,6 +88,11 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
               ${listHtml(rows, tr('leaderCenter.review.empty'), row => {const life=row.lifecycle;const label=tr(life?.status==='completed'?'leaderCenter.status.completed':life?.status==='scheduled'?'leaderCenter.status.scheduled':life?.status==='published'?'leaderCenter.status.published':'leaderCenter.status.unavailable');const totals=life?` · ${tr('leaderCenter.status.total',{completed:life.completedCount,total:life.recipientCount})}`:'';return `<div class="bq-list-row"><div><b>${esc(row.title || tr('leaderCenter.assignmentFallback'))}</b><small>${esc(label+totals)}</small></div><button type="button" class="bq-secondary-button" data-leader-review-assignment="${esc(row.id)}">${esc(tr('leaderCenter.review.action'))}</button></div>`})}
               <p class="bq-form-message" data-leader-review-message role="status"></p>
               <button type="button" class="bq-secondary-button" data-leader-open-assignments>${esc(tr('leaderCenter.openAssignments'))}</button>
+            </section>
+            <section class="bq-panel" data-leader-announcements>
+              <p class="bq-eyebrow">${esc(tr('leaderCenter.spaces.eyebrow'))}</p><h2>Congregation announcements</h2>
+              <p>Publish a message for members of your active congregation. The database checks your role and congregation on every publish.</p>
+              <button type="button" class="bq-primary-button" data-leader-open-announcements>Open announcements</button>
             </section>
             <section class="bq-panel" data-leader-people>
               <p class="bq-eyebrow">${esc(tr('leaderCenter.people.eyebrow'))}</p><h2>${esc(tr('leaderCenter.people.heading'))}</h2>

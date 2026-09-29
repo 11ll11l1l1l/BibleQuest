@@ -147,10 +147,27 @@ jobs:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/built-artifact-browser.mjs
 
+      - name: Authenticated Assignments deep-link hydration on built artifact
+        env:
+          BQ_BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v5-auth-deeplink-hydration-browser.mjs
+
       - name: Built artifact PWA acceptance
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/pwa-built-artifact-browser.mjs
+
+      - name: Reader parity accessibility and mobile acceptance
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/reader-route-acceptance-browser.mjs
+
+      - name: OpenBible BSB chapter playback smoke
+        continue-on-error: true
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+          BQ_VERIFY_OPENBIBLE_AUDIO: '1'
+        run: node tests/v6/reader-route-acceptance-browser.mjs
 
       - name: Preview diagnostics
         if: always()

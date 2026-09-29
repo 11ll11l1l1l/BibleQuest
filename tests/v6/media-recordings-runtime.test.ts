@@ -52,9 +52,11 @@ class FakeLifecycleTarget implements MediaVisibilityTarget, MediaLifecycleEventT
   }
 }
 
-function harness() {
+function harness(options: { storage?: Map<string, unknown>; owner?: () => string; maxInstances?: number } = {}) {
   const calls: string[] = [];
   const lifecycle = new FakeLifecycleTarget();
+  const positions = options.storage ?? new Map<string, unknown>();
+  let currentTime = 0;
 
   class Player implements YouTubePlayer {
     constructor(element: HTMLElement | string, options?: Record<string, unknown>) {
@@ -72,6 +74,7 @@ function harness() {
     pauseVideo() { calls.push('pause'); }
     stopVideo() { calls.push('stop'); }
     seekTo(seconds: number) { calls.push(`seek:${seconds}`); }
+    getCurrentTime() { return currentTime; }
     destroy() { calls.push('destroy'); }
   }
 
@@ -92,9 +95,12 @@ function harness() {
     visibilityTarget: lifecycle,
     pageTarget: lifecycle,
     playerReadyTimeoutMs: 100,
+    sessionOwner: options.owner ?? (() => 'guest'),
+    maxInstances: options.maxInstances,
+    storage: { read: (key, fallback) => positions.get(key) ?? fallback, write: (key, value) => { positions.set(key, value); return value; } },
   });
 
-  return { calls, lifecycle, runtime };
+  return { calls, lifecycle, runtime, positions, setCurrentTime: (seconds: number) => { currentTime = seconds; } };
 }
 
 test('Recordings Media runtime composes a ready YouTube player into the released audio contract', async () => {
@@ -131,6 +137,7 @@ test('Recordings Media runtime composes a ready YouTube player into the released
   assert.equal(host.children.length, 0);
   assert.equal(host.getAttribute('data-bq-media-host-owner'), null);
   assert.equal(h.calls.filter((call) => call === 'destroy').length, 1);
+  await h.runtime.dispose();
 });
 
 test('Recordings Media runtime replaces a selected source without retaining a second player', async () => {
@@ -149,6 +156,101 @@ test('Recordings Media runtime replaces a selected source without retaining a se
   await h.runtime.dispose();
   assert.equal(h.calls.filter((call) => call === 'destroy').length, 2);
   assert.equal(host.children.length, 0);
+});
+
+test('Recordings Media runtime bounds independent players and keeps only one audible', async () => {
+  const h = harness({ maxInstances: 2 });
+  const firstHost = new FakeElement();
+  const secondHost = new FakeElement();
+  const second = h.runtime.createAudioInstance('recordings-secondary', 'recordings-secondary-route');
+
+  await h.runtime.audio.mount(firstHost, { kind: 'youtube', id: 'abcDEF12345', title: 'Primary' });
+  await second.mount(secondHost, { kind: 'youtube', id: 'ZYXWV987654', title: 'Secondary' });
+  assert.throws(
+    () => h.runtime.createAudioInstance('recordings-overflow'),
+    /at most 2 audio instances/,
+  );
+  assert.equal(h.runtime.host.getTargetCount(), 2);
+  assert.equal(h.runtime.session.snapshot().instances.length, 2);
+  assert.equal(h.calls.filter((call) => call.startsWith('construct:')).length, 2);
+
+  await h.runtime.audio.play();
+  await second.play();
+  assert.equal(h.runtime.session.snapshot().activeAudibleInstanceId, 'recordings-secondary');
+  assert.equal(h.runtime.audio.getState().status, 'paused');
+  assert.equal(second.getState().status, 'playing');
+  assert.ok(h.calls.filter((call) => call === 'play').length === 2);
+
+  await second.dispose();
+  assert.equal(h.runtime.host.getTargetCount(), 1);
+  assert.equal(firstHost.children.length, 1);
+  assert.equal(secondHost.children.length, 0);
+  assert.throws(
+    () => h.runtime.createAudioInstance('recordings-secondary'),
+    /id cannot be reused/,
+  );
+  const replacement = h.runtime.createAudioInstance('recordings-replacement');
+  await replacement.dispose();
+
+  await h.runtime.dispose();
+  assert.equal(h.runtime.session.snapshot().instances.length, 0);
+  assert.equal(h.runtime.host.getTargetCount(), 0);
+  assert.equal(firstHost.children.length, 0);
+});
+
+test('additional recording instances keep resume progress scoped to their initiating account', async () => {
+  const storage = new Map<string, unknown>();
+  let activeOwner = 'account:alice';
+  const h = harness({ storage, owner: () => activeOwner, maxInstances: 2 });
+  const secondary = h.runtime.createAudioInstance('secondary');
+  await secondary.mount(new FakeElement(), { kind: 'youtube', id: 'ZYXWV987654', title: 'Secondary' });
+  activeOwner = 'account:bob';
+  h.setCurrentTime(29);
+  await secondary.pause();
+
+  assert.equal(storage.size, 1);
+  const [saved] = [...storage.values()] as Array<{ owner: string; sourceId: string; seconds: number }>;
+  assert.deepEqual(saved, { schema: 1, owner: 'account:alice', sourceId: 'ZYXWV987654', seconds: 29 });
+  await h.runtime.dispose();
+});
+
+test('Recordings Media runtime restores saved position only for the matching authenticated owner', async () => {
+  const storage = new Map<string, unknown>();
+  const first = harness({ storage, owner: () => 'account:alice' });
+  await first.runtime.audio.mount(new FakeElement(), { kind: 'youtube', id: 'abcDEF12345', title: 'Saved service' });
+  first.setCurrentTime(73);
+  await first.runtime.audio.pause();
+  assert.equal(first.positions.size, 1);
+  assert.equal(first.runtime.audio.getSavedPosition('abcDEF12345'), 73);
+  await first.runtime.dispose();
+
+  const otherAccount = harness({ storage, owner: () => 'account:bob' });
+  await otherAccount.runtime.audio.mount(new FakeElement(), { kind: 'youtube', id: 'abcDEF12345', title: 'Saved service' });
+  assert.ok(otherAccount.calls.includes('cue:abcDEF12345@0'));
+  assert.equal(otherAccount.runtime.audio.getSavedPosition('abcDEF12345'), 0);
+  await otherAccount.runtime.dispose();
+
+  const sameAccount = harness({ storage, owner: () => 'account:alice' });
+  await sameAccount.runtime.audio.mount(new FakeElement(), { kind: 'youtube', id: 'abcDEF12345', title: 'Saved service' });
+  assert.ok(sameAccount.calls.includes('cue:abcDEF12345@73'));
+  assert.equal(sameAccount.runtime.audio.getState().status, 'ready', 'restoring a position never auto-starts playback');
+  await sameAccount.runtime.dispose();
+});
+
+test('Recordings Media runtime keeps a mounted recording resume write with its original account after a session switch', async () => {
+  const storage = new Map<string, unknown>();
+  let activeOwner = 'account:alice';
+  const h = harness({ storage, owner: () => activeOwner });
+  await h.runtime.audio.mount(new FakeElement(), { kind: 'youtube', id: 'abcDEF12345', title: 'Private progress' });
+  activeOwner = 'account:bob';
+  assert.equal(h.runtime.audio.getSavedPosition('abcDEF12345'), 0, 'saved position lookup follows the current account');
+  h.setCurrentTime(48);
+  await h.runtime.audio.pause();
+  assert.equal(storage.size, 1);
+  const [saved] = [...storage.values()] as Array<{ owner: string; seconds: number }>;
+  assert.equal(saved.owner, 'account:alice');
+  assert.equal(saved.seconds, 48);
+  await h.runtime.dispose();
 });
 
 test('Recordings Media runtime background lifecycle pauses through the audio owner without silent resume', async () => {

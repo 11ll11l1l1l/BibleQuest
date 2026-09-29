@@ -37,6 +37,8 @@ export interface ScripturePackageUsage {
 
 export interface ScripturePackageRepository {
   readInstalled(translationId: string, bookCode: string): Promise<InstalledScripturePackage | null>;
+  readInstalledPayload?(translationId: string, bookCode: string): Promise<ArrayBuffer | null>;
+  listInstalled(): Promise<readonly InstalledScripturePackage[]>;
   replaceInstalled(record: InstalledScripturePackage, payload: ArrayBuffer): Promise<void>;
   removeInstalled(translationId: string, bookCode: string): Promise<void>;
   usage(): Promise<ScripturePackageUsage>;
@@ -120,6 +122,7 @@ export class ScripturePackageManager {
   readonly #transport: ScripturePackageTransport;
   readonly #now: () => string;
   readonly #active = new Map<string, AbortController>();
+  #storageTail: Promise<void> = Promise.resolve();
 
   constructor(
     repository: ScripturePackageRepository,
@@ -139,6 +142,10 @@ export class ScripturePackageManager {
     return this.#repository.usage();
   }
 
+  async listInstalled(): Promise<readonly InstalledScripturePackage[]> {
+    return Object.freeze([...(await this.#repository.listInstalled())]);
+  }
+
   async remove(translationId: string, bookCode: string): Promise<void> {
     const key = operationKey(translationId, bookCode);
     if (this.#active.has(key)) throw new Error('Cancel the active Scripture download before removing this package.');
@@ -150,6 +157,18 @@ export class ScripturePackageManager {
     if (!controller) return false;
     controller.abort();
     return true;
+  }
+
+  async #withStorageLock<T>(operation: () => Promise<T>): Promise<T> {
+    const previous = this.#storageTail;
+    let release!: () => void;
+    this.#storageTail = new Promise<void>((resolve) => { release = resolve; });
+    await previous;
+    try {
+      return await operation();
+    } finally {
+      release();
+    }
   }
 
   async install(
@@ -223,23 +242,29 @@ export class ScripturePackageManager {
       }
       if (controller.signal.aborted) throw abortError();
 
-      // Re-read usage immediately before storage so another completed package operation
-      // cannot make an earlier preflight budget decision stale.
-      assertBelowStorageCeiling(await this.#repository.usage(), current, payload.byteLength);
+      // Serialize the final budget read and replacement. Independent chapter
+      // downloads can finish together, so an unlocked read/write pair could
+      // otherwise let both consume the same remaining storage headroom.
+      return await this.#withStorageLock(async () => {
+        if (controller.signal.aborted) throw abortError();
+        const latestUsage = await this.#repository.usage();
+        if (controller.signal.aborted) throw abortError();
+        assertBelowStorageCeiling(latestUsage, current, payload.byteLength);
 
-      const record = Object.freeze({
-        key: scripturePackageKey(manifest, book),
-        translationId: manifest.translationId,
-        contentVersion: manifest.contentVersion,
-        bookCode: normalizedCode,
-        sha256: book.sha256.toLowerCase(),
-        bytes: payload.byteLength,
-        installedAt: this.#now(),
+        const record = Object.freeze({
+          key: scripturePackageKey(manifest, book),
+          translationId: manifest.translationId,
+          contentVersion: manifest.contentVersion,
+          bookCode: normalizedCode,
+          sha256: book.sha256.toLowerCase(),
+          bytes: payload.byteLength,
+          installedAt: this.#now(),
+        });
+
+        emit('storing', payload.byteLength, payload.byteLength);
+        await this.#repository.replaceInstalled(record, payload.slice(0));
+        return Object.freeze({ status: 'installed' as const, package: record });
       });
-
-      emit('storing', payload.byteLength, payload.byteLength);
-      await this.#repository.replaceInstalled(record, payload.slice(0));
-      return Object.freeze({ status: 'installed' as const, package: record });
     } finally {
       externalSignal?.removeEventListener('abort', propagateAbort);
       if (this.#active.get(key) === controller) this.#active.delete(key);
