@@ -461,9 +461,9 @@ export function createApi() {
       if(error)throw error;
       return data||[];
     },
-    async loadPrivateResponses(congregationId,assignmentId) {
+    async loadPrivateResponses(assignmentId) {
       const client=await getClient();
-      const {data,error}=await client.from('bible_assignment_progress').select(`${ASSIGNMENT_PRIVATE_RESPONSE_FIELDS},bible_assignments!inner()`).eq('assignment_id',assignmentId).eq('bible_assignments.congregation_id',congregationId).eq('status','completed');
+      const {data,error}=await client.from('bible_assignment_progress').select(ASSIGNMENT_PRIVATE_RESPONSE_FIELDS).eq('assignment_id',String(assignmentId)).eq('status','completed').order('completed_at',{ascending:true});
       if(error)throw error;
       return data||[];
     },
