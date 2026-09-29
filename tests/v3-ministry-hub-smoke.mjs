@@ -11,7 +11,8 @@ async function run(){
     window.__bqMinistryCleanup?.();
     const stamp=Date.now(),[{createMinistryHubService},{ministryHubPage}]=await Promise.all([import(`/src/app/ministry-hub.js?smoke=${stamp}`),import(`/src/features/ministry-hub/index.js?smoke=${stamp}`)]);
     const validRoles=new Set(['member','facilitator','leader','pastor','admin']),ministryRoles=new Set(['facilitator','leader','pastor','admin']);
-    const congregation={isAuthenticated:()=>true,load:async()=>[{congregationId:'c1',role:validRoles.has(role)?role:null,roleKnown:validRoles.has(role),roleLabel:validRoles.has(role)?role:'Unsupported role',congregation:{id:'c1',name:'Grace Church'}}],can:(_id,capability)=>capability==='read'?validRoles.has(role):capability==='ministry'?ministryRoles.has(role):false};
+    const memberships=[{congregationId:'c1',role:validRoles.has(role)?role:null,roleKnown:validRoles.has(role),roleLabel:validRoles.has(role)?role:'Unsupported role',congregation:{id:'c1',name:'Grace Church'}}];
+    const congregation={isAuthenticated:()=>true,load:async()=>memberships,getActive:()=>memberships[0],can:(_id,capability)=>capability==='read'?validRoles.has(role):capability==='ministry'?ministryRoles.has(role):false};
     const hub=createMinistryHubService({congregation}),host=document.querySelector('#bq-view');window.__bqMinistryRoutes=[];
     const view=ministryHubPage({hub,onNavigate:route=>window.__bqMinistryRoutes.push(route),onBack:()=>window.__bqMinistryRoutes.push('more'),onAccount:()=>window.__bqMinistryRoutes.push('account'),onCongregation:()=>window.__bqMinistryRoutes.push('congregation')});host.innerHTML=view.html;window.__bqMinistryCleanup=view.mount(host);await new Promise(resolve=>setTimeout(resolve,25));
   },role);
