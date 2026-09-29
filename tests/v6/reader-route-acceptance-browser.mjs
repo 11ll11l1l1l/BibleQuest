@@ -212,9 +212,16 @@ async function verifyReaderAudioStateRecovery() {
 async function verifyOpenBiblePlayback() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   const errors = [];
+  let expectedInjectedFailureUrl = '';
+  let expectedInjectedFailureSeen = false;
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('requestfailed', request => {
-    if (request.url().startsWith('https://openbible.com/audio/')) errors.push(`${request.url()}: ${request.failure()?.errorText}`);
+    if (!request.url().startsWith('https://openbible.com/audio/')) return;
+    if (request.url() === expectedInjectedFailureUrl && !expectedInjectedFailureSeen) {
+      expectedInjectedFailureSeen = true;
+      return;
+    }
+    errors.push(`${request.url()}: ${request.failure()?.errorText}`);
   });
   await page.addInitScript(() => {
     const NativeAudio = window.Audio;
@@ -254,6 +261,7 @@ async function verifyOpenBiblePlayback() {
     `Audio playback probe expected BSB Genesis 1, got ${selectedBook} ${selectedChapter}.`);
 
   const chapterUrl = 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3';
+  expectedInjectedFailureUrl = chapterUrl;
   let failFirstRequest = true;
   await page.route(chapterUrl, (route) => {
     if (failFirstRequest) {
@@ -271,6 +279,7 @@ async function verifyOpenBiblePlayback() {
     throw new Error(`OpenBible failure injection did not reach retry state: ${JSON.stringify(diagnostic)}`, { cause: error });
   });
   assert((await playButton.textContent())?.trim() === 'Retry audio', 'Reader does not offer a retry action after an audio load failure.');
+  assert(expectedInjectedFailureSeen, 'OpenBible retry probe did not observe the intentionally failed first chapter request.');
   await playButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'), null, { timeout: 15000 }).catch(async error => {
     const diagnostic = await page.evaluate(() => ({ status: document.querySelector('[data-reader-audio-status]')?.textContent,
