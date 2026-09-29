@@ -166,11 +166,15 @@ export function createChapterAudioPlayer(input: {
     if (!segment || disposed) return state;
     const next = resolveNextChapter(state.bookCode, state.chapter);
     if (!next) return state;
+    const pending = player.load(next.bookCode, next.chapter);
+    const generation = loadGeneration;
     try {
-      await player.load(next.bookCode, next.chapter);
+      await pending;
+      if (disposed || generation !== loadGeneration) return state;
       if (autoplay) await player.play();
       return state;
     } catch (error) {
+      if (disposed || generation !== loadGeneration) return state;
       return commit({ status: 'error', error: error instanceof Error ? error.message : 'Next chapter could not be loaded.' });
     }
   };
