@@ -16,7 +16,8 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 
 ## Integrated checkpoint — 2026-09-29
 
-- **Authoritative integrated head: `eed8ab7c3f6853f4d46f067c4ba75290165d8753` on `v6/architecture-upgrade`.** This is an integrated development checkpoint, not a release candidate and not a production promotion.
+- **Authoritative integrated head: `7895a61be03c8b39791eef5b214bad8725255cca` on `v6/architecture-upgrade`.** This is an integrated development checkpoint, not a release candidate and not a production promotion.
+- PR #827 merged at `7895a61b`: Calendar now fails closed if the active congregation is cleared while a shared-calendar request is pending; a deferred-response regression covers the stale response. Exact PR head `a19544d1` passed Phase-1 build/browser/PWA `36551313410`, Client Artifact Security `36551313539`, and inherited regression `36551313311`. The exact local-source build artifact SHA-256 was `31bf77f11a4edf5c7fd6110e0fa1d74750d4d6170e576a8b50a6bc5a02d6b18d`; the V6 count remains 635 unit tests at that PR head.
 - PR #824 merged at `eed8ab7c`: congregation provisioning now validates the requested IANA timezone and compensates the new membership/congregation if invite creation fails, preventing a partially provisioned congregation. Exact head `b04d6865` passed Phase-1 build/browser `36518587955`, disposable Database CI `36518587987`, and inherited regression `36518588025`.
 - PR #823 merged at `b9ba8e4d`: executable avatar-vault pgTAP coverage proves an authenticated member may update only their own avatar and cannot mutate another member, another congregation, role, or active-state fields. Exact head `c4280e25` passed Database CI `36518308814` and inherited regression `36518308821`.
 - PR #822 merged at `4fde2b46`: Videos creation uses the explicit active congregation and fails closed on account/congregation/ministry-role mismatch before insert; server RLS remains authoritative. Exact head `612d2698` passed Client Artifact Security `36514080673`, Phase-1 build/Chromium/PWA `36514080579`, and inherited regression `36514080593`.
@@ -26,11 +27,10 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 - The stale branch `agent-v6-c2/assignment-scheduler-contract-20260928` must not be integrated: it characterizes trusted due/reminder scheduling as absent, while the current V6 line already contains `bq-assignment-reminders`, the due-reminder migration/runbook, and pgTAP coverage. Live/deployed schedule and physical push delivery are still separate acceptance gates.
 - **Next safe work:** authenticated Member/Leader/Pastor/Admin role-browser coverage and remaining explicit-tenant repository audit; exact deployed Cloudflare artifact identity; installed-device PWA/offline/push proof; live OpenBible/browser audio behavior plus offline-copy/alignment rights gates; then CSP/security-advisor/auth-hardening and final RC certification. Do not promote device/live-service/release rows from synthetic or local evidence.
 
-## Current bounded tenant-safety candidate — 2026-09-29
+## Current bounded role-browser candidate — 2026-09-29
 
-- Branch `codex/v6-calendar-fail-closed-active-context` contains a focused Calendar tenant-race fix on top of official head `8e175ac882523c0fb2328fcc17d70d1c36cbc2e7`. Calendar no longer treats a cached/prior congregation ID as active when `getActive()` becomes empty. A new deferred-response regression test reproduces a shared-calendar fetch completing after the active tenant is cleared and proves the response is not exposed.
-- Verification on this candidate: all 635 V6 unit tests pass; the focused Calendar suite passes 5/5; typecheck, lint, formatting and V6 build pass. The build emits the existing >500 kB entry-chunk warning. Run exact-SHA artifact evidence and CI after commit/push. This candidate is not integrated and does not change the official acceptance count.
-- Next: exact-SHA artifact check, push branch, open PR, and run required V6 CI. Continue the remaining tenant audit only after this serialized change is integrated.
+- Branch `codex/v6-leader-center-role-browser-matrix` adds a built-artifact browser matrix for Member, Leader, Pastor and Admin sessions on the Leader Center route. Each synthetic session gets a distinct congregation fixture; the test checks member denial, ministry-role access and congregation-scoped assignment reads. It explicitly does not claim real Supabase authentication or RLS evidence.
+- The branch adds the role matrix to the V6 Phase-1 built-artifact workflow. Browser execution, exact-SHA build evidence and CI are pending. Keep the 154/211 checklist unchanged until the correct role and backend evidence is accepted.
 
 ## Historical local handoff archive — 2026-09-29
 

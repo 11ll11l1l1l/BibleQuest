@@ -152,6 +152,11 @@ jobs:
           BQ_BASE_URL: http://127.0.0.1:4173/
         run: node tests/v5-auth-deeplink-hydration-browser.mjs
 
+      - name: Built artifact Leader Center Member/Leader/Pastor/Admin role matrix
+        env:
+          BQ_BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v6/leader-center-role-browser.mjs
+
       - name: Built artifact PWA acceptance
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
