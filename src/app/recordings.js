@@ -71,9 +71,10 @@ export function createRecordingsService({media,audio,session,congregation}){
   async function addVideo({title,description='',youtubeUrl,congregationId,featured=false,category='other'}={}){
     const sessionState=session.getState?.();
     if(!sessionState?.authenticated||!sessionState?.user?.id)throw new Error('Sign in to add a video.');
-    let id=String(congregationId||'');
-    if(!id&&congregation){const memberships=await congregation.load();id=String(memberships?.[0]?.congregationId||'');}
-    if(!id)throw new Error('Join a congregation before adding a video.');
+    await congregation?.load();
+    const active=congregation?.getActive();
+    const id=congregationId||active?.congregationId;
+    if(!active||id!==active.congregationId||active.userId!==sessionState.user.id||!congregation.can(id,'ministry')||session.getState().user?.id!==sessionState.user.id)throw new Error('Denied.');
     const youtubeId=youtubeIdFromUrl(youtubeUrl);
     if(!YOUTUBE_ID.test(youtubeId))throw new Error('Enter a valid YouTube video, live, or shorts link.');
     if(state.rows.some(row=>row.youtubeId===youtubeId))throw new Error('This YouTube recording is already in Videos.');

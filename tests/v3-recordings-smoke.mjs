@@ -25,7 +25,7 @@ async function installHarness(page,{allowAdd=true}={}){
       async updateVideo(){throw new Error('not used in this harness')}
     };
     const session={getState:()=>({authenticated:true,user:{id:'u1'}}),isAuthenticated:()=>true};
-    const congregation={load:async()=>[{congregationId:'c1'}]};
+    const congregation={load:async()=>[{congregationId:'c1',userId:'u1'}],getActive:()=>({congregationId:'c1',userId:'u1'}),can:(id,capability)=>id==='c1'&&capability==='ministry'};
     const recordings=createRecordingsService({media,audio,session,congregation});
     const root=document.createElement('div');root.id='recordings-test-root';document.body.append(root);
     const definition=recordingsPage({recordings,onHome:()=>{},onAccount:()=>{}});root.innerHTML=definition.html;
@@ -330,7 +330,7 @@ async function v6LiveCutoverBrowser(){
       async updateVideo(){throw new Error('not used in live cutover harness')}
     };
     const session={getState:()=>({authenticated:true,user:{id:'u-v6'}}),isAuthenticated:()=>true};
-    const congregation={load:async()=>[{congregationId:'c-v6'}]};
+    const congregation={load:async()=>[{congregationId:'c-v6',userId:'u-v6'}],getActive:()=>({congregationId:'c-v6',userId:'u-v6'}),can:(id,capability)=>id==='c-v6'&&capability==='ministry'};
     const recordings=createRecordingsService({media,audio:runtime.audio,session,congregation});
     const root=document.createElement('div');
     root.id='recordings-v6-live-root';

@@ -16,7 +16,7 @@ const media={
 };
 const audio={unload(){},dispose(){},mount(){},play(){},pause(){},stop(){},seek(){},getState(){return{};},getPlayerCount(){return 0;}};
 const session={isAuthenticated(){return true;},getState(){return {authenticated:true,user:{id:'leader-1'}};}};
-const congregation={async load(){return [{congregationId:'church-1'}];}};
+const congregation={async load(){return [{congregationId:'church-1',userId:'leader-1'}];},getActive(){return {congregationId:'church-1',userId:'leader-1'};},can(id,capability){return id==='church-1'&&capability==='ministry';}};
 const service=createRecordingsService({media,audio,session,congregation});
 const state=await service.load();
 assert.equal(state.rows.length,4,'stable YouTube identity dedupes duplicate rows');
