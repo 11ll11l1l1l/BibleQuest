@@ -232,7 +232,13 @@ export function createChapterAudioPlayer(input: {
         throw error;
       }
     },
-    pause() { if (disposed) return state; audio.pause(); updatePosition(); return state; },
+    pause() {
+      if (disposed) return state;
+      loadGeneration += 1;
+      audio.pause();
+      updatePosition();
+      return state;
+    },
     seek(seconds: number) {
       if (disposed || !segment) throw new Error('Load a Bible chapter before seeking.');
       const value = Number(seconds);

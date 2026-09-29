@@ -118,7 +118,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           text.textContent = `${phase} · book ${Math.min(current, progress?.totalBooks || current)} of ${progress?.totalBooks || current} · ${progress?.currentBookCode || ''}`;
         }
       };
-      let activeAudioDownload = null, activeAudioProgress = null;
+      let activeAudioDownload = null, activeAudioProgress = null, audioPassageSync = null;
       const refreshAudioPackage = async () => {
         const container = host.querySelector('[data-reader-audio-package]');
         if (!container || !audio?.getInstalledPackage) return;
@@ -145,6 +145,30 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
       const refreshAudioPresentation = () => {
         if (!audio) return;
         const snapshot = audio.getState?.(), playback = snapshot?.playback;
+        const selected = reader.getState();
+        const shouldFollowAudio = playback?.status === 'playing'
+          && playback.autoNext === true
+          && selected.translation === playback.translationId
+          && (selected.book !== playback.bookCode || selected.chapter !== playback.chapter);
+        if (shouldFollowAudio) {
+          const key = `${playback.translationId}:${playback.bookCode}:${playback.chapter}`;
+          if (audioPassageSync !== key) {
+            audioPassageSync = key;
+            searchResults = null;
+            highlightVerse = null;
+            try {
+              reader.setBook(playback.bookCode, playback.chapter);
+              void load('Loading next audio chapter…').finally(() => {
+                if (audioPassageSync === key) audioPassageSync = null;
+              });
+            } catch (error) {
+              audio.pause();
+              audioPassageSync = null;
+              queueMicrotask(() => message(error?.message || 'Could not follow audio to the next chapter.'));
+            }
+          }
+          return;
+        }
         const toggle = host.querySelector('[data-reader-audio-toggle]');
         const status = host.querySelector('[data-reader-audio-status]');
         const speed = host.querySelector('[data-reader-audio-speed]');
@@ -161,7 +185,6 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         if (position && playback) { position.max = String(playback.duration || 0); if (!position.matches(':active')) position.value = String(playback.currentTime || 0); position.disabled = !(playback.duration && playback.duration > 0); }
         if (time && playback) time.textContent = `${formatAudioTime(playback.currentTime)} / ${playback.duration ? formatAudioTime(playback.duration) : '--:--'}`;
         if (narrator) narrator.value = audio.getNarrator?.() || '';
-        const selected = reader.getState();
         host.querySelectorAll('[data-verse]').forEach(node => {
           const active = playback?.currentVerse === Number(node.dataset.verse) && playback.bookCode === selected.book && playback.chapter === selected.chapter && selected.translation === playback.translationId;
           node.classList.toggle('is-audio-current', active);
