@@ -3,12 +3,13 @@ const ROLE_LABELS=Object.freeze({member:'Member',facilitator:'Facilitator',leade
 const MINISTRY_ROLES=new Set(['facilitator','leader','pastor','admin']);
 
 function normalizeInvite(value){return String(value||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'')}
+function invalidMemberResponse(message){const error=new Error(message);error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
 function normalizeMembership(row){
   const rawRole=String(row?.role||'').trim().toLowerCase();
   const roleKnown=ROLES.includes(rawRole);
   const congregation=row?.congregation||{};
-  const congregationId=String(row?.congregation_id||'');
-  if(!congregationId||String(congregation.id||'')!==congregationId||row?.active===false||congregation.active===false)return null;
+  const congregationId=row?.congregation_id;
+  if(!congregationId||congregation.id!==congregationId||row.active===false||congregation.active===false)return null;
   return Object.freeze({
     congregationId,
     userId:String(row?.user_id||''),
@@ -103,10 +104,10 @@ export function createCongregationMembershipService({api,session}){
     const scope=adminScope(),result=await api.congregation.listManagedMembers(scope.congregationId);
     const current=adminScope();
     if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while members were loading.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
-    if(String(result?.congregationId||'')!==scope.congregationId){const error=new Error('Member list returned a different congregation.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
+    if(result?.congregationId!==scope.congregationId)invalidMemberResponse('Invalid member list scope.');
     const seen=new Set(),members=(Array.isArray(result?.members)?result.members:[]).map(row=>{
       const userId=String(row?.userId||''),role=String(row?.role||'').trim().toLowerCase();
-      if(!userId||seen.has(userId)||!ROLES.includes(role)){const error=new Error('Congregation member list returned invalid or duplicate identities.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
+      if(!userId||seen.has(userId)||!ROLES.includes(role))invalidMemberResponse('Invalid member identity.');
       seen.add(userId);
       return Object.freeze({userId,displayName:String(row?.displayName||'Member').trim()||'Member',role,active:row?.active!==false,joinedAt:row?.joinedAt||null});
     });
@@ -120,7 +121,7 @@ export function createCongregationMembershipService({api,session}){
     const current=adminScope();
     if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while saving member access.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
     const saved=result?.membership;
-    if(String(saved?.congregationId||'')!==scope.congregationId||String(saved?.userId||'')!==targetUserId||saved?.role!==nextRole||saved?.active!==active){const error=new Error('Member update returned an invalid congregation or role. Reload before trying again.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
+    if(saved?.congregationId!==scope.congregationId||saved?.userId!==targetUserId||saved?.role!==nextRole||saved?.active!==active)invalidMemberResponse('Invalid member update scope.');
     return loadManagedMembers();
   }
 

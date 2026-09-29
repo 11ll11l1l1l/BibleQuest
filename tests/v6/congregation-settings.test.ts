@@ -84,6 +84,6 @@ test('member administration rejects cross-congregation list and mutation respons
     manageMember:async()=>({membership:{congregationId:'c2',userId:'u2',role:'pastor',active:true}})}};
   const owner=createCongregationMembershipService({api,session});
   await owner.load();
-  await assert.rejects(owner.loadManagedMembers(),/different congregation/);
-  await assert.rejects(owner.manageMember({userId:'u2',role:'pastor',active:true}),/invalid congregation or role/);
+  await assert.rejects(owner.loadManagedMembers(),/Invalid member list scope/);
+  await assert.rejects(owner.manageMember({userId:'u2',role:'pastor',active:true}),/Invalid member update scope/);
 });
