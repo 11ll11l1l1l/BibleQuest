@@ -21,15 +21,18 @@ function makeHarness(){
   };
 }
 
-test('load chooses a valid first membership as the initial active congregation',async()=>{
+test('load does not select a congregation until the user chooses one',async()=>{
   const h=makeHarness();
   await h.service.load();
+  assert.equal(h.service.getActive(),null);
+  h.service.setActive('cong-a');
   assert.equal(h.service.getActive()?.congregationId,'cong-a');
 });
 
 test('member can switch active congregation only to one of their loaded memberships',async()=>{
   const h=makeHarness();
   await h.service.load();
+  h.service.setActive('cong-a');
   assert.equal(h.service.setActive('cong-b').congregationId,'cong-b');
   assert.equal(h.service.getActive()?.role,'leader');
   assert.throws(()=>h.service.setActive('cong-other'),error=>error?.code==='BQ_CONGREGATION_NOT_MEMBER');
@@ -43,13 +46,13 @@ test('reload preserves a still-valid active congregation',async()=>{
   assert.equal(h.service.getActive()?.congregationId,'cong-b');
 });
 
-test('reload falls back safely when the selected membership is removed',async()=>{
+test('reload clears scope when the selected membership is removed',async()=>{
   const h=makeHarness();
   await h.service.load();
   h.service.setActive('cong-b');
   h.setRows([{congregation_id:'cong-a',user_id:'user-a',role:'member',congregation:{id:'cong-a',name:'Alpha'}}]);
   await h.service.load();
-  assert.equal(h.service.getActive()?.congregationId,'cong-a');
+  assert.equal(h.service.getActive(),null);
 });
 
 test('account switch cannot inherit the prior account active context',async()=>{
@@ -61,6 +64,8 @@ test('account switch cannot inherit the prior account active context',async()=>{
   assert.throws(()=>h.service.setActive('cong-b'),error=>error?.code==='BQ_CONGREGATION_CONTEXT_STALE');
   h.setRows([{congregation_id:'cong-c',user_id:'user-b',role:'member',congregation:{id:'cong-c',name:'Gamma'}}]);
   await h.service.load();
+  assert.equal(h.service.getActive(),null);
+  h.service.setActive('cong-c');
   assert.equal(h.service.getActive()?.congregationId,'cong-c');
 });
 

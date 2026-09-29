@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - v5/feature-completion
+      - v6/architecture-upgrade
     paths:
       - 'src/features/congregation/index.js'
       - 'tests/v5-active-congregation-switcher.test.mjs'

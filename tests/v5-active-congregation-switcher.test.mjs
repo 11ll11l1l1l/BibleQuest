@@ -9,13 +9,18 @@ test('congregation page consumes the integrated active-congregation owner',()=>{
   assert.match(feature,/membership\.getActive\(\)/);
   assert.match(feature,/membership\.setActive\(/);
   assert.match(feature,/membership\.list\(\)/);
-  assert.match(service,/return Object\.freeze\(\{load,join,list,get,getActive,setActive,/);
+  assert.match(service,/return Object\.freeze\(\{load,join,[^}]*list,get,getActive,setActive,/);
 });
 
 test('multiple memberships expose an explicit visible switch action',()=>{
-  assert.match(feature,/const switchable=rows\.length>1/);
+  assert.match(feature,/const switchable=rows\.length>1\|\|!activeId/);
   assert.match(feature,/data-congregation-switch=/);
   assert.match(feature,/Use \$\{escapeHtml\(row\.congregation\.name\)\}/);
+});
+
+test('a single unselected membership exposes its explicit selection action',()=>{
+  assert.match(feature,/const switchable=rows\.length>1\|\|!activeId/);
+  assert.match(feature,/data-congregation-switch=/);
 });
 
 test('current membership is visibly marked and is not rendered as a switch target',()=>{

@@ -44,6 +44,7 @@ test('sign-out clears tenant authority and invalidates an old request scope', ()
   const coordinator = createSessionTenantCoordinator(tenant);
 
   coordinator.applySession({ status: 'authenticated', identity: { userId: 'user-a' }, memberships });
+  tenant.setActive('church-a');
   const oldScope = tenant.scope();
   const before = tenant.snapshot().generation;
 
@@ -73,6 +74,7 @@ test('account switch invalidates prior-user scope before establishing the next t
   const coordinator = createSessionTenantCoordinator(tenant);
 
   coordinator.applySession({ status: 'authenticated', identity: { userId: 'user-a' }, memberships });
+  tenant.setActive('church-a');
   const oldScope = tenant.scope();
 
   const next = coordinator.applySession({
@@ -82,6 +84,7 @@ test('account switch invalidates prior-user scope before establishing the next t
   });
 
   assert.equal(next.userId, 'user-b');
-  assert.equal(next.activeCongregationId, 'church-c');
+  assert.equal(next.activeCongregationId, null);
+  assert.throws(() => tenant.scope(), /Choose an active congregation/);
   assert.throws(() => tenant.assertCurrent(oldScope), /active congregation changed/);
 });

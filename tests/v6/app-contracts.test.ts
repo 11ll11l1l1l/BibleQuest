@@ -30,6 +30,8 @@ test('route contract keeps public, authenticated and congregation access distinc
     memberships,
   });
   assert.equal(routeAllowed(accountRoute, { session: authenticated, tenant: tenant.snapshot() }), true);
+  assert.equal(routeAllowed(tenantRoute, { session: authenticated, tenant: tenant.snapshot() }), false);
+  tenant.setActive('cong-a');
   assert.equal(routeAllowed(tenantRoute, { session: authenticated, tenant: tenant.snapshot() }), true);
 
   tenant.clear();

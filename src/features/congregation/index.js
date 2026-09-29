@@ -3,7 +3,7 @@ const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;'
 function membershipRows(rows,activeMembership){
   if(!rows.length)return '<p data-congregation-empty>You are not linked to an active congregation yet. Use an invite code below to join one.</p>';
   const activeId=String(activeMembership?.congregationId||'');
-  const switchable=rows.length>1;
+  const switchable=rows.length>1||!activeId;
   return rows.map(row=>{
     const isActive=row.congregationId===activeId;
     const activeState=isActive

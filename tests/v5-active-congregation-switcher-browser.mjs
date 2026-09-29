@@ -4,8 +4,8 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch({headless:true});
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
-async function installHarness(page,{single=false}={}){
-  await page.evaluate(async(single)=>{
+async function installHarness(page,{single=false,unselected=false}={}){
+  await page.evaluate(async({single,unselected})=>{
     const {congregationPage}=await import('/src/features/congregation/index.js');
     window.__removeCongregationHarness?.();
     const rows=[
@@ -13,7 +13,7 @@ async function installHarness(page,{single=false}={}){
       {congregationId:'c2',userId:'u1',role:'leader',roleKnown:true,roleLabel:'Leader',congregation:{id:'c2',name:'ICAC Tsukuba',timezone:'Asia/Tokyo'}}
     ];
     let memberships=single?rows.slice(0,1):rows.slice();
-    let activeId='c1';
+    let activeId=unselected?'':'c1';
     const membership={
       isAuthenticated:()=>true,
       async load(){return memberships.slice()},
@@ -30,7 +30,7 @@ async function installHarness(page,{single=false}={}){
     const definition=congregationPage({membership,onAccount:()=>{},onBack:()=>{}});
     root.innerHTML=definition.html;const cleanup=definition.mount(root);
     window.__removeCongregationHarness=()=>{cleanup?.();root.remove()};
-  },single);
+  },{single,unselected});
 }
 
 async function switcherWorks(){
@@ -51,10 +51,13 @@ async function switcherWorks(){
 
 async function singleMembershipHasNoSwitcher(){
   const page=await browser.newPage({viewport:{width:1280,height:900}});
-  await page.goto(BASE,{waitUntil:'networkidle'});await installHarness(page,{single:true});
+  await page.goto(BASE,{waitUntil:'networkidle'});await installHarness(page,{single:true,unselected:true});
   const root=page.locator('#congregation-switcher-test-root');
+  await root.locator('[data-congregation-switch="c1"]').waitFor();
+  assert(await root.locator('[data-congregation-current="true"]').count()===0,'Unselected users must not appear to have an active congregation.');
+  await root.locator('[data-congregation-switch="c1"]').click();
   await root.locator('[data-congregation-current="true"]').waitFor();
-  assert(await root.locator('[data-congregation-switch]').count()===0,'Single-membership users must not see a congregation switch action.');
+  assert(await root.locator('[data-congregation-switch]').count()===0,'A single-membership user must no longer need a switch after explicitly selecting it.');
   assert(await root.locator('[data-congregation-active]').count()===1,'Single membership must still be visibly identified as active.');
   await page.evaluate(()=>window.__removeCongregationHarness());await page.close();
 }

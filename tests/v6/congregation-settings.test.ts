@@ -14,6 +14,7 @@ function fixture(role='admin'){
 test('only the active congregation admin may update validated profile settings',async()=>{
   const {owner,calls}=fixture();
   await owner.load();
+  owner.setActive('c1');
   await owner.updateSettings({name:' New name ',timezone:'America/Los_Angeles'});
   assert.deepEqual(calls,[['c1',{name:'New name',timezone:'America/Los_Angeles'}]]);
   await assert.rejects(owner.updateSettings({name:'x',timezone:'UTC'}),/between 2 and 100/);
@@ -31,18 +32,21 @@ test('congregation provisioning validates timezone and compensates a failed invi
 test('congregation admin member management remains tenant-scoped and validates returned identities',async()=>{
   const {owner,calls}=fixture();
   await owner.load();
+  owner.setActive('c1');
   assert.deepEqual(await owner.loadManagedMembers(),[{userId:'u2',displayName:'Second Member',role:'member',active:true,joinedAt:null}]);
   assert.deepEqual(await owner.manageMember({userId:'u2',role:'pastor',active:true}),[{userId:'u2',displayName:'Second Member',role:'member',active:true,joinedAt:null}]);
   assert.deepEqual(calls[0],['c1','u2','pastor',true]);
   await assert.rejects(owner.manageMember({userId:'',role:'admin',active:true}),/Choose a member/);
   const member=fixture('member');
   await member.owner.load();
+  member.owner.setActive('c1');
   await assert.rejects(member.owner.loadManagedMembers(),/admin permission/);
 });
 
 test('members cannot edit settings and server endpoint rechecks role before service writes',async()=>{
   const {owner}=fixture('leader');
   await owner.load();
+  owner.setActive('c1');
   await assert.rejects(owner.updateSettings({name:'Valid Name',timezone:'Asia/Tokyo'}),/admin permission/);
   const endpoint=await readFile(new URL('../../supabase/functions/bq-congregation-settings/index.ts',import.meta.url),'utf8');
   assert.match(endpoint,/activeMembership\(admin,congregationId,user\.id\)/);
@@ -77,11 +81,24 @@ test('membership response never selects an inactive or mismatched congregation a
   const owner=createCongregationMembershipService({api:{congregation:{listMemberships:async()=>rows}},session});
   const memberships=await owner.load();
   assert.deepEqual(memberships.map(row=>row.congregationId),['c4']);
+  assert.equal(owner.getActive(),null);
+  owner.setActive('c4');
   assert.equal(owner.getActive()?.congregationId,'c4');
   for(const id of ['c1','c2','c3']){
     assert.equal(owner.can(id,'read'),false);
     assert.throws(()=>owner.setActive(id),/not a member/);
   }
+});
+
+test('tenant administration stays idle until the user explicitly selects a congregation',async()=>{
+  const {owner,calls}=fixture();
+  await owner.load();
+  await assert.rejects(owner.updateSettings({name:'Updated Church',timezone:'Asia/Tokyo'}),/Choose an active congregation/);
+  await assert.rejects(owner.loadManagedMembers(),/Choose an active congregation/);
+  assert.deepEqual(calls,[]);
+  owner.setActive('c1');
+  await owner.updateSettings({name:'Updated Church',timezone:'Asia/Tokyo'});
+  assert.deepEqual(calls,[['c1',{name:'Updated Church',timezone:'Asia/Tokyo'}]]);
 });
 
 test('member administration rejects cross-congregation list and mutation responses',async()=>{
@@ -92,6 +109,7 @@ test('member administration rejects cross-congregation list and mutation respons
     manageMember:async()=>({membership:{congregationId:'c2',userId:'u2',role:'pastor',active:true}})}};
   const owner=createCongregationMembershipService({api,session});
   await owner.load();
+  owner.setActive('c1');
   await assert.rejects(owner.loadManagedMembers(),/Invalid member list scope/);
   await assert.rejects(owner.manageMember({userId:'u2',role:'pastor',active:true}),/Invalid member update scope/);
 });
