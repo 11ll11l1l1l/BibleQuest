@@ -78,11 +78,13 @@ test('active congregation takes precedence over stale Assignments service state'
   assert.equal(state.congregationId,'cong-b');
 });
 
-test('non-member active values cannot escape membership-scoped fallback',async()=>{
+test('non-member active values fail closed instead of selecting another membership',async()=>{
   const h=harness();
   await h.service.load();
+  const loadCount=h.loads.length;
   h.congregation.setActive('not-a-membership');
   const state=await h.service.load();
-  assert.equal(state.congregationId,'cong-a');
-  assert.deepEqual(h.loads.at(-1),['cong-a','user-1']);
+  assert.equal(state.status,'no-congregation');
+  assert.equal(state.congregationId,'');
+  assert.equal(h.loads.length,loadCount,'Invalid active tenant must not trigger a fallback repository read.');
 });
