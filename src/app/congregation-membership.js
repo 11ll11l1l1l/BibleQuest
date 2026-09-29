@@ -7,8 +7,10 @@ function normalizeMembership(row){
   const rawRole=String(row?.role||'').trim().toLowerCase();
   const roleKnown=ROLES.includes(rawRole);
   const congregation=row?.congregation||{};
+  const congregationId=String(row?.congregation_id||'');
+  if(!congregationId||String(congregation.id||'')!==congregationId||row?.active===false||congregation.active===false)return null;
   return Object.freeze({
-    congregationId:String(row?.congregation_id||congregation.id||''),
+    congregationId,
     userId:String(row?.user_id||''),
     role:roleKnown?rawRole:null,
     roleKnown,
@@ -63,7 +65,7 @@ export function createCongregationMembershipService({api,session}){
     try{rows=await api.congregation.listMemberships(user.id)}
     catch(error){if(request!==loadRequest||currentUserId()!==userId)return list();throw error}
     if(request!==loadRequest||currentUserId()!==userId)return list();
-    memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row.congregationId&&row.userId===userId);
+    memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row&&row.userId===userId);
     loadedUserId=userId;
     if(!get(activeCongregationId))activeCongregationId=memberships[0]?.congregationId||'';
     return list();
@@ -101,6 +103,7 @@ export function createCongregationMembershipService({api,session}){
     const scope=adminScope(),result=await api.congregation.listManagedMembers(scope.congregationId);
     const current=adminScope();
     if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while members were loading.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    if(String(result?.congregationId||'')!==scope.congregationId){const error=new Error('Member list returned a different congregation.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
     const seen=new Set(),members=(Array.isArray(result?.members)?result.members:[]).map(row=>{
       const userId=String(row?.userId||''),role=String(row?.role||'').trim().toLowerCase();
       if(!userId||seen.has(userId)||!ROLES.includes(role)){const error=new Error('Congregation member list returned invalid or duplicate identities.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
@@ -113,9 +116,11 @@ export function createCongregationMembershipService({api,session}){
   async function manageMember({userId,role,active}={}){
     const scope=adminScope(),targetUserId=String(userId||'').trim(),nextRole=String(role||'').trim().toLowerCase();
     if(!targetUserId||!ROLES.includes(nextRole)||typeof active!=='boolean'){const error=new Error('Choose a member, valid congregation role, and active state.');error.code='BQ_CONGREGATION_MEMBER_INPUT';throw error}
-    await api.congregation.manageMember(scope.congregationId,targetUserId,nextRole,active);
+    const result=await api.congregation.manageMember(scope.congregationId,targetUserId,nextRole,active);
     const current=adminScope();
     if(current.userId!==scope.userId||current.congregationId!==scope.congregationId){const error=new Error('Account or active congregation changed while saving member access.');error.code='BQ_CONGREGATION_CONTEXT_STALE';throw error}
+    const saved=result?.membership;
+    if(String(saved?.congregationId||'')!==scope.congregationId||String(saved?.userId||'')!==targetUserId||saved?.role!==nextRole||saved?.active!==active){const error=new Error('Member update returned an invalid congregation or role. Reload before trying again.');error.code='BQ_CONGREGATION_MEMBER_RESPONSE';throw error}
     return loadManagedMembers();
   }
 
