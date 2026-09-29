@@ -1,7 +1,27 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(13);
+
+-- Deliberately model a malformed privileged write: an active Member A has a
+-- stale/foreign team link, and an A assignment points at Team B. Read policies
+-- must still refuse to treat that cross-tenant join as assignment membership.
+insert into public.bible_team_members (team_id,user_id)
+values ('72000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111112')
+on conflict (team_id,user_id) do nothing;
+
+insert into public.bible_assignments (
+  id,congregation_id,created_by,title,instructions,assignment_type,target_scope,target_id,points,active
+) values (
+  'a3000000-0000-4000-8000-000000000003',
+  '10000000-0000-4000-8000-000000000001',
+  '11111111-1111-4111-8111-111111111111',
+  'Mismatched team target','Tenant isolation regression','reading','team',
+  '72000000-0000-4000-8000-000000000002',5,true
+);
+
+insert into public.bible_assignment_progress (assignment_id,user_id,status,submission)
+values ('a3000000-0000-4000-8000-000000000003','11111111-1111-4111-8111-111111111112','started','foreign-team-progress');
 
 insert into public.bible_assignment_progress (
   assignment_id, user_id, status, submission
@@ -59,6 +79,11 @@ select results_eq(
   $$select submission from public.bible_assignment_progress order by submission$$,
   array['member-a-progress'::text],
   'Member A reads only its own current-congregation assignment progress'
+);
+select is(
+  (select count(*)::bigint from public.bible_assignment_progress where assignment_id='a3000000-0000-4000-8000-000000000003'::uuid),
+  0::bigint,
+  'Member A cannot read progress through a Team B target attached to a congregation A assignment'
 );
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111114';

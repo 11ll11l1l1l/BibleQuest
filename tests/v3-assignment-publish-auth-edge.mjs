@@ -10,11 +10,14 @@ class Query{
   constructor(table){this.table=table;this.filters=[];this.inserted=null}
   select(){return this}
   eq(column,value){this.filters.push([column,value]);return this}
+  in(column,values){this.filters.push([column,values]);return this}
+  limit(){return this}
   order(){return Promise.resolve({data:this.rows(),error:null})}
   maybeSingle(){const rows=this.rows();return Promise.resolve({data:rows[0]||null,error:null})}
   insert(row){this.inserted=row;scenario.inserts.push({table:this.table,row});return this}
   single(){if(this.inserted)return Promise.resolve({data:{id:'assignment-created',...this.inserted},error:null});const rows=this.rows();return Promise.resolve({data:rows[0]||null,error:null})}
-  rows(){return (scenario.tables[this.table]||[]).filter(row=>this.filters.every(([key,value])=>row[key]===value))}
+  rows(){return (scenario.tables[this.table]||[]).filter(row=>this.filters.every(([key,value])=>Array.isArray(value)?value.includes(row[key]):row[key]===value))}
+  then(resolve,reject){return Promise.resolve({data:this.rows(),error:null}).then(resolve,reject)}
 }
 
 const admin={from(table){return new Query(table)}};
@@ -48,7 +51,10 @@ function reset(role='leader'){
         {id:'group-inactive',name:'Group Inactive',congregation_id:'c1',active:false,created_at:'2026-01-02'},
         {id:'group-foreign',name:'Group Foreign',congregation_id:'c2',active:true,created_at:'2026-01-03'}
       ],
-      bible_assignments:[]
+      bible_assignments:[],
+      bible_team_members:[],
+      bible_group_members:[],
+      bible_assignment_progress:[]
     }
   };
 }
@@ -128,5 +134,22 @@ reset('leader');
 response=await post(createBody('member',null));
 assert.equal(response.status,400,'Missing non-all target must fail closed.');
 assert.equal(scenario.inserts.length,0,'Missing target must fail before insertion.');
+
+reset('leader');
+scenario.tables.bible_assignments=[
+  {id:'assignment-team-good',congregation_id:'c1',active:true,target_scope:'team',target_id:'team-good',schedule_at:null},
+  {id:'assignment-team-foreign',congregation_id:'c1',active:true,target_scope:'team',target_id:'team-foreign',schedule_at:null},
+  {id:'assignment-group-good',congregation_id:'c1',active:true,target_scope:'group',target_id:'group-good',schedule_at:null},
+  {id:'assignment-group-foreign',congregation_id:'c1',active:true,target_scope:'group',target_id:'group-foreign',schedule_at:null}
+];
+scenario.tables.bible_team_members=[{team_id:'team-good',user_id:'member-good'},{team_id:'team-foreign',user_id:'member-good'}];
+scenario.tables.bible_group_members=[{group_id:'group-good',user_id:'member-good',active:true},{group_id:'group-foreign',user_id:'member-good',active:true}];
+response=await post({action:'lifecycle',congregationId:'c1'});
+assert.equal(response.status,200,'Leader lifecycle query must return scoped assignments.');
+const lifecycle=new Map(response.body.assignments.map(item=>[item.assignmentId,item]));
+assert.equal(lifecycle.get('assignment-team-good').recipientCount,1,'Same-congregation team members count toward assignment completion.');
+assert.equal(lifecycle.get('assignment-team-foreign').recipientCount,0,'Foreign team rows do not count as recipients in this congregation.');
+assert.equal(lifecycle.get('assignment-group-good').recipientCount,1,'Same-congregation group members count toward assignment completion.');
+assert.equal(lifecycle.get('assignment-group-foreign').recipientCount,0,'Foreign group rows do not count as recipients in this congregation.');
 
 console.log('BibleQuest v3 assignment publish authorization trusted-boundary regression passed.');

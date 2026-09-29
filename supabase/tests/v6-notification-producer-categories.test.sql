@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(19);
 
 select ok(
   (select prosecdef from pg_proc where oid='public.bq_notify_assignment()'::regprocedure),
@@ -76,6 +76,28 @@ select results_eq(
       and notification_type='assignment'$$,
   $$values ('assignments'::text)$$,
   'assignment producer emits canonical assignments category'
+);
+
+-- A malformed Team B membership attached to Member A must not leak an
+-- assignment notification from congregation A through a foreign team target.
+insert into public.bible_team_members (team_id,user_id)
+values ('72000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111112')
+on conflict (team_id,user_id) do nothing;
+insert into public.bible_assignments (
+  id,congregation_id,created_by,title,instructions,assignment_type,target_scope,target_id,points,active
+) values (
+  'ee100000-0000-4000-8000-000000000010',
+  '10000000-0000-4000-8000-000000000001',
+  '11111111-1111-4111-8111-111111111111',
+  'Foreign team notification guard','Synthetic malformed target','reading','team',
+  '72000000-0000-4000-8000-000000000002',5,true
+);
+select is(
+  (select count(*)::bigint from public.bible_notifications
+   where action_payload->>'assignment_id'='ee100000-0000-4000-8000-000000000010'
+     and notification_type='assignment'),
+  0::bigint,
+  'assignment notification trigger does not use a foreign-congregation team membership'
 );
 
 insert into public.bible_assignment_progress (
