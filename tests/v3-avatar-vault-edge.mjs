@@ -62,7 +62,8 @@ let cloudCalls = 0;
 const cloudApi = { avatarVault: { load: async () => { cloudCalls++; return null; }, save: async () => { cloudCalls++; } } };
 const guestSession = { getState: () => ({ authenticated: false, user: null }) };
 const guestProgress = { getState: () => ({ xp: 0, streak: 0 }) };
-const guestVault = createAvatarVaultService({ session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress });
+const congregation = { getActive: () => ({ congregationId: 'congregation-1' }) };
+const guestVault = createAvatarVaultService({ session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress, congregation });
 const guestState = await guestVault.load();
 assert.equal(cloudCalls, 0, 'Guest owner must never call the API boundary.');
 assert.equal(guestState.scope, 'guest-device');
@@ -75,7 +76,7 @@ assert.equal(guestVault.getState().selected.id, 'starter', 'A rejected selection
 // --- app owner: unlocked selection persists locally ---
 const richProgress = { getState: () => ({ xp: 3000, streak: 40 }) };
 const richStorage = fakeStorage();
-const guestRich = createAvatarVaultService({ session: guestSession, privateStorage: richStorage, api: cloudApi, progress: richProgress });
+const guestRich = createAvatarVaultService({ session: guestSession, privateStorage: richStorage, api: cloudApi, progress: richProgress, congregation });
 await guestRich.load();
 const afterSelect = await guestRich.select('crown');
 assert.equal(afterSelect.selected.id, 'crown');
@@ -84,7 +85,7 @@ assert.equal(cloudCalls, 0, 'Guest select must still never call the API boundary
 // --- app owner: authenticated select syncs; failed sync keeps device state authoritative and reports synced:false ---
 const acctSession = { getState: () => ({ authenticated: true, user: { id: 'user-1' } }) };
 const failingApi = { avatarVault: { load: async () => null, save: async () => { throw new Error('network down'); } } };
-const acctVault = createAvatarVaultService({ session: acctSession, privateStorage: fakeStorage(), api: failingApi, progress: richProgress });
+const acctVault = createAvatarVaultService({ session: acctSession, privateStorage: fakeStorage(), api: failingApi, progress: richProgress, congregation });
 await acctVault.load();
 const failedSync = await acctVault.select('crown');
 assert.equal(failedSync.selected.id, 'crown', 'Device state stays authoritative even when cloud sync fails.');
@@ -95,9 +96,9 @@ const retryStorage=fakeStorage();
 let retryRemote='starter',retryFail=false,retryOrder=[];
 const retryApi={avatarVault:{
   async load(){retryOrder.push('load');return{selected_style:retryRemote}},
-  async save(_userId,selected){retryOrder.push(`save:${selected}`);if(retryFail)throw new Error('network down');retryRemote=selected}
+  async save(_userId,_congregationId,selected){retryOrder.push(`save:${selected}`);if(retryFail)throw new Error('network down');retryRemote=selected}
 }};
-const retryVault=createAvatarVaultService({session:acctSession,privateStorage:retryStorage,api:retryApi,progress:richProgress});
+const retryVault=createAvatarVaultService({session:acctSession,privateStorage:retryStorage,api:retryApi,progress:richProgress,congregation});
 await retryVault.load();
 retryFail=true;
 const pendingSelection=await retryVault.select('crown');
@@ -113,8 +114,8 @@ assert.equal(recoveredSelection.synced,true,'Recovered avatar selection must cle
 // --- app owner: account and guest owners are isolated ---
 const sharedStorage = fakeStorage();
 const okApi = { avatarVault: { load: async () => null, save: async () => {} } };
-const guestIso = createAvatarVaultService({ session: guestSession, privateStorage: sharedStorage, api: okApi, progress: richProgress });
-const acctIso = createAvatarVaultService({ session: acctSession, privateStorage: sharedStorage, api: okApi, progress: richProgress });
+const guestIso = createAvatarVaultService({ session: guestSession, privateStorage: sharedStorage, api: okApi, progress: richProgress, congregation });
+const acctIso = createAvatarVaultService({ session: acctSession, privateStorage: sharedStorage, api: okApi, progress: richProgress, congregation });
 await guestIso.load(); await guestIso.select('crown');
 await acctIso.load();
 assert.equal(acctIso.getState().selected.id, 'starter', 'Guest selection must not leak into a signed-in account owner sharing the same device storage.');
@@ -130,7 +131,7 @@ const fakeAssignments = { snapshot: () => ({ assignments: [
 ] }) };
 const composedVault = createAvatarVaultService({
   session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress,
-  bibleWorld: fakeBibleWorld, couplesFamily: fakeCouplesFamily, games: fakeGames, assignments: fakeAssignments
+  bibleWorld: fakeBibleWorld, couplesFamily: fakeCouplesFamily, games: fakeGames, assignments: fakeAssignments, congregation
 });
 const composedState = await composedVault.load();
 const scroll = composedState.styles.find(s => s.id === 'scroll');
@@ -143,7 +144,7 @@ const tea = composedState.styles.find(s => s.id === 'tea');
 assert.ok(!tea.unlocked, 'tea must reflect only completed assignments (2 of 3), not the total row count.');
 
 // --- app owner: missing new owners must fail closed, not crash ---
-const bareVault = createAvatarVaultService({ session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress });
+const bareVault = createAvatarVaultService({ session: guestSession, privateStorage: fakeStorage(), api: cloudApi, progress: guestProgress, congregation });
 const bareState = await bareVault.load();
 assert.ok(!bareState.styles.find(s => s.id === 'scroll').unlocked, 'Without Games injected, scroll must stay locked, not throw.');
 
