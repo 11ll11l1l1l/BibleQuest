@@ -39,3 +39,14 @@ test('avatar membership writes require and filter an explicit congregation scope
   assert.match(source, /\.eq\('user_id',userId\)\.eq\('congregation_id',congregationId\)/);
   assert.match(source, /if\(!congregationId\)throw Error\(\)/);
 });
+
+
+test('content review decision writes accept the congregation as an explicit scope', () => {
+  const source = methodSource('contentReview', 'saveDecision');
+  assert.match(source, /^async saveDecision\(congregationId,row\)/);
+});
+
+test('content review decision writes override payload tenant from the explicit scope', () => {
+  const source = methodSource('contentReview', 'saveDecision');
+  assert.match(source, /upsert\(\{\.\.\.row,congregation_id:congregationId\}/);
+});
