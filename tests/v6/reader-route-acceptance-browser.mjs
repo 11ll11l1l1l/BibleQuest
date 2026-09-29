@@ -106,12 +106,122 @@ async function verifyWidth(width) {
   await page.close();
 }
 
+async function verifyReaderAudioStateRecovery() {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await page.addInitScript(() => {
+    window.__bqFakeAudioInstances = [];
+    class FakeAudio extends EventTarget {
+      constructor() {
+        super();
+        this.src = '';
+        this.currentSrc = '';
+        this.currentTime = 0;
+        this.duration = 180;
+        this.playbackRate = 1;
+        this.paused = true;
+        this.readyState = 4;
+        this.networkState = 1;
+        window.__bqFakeAudioInstances.push(this);
+      }
+      async play() {
+        this.paused = false;
+        this.currentSrc = this.src;
+        this.dispatchEvent(new Event('play'));
+        this.dispatchEvent(new Event('timeupdate'));
+      }
+      pause() {
+        this.paused = true;
+        this.dispatchEvent(new Event('pause'));
+      }
+      load() {
+        this.currentSrc = this.src;
+      }
+      removeAttribute(name) {
+        if (name === 'src') {
+          this.src = '';
+          this.currentSrc = '';
+        }
+      }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, writable: true, value: FakeAudio });
+  });
+
+  await page.goto(`${BASE}/#/reader`, { waitUntil: 'networkidle' });
+  await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
+  const translation = page.getByLabel('Translation', { exact: true });
+  await translation.selectOption('tl');
+  assert(await page.locator('[data-reader-audio-player]').count() === 0,
+    'Human BSB audio controls leaked into a non-BSB translation.');
+  await translation.selectOption('bsb');
+  await page.getByLabel('Book', { exact: true }).selectOption('GEN');
+  await page.getByLabel('Chapter', { exact: true }).selectOption('1');
+  const playButton = page.locator('[data-reader-audio-toggle]');
+  await playButton.waitFor({ state: 'visible' });
+  await playButton.click();
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
+
+  const firstPlayback = await page.evaluate(() => {
+    const audio = window.__bqFakeAudioInstances?.find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
+    return audio ? { src: audio.src, currentTime: audio.currentTime, paused: audio.paused } : null;
+  });
+  assert(firstPlayback?.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3' && firstPlayback.paused === false,
+    `Built Reader did not bind BSB Genesis 1 to the approved Hays stream: ${JSON.stringify(firstPlayback)}.`);
+
+  const position = page.getByLabel('Audio position', { exact: true });
+  await position.waitFor();
+  await position.evaluate((range, value) => {
+    range.value = String(value);
+    range.dispatchEvent(new Event('change', { bubbles: true }));
+  }, 37);
+  await page.waitForFunction(() => {
+    const audio = window.__bqFakeAudioInstances?.find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
+    return audio && Math.abs(audio.currentTime - 37) < 0.01;
+  });
+
+  await translation.selectOption('tl');
+  assert(await page.locator('[data-reader-audio-player]').count() === 0,
+    'Reader retained human BSB audio controls after changing to Tagalog.');
+  await translation.selectOption('bsb');
+  await page.getByLabel('Book', { exact: true }).selectOption('GEN');
+  await page.getByLabel('Chapter', { exact: true }).selectOption('1');
+  await page.locator('[data-reader-audio-toggle]').waitFor({ state: 'visible' });
+
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
+  await page.getByLabel('Translation', { exact: true }).selectOption('bsb');
+  await page.getByLabel('Book', { exact: true }).selectOption('GEN');
+  await page.getByLabel('Chapter', { exact: true }).selectOption('1');
+  const restoredPlayButton = page.locator('[data-reader-audio-toggle]');
+  await restoredPlayButton.waitFor({ state: 'visible' });
+  await restoredPlayButton.click();
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
+  const restored = await page.evaluate(() => {
+    const audio = [...(window.__bqFakeAudioInstances || [])].reverse()
+      .find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
+    return audio ? { src: audio.src, currentTime: audio.currentTime, paused: audio.paused } : null;
+  });
+  assert(restored?.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3'
+    && Math.abs(restored.currentTime - 37) < 0.01 && restored.paused === false,
+  `Reader did not recover the saved BSB playback position after reload: ${JSON.stringify(restored)}.`);
+  assert(Math.abs(Number(await page.getByLabel('Audio position', { exact: true }).inputValue()) - 37) < 0.01,
+    'Recovered BSB playback position is not reflected by the visible Reader control.');
+
+  await page.close();
+}
+
 async function verifyOpenBiblePlayback() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   const errors = [];
+  let expectedInjectedFailureUrl = '';
+  let expectedInjectedFailureSeen = false;
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('requestfailed', request => {
-    if (request.url().startsWith('https://openbible.com/audio/')) errors.push(`${request.url()}: ${request.failure()?.errorText}`);
+    if (!request.url().startsWith('https://openbible.com/audio/')) return;
+    if (request.url() === expectedInjectedFailureUrl && !expectedInjectedFailureSeen) {
+      expectedInjectedFailureSeen = true;
+      return;
+    }
+    errors.push(`${request.url()}: ${request.failure()?.errorText}`);
   });
   await page.addInitScript(() => {
     const NativeAudio = window.Audio;
@@ -151,6 +261,7 @@ async function verifyOpenBiblePlayback() {
     `Audio playback probe expected BSB Genesis 1, got ${selectedBook} ${selectedChapter}.`);
 
   const chapterUrl = 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3';
+  expectedInjectedFailureUrl = chapterUrl;
   let failFirstRequest = true;
   await page.route(chapterUrl, (route) => {
     if (failFirstRequest) {
@@ -168,6 +279,7 @@ async function verifyOpenBiblePlayback() {
     throw new Error(`OpenBible failure injection did not reach retry state: ${JSON.stringify(diagnostic)}`, { cause: error });
   });
   assert((await playButton.textContent())?.trim() === 'Retry audio', 'Reader does not offer a retry action after an audio load failure.');
+  assert(expectedInjectedFailureSeen, 'OpenBible retry probe did not observe the intentionally failed first chapter request.');
   await playButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'), null, { timeout: 15000 }).catch(async error => {
     const diagnostic = await page.evaluate(() => ({ status: document.querySelector('[data-reader-audio-status]')?.textContent,
@@ -222,9 +334,12 @@ async function verifyOpenBiblePlayback() {
   assert(souerMedia?.currentSrc === 'https://openbible.com/audio/souer/BSB_01_Gen_001.mp3',
     `Bob Souer fallback did not resolve to the expected OpenBible chapter: ${JSON.stringify(souerMedia)}.`);
   await page.locator('[data-reader-chapter]').selectOption('2');
-  await page.waitForFunction(() => window.__bqAudioInstances?.some((candidate) => candidate.currentSrc.endsWith('/souer/BSB_01_Gen_002.mp3')),
-    null, { timeout: 10000 });
   assert(await narratorControl.inputValue() === 'souer', 'Reader lost the selected narrator when navigating to another chapter.');
+  await playButton.click();
+  await page.waitForFunction(() => {
+    const audio = window.__bqAudioInstances?.find((candidate) => candidate.currentSrc.endsWith('/souer/BSB_01_Gen_002.mp3'));
+    return audio && audio.currentTime > 0;
+  }, null, { timeout: 15000 });
   await page.reload({ waitUntil: 'networkidle' });
   await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
   await page.locator('[data-reader-audio-toggle]').waitFor({ state: 'visible', timeout: 15000 });
@@ -292,6 +407,7 @@ async function verifyReaderSpeechControls() {
 try {
   if (!VERIFY_OPENBIBLE_AUDIO) {
     for (const width of WIDTHS) await verifyWidth(width);
+    await verifyReaderAudioStateRecovery();
     await verifyReaderSpeechControls();
     console.log(`V6 Reader parity/accessibility/mobile acceptance passed at ${WIDTHS.join('/')} px.`);
   }
