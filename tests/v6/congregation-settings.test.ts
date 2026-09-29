@@ -20,6 +20,14 @@ test('only the active congregation admin may update validated profile settings',
   await assert.rejects(owner.updateSettings({name:'Valid',timezone:'Not/A_Zone'}),/valid time zone/);
 });
 
+test('congregation provisioning validates timezone and compensates a failed invite insert',async()=>{
+  const endpoint=await readFile(new URL('../../supabase/functions/bq-create-congregation/index.ts',import.meta.url),'utf8');
+  assert.match(endpoint,/function validTimeZone/);
+  assert.match(endpoint,/Choose a valid time zone/);
+  assert.match(endpoint,/insert\(\{owner_id:user\.id,name,timezone\}\)/);
+  assert.match(endpoint,/if\(inviteError\)\{[\s\S]*bible_congregation_members[\s\S]*\.delete\(\)[\s\S]*bible_congregations[\s\S]*\.delete\(\)/);
+});
+
 test('congregation admin member management remains tenant-scoped and validates returned identities',async()=>{
   const {owner,calls}=fixture();
   await owner.load();
