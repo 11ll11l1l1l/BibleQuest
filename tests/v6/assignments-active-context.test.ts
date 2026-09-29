@@ -133,4 +133,32 @@ describe('Assignments active-congregation context', () => {
     const opened = h.service.open('task-cong-a');
     assert.equal(opened.activeId, 'task-cong-a');
   });
+
+  it('never falls back to the first membership when there is no active congregation', async () => {
+    const memberships = [
+      { congregationId: 'cong-a', userId: 'user-1', role: 'member', roleKnown: true, roleLabel: 'Member', congregation: { id: 'cong-a', name: 'Alpha' } },
+      { congregationId: 'cong-b', userId: 'user-1', role: 'member', roleKnown: true, roleLabel: 'Member', congregation: { id: 'cong-b', name: 'Beta' } },
+    ];
+    let remoteLoads = 0;
+    const service = createAssignmentsService({
+      session: { getState: () => ({ authenticated: true, remoteAvailable: true, user: { id: 'user-1' } }) },
+      congregation: {
+        async load() { return memberships; },
+        getActive() { return null; },
+        assert() { throw new Error('must not assert an implicit tenant'); },
+      },
+      api: {
+        async load() { remoteLoads += 1; return { assignments: [], progress: [] }; },
+        async start() { throw new Error('unused'); },
+        async complete() { throw new Error('unused'); },
+        async subscribe() { return () => {}; },
+      },
+    });
+
+    const state = await service.load();
+    assert.equal(state.status, 'no-congregation');
+    assert.equal(state.congregationId, '');
+    assert.deepEqual(state.assignments, []);
+    assert.equal(remoteLoads, 0, 'Assignments must not query a first-membership tenant implicitly.');
+  });
 });
