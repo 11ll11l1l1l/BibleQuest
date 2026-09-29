@@ -413,15 +413,14 @@ export function createApi() {
       return data||null;
     },
     async save(userId,congregationId,selectedStyle) {
-      if(!congregationId)throw new Error('Avatar congregation required.');
+      if(!congregationId)throw new Error('Avatar scope required.');
       const client=await getClient();
       const avatar={cosmetic:selectedStyle};
       const updatedAt=new Date().toISOString();
       const cosmeticRes=await client.from('bible_avatar_cosmetics').upsert({user_id:userId,selected_style:selectedStyle,updated_at:updatedAt},{onConflict:'user_id'});
       if(cosmeticRes?.error)throw cosmeticRes.error;
-      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId).eq('congregation_id',congregationId).select('user_id').maybeSingle();
+      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId).eq('congregation_id',congregationId);
       if(memberRes?.error)throw memberRes.error;
-      if(!memberRes?.data)throw new Error('Avatar membership unavailable.');
       return {selected_style:selectedStyle,avatar};
     }
   });
