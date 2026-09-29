@@ -6,7 +6,7 @@ import { createCongregationMembershipService } from '../../src/app/congregation-
 function fixture(role='admin'){
   const calls=[];
   const session={getState:()=>({authenticated:true,user:{id:'u1'}})};
-  const api={congregation:{async listMemberships(userId){return [{user_id:userId,congregation_id:'c1',role,active:true,congregation:{id:'c1',name:'First Church',timezone:'Asia/Tokyo'}}]},async updateSettings(...args){calls.push(args);return {}},async listManagedMembers(){return {members:[{userId:'u2',displayName:'Second Member',role:'member',active:true}]}},async manageMember(...args){calls.push(args);return {}}}};
+  const api={congregation:{async listMemberships(userId){return [{user_id:userId,congregation_id:'c1',role,active:true,congregation:{id:'c1',name:'First Church',timezone:'Asia/Tokyo'}}]},async updateSettings(...args){calls.push(args);return {}},async listManagedMembers(){return {congregationId:'c1',members:[{userId:'u2',displayName:'Second Member',role:'member',active:true}]}},async manageMember(...args){calls.push(args);return {membership:{congregationId:args[0],userId:args[1],role:args[2],active:args[3]}}}}};
   const owner=createCongregationMembershipService({api,session});
   return {owner,calls};
 }
@@ -56,4 +56,34 @@ test('member admin writes run transactionally with audit and owner/last-admin gu
   assert.match(edge,/admin\.rpc\('bible_manage_congregation_member_v6'/);
   assert.match(platformAdmin,/rpc\('bible_manage_congregation_member_v6'/);
   assert.match(page,/data-congregation-member-form/);
+});
+
+test('membership response never selects an inactive or mismatched congregation as client context',async()=>{
+  const session={getState:()=>({authenticated:true,user:{id:'u1'}})};
+  const rows=[
+    {user_id:'u1',congregation_id:'c1',role:'admin',active:false,congregation:{id:'c1',name:'Inactive member'}},
+    {user_id:'u1',congregation_id:'c2',role:'admin',active:true,congregation:{id:'foreign',name:'Foreign congregation'}},
+    {user_id:'u1',congregation_id:'c3',role:'admin',active:true,congregation:{id:'c3',name:'Inactive congregation',active:false}},
+    {user_id:'u1',congregation_id:'c4',role:'member',active:true,congregation:{id:'c4',name:'Valid',active:true}},
+  ];
+  const owner=createCongregationMembershipService({api:{congregation:{listMemberships:async()=>rows}},session});
+  const memberships=await owner.load();
+  assert.deepEqual(memberships.map(row=>row.congregationId),['c4']);
+  assert.equal(owner.getActive()?.congregationId,'c4');
+  for(const id of ['c1','c2','c3']){
+    assert.equal(owner.can(id,'read'),false);
+    assert.throws(()=>owner.setActive(id),/not a member/);
+  }
+});
+
+test('member administration rejects cross-congregation list and mutation responses',async()=>{
+  const session={getState:()=>({authenticated:true,user:{id:'u1'}})};
+  const memberships=async()=>[{user_id:'u1',congregation_id:'c1',role:'admin',active:true,congregation:{id:'c1',name:'Valid'}}];
+  const api={congregation:{listMemberships:memberships,
+    listManagedMembers:async()=>({congregationId:'c2',members:[{userId:'foreign',role:'admin'}]}),
+    manageMember:async()=>({membership:{congregationId:'c2',userId:'u2',role:'pastor',active:true}})}};
+  const owner=createCongregationMembershipService({api,session});
+  await owner.load();
+  await assert.rejects(owner.loadManagedMembers(),/Invalid member list scope/);
+  await assert.rejects(owner.manageMember({userId:'u2',role:'pastor',active:true}),/Invalid member update scope/);
 });

@@ -21,7 +21,7 @@ Deno.serve(async(req:Request)=>{
         .order('joined_at',{ascending:true})
         .limit(3000);
       if(error)throw error;
-      return json({members:(data||[]).map(row=>({userId:row.user_id,displayName:String(row.display_name||'').trim()||'Member',role:row.role,active:row.active!==false,joinedAt:row.joined_at||null}))});
+      return json({congregationId,members:(data||[]).map(row=>({userId:row.user_id,displayName:String(row.display_name||'').trim()||'Member',role:row.role,active:row.active!==false,joinedAt:row.joined_at||null}))});
     }
 
     if(body?.action==='manage'){
