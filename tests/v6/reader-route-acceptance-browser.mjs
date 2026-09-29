@@ -161,7 +161,7 @@ async function verifyReaderAudioStateRecovery() {
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
 
   const firstPlayback = await page.evaluate(() => {
-    const audio = window.__bqFakeAudioInstances?.at(-1);
+    const audio = window.__bqFakeAudioInstances?.find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
     return audio ? { src: audio.src, currentTime: audio.currentTime, paused: audio.paused } : null;
   });
   assert(firstPlayback?.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3' && firstPlayback.paused === false,
@@ -174,7 +174,7 @@ async function verifyReaderAudioStateRecovery() {
     range.dispatchEvent(new Event('change', { bubbles: true }));
   }, 37);
   await page.waitForFunction(() => {
-    const audio = window.__bqFakeAudioInstances?.at(-1);
+    const audio = window.__bqFakeAudioInstances?.find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
     return audio && Math.abs(audio.currentTime - 37) < 0.01;
   });
 
@@ -196,7 +196,8 @@ async function verifyReaderAudioStateRecovery() {
   await restoredPlayButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
   const restored = await page.evaluate(() => {
-    const audio = window.__bqFakeAudioInstances?.at(-1);
+    const audio = [...(window.__bqFakeAudioInstances || [])].reverse()
+      .find(candidate => candidate.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
     return audio ? { src: audio.src, currentTime: audio.currentTime, paused: audio.paused } : null;
   });
   assert(restored?.src === 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3'
