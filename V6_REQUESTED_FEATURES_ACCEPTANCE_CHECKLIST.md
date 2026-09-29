@@ -122,11 +122,13 @@ Local candidate evidence (2026-09-28, runtime code SHA `ada62e2d787107df32f7dd5e
 
 ## F2. BSB Audio Bible
 
+Integrated evidence (2026-09-30; PR #836, exact PR head `d7280801a9de50b324970453e2d906b0c8bd25d5`, merge `a48d49147bb953da606fd40c95db1dc8593b9867`): the required built-artifact Reader browser suite now deterministically proves BSB-only human-audio presentation and playback-position recovery through a full page reload at mobile width. Phase-1 run `36634970468` passed built Chromium parity, PWA acceptance, Reader acceptance at 320/360/390/412/430 px, and the opt-in live OpenBible probe. Raw live output confirmed failed-request retry recovery, Hays Genesis 1 playback, seeking to 5.0 s, Souer switching/playback, Genesis 2 chapter navigation, and narrator persistence after reload. Inherited regression `36634970343` also passed. This promotes only the direct-stream, live browser/seek/retry, and built browser/mobile/PWA recovery rows; offline-copy rights, exact source/text revision alignment, verse timing, auto-next text synchronization, background-device behavior and physical-device acceptance remain open.
+
 Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e6040643947a367a73`, exact build artifact SHA-256 `495b804f9fe74926f5092f2efdb51f4ba0cc460a07799d625cf20681cd6b65e4`): the Reader streams all 1,189 BSB Hays chapters and all 1,189 Bob Souer alternatives directly from OpenBible, defaults to Barry Hays, and exposes a persisted narrator selector. Switching pauses the prior source and prepares the same chapter in the selected source. Audio package policy remains fail-closed for offline copies; verse synchronization remains hidden until exact source-matched timing rows are reviewed. The opt-in browser smoke now checks failed-source retry, decoded playback, seeking, Hays→Souer switching, chapter navigation, and narrator persistence through page reload. Full V6 unit suite (611), lint, formatting, typecheck, and exact-SHA build pass. Browser execution remains pending because Chromium is absent locally and the external-source smoke has not yet run in CI. Real-device acceptance and alignment/source identity review remain open.
 
 - [x] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
-- [ ] Play the selected public chapter stream directly on demand; BibleQuest does not need to host a full audio-library mirror.
-- [ ] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
+- [x] Play the selected public chapter stream directly on demand; BibleQuest does not need to host a full audio-library mirror.
+- [x] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
 - [ ] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
 - [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
 - [ ] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
@@ -139,7 +141,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [ ] Selective offline audio download is bounded by explicit user choice; the app does not silently cache the complete Audio Bible.
 - [x] Audio binaries are excluded from Git and Supabase bulk storage; direct streaming remains at the public audio source and optional downloads stay in local PWA storage.
 - [x] Audio provider abstraction allows future narrators/languages without coupling Reader state to one host/provider.
-- [ ] Built browser/mobile/PWA regression verifies BSB text/audio translation match and playback state recovery.
+- [x] Built browser/mobile/PWA regression verifies BSB text/audio translation match and playback state recovery.
 
 ## G. Games engine and Games UI
 
