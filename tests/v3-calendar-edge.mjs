@@ -74,6 +74,7 @@ function fakeCongregation({ role = 'leader', congregationId = 'cong-1', name = '
   const MINISTRY = new Set(['facilitator', 'leader', 'pastor', 'admin']);
   return {
     async load() { return [{ congregationId, congregation: { name } }]; },
+    getActive() { return { congregationId, congregation: { name } }; },
     can(id, capability) { if (id !== congregationId) return false; if (capability === 'read') return true; if (capability === 'ministry') return MINISTRY.has(role); return false; },
     assert(id, capability) { if (!this.can(id, capability)) { const e = new Error('Your congregation role does not allow this action.'); e.code = 'BQ_CONGREGATION_PERMISSION_DENIED'; throw e; } return true; }
   };
