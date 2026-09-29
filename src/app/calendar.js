@@ -94,8 +94,11 @@ export function createCalendarService({ session, privateStorage, api, assignment
     try {
       const memberships = await congregation.load();
       if(request!==congregationRequest||sessionUserId()!==userId)return;
-      const active = congregation.getActive?.() || memberships[0];
-      if (!active) { congregationState=emptyCongregationState(); return; }
+      const active = congregation.getActive?.();
+      if (!active || !memberships.some(row=>String(row?.congregationId||'')===String(active.congregationId||''))) {
+        congregationState=emptyCongregationState();
+        return;
+      }
       const canShare = congregation.can(active.congregationId, 'ministry');
       const congregationId=String(active.congregationId||'');
       const rows = await api.calendar.listCongregation(congregationId);
