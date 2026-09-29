@@ -6,7 +6,7 @@ const baseAssignment={id:'a1',congregation_id:'c1',created_by:'leader1',title:'R
 let assignmentRows=[baseAssignment];
 const membership=(id='c1',role='member')=>({congregationId:id,userId:'u1',role,roleKnown:true,roleLabel:role,congregation:{id,name:id==='c1'?'Church One':'Church Two',timezone:'Asia/Tokyo'}});
 const session={getState:()=>sessionState};
-const congregation={load:async()=>memberships,assert:(id,cap)=>{assert.ok(memberships.some(row=>row.congregationId===id));assert.equal(cap,'read')}};
+const congregation={load:async()=>memberships,getActive:()=>memberships[0]||null,assert:(id,cap)=>{assert.ok(memberships.some(row=>row.congregationId===id));assert.equal(cap,'read')}};
 const api={
   load:async(congregationId,userId)=>{loadCalls.push([congregationId,userId]);return{assignments:assignmentRows.filter(row=>row.congregation_id===congregationId),progress}},
   start:async(congregationId,assignmentId)=>{startCalls.push([congregationId,assignmentId]);progress=[{assignment_id:assignmentId,user_id:'u1',status:'started',submission:null,leader_feedback:null,completed_at:null,updated_at:'2026-09-10T00:00:00Z'}];return{progress:progress[0],awarded:0,alreadyCompleted:false}},

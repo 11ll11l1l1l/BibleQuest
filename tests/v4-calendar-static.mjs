@@ -20,7 +20,6 @@ const workflow=fs.readFileSync(path.join(root,'.github/workflows/v3-regression.y
 for(const token of[
   'export function createCalendarService({ session, privateStorage, api, assignments, congregation, clock = () => new Date() })',
   'assignments?.snapshot?.()',
-  'congregation.getActive?.() || memberships[0]',
   "congregation.can(active.congregationId, 'ministry')",
   "congregation.assert(congregationState.congregationId, 'ministry')",
   'current.ownerId !== userId',
@@ -31,6 +30,8 @@ for(const token of[
   'function getAgenda({ startDate = clock(), days = 30 } = {})',
   'return Object.freeze({ load, addEvent, updateCongregationEvent, removeCongregationEvent, removeEvent, getAgenda, getState: present })'
 ]) assert.ok(service.includes(token),`Calendar service must retain structural contract: ${token}`);
+assert.match(service,/const active\s*=\s*congregation\.getActive\?\.\(\)/,'Calendar shared scope must resolve from the explicit active congregation.');
+assert.ok(!service.includes('congregation.getActive?.() || memberships[0]'),'Calendar must never fall back to the first membership when active tenant context is absent.');
 assert.ok(!/\bfetch\s*\(/.test(service),'Calendar service must not bypass the API boundary with direct fetch calls.');
 assert.ok(!/supabase\.co|service[_-]?role|sb_secret_/i.test(service),'Calendar owner must not embed privileged backend credentials.');
 

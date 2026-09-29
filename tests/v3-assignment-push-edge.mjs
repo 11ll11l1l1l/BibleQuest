@@ -6,7 +6,7 @@ const baseRow={id:'a1',congregation_id:'c1',created_by:'leader1',title:'Read Joh
 const member=(role='leader',cid='c1')=>({congregationId:cid,userId:'u1',role,roleKnown:true,roleLabel:role,congregation:{id:cid,name:cid==='c1'?'Church One':'Church Two',timezone:'Asia/Tokyo'}});
 let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},memberships=[member()],rows=[],targetCalls=[],createCalls=[],loadCalls=[];
 const session={getState:()=>sessionState};
-const congregation={load:async()=>memberships,assert:(cid,cap)=>{assert.equal(cid,memberships[0]?.congregationId);assert.ok(cap==='read'||cap==='ministry')}};
+const congregation={load:async()=>memberships,getActive:()=>memberships[0]||null,assert:(cid,cap)=>{assert.equal(cid,memberships[0]?.congregationId);assert.ok(cap==='read'||cap==='ministry')}};
 const targets={members:[{id:'u2',label:'Member Two',role:'member'}],teams:[{id:'t1',label:'Team One',type:'game_team'}],groups:[{id:'g1',label:'Group One'}]};
 const api={
   load:async(cid,userId)=>{loadCalls.push([cid,userId]);return{assignments:rows,progress:[]}},

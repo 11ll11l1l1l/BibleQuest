@@ -207,4 +207,38 @@ describe('Calendar account-context isolation', () => {
     assert.ok(refreshed.agenda.some((group: any) => group.events.some((row: any) => row.title === 'B event')));
     assert.ok(!refreshed.agenda.some((group: any) => group.events.some((row: any) => row.title === 'A event')));
   });
+
+  it('never falls back to the first membership when there is no active congregation', async () => {
+    const session = mutableSession();
+    const memberships = [
+      { congregationId: 'congregation-a', congregation: { name: 'A' } },
+      { congregationId: 'congregation-b', congregation: { name: 'B' } },
+    ];
+    let sharedReads = 0;
+    const calendar = createCalendarService({
+      session,
+      privateStorage: memoryStorage(),
+      assignments: { snapshot: () => ({ assignments: [] }) },
+      congregation: {
+        async load() { return memberships; },
+        getActive() { return null; },
+        can() { return true; },
+        assert() { throw new Error('must not assert an implicit tenant'); },
+      },
+      api: {
+        calendar: {
+          async list() { return []; },
+          async create() { throw new Error('unused'); },
+          async remove() { return true; },
+          async listCongregation() { sharedReads += 1; return []; },
+        },
+      },
+      clock: () => new Date('2026-09-24T00:00:00.000Z'),
+    });
+
+    const state = await calendar.load();
+    assert.equal(state.congregationId, '');
+    assert.equal(state.canShareWithCongregation, false);
+    assert.equal(sharedReads, 0, 'Calendar must not query a first-membership tenant implicitly.');
+  });
 });
