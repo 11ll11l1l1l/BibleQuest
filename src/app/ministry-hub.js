@@ -39,7 +39,7 @@ export function createMinistryHubService({congregation}={}){
     }).filter(row=>row.congregationId);
     const activeRow=activeCongregationId
       ?rows.find(row=>row.congregationId===activeCongregationId)||null
-      :rows.find(row=>row.canRead)||null;
+      :null;
     const hasReadableMembership=Boolean(activeRow?.canRead);
     const canMinistry=Boolean(activeRow?.canMinistry);
     return Object.freeze({

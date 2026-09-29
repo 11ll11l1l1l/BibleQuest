@@ -23,9 +23,15 @@ rows=[
 state=await hub.load();
 assert.equal(state.status,'ready');
 assert.equal(state.congregations.length,3);
+assert.equal(state.activeCongregationId,'');
+assert.equal(state.hasReadableMembership,false,'Ministry tools require an explicitly selected congregation.');
+assert.equal(state.memberTools.length,0);
+assert.equal(state.congregations.find(row=>row.congregationId==='c1').isActive,false);
+assert.equal(state.congregations.find(row=>row.congregationId==='c2').isActive,false);
+congregation.setActive('c1');
+state=await hub.load();
 assert.equal(state.activeCongregationId,'c1');
 assert.equal(state.congregations.find(row=>row.congregationId==='c1').isActive,true);
-assert.equal(state.congregations.find(row=>row.congregationId==='c2').isActive,false);
 assert.equal(state.hasReadableMembership,true);
 assert.equal(state.canMinistry,false,'Ministry tools must follow the active congregation, not another congregation where this account has a ministry role.');
 assert.deepEqual(state.memberTools.map(tool=>tool.id),['assignments','calendar','journey-groups','live-room']);
@@ -59,7 +65,7 @@ assert.equal(state.memberTools.some(tool=>tool.id==='calendar'&&tool.route==='ca
 
 rows=[{congregation_id:'c9',user_id:'u1',role:'unknown',congregation:{id:'c9',name:'Unsupported Church'}}];
 state=await hub.load();
-assert.equal(state.activeCongregationId,'c9');
+assert.equal(state.activeCongregationId,'');
 assert.equal(state.hasReadableMembership,false);
 assert.equal(state.canMinistry,false);
 assert.equal(state.memberTools.length,0);
