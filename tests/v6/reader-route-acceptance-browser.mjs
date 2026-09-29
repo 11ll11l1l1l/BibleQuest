@@ -334,9 +334,12 @@ async function verifyOpenBiblePlayback() {
   assert(souerMedia?.currentSrc === 'https://openbible.com/audio/souer/BSB_01_Gen_001.mp3',
     `Bob Souer fallback did not resolve to the expected OpenBible chapter: ${JSON.stringify(souerMedia)}.`);
   await page.locator('[data-reader-chapter]').selectOption('2');
-  await page.waitForFunction(() => window.__bqAudioInstances?.some((candidate) => candidate.currentSrc.endsWith('/souer/BSB_01_Gen_002.mp3')),
-    null, { timeout: 10000 });
   assert(await narratorControl.inputValue() === 'souer', 'Reader lost the selected narrator when navigating to another chapter.');
+  await playButton.click();
+  await page.waitForFunction(() => {
+    const audio = window.__bqAudioInstances?.find((candidate) => candidate.currentSrc.endsWith('/souer/BSB_01_Gen_002.mp3'));
+    return audio && audio.currentTime > 0;
+  }, null, { timeout: 15000 });
   await page.reload({ waitUntil: 'networkidle' });
   await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
   await page.locator('[data-reader-audio-toggle]').waitFor({ state: 'visible', timeout: 15000 });
