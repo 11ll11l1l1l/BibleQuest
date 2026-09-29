@@ -47,7 +47,7 @@ try{
       await page.locator('[data-leader-center-denied]').waitFor({timeout:10000});
       assert(!(await page.locator('[data-leader-overview]').count()),'Member unexpectedly received the Leader Center overview.');
     }else{
-      await page.locator('[data-leader-overview]').waitFor({timeout:10000});
+      try{await page.locator('[data-leader-overview]').waitFor({timeout:10000})}catch(error){throw new Error(`${role} Leader Center did not render its authorized overview. Page text: ${(await page.locator('body').innerText()).slice(-1800)}. Browser errors: ${errors.join(' | ')}. Assignment observations: ${JSON.stringify(observations)}. Original: ${error.message}`)}
       const viewText=(await page.locator('[data-leader-overview]').textContent())||'';
       assert(viewText.includes(role),`${role} was not shown as the authorized active-congregation role.`);
     }
