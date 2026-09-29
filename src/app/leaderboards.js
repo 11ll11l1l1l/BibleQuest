@@ -99,7 +99,11 @@ export function createLeaderboardsService({api,session,congregation,clock=()=>ne
     const inheritedImplicit=followsActiveCongregation&&requestedId&&requestedId===current.congregationId;
     const explicitRequest=Boolean(requestedId)&&!inheritedImplicit;
     const selectedId=explicitRequest?requestedId:(activeId||requestedId);
-    const selected=congregations.find(row=>row.id===selectedId)||congregations[0];
+    const selected=congregations.find(row=>row.id===selectedId);
+    if(!selected){
+      followsActiveCongregation=false;
+      return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',period,lane,rows:[]});
+    }
     const requestFollowsActive=!explicitRequest&&Boolean(activeId)&&selected.id===activeId;
     congregation.assert(selected.id,'read');
     let result;

@@ -27,7 +27,7 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     .split('\n')
     .filter(line => line.startsWith('const ') && line.includes(" = args => lazyFeaturePage('"));
 
-  assert.equal(lazyProxyLines.length, 46);
+  assert.equal(lazyProxyLines.length, 44);
   for (const route of [
     "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);",
     "const explorerPage = args => lazyFeaturePage('explorer', 'explorerPage', args);",
@@ -41,6 +41,14 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
   assert.equal(source.includes("import('./wisdom-situations.js')"), true);
   assert.equal(source.includes("featurePageModules['../features/wisdom-situations/index.js']"), true);
   assert.equal(source.includes("'wisdom-situations':()=>wisdomSituationsPage({lesson,progress,storage"), true);
+  for(const owner of ['leaderboards','content-review']){
+    assert.equal(source.includes(`from './${owner}.js';`),false,`${owner} owner must stay out of the startup bundle`);
+    assert.equal(source.includes(`import('./${owner}.js')`),true,`${owner} owner should load with its lazy route`);
+  }
+  assert.match(source,/function leaderboardsPage\([\s\S]*?featurePageModules\['\.\.\/features\/leaderboards\/index\.js'\][\s\S]*?import\('\.\/leaderboards\.js'\)/);
+  assert.match(source,/function contentReviewPage\([\s\S]*?featurePageModules\['\.\.\/features\/content-review\/index\.js'\][\s\S]*?import\('\.\/content-review\.js'\)/);
+  assert.match(source,/leaderboards:\(\)=>leaderboardsPage\(\{api,session,congregation,/);
+  assert.match(source,/'content-review':\(\)=>contentReviewPage\(\{api,session,congregation,recall,/);
 
   for (const line of lazyProxyLines) {
     const name = line.slice('const '.length, line.indexOf(' = args'));

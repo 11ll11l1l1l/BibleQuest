@@ -104,7 +104,9 @@ export function createContentModerationService({api,session,congregation}={}){
     const requested=clean(preferredCongregationId);
     if(requested&&!scopes.some(row=>row.id===requested))throw policyError('Choose one of your current congregations for content policy.','BQ_CONTENT_MODERATION_SCOPE_DENIED');
     const currentStillValid=state.congregationId&&scopes.some(row=>row.id===state.congregationId);
-    const selected=scopes.find(row=>row.id===(requested||(currentStillValid?state.congregationId:scopes[0].id)))||scopes[0];
+    const activeId=clean(congregation.getActive?.()?.congregationId);
+    const selected=scopes.find(row=>row.id===(requested||(currentStillValid?state.congregationId:activeId)));
+    if(!selected){state={...emptyState('ready'),scopes};return snapshot()}
     const previous=selected.id===state.congregationId?new Map(state.decisions):new Map();
     const previousLoadedAt=selected.id===state.congregationId?state.loadedAt:null;
 

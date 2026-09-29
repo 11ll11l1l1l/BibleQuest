@@ -4,7 +4,7 @@ import {createLeaderboardsService,leaderboardContract} from '../src/app/leaderbo
 const memberships=[{congregationId:'c1',roleLabel:'Member',congregation:{name:'Church One',timezone:'Asia/Tokyo'}}];
 let sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}},calls=[];
 const session={getState:()=>sessionState};
-const congregation={load:async()=>memberships,assert:(id,cap)=>{assert.equal(id,'c1');assert.equal(cap,'read')}};
+const congregation={load:async()=>memberships,getActive:()=>memberships[0],assert:(id,cap)=>{assert.equal(id,'c1');assert.equal(cap,'read')}};
 const api={load:async(id,since)=>{calls.push({id,since});return{directory:[{congregation_id:'c1',user_id:'u2',display_name:'Zed',active:true},{congregation_id:'c1',user_id:'u1',display_name:'Amy',active:true},{congregation_id:'c1',user_id:'u3',display_name:'Bob',active:true}],scores:[{user_id:'u1',category:'knowledge',points:5},{user_id:'u1',category:'reading',points:4},{user_id:'u2',category:'knowledge',points:9},{user_id:'former',category:'knowledge',points:99}]}}};
 const clock=()=>new Date('2026-09-09T15:30:00+09:00');
 const board=createLeaderboardsService({api,session,congregation,clock});

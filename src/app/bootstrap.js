@@ -45,7 +45,6 @@ import { createCouplesCloudService } from './couples-cloud.js';
 import { createCongregationMembershipService } from './congregation-membership.js';
 import { createLiveRoomsService } from './live-rooms.js';
 import { createContentModerationService } from './content-moderation.js';
-import { createContentReviewService } from './content-review.js';
 import { createContentReportingService } from './content-reporting.js';
 import { createMinistryHubService } from './ministry-hub.js';
 import { createLeaderCenterService } from './leader-center.js';
@@ -56,7 +55,6 @@ import { createPresenceService } from './presence.js';
 import { createTeamCenterService } from './team-center.js';
 import { createTrustedScoreEventsService } from './trusted-score-events.js';
 import { createProgressLeaderboardBridgeService } from './progress-leaderboard-bridge.js';
-import { createLeaderboardsService } from './leaderboards.js';
 import { createCongregationRecognitionService } from './congregation-recognition.js';
 import { createAssignmentsService } from './assignments.js';
 import { createJourneyGroupsService } from './journey-groups.js';
@@ -165,10 +163,33 @@ const leaderCenterPage = args => lazyFeaturePage('leader-center', 'leaderCenterP
 const notificationCenterPage = args => lazyFeaturePage('notification-center', 'notificationCenterPage', args);
 const workspacePage = args => lazyFeaturePage('workspace', 'workspacePage', args);
 const teamCenterPage = args => lazyFeaturePage('team-center', 'teamCenterPage', args);
-const leaderboardsPage = args => lazyFeaturePage('leaderboards', 'leaderboardsPage', args);
+function leaderboardsPage({api,session,congregation,onBack,onAccount}) {
+  return createLazyPage({key:'leaderboards',async load(){
+    const loadPage=featurePageModules['../features/leaderboards/index.js'];
+    if(typeof loadPage!=='function')throw new Error('Missing lazy feature module: ../features/leaderboards/index.js');
+    const [pageModule,serviceModule]=await Promise.all([loadPage(),import('./leaderboards.js')]);
+    return {pageModule,serviceModule};
+  },create({pageModule,serviceModule}){
+    const pageFactory=pageModule?.leaderboardsPage,serviceFactory=serviceModule?.createLeaderboardsService;
+    if(typeof pageFactory!=='function'||typeof serviceFactory!=='function')throw new Error('Leaderboards page owner is unavailable.');
+    return pageFactory({leaderboards:serviceFactory({api:api.leaderboards,session,congregation}),onBack,onAccount});
+  }});
+}
 const congregationRecognitionPage = args => lazyFeaturePage('congregation-recognition', 'congregationRecognitionPage', args);
 const assignmentsPage = args => lazyFeaturePage('assignments', 'assignmentsPage', args);
-const contentReviewPage = args => lazyFeaturePage('content-review', 'contentReviewPage', args);
+function contentReviewPage({api,session,congregation,recall,onBack,onAccount,onCongregation}) {
+  return createLazyPage({key:'content-review',async load(){
+    const loadPage=featurePageModules['../features/content-review/index.js'];
+    if(typeof loadPage!=='function')throw new Error('Missing lazy feature module: ../features/content-review/index.js');
+    const [pageModule,serviceModule]=await Promise.all([loadPage(),import('./content-review.js')]);
+    return {pageModule,serviceModule};
+  },create({pageModule,serviceModule}){
+    const pageFactory=pageModule?.contentReviewPage,serviceFactory=serviceModule?.createContentReviewService;
+    if(typeof pageFactory!=='function'||typeof serviceFactory!=='function')throw new Error('Content Review page owner is unavailable.');
+    const review=serviceFactory({api:api.contentReview,session,congregation,recall});
+    return pageFactory({review,onBack,onAccount,onCongregation});
+  }});
+}
 let disposeReaderAudioProvider = () => {};
 const readerPage = args => createLazyPage({
   key: 'reader',
@@ -271,7 +292,6 @@ function boot(root){
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
   const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
-  const contentReview=createContentReviewService({api:api.contentReview,session,congregation,recall});
   const games=createGameLauncherService({progress,storage,recall,moderation:contentModeration});
   const openReview=createOpenReviewService({storage,lesson,progress,recall,games,adaptive:adaptiveLearning});
   const mission=createMissionService({openReview});
@@ -291,7 +311,6 @@ function boot(root){
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
   const scoreEvents=createTrustedScoreEventsService({api:api.scoreEvents,session,congregation});
   const progressLeaderboardBridge=createProgressLeaderboardBridgeService({progress,scoreEvents,session,congregation,storage:privateStorage});
-  const leaderboards=createLeaderboardsService({api:api.leaderboards,session,congregation});
   const recognition=createCongregationRecognitionService({api:api.congregationRecognition,session,congregation});
   const assignments=createAssignmentsService({api:api.assignments,session,congregation});
   const myJourney=createMyJourneyService({progress,assignments,bibleQuest});
@@ -347,10 +366,10 @@ function boot(root){
     'notification-center':()=>notificationCenterPage({notifications,notificationSettings,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     workspace:()=>workspacePage({workspace,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'team-center':()=>teamCenterPage({teamCenter,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
-    leaderboards:()=>leaderboardsPage({leaderboards,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
+    leaderboards:()=>leaderboardsPage({api,session,congregation,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     recognition:()=>congregationRecognitionPage({recognition,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onLeaderboards:()=>router.navigate('leaderboards')}),
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
-    'content-review':()=>contentReviewPage({review:contentReview,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
+    'content-review':()=>contentReviewPage({api,session,congregation,recall,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     // Lazy Reader adds managed offlinePackages and its gated audio provider when the feature opens.
     reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
@@ -447,6 +466,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentReview.clear();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();leaderboards.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
