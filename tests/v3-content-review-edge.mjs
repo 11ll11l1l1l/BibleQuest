@@ -19,7 +19,7 @@ function harness({authenticated=true,memberships=[membership()],siteAccess=null,
     async platformAccess(){calls.platformAccess+=1;if(platformError)throw platformError;return siteAccess?structuredClone(siteAccess):null},
     async listPlatformCongregations(){calls.platformCongregations+=1;return structuredClone(platformCongregations)},
     async loadQueue(id){calls.loadQueue.push(id);return structuredClone(queue)},
-    async saveDecision(row){calls.save.push(structuredClone(row));if(saveError)throw saveError;return structuredClone(row)},
+    async saveDecision(congregationId,row){const saved=structuredClone(row);saved.__scope=congregationId;calls.save.push(saved);if(saveError)throw saveError;return structuredClone(row)},
     async markReportsReviewed(congregationId,contentKey,reviewedBy,reviewedAt){calls.mark.push({congregationId,contentKey,reviewedBy,reviewedAt});if(markError)throw markError;return [{id:7}]}
   };
   const recall={
@@ -107,6 +107,7 @@ for(const role of ['leader','pastor','admin']){
   assert.equal(calls.save.length,1);
   const saved=calls.save[0];
   assert.equal(saved.congregation_id,'c1');
+  assert.equal(saved.__scope,'c1','Decision repository must receive the active congregation as an explicit argument.');
   assert.equal(saved.content_key,'question:RUT:q1');
   assert.equal(saved.content_type,'question');
   assert.equal(saved.origin,'quarantine');
