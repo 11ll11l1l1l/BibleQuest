@@ -7,7 +7,7 @@ const assignmentRow={
 };
 
 function fakeSession(userId){return {getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})}}
-function fakeCongregation(role){return {load:async()=>[{congregationId:'c-1',role,roleLabel:role,congregation:{name:'Test Church'}}],assert:()=>true}}
+function fakeCongregation(role){const row={congregationId:'c-1',role,roleLabel:role,congregation:{name:'Test Church'}};return {load:async()=>[row],getActive:()=>row,assert:()=>true}}
 function fakeApi(userId){return {
   load:async()=>({assignments:[assignmentRow],progress:[]}),
   start:async()=>({progress:{assignment_id:'a-1',user_id:userId,status:'started'},awarded:0}),
