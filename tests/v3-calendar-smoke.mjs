@@ -25,6 +25,7 @@ async function run(){
     const assignments={snapshot:()=>({assignments:[{id:'a1',title:'Read Mark 1',dueAt:new Date(Date.now()+2*86400000).toISOString(),dueState:'assigned'}]})};
     const congregation={
       async load(){return[{congregationId:'cong-smoke',congregation:{name:'Smoke Test Congregation'}}]},
+      getActive(){return{congregationId:'cong-smoke',congregation:{name:'Smoke Test Congregation'}}},
       can(){return true},
       assert(){return true}
     };
