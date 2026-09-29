@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-28 JST
+Updated: 2026-09-29 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -21,6 +21,8 @@ Fifth certification reconciliation from integrated head `2b779928582aa73d961db6b
 Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb24393f03b6705adeb37df`: PR #811 corrected the Phase-1 exact-head checkout/build-identity path and landed the fail-closed deployed-artifact verifier, with Phase-1 `36298560863` and inherited regression `36298560896` SUCCESS. PR #812 replaced version-specific inherited CI execution ownership with reusable static/browser composite seams while preserving the accumulated V3/V4/V5 coverage; Phase-1 `36299094338` and inherited regression `36299094354` SUCCESS. The Cloudflare exact-deployed-artifact item remains OPEN because the current Git-integrated Pages project still needs to build/publish `dist-v6` before deployed-byte verification can pass.
 
 Seventh reconciliation at integrated head `5a80ae75778da2d4aff8329b6911b8876a08584d`: merged Reader PRs #815/#816 provide independently testable Search and Verse Peek presentations and route Scripture/Search/Context Lab reads through `ScriptureContentProvider`; the three corresponding Reader decomposition items are now PASS. Mobile/accessibility Reader acceptance from PR #817 and subsequent offline package/audio/security work remain in the local speedtrack candidate, outside this official checkpoint. Therefore this integrated checklist is 131/210 PASS; the local branch `codex/v6-offline-reader` has unintegrated commits and separate candidate evidence in `V6_ACTIVE_STATUS.md`.
+
+Eighth reconciliation at integrated head `b68b0b75` after merged PR #818: its exact source head `7dc3c077` passed Client Artifact Security `36501288796`, Phase-1 build/Chromium/PWA `36501288723`, disposable Supabase replay/pgTAP/lint/types `36501288726`, and inherited static/browser regression `36501288841`. The built Reader accessibility/mobile probe covers 320/360/390/412/430 px. The built offline probe installs all 66 BSB books, cancels/resumes a partial install across browser restarts, reopens and navigates offline, searches installed text without external requests, and removes packages. Unit and CacheStorage adapter regressions cover corrupt package recovery. Ten directly evidenced items below are promoted; installed PWA on physical devices, live external audio, authenticated full-role matrix, and deployed artifact identity remain OPEN. The actual checklist row count before this update was 135 checked/76 open (211 total), despite the older prose saying 131/210. It is now 145/211 PASS with 66 open; the historical discrepancy needs an inventory audit before release.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -94,7 +96,7 @@ Seventh reconciliation at integrated head `5a80ae75778da2d4aff8329b6911b8876a085
 - [x] Read/progress writes use new domain/data boundary.
 - [x] Canonical chapter-read identity remains translation-independent so the same Bible chapter cannot duplicate XP/progression across translations.
 - [x] Reader/Main Quest chapter completion preserves one trusted Reading leaderboard identity per chapter and server-authoritative scoring; local XP never becomes leaderboard authority.
-- [ ] Reader route passes parity + accessibility + mobile tests.
+- [x] Reader route passes parity + accessibility + mobile tests.
 
 Local candidate note (2026-09-28; code SHA `56f151b9f486be8cea4dda984dccbceccb5f70ce`, exact build artifact SHA-256 `9ae5ea54f6e0d45f8db324cccf260cd807d35ec06b07c98d03d0003d8cf5527d`): the live Reader now delegates validated chapter/verse markup to `renderReaderChapterPresentation` in `src/v6/reader/presentation.ts`. The pure presenter escapes Scripture and labels and covers grouped verses, highlighted verses, and mark-read state. The full V6 unit suite passes 612 tests; lint, format, typecheck, and exact-SHA build evidence pass. This code is on the local speedtrack branch and is not added to the official `5a80ae...` acceptance count until integration. Reader browser/mobile parity remains open because local Chromium is unavailable.
 
@@ -102,14 +104,14 @@ Local candidate note (2026-09-28; code SHA `56f151b9f486be8cea4dda984dccbceccb5f
 
 - [x] Versioned Scripture content-manifest format exists with package identity/license metadata.
 - [x] Offline package lifecycle manager supports deliberate declared book-package installation through injected transport/repository boundaries.
-- [ ] At least one supported full translation can be made truly offline where licensing/size permits.
-- [ ] Download progress/cancel/retry/remove controls exist.
-- [ ] Storage usage/reclaim controls exist.
+- [x] At least one supported full translation can be made truly offline where licensing/size permits.
+- [x] Download progress/cancel/retry/remove controls exist.
+- [x] Storage usage/reclaim controls exist.
 - [x] Package byte-length/checksum/version validation exists and fails closed before persistence.
-- [ ] Corrupt/outdated package recovery is tested.
-- [ ] Previously downloaded Bible text opens with network disabled.
-- [ ] Offline chapter navigation works after app restart.
-- [ ] Supported local search works offline or is clearly scoped if deferred.
+- [x] Corrupt/outdated package recovery is tested.
+- [x] Previously downloaded Bible text opens with network disabled.
+- [x] Offline chapter navigation works after app restart.
+- [x] Supported local search works offline or is clearly scoped if deferred.
 - [x] Live/licensed redistribution policy explicitly rejects unsupported packaged substitution.
 - [ ] App/service-worker/content-pack versions can upgrade safely.
 - [ ] Physical installed-PWA offline acceptance passes.
@@ -269,7 +271,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Unit/type/lint/build gates run on V6 PRs.
 - [x] Database/RLS integration gate runs on relevant Supabase/database PRs using a real disposable stack.
 - [ ] Whole-app/protected-route/browser gates run against built output.
-- [ ] PWA/offline gate covers real V6 SW/content architecture.
+- [x] PWA/offline gate covers real V6 SW/content architecture.
 - [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
 - [ ] Exact-SHA Cloudflare preview verification remains mandatory.
 - [ ] V4→V6 upgrade database path is tested before RC.
@@ -287,7 +289,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [ ] No content/media asset is hosted or transformed without verified redistribution rights/provenance.
 - [ ] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
-- [ ] Large offline downloads require explicit user action and provide storage/removal controls.
+- [x] Large offline downloads require explicit user action and provide storage/removal controls.
 - [ ] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
 - [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
 - [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
