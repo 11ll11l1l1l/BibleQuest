@@ -27,3 +27,15 @@ test('private assignment response query filters through the linked assignment co
   assert.match(source, /bible_assignments!inner\(\)/);
   assert.match(source, /\.eq\('bible_assignments\.congregation_id',congregationId\)/);
 });
+
+
+test('avatar membership writes accept the congregation as an explicit scope', () => {
+  const source = methodSource('avatarVault', 'save');
+  assert.match(source, /^async save\(userId,congregationId,selectedStyle\)/);
+});
+
+test('avatar membership writes require and filter an explicit congregation scope', () => {
+  const source = methodSource('avatarVault', 'save');
+  assert.match(source, /\.eq\('user_id',userId\)\.eq\('congregation_id',congregationId\)/);
+  assert.match(source, /if\(!congregationId\)throw Error\(\)/);
+});

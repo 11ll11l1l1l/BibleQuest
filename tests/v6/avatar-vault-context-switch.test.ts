@@ -30,6 +30,7 @@ function fakeStorage() {
 }
 
 const richProgress = { getState: () => ({ xp: 3000, streak: 40 }) };
+const congregation = { getActive: () => ({ congregationId: 'congregation-a' }) };
 
 describe('Avatar Vault account-switch isolation', () => {
   it('does not apply a late Account A cloud selection after switching to B', async () => {
@@ -40,6 +41,7 @@ describe('Avatar Vault account-switch isolation', () => {
       session,
       privateStorage: fakeStorage(),
       progress: richProgress,
+      congregation,
       api: {
         avatarVault: {
           async load(userId: string) {
@@ -71,11 +73,13 @@ describe('Avatar Vault account-switch isolation', () => {
       session,
       privateStorage: fakeStorage(),
       progress: richProgress,
+      congregation,
       api: {
         avatarVault: {
           async load() { return null; },
-          async save(userId: string, styleId: string) {
+          async save(userId: string, congregationId: string, styleId: string) {
             assert.equal(userId, 'user-a');
+            assert.equal(congregationId, 'congregation-a');
             assert.equal(styleId, 'crown');
             started.resolve();
             await release.promise;
@@ -110,6 +114,7 @@ describe('Avatar Vault account-switch isolation', () => {
       session,
       privateStorage: storage,
       progress: richProgress,
+      congregation,
       api: {
         avatarVault: {
           async load() { loadCalls++; return null; },

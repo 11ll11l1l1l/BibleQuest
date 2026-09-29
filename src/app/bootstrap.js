@@ -298,7 +298,7 @@ function boot(root){
   const calendar=createCalendarService({session,privateStorage,api,assignments,congregation});
   const leaderCenter=createLeaderCenterService({assignments,presence,calendar});
   const ministryAnnouncements=createMinistryAnnouncementsService({api:api.ministryAnnouncements,session,congregation});
-  const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments});
+  const avatarVault=createAvatarVaultService({session,privateStorage,api,progress,bibleWorld,couplesFamily,games,assignments,congregation});
   const journeyGroups=createJourneyGroupsService({api:api.journeyGroups,session,congregation});
   const encouragements=createEncouragementsService({api:api.encouragements,session,journeyGroups});
   const communityBridge=createCommunityBridgeService({session,congregation,journeyGroups,encouragements});

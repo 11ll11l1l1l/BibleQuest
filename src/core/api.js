@@ -412,13 +412,14 @@ export function createApi() {
       if(error)throw error;
       return data||null;
     },
-    async save(userId,selectedStyle) {
+    async save(userId,congregationId,selectedStyle) {
+      if(!congregationId)throw Error();
       const client=await getClient();
       const avatar={cosmetic:selectedStyle};
       const updatedAt=new Date().toISOString();
       const cosmeticRes=await client.from('bible_avatar_cosmetics').upsert({user_id:userId,selected_style:selectedStyle,updated_at:updatedAt},{onConflict:'user_id'});
       if(cosmeticRes?.error)throw cosmeticRes.error;
-      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId);
+      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId).eq('congregation_id',congregationId);
       if(memberRes?.error)throw memberRes.error;
       return {selected_style:selectedStyle,avatar};
     }
