@@ -11,10 +11,10 @@ const baseQueue={
 };
 const membership=(role='leader',id='c1',name='First Church')=>({congregationId:id,userId:'reviewer-1',role,roleKnown:true,roleLabel:role[0].toUpperCase()+role.slice(1),congregation:{id,name}});
 
-function harness({authenticated=true,memberships=[membership()],siteAccess=null,platformCongregations=[],queue=baseQueue,platformError=null,saveError=null,markError=null}={}){
+function harness({authenticated=true,memberships=[membership()],siteAccess=null,platformCongregations=[],activeCongregationId=memberships.length===1?memberships[0].congregationId:'',queue=baseQueue,platformError=null,saveError=null,markError=null}={}){
   const calls={platformAccess:0,platformCongregations:0,loadQueue:[],save:[],mark:[],quarantine:[]};
   const session={getState:()=>({authenticated,user:authenticated?{id:'reviewer-1'}:null})};
-  const congregation={async load(){return structuredClone(memberships)}};
+  const congregation={async load(){return structuredClone(memberships)},getActive(){return memberships.find(row=>row.congregationId===activeCongregationId)||null}};
   const api={
     async platformAccess(){calls.platformAccess+=1;if(platformError)throw platformError;return siteAccess?structuredClone(siteAccess):null},
     async listPlatformCongregations(){calls.platformCongregations+=1;return structuredClone(platformCongregations)},
@@ -57,10 +57,12 @@ for(const role of ['leader','pastor','admin']){
   const {service,calls}=harness({memberships:[],siteAccess:{role:'owner',active:true},platformCongregations:[{id:'c2',name:'Platform Church',active:true}] ,queue:{decisions:[],reports:[],members:[]}});
   const state=await service.refresh();
   assert.equal(state.status,'ready','Platform owner must receive reviewer scopes through the retained RLS path.');
-  assert.equal(state.congregationId,'c2');
+  assert.equal(state.congregationId,'','Platform role scope must not implicitly select the first congregation.');
   assert.equal(state.platformRole,'owner');
   assert.equal(state.scopes[0].source,'platform');
-  assert.equal(calls.platformCongregations,1);
+  assert.deepEqual(calls.loadQueue,[]);
+  assert.equal((await service.selectCongregation('c2')).congregationId,'c2');
+  assert.equal(calls.platformCongregations,2,'Platform scopes must be revalidated when a congregation is explicitly selected.');
 }
 
 {
@@ -84,11 +86,20 @@ for(const role of ['leader','pastor','admin']){
 
 {
   const {service}=harness({memberships:[membership('leader','c1'),membership('pastor','c2','Second Church')],queue:{decisions:[],reports:[],members:[]}});
-  assert.equal((await service.refresh()).congregationId,'c1');
+  assert.equal((await service.refresh()).congregationId,'','Multiple memberships require an active or explicit selection.');
+  assert.equal((await service.selectCongregation('c1')).congregationId,'c1');
   assert.equal((await service.selectCongregation('c2')).congregationId,'c2');
   const denied=await service.selectCongregation('other');
   assert.equal(denied.status,'error');
   assert.match(denied.error,/cannot review that congregation/i);
+}
+
+{
+  const {service,calls}=harness({memberships:[membership('leader','c1'),membership('pastor','c2','Second Church')],activeCongregationId:'',queue:{decisions:[],reports:[],members:[]}});
+  const state=await service.refresh();
+  assert.equal(state.status,'ready');
+  assert.equal(state.congregationId,'');
+  assert.deepEqual(calls.loadQueue,[],'No review-queue data should load until a scope is explicit.');
 }
 
 {

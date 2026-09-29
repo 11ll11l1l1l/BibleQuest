@@ -138,7 +138,13 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       const requested=clean(preferredCongregationId);
       if(requested&&!byId.has(requested))throw reviewError('Your account cannot review that congregation.','BQ_CONTENT_REVIEW_SCOPE_DENIED');
       const keep=state.congregationId&&byId.has(state.congregationId)?state.congregationId:'';
-      const selected=byId.get(requested||keep||scopes[0].id)||scopes[0];
+      const activeId=clean(congregation.getActive?.()?.congregationId);
+      const active=byId.get(activeId);
+      const selected=byId.get(requested||keep)||active;
+      if(!selected){
+        state={status:'ready',scopes,congregationId:'',congregationName:'',platformRole:siteRole,books:Object.freeze([]),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze([]),members:new Map(),decisions:new Map(),busy:false,error:'',warning:accessError&&membershipScopes.length?accessError:''};
+        return snapshot();
+      }
       const [queue,manifest]=await Promise.all([api.loadQueue(selected.id),recall.loadManifest()]);
       if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const decisions=new Map();for(const raw of Array.isArray(queue?.decisions)?queue.decisions:[]){const row=normalizeDecision(raw,selected.id);if(row)decisions.set(row.contentKey,row)}

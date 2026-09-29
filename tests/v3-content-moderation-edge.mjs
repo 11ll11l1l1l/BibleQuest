@@ -9,7 +9,8 @@ let apiError=null;
 const apiCalls=[];
 const api={async list(id){apiCalls.push(id);if(apiError)throw apiError;return apiRows.map(row=>({...row}))}};
 const session={getState:()=>sessionState};
-const congregation={async load(){return memberships.map(row=>({...row,congregation:{...row.congregation}}))}};
+let activeCongregationId='';
+const congregation={async load(){return memberships.map(row=>({...row,congregation:{...row.congregation}}))},getActive(){return activeCongregationId?{congregationId:activeCongregationId}:null}};
 const moderation=createContentModerationService({api,session,congregation});
 
 let state=await moderation.refresh();
@@ -37,7 +38,10 @@ apiRows=[
   {congregation_id:'cong-1',content_key:'question:core:q6',content_type:'question',origin:'review',decision:'hide',updated_at:'2026-09-11T00:00:00Z'}
 ];
 state=await moderation.refresh();
-assert(state.status==='ready'&&state.congregationId==='cong-1','Moderation must choose the first active membership deterministically.');
+assert(state.status==='ready'&&state.congregationId===''&&apiCalls.length===0,'Moderation must not read the first membership without active congregation context.');
+activeCongregationId='cong-1';
+state=await moderation.refresh();
+assert(state.status==='ready'&&state.congregationId==='cong-1','Moderation must use the explicit active congregation.');
 assert(state.decisionCount===4,'Malformed, cross-congregation, wrong-type, origin, or decision rows must be discarded.');
 assert(apiCalls.at(-1)==='cong-1','Moderation policy read was not scoped to the selected congregation.');
 const core=moderation.applyCore([{id:'q1'},{id:'q2'},{id:'q3'}]);

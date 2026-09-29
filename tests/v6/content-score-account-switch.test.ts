@@ -48,7 +48,7 @@ describe('V6 S3 content/score account-switch isolation', () => {
     const queue = deferred<any>();
     const service = createContentReviewService({
       session: { getState: () => ({ authenticated: true, user: { id: userId } }) },
-      congregation: { load: async () => [{ congregationId: 'c1', userId: 'u1', role: 'leader', congregation: { name: 'One' } }] },
+      congregation: { load: async () => [{ congregationId: 'c1', userId: 'u1', role: 'leader', congregation: { name: 'One' } }], getActive: () => ({ congregationId: 'c1', userId: 'u1', role: 'leader' }) },
       api: {
         platformAccess: async () => null,
         listPlatformCongregations: async () => [],

@@ -98,6 +98,14 @@ describe('content and trusted-event account-switch isolation', () => {
         const userId = session.getState().user?.id || '';
         return [membership(userId, userId === 'user-a' ? 'cong-a' : 'cong-b')];
       },
+      getActive() {
+        const userId = session.getState().user?.id || '';
+        return membership(userId, userId === 'user-a' ? 'cong-a' : 'cong-b');
+      },
+      getActive() {
+        const userId = session.getState().user?.id || '';
+        return userId ? { congregationId: userId === 'user-a' ? 'cong-a' : 'cong-b' } : null;
+      },
     };
     const api = {
       async list(congregationId: string) {
@@ -146,6 +154,10 @@ describe('content and trusted-event account-switch isolation', () => {
       async load() {
         const userId = session.getState().user?.id || '';
         return [membership(userId, userId === 'user-a' ? 'cong-a' : 'cong-b')];
+      },
+      getActive() {
+        const userId = session.getState().user?.id || '';
+        return membership(userId, userId === 'user-a' ? 'cong-a' : 'cong-b');
       },
     };
     const queueFor = (id: string) => ({
@@ -204,6 +216,7 @@ describe('content and trusted-event account-switch isolation', () => {
     let saves = 0;
     const congregation = {
       async load() { return [membership('user-a', 'cong-a')]; },
+      getActive() { return membership('user-a', 'cong-a'); },
     };
     const api = {
       async platformAccess() { return null; },

@@ -53,4 +53,22 @@ describe('Leaderboards active congregation context',()=>{
     const explicit=await service.load({congregationId:'cong-a'});
     assert.equal(explicit.congregationId,'cong-a');
   });
+
+  it('requires explicit selection when memberships exist without an active congregation',async()=>{
+    const memberships=[member('cong-a','Alpha'),member('cong-b','Beta')];
+    const congregation={load:async()=>memberships,getActive:()=>null,assert:()=>true};
+    const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:'user-1'}})};
+    const calls=[];
+    const api={load:async cid=>{calls.push(cid);return{directory:[row(cid,'user-1')],scores:[]}}};
+    const service=createLeaderboardsService({api,session,congregation});
+
+    const unselected=await service.load();
+    assert.equal(unselected.status,'ready');
+    assert.equal(unselected.congregationId,'');
+    assert.deepEqual(unselected.rows,[]);
+    assert.deepEqual(calls,[],'No congregation query should run before a user selects a scope.');
+    const chosen=await service.load({congregationId:'cong-b'});
+    assert.equal(chosen.congregationId,'cong-b');
+    assert.deepEqual(calls,['cong-b']);
+  });
 });

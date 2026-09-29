@@ -4,7 +4,7 @@ const decisionLabel=value=>({pending:'Pending review',include:'Included',exempt:
 
 function toolbar(state){
   const scopes=state.scopes||[];
-  return `<section class="bq-panel" data-content-review-toolbar><div class="bq-form-grid"><label>Congregation<select data-content-review-congregation>${scopes.map(row=>`<option value="${esc(row.id)}" ${row.id===state.congregationId?'selected':''}>${esc(row.name)} · ${esc(row.roleLabel)}</option>`).join('')}</select></label><button type="button" class="bq-secondary-button" data-content-review-refresh>Refresh queue</button></div>${state.warning?`<p class="bq-form-message">${esc(state.warning)}</p>`:''}</section>`;
+  return `<section class="bq-panel" data-content-review-toolbar><div class="bq-form-grid"><label>Congregation<select data-content-review-congregation>${state.congregationId?'':'<option value="" selected>Choose a congregation</option>'}${scopes.map(row=>`<option value="${esc(row.id)}" ${row.id===state.congregationId?'selected':''}>${esc(row.name)} · ${esc(row.roleLabel)}</option>`).join('')}</select></label><button type="button" class="bq-secondary-button" data-content-review-refresh>Refresh queue</button></div>${state.warning?`<p class="bq-form-message">${esc(state.warning)}</p>`:''}</section>`;
 }
 
 function tabs(tab,openReports){return `<div class="bq-chip-row" data-content-review-tabs><button type="button" class="${tab==='quarantine'?'bq-primary-button':'bq-secondary-button'}" data-content-review-tab="quarantine">Quarantined questions</button><button type="button" class="${tab==='reports'?'bq-primary-button':'bq-secondary-button'}" data-content-review-tab="reports">Member reports${openReports?` (${openReports})`:''}</button></div>`}
@@ -58,6 +58,7 @@ export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
       if(state.status==='unauthorized'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Reviewer role required</h2><p>Content Review is limited to congregation Leaders, Pastors and Admins, or platform Owner/Admin accounts.</p><button type="button" class="bq-primary-button" data-content-review-congregation-access>Open congregation access</button></section>`;bindCommon();return}
       if(state.status==='error'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Content Review could not load</h2><p class="bq-form-message" role="alert">${esc(state.error||'Try again.')}</p><button type="button" class="bq-secondary-button" data-content-review-retry>Try again</button></section>`;bindCommon();return}
       if(state.status!=='ready'){view.innerHTML=`${intro()}<section class="bq-panel"><h2>Opening review queue…</h2></section>`;bindCommon();return}
+      if(!state.congregationId){view.innerHTML=`${intro()}${toolbar(state)}<section class="bq-panel"><h2>Select a congregation</h2><p>Choose a congregation above to load its review queue.</p></section>`;bindReady();return}
       const reports=review.reportItems(),openReports=reports.filter(row=>row.status==='open').length;
       const book=state.books.find(row=>row.code===state.selectedBook)||state.books[0]||null;
       const quarantine=(state.quarantine||[]).filter(item=>matches(item,[item.question,item.answer,item.reference,(item.safety?.topics||[]).join(' ')]));
@@ -67,7 +68,7 @@ export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
       view.innerHTML=`${intro()}${toolbar(state)}${tabs(tab,openReports)}${bookControl}${filters(filter,search)}${message?`<p class="bq-form-message" role="status" data-content-review-message>${esc(message)}</p>`:''}<section data-content-review-list>${list||'<div class="bq-panel"><p>No review items match this filter.</p></div>'}</section>`;
       view.querySelectorAll('button,select,input,textarea').forEach(control=>control.toggleAttribute('disabled',busy||state.busy));bindReady();
     };
-    async function load(){if(busy||disposed)return;busy=true;message='';view.innerHTML=`${intro()}<section class="bq-panel"><h2>Opening review queue…</h2></section>`;bindCommon();const state=await review.refresh();if(state.status==='ready'&&state.books[0])await review.openQuarantine(state.books[0].code);busy=false;render(review.getState())}
+    async function load(){if(busy||disposed)return;busy=true;message='';view.innerHTML=`${intro()}<section class="bq-panel"><h2>Opening review queue…</h2></section>`;bindCommon();const state=await review.refresh();if(state.status==='ready'&&state.congregationId&&state.books[0])await review.openQuarantine(state.books[0].code);busy=false;render(review.getState())}
     void load();return()=>{disposed=true;review.clear()};
   }};
 }

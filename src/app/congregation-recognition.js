@@ -47,7 +47,7 @@ export function createCongregationRecognitionService({api,session,congregation}=
   const setState=patch=>{current=Object.freeze({...current,...patch});return current};
   const requireAccount=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw recognitionError('Sign in to view congregation recognition.','BQ_RECOGNITION_AUTH_REQUIRED');if(state.remoteAvailable===false)throw recognitionError('Congregation recognition is unavailable in local preview.','BQ_RECOGNITION_REMOTE_DISABLED');return state};
 
-  async function load({congregationId=current.congregationId}={}){
+  async function load({congregationId}={}){
     const account=requireAccount(),userId=String(account.user.id),request=++loadRequest;
     if(contextUserId&&contextUserId!==userId)setState({status:'idle',congregations:[],congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]});
     contextUserId=userId;
@@ -56,7 +56,9 @@ export function createCongregationRecognitionService({api,session,congregation}=
     if(request!==loadRequest||currentUserId()!==userId)return snapshot();
     const congregations=memberships.map(row=>Object.freeze({id:String(row.congregationId),name:cleanText(row.congregation?.name,100)||'Congregation',role:String(row.role||''),roleLabel:cleanText(row.roleLabel,40)||'Member',canAward:AWARD_ROLES.has(String(row.role||''))}));
     if(!congregations.length)return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]});
-    const selected=congregations.find(row=>row.id===String(congregationId||''))||congregations[0];
+    const requestedId=String(congregationId||congregation.getActive?.()?.congregationId||'');
+    const selected=congregations.find(row=>row.id===requestedId);
+    if(!selected)return setState({authenticated:true,remoteAvailable:true,status:'ready',congregations,congregationId:'',congregationName:'',role:'',roleLabel:'',canAward:false,members:[],recognitions:[],badges:[]});
     congregation.assert(selected.id,'read');
     let result;
     try{result=await api.load(selected.id)}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}

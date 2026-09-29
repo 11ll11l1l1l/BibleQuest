@@ -14,7 +14,7 @@ const dataset=()=>({
   badges:[{congregation_id:'c1',user_id:'u2',badge_id:'first-study',earned_at:'2026-09-09T00:00:00Z'}],
   recognitions:[{id:'r1',congregation_id:'c1',user_id:'u2',awarded_by:'u1',award_code:'encourager',title:'Encourager',note:'Thank you',icon:'💛',visible:true,created_at:'2026-09-09T01:00:00Z'}]
 });
-const congregation={load:async()=>memberships,assert:(id,cap)=>{assert.equal(id,'c1');assert.equal(cap,'read')}};
+const congregation={load:async()=>memberships,getActive:()=>({congregationId:'c1'}),assert:(id,cap)=>{assert.equal(id,'c1');assert.equal(cap,'read')}};
 const api={
   load:async id=>{loadCalls.push(id);return dataset()},
   award:async row=>{awardCalls.push(row);return{...row,id:'r2',visible:true,created_at:'2026-09-09T02:00:00Z'}}
@@ -58,4 +58,18 @@ await assert.rejects(()=>makeBad(async()=>({...dataset(),recognitions:[{...datas
 
 const mismatch=createCongregationRecognitionService({api:{load:api.load,award:async row=>({...row,id:'wrong',congregation_id:'foreign'})},session,congregation});
 await mismatch.load();await assert.rejects(()=>mismatch.award({targetUserId:'u2',awardCode:'consistency'}),error=>error.code==='BQ_RECOGNITION_RESPONSE');
+
+let unscopedReads=0;
+const noActiveRecognition=createCongregationRecognitionService({
+  api:{load:async()=>{unscopedReads++;return dataset()},award:api.award},
+  session,
+  congregation:{
+    load:async()=>[baseMembership('leader'),{...baseMembership('leader'),congregationId:'c2',congregation:{name:'Church Two'}}],
+    getActive:()=>null,
+    assert:()=>{throw new Error('Recognition must not assert an implicit congregation.')}
+  }
+});
+const noActiveState=await noActiveRecognition.load();
+assert.equal(noActiveState.congregationId,'','Recognition must not select the first membership without active congregation context.');
+assert.equal(unscopedReads,0,'Recognition must not perform a tenant read without active congregation context.');
 console.log('BibleQuest v3 Congregation Recognition edge regression passed.');
