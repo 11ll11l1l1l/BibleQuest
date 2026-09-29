@@ -27,3 +27,16 @@ test('private assignment response query filters through the linked assignment co
   assert.match(source, /bible_assignments!inner\(\)/);
   assert.match(source, /\.eq\('bible_assignments\.congregation_id',congregationId\)/);
 });
+
+
+test('avatar membership writes accept the congregation as an explicit scope', () => {
+  const source = methodSource('avatarVault', 'save');
+  assert.match(source, /^async save\(userId,congregationId,selectedStyle\)/);
+});
+
+test('avatar membership writes filter both account and congregation and verify the affected row', () => {
+  const source = methodSource('avatarVault', 'save');
+  assert.match(source, /\.eq\('user_id',userId\)\.eq\('congregation_id',cid\)/);
+  assert.match(source, /\.select\('congregation_id,user_id'\)\.maybeSingle\(\)/);
+  assert.match(source, /BQ_AVATAR_VAULT_SCOPE_UNAVAILABLE/);
+});
