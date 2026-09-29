@@ -412,15 +412,22 @@ export function createApi() {
       if(error)throw error;
       return data||null;
     },
-    async save(userId,selectedStyle) {
+    async save(userId,congregationId,selectedStyle) {
+      const cid=String(congregationId||'').trim();
+      if(!cid){const error=new Error('Avatar Vault congregation is required.');error.code='BQ_AVATAR_VAULT_CONGREGATION_REQUIRED';throw error}
       const client=await getClient();
       const avatar={cosmetic:selectedStyle};
       const updatedAt=new Date().toISOString();
       const cosmeticRes=await client.from('bible_avatar_cosmetics').upsert({user_id:userId,selected_style:selectedStyle,updated_at:updatedAt},{onConflict:'user_id'});
       if(cosmeticRes?.error)throw cosmeticRes.error;
-      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId);
+      const memberRes=await client.from('bible_congregation_members').update({avatar}).eq('user_id',userId).eq('congregation_id',cid).select('congregation_id,user_id').maybeSingle();
       if(memberRes?.error)throw memberRes.error;
-      return {selected_style:selectedStyle,avatar};
+      if(!memberRes?.data||String(memberRes.data.user_id)!==String(userId)||String(memberRes.data.congregation_id)!==cid){
+        const error=new Error('Avatar Vault membership scope is unavailable.');
+        error.code='BQ_AVATAR_VAULT_SCOPE_UNAVAILABLE';
+        throw error;
+      }
+      return {selected_style:selectedStyle,avatar,congregation_id:cid};
     }
   });
 
