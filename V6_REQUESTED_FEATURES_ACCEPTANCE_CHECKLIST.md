@@ -6,7 +6,7 @@ Plan: `DEVELOPMENT_PLAN_V6.md`
 
 This checklist is the release-blocking inventory for V6 unless `V6_ACTIVE_STATUS.md` explicitly marks an item non-applicable or owner-waived. A waiver is not a PASS.
 
-Evidence checkpoint: integrated V6 head `5a80ae75778da2d4aff8329b6911b8876a08584d`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
+Evidence checkpoint: integrated V6 head `eed8ab7c3f6853f4d46f067c4ba75290165d8753`. Checked items below are limited to behavior directly supported by merged source plus executable CI evidence; signed-out Chromium, local Supabase CI and physical/device evidence are not treated as interchangeable. Core V6 reconciliation includes merged PR #538 with V6 Phase 1 Build Gate `35961956126` SUCCESS. Phase-2 reconciliation includes merged PR #541 with V6 Database CI `35975269052` SUCCESS and V6 Phase 1 Build Gate `35975269120` SUCCESS. Shared typed-account-resume parity repair PR #546 passed V6 Phase 1 `35975512403` and inherited regression `35975512420` before merge.
 
 Certification reconciliation from integrated head `316c9fadd50d30854c0c545914a7d5749eff9f8c`: production parity is proven by merged PR #510 (Phase 1 `35823184257`, Database CI `35823184256`, inherited regression `35823184264`) and current ancestry; push cleanup/rate-control/server-category evidence is integrated through PR #541 Database CI `35975269052` and subsequent green S2 integrations; account/tenant isolation is integrated through PRs #550/#557 with Phase 1 + inherited regression green; privacy-safe telemetry is merged through PR #568 with Database CI `36062843154`, regression `36062843068`, and Phase 1 `36062843220`; Games engine/characterization/adapters/presentation are merged through PR #572 with Phase 1 `36063707076` and regression `36063706908`. The dedicated integrated-acceptance certification test on this checklist reconciliation must also pass before merge. Physical-device, authenticated role-browser, unmerged Reader/Assignments, and Cloudflare exact-artifact requirements remain unchecked.
 
@@ -23,6 +23,8 @@ Sixth certification reconciliation from integrated head `dfff5bcf4fe73642cfb2439
 Seventh reconciliation at integrated head `5a80ae75778da2d4aff8329b6911b8876a08584d`: merged Reader PRs #815/#816 provide independently testable Search and Verse Peek presentations and route Scripture/Search/Context Lab reads through `ScriptureContentProvider`; the three corresponding Reader decomposition items are now PASS. Mobile/accessibility Reader acceptance from PR #817 and subsequent offline package/audio/security work remain in the local speedtrack candidate, outside this official checkpoint. Therefore this integrated checklist is 131/210 PASS; the local branch `codex/v6-offline-reader` has unintegrated commits and separate candidate evidence in `V6_ACTIVE_STATUS.md`.
 
 Eighth reconciliation at integrated head `b68b0b75` after merged PR #818: its exact source head `7dc3c077` passed Client Artifact Security `36501288796`, Phase-1 build/Chromium/PWA `36501288723`, disposable Supabase replay/pgTAP/lint/types `36501288726`, and inherited static/browser regression `36501288841`. The built Reader accessibility/mobile probe covers 320/360/390/412/430 px. The built offline probe installs all 66 BSB books, cancels/resumes a partial install across browser restarts, reopens and navigates offline, searches installed text without external requests, and removes packages. Unit and CacheStorage adapter regressions cover corrupt package recovery. Ten directly evidenced items below are promoted; installed PWA on physical devices, live external audio, authenticated full-role matrix, and deployed artifact identity remain OPEN. The actual checklist row count before this update was 135 checked/76 open (211 total), despite the older prose saying 131/210. It is now 145/211 PASS with 66 open; the historical discrepancy needs an inventory audit before release.
+
+Ninth reconciliation at integrated head `eed8ab7c3f6853f4d46f067c4ba75290165d8753`: PR #822 merged active-congregation enforcement for Videos after exact-head Client Artifact Security `36514080673`, Phase-1 build/Chromium/PWA `36514080579`, and inherited regression `36514080593` all passed. PR #823 merged avatar-vault tenant-write pgTAP coverage after Database CI `36518308814` and inherited regression `36518308821` passed. PR #824 hardened congregation provisioning with IANA timezone validation and compensating cleanup after invite-creation failure; its exact head `b04d6865` passed Phase-1 build/browser `36518587955`, Database CI `36518587987`, and inherited regression `36518588025`. The previously merged #818/#821 evidence also directly proves independently testable chapter/verse presentation, bounded multi-instance media ownership, account-scoped resume, canonical Recordings ownership, ministry announcement→durable notification production, congregation member/settings management, and assignment-response tenant isolation. Nine directly evidenced rows are promoted in this reconciliation. Physical-device, live OpenBible/provider behavior, full authenticated role-browser coverage, deployed Cloudflare byte identity, CSP enforcement, and final RC gates remain OPEN. Checklist count is now 154 checked / 57 open (211 total).
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -86,7 +88,7 @@ Eighth reconciliation at integrated head `b68b0b75` after merged PR #818: its ex
 - [x] Current Reader translation/content behavior has characterization tests before migration.
 - [x] Reader navigation/translation state has a DOM-independent typed parity seam.
 - [x] Scripture repository/content provider separated from route/view.
-- [ ] Chapter/verse presentation split into testable components.
+- [x] Chapter/verse presentation split into testable components.
 - [x] Search is independently testable.
 - [x] Verse Peek is independently testable.
 - [x] Context Lab bridge is independently testable.
@@ -160,15 +162,15 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 
 - [x] Provider-adapter architecture exists.
 - [x] YouTube playback uses the official IFrame API or an equally explicit supported adapter, not command-only raw messaging as the primary abstraction.
-- [ ] Multiple media instances can register without creating uncontrolled persistent iframes.
+- [x] Multiple media instances can register without creating uncontrolled persistent iframes.
 - [x] One-audible-session default policy is enforced/tested.
 - [x] Player switching/route teardown is deterministic.
 - [x] Queue/playlist behavior exists where accepted.
-- [ ] Continue-watching/resume state exists where accepted.
+- [x] Continue-watching/resume state exists where accepted.
 - [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
 - [x] Background/foreground lifecycle is tested.
 - [x] Media curation remains server-authorized.
-- [ ] Old dead Media Library owner is removed only after live routes have parity/evidence.
+- [x] Old dead Media Library owner is removed only after live routes have parity/evidence.
 
 ## I. Push notifications and background delivery
 
@@ -207,7 +209,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Privacy-safe member/group activity summaries are available.
 - [x] Raw presence data is not exposed to ordinary roles or used as unnecessary surveillance.
 - [x] Upcoming due items/events surface is available.
-- [ ] Leader announcement/notification publishing is integrated.
+- [x] Leader announcement/notification publishing is integrated.
 - [x] Journey Group/team management entry points are integrated where applicable.
 - [ ] Moderation/review entry points preserve existing server authority.
 - [ ] Role matrix passes DB + browser tests.
@@ -220,10 +222,10 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Tenant switch clears stale cached/view state.
 - [ ] Sensitive repository calls require explicit congregation context.
 - [x] Invitation/join flow is preserved/migrated.
-- [ ] Membership/role management is preserved/migrated.
-- [ ] Congregation profile/settings workflow exists as accepted.
-- [ ] Congregation provisioning workflow exists as accepted.
-- [ ] Assignments/responses cross-tenant isolation passes.
+- [x] Membership/role management is preserved/migrated.
+- [x] Congregation profile/settings workflow exists as accepted.
+- [x] Congregation provisioning workflow exists as accepted.
+- [x] Assignments/responses cross-tenant isolation passes.
 - [x] Presence cross-tenant isolation passes.
 - [x] Groups/teams/rooms cross-tenant isolation passes.
 - [x] Media/notifications/Leader Center cross-tenant isolation passes.
