@@ -131,6 +131,11 @@ jobs:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/notification-settings-browser.mjs
 
+      - name: Media Picture-in-Picture Chromium acceptance
+        env:
+          BQ_V6_DEV_URL: http://127.0.0.1:4174
+        run: node tests/v6/media-pip-browser.mjs
+
       - name: Start built artifact preview
         shell: bash
         run: |
