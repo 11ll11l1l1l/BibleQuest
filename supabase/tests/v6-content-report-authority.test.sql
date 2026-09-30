@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(17);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_content_reports'::regclass),
@@ -120,6 +120,67 @@ select results_eq(
     ) select count(*)::bigint from changed$$,
   array[0::bigint],
   'ordinary Member A cannot change report review state after submission'
+);
+
+set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111113';
+select results_eq(
+  $$with changed as (
+      update public.bible_content_reports
+      set status='closed',
+          reviewed_by='11111111-1111-4111-8111-111111111113',
+          reviewed_at=now(),
+          updated_at=now()
+      where congregation_id='10000000-0000-4000-8000-000000000001'
+        and content_key='question:GEN:v6-report-authority'
+      returning reviewed_by::text
+    ) select reviewed_by from changed$$,
+  $$values ('11111111-1111-4111-8111-111111111113'::text)$$,
+  'Pastor A may review a congregation A report'
+);
+
+set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222221';
+select lives_ok(
+  $$insert into public.bible_content_reports(
+      congregation_id,reporter_id,content_key,content_type,content_text,reason
+    ) values (
+      '20000000-0000-4000-8000-000000000002',
+      '22222222-2222-4222-8222-222222222221',
+      'question:GEN:v6-admin-review-authority',
+      'question','Congregation B review fixture','accuracy'
+    )$$,
+  'Admin B may submit a congregation B report for review fixture setup'
+);
+select lives_ok(
+  $$update public.bible_content_reports
+    set status='reviewed',
+        reviewed_by='22222222-2222-4222-8222-222222222221',
+        reviewed_at=now(),
+        updated_at=now()
+    where congregation_id='20000000-0000-4000-8000-000000000002'
+      and content_key='question:GEN:v6-admin-review-authority'$$,
+  'Admin B may review a congregation B report'
+);
+select results_eq(
+  $$select reviewed_by::text
+    from public.bible_content_reports
+    where congregation_id='20000000-0000-4000-8000-000000000002'
+      and content_key='question:GEN:v6-admin-review-authority'$$,
+  $$values ('22222222-2222-4222-8222-222222222221'::text)$$,
+  'Admin B review is stamped with the authenticated reviewer identity'
+);
+select results_eq(
+  $$with changed as (
+      update public.bible_content_reports
+      set status='reviewed',
+          reviewed_by='22222222-2222-4222-8222-222222222221',
+          reviewed_at=now(),
+          updated_at=now()
+      where congregation_id='10000000-0000-4000-8000-000000000001'
+        and content_key='question:GEN:v6-report-authority'
+      returning 1
+    ) select count(*)::bigint from changed$$,
+  array[0::bigint],
+  'Admin B cannot review a congregation A report'
 );
 
 reset role;
