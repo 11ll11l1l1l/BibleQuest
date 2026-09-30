@@ -260,7 +260,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
 - [x] Existing supported-language and Japanese/furigana behavior is preserved.
 - [x] Scripture licensing/source metadata remains separate from UI localization.
-- [ ] Automated accessibility checks run on built artifacts.
+- [x] Automated accessibility checks run on built artifacts.
 - [ ] Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.
 
 ## O. Observability and performance
@@ -273,7 +273,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Route/chunk size budgets are enforced in exact-head build CI.
 - [x] Image/font budgets are enforced.
 - [x] Startup/critical-route performance budgets are defined.
-- [ ] Large Bible/game/media payloads are not eagerly loaded without need.
+- [x] Large Bible/game/media payloads are not eagerly loaded without need.
 
 ## P. CI/release architecture
 
