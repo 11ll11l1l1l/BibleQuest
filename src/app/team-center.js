@@ -45,7 +45,7 @@ export function createTeamCenterService({api,session,congregation}){
     if(contextCongregationId&&contextCongregationId!==activeId){teams=[];directory=[];contextCongregationId=''}
     if(!activeMembership){congregations=nextCongregations;teams=[];directory=[];contextCongregationId='';return snapshot()}
     let result;
-    try{result=await api.list([activeId])}catch(error){if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();throw error}
+    try{result=await api.list(activeId)}catch(error){if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();throw error}
     if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();
     const allowedCongregations=new Set([activeId]),rawTeams=Array.isArray(result?.teams)?result.teams:[],rawMembers=Array.isArray(result?.members)?result.members:[],rawDirectory=Array.isArray(result?.directory)?result.directory:[];
     const normalizedTeams=rawTeams.map(row=>normalizeTeam(row,allowedCongregations)),allowedTeams=new Set(normalizedTeams.map(row=>row.id));
