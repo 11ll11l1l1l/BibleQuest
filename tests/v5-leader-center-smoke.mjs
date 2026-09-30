@@ -11,6 +11,7 @@ async function installHarness(page,{role='leader',directoryFails=false,switchDur
     ]);
     window.__removeLeaderCenterHarness?.();
     window.__lcReviewCalls=[];
+    window.__lcContentReviewCalls=0;
     const baseState={status:'ready',role,userId:'leader-a',congregationId:'c1',congregationName:'Harness Congregation',assignments:[{id:'a1',scheduleAt:null,title:'Open task'},{id:'a2',scheduleAt:'2999-01-01T00:00:00.000Z',title:'Future task'}]};
     let currentState=baseState;
     const assignments={
@@ -45,7 +46,7 @@ async function installHarness(page,{role='leader',directoryFails=false,switchDur
     ]}]}}};
     const leaderCenter=createLeaderCenterService({assignments,presence,calendar});
     const root=document.createElement('div');root.id='leader-center-test-root';document.body.append(root);
-    const definition=leaderCenterPage({leaderCenter,onBack:()=>{},onAccount:()=>{},onAssignments:()=>{window.__lcNav='assignments'},onCalendar:()=>{window.__lcNav='calendar'},onJourneyGroups:()=>{window.__lcNav='journey-groups'},onTeamCenter:()=>{window.__lcNav='team-center'},onCongregation:()=>{window.__lcNav='congregation'}});
+    const definition=leaderCenterPage({leaderCenter,onBack:()=>{},onAccount:()=>{},onAssignments:()=>{window.__lcNav='assignments'},onCalendar:()=>{window.__lcNav='calendar'},onJourneyGroups:()=>{window.__lcNav='journey-groups'},onTeamCenter:()=>{window.__lcNav='team-center'},onCongregation:()=>{window.__lcNav='congregation'},onContentReview:()=>{window.__lcContentReviewCalls++;window.__lcNav='content-review'}});
     root.innerHTML=definition.html;const cleanup=definition.mount(root);
     window.__removeLeaderCenterHarness=()=>{cleanup?.();root.remove();delete window.__lcNav};
   },{role,directoryFails,switchDuringLifecycle});
@@ -127,6 +128,16 @@ async function ministryRoleMatrix(){
     await root.locator('[data-leader-overview]').waitFor();
     assert(await root.locator('[data-leader-center-denied]').count()===0,`Ministry role '${role}' must be authorized in the Leader Center browser matrix.`);
     assert((await root.locator('[data-leader-overview]').innerText()).includes(role),`Leader Center did not render the verified '${role}' role.`);
+    const reviewEntry=root.locator('[data-leader-open-content-review]');
+    if(role==='facilitator'){
+      assert(await reviewEntry.count()===0,'Facilitator may use Leader Center but must not receive the Content Review entry point.');
+    }else{
+      assert(await reviewEntry.count()===1,`Review-capable role '${role}' must receive the Content Review entry point.`);
+      await page.evaluate(()=>{window.__lcNav='';window.__lcContentReviewCalls=0;});
+      await reviewEntry.click();
+      assert(await page.evaluate(()=>window.__lcNav)==='content-review',`Content Review handoff failed for '${role}'.`);
+      assert(await page.evaluate(()=>window.__lcContentReviewCalls)===1,`Content Review handoff must fire once for '${role}'.`);
+    }
   }
   await page.evaluate(()=>window.__removeLeaderCenterHarness());
   await page.close();
@@ -140,6 +151,8 @@ async function tenantSwitchFailsClosed(){
   await root.locator('[data-leader-center-denied]').waitFor();
   assert(await root.locator('[data-leader-overview]').count()===0,'Leader Center must not render stale congregation A overview after A→B switch.');
   assert(await root.locator('[data-leader-people]').count()===0,'Leader Center must not render stale congregation A directory after A→B switch.');
+  assert(await root.locator('[data-leader-open-content-review]').count()===0,'Leader Center must not retain a Content Review entry from stale congregation A after A→B switch.');
+  assert(await page.evaluate(()=>window.__lcContentReviewCalls)===0,'Tenant switch must not trigger stale Content Review navigation.');
   assert(!((await root.innerText())||'').includes('Harness Congregation'),'Stale congregation A identity leaked after active tenant switch.');
   await page.evaluate(()=>window.__removeLeaderCenterHarness());
   await page.close();
