@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 import { exportCurrentBsbAlignmentText } from '../../scripts/v6-export-current-bsb-alignment-text.mjs';
@@ -9,7 +10,7 @@ import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../
 
 test('current BSB alignment export is complete, deterministic and bound to the Reader Scripture revision', async () => {
   const output = await mkdtemp(join(tmpdir(), 'bq-v6-bsb-align-'));
-  const root = resolve(new URL('../..', import.meta.url).pathname);
+  const root = fileURLToPath(new URL('../..', import.meta.url));
   try {
     const result = await exportCurrentBsbAlignmentText({ root, outputDirectory: output });
     const bsb = SCRIPTURE_PACKAGE_SOURCES.find(source => source.translationId === 'bsb');
@@ -36,13 +37,8 @@ test('current BSB alignment export is complete, deterministic and bound to the R
 
 test('current BSB alignment export refuses a non-empty output directory', async () => {
   const output = await mkdtemp(join(tmpdir(), 'bq-v6-bsb-align-nonempty-'));
-  const root = resolve(new URL('../..', import.meta.url).pathname);
-  try {
-    await Bun?.write?.(join(output, 'stale.txt'), 'stale');
-  } catch {
-    const { writeFile } = await import('node:fs/promises');
-    await writeFile(join(output, 'stale.txt'), 'stale');
-  }
+  const root = fileURLToPath(new URL('../..', import.meta.url));
+  await writeFile(join(output, 'stale.txt'), 'stale');
   try {
     await assert.rejects(
       exportCurrentBsbAlignmentText({ root, outputDirectory: output }),
