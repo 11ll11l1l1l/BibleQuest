@@ -91,25 +91,25 @@ test('BSB alignment import remaps line ordinals to canonical verse ids without s
   const exportManifest = {
     translationId: 'bsb',
     scriptureContentVersion,
-    files: [{ book: 'ACT', chapter: 8, verseNumbers: [36, 38] }],
+    files: [{ book: 'ACT', chapter: 8, verseNumbers: [1, 3] }],
   };
   const remapped = remapBsbAlignmentVerseIds({ records: raw, exportManifest, scriptureContentVersion });
-  assert.deepEqual(Object.keys(remapped[0].verses), ['36', '38']);
+  assert.deepEqual(Object.keys(remapped[0].verses), ['1', '3']);
 
   const result = convertBsbWordAlignments({
     records: remapped,
     durations: [{ book: 'ACT', chapter: 8, durationSeconds: 3 }],
     bookPacks: { ACT: [
-      { c: 8, v: 36, t: 'Look, here is water.' },
-      { c: 8, v: 38, t: 'He stopped the chariot.' },
+      { c: 8, v: 1, t: 'Look, here is water.' },
+      { c: 8, v: 3, t: 'He stopped the chariot.' },
     ] },
     metadata,
     scriptureContentVersion,
     requireComplete: false,
   });
   assert.deepEqual(result.alignments[0].verses, [
-    { verse: 36, startSeconds: 0.1, endSeconds: 0.6 },
-    { verse: 38, startSeconds: 1, endSeconds: 1.7 },
+    { verse: 1, startSeconds: 0.1, endSeconds: 0.6 },
+    { verse: 3, startSeconds: 1, endSeconds: 1.7 },
   ]);
 });
 
