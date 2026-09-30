@@ -220,10 +220,6 @@ const helpCenterPage = args => lazyFeaturePage('help-center', 'helpCenterPage', 
 
 const V5_PUSH_VAPID_PUBLIC_KEY='BKxJ2WXSqmiA9ZEmx8bItafM4fp_R4NkTC4F45BGZjjDqnfK-C3Goqb25CVgWsSSwMZsvOczx8LNv2vstkdqRmI';
 
-function escapeStartupMessage(value){
-  return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-}
-
 // Fail-fast startup guard: if service construction/wiring below throws (for
 // example a dependency-ordering ReferenceError), render an actionable
 // diagnostic into #app instead of leaving a blank/frozen screen. This is not
