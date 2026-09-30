@@ -124,14 +124,18 @@ select results_eq(
 
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111113';
-select lives_ok(
-  $$update public.bible_content_reports
-    set status='closed',
-        reviewed_by='11111111-1111-4111-8111-111111111113',
-        reviewed_at=now(),
-        updated_at=now()
-    where congregation_id='10000000-0000-4000-8000-000000000001'
-      and content_key='question:GEN:v6-report-authority'$$,
+select results_eq(
+  $$with changed as (
+      update public.bible_content_reports
+      set status='closed',
+          reviewed_by='11111111-1111-4111-8111-111111111113',
+          reviewed_at=now(),
+          updated_at=now()
+      where congregation_id='10000000-0000-4000-8000-000000000001'
+        and content_key='question:GEN:v6-report-authority'
+      returning reviewed_by::text
+    ) select reviewed_by from changed$$,
+  $$values ('11111111-1111-4111-8111-111111111113'::text)$$,
   'Pastor A may review a congregation A report'
 );
 
@@ -181,14 +185,18 @@ select results_eq(
 );
 
 set local "request.jwt.claim.sub"='99999999-9999-4999-8999-999999999999';
-select lives_ok(
-  $$update public.bible_content_reports
-    set status='reviewed',
-        reviewed_by='99999999-9999-4999-8999-999999999999',
-        reviewed_at=now(),
-        updated_at=now()
-    where congregation_id='10000000-0000-4000-8000-000000000001'
-      and content_key='question:GEN:v6-report-authority'$$,
+select results_eq(
+  $$with changed as (
+      update public.bible_content_reports
+      set status='reviewed',
+          reviewed_by='99999999-9999-4999-8999-999999999999',
+          reviewed_at=now(),
+          updated_at=now()
+      where congregation_id='10000000-0000-4000-8000-000000000001'
+        and content_key='question:GEN:v6-report-authority'
+      returning reviewed_by::text
+    ) select reviewed_by from changed$$,
+  $$values ('99999999-9999-4999-8999-999999999999'::text)$$,
   'Platform Owner retains explicit global content-review authority'
 );
 
