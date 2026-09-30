@@ -1,6 +1,6 @@
 # BibleQuest V6 Agent Task Board
 
-Updated: 2026-09-30 JST
+Updated: 2026-10-01 JST
 Integration branch: `v6/architecture-upgrade`
 Operational contract: `V6_AGENT_OPERATING_SYSTEM.md`
 
@@ -17,6 +17,14 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- PR #934 is integrated at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed, including exact built-artifact report-only and enforcing CSP Chromium gates. CSP is now accepted. After reconciliation: **179 checked / 32 open / 211 total = 84.8%**.
+
+- PR #912 is integrated at `de1ee50c9d25f8a3dcc8507b2f59c2f2e00d7e35` from exact head `5e1b99f674648e83ab6141ee810deec6ee055194`; its green Phase-1/inherited/artifact-security evidence closes the explicit removable permission-gated offline-download and selective-audio/no-silent-full-cache rows. Alignment-dependent Reader behavior remains fail-closed.
+
+- PR #935 is the current W1 deployment-verifier artifact. Exact-preview discovery and exact-head rebuild work; deployed verification run `36790979893` fails because Cloudflare returns HTML for `bq-artifact-integrity.json`. This is now an external Pages publish-root/output blocker: configure Pages to publish `dist-v6` unchanged, then rerun #935. Do not duplicate the verifier.
+
+- PR #936 is the active W3 Reader/audio tranche. It records that pinned `bsb-align` text is not exact-equivalent to the current BibleQuest BSB text and therefore must not drive verse timing/highlight/seek/autoscroll; keep those acceptance rows open until exact source-matched timing exists.
+
 - PR #931 is integrated at `1e481b12205718dd4b45ae1bfd53e0d8f7f2b461` from exact head `c634bf382b2f20eedc485550692756b0e5f37b68`; Client Artifact Security `36723086328`, Phase-1 `36723086331`, and inherited regression `36723086375` passed. Team Center is single-tenant at the repository boundary, and the deny-by-default inter-congregation sharing policy is now accepted. Acceptance target after reconciliation: **176 checked / 35 open / 211 total**. W2-01 continues with Live Rooms explicit scope and the complete sensitive-domain audit.
 
 - PR #926 is integrated at `b92258a93140c06cc6f71c93ece487d711dbd6a5` from exact head `337e3f66a4cc172a50b95a8d4de51f9af66b6b8b`; Database CI `36721670165`, Phase-1 `36721669960`, and inherited regression `36721670124` passed. The Leader Center role-matrix and cross-congregation DB+browser rows are now counted. Current acceptance target: **175 checked / 36 open / 211 total**. W2-01 now continues with the broader all-sensitive-domain explicit-tenant audit rather than redoing Leader Center evidence.
@@ -67,21 +75,22 @@ Owner bias: W1
 Checklist targets:
 - Cloudflare exact-SHA deployment identity from built artifacts;
 - exact-SHA Cloudflare preview verification.
+Current state:
+- repository verifier and automatic exact-preview discovery are consolidated in PR #935;
+- external blocker is Cloudflare Pages serving HTML instead of `dist-v6/bq-artifact-integrity.json`.
 Work:
-- inspect current fail-closed verifier and Pages configuration;
-- implement repository-side build/deployment metadata seam if missing;
-- add deterministic test/CI contract;
-- if external Pages configuration is the only blocker, document it once and pivot to W1-02 in the same run.
+- do not duplicate verifier code;
+- after Pages publish root is corrected to `dist-v6`, rerun #935 and attach exact deployed-byte evidence;
+- while external configuration remains blocked, pivot to W1-02.
 
-### W4-01 — Built-artifact automated accessibility
-Owner bias: W4
+### W2-04 — Protected-action authority closure
+Owner bias: W2 / IC
 Checklist target:
-- automated accessibility checks run on built artifacts.
+- Feature modules do not make UI visibility the authority for protected actions.
 Work:
-- integrate a deterministic built-output accessibility gate for representative critical routes;
-- preserve existing keyboard/focus tests;
-- include mobile viewport coverage where practical;
-- never substitute automation for the separate physical/manual row.
+- inventory migrated feature modules with protected mutations;
+- prove presentation-only visibility gates delegate to server-authorized API/RLS/Edge Function boundaries;
+- add a fail-closed architectural regression rather than accepting one-screen evidence.
 
 ## P1 — take when P0 item is owned/blocked
 
