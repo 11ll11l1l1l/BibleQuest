@@ -7,7 +7,9 @@ on:
     paths:
       - 'supabase/**'
       - 'scripts/v6-prepare-local-supabase.mjs'
+      - 'scripts/v6-migration-history-guard.mjs'
       - 'tests/v6/database-ci-contract.test.mjs'
+      - 'tests/v6/migration-history-guard.test.ts'
       - '.github/workflows/v6-database-ci.yml'
   workflow_dispatch:
 
@@ -39,6 +41,9 @@ jobs:
 
       - name: Run no-Docker database CI contract
         run: node --test tests/v6/database-ci-contract.test.mjs
+
+      - name: Validate local migration identity inventory
+        run: npm run check:v6-migration-history
 
       - name: Install pinned Supabase CLI
         uses: supabase/setup-cli@v1
