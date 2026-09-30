@@ -10,7 +10,8 @@ async function installHarness(page,{role='leader',directoryFails=false,switchDur
       import('/src/app/leader-center.js'),import('/src/features/leader-center/index.js')
     ]);
     window.__removeLeaderCenterHarness?.();
-    window.__lcReviewCalls=[];\n    window.__lcContentReviewCalls=0;
+    window.__lcReviewCalls=[];
+    window.__lcContentReviewCalls=0;
     const baseState={status:'ready',role,userId:'leader-a',congregationId:'c1',congregationName:'Harness Congregation',assignments:[{id:'a1',scheduleAt:null,title:'Open task'},{id:'a2',scheduleAt:'2999-01-01T00:00:00.000Z',title:'Future task'}]};
     let currentState=baseState;
     const assignments={
@@ -126,7 +127,17 @@ async function ministryRoleMatrix(){
     const root=page.locator('#leader-center-test-root');
     await root.locator('[data-leader-overview]').waitFor();
     assert(await root.locator('[data-leader-center-denied]').count()===0,`Ministry role '${role}' must be authorized in the Leader Center browser matrix.`);
-    assert((await root.locator('[data-leader-overview]').innerText()).includes(role),`Leader Center did not render the verified '${role}' role.`);\n    const reviewEntry=root.locator('[data-leader-open-content-review]');\n    if(role==='facilitator'){\n      assert(await reviewEntry.count()===0,'Facilitator may use Leader Center but must not receive the Content Review entry point.');\n    }else{\n      assert(await reviewEntry.count()===1,`Review-capable role '${role}' must receive the Content Review entry point.`);\n      await page.evaluate(()=>{window.__lcNav='';window.__lcContentReviewCalls=0;});\n      await reviewEntry.click();\n      assert(await page.evaluate(()=>window.__lcNav)==='content-review',`Content Review handoff failed for '${role}'.`);\n      assert(await page.evaluate(()=>window.__lcContentReviewCalls)===1,`Content Review handoff must fire once for '${role}'.`);\n    }
+    assert((await root.locator('[data-leader-overview]').innerText()).includes(role),`Leader Center did not render the verified '${role}' role.`);
+    const reviewEntry=root.locator('[data-leader-open-content-review]');
+    if(role==='facilitator'){
+      assert(await reviewEntry.count()===0,'Facilitator may use Leader Center but must not receive the Content Review entry point.');
+    }else{
+      assert(await reviewEntry.count()===1,`Review-capable role '${role}' must receive the Content Review entry point.`);
+      await page.evaluate(()=>{window.__lcNav='';window.__lcContentReviewCalls=0;});
+      await reviewEntry.click();
+      assert(await page.evaluate(()=>window.__lcNav)==='content-review',`Content Review handoff failed for '${role}'.`);
+      assert(await page.evaluate(()=>window.__lcContentReviewCalls)===1,`Content Review handoff must fire once for '${role}'.`);
+    }
   }
   await page.evaluate(()=>window.__removeLeaderCenterHarness());
   await page.close();
