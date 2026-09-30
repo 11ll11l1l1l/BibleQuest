@@ -33,7 +33,7 @@ export function findUnsafeClientConsoleSinks(source) {
   const lines = String(source || '').split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    const calls = line.matchAll(/console\.(?:log|info|warn|error|debug|trace|dir|table)\s*\(([^)]]*)\)/g);
+    const calls = line.matchAll(/console\.(?:log|info|warn|error|debug|trace|dir|table)\s*\(([^)]*)\)/g);
     for (const call of calls) {
       const args = String(call[1] || '').trim();
       if (FIXED_SINGLE_QUOTED_LITERAL.test(args)) continue;
