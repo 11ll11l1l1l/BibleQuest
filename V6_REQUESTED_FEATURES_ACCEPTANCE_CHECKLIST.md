@@ -293,6 +293,8 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [ ] V4 rollback reference remains available through V6 production acceptance.
 
+Integrated acceptance evidence (2026-09-30; PR #649, exact PR head evidence via Phase-1 `36157859026` and inherited regression `36157858952`): the versioned offline mutation outbox is allowlisted to accepted safe mutations and rejects privileged/destructive/auth/admin actions rather than replaying them after reconnect. This is automated exact-head evidence; it does not promote unrelated physical-device or live-service rows.
+
 ## Q. Cross-cutting safety gates
 
 - [ ] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
@@ -300,7 +302,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [ ] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [x] Large offline downloads require explicit user action and provide storage/removal controls.
-- [ ] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
+- [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
 - [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
 - [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
 - [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
