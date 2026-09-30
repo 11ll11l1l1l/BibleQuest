@@ -11,6 +11,7 @@ const producerDbTest = readFileSync(new URL('../../supabase/tests/v6-notificatio
 const reminderDbTest = readFileSync(new URL('../../supabase/tests/v6-assignment-due-reminders.test.sql', import.meta.url), 'utf8');
 const workerTest = readFileSync(new URL('./assignment-push-service-worker.test.ts', import.meta.url), 'utf8');
 const databaseWorkflow = readFileSync(new URL('../../.github/workflows/v6-database-ci.yml', import.meta.url), 'utf8');
+const schedulerOps = readFileSync(new URL('../../supabase/ops/assignment-due-reminder-cron.sql', import.meta.url), 'utf8');
 
 test('assignment assigned push is connected from durable producer to the canonical sender', () => {
   assert.match(producerMigration, /create or replace function public\.bq_notify_assignment\(\)/);
@@ -66,4 +67,20 @@ test('changes to the combined assignment push contract trigger disposable Databa
     /- 'tests\/v6\/assignment-assigned-due-push\.test\.ts'/,
     'Database CI must rerun when this cross-layer acceptance contract changes',
   );
+});
+
+
+test('due reminder scheduler is explicit, Vault-backed and does not embed server secret values', () => {
+  assert.match(schedulerOps, /create extension if not exists pg_cron/);
+  assert.match(schedulerOps, /create extension if not exists pg_net with schema extensions/);
+  assert.match(schedulerOps, /'bq-assignment-due-reminders-v6'/);
+  assert.match(schedulerOps, /'\*\/5 \* \* \* \*'/);
+  assert.match(schedulerOps, /vault\.decrypted_secrets/);
+  assert.match(schedulerOps, /bq_assignment_reminder_project_url/);
+  assert.match(schedulerOps, /bq_assignment_reminder_secret_key/);
+  assert.match(schedulerOps, /\/functions\/v1\/bq-assignment-reminders/);
+  assert.match(schedulerOps, /'Authorization', 'Bearer ' \|\|/);
+  assert.match(schedulerOps, /timeout_milliseconds := 5000/);
+  assert.doesNotMatch(schedulerOps, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEYS/);
+  assert.doesNotMatch(schedulerOps, /https:\/\/[a-z0-9]+\.supabase\.co/);
 });
