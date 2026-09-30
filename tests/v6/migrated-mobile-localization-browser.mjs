@@ -19,6 +19,7 @@ const locales = Object.freeze({
       'NOTIFICATIONS',
       'Leader Center',
       'MINISTRY',
+      'COMMUNITY BRIDGE',
     ]),
   }),
   ceb: Object.freeze({
@@ -40,6 +41,10 @@ const surfaces = Object.freeze([
   Object.freeze({
     route: 'leader-center',
     keys: Object.freeze(['leaderCenter.title', 'leaderCenter.eyebrow']),
+  }),
+  Object.freeze({
+    route: 'community',
+    keys: Object.freeze(['community.intro.heading', 'community.eyebrow']),
   }),
 ]);
 
@@ -183,5 +188,5 @@ try {
 }
 
 console.log(
-  `Built migrated-surface mobile/localization/accessibility regression passed: ${widths.join('/')}px × EN/TL/CEB × Notification/Leader Center with xlarge/reduced-motion/strong-contrast preferences.`,
+  `Built migrated-surface mobile/localization/accessibility regression passed: ${widths.join('/')}px × EN/TL/CEB × Notification/Leader/Community surfaces with xlarge/reduced-motion/strong-contrast preferences.`,
 );
