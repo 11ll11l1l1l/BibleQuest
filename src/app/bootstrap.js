@@ -229,9 +229,9 @@ function escapeStartupMessage(value){
 // diagnostic into #app instead of leaving a blank/frozen screen. This is not
 // a second bootstrap owner - it wraps the same, single start() sequence.
 function renderStartupFailure(root,error){
-  console.error('BibleQuest failed to start.',error);
+  console.error('BibleQuest failed to start.');
   if(!root)return;
-  root.innerHTML=`<section class="bq-panel" data-startup-failure><p class="bq-eyebrow">STARTUP ERROR</p><h1>BibleQuest could not start</h1><p>Something went wrong while preparing the app. Reloading usually fixes this. If it keeps happening, please let us know.</p><button type="button" data-startup-reload class="bq-primary-button">Reload</button>${error?.message?`<p><small data-startup-error-detail>${escapeStartupMessage(error.message)}</small></p>`:''}</section>`;
+  root.innerHTML=`<section class="bq-panel" data-startup-failure><p class="bq-eyebrow">STARTUP ERROR</p><h1>BibleQuest could not start</h1><p>Something went wrong while preparing the app. Reloading usually fixes this. If it keeps happening, please let us know.</p><button type="button" data-startup-reload class="bq-primary-button">Reload</button><p><small data-startup-error-detail>Unexpected startup error.</small></p></section>`;
   root.querySelector('[data-startup-reload]')?.addEventListener('click',()=>window.location.reload());
 }
 
