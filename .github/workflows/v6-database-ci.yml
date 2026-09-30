@@ -10,6 +10,7 @@ on:
       - 'scripts/v6-migration-history-guard.mjs'
       - 'tests/v6/database-ci-contract.test.mjs'
       - 'tests/v6/migration-history-guard.test.ts'
+      - 'tests/v6/assignment-assigned-due-push.test.ts'
       - '.github/workflows/v6-database-ci.yml'
   workflow_dispatch:
 
