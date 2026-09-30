@@ -77,9 +77,11 @@ test('provisional CSP shape is least-broad for currently evidenced remote origin
   assert.match(provisionalPolicy, /script-src 'self' https:\/\/cdn\.jsdelivr\.net https:\/\/www\.youtube\.com;/);
   assert.match(
     provisionalPolicy,
-    /connect-src 'self' https:\/\/zkfmgezvzugchcwppreq\.supabase\.co wss:\/\/zkfmgezvzugchcwppreq\.supabase\.co;/,
+    /connect-src 'self' https:\/\/zkfmgezvzugchcwppreq\.supabase\.co wss:\/\/zkfmgezvzugchcwppreq\.supabase\.co https:\/\/cdn\.jsdelivr\.net https:\/\/openbible\.com;/,
   );
+  assert.match(provisionalPolicy, /media-src 'self' https:\/\/openbible\.com;/);
   assert.match(provisionalPolicy, /frame-src 'self' https:\/\/www\.youtube\.com;/);
+  assert.match(provisionalPolicy, /img-src 'self' https:\/\/i\.ytimg\.com;/);
   assert.match(provisionalPolicy, /object-src 'none';/);
   assert.match(provisionalPolicy, /frame-ancestors 'self';/);
 });
