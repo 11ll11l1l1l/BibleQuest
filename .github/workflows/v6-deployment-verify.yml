@@ -41,6 +41,19 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Build certified exact-SHA artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        run: npm run build:v6
+
+      - name: Export certified artifact digest
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('dist-v6/bq-artifact-integrity.json','utf8'));if(!/^[0-9a-f]{64}$/i.test(m.artifactSha256)||m.sourceSha!==process.env.BQ_EXPECTED_SHA)process.exit(1);fs.appendFileSync(process.env.GITHUB_ENV,'BQ_EXPECTED_ARTIFACT_SHA256='+m.artifactSha256.toLowerCase()+'\\n')"
+
       - name: Verify deployed bytes and exact source identity
         env:
           BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}
