@@ -5,7 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp
 // BibleQuest V5 Phase 1: Leader Center. Presentation/navigation only - every
 // figure shown here is read directly from leader-center.js's composition of
 // already-authorized owners. This page never queries Supabase itself.
-export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onAnnouncements, onCongregation } = {}) {
+export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onAnnouncements, onContentReview, onCongregation } = {}) {
   const locale = localization.getLocale();
   const tr = (key, values) => localization.t(key, { locale, values });
   return {
@@ -29,6 +29,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
         view.querySelector('[data-leader-open-groups]')?.addEventListener('click', () => onJourneyGroups?.(), { once: true });
         view.querySelector('[data-leader-open-teams]')?.addEventListener('click', () => onTeamCenter?.(), { once: true });
         view.querySelector('[data-leader-open-announcements]')?.addEventListener('click', () => onAnnouncements?.(), { once: true });
+        view.querySelector('[data-leader-open-content-review]')?.addEventListener('click', () => onContentReview?.(), { once: true });
         for (const button of view.querySelectorAll('[data-leader-review-assignment]')) {
           button.addEventListener('click', async () => {
             const message = view.querySelector('[data-leader-review-message]');
@@ -93,6 +94,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
               <p class="bq-eyebrow">${esc(tr('leaderCenter.spaces.eyebrow'))}</p><h2>Congregation announcements</h2>
               <p>Publish a message for members of your active congregation. The database checks your role and congregation on every publish.</p>
               <button type="button" class="bq-primary-button" data-leader-open-announcements>Open announcements</button>
+              ${['leader','pastor','admin'].includes(state.role)?`<button type="button" class="bq-secondary-button" data-leader-open-content-review>${esc(tr('contentReview.title'))}</button>`:''}
             </section>
             <section class="bq-panel" data-leader-people>
               <p class="bq-eyebrow">${esc(tr('leaderCenter.people.eyebrow'))}</p><h2>${esc(tr('leaderCenter.people.heading'))}</h2>
