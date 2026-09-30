@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-09-30 JST
+Updated: 2026-10-01 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -29,6 +29,8 @@ Ninth reconciliation at integrated head `eed8ab7c3f6853f4d46f067c4ba75290165d875
 Tenth acceptance reconciliation at integrated head `19e6e88c10767fdb06fd5a87a18f89e22b291aba`: PR #838 merged Team Center active-congregation scoping from exact PR head `02e45ab785f75dc58223c9ef3a9b6dc2e0e58841`; V6 Client Artifact Security `36664115225`, V6 Phase 1 Build Gate `36664115260`, and inherited regression `36664115301` all completed successfully. PR #839 then merged Journey Groups and Encouragements active-congregation scoping from exact PR head `6bc69f477826f559e2a0bf5c8154a34d1c0bb29d`; Phase-1 `36665434001`, Database CI `36665434038`, Client Artifact Security `36665434025`, and inherited regression `36665434074` all passed. These bounded tenant tranches do not by themselves promote the global cross-congregation rows. Separately, the already-integrated shared V6 UI primitives in `src/v6/ui/keyboard.ts` and `src/v6/ui/focus-return.ts`, exported through `src/v6/ui/index.ts`, are directly covered by `tests/v6/ui-keyboard-focus.test.ts` inside the exact-head Phase-1 unit suite. The suite exercises Enter/Space activation, horizontal/vertical/RTL roving focus, disabled-item skipping, Home/End and wrapping behavior, one-shot focus return, and fail-closed handling for disconnected/hidden/inert/aria-hidden/throwing targets. This promotes only the Phase-11 focus/keyboard componentization row. Inventory is now **159 checked / 52 open (211 total, 75.4%)**.
 
 Eleventh acceptance reconciliation at integrated head `b343b308ab1b3abf17203fdef2084303f97eef23`: PR #842 integrated the bounded built-output evidence record proving that exact PR head `6bc69f477826f559e2a0bf5c8154a34d1c0bb29d` was built before whole-app/protected-route Chromium acceptance in Phase-1 run `36665434001`, including built-artifact parity, authenticated Assignments deep-link hydration, the built Leader Center four-role matrix, built PWA acceptance, and Reader mobile/accessibility acceptance. PR #843 then integrated `tests/v6/pwa-content-version-upgrade.test.ts` from exact head `1e3f6bc09317c01fa6d9b81ae92fcb33258065f2`; Phase-1 `36700158062` and inherited regression `36700157859` passed. The test executes the real service-worker activate handler, proves stale BibleQuest shell-cache cleanup without touching unrelated caches, controlled same-origin refresh behavior, and atomic content-package replacement only after exact version/checksum verification while preserving the prior package on corrupt replacement. These two merged evidence tranches promote only `Whole-app/protected-route/browser gates run against built output` and `App/service-worker/content-pack versions can upgrade safely`. Physical installed-device evidence and deployed Cloudflare exact-SHA identity remain open. Inventory is now **161 checked / 50 open (211 total, 76.3%)**.
+
+Twelfth acceptance reconciliation at integrated head `bb0e2251a74049e5309b4fb9ae0d1706de2a9507`: PR #912 merged from exact head `5e1b99f674648e83ab6141ee810deec6ee055194`; Phase-1 `36765035212`, inherited regression `36765035206`, and Client Artifact Security `36765035213` passed. Its built Reader/browser and package-policy evidence promotes only the explicit user-initiated/removable/permission-gated offline-download row and the bounded selective-audio-download/no-silent-full-cache row. PR #934 then merged at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed. The exact-head Phase-1 run built `dist-v6`, passed both report-only and enforcing Chromium CSP gates across the V6 app and covered standalone surfaces, and the deployable root `_headers` contains the same reviewed enforcing policy. This promotes only `CSP is compatible with media/push/build architecture and enforced as accepted.` Exact Cloudflare deployed-byte identity remains a separate OPEN release gate because Pages currently returns HTML at V6 artifact-metadata paths. Inventory is now **179 checked / 32 open (211 total, 84.8%)**.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -249,7 +251,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Admin operation contracts/audit schema are typed/tested.
 - [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
-- [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
+- [x] CSP is compatible with media/push/build architecture and enforced as accepted.
 - [x] Secret scanning/client artifact scanning exists.
 - [x] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
 - [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.

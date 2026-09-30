@@ -59,16 +59,16 @@ test('Web Push remains browser-managed and does not justify arbitrary connect-sr
   assert.match(inventory, /browser-managed Web Push delivery is not an application fetch allowlist/i);
 });
 
-test('CSP tranche is characterization-only until report-only browser evidence exists', () => {
-  assert.doesNotMatch(headersSource, /^\s*Content-Security-Policy\s*:/mi);
+test('deployable headers contain the reviewed enforcing CSP while report-only remains CI evidence', () => {
+  assert.match(headersSource, /^\s*Content-Security-Policy\s*:\s*default-src 'self';/mi);
   assert.doesNotMatch(headersSource, /^\s*Content-Security-Policy-Report-Only\s*:/mi);
 
-  assert.match(inventory, /NOT an enforcement authorization/);
+  assert.match(inventory, /enforcing candidate/i);
   assert.match(inventory, /inline script\/style inventory/i);
   assert.match(inventory, /unsafe DOM sinks/i);
-  assert.match(inventory, /report-only policy/i);
+  assert.match(inventory, /report-only/i);
   assert.match(inventory, /built-artifact Chromium/i);
-  assert.match(inventory, /checkbox remains open/i);
+  assert.match(inventory, /checklist remains open until exact-head CI/i);
 });
 
 test('provisional CSP shape is least-broad for currently evidenced remote origins', () => {
@@ -86,7 +86,7 @@ test('provisional CSP shape is least-broad for currently evidenced remote origin
 
 
 test('standalone HTML inline-block budget fails closed on new CSP compatibility debt', () => {
-  const inlineBlockBudget = { index:[0,0], transform:[1,1], psychometrics:[1,1], admin:[0,0], adminOperations:[0,0], contentReview:[0,0] } as const;
+  const inlineBlockBudget = { index:[0,0], transform:[0,0], psychometrics:[0,0], admin:[0,0], adminOperations:[0,0], contentReview:[0,0] } as const;
   for (const [page, source] of Object.entries(standalonePages)) {
     const [scripts, styles] = inlineBlockBudget[page as keyof typeof inlineBlockBudget];
     assert.equal(countInlineScripts(source), scripts, `${page}: inline script block count changed`);
@@ -94,7 +94,6 @@ test('standalone HTML inline-block budget fails closed on new CSP compatibility 
   }
 
   assert.match(standalonePages.contentReview, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\.112\.4/);
-  assert.match(inventory, /`transform\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
-  assert.match(inventory, /`psychometrics\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
+  assert.match(inventory, /Transform and Psychometrics inline execution debt has been externalized/i);
   assert.match(inventory, /not.*blanket.*unsafe-inline/is);
 });
