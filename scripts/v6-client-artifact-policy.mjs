@@ -26,19 +26,19 @@ const CREDENTIAL_LITERALS = [
 const JWT_LITERAL_PATTERN = /["'`](eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+)["'`]/g;
 
 const CLIENT_RUNTIME_LOG_TARGETS = ['src'];
-const ALLOWED_FIXED_CONSOLE_LINES = new Set([
-  "console.error('BibleQuest failed to start.');",
-]);
+const FIXED_SINGLE_QUOTED_LITERAL = /^(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")$/;
 
 export function findUnsafeClientConsoleSinks(source) {
   const findings = [];
   const lines = String(source || '').split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (!/console\.(?:log|info|warn|error|debug|trace|dir|table)\s*\(/.test(line)) continue;
-    const trimmed = line.trim();
-    if (ALLOWED_FIXED_CONSOLE_LINES.has(trimmed)) continue;
-    findings.push({ line: index + 1, snippet: trimmed.slice(0, 240) });
+    const calls = line.matchAll(/console\.(?:log|info|warn|error|debug|trace|dir|table)\s*\(([^)]]*)\)/g);
+    for (const call of calls) {
+      const args = String(call[1] || '').trim();
+      if (FIXED_SINGLE_QUOTED_LITERAL.test(args)) continue;
+      findings.push({ line: index + 1, snippet: line.trim().slice(0, 240) });
+    }
   }
   return findings;
 }
