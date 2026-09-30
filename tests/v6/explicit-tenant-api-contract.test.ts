@@ -39,3 +39,21 @@ test('avatar membership writes require and filter an explicit congregation scope
   assert.match(source, /\.eq\('user_id',userId\)\.eq\('congregation_id',congregationId\)/);
   assert.match(source, /if\(!congregationId\)throw Error\(\)/);
 });
+
+
+test('Live Rooms repository requires explicit congregation scope for tenant-sensitive operations', () => {
+  const expectations = [
+    ['findByCode', /^async findByCode\(roomCode,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
+    ['loadRoom', /^async loadRoom\(roomId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
+    ['joinParticipant', /^async joinParticipant\(roomId,userId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
+    ['participants', /^async participants\(roomId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
+    ['endRoom', /^async endRoom\(roomId,userId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
+    ['subscribe', /^async subscribe\(roomId,congregationId,listener\)/, /congregation_id.*tenantId/],
+  ] as const;
+
+  for (const [method, signature, scope] of expectations) {
+    const source = methodSource('liveRooms', method);
+    assert.match(source, signature);
+    assert.match(source, scope);
+  }
+});
