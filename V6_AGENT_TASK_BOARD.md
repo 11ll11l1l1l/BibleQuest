@@ -18,19 +18,24 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-Latest integrated runtime/evidence head before this documentation reconciliation: `b343b308ab1b3abf17203fdef2084303f97eef23`.
+Latest integrated runtime/evidence head before this documentation reconciliation: `cf1ee5f6e67f9005664152f883fb570c91199fb0`.
 
-Acceptance inventory after validated PR #842/#843 reconciliation: **161 checked / 50 open / 211 total = 76.3%**.
+Acceptance inventory after validated PR #845 reconciliation: **162 checked / 49 open / 211 total = 76.8%**.
 
 Completed in this cycle:
 - PR #842 integrated exact built-output browser acceptance evidence and closes `Whole-app/protected-route/browser gates run against built output.`
 - PR #843 integrated safe app/service-worker/content-package upgrade regressions and closes `App/service-worker/content-pack versions can upgrade safely.`
+- PR #845 integrated built-artifact accessibility automation and closes `Automated accessibility checks run on built artifacts.`
+- PR #846 records that BSB chapter identity still needs exact external-source evidence; do not repeat repository-only analysis or promote that row from inferred equivalence.
+- PR #851 integrated the structural heavyweight-route lazy-loading guard; runtime request evidence is pending in PR #856 before checklist promotion.
 - stale draft PR #841 is superseded by the current reconciliation and must not be merged.
 
 ## P0 — work first
 
 ### W2-01 — Finish systemic explicit-tenant audit
 Owner bias: W2
+Current candidate:
+- PR #847 hardens Live Rooms active-tenant ownership and is undergoing exact-head revalidation after its no-active-congregation UX correction.
 Checklist targets:
 - Cross-congregation denial is tested for every sensitive migrated domain.
 - Sensitive repository calls require explicit congregation context.
@@ -47,12 +52,13 @@ Owner bias: W3
 Checklist targets:
 - deterministic audio chapter identity to exact Reader BSB text;
 - versioned timing/alignment manifest.
+Current blocker:
+- PR #846 records that repository contracts pin chapter catalogs to the active BSB revision, but exact external-source evidence tying the selected OpenBible recording set to that immutable Reader revision is still missing.
 Work:
-- define/complete deterministic book/chapter identity;
-- version/checksum relation among text/audio/alignment;
-- implement validation and tests;
-- do not invent alignment data or rights.
-This foundation should precede highlight/seek/autoscroll closure.
+- obtain/review exact-source evidence or an authoritative timing/revision artifact;
+- only then complete version/checksum relation among text/audio/alignment;
+- do not invent alignment data, text equivalence or offline-copy rights.
+Do not spend repeated runs re-proving the repository-only boundary already documented by #846.
 
 ### W1-01 — Exact-SHA deployment identity
 Owner bias: W1
@@ -64,16 +70,6 @@ Work:
 - implement repository-side build/deployment metadata seam if missing;
 - add deterministic test/CI contract;
 - if external Pages configuration is the only blocker, document it once and pivot to W1-02 in the same run.
-
-### W4-01 — Built-artifact automated accessibility
-Owner bias: W4
-Checklist target:
-- automated accessibility checks run on built artifacts.
-Work:
-- integrate a deterministic built-output accessibility gate for representative critical routes;
-- preserve existing keyboard/focus tests;
-- include mobile viewport coverage where practical;
-- never substitute automation for the separate physical/manual row.
 
 ## P1 — take when P0 item is owned/blocked
 
@@ -97,7 +93,9 @@ Do not claim offline-copy rights until provenance permits it.
 Targets:
 - assignment assigned/due push support;
 - browser/service-worker push coverage.
-Physical-device delivery remains a separate field gate.
+Current candidate:
+- PR #855 adds real service-worker push/click routing coverage for assignment deep links; integrate only after its exact-head gates are green.
+Physical-device delivery and deployed scheduler/Cron evidence remain separate gates.
 
 ### W2-02 — Privileged authorization hardening
 Targets:
@@ -124,6 +122,9 @@ Choose bounded representative surfaces; V7 owns full redesign.
 Targets:
 - large Bible/game/media payloads not eagerly loaded;
 - preserve route/bundle budgets.
+Current state:
+- PR #851 structural build guard is integrated.
+- PR #856 adds complementary built-Chromium request evidence; integrate only if exact-head Phase-1 and inherited regression are green, then reconcile the checklist row.
 Coordinate with W1 when CI/build tooling is involved.
 
 ## P2 — certification / field work after implementation is ready
