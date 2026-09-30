@@ -12,6 +12,8 @@ test('V6 database CI is local-only, pinned, and uses released V5 baseline plus V
 
   assert.match(workflow, /version:\s*2\.117\.0/);
   assert.match(workflow, /node scripts\/v6-prepare-local-supabase\.mjs/);
+  assert.match(workflow, /npm run check:v6-migration-history/);
+  assert.match(workflow, /scripts\/v6-migration-history-guard\.mjs/);
   assert.match(workflow, /supabase db reset/);
   assert.match(workflow, /supabase test db/);
   assert.match(workflow, /supabase gen types typescript --local/);
