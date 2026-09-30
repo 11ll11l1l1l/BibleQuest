@@ -85,3 +85,29 @@ test('managed controls preserve existing Reader advanced surfaces', () => {
     assert.ok(readerPage.includes(contract), `Reader regression lost existing contract: ${contract}`);
   }
 });
+
+
+test('all Reader offline installs stay behind explicit user actions and browser-local removable storage', async () => {
+  const [browserPackages, audioStorage, packageManager, audioPolicy] = await Promise.all([
+    readFile(new URL('../../src/v6/reader/browser-packages.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../src/v6/reader/audio-package-storage.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../src/v6/reader/package-manager.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../../src/v6/reader/audio-policy.ts', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(readerPage, /target\.closest\('\[data-reader-offline-download\]'\)[\s\S]{0,900}offlinePackages\.install\(state\.translation, state\.book/);
+  assert.match(readerPage, /target\.closest\('\[data-reader-translation-download\]'\)[\s\S]{0,900}offlinePackages\.installTranslation\(translationId/);
+  assert.match(readerPage, /target\.closest\('\[data-reader-audio-download\]'\)[\s\S]{0,900}audio\.installChapter\(state\.book, state\.chapter/);
+
+  assert.match(browserPackages, /const cacheStorage = globalThis\.caches|cacheStorage = globalThis\.caches/);
+  assert.match(browserPackages, /removeInstalled[\s\S]{0,500}payloadCache\.delete/);
+  assert.match(browserPackages, /metadataCache\.delete/);
+  assert.doesNotMatch(browserPackages, /supabase/i);
+
+  assert.match(audioStorage, /const cacheStorage = input\.cacheStorage \?\? globalThis\.caches/);
+  assert.match(audioStorage, /removeInstalled[\s\S]{0,200}deleteBoth/);
+  assert.doesNotMatch(audioStorage, /supabase/i);
+
+  assert.match(packageManager, /assertScriptureDownloadAllowed\(manifest\)/);
+  assert.match(audioPolicy, /permissions\?\.offlineCopy !== 'allowed'/);
+});

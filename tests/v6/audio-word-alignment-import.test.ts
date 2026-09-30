@@ -5,7 +5,9 @@ import { convertBsbWordAlignments } from '../../scripts/v6-import-bsb-word-align
 
 const metadata = {
   translationId: 'bsb', source: 'Barry Hays / OpenBible candidate', license: 'CC0 claim awaiting review',
-  alignmentSource: 'BSB-publishing/bsb-align output', contentVersion: 'audio-candidate-1',
+  alignmentSource: 'BSB-publishing/bsb-align output',
+  alignmentRevision: 'bdb859afc427b215b78e12ee4a7798c32b7b91e0',
+  contentVersion: 'audio-candidate-1',
 };
 const pack = [{ c: 1, v: 1, t: 'In the beginning God created the heavens and the earth.' }];
 const words = [{
@@ -32,6 +34,8 @@ test('BSB word timings convert only against matching current verse text and bind
     scriptureContentVersion: 'sha256-current-bsb-12345678901234567890', requireComplete: false,
   });
   assert.equal(result.alignments[0].scriptureContentVersion, 'sha256-current-bsb-12345678901234567890');
+  assert.equal(result.alignments[0].alignmentSource,
+    'BSB-publishing/bsb-align output@bdb859afc427b215b78e12ee4a7798c32b7b91e0');
   assert.deepEqual(result.alignments[0].verses, [{ verse: 1, startSeconds: 0.1, endSeconds: 2 }]);
   assert.equal(result.audit.words, 10);
   assert.equal(result.audit.lowConfidenceWords, 1);
@@ -50,4 +54,17 @@ test('full BSB import mode requires every chapter alignment and duration record'
   assert.throws(() => convertBsbWordAlignments({
     records: words, durations, bookPacks: { GEN: pack }, metadata, scriptureContentVersion: 'bsb-current',
   }), /full BSB timing import incomplete/i);
+});
+
+
+test('BSB word timing import requires an immutable upstream alignment revision', () => {
+  const args = {
+    records: words, durations, bookPacks: { GEN: pack },
+    scriptureContentVersion: 'bsb-current', requireComplete: false,
+  };
+  const { alignmentRevision: _missing, ...withoutRevision } = metadata;
+  assert.throws(() => convertBsbWordAlignments({ ...args, metadata: withoutRevision }), /alignmentRevision/i);
+  assert.throws(() => convertBsbWordAlignments({
+    ...args, metadata: { ...metadata, alignmentRevision: 'main' },
+  }), /immutable 40-hex Git commit/i);
 });

@@ -118,3 +118,14 @@ test('audio transport rejects non-HTTPS URLs and oversized declared responses be
   await assert.rejects(transport.download('https://audio.example.test/chapter.mp3', options), /size limit/);
   assert.equal(requests, 1, 'the insecure URL must be rejected before fetch');
 });
+
+
+test('audio transport turns browser fetch or CORS failure into an explicit streaming-safe unavailable state', async () => {
+  const transport = createFetchScriptureAudioPackageTransport({
+    fetcher: async () => { throw new TypeError('Failed to fetch'); },
+  });
+  await assert.rejects(
+    transport.download('https://audio.example.test/chapter.mp3', { signal: new AbortController().signal }),
+    /Offline audio download is unavailable.*Direct streaming remains usable/i,
+  );
+});

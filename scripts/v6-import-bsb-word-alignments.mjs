@@ -42,8 +42,11 @@ function currentBibleChapters(bookPacks) {
 /** Converts BSB-publishing/bsb-align word rows after checking verse text against this checkout's BSB packs. */
 export function convertBsbWordAlignments({ records, durations, bookPacks, metadata, scriptureContentVersion, requireComplete = true }) {
   if (!metadata || metadata.translationId !== 'bsb') fail('Audio metadata must declare translationId "bsb".');
-  for (const key of ['source', 'license', 'alignmentSource', 'contentVersion']) {
+  for (const key of ['source', 'license', 'alignmentSource', 'alignmentRevision', 'contentVersion']) {
     if (typeof metadata[key] !== 'string' || !metadata[key].trim()) fail(`Audio metadata requires ${key}.`);
+  }
+  if (!/^[a-f0-9]{40}$/i.test(metadata.alignmentRevision.trim())) {
+    fail('Audio metadata alignmentRevision must be an immutable 40-hex Git commit.');
   }
   if (!Array.isArray(records) || !Array.isArray(durations)) fail('Word alignment records and duration records must be arrays.');
   if (typeof scriptureContentVersion !== 'string' || !scriptureContentVersion.trim()) fail('Current BSB Scripture content version is required.');
@@ -100,7 +103,8 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     const alignment = {
       schemaVersion: 1, translationId: 'bsb', contentVersion: metadata.contentVersion,
       scriptureContentVersion, book, chapter, durationSeconds,
-      source: metadata.source, license: metadata.license, alignmentSource: metadata.alignmentSource,
+      source: metadata.source, license: metadata.license,
+      alignmentSource: `${metadata.alignmentSource}@${metadata.alignmentRevision.trim().toLowerCase()}`,
       verses: verseRows,
     };
     const validation = validateChapterAlignment(alignment, { translationId: 'bsb', book, chapter, verseCount: expectedVerses.size });

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
-import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
+import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
 
 const root = new URL('../../', import.meta.url);
 
@@ -67,6 +67,28 @@ test('lazy catalog loader pins the stream catalog to the generated current BSB p
   assert.equal(wrongTranslation, null);
 });
 
+test('current BSB Scripture identity loader returns only a valid non-empty BSB content version', async () => {
+  const calls: string[] = [];
+  const valid = await loadCurrentBsbScriptureContentVersion(async (url: string | URL | Request) => {
+    calls.push(String(url));
+    return {
+      ok: true,
+      async json() { return { translationId: 'bsb', contentVersion: '  sha256-current-bsb  ' }; },
+    } as Response;
+  });
+  assert.equal(valid, 'sha256-current-bsb');
+  assert.deepEqual(calls, ['/data/v6-scripture-manifests/bsb.json']);
+
+  for (const fetcher of [
+    async () => ({ ok: false } as Response),
+    async () => ({ ok: true, async json() { return { translationId: 'tl', contentVersion: 'sha256-other' }; } } as Response),
+    async () => ({ ok: true, async json() { return { translationId: 'bsb', contentVersion: '   ' }; } } as Response),
+    async () => { throw new Error('offline'); },
+  ]) {
+    assert.equal(await loadCurrentBsbScriptureContentVersion(fetcher as typeof fetch), null);
+  }
+});
+
 test('lazy narrator catalogs fail closed on unavailable, malformed, or stale BSB manifest responses', async () => {
   const bibleDirectory = new URL('data/packs/bible/', root);
   const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name));
@@ -84,4 +106,27 @@ test('lazy narrator catalogs fail closed on unavailable, malformed, or stale BSB
   assert.equal(unavailable, null);
   assert.equal(malformedVersion, null);
   assert.equal(malformedBooks, null);
+});
+
+
+test('both OpenBible narrators bind to one independently loaded current BSB revision', async () => {
+  const scriptureVersion = await loadCurrentBsbScriptureContentVersion(async () => ({
+    ok: true,
+    async json() { return { translationId: 'bsb', contentVersion: 'bsb-current-sha256' }; },
+  } as Response));
+  assert.equal(scriptureVersion, 'bsb-current-sha256');
+
+  const bibleDirectory = new URL('data/packs/bible/', root);
+  const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name));
+  const books = await Promise.all(files.map(async name => {
+    const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
+    return { code: name.slice(0, -5), name, chapters: Math.max(...rows.map(row => row.c)) };
+  }));
+
+  const hays = createOpenBibleNarratorStreamingManifest('hays', scriptureVersion!, books);
+  const souer = createOpenBibleNarratorStreamingManifest('souer', scriptureVersion!, books);
+  assert.equal(hays.source.scriptureContentVersion, 'bsb-current-sha256');
+  assert.equal(souer.source.scriptureContentVersion, 'bsb-current-sha256');
+  assert.equal(hays.segments.length, 1189);
+  assert.equal(souer.segments.length, 1189);
 });

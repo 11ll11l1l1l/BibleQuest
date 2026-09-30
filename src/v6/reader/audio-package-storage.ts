@@ -179,8 +179,14 @@ export function createFetchScriptureAudioPackageTransport(input: {
       try { parsedUrl = new URL(url); }
       catch { throw new Error('Audio package URL is invalid.'); }
       if (parsedUrl.protocol !== 'https:' || parsedUrl.username || parsedUrl.password) throw new Error('Audio package URL must be credential-free HTTPS.');
-      const response = await fetcher(url, { signal, cache: 'no-store', credentials: 'omit', redirect: 'error' });
-      if (!response.ok) throw new Error(`Scripture audio request failed with HTTP ${response.status}.`);
+      let response: Response;
+      try {
+        response = await fetcher(url, { signal, cache: 'no-store', credentials: 'omit', redirect: 'error' });
+      } catch (error) {
+        if (signal.aborted || (error instanceof Error && error.name === 'AbortError')) throw error;
+        throw new Error('Offline audio download is unavailable from this source in this browser. Direct streaming remains usable.');
+      }
+      if (!response.ok) throw new Error(`Scripture audio request failed with HTTP ${response.status}. Direct streaming remains usable.`);
       const headerBytes = Number(response.headers.get('content-length'));
       const total = Number.isFinite(headerBytes) && headerBytes > 0 ? headerBytes : undefined;
       if (total !== undefined && total > maxBytes) throw new Error('Audio package response exceeds the configured size limit.');
