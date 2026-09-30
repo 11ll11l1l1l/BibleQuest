@@ -137,7 +137,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
 - [x] Play the selected public chapter stream directly on demand; BibleQuest does not need to host a full audio-library mirror.
 - [x] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
-- [ ] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
+- [x] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
 - [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
 - [ ] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
 - [ ] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
