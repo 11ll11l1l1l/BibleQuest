@@ -27,7 +27,22 @@ if(!failures.length){
   for(const token of ['mountAccessibilityRuntime','keepFocusInDialog','[role="dialog"][aria-modal="true"]','root.dataset.bqText','root.dataset.bqEffectiveMotion','addEventListener(\'keydown\''])if(!runtime.includes(token))fail(`Accessibility UI runtime missing contract token: ${token}`);
 
   for(const forbidden of ['localStorage','sessionStorage','createClient','@supabase','progress.','storage.','MutationObserver'])if(page.includes(forbidden))fail(`Accessibility settings page bypasses its service: ${forbidden}`);
-  for(const token of ['data-accessibility-page','data-accessibility-setting="text"','data-accessibility-setting="motion"','data-accessibility-setting="contrast"','data-accessibility-reset'])if(!page.includes(token))fail(`Accessibility page missing control contract: ${token}`);
+  const primitiveAccessibility=page.includes("from '../../v6/ui/primitives.ts'");
+  const controlContracts=[
+    ['data-accessibility-page', "'accessibility-page': true"],
+    ['data-accessibility-setting="text"', "'accessibility-setting': 'text'"],
+    ['data-accessibility-setting="motion"', "'accessibility-setting': 'motion'"],
+    ['data-accessibility-setting="contrast"', "'accessibility-setting': 'contrast'"],
+    ['data-accessibility-reset', "'accessibility-reset': true"]
+  ];
+  for(const [legacyToken,primitiveToken] of controlContracts){
+    if(page.includes(legacyToken))continue;
+    if(primitiveAccessibility&&page.includes(primitiveToken))continue;
+    fail(`Accessibility page missing control contract: ${legacyToken}`);
+  }
+  if(primitiveAccessibility){
+    for(const token of ['uiCardHtml','uiSelectFieldHtml','uiButtonHtml','uiStatusHtml'])if(!page.includes(token))fail(`Accessibility shared primitive migration missing contract token: ${token}`);
+  }
   if(!more.includes('data-open-accessibility')||!more.includes('onAccessibility'))fail('More must expose the verified Accessibility route through an explicit callback.');
   for(const token of ["createAccessibilityService({storage})",'mountAccessibilityRuntime({accessibility})',"accessibility:()=>accessibilityPage({accessibility",'onAccessibility:()=>router.navigate(\'accessibility\')','accessibilityRuntime.dispose()','accessibility.dispose()'])if(!bootstrap.includes(token))fail(`Bootstrap missing Accessibility composition contract: ${token}`);
   if(!index.includes('src/ui/accessibility.css'))fail('index.html does not load Accessibility presentation CSS.');

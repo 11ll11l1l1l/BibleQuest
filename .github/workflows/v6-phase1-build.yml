@@ -148,6 +148,11 @@ jobs:
           BQ_BASE_URL: http://127.0.0.1:4173/
         run: node tests/v3-accessibility-smoke.mjs
 
+      - name: Migrated mobile localization and accessibility matrix
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/migrated-mobile-localization-browser.mjs
+
       - name: Built artifact Chromium parity
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
