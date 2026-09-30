@@ -151,6 +151,8 @@ async function tenantSwitchFailsClosed(){
   await root.locator('[data-leader-center-denied]').waitFor();
   assert(await root.locator('[data-leader-overview]').count()===0,'Leader Center must not render stale congregation A overview after A→B switch.');
   assert(await root.locator('[data-leader-people]').count()===0,'Leader Center must not render stale congregation A directory after A→B switch.');
+  assert(await root.locator('[data-leader-open-content-review]').count()===0,'Leader Center must not retain a Content Review entry from stale congregation A after A→B switch.');
+  assert(await page.evaluate(()=>window.__lcContentReviewCalls)===0,'Tenant switch must not trigger stale Content Review navigation.');
   assert(!((await root.innerText())||'').includes('Harness Congregation'),'Stale congregation A identity leaked after active tenant switch.');
   await page.evaluate(()=>window.__removeLeaderCenterHarness());
   await page.close();
