@@ -86,7 +86,7 @@ test('provisional CSP shape is least-broad for currently evidenced remote origin
 
 
 test('standalone HTML inline-block budget fails closed on new CSP compatibility debt', () => {
-  const inlineBlockBudget = { index:[0,0], transform:[1,1], psychometrics:[1,1], admin:[0,0], adminOperations:[0,0], contentReview:[0,0] } as const;
+  const inlineBlockBudget = { index:[0,0], transform:[0,0], psychometrics:[0,0], admin:[0,0], adminOperations:[0,0], contentReview:[0,0] } as const;
   for (const [page, source] of Object.entries(standalonePages)) {
     const [scripts, styles] = inlineBlockBudget[page as keyof typeof inlineBlockBudget];
     assert.equal(countInlineScripts(source), scripts, `${page}: inline script block count changed`);
@@ -94,7 +94,6 @@ test('standalone HTML inline-block budget fails closed on new CSP compatibility 
   }
 
   assert.match(standalonePages.contentReview, /https:\/\/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\.112\.4/);
-  assert.match(inventory, /`transform\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
-  assert.match(inventory, /`psychometrics\.html`:[^\n]*inline script body[^\n]*inline `<style>` block/i);
+  assert.match(inventory, /Transform and Psychometrics inline execution debt has been externalized/i);
   assert.match(inventory, /not.*blanket.*unsafe-inline/is);
 });
