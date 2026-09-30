@@ -38,6 +38,8 @@ sessionState.authenticated=false;let auth=false;try{await service.load()}catch(e
 sessionState.authenticated=true;sessionState.remoteAvailable=false;let preview=false;try{await service.load()}catch(error){preview=error.code==='BQ_ENCOURAGEMENTS_REMOTE_DISABLED'}assert(preview,'Local-preview load must fail closed.');
 
 sessionState.remoteAvailable=true;activeCongregationId='c1';
-rowsByTenant.c1=[{id:9,group_id:'foreign',sender_id:'u9',recipient_id:null,kind:'pray',created_at:today}];let foreign=false;try{await service.load()}catch(error){foreign=error.code==='BQ_ENCOURAGEMENTS_MALFORMED'}assert(foreign,'Foreign received row must fail closed.');
-rowsByTenant.c1=[{id:10,group_id:'g1',sender_id:'u2',recipient_id:'u1',kind:'heart',created_at:today}];let targeted=false;try{await service.load()}catch(error){targeted=error.code==='BQ_ENCOURAGEMENTS_SCOPE'}assert(targeted,'Targeted rows must stay outside #65.');
+const originalList=api.list;
+api.list=async(ids,tenantId)=>{calls.push(['list',ids,tenantId]);return[{id:9,group_id:'foreign',sender_id:'u9',recipient_id:null,kind:'pray',created_at:today}]};let foreign=false;try{await service.load()}catch(error){foreign=error.code==='BQ_ENCOURAGEMENTS_MALFORMED'}assert(foreign,'Foreign received row must fail closed.');
+api.list=async(ids,tenantId)=>{calls.push(['list',ids,tenantId]);return[{id:10,group_id:'g1',sender_id:'u2',recipient_id:'u1',kind:'heart',created_at:today}]};let targeted=false;try{await service.load()}catch(error){targeted=error.code==='BQ_ENCOURAGEMENTS_SCOPE'}assert(targeted,'Targeted rows must stay outside #65.');
+api.list=originalList;
 console.log('BibleQuest v3 Encouragements active-tenant edge regression passed.');
