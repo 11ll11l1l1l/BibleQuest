@@ -39,6 +39,51 @@ function currentBibleChapters(bookPacks) {
   return output;
 }
 
+
+/** Remaps the aligner's line-ordinal verse keys back to canonical Bible verse numbers. */
+export function remapBsbAlignmentVerseIds({ records, exportManifest, scriptureContentVersion }) {
+  if (!Array.isArray(records)) fail('Word alignment records must be an array.');
+  if (!exportManifest || exportManifest.translationId !== 'bsb' || !Array.isArray(exportManifest.files)) {
+    fail('BSB text-export manifest is invalid.');
+  }
+  if (exportManifest.scriptureContentVersion !== scriptureContentVersion) {
+    fail('BSB text-export manifest belongs to a different Scripture content revision.');
+  }
+  const byChapter = new Map();
+  for (const row of exportManifest.files) {
+    const book = String(row?.book ?? '').toUpperCase(), chapter = Number(row?.chapter);
+    const verseNumbers = row?.verseNumbers;
+    if (!BOOK_CHAPTERS[book] || !Number.isSafeInteger(chapter) || chapter < 1 || chapter > BOOK_CHAPTERS[book]
+      || !Array.isArray(verseNumbers) || !verseNumbers.length
+      || verseNumbers.some((verse, index) => !Number.isSafeInteger(verse) || verse < 1 || (index > 0 && verse <= verseNumbers[index - 1]))) {
+      fail('BSB text-export manifest contains an invalid canonical verse map.');
+    }
+    const key = keyOf(book, chapter);
+    if (byChapter.has(key)) fail(`BSB text-export manifest duplicates ${key}.`);
+    byChapter.set(key, verseNumbers);
+  }
+
+  return records.map(record => {
+    const book = String(record?.book ?? '').toUpperCase(), chapter = Number(record?.chapter);
+    const key = keyOf(book, chapter);
+    const verseNumbers = byChapter.get(key);
+    if (!verseNumbers) fail(`BSB text-export manifest has no verse map for ${key}.`);
+    if (!record?.verses || typeof record.verses !== 'object' || Array.isArray(record.verses)) {
+      fail(`Word alignment ${key} has no verse map.`);
+    }
+    const ordinalKeys = Object.keys(record.verses).map(Number).sort((a, b) => a - b);
+    if (ordinalKeys.length !== verseNumbers.length
+      || ordinalKeys.some((verse, index) => verse !== index + 1)) {
+      fail(`Word alignment ${key} does not use the expected line-ordinal verse keys.`);
+    }
+    const verses = {};
+    verseNumbers.forEach((canonicalVerse, index) => {
+      verses[String(canonicalVerse)] = record.verses[String(index + 1)];
+    });
+    return Object.freeze({ ...record, book, verses: Object.freeze(verses) });
+  });
+}
+
 /** Converts BSB-publishing/bsb-align word rows after checking verse text against this checkout's BSB packs. */
 export function convertBsbWordAlignments({ records, durations, bookPacks, metadata, scriptureContentVersion, requireComplete = true }) {
   if (!metadata || metadata.translationId !== 'bsb') fail('Audio metadata must declare translationId "bsb".');
@@ -75,10 +120,14 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     if (!record.verses || typeof record.verses !== 'object' || Array.isArray(record.verses)) fail(`Word alignment ${key} has no verse map.`);
     const verseRows = [];
     let averageWordScoreTotal = 0, scoredWords = 0, lowConfidenceWords = 0, unscoredWords = 0;
-    const verseKeys = Object.keys(record.verses);
+    const expectedVerseEntries = [...expectedVerses.entries()].sort((a, b) => a[0] - b[0]);
+    const expectedVerseNumbers = expectedVerseEntries.map(([verse]) => verse);
+    const verseKeys = Object.keys(record.verses).map(Number).sort((a, b) => a - b);
     if (verseKeys.length !== expectedVerses.size) fail(`Word alignment ${key} covers ${verseKeys.length} verses; current BSB text has ${expectedVerses.size}.`);
-    for (let verse = 1; verse <= expectedVerses.size; verse += 1) {
-      const expectedText = expectedVerses.get(verse);
+    if (verseKeys.some((verse, index) => !Number.isSafeInteger(verse) || verse !== expectedVerseNumbers[index])) {
+      fail(`Word alignment ${key} verse identities do not match current BSB text.`);
+    }
+    for (const [verse, expectedText] of expectedVerseEntries) {
       const words = record.verses[String(verse)];
       if (!Array.isArray(words) || words.length === 0) fail(`Word alignment ${key}:${verse} is missing timed words.`);
       const scriptureWords = alignmentTokens(expectedText), timingWords = [];
@@ -107,7 +156,9 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
       alignmentSource: `${metadata.alignmentSource}@${metadata.alignmentRevision.trim().toLowerCase()}`,
       verses: verseRows,
     };
-    const validation = validateChapterAlignment(alignment, { translationId: 'bsb', book, chapter, verseCount: expectedVerses.size });
+    const validation = validateChapterAlignment(alignment, {
+      translationId: 'bsb', book, chapter, verseCount: expectedVerses.size, verseNumbers: expectedVerseNumbers,
+    });
     if (!validation.valid) fail(`Converted alignment ${key} is invalid: ${validation.issues.join('; ')}.`);
     alignments.push(Object.freeze(alignment));
     audit.push(Object.freeze({
@@ -145,19 +196,34 @@ async function walkJson(root, directory = root) {
 }
 
 async function main(argv) {
-  const allowPartial = argv.includes('--allow-partial');
-  const args = argv.filter(value => value !== '--allow-partial');
+  let allowPartial = false, verseMapPath = null;
+  const args = [];
+  for (let index = 0; index < argv.length; index += 1) {
+    const value = argv[index];
+    if (value === '--allow-partial') { allowPartial = true; continue; }
+    if (value === '--verse-map') {
+      verseMapPath = argv[index + 1];
+      if (!verseMapPath) fail('--verse-map requires the BibleQuest BSB text-export manifest path.');
+      index += 1;
+      continue;
+    }
+    args.push(value);
+  }
   const [wordAlignmentDir, metadataPath, durationsPath, outputPath] = args;
-  if (!wordAlignmentDir || !metadataPath || !durationsPath || !outputPath) {
-    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--allow-partial]');
+  if (!wordAlignmentDir || !metadataPath || !durationsPath || !outputPath || args.length !== 4) {
+    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--verse-map <text-export-manifest.json>] [--allow-partial]');
   }
   const root = resolve(wordAlignmentDir);
   const paths = (await walkJson(root)).sort();
-  const records = await Promise.all(paths.map(async path => JSON.parse(await readFile(path, 'utf8'))));
+  let records = await Promise.all(paths.map(async path => JSON.parse(await readFile(path, 'utf8'))));
   const metadata = JSON.parse(await readFile(resolve(metadataPath), 'utf8'));
   const durations = JSON.parse(await readFile(resolve(durationsPath), 'utf8'));
   const bsb = SCRIPTURE_PACKAGE_SOURCES.find(source => source.translationId === 'bsb');
   const scriptureContentVersion = buildScripturePackageManifest(process.cwd(), bsb).contentVersion;
+  if (verseMapPath) {
+    const exportManifest = JSON.parse(await readFile(resolve(verseMapPath), 'utf8'));
+    records = remapBsbAlignmentVerseIds({ records, exportManifest, scriptureContentVersion });
+  }
   const result = convertBsbWordAlignments({
     records, durations, metadata, scriptureContentVersion,
     bookPacks: Object.fromEntries(await Promise.all(Object.keys(BOOK_CHAPTERS).map(async book => [book, JSON.parse(await readFile(join(process.cwd(), 'data', 'packs', 'bible', `${book}.json`), 'utf8'))]))),
