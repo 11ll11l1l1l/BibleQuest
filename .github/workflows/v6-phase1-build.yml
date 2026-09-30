@@ -136,6 +136,11 @@ jobs:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/media-pip-browser.mjs
 
+      - name: Reader Media Session Chromium acceptance
+        env:
+          BQ_V6_DEV_URL: http://127.0.0.1:4174
+        run: node tests/v6/reader-media-session-browser.mjs
+
       - name: Start built artifact preview
         shell: bash
         run: |
