@@ -1,7 +1,9 @@
 import { localization } from '../../app/localization.js';
+import { iconSvg } from '../../ui/icons.js';
 
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const icons=Object.freeze({assignment:'📮',feedback:'💬',devotional:'📖',announcement:'📣',activity:'🧭',encouragement:'💛',poll:'📊',award:'🏅',media:'🎬',info:'🔔'});
+const NOTIFICATION_ICON_NAMES=Object.freeze({assignment:'assignments',feedback:'notifications',devotional:'bible',announcement:'notifications',activity:'grow',encouragement:'grow',poll:'guide',award:'grow',media:'video',info:'notifications'});
+const notificationIcon=type=>iconSvg(NOTIFICATION_ICON_NAMES[String(type||'').toLowerCase()]||'notifications',{size:22});
 
 export function notificationCenterPage({notifications,notificationSettings,onNavigate,onBack,onAccount}){
   const locale=localization.getLocale();
@@ -12,7 +14,7 @@ export function notificationCenterPage({notifications,notificationSettings,onNav
   };
   const itemHtml=item=>{
     const open=item.route?`<button type="button" class="bq-primary-button" data-notification-open="${escapeHtml(item.id)}">${escapeHtml(tr('notificationCenter.open'))}</button>`:`<button type="button" class="bq-secondary-button" disabled title="${escapeHtml(tr('notificationCenter.destinationUnavailable'))}">${escapeHtml(tr('notificationCenter.unavailable'))}</button>`;
-    return `<article class="bq-panel notification-center-item${item.isRead?'':' is-unread'}" data-notification-item="${escapeHtml(item.id)}"><div class="notification-center-row"><span class="notification-center-icon" data-notification-type="${escapeHtml(item.type)}" aria-hidden="true">${icons[item.type]||'🔔'}</span><div class="notification-center-copy"><div class="notification-center-heading"><h3>${escapeHtml(item.title)}</h3>${item.isRead?'':`<span class="notification-center-dot" aria-label="${escapeHtml(tr('notificationCenter.unread'))}">${escapeHtml(tr('notificationCenter.unread'))}</span>`}</div>${item.body?`<p>${escapeHtml(item.body)}</p>`:''}<small>${escapeHtml(relativeTime(item.createdAt))} · ${escapeHtml(item.type)}</small></div></div><div class="notification-center-actions">${open}<button type="button" class="bq-secondary-button" data-notification-read="${escapeHtml(item.id)}" data-read-next="${item.isRead?'0':'1'}">${escapeHtml(tr(item.isRead?'notificationCenter.markUnread':'notificationCenter.markRead'))}</button></div></article>`;
+    return `<article class="bq-panel notification-center-item${item.isRead?'':' is-unread'}" data-notification-item="${escapeHtml(item.id)}"><div class="notification-center-row"><span class="notification-center-icon" data-notification-type="${escapeHtml(item.type)}" aria-hidden="true">${notificationIcon(item.type)}</span><div class="notification-center-copy"><div class="notification-center-heading"><h3>${escapeHtml(item.title)}</h3>${item.isRead?'':`<span class="notification-center-dot" aria-label="${escapeHtml(tr('notificationCenter.unread'))}">${escapeHtml(tr('notificationCenter.unread'))}</span>`}</div>${item.body?`<p>${escapeHtml(item.body)}</p>`:''}<small>${escapeHtml(relativeTime(item.createdAt))} · ${escapeHtml(item.type)}</small></div></div><div class="notification-center-actions">${open}<button type="button" class="bq-secondary-button" data-notification-read="${escapeHtml(item.id)}" data-read-next="${item.isRead?'0':'1'}">${escapeHtml(tr(item.isRead?'notificationCenter.markUnread':'notificationCenter.markRead'))}</button></div></article>`;
   };
   const frame=(heading,message,action='')=>`<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(tr('notificationCenter.eyebrow'))}</p><h1>${escapeHtml(heading)}</h1><p>${message}</p>${action}</section>`;
   const settingsLocale=locale==='tl'||locale==='ceb'?locale:'en';
