@@ -6,7 +6,7 @@ const routeName = value => {
 
 const asError = value => value instanceof Error ? value : new Error(String(value || 'Unknown feature failure.'));
 
-export function createOperationalRecoveryService({ report = (error, context) => console.error('BibleQuest route recovery', context, error) } = {}) {
+export function createOperationalRecoveryService({ report = () => console.error('BibleQuest route recovery') } = {}) {
   if (typeof report !== 'function') throw new Error('Operational recovery requires a reporting callback.');
   let active = null;
   let sequence = 0;
