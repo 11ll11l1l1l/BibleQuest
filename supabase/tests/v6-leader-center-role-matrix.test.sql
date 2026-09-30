@@ -187,7 +187,7 @@ select results_eq(
 -- Admin B must be tenant-admin only here, not implicit platform-wide authority.
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222223';
 select results_eq(
-  $select role from public.bible_congregation_members where user_id=auth.uid() and active$,
+  $$select role from public.bible_congregation_members where user_id=auth.uid() and active$$,
   array['admin'::text],
   'Tenant-only Admin B resolves the congregation admin role'
 );
