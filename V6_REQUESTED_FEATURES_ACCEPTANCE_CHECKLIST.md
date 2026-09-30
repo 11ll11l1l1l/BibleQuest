@@ -28,6 +28,8 @@ Ninth reconciliation at integrated head `eed8ab7c3f6853f4d46f067c4ba75290165d875
 
 Tenth acceptance reconciliation at integrated head `19e6e88c10767fdb06fd5a87a18f89e22b291aba`: PR #838 merged Team Center active-congregation scoping from exact PR head `02e45ab785f75dc58223c9ef3a9b6dc2e0e58841`; V6 Client Artifact Security `36664115225`, V6 Phase 1 Build Gate `36664115260`, and inherited regression `36664115301` all completed successfully. PR #839 then merged Journey Groups and Encouragements active-congregation scoping from exact PR head `6bc69f477826f559e2a0bf5c8154a34d1c0bb29d`; Phase-1 `36665434001`, Database CI `36665434038`, Client Artifact Security `36665434025`, and inherited regression `36665434074` all passed. These bounded tenant tranches do not by themselves promote the global cross-congregation rows. Separately, the already-integrated shared V6 UI primitives in `src/v6/ui/keyboard.ts` and `src/v6/ui/focus-return.ts`, exported through `src/v6/ui/index.ts`, are directly covered by `tests/v6/ui-keyboard-focus.test.ts` inside the exact-head Phase-1 unit suite. The suite exercises Enter/Space activation, horizontal/vertical/RTL roving focus, disabled-item skipping, Home/End and wrapping behavior, one-shot focus return, and fail-closed handling for disconnected/hidden/inert/aria-hidden/throwing targets. This promotes only the Phase-11 focus/keyboard componentization row. Inventory is now **159 checked / 52 open (211 total, 75.4%)**.
 
+Eleventh acceptance reconciliation (2026-09-30): merged PR #839 exact-head Phase-1 `36665434001` built V6 first and then ran the required Chromium acceptance cohorts against built output, including canonical/deep-link routing, protected-route behavior, representative mobile routes, Reader behavior, service-worker registration, and built PWA shell acceptance. This promotes only the whole-app/protected-route/browser-built-output gate. Inventory is now **160 checked / 51 open (211 total, 75.8%)**.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -278,7 +280,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Reusable/version-neutral workflows replace permanent reliance on `v3-*`/`v4-*` naming for inherited gates.
 - [x] Unit/type/lint/build gates run on V6 PRs.
 - [x] Database/RLS integration gate runs on relevant Supabase/database PRs using a real disposable stack.
-- [ ] Whole-app/protected-route/browser gates run against built output.
+- [x] Whole-app/protected-route/browser gates run against built output.
 - [x] PWA/offline gate covers real V6 SW/content architecture.
 - [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
 - [ ] Exact-SHA Cloudflare preview verification remains mandatory.
