@@ -182,7 +182,7 @@ export function createProgressLeaderboardBridgeService({progress,scoreEvents,ses
   const schedule=task=>{
     chain=chain.then(task).catch(error=>{
       publish('error',error?.message||'Leaderboard score sync failed.');
-      console.warn('Progress leaderboard sync unavailable',error);
+      console.warn('Progress leaderboard sync unavailable');
     });
     return chain;
   };
