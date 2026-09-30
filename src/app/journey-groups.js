@@ -2,9 +2,10 @@ const GROUP_CODE=/^[A-Z0-9]{8}$/;
 const MIN_MEMBERS=2,MAX_MEMBERS=6;
 const cleanText=(value,max=240)=>String(value??'').replace(/\r\n?/g,'\n').trim().slice(0,max);
 const groupError=(message,code)=>{const error=new Error(message);error.code=code;return error};
-function normalizeGroup(row){
+function normalizeGroup(row,expectedCongregationId=''){
   const id=String(row?.id||''),congregationId=String(row?.congregation_id||''),ownerId=String(row?.owner_id||''),name=cleanText(row?.name,60),maxMembers=Number(row?.max_members);
   if(!id||!congregationId||!name||!Number.isInteger(maxMembers)||maxMembers<MIN_MEMBERS||maxMembers>MAX_MEMBERS)throw groupError('Journey Groups received malformed group data.','BQ_JOURNEY_GROUPS_MALFORMED');
+  if(expectedCongregationId&&congregationId!==String(expectedCongregationId))throw groupError('Journey Groups received data outside the active congregation.','BQ_JOURNEY_GROUPS_SCOPE');
   return {id,congregationId,ownerId,name,description:cleanText(row?.description,240),scheduleText:cleanText(row?.schedule_text,100),maxMembers,active:row?.active!==false};
 }
 function normalizeMember(row,allowed){
@@ -15,42 +16,58 @@ function normalizeMember(row,allowed){
 const normalizeCode=value=>cleanText(value,24).toUpperCase().replace(/[^A-Z0-9]/g,'');
 export function createJourneyGroupsService({api,session,congregation}){
   if(!api||!session||!congregation)throw new Error('Journey Groups requires shared API, session and congregation owners.');
-  let groups=[],congregations=[],inviteCode='',inviteGroupId='',contextUserId='',loadRequest=0;
+  let groups=[],congregations=[],inviteCode='',inviteGroupId='',contextUserId='',contextCongregationId='',loadRequest=0;
   const sessionState=()=>session.getState?.()||{};
   const currentUserId=()=>{const state=sessionState();return state.authenticated&&state.user?.id?String(state.user.id):''};
+  const activeCongregationId=()=>String(congregation.getActive?.()?.congregationId||'');
   const identity=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw groupError('Sign in to use Journey Groups.','BQ_JOURNEY_GROUPS_AUTH_REQUIRED');if(state.remoteAvailable===false)throw groupError('Journey Groups are unavailable in local preview.','BQ_JOURNEY_GROUPS_REMOTE_DISABLED');return String(state.user.id)};
-  const clearContext=(userId='')=>{groups=[];congregations=[];inviteCode='';inviteGroupId='';contextUserId=String(userId||'')};
-  const contextCurrent=userId=>Boolean(userId)&&contextUserId===userId&&currentUserId()===userId;
+  const staleContext=()=>groupError('The account or active congregation changed. Reload Journey Groups before continuing.','BQ_JOURNEY_GROUPS_CONTEXT_STALE');
+  const clearContext=(userId='')=>{groups=[];congregations=[];inviteCode='';inviteGroupId='';contextUserId=String(userId||'');contextCongregationId=''};
+  const contextCurrent=(userId,congregationId=contextCongregationId)=>Boolean(userId)&&Boolean(congregationId)&&contextUserId===String(userId)&&currentUserId()===String(userId)&&contextCongregationId===String(congregationId)&&activeCongregationId()===String(congregationId);
   const snapshot=()=>{
-    const state=sessionState(),userId=currentUserId(),visible=!contextUserId||contextUserId===userId;
-    return Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,groups:visible?groups.slice():[],congregations:visible?congregations.slice():[],inviteCode:visible?inviteCode:'',inviteGroupId:visible?inviteGroupId:''});
+    const state=sessionState(),userId=currentUserId(),activeId=activeCongregationId(),visible=!contextUserId||(contextUserId===userId&&(!contextCongregationId||contextCongregationId===activeId));
+    return Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,activeCongregationId:activeId,loadedCongregationId:visible?contextCongregationId:'',groups:visible?groups.slice():[],congregations:visible?congregations.slice():[],inviteCode:visible?inviteCode:'',inviteGroupId:visible?inviteGroupId:''});
   };
+  const requireLoadedCongregation=userId=>{const id=activeCongregationId();if(!contextCurrent(userId,id))throw staleContext();return id};
   async function load(){
     const userId=identity(),request=++loadRequest;
     if(contextUserId!==userId)clearContext(userId);
     let memberships;
     try{memberships=await congregation.load()}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
     if(request!==loadRequest||currentUserId()!==userId)return snapshot();
-    const nextCongregations=memberships.map(row=>Object.freeze({id:row.congregationId,name:row.congregation.name,role:row.role,roleLabel:row.roleLabel,canCreate:congregation.can(row.congregationId,'ministry')}));
+    const activeId=activeCongregationId(),membershipRows=Array.isArray(memberships)?memberships:[],activeMembership=membershipRows.find(row=>String(row?.congregationId||'')===activeId&&(!row?.userId||String(row.userId)===userId))||null;
+    const nextCongregations=membershipRows.map(row=>{const id=String(row?.congregationId||''),isActive=Boolean(activeMembership&&id===activeId);return Object.freeze({id,name:row?.congregation?.name||'Congregation',role:row?.role,roleLabel:row?.roleLabel,isActive,canCreate:isActive&&congregation.can(id,'ministry')})}).filter(row=>row.id);
+    if(contextCongregationId&&contextCongregationId!==activeId){groups=[];inviteCode='';inviteGroupId='';contextCongregationId=''}
+    if(!activeMembership){congregations=nextCongregations;groups=[];inviteCode='';inviteGroupId='';contextCongregationId='';return snapshot()}
     let result;
-    try{result=await api.list(userId)}catch(error){if(request!==loadRequest||currentUserId()!==userId)return snapshot();throw error}
-    if(request!==loadRequest||currentUserId()!==userId)return snapshot();
+    try{result=await api.list(userId,activeId)}catch(error){if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();throw error}
+    if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();
     const rawGroups=Array.isArray(result?.groups)?result.groups:[],rawMembers=Array.isArray(result?.members)?result.members:[];
-    const normalized=rawGroups.map(normalizeGroup),allowed=new Set(normalized.map(group=>group.id)),members=rawMembers.map(row=>normalizeMember(row,allowed));
+    const normalized=rawGroups.map(row=>normalizeGroup(row,activeId)),allowed=new Set(normalized.map(group=>group.id)),members=rawMembers.map(row=>normalizeMember(row,allowed));
     const nextGroups=normalized.map(group=>{const groupMembers=members.filter(member=>member.groupId===group.id),mine=groupMembers.find(member=>member.userId===userId);if(!mine)throw groupError('Journey Groups returned a group without this account membership.','BQ_JOURNEY_GROUPS_PERMISSION');return Object.freeze({...group,members:Object.freeze(groupMembers),memberCount:groupMembers.length,role:mine.role,isLeader:mine.role==='leader'||group.ownerId===userId,canLeave:group.ownerId!==userId})}).sort((a,b)=>a.name.localeCompare(b.name)||a.id.localeCompare(b.id));
-    if(request!==loadRequest||currentUserId()!==userId)return snapshot();
-    congregations=nextCongregations;groups=nextGroups;
+    if(request!==loadRequest||currentUserId()!==userId||activeCongregationId()!==activeId)return snapshot();
+    contextUserId=userId;contextCongregationId=activeId;congregations=nextCongregations;groups=nextGroups;
     if(inviteGroupId&&!groups.some(group=>group.id===inviteGroupId)){inviteCode='';inviteGroupId=''}return snapshot();
   }
   async function create({congregationId,name,description='',scheduleText='',maxMembers=MAX_MEMBERS}={}){
-    identity();const id=String(congregationId||'');congregation.assert(id,'ministry');const title=cleanText(name,60),max=Number(maxMembers);
+    const userId=identity(),id=requireLoadedCongregation(userId);if(String(congregationId||'')!==id)throw staleContext();congregation.assert(id,'ministry');const title=cleanText(name,60),max=Number(maxMembers);
     if(title.length<2)throw groupError('Enter a Journey Group name.','BQ_JOURNEY_GROUPS_NAME');if(!Number.isInteger(max)||max<MIN_MEMBERS||max>MAX_MEMBERS)throw groupError('Journey Groups support 2–6 members.','BQ_JOURNEY_GROUPS_SIZE');
     const result=await api.create({congregation_id:id,name:title,description:cleanText(description,240),schedule_text:cleanText(scheduleText,100),max_members:max}),code=normalizeCode(result?.invite_code);
-    if(!GROUP_CODE.test(code))throw groupError('Journey Groups did not return a valid 8-character group code.','BQ_JOURNEY_GROUPS_MALFORMED');inviteCode=code;inviteGroupId=String(result?.group?.id||'');await load();return snapshot();
+    if(String(result?.group?.congregation_id||'')!==id||!GROUP_CODE.test(code))throw groupError('Journey Groups returned data outside the active congregation.','BQ_JOURNEY_GROUPS_SCOPE');
+    if(!contextCurrent(userId,id))throw staleContext();inviteCode=code;inviteGroupId=String(result?.group?.id||'');await load();return snapshot();
   }
-  async function join(rawCode){identity();const code=normalizeCode(rawCode);if(!GROUP_CODE.test(code))throw groupError('Enter the 8-character Journey Group code.','BQ_JOURNEY_GROUPS_CODE');await api.join(code);inviteCode='';inviteGroupId='';await load();return snapshot()}
-  async function rotateCode(groupId){const userId=identity();if(!contextCurrent(userId))throw groupError('Reload Journey Groups after changing accounts.','BQ_JOURNEY_GROUPS_CONTEXT_STALE');const group=groups.find(row=>row.id===String(groupId||''));if(!group?.isLeader)throw groupError('Only a Journey Group leader can create a new code.','BQ_JOURNEY_GROUPS_PERMISSION');const result=await api.rotateCode(group.id),code=normalizeCode(result?.invite_code);if(!GROUP_CODE.test(code))throw groupError('Journey Groups did not return a valid 8-character group code.','BQ_JOURNEY_GROUPS_MALFORMED');inviteCode=code;inviteGroupId=group.id;return snapshot()}
-  async function leave(groupId){const userId=identity();if(!contextCurrent(userId))throw groupError('Reload Journey Groups after changing accounts.','BQ_JOURNEY_GROUPS_CONTEXT_STALE');const group=groups.find(row=>row.id===String(groupId||''));if(!group||!group.members.some(member=>member.userId===userId))throw groupError('This account is not an active member of that Journey Group.','BQ_JOURNEY_GROUPS_PERMISSION');if(!group.canLeave)throw groupError('The group owner cannot leave until leadership is transferred or the group is archived.','BQ_JOURNEY_GROUPS_OWNER_LEAVE');await api.leave(group.id);if(inviteGroupId===group.id){inviteCode='';inviteGroupId=''}await load();return snapshot()}
+  async function join(rawCode){
+    const userId=identity(),tenantId=requireLoadedCongregation(userId),code=normalizeCode(rawCode);if(!GROUP_CODE.test(code))throw groupError('Enter the 8-character Journey Group code.','BQ_JOURNEY_GROUPS_CODE');
+    const result=await api.join(code,tenantId);if(String(result?.group?.congregation_id||'')!==tenantId)throw groupError('That Journey Group belongs to a different congregation.','BQ_JOURNEY_GROUPS_SCOPE');if(!contextCurrent(userId,tenantId))throw staleContext();inviteCode='';inviteGroupId='';await load();return snapshot();
+  }
+  async function rotateCode(groupId){
+    const userId=identity(),tenantId=requireLoadedCongregation(userId),group=groups.find(row=>row.id===String(groupId||'')&&row.congregationId===tenantId);if(!group?.isLeader)throw groupError('Only a Journey Group leader can create a new code.','BQ_JOURNEY_GROUPS_PERMISSION');
+    const result=await api.rotateCode(group.id,tenantId),code=normalizeCode(result?.invite_code);if(!GROUP_CODE.test(code))throw groupError('Journey Groups did not return a valid 8-character group code.','BQ_JOURNEY_GROUPS_MALFORMED');if(!contextCurrent(userId,tenantId))throw staleContext();inviteCode=code;inviteGroupId=group.id;return snapshot();
+  }
+  async function leave(groupId){
+    const userId=identity(),tenantId=requireLoadedCongregation(userId),group=groups.find(row=>row.id===String(groupId||'')&&row.congregationId===tenantId);if(!group||!group.members.some(member=>member.userId===userId))throw groupError('This account is not an active member of that Journey Group.','BQ_JOURNEY_GROUPS_PERMISSION');if(!group.canLeave)throw groupError('The group owner cannot leave until leadership is transferred or the group is archived.','BQ_JOURNEY_GROUPS_OWNER_LEAVE');
+    await api.leave(group.id,tenantId);if(!contextCurrent(userId,tenantId))throw staleContext();if(inviteGroupId===group.id){inviteCode='';inviteGroupId=''}await load();return snapshot();
+  }
   function clear(){loadRequest++;clearContext()}
   return Object.freeze({snapshot,load,create,join,rotateCode,leave,clear});
 }

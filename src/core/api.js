@@ -599,13 +599,15 @@ export function createApi() {
   });
 
   const journeyGroups = Object.freeze({
-    async list(userId) {
+    async list(userId,congregationId) {
+      const uid=String(userId||'').trim(),tenantId=String(congregationId||'').trim();
+      if(!uid||!tenantId)return {groups:[],members:[]};
       const client=await getClient();
-      const {data:mine,error:mineError}=await client.from('bible_group_members').select(JOURNEY_GROUP_MEMBER_FIELDS).eq('user_id',userId).eq('active',true).order('joined_at',{ascending:true});
+      const {data:mine,error:mineError}=await client.from('bible_group_members').select(JOURNEY_GROUP_MEMBER_FIELDS).eq('user_id',uid).eq('active',true).order('joined_at',{ascending:true});
       if(mineError)throw mineError;
       const groupIds=[...new Set((mine||[]).map(row=>row.group_id).filter(Boolean))];
       if(!groupIds.length)return {groups:[],members:[]};
-      const {data:groups,error:groupError}=await client.from('bible_groups').select(JOURNEY_GROUP_FIELDS).in('id',groupIds).eq('active',true).order('created_at',{ascending:true});
+      const {data:groups,error:groupError}=await client.from('bible_groups').select(JOURNEY_GROUP_FIELDS).in('id',groupIds).eq('congregation_id',tenantId).eq('active',true).order('created_at',{ascending:true});
       if(groupError)throw groupError;
       const visibleIds=[...new Set((groups||[]).map(row=>row.id).filter(Boolean))];
       if(!visibleIds.length)return {groups:[],members:[]};
@@ -614,9 +616,9 @@ export function createApi() {
       return {groups:groups||[],members:members||[]};
     },
     async create(payload) { return invoke('bq-journey-group',{action:'create',...payload}); },
-    async join(inviteCode) { return invoke('bq-journey-group',{action:'join',invite_code:inviteCode}); },
-    async rotateCode(groupId) { return invoke('bq-journey-group',{action:'rotate_code',group_id:groupId}); },
-    async leave(groupId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId}); }
+    async join(inviteCode,congregationId) { return invoke('bq-journey-group',{action:'join',invite_code:inviteCode,congregation_id:congregationId}); },
+    async rotateCode(groupId,congregationId) { return invoke('bq-journey-group',{action:'rotate_code',group_id:groupId,congregation_id:congregationId}); },
+    async leave(groupId,congregationId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId,congregation_id:congregationId}); }
   });
 
   const liveRooms = Object.freeze({
@@ -672,15 +674,19 @@ export function createApi() {
   });
 
   const encouragements = Object.freeze({
-    async list(groupIds) {
-      const ids=[...new Set((groupIds||[]).map(String).filter(Boolean))];
-      if(!ids.length)return [];
+    async list(groupIds,congregationId) {
+      const ids=[...new Set((groupIds||[]).map(String).filter(Boolean))],tenantId=String(congregationId||'').trim();
+      if(!ids.length||!tenantId)return [];
       const client=await getClient();
-      const {data,error}=await client.from('bible_group_encouragements').select(ENCOURAGEMENT_FIELDS).in('group_id',ids).order('created_at',{ascending:false}).limit(80);
+      const {data:scopedGroups,error:scopeError}=await client.from('bible_groups').select('id').in('id',ids).eq('congregation_id',tenantId).eq('active',true);
+      if(scopeError)throw scopeError;
+      const scopedIds=[...new Set((scopedGroups||[]).map(row=>String(row.id||'')).filter(Boolean))];
+      if(scopedIds.length!==ids.length)throw new Error('Encouragement group scope changed. Reload the active congregation.');
+      const {data,error}=await client.from('bible_group_encouragements').select(ENCOURAGEMENT_FIELDS).in('group_id',scopedIds).order('created_at',{ascending:false}).limit(80);
       if(error)throw error;
       return data||[];
     },
-    async send(groupId,kind) { return invoke('bq-journey-group',{action:'encourage',group_id:groupId,kind}); }
+    async send(groupId,kind,congregationId) { return invoke('bq-journey-group',{action:'encourage',group_id:groupId,kind,congregation_id:congregationId}); }
   });
 
   const contentDecisions = Object.freeze({

@@ -242,13 +242,12 @@ describe('product account and tenant stale-response isolation', () => {
     const groupAStarted = deferred();
     const releaseGroupA = deferred();
     const groupApi = {
-      async list(userId: string) {
+      async list(userId: string, congregationId: string) {
         if (userId === 'user-a') {
           groupAStarted.resolve();
           await releaseGroupA.promise;
         }
         const groupId = userId === 'user-a' ? 'group-a' : 'group-b';
-        const congregationId = userId === 'user-a' ? 'cong-a' : 'cong-b';
         return {
           groups: [{ id: groupId, owner_id: userId, congregation_id: congregationId, name: groupId, description: '', schedule_text: '', max_members: 6, active: true }],
           members: [{ group_id: groupId, user_id: userId, role: 'leader', joined_at: '2026-09-24T00:00:00.000Z' }],
@@ -277,20 +276,27 @@ describe('product account and tenant stale-response isolation', () => {
 
     const encouragementAStarted = deferred();
     const releaseEncouragementA = deferred();
+    const fakeGroupState = () => {
+      const userId = session.getState().user?.id || '';
+      const congregationId = congregation.getActive()?.congregationId || '';
+      const groupId = userId === 'user-a' ? 'group-a' : 'group-b';
+      return {
+        activeCongregationId: congregationId,
+        loadedCongregationId: congregationId,
+        groups: [{
+          id: groupId,
+          congregationId,
+          members: [{ userId, role: 'leader' }],
+        }],
+      };
+    };
     const fakeJourneyGroups = {
-      async load() {
-        const userId = session.getState().user?.id || '';
-        const groupId = userId === 'user-a' ? 'group-a' : 'group-b';
-        return {
-          groups: [{
-            id: groupId,
-            members: [{ userId, role: 'leader' }],
-          }],
-        };
-      },
+      async load() { return fakeGroupState(); },
+      snapshot() { return fakeGroupState(); },
     };
     const encouragementApi = {
-      async list(groupIds: string[]) {
+      async list(groupIds: string[], congregationId: string) {
+        assert.ok(congregationId === 'cong-a' || congregationId === 'cong-b');
         if (groupIds.includes('group-a')) {
           encouragementAStarted.resolve();
           await releaseEncouragementA.promise;
