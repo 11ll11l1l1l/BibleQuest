@@ -177,7 +177,7 @@ export function accountPage({ account, session, onHome, onTutorial }) {
           busy(form, true, 'Signing in…');
           try {
             const result = await account.signIn(data.get('email'), data.get('password'));
-            if (result.deviceWarning) console.warn(result.deviceWarning);
+            if (result.deviceWarning) console.warn('Device registration warning');
             onHome();
           } catch (error) { setMessage(error?.message || 'Could not sign in.'); }
           finally { busy(form, false); }
@@ -188,7 +188,7 @@ export function accountPage({ account, session, onHome, onTutorial }) {
             const detail = result.signInWarning
               ? `Your account was created, but automatic sign-in did not finish: ${result.signInWarning} Save this recovery code before signing in manually.`
               : 'Your account is created and signed in. This recovery code is shown once.';
-            if (result.deviceWarning) console.warn(result.deviceWarning);
+            if (result.deviceWarning) console.warn('Device registration warning');
             showCode('Save your recovery code', result.recovery_code, detail, result.signedIn ? 'center' : 'login', () => onTutorial?.());
           } catch (error) { setMessage(error?.message || 'Could not create account.'); }
           finally { busy(form, false); }
