@@ -544,8 +544,7 @@ describe('product account and tenant stale-response isolation', () => {
     const aStarted = deferred();
     const releaseA = deferred();
     const api = {
-      async list(ids: string[]) {
-        const congregationId = ids[0];
+      async list(congregationId: string) {
         if (congregationId === 'cong-a') {
           aStarted.resolve();
           await releaseA.promise;
