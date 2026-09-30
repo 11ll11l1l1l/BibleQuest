@@ -1,4 +1,4 @@
-export const CSP_REPORT_ONLY_POLICY = [
+export const CSP_POLICY = [
   "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
@@ -15,7 +15,10 @@ export const CSP_REPORT_ONLY_POLICY = [
   "form-action 'self'",
 ].join('; ') + ';';
 
-export function validateCspPolicy(value = CSP_REPORT_ONLY_POLICY) {
+export const CSP_REPORT_ONLY_POLICY = CSP_POLICY;
+export const CSP_ENFORCING_POLICY = CSP_POLICY;
+
+export function validateCspPolicy(value = CSP_POLICY) {
   const directives = new Map();
   for (const raw of String(value || '').split(';')) {
     const part = raw.trim();

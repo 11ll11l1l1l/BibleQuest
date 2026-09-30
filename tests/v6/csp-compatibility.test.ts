@@ -59,16 +59,16 @@ test('Web Push remains browser-managed and does not justify arbitrary connect-sr
   assert.match(inventory, /browser-managed Web Push delivery is not an application fetch allowlist/i);
 });
 
-test('CSP tranche is characterization-only until report-only browser evidence exists', () => {
-  assert.doesNotMatch(headersSource, /^\s*Content-Security-Policy\s*:/mi);
+test('deployable headers contain the reviewed enforcing CSP while report-only remains CI evidence', () => {
+  assert.match(headersSource, /^\s*Content-Security-Policy\s*:\s*default-src 'self';/mi);
   assert.doesNotMatch(headersSource, /^\s*Content-Security-Policy-Report-Only\s*:/mi);
 
-  assert.match(inventory, /NOT an enforcement authorization/);
+  assert.match(inventory, /enforcing candidate/i);
   assert.match(inventory, /inline script\/style inventory/i);
   assert.match(inventory, /unsafe DOM sinks/i);
-  assert.match(inventory, /report-only policy/i);
+  assert.match(inventory, /report-only/i);
   assert.match(inventory, /built-artifact Chromium/i);
-  assert.match(inventory, /checkbox remains open/i);
+  assert.match(inventory, /checklist remains open until exact-head CI/i);
 });
 
 test('provisional CSP shape is least-broad for currently evidenced remote origins', () => {

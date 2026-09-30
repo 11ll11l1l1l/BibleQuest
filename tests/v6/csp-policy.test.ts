@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { CSP_REPORT_ONLY_POLICY, validateCspPolicy } from '../../scripts/v6-csp-policy.mjs';
+import { CSP_ENFORCING_POLICY, CSP_REPORT_ONLY_POLICY, validateCspPolicy } from '../../scripts/v6-csp-policy.mjs';
 
 const rootHtml = ['index.html','admin.html','admin-operations.html','content-review.html','transform.html','psychometrics.html','reset.html','classic.html','v5-push-device-field.html'];
 
@@ -26,8 +26,17 @@ test('all root HTML covered by Cloudflare global headers has no inline script bl
   }
 });
 
-test('report-only CSP browser evidence is wired into exact-SHA Phase-1 after dist-v6 preview starts', async () => {
+test('report-only and enforcing CSP browser evidence are wired into exact-SHA Phase-1 after dist-v6 preview starts', async () => {
   const workflow = await readFile(new URL('../../.github/workflows/v6-phase1-build.yml', import.meta.url), 'utf8');
   assert.match(workflow, /Built artifact CSP report-only compatibility/);
   assert.match(workflow, /node tests\/v6\/csp-report-only-browser\.mjs/);
+  assert.match(workflow, /Built artifact CSP enforcing compatibility/);
+  assert.match(workflow, /node tests\/v6\/csp-enforcing-browser\.mjs/);
+});
+
+test('Cloudflare deployable header exactly matches the enforcing policy candidate', async () => {
+  const headers = await readFile(new URL('../../_headers', import.meta.url), 'utf8');
+  const line = headers.split(/\r?\n/).find(row => /^\s*Content-Security-Policy\s*:/.test(row));
+  assert.ok(line, 'root _headers must contain an enforcing Content-Security-Policy');
+  assert.equal(line.replace(/^\s*Content-Security-Policy\s*:\s*/, '').trim(), CSP_ENFORCING_POLICY);
 });

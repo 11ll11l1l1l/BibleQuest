@@ -17,6 +17,11 @@ on:
       - "src/content/**"
       - "src/ui/**"
       - "index.html"
+      - "_headers"
+      - "classic.html"
+      - "transform.html"
+      - "psychometrics.html"
+      - "v5-push-device-field.html"
       - "offline-shell-sw.js"
       - "innovation-suite.js"
       - "tests/v3-accessibility-smoke.mjs"
@@ -157,6 +162,11 @@ jobs:
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v6/csp-report-only-browser.mjs
+
+      - name: Built artifact CSP enforcing compatibility
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/csp-enforcing-browser.mjs
 
       - name: Built artifact automated accessibility
         env:
