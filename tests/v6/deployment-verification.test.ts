@@ -59,6 +59,7 @@ test('deployed artifact verifier proves exact source SHA and every declared file
   const result = await verifyDeployedArtifact({
     deploymentUrl: 'https://preview.mybiblequest.pages.dev',
     expectedSha: exactSha,
+    expectedArtifactSha256: fixture.integrity.artifactSha256,
     fetchImpl: fixture.fetchImpl,
     concurrency: 2,
   });
@@ -76,6 +77,7 @@ test('deployed artifact verifier rejects build identity mismatch', async () => {
     verifyDeployedArtifact({
       deploymentUrl: 'https://preview.mybiblequest.pages.dev',
       expectedSha: exactSha,
+      expectedArtifactSha256: fixture.integrity.artifactSha256,
       fetchImpl: fixture.fetchImpl,
     }),
     /Deployed build SHA mismatch/,
@@ -90,9 +92,23 @@ test('deployed artifact verifier rejects bytes changed after the integrity manif
     verifyDeployedArtifact({
       deploymentUrl: 'https://preview.mybiblequest.pages.dev',
       expectedSha: exactSha,
+      expectedArtifactSha256: fixture.integrity.artifactSha256,
       fetchImpl: fixture.fetchImpl,
     }),
     /Deployed artifact (byte count|SHA-256) mismatch for index\.html/,
+  );
+});
+
+test('deployed artifact verifier rejects a self-consistent deployment that is not the certified build', async () => {
+  const fixture = createFixture();
+  await assert.rejects(
+    verifyDeployedArtifact({
+      deploymentUrl: 'https://preview.mybiblequest.pages.dev',
+      expectedSha: exactSha,
+      expectedArtifactSha256: 'f'.repeat(64),
+      fetchImpl: fixture.fetchImpl,
+    }),
+    /Deployed artifact digest mismatch/,
   );
 });
 
@@ -106,6 +122,8 @@ test('deployment verification workflow binds a manual Cloudflare URL to an exact
     'ref: ${{ env.BQ_EXPECTED_SHA }}',
     'test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"',
     'BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}',
+    "BQ_EXPECTED_ARTIFACT_SHA256='+m.artifactSha256.toLowerCase()",
+    'npm run build:v6',
     'node scripts/v6-deployment-verify.mjs',
   ]) {
     assert.ok(workflow.includes(token), `deployment verification workflow missing: ${token}`);
