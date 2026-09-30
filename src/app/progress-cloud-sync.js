@@ -102,7 +102,7 @@ export function createProgressCloudSyncService({api,session,progress,ownerStorag
     if(!userId)return;
     prepareOwner(userId);
     cacheCurrent(userId);
-    void syncNow().catch(error=>console.warn('Progress account sync unavailable',error));
+    void syncNow().catch(()=>console.warn('Progress account sync unavailable'));
   });
 
   const removeBeforeSignOut=session.beforeSignOut(async()=>{
