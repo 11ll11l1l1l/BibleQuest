@@ -26,12 +26,13 @@ const alignment: ScriptureChapterAlignment = {
   ],
 };
 
-test('chapter alignment validates identity, complete verse ordering and provenance', () => {
+test('chapter alignment validates identity, canonical verse ordering and provenance', () => {
   assert.deepEqual(validateChapterAlignment(alignment, {
     translationId: 'bsb', book: 'JHN', chapter: 3, verseCount: 3,
   }), { valid: true, issues: [] });
   assert.match(validateChapterAlignment(alignment, { translationId: 'niv' }).issues[0], /translation identity/);
   assert.match(validateChapterAlignment(alignment, { verseCount: 4 }).issues[0], /verse count/);
+  assert.match(validateChapterAlignment(alignment, { verseNumbers: [1, 2, 4] }).issues[0], /verse identity/);
 });
 
 test('alignment rejects missing verse rows, overlaps, duration overruns and missing evidence', () => {
@@ -47,7 +48,7 @@ test('alignment rejects missing verse rows, overlaps, duration overruns and miss
   const result = validateChapterAlignment(invalid);
   assert.equal(result.valid, false);
   assert.ok(result.issues.some(issue => /provenance/.test(issue)));
-  assert.ok(result.issues.some(issue => /verse sequence/.test(issue)));
+  assert.ok(result.issues.some(issue => /strictly increasing/.test(issue)));
   assert.ok(result.issues.some(issue => /overlaps/.test(issue)));
   assert.ok(result.issues.some(issue => /exceeds audio duration/.test(issue)));
 });
@@ -60,4 +61,24 @@ test('time and verse conversions use half-open timing intervals and reject gaps'
   assert.equal(verseAtAudioTime(alignment, -1), null);
   assert.equal(audioTimeForVerse(alignment, 2), 21.4);
   assert.equal(audioTimeForVerse(alignment, 4), null);
+});
+
+
+test('alignment supports canonical verse-number gaps without shifting seek identity', () => {
+  const gap: ScriptureChapterAlignment = {
+    ...alignment,
+    book: 'ACT',
+    chapter: 8,
+    verses: [
+      { verse: 36, startSeconds: 0, endSeconds: 20 },
+      { verse: 38, startSeconds: 20, endSeconds: 50 },
+      { verse: 39, startSeconds: 50, endSeconds: 89 },
+    ],
+  };
+  assert.deepEqual(validateChapterAlignment(gap, {
+    translationId: 'bsb', book: 'ACT', chapter: 8, verseCount: 3, verseNumbers: [36, 38, 39],
+  }), { valid: true, issues: [] });
+  assert.equal(audioTimeForVerse(gap, 37), null);
+  assert.equal(audioTimeForVerse(gap, 38), 20);
+  assert.equal(verseAtAudioTime(gap, 25), 38);
 });
