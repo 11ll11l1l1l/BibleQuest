@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -70,10 +70,71 @@ async function assertRoute(page, route, label) {
   if (resolvedHash !== `#/${route}`) throw new Error(`${label} #/${route}: resolved ${resolvedHash}`);
 }
 
+function findBuiltChunk(manifest, sourcePath) {
+  const match = Object.entries(manifest).find(([key, value]) =>
+    key.endsWith(sourcePath) || String(value?.src || '').endsWith(sourcePath));
+  if (!match) throw new Error(`Built manifest is missing lazy source ${sourcePath}`);
+  return match[1].file;
+}
+
 const browser = await chromium.launch({ headless: true });
 let offlinePersistentContext = null;
 let offlineProfileDir = null;
 try {
+  // Built-output lazy payload proof: large Reader, games, and recordings route
+  // chunks must stay off Home's initial network path. Scripture packs are also
+  // demand-loaded only after the Reader is opened.
+  const manifest = JSON.parse(await readFile(new URL('../../dist-v6/vite-manifest.json', import.meta.url), 'utf8'));
+  const lazyChunkFiles = {
+    reader: findBuiltChunk(manifest, 'src/app/reader-v6-page.js'),
+    games: findBuiltChunk(manifest, 'src/features/games/index.js'),
+    recordings: findBuiltChunk(manifest, 'src/features/recordings/index.js'),
+  };
+  const lazyContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const lazyPage = await lazyContext.newPage();
+  const requestedPaths = new Set();
+  const externalRequests = [];
+  lazyPage.on('request', request => {
+    try {
+      const target = new URL(request.url());
+      if (target.origin === new URL(baseUrl).origin) requestedPaths.add(target.pathname);
+      else externalRequests.push(target.href);
+    } catch { /* Ignore non-URL request diagnostics. */ }
+  });
+  const builtPath = file => new URL(file, `${baseUrl}/`).pathname;
+
+  await assertRoute(lazyPage, 'home', '390px lazy payload Home');
+  for (const [owner, file] of Object.entries(lazyChunkFiles)) {
+    if (requestedPaths.has(builtPath(file))) {
+      throw new Error(`Home eagerly loaded ${owner} chunk ${file}`);
+    }
+  }
+  if ([...requestedPaths].some(path => path.includes('/data/packs/bible/'))) {
+    throw new Error('Home eagerly requested Bible pack payloads.');
+  }
+  if (externalRequests.some(url => /openbible\.com|\.mp3(?:$|\?)/i.test(url))) {
+    throw new Error('Home eagerly requested Bible audio/media payloads.');
+  }
+
+  await assertRoute(lazyPage, 'reader', '390px lazy payload Reader');
+  if (!requestedPaths.has(builtPath(lazyChunkFiles.reader))) {
+    throw new Error(`Reader route did not demand-load ${lazyChunkFiles.reader}`);
+  }
+  if (![...requestedPaths].some(path => path.includes('/data/packs/bible/'))) {
+    throw new Error('Reader route did not demand-load a Bible pack payload.');
+  }
+
+  await assertRoute(lazyPage, 'play', '390px lazy payload Games');
+  if (!requestedPaths.has(builtPath(lazyChunkFiles.games))) {
+    throw new Error(`Play route did not demand-load ${lazyChunkFiles.games}`);
+  }
+
+  await assertRoute(lazyPage, 'recordings', '390px lazy payload Recordings');
+  if (!requestedPaths.has(builtPath(lazyChunkFiles.recordings))) {
+    throw new Error(`Recordings route did not demand-load ${lazyChunkFiles.recordings}`);
+  }
+  await lazyContext.close();
+
   for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 } });
     const page = await context.newPage();
