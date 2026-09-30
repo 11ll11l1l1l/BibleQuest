@@ -1,34 +1,53 @@
+import { uiButtonHtml, uiCardHtml, uiSelectFieldHtml, uiStatusHtml } from '../../v6/ui/primitives.ts';
+
+// Inherited compatibility selectors rendered by the shared primitives:
+// data-accessibility-page, data-accessibility-setting, data-accessibility-reset.
 export function accessibilityPage({ accessibility, onBack } = {}) {
   if (!accessibility?.subscribe) throw new Error('Accessibility page requires the accessibility service.');
   return {
     title: 'Accessibility',
-    html: `<section class="bq-panel bq-accessibility-page" data-accessibility-page>
-      <p class="bq-eyebrow">ACCESSIBILITY</p>
-      <h1>Accessibility</h1>
-      <p>Adjust readability and motion for this device. These preferences use BibleQuest's existing local storage boundary and do not change account or cloud data.</p>
-      <button type="button" class="bq-secondary-button" data-accessibility-back>← More</button>
-    </section>
+    html: `${uiCardHtml({
+      heading: 'Accessibility',
+      headingLevel: 1,
+      eyebrow: 'ACCESSIBILITY',
+      description: "Adjust readability and motion for this device. These preferences use BibleQuest's existing local storage boundary and do not change account or cloud data.",
+      className: 'bq-accessibility-page',
+      data: { 'accessibility-page': true },
+      actions: [{ label: '← More', variant: 'secondary', data: { 'accessibility-back': true } }]
+    })}
     <section class="bq-panel bq-accessibility-controls" aria-labelledby="bq-accessibility-options">
       <h2 id="bq-accessibility-options">Display and motion</h2>
-      <label for="bq-accessibility-text">Text size</label>
-      <select id="bq-accessibility-text" data-accessibility-setting="text">
-        <option value="normal">Normal</option>
-        <option value="large">Large</option>
-        <option value="xlarge">Extra large</option>
-      </select>
-      <label for="bq-accessibility-motion">Motion</label>
-      <select id="bq-accessibility-motion" data-accessibility-setting="motion">
-        <option value="system">Follow device</option>
-        <option value="reduce">Reduce motion</option>
-        <option value="full">Full motion</option>
-      </select>
-      <label for="bq-accessibility-contrast">Contrast</label>
-      <select id="bq-accessibility-contrast" data-accessibility-setting="contrast">
-        <option value="normal">Normal</option>
-        <option value="strong">Stronger contrast</option>
-      </select>
-      <button type="button" class="bq-secondary-button" data-accessibility-reset>Reset accessibility settings</button>
-      <p class="bq-accessibility-status" role="status" aria-live="polite" data-accessibility-status></p>
+      ${uiSelectFieldHtml({
+        id: 'bq-accessibility-text',
+        label: 'Text size',
+        data: { 'accessibility-setting': 'text' },
+        options: [
+          { value: 'normal', label: 'Normal' },
+          { value: 'large', label: 'Large' },
+          { value: 'xlarge', label: 'Extra large' }
+        ]
+      })}
+      ${uiSelectFieldHtml({
+        id: 'bq-accessibility-motion',
+        label: 'Motion',
+        data: { 'accessibility-setting': 'motion' },
+        options: [
+          { value: 'system', label: 'Follow device' },
+          { value: 'reduce', label: 'Reduce motion' },
+          { value: 'full', label: 'Full motion' }
+        ]
+      })}
+      ${uiSelectFieldHtml({
+        id: 'bq-accessibility-contrast',
+        label: 'Contrast',
+        data: { 'accessibility-setting': 'contrast' },
+        options: [
+          { value: 'normal', label: 'Normal' },
+          { value: 'strong', label: 'Stronger contrast' }
+        ]
+      })}
+      ${uiButtonHtml({ label: 'Reset accessibility settings', variant: 'secondary', data: { 'accessibility-reset': true } })}
+      ${uiStatusHtml({ className: 'bq-accessibility-status', data: { 'accessibility-status': true } })}
     </section>`,
     mount(root) {
       const text = root.querySelector('[data-accessibility-setting="text"]');
