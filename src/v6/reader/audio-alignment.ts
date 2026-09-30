@@ -33,7 +33,7 @@ function nonBlank(value: unknown): boolean {
 /** Validates one-based verse timings before they can drive Reader highlighting or seeking. */
 export function validateChapterAlignment(
   alignment: ScriptureChapterAlignment | null | undefined,
-  expected?: { readonly translationId?: string; readonly book?: string; readonly chapter?: number; readonly verseCount?: number },
+  expected?: { readonly translationId?: string; readonly book?: string; readonly chapter?: number; readonly verseCount?: number; readonly verseNumbers?: readonly number[] },
 ): AudioAlignmentValidation {
   const issues: string[] = [];
   if (!alignment || typeof alignment !== 'object') return { valid: false, issues: ['alignment is required'] };
@@ -52,17 +52,24 @@ export function validateChapterAlignment(
     issues.push('verse timings are required');
   } else {
     let previousEnd = 0;
+    let previousVerse = 0;
     alignment.verses.forEach((timing, index) => {
-      const expectedVerse = index + 1;
-      if (!timing || timing.verse !== expectedVerse) issues.push(`verse sequence must include verse ${expectedVerse} in order`);
+      const verse = Number(timing?.verse);
+      if (!Number.isSafeInteger(verse) || verse < 1) {
+        issues.push(`verse timing at index ${index} has an invalid verse number`);
+      } else if (verse <= previousVerse) {
+        issues.push('verse numbers must be strictly increasing');
+      }
+      const label = Number.isSafeInteger(verse) && verse > 0 ? verse : index + 1;
       if (!Number.isFinite(timing?.startSeconds) || !Number.isFinite(timing?.endSeconds)
         || timing.startSeconds < 0 || timing.endSeconds <= timing.startSeconds) {
-        issues.push(`verse ${expectedVerse} has invalid timing bounds`);
+        issues.push(`verse ${label} has invalid timing bounds`);
         return;
       }
-      if (timing.startSeconds < previousEnd) issues.push(`verse ${expectedVerse} overlaps the preceding timing`);
-      if (timing.endSeconds > alignment.durationSeconds) issues.push(`verse ${expectedVerse} exceeds audio duration`);
+      if (timing.startSeconds < previousEnd) issues.push(`verse ${label} overlaps the preceding timing`);
+      if (timing.endSeconds > alignment.durationSeconds) issues.push(`verse ${label} exceeds audio duration`);
       previousEnd = timing.endSeconds;
+      if (Number.isSafeInteger(verse) && verse > 0) previousVerse = verse;
     });
   }
   if (expected?.translationId && alignment.translationId !== expected.translationId) issues.push('translation identity mismatch');
@@ -70,6 +77,13 @@ export function validateChapterAlignment(
   if (expected?.chapter !== undefined && alignment.chapter !== expected.chapter) issues.push('chapter identity mismatch');
   if (expected?.verseCount !== undefined && (!Array.isArray(alignment.verses) || alignment.verses.length !== expected.verseCount)) {
     issues.push('verse count mismatch');
+  }
+  if (expected?.verseNumbers !== undefined) {
+    const actual = Array.isArray(alignment.verses) ? alignment.verses.map(row => row.verse) : [];
+    if (actual.length !== expected.verseNumbers.length
+      || actual.some((verse, index) => verse !== expected.verseNumbers![index])) {
+      issues.push('verse identity sequence mismatch');
+    }
   }
   return Object.freeze({ valid: issues.length === 0, issues: Object.freeze(issues) });
 }
@@ -90,6 +104,14 @@ export function verseAtAudioTime(alignment: ScriptureChapterAlignment, seconds: 
 
 export function audioTimeForVerse(alignment: ScriptureChapterAlignment, verse: number): number | null {
   if (!Number.isSafeInteger(verse) || verse < 1) return null;
-  const timing = alignment.verses[verse - 1];
-  return timing?.verse === verse ? timing.startSeconds : null;
+  let low = 0;
+  let high = alignment.verses.length - 1;
+  while (low <= high) {
+    const mid = (low + high) >>> 1;
+    const timing = alignment.verses[mid];
+    if (verse < timing.verse) high = mid - 1;
+    else if (verse > timing.verse) low = mid + 1;
+    else return timing.startSeconds;
+  }
+  return null;
 }
