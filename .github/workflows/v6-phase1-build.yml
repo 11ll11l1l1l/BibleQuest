@@ -153,6 +153,11 @@ jobs:
           cat /tmp/bq-v6-preview.log
           exit 1
 
+      - name: Built artifact CSP report-only compatibility
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/csp-report-only-browser.mjs
+
       - name: Built artifact automated accessibility
         env:
           BQ_BASE_URL: http://127.0.0.1:4173/
