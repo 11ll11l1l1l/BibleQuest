@@ -1,6 +1,6 @@
 # BibleQuest V6 CSP compatibility inventory
 
-Status: characterization only — **NOT an enforcement authorization**
+Status: report-only browser candidate — **NOT an enforcement authorization**
 
 Official integration observed: `b8c5fe7fafe016720cf33d6913984b2db49df4d9`
 
@@ -79,10 +79,12 @@ Current characterization:
 - `index.html`: external module script only; no inline `<script>` body or `<style>` block.
 - `admin.html` and `admin-operations.html`: external entry modules only; no inline script/style blocks.
 - `content-review.html`: external scripts only, but still directly loads the pinned Supabase browser client from jsDelivr.
-- `transform.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
-- `psychometrics.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
+- `transform.html`: bootstrap script and shell style are external files; direct jsDelivr Supabase loading remains explicitly inventoried.
+- `psychometrics.html`: bootstrap script, shell style, and retry/return handlers are external files/listeners; direct jsDelivr Supabase loading remains explicitly inventoried.
+- `classic.html`: the Classic-mode bootstrap flag is external.
+- `v5-push-device-field.html`: the field-harness style block is external.
 
-Therefore the enforcement path is **not** to add blanket `'unsafe-inline'` permanently. The preferred migration is to externalize or nonce/hash the remaining inline blocks, then validate the resulting policy in report-only Chromium before enforcement.
+Transform and Psychometrics inline execution debt has been externalized. The report-only candidate does **not** use blanket `'unsafe-inline'` for scripts; transitional `style-src 'self' 'unsafe-inline'` remains scoped to inherited presentation compatibility while built Chromium reports are collected.
 
 ## Required work before enforcement
 
@@ -102,3 +104,8 @@ This tranche advances checklist M by making the compatibility contract explicit 
 > CSP is compatible with media/push/build architecture and enforced as accepted.
 
 That checkbox remains open until an enforcing policy is browser-proven and accepted on the integrated V6 candidate.
+
+
+## Report-only built-artifact gate
+
+`tests/v6/csp-report-only-browser.mjs` injects the candidate policy as `Content-Security-Policy-Report-Only` into built `dist-v6` document responses inside Chromium. It covers the root application and every standalone root HTML surface copied by Vite and fails on any `securitypolicyviolation` event. Root `_headers` remains non-enforcing until an exact-head Phase-1 run proves this report-only gate green. Enforcement still requires a later `_headers` transition with its own exact-head Phase-1 and inherited regression evidence; the checklist remains open until then.
