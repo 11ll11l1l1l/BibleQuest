@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- PR #931 is integrated at `1e481b12205718dd4b45ae1bfd53e0d8f7f2b461` from exact head `c634bf382b2f20eedc485550692756b0e5f37b68`; Client Artifact Security `36723086328`, Phase-1 `36723086331`, and inherited regression `36723086375` passed. Team Center is single-tenant at the repository boundary, and the deny-by-default inter-congregation sharing policy is now accepted. Acceptance target after reconciliation: **176 checked / 35 open / 211 total**. W2-01 continues with Live Rooms explicit scope and the complete sensitive-domain audit.
+
 - PR #926 is integrated at `b92258a93140c06cc6f71c93ece487d711dbd6a5` from exact head `337e3f66a4cc172a50b95a8d4de51f9af66b6b8b`; Database CI `36721670165`, Phase-1 `36721669960`, and inherited regression `36721670124` passed. The Leader Center role-matrix and cross-congregation DB+browser rows are now counted. Current acceptance target: **175 checked / 36 open / 211 total**. W2-01 now continues with the broader all-sensitive-domain explicit-tenant audit rather than redoing Leader Center evidence.
 
 - Captain reconciliation: merged #874 privacy evidence and #891 privileged-auth/MFA review evidence are now counted on current integration. Exact workflows: #874 Client Artifact Security `36707156920`, Phase-1 `36707156794`, inherited regression `36707156702`; #891 Phase-1 `36708011086`, inherited regression `36708010975`. Acceptance target after reconciliation: **172 checked / 39 open / 211 total**.
