@@ -65,6 +65,12 @@ const featureDynamicChunks = manifestEntries
   .map(([source, chunk]) => Object.freeze({ source, file: String(chunk.file || '') }))
   .sort((a, b) => a.source.localeCompare(b.source));
 
+const heavyweightFeatureRouteSources = Object.freeze([
+  'src/features/reader/index.js',
+  'src/features/games/index.js',
+  'src/features/recordings/index.js',
+]);
+
 function collectStaticManifestResources(source) {
   const visited = new Set();
   const javascript = new Set();
@@ -105,6 +111,24 @@ const startupPerformance = Object.freeze({
   javascriptFiles: startupResources.javascript,
   stylesheetFiles: startupResources.stylesheets,
 });
+
+const heavyweightPayloadEvidence = Object.freeze(
+  heavyweightFeatureRouteSources.map((source) => {
+    const chunk = manifest[source];
+    const file = String(chunk?.file || '');
+    const resources = chunk
+      ? collectStaticManifestResources(source)
+      : Object.freeze({ javascript: Object.freeze([]), stylesheets: Object.freeze([]) });
+    const routeSpecificJavaScript = resources.javascript.filter((path) => !startupJavascriptSet.has(path));
+    return Object.freeze({
+      source,
+      file,
+      isDynamicEntry: chunk?.isDynamicEntry === true,
+      startupContainsEntry: Boolean(file && startupJavascriptSet.has(file)),
+      routeSpecificJavaScript: Object.freeze(routeSpecificJavaScript),
+    });
+  }),
+);
 
 const featureRoutePerformance = Object.freeze(
   await Promise.all(
@@ -264,6 +288,7 @@ const report = {
     browserEntry: { path: browserEntryPath, bytes: browserEntryBytes },
     featureDynamicChunkCount: featureDynamicChunks.length,
     featureDynamicChunks,
+    heavyweightPayloadEvidence,
   },
   performance: {
     startup: startupPerformance,
@@ -318,6 +343,18 @@ for (const route of featureRoutePerformance) {
 }
 if (featureDynamicChunks.length < budgets.minimumFeatureDynamicChunks) {
   failures.push(`feature dynamic chunks ${featureDynamicChunks.length} < ${budgets.minimumFeatureDynamicChunks}`);
+}
+for (const route of heavyweightPayloadEvidence) {
+  if (!route.file || !route.isDynamicEntry) {
+    failures.push(`heavyweight route is not a dynamic entry: ${route.source}`);
+    continue;
+  }
+  if (route.startupContainsEntry) {
+    failures.push(`heavyweight route entry leaked into startup JavaScript: ${route.source} -> ${route.file}`);
+  }
+  if (!route.routeSpecificJavaScript.length) {
+    failures.push(`heavyweight route has no route-specific JavaScript chunk: ${route.source}`);
+  }
 }
 if (largestImage.bytes > budgets.imageBytes) failures.push(`largest image ${largestImage.bytes} > ${budgets.imageBytes}`);
 if (imageTotalBytes > budgets.imageTotalBytes) failures.push(`image total ${imageTotalBytes} > ${budgets.imageTotalBytes}`);
