@@ -18,11 +18,13 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-Latest integrated runtime/evidence head before this documentation reconciliation: `b343b308ab1b3abf17203fdef2084303f97eef23`.
+Latest integrated runtime/evidence head before this documentation reconciliation: `b2786b8c742220427f1d41fc343b84089a9130fa`.
 
-Acceptance inventory after validated PR #842/#843 reconciliation: **161 checked / 50 open / 211 total = 76.3%**.
+Acceptance inventory after PR #867 and the PR #649 offline-replay evidence reconciliation: **164 checked / 47 open / 211 total = 77.7%**.
 
 Completed in this cycle:
+- PR #867 reconciled exact built-artifact accessibility and heavyweight lazy-loading evidence into the official checklist.
+- PR #649 exact-head Phase-1 `36157859026` + inherited regression `36157858952` prove privileged/destructive/auth/admin operations are rejected from blind offline replay; the duplicate cross-cutting row is now counted.
 - PR #842 integrated exact built-output browser acceptance evidence and closes `Whole-app/protected-route/browser gates run against built output.`
 - PR #843 integrated safe app/service-worker/content-package upgrade regressions and closes `App/service-worker/content-pack versions can upgrade safely.`
 - stale draft PR #841 is superseded by the current reconciliation and must not be merged.
