@@ -13,6 +13,8 @@ Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084
 
 This file is the authoritative source for current BibleQuest V6 phase, scope, blockers and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Detailed execution is in `DEVELOPMENT_PLAN_V6.md`; acceptance inventory is in `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`; Phase-0 evidence is in `docs/v6/V6_PHASE0_BOOTSTRAP.md`.
 
+Autonomous/manual V6 execution is governed by `V6_AGENT_OPERATING_SYSTEM.md`; the live cross-chat/scheduled-worker queue is `V6_AGENT_TASK_BOARD.md`. Every scheduled worker and manual chat instance must read those files plus live GitHub state before selecting work. Repository state replaces stale chat/task-prompt assumptions.
+
 
 ## Integrated checkpoint — 2026-09-30
 
