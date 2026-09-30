@@ -52,7 +52,7 @@ test('MFA and passkey evaluation records rollout and recovery boundaries without
   assert.match(review, /passkey support as \*\*experimental\*\*/i);
   assert.match(review, /RP ID must remain stable/i);
   assert.match(review, /existing application recovery code is a password-reset mechanism/i);
-  assert.match(review, /not an MFA factor/i);
+  assert.match(review, /MFA factor and must not be treated as proof of AAL2/i);
   assert.match(review, /break-glass Owner recovery/i);
   assert.match(review, /does \*\*not\*\* mean reauthentication, MFA, AAL2 enforcement, passkeys/i);
 });
