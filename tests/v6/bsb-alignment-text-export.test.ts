@@ -30,6 +30,14 @@ test('current BSB alignment export is complete, deterministic and bound to the R
     const diskManifest = JSON.parse(await readFile(join(output, '_biblequest-bsb-alignment-export.json'), 'utf8'));
     assert.equal(diskManifest.inventorySha256, result.inventorySha256);
     assert.equal(diskManifest.files.length, 1189);
+    const acts8 = diskManifest.files.find(row => row.book === 'ACT' && row.chapter === 8);
+    assert.ok(acts8);
+    assert.equal(acts8.requiresVerseRemap, true);
+    assert.equal(acts8.verseNumbers.length, 39);
+    assert.deepEqual(acts8.verseNumbers.slice(-5), [35, 36, 38, 39, 40]);
+    const acts8Lines = (await readFile(join(output, 'ACT_008_BSB.txt'), 'utf8')).trimEnd().split('\n');
+    assert.equal(acts8Lines.length, 39);
+    assert.match(acts8Lines[36], /gave orders to stop the chariot/);
   } finally {
     await rm(output, { recursive: true, force: true });
   }
