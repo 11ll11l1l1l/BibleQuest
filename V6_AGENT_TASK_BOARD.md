@@ -18,13 +18,14 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-Latest integrated runtime/evidence head before this documentation reconciliation: `b343b308ab1b3abf17203fdef2084303f97eef23`.
+Latest integrated runtime/evidence head before this documentation reconciliation: `0887bec6acf7ede4e7aff98fc1caf9b700b23ffe`.
 
-Acceptance inventory after validated PR #842/#843 reconciliation: **161 checked / 50 open / 211 total = 76.3%**.
+Acceptance inventory after validated PR #842/#843/#845 reconciliation: **162 checked / 49 open / 211 total = 76.8%**.
 
 Completed in this cycle:
 - PR #842 integrated exact built-output browser acceptance evidence and closes `Whole-app/protected-route/browser gates run against built output.`
 - PR #843 integrated safe app/service-worker/content-package upgrade regressions and closes `App/service-worker/content-pack versions can upgrade safely.`
+- PR #845 integrated automated accessibility checks against the exact built artifact and closes `Automated accessibility checks run on built artifacts.`
 - stale draft PR #841 is superseded by the current reconciliation and must not be merged.
 
 ## P0 — work first
@@ -64,16 +65,6 @@ Work:
 - implement repository-side build/deployment metadata seam if missing;
 - add deterministic test/CI contract;
 - if external Pages configuration is the only blocker, document it once and pivot to W1-02 in the same run.
-
-### W4-01 — Built-artifact automated accessibility
-Owner bias: W4
-Checklist target:
-- automated accessibility checks run on built artifacts.
-Work:
-- integrate a deterministic built-output accessibility gate for representative critical routes;
-- preserve existing keyboard/focus tests;
-- include mobile viewport coverage where practical;
-- never substitute automation for the separate physical/manual row.
 
 ## P1 — take when P0 item is owned/blocked
 
