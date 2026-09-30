@@ -141,11 +141,16 @@ function validateInventory(manifest) {
 export async function verifyDeployedArtifact({
   deploymentUrl,
   expectedSha,
+  expectedArtifactSha256,
   fetchImpl = globalThis.fetch,
   concurrency = DEFAULT_CONCURRENCY,
 } = {}) {
   const sourceSha = String(expectedSha || '').trim().toLowerCase();
+  const certifiedArtifactSha256 = String(expectedArtifactSha256 || '').trim().toLowerCase();
   if (!SHA_PATTERN.test(sourceSha)) throw new Error('Deployment verification requires the full 40-character Git commit SHA.');
+  if (!SHA256_PATTERN.test(certifiedArtifactSha256)) {
+    throw new Error('Deployment verification requires the certified build artifact SHA-256.');
+  }
   if (typeof fetchImpl !== 'function') throw new Error('Deployment verification requires a fetch implementation.');
   if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 32) {
     throw new Error('Deployment verification concurrency must be an integer from 1 to 32.');
@@ -168,6 +173,9 @@ export async function verifyDeployedArtifact({
   }
 
   const entries = validateInventory(integrity);
+  if (String(integrity.artifactSha256).toLowerCase() !== certifiedArtifactSha256) {
+    throw new Error(`Deployed artifact digest mismatch: expected certified ${certifiedArtifactSha256}, got ${String(integrity.artifactSha256 || '<missing>')}`);
+  }
   const actual = new Array(entries.length);
   let cursor = 0;
 
@@ -209,6 +217,7 @@ if (invokedAsCli) {
   verifyDeployedArtifact({
     deploymentUrl: process.argv[2] || process.env.BQ_DEPLOYMENT_URL,
     expectedSha: process.argv[3] || process.env.BQ_EXPECTED_SHA,
+    expectedArtifactSha256: process.argv[4] || process.env.BQ_EXPECTED_ARTIFACT_SHA256,
   }).then(
     result => console.log(JSON.stringify(result, null, 2)),
     error => {
