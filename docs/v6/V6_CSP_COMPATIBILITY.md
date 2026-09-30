@@ -38,6 +38,16 @@ Compatibility requirement:
 - `frame-src` must permit `https://www.youtube.com` for the player iframe.
 - Do not add broad Google/YouTube wildcard origins merely as a precaution. Add any additional origin only after executable browser evidence proves it is required.
 
+### OpenBible audio, Kuromoji dictionary and YouTube thumbnails
+
+Additional runtime evidence requires three more explicit CSP capabilities:
+
+- Reader human BSB playback resolves chapter media from `https://openbible.com/audio/...`; direct media therefore requires `media-src https://openbible.com`, while on-demand fetch/download paths also require `connect-src https://openbible.com`.
+- Japanese furigana loads the pinned Kuromoji script and dictionary from `https://cdn.jsdelivr.net`; the script belongs in `script-src` and dictionary network reads belong in `connect-src`.
+- Media Library thumbnails use `https://i.ytimg.com`; that exact origin belongs in `img-src`.
+
+The executable `scripts/v6-csp-compatibility.mjs` preflight binds these runtime seams plus Supabase and YouTube to the policy inventory. While no root CSP is present it reports characterization-only status. Once a root CSP is introduced, CI fails if required runtime origins are missing or `script-src` enables `'unsafe-eval'`.
+
 ### Web Push / service worker
 
 `src/app/push-subscription.js` delegates subscription creation to `ServiceWorkerRegistration.pushManager.subscribe()` and persists the resulting subscription through the existing application persistence boundary. It does not directly fetch a separate push-provider URL.
@@ -62,8 +72,10 @@ base-uri 'self';
 object-src 'none';
 frame-ancestors 'self';
 script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com;
-connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co;
+connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co https://cdn.jsdelivr.net https://openbible.com;
+media-src 'self' https://openbible.com;
 frame-src 'self' https://www.youtube.com;
+img-src 'self' https://i.ytimg.com;
 manifest-src 'self';
 worker-src 'self';
 ```
