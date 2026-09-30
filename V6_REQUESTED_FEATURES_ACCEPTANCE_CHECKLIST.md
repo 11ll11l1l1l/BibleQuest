@@ -242,14 +242,14 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 ## M. Auth/admin/security hardening
 
 - [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
-- [ ] Privileged Owner/Admin re-auth requirements are reviewed.
+- [x] Privileged Owner/Admin re-auth requirements are reviewed.
 - [x] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
 - [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
 - [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
 - [x] Secret scanning/client artifact scanning exists.
-- [ ] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
+- [x] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
 - [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
 ## N. Design system / i18n / accessibility
