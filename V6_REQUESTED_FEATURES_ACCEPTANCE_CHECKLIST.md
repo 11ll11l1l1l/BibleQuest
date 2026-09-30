@@ -220,7 +220,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Leader announcement/notification publishing is integrated.
 - [x] Journey Group/team management entry points are integrated where applicable.
 - [x] Moderation/review entry points preserve existing server authority.
-- [ ] Role matrix passes DB + browser tests.
+- [x] Role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
 
 ## L. Multi-congregation
