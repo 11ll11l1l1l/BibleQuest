@@ -23,6 +23,34 @@ const CREDENTIAL_LITERALS = [
   /(?:service[_-]?role|secret)[_-]?(?:key|token)\s*[:=]\s*["'`][^"'`\r\n]{20,}["'`]/i,
 ];
 
+
+const CSP_REQUIRED_DIRECTIVES = Object.freeze({
+  "default-src": ["'self'"], "base-uri": ["'self'"], "object-src": ["'none'"],
+  "frame-ancestors": ["'self'"], "script-src": ["'self'", 'https://cdn.jsdelivr.net'],
+  "style-src": ["'self'"],
+  "connect-src": ["'self'", 'https://zkfmgezvzugchcwppreq.supabase.co', 'wss://zkfmgezvzugchcwppreq.supabase.co', 'https://openbible.com'],
+  "media-src": ["'self'", 'blob:', 'https://openbible.com'],
+  "worker-src": ["'self'", 'blob:'], "manifest-src": ["'self'"], "form-action": ["'self'"],
+});
+export function validateCspHeader(source) {
+  const line = String(source || '').split(/\r?\n/).find(row => /^\s*Content-Security-Policy:/i.test(row));
+  if (!line) return ['missing Content-Security-Policy header'];
+  const directives = new Map(line.replace(/^\s*Content-Security-Policy:\s*/i, '').split(';').map(part => part.trim()).filter(Boolean).map(part => {
+    const [name, ...values] = part.split(/\s+/); return [name.toLowerCase(), new Set(values)];
+  }));
+  const errors = [];
+  for (const [name, required] of Object.entries(CSP_REQUIRED_DIRECTIVES)) {
+    const actual = directives.get(name);
+    if (!actual) { errors.push('missing ' + name); continue; }
+    for (const value of required) if (!actual.has(value)) errors.push(name + ' missing ' + value);
+  }
+  for (const name of ['script-src','style-src']) {
+    const actual = directives.get(name) || new Set();
+    for (const unsafe of ["'unsafe-inline'", "'unsafe-eval'"]) if (actual.has(unsafe)) errors.push(name + ' permits ' + unsafe);
+  }
+  return errors;
+}
+
 const JWT_LITERAL_PATTERN = /["'`](eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+)["'`]/g;
 
 function isTextCandidate(filePath) {
@@ -91,6 +119,12 @@ export async function scanClientArtifactInputs(rootDir, targets = DEFAULT_TARGET
 
 async function main() {
   const rootDir = process.cwd();
+  const cspFindings = validateCspHeader(await readFile(path.join(rootDir, '_headers'), 'utf8'));
+  if (cspFindings.length) {
+    console.error('V6 CSP policy failed: ' + cspFindings.join('; '));
+    process.exitCode = 1;
+    return;
+  }
   const findings = await scanClientArtifactInputs(rootDir);
   if (findings.length) {
     console.error('V6 client artifact policy failed. Browser-shipped inputs contain privileged credential material.');
