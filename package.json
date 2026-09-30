@@ -19,10 +19,11 @@
     "lint": "node scripts/v6-lint.mjs",
     "format:check": "node scripts/v6-format-check.mjs",
     "unit": "npm run unit:v6",
-    "check:v6-dependency-security": "node scripts/v6-dependency-security.mjs"
+    "check:v6-dependency-security": "node scripts/v6-dependency-security.mjs",
+    "check:v6-migration-history": "node scripts/v6-migration-history-guard.mjs --local-only"
   },
   "devDependencies": {
     "typescript": "7.0.2",
     "vite": "8.3.0"
   }
-}
+}\n
