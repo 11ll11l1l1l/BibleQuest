@@ -17,6 +17,8 @@ Autonomous/manual V6 execution is governed by `V6_AGENT_OPERATING_SYSTEM.md`; th
 
 
 ## Integrated checkpoint — 2026-09-30
+- Acceptance reconciliation on current integration: merged PR #874 exact head `53e13820` passed Client Artifact Security `36707156920`, Phase-1 `36707156794`, and inherited regression `36707156702`, proving the client privacy/log/diagnostic row. Merged PR #891 exact head `bcf629ca` passed Phase-1 `36708011086` and inherited regression `36708010975`; its privileged-auth review documents re-auth requirements plus MFA/passkey recovery implications without claiming deployment. These three evidence-backed rows advance acceptance from 169/211 to 172/211.
+
 
 - **Authoritative integrated feature head: `db0010048e970e571723956a58cdffb75136ac93` on `v6/architecture-upgrade`.** This includes Reader audio acceptance through PR #837, Team Center active-congregation hardening in PR #838, Journey Groups/Encouragements active-congregation hardening in PR #839, built-output acceptance evidence in PR #842, and safe app/service-worker/content-package upgrade coverage in PR #843. This is an integrated development checkpoint, not a release candidate and not a production promotion.
 - PR #845 merged at `0887bec6` from exact PR head `a19bfd9d`: V6 Phase-1 `36701984068` and inherited regression `36701984136` passed. The exact-head Phase-1 job checked out and built the candidate, served `dist-v6`, and passed the dedicated `Built artifact automated accessibility` browser step before the remaining built Chromium/PWA/Reader cohorts. This promotes only `Automated accessibility checks run on built artifacts`; physical/manual accessibility remains open.
