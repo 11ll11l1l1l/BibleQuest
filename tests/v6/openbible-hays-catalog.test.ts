@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
-import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
+import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadBsbScriptureContentVersion, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
 
 const root = new URL('../../', import.meta.url);
 
@@ -84,4 +84,21 @@ test('lazy narrator catalogs fail closed on unavailable, malformed, or stale BSB
   assert.equal(unavailable, null);
   assert.equal(malformedVersion, null);
   assert.equal(malformedBooks, null);
+});
+
+
+test('BSB Scripture identity loader returns only a valid independent Reader manifest revision', async () => {
+  const calls: string[] = [];
+  const version = await loadBsbScriptureContentVersion(async (url: string | URL | Request) => {
+    calls.push(String(url));
+    return { ok: true, async json() { return { translationId: 'bsb', contentVersion: 'bsb-reader-revision-42' }; } } as Response;
+  });
+  assert.equal(version, 'bsb-reader-revision-42');
+  assert.deepEqual(calls, ['/data/v6-scripture-manifests/bsb.json']);
+  assert.equal(await loadBsbScriptureContentVersion(async () => ({
+    ok: true, async json() { return { translationId: 'tl', contentVersion: 'bsb-reader-revision-42' }; },
+  } as Response)), null);
+  assert.equal(await loadBsbScriptureContentVersion(async () => ({
+    ok: true, async json() { return { translationId: 'bsb', contentVersion: '   ' }; },
+  } as Response)), null);
 });

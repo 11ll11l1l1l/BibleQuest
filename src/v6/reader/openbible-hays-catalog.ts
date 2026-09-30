@@ -81,18 +81,31 @@ export function createOpenBibleHaysStreamingManifest(
 }
 
 
-export async function loadOpenBibleNarratorStreamingManifest(
-  narrator: OpenBibleBsbNarrator,
-  books: readonly ReaderBookRef[],
+export async function loadBsbScriptureContentVersion(
   fetcher: typeof fetch = globalThis.fetch,
-): Promise<ScriptureAudioManifest | null> {
+): Promise<string | null> {
   if (typeof fetcher !== 'function') return null;
   try {
     const response = await fetcher('/data/v6-scripture-manifests/bsb.json');
     if (!response.ok) return null;
     const scriptureManifest = await response.json() as { translationId?: unknown; contentVersion?: unknown };
-    if (scriptureManifest.translationId !== 'bsb' || typeof scriptureManifest.contentVersion !== 'string') return null;
-    return createOpenBibleNarratorStreamingManifest(narrator, scriptureManifest.contentVersion, books);
+    if (scriptureManifest.translationId !== 'bsb' || typeof scriptureManifest.contentVersion !== 'string'
+      || !scriptureManifest.contentVersion.trim()) return null;
+    return scriptureManifest.contentVersion;
+  } catch {
+    return null;
+  }
+}
+
+export async function loadOpenBibleNarratorStreamingManifest(
+  narrator: OpenBibleBsbNarrator,
+  books: readonly ReaderBookRef[],
+  fetcher: typeof fetch = globalThis.fetch,
+): Promise<ScriptureAudioManifest | null> {
+  const scriptureContentVersion = await loadBsbScriptureContentVersion(fetcher);
+  if (!scriptureContentVersion) return null;
+  try {
+    return createOpenBibleNarratorStreamingManifest(narrator, scriptureContentVersion, books);
   } catch {
     return null;
   }
