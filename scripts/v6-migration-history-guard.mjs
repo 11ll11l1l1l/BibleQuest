@@ -2,12 +2,15 @@ import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const MIGRATION_FILE = /^(\d{14})_([a-z0-9][a-z0-9_]*)\.sql$/;
+const MIGRATION_FILE = /^(\d{8}|\d{14})_([a-z0-9][a-z0-9_]*)\.sql$/;
+export const V5_RELEASE_CUTOFF = '20260918235959';
 
 export function parseMigrationFilename(filename) {
   const match = MIGRATION_FILE.exec(String(filename || ''));
   if (!match) throw new Error(`Invalid Supabase migration filename: ${filename}`);
-  return Object.freeze({ version: match[1], name: match[2], filename });
+  const sourceVersion = match[1];
+  const version = sourceVersion.length === 8 ? `${sourceVersion}000000` : sourceVersion;
+  return Object.freeze({ version, sourceVersion, name: match[2], filename });
 }
 
 export function normalizeRemoteMigrations(value) {
@@ -18,13 +21,14 @@ export function normalizeRemoteMigrations(value) {
   return rows.map((row, index) => {
     const version = String(row?.version || '').trim();
     const name = String(row?.name || '').trim();
-    if (!/^\d{14}$/.test(version)) {
+    if (!/^(?:\d{8}|\d{14})$/.test(version)) {
       throw new Error(`Remote migration at index ${index} has an invalid version: ${version || '<missing>'}`);
     }
     if (!/^[a-z0-9][a-z0-9_]*$/.test(name)) {
       throw new Error(`Remote migration at index ${index} has an invalid name: ${name || '<missing>'}`);
     }
-    return Object.freeze({ version, name });
+    const normalizedVersion = version.length === 8 ? `${version}000000` : version;
+    return Object.freeze({ version: normalizedVersion, sourceVersion: version, name });
   });
 }
 
@@ -38,14 +42,21 @@ function indexUnique(rows, key, label) {
   return out;
 }
 
-export function analyzeMigrationHistory(localRows, remoteRows = []) {
-  const localByVersion = indexUnique(localRows, 'version', 'Local migration history');
-  const localByName = indexUnique(localRows, 'name', 'Local migration history');
-  const remoteByVersion = indexUnique(remoteRows, 'version', 'Remote migration history');
-  const remoteByName = indexUnique(remoteRows, 'name', 'Remote migration history');
+export function analyzeMigrationHistory(localRows, remoteRows = [], { cutoff = V5_RELEASE_CUTOFF } = {}) {
+  const localForward = localRows.filter(row => row.version > cutoff);
+  const remoteForward = remoteRows.filter(row => row.version > cutoff);
+  for (const row of localForward) {
+    if (String(row.sourceVersion || row.version).length !== 14) {
+      throw new Error(`V6 forward migration must use a unique 14-digit version: ${row.filename || row.name}`);
+    }
+  }
+  const localByVersion = indexUnique(localForward, 'version', 'Local migration history');
+  const localByName = indexUnique(localForward, 'name', 'Local migration history');
+  const remoteByVersion = indexUnique(remoteForward, 'version', 'Remote migration history');
+  const remoteByName = indexUnique(remoteForward, 'name', 'Remote migration history');
 
   const versionMismatches = [];
-  for (const local of localRows) {
+  for (const local of localForward) {
     const remote = remoteByName.get(local.name);
     if (remote && remote.version !== local.version) {
       versionMismatches.push(Object.freeze({
@@ -56,15 +67,15 @@ export function analyzeMigrationHistory(localRows, remoteRows = []) {
     }
   }
 
-  const remoteOnly = remoteRows
+  const remoteOnly = remoteForward
     .filter(remote => !localByName.has(remote.name))
     .map(remote => Object.freeze({ ...remote }));
 
-  const pending = localRows
+  const pending = localForward
     .filter(local => !remoteByName.has(local.name))
     .map(local => Object.freeze({ ...local }));
 
-  const latestRemoteVersion = remoteRows.reduce(
+  const latestRemoteVersion = remoteForward.reduce(
     (latest, row) => (row.version > latest ? row.version : latest),
     '',
   );
@@ -73,7 +84,7 @@ export function analyzeMigrationHistory(localRows, remoteRows = []) {
     : [];
 
   const sameVersionDifferentName = [];
-  for (const local of localRows) {
+  for (const local of localForward) {
     const remote = remoteByVersion.get(local.version);
     if (remote && remote.name !== local.name) {
       sameVersionDifferentName.push(Object.freeze({
@@ -91,8 +102,9 @@ export function analyzeMigrationHistory(localRows, remoteRows = []) {
   if (outOfOrderPending.length) blockers.push('older local migrations are unapplied behind the latest remote migration version');
 
   return Object.freeze({
-    localCount: localRows.length,
-    remoteCount: remoteRows.length,
+    cutoff,
+    localCount: localForward.length,
+    remoteCount: remoteForward.length,
     latestRemoteVersion: latestRemoteVersion || null,
     pending,
     outOfOrderPending,
