@@ -10,7 +10,7 @@ export const CLIENT_DIAGNOSTIC_CODES = Object.freeze({
 const SAFE_CONNECTION_REASONS=new Set(['ok','browser-offline','http','timeout','fetch-failed','probe','probe-failed','unknown']);
 const SAFE_WORKER_STATES=new Set(['installing','installed','activating','activated','redundant','none','unknown']);
 const SAFE_CONTENT_STATES=new Set(['idle','registering','ready','unsupported','error','disposed','unknown']);
-const safeRoute=value=>String(value||'feature').trim().replace(/[^a-z0-9_-]/gi,'').slice(0,80)||'feature';
+const safeRoute=value=>String(value||'feature').trim().split(/[?#]/,1)[0].replace(/[^a-z0-9_-]/gi,'').slice(0,80)||'feature';
 const safeConnectionReason=value=>SAFE_CONNECTION_REASONS.has(String(value||''))?String(value):'unknown';
 const safeHttpStatus=value=>{
   const status=Number(value);
