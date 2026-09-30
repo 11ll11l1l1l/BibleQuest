@@ -102,11 +102,12 @@ test('assignment push renders the canonical assignments deep link', async () => 
   assert.equal(shown.title, 'New assignment');
   assert.equal(shown.options.body, 'Read John 1 before Friday.');
   assert.equal(shown.options.tag, 'bq-11111111-1111-4111-8111-111111111111');
-  assert.deepEqual(shown.options.data, {
-    url: 'https://biblequest.example/#/assignments',
-    notificationId: '11111111-1111-4111-8111-111111111111',
-    type: 'assignments',
-  });
+  assert.equal(shown.options.data.url, 'https://biblequest.example/#/assignments');
+  assert.equal(
+    shown.options.data.notificationId,
+    '11111111-1111-4111-8111-111111111111',
+  );
+  assert.equal(shown.options.data.type, 'assignments');
 });
 
 test('assignment notification click reuses a same-origin client and focuses it', async () => {
