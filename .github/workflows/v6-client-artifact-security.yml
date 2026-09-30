@@ -11,6 +11,7 @@ on:
       - 'vite.config.*'
       - scripts/v6-client-artifact-policy.mjs
       - tests/v6/client-artifact-policy.test.ts
+      - tests/v6/client-diagnostics-privacy.test.ts
       - package.json
       - package-lock.json
       - .github/workflows/v6-client-artifact-security.yml
@@ -43,8 +44,8 @@ jobs:
       - name: Install exact dependencies
         run: npm ci
 
-      - name: Run focused policy regression
-        run: node --experimental-strip-types --test tests/v6/client-artifact-policy.test.ts
+      - name: Run focused client privacy regressions
+        run: node --experimental-strip-types --test tests/v6/client-artifact-policy.test.ts tests/v6/client-diagnostics-privacy.test.ts
 
       - name: Build V6 client
         run: npm run build
