@@ -219,7 +219,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Upcoming due items/events surface is available.
 - [x] Leader announcement/notification publishing is integrated.
 - [x] Journey Group/team management entry points are integrated where applicable.
-- [ ] Moderation/review entry points preserve existing server authority.
+- [x] Moderation/review entry points preserve existing server authority.
 - [ ] Role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
 
