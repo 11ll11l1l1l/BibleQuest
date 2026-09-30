@@ -98,7 +98,7 @@ export function createBibleQuestCloudSyncService({api,session,bibleQuest,ownerSt
     if(!userId)return;
     prepareOwner(userId);
     cacheCurrent(userId);
-    void syncNow().catch(error=>console.warn('Bible Quest account sync unavailable',error));
+    void syncNow().catch(()=>console.warn('Bible Quest account sync unavailable'));
   });
 
   const removeBeforeSignOut=session.beforeSignOut(async()=>{
