@@ -219,7 +219,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Upcoming due items/events surface is available.
 - [x] Leader announcement/notification publishing is integrated.
 - [x] Journey Group/team management entry points are integrated where applicable.
-- [ ] Moderation/review entry points preserve existing server authority.
+- [x] Moderation/review entry points preserve existing server authority.
 - [ ] Role matrix passes DB + browser tests.
 - [ ] Cross-congregation denial passes DB + browser tests.
 
@@ -300,7 +300,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [ ] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [x] Large offline downloads require explicit user action and provide storage/removal controls.
-- [ ] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
+- [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
 - [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
 - [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
 - [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
