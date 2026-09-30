@@ -17,8 +17,12 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerBoot, /new audioPackageModule\.ScriptureAudioPackageManager/);
   assert.match(readerBoot, /offlinePackages: audioRepository/);
   assert.match(readerBoot, /createReaderAudioProvider\(\{\s*manifest,/);
-  assert.match(readerBoot, /loadOpenBibleNarratorStreamingManifest\('hays', args\.books\)/);
-  assert.match(readerBoot, /loadOpenBibleNarratorStreamingManifest\('souer', args\.books\)/);
+  assert.match(readerBoot, /const scriptureContentVersion = await catalogModule\.loadCurrentBsbScriptureContentVersion\(\)/);
+  assert.match(readerBoot, /const \[haysManifest, souerManifest\] = scriptureContentVersion \? \[/);
+  assert.match(readerBoot, /\] : \[null, null\];/);
+  assert.match(readerBoot, /createOpenBibleNarratorStreamingManifest\('hays', scriptureContentVersion, args\.books\)/);
+  assert.match(readerBoot, /createOpenBibleNarratorStreamingManifest\('souer', scriptureContentVersion, args\.books\)/);
+  assert.match(readerBoot, /scriptureContentVersion,/);
   assert.match(readerBoot, /createReaderAudioSourceRouter/);
   assert.match(readerBoot, /audio: readerAudioProvider/);
   assert.match(provider, /audioOfflineEligibility\(manifest\)/);
@@ -49,4 +53,29 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerPage, /unsubscribeAudio\?\.\(\)/);
   assert.match(stylesheet, /\.bq-reader-audio/);
   assert.match(stylesheet, /\.bq-verse\.is-audio-current/);
+});
+
+
+test('Reader exposes selective audio packages only through an explicit chapter action and keeps unapproved sources streaming-only', async () => {
+  const [readerPage, provider, policy, packages] = await Promise.all([
+    read('src/features/reader/index.js'),
+    read('src/v6/reader/audio-provider.ts'),
+    read('src/v6/reader/audio-policy.ts'),
+    read('src/v6/reader/audio-packages.ts'),
+  ]);
+
+  assert.match(readerPage, /audio\.canDownloadOffline\?\.\(\) === false[\s\S]*Offline download is not approved for this audio source\. Streaming requires an internet connection\./);
+  assert.match(readerPage, /data-reader-audio-download>Download chapter audio<\/button>/);
+  assert.match(readerPage, /audio\.installChapter\(state\.book, state\.chapter/);
+  assert.doesNotMatch(readerPage, /install(?:All|Bible|Translation)Audio|download(?:All|Bible|Translation)Audio/i);
+
+  assert.match(provider, /canDownloadOffline: \(\) => offlineAvailable/);
+  assert.match(provider, /installChapter\(bookCode: string, chapter: number/);
+  assert.match(provider, /const segment = manifest\.segments\.find\(row => row\.book\.toUpperCase\(\) === String\(bookCode\)\.toUpperCase\(\) && row\.chapter === chapter\)/);
+  assert.match(provider, /input\.packageManager\.install\(manifest, segment/);
+
+  assert.match(policy, /permissions: Object\.freeze\(\{ stream: 'allowed', offlineCopy: 'review-required' \}\)/);
+  assert.match(policy, /if \(manifest\.source\.permissions\?\.offlineCopy !== 'allowed'\) return \{ eligible: false, reason: 'rights-unverified'/);
+  assert.match(packages, /const eligibility = audioOfflineEligibility\(manifest, this\.#ceilingBytes\)/);
+  assert.match(packages, /if \(!eligibility\.eligible\) throw new Error/);
 });

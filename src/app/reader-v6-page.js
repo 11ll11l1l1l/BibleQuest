@@ -17,10 +17,11 @@ export async function loadReaderPage(args) {
     import('../v6/reader/audio-packages.ts'),
     import('../v6/reader/openbible-hays-catalog.ts'),
   ]);
-  const [haysManifest, souerManifest] = await Promise.all([
-    catalogModule.loadOpenBibleNarratorStreamingManifest('hays', args.books),
-    catalogModule.loadOpenBibleNarratorStreamingManifest('souer', args.books),
-  ]);
+  const scriptureContentVersion = await catalogModule.loadCurrentBsbScriptureContentVersion();
+  const [haysManifest, souerManifest] = scriptureContentVersion ? [
+    catalogModule.createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, args.books),
+    catalogModule.createOpenBibleNarratorStreamingManifest('souer', scriptureContentVersion, args.books),
+  ] : [null, null];
   if (typeof pageModule?.readerPage !== 'function' || typeof packageModule.createBrowserScripturePackageController !== 'function'
     || typeof audioModule.createReaderAudioProvider !== 'function' || typeof audioModule.createReaderAudioSourceRouter !== 'function'
     || typeof speechModule.createReaderSpeechSynthesis !== 'function'
@@ -37,7 +38,7 @@ export async function loadReaderPage(args) {
     const audioRepository = audioStorageModule.createBrowserScriptureAudioPackageRepository();
     const createNarratorProvider = manifest => audioModule.createReaderAudioProvider({
       manifest,
-      scriptureContentVersion: manifest?.source.scriptureContentVersion ?? null,
+      scriptureContentVersion,
       store: args.audioStore,
       createAudio: () => new Audio(),
       mediaSession: globalThis.navigator?.mediaSession || null,

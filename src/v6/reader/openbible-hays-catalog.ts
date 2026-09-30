@@ -81,6 +81,22 @@ export function createOpenBibleHaysStreamingManifest(
 }
 
 
+export async function loadCurrentBsbScriptureContentVersion(
+  fetcher: typeof fetch = globalThis.fetch,
+): Promise<string | null> {
+  if (typeof fetcher !== 'function') return null;
+  try {
+    const response = await fetcher('/data/v6-scripture-manifests/bsb.json');
+    if (!response.ok) return null;
+    const scriptureManifest = await response.json() as { translationId?: unknown; contentVersion?: unknown };
+    if (scriptureManifest.translationId !== 'bsb' || typeof scriptureManifest.contentVersion !== 'string') return null;
+    const contentVersion = scriptureManifest.contentVersion.trim();
+    return contentVersion || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function loadOpenBibleNarratorStreamingManifest(
   narrator: OpenBibleBsbNarrator,
   books: readonly ReaderBookRef[],

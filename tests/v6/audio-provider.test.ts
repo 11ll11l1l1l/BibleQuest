@@ -260,3 +260,33 @@ test('Reader audio provider refuses unaligned coverage and wrong translation req
   const ready = createReaderAudioProvider({ manifest, alignments: [alignment], scriptureContentVersion: 'bsb-fixture-1', store: storeFixture(), createAudio: fixtureAudio });
   assert.throws(() => ready.load('tl', 'JHN', 1), /exact Scripture translation/i);
 });
+
+
+test('offline audio fetch failure leaves the verified direct stream usable', async () => {
+  const audio = fixtureAudio();
+  const packageManager = {
+    async readInstalled() { return null; },
+    async listInstalled() { return []; },
+    async install() { throw new TypeError('Failed to fetch'); },
+    cancel() { return false; },
+    async remove() {},
+  };
+  const provider = createReaderAudioProvider({
+    manifest,
+    alignments: [alignment],
+    scriptureContentVersion: 'bsb-fixture-1',
+    store: storeFixture(),
+    createAudio: () => audio,
+    packageManager: packageManager as never,
+  });
+
+  assert.equal(provider.isAvailable(), true);
+  assert.equal(provider.canDownloadOffline(), true);
+  await assert.rejects(provider.installChapter('JHN', 1), /Failed to fetch/);
+  assert.equal(provider.isAvailable(), true, 'offline transport failure must not disable direct streaming');
+  await provider.load('bsb', 'JHN', 1);
+  await provider.play();
+  assert.equal(audio.src, 'https://audio.example/bsb-audio-1/JHN-1.mp3');
+  assert.equal(audio.paused, false);
+  provider.dispose();
+});

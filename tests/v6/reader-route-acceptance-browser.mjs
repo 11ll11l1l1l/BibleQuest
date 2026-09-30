@@ -100,6 +100,21 @@ async function verifyWidth(width) {
     assert(await page.locator('[data-reader-book]').inputValue() === 'JHN'
       && await page.locator('[data-reader-chapter]').inputValue() === '3',
     'Reader Search-result navigation did not preserve existing John 3:16 behavior.');
+
+    const offlineDownload = page.locator('[data-reader-offline-download]');
+    await offlineDownload.waitFor({ state: 'visible' });
+    assert((await offlineDownload.textContent())?.includes('Download'),
+      'Reader did not expose an explicit user-triggered Scripture offline action.');
+    await offlineDownload.click();
+    await page.waitForFunction(() =>
+      document.querySelector('[data-reader-offline-manager]')?.getAttribute('data-managed-installed') === 'true',
+    null, { timeout: 15000 });
+    assert(await page.locator('[data-reader-offline-remove]').count() === 1,
+      'Verified Scripture package did not expose a remove action.');
+    await page.locator('[data-reader-offline-remove]').click();
+    await page.locator('[data-reader-offline-download]').waitFor({ state: 'visible', timeout: 15000 });
+    assert(await page.locator('[data-reader-offline-manager]').getAttribute('data-managed-installed') === 'false',
+      'Removed Scripture package remained presented as locally installed.');
   }
 
   assert(errors.length === 0, `${width}px Reader acceptance produced errors: ${errors.join(' | ')}`);
@@ -162,6 +177,11 @@ async function verifyReaderAudioStateRecovery() {
   await page.getByLabel('Chapter', { exact: true }).selectOption('1');
   const playButton = page.locator('[data-reader-audio-toggle]');
   await playButton.waitFor({ state: 'visible' });
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-package]')?.textContent?.includes('Offline download is not approved'));
+  assert(await page.locator('[data-reader-audio-download]').count() === 0,
+    'Unapproved OpenBible audio exposed an offline download action.');
+  assert((await page.locator('[data-reader-audio-package]').textContent())?.includes('Streaming requires an internet connection.'),
+    'Reader did not preserve streaming-only guidance while offline-copy permission remains unapproved.');
   await playButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
 
