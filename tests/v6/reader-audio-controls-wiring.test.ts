@@ -40,6 +40,10 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerPage, /data-reader-audio-speed/);
   assert.match(readerPage, /data-reader-audio-auto-next/);
   assert.match(readerPage, /data-reader-audio-timer/);
+  assert.match(readerPage, /data-reader-audio-follow/);
+  assert.match(readerPage, /audioFollowVerse = target\.checked/);
+  assert.match(readerPage, /scrollIntoView\(\{ block: 'nearest', behavior: reduceMotion \? 'auto' : 'smooth' \}\)/);
+  assert.match(readerPage, /prefers-reduced-motion: reduce/);
   assert.match(readerPage, /data-reader-audio-verse/);
   assert.match(readerPage, /hasVerseAlignment\?\.\(reader\.getState\(\)\.book/);
   assert.match(readerPage, /audio\.seekVerse\(verse\)/);

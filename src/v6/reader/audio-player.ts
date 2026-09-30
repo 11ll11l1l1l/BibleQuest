@@ -109,8 +109,16 @@ export function createChapterAudioPlayer(input: {
   let sleepTimer: unknown = null;
   let loadGeneration = 0;
 
+  const syncMediaPlaybackState = (status: ChapterAudioPlaybackState['status']) => {
+    if (!mediaSession) return;
+    try {
+      mediaSession.playbackState = status === 'playing' ? 'playing' : status === 'paused' ? 'paused' : 'none';
+    } catch { /* Media Session playback state is optional and must never block audio. */ }
+  };
+
   const commit = (patch: Partial<ChapterAudioPlaybackState>) => {
     state = Object.freeze({ ...state, ...patch });
+    syncMediaPlaybackState(state.status);
     publish(state);
     return state;
   };
@@ -306,6 +314,7 @@ export function createChapterAudioPlayer(input: {
         setMediaAction('seekforward', null);
         setMediaAction('nexttrack', null);
         mediaSession.metadata = null;
+        syncMediaPlaybackState('idle');
       }
     },
   });

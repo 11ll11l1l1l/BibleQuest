@@ -222,6 +222,7 @@ test('Media Session seek and next actions degrade safely and are removed on tear
   const handlers = new Map<string, ((details?: { seekTime?: number; seekOffset?: number }) => void) | null>();
   const session = {
     metadata: null,
+    playbackState: 'none' as MediaSessionPlaybackState,
     setActionHandler(action: string, handler: ((details?: { seekTime?: number; seekOffset?: number }) => void) | null) {
       if (action === 'seekforward') throw new Error('Unsupported action');
       handlers.set(action, handler);
@@ -233,6 +234,12 @@ test('Media Session seek and next actions degrade safely and are removed on tear
     resolveNextChapter: () => ({ bookCode: 'GEN', chapter: 2 }),
   });
   await player.load('GEN', 1);
+  assert.equal(session.playbackState, 'none');
+  await player.play();
+  assert.equal(session.playbackState, 'playing');
+  player.pause();
+  assert.equal(session.playbackState, 'paused');
+  await player.play();
   player.seek(20);
   handlers.get('seekbackward')?.({ seekOffset: 5 });
   assert.equal(player.getState().currentTime, 15);
@@ -245,6 +252,7 @@ test('Media Session seek and next actions degrade safely and are removed on tear
   assert.equal(handlers.get('play'), null);
   assert.equal(handlers.get('seekbackward'), null);
   assert.equal(handlers.get('nexttrack'), null);
+  assert.equal(session.playbackState, 'none');
 });
 
 test('chapter audio synchronizes verse identity and seeks only from validated timing', async () => {

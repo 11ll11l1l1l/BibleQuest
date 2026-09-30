@@ -16,6 +16,14 @@ Barry Hays is the selected first narrator because the [BSB-publishing/bsb-align 
 
 Pinned alignment-source identity for V6 review: `BSB-publishing/bsb-align` commit `bdb859afc427b215b78e12ee4a7798c32b7b91e0`, Git tree `c83b2494c8fc5413863e9617b23660eab9459323`. The recursive tree at that commit is complete (not truncated) and contains exactly 1,189 `text/*_BSB.txt` chapter blobs plus exactly 1,189 `output/*/*_words.json` timing blobs. Treat this immutable commit/tree pair as the candidate alignment corpus for V6 import; never import from a moving branch name. These counts establish complete chapter inventory only. They do **not** establish byte/text equivalence to BibleQuest, timing correctness, or exact OpenBible audio-file identity. The importer must still compare every timing word against the current BibleQuest BSB pack and bind the generated rows to the package-derived `scriptureContentVersion` before any alignment-dependent UI can be enabled.
 
+## Alignment compatibility finding — 2026-10-01
+
+The pinned `bsb-align` corpus cannot currently be promoted as an exact timing source for BibleQuest's active BSB text. A fail-closed comparison against the current Reader packs found substantive spoken-text differences in the upstream alignment source itself, not merely punctuation differences. For example, the pinned upstream Genesis 1 text ends verse 3 after “Let there be light,” while the current BibleQuest BSB verse continues “and there was light.” The same pattern appears in Genesis 1:5, 1:6, and 1:8. The committed MMS-only word timing output reflects those shorter source lines.
+
+This means the pinned commit remains useful provenance and candidate timing evidence for Barry Hays, but its timings must **not** drive Reader highlighting, verse seeking, autoscroll, or exact-alignment/offline-package approval against the current BSB revision. `scripts/v6-audit-bsb-alignment-source.mjs` now provides an executable full-corpus text audit and intentionally exits non-zero when the pinned source differs from the current BSB packs. The existing importer remains stricter still: it rejects timing-word rows that do not reproduce the current verse tokens exactly.
+
+Resolution paths are limited to evidence-preserving options: obtain/regenerate Hays timings against the exact current BibleQuest BSB text and exact selected audio files, or deliberately adopt a reviewed Scripture/audio revision pair whose text is demonstrably identical. Do not patch missing words by interpolation or infer timing for text that is absent from the alignment source.
+
 ## Evidence boundary
 
 The CC0 statement is made by the BSB Audio Bible project and is repeated on the Berean Bible site. Creative Commons describes CC0 as a public-domain dedication tool and states that it does not verify the copyright status of works to which CC0 is applied. The alignment repository licenses its code under MIT, which does not license audio. Therefore:
