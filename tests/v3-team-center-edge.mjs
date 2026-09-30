@@ -31,10 +31,10 @@ let directory=[
 ];
 const calls=[];
 const api={
-  async list(ids){
-    calls.push(['list',ids]);
-    const allowed=new Set(ids.map(String)),visibleTeams=teams.filter(row=>allowed.has(row.congregation_id)),visibleIds=new Set(visibleTeams.map(row=>row.id));
-    return{teams:visibleTeams,members:members.filter(row=>visibleIds.has(row.team_id)),directory:directory.filter(row=>allowed.has(row.congregation_id))};
+  async list(congregationId){
+    calls.push(['list',congregationId]);
+    const id=String(congregationId),visibleTeams=teams.filter(row=>row.congregation_id===id),visibleIds=new Set(visibleTeams.map(row=>row.id));
+    return{teams:visibleTeams,members:members.filter(row=>visibleIds.has(row.team_id)),directory:directory.filter(row=>row.congregation_id===id)};
   },
   async create(congregationId,name){calls.push(['create',congregationId,name]);teams.push({id:'t2',congregation_id:congregationId,created_by:'u1',team_type:'game_team',name,active:true,created_at:now});members.push({team_id:'t2',user_id:'u1',joined_at:now});return{team:{id:'t2'}}},
   async add(congregationId,teamId,targetUserId){calls.push(['add',congregationId,teamId,targetUserId]);members.push({team_id:teamId,user_id:targetUserId,joined_at:now});return{ok:true}},
@@ -45,7 +45,7 @@ const api={
 const service=createTeamCenterService({api,session,congregation});
 let state=await service.load();
 assert(state.activeCongregationId==='c1','Team Center must bind the loaded state to the active congregation.');
-assert(calls.at(-1)[0]==='list'&&JSON.stringify(calls.at(-1)[1])===JSON.stringify(['c1']),'Team Center must query only the active congregation.');
+assert(calls.at(-1)[0]==='list'&&calls.at(-1)[1]==='c1','Team Center must query only the active congregation.');
 assert(state.teams.length===1&&state.teams[0].id==='t1'&&state.teams[0].memberCount===2,'Team list/member projection failed.');
 assert(state.congregations.length===2&&state.congregations.find(row=>row.id==='c1')?.isActive===true&&state.congregations.find(row=>row.id==='c2')?.canManage===false,'Only the active membership may expose Team Center management.');
 assert(state.teams[0].members.find(row=>row.userId==='u2')?.displayName==='Creator Two','Team member directory projection failed.');
@@ -65,7 +65,7 @@ assert(service.snapshot().teams.length===0&&service.snapshot().activeCongregatio
 let staleMutation=false;try{await service.rename('t1','Blocked After Switch')}catch(error){staleMutation=error.code==='BQ_TEAM_CENTER_CONTEXT_STALE'}assert(staleMutation,'A tenant change must invalidate loaded Team Center mutations.');
 state=await service.load();
 assert(state.activeCongregationId==='c2'&&state.teams.length===1&&state.teams[0].id==='t9','Reload must move Team Center to the newly active congregation.');
-assert(calls.at(-1)[0]==='list'&&JSON.stringify(calls.at(-1)[1])===JSON.stringify(['c2']),'Reload after tenant switch must query only the new active congregation.');
+assert(calls.at(-1)[0]==='list'&&calls.at(-1)[1]==='c2','Reload after tenant switch must query only the new active congregation.');
 
 activeCongregationId='';
 const listCallsBeforeNoActive=calls.filter(row=>row[0]==='list').length;
@@ -85,7 +85,7 @@ sessionState={authenticated:true,remoteAvailable:true,user:{id:'u1'}};
 ownRows=[{congregationId:'c1',userId:'u1',role:'admin',roleKnown:true,roleLabel:'Admin',congregation:{id:'c1',name:'Test Church'}}];
 activeCongregationId='c1';
 const originalList=api.list;
-api.list=async ids=>{calls.push(['list',ids]);return{teams:[{id:'foreign',congregation_id:'c9',created_by:'u9',team_type:'game_team',name:'Foreign Team',active:true,created_at:now}],members:[],directory:[]}};
+api.list=async congregationId=>{calls.push(['list',congregationId]);return{teams:[{id:'foreign',congregation_id:'c9',created_by:'u9',team_type:'game_team',name:'Foreign Team',active:true,created_at:now}],members:[],directory:[]}};
 let foreign=false;try{await service.load()}catch(error){foreign=error.code==='BQ_TEAM_CENTER_SCOPE'}assert(foreign,'Foreign congregation team must be rejected even if the API returns it.');
 api.list=originalList;
 teams=[{id:'wrong-type',congregation_id:'c1',created_by:'u1',team_type:'family',name:'Family Team',active:true,created_at:now}];members=[];directory=[];let wrongType=false;try{await service.load()}catch(error){wrongType=error.code==='BQ_TEAM_CENTER_SCOPE'}assert(wrongType,'Non-game Team Center row must be rejected.');
