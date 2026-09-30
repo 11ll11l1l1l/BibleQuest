@@ -4,7 +4,7 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
 const AUTH_ORIGIN='https://zkfmgezvzugchcwppreq.supabase.co';
 const STORAGE_KEY='biblequest.v3.auth.sb-zkfmgezvzugchcwppreq-auth-token';
 const USER_ID='11111111-2222-4333-8444-555555555555';
-const ROLES=['member','leader','pastor','admin'];
+const ROLES=['member','facilitator','leader','pastor','admin'];
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const b64url=value=>Buffer.from(JSON.stringify(value)).toString('base64url');
 const now=Math.floor(Date.now()/1000);
