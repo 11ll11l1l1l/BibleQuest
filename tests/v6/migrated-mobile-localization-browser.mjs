@@ -16,18 +16,18 @@ const locales = Object.freeze({
     dictionary: tl,
     englishFallbacks: Object.freeze([
       'Notification Center',
-      'Sign in to load your private BibleQuest inbox.',
+      'NOTIFICATIONS',
       'Leader Center',
-      'Sign in to open the Leader Center',
+      'MINISTRY',
     ]),
   }),
   ceb: Object.freeze({
     dictionary: ceb,
     englishFallbacks: Object.freeze([
       'Notification Center',
-      'Sign in to load your private BibleQuest inbox.',
+      'NOTIFICATIONS',
       'Leader Center',
-      'Sign in to open the Leader Center',
+      'MINISTRY',
     ]),
   }),
 });
@@ -35,11 +35,11 @@ const locales = Object.freeze({
 const surfaces = Object.freeze([
   Object.freeze({
     route: 'notification-center',
-    keys: Object.freeze(['notificationCenter.heading', 'notificationCenter.signedOut']),
+    keys: Object.freeze(['notificationCenter.heading', 'notificationCenter.eyebrow']),
   }),
   Object.freeze({
     route: 'leader-center',
-    keys: Object.freeze(['leaderCenter.title', 'leaderCenter.signedOut']),
+    keys: Object.freeze(['leaderCenter.title', 'leaderCenter.eyebrow']),
   }),
 ]);
 
