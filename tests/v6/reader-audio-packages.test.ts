@@ -6,7 +6,7 @@ import {
   type InstalledScriptureAudioPackage,
   type ScriptureAudioPackageRepository,
 } from '../../src/v6/reader/audio-packages.ts';
-import type { ScriptureAudioManifest, ScriptureAudioSegment } from '../../src/v6/reader/audio-policy.ts';
+import { audioStreamingEligibility, type ScriptureAudioManifest, type ScriptureAudioSegment } from '../../src/v6/reader/audio-policy.ts';
 
 const payload = new TextEncoder().encode('audio bytes').buffer;
 const sha256 = createHash('sha256').update(new Uint8Array(payload)).digest('hex');
@@ -180,4 +180,24 @@ test('storage replacement failures leave the previous installed segment untouche
   repo.setFailReplace(true);
   await assert.rejects(manager.install(manifest({ contentVersion: 'audio-v2' }), original.segments[0]!), /storage unavailable/);
   assert.equal(repo.records.get('bsb:bsb:JHN:3'), previous);
+});
+
+
+test('offline audio network failure does not change streaming eligibility', async () => {
+  const repo = repository();
+  const candidate = manifest();
+  const segment = candidate.segments[0]!;
+  let attempts = 0;
+  const manager = new ScriptureAudioPackageManager({
+    repository: repo.value,
+    transport: { async download() { attempts += 1; throw new TypeError('Network request unavailable'); } },
+  });
+
+  assert.deepEqual(audioStreamingEligibility(candidate), { eligible: true, reason: 'eligible' });
+  await assert.rejects(manager.install(candidate, segment), /Network request unavailable/);
+  assert.equal(attempts, 1);
+  assert.equal(repo.records.size, 0);
+  assert.equal(repo.payloads.size, 0);
+  assert.deepEqual(await manager.usage(), { bytes: 0, packages: 0 });
+  assert.deepEqual(audioStreamingEligibility(candidate), { eligible: true, reason: 'eligible' });
 });
