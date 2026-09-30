@@ -237,7 +237,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] Presence cross-tenant isolation passes.
 - [x] Groups/teams/rooms cross-tenant isolation passes.
 - [x] Media/notifications/Leader Center cross-tenant isolation passes.
-- [ ] Any inter-congregation directory/shared-resource feature is opt-in and separately approved, not implied by tenancy support.
+- [x] Any inter-congregation directory/shared-resource feature is opt-in and separately approved, not implied by tenancy support.
 
 ## M. Auth/admin/security hardening
 
