@@ -370,16 +370,17 @@ export function createApi() {
   });
 
   const teamCenter = Object.freeze({
-    async list(congregationIds) {
-      const ids=[...new Set((congregationIds||[]).map(String).filter(Boolean))];
-      if(!ids.length)return {teams:[],members:[],directory:[]};
+    async list(congregationId) {
+      const id=String(congregationId||'').trim();
+      if(!id)throw new Error('Team Center requires an explicit congregation.');
+      if(Array.isArray(congregationId))throw new Error('Team Center does not allow implicit inter-congregation reads.');
       const client=await getClient();
-      const {data:teams,error:teamError}=await client.from('bible_teams').select(TEAM_FIELDS).in('congregation_id',ids).eq('team_type','game_team').eq('active',true).order('created_at',{ascending:true});
+      const {data:teams,error:teamError}=await client.from('bible_teams').select(TEAM_FIELDS).eq('congregation_id',id).eq('team_type','game_team').eq('active',true).order('created_at',{ascending:true});
       if(teamError)throw teamError;
       const teamIds=[...new Set((teams||[]).map(row=>row.id).filter(Boolean))];
       let members=[];
       if(teamIds.length){const {data,error}=await client.from('bible_team_members').select(TEAM_MEMBER_FIELDS).in('team_id',teamIds).order('joined_at',{ascending:true});if(error)throw error;members=data||[]}
-      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(TEAM_DIRECTORY_FIELDS).in('congregation_id',ids).eq('active',true).order('joined_at',{ascending:true});
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(TEAM_DIRECTORY_FIELDS).eq('congregation_id',id).eq('active',true).order('joined_at',{ascending:true});
       if(directoryError)throw directoryError;
       return {teams:teams||[],members,directory:directory||[]};
     },
