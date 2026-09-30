@@ -628,45 +628,57 @@ export function createApi() {
       if(error)throw error;
       return data;
     },
-    async findByCode(roomCode) {
+    async findByCode(roomCode,congregationId) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)return null;
       const client=await getClient();
-      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('room_code',roomCode).neq('status','ended').maybeSingle();
+      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('room_code',roomCode).eq('congregation_id',tenantId).neq('status','ended').maybeSingle();
       if(error)throw error;
       return data||null;
     },
-    async loadRoom(roomId) {
+    async loadRoom(roomId,congregationId) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)return null;
       const client=await getClient();
-      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('id',roomId).maybeSingle();
+      const {data,error}=await client.from('bible_shared_sessions').select(LIVE_ROOM_FIELDS).eq('id',roomId).eq('congregation_id',tenantId).maybeSingle();
       if(error)throw error;
       return data||null;
     },
-    async joinParticipant(roomId,userId) {
+    async joinParticipant(roomId,userId,congregationId) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw new Error('Live Room congregation is required.');
       const client=await getClient();
+      const {data:room,error:roomError}=await client.from('bible_shared_sessions').select('id').eq('id',roomId).eq('congregation_id',tenantId).neq('status','ended').maybeSingle();
+      if(roomError)throw roomError;if(!room)throw new Error('Live Room tenant scope changed.');
       const {data,error}=await client.from('bible_session_participants').upsert({session_id:roomId,user_id:userId,participation_points:0},{onConflict:'session_id,user_id'}).select(LIVE_ROOM_PARTICIPANT_FIELDS).single();
       if(error)throw error;
       return data;
     },
     async participants(roomId,congregationId) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)return {participants:[],directory:[]};
       const client=await getClient();
+      const {data:room,error:roomError}=await client.from('bible_shared_sessions').select('id').eq('id',roomId).eq('congregation_id',tenantId).neq('status','ended').maybeSingle();
+      if(roomError)throw roomError;if(!room)return {participants:[],directory:[]};
       const {data:participants,error:participantError}=await client.from('bible_session_participants').select(LIVE_ROOM_PARTICIPANT_FIELDS).eq('session_id',roomId).order('created_at',{ascending:true});
       if(participantError)throw participantError;
       const rows=participants||[],ids=[...new Set(rows.map(row=>row.user_id).filter(Boolean))];
       if(!ids.length)return {participants:rows,directory:[]};
-      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(LIVE_ROOM_DIRECTORY_FIELDS).eq('congregation_id',congregationId).eq('active',true).in('user_id',ids);
+      const {data:directory,error:directoryError}=await client.from('bible_congregation_members').select(LIVE_ROOM_DIRECTORY_FIELDS).eq('congregation_id',tenantId).eq('active',true).in('user_id',ids);
       if(directoryError)throw directoryError;
       return {participants:rows,directory:directory||[]};
     },
-    async endRoom(roomId,userId) {
+    async endRoom(roomId,userId,congregationId) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)return null;
       const client=await getClient(),now=new Date().toISOString();
-      const {data,error}=await client.from('bible_shared_sessions').update({status:'ended',ended_at:now,updated_at:now}).eq('id',roomId).eq('created_by',userId).select(LIVE_ROOM_FIELDS).maybeSingle();
+      const {data,error}=await client.from('bible_shared_sessions').update({status:'ended',ended_at:now,updated_at:now}).eq('id',roomId).eq('congregation_id',tenantId).eq('created_by',userId).select(LIVE_ROOM_FIELDS).maybeSingle();
       if(error)throw error;
       return data||null;
     },
-    async subscribe(roomId,listener) {
+    async subscribe(roomId,congregationId,listener) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw new Error('Live Room congregation is required.');
       const client=await getClient();
       let closed=false;
       const channel=client.channel(`bq-v3-live-room-${roomId}`)
-        .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bible_shared_sessions',filter:`id=eq.${roomId}`},payload=>listener?.({type:'room',room:payload.new}))
+        .on('postgres_changes',{event:'UPDATE',schema:'public',table:'bible_shared_sessions',filter:`id=eq.${roomId}`},payload=>{
+          if(String(payload?.new?.congregation_id||'')===tenantId)listener?.({type:'room',room:payload.new});
+        })
         .on('postgres_changes',{event:'*',schema:'public',table:'bible_session_participants',filter:`session_id=eq.${roomId}`},()=>listener?.({type:'participants'}))
         .subscribe(status=>listener?.({type:'connection',status}));
       return ()=>{if(closed)return;closed=true;void client.removeChannel(channel)};
