@@ -81,7 +81,7 @@ export function createWeeklyJourneyService({storage,getDateKey,clock=()=>new Dat
   };
   const notify=source=>{
     const exported=clone(state);
-    for(const listener of listeners){try{listener(Object.freeze({source,state:exported}))}catch(error){console.warn('Weekly Journey state listener failed',error)}}
+    for(const listener of listeners){try{listener(Object.freeze({source,state:exported}))}catch{console.warn('Weekly Journey state listener failed')}}
   };
   const persist=(next,{source='local'}={})=>{
     const normalized=normalize(next);
