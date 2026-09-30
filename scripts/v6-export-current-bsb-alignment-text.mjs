@@ -56,8 +56,11 @@ export async function exportCurrentBsbAlignmentText({
     for (const [chapter, verseRows] of [...chapters.entries()].sort((a, b) => a[0] - b[0])) {
       verseRows.sort((a, b) => a.v - b.v);
       verseRows.forEach((row, index) => {
-        if (row.v !== index + 1) fail(`BSB ${book} ${chapter} verse sequence is not contiguous at verse ${index + 1}.`);
+        if (index > 0 && row.v <= verseRows[index - 1].v) {
+          fail(`BSB ${book} ${chapter} has a duplicate or unordered verse ${row.v}.`);
+        }
       });
+      const verseNumbers = verseRows.map(row => row.v);
       const filename = `${book}_${String(chapter).padStart(3, '0')}_BSB.txt`;
       const content = `${verseRows.map(row => row.t).join('\n')}\n`;
       await writeFile(join(output, filename), content, { flag: 'wx' });
@@ -66,6 +69,8 @@ export async function exportCurrentBsbAlignmentText({
         chapter,
         filename,
         verses: verseRows.length,
+        verseNumbers: Object.freeze(verseNumbers),
+        requiresVerseRemap: verseNumbers.some((verse, index) => verse !== index + 1),
         sha256: sha256(content),
       }));
       chapterCount += 1;
@@ -74,7 +79,7 @@ export async function exportCurrentBsbAlignmentText({
   }
 
   if (chapterCount !== EXPECTED_CHAPTERS) fail(`Expected ${EXPECTED_CHAPTERS} BSB chapters, found ${chapterCount}.`);
-  const inventorySeed = files.map(row => `${row.filename}:${row.sha256}:${row.verses}`).join('\n');
+  const inventorySeed = files.map(row => `${row.filename}:${row.sha256}:${row.verses}:${row.verseNumbers.join(',')}`).join('\n');
   const exportManifest = Object.freeze({
     schemaVersion: 1,
     translationId: 'bsb',
