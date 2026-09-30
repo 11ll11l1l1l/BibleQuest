@@ -25,6 +25,24 @@ const CREDENTIAL_LITERALS = [
 
 const JWT_LITERAL_PATTERN = /["'`](eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+)["'`]/g;
 
+const CLIENT_RUNTIME_LOG_TARGETS = ['src'];
+const ALLOWED_FIXED_CONSOLE_LINES = new Set([
+  "console.error('BibleQuest failed to start.');",
+]);
+
+export function findUnsafeClientConsoleSinks(source) {
+  const findings = [];
+  const lines = String(source || '').split(/\r?\n/);
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!/console\.(?:log|info|warn|error|debug|trace|dir|table)\s*\(/.test(line)) continue;
+    const trimmed = line.trim();
+    if (ALLOWED_FIXED_CONSOLE_LINES.has(trimmed)) continue;
+    findings.push({ line: index + 1, snippet: trimmed.slice(0, 240) });
+  }
+  return findings;
+}
+
 function isTextCandidate(filePath) {
   return TEXT_EXTENSIONS.has(path.extname(filePath).toLowerCase());
 }
@@ -78,6 +96,17 @@ export function findClientCredentialExposure(source) {
   return [...new Set(matches)];
 }
 
+export async function scanClientRuntimeLogSinks(rootDir, targets = CLIENT_RUNTIME_LOG_TARGETS) {
+  const files = (await Promise.all(targets.map((target) => collectFiles(path.join(rootDir, target))))).flat();
+  const findings = [];
+  for (const filePath of files.sort()) {
+    const source = await readFile(filePath, 'utf8');
+    const sinks = findUnsafeClientConsoleSinks(source);
+    if (sinks.length) findings.push({ file: path.relative(rootDir, filePath), sinks });
+  }
+  return findings;
+}
+
 export async function scanClientArtifactInputs(rootDir, targets = DEFAULT_TARGETS) {
   const files = (await Promise.all(targets.map((target) => collectFiles(path.join(rootDir, target))))).flat();
   const findings = [];
@@ -91,14 +120,23 @@ export async function scanClientArtifactInputs(rootDir, targets = DEFAULT_TARGET
 
 async function main() {
   const rootDir = process.cwd();
-  const findings = await scanClientArtifactInputs(rootDir);
-  if (findings.length) {
-    console.error('V6 client artifact policy failed. Browser-shipped inputs contain privileged credential material.');
-    for (const finding of findings) console.error(`- ${finding.file}: ${finding.matches.join(', ')}`);
+  const credentialFindings = await scanClientArtifactInputs(rootDir);
+  const logFindings = await scanClientRuntimeLogSinks(rootDir);
+  if (credentialFindings.length || logFindings.length) {
+    if (credentialFindings.length) {
+      console.error('V6 client artifact policy failed. Browser-shipped inputs contain privileged credential material.');
+      for (const finding of credentialFindings) console.error(`- ${finding.file}: ${finding.matches.join(', ')}`);
+    }
+    if (logFindings.length) {
+      console.error('V6 client artifact policy failed. Browser source contains unreviewed dynamic console sinks.');
+      for (const finding of logFindings) {
+        for (const sink of finding.sinks) console.error(`- ${finding.file}:${sink.line}: ${sink.snippet}`);
+      }
+    }
     process.exitCode = 1;
     return;
   }
-  console.log('V6 client artifact policy PASS: no privileged credential material found in browser-shipped inputs or built artifacts.');
+  console.log('V6 client artifact policy PASS: no privileged credential material and no unreviewed dynamic client console sinks found.');
 }
 
 const isDirect = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
