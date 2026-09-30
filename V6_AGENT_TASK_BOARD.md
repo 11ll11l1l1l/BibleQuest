@@ -94,7 +94,7 @@ Targets:
 - assignment assigned/due push support;
 - browser/service-worker push coverage.
 Current candidate:
-- PR #855 adds real service-worker push/click routing coverage for assignment deep links; integrate only after its exact-head gates are green.
+- PR #858 is the current rebased candidate for real service-worker push/click routing coverage of assignment deep links; integrate only after its exact-head gates are green.
 Physical-device delivery and deployed scheduler/Cron evidence remain separate gates.
 
 ### W2-02 — Privileged authorization hardening
