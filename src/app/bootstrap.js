@@ -228,7 +228,7 @@ function escapeStartupMessage(value){
 // example a dependency-ordering ReferenceError), render an actionable
 // diagnostic into #app instead of leaving a blank/frozen screen. This is not
 // a second bootstrap owner - it wraps the same, single start() sequence.
-function renderStartupFailure(root,error){
+function renderStartupFailure(root){
   console.error('BibleQuest failed to start.');
   if(!root)return;
   root.innerHTML=`<section class="bq-panel" data-startup-failure><p class="bq-eyebrow">STARTUP ERROR</p><h1>BibleQuest could not start</h1><p>Something went wrong while preparing the app. Reloading usually fixes this. If it keeps happening, please let us know.</p><button type="button" data-startup-reload class="bq-primary-button">Reload</button><p><small data-startup-error-detail>Unexpected startup error.</small></p></section>`;
@@ -240,8 +240,8 @@ function start(){
   const root=document.getElementById('app');
   try{
     boot(root);
-  }catch(error){
-    renderStartupFailure(root,error);
+  }catch{
+    renderStartupFailure(root);
   }
 }
 
