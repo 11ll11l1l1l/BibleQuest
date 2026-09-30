@@ -70,15 +70,15 @@ test('alignment supports canonical verse-number gaps without shifting seek ident
     book: 'ACT',
     chapter: 8,
     verses: [
-      { verse: 36, startSeconds: 0, endSeconds: 20 },
-      { verse: 38, startSeconds: 20, endSeconds: 50 },
-      { verse: 39, startSeconds: 50, endSeconds: 89 },
+      { verse: 1, startSeconds: 0, endSeconds: 20 },
+      { verse: 3, startSeconds: 20, endSeconds: 50 },
+      { verse: 4, startSeconds: 50, endSeconds: 89 },
     ],
   };
   assert.deepEqual(validateChapterAlignment(gap, {
-    translationId: 'bsb', book: 'ACT', chapter: 8, verseCount: 3, verseNumbers: [36, 38, 39],
+    translationId: 'bsb', book: 'ACT', chapter: 8, verseCount: 3, verseNumbers: [1, 3, 4],
   }), { valid: true, issues: [] });
-  assert.equal(audioTimeForVerse(gap, 37), null);
-  assert.equal(audioTimeForVerse(gap, 38), 20);
-  assert.equal(verseAtAudioTime(gap, 25), 38);
+  assert.equal(audioTimeForVerse(gap, 2), null);
+  assert.equal(audioTimeForVerse(gap, 3), 20);
+  assert.equal(verseAtAudioTime(gap, 25), 3);
 });
