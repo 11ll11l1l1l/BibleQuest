@@ -57,6 +57,8 @@ export function validateChapterAlignment(
       const verse = Number(timing?.verse);
       if (!Number.isSafeInteger(verse) || verse < 1) {
         issues.push(`verse timing at index ${index} has an invalid verse number`);
+      } else if (index === 0 && verse !== 1) {
+        issues.push('verse timing must begin at verse 1');
       } else if (verse <= previousVerse) {
         issues.push('verse numbers must be strictly increasing');
       }
