@@ -33,8 +33,9 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
   const staleContext=()=>roomError('The account or active congregation changed. Reload Live Rooms before continuing.','BQ_LIVE_ROOMS_CONTEXT_STALE');
 
   async function loadMemberships(){
-    const userId=identity(),request=++loadRequest;
+    const userId=identity();
     if(contextUserId!==userId)clearContext(userId);
+    const request=++loadRequest;
     let rows;
     try{rows=await congregation.load()}catch(error){if(request!==loadRequest||!accountCurrent(userId))return memberships;throw error}
     if(request!==loadRequest||!accountCurrent(userId))return memberships;
