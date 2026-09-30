@@ -21,8 +21,15 @@ const local = [
 test('migration filenames require a sortable 14-digit version and stable logical name', () => {
   assert.deepEqual(parseMigrationFilename('20260928140000_assignment_due_reminders.sql'), {
     version: '20260928140000',
+    sourceVersion: '20260928140000',
     name: 'assignment_due_reminders',
     filename: '20260928140000_assignment_due_reminders.sql',
+  });
+  assert.deepEqual(parseMigrationFilename('20260904_release_hardening.sql'), {
+    version: '20260904000000',
+    sourceVersion: '20260904',
+    name: 'release_hardening',
+    filename: '20260904_release_hardening.sql',
   });
   assert.throws(() => parseMigrationFilename('assignment_due_reminders.sql'), /Invalid Supabase migration filename/);
   assert.throws(() => parseMigrationFilename('20260928140000_Assignment.sql'), /Invalid Supabase migration filename/);
@@ -90,7 +97,7 @@ test('remote-only migrations and same-version name conflicts fail closed', () =>
 
 test('remote evidence accepts array/object JSON and rejects malformed records', () => {
   assert.deepEqual(normalizeRemoteMigrations({ migrations: [{ version: '20260924010000', name: 'alpha' }] }), [
-    { version: '20260924010000', name: 'alpha' },
+    { version: '20260924010000', sourceVersion: '20260924010000', name: 'alpha' },
   ]);
   assert.throws(() => normalizeRemoteMigrations([{ version: 'short', name: 'alpha' }]), /invalid version/);
   assert.throws(() => normalizeRemoteMigrations([{ version: '20260924010000', name: 'Alpha' }]), /invalid name/);
@@ -99,11 +106,12 @@ test('remote evidence accepts array/object JSON and rejects malformed records', 
 test('filesystem readers produce a stable local inventory and parse reviewed remote evidence', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'bq-migrations-'));
   await writeFile(join(dir, '20260925010000_beta.sql'), '-- beta\n');
+  await writeFile(join(dir, '20260904_legacy_alpha.sql'), '-- legacy alpha\n');
   await writeFile(join(dir, '20260924010000_alpha.sql'), '-- alpha\n');
   const remotePath = join(dir, 'remote.json');
   await writeFile(remotePath, JSON.stringify({ migrations: [{ version: '20260924010000', name: 'alpha' }] }));
 
   const inventory = await readLocalMigrations(dir);
   assert.deepEqual(inventory.map(row => row.name), ['alpha', 'beta']);
-  assert.deepEqual(await loadRemoteMigrationEvidence(remotePath), [{ version: '20260924010000', name: 'alpha' }]);
+  assert.deepEqual(await loadRemoteMigrationEvidence(remotePath), [{ version: '20260924010000', sourceVersion: '20260924010000', name: 'alpha' }]);
 });
