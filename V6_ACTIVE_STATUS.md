@@ -240,3 +240,4 @@ High-risk changes to global auth, RLS strategy, destructive schema, global routi
 ## Release rule
 
 There is no V6 release candidate yet. Production remains the released V5 line until one exact V6 candidate passes applicable automated, backend, browser/device, security, offline and tenant gates and is explicitly promoted.
+- Media PiP acceptance: PR #918 merged at `e2c6b118` from exact tested head `aecead53`. Phase-1 run `36717977136` and inherited regression `36717977206` passed. Chromium proved the YouTube iframe receives one `picture-in-picture` permission while preserving autoplay/fullscreen; unsupported programmatic YouTube PiP remains fail-closed through provider capabilities. Evidence: `docs/v6/evidence/H_MEDIA_PIP_BROWSER_20260930.md`.

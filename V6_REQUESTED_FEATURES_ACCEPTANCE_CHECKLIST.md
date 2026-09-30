@@ -175,7 +175,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] Player switching/route teardown is deterministic.
 - [x] Queue/playlist behavior exists where accepted.
 - [x] Continue-watching/resume state exists where accepted.
-- [ ] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
+- [x] Picture-in-Picture works where provider/browser support exists and degrades safely otherwise.
 - [x] Background/foreground lifecycle is tested.
 - [x] Media curation remains server-authorized.
 - [x] Old dead Media Library owner is removed only after live routes have parity/evidence.
