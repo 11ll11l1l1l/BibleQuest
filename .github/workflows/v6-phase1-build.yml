@@ -29,6 +29,8 @@ on:
       - "scripts/v6-deployment-verify.mjs"
       - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-csp-compatibility.mjs"
+      - "_headers"
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
@@ -72,6 +74,9 @@ jobs:
 
       - name: V6 toolchain smoke
         run: npm run check:v6-toolchain
+
+      - name: CSP runtime compatibility preflight
+        run: npm run check:v6-csp
 
       - name: Lint V6 client boundaries
         run: npm run lint
