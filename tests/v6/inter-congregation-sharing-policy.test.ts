@@ -34,6 +34,13 @@ test('Team Center repository is single-tenant and rejects implicit inter-congreg
   assert.doesNotMatch(source, /congregationIds/);
 });
 
+test('shared API contains no implicit multi-congregation tenant query', () => {
+  const api = read('src/core/api.js');
+
+  assert.doesNotMatch(api, /\.in\('congregation_id'/);
+  assert.doesNotMatch(api, /\bcongregationIds\b/);
+});
+
 test('Team Center live service passes only the active congregation to its repository', () => {
   const service = read('src/app/team-center.js');
 
