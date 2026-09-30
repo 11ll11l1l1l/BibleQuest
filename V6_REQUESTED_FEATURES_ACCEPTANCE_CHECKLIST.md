@@ -242,22 +242,22 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 ## M. Auth/admin/security hardening
 
 - [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
-- [ ] Privileged Owner/Admin re-auth requirements are reviewed.
+- [x] Privileged Owner/Admin re-auth requirements are reviewed.
 - [x] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
 - [x] Client bundle contains no privileged secrets.
 - [x] Dependency/security scanning exists after package management is introduced.
 - [ ] CSP is compatible with media/push/build architecture and enforced as accepted.
 - [x] Secret scanning/client artifact scanning exists.
-- [ ] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
+- [x] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
 - [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
 ## N. Design system / i18n / accessibility
 
-- [ ] Shared component primitives cover common buttons/forms/dialogs/cards/status states.
+- [x] Shared component primitives cover common buttons/forms/dialogs/cards/status states.
 - [x] Focus/keyboard contracts are componentized/tested.
-- [ ] Icon/art registry replaces scattered decorative symbols where applicable.
-- [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
+- [x] Icon/art registry replaces scattered decorative symbols where applicable.
+- [x] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
 - [x] Existing supported-language and Japanese/furigana behavior is preserved.
 - [x] Scripture licensing/source metadata remains separate from UI localization.
 - [x] Automated accessibility checks run on built artifacts.
@@ -303,8 +303,8 @@ Integrated acceptance evidence (2026-09-30; PR #649, exact PR head evidence via 
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [x] Large offline downloads require explicit user action and provide storage/removal controls.
 - [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
-- [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
-- [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
+- [x] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
+- [x] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
 - [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
 - [ ] Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.
 - [ ] One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion.

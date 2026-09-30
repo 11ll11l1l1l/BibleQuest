@@ -91,9 +91,9 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
               <button type="button" class="bq-secondary-button" data-leader-open-assignments>${esc(tr('leaderCenter.openAssignments'))}</button>
             </section>
             <section class="bq-panel" data-leader-announcements>
-              <p class="bq-eyebrow">${esc(tr('leaderCenter.spaces.eyebrow'))}</p><h2>Congregation announcements</h2>
-              <p>Publish a message for members of your active congregation. The database checks your role and congregation on every publish.</p>
-              <button type="button" class="bq-primary-button" data-leader-open-announcements>Open announcements</button>
+              <p class="bq-eyebrow">${esc(tr('leaderCenter.spaces.eyebrow'))}</p><h2>${esc(tr('leaderCenter.announcements.heading'))}</h2>
+              <p>${esc(tr('leaderCenter.announcements.description'))}</p>
+              <button type="button" class="bq-primary-button" data-leader-open-announcements>${esc(tr('leaderCenter.announcements.open'))}</button>
               ${['leader','pastor','admin'].includes(state.role)?`<button type="button" class="bq-secondary-button" data-leader-open-content-review>${esc(tr('contentReview.title'))}</button>`:''}
             </section>
             <section class="bq-panel" data-leader-people>

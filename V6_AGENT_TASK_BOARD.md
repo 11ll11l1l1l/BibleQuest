@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- Captain reconciliation: merged #874 privacy evidence and #891 privileged-auth/MFA review evidence are now counted on current integration. Exact workflows: #874 Client Artifact Security `36707156920`, Phase-1 `36707156794`, inherited regression `36707156702`; #891 Phase-1 `36708011086`, inherited regression `36708010975`. Acceptance target after reconciliation: **172 checked / 39 open / 211 total**.
+
 
 Latest integrated runtime/evidence head before this documentation reconciliation: `b2786b8c742220427f1d41fc343b84089a9130fa`.
 
