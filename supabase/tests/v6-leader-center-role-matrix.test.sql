@@ -15,6 +15,19 @@ select ok(
   'Leader Center source tables keep RLS enabled'
 );
 
+-- Distinguish congregation Admin from the seeded platform Admin fixture.
+insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data)
+values('22222222-2222-4222-8222-222222222223','tenant-admin-b-leader-center@bq-v6.invalid','{}'::jsonb,'{}'::jsonb)
+on conflict(id) do nothing;
+
+insert into public.bible_app_access(user_id,role,active)
+values('22222222-2222-4222-8222-222222222223','member',true)
+on conflict(user_id) do update set role='member',active=true;
+
+insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
+values('20000000-0000-4000-8000-000000000002','22222222-2222-4222-8222-222222222223','admin','Tenant Admin B',true)
+on conflict(congregation_id,user_id) do update set role='admin',display_name='Tenant Admin B',active=true;
+
 insert into public.bible_assignment_progress(assignment_id,user_id,status,submission)
 values
   ('a1000000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111112','started','leader-center-a'),
@@ -172,37 +185,37 @@ select results_eq(
 );
 
 -- Admin B must be tenant-admin only here, not implicit platform-wide authority.
-set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222221';
+set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222223';
 select results_eq(
-  $$select role from public.bible_congregation_members where user_id=auth.uid() and active$$,
+  $select role from public.bible_congregation_members where user_id=auth.uid() and active$,
   array['admin'::text],
-  'Admin B resolves the congregation admin role'
+  'Tenant-only Admin B resolves the congregation admin role'
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_assignments where congregation_id='10000000-0000-4000-8000-000000000001'::uuid$$,
   array[0::bigint],
-  'Admin B cannot read congregation A assignments'
+  'Tenant-only Admin B cannot read congregation A assignments'
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_calendar_events where congregation_id='10000000-0000-4000-8000-000000000001'::uuid$$,
   array[0::bigint],
-  'Admin B cannot read congregation A calendar events'
+  'Tenant-only Admin B cannot read congregation A calendar events'
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_congregation_members where congregation_id='10000000-0000-4000-8000-000000000001'::uuid$$,
   array[0::bigint],
-  'Admin B cannot read congregation A directory rows'
+  'Tenant-only Admin B cannot read congregation A directory rows'
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_teams where congregation_id='10000000-0000-4000-8000-000000000001'::uuid$$,
   array[0::bigint],
-  'Admin B cannot read congregation A teams'
+  'Tenant-only Admin B cannot read congregation A teams'
 );
 select results_eq(
   $$select count(*)::bigint from public.bible_assignment_progress
      where assignment_id='a1000000-0000-4000-8000-000000000001'::uuid$$,
   array[0::bigint],
-  'Admin B cannot review congregation A assignment progress'
+  'Tenant-only Admin B cannot review congregation A assignment progress'
 );
 
 reset role;
