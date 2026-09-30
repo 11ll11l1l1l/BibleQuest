@@ -19,6 +19,7 @@ on:
       - "index.html"
       - "offline-shell-sw.js"
       - "innovation-suite.js"
+      - "tests/v3-accessibility-smoke.mjs"
       - "tests/v5-*.mjs"
       - "tests/v6/**"
       - "scripts/v6-toolchain-smoke.mjs"
@@ -141,6 +142,11 @@ jobs:
           done
           cat /tmp/bq-v6-preview.log
           exit 1
+
+      - name: Built artifact automated accessibility
+        env:
+          BQ_BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v3-accessibility-smoke.mjs
 
       - name: Built artifact Chromium parity
         env:
