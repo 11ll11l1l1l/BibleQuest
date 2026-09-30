@@ -34,6 +34,7 @@ describe('Live Rooms and admin account-switch isolation', () => {
       congregation: { name: userId === 'user-a' ? 'Church A' : 'Church B' },
     }];
     let membershipUser = 'user-a';
+    let activeCongregationId = 'cong-a';
     const congregation = {
       async load() {
         const requested = membershipUser;
@@ -42,6 +43,10 @@ describe('Live Rooms and admin account-switch isolation', () => {
           await releaseA.promise;
         }
         return rows(requested);
+      },
+      getActive() {
+        const row = rows(session.getState().user?.id || '')[0];
+        return row?.congregationId === activeCongregationId ? row : null;
       },
       get(id: string) {
         return rows(session.getState().user?.id || '')[0]?.congregationId === id ? rows(session.getState().user?.id || '')[0] : null;
@@ -82,6 +87,7 @@ describe('Live Rooms and admin account-switch isolation', () => {
     await aStarted.promise;
     session.setUser('user-b');
     membershipUser = 'user-b';
+    activeCongregationId = 'cong-b';
     const fresh = await rooms.load();
     assert.deepEqual(fresh.memberships.map((row: any) => row.congregationId), ['cong-b']);
     releaseA.resolve();
@@ -90,12 +96,14 @@ describe('Live Rooms and admin account-switch isolation', () => {
 
     session.setUser('user-a');
     membershipUser = 'user-a';
+    activeCongregationId = 'cong-a';
     releaseA.resolve();
     await rooms.load();
     await rooms.create({ congregationId: 'cong-a', title: 'A room' });
     assert.equal(rooms.snapshot().room?.id, 'room-a');
 
     session.setUser('user-b');
+    activeCongregationId = 'cong-b';
     assert.equal(rooms.snapshot().room, null);
     assert.deepEqual(rooms.snapshot().participants, []);
     assert.equal(rooms.snapshot().connected, false);
