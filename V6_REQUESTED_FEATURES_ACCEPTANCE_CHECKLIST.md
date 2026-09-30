@@ -254,10 +254,10 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 
 ## N. Design system / i18n / accessibility
 
-- [ ] Shared component primitives cover common buttons/forms/dialogs/cards/status states.
+- [x] Shared component primitives cover common buttons/forms/dialogs/cards/status states.
 - [x] Focus/keyboard contracts are componentized/tested.
-- [ ] Icon/art registry replaces scattered decorative symbols where applicable.
-- [ ] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
+- [x] Icon/art registry replaces scattered decorative symbols where applicable.
+- [x] New/migrated UI strings use structured catalogs rather than new scattered hard-coded language strings.
 - [x] Existing supported-language and Japanese/furigana behavior is preserved.
 - [x] Scripture licensing/source metadata remains separate from UI localization.
 - [x] Automated accessibility checks run on built artifacts.
