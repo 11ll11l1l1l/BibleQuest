@@ -1,6 +1,6 @@
 # BibleQuest V6 CSP compatibility inventory
 
-Status: characterization only — **NOT an enforcement authorization**
+Status: enforcing candidate — exact-SHA report-only prerequisite passed
 
 Official integration observed: `b8c5fe7fafe016720cf33d6913984b2db49df4d9`
 
@@ -52,23 +52,15 @@ Compatibility requirement:
 
 The Vite application, route chunks, manifest, icons, CSS, service worker and normal app assets are same-origin. A future policy should keep `'self'` as the default ownership boundary.
 
-## Provisional report-only policy shape
+## Enforcing policy
 
-The following is an **inventory template**, not a header to deploy yet:
+The following policy passed the report-only built-artifact stage and is now the root `_headers` enforcement candidate:
 
 ```
-default-src 'self';
-base-uri 'self';
-object-src 'none';
-frame-ancestors 'self';
-script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com;
-connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co;
-frame-src 'self' https://www.youtube.com;
-manifest-src 'self';
-worker-src 'self';
+default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com; font-src 'self' data:; connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co https://openbible.com https://cdn.jsdelivr.net; media-src 'self' blob: https://openbible.com; frame-src 'self' https://www.youtube.com; worker-src 'self' blob:; manifest-src 'self'; form-action 'self';
 ```
 
-Image, media, font and style directives are intentionally not frozen here. The current application still contains substantial inherited presentation/runtime code, so adding restrictive directives without browser evidence could break existing V5/V6 behavior.
+The policy now includes evidence-backed image, media, font and style boundaries. `style-src 'unsafe-inline'` remains a documented transitional concession for inherited presentation code; script execution does not permit `'unsafe-inline'` or `'unsafe-eval'`.
 
 ## Standalone-page compatibility findings
 
@@ -79,14 +71,18 @@ Current characterization:
 - `index.html`: external module script only; no inline `<script>` body or `<style>` block.
 - `admin.html` and `admin-operations.html`: external entry modules only; no inline script/style blocks.
 - `content-review.html`: external scripts only, but still directly loads the pinned Supabase browser client from jsDelivr.
-- `transform.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
-- `psychometrics.html`: contains both an inline script body and an inline `<style>` block, plus direct jsDelivr Supabase loading.
+- `transform.html`: bootstrap script and shell style are external files; direct jsDelivr Supabase loading remains explicitly inventoried.
+- `psychometrics.html`: bootstrap script, shell style, and retry/return handlers are external files/listeners; direct jsDelivr Supabase loading remains explicitly inventoried.
+- `classic.html`: the Classic-mode bootstrap flag is external.
+- `v5-push-device-field.html`: the field-harness style block is external.
 
-Therefore the enforcement path is **not** to add blanket `'unsafe-inline'` permanently. The preferred migration is to externalize or nonce/hash the remaining inline blocks, then validate the resulting policy in report-only Chromium before enforcement.
+Transform and Psychometrics inline execution debt has been externalized. The report-only candidate does **not** use blanket `'unsafe-inline'` for scripts; transitional `style-src 'self' 'unsafe-inline'` remains scoped to inherited presentation compatibility while built Chromium reports are collected.
 
 ## Required work before enforcement
 
-An enforcing CSP in root `_headers` is blocked until all of the following are complete:
+The report-only prerequisite on exact candidate `ad2b688b66cd0fc18764c33c0597027f1be13f56` passed Phase-1 run `36716674641` and inherited regression run `36716674561`. The report-only browser step recorded zero CSP violations. Root enforcement may now proceed, but checklist acceptance still requires green exact-head enforcement evidence.
+
+The enforcement evidence must preserve all of the following:
 
 1. Run an inline script/style inventory across every root/standalone HTML route covered by the global Cloudflare header.
 2. Audit unsafe DOM sinks and dynamic script/style injection. CSP must not be used to hide an unresolved unsafe-DOM path.
@@ -102,3 +98,8 @@ This tranche advances checklist M by making the compatibility contract explicit 
 > CSP is compatible with media/push/build architecture and enforced as accepted.
 
 That checkbox remains open until an enforcing policy is browser-proven and accepted on the integrated V6 candidate.
+
+
+## Report-only built-artifact gate
+
+The report-only prerequisite passed Phase-1 run `36716674641` with zero `securitypolicyviolation` events and inherited regression run `36716674561`. The enforcement stage uses `tests/v6/csp-enforcement-browser.mjs` to apply the exact same policy as an enforcing response header against the built artifact, while `scripts/v6-build-evidence.mjs` independently proves `dist-v6/_headers` contains that exact policy. The checklist remains open until this enforcing candidate's exact-head Phase-1 and inherited regression runs are green.

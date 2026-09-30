@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, join, relative, resolve } from 'node:path';
 import { verifyArtifactIntegrityManifest } from './v6-artifact-integrity.mjs';
+import { CSP_POLICY, validateCspPolicy } from './v6-csp-policy.mjs';
 
 const root = process.cwd();
 const outDir = resolve(root, 'dist-v6');
@@ -48,6 +49,10 @@ if (identity.sha !== expectedSha) {
 }
 
 const artifactIntegrity = await verifyArtifactIntegrityManifest(outDir, expectedSha);
+const deployedHeaders = await readFile(join(outDir, '_headers'), 'utf8');
+const deployedCsp = deployedHeaders.match(/^\s*Content-Security-Policy:\s*(.+)$/mi)?.[1]?.trim() ?? '';
+const cspFailures = validateCspPolicy(deployedCsp);
+if (deployedCsp !== CSP_POLICY) cspFailures.push('built _headers CSP does not exactly match the browser-proven V6 policy');
 
 const manifest = JSON.parse(await readFile(join(outDir, 'vite-manifest.json'), 'utf8'));
 const manifestEntries = Object.entries(manifest);
@@ -276,6 +281,11 @@ for (const file of files) {
 inventory.sort((a, b) => b.bytes - a.bytes || a.path.localeCompare(b.path));
 const report = {
   build: identity,
+  csp: {
+    enforced: deployedCsp === CSP_POLICY && cspFailures.length === 0,
+    headerFile: '_headers',
+    failures: cspFailures,
+  },
   artifactIntegrity: {
     sourceSha: artifactIntegrity.sourceSha,
     artifactSha256: artifactIntegrity.artifactSha256,
@@ -320,6 +330,7 @@ const report = {
 console.log(JSON.stringify(report, null, 2));
 
 const failures = [];
+failures.push(...cspFailures.map(failure => `CSP: ${failure}`));
 if (publicSourceMapFiles.length) failures.push(`public artifact contains ${publicSourceMapFiles.length} source-map file(s)`);
 if (publicSourceMapReferences.length) failures.push(`public V6 chunks expose sourceMappingURL references: ${publicSourceMapReferences.join(', ')}`);
 failures.push(...privateSourceMapFailures);
