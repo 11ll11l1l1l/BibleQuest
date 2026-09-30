@@ -75,5 +75,13 @@ await rooms.join('ABC234');await rooms.end();assert.equal(ended,1);assert.equal(
 assert.ok(calls.some(call=>call.join(':')==='end:r1:u1:c1'),'Ending a room must carry active tenant scope.');
 
 current={...current,status:'ended'};await assert.rejects(()=>rooms.join('ABC234'),/not found|ended/i);assert.equal(rooms.snapshot().room,null,'Ended room rejection must not leave stale state.');
+
+rooms.clear();activeCongregationId='';loaded=false;state=await rooms.load();
+assert.equal(state.loadedCongregationId,'','Signed-in Live Rooms may load an empty state before a congregation is selected.');
+assert.deepEqual(state.memberships,[],'No active congregation must expose no Live Room membership scope.');
+const findsBeforeNoActive=calls.filter(call=>call[0]==='find').length;
+await assert.rejects(()=>rooms.join('ABC234'),error=>error.code==='BQ_LIVE_ROOMS_CONGREGATION');
+assert.equal(calls.filter(call=>call[0]==='find').length,findsBeforeNoActive,'Join without an active congregation must fail before room lookup.');
+
 rooms.clear();remoteAvailable=false;await assert.rejects(()=>rooms.load(),error=>error.code==='BQ_LIVE_ROOMS_REMOTE_DISABLED');assert.equal(rooms.snapshot().room,null);
 console.log('BibleQuest v3 Live Rooms active-tenant edge regression passed');
