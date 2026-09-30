@@ -29,6 +29,7 @@ const locales = Object.freeze({
       'NOTIFICATIONS',
       'Leader Center',
       'MINISTRY',
+      'COMMUNITY BRIDGE',
     ]),
   }),
 });
