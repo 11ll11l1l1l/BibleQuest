@@ -303,7 +303,7 @@ Integrated acceptance evidence (2026-09-30; PR #649, exact PR head evidence via 
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [x] Large offline downloads require explicit user action and provide storage/removal controls.
 - [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
-- [ ] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
+- [x] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
 - [ ] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
 - [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
 - [ ] Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.
