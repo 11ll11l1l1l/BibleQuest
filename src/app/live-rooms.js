@@ -50,7 +50,9 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
     const userId=identity(),activeId=activeCongregationId();
     if(contextUserId!==userId)clearContext(userId);
     if(membershipUserId!==userId||contextCongregationId!==activeId)await loadMemberships();
-    if(!contextCurrent(userId))throw staleContext();
+    if(!accountCurrent(userId))throw staleContext();
+    const selectedId=activeCongregationId();
+    if(selectedId&&!contextCurrent(userId,selectedId))throw staleContext();
     return memberships;
   }
   function requireMembership(congregationId){const id=String(congregationId||'');if(!contextCongregationId||id!==contextCongregationId)throw roomError('Live Rooms require the active congregation.','BQ_LIVE_ROOMS_SCOPE');const membership=congregation.get(id);if(!membership)throw roomError('Join this room’s congregation before using Live Rooms.','BQ_LIVE_ROOMS_CONGREGATION');return membership}
@@ -98,13 +100,13 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
     if(room)await reconnect();else emit();return snapshot();
   }
   async function create({congregationId,title='BibleQuest Live'}={}){
-    const userId=identity();await ensureMemberships();const id=String(congregationId||''),tenantId=contextCongregationId;if(!tenantId||id!==tenantId)throw staleContext();congregation.assert(id,'ministry');const name=cleanText(title,80)||'BibleQuest Live',roomCode=normalizeCode(codeFactory());if(!ROOM_CODE.test(roomCode))throw roomError('Live Rooms could not create a valid room code.','BQ_LIVE_ROOMS_CODE');
+    const userId=identity();await ensureMemberships();const id=String(congregationId||''),tenantId=contextCongregationId;if(!tenantId)throw roomError('Choose an active congregation before creating a Live Room.','BQ_LIVE_ROOMS_CONGREGATION');if(id!==tenantId)throw staleContext();congregation.assert(id,'ministry');const name=cleanText(title,80)||'BibleQuest Live',roomCode=normalizeCode(codeFactory());if(!ROOM_CODE.test(roomCode))throw roomError('Live Rooms could not create a valid room code.','BQ_LIVE_ROOMS_CODE');
     const created=await api.create({congregation_id:id,created_by:userId,session_type:'live-room',title:name,room_code:roomCode,status:'lobby',state:{round:0,activity:'lobby'},metadata:{version:1}});
     if(!contextCurrent(userId,tenantId))throw staleContext();
     return activate(created);
   }
   async function join(rawCode){
-    const userId=identity();await ensureMemberships();const tenantId=contextCongregationId,code=normalizeCode(rawCode);if(!ROOM_CODE.test(code))throw roomError('Enter a valid Live Room code.','BQ_LIVE_ROOMS_CODE');const found=await api.findByCode(code,tenantId);if(!contextCurrent(userId,tenantId))throw staleContext();if(!found)throw roomError('Live Room not found or already ended in the active congregation.','BQ_LIVE_ROOMS_NOT_FOUND');return activate(found);
+    const userId=identity();await ensureMemberships();const tenantId=contextCongregationId,code=normalizeCode(rawCode);if(!tenantId)throw roomError('Choose an active congregation before joining a Live Room.','BQ_LIVE_ROOMS_CONGREGATION');if(!ROOM_CODE.test(code))throw roomError('Enter a valid Live Room code.','BQ_LIVE_ROOMS_CODE');const found=await api.findByCode(code,tenantId);if(!contextCurrent(userId,tenantId))throw staleContext();if(!found)throw roomError('Live Room not found or already ended in the active congregation.','BQ_LIVE_ROOMS_NOT_FOUND');return activate(found);
   }
   async function reconnect(){
     const userId=identity();if(!room)throw roomError('There is no Live Room to reconnect.','BQ_LIVE_ROOMS_NO_ACTIVE');await ensureMemberships();const tenantId=contextCongregationId;if(!contextCurrent(userId,tenantId)||!room||room.congregationId!==tenantId)throw staleContext();const roomId=room.id;const fresh=await api.loadRoom(roomId,tenantId);if(!contextCurrent(userId,tenantId)||room?.id!==roomId)throw staleContext();if(!fresh){clearRoom();emit();throw roomError('This Live Room is no longer available.','BQ_LIVE_ROOMS_NOT_FOUND')}try{return await activate(fresh)}catch(error){if(error?.code==='BQ_LIVE_ROOMS_ENDED')emit();throw error}
