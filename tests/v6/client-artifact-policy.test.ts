@@ -6,7 +6,9 @@ import test from 'node:test';
 
 import {
   findClientCredentialExposure,
+  findUnsafeClientConsoleSinks,
   scanClientArtifactInputs,
+  scanClientRuntimeLogSinks,
 } from '../../scripts/v6-client-artifact-policy.mjs';
 
 function jwt(role: string) {
@@ -66,6 +68,45 @@ test('client artifact scan remains clean when privileged-looking data exists onl
     await writeFile(path.join(root, 'supabase', 'functions', 'server.ts'), "const SERVICE_ROLE_KEY = 'server-only';\n");
 
     assert.deepEqual(await scanClientArtifactInputs(root), []);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+
+test('client console policy allows only explicitly reviewed fixed-literal messages', () => {
+  assert.deepEqual(
+    findUnsafeClientConsoleSinks("console.error('BibleQuest failed to start.');"),
+    [],
+  );
+
+  for (const source of [
+    "console.error('Request failed', error);",
+    "console.log(user);",
+    "console.warn(`token=${token}`);",
+    "console.info(session.email);",
+    "console.debug(payload);",
+  ]) {
+    assert.equal(findUnsafeClientConsoleSinks(source).length, 1, source);
+  }
+});
+
+test('client runtime log scan reports file and line for dynamic browser logging', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'bq-v6-client-logs-'));
+  try {
+    await mkdir(path.join(root, 'src'), { recursive: true });
+    await writeFile(path.join(root, 'src', 'safe.js'), "console.error('BibleQuest failed to start.');\n");
+    await writeFile(path.join(root, 'src', 'unsafe.js'), [
+      "export function report(error) {",
+      "  console.error('Request failed', error);",
+      "}",
+    ].join('\n'));
+
+    const findings = await scanClientRuntimeLogSinks(root);
+    assert.equal(findings.length, 1);
+    assert.equal(findings[0].file, path.join('src', 'unsafe.js'));
+    assert.equal(findings[0].sinks[0].line, 2);
+    assert.match(findings[0].sinks[0].snippet, /Request failed/);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
