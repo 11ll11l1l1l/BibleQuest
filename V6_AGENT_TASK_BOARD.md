@@ -16,24 +16,18 @@ At the start of every run:
 
 The numbers below are a snapshot, not an authority over the checklist.
 
-## Snapshot when this board was created
+## Current serialized checkpoint
 
-Authoritative integration head before orchestration reset: `d16935ac86c32d152a860f9880daf077199880b3`.
+Latest integrated runtime/evidence head before this documentation reconciliation: `b343b308ab1b3abf17203fdef2084303f97eef23`.
 
-Checklist at that head: **159 checked / 52 open / 211 total = 75.4%**.
+Acceptance inventory after validated PR #842/#843 reconciliation: **161 checked / 50 open / 211 total = 76.3%**.
 
-A later evidence candidate branch `codex/v6-built-output-acceptance-20260930-1501` at `dc92e929` is two commits ahead of that integration head and proposes promotion of:
-- `Whole-app/protected-route/browser gates run against built output.`
-
-If still valid and unintegrated, IC should review this first. Do not count it as PASS until it is integrated.
+Completed in this cycle:
+- PR #842 integrated exact built-output browser acceptance evidence and closes `Whole-app/protected-route/browser gates run against built output.`
+- PR #843 integrated safe app/service-worker/content-package upgrade regressions and closes `App/service-worker/content-pack versions can upgrade safely.`
+- stale draft PR #841 is superseded by the current reconciliation and must not be merged.
 
 ## P0 — work first
-
-### IC-01 — Reconcile built-output acceptance candidate
-Owner bias: IC / W1
-Goal: inspect `dc92e929` versus current integration and exact workflow evidence; integrate/recreate the bounded acceptance reconciliation if valid.
-Expected effect: potentially 159/211 -> 160/211.
-Do not promote unrelated rows.
 
 ### W2-01 — Finish systemic explicit-tenant audit
 Owner bias: W2
@@ -104,12 +98,6 @@ Targets:
 - assignment assigned/due push support;
 - browser/service-worker push coverage.
 Physical-device delivery remains a separate field gate.
-
-### W1-03 — PWA upgrade/offline lifecycle
-Targets:
-- app/service-worker/content-pack version upgrades;
-- installed/browser acceptance that can be automated.
-Do not mark physical installed-device row without actual device evidence.
 
 ### W2-02 — Privileged authorization hardening
 Targets:
