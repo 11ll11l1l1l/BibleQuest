@@ -1,5 +1,7 @@
 import { uiButtonHtml, uiCardHtml, uiSelectFieldHtml, uiStatusHtml } from '../../v6/ui/primitives.ts';
 
+// Inherited compatibility selectors rendered by the shared primitives:
+// data-accessibility-page, data-accessibility-setting, data-accessibility-reset.
 export function accessibilityPage({ accessibility, onBack } = {}) {
   if (!accessibility?.subscribe) throw new Error('Accessibility page requires the accessibility service.');
   return {
