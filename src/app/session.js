@@ -1,3 +1,5 @@
+import { assertPasswordNotCompromised } from '../security/password-breach.js';
+
 const EMPTY_USER = null;
 
 function cleanUser(user) {
@@ -199,6 +201,8 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
       const verified = await auth.verifyPassword(email, current);
       assertUserContext(operation, userId);
       if (!verified.session) throw new Error('Current password is incorrect.');
+      await assertPasswordNotCompromised(next);
+      assertUserContext(operation, userId);
       const changed = await auth.updatePassword(next);
       assertUserContext(operation, userId);
       const changedUser = cleanUser(changed.user);
