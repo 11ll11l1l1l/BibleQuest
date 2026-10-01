@@ -298,6 +298,21 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           if (!dialog.open) dialog.showModal();
         } catch (error) { message(error?.message || 'Could not open verse.'); }
       };
+      const suspendAudioFollowForManualNavigation = event => {
+        if (!audioFollowVerse || !audio) return;
+        const playback = audio.getState?.()?.playback;
+        if (playback?.status !== 'playing') return;
+        const target = event.target instanceof Element ? event.target : null;
+        if (target?.closest('[data-reader-audio-player]')) return;
+        if (event.type === 'keydown') {
+          if (!['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) return;
+          if (target?.closest('input,select,textarea,[contenteditable="true"]')) return;
+        }
+        audioFollowVerse = false;
+        lastAudioFollowKey = null;
+        const follow = host.querySelector('[data-reader-audio-follow]');
+        if (follow) follow.checked = false;
+      };
       const onChange = async event => {
         const target = event.target;
         searchResults = null;
@@ -511,7 +526,24 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const vocabToggle = target.closest('[data-jp-vocab-toggle]');
         if (vocabToggle && vocabulary) { const next = vocabulary.setEnabled(!vocabulary.getState().enabled); vocabToggle.outerHTML = japaneseVocabularyControl(next); message(next.enabled ? 'Japanese vocabulary notes enabled.' : 'Japanese vocabulary notes disabled.'); return; }
         const mark = target.closest('[data-reader-mark]'); if (mark) { try { const result = reader.markRead(); mark.textContent = 'Marked read'; if (result.newlyRead) message(result.progress?.awardedXp ? `Marked read · +${result.progress.awardedXp} XP` : 'Marked read · progress already credited'); else message('Already marked read.'); } catch (error) { message(error?.message || 'Could not mark chapter read.'); } return; }
-        const verse = target.closest('[data-verse]'); if (verse) return showPeek(Number(verse.dataset.verse));
+        const verse = target.closest('[data-verse]');
+        if (verse) {
+          const verseNumber = Number(verse.dataset.verse), state = reader.getState(), playback = audio?.getState?.()?.playback;
+          const sameActiveBsbChapter = state.translation === 'bsb'
+            && audio?.hasVerseAlignment?.(state.book, state.chapter)
+            && playback?.translationId === state.translation
+            && playback?.bookCode === state.book
+            && playback?.chapter === state.chapter
+            && ['playing', 'paused'].includes(playback?.status);
+          if (sameActiveBsbChapter) {
+            try {
+              audio.seekVerse(verseNumber);
+              refreshAudioPresentation();
+            } catch (error) { message(error?.message || 'Could not seek to the selected verse.'); }
+            return;
+          }
+          return showPeek(verseNumber);
+        }
         if (target.closest('[data-peek-context]')) { const dialog = host.querySelector('[data-verse-dialog]'), verseNumber = Number(dialog?.dataset.peekVerse); dialog?.close(); const state = reader.getState(); return openContext({ code: state.book, chapter: state.chapter, verse: verseNumber }); }
         if (target.closest('[data-verse-close]')) { host.querySelector('[data-verse-dialog]')?.close(); return; }
         const resultButton = target.closest('[data-search-result]'); if (resultButton && searchResults) { audio?.pause(); const result = searchResults.results[Number(resultButton.dataset.searchResult)]; operation++; try { renderLoading('Opening search result…'); const opened = await reader.openSearchResult(result); highlightVerse = opened.verse; searchResults = null; renderChapter(opened.chapter, await getOfflineStatus()); } catch (error) { renderError(error, await getOfflineStatus()); } }
@@ -549,8 +581,12 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
       };
       const unsubscribeAudio = audio?.subscribe?.(refreshAudioPresentation);
       const unsubscribeSpeech = speech?.subscribe?.(refreshSpeechPresentation);
-      host.addEventListener('change', onChange); host.addEventListener('click', onClick); host.addEventListener('submit', onSubmit); load();
-      return () => { operation++; furiganaPass++; unsubscribeAudio?.(); unsubscribeSpeech?.(); speech?.dispose?.(); if (activeOfflineDownload && offlinePackages) offlinePackages.cancel(activeOfflineDownload.translationId, activeOfflineDownload.bookCode); if (activeOfflineTranslation && offlinePackages) offlinePackages.cancelTranslation(activeOfflineTranslation.translationId); activeOfflineDownload = null; activeOfflineTranslation = null; host.querySelector('[data-verse-dialog]')?.close(); host.querySelector('[data-context-dialog]')?.close(); host.removeEventListener('change', onChange); host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); };
+      host.addEventListener('change', onChange); host.addEventListener('click', onClick); host.addEventListener('submit', onSubmit);
+      host.addEventListener('wheel', suspendAudioFollowForManualNavigation);
+      host.addEventListener('touchmove', suspendAudioFollowForManualNavigation);
+      host.addEventListener('keydown', suspendAudioFollowForManualNavigation);
+      load();
+      return () => { operation++; furiganaPass++; unsubscribeAudio?.(); unsubscribeSpeech?.(); speech?.dispose?.(); if (activeOfflineDownload && offlinePackages) offlinePackages.cancel(activeOfflineDownload.translationId, activeOfflineDownload.bookCode); if (activeOfflineTranslation && offlinePackages) offlinePackages.cancelTranslation(activeOfflineTranslation.translationId); activeOfflineDownload = null; activeOfflineTranslation = null; host.querySelector('[data-verse-dialog]')?.close(); host.querySelector('[data-context-dialog]')?.close(); host.removeEventListener('change', onChange); host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); host.removeEventListener('wheel', suspendAudioFollowForManualNavigation); host.removeEventListener('touchmove', suspendAudioFollowForManualNavigation); host.removeEventListener('keydown', suspendAudioFollowForManualNavigation); };
     }
   };
 }
