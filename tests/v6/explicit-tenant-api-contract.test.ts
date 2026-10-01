@@ -98,3 +98,37 @@ test('remaining sensitive creation/write repositories require explicit congregat
   assert.match(decision, /^async saveDecision\(congregationId,row\)/);
   assert.match(decision, /upsert\(\{\.\.\.row,congregation_id:tenantId\}/);
 });
+
+test('systemic sensitive repository inventory exposes congregation context explicitly', () => {
+  const inventory = {
+    congregation: ['updateSettings','listManagedMembers','manageMember'],
+    presence: ['list','touch','leave','activeCount'],
+    teamCenter: ['list','create','add','remove','rename','archive'],
+    scoreEvents: ['submit'],
+    leaderboards: ['load'],
+    avatarVault: ['save'],
+    congregationRecognition: ['load','award'],
+    assignments: ['load','loadResponsePresence','loadPrivateResponses','targets','lifecycle','create','start','complete','subscribe'],
+    ministryAnnouncements: ['list','publish'],
+    journeyGroups: ['list','create','join','rotateCode','leave'],
+    liveRooms: ['create','findByCode','loadRoom','joinParticipant','participants','endRoom','subscribe'],
+    encouragements: ['list','send'],
+    contentDecisions: ['list'],
+    contentReports: ['submit'],
+    contentReview: ['loadQueue','saveDecision','markReportsReviewed'],
+    media: ['listLiveRecordings','createVideo','updateVideo'],
+    calendar: ['listCongregation','createCongregation','updateCongregation','removeCongregation'],
+  } as const;
+
+  for (const [owner, methods] of Object.entries(inventory)) {
+    for (const method of methods) {
+      const source = methodSource(owner, method);
+      assert.match(
+        source,
+        new RegExp(`^async ${method}\\([^)]*congregationId`),
+        `${owner}.${method}() must receive congregationId explicitly`,
+      );
+    }
+  }
+});
+
