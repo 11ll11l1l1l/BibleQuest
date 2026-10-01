@@ -1,5 +1,59 @@
 -- Assignment due reminders are durable inbox rows first, with the existing
 -- service-only push sender handling optional Web Push delivery afterward.
+--
+-- Keep this migration deployable on production environments that have the
+-- released V5 notification schema but have not yet replayed the additive V6
+-- notification-preference migration. The canonical V6 producer migration
+-- applies the same column/constraint earlier on clean V6 database replays.
+
+alter table public.bible_notifications
+  add column if not exists delivery_category text;
+
+do $bq_due_category_constraint$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'bible_notifications_v6_delivery_category_check'
+      and conrelid = 'public.bible_notifications'::regclass
+  ) then
+    alter table public.bible_notifications
+      add constraint bible_notifications_v6_delivery_category_check
+      check (
+        delivery_category is null
+        or delivery_category = any (
+          array['reading','assignments','ministry','announcements','encouragement','streaks']::text[]
+        )
+      );
+  end if;
+end
+$bq_due_category_constraint$;
+
+create or replace function public.bible_verify_assignment_reminder_scheduler_secret(
+  provided_secret text
+)
+returns boolean
+language sql
+security definer
+set search_path = pg_catalog, public
+set row_security = off
+as $
+  select exists (
+    select 1
+    from vault.decrypted_secrets
+    where name = 'bq_assignment_reminder_scheduler_secret'
+      and nullif(trim(decrypted_secret), '') is not null
+      and decrypted_secret = provided_secret
+  );
+$;
+
+revoke all on function public.bible_verify_assignment_reminder_scheduler_secret(text)
+  from public, anon, authenticated;
+grant execute on function public.bible_verify_assignment_reminder_scheduler_secret(text)
+  to service_role;
+
+comment on function public.bible_verify_assignment_reminder_scheduler_secret(text) is
+  'Service-role-only verifier for the Vault-held assignment reminder scheduler secret. The secret value is never returned.';
 
 create unique index if not exists bible_notifications_assignment_due_once_idx
   on public.bible_notifications (
