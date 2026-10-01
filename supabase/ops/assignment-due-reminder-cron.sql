@@ -4,11 +4,10 @@
 -- Prerequisites:
 --   1. Deploy the checked-in bq-assignment-reminders Edge Function.
 --   2. Store the project URL in Supabase Vault as bq_assignment_reminder_project_url.
---   3. Store one server-only Supabase secret key accepted by the Edge Function
---      in Vault as bq_assignment_reminder_secret_key.
 --
--- Secret VALUES are intentionally never interpolated into cron.job.command.
--- The scheduled command resolves both secrets from Vault only at execution time.
+-- The scheduler authentication secret is generated inside Vault when absent.
+-- Its value is never returned, embedded in repository source, or copied into
+-- cron.job.command. The scheduled command resolves it from Vault at runtime.
 
 create extension if not exists pg_cron;
 create extension if not exists pg_net with schema extensions;
@@ -16,7 +15,7 @@ create extension if not exists pg_net with schema extensions;
 do $bq_assignment_due_scheduler$
 declare
   project_url_present boolean;
-  secret_key_present boolean;
+  scheduler_secret_present boolean;
 begin
   select exists(
     select 1
@@ -25,17 +24,29 @@ begin
       and nullif(trim(decrypted_secret), '') is not null
   ) into project_url_present;
 
+  if not project_url_present then
+    raise exception
+      'BibleQuest assignment reminder scheduler requires Vault secret bq_assignment_reminder_project_url';
+  end if;
+
   select exists(
     select 1
     from vault.decrypted_secrets
-    where name = 'bq_assignment_reminder_secret_key'
+    where name = 'bq_assignment_reminder_scheduler_secret'
       and nullif(trim(decrypted_secret), '') is not null
-  ) into secret_key_present;
+  ) into scheduler_secret_present;
 
-  if not project_url_present or not secret_key_present then
-    raise exception
-      'BibleQuest assignment reminder scheduler requires Vault secrets bq_assignment_reminder_project_url and bq_assignment_reminder_secret_key';
+  if not scheduler_secret_present then
+    perform vault.create_secret(
+      encode(extensions.gen_random_bytes(32), 'hex'),
+      'bq_assignment_reminder_scheduler_secret',
+      'BibleQuest V6 assignment reminder scheduler authentication secret'
+    );
   end if;
+
+  perform cron.unschedule(jobid)
+  from cron.job
+  where jobname = 'bq-assignment-due-reminders-v6';
 
   perform cron.schedule(
     'bq-assignment-due-reminders-v6',
@@ -49,9 +60,9 @@ begin
         ) || '/functions/v1/bq-assignment-reminders',
         headers := jsonb_build_object(
           'Content-Type', 'application/json',
-          'Authorization', 'Bearer ' || (
+          'X-BQ-Assignment-Reminder-Secret', (
             select decrypted_secret from vault.decrypted_secrets
-            where name = 'bq_assignment_reminder_secret_key'
+            where name = 'bq_assignment_reminder_scheduler_secret'
           )
         ),
         body := '{}'::jsonb,

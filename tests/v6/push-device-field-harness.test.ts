@@ -85,7 +85,7 @@ test('push certification procedure stays fail-closed across browser and physical
 test('due-reminder operator documentation cannot drift from the canonical five-minute Vault-backed scheduler', () => {
   for (const token of [
     'bq_assignment_reminder_project_url',
-    'bq_assignment_reminder_secret_key',
+    'bq_assignment_reminder_scheduler_secret',
     'bq-assignment-due-reminders-v6',
     '*/5 * * * *',
   ]) {
@@ -96,6 +96,7 @@ test('due-reminder operator documentation cannot drift from the canonical five-m
   for (const stale of [
     'bq_supabase_url',
     'bq_assignment_reminder_service_key',
+    'bq_assignment_reminder_secret_key',
   ]) {
     assert.equal(dueRunbook.includes(stale), false, 'stale reminder secret name must not survive: ' + stale);
   }

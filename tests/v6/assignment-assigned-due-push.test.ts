@@ -49,6 +49,9 @@ test('assignment due push is service-only, recipient-scoped, idempotent and uses
   assert.match(reminderMigration, /revoke all on function public\.bible_enqueue_assignment_due_notifications_v6\(\) from public, anon, authenticated/);
   assert.match(reminderMigration, /grant execute on function public\.bible_enqueue_assignment_due_notifications_v6\(\) to service_role/);
 
+  assert.match(reminderEdge, /X-BQ-Assignment-Reminder-Secret/);
+  assert.match(reminderEdge, /from vault\.decrypted_secrets/);
+  assert.match(reminderEdge, /bq_assignment_reminder_scheduler_secret/);
   assert.match(reminderEdge, /admin\.rpc\('bible_enqueue_assignment_due_notifications_v6'\)/);
   assert.match(reminderEdge, /admin\.functions\.invoke\('bq-push-delivery', \{ body: \{ notificationId \} \}\)/);
   assert.match(reminderEdge, /const BATCH_SIZE = 10/);
@@ -85,9 +88,11 @@ test('due reminder scheduler is explicit, Vault-backed and does not embed server
   assert.match(schedulerOps, /'\*\/5 \* \* \* \*'/);
   assert.match(schedulerOps, /vault\.decrypted_secrets/);
   assert.match(schedulerOps, /bq_assignment_reminder_project_url/);
-  assert.match(schedulerOps, /bq_assignment_reminder_secret_key/);
+  assert.match(schedulerOps, /bq_assignment_reminder_scheduler_secret/);
+  assert.match(schedulerOps, /vault\.create_secret/);
+  assert.match(schedulerOps, /extensions\.gen_random_bytes\(32\)/);
   assert.match(schedulerOps, /\/functions\/v1\/bq-assignment-reminders/);
-  assert.match(schedulerOps, /'Authorization', 'Bearer ' \|\|/);
+  assert.match(schedulerOps, /'X-BQ-Assignment-Reminder-Secret'/);
   assert.match(schedulerOps, /timeout_milliseconds := 5000/);
   assert.doesNotMatch(schedulerOps, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEYS/);
   assert.doesNotMatch(schedulerOps, /https:\/\/[a-z0-9]+\.supabase\.co/);
