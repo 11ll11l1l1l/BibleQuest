@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "intent": "certify-current-v6-release-candidate",
+  "sequence": 1,
+  "instructions": "Increment sequence in a PR targeting v6/architecture-upgrade to fan out every exact-SHA RC component gate and Cloudflare preview verification on that PR head."
+}
