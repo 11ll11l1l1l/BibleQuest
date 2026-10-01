@@ -13,6 +13,8 @@ on:
       - 'tests/v6/v4-v6-upgrade-database.test.mjs'
       - 'tests/v6/migration-history-guard.test.ts'
       - 'tests/v6/assignment-assigned-due-push.test.ts'
+      - 'tests/v6/sensitive-domain-tenant-matrix.test.ts'
+      - 'docs/v6/V6_SENSITIVE_DOMAIN_TENANT_MATRIX.json'
       - '.github/workflows/v6-database-ci.yml'
   workflow_dispatch:
 
@@ -43,7 +45,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run no-Docker database CI contract
-        run: node --test tests/v6/database-ci-contract.test.mjs tests/v6/v4-v6-upgrade-database.test.mjs
+        run: node --test tests/v6/database-ci-contract.test.mjs tests/v6/v4-v6-upgrade-database.test.mjs tests/v6/sensitive-domain-tenant-matrix.test.ts
 
       - name: Validate local migration identity inventory
         run: npm run check:v6-migration-history
