@@ -12,6 +12,7 @@ export const DEFAULT_REQUIRED_WORKFLOWS = Object.freeze([
   'V6 Database CI',
   'V6 Client Artifact Security',
   'V6 Dependency Security',
+  'V6 Deployed Artifact Verification',
   'BibleQuest inherited regression',
 ]);
 
