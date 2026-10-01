@@ -20,7 +20,7 @@ let current={id:'r1',congregation_id:'c1',created_by:'u1',session_type:'live-roo
 let participantRows=[{session_id:'r1',user_id:'u1',created_at:'t0'}],stops=0,joins=0,listener=null,ended=0;
 const calls=[];
 const api={
-  async create(row){calls.push(['create',row.congregation_id]);assert.equal(row.congregation_id,activeCongregationId);assert.equal(row.session_type,'live-room');current={...current,...row};return current},
+  async create(tenantId,row){calls.push(['create',tenantId]);assert.equal(tenantId,activeCongregationId);assert.equal(row.congregation_id,undefined);assert.equal(row.session_type,'live-room');current={...current,...row,congregation_id:tenantId};return current},
   async findByCode(code,tenantId){calls.push(['find',code,tenantId]);assert.equal(tenantId,activeCongregationId);return current.congregation_id===tenantId&&current.room_code===code&&current.status!=='ended'?current:null},
   async loadRoom(id,tenantId){calls.push(['loadRoom',id,tenantId]);assert.equal(tenantId,activeCongregationId);return current.id===id&&current.congregation_id===tenantId?current:null},
   async joinParticipant(id,uid,tenantId){calls.push(['joinParticipant',id,uid,tenantId]);assert.equal(tenantId,activeCongregationId);joins++;if(!participantRows.some(row=>row.session_id===id&&row.user_id===uid))participantRows.push({session_id:id,user_id:uid,created_at:'now'});return{}},

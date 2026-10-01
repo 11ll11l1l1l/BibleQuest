@@ -623,9 +623,11 @@ export function createApi() {
   });
 
   const liveRooms = Object.freeze({
-    async create(row) {
+    async create(congregationId,row) {
+      const tenantId=String(congregationId||'').trim();
+      if(!tenantId)throw Error('Congregation context is required.');
       const client=await getClient();
-      const {data,error}=await client.from('bible_shared_sessions').insert(row).select(LIVE_ROOM_FIELDS).single();
+      const {data,error}=await client.from('bible_shared_sessions').insert({...row,congregation_id:tenantId}).select(LIVE_ROOM_FIELDS).single();
       if(error)throw error;
       return data;
     },

@@ -45,7 +45,7 @@ test('domain owners re-check identity, tenant or role before protected mutations
 
   const liveRooms = read('src/app/live-rooms.js');
   assert.match(liveRooms, /congregation\.assert\(id,'ministry'\)/);
-  assert.match(liveRooms, /api\.create\(\{congregation_id:id/);
+  assert.match(liveRooms, /api\.create\(id,\{created_by:userId/);
   assert.match(liveRooms, /api\.endRoom\(roomId,userId,tenantId\)/);
 
   const announcements = read('src/app/ministry-announcements.js');

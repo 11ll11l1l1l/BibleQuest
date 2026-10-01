@@ -72,8 +72,14 @@ describe('Live Rooms and admin account-switch isolation', () => {
       status: 'lobby',
       state: {},
     };
+    let createTenantId = '';
+    let createPayload: any = null;
     const api = {
-      async create() { return roomRow; },
+      async create(congregationId: string, payload: any) {
+        createTenantId = congregationId;
+        createPayload = payload;
+        return roomRow;
+      },
       async findByCode() { return roomRow; },
       async loadRoom() { return roomRow; },
       async joinParticipant() { return {}; },
@@ -100,6 +106,8 @@ describe('Live Rooms and admin account-switch isolation', () => {
     releaseA.resolve();
     await rooms.load();
     await rooms.create({ congregationId: 'cong-a', title: 'A room' });
+    assert.equal(createTenantId, 'cong-a');
+    assert.equal(createPayload?.congregation_id, undefined);
     assert.equal(rooms.snapshot().room?.id, 'room-a');
 
     session.setUser('user-b');

@@ -43,6 +43,7 @@ test('avatar membership writes require and filter an explicit congregation scope
 
 test('Live Rooms repository requires explicit congregation scope for tenant-sensitive operations', () => {
   const expectations = [
+    ['create', /^async create\(congregationId,row\)/, /congregation_id:tenantId/],
     ['findByCode', /^async findByCode\(roomCode,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
     ['loadRoom', /^async loadRoom\(roomId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
     ['joinParticipant', /^async joinParticipant\(roomId,userId,congregationId\)/, /\.eq\('congregation_id',tenantId\)/],
