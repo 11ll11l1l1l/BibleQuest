@@ -1,7 +1,7 @@
 name: V6 PR Serialization Guard
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, synchronize, ready_for_review, edited]
   push:
     branches:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   validate-pr:
-    if: github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Reject reverse integration refresh PRs
