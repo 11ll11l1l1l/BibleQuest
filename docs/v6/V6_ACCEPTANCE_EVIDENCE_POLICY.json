@@ -223,7 +223,25 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "52c11bf720c72dd04cf22a82e2d22bc54ba4f9e8",
+        "classes": [
+          "STATIC",
+          "UNIT"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "V6 Phase 1 Build Gate",
+            "id": "36885122702"
+          },
+          {
+            "kind": "decision-record",
+            "name": "Temporary leaked-password residual-risk acceptance",
+            "id": "docs/v6/V6_LEAKED_PASSWORD_RESIDUAL_RISK_DECISION.md"
+          }
+        ]
+      }
     },
     {
       "row": "Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.",
