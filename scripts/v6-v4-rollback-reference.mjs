@@ -1,3 +1,6 @@
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
@@ -80,7 +83,8 @@ export async function verifyV4RollbackReference({
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const invokedAsCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedAsCli) {
   verifyV4RollbackReference({
     repository: process.env.GITHUB_REPOSITORY,
     token: process.env.GITHUB_TOKEN,
