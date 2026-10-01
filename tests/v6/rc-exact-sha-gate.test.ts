@@ -5,6 +5,7 @@ import {
   DEFAULT_REQUIRED_WORKFLOWS,
   collectExactShaRcEvidence,
   normalizeCandidateSha,
+  waitForExactShaRcEvidence,
 } from '../../scripts/v6-rc-exact-sha-gate.mjs';
 
 const candidateSha = 'a'.repeat(40);
@@ -96,4 +97,30 @@ test('RC collector rejects GitHub API failures rather than manufacturing evidenc
     }),
     /GitHub Actions evidence query failed: HTTP 403/,
   );
+});
+
+test('RC collector can wait for exact-SHA component runs without accepting partial evidence', async () => {
+  let queries = 0;
+  const complete = DEFAULT_REQUIRED_WORKFLOWS.map((name, index) => successRun(name, 4000 + index));
+  const evidence = await waitForExactShaRcEvidence({
+    repository: 'example/repo',
+    candidateSha,
+    token: 'test-token',
+    timeoutMs: 1000,
+    pollIntervalMs: 0,
+    sleepImpl: async () => {},
+    fetchImpl: async input => {
+      const url = input instanceof URL ? input : new URL(input);
+      assert.equal(url.searchParams.get('head_sha'), candidateSha);
+      queries += 1;
+      const runs = queries === 1 ? complete.slice(0, -1) : complete;
+      return new Response(JSON.stringify({ workflow_runs: runs }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    },
+  });
+
+  assert.ok(queries >= 2);
+  assert.equal(evidence.requiredWorkflowCount, DEFAULT_REQUIRED_WORKFLOWS.length);
 });

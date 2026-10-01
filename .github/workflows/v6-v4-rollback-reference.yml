@@ -8,6 +8,7 @@ on:
       - 'scripts/v6-v4-rollback-reference.mjs'
       - 'tests/v6/v4-rollback-reference.test.ts'
       - '.github/workflows/v6-v4-rollback-reference.yml'
+      - 'docs/v6/RC_CANDIDATE.json'
   push:
     branches:
       - v6/architecture-upgrade
