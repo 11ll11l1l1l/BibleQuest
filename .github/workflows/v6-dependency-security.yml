@@ -22,9 +22,17 @@ on:
   schedule:
     - cron: "17 3 * * *"
   workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character commit SHA to run this gate against
+        required: false
+        type: string
 
 permissions:
   contents: read
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
 
 concurrency:
   group: v6-dependency-security-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
@@ -38,7 +46,14 @@ jobs:
       - name: Checkout exact candidate
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
 
       - name: Use pinned Node and npm cache
         uses: actions/setup-node@v4
