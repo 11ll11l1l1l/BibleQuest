@@ -52,6 +52,54 @@ jobs:
           souer|https://openbible.com/audio/souer/BSB_01_Gen_001.mp3
           EOF
 
+      - name: Transcribe sample narrations against current Reader text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet faster-whisper
+          python - <<'PY'
+          import json, re, unicodedata
+          from difflib import SequenceMatcher
+          from pathlib import Path
+          from faster_whisper import WhisperModel
+
+          rows = json.loads(Path('data/packs/bible/GEN.json').read_text(encoding='utf-8'))
+          current = ' '.join(str(row['t']) for row in rows if int(row['c']) == 1)
+
+          def tokens(value):
+              value = unicodedata.normalize('NFKD', value)
+              value = ''.join(ch for ch in value if unicodedata.category(ch) != 'Mn')
+              value = re.sub(r"[^A-Za-z0-9' ]+", ' ', value).lower()
+              return [part for part in value.split() if part]
+
+          model = WhisperModel('tiny.en', device='cpu', compute_type='int8')
+          result = {}
+          for narrator in ('hays', 'souer'):
+              path = f'/tmp/openbible-audit/{narrator}-gen1.mp3'
+              segments, info = model.transcribe(path, beam_size=5, vad_filter=True)
+              transcript = ' '.join(segment.text.strip() for segment in segments).strip()
+              current_tokens = tokens(current)
+              transcript_tokens = tokens(transcript)
+              ratio = SequenceMatcher(None, current_tokens, transcript_tokens, autojunk=False).ratio()
+              payload = {
+                  'narrator': narrator,
+                  'language': info.language,
+                  'languageProbability': info.language_probability,
+                  'currentTokens': len(current_tokens),
+                  'transcriptTokens': len(transcript_tokens),
+                  'tokenSimilarity': ratio,
+                  'containsAndThereWasLight': 'and there was light' in transcript.lower(),
+                  'transcript': transcript,
+              }
+              result[narrator] = payload
+              Path(f'/tmp/openbible-audit/{narrator}-transcript.json').write_text(json.dumps(payload, indent=2) + '\n', encoding='utf-8')
+          Path('/tmp/openbible-audit/transcript-comparison.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({
+              key: {k: value[k] for k in ('currentTokens','transcriptTokens','tokenSimilarity','containsAndThereWasLight')}
+              for key, value in result.items()
+          }, indent=2))
+          PY
+
       - name: Publish audit summary
         shell: bash
         run: |
