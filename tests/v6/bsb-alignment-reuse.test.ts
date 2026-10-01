@@ -96,7 +96,7 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     await mkdir(dirname(upstreamWordPath), { recursive: true });
     await writeFile(upstreamWordPath, JSON.stringify(wordOutputFor(currentText), null, 2));
 
-    const report = await stageReusableBsbAlignments({ plan });
+    const report = await stageReusableBsbAlignments({ plan, gitResolver: reviewedGit });
     assert.equal(report.reusableChapters, 1);
     assert.equal(report.regenerateChapters, 1188);
     assert.equal(report.expectedChapters, 1189);
@@ -110,7 +110,7 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(disk.reusableChapters, 1);
     assert.equal(disk.regenerateChapters, 1188);
 
-    await assert.rejects(stageReusableBsbAlignments({ plan }), /requires an empty regeneration output directory/i);
+    await assert.rejects(stageReusableBsbAlignments({ plan, gitResolver: reviewedGit }), /requires an empty regeneration output directory/i);
   } finally {
     await rm(temp, { recursive: true, force: true });
   }
