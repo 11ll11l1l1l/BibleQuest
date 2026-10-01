@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+
+- Acceptance reconciliation from current integration `1d876e68d355ccfde339ea278f4a6919f3a29d8e`: #941 security-advisor triage, #951 V4→V6 route/feature parity, #950/#952 canonical V4-production→V6 database-upgrade proof, #976 immutable V4 rollback-reference guard, and #962 systemic explicit-congregation repository context are complete. After this reconciliation lands, official acceptance is **186 checked / 25 open / 211 total = 88.2%**. Do not reassign these rows. W2 should continue aggregate cross-congregation/server-authority DB evidence rather than reworking explicit client/repository context; other lanes continue leaked-password/equivalent, BSB exact-source alignment, exact-RC/release evidence, and genuine field/device acceptance.
 - PR #939 is integrated at `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9` from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; Phase-1 `36792168865` and inherited regression `36792168887` passed. The protected feature-authority boundary is now accepted. After reconciliation: **180 checked / 31 open / 211 total = 85.3%**.
 
 - PR #934 is integrated at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed, including exact built-artifact report-only and enforcing CSP Chromium gates. CSP is now accepted. After reconciliation: **179 checked / 32 open / 211 total = 84.8%**.
@@ -51,7 +53,6 @@ Completed in this cycle:
 Owner bias: W2
 Checklist targets:
 - Cross-congregation denial is tested for every sensitive migrated domain.
-- Sensitive repository calls require explicit congregation context.
 - Leader Center role/cross-congregation DB + browser rows.
 Work:
 - inventory sensitive domains from current source;
@@ -121,7 +122,6 @@ Targets:
 Targets:
 - leaked-password protection/equivalent decision with evidence;
 - MFA/passkey evaluation with recovery implications;
-- Supabase security-advisor triage.
 Do not weaken custom auth or RLS merely to clear an advisor warning.
 
 ### W4-02 — Shared component/design primitives
@@ -145,7 +145,6 @@ Coordinate with W1 when CI/build tooling is involved.
 - PiP provider/browser acceptance if not fully automatable.
 - Critical physical/manual accessibility acceptance.
 - Exact candidate field evidence.
-- V4 -> V6 upgrade DB path and complete route/feature parity matrix.
 - One exact V6 RC SHA across all gates.
 - Exact candidate production promotion.
 - Post-production exact-SHA route/PWA/offline/push smoke.
