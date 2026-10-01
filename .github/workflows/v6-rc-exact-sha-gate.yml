@@ -1,0 +1,71 @@
+name: V6 RC Exact-SHA Automated Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character V6 release-candidate SHA to certify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v6-rc-exact-sha-${{ inputs.candidate_sha }}
+  cancel-in-progress: false
+
+env:
+  BQ_RC_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+
+jobs:
+  certify-automated-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          fetch-depth: 0
+
+      - name: Prove exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_RC_CANDIDATE_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify RC evidence collector contract
+        run: node --experimental-strip-types --test tests/v6/rc-exact-sha-gate.test.ts
+
+      - name: Collect exact-SHA automated-gate evidence
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BQ_RC_EVIDENCE_OUTPUT: v6-rc-exact-sha-evidence.json
+        run: node scripts/v6-rc-exact-sha-gate.mjs
+
+      - name: Publish evidence summary
+        shell: bash
+        run: |
+          {
+            echo '## V6 RC exact-SHA automated-gate evidence'
+            echo
+            echo '```json'
+            cat v6-rc-exact-sha-evidence.json
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload exact-SHA evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-rc-exact-sha-evidence-${{ inputs.candidate_sha }}
+          path: v6-rc-exact-sha-evidence.json
+          if-no-files-found: error
+          retention-days: 90
