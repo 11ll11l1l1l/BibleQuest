@@ -1,0 +1,65 @@
+name: V6 BSB Reuse Audit Run
+
+on:
+  push:
+    branches:
+      - audit/v6-bsb-reuse-real-20261001
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout BibleQuest audit head
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+
+      - name: Fetch reviewed bsb-align revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init /tmp/bsb-align
+          git -C /tmp/bsb-align remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C /tmp/bsb-align fetch --depth=1 origin bdb859afc427b215b78e12ee4a7798c32b7b91e0
+          git -C /tmp/bsb-align checkout --detach FETCH_HEAD
+          test "$(git -C /tmp/bsb-align rev-parse HEAD)" = "bdb859afc427b215b78e12ee4a7798c32b7b91e0"
+          test "$(git -C /tmp/bsb-align rev-parse 'HEAD^{tree}')" = "c83b2494c8fc5413863e9617b23660eab9459323"
+
+      - name: Prepare exact Reader corpus
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bsb-audio-empty /tmp/bsb-reuse-workspace
+          node scripts/v6-prepare-bsb-alignment-regeneration.mjs \
+            /tmp/bsb-align \
+            /tmp/bsb-audio-empty \
+            /tmp/bsb-reuse-workspace \
+            > /tmp/bsb-reuse-prepare.json
+
+      - name: Audit and stage reusable upstream timings
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-stage-bsb-alignment-reuse.mjs \
+            /tmp/bsb-reuse-workspace/regeneration-plan.json \
+            > /tmp/bsb-reuse-summary.json
+          cp /tmp/bsb-reuse-workspace/reuse-plan.json ./bsb-reuse-plan.json
+          cp /tmp/bsb-reuse-summary.json ./bsb-reuse-summary.json
+          cat ./bsb-reuse-summary.json
+
+      - name: Upload reuse audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-reuse-audit
+          path: |
+            bsb-reuse-plan.json
+            bsb-reuse-summary.json
+          if-no-files-found: error
+          retention-days: 7
