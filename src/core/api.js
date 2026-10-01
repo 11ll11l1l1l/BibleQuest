@@ -798,11 +798,14 @@ export function createApi() {
   });
 
   const media = Object.freeze({
-    async listLiveRecordings() {
+    async listLiveRecordings(congregationId) {
+      const tenantId = String(congregationId || '').trim();
+      if (!tenantId) throw Error();
       const client = await getClient();
       const now = new Date().toISOString();
       const request = client.from('bible_media_library')
         .select('id,congregation_id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category')
+        .eq('congregation_id', tenantId)
         .eq('active', true)
         .eq('media_type', 'youtube_video')
         .lte('publish_at', now)
