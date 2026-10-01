@@ -59,6 +59,11 @@ test('Live Rooms repository requires explicit congregation scope for tenant-sens
 });
 
 test('media mutation repository requires explicit congregation scope', () => {
+  const listSource = methodSource('media', 'listLiveRecordings');
+  assert.match(listSource, /^async listLiveRecordings\(congregationId\)/);
+  assert.match(listSource, /\.eq\('congregation_id', tenantId\)/);
+  assert.match(listSource, /if \(!tenantId\) throw Error\(\)/);
+
   const createSource = methodSource('media', 'createVideo');
   assert.match(createSource, /^async createVideo\(congregationId, payload\)/);
   assert.match(createSource, /congregation_id: tenantId/);
