@@ -37,6 +37,21 @@ Observed state:
 
 Therefore the repository due-reminder implementation is not yet a live due Web Push path.
 
+## Fail-closed migration preflight
+
+Before any staging or production database push, export the reviewed target migration history as JSON with `version` and `name` fields and run:
+
+```bash
+npm run check:v6-assignment-push-release -- --remote-json /path/to/remote-migrations.json
+```
+
+The command is read-only. It requires the canonical `assignment_due_reminders` migration to be either:
+
+- already recorded at the exact repository version; or
+- safely pending inside an ordered migration tail with no version/name divergence, remote-only migration, or older unapplied migration behind the remote tip.
+
+It exits non-zero on the current production divergence where logical telemetry migrations are recorded under different versions. That failure is intentional: first prove schema equivalence and reconcile migration history through the reviewed Supabase repair process, then rerun the preflight. The preflight never repairs history and never applies SQL.
+
 ## Production-safe release sequence
 
 Do not execute these steps without explicit production authorization.
