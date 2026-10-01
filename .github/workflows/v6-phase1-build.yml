@@ -43,6 +43,7 @@ on:
       - "scripts/v6-content-media-provenance.mjs"
       - "scripts/v6-audit-bsb-upstream-timing-reuse.mjs"
       - "scripts/v6-run-bsb-alignment-regeneration.mjs"
+      - "scripts/v6-plan-bsb-alignment-shards.mjs"
       - "scripts/v6-rc-exact-sha-gate.mjs"
       - "scripts/v6-assemble-rc-certification.mjs"
       - "scripts/v6-live-smoke.mjs"
