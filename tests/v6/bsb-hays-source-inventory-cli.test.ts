@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
-const root = resolve(new URL('../../', import.meta.url).pathname);
+const root = fileURLToPath(new URL('../../', import.meta.url));
 const script = join(root, 'scripts', 'v6-hays-source-inventory.mjs');
 
 test('standalone Hays inventory CLI requires an explicit staged directory', () => {
