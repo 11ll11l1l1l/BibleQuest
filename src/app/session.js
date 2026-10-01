@@ -1,5 +1,3 @@
-import { assertPasswordNotCompromised } from '../security/password-breach.js';
-
 const EMPTY_USER = null;
 
 function cleanUser(user) {
@@ -28,7 +26,7 @@ function sessionContextError() {
   return error;
 }
 
-export function createSessionService({ auth, store, clock = () => Date.now() }) {
+export function createSessionService({ auth, store, clock = () => Date.now(), passwordSafety = null }) {
   if (!auth || !store) throw new Error('Session service requires auth and store.');
   let state = initialState(auth.enabled?.() !== false);
   let unsubscribeAuth = null;
@@ -201,7 +199,7 @@ export function createSessionService({ auth, store, clock = () => Date.now() }) 
       const verified = await auth.verifyPassword(email, current);
       assertUserContext(operation, userId);
       if (!verified.session) throw new Error('Current password is incorrect.');
-      await assertPasswordNotCompromised(next);
+      if (typeof passwordSafety === 'function') await passwordSafety(next);
       assertUserContext(operation, userId);
       const changed = await auth.updatePassword(next);
       assertUserContext(operation, userId);
