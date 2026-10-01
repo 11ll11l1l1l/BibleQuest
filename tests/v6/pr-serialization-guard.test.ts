@@ -10,7 +10,7 @@ test('V6 serialization guard revalidates PR heads against the live integration r
 
   assert.match(workflow, /pull_request:/);
   assert.doesNotMatch(workflow, /pull_request_target:/);
-  assert.match(workflow, /types: \\[opened, reopened, synchronize, ready_for_review, edited\\]/);
+  assert.equal(workflow.includes('types: [opened, reopened, synchronize, ready_for_review, edited]'), true);
   assert.match(workflow, /git\/ref\/heads\/\$BASE_REF/);
   assert.match(workflow, /git\/ref\/heads\/v6\/architecture-upgrade/);
   assert.doesNotMatch(workflow, /BASE_SHA: \$\{\{ github\.event\.pull_request\.base\.sha \}\}/);
