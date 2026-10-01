@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
+import { assertPasswordNotCompromised } from '../_shared/password-security.ts';
 
 const PRIMARY_ORIGIN='https://mybiblequest.pages.dev';
 const LEGACY_ORIGIN='https://11ll11l1l1l.github.io';
@@ -32,6 +33,7 @@ Deno.serve(async(req:Request)=>{
     if(fullName.length<2||preferredName.length<2)return json(req,{error:'Enter your name and the name BibleQuest should call you.'},400);
     if(password.length<8||password.length>128)return json(req,{error:'Password must be 8 to 128 characters.'},400);
     if(password!==confirm)return json(req,{error:'Passwords do not match.'},400);
+    await assertPasswordNotCompromised(password);
 
     // Registration is intentionally deterministic: users join ICAC by default instead of
     // relying on a free-text church field that can be mistyped. Admins can correct the
@@ -51,5 +53,10 @@ Deno.serve(async(req:Request)=>{
     const inserted=await admin.from('bible_password_reset_codes').insert({user_id:created.user.id,requested_by:created.user.id,code_hash:codeHash,email_hash:emailHash,expires_at:expires,attempts:0});
     if(inserted.error){await admin.auth.admin.deleteUser(created.user.id).catch(()=>{});throw inserted.error}
     return json(req,{ok:true,recovery_code:code,recovery_expires_at:expires,default_congregation:{id:congregation.id,name:congregation.name}});
-  }catch(err){console.error(err);return json(req,{error:'Account creation failed. Please try again.'},500)}
+  }catch(err){
+    const code=err instanceof Error?(err as Error&{code?:string}).code:'';
+    if(code==='BQ_PASSWORD_COMPROMISED')return json(req,{error:(err as Error).message},400);
+    if(code==='BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE')return json(req,{error:(err as Error).message},503);
+    console.error(err);return json(req,{error:'Account creation failed. Please try again.'},500)
+  }
 });
