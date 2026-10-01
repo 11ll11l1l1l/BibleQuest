@@ -23,7 +23,8 @@
     "check:v6-migration-history": "node scripts/v6-migration-history-guard.mjs --local-only",
     "check:v6-assignment-push-release": "node scripts/v6-migration-history-guard.mjs --require-target assignment_due_reminders",
     "check:v6-content-media-provenance": "node scripts/v6-content-media-provenance.mjs",
-    "run:v6-bsb-alignment": "node scripts/v6-run-bsb-alignment-regeneration.mjs"
+    "run:v6-bsb-alignment": "node scripts/v6-run-bsb-alignment-regeneration.mjs",
+    "audit:v6-bsb-reuse": "node scripts/v6-audit-bsb-upstream-timing-reuse.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",
