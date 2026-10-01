@@ -18,15 +18,16 @@ test('Recordings UI delegates correction to the existing service owner and not d
 
 test('existing Recordings service can update featured curation and archive recordings', async () => {
   const rows = [
-    { id: 'old', youtube_id: 'OLDER123456', title: 'Older service', featured: true, active: true, created_at: '2026-09-01T01:00:00Z' },
-    { id: 'latest', youtube_id: 'LATEST12345', title: 'Wrong latest service', featured: true, active: true, created_at: '2026-09-08T01:00:00Z' },
-    { id: 'ordinary', youtube_id: 'ORDINARY123', title: 'Corrected service', featured: false, active: true, created_at: '2026-09-12T01:00:00Z' }
+    { id: 'old', congregation_id: 'church-1', youtube_id: 'OLDER123456', title: 'Older service', featured: true, active: true, created_at: '2026-09-01T01:00:00Z' },
+    { id: 'latest', congregation_id: 'church-1', youtube_id: 'LATEST12345', title: 'Wrong latest service', featured: true, active: true, created_at: '2026-09-08T01:00:00Z' },
+    { id: 'ordinary', congregation_id: 'church-1', youtube_id: 'ORDINARY123', title: 'Corrected service', featured: false, active: true, created_at: '2026-09-12T01:00:00Z' }
   ];
   const updates = [];
   const media = {
-    async listLiveRecordings() { return rows.filter(row => row.active !== false).map(row => ({ ...row })); },
+    async listLiveRecordings(congregationId) { assert.equal(congregationId, 'church-1'); return rows.filter(row => row.active !== false).map(row => ({ ...row })); },
     async createVideo() { throw new Error('not used'); },
-    async updateVideo(id, patch) {
+    async updateVideo(congregationId, id, patch) {
+      assert.equal(congregationId, 'church-1');
       updates.push({ id, patch: { ...patch } });
       const row = rows.find(item => item.id === id);
       if (!row) throw new Error('missing row');
@@ -36,7 +37,8 @@ test('existing Recordings service can update featured curation and archive recor
   };
   const audio = { unload() {}, dispose() {}, mount() {}, play() {}, pause() {}, stop() {}, seek() {}, getState() { return {}; }, getPlayerCount() { return 0; } };
   const session = { isAuthenticated() { return true; }, getState() { return { authenticated: true, user: { id: 'leader-1' } }; } };
-  const service = createRecordingsService({ media, audio, session });
+  const congregation = { async load() { return [{ congregationId: 'church-1', userId: 'leader-1' }]; }, getActive() { return { congregationId: 'church-1', userId: 'leader-1' }; }, can(id, capability) { return id === 'church-1' && capability === 'ministry'; } };
+  const service = createRecordingsService({ media, audio, session, congregation });
 
   assert.equal((await service.load()).latestService?.id, 'ordinary', 'legacy uncategorized libraries surface the newest recording');
   await service.setFeatured('latest', false);
