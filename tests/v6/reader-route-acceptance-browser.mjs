@@ -22,7 +22,7 @@ async function buildBuiltReaderAlignmentFixture() {
   const audioInventorySha256 = 'b'.repeat(64);
   const audioContentVersion = 'sha256-' + audioInventorySha256;
   const source = 'Barry Hays BSB narration (OpenBible direct chapter stream)';
-  const license = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
+  const license = 'CC0 1.0 public-domain dedication by the BSB Audio Bible project';
   const alignmentRoot = 'BSB-publishing/bsb-align';
   const alignmentSource = alignmentRoot + '@' + revision;
   const alignments = [];
