@@ -41,7 +41,8 @@ test('password screening uses the HIBP k-anonymity prefix and never sends the pa
     );
     assert.equal(calls.length, 1);
     assert.equal(calls[0].url, `https://api.pwnedpasswords.com/range/${PASSWORD_PREFIX}`);
-    assert.equal(calls[0].url.includes('password'), false);
+    const requestUrl = new URL(calls[0].url);
+    assert.equal(requestUrl.pathname.toLowerCase().includes('password'), false);
     assert.equal(calls[0].url.includes(PASSWORD_HASH), false);
     const headers = new Headers(calls[0].init?.headers);
     assert.equal(headers.get('Add-Padding'), 'true');
@@ -71,10 +72,12 @@ test('password screening fails closed when the breach service is unavailable', a
 
 test('first-party signup, recovery and signed-in password change paths invoke breach screening before mutation', async () => {
   const session = await readFile(new URL('../../src/app/session.js', import.meta.url), 'utf8');
+  const bootstrap = await readFile(new URL('../../src/app/bootstrap.js', import.meta.url), 'utf8');
   const signup = await readFile(new URL('../../supabase/functions/bq-signup/index.ts', import.meta.url), 'utf8');
   const reset = await readFile(new URL('../../supabase/functions/bq-password-reset/index.ts', import.meta.url), 'utf8');
 
-  assert.match(session, /await assertPasswordNotCompromised\(next\);[\s\S]*auth\.updatePassword\(next\)/);
+  assert.match(session, /typeof passwordSafety === 'function'[\s\S]*await passwordSafety\(next\);[\s\S]*auth\.updatePassword\(next\)/);
+  assert.match(bootstrap, /createSessionService\(\{auth:api\.auth,store,passwordSafety:assertPasswordNotCompromised\}\)/);
   assert.match(signup, /await assertPasswordNotCompromised\(password\);[\s\S]*auth\.admin\.createUser/);
   assert.match(reset, /safeEqual\(suppliedHash[\s\S]*await assertPasswordNotCompromised\(password\);[\s\S]*auth\.admin\.updateUserById/);
 });
