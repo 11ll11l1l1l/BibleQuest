@@ -36,9 +36,13 @@ jobs:
               "${url}"
             sha256sum "/tmp/openbible-audit/${narrator}-gen1.mp3" | tee -a /tmp/openbible-audit/summary.txt
             stat -c 'bytes=%s' "/tmp/openbible-audit/${narrator}-gen1.mp3" | tee -a /tmp/openbible-audit/summary.txt
-            ffprobe -v error -show_entries format=duration,size,bit_rate:format_tags -of json \
-              "/tmp/openbible-audit/${narrator}-gen1.mp3" > "/tmp/openbible-audit/${narrator}-ffprobe.json"
-            cat "/tmp/openbible-audit/${narrator}-ffprobe.json" | tee -a /tmp/openbible-audit/summary.txt
+            if command -v ffprobe >/dev/null 2>&1; then
+              ffprobe -v error -show_entries format=duration,size,bit_rate:format_tags -of json \
+                "/tmp/openbible-audit/${narrator}-gen1.mp3" > "/tmp/openbible-audit/${narrator}-ffprobe.json"
+              cat "/tmp/openbible-audit/${narrator}-ffprobe.json" | tee -a /tmp/openbible-audit/summary.txt
+            else
+              echo "ffprobe=unavailable-on-runner" | tee -a /tmp/openbible-audit/summary.txt
+            fi
             echo "-- response headers --" | tee -a /tmp/openbible-audit/summary.txt
             grep -iE '^(HTTP/|access-control-allow-origin:|accept-ranges:|content-range:|content-length:|content-type:|etag:|last-modified:|cache-control:)' \
               "/tmp/openbible-audit/${narrator}-range-headers.txt" | tee -a /tmp/openbible-audit/summary.txt || true
