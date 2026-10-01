@@ -1,6 +1,6 @@
 # BibleQuest V6 Agent Task Board
 
-Updated: 2026-10-01 JST
+Updated: 2026-10-02 JST
 Integration branch: `v6/architecture-upgrade`
 Operational contract: `V6_AGENT_OPERATING_SYSTEM.md`
 
@@ -17,6 +17,14 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+
+- Integration is now `05b852c392c0c2ecc80cb0e894abe098106908ec`. PR #1057 closed only the leaked-password/equivalent acceptance row using the release owner's explicit temporary residual-risk rationale; serialization `36905232021` and inherited regression `36905232026` passed. Native Supabase leaked-password protection is still disabled and must not be represented as enabled. Direct acceptance is **194 checked / 17 open / 211 total = 91.9%**.
+- PR #1053 is integrated at `c5bbd49ee83b58e03ae9ab15db71a9de76ef842f` with all seven observed component gates green. Exact-candidate manual dispatch plumbing is complete; the remaining RC rows still require one real exact SHA to pass every applicable gate.
+- Cross-congregation sensitive-domain denial and aggregate server-authority/RLS closure are already complete. Do not reassign those old W2 tasks.
+- Assignment assigned/due push remains evidence-blocked on a real eligible live due notification plus canonical push dispatch; do not create production QA data merely to clear the row. Cloudflare deployment identity remains externally blocked until Pages publishes `dist-v6` unchanged.
+- #1056 (W4 field runbook), #1058 (corrected built-Reader sync proof), and #1059 (BSB timing acceptance guard) were based on the immediately previous integration and must be replayed/revalidated after #1057 before any merge.
+
+## Historical serialized checkpoints
 
 - Integration is now `2730ab752394d8f16ca7d6bcbc325528f4a6e720`. PR #1010 replayed the six green stale tranches from #1009 onto live integration and passed exact-head serialization `36858421227`, Dependency Security `36858421305`, Client Artifact Security `36858421179`, Phase-1 `36858421168`, Database CI `36858421262`, and inherited regression `36858421145`. Because #1009 had first been rejected as stale by serialization run `36856769639`, the serialized/rebased/revalidated integration row is now evidence-complete. After checklist reconciliation: **189 checked / 22 open / 211 total = 89.6%**.
 - The #1010 merge also integrates the W2 four-domain tenant DB matrix, W4 evidence-class/field-device fail-closed guards, emergency temporary-password screening, exact Hays inventory/alignment identity tooling, exact-SHA RC evidence collector, and assignment migration-history/release-target preflight. These are foundations only; do not promote their broader rows without the remaining required evidence class.
@@ -52,17 +60,16 @@ Completed in this cycle:
 
 ## P0 — work first
 
-### W2-01 — Finish systemic explicit-tenant audit
+### W2-01 — Exact-RC security evidence integrity
 Owner bias: W2
 Checklist targets:
-- Cross-congregation denial is tested for every sensitive migrated domain.
-- Leader Center role/cross-congregation DB + browser rows.
+- One exact V6 RC SHA passes all applicable automated/security/tenant/regression gates.
 Work:
-- inventory sensitive domains from current source;
-- identify remaining first-membership/default/unscoped reads or writes;
-- implement smallest missing domain tranches;
-- add two-congregation DATABASE evidence and relevant BUILT-BROWSER evidence;
-- keep server authority primary.
+- consume the integrated #1053 exact-candidate dispatch contract rather than duplicating it;
+- verify collectors/orchestration bind workflow evidence to the actual checked-out candidate SHA;
+- repair only demonstrated mismatches;
+- keep native leaked-password status truthful even though the temporary first-party-equivalent residual risk is accepted;
+- never weaken Auth, RLS, role, or tenant isolation evidence.
 
 ### W3-01 — BSB audio text/chapter identity + alignment foundation
 Owner bias: W3
