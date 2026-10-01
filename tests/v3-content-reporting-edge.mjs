@@ -4,8 +4,8 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const user={id:'user-1'};
 let authenticated=true;
 let rows=[{congregationId:'cong-1',userId:'user-1',role:'member',roleLabel:'Member',congregation:{name:'First Church'}}];
-const submitted=[];
-const api={async submit(row){submitted.push(JSON.parse(JSON.stringify(row)));return {id:String(submitted.length)}}};
+const submitted=[],submitScopes=[];
+const api={async submit(congregationId,row){submitScopes.push(congregationId);submitted.push(JSON.parse(JSON.stringify(row)));return {id:String(submitted.length),congregation_id:congregationId}}};
 const session={getState:()=>({authenticated,user:authenticated?user:null})};
 const congregation={
   async load(){return rows.slice()},
@@ -21,7 +21,8 @@ const context={contentKey:'v3:study:abc123',contentType:'question',contentSource
 const result=await reporting.submit({congregationId:'cong-1',context,reason:'accuracy',note:'Please verify the wording.'});
 assert(result.id==='1','Successful content report did not return the backend report ID.');
 assert(submitted.length===1,'Valid content report was not submitted exactly once.');
-assert(submitted[0].reporter_id==='user-1'&&submitted[0].congregation_id==='cong-1','Reporter or congregation identity was not bound to verified owners.');
+assert(submitScopes[0]==='cong-1','Content report must carry explicit congregation scope outside the payload.');
+assert(submitted[0].reporter_id==='user-1'&&submitted[0].congregation_id===undefined,'Reporter identity must remain in the payload while congregation identity is supplied separately.');
 assert(submitted[0].content_key===context.contentKey&&submitted[0].content_text===context.contentText,'Exact reportable content context was not preserved.');
 assert(submitted[0].reason==='accuracy'&&submitted[0].note==='Please verify the wording.','Reason/note were not preserved after validation.');
 

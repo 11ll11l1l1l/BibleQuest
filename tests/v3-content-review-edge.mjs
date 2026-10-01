@@ -12,14 +12,14 @@ const baseQueue={
 const membership=(role='leader',id='c1',name='First Church')=>({congregationId:id,userId:'reviewer-1',role,roleKnown:true,roleLabel:role[0].toUpperCase()+role.slice(1),congregation:{id,name}});
 
 function harness({authenticated=true,memberships=[membership()],siteAccess=null,platformCongregations=[],activeCongregationId=memberships.length===1?memberships[0].congregationId:'',queue=baseQueue,platformError=null,saveError=null,markError=null}={}){
-  const calls={platformAccess:0,platformCongregations:0,loadQueue:[],save:[],mark:[],quarantine:[]};
+  const calls={platformAccess:0,platformCongregations:0,loadQueue:[],save:[],saveScopes:[],mark:[],quarantine:[]};
   const session={getState:()=>({authenticated,user:authenticated?{id:'reviewer-1'}:null})};
   const congregation={async load(){return structuredClone(memberships)},getActive(){return memberships.find(row=>row.congregationId===activeCongregationId)||null}};
   const api={
     async platformAccess(){calls.platformAccess+=1;if(platformError)throw platformError;return siteAccess?structuredClone(siteAccess):null},
     async listPlatformCongregations(){calls.platformCongregations+=1;return structuredClone(platformCongregations)},
     async loadQueue(id){calls.loadQueue.push(id);return structuredClone(queue)},
-    async saveDecision(row){calls.save.push(structuredClone(row));if(saveError)throw saveError;return structuredClone(row)},
+    async saveDecision(congregationId,row){calls.saveScopes.push(congregationId);calls.save.push(structuredClone(row));if(saveError)throw saveError;return {...structuredClone(row),congregation_id:congregationId}},
     async markReportsReviewed(congregationId,contentKey,reviewedBy,reviewedAt){calls.mark.push({congregationId,contentKey,reviewedBy,reviewedAt});if(markError)throw markError;return [{id:7}]}
   };
   const recall={
@@ -116,8 +116,9 @@ for(const role of ['leader','pastor','admin']){
   assert.equal(result.saved,true);
   assert.equal(result.partial,false);
   assert.equal(calls.save.length,1);
+  assert.equal(calls.saveScopes[0],'c1','Content decision must carry explicit congregation scope outside the payload.');
   const saved=calls.save[0];
-  assert.equal(saved.congregation_id,'c1');
+  assert.equal(saved.congregation_id,undefined);
   assert.equal(saved.content_key,'question:RUT:q1');
   assert.equal(saved.content_type,'question');
   assert.equal(saved.origin,'quarantine');

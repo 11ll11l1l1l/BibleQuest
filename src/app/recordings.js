@@ -34,7 +34,7 @@ function latestServiceFromRows(rows){
 }
 
 export function createRecordingsService({media,audio,session,congregation}){
-  if(!media||!audio||!session)throw new Error('Recordings service requires media, audio, and session owners.');
+  if(!media||!audio||!session||!congregation)throw new Error('Recordings service requires media, audio, session, and congregation owners.');
   let state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null};
   const getState=()=>snapshot(state);
   const set=patch=>{state={...state,...patch};return getState()};
@@ -44,10 +44,15 @@ export function createRecordingsService({media,audio,session,congregation}){
     if(!session.isAuthenticated())return set({status:'locked',rows:[],selectedId:null,error:'',access:'signin',latestService:null});
     set({status:'loading',rows:[],selectedId:null,error:'',access:'granted',latestService:null});
     try{
-      const input=await media.listLiveRecordings();
+      await congregation.load();
+      const account=session.getState?.(),userId=String(account?.user?.id||''),active=congregation.getActive?.(),tenantId=String(active?.congregationId||'');
+      if(!tenantId||(userId&&active?.userId&&String(active.userId)!==userId))return set({status:'ready',rows:[],selectedId:null,error:'',access:'granted',latestService:null});
+      const input=await media.listLiveRecordings(tenantId);
+      const current=congregation.getActive?.();
+      if(String(current?.congregationId||'')!==tenantId||(userId&&current?.userId&&String(current.userId)!==userId))return set({status:'ready',rows:[],selectedId:null,error:'',access:'granted',latestService:null});
       const seen=new Set();
       const normalized=(Array.isArray(input)?input:[]).map(normalizeRow).filter(Boolean).sort(newestFirst);
-      const rows=normalized.filter(row=>!seen.has(row.youtubeId)&&seen.add(row.youtubeId));
+      const rows=normalized.filter(row=>row.congregationId===tenantId&&!seen.has(row.youtubeId)&&seen.add(row.youtubeId));
       return set({status:'ready',rows,selectedId:null,error:'',access:'granted',latestService:latestServiceFromRows(rows)});
     }catch(error){
       return set({status:'error',rows:[],selectedId:null,error:error?.message||'Could not load recordings.',access:'granted',latestService:null});
