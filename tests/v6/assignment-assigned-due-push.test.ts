@@ -48,12 +48,10 @@ test('assignment due push is service-only, recipient-scoped, idempotent and uses
   assert.match(reminderMigration, /progress\.status = 'completed'/);
   assert.match(reminderMigration, /revoke all on function public\.bible_enqueue_assignment_due_notifications_v6\(\) from public, anon, authenticated/);
   assert.match(reminderMigration, /grant execute on function public\.bible_enqueue_assignment_due_notifications_v6\(\) to service_role/);
-  assert.match(reminderMigration, /bible_verify_assignment_reminder_scheduler_secret/);
-  assert.match(reminderMigration, /bq_assignment_reminder_scheduler_secret/);
-  assert.match(reminderMigration, /grant execute on function public\.bible_verify_assignment_reminder_scheduler_secret\(text\)[\s\S]*?to service_role/);
 
   assert.match(reminderEdge, /X-BQ-Assignment-Reminder-Secret/);
-  assert.match(reminderEdge, /admin\.rpc\('bible_verify_assignment_reminder_scheduler_secret'/);
+  assert.match(reminderEdge, /from vault\.decrypted_secrets/);
+  assert.match(reminderEdge, /bq_assignment_reminder_scheduler_secret/);
   assert.match(reminderEdge, /admin\.rpc\('bible_enqueue_assignment_due_notifications_v6'\)/);
   assert.match(reminderEdge, /admin\.functions\.invoke\('bq-push-delivery', \{ body: \{ notificationId \} \}\)/);
   assert.match(reminderEdge, /const BATCH_SIZE = 10/);
