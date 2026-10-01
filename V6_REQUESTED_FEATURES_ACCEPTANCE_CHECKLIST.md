@@ -32,6 +32,8 @@ Eleventh acceptance reconciliation at integrated head `b343b308ab1b3abf17203fdef
 
 Twelfth acceptance reconciliation at integrated head `bb0e2251a74049e5309b4fb9ae0d1706de2a9507`: PR #912 merged from exact head `5e1b99f674648e83ab6141ee810deec6ee055194`; Phase-1 `36765035212`, inherited regression `36765035206`, and Client Artifact Security `36765035213` passed. Its built Reader/browser and package-policy evidence promotes only the explicit user-initiated/removable/permission-gated offline-download row and the bounded selective-audio-download/no-silent-full-cache row. PR #934 then merged at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed. The exact-head Phase-1 run built `dist-v6`, passed both report-only and enforcing Chromium CSP gates across the V6 app and covered standalone surfaces, and the deployable root `_headers` contains the same reviewed enforcing policy. This promotes only `CSP is compatible with media/push/build architecture and enforced as accepted.` Exact Cloudflare deployed-byte identity remains a separate OPEN release gate because Pages currently returns HTML at V6 artifact-metadata paths. Inventory is now **179 checked / 32 open (211 total, 84.8%)**.
 
+Thirteenth acceptance reconciliation at integrated head `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9`: PR #939 merged from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; V6 Phase-1 Build Gate `36792168865` and inherited regression `36792168887` passed. The systemic architecture gate inventories protected Admin, Assignments, Congregation, Content Review, Journey Groups, Leader Center, Live Rooms, Ministry Announcements, Team Center and Recordings presentation modules, rejects direct Supabase/RPC/Edge transports from those presentation modules, verifies delegation to domain owners, and ties their role/tenant re-checks to existing executable server-authority/RLS evidence. This promotes only `Feature modules do not make UI visibility the authority for protected actions.` Inventory is now **180 checked / 31 open (211 total, 85.3%)**.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -84,7 +86,7 @@ Twelfth acceptance reconciliation at integrated head `bb0e2251a74049e5309b4fb9ae
 - [x] Explicit active-congregation context is established separately from authenticated identity.
 - [x] Central typed repository/data-access boundary is established for V6 domain migration.
 - [x] Standard async/error/offline/unauthorized state contract established: `async-state.ts`, `errors.ts`, and `view-state.ts` define the shared typed failure/view-state semantics with executable unit coverage for offline, unauthorized, forbidden, retryable remote and generic failures.
-- [ ] Feature modules do not make UI visibility the authority for protected actions.
+- [x] Feature modules do not make UI visibility the authority for protected actions.
 - [x] Route-level lazy loading/cancellation and stale-request invalidation primitives are standardized.
 - [x] Compatibility feature command/event boundary and fail-closed migration seam exist.
 - [x] At least one low-risk feature proves the new architecture end to end before Reader/Games rewrite: Accessibility preferences mutate through the V6 command seam and built Chromium proves runtime application plus V5-compatible persistence after reload.
