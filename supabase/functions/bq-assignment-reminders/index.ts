@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
 
 const BATCH_SIZE = 10;
+const SCHEDULER_HEADER = 'X-BQ-Assignment-Reminder-Secret';
 
 function serviceSecret() {
   const modern = Deno.env.get('SUPABASE_SECRET_KEYS');
@@ -31,11 +32,17 @@ Deno.serve(async (request: Request) => {
   const url = Deno.env.get('SUPABASE_URL') || '';
   if (!key || !url) return json({ error: 'Supabase service configuration is incomplete' }, 503);
 
-  const authorization = (request.headers.get('Authorization') || '').trim();
-  const apiKey = (request.headers.get('apikey') || '').trim();
-  if (authorization !== `Bearer ${key}` && apiKey !== key) return json({ error: 'Service authorization required' }, 401);
+  const schedulerSecret = (request.headers.get(SCHEDULER_HEADER) || '').trim();
+  if (!schedulerSecret) return json({ error: 'Scheduler authorization required' }, 401);
 
   const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  const verified = await admin.rpc('bible_verify_assignment_reminder_scheduler_secret', {
+    provided_secret: schedulerSecret,
+  });
+  if (verified.error || verified.data !== true) {
+    return json({ error: 'Scheduler authorization required' }, 401);
+  }
+
   const queued = await admin.rpc('bible_enqueue_assignment_due_notifications_v6');
   if (queued.error) {
     console.error('assignment due reminder enqueue failed');
