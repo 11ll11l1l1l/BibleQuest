@@ -58,6 +58,9 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerPage, /data-reader-audio-remove/);
   assert.match(readerPage, /data-book="\$\{escapeHtml\(activeAudioDownload\.book\)\}" data-chapter="\$\{activeAudioDownload\.chapter\}"/);
   assert.match(readerPage, /audio\.installChapter\(state\.book, state\.chapter/);
+  assert.match(readerPage, /data-reader-audio-download-unavailable/);
+  assert.match(readerPage, /error\?\.code === 'audio-download-unavailable'/);
+  assert.match(readerPage, /Direct streaming remains usable/);
   assert.match(provider, /input\.packageManager\.install\(manifest, segment/);
   assert.match(provider, /cancelChapter\(bookCode: string, chapter: number\)/);
   assert.match(readerPage, /unsubscribeAudio\?\.\(\)/);
