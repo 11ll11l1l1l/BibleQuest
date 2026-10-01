@@ -12,7 +12,11 @@ const assignmentFunction = readFileSync(new URL('../../supabase/functions/bq-ass
 
 test('assignment due reminder scheduler is service-only, bounded and calls the existing sender', () => {
   assert.match(edge, /request\.method !== 'POST'/);
-  assert.match(edge, /authorization !== `Bearer \$\{key\}` && apiKey !== key/);
+  assert.match(edge, /X-BQ-Assignment-Reminder-Secret/);
+  assert.match(edge, /from vault\.decrypted_secrets/);
+  assert.match(edge, /bq_assignment_reminder_scheduler_secret/);
+  assert.match(edge, /SUPABASE_DB_URL/);
+  assert.doesNotMatch(edge, /authorization !== `Bearer \$\{key\}` && apiKey !== key/);
   assert.match(edge, /admin\.rpc\('bible_enqueue_assignment_due_notifications_v6'\)/);
   assert.match(edge, /admin\.functions\.invoke\('bq-push-delivery'/);
   assert.match(edge, /const BATCH_SIZE = 10/);
