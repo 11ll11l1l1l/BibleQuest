@@ -44,9 +44,12 @@ on:
       - "scripts/v6-audit-bsb-upstream-timing-reuse.mjs"
       - "scripts/v6-run-bsb-alignment-regeneration.mjs"
       - "scripts/v6-rc-exact-sha-gate.mjs"
+      - "scripts/v6-assemble-rc-certification.mjs"
+      - "scripts/v6-live-smoke.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-rc-exact-sha-gate.yml"
       - ".github/workflows/v6-phase1-build.yml"
+      - "docs/v6/RC_CANDIDATE.json"
   workflow_dispatch:
     inputs:
       candidate_sha:

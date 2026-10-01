@@ -7,14 +7,18 @@ const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const MAX_PAGES = 10;
 const PER_PAGE = 100;
 
-export const DEFAULT_REQUIRED_WORKFLOWS = Object.freeze([
+export const PREDEPLOY_REQUIRED_WORKFLOWS = Object.freeze([
   'V6 Phase 1 Build Gate',
   'V6 Database CI',
   'V6 Client Artifact Security',
   'V6 Dependency Security',
-  'V6 Deployed Artifact Verification',
   'V6 V4 Rollback Reference Guard',
   'BibleQuest inherited regression',
+]);
+
+export const DEFAULT_REQUIRED_WORKFLOWS = Object.freeze([
+  ...PREDEPLOY_REQUIRED_WORKFLOWS,
+  'V6 Deployed Artifact Verification',
 ]);
 
 export function normalizeCandidateSha(value) {
@@ -143,15 +147,50 @@ export async function collectExactShaRcEvidence({
   });
 }
 
+export async function waitForExactShaRcEvidence({
+  timeoutMs = 0,
+  pollIntervalMs = 15000,
+  sleepImpl = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms)),
+  ...options
+} = {}) {
+  const timeout = Number(timeoutMs);
+  const interval = Number(pollIntervalMs);
+  if (!Number.isFinite(timeout) || timeout < 0) throw new Error('RC evidence wait timeout must be a non-negative number.');
+  if (!Number.isFinite(interval) || interval < 0) throw new Error('RC evidence poll interval must be a non-negative number.');
+
+  const startedAt = Date.now();
+  while (true) {
+    try {
+      return await collectExactShaRcEvidence(options);
+    } catch (error) {
+      const message = String(error?.message || error);
+      const retryable = message.includes('is not RC-automated-gate ready. Missing exact-SHA SUCCESS:');
+      if (!retryable) throw error;
+      if (timeout === 0 || Date.now() - startedAt >= timeout) throw error;
+      await sleepImpl(interval);
+    }
+  }
+}
+
 const invokedAsCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (invokedAsCli) {
-  collectExactShaRcEvidence({
+  const profile = String(process.env.BQ_RC_EVIDENCE_PROFILE || 'full').trim().toLowerCase();
+  const requiredWorkflows = profile === 'predeploy'
+    ? PREDEPLOY_REQUIRED_WORKFLOWS
+    : DEFAULT_REQUIRED_WORKFLOWS;
+  const timeoutMs = Number(process.env.BQ_RC_WAIT_MS || 0);
+  const pollIntervalMs = Number(process.env.BQ_RC_POLL_MS || 15000);
+
+  waitForExactShaRcEvidence({
     repository: process.env.GITHUB_REPOSITORY,
     candidateSha: process.env.BQ_RC_CANDIDATE_SHA,
     token: process.env.GITHUB_TOKEN,
+    requiredWorkflows,
+    timeoutMs,
+    pollIntervalMs,
   }).then(
     async evidence => {
-      const json = JSON.stringify(evidence, null, 2) + '\n';
+      const json = JSON.stringify({ ...evidence, profile }, null, 2) + '\n';
       const output = process.env.BQ_RC_EVIDENCE_OUTPUT;
       if (output) await writeFile(output, json, 'utf8');
       process.stdout.write(json);

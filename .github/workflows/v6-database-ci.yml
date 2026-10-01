@@ -16,6 +16,7 @@ on:
       - 'tests/v6/sensitive-domain-tenant-matrix.test.ts'
       - 'docs/v6/V6_SENSITIVE_DOMAIN_TENANT_MATRIX.json'
       - '.github/workflows/v6-database-ci.yml'
+      - 'docs/v6/RC_CANDIDATE.json'
   workflow_dispatch:
     inputs:
       candidate_sha:
