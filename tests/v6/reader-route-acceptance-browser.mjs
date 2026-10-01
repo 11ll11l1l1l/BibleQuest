@@ -1,5 +1,7 @@
 import { chromium } from 'playwright';
 import { deepStrictEqual } from 'node:assert';
+import { readFile, readdir } from 'node:fs/promises';
+import { buildBsbAlignmentManifest } from '../../scripts/v6-bsb-alignment-manifest.mjs';
 
 const BASE = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
 const WIDTHS = [320, 360, 390, 412, 430];
@@ -8,6 +10,70 @@ const browser = await chromium.launch({ headless: true });
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+async function buildBuiltReaderAlignmentFixture() {
+  const scripture = JSON.parse(await readFile(new URL('../../dist-v6/data/v6-scripture-manifests/bsb.json', import.meta.url), 'utf8'));
+  assert(scripture?.translationId === 'bsb' && typeof scripture.contentVersion === 'string' && scripture.contentVersion,
+    'Built Reader alignment fixture requires the exact built BSB Scripture content version.');
+  const bibleDirectory = new URL('../../data/packs/bible/', import.meta.url);
+  const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\\.json$/.test(name)).sort();
+  const revision = 'a'.repeat(40);
+  const audioInventorySha256 = 'b'.repeat(64);
+  const audioContentVersion = 'sha256-' + audioInventorySha256;
+  const source = 'Barry Hays BSB narration (OpenBible direct chapter stream)';
+  const license = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
+  const alignmentRoot = 'BSB-publishing/bsb-align';
+  const alignmentSource = alignmentRoot + '@' + revision;
+  const alignments = [];
+  let audioIndex = 0;
+  for (const name of files) {
+    const code = name.slice(0, -5);
+    const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
+    const chapters = new Map();
+    for (const row of rows) {
+      const chapter = Number(row.c), verse = Number(row.v);
+      if (!chapters.has(chapter)) chapters.set(chapter, []);
+      chapters.get(chapter).push(verse);
+    }
+    for (const [chapter, verseNumbers] of [...chapters.entries()].sort((a, b) => a[0] - b[0])) {
+      const verses = [...new Set(verseNumbers)].sort((a, b) => a - b).map((verse, index) => ({
+        verse,
+        startSeconds: index * 2,
+        endSeconds: index * 2 + 1.5,
+      }));
+      audioIndex += 1;
+      alignments.push({
+        schemaVersion: 1,
+        translationId: 'bsb',
+        contentVersion: audioContentVersion,
+        scriptureContentVersion: scripture.contentVersion,
+        book: code,
+        chapter,
+        durationSeconds: Math.max(2, verses.length * 2),
+        source,
+        license,
+        alignmentSource,
+        audioSha256: audioIndex.toString(16).padStart(64, '0'),
+        audioByteLength: 100000 + audioIndex,
+        verses,
+      });
+    }
+  }
+  return buildBsbAlignmentManifest({
+    alignments,
+    metadata: {
+      translationId: 'bsb',
+      source,
+      license,
+      alignmentSource: alignmentRoot,
+      alignmentRevision: revision,
+      contentVersion: audioContentVersion,
+    },
+    scriptureContentVersion: scripture.contentVersion,
+    audioInventorySha256,
+    complete: true,
+  });
 }
 
 async function verifyWidth(width) {
@@ -253,6 +319,127 @@ async function verifyReaderAudioStateRecovery() {
   await page.close();
 }
 
+
+async function verifyBuiltReaderVerifiedAlignmentSync() {
+  const alignmentManifest = await buildBuiltReaderAlignmentFixture();
+  assert(alignmentManifest.complete === true && alignmentManifest.chapterCount === 1189,
+    'Built Reader verified-alignment fixture is not a complete BSB corpus.');
+  const gen1 = alignmentManifest.chapters.find(row => row.book === 'GEN' && row.chapter === 1);
+  assert(gen1?.verses?.length >= 3, 'Built Reader alignment fixture lacks Genesis 1 verse timing.');
+  const verse2Time = gen1.verses.find(row => row.verse === 2)?.startSeconds;
+  const verse3Time = gen1.verses.find(row => row.verse === 3)?.startSeconds;
+  assert(Number.isFinite(verse2Time) && Number.isFinite(verse3Time),
+    'Built Reader alignment fixture lacks Genesis 1:2-3 timing.');
+
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  await page.route('**/data/v6-audio/bsb-hays-alignment.json', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(alignmentManifest),
+  }));
+  await page.addInitScript(() => {
+    window.__bqBuiltAudioScrolls = [];
+    window.__bqBuiltReduceMotion = false;
+    window.matchMedia = () => ({
+      matches: window.__bqBuiltReduceMotion === true,
+      media: '(prefers-reduced-motion: reduce)',
+      onchange: null,
+      addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {},
+      dispatchEvent() { return true; },
+    });
+    Element.prototype.scrollIntoView = function scrollIntoView(options) {
+      window.__bqBuiltAudioScrolls.push({ verse: this.getAttribute?.('data-verse') || null, options: options || null });
+    };
+    window.__bqFakeAudioInstances = [];
+    class FakeAudio extends EventTarget {
+      constructor() {
+        super();
+        this.src = '';
+        this.currentSrc = '';
+        this.currentTime = 0;
+        this.duration = 180;
+        this.playbackRate = 1;
+        this.paused = true;
+        this.readyState = 4;
+        this.networkState = 1;
+        window.__bqFakeAudioInstances.push(this);
+      }
+      async play() { this.paused = false; this.currentSrc = this.src; this.dispatchEvent(new Event('play')); this.dispatchEvent(new Event('timeupdate')); }
+      pause() { this.paused = true; this.dispatchEvent(new Event('pause')); }
+      load() { this.currentSrc = this.src; }
+      removeAttribute(name) { if (name === 'src') { this.src = ''; this.currentSrc = ''; } }
+    }
+    Object.defineProperty(window, 'Audio', { configurable: true, writable: true, value: FakeAudio });
+  });
+
+  try {
+    await page.goto(`${BASE}/#/reader`, { waitUntil: 'networkidle' });
+    await page.locator('[data-reader-page] h1', { hasText: 'Bible Reader' }).waitFor();
+    await page.getByLabel('Translation', { exact: true }).selectOption('bsb');
+    await page.getByLabel('Book', { exact: true }).selectOption('GEN');
+    await page.getByLabel('Chapter', { exact: true }).selectOption('1');
+    const follow = page.locator('[data-reader-audio-follow]');
+    await follow.waitFor({ state: 'visible' });
+    assert(await follow.isChecked() && !await follow.isDisabled(),
+      'Built Reader did not enable spoken-verse follow for complete verified alignment.');
+
+    await page.locator('[data-verse="2"]').click();
+    await page.locator('[data-verse-dialog]').waitFor({ state: 'visible' });
+    const playFromVerse = page.locator('[data-reader-audio-verse="2"]');
+    await playFromVerse.waitFor({ state: 'visible' });
+    await playFromVerse.click();
+    await page.waitForFunction(() => document.querySelector('[data-verse="2"]')?.classList.contains('is-audio-current'));
+    assert(await page.locator('[data-verse="2"]').getAttribute('aria-pressed') === 'true',
+      'Built Reader did not expose the current spoken verse through aria-pressed.');
+    assert(await page.locator('[data-verse="1"]').getAttribute('aria-pressed') === 'false',
+      'Built Reader retained stale spoken-verse accessibility state.');
+    const seeked = await page.evaluate(() => [...(window.__bqFakeAudioInstances || [])].reverse().find(audio => audio.src.includes('/hays/BSB_01_Gen_001_H.mp3'))?.currentTime ?? null);
+    assert(Math.abs(Number(seeked) - Number(verse2Time)) < 0.001,
+      `Built Reader Verse Peek did not seek to verified Genesis 1:2 timing: ${seeked} vs ${verse2Time}.`);
+    await page.waitForFunction(() => window.__bqBuiltAudioScrolls.some(row => row.verse === '2'));
+    const smoothScroll = await page.evaluate(() => window.__bqBuiltAudioScrolls.find(row => row.verse === '2'));
+    assert(smoothScroll?.options?.block === 'nearest' && smoothScroll?.options?.behavior === 'smooth',
+      'Built Reader spoken-verse follow did not use nearest smooth scrolling.');
+
+    const verseOne = page.locator('[data-verse="1"]');
+    await follow.uncheck();
+    await verseOne.focus();
+    await page.evaluate((target) => {
+      window.__bqBuiltAudioScrolls.length = 0;
+      const audio = [...(window.__bqFakeAudioInstances || [])].reverse().find(candidate => candidate.src.includes('/hays/BSB_01_Gen_001_H.mp3'));
+      if (!audio) throw new Error('Built Reader active Hays audio instance is missing.');
+      audio.currentTime = target;
+      audio.dispatchEvent(new Event('timeupdate'));
+    }, verse3Time);
+    await page.waitForFunction(() => document.querySelector('[data-verse="3"]')?.classList.contains('is-audio-current'));
+    assert((await page.evaluate(() => window.__bqBuiltAudioScrolls.length)) === 0,
+      'Built Reader moved the viewport after the user disabled spoken-verse follow.');
+    assert(await verseOne.evaluate(node => document.activeElement === node),
+      'Built Reader audio updates stole keyboard focus while follow-scroll was disabled.');
+
+    await follow.check();
+    await page.evaluate(() => { window.__bqBuiltAudioScrolls.length = 0; window.__bqBuiltReduceMotion = true; });
+    await page.evaluate(() => {
+      const audio = [...(window.__bqFakeAudioInstances || [])].reverse().find(candidate => candidate.src.includes('/hays/BSB_01_Gen_001_H.mp3'));
+      if (!audio) throw new Error('Built Reader active Hays audio instance is missing for reduced-motion proof.');
+      audio.currentTime = 0;
+      audio.dispatchEvent(new Event('timeupdate'));
+    });
+    await page.waitForFunction(() => window.__bqBuiltAudioScrolls.some(row => row.verse === '1'));
+    const reduced = await page.evaluate(() => window.__bqBuiltAudioScrolls.find(row => row.verse === '1'));
+    assert(reduced?.options?.behavior === 'auto',
+      'Built Reader did not honor reduced-motion for spoken-verse follow scrolling.');
+    assert(await page.locator('[data-verse="1"]').getAttribute('aria-pressed') === 'true',
+      'Built Reader reduced-motion mode lost current-verse accessibility highlighting.');
+    assert(errors.length === 0, 'Built Reader verified-alignment synchronization produced errors: ' + errors.join(' | '));
+  } finally {
+    await page.close();
+  }
+}
+
 async function verifyOpenBiblePlayback() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   const errors = [];
@@ -452,6 +639,7 @@ try {
   if (!VERIFY_OPENBIBLE_AUDIO) {
     for (const width of WIDTHS) await verifyWidth(width);
     await verifyReaderAudioStateRecovery();
+    await verifyBuiltReaderVerifiedAlignmentSync();
     await verifyReaderSpeechControls();
     console.log(`V6 Reader parity/accessibility/mobile acceptance passed at ${WIDTHS.join('/')} px.`);
   }
