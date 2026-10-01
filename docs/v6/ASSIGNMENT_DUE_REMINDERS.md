@@ -6,7 +6,7 @@ Database idempotency prevents duplicate due reminders for the same assignment an
 
 ## Canonical deployment contract
 
-The Edge Function is service-only. Its Supabase gateway JWT verification is disabled because the scheduler calls it with a server credential; the function independently requires the configured Supabase server secret. Never put that secret in the client bundle or repository.
+The Edge Function is service-only. Supabase gateway JWT verification is disabled because the scheduler is not a user session. The function independently validates a dedicated scheduler secret by reading Vault through its server-only database connection. No public RPC is added for this check. The scheduler secret is generated inside Vault and its value is never returned, committed, or stored in cron.job.command.
 
 The canonical scheduler definition is 'supabase/ops/assignment-due-reminder-cron.sql'. Do not create a second hand-written Cron definition from this document.
 
@@ -15,10 +15,8 @@ Required deployment order:
 1. Reconcile/verify migration history and apply the reviewed V6 migrations, including '20260928140000_assignment_due_reminders.sql' and the later assignment-push retry migration.
 2. Deploy 'bq-assignment-reminders' from the same reviewed V6 candidate.
 3. Enable 'pg_cron'; 'pg_net' must also be present.
-4. Store exactly these Vault entries:
-   - 'bq_assignment_reminder_project_url' — the BibleQuest Supabase project URL.
-   - 'bq_assignment_reminder_secret_key' — one server-only Supabase secret accepted by the Edge Function.
-5. Apply 'supabase/ops/assignment-due-reminder-cron.sql'.
+4. Store 'bq_assignment_reminder_project_url' in Vault. This is the public BibleQuest Supabase project URL, not a credential.
+5. Apply 'supabase/ops/assignment-due-reminder-cron.sql'. The script creates 'bq_assignment_reminder_scheduler_secret' inside Vault if it is absent and schedules the job without exposing the secret value.
 6. Verify the Cron row:
    - job name: 'bq-assignment-due-reminders-v6'
    - schedule: every five minutes ('*/5 * * * *')
