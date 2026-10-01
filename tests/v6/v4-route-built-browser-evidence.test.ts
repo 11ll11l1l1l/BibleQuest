@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 type ParityManifest = Readonly<{
-  entries: readonly Readonly<{ v6Route: string }>[]; 
+  entries: readonly Readonly<{ v6Route: string }>[];
 }>;
 
 function parseBuiltBrowserCanonicalRoutes(source: string): string[] {
