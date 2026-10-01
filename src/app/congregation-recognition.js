@@ -80,8 +80,8 @@ export function createCongregationRecognitionService({api,session,congregation}=
     congregation.assert(scope.id,'read');
     const target=current.members.find(row=>row.userId===String(targetUserId||''));if(!target)throw recognitionError('Choose an active member of this congregation.','BQ_RECOGNITION_TARGET');
     const preset=PRESETS.find(row=>row.code===String(awardCode||''));if(!preset)throw recognitionError('Choose a supported recognition award.','BQ_RECOGNITION_AWARD');
-    const payload={congregation_id:scope.id,user_id:target.userId,awarded_by:String(state.user.id),award_code:preset.code,title:cleanText(title,120)||preset.title,note:cleanText(note,1200)||null,icon:preset.icon};
-    const saved=await api.award(payload);
+    const payload={user_id:target.userId,awarded_by:String(state.user.id),award_code:preset.code,title:cleanText(title,120)||preset.title,note:cleanText(note,1200)||null,icon:preset.icon};
+    const saved=await api.award(scope.id,payload);
     if(currentUserId()!==userId)throw recognitionError('The account changed while recognition was being saved. Reload before continuing.','BQ_RECOGNITION_CONTEXT_STALE');
     if(!saved||String(saved.congregation_id||'')!==scope.id||String(saved.user_id||'')!==target.userId||String(saved.awarded_by||'')!==userId)throw recognitionError('Recognition response did not match the requested congregation award.','BQ_RECOGNITION_RESPONSE');
     return load({congregationId:scope.id});
