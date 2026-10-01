@@ -29,32 +29,6 @@ begin
 end
 $bq_due_category_constraint$;
 
-create or replace function public.bible_verify_assignment_reminder_scheduler_secret(
-  provided_secret text
-)
-returns boolean
-language sql
-security definer
-set search_path = pg_catalog, public
-set row_security = off
-as $bq_scheduler_verify$
-  select exists (
-    select 1
-    from vault.decrypted_secrets
-    where name = 'bq_assignment_reminder_scheduler_secret'
-      and nullif(trim(decrypted_secret), '') is not null
-      and decrypted_secret = provided_secret
-  );
-$bq_scheduler_verify$;
-
-revoke all on function public.bible_verify_assignment_reminder_scheduler_secret(text)
-  from public, anon, authenticated;
-grant execute on function public.bible_verify_assignment_reminder_scheduler_secret(text)
-  to service_role;
-
-comment on function public.bible_verify_assignment_reminder_scheduler_secret(text) is
-  'Service-role-only verifier for the Vault-held assignment reminder scheduler secret. The secret value is never returned.';
-
 create unique index if not exists bible_notifications_assignment_due_once_idx
   on public.bible_notifications (
     user_id,
