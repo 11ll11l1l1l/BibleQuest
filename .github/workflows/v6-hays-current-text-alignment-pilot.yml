@@ -1,0 +1,160 @@
+name: V6 Hays Current Text Alignment Pilot
+
+on:
+  push:
+    branches:
+      - audit/v6-hays-current-text-pilot-20261001
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact BibleQuest pilot head
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install audio/alignment runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --disable-pip-version-check --quiet torch torchaudio numpy uroman torchcodec
+
+      - name: Fetch reviewed bsb-align engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init /tmp/bsb-align
+          git -C /tmp/bsb-align remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C /tmp/bsb-align fetch --depth=1 origin bdb859afc427b215b78e12ee4a7798c32b7b91e0
+          git -C /tmp/bsb-align checkout --detach FETCH_HEAD
+          test "$(git -C /tmp/bsb-align rev-parse HEAD)" = "bdb859afc427b215b78e12ee4a7798c32b7b91e0"
+
+      - name: Export exact current Reader BSB text
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/reader-text-all /tmp/pilot-text /tmp/pilot-audio /tmp/pilot-output
+          node scripts/v6-export-current-bsb-alignment-text.mjs /tmp/reader-text-all
+          cp /tmp/reader-text-all/GEN_001_BSB.txt /tmp/pilot-text/
+          cp /tmp/reader-text-all/LAM_001_BSB.txt /tmp/pilot-text/
+          cp /tmp/reader-text-all/LAM_002_BSB.txt /tmp/pilot-text/
+          cp /tmp/reader-text-all/ISA_050_BSB.txt /tmp/pilot-text/
+          cp /tmp/reader-text-all/PSA_056_BSB.txt /tmp/pilot-text/
+          cp /tmp/reader-text-all/ACT_008_BSB.txt /tmp/pilot-text/
+
+      - name: Download exact live Hays pilot chapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS='|' read -r book number token chapter; do
+            chapter3="$(printf '%03d' "$chapter")"
+            file="BSB_${number}_${token}_${chapter3}_H.mp3"
+            curl --fail --silent --show-error --location \
+              -o "/tmp/pilot-audio/${file}" \
+              "https://openbible.com/audio/hays/${file}"
+          done <<'EOF'
+          GEN|01|Gen|1
+          LAM|25|Lam|1
+          LAM|25|Lam|2
+          ISA|23|Isa|50
+          PSA|19|Psa|56
+          ACT|44|Act|8
+          EOF
+
+      - name: Force-align exact Reader text to real Hays audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/bsb-align/align_book.py \
+            --all \
+            --audio-dir /tmp/pilot-audio \
+            --text-dir /tmp/pilot-text \
+            --output-dir /tmp/pilot-output \
+            --force | tee /tmp/pilot-align.log
+
+      - name: Build measured duration and import metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+
+          rows = [
+              ('GEN', 1, 'BSB_01_Gen_001_H.mp3'),
+              ('LAM', 1, 'BSB_25_Lam_001_H.mp3'),
+              ('LAM', 2, 'BSB_25_Lam_002_H.mp3'),
+              ('ISA', 50, 'BSB_23_Isa_050_H.mp3'),
+              ('PSA', 56, 'BSB_19_Psa_056_H.mp3'),
+              ('ACT', 8, 'BSB_44_Act_008_H.mp3'),
+          ]
+          durations = []
+          for book, chapter, filename in rows:
+              raw = subprocess.check_output([
+                  'ffprobe','-v','error','-show_entries','format=duration',
+                  '-of','default=noprint_wrappers=1:nokey=1',
+                  f'/tmp/pilot-audio/{filename}',
+              ], text=True).strip()
+              durations.append({'book':book,'chapter':chapter,'durationSeconds':round(float(raw),6)})
+          Path('/tmp/pilot-durations.json').write_text(json.dumps(durations, indent=2)+'\n')
+          metadata = {
+              'translationId':'bsb',
+              'source':'Barry Hays BSB narration (OpenBible direct chapter stream)',
+              'license':'CC0 1.0 declared by the BSB Audio Bible project; pilot source verification only',
+              'alignmentSource':'BSB-publishing/bsb-align',
+              'alignmentRevision':'bdb859afc427b215b78e12ee4a7798c32b7b91e0',
+              'contentVersion':'pilot-live-hays-current-reader-20261001',
+          }
+          Path('/tmp/pilot-source.json').write_text(json.dumps(metadata, indent=2)+'\n')
+          PY
+
+      - name: Validate pilot against exact current Scripture tokens
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-import-bsb-word-alignments.mjs \
+            /tmp/pilot-output \
+            /tmp/pilot-source.json \
+            /tmp/pilot-durations.json \
+            /tmp/pilot-alignments.json \
+            --verse-map /tmp/reader-text-all/_biblequest-bsb-alignment-export.json \
+            --manifest-output /tmp/pilot-alignment-manifest.json \
+            --allow-partial | tee /tmp/pilot-import.log
+
+      - name: Summarize pilot quality
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo '## Hays exact-current-text forced-alignment pilot'
+            echo
+            echo '```text'
+            cat /tmp/pilot-align.log
+            cat /tmp/pilot-import.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload pilot evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hays-current-text-alignment-pilot
+          path: |
+            /tmp/pilot-output/
+            /tmp/pilot-alignments.json
+            /tmp/pilot-alignment-manifest.json
+            /tmp/pilot-durations.json
+            /tmp/pilot-source.json
+            /tmp/pilot-align.log
+            /tmp/pilot-import.log
+          if-no-files-found: error
+          retention-days: 7
