@@ -1,7 +1,15 @@
 const RANGE_ENDPOINT='https://api.pwnedpasswords.com/range/';
 const DEFAULT_TIMEOUT_MS=5000;
+const RANGE_LINE_PATTERN=/^[A-F0-9]{35}:\d+$/i;
 
 function securityError(message:string,code:string){const error=new Error(message) as Error&{code?:string};error.code=code;return error}
+
+function validatedRangeText(rangeText:string){
+  const text=String(rangeText??'');
+  const lines=text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+  if(!lines.length||lines.some(line=>!RANGE_LINE_PATTERN.test(line)))throw securityError('Password safety check is temporarily unavailable. Try again.','BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE');
+  return text;
+}
 
 export async function sha1Hex(value:string){
   const bytes=new TextEncoder().encode(String(value??''));
@@ -28,7 +36,8 @@ export async function pwnedPasswordCount(password:string,{fetcher=fetch,timeoutM
   try{
     const response=await fetcher(`${RANGE_ENDPOINT}${prefix}`,{method:'GET',headers:{'Add-Padding':'true','User-Agent':'BibleQuest/6 password-security'},signal:controller.signal});
     if(!response?.ok)throw securityError('Password safety check is temporarily unavailable. Try again.','BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE');
-    return pwnedCountFromRange(await response.text(),suffix);
+    const rangeText=validatedRangeText(await response.text());
+    return pwnedCountFromRange(rangeText,suffix);
   }catch(error){
     if((error as Error&{code?:string})?.code)throw error;
     throw securityError('Password safety check is temporarily unavailable. Try again.','BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE');
