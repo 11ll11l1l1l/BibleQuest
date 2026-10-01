@@ -18,10 +18,10 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-- Integration is now `f88f9265922c82c631003f947d4a78f90ff65f3e` after the BSB speedtrack sequence through PR #1081. Direct acceptance remains **194 checked / 17 open / 211 total = 91.9%**; the new BSB work improves implementation/evidence readiness without upgrading rows that still require stronger external or physical evidence.
-- BSB runtime/tooling already integrated: resumable exact-identity 1,189-chapter regeneration + strict upstream reuse audit (#1066); corrected built-Reader verified-alignment proof + timing acceptance guard (#1068); previous/stop Media Session + exact-candidate physical field gate (#1076); streaming-safe offline/CORS fallback (#1078); deterministic missing-work sharding across 1–16 workers (#1081).
-- BSB evidence state: only **10 / 1,189** chapters are strictly reusable from the pinned upstream timing corpus; **1,179** require regeneration/reconciliation. The five BSB checklist rows remain OPEN for exact offline-file checksum/version + copy-policy review, the complete real timing manifest, highlight/seek on that manifest, autoscroll on that manifest, and physical background/lock-screen observations.
-- Do not reassign seek/highlight/autoscroll runtime implementation, offline-download-unavailable fallback, Media Session previous/stop controls, or generic timing-manifest tooling. W3 should spend cycles on exact staged Hays identity, approved-copy evidence, executing the real regeneration/import, and physical-device evidence.
+- Integration is now `d0a09d828a4e28f0ae5c0d9d7537cfc383145d68` after the BSB speedtrack sequence through PR #1090. Direct acceptance remains **194 checked / 17 open / 211 total = 91.9%**; the new BSB work improves implementation/evidence readiness without upgrading rows that still require stronger external or physical evidence.
+- BSB runtime/tooling already integrated: resumable exact-identity 1,189-chapter regeneration + strict upstream reuse audit (#1066); corrected built-Reader verified-alignment proof + timing acceptance guard (#1068); previous/stop Media Session + exact-candidate physical field gate (#1076); streaming-safe offline/CORS fallback (#1078); deterministic missing-work sharding across 1–16 workers (#1081); text-drift reuse fast path (#1086); verified narrator-specific CC0 copy permission (#1089); and standalone exact 1,189-file staged Hays inventory capture (#1090).
+- BSB evidence state: only **10 / 1,189** chapters are strictly reusable from the pinned upstream timing corpus; **1,179** require regeneration/reconciliation. The five BSB checklist rows remain OPEN for exact staged-file checksum/version evidence, the complete real timing manifest, highlight/seek on that manifest, autoscroll on that manifest, and physical background/lock-screen observations. Copy-rights review is no longer a blocker.
+- Do not reassign seek/highlight/autoscroll runtime implementation, offline-download-unavailable fallback, Media Session previous/stop controls, rights review, generic timing-manifest tooling, or staged-inventory CLI work. W3 should spend cycles on approved exact Hays staging, executing the real inventory/regeneration/import, and physical-device evidence.
 - Cross-congregation sensitive-domain denial and aggregate server-authority/RLS closure are complete. Assignment assigned/due push still requires a real eligible live due recipient plus canonical dispatch evidence. Cloudflare deployment identity remains external until Pages publishes `dist-v6` unchanged.
 
 ## Historical serialized checkpoints
@@ -78,10 +78,11 @@ Checklist targets:
 - complete versioned timing/alignment manifest for the exact Reader BSB text/audio revision.
 Current state:
 - exact chapter/text/audio/alignment identity contracts are integrated;
-- strict reuse audit shows 10 reusable / 1,179 regenerate;
-- resumable regeneration and deterministic 1–16-worker shard planning are integrated.
+- strict reuse audit shows 10 reusable / 1,179 regenerate, with the #1086 text-drift fast path integrated;
+- resumable regeneration, deterministic 1–16-worker shard planning, verified CC0 copy permission, and exact staged-source inventory CLI are integrated.
 Work:
 - use only an approved exact Hays staging set; do not fetch/copy audio merely to clear acceptance;
+- run `npm run inventory:v6-bsb-hays -- <staged-hays-audio-dir> [inventory-output.json]` to bind exact SHA-256/byte-length/duration identity;
 - run `npm run audit:v6-bsb-reuse -- <pinned-bsb-align-dir> [report.json]`;
 - prepare the exact regeneration workspace, then use `npm run plan:v6-bsb-shards -- <regeneration-plan.json> <1-16>` when approved multi-worker hardware is available;
 - execute disjoint shard commands without `--force`, then finalize with `npm run run:v6-bsb-alignment -- --resume-plan <regeneration-plan.json>`;
@@ -120,11 +121,13 @@ Targets:
 - approved local-copy policy for the exact selected files.
 Current state:
 - user-initiated/removable bounded downloads, upgrade safety, and explicit CORS/fetch unavailable-state with direct-stream fallback are already integrated;
+- narrator-specific BSB copy permission is verified and integrated through #1089;
+- exact staged-source inventory capture is integrated through #1090;
 - do not rework those completed behaviors.
 Work:
-- bind exact staged Hays bytes to the integrated SHA-256/size/duration inventory;
-- record the approved copy-rights decision for those exact source files;
-- keep offline copy fail-closed until both evidence classes exist.
+- run the exact inventory command against an approved complete Hays staging set and retain the resulting SHA-256/size/duration evidence;
+- bind that exact staged identity into the complete real alignment manifest;
+- keep offline package eligibility fail-closed until the checksum-bound exact-alignment bundle exists and browser/device evidence is collected.
 
 ### W1-02 — Push assignment assigned/due path
 Targets:
