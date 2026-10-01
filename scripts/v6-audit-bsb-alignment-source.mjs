@@ -35,12 +35,16 @@ export function auditBsbAlignmentChapter({ book, chapter, currentVerses, alignme
     }));
   }
 
-  for (const row of ordered) {
+  let matchingVerseLines = 0;
+  ordered.forEach((row, ordinalIndex) => {
     const verse = Number(row?.v);
     if (!Number.isSafeInteger(verse) || verse < 1 || typeof row?.t !== 'string') {
       throw new Error(`Current BSB ${code} ${chapterNumber} contains a malformed verse row.`);
     }
-    const source = sourceLines[verse - 1] ?? '';
+    // bsb-align emits one timing/text line per present source verse. Its verse keys
+    // are line ordinals, not canonical verse numbers. Canonical Bibles can omit
+    // verse numbers (for example Acts 8:37), so index by sorted row ordinal here.
+    const source = sourceLines[ordinalIndex] ?? '';
     const currentTokens = alignmentTokens(row.t);
     const sourceTokens = alignmentTokens(source);
     if (currentTokens.length !== sourceTokens.length || currentTokens.some((token, index) => token !== sourceTokens[index])) {
@@ -48,18 +52,23 @@ export function auditBsbAlignmentChapter({ book, chapter, currentVerses, alignme
         book: code,
         chapter: chapterNumber,
         verse,
+        sourceLine: ordinalIndex + 1,
         reason: 'text-mismatch',
         current: row.t,
         alignment: source,
       }));
+    } else {
+      matchingVerseLines += 1;
     }
-  }
+  });
 
   return Object.freeze({
     valid: mismatches.length === 0,
     book: code,
     chapter: chapterNumber,
     verses: ordered.length,
+    matchingVerseLines,
+    mismatchedVerseLines: ordered.length - matchingVerseLines,
     mismatches: Object.freeze(mismatches),
   });
 }
@@ -79,6 +88,8 @@ export async function auditBsbAlignmentTextSource({
 
   let chapters = 0;
   let verses = 0;
+  let matchingChapters = 0;
+  let matchingVerseLines = 0;
   const mismatches = [];
   const missingFiles = [];
 
@@ -104,6 +115,8 @@ export async function auditBsbAlignmentTextSource({
         continue;
       }
       const result = auditBsbAlignmentChapter({ book, chapter, currentVerses, alignmentText });
+      if (result.valid) matchingChapters += 1;
+      matchingVerseLines += result.matchingVerseLines;
       mismatches.push(...result.mismatches);
     }
   }
@@ -113,6 +126,10 @@ export async function auditBsbAlignmentTextSource({
     books: packFiles.length,
     chapters,
     verses,
+    matchingChapters,
+    mismatchedChapters: chapters - matchingChapters,
+    matchingVerseLines,
+    mismatchedVerseLines: verses - matchingVerseLines,
     missingFiles: Object.freeze(missingFiles),
     mismatches: Object.freeze(mismatches),
   });
@@ -129,6 +146,10 @@ async function main(argv) {
     books: result.books,
     chapters: result.chapters,
     verses: result.verses,
+    matchingChapters: result.matchingChapters,
+    mismatchedChapters: result.mismatchedChapters,
+    matchingVerseLines: result.matchingVerseLines,
+    mismatchedVerseLines: result.mismatchedVerseLines,
     missingFiles: result.missingFiles.length,
     textMismatches: result.mismatches.length,
   }, null, 2));

@@ -15,6 +15,8 @@ test('BSB alignment audit ignores punctuation/typography but requires the same s
     alignmentText: 'In the beginning, God created the heavens and the earth!\nAnd God said Let there be light\n',
   });
   assert.equal(result.valid, true);
+  assert.equal(result.matchingVerseLines, 2);
+  assert.equal(result.mismatchedVerseLines, 0);
   assert.equal(result.mismatches.length, 0);
 });
 
@@ -38,6 +40,8 @@ test('BSB alignment audit fails closed on the known truncated Genesis timing-sou
     ].join('\n'),
   });
   assert.equal(result.valid, false);
+  assert.equal(result.matchingVerseLines, 3);
+  assert.equal(result.mismatchedVerseLines, 2);
   assert.deepEqual(result.mismatches.map(row => row.verse), [3, 5]);
   assert.match(result.mismatches[0].current, /and there was light/);
 });
@@ -52,4 +56,44 @@ test('BSB alignment audit reports verse-count mismatch instead of silently reind
   assert.equal(result.valid, false);
   assert.equal(result.mismatches[0].reason, 'verse-count-mismatch');
   assert.ok(result.mismatches.some(row => row.verse === 2 && row.reason === 'text-mismatch'));
+});
+
+
+test('BSB alignment audit maps source lines by ordinal when canonical verse numbers contain gaps', () => {
+  const result = auditBsbAlignmentChapter({
+    book: 'ACT',
+    chapter: 8,
+    currentVerses: [
+      { v: 36, t: 'As they traveled along the road, they came to some water.' },
+      { v: 38, t: 'And he gave orders to stop the chariot.' },
+    ],
+    alignmentText: [
+      'As they traveled along the road, they came to some water.',
+      'And he gave orders to stop the chariot.',
+    ].join('\n'),
+  });
+  assert.equal(result.valid, true);
+  assert.equal(result.matchingVerseLines, 2);
+  assert.equal(result.mismatchedVerseLines, 0);
+  assert.equal(result.mismatches.length, 0);
+});
+
+test('BSB alignment audit preserves canonical verse identity while reporting source-line ordinal', () => {
+  const result = auditBsbAlignmentChapter({
+    book: 'ACT',
+    chapter: 8,
+    currentVerses: [
+      { v: 36, t: 'As they traveled along the road, they came to some water.' },
+      { v: 38, t: 'And he gave orders to stop the chariot.' },
+    ],
+    alignmentText: [
+      'As they traveled along another road, they came to some water.',
+      'And he gave orders to stop the chariot.',
+    ].join('\n'),
+  });
+  assert.equal(result.valid, false);
+  assert.equal(result.mismatches[0].verse, 36);
+  assert.equal(result.mismatches[0].sourceLine, 1);
+  assert.equal(result.matchingVerseLines, 1);
+  assert.equal(result.mismatchedVerseLines, 1);
 });
