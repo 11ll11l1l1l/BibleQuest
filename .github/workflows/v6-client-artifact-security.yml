@@ -15,6 +15,7 @@ on:
       - package.json
       - package-lock.json
       - .github/workflows/v6-client-artifact-security.yml
+      - docs/v6/RC_CANDIDATE.json
   workflow_dispatch:
     inputs:
       candidate_sha:
