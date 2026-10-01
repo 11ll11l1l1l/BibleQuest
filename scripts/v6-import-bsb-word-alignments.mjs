@@ -3,6 +3,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from './v6-generate-scripture-manifests.mjs';
 import { buildBsbAlignmentManifest } from './v6-bsb-alignment-manifest.mjs';
+import { validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
 import { validateChapterAlignment } from '../src/v6/reader/audio-alignment.ts';
 
 const BOOK_CHAPTERS = Object.freeze({
@@ -86,7 +87,7 @@ export function remapBsbAlignmentVerseIds({ records, exportManifest, scriptureCo
 }
 
 /** Converts BSB-publishing/bsb-align word rows after checking verse text against this checkout's BSB packs. */
-export function convertBsbWordAlignments({ records, durations, bookPacks, metadata, scriptureContentVersion, requireComplete = true }) {
+export function convertBsbWordAlignments({ records, durations, bookPacks, metadata, scriptureContentVersion, audioInventory = null, requireComplete = true }) {
   if (!metadata || metadata.translationId !== 'bsb') fail('Audio metadata must declare translationId "bsb".');
   for (const key of ['source', 'license', 'alignmentSource', 'alignmentRevision', 'contentVersion']) {
     if (typeof metadata[key] !== 'string' || !metadata[key].trim()) fail(`Audio metadata requires ${key}.`);
@@ -96,6 +97,17 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
   }
   if (!Array.isArray(records) || !Array.isArray(durations)) fail('Word alignment records and duration records must be arrays.');
   if (typeof scriptureContentVersion !== 'string' || !scriptureContentVersion.trim()) fail('Current BSB Scripture content version is required.');
+  let audioByChapter = null;
+  if (audioInventory !== null) {
+    const audioValidation = validateHaysAudioInventory(audioInventory, { requireComplete });
+    if (!audioValidation.valid) fail('Hays audio inventory is invalid: ' + audioValidation.issues.join('; ') + '.');
+    if (metadata.contentVersion !== audioInventory.contentVersion) {
+      fail('Audio metadata contentVersion does not match the exact Hays audio inventory.');
+    }
+    audioByChapter = new Map(audioInventory.files.map(row => [keyOf(row.book, row.chapter), row]));
+  } else if (requireComplete) {
+    fail('Full BSB timing import requires the exact Hays audio inventory.');
+  }
   const bible = currentBibleChapters(bookPacks);
   const durationByChapter = new Map();
   for (const row of durations) {
@@ -104,6 +116,11 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
       || !Number.isFinite(row?.durationSeconds) || row.durationSeconds <= 0) fail('Audio duration manifest contains an invalid chapter or duration.');
     const key = keyOf(book, chapter);
     if (durationByChapter.has(key)) fail(`Duplicate audio duration for ${key}.`);
+    const audioRow = audioByChapter?.get(key);
+    if (audioByChapter && !audioRow) fail(`Exact Hays audio inventory has no chapter ${key}.`);
+    if (audioRow && Number(Number(row.durationSeconds).toFixed(6)) !== Number(Number(audioRow.durationSeconds).toFixed(6))) {
+      fail(`Measured duration for ${key} does not match the exact Hays audio inventory.`);
+    }
     durationByChapter.set(key, row.durationSeconds);
   }
 
@@ -116,6 +133,7 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     chapterKeys.add(key);
     const durationSeconds = durationByChapter.get(key);
     if (!durationSeconds) fail(`Missing measured audio duration for ${key}.`);
+    const audioRow = audioByChapter?.get(key) ?? null;
     const expectedVerses = bible.get(book)?.get(chapter);
     if (!expectedVerses) fail(`Current BSB pack has no text for ${key}.`);
     if (!record.verses || typeof record.verses !== 'object' || Array.isArray(record.verses)) fail(`Word alignment ${key} has no verse map.`);
@@ -153,6 +171,7 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     const alignment = {
       schemaVersion: 1, translationId: 'bsb', contentVersion: metadata.contentVersion,
       scriptureContentVersion, book, chapter, durationSeconds,
+      ...(audioRow ? { audioSha256: audioRow.sha256, audioByteLength: audioRow.byteLength } : {}),
       source: metadata.source, license: metadata.license,
       alignmentSource: `${metadata.alignmentSource}@${metadata.alignmentRevision.trim().toLowerCase()}`,
       verses: verseRows,
@@ -178,10 +197,12 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     }
     const extraDurations = [...durationByChapter.keys()].filter(key => !chapterKeys.has(key));
     if (extraDurations.length) fail(`Full BSB timing import has ${extraDurations.length} extra duration rows.`);
+    if (!audioByChapter || audioByChapter.size !== expected.length) fail('Full BSB timing import requires all 1,189 exact Hays audio identities.');
   }
   const frozenAlignments = Object.freeze(alignments);
   const manifest = buildBsbAlignmentManifest({
-    alignments: frozenAlignments, metadata, scriptureContentVersion, complete: requireComplete,
+    alignments: frozenAlignments, metadata, scriptureContentVersion,
+    audioInventorySha256: audioInventory?.inventorySha256 ?? null, complete: requireComplete,
   });
   return Object.freeze({
     translationId: 'bsb', scriptureContentVersion,
@@ -202,7 +223,7 @@ async function walkJson(root, directory = root) {
 }
 
 async function main(argv) {
-  let allowPartial = false, verseMapPath = null, manifestOutputPath = null;
+  let allowPartial = false, verseMapPath = null, manifestOutputPath = null, audioInventoryPath = null;
   const args = [];
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
@@ -210,6 +231,12 @@ async function main(argv) {
     if (value === '--verse-map') {
       verseMapPath = argv[index + 1];
       if (!verseMapPath) fail('--verse-map requires the BibleQuest BSB text-export manifest path.');
+      index += 1;
+      continue;
+    }
+    if (value === '--audio-inventory') {
+      audioInventoryPath = argv[index + 1];
+      if (!audioInventoryPath) fail('--audio-inventory requires the exact Hays audio inventory path.');
       index += 1;
       continue;
     }
@@ -223,13 +250,15 @@ async function main(argv) {
   }
   const [wordAlignmentDir, metadataPath, durationsPath, outputPath] = args;
   if (!wordAlignmentDir || !metadataPath || !durationsPath || !outputPath || args.length !== 4) {
-    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--verse-map <text-export-manifest.json>] [--manifest-output <alignment-manifest.json>] [--allow-partial]');
+    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--verse-map <text-export-manifest.json>] [--audio-inventory <audio-source-inventory.json>] [--manifest-output <alignment-manifest.json>] [--allow-partial]');
   }
   const root = resolve(wordAlignmentDir);
   const paths = (await walkJson(root)).sort();
   let records = await Promise.all(paths.map(async path => JSON.parse(await readFile(path, 'utf8'))));
   const metadata = JSON.parse(await readFile(resolve(metadataPath), 'utf8'));
   const durations = JSON.parse(await readFile(resolve(durationsPath), 'utf8'));
+  const audioInventory = audioInventoryPath ? JSON.parse(await readFile(resolve(audioInventoryPath), 'utf8')) : null;
+  if (!allowPartial && !audioInventory) fail('Full BSB timing import requires --audio-inventory from the exact staged Hays source.');
   const bsb = SCRIPTURE_PACKAGE_SOURCES.find(source => source.translationId === 'bsb');
   const scriptureContentVersion = buildScripturePackageManifest(process.cwd(), bsb).contentVersion;
   if (verseMapPath) {
@@ -237,7 +266,7 @@ async function main(argv) {
     records = remapBsbAlignmentVerseIds({ records, exportManifest, scriptureContentVersion });
   }
   const result = convertBsbWordAlignments({
-    records, durations, metadata, scriptureContentVersion,
+    records, durations, metadata, scriptureContentVersion, audioInventory,
     bookPacks: Object.fromEntries(await Promise.all(Object.keys(BOOK_CHAPTERS).map(async book => [book, JSON.parse(await readFile(join(process.cwd(), 'data', 'packs', 'bible', `${book}.json`), 'utf8'))]))),
     requireComplete: !allowPartial,
   });
