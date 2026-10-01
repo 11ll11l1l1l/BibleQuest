@@ -22,6 +22,8 @@ test('V4->V6 upgrade fixture is pinned to the preserved V4 rollback ancestor', (
   assert.match(script, /gitFile\(V4_RELEASE_SHA, 'supabase\/schema\.sql'\)/);
   assert.match(script, /v5-release-migration-order\.json/);
   assert.match(script, /v5-release-repository-mapping\.json/);
+  assert.match(script, /v6-ci-release-prerequisites\.sql/);
+  assert.match(script, /RELEASED V4 PREREQUISITE PARITY/);
   assert.doesNotMatch(script, /supabase link|--linked|SUPABASE_ACCESS_TOKEN|SUPABASE_DB_PASSWORD|SERVICE_ROLE_KEY/);
 });
 
