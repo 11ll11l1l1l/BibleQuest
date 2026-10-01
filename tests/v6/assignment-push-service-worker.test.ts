@@ -83,7 +83,7 @@ async function dispatchWaitable(
   await pending;
 }
 
-test('assignment push renders the canonical assignments deep link', async () => {
+test('assignment assigned push renders the canonical assignments deep link', async () => {
   const worker = loadWorker();
   await dispatchWaitable(worker.listeners.get('push'), {
     data: {
@@ -106,6 +106,33 @@ test('assignment push renders the canonical assignments deep link', async () => 
   assert.equal(
     shown.options.data.notificationId,
     '11111111-1111-4111-8111-111111111111',
+  );
+  assert.equal(shown.options.data.type, 'assignments');
+});
+
+test('assignment due push renders the same canonical assignments deep link', async () => {
+  const worker = loadWorker();
+  await dispatchWaitable(worker.listeners.get('push'), {
+    data: {
+      json: () => ({
+        title: 'Assignment due soon',
+        body: 'Finish John 1 before the deadline.',
+        notificationId: '44444444-4444-4444-8444-444444444444',
+        type: 'assignments',
+        url: '/#/assignments',
+      }),
+    },
+  });
+
+  assert.equal(worker.notifications.length, 1);
+  const shown = worker.notifications[0];
+  assert.equal(shown.title, 'Assignment due soon');
+  assert.equal(shown.options.body, 'Finish John 1 before the deadline.');
+  assert.equal(shown.options.tag, 'bq-44444444-4444-4444-8444-444444444444');
+  assert.equal(shown.options.data.url, 'https://biblequest.example/#/assignments');
+  assert.equal(
+    shown.options.data.notificationId,
+    '44444444-4444-4444-8444-444444444444',
   );
   assert.equal(shown.options.data.type, 'assignments');
 });
