@@ -1,12 +1,17 @@
+import { execFileSync } from 'node:child_process';
 import { constants as fsConstants } from 'node:fs';
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
-import { basename, dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { BSB_ALIGN_REVISION, BSB_ALIGN_TREE } from './v6-prepare-bsb-alignment-regeneration.mjs';
 
 const WORD_OUTPUT = /^((?:[1-3])?[A-Z]{2,3})\/\1_(\d{3})_words\.json$/;
 const EXPECTED_CHAPTERS = 1189;
+
+function defaultGitResolver(directory, args) {
+  return execFileSync('git', ['-C', directory, ...args], { encoding: 'utf8' }).trim();
+}
 
 function fail(message) {
   throw new Error(message);
@@ -111,12 +116,25 @@ function parseExpectedOutput(relativePath) {
 export async function stageReusableBsbAlignments({
   plan,
   writeReport = true,
+  gitResolver = defaultGitResolver,
 } = {}) {
   if (!plan || plan.translationId !== 'bsb' || plan.alignmentRevision !== BSB_ALIGN_REVISION
     || plan.alignmentTree !== BSB_ALIGN_TREE || plan.expectedChapters !== EXPECTED_CHAPTERS
     || !Array.isArray(plan.expectedOutputFiles) || plan.expectedOutputFiles.length !== EXPECTED_CHAPTERS) {
     fail('A reviewed 1,189-chapter BibleQuest BSB regeneration plan is required.');
   }
+
+  if (typeof gitResolver !== 'function') fail('Git revision resolver is required.');
+  const liveRevision = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD']) ?? '').trim().toLowerCase();
+  const liveTree = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD^{tree}']) ?? '').trim().toLowerCase();
+  const trackedChanges = String(gitResolver(plan.alignerDirectory, ['status', '--porcelain', '--untracked-files=no']) ?? '').trim();
+  if (liveRevision !== plan.alignmentRevision || liveRevision !== BSB_ALIGN_REVISION) {
+    fail('bsb-align checkout moved after the regeneration plan was prepared.');
+  }
+  if (liveTree !== plan.alignmentTree || liveTree !== BSB_ALIGN_TREE) {
+    fail('bsb-align checkout tree changed after the regeneration plan was prepared.');
+  }
+  if (trackedChanges) fail('bsb-align checkout has tracked modifications; reuse staging is refused.');
 
   const outputDirectory = resolve(plan.outputDirectory);
   const existing = await readdir(outputDirectory);
