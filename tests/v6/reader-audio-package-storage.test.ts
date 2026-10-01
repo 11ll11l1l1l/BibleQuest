@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import {
+  AudioPackageDownloadUnavailableError,
   createBrowserScriptureAudioPackageRepository,
   createFetchScriptureAudioPackageTransport,
   SCRIPTURE_AUDIO_METADATA_CACHE,
@@ -126,6 +127,20 @@ test('audio transport turns browser fetch or CORS failure into an explicit strea
   });
   await assert.rejects(
     transport.download('https://audio.example.test/chapter.mp3', { signal: new AbortController().signal }),
-    /Offline audio download is unavailable.*Direct streaming remains usable/i,
+    error => error instanceof AudioPackageDownloadUnavailableError
+      && error.code === 'audio-download-unavailable'
+      && /Offline audio download is unavailable.*Direct streaming remains usable/i.test(error.message),
+  );
+});
+
+test('audio transport classifies HTTP download failures without conflating them with stream playback', async () => {
+  const transport = createFetchScriptureAudioPackageTransport({
+    fetcher: async () => new Response('blocked', { status: 403 }),
+  });
+  await assert.rejects(
+    transport.download('https://audio.example.test/chapter.mp3', { signal: new AbortController().signal }),
+    error => error instanceof AudioPackageDownloadUnavailableError
+      && error.code === 'audio-download-unavailable'
+      && /HTTP 403.*Direct streaming remains usable/i.test(error.message),
   );
 });
