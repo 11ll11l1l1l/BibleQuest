@@ -68,7 +68,7 @@ export function expectedHaysAudioFiles() {
   return Object.freeze(rows);
 }
 
-function inventoryDigest(rows) {
+export function computeHaysAudioInventoryDigest(rows) {
   const hash = createHash('sha256');
   hash.update(JSON.stringify(rows.map(row => ({
     book: row.book,
@@ -79,6 +79,62 @@ function inventoryDigest(rows) {
     durationSeconds: row.durationSeconds,
   }))));
   return hash.digest('hex');
+}
+
+export function validateHaysAudioInventory(inventory, { requireComplete = true } = {}) {
+  const issues = [];
+  if (!inventory || typeof inventory !== 'object') {
+    return Object.freeze({ valid: false, issues: Object.freeze(['Hays audio inventory is required']) });
+  }
+  if (inventory.schemaVersion !== 1) issues.push('unsupported Hays audio inventory schema');
+  if (inventory.translationId !== 'bsb') issues.push('Hays audio inventory must be BSB');
+  if (inventory.narrator !== 'Barry Hays') issues.push('Hays audio inventory narrator mismatch');
+  if (inventory.sourceBaseUrl !== OPENBIBLE_SOURCE_BASE) issues.push('Hays audio inventory source URL mismatch');
+  if (!Array.isArray(inventory.files)) issues.push('Hays audio inventory files are required');
+  if (!Number.isSafeInteger(inventory.chapters) || inventory.chapters < 1) issues.push('Hays audio inventory chapter count is invalid');
+  if (!Number.isSafeInteger(inventory.totalBytes) || inventory.totalBytes < 1) issues.push('Hays audio inventory byte total is invalid');
+  if (!Number.isFinite(inventory.totalDurationSeconds) || inventory.totalDurationSeconds <= 0) issues.push('Hays audio inventory duration total is invalid');
+  if (!SHA256.test(String(inventory.inventorySha256 ?? ''))) issues.push('Hays audio inventory checksum is invalid');
+  if (inventory.contentVersion !== 'sha256-' + String(inventory.inventorySha256 ?? '')) {
+    issues.push('Hays audio content version does not match its inventory checksum');
+  }
+
+  if (Array.isArray(inventory.files)) {
+    const expected = expectedHaysAudioFiles();
+    const expectedByKey = new Map(expected.map(row => [row.book + '-' + row.chapter, row]));
+    const seen = new Set();
+    let totalBytes = 0;
+    let totalDurationSeconds = 0;
+    for (const row of inventory.files) {
+      const book = String(row?.book ?? '').toUpperCase();
+      const chapter = Number(row?.chapter);
+      const key = book + '-' + chapter;
+      const canonical = expectedByKey.get(key);
+      if (!canonical || seen.has(key)) {
+        issues.push('invalid or duplicate Hays audio chapter ' + key);
+        continue;
+      }
+      seen.add(key);
+      if (row.filename !== canonical.filename) issues.push('Hays audio filename mismatch for ' + key);
+      if (!Number.isSafeInteger(row.byteLength) || row.byteLength < 1) issues.push('Hays audio byte length is invalid for ' + key);
+      if (!SHA256.test(String(row.sha256 ?? ''))) issues.push('Hays audio checksum is invalid for ' + key);
+      if (!Number.isFinite(row.durationSeconds) || row.durationSeconds <= 0) issues.push('Hays audio duration is invalid for ' + key);
+      if (row.sourceUrl !== OPENBIBLE_SOURCE_BASE + canonical.filename) issues.push('Hays audio source URL mismatch for ' + key);
+      if (Number.isSafeInteger(row.byteLength) && row.byteLength > 0) totalBytes += row.byteLength;
+      if (Number.isFinite(row.durationSeconds) && row.durationSeconds > 0) totalDurationSeconds += row.durationSeconds;
+    }
+    if (inventory.chapters !== inventory.files.length) issues.push('Hays audio chapter count does not match files');
+    if (requireComplete && (inventory.files.length !== 1189 || seen.size !== 1189)) issues.push('complete Hays audio inventory requires all 1,189 chapters');
+    if (totalBytes !== inventory.totalBytes) issues.push('Hays audio byte total mismatch');
+    if (Math.abs(Number(totalDurationSeconds.toFixed(6)) - Number(inventory.totalDurationSeconds)) > 0.000001) {
+      issues.push('Hays audio duration total mismatch');
+    }
+    if (SHA256.test(String(inventory.inventorySha256 ?? ''))) {
+      const digest = computeHaysAudioInventoryDigest(inventory.files);
+      if (digest !== inventory.inventorySha256) issues.push('Hays audio inventory checksum mismatch');
+    }
+  }
+  return Object.freeze({ valid: issues.length === 0, issues: Object.freeze(issues) });
 }
 
 export async function snapshotStagedHaysSource({
@@ -130,8 +186,8 @@ export async function snapshotStagedHaysSource({
     }));
   }
 
-  const digest = inventoryDigest(files);
-  return Object.freeze({
+  const digest = computeHaysAudioInventoryDigest(files);
+  const inventory = Object.freeze({
     schemaVersion: 1,
     translationId: 'bsb',
     narrator: 'Barry Hays',
@@ -144,4 +200,7 @@ export async function snapshotStagedHaysSource({
     contentVersion: 'sha256-' + digest,
     files: Object.freeze(files),
   });
+  const validation = validateHaysAudioInventory(inventory, { requireComplete: true });
+  if (!validation.valid) fail('Staged Hays audio inventory failed validation: ' + validation.issues.join('; ') + '.');
+  return inventory;
 }
