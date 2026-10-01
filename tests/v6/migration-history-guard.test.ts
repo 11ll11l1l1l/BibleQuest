@@ -6,7 +6,9 @@ import test from 'node:test';
 
 import {
   analyzeMigrationHistory,
+  loadMigrationEquivalenceEvidence,
   loadRemoteMigrationEvidence,
+  normalizeMigrationEquivalences,
   normalizeRemoteMigrations,
   parseMigrationFilename,
   readLocalMigrations,
@@ -72,6 +74,80 @@ test('renamed timestamp for the same logical migration fails closed', () => {
   assert.match(report.blockers.join(' '), /different versions/);
 });
 
+test('reviewed version equivalence yields an exact metadata-repair plan without claiming the current history is push-safe', () => {
+  const report = analyzeMigrationHistory(local, [
+    { version: '20260923123000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+  ], {
+    equivalences: [{
+      remoteVersion: '20260923123000',
+      remoteName: 'alpha',
+      localVersion: '20260924010000',
+      localName: 'alpha',
+      reviewed: true,
+      evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+    }],
+  });
+
+  assert.equal(report.safeForOrderedPush, false);
+  assert.equal(report.safeAfterReviewedRepairs, true);
+  assert.equal(report.requiresHistoryRepair, true);
+  assert.deepEqual(report.versionMismatches, []);
+  assert.deepEqual(report.outOfOrderPending, []);
+  assert.deepEqual(report.historyRepairs, [{
+    remoteVersion: '20260923123000',
+    remoteName: 'alpha',
+    localVersion: '20260924010000',
+    localName: 'alpha',
+    evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+    commands: [
+      'supabase migration repair --status reverted 20260923123000',
+      'supabase migration repair --status applied 20260924010000',
+    ],
+  }]);
+});
+
+test('equivalence mappings fail closed unless reviewed, evidenced, and exact', () => {
+  assert.throws(
+    () => normalizeMigrationEquivalences([{
+      remoteVersion: '20260923123000',
+      remoteName: 'alpha',
+      localVersion: '20260924010000',
+      localName: 'alpha',
+      reviewed: false,
+      evidence: 'not enough',
+    }]),
+    /reviewed=true/,
+  );
+  assert.throws(
+    () => normalizeMigrationEquivalences([{
+      remoteVersion: '20260923123000',
+      remoteName: 'alpha',
+      localVersion: '20260924010000',
+      localName: 'alpha',
+      reviewed: true,
+      evidence: '',
+    }]),
+    /schema-equivalence evidence/,
+  );
+  assert.throws(
+    () => analyzeMigrationHistory(local, [
+      { version: '20260923123000', name: 'alpha' },
+      { version: '20260925010000', name: 'beta' },
+    ], {
+      equivalences: [{
+        remoteVersion: '20260923123000',
+        remoteName: 'wrong_name',
+        localVersion: '20260924010000',
+        localName: 'alpha',
+        reviewed: true,
+        evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+      }],
+    }),
+    /does not match remote migration history/,
+  );
+});
+
 test('older unapplied migrations behind the remote tip fail closed', () => {
   const report = analyzeMigrationHistory(local, [
     { version: '20260925010000', name: 'beta' },
@@ -110,8 +186,27 @@ test('filesystem readers produce a stable local inventory and parse reviewed rem
   await writeFile(join(dir, '20260924010000_alpha.sql'), '-- alpha\n');
   const remotePath = join(dir, 'remote.json');
   await writeFile(remotePath, JSON.stringify({ migrations: [{ version: '20260924010000', name: 'alpha' }] }));
+  const equivalencePath = join(dir, 'equivalence.json');
+  await writeFile(equivalencePath, JSON.stringify({
+    equivalences: [{
+      remoteVersion: '20260923123000',
+      remoteName: 'alpha',
+      localVersion: '20260924010000',
+      localName: 'alpha',
+      reviewed: true,
+      evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+    }],
+  }));
 
   const inventory = await readLocalMigrations(dir);
   assert.deepEqual(inventory.map(row => row.name), ['legacy_alpha', 'alpha', 'beta']);
   assert.deepEqual(await loadRemoteMigrationEvidence(remotePath), [{ version: '20260924010000', sourceVersion: '20260924010000', name: 'alpha' }]);
+  assert.deepEqual(await loadMigrationEquivalenceEvidence(equivalencePath), [{
+    remoteVersion: '20260923123000',
+    remoteName: 'alpha',
+    localVersion: '20260924010000',
+    localName: 'alpha',
+    reviewed: true,
+    evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+  }]);
 });
