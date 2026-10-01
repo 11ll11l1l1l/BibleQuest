@@ -106,6 +106,62 @@ jobs:
           }, indent=2))
           PY
 
+      - name: Stress-test Hays narration against worst stale-alignment chapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS='|' read -r book number token chapter; do
+            chapter3="$(printf '%03d' "$chapter")"
+            curl --fail --silent --show-error --location \
+              -o "/tmp/openbible-audit/hays-${book}-${chapter}.mp3" \
+              "https://openbible.com/audio/hays/BSB_${number}_${token}_${chapter3}_H.mp3"
+          done <<'EOF'
+          LAM|25|Lam|1
+          LAM|25|Lam|2
+          ISA|23|Isa|50
+          PSA|19|Psa|56
+          ACT|44|Act|8
+          EOF
+          python - <<'PY'
+          import json, re, unicodedata, av
+          from difflib import SequenceMatcher
+          from pathlib import Path
+          _av_open = av.open
+          def _compat_av_open(*args, **kwargs):
+              kwargs.pop('metadata_errors', None)
+              return _av_open(*args, **kwargs)
+          av.open = _compat_av_open
+          from faster_whisper import WhisperModel
+
+          samples = [('LAM',1),('LAM',2),('ISA',50),('PSA',56),('ACT',8)]
+          def tokens(value):
+              value = unicodedata.normalize('NFKD', value)
+              value = ''.join(ch for ch in value if unicodedata.category(ch) != 'Mn')
+              value = re.sub(r"[^A-Za-z0-9' ]+", ' ', value).lower()
+              return [part for part in value.split() if part]
+
+          model = WhisperModel('tiny.en', device='cpu', compute_type='int8')
+          results = []
+          for book, chapter in samples:
+              rows = json.loads(Path(f'data/packs/bible/{book}.json').read_text(encoding='utf-8'))
+              current = ' '.join(str(row['t']) for row in rows if int(row['c']) == chapter)
+              audio = f'/tmp/openbible-audit/hays-{book}-{chapter}.mp3'
+              segments, info = model.transcribe(audio, beam_size=5, vad_filter=True)
+              transcript = ' '.join(segment.text.strip() for segment in segments).strip()
+              current_tokens, transcript_tokens = tokens(current), tokens(transcript)
+              results.append({
+                  'book': book, 'chapter': chapter,
+                  'currentTokens': len(current_tokens),
+                  'transcriptTokens': len(transcript_tokens),
+                  'tokenSimilarity': SequenceMatcher(None, current_tokens, transcript_tokens, autojunk=False).ratio(),
+                  'language': info.language,
+                  'languageProbability': info.language_probability,
+                  'transcript': transcript,
+              })
+          Path('/tmp/openbible-audit/hays-stress-transcripts.json').write_text(json.dumps(results, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps([{k:r[k] for k in ('book','chapter','currentTokens','transcriptTokens','tokenSimilarity')} for r in results], indent=2))
+          PY
+
       - name: Publish audit summary
         shell: bash
         run: |
