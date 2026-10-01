@@ -100,14 +100,15 @@ The V6 fallback candidate therefore uses the free HaveIBeenPwned Pwned Passwords
 
 The fallback is fail closed for first-party password-setting flows: if the breach service cannot be checked, BibleQuest does not silently proceed with that password change. A known-compromised password is rejected with a user-safe message.
 
-Candidate coverage currently includes:
+Candidate coverage includes:
 - ordinary account signup in `bq-signup`;
 - recovery-code password reset in `bq-password-reset`;
-- the signed-in user's normal Account-page password change before `auth.updateUser`.
+- the signed-in user's normal Account-page password change before `auth.updateUser`;
+- the Owner emergency `set_temp_password` path before audit, session revocation, and Admin Auth mutation.
 
-This is **not yet equivalent to project-level Supabase enforcement**. The Owner emergency `set_temp_password` path is not included in this candidate, and a caller that bypasses BibleQuest UI and calls a permitted Supabase Auth password endpoint directly would not be covered while the hosted project setting remains disabled. Therefore the acceptance row must remain open until either:
+This is **still not equivalent to project-level Supabase enforcement**. A caller that bypasses BibleQuest's first-party password-setting flows and reaches a permitted Supabase Auth password endpoint directly would not be covered while the hosted project setting remains disabled. Therefore the acceptance row must remain open until either:
 1. Supabase built-in leaked-password protection is enabled and verified on a plan that supports it; or
-2. the release owner explicitly accepts the first-party equivalent plus its residual bypass scope after the emergency Owner credential path is covered.
+2. the release owner explicitly accepts the now-complete first-party equivalent plus its residual direct-Auth bypass scope.
 
 ## Release impact
 
