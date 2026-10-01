@@ -2,6 +2,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from './v6-generate-scripture-manifests.mjs';
+import { buildBsbAlignmentManifest } from './v6-bsb-alignment-manifest.mjs';
 import { validateChapterAlignment } from '../src/v6/reader/audio-alignment.ts';
 
 const BOOK_CHAPTERS = Object.freeze({
@@ -178,9 +179,14 @@ export function convertBsbWordAlignments({ records, durations, bookPacks, metada
     const extraDurations = [...durationByChapter.keys()].filter(key => !chapterKeys.has(key));
     if (extraDurations.length) fail(`Full BSB timing import has ${extraDurations.length} extra duration rows.`);
   }
+  const frozenAlignments = Object.freeze(alignments);
+  const manifest = buildBsbAlignmentManifest({
+    alignments: frozenAlignments, metadata, scriptureContentVersion, complete: requireComplete,
+  });
   return Object.freeze({
     translationId: 'bsb', scriptureContentVersion,
-    alignments: Object.freeze(alignments),
+    alignments: frozenAlignments,
+    manifest,
     audit: Object.freeze({ chapters: audit.length, verses: audit.reduce((sum, row) => sum + row.verseCount, 0), words: audit.reduce((sum, row) => sum + row.wordCount, 0), lowConfidenceWords: audit.reduce((sum, row) => sum + row.lowConfidenceWords, 0), rows: Object.freeze(audit) }),
   });
 }
@@ -196,7 +202,7 @@ async function walkJson(root, directory = root) {
 }
 
 async function main(argv) {
-  let allowPartial = false, verseMapPath = null;
+  let allowPartial = false, verseMapPath = null, manifestOutputPath = null;
   const args = [];
   for (let index = 0; index < argv.length; index += 1) {
     const value = argv[index];
@@ -207,11 +213,17 @@ async function main(argv) {
       index += 1;
       continue;
     }
+    if (value === '--manifest-output') {
+      manifestOutputPath = argv[index + 1];
+      if (!manifestOutputPath) fail('--manifest-output requires an output path.');
+      index += 1;
+      continue;
+    }
     args.push(value);
   }
   const [wordAlignmentDir, metadataPath, durationsPath, outputPath] = args;
   if (!wordAlignmentDir || !metadataPath || !durationsPath || !outputPath || args.length !== 4) {
-    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--verse-map <text-export-manifest.json>] [--allow-partial]');
+    fail('Usage: node scripts/v6-import-bsb-word-alignments.mjs <bsb-align-output-dir> <audio-source.json> <durations.json> <alignments.json> [--verse-map <text-export-manifest.json>] [--manifest-output <alignment-manifest.json>] [--allow-partial]');
   }
   const root = resolve(wordAlignmentDir);
   const paths = (await walkJson(root)).sort();
@@ -230,6 +242,9 @@ async function main(argv) {
     requireComplete: !allowPartial,
   });
   await writeFile(resolve(outputPath), `${JSON.stringify(result.alignments, null, 2)}\n`, { flag: 'wx' });
+  if (manifestOutputPath) {
+    await writeFile(resolve(manifestOutputPath), `${JSON.stringify(result.manifest, null, 2)}\n`, { flag: 'wx' });
+  }
   const scoredWords = result.audit.rows.reduce((sum, row) => sum + row.scoredWords, 0);
   const scoreTotal = result.audit.rows.reduce((sum, row) => sum + (row.averageWordScore ?? 0) * row.scoredWords, 0);
   console.log(`Converted ${result.audit.chapters} BSB chapter alignments / ${result.audit.verses} verses / ${result.audit.words} words for ${scriptureContentVersion}; average available word score ${scoredWords ? (scoreTotal / scoredWords).toFixed(3) : 'unavailable'}; ${result.audit.lowConfidenceWords} words below 0.30.`);
