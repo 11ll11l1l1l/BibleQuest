@@ -54,6 +54,74 @@ jobs:
           cp /tmp/bsb-reuse-summary.json ./bsb-reuse-summary.json
           cat ./bsb-reuse-summary.json
 
+      - name: Quantify current Reader vs upstream text drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, re, unicodedata
+          from collections import defaultdict
+          from difflib import SequenceMatcher
+          from pathlib import Path
+
+          root = Path('.')
+          upstream = Path('/tmp/bsb-align/text')
+
+          def tokens(value):
+              value = unicodedata.normalize('NFKD', str(value))
+              value = ''.join(ch for ch in value if unicodedata.category(ch) != 'Mn')
+              value = re.sub(r'[^\\w\\s]', '', value, flags=re.UNICODE).lower().strip()
+              return value.split()
+
+          rows = []
+          for pack in sorted((root / 'data/packs/bible').glob('*.json')):
+              book = pack.stem.upper()
+              verses = json.loads(pack.read_text(encoding='utf-8'))
+              chapters = defaultdict(list)
+              for row in verses:
+                  chapters[int(row['c'])].append(row)
+              for chapter, chapter_rows in sorted(chapters.items()):
+                  chapter_rows.sort(key=lambda row: int(row['v']))
+                  current_lines = [row['t'] for row in chapter_rows]
+                  source_path = upstream / f'{book}_{chapter:03d}_BSB.txt'
+                  source_lines = source_path.read_text(encoding='utf-8').splitlines() if source_path.exists() else []
+                  current_tokens = [tok for line in current_lines for tok in tokens(line)]
+                  source_tokens = [tok for line in source_lines if line.strip() for tok in tokens(line)]
+                  ratio = SequenceMatcher(None, current_tokens, source_tokens, autojunk=False).ratio() if (current_tokens or source_tokens) else 1.0
+                  rows.append({
+                      'book': book,
+                      'chapter': chapter,
+                      'currentLines': len(current_lines),
+                      'upstreamLines': len([line for line in source_lines if line.strip()]),
+                      'currentTokens': len(current_tokens),
+                      'upstreamTokens': len(source_tokens),
+                      'ratio': ratio,
+                      'exact': current_tokens == source_tokens,
+                  })
+
+          buckets = {
+              'exact': sum(1 for row in rows if row['exact']),
+              'ge_0_999': sum(1 for row in rows if row['ratio'] >= .999),
+              'ge_0_99': sum(1 for row in rows if row['ratio'] >= .99),
+              'ge_0_95': sum(1 for row in rows if row['ratio'] >= .95),
+              'ge_0_90': sum(1 for row in rows if row['ratio'] >= .90),
+              'lt_0_90': sum(1 for row in rows if row['ratio'] < .90),
+          }
+          weighted_current = sum(row['currentTokens'] for row in rows)
+          weighted_matches = sum(row['ratio'] * row['currentTokens'] for row in rows)
+          result = {
+              'chapters': len(rows),
+              'buckets': buckets,
+              'weightedSimilarity': weighted_matches / weighted_current if weighted_current else 1.0,
+              'medianSimilarity': sorted(row['ratio'] for row in rows)[len(rows)//2],
+              'worst': sorted(rows, key=lambda row: row['ratio'])[:30],
+              'bestNonExact': sorted((row for row in rows if not row['exact']), key=lambda row: row['ratio'], reverse=True)[:30],
+              'rows': rows,
+          }
+          Path('bsb-text-drift.json').write_text(json.dumps(result, indent=2) + '\\n', encoding='utf-8')
+          print(json.dumps({k: result[k] for k in ['chapters','buckets','weightedSimilarity','medianSimilarity']}, indent=2))
+          PY
+
       - name: Upload reuse audit evidence
         uses: actions/upload-artifact@v4
         with:
@@ -61,5 +129,6 @@ jobs:
           path: |
             bsb-reuse-plan.json
             bsb-reuse-summary.json
+            bsb-text-drift.json
           if-no-files-found: error
           retention-days: 7
