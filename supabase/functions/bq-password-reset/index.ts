@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
+import { assertPasswordNotCompromised } from '../_shared/password-security.ts';
 
 const PRIMARY_ORIGIN='https://mybiblequest.pages.dev';
 const LEGACY_ORIGIN='https://11ll11l1l1l.github.io';
@@ -52,10 +53,16 @@ Deno.serve(async(req:Request)=>{
     if(row.locked_until&&new Date(row.locked_until)>now)return json(req,{error:'Too many incorrect recovery attempts. Try again later.'},429);
     const suppliedHash=await hashRaw(normalizeCode(code));
     if(!safeEqual(suppliedHash,String(row.code_hash))){const previousLock=row.locked_until&&new Date(row.locked_until)<=now;const attempts=(previousLock?0:Number(row.attempts||0))+1;const locked=attempts>=5?new Date(Date.now()+15*60*1000).toISOString():null;const updated=await admin.from('bible_password_reset_codes').update({attempts:attempts>=5?0:attempts,locked_until:locked,last_attempt_at:now.toISOString()}).eq('id',row.id);if(updated.error)throw updated.error;return json(req,{error:locked?'Too many incorrect recovery attempts. Try again in 15 minutes.':'Email or recovery code is incorrect.'},locked?429:400)}
+    await assertPasswordNotCompromised(password);
     const claimed=await admin.from('bible_password_reset_codes').update({used_at:now.toISOString(),last_attempt_at:now.toISOString()}).eq('id',row.id).is('used_at',null).select('id').maybeSingle();if(claimed.error)throw claimed.error;if(!claimed.data)return json(req,{error:'This recovery code has already been used.'},409);
     const changed=await admin.auth.admin.updateUserById(row.user_id,{password});if(changed.error){await admin.from('bible_password_reset_codes').update({used_at:null}).eq('id',row.id);throw changed.error}
     const {data:userData,error:userError}=await admin.auth.admin.getUserById(row.user_id);if(userError||!userData.user?.email)throw userError||new Error('Account email unavailable');
     const fresh=await insertCode(admin,row.user_id,userData.user.email);
     return json(req,{ok:true,recovery_code:fresh.code,recovery_expires_at:fresh.expires,message:'Password updated. Save your new recovery code; the old code is no longer valid.'});
-  }catch(err){console.error(err);const msg=err instanceof Error?err.message:'Recovery failed';const status=/Authentication required|Invalid or expired session/.test(msg)?401:500;return json(req,{error:status===401?msg:'Recovery service is temporarily unavailable.'},status)}
+  }catch(err){
+    const msg=err instanceof Error?err.message:'Recovery failed',code=err instanceof Error?(err as Error&{code?:string}).code:'';
+    if(code==='BQ_PASSWORD_COMPROMISED')return json(req,{error:msg},400);
+    if(code==='BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE')return json(req,{error:msg},503);
+    console.error(err);const status=/Authentication required|Invalid or expired session/.test(msg)?401:500;return json(req,{error:status===401?msg:'Recovery service is temporarily unavailable.'},status)
+  }
 });
