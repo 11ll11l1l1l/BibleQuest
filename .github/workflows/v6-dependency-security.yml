@@ -10,6 +10,7 @@ on:
       - ".nvmrc"
       - "scripts/v6-dependency-security.mjs"
       - ".github/workflows/v6-dependency-security.yml"
+      - "docs/v6/RC_CANDIDATE.json"
   push:
     branches:
       - v6/architecture-upgrade
