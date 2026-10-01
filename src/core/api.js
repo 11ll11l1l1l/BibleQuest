@@ -798,7 +798,7 @@ export function createApi() {
       const client = await getClient();
       const now = new Date().toISOString();
       const request = client.from('bible_media_library')
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category')
+        .select('id,congregation_id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category')
         .eq('active', true)
         .eq('media_type', 'youtube_video')
         .lte('publish_at', now)
@@ -810,18 +810,22 @@ export function createApi() {
       if (error) throw error;
       return data || [];
     },
-    async createVideo(payload) {
+    async createVideo(congregationId, payload) {
+      const tenantId = String(congregationId || '');
+      if (!tenantId) throw Error();
       const client = await getClient();
-      const request = client.from('bible_media_library').insert(payload)
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
+      const request = client.from('bible_media_library').insert({ ...payload, congregation_id: tenantId })
+        .select('id,congregation_id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
       const { data, error } = await withTimeout(request, 10000, 'Adding this video took too long. Please try again.');
       if (error) throw error;
       return data;
     },
-    async updateVideo(id, patch) {
+    async updateVideo(congregationId, id, patch) {
+      const tenantId = String(congregationId || '');
+      if (!tenantId) throw Error();
       const client = await getClient();
-      const request = client.from('bible_media_library').update(patch).eq('id', id)
-        .select('id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
+      const request = client.from('bible_media_library').update(patch).eq('congregation_id', tenantId).eq('id', id)
+        .select('id,congregation_id,title,description,youtube_url,youtube_id,featured,created_at,publish_at,active,media_type,category').single();
       const { data, error } = await withTimeout(request, 10000, 'Updating this video took too long. Please try again.');
       if (error) throw error;
       return data;
