@@ -1,4 +1,5 @@
 name: V6 Database CI
+run-name: RC ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
 
 on:
   pull_request:
