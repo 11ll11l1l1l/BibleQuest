@@ -16,7 +16,7 @@ test('video creation uses the active congregation and rejects stale or unauthori
     can(id: string, capability: string) { return id === active.congregationId && capability === 'ministry'; },
   };
   const media = {
-    async listLiveRecordings() { return []; },
+    async listLiveRecordings(congregationId: string) { assert.equal(congregationId, 'church-b'); return []; },
     async createVideo(congregationId: string, payload: any) {
       created.push({ congregationId, payload });
       return { ...payload, congregation_id: congregationId };
@@ -62,7 +62,7 @@ test('video updates are scoped to the loaded row congregation and active ministr
     can(id: string, capability: string) { return id === active.congregationId && capability === 'ministry'; },
   };
   const media = {
-    async listLiveRecordings() { return rows; },
+    async listLiveRecordings(congregationId: string) { assert.equal(congregationId, active.congregationId); return rows; },
     async updateVideo(congregationId: string, id: string, patch: any) {
       updates.push({ congregationId, id, patch });
       rows = rows.map(row => row.id === id ? { ...row, ...patch } : row);
@@ -103,7 +103,7 @@ test('video mutation result is rejected when active congregation changes in flig
     can(id: string, capability: string) { return id === active.congregationId && capability === 'ministry'; },
   };
   const media = {
-    async listLiveRecordings() { return rows; },
+    async listLiveRecordings(congregationId: string) { assert.equal(congregationId, active.congregationId); return rows; },
     async updateVideo(congregationId: string, id: string, patch: any) {
       active = { congregationId: 'church-a', userId };
       return { ...rows[0], ...patch, congregation_id: congregationId, id };
