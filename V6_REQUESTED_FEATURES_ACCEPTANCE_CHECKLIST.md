@@ -144,7 +144,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
 - [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
 - [ ] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
-- [ ] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
+- [x] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
 - [ ] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
 - [ ] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
 - [ ] Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.
