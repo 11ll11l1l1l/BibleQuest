@@ -7,8 +7,10 @@ on:
     paths:
       - 'supabase/**'
       - 'scripts/v6-prepare-local-supabase.mjs'
+      - 'scripts/v6-prepare-v4-upgrade-supabase.mjs'
       - 'scripts/v6-migration-history-guard.mjs'
       - 'tests/v6/database-ci-contract.test.mjs'
+      - 'tests/v6/v4-v6-upgrade-database.test.mjs'
       - 'tests/v6/migration-history-guard.test.ts'
       - 'tests/v6/assignment-assigned-due-push.test.ts'
       - '.github/workflows/v6-database-ci.yml'
@@ -20,7 +22,7 @@ permissions:
 jobs:
   local-database:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
     env:
       SUPABASE_TELEMETRY_DISABLED: '1'
     steps:
@@ -41,7 +43,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run no-Docker database CI contract
-        run: node --test tests/v6/database-ci-contract.test.mjs
+        run: node --test tests/v6/database-ci-contract.test.mjs tests/v6/v4-v6-upgrade-database.test.mjs
 
       - name: Validate local migration identity inventory
         run: npm run check:v6-migration-history
@@ -91,7 +93,37 @@ jobs:
           git diff --exit-code
           git diff --cached --exit-code
 
-      - name: Stop disposable Supabase stack
-        if: always()
+      - name: Stop V5-baseline disposable Supabase stack
         working-directory: /tmp/bq-v6-db
-        run: supabase stop || true
+        run: supabase stop
+
+      - name: Prepare disposable V4-to-current V6 database
+        run: node scripts/v6-prepare-v4-upgrade-supabase.mjs /tmp/bq-v4-v6-db
+
+      - name: Start V4-upgrade disposable Supabase stack
+        working-directory: /tmp/bq-v4-v6-db
+        run: supabase start
+
+      - name: Prove V4-to-current V6 replay
+        working-directory: /tmp/bq-v4-v6-db
+        run: supabase db reset
+
+      - name: Run V4-upgrade RLS and privilege tests
+        working-directory: /tmp/bq-v4-v6-db
+        run: supabase test db
+
+      - name: Lint V4-upgraded database functions for errors
+        working-directory: /tmp/bq-v4-v6-db
+        run: supabase db lint --level error
+
+      - name: Verify source tree remains unchanged after V4 upgrade proof
+        run: |
+          set -euo pipefail
+          git diff --exit-code
+          git diff --cached --exit-code
+
+      - name: Stop disposable Supabase stacks
+        if: always()
+        run: |
+          (cd /tmp/bq-v6-db && supabase stop) || true
+          (cd /tmp/bq-v4-v6-db && supabase stop) || true
