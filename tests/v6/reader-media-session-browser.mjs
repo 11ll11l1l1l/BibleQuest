@@ -134,7 +134,7 @@ try {
   assert(result.positionStates.some(row => row.duration === 120 && row.position === 18),
     'Reader audio did not publish a valid Media Session position state.');
 
-  for (const action of ['play', 'pause', 'seekto', 'seekbackward', 'nexttrack']) {
+  for (const action of ['play', 'pause', 'seekto', 'seekbackward', 'nexttrack', 'previoustrack', 'stop']) {
     assert(result.actionAttempts.some(row => row.action === action && row.enabled),
       'Reader audio did not attempt to register Media Session action ' + action + '.');
   }
@@ -146,6 +146,10 @@ try {
     'Reader audio did not remove Media Session play handler on teardown.');
   assert(result.actionAttempts.some(row => row.action === 'nexttrack' && !row.enabled),
     'Reader audio did not remove Media Session next-track handler on teardown.');
+  assert(result.actionAttempts.some(row => row.action === 'previoustrack' && !row.enabled),
+    'Reader audio did not remove Media Session previous-track handler on teardown.');
+  assert(result.actionAttempts.some(row => row.action === 'stop' && !row.enabled),
+    'Reader audio did not remove Media Session stop handler on teardown.');
   assert(result.metadataAfterDispose === null, 'Reader audio did not clear Media Session metadata on teardown.');
 
   assert(result.fallbackState.status === 'paused',
