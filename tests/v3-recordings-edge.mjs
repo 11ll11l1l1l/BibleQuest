@@ -14,15 +14,16 @@ const audio={
   getState(){return this.state},
   getPlayerCount(){return this.state.source?1:0}
 };
-let authenticated=false,mediaCalls=0,fail=false;
-const session={isAuthenticated:()=>authenticated};
-const media={async listLiveRecordings(){mediaCalls++;if(fail)throw new Error('simulated recordings failure');return[
-  {id:'one',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Replay',featured:true},
-  {id:'bad',youtube_id:'bad!',youtube_url:'https://example.com/not-a-video',title:'Invalid source'},
-  {id:'two',youtube_id:'ZyxWV987654',title:'Bible Study'},
-  {id:'legacy',youtube_id:'',youtube_url:'https://www.youtube.com/live/Qwerty12345',title:'Legacy Live URL'}
+let authenticated=false,mediaCalls=0,fail=false,activeCongregationId='c1';
+const session={isAuthenticated:()=>authenticated,getState:()=>({authenticated,user:authenticated?{id:'u1'}:null})};
+const congregation={async load(){return activeCongregationId?[{congregationId:activeCongregationId,userId:'u1'}]:[]},getActive(){return activeCongregationId?{congregationId:activeCongregationId,userId:'u1'}:null},can:()=>false};
+const media={async listLiveRecordings(congregationId){mediaCalls++;assert(congregationId===activeCongregationId,'Recordings list must receive the active congregation explicitly.');if(fail)throw new Error('simulated recordings failure');return[
+  {id:'one',congregation_id:'c1',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Replay',featured:true},
+  {id:'bad',congregation_id:'c1',youtube_id:'bad!',youtube_url:'https://example.com/not-a-video',title:'Invalid source'},
+  {id:'two',congregation_id:'c1',youtube_id:'ZyxWV987654',title:'Bible Study'},
+  {id:'legacy',congregation_id:'c1',youtube_id:'',youtube_url:'https://www.youtube.com/live/Qwerty12345',title:'Legacy Live URL'}
 ]}};
-const recordings=createRecordingsService({media,audio,session});
+const recordings=createRecordingsService({media,audio,session,congregation});
 
 let state=await recordings.load();
 assert(state.status==='locked'&&state.access==='signin','Guest recordings must be locked.');
@@ -32,6 +33,7 @@ authenticated=true;state=await recordings.load();
 assert(state.status==='ready'&&state.rows.length===3,'Authenticated recordings load must keep valid stored-ID and legacy URL rows only.');
 assert(state.rows.find(row=>row.id==='legacy')?.youtubeId==='Qwerty12345','Legacy youtube.com/live URL must recover a missing stored video ID.');
 assert(state.rows[0].title==='Sunday Worship'&&Object.isFrozen(state.rows),'Recordings snapshots must be immutable.');
+const loadedCalls=mediaCalls;activeCongregationId='';state=await recordings.load();assert(state.status==='ready'&&state.rows.length===0,'No active congregation must expose no recordings.');assert(mediaCalls===loadedCalls,'No active congregation must issue a media tenant read.');activeCongregationId='c1';state=await recordings.load();
 recordings.select('one',{});assert(recordings.getState().selectedId==='one','Recording selection failed.');
 recordings.play();recordings.pause();recordings.seek(45);recordings.stop();
 assert(calls.some(row=>row[0]==='play')&&calls.some(row=>row[0]==='pause')&&calls.some(row=>row[0]==='seek'&&row[1]===45)&&calls.some(row=>row[0]==='stop'),'Playback controls did not delegate to the single audio owner.');
