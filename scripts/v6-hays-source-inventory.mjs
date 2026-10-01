@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { createReadStream } from 'node:fs';
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const OPENBIBLE_SOURCE_BASE = 'https://openbible.com/audio/hays/';
 const SOURCE_LABEL = 'OpenBible Barry Hays';
@@ -203,4 +204,25 @@ export async function snapshotStagedHaysSource({
   const validation = validateHaysAudioInventory(inventory, { requireComplete: true });
   if (!validation.valid) fail('Staged Hays audio inventory failed validation: ' + validation.issues.join('; ') + '.');
   return inventory;
+}
+
+
+async function main(argv) {
+  const [audioDirectory, outputPath] = argv;
+  if (!audioDirectory || argv.length > 2) {
+    fail('Usage: node scripts/v6-hays-source-inventory.mjs <staged-hays-audio-dir> [inventory-output.json]');
+  }
+
+  const inventory = await snapshotStagedHaysSource({ audioDirectory });
+  const json = JSON.stringify(inventory, null, 2) + '\n';
+  if (outputPath) {
+    const destination = resolve(outputPath);
+    await writeFile(destination, json, { flag: 'wx' });
+    console.error('Wrote exact Hays source inventory to ' + destination + '.');
+  }
+  process.stdout.write(json);
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await main(process.argv.slice(2));
 }
