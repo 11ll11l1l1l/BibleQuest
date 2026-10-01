@@ -17,10 +17,11 @@ function fakePlan() {
       expectedOutputFiles.push(book + '/' + book + '_' + String(chapter).padStart(3, '0') + '_words.json');
     }
   }
+  let fillerChapter = 1;
   while (expectedOutputFiles.length < 1189) {
-    const index = expectedOutputFiles.length + 1;
-    const book = 'ZZZ';
-    expectedOutputFiles.push(book + '/' + book + '_' + String(index).padStart(3, '0') + '_words.json');
+    const book = 'ZZA';
+    expectedOutputFiles.push(book + '/' + book + '_' + String(fillerChapter).padStart(3, '0') + '_words.json');
+    fillerChapter += 1;
   }
   return {
     schemaVersion: 2,
