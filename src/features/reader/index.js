@@ -121,6 +121,8 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         }
       };
       let activeAudioDownload = null, activeAudioProgress = null, audioPassageSync = null, audioFollowVerse = true, lastAudioFollowKey = null;
+      const unavailableAudioDownloads = new Set();
+      const audioDownloadKey = state => `${audio?.getNarrator?.() || 'default'}:${state.book}:${state.chapter}`;
       const refreshAudioPackage = async () => {
         const container = host.querySelector('[data-reader-audio-package]');
         if (!container || !audio?.getInstalledPackage) return;
@@ -135,11 +137,14 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           const installed = await audio.getInstalledPackage(state.book, state.chapter);
           const latest = reader.getState();
           if (!container.isConnected || `${latest.book}:${latest.chapter}` !== key) return;
+          const downloadUnavailable = unavailableAudioDownloads.has(audioDownloadKey(state));
           container.innerHTML = installed
             ? `<span>Offline audio installed · ${escapeHtml(formatBytes(installed.bytes))}</span><button type="button" class="bq-secondary-button" data-reader-audio-remove>Remove chapter audio</button>`
             : audio.canDownloadOffline?.() === false
               ? '<span>Offline download is not approved for this audio source. Streaming requires an internet connection.</span>'
-              : `<span>Download ${escapeHtml(state.book)} ${state.chapter} audio for offline playback</span><button type="button" class="bq-secondary-button" data-reader-audio-download>Download chapter audio</button>`;
+              : downloadUnavailable
+                ? '<span data-reader-audio-download-unavailable>Offline audio download is unavailable from this source in this browser. Direct streaming remains usable.</span><button type="button" class="bq-secondary-button" data-reader-audio-download>Retry download</button>'
+                : `<span>Download ${escapeHtml(state.book)} ${state.chapter} audio for offline playback</span><button type="button" class="bq-secondary-button" data-reader-audio-download>Download chapter audio</button>`;
         } catch (error) {
           if (container.isConnected) container.innerHTML = `<span>${escapeHtml(error?.message || 'Offline audio status is unavailable.')}</span>`;
         }
@@ -347,8 +352,10 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
               if (current) current.value = Math.round(progress.ratio * 100);
               if (text) text.textContent = `${progress.phase} · ${formatBytes(progress.receivedBytes)} / ${formatBytes(progress.totalBytes)}`;
             });
+            unavailableAudioDownloads.delete(audioDownloadKey(state));
             message(result.status === 'current' ? 'Audio chapter is already current.' : 'Audio chapter downloaded and verified.');
           } catch (error) {
+            if (error?.code === 'audio-download-unavailable') unavailableAudioDownloads.add(audioDownloadKey(state));
             message(error?.name === 'AbortError' ? 'Audio download cancelled.' : error?.message || 'Audio download failed.');
           } finally {
             if (activeAudioDownload?.key === key) activeAudioDownload = null;
