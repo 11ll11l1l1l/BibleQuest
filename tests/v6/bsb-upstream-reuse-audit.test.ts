@@ -26,6 +26,7 @@ test('BSB upstream reuse audit is exact-revision-bound and reports missing timin
   const genesis = JSON.parse(await readFile(join(root, 'data', 'packs', 'bible', 'GEN.json'), 'utf8'));
   const genesisOne = genesis.filter(row => row.c === 1).sort((a, b) => a.v - b.v).map(row => row.t).join('\n') + '\n';
   await writeFile(join(aligner, 'text', 'GEN_001_BSB.txt'), genesisOne);
+  await writeFile(join(aligner, 'text', 'EXO_001_BSB.txt'), 'Deliberately incompatible Reader text.\n');
 
   try {
     const report = await auditBsbUpstreamTimingReuse({
@@ -37,7 +38,11 @@ test('BSB upstream reuse audit is exact-revision-bound and reports missing timin
     assert.equal(report.reusableChapters, 0);
     assert.equal(report.regenerateChapters, 1189);
     assert.equal(report.reasonCounts['upstream-word-output-missing-or-invalid'], 1);
-    assert.equal(report.reasonCounts['upstream-text-missing'], 1188);
+    assert.equal(report.reasonCounts['text-token-mismatch'], 1);
+    assert.equal(report.reasonCounts['upstream-text-missing'], 1187);
+    const exodusMismatch = report.rows.find(row => row.book === 'EXO' && row.chapter === 1);
+    assert.ok(exodusMismatch?.reasons.includes('text-token-mismatch'));
+    assert.equal(exodusMismatch?.reasons.includes('upstream-word-output-missing-or-invalid'), false);
     assert.equal(report.rows.length, 1189);
     assert.equal(report.alignmentRevision, BSB_ALIGN_REVISION);
     assert.equal(report.alignmentTree, BSB_ALIGN_TREE);
