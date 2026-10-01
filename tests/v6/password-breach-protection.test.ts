@@ -70,6 +70,26 @@ test('password screening fails closed when the breach service is unavailable', a
   }
 });
 
+test('password screening fails closed on malformed successful range responses', async () => {
+  const malformedBodies = [
+    '',
+    '<html>upstream proxy error</html>',
+    `${PASSWORD_SUFFIX}:not-a-number\n`,
+    'XYZ:1\n',
+    `${PASSWORD_SUFFIX}:1\nmalformed\n`,
+  ];
+
+  for (const body of malformedBodies) {
+    const malformed = async () => new Response(body, { status: 200 });
+    for (const assertSafe of [assertBrowserPassword, assertServerPassword]) {
+      await assert.rejects(
+        () => assertSafe(CLEAN_PASSWORD, { fetcher: malformed as typeof fetch, timeoutMs: 1000 }),
+        (error: any) => error?.code === 'BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE',
+      );
+    }
+  }
+});
+
 test('first-party signup, recovery and signed-in password change paths invoke breach screening before mutation', async () => {
   const session = await readFile(new URL('../../src/app/session.js', import.meta.url), 'utf8');
   const bootstrap = await readFile(new URL('../../src/app/bootstrap.js', import.meta.url), 'utf8');
