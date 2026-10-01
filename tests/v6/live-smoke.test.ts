@@ -20,13 +20,24 @@ function responseFor(url) {
     });
   }
   if (path === '/manifest.webmanifest') {
-    return new Response(JSON.stringify({ name: 'BibleQuest' }), {
+    return new Response(JSON.stringify({
+      name: 'BibleQuest',
+      display: 'standalone',
+      shortcuts: [{ url: './#/reader' }, { url: './#/assignments' }],
+    }), {
       status: 200,
       headers: { 'content-type': 'application/manifest+json' },
     });
   }
   if (path === '/offline-shell-sw.js') {
-    return new Response('self.addEventListener("fetch",()=>{});'.repeat(4), {
+    return new Response([
+      "self.addEventListener('fetch',()=>{});",
+      'caches.open("bq");',
+      "self.addEventListener('push',()=>{});",
+      'self.registration.showNotification("BibleQuest");',
+      "self.addEventListener('notificationclick',()=>{});",
+      'self.clients.openWindow?.("/#/notification-center");',
+    ].join('\n'), {
       status: 200,
       headers: { 'content-type': 'text/javascript' },
     });
@@ -44,7 +55,11 @@ test('live smoke proves the exact deployed SHA and required PWA shell endpoints'
 
   assert.equal(evidence.sourceSha, candidateSha);
   assert.equal(evidence.deploymentOrigin, 'https://candidate.mybiblequest.pages.dev');
-  assert.equal(evidence.checks.length, 4);
+  assert.equal(evidence.schemaVersion, 2);
+  assert.equal(evidence.checks.length, 6);
+  assert.ok(evidence.checks.some(check => check.kind === 'route-shortcuts'));
+  assert.ok(evidence.checks.some(check => check.kind === 'offline-cache-contract'));
+  assert.ok(evidence.checks.some(check => check.kind === 'push-worker-contract'));
   assert.ok(evidence.checks.every(check => check.ok));
 });
 
