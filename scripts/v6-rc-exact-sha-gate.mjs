@@ -159,7 +159,6 @@ export async function waitForExactShaRcEvidence({
   if (!Number.isFinite(interval) || interval < 0) throw new Error('RC evidence poll interval must be a non-negative number.');
 
   const startedAt = Date.now();
-  let lastMissingError;
   while (true) {
     try {
       return await collectExactShaRcEvidence(options);
@@ -167,7 +166,6 @@ export async function waitForExactShaRcEvidence({
       const message = String(error?.message || error);
       const retryable = message.includes('is not RC-automated-gate ready. Missing exact-SHA SUCCESS:');
       if (!retryable) throw error;
-      lastMissingError = error;
       if (timeout === 0 || Date.now() - startedAt >= timeout) throw error;
       await sleepImpl(interval);
     }
