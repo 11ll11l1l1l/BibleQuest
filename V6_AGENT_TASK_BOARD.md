@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- Integrated acceptance is now evidence-complete through security-advisor triage (#941), V4→V6 route/feature parity (#951), and canonical V4-production→V6 database upgrade proof (#950/#952). Once this reconciliation merges, the official inventory is **183 checked / 28 open / 211 total = 86.7%** at integration `16d41b9b299917d1dd602706029e7ea49600af8d`. Global sensitive-domain tenant closure, leaked-password decision, physical/device evidence, Cloudflare exact identity, RC and production gates remain open.
+
 - PR #939 is integrated at `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9` from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; Phase-1 `36792168865` and inherited regression `36792168887` passed. The protected feature-authority boundary is now accepted. After reconciliation: **180 checked / 31 open / 211 total = 85.3%**.
 
 - PR #934 is integrated at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed, including exact built-artifact report-only and enforcing CSP Chromium gates. CSP is now accepted. After reconciliation: **179 checked / 32 open / 211 total = 84.8%**.
@@ -120,9 +122,8 @@ Targets:
 ### W2-03 — Security platform closure
 Targets:
 - leaked-password protection/equivalent decision with evidence;
-- MFA/passkey evaluation with recovery implications;
-- Supabase security-advisor triage.
-Do not weaken custom auth or RLS merely to clear an advisor warning.
+- MFA/passkey evaluation with recovery implications.
+Security-advisor triage is integrated and no longer needs rework. Do not weaken custom auth or RLS merely to clear an advisor warning.
 
 ### W4-02 — Shared component/design primitives
 Targets:
@@ -145,7 +146,6 @@ Coordinate with W1 when CI/build tooling is involved.
 - PiP provider/browser acceptance if not fully automatable.
 - Critical physical/manual accessibility acceptance.
 - Exact candidate field evidence.
-- V4 -> V6 upgrade DB path and complete route/feature parity matrix.
 - One exact V6 RC SHA across all gates.
 - Exact candidate production promotion.
 - Post-production exact-SHA route/PWA/offline/push smoke.
