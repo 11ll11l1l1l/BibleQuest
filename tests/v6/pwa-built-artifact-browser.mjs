@@ -26,6 +26,56 @@ async function waitForResolvedLazyRoute(page, label) {
   assert(lazyFailure === 0, `${label}: lazy route module failed to load`);
 }
 
+async function dispatchPushThroughInstalledWorker(context, payload) {
+  const worker = context.serviceWorkers().find(candidate => candidate.url().includes('offline-shell-sw.js'));
+  assert(worker, 'installed BibleQuest service worker was not visible to Chromium');
+
+  return worker.evaluate(async value => {
+    const prototype = ServiceWorkerRegistration.prototype;
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, 'showNotification');
+    if (!descriptor) throw new Error('ServiceWorkerRegistration.showNotification descriptor unavailable');
+
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const restore = () => Object.defineProperty(prototype, 'showNotification', descriptor);
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        restore();
+        reject(new Error('installed worker did not call showNotification'));
+      }, 1000);
+
+      try {
+        Object.defineProperty(prototype, 'showNotification', {
+          configurable: true,
+          writable: true,
+          value: async (title, options = {}) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            const captured = {
+              title: String(title || ''),
+              body: String(options.body || ''),
+              tag: String(options.tag || ''),
+              data: options.data || null,
+            };
+            restore();
+            resolve(captured);
+          },
+        });
+
+        self.dispatchEvent(new PushEvent('push', { data: JSON.stringify(value) }));
+      } catch (error) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        restore();
+        reject(error);
+      }
+    });
+  }, payload);
+}
+
 const browser = await chromium.launch({ headless: true });
 try {
   const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
@@ -80,6 +130,32 @@ try {
   });
   await page.waitForFunction(async () => Boolean(await navigator.serviceWorker.ready));
 
+  const assignedPush = await dispatchPushThroughInstalledWorker(context, {
+    title: 'New assignment',
+    body: 'Read John 1 before Friday.',
+    notificationId: '55555555-5555-4555-8555-555555555555',
+    type: 'assignments',
+    url: '/#/assignments',
+  });
+  assert(assignedPush.title === 'New assignment', 'assigned push title changed in the installed service worker');
+  assert(assignedPush.body === 'Read John 1 before Friday.', 'assigned push body changed in the installed service worker');
+  assert(assignedPush.tag === 'bq-55555555-5555-4555-8555-555555555555', 'assigned push tag is not stable');
+  assert(assignedPush.data?.url === `${new URL(baseUrl).origin}/#/assignments`, 'assigned push lost the assignments deep link');
+  assert(assignedPush.data?.type === 'assignments', 'assigned push lost the assignments delivery category');
+
+  const duePush = await dispatchPushThroughInstalledWorker(context, {
+    title: 'Assignment due soon',
+    body: 'Finish John 1 before the deadline.',
+    notificationId: '66666666-6666-4666-8666-666666666666',
+    type: 'assignments',
+    url: '/#/assignments',
+  });
+  assert(duePush.title === 'Assignment due soon', 'due push title changed in the installed service worker');
+  assert(duePush.body === 'Finish John 1 before the deadline.', 'due push body changed in the installed service worker');
+  assert(duePush.tag === 'bq-66666666-6666-4666-8666-666666666666', 'due push tag is not stable');
+  assert(duePush.data?.url === `${new URL(baseUrl).origin}/#/assignments`, 'due push lost the assignments deep link');
+  assert(duePush.data?.type === 'assignments', 'due push lost the assignments delivery category');
+
   // Prove the installed-app shell can reopen without network after one online
   // load. This is browser automation for shell availability only; it does not
   // claim physical-device install UI or offline Scripture-package acceptance.
@@ -98,4 +174,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, service-worker registration, and offline shell reopen verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling, and offline shell reopen verified at 390px.');
