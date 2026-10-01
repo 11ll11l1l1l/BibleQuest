@@ -70,3 +70,26 @@ test('media mutation repository requires explicit congregation scope', () => {
   assert.match(updateSource, /if \(!tenantId\) throw Error\(\)/);
 });
 
+
+test('remaining sensitive creation/write repositories require explicit congregation scope', () => {
+  const journeyCreate = methodSource('journeyGroups', 'create');
+  assert.match(journeyCreate, /^async create\(congregationId,payload\)/);
+  assert.match(journeyCreate, /\.\.\.payload,congregation_id:tenantId/);
+  assert.match(journeyCreate, /if\(!tenantId\)throw Error\(\)/);
+
+  const liveCreate = methodSource('liveRooms', 'create');
+  assert.match(liveCreate, /^async create\(congregationId,row\)/);
+  assert.match(liveCreate, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const award = methodSource('congregationRecognition', 'award');
+  assert.match(award, /^async award\(congregationId,row\)/);
+  assert.match(award, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const report = methodSource('contentReports', 'submit');
+  assert.match(report, /^async submit\(congregationId,row\)/);
+  assert.match(report, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const decision = methodSource('contentReview', 'saveDecision');
+  assert.match(decision, /^async saveDecision\(congregationId,row\)/);
+  assert.match(decision, /upsert\(\{\.\.\.row,congregation_id:tenantId\}/);
+});
