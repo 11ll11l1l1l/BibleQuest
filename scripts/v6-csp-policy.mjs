@@ -7,7 +7,7 @@ export const CSP_POLICY = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://i.ytimg.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co https://openbible.com https://cdn.jsdelivr.net",
+  "connect-src 'self' https://zkfmgezvzugchcwppreq.supabase.co wss://zkfmgezvzugchcwppreq.supabase.co https://openbible.com https://cdn.jsdelivr.net https://api.pwnedpasswords.com",
   "media-src 'self' blob: https://openbible.com",
   "frame-src 'self' https://www.youtube.com",
   "worker-src 'self' blob:",
@@ -42,7 +42,7 @@ export function validateCspPolicy(value = CSP_POLICY) {
     if (!script.has(required)) failures.push(`script-src missing ${required}`);
   }
   const connect = directives.get('connect-src') ?? new Set();
-  for (const required of ["'self'",'https://zkfmgezvzugchcwppreq.supabase.co','wss://zkfmgezvzugchcwppreq.supabase.co','https://openbible.com','https://cdn.jsdelivr.net']) {
+  for (const required of ["'self'",'https://zkfmgezvzugchcwppreq.supabase.co','wss://zkfmgezvzugchcwppreq.supabase.co','https://openbible.com','https://cdn.jsdelivr.net','https://api.pwnedpasswords.com']) {
     if (!connect.has(required)) failures.push(`connect-src missing ${required}`);
   }
   if (!(directives.get('frame-src') ?? new Set()).has('https://www.youtube.com')) failures.push('frame-src missing https://www.youtube.com');
