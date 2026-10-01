@@ -60,9 +60,11 @@ test('domain owners re-check identity, tenant or role before protected mutations
   assert.match(teams, /api\.archive\(tenantId,team\.id\)/);
 
   const recordings = read('src/app/recordings.js');
-  assert.match(recordings, /active\.userId!==sessionState\.user\.id/);
-  assert.match(recordings, /!congregation\.can\(id,'ministry'\)/);
-  assert.match(recordings, /media\.createVideo\(\{congregation_id:id/);
+  assert.match(recordings, /assertCurationContext=scope/);
+  assert.match(recordings, /String\(active\?\.userId\|\|''\)!==scope\.userId/);
+  assert.match(recordings, /!congregation\.can\(scope\.congregationId,'ministry'\)/);
+  assert.match(recordings, /media\.createVideo\(scope\.congregationId/);
+  assert.match(recordings, /media\.updateVideo\(scope\.congregationId/);
 });
 
 test('protected presentation checks remain backed by executable server-authority evidence', () => {

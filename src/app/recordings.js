@@ -18,11 +18,11 @@ const youtubeIdFromUrl=value=>{
 
 function normalizeRow(row){
   if(!row||typeof row!=='object')return null;
-  const id=String(row.id||'').trim(),storedId=String(row.youtube_id||row.youtubeId||'').trim(),derivedId=youtubeIdFromUrl(row.youtube_url||row.youtubeUrl),youtubeId=YOUTUBE_ID.test(storedId)?storedId:derivedId,title=String(row.title||'').trim();
+  const id=String(row.id||'').trim(),congregationId=String(row.congregation_id||row.congregationId||'').trim(),storedId=String(row.youtube_id||row.youtubeId||'').trim(),derivedId=youtubeIdFromUrl(row.youtube_url||row.youtubeUrl),youtubeId=YOUTUBE_ID.test(storedId)?storedId:derivedId,title=String(row.title||'').trim();
   if(!id||!YOUTUBE_ID.test(youtubeId)||!title)return null;
   const rawCategory=String(row.category||'other');
   const category=RECORDING_CATEGORIES.includes(rawCategory)?rawCategory:'other';
-  return {id,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),category,createdAt:String(row.created_at||row.createdAt||'')};
+  return {id,congregationId,youtubeId,title:title.slice(0,180),description:String(row.description||'').trim().slice(0,2500),featured:Boolean(row.featured),category,createdAt:String(row.created_at||row.createdAt||'')};
 }
 
 const newestFirst=(a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''));
@@ -68,30 +68,54 @@ export function createRecordingsService({media,audio,session,congregation}){
   function leave(){audio.unload();return set({selectedId:null,error:''})}
   function dispose(){audio.dispose();state={status:'idle',rows:[],selectedId:null,error:'',access:'unknown',latestService:null}}
 
-  async function addVideo({title,description='',youtubeUrl,congregationId,featured=false,category='other'}={}){
+  const assertCurationContext=scope=>{
+    if(!congregation)throw new Error('Denied.');
+    const sessionState=session.getState?.(),active=congregation.getActive?.();
+    if(!sessionState?.authenticated||String(sessionState.user?.id||'')!==scope.userId||String(active?.congregationId||'')!==scope.congregationId||String(active?.userId||'')!==scope.userId||!congregation.can(scope.congregationId,'ministry'))throw new Error('Denied.');
+  };
+  async function requireCurationScope(expectedCongregationId=''){
+    if(!congregation)throw new Error('Denied.');
     const sessionState=session.getState?.();
-    if(!sessionState?.authenticated||!sessionState?.user?.id)throw new Error('Sign in to add a video.');
-    await congregation?.load();
-    const active=congregation?.getActive();
-    const id=congregationId||active?.congregationId;
-    if(!active||id!==active.congregationId||active.userId!==sessionState.user.id||!congregation.can(id,'ministry')||session.getState().user?.id!==sessionState.user.id)throw new Error('Denied.');
+    if(!sessionState?.authenticated||!sessionState.user?.id)throw new Error('Sign in to add or manage a video.');
+    const userId=String(sessionState.user.id);
+    await congregation.load();
+    const active=congregation.getActive?.(),congregationId=String(active?.congregationId||'');
+    const scope=Object.freeze({userId,congregationId});
+    assertCurationContext(scope);
+    if(expectedCongregationId&&String(expectedCongregationId)!==congregationId)throw new Error('Denied.');
+    return scope;
+  }
+
+  async function addVideo({title,description='',youtubeUrl,congregationId,featured=false,category='other'}={}){
+    const scope=await requireCurationScope(congregationId);
     const youtubeId=youtubeIdFromUrl(youtubeUrl);
     if(!YOUTUBE_ID.test(youtubeId))throw new Error('Enter a valid YouTube video, live, or shorts link.');
     if(state.rows.some(row=>row.youtubeId===youtubeId))throw new Error('This YouTube recording is already in Videos.');
     const cleanTitle=String(title||'').trim();
     if(cleanTitle.length<2)throw new Error('Enter a title for this video.');
     const cleanCategory=RECORDING_CATEGORIES.includes(String(category))?String(category):'other';
-    const created=await media.createVideo({congregation_id:id,created_by:sessionState.user.id,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured),category:cleanCategory});
+    const created=await media.createVideo(scope.congregationId,{created_by:scope.userId,media_type:'youtube_video',title:cleanTitle.slice(0,160),description:String(description||'').trim().slice(0,2500),youtube_url:String(youtubeUrl||'').trim(),youtube_id:youtubeId,featured:Boolean(featured),category:cleanCategory});
+    assertCurationContext(scope);
     await load();
     return created;
   }
   async function setFeatured(id,featured){
-    const updated=await media.updateVideo(id,{featured:Boolean(featured)});
+    const row=state.rows.find(item=>item.id===String(id||''));
+    if(!row)throw new Error('Recording is no longer available.');
+    if(!row.congregationId)throw new Error('Reload Videos before managing this recording.');
+    const scope=await requireCurationScope(row.congregationId);
+    const updated=await media.updateVideo(scope.congregationId,row.id,{featured:Boolean(featured)});
+    assertCurationContext(scope);
     await load();
     return updated;
   }
   async function archive(id){
-    const updated=await media.updateVideo(id,{active:false});
+    const row=state.rows.find(item=>item.id===String(id||''));
+    if(!row)throw new Error('Recording is no longer available.');
+    if(!row.congregationId)throw new Error('Reload Videos before managing this recording.');
+    const scope=await requireCurationScope(row.congregationId);
+    const updated=await media.updateVideo(scope.congregationId,row.id,{active:false});
+    assertCurationContext(scope);
     await load();
     return updated;
   }
