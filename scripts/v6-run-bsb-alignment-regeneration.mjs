@@ -16,7 +16,7 @@ import { stageReusableBsbAlignments } from './v6-stage-bsb-alignment-reuse.mjs';
 
 const EXPECTED_CHAPTERS = 1189;
 const HAYS_SOURCE = 'Barry Hays BSB narration (OpenBible direct chapter stream)';
-const HAYS_LICENSE = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
+const HAYS_LICENSE = 'CC0 1.0 public-domain dedication by the BSB Audio Bible project';
 const ALIGNMENT_SOURCE = 'BSB-publishing/bsb-align';
 
 function fail(message) {
