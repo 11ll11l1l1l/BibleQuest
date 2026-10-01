@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import {
   analyzeMigrationHistory,
+  analyzeReleaseTarget,
   loadMigrationEquivalenceEvidence,
   loadRemoteMigrationEvidence,
   normalizeMigrationEquivalences,
@@ -209,4 +210,71 @@ test('filesystem readers produce a stable local inventory and parse reviewed rem
     reviewed: true,
     evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
   }]);
+});
+
+
+test('assignment due release target is safe only when its exact migration is ordered and pending or applied', () => {
+  const pending = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+  ], 'assignment_due_reminders');
+  assert.equal(pending.safeForReleaseTarget, true);
+  assert.deepEqual(pending.releaseTarget, {
+    name: 'assignment_due_reminders',
+    version: '20260928140000',
+    status: 'pending',
+    appliedExact: false,
+    pendingExact: true,
+    remoteVersion: null,
+  });
+
+  const applied = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+    { version: '20260928140000', name: 'assignment_due_reminders' },
+  ], 'assignment_due_reminders');
+  assert.equal(applied.safeForReleaseTarget, true);
+  assert.equal(applied.releaseTarget.status, 'applied');
+  assert.equal(applied.releaseTarget.appliedExact, true);
+});
+
+test('assignment due release target fails closed behind unresolved or reviewed-but-unapplied history repair', () => {
+  const divergentRemote = [
+    { version: '20260923123000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+  ];
+  const blocked = analyzeReleaseTarget(local, divergentRemote, 'assignment_due_reminders');
+  assert.equal(blocked.safeForReleaseTarget, false);
+  assert.equal(blocked.releaseTarget.status, 'pending');
+  assert.match(blocked.blockers.join(' '), /different versions/);
+
+  const repairPlanned = analyzeReleaseTarget(local, divergentRemote, 'assignment_due_reminders', {
+    equivalences: [{
+      remoteVersion: '20260923123000',
+      remoteName: 'alpha',
+      localVersion: '20260924010000',
+      localName: 'alpha',
+      reviewed: true,
+      evidence: 'Reviewed schema-equivalence record TEST-ALPHA.',
+    }],
+  });
+  assert.equal(repairPlanned.safeAfterReviewedRepairs, true);
+  assert.equal(repairPlanned.requiresHistoryRepair, true);
+  assert.equal(repairPlanned.safeForReleaseTarget, false);
+});
+
+test('release target detects target-version mismatch and missing local target', () => {
+  const mismatched = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+    { version: '20260928135959', name: 'assignment_due_reminders' },
+  ], 'assignment_due_reminders');
+  assert.equal(mismatched.safeForReleaseTarget, false);
+  assert.equal(mismatched.releaseTarget.status, 'blocked');
+  assert.equal(mismatched.releaseTarget.remoteVersion, '20260928135959');
+
+  assert.throws(
+    () => analyzeReleaseTarget(local, [], 'missing_release_target'),
+    /Release target migration is missing/,
+  );
 });
