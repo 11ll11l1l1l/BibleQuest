@@ -313,7 +313,9 @@ Integrated acceptance evidence (2026-09-30; PR #649, exact PR head evidence via 
 
 ## Q. Cross-cutting safety gates
 
-- [ ] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
+- [x] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
+
+Integrated-candidate authority evidence (2026-10-01): the systemic explicit-tenant repository inventory is bound to executable domain-specific server/RLS denial evidence by `tests/v6/tenant-security-aggregate.test.ts`; score/badge pgTAP proves immutable browser-write denial and cross-congregation read denial; the production `bible_leaderboard(uuid,timestamptz)` contract is restored to the reproducible V6 migration chain as authenticated-only `SECURITY INVOKER`, so underlying score-event RLS remains authoritative; telemetry's intentional public ingestion exception has no direct browser table DML/schema-CREATE authority and is bounded away from sensitive application domains; and the trusted score Edge Function retains active-membership, target-tenant and delegated-scoring denial checks. This row requires the exact replay head to pass Database CI, Phase-1, inherited regression and serialization before integration. It does not promote leaked-password, deployed-service, or physical-device rows.
 - [x] No content/media asset is hosted or transformed without verified redistribution rights/provenance.
 - [x] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
