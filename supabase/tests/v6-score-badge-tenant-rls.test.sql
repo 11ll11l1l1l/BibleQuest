@@ -131,14 +131,12 @@ select results_eq(
   'Member A cannot force-read congregation B score events'
 );
 
-select is(
-  (
-    select count(*)::bigint
+select results_eq(
+  $select count(*)::bigint
     from public.bible_user_badges
     where congregation_id='20000000-0000-4000-8000-000000000002'::uuid
-      and badge_id='v6-tenant-badge'
-  ),
-  0::bigint,
+      and badge_id='v6-tenant-badge'$,
+  array[0::bigint],
   'Member A cannot force-read congregation B earned badges'
 );
 
@@ -217,14 +215,12 @@ select results_eq(
   'Member B reads congregation B score state'
 );
 
-select is(
-  (
-    select count(*)::bigint
+select results_eq(
+  $select badge_id
     from public.bible_user_badges
     where congregation_id='20000000-0000-4000-8000-000000000002'::uuid
-      and badge_id='v6-tenant-badge'
-  ),
-  1::bigint,
+      and badge_id='v6-tenant-badge'$,
+  $values ('v6-tenant-badge'::text)$,
   'Member B reads congregation B earned-badge state'
 );
 
@@ -242,14 +238,11 @@ select is(
 
 set local "request.jwt.claim.sub"='99999999-9999-4999-8999-999999999999';
 
-select ok(
-  (select count(*)::bigint
-    from public.bible_score_events
-    where source_event_id in ('v6-score-a','v6-score-b')) = 0
-  and
-  (select count(*)::bigint
-    from public.bible_user_badges
-    where badge_id='v6-tenant-badge') = 0,
+select results_eq(
+  $select
+      (select count(*)::bigint from public.bible_score_events where source_event_id in ('v6-score-a','v6-score-b')),
+      (select count(*)::bigint from public.bible_user_badges where badge_id='v6-tenant-badge')$,
+  $values (0::bigint,0::bigint)$,
   'platform Owner gets no implicit tenant bypass for score or badge state'
 );
 
