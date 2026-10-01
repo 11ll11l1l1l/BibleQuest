@@ -1,0 +1,41 @@
+name: V6 Production Auth Security
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SUPABASE_ACCESS_TOKEN:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-production-auth-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  leaked-password-protection:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BQ_SUPABASE_PROJECT_REF: zkfmgezvzugchcwppreq
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+
+      - name: Prove checkout identity
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Require production Management API credential
+        shell: bash
+        run: test -n "${SUPABASE_ACCESS_TOKEN}"
+
+      - name: Verify production leaked-password protection
+        run: node scripts/v6-auth-production-security.mjs
