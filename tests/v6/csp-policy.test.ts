@@ -11,6 +11,7 @@ test('report-only CSP candidate is least-broad for current V6 architecture', () 
   assert.doesNotMatch(CSP_REPORT_ONLY_POLICY, /script-src[^;]*'unsafe-eval'/);
   assert.doesNotMatch(CSP_REPORT_ONLY_POLICY, /https?:\/\/\*/);
   assert.match(CSP_REPORT_ONLY_POLICY, /https:\/\/openbible\.com/);
+  assert.match(CSP_REPORT_ONLY_POLICY, /https:\/\/api\.pwnedpasswords\.com/);
   assert.match(CSP_REPORT_ONLY_POLICY, /https:\/\/www\.youtube\.com/);
   assert.match(CSP_REPORT_ONLY_POLICY, /https:\/\/cdn\.jsdelivr\.net/);
   assert.match(CSP_REPORT_ONLY_POLICY, /wss:\/\/zkfmgezvzugchcwppreq\.supabase\.co/);
