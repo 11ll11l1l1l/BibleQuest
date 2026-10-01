@@ -179,12 +179,14 @@ function writePreparedProject(destination) {
 
   const releaseOrderPath = path.join(sourceSupabase, 'v5-release-migration-order.json');
   const repositoryMappingPath = path.join(sourceSupabase, 'v5-release-repository-mapping.json');
+  const releasePrerequisitesPath = path.join(sourceSupabase, 'v6-ci-release-prerequisites.sql');
 
   for (const file of [
     path.join(sourceSupabase, 'config.toml'),
     path.join(sourceSupabase, 'seed-v6-ci.sql'),
     releaseOrderPath,
     repositoryMappingPath,
+    releasePrerequisitesPath,
   ]) {
     if (!fs.existsSync(file)) {
       throw new Error(`Missing V4->V6 database-CI input: ${path.relative(repoRoot, file)}`);
@@ -229,6 +231,10 @@ function writePreparedProject(destination) {
     '-- This baseline exists only to recreate V4 state; the following migration files exercise the actual V5 then V6 forward path.',
     '',
     v4Schema,
+    '',
+    '-- BEGIN RELEASED V4 PREREQUISITE PARITY: verified object missing from one-to-one historical SQL',
+    fs.readFileSync(releasePrerequisitesPath, 'utf8'),
+    '-- END RELEASED V4 PREREQUISITE PARITY',
   ];
 
   const adminParity = classified.v4Historical.find((entry) => entry.productionName === 'admin_auth_schema_parity');
@@ -297,6 +303,7 @@ function writePreparedProject(destination) {
     v4ReleaseCutoff: V4_RELEASE_CUTOFF,
     v5ReleaseCutoff: V5_RELEASE_CUTOFF,
     syntheticBaseline: baselineName,
+    releasePrerequisites: 'supabase/v6-ci-release-prerequisites.sql',
     v4HistoricalMigrations: classified.v4Historical,
     v4ReleasedStateParityExtras: classified.v4ParityExtras,
     v4ExcludedRepositorySql: classified.v4Excluded,
