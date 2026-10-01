@@ -71,6 +71,9 @@ test('Reader exposes selective audio packages only through an explicit chapter a
   assert.match(readerPage, /audio\.canDownloadOffline\?\.\(\) === false[\s\S]*Offline download is not approved for this audio source\. Streaming requires an internet connection\./);
   assert.match(readerPage, /data-reader-audio-download>Download chapter audio<\/button>/);
   assert.match(readerPage, /audio\.installChapter\(state\.book, state\.chapter/);
+  assert.match(readerPage, /data-reader-audio-download-unavailable/);
+  assert.match(readerPage, /error\?\.code === 'audio-download-unavailable'/);
+  assert.match(readerPage, /Direct streaming remains usable/);
   assert.doesNotMatch(readerPage, /install(?:All|Bible|Translation)Audio|download(?:All|Bible|Translation)Audio/i);
 
   assert.match(provider, /canDownloadOffline: \(\) => offlineAvailable/);
