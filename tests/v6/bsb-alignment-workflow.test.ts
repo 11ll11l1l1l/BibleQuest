@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
 import {
   buildBsbAlignmentImportCommand,
   buildBsbRegenerationFinalizeInputs,
+  loadBsbRegenerationResumePlan,
 } from '../../scripts/v6-run-bsb-alignment-regeneration.mjs';
 import {
   BSB_ALIGN_REVISION,
@@ -15,11 +18,11 @@ import {
   expectedHaysAudioFiles,
 } from '../../scripts/v6-hays-source-inventory.mjs';
 
-function fakeAudioInventory() {
+function fakeAudioInventory(hashCharacter = 'a') {
   const files = expectedHaysAudioFiles().map(row => ({
     ...row,
     byteLength: 2048,
-    sha256: 'a'.repeat(64),
+    sha256: hashCharacter.repeat(64),
     durationSeconds: 90,
     sourceUrl: 'https://openbible.com/audio/hays/' + row.filename,
   }));
@@ -39,22 +42,25 @@ function fakeAudioInventory() {
   });
 }
 
-function fakePlan(audioInventory = fakeAudioInventory()) {
+function fakePlan(audioInventory = fakeAudioInventory(), paths = {}) {
   return Object.freeze({
     schemaVersion: 2,
     translationId: 'bsb',
     alignmentRevision: BSB_ALIGN_REVISION,
     alignmentTree: BSB_ALIGN_TREE,
     scriptureContentVersion: 'sha256-current-bsb',
+    textInventorySha256: 'd'.repeat(64),
     audioContentVersion: audioInventory.contentVersion,
     audioInventorySha256: audioInventory.inventorySha256,
     expectedChapters: 1189,
-    alignerDirectory: '/tmp/bsb-align',
-    audioDirectory: '/tmp/hays',
-    workspaceDirectory: '/tmp/workspace',
-    textDirectory: '/tmp/workspace/text',
-    outputDirectory: '/tmp/workspace/output',
-    audioInventoryPath: '/tmp/workspace/audio-source-inventory.json',
+    expectedOutputFiles: expectedHaysAudioFiles().map(row =>
+      row.book + '/' + row.book + '_' + String(row.chapter).padStart(3, '0') + '_words.json'),
+    alignerDirectory: paths.alignerDirectory || '/tmp/bsb-align',
+    audioDirectory: paths.audioDirectory || '/tmp/hays',
+    workspaceDirectory: paths.workspaceDirectory || '/tmp/workspace',
+    textDirectory: paths.textDirectory || '/tmp/workspace/text',
+    outputDirectory: paths.outputDirectory || '/tmp/workspace/output',
+    audioInventoryPath: paths.audioInventoryPath || '/tmp/workspace/audio-source-inventory.json',
   });
 }
 
@@ -114,4 +120,85 @@ test('BSB regeneration finalizer rejects tampered audio identity', () => {
     }, inventory),
     /reviewed exact-identity BSB regeneration plan/i,
   );
+});
+
+
+test('BSB regeneration resume accepts only the original exact text/audio/aligner identity', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'bq-v6-bsb-resume-'));
+  const alignerDirectory = join(temp, 'bsb-align');
+  const audioDirectory = join(temp, 'audio');
+  const workspaceDirectory = join(temp, 'workspace');
+  const textDirectory = join(workspaceDirectory, 'text');
+  const outputDirectory = join(workspaceDirectory, 'output');
+  const audioInventoryPath = join(workspaceDirectory, 'audio-source-inventory.json');
+  const planPath = join(workspaceDirectory, 'regeneration-plan.json');
+  await Promise.all([
+    mkdir(alignerDirectory, { recursive: true }),
+    mkdir(audioDirectory, { recursive: true }),
+    mkdir(textDirectory, { recursive: true }),
+    mkdir(outputDirectory, { recursive: true }),
+  ]);
+
+  const inventory = fakeAudioInventory();
+  const plan = fakePlan(inventory, {
+    alignerDirectory,
+    audioDirectory,
+    workspaceDirectory,
+    textDirectory,
+    outputDirectory,
+    audioInventoryPath,
+  });
+  const textManifest = {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    scriptureContentVersion: plan.scriptureContentVersion,
+    inventorySha256: plan.textInventorySha256,
+    chapters: 1189,
+    files: Array.from({ length: 1189 }, (_, index) => ({ index })),
+  };
+
+  await writeFile(planPath, JSON.stringify(plan, null, 2) + '\n');
+  await writeFile(audioInventoryPath, JSON.stringify(inventory, null, 2) + '\n');
+  await writeFile(join(textDirectory, '_biblequest-bsb-alignment-export.json'), JSON.stringify(textManifest, null, 2) + '\n');
+
+  const reviewedGit = (_directory, args) => {
+    if (args[0] === 'rev-parse' && args[1] === 'HEAD') return BSB_ALIGN_REVISION;
+    if (args[0] === 'rev-parse' && args[1] === 'HEAD^{tree}') return BSB_ALIGN_TREE;
+    if (args[0] === 'status') return '';
+    throw new Error('Unexpected git query: ' + args.join(' '));
+  };
+
+  try {
+    const resumed = await loadBsbRegenerationResumePlan({
+      planPath,
+      gitResolver: reviewedGit,
+      audioInventoryResolver: async ({ audioDirectory: current }) => {
+        assert.equal(current, audioDirectory);
+        return inventory;
+      },
+    });
+    assert.equal(resumed.plan.audioInventorySha256, inventory.inventorySha256);
+    assert.equal(resumed.audioInventory.contentVersion, inventory.contentVersion);
+
+    const changedInventory = fakeAudioInventory('b');
+    await assert.rejects(
+      loadBsbRegenerationResumePlan({
+        planPath,
+        gitResolver: reviewedGit,
+        audioInventoryResolver: async () => changedInventory,
+      }),
+      /staged Hays audio files changed/i,
+    );
+
+    await assert.rejects(
+      loadBsbRegenerationResumePlan({
+        planPath,
+        gitResolver: (_directory, args) => args[0] === 'status' ? ' M align_book.py' : reviewedGit(_directory, args),
+        audioInventoryResolver: async () => inventory,
+      }),
+      /tracked modifications/i,
+    );
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
 });
