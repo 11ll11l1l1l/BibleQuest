@@ -61,6 +61,12 @@ jobs:
           import json, re, unicodedata
           from difflib import SequenceMatcher
           from pathlib import Path
+          import av
+          _av_open = av.open
+          def _compat_av_open(*args, **kwargs):
+              kwargs.pop('metadata_errors', None)
+              return _av_open(*args, **kwargs)
+          av.open = _compat_av_open
           from faster_whisper import WhisperModel
 
           rows = json.loads(Path('data/packs/bible/GEN.json').read_text(encoding='utf-8'))
