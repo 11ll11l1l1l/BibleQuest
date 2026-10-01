@@ -1,0 +1,63 @@
+name: V6 Hays Alignment Generate
+
+on:
+  push:
+    branches:
+      - chatgpt/v6-hays-alignment-manifest-20261002
+    paths:
+      - 'scripts/v6-generate-hays-alignment.mjs'
+      - '.github/workflows/v6-hays-alignment-generate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout BibleQuest candidate
+        uses: actions/checkout@v4
+
+      - name: Checkout pinned BSB alignment corpus
+        uses: actions/checkout@v4
+        with:
+          repository: BSB-publishing/bsb-align
+          ref: bdb859afc427b215b78e12ee4a7798c32b7b91e0
+          path: external/bsb-align
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Generate pinned Hays timing manifest
+        run: |
+          set -euo pipefail
+          node scripts/v6-generate-hays-alignment.mjs \
+            --alignment-root external/bsb-align \
+            --revision bdb859afc427b215b78e12ee4a7798c32b7b91e0 \
+            --output data/v6-audio/bsb-hays-alignment.json
+
+      - name: Prove deterministic generation
+        run: |
+          set -euo pipefail
+          node scripts/v6-generate-hays-alignment.mjs \
+            --alignment-root external/bsb-align \
+            --revision bdb859afc427b215b78e12ee4a7798c32b7b91e0 \
+            --output /tmp/bsb-hays-alignment.second.json
+          cmp data/v6-audio/bsb-hays-alignment.json /tmp/bsb-hays-alignment.second.json
+          test -s data/v6-audio/bsb-hays-alignment.json
+          sha256sum data/v6-audio/bsb-hays-alignment.json
+          wc -c data/v6-audio/bsb-hays-alignment.json
+
+      - name: Upload reviewed timing candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-hays-alignment-manifest
+          path: data/v6-audio/bsb-hays-alignment.json
+          if-no-files-found: error
+          retention-days: 7
