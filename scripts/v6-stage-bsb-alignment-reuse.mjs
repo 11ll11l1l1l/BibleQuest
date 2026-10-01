@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { BSB_ALIGN_REVISION, BSB_ALIGN_TREE } from './v6-prepare-bsb-alignment-regeneration.mjs';
+import { validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
 
 const WORD_OUTPUT = /^((?:[1-3])?[A-Z]{2,3})\/\1_(\d{3})_words\.json$/;
 const EXPECTED_CHAPTERS = 1189;
@@ -118,13 +119,29 @@ export async function stageReusableBsbAlignments({
   writeReport = true,
   gitResolver = defaultGitResolver,
 } = {}) {
-  if (!plan || plan.translationId !== 'bsb' || plan.alignmentRevision !== BSB_ALIGN_REVISION
+  if (!plan || plan.schemaVersion !== 2 || plan.translationId !== 'bsb' || plan.alignmentRevision !== BSB_ALIGN_REVISION
     || plan.alignmentTree !== BSB_ALIGN_TREE || plan.expectedChapters !== EXPECTED_CHAPTERS
-    || !Array.isArray(plan.expectedOutputFiles) || plan.expectedOutputFiles.length !== EXPECTED_CHAPTERS) {
-    fail('A reviewed 1,189-chapter BibleQuest BSB regeneration plan is required.');
+    || !Array.isArray(plan.expectedOutputFiles) || plan.expectedOutputFiles.length !== EXPECTED_CHAPTERS
+    || !/^sha256-[a-f0-9]{64}$/.test(String(plan.audioContentVersion ?? ''))
+    || !/^[a-f0-9]{64}$/.test(String(plan.audioInventorySha256 ?? ''))
+    || plan.audioContentVersion !== 'sha256-' + plan.audioInventorySha256
+    || typeof plan.audioInventoryPath !== 'string' || !plan.audioInventoryPath.trim()) {
+    fail('A reviewed 1,189-chapter BibleQuest BSB regeneration plan with exact Hays audio identity is required.');
   }
 
   if (typeof gitResolver !== 'function') fail('Git revision resolver is required.');
+  let audioInventory;
+  try {
+    audioInventory = JSON.parse(await readFile(resolve(plan.audioInventoryPath), 'utf8'));
+  } catch {
+    fail('Exact Hays audio inventory referenced by the regeneration plan is missing or invalid.');
+  }
+  const audioValidation = validateHaysAudioInventory(audioInventory, { requireComplete: true });
+  if (!audioValidation.valid
+    || audioInventory.contentVersion !== plan.audioContentVersion
+    || audioInventory.inventorySha256 !== plan.audioInventorySha256) {
+    fail('Exact Hays audio inventory does not match the regeneration plan.');
+  }
   const liveRevision = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD']) ?? '').trim().toLowerCase();
   const liveTree = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD^{tree}']) ?? '').trim().toLowerCase();
   const trackedChanges = String(gitResolver(plan.alignerDirectory, ['status', '--porcelain', '--untracked-files=no']) ?? '').trim();
@@ -200,6 +217,8 @@ export async function stageReusableBsbAlignments({
     schemaVersion: 1,
     translationId: 'bsb',
     scriptureContentVersion: plan.scriptureContentVersion,
+    audioContentVersion: plan.audioContentVersion,
+    audioInventorySha256: plan.audioInventorySha256,
     alignmentRevision: plan.alignmentRevision,
     alignmentTree: plan.alignmentTree,
     expectedChapters: EXPECTED_CHAPTERS,
@@ -226,6 +245,8 @@ async function main(argv) {
   const report = await stageReusableBsbAlignments({ plan });
   console.log(JSON.stringify({
     scriptureContentVersion: report.scriptureContentVersion,
+    audioContentVersion: report.audioContentVersion,
+    audioInventorySha256: report.audioInventorySha256,
     alignmentRevision: report.alignmentRevision,
     expectedChapters: report.expectedChapters,
     reusableChapters: report.reusableChapters,
