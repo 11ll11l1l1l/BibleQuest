@@ -13,12 +13,19 @@ import {
   prepareBsbAlignmentRegeneration,
 } from '../../scripts/v6-prepare-bsb-alignment-regeneration.mjs';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../scripts/v6-generate-scripture-manifests.mjs';
-import { expectedHaysAudioFiles, snapshotStagedHaysSource } from '../../scripts/v6-hays-source-inventory.mjs';
+import { computeHaysAudioInventoryDigest, expectedHaysAudioFiles, snapshotStagedHaysSource } from '../../scripts/v6-hays-source-inventory.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
 
 function fakeAudioInventory() {
-  const digest = 'a'.repeat(64);
+  const files = expectedHaysAudioFiles().map(row => ({
+    ...row,
+    byteLength: 1000,
+    sha256: 'b'.repeat(64),
+    durationSeconds: 100,
+    sourceUrl: 'https://openbible.com/audio/hays/' + row.filename,
+  }));
+  const digest = computeHaysAudioInventoryDigest(files);
   return {
     schemaVersion: 1,
     translationId: 'bsb',
@@ -30,13 +37,7 @@ function fakeAudioInventory() {
     totalDurationSeconds: 118900,
     inventorySha256: digest,
     contentVersion: 'sha256-' + digest,
-    files: expectedHaysAudioFiles().map(row => ({
-      ...row,
-      byteLength: 1000,
-      sha256: 'b'.repeat(64),
-      durationSeconds: 100,
-      sourceUrl: 'https://openbible.com/audio/hays/' + row.filename,
-    })),
+    files,
   };
 }
 
@@ -70,8 +71,8 @@ test('BSB regeneration handoff pins the reviewed aligner and exact current Reade
     assert.equal(plan.alignmentTree, BSB_ALIGN_TREE);
     assert.equal(plan.scriptureContentVersion, scripture.contentVersion);
     assert.equal(plan.expectedChapters, 1189);
-    assert.equal(plan.audioContentVersion, 'sha256-' + 'a'.repeat(64));
-    assert.equal(plan.audioInventorySha256, 'a'.repeat(64));
+    assert.equal(plan.audioContentVersion, fakeAudioInventory().contentVersion);
+    assert.equal(plan.audioInventorySha256, fakeAudioInventory().inventorySha256);
     assert.equal(plan.audioTotalBytes, 1189000);
     assert.equal(plan.expectedOutputFiles.length, 1189);
     assert.ok(plan.expectedOutputFiles.includes('GEN/GEN_001_words.json'));
