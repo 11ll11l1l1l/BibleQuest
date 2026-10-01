@@ -98,7 +98,7 @@ Production review on 2026-10-01 found the BibleQuest Supabase project on the Fre
 
 The V6 fallback candidate therefore uses the free HaveIBeenPwned Pwned Passwords range API with k-anonymity: BibleQuest hashes the completed password locally, sends only the first five SHA-1 hexadecimal characters, requests padded responses, and compares the returned suffixes locally. The plaintext password and complete hash are never sent to HaveIBeenPwned.
 
-The fallback is fail closed for first-party password-setting flows: if the breach service cannot be checked, BibleQuest does not silently proceed with that password change. A known-compromised password is rejected with a user-safe message.
+The fallback is fail closed for first-party password-setting flows: if the breach service cannot be checked, returns a non-success status, or returns an empty/malformed range payload, BibleQuest does not silently proceed with that password change. A known-compromised password is rejected with a user-safe message. `tests/v6/password-breach-protection.test.ts` exercises browser and Edge-function implementations for k-anonymity, padded valid responses, unavailable service behavior, and malformed-success-response rejection.
 
 Candidate coverage includes:
 - ordinary account signup in `bq-signup`;
