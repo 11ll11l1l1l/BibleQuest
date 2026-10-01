@@ -61,7 +61,6 @@ test('BSB regeneration handoff pins the reviewed aligner and exact current Reade
       '--audio-dir', audio,
       '--text-dir', join(workspace, 'text'),
       '--output-dir', join(workspace, 'output'),
-      '--force',
     ]);
 
     const report = await inspectBsbAlignmentRegeneration(plan);
