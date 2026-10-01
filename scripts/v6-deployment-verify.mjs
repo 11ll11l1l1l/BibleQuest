@@ -15,6 +15,8 @@ const METADATA_RETRY_MS = 5000;
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const sleep = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms));
 
+class DeploymentPublishRootError extends Error {}
+
 export function normalizeDeploymentUrl(value) {
   let url;
   try {
@@ -72,8 +74,16 @@ async function fetchBytes(baseUrl, path, fetchImpl) {
 
 async function fetchJson(baseUrl, path, fetchImpl) {
   const bytes = await fetchBytes(baseUrl, path, fetchImpl);
+  const text = bytes.toString('utf8');
+  if (/^\s*(?:<!doctype\s+html|<html\b)/i.test(text)) {
+    throw new DeploymentPublishRootError(
+      `Deployment metadata ${path} returned HTML instead of the V6 build artifact. `
+      + 'Cloudflare Pages appears to be serving an HTML fallback or a different publish root; '
+      + 'verify the Pages build output directory publishes dist-v6 unchanged before exact-SHA verification.',
+    );
+  }
   try {
-    return JSON.parse(bytes.toString('utf8'));
+    return JSON.parse(text);
   } catch {
     throw new Error(`Deployment artifact is not valid JSON: ${path}`);
   }
@@ -85,6 +95,7 @@ async function fetchDeploymentMetadata(baseUrl, path, fetchImpl) {
     try {
       return await fetchJson(baseUrl, path, fetchImpl);
     } catch (error) {
+      if (error instanceof DeploymentPublishRootError) throw error;
       lastError = error;
       if (attempt < METADATA_ATTEMPTS) await sleep(METADATA_RETRY_MS);
     }
