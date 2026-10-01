@@ -111,6 +111,27 @@
     <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
   </section>
 
+  <section data-gate="background-media" aria-labelledby="background-media-heading">
+    <h2 id="background-media-heading">BSB Audio: background / lock-screen media controls</h2>
+    <p>Use the Reader's Barry Hays BSB audio on a supported physical device. Record unsupported OS/browser controls as unavailable rather than forcing a PASS.</p>
+    <label class="check"><input type="checkbox" data-step="background-playback"> Start BSB chapter playback, background or lock the device, and confirm playback state remains coherent without duplicate or runaway audio.</label>
+    <label class="check"><input type="checkbox" data-step="metadata"> The system media surface shows the BibleQuest Audio Bible chapter metadata where Media Session metadata is supported.</label>
+    <label class="check"><input type="checkbox" data-step="play-pause"> Lock-screen/background play and pause controls operate the active BSB chapter where the platform exposes them.</label>
+    <label class="check"><input type="checkbox" data-step="seek"> Seek/back/forward controls operate safely where exposed; unsupported controls do not break foreground playback.</label>
+    <label class="check"><input type="checkbox" data-step="chapter-nav"> Previous/next chapter controls operate where exposed and return to the correct Reader chapter when the app is foregrounded.</label>
+    <label class="check"><input type="checkbox" data-step="resume"> Returning to the app preserves the active chapter, playback position, and normal Reader controls.</label>
+    <label>Verdict
+      <select data-gate-status>
+        <option value="PENDING">PENDING</option>
+        <option value="PASS">PASS</option>
+        <option value="FAIL">FAIL</option>
+      </select>
+    </label>
+    <label>Observation
+      <textarea data-gate-notes rows="4" placeholder="Record the exact controls exposed by the device/OS/browser and what happened."></textarea>
+    </label>
+  </section>
+
   <section aria-labelledby="export-heading">
     <h2 id="export-heading">Export sanitized field record</h2>
     <p>PASS is accepted only when every required sub-check for that gate is checked and its observation is non-empty. The export contains no credentials, auth tokens, push endpoints, or account identifiers.</p>
