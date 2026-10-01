@@ -4,7 +4,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exportCurrentBsbAlignmentText } from './v6-export-current-bsb-alignment-text.mjs';
-import { snapshotStagedHaysSource } from './v6-hays-source-inventory.mjs';
+import { snapshotStagedHaysSource, validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
 
 export const BSB_ALIGN_REVISION = 'bdb859afc427b215b78e12ee4a7798c32b7b91e0';
 export const BSB_ALIGN_TREE = 'c83b2494c8fc5413863e9617b23660eab9459323';
@@ -73,11 +73,9 @@ export async function prepareBsbAlignmentRegeneration({
   }
 
   const audioInventory = await audioInventoryResolver({ audioDirectory: audio });
-  if (audioInventory?.translationId !== 'bsb' || audioInventory?.narrator !== 'Barry Hays'
-    || audioInventory?.chapters !== EXPECTED_CHAPTERS || !Array.isArray(audioInventory?.files)
-    || audioInventory.files.length !== EXPECTED_CHAPTERS || !/^[a-f0-9]{64}$/.test(String(audioInventory?.inventorySha256 ?? ''))
-    || audioInventory?.contentVersion !== 'sha256-' + audioInventory.inventorySha256) {
-    fail('Staged Hays audio inventory is incomplete or lacks an exact immutable byte identity.');
+  const audioValidation = validateHaysAudioInventory(audioInventory, { requireComplete: true });
+  if (!audioValidation.valid) {
+    fail('Staged Hays audio inventory is incomplete or invalid: ' + audioValidation.issues.join('; ') + '.');
   }
   const audioInventoryPath = join(workspace, 'audio-source-inventory.json');
   await writeFile(audioInventoryPath, JSON.stringify(audioInventory, null, 2) + '\n', { flag: 'wx' });
