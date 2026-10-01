@@ -1,0 +1,118 @@
+name: V6 Certified SHA Production Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character V6 RC SHA that already passed the seven exact-SHA RC gates
+        required: true
+        type: string
+      production_url:
+        description: BibleQuest production Cloudflare Pages URL
+        required: true
+        default: https://mybiblequest.pages.dev
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v6-production-verify-${{ inputs.candidate_sha }}
+  cancel-in-progress: false
+
+env:
+  BQ_RC_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact certified candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          fetch-depth: 0
+
+      - name: Prove exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_RC_CANDIDATE_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_RC_CANDIDATE_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Require production origin
+        env:
+          BQ_PRODUCTION_URL: ${{ inputs.production_url }}
+        run: |
+          node -e "const u=new URL(process.env.BQ_PRODUCTION_URL);if(u.origin!=='https://mybiblequest.pages.dev'||u.pathname!=='/')throw new Error('Production verification must target https://mybiblequest.pages.dev/');"
+
+      - name: Use candidate-pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Require all seven exact-SHA RC gates
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          BQ_RC_EVIDENCE_OUTPUT: v6-rc-exact-sha-evidence.json
+        run: node scripts/v6-rc-exact-sha-gate.mjs
+
+      - name: Resolve successful deployed-artifact certification run
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const e=JSON.parse(fs.readFileSync('v6-rc-exact-sha-evidence.json','utf8'));const r=e.workflows.find(x=>x.workflow==='V6 Deployed Artifact Verification');if(!r||!Number.isInteger(r.runId))process.exit(1);fs.appendFileSync(process.env.GITHUB_ENV,'BQ_RC_DEPLOYMENT_RUN_ID='+r.runId+'\\n');"
+
+      - name: Download exact RC certification artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${BQ_RC_DEPLOYMENT_RUN_ID}"             --repo "${GITHUB_REPOSITORY}"             --name "v6-rc-certification-${BQ_RC_CANDIDATE_SHA}"             --dir rc-certification
+
+      - name: Bind production proof to certified artifact digest
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const sha=process.env.BQ_RC_CANDIDATE_SHA.toLowerCase();if(String(c.candidateSha||'').toLowerCase()!==sha)throw new Error('RC certification SHA mismatch');if(!/^[0-9a-f]{64}$/i.test(String(c.artifactSha256||'')))throw new Error('RC certification artifact digest missing');fs.appendFileSync(process.env.GITHUB_ENV,'BQ_CERTIFIED_ARTIFACT_SHA256='+String(c.artifactSha256).toLowerCase()+'\\n');"
+
+      - name: Verify production bytes equal the certified RC artifact
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.production_url }}
+          BQ_EXPECTED_SHA: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          BQ_EXPECTED_ARTIFACT_SHA256: ${{ env.BQ_CERTIFIED_ARTIFACT_SHA256 }}
+        run: node scripts/v6-deployment-verify.mjs > v6-production-deployment-evidence.json
+
+      - name: Run exact-SHA production smoke
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.production_url }}
+          BQ_EXPECTED_SHA: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          BQ_LIVE_SMOKE_OUTPUT: v6-production-smoke-evidence.json
+        run: node scripts/v6-live-smoke.mjs
+
+      - name: Assemble production promotion evidence
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const rc=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const gates=JSON.parse(fs.readFileSync('v6-rc-exact-sha-evidence.json','utf8'));const deployment=JSON.parse(fs.readFileSync('v6-production-deployment-evidence.json','utf8'));const smoke=JSON.parse(fs.readFileSync('v6-production-smoke-evidence.json','utf8'));const out={schemaVersion:1,repository:process.env.GITHUB_REPOSITORY,candidateSha:process.env.BQ_RC_CANDIDATE_SHA.toLowerCase(),artifactSha256:process.env.BQ_CERTIFIED_ARTIFACT_SHA256,productionOrigin:deployment.deploymentOrigin,verifiedAt:new Date().toISOString(),sourceRcCertification:{certifyingRunId:rc.certifyingRunId,previewOrigin:rc.deploymentOrigin},gates,deployment,smoke};fs.writeFileSync('v6-production-promotion-evidence.json',JSON.stringify(out,null,2)+'\\n');"
+
+      - name: Publish production evidence summary
+        shell: bash
+        run: |
+          {
+            echo '## V6 certified-SHA production verification'
+            echo
+            cat v6-production-promotion-evidence.json
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload production promotion evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-production-promotion-evidence-${{ env.BQ_RC_CANDIDATE_SHA }}
+          path: |
+            v6-production-promotion-evidence.json
+            v6-production-deployment-evidence.json
+            v6-production-smoke-evidence.json
+            v6-rc-exact-sha-evidence.json
+            rc-certification/v6-rc-certification.json
+          if-no-files-found: error
+          retention-days: 90
