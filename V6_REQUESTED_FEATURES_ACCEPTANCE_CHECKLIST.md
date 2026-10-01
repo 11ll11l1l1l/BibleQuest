@@ -34,6 +34,8 @@ Twelfth acceptance reconciliation at integrated head `bb0e2251a74049e5309b4fb9ae
 
 Thirteenth acceptance reconciliation at integrated head `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9`: PR #939 merged from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; V6 Phase-1 Build Gate `36792168865` and inherited regression `36792168887` passed. The systemic architecture gate inventories protected Admin, Assignments, Congregation, Content Review, Journey Groups, Leader Center, Live Rooms, Ministry Announcements, Team Center and Recordings presentation modules, rejects direct Supabase/RPC/Edge transports from those presentation modules, verifies delegation to domain owners, and ties their role/tenant re-checks to existing executable server-authority/RLS evidence. This promotes only `Feature modules do not make UI visibility the authority for protected actions.` Inventory is now **180 checked / 31 open (211 total, 85.3%)**.
 
+Fourteenth acceptance reconciliation at integrated head `16d41b9b299917d1dd602706029e7ea49600af8d`: merged security-advisor tranche #941 passed Database CI `36816949175` and inherited regression `36816949184`, documenting and testing the current Supabase advisor findings without weakening RLS or custom authorization; merged route-parity PR #951 exact head `5cb9a21fe7c7aa1d355be57fe07275b83248bb9a` passed Phase-1 `36818526913` and inherited regression `36818526856`, with a frozen 42-route V4→V6 route/feature-owner matrix and executable gate; merged database-upgrade work #950 plus provenance correction #952 exact head `b50b2d97ba3b11ac46d93fe9cc9a7a2db1df4d1c` passed Phase-1 `36819301790`, Database CI `36819301772`, and inherited regression `36819301881`, proving the V4 production merge `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb` upgrades through released V5 and current V6 migrations with the current RLS/privilege suite. This promotes exactly `Relevant Supabase security-advisor findings are triaged before RC freeze`, `V4→V6 upgrade database path is tested before RC`, and `V4→V6 route/feature parity matrix is complete`. Leaked-password protection, global tenant closure, physical/device evidence, deployed Cloudflare identity, RC and production rows remain OPEN. Inventory is now **183 checked / 28 open (211 total, 86.7%)**.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -256,7 +258,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] CSP is compatible with media/push/build architecture and enforced as accepted.
 - [x] Secret scanning/client artifact scanning exists.
 - [x] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
-- [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
+- [x] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
 ## N. Design system / i18n / accessibility
 
@@ -290,8 +292,8 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] PWA/offline gate covers real V6 SW/content architecture.
 - [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
 - [ ] Exact-SHA Cloudflare preview verification remains mandatory.
-- [ ] V4→V6 upgrade database path is tested before RC.
-- [ ] V4→V6 route/feature parity matrix is complete.
+- [x] V4→V6 upgrade database path is tested before RC.
+- [x] V4→V6 route/feature parity matrix is complete.
 - [ ] One exact V6 RC SHA passes all applicable automated gates.
 - [ ] Required field/device evidence is attached to exact candidate.
 - [x] No WAIVED item is represented as PASS.
