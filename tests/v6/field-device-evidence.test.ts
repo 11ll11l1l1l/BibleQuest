@@ -81,3 +81,21 @@ test('critical manual accessibility cannot pass without physical observations', 
   assertExactCandidateMetadata(evidence);
   for (const label of manualGates) assertGateEvidence(evidence, label);
 });
+
+const installedPwaChecklistRow = 'Physical installed-PWA offline acceptance passes.';
+
+test('physical installed-PWA acceptance cannot pass without exact-candidate device observation', () => {
+  const checklist = read('V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md');
+  const evidence = read('docs/v6/V6_FIELD_DEVICE_EVIDENCE.md');
+
+  assert.ok(
+    checklist.includes('- [ ] ' + installedPwaChecklistRow) ||
+      checklist.includes('- [x] ' + installedPwaChecklistRow),
+    'physical installed-PWA acceptance row must remain present',
+  );
+
+  if (!isChecked(checklist, installedPwaChecklistRow)) return;
+
+  assertExactCandidateMetadata(evidence);
+  assertGateEvidence(evidence, 'Installed-PWA offline behavior');
+});

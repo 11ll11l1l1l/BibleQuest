@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" data-bq-v6-field-device>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>BibleQuest V6 Physical PWA + Accessibility Field Harness</title>
+  <link rel="stylesheet" href="./v6-field-device.css">
+</head>
+<body>
+<main>
+  <section>
+    <p class="warning">QA ONLY — V6 PHYSICAL DEVICE HARNESS</p>
+    <h1>Physical PWA + accessibility acceptance</h1>
+    <p>This unlinked page records observations that browser automation cannot prove. It never marks a release checklist row complete by itself.</p>
+    <p>Run it from the exact deployed V6 candidate on the physical device being certified. If the build SHA changes, repeat the observations.</p>
+  </section>
+
+  <section aria-labelledby="candidate-heading">
+    <h2 id="candidate-heading">Exact candidate</h2>
+    <dl class="status-grid">
+      <dt>Harness</dt><dd data-field-harness>booting</dd>
+      <dt>Candidate SHA</dt><dd data-field-sha>checking</dd>
+      <dt>Installed display mode</dt><dd data-field-installed>checking</dd>
+      <dt>Network</dt><dd data-field-network>checking</dd>
+      <dt>Service worker</dt><dd data-field-worker>checking</dd>
+    </dl>
+    <div class="actions">
+      <button type="button" data-field-refresh>Refresh device state</button>
+    </div>
+    <p data-field-message role="status" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="metadata-heading">
+    <h2 id="metadata-heading">Evidence metadata</h2>
+    <label>Tester
+      <input data-field-tester autocomplete="name" placeholder="Name or QA identifier">
+    </label>
+    <label>Device / OS / browser
+      <input data-field-device placeholder="Example: Pixel 9 / Android 16 / Chrome 141">
+    </label>
+    <label>Environment
+      <input data-field-environment placeholder="Example: Cloudflare preview / production">
+    </label>
+    <label>Durable evidence reference
+      <input data-field-reference placeholder="PR comment, issue, artifact, or field-record ID">
+    </label>
+  </section>
+
+  <section data-gate="installed-pwa" aria-labelledby="pwa-heading">
+    <h2 id="pwa-heading">Installed-PWA offline behavior</h2>
+    <p>These checks must be performed in the installed app, not only in a normal browser tab.</p>
+    <label class="check"><input type="checkbox" data-step="installed"> App is launched in standalone/installed mode on this physical device.</label>
+    <label class="check"><input type="checkbox" data-step="warm"> Candidate was opened online first and the service worker reached an active/ready state.</label>
+    <label class="check"><input type="checkbox" data-step="offline-launch"> With network disabled, the installed app cold-launched without a startup failure.</label>
+    <label class="check"><input type="checkbox" data-step="offline-home"> Home rendered and remained navigable while offline.</label>
+    <label class="check"><input type="checkbox" data-step="offline-reader"> Reader opened offline and previously installed Scripture remained readable/navigation-safe.</label>
+    <label class="check"><input type="checkbox" data-step="restart"> After fully closing and reopening while still offline, the accepted offline behavior remained intact.</label>
+    <label>Verdict
+      <select data-gate-status>
+        <option value="PENDING">PENDING</option>
+        <option value="PASS">PASS</option>
+        <option value="FAIL">FAIL</option>
+      </select>
+    </label>
+    <label>Observation
+      <textarea data-gate-notes rows="4" placeholder="Record what was physically observed."></textarea>
+    </label>
+  </section>
+
+  <section data-gate="keyboard-focus" aria-labelledby="keyboard-heading">
+    <h2 id="keyboard-heading">Manual accessibility: keyboard/focus</h2>
+    <label class="check"><input type="checkbox" data-step="sequence"> Visible focus follows a logical sequence through primary navigation and the tested workflow.</label>
+    <label class="check"><input type="checkbox" data-step="activation"> Enter/Space activation works where applicable and focus is not trapped.</label>
+    <label class="check"><input type="checkbox" data-step="return"> Dialog/menu dismissal returns focus to a sensible visible target.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
+  </section>
+
+  <section data-gate="screen-reader" aria-labelledby="reader-heading">
+    <h2 id="reader-heading">Manual accessibility: screen reader</h2>
+    <label class="check"><input type="checkbox" data-step="labels"> Primary controls have understandable spoken names/roles/states.</label>
+    <label class="check"><input type="checkbox" data-step="headings"> Heading/landmark navigation reaches the expected regions.</label>
+    <label class="check"><input type="checkbox" data-step="updates"> Important dynamic updates are announced without disruptive repeated speech.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
+  </section>
+
+  <section data-gate="text-scaling" aria-labelledby="scale-heading">
+    <h2 id="scale-heading">Manual accessibility: text scaling/readability</h2>
+    <label class="check"><input type="checkbox" data-step="scale"> At 200% browser zoom or equivalent OS text scaling, core content remains readable.</label>
+    <label class="check"><input type="checkbox" data-step="reflow"> No essential text/control is clipped, overlapped, or hidden by horizontal overflow.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
+  </section>
+
+  <section data-gate="touch-overflow" aria-labelledby="touch-heading">
+    <h2 id="touch-heading">Manual accessibility: touch/mobile targets and overflow</h2>
+    <label class="check"><input type="checkbox" data-step="targets"> Primary touch targets can be activated reliably without accidental adjacent activation.</label>
+    <label class="check"><input type="checkbox" data-step="orientation"> Portrait and landscape keep critical actions reachable without destructive overflow.</label>
+    <label class="check"><input type="checkbox" data-step="safe-area"> Fixed navigation respects device safe areas/notches where applicable.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
+  </section>
+
+  <section data-gate="motion-contrast" aria-labelledby="motion-heading">
+    <h2 id="motion-heading">Manual accessibility: reduced motion/contrast</h2>
+    <label class="check"><input type="checkbox" data-step="motion"> With reduced-motion enabled, nonessential motion is removed or reduced without losing meaning.</label>
+    <label class="check"><input type="checkbox" data-step="contrast"> Text, focus indicators, controls, and important states remain distinguishable in the tested contrast/theme settings.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
+  </section>
+
+  <section aria-labelledby="export-heading">
+    <h2 id="export-heading">Export sanitized field record</h2>
+    <p>PASS is accepted only when every required sub-check for that gate is checked and its observation is non-empty. The export contains no credentials, auth tokens, push endpoints, or account identifiers.</p>
+    <div class="actions">
+      <button type="button" data-field-copy>Copy JSON</button>
+      <button type="button" data-field-download>Download JSON</button>
+      <button type="button" data-field-reset>Reset this candidate</button>
+    </div>
+  </section>
+</main>
+<script type="module" src="./v6-field-device.js"></script>
+</body>
+</html>
