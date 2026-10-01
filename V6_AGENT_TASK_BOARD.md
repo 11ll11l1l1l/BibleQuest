@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- PR #939 is integrated at `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9` from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; Phase-1 `36792168865` and inherited regression `36792168887` passed. The protected feature-authority boundary is now accepted. After reconciliation: **180 checked / 31 open / 211 total = 85.3%**.
+
 - PR #934 is integrated at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed, including exact built-artifact report-only and enforcing CSP Chromium gates. CSP is now accepted. After reconciliation: **179 checked / 32 open / 211 total = 84.8%**.
 
 - PR #912 is integrated at `de1ee50c9d25f8a3dcc8507b2f59c2f2e00d7e35` from exact head `5e1b99f674648e83ab6141ee810deec6ee055194`; its green Phase-1/inherited/artifact-security evidence closes the explicit removable permission-gated offline-download and selective-audio/no-silent-full-cache rows. Alignment-dependent Reader behavior remains fail-closed.
@@ -83,14 +85,6 @@ Work:
 - after Pages publish root is corrected to `dist-v6`, rerun #935 and attach exact deployed-byte evidence;
 - while external configuration remains blocked, pivot to W1-02.
 
-### W2-04 — Protected-action authority closure
-Owner bias: W2 / IC
-Checklist target:
-- Feature modules do not make UI visibility the authority for protected actions.
-Work:
-- inventory migrated feature modules with protected mutations;
-- prove presentation-only visibility gates delegate to server-authorized API/RLS/Edge Function boundaries;
-- add a fail-closed architectural regression rather than accepting one-screen evidence.
 
 ## P1 — take when P0 item is owned/blocked
 
