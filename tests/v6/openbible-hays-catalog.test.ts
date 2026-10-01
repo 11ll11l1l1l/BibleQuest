@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../scripts/v6-generate-scripture-manifests.mjs';
 import { bindOpenBibleHaysAlignmentIdentity, createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysAlignmentBundle, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
+import { audioOfflineEligibility } from '../../src/v6/reader/audio-policy.ts';
 
 const root = new URL('../../', import.meta.url);
 
@@ -17,7 +18,14 @@ test('OpenBible Hays catalog creates direct source URLs for all 1,189 BSB chapte
   const manifest = createOpenBibleHaysStreamingManifest('bsb-test-scripture-revision', books);
   assert.equal(manifest.segments.length, 1189);
   assert.equal(manifest.source.permissions?.stream, 'allowed');
-  assert.equal(manifest.source.permissions?.offlineCopy, 'review-required');
+  assert.equal(manifest.source.permissions?.offlineCopy, 'allowed');
+  assert.equal(manifest.source.rights, 'verified');
+  assert.equal(manifest.source.delivery, 'stream');
+  assert.equal(manifest.source.textAlignment, 'unverified');
+  assert.ok(manifest.source.rightsEvidence?.includes('audiobible.org'));
+  assert.ok(manifest.source.reviewedBy);
+  assert.ok(Number.isFinite(Date.parse(manifest.source.reviewedAt || '')));
+  assert.equal(audioOfflineEligibility(manifest).eligible, false);
   const gen = manifest.segments.find(segment => segment.id === 'GEN-1');
   const john = manifest.segments.find(segment => segment.id === 'JHN-21');
   assert.equal(gen?.url, 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3');
@@ -42,7 +50,9 @@ test('OpenBible Souer alternative maps every chapter to its original direct-stre
     'https://openbible.com/audio/souer/BSB_01_Gen_001.mp3');
   assert.equal(manifest.segments.find(segment => segment.id === 'JHN-21')?.url,
     'https://openbible.com/audio/souer/BSB_43_Jhn_021.mp3');
-  assert.equal(manifest.source.permissions?.offlineCopy, 'review-required');
+  assert.equal(manifest.source.permissions?.offlineCopy, 'allowed');
+  assert.equal(manifest.source.rights, 'verified');
+  assert.equal(manifest.source.delivery, 'stream');
 });
 
 test('lazy catalog loader pins the stream catalog to the generated current BSB package version', async () => {
@@ -235,7 +245,15 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   assert.equal(bound.contentVersion, exactAudioContentVersion);
   assert.equal(bound.segments[0].sha256, 'd'.repeat(64));
   assert.ok((bound.segments[0].byteLength || 0) > 0);
-  assert.equal(bound.source.permissions?.offlineCopy, 'review-required');
+  assert.equal(bound.source.permissions?.offlineCopy, 'allowed');
+  assert.equal(bound.source.rights, 'verified');
+  assert.equal(bound.source.delivery, 'downloadable');
+  assert.equal(bound.source.textAlignment, 'exact');
+  assert.deepEqual(audioOfflineEligibility(bound), {
+    eligible: true,
+    reason: 'eligible',
+    totalBytes: bound.segments.reduce((sum, segment) => sum + (segment.byteLength || 0), 0),
+  });
 
   assert.equal(await loadOpenBibleHaysAlignmentBundle('sha256-other-bsb', books, async () => ({
     ok: true, async json() { return payload; },
