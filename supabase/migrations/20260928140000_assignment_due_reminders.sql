@@ -1,5 +1,33 @@
 -- Assignment due reminders are durable inbox rows first, with the existing
 -- service-only push sender handling optional Web Push delivery afterward.
+--
+-- Keep this migration deployable on production environments that have the
+-- released V5 notification schema but have not yet replayed the additive V6
+-- notification-preference migration. The canonical V6 producer migration
+-- applies the same column/constraint earlier on clean V6 database replays.
+
+alter table public.bible_notifications
+  add column if not exists delivery_category text;
+
+do $bq_due_category_constraint$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'bible_notifications_v6_delivery_category_check'
+      and conrelid = 'public.bible_notifications'::regclass
+  ) then
+    alter table public.bible_notifications
+      add constraint bible_notifications_v6_delivery_category_check
+      check (
+        delivery_category is null
+        or delivery_category = any (
+          array['reading','assignments','ministry','announcements','encouragement','streaks']::text[]
+        )
+      );
+  end if;
+end
+$bq_due_category_constraint$;
 
 create unique index if not exists bible_notifications_assignment_due_once_idx
   on public.bible_notifications (
