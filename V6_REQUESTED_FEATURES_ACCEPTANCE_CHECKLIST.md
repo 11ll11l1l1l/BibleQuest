@@ -325,6 +325,8 @@ Integrated-candidate authority evidence (2026-10-01): the systemic explicit-tena
 - [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.
 - [x] Client bundles/logs/diagnostics contain no privileged secrets, auth tokens or unnecessary private content.
 - [x] Accessibility, localization and 320/360/390/412/430px mobile behavior remain regression-covered on migrated surfaces.
-- [ ] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
+- [x] Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.
+
+Evidence-policy closure (2026-10-02): `docs/v6/V6_ACCEPTANCE_EVIDENCE_POLICY.json` schema v2 classifies every currently unresolved V6 acceptance blocker with one or more explicit evidence paths and durable reference kinds. `tests/v6/acceptance-evidence-class-policy.test.ts` fails if a new unresolved row is unclassified, if a checked tracked row lacks typed exact-SHA evidence, or if physical/live/deployed evidence is represented by the wrong reference class. This closes only the cross-cutting evidence-policy invariant; all dependent physical-device, Cloudflare/deployment, BSB Audio, assignment-push, leaked-password and RC/promotion rows remain independently fail-closed until their own evidence exists.
 - [x] Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.
 - [ ] One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion.

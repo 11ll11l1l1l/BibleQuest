@@ -1,6 +1,7 @@
 {
-  "schemaVersion": 1,
-  "coverageStatus": "PARTIAL",
+  "schemaVersion": 2,
+  "coverageStatus": "COMPLETE",
+  "coverageScope": "all currently open V6 acceptance rows except the evidence-policy target itself; tracked rows remain governed after promotion",
   "targetRow": "Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.",
   "allowedEvidenceClasses": [
     "STATIC",
@@ -11,12 +12,28 @@
     "DEPLOYED",
     "PHYSICAL-DEVICE"
   ],
+  "allowedReferenceKinds": [
+    "workflow",
+    "artifact",
+    "physical-record",
+    "live-record",
+    "deployment-record",
+    "decision-record"
+  ],
   "rows": [
     {
       "row": "V4→V6 route/feature parity matrix is complete.",
-      "requiredClasses": [
-        "UNIT",
-        "BUILT-BROWSER"
+      "options": [
+        {
+          "id": "automated-route-parity",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER"
+          ],
+          "requiredReferenceKinds": [
+            "workflow"
+          ]
+        }
       ],
       "evidence": {
         "headSha": "5cb9a21fe7c7aa1d355be57fe07275b83248bb9a",
@@ -39,45 +56,308 @@
       }
     },
     {
+      "row": "Cloudflare exact-SHA deployment identity works from built artifacts.",
+      "options": [
+        {
+          "id": "exact-deployed-identity",
+          "requiredClasses": [
+            "DEPLOYED"
+          ],
+          "requiredReferenceKinds": [
+            "deployment-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
       "row": "Physical installed-PWA offline acceptance passes.",
-      "requiredClasses": [
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "physical-installed-pwa",
+          "requiredClasses": [
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.",
+      "options": [
+        {
+          "id": "offline-audio-integrity-and-live-fallback",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER",
+            "EXTERNAL-LIVE"
+          ],
+          "requiredReferenceKinds": [
+            "workflow",
+            "live-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.",
+      "options": [
+        {
+          "id": "versioned-alignment-manifest",
+          "requiredClasses": [
+            "STATIC",
+            "UNIT"
+          ],
+          "requiredReferenceKinds": [
+            "artifact",
+            "workflow"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Current verse highlights during playback and tapping a verse seeks to the correct audio position.",
+      "options": [
+        {
+          "id": "rendered-verse-sync",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER"
+          ],
+          "requiredReferenceKinds": [
+            "workflow"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.",
+      "options": [
+        {
+          "id": "rendered-autoscroll",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER"
+          ],
+          "requiredReferenceKinds": [
+            "workflow"
+          ]
+        }
       ],
       "evidence": null
     },
     {
       "row": "Background/lock-screen media controls work where supported and degrade safely where unsupported.",
-      "requiredClasses": [
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "physical-media-session",
+          "requiredClasses": [
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Assignment assigned/due push is supported.",
+      "options": [
+        {
+          "id": "database-and-live-assignment-push",
+          "requiredClasses": [
+            "DATABASE",
+            "EXTERNAL-LIVE"
+          ],
+          "requiredReferenceKinds": [
+            "workflow",
+            "live-record"
+          ]
+        }
       ],
       "evidence": null
     },
     {
       "row": "Physical-device push acceptance passes.",
-      "requiredClasses": [
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "physical-push",
+          "requiredClasses": [
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.",
+      "options": [
+        {
+          "id": "supabase-hosted-protection",
+          "requiredClasses": [
+            "EXTERNAL-LIVE"
+          ],
+          "requiredReferenceKinds": [
+            "live-record"
+          ]
+        },
+        {
+          "id": "accepted-first-party-equivalent",
+          "requiredClasses": [
+            "STATIC",
+            "UNIT"
+          ],
+          "requiredReferenceKinds": [
+            "workflow",
+            "decision-record"
+          ]
+        }
       ],
       "evidence": null
     },
     {
       "row": "Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.",
-      "requiredClasses": [
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "manual-accessibility",
+          "requiredClasses": [
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "physical-record"
+          ]
+        }
       ],
       "evidence": null
     },
     {
       "row": "Push tests include browser/service-worker coverage plus physical-device acceptance.",
-      "requiredClasses": [
-        "BUILT-BROWSER",
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "browser-and-physical-push",
+          "requiredClasses": [
+            "BUILT-BROWSER",
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "workflow",
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Exact-SHA Cloudflare preview verification remains mandatory.",
+      "options": [
+        {
+          "id": "exact-preview-deployment",
+          "requiredClasses": [
+            "DEPLOYED"
+          ],
+          "requiredReferenceKinds": [
+            "deployment-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "One exact V6 RC SHA passes all applicable automated gates.",
+      "options": [
+        {
+          "id": "automated-rc",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER",
+            "DATABASE"
+          ],
+          "requiredReferenceKinds": [
+            "workflow"
+          ]
+        }
       ],
       "evidence": null
     },
     {
       "row": "Required field/device evidence is attached to exact candidate.",
-      "requiredClasses": [
-        "PHYSICAL-DEVICE"
+      "options": [
+        {
+          "id": "exact-candidate-field-evidence",
+          "requiredClasses": [
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Production promotion uses the exact certified candidate.",
+      "options": [
+        {
+          "id": "exact-production-promotion",
+          "requiredClasses": [
+            "DEPLOYED"
+          ],
+          "requiredReferenceKinds": [
+            "deployment-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Post-production exact-SHA + route + PWA + offline + push smoke passes.",
+      "options": [
+        {
+          "id": "post-production-smoke",
+          "requiredClasses": [
+            "DEPLOYED",
+            "EXTERNAL-LIVE",
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "deployment-record",
+            "live-record",
+            "physical-record"
+          ]
+        }
+      ],
+      "evidence": null
+    },
+    {
+      "row": "One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion.",
+      "options": [
+        {
+          "id": "full-release-candidate",
+          "requiredClasses": [
+            "UNIT",
+            "BUILT-BROWSER",
+            "DATABASE",
+            "EXTERNAL-LIVE",
+            "DEPLOYED",
+            "PHYSICAL-DEVICE"
+          ],
+          "requiredReferenceKinds": [
+            "workflow",
+            "live-record",
+            "deployment-record",
+            "physical-record"
+          ]
+        }
       ],
       "evidence": null
     }
