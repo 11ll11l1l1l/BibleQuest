@@ -29,6 +29,7 @@ function inventoryDigest(input) {
   const header = [
     'bsb',
     input.audioContentVersion,
+    input.audioInventorySha256 ?? '',
     input.scriptureContentVersion,
     input.alignmentSource,
     input.alignmentRevision,
@@ -38,6 +39,8 @@ function inventoryDigest(input) {
     String(row.book).toUpperCase(),
     row.chapter,
     row.durationSeconds,
+    row.audioSha256 ?? '',
+    row.audioByteLength ?? '',
     row.verses.map(verse => String(verse.verse) + '@' + verse.startSeconds + '-' + verse.endSeconds).join(','),
   ].join('|'));
   return createHash('sha256').update([header, ...rows].join('\n')).digest('hex');
@@ -47,6 +50,7 @@ export function buildBsbAlignmentManifest({
   alignments,
   metadata,
   scriptureContentVersion,
+  audioInventorySha256 = null,
   complete = false,
 }) {
   if (!metadata || metadata.translationId !== 'bsb') fail('BSB alignment manifest requires translationId "bsb".');
@@ -58,6 +62,12 @@ export function buildBsbAlignmentManifest({
   if (!nonBlank(scriptureContentVersion)) fail('BSB alignment manifest requires the current Scripture content version.');
   if (!Array.isArray(alignments) || alignments.length === 0) fail('BSB alignment manifest requires chapter timings.');
   if (typeof complete !== 'boolean') fail('BSB alignment manifest completeness must be boolean.');
+  if (audioInventorySha256 !== null && !SHA256.test(String(audioInventorySha256))) {
+    fail('BSB alignment manifest audio inventory checksum must be a 64-hex SHA-256 value.');
+  }
+  if (complete && !SHA256.test(String(audioInventorySha256 ?? ''))) {
+    fail('Complete BSB alignment manifest requires an exact audio inventory checksum.');
+  }
 
   const alignmentSource = metadata.alignmentSource.trim() + '@' + revision;
   const chapters = sortedChapters(alignments);
@@ -81,6 +91,9 @@ export function buildBsbAlignmentManifest({
       chapter: Number(row.chapter),
     });
     if (!validation.valid) fail('BSB alignment manifest contains invalid timing for ' + key + ': ' + validation.issues.join('; ') + '.');
+    if (complete && (!SHA256.test(String(row.audioSha256 ?? '')) || !Number.isSafeInteger(row.audioByteLength) || row.audioByteLength < 1)) {
+      fail('Complete BSB alignment manifest requires exact audio checksum/size for ' + key + '.');
+    }
     verseCount += row.verses.length;
   }
   if (complete && chapters.length !== EXPECTED_BSB_CHAPTERS) {
@@ -89,6 +102,7 @@ export function buildBsbAlignmentManifest({
 
   const inventorySha256 = inventoryDigest({
     audioContentVersion: metadata.contentVersion,
+    audioInventorySha256,
     scriptureContentVersion,
     alignmentSource,
     alignmentRevision: revision,
@@ -100,6 +114,7 @@ export function buildBsbAlignmentManifest({
     translationId: 'bsb',
     alignmentContentVersion: 'sha256-' + inventorySha256,
     audioContentVersion: metadata.contentVersion,
+    audioInventorySha256,
     scriptureContentVersion,
     alignmentSource,
     alignmentRevision: revision,
@@ -118,6 +133,8 @@ export function validateBsbAlignmentManifest(manifest, expected = {}) {
   if (manifest.translationId !== 'bsb') issues.push('alignment manifest must be BSB');
   if (!nonBlank(manifest.audioContentVersion)) issues.push('audio content version is required');
   if (!nonBlank(manifest.scriptureContentVersion)) issues.push('Scripture content version is required');
+  if (manifest.audioInventorySha256 !== null && manifest.audioInventorySha256 !== undefined
+    && !SHA256.test(String(manifest.audioInventorySha256))) issues.push('audio inventory checksum is invalid');
   if (!nonBlank(manifest.alignmentSource)) issues.push('alignment source is required');
   if (!GIT_REVISION.test(String(manifest.alignmentRevision ?? ''))) issues.push('immutable alignment revision is required');
   if (typeof manifest.complete !== 'boolean') issues.push('completeness flag is required');
@@ -134,8 +151,12 @@ export function validateBsbAlignmentManifest(manifest, expected = {}) {
   if (manifest.complete === true && manifest.chapterCount !== EXPECTED_BSB_CHAPTERS) {
     issues.push('complete alignment manifest does not contain all BSB chapters');
   }
+  if (manifest.complete === true && !SHA256.test(String(manifest.audioInventorySha256 ?? ''))) {
+    issues.push('complete alignment manifest requires an exact audio inventory checksum');
+  }
   if (expected.requireComplete === true && manifest.complete !== true) issues.push('complete alignment manifest is required');
   if (expected.audioContentVersion && manifest.audioContentVersion !== expected.audioContentVersion) issues.push('audio content version mismatch');
+  if (expected.audioInventorySha256 && manifest.audioInventorySha256 !== expected.audioInventorySha256) issues.push('audio inventory checksum mismatch');
   if (expected.scriptureContentVersion && manifest.scriptureContentVersion !== expected.scriptureContentVersion) issues.push('Scripture content version mismatch');
 
   if (Array.isArray(manifest.chapters)) {
@@ -157,12 +178,17 @@ export function validateBsbAlignmentManifest(manifest, expected = {}) {
         chapter: Number(row?.chapter),
       });
       if (!validation.valid) issues.push('invalid chapter timing for ' + key);
+      if (manifest.complete === true && (!SHA256.test(String(row?.audioSha256 ?? ''))
+        || !Number.isSafeInteger(row?.audioByteLength) || row.audioByteLength < 1)) {
+        issues.push('complete chapter audio identity missing for ' + key);
+      }
       if (Array.isArray(row?.verses)) verseCount += row.verses.length;
     }
     if (Number.isSafeInteger(manifest.verseCount) && verseCount !== manifest.verseCount) issues.push('verse count mismatch');
     if (issues.length === 0 || SHA256.test(String(manifest.inventorySha256 ?? ''))) {
       const digest = inventoryDigest({
         audioContentVersion: manifest.audioContentVersion,
+        audioInventorySha256: manifest.audioInventorySha256 ?? null,
         scriptureContentVersion: manifest.scriptureContentVersion,
         alignmentSource: manifest.alignmentSource,
         alignmentRevision: manifest.alignmentRevision,
