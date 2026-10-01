@@ -74,13 +74,12 @@ jobs:
       - name: Bind production proof to certified artifact digest
         shell: bash
         run: |
-          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const sha=process.env.BQ_RC_CANDIDATE_SHA.toLowerCase();if(String(c.candidateSha||'').toLowerCase()!==sha)throw new Error('RC certification SHA mismatch');if(!/^[0-9a-f]{64}$/i.test(String(c.artifactSha256||'')))throw new Error('RC certification artifact digest missing');fs.appendFileSync(process.env.GITHUB_ENV,'BQ_CERTIFIED_ARTIFACT_SHA256='+String(c.artifactSha256).toLowerCase()+'\\n');"
+          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const sha=process.env.BQ_RC_CANDIDATE_SHA.toLowerCase();if(String(c.candidateSha||'').toLowerCase()!==sha)throw new Error('RC certification SHA mismatch');if(!/^[0-9a-f]{64}$/i.test(String(c.artifactSha256||'')))throw new Error('RC certification artifact digest missing');fs.appendFileSync(process.env.GITHUB_ENV,'BQ_CERTIFIED_ARTIFACT_SHA256='+String(c.artifactSha256).toLowerCase()+'\\nBQ_EXPECTED_ARTIFACT_SHA256='+String(c.artifactSha256).toLowerCase()+'\\n');"
 
       - name: Verify production bytes equal the certified RC artifact
         env:
           BQ_DEPLOYMENT_URL: ${{ inputs.production_url }}
           BQ_EXPECTED_SHA: ${{ env.BQ_RC_CANDIDATE_SHA }}
-          BQ_EXPECTED_ARTIFACT_SHA256: ${{ env.BQ_CERTIFIED_ARTIFACT_SHA256 }}
         run: node scripts/v6-deployment-verify.mjs > v6-production-deployment-evidence.json
 
       - name: Run exact-SHA production smoke
