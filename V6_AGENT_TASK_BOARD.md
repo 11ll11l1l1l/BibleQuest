@@ -83,14 +83,6 @@ Work:
 - after Pages publish root is corrected to `dist-v6`, rerun #935 and attach exact deployed-byte evidence;
 - while external configuration remains blocked, pivot to W1-02.
 
-### W2-04 — Protected-action authority closure
-Owner bias: W2 / IC
-Checklist target:
-- Feature modules do not make UI visibility the authority for protected actions.
-Work:
-- inventory migrated feature modules with protected mutations;
-- prove presentation-only visibility gates delegate to server-authorized API/RLS/Edge Function boundaries;
-- add a fail-closed architectural regression rather than accepting one-screen evidence.
 
 ## P1 — take when P0 item is owned/blocked
 
