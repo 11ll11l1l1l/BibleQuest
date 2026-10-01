@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import { buildBsbAlignmentManifest, validateBsbAlignmentManifest } from '../../scripts/v6-bsb-alignment-manifest.mjs';
 import { convertBsbWordAlignments, remapBsbAlignmentVerseIds } from '../../scripts/v6-import-bsb-word-alignments.mjs';
+import { computeHaysAudioInventoryDigest } from '../../scripts/v6-hays-source-inventory.mjs';
 
 const metadata = {
   translationId: 'bsb', source: 'Barry Hays / OpenBible candidate', license: 'CC0 claim awaiting review',
@@ -28,6 +29,28 @@ const words = [{
   },
 }];
 const durations = [{ book: 'GEN', chapter: 1, durationSeconds: 5 }];
+
+function partialHaysInventory(durationSeconds = 5) {
+  const files = [{
+    book: 'GEN', chapter: 1, filename: 'BSB_01_Gen_001_H.mp3',
+    byteLength: 12345, sha256: 'c'.repeat(64), durationSeconds,
+    sourceUrl: 'https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3',
+  }];
+  const inventorySha256 = computeHaysAudioInventoryDigest(files);
+  return {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    narrator: 'Barry Hays',
+    source: 'OpenBible Barry Hays',
+    sourceBaseUrl: 'https://openbible.com/audio/hays/',
+    chapters: files.length,
+    totalBytes: files[0].byteLength,
+    totalDurationSeconds: durationSeconds,
+    inventorySha256,
+    contentVersion: 'sha256-' + inventorySha256,
+    files,
+  };
+}
 
 test('BSB word timings convert only against matching current verse text and bind to its immutable version', () => {
   const result = convertBsbWordAlignments({
@@ -56,10 +79,10 @@ test('BSB word timing import rejects stale text, partial verse coverage, bad dur
   assert.throws(() => convertBsbWordAlignments({ ...args, records: [{ ...words[0], verses: { '1': [{ ...words[0].verses['1'][0], end: 9 }] } }] }), /out-of-duration bounds/i);
 });
 
-test('full BSB import mode requires every chapter alignment and duration record', () => {
+test('full BSB import mode requires an exact Hays audio inventory before release completeness can be evaluated', () => {
   assert.throws(() => convertBsbWordAlignments({
     records: words, durations, bookPacks: { GEN: pack }, metadata, scriptureContentVersion: 'bsb-current',
-  }), /full BSB timing import incomplete/i);
+  }), /requires the exact Hays audio inventory/i);
 });
 
 
@@ -161,4 +184,63 @@ test('BSB alignment manifest checksum binds timings to Scripture, audio and immu
     scriptureContentVersion,
     complete: false,
   }), /immutable 40-hex/i);
+});
+
+
+test('partial BSB timing import binds chapter timing to the exact Hays file checksum, size and inventory digest', () => {
+  const audioInventory = partialHaysInventory();
+  const exactMetadata = { ...metadata, contentVersion: audioInventory.contentVersion };
+  const result = convertBsbWordAlignments({
+    records: words,
+    durations,
+    bookPacks: { GEN: pack },
+    metadata: exactMetadata,
+    scriptureContentVersion: 'bsb-current-exact-audio',
+    audioInventory,
+    requireComplete: false,
+  });
+  assert.equal(result.alignments[0].audioSha256, 'c'.repeat(64));
+  assert.equal(result.alignments[0].audioByteLength, 12345);
+  assert.equal(result.manifest.audioContentVersion, audioInventory.contentVersion);
+  assert.equal(result.manifest.audioInventorySha256, audioInventory.inventorySha256);
+  assert.deepEqual(validateBsbAlignmentManifest(result.manifest, {
+    audioContentVersion: audioInventory.contentVersion,
+    audioInventorySha256: audioInventory.inventorySha256,
+    scriptureContentVersion: 'bsb-current-exact-audio',
+  }), { valid: true, issues: [] });
+});
+
+test('BSB timing import rejects copied metadata or duration rows that do not match the exact Hays inventory', () => {
+  const audioInventory = partialHaysInventory();
+  assert.throws(() => convertBsbWordAlignments({
+    records: words,
+    durations,
+    bookPacks: { GEN: pack },
+    metadata,
+    scriptureContentVersion: 'bsb-current',
+    audioInventory,
+    requireComplete: false,
+  }), /contentVersion does not match the exact Hays audio inventory/i);
+
+  const exactMetadata = { ...metadata, contentVersion: audioInventory.contentVersion };
+  assert.throws(() => convertBsbWordAlignments({
+    records: words,
+    durations: [{ book: 'GEN', chapter: 1, durationSeconds: 4.5 }],
+    bookPacks: { GEN: pack },
+    metadata: exactMetadata,
+    scriptureContentVersion: 'bsb-current',
+    audioInventory,
+    requireComplete: false,
+  }), /duration.*does not match the exact Hays audio inventory/i);
+
+  const tamperedInventory = { ...audioInventory, inventorySha256: 'd'.repeat(64), contentVersion: 'sha256-' + 'd'.repeat(64) };
+  assert.throws(() => convertBsbWordAlignments({
+    records: words,
+    durations,
+    bookPacks: { GEN: pack },
+    metadata: { ...metadata, contentVersion: tamperedInventory.contentVersion },
+    scriptureContentVersion: 'bsb-current',
+    audioInventory: tamperedInventory,
+    requireComplete: false,
+  }), /inventory checksum mismatch/i);
 });
