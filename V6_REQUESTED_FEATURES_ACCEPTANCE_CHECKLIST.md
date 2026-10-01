@@ -34,6 +34,8 @@ Twelfth acceptance reconciliation at integrated head `bb0e2251a74049e5309b4fb9ae
 
 Thirteenth acceptance reconciliation at integrated head `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9`: PR #939 merged from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; V6 Phase-1 Build Gate `36792168865` and inherited regression `36792168887` passed. The systemic architecture gate inventories protected Admin, Assignments, Congregation, Content Review, Journey Groups, Leader Center, Live Rooms, Ministry Announcements, Team Center and Recordings presentation modules, rejects direct Supabase/RPC/Edge transports from those presentation modules, verifies delegation to domain owners, and ties their role/tenant re-checks to existing executable server-authority/RLS evidence. This promotes only `Feature modules do not make UI visibility the authority for protected actions.` Inventory is now **180 checked / 31 open (211 total, 85.3%)**.
 
+Fourteenth acceptance reconciliation at integrated head `a18a2479868b8f43168bf02d22bdd65b33d6c43a`: PR #941 merged from exact head `459e5fccc4632a465dd394ded12481cb515b098b`; V6 Database CI `36816949175` and inherited regression `36816949184` passed. Current live Supabase Security Advisor findings were inspected and dispositioned in `docs/v6/V6_SUPABASE_SECURITY_ADVISOR_TRIAGE.md`; the intentional write-only telemetry `SECURITY DEFINER` ingress is guarded by executable pgTAP evidence that preserves pinned search path, reviewed execution grants, RLS, and revoked direct telemetry-table DML. The leaked-password warning remains a separate OPEN acceptance gate and was not waived by this reconciliation. This promotes only `Relevant Supabase security-advisor findings are triaged before RC freeze.` Inventory is now **181 checked / 30 open (211 total, 85.8%)**.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -256,7 +258,7 @@ Local candidate progress (2026-09-28, not release evidence): an idempotent tenan
 - [x] CSP is compatible with media/push/build architecture and enforced as accepted.
 - [x] Secret scanning/client artifact scanning exists.
 - [x] MFA/passkeys for privileged roles are evaluated with recovery implications documented.
-- [ ] Relevant Supabase security-advisor findings are triaged before RC freeze.
+- [x] Relevant Supabase security-advisor findings are triaged before RC freeze.
 
 ## N. Design system / i18n / accessibility
 
