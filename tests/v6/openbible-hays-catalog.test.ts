@@ -3,7 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../scripts/v6-generate-scripture-manifests.mjs';
-import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
+import { bindOpenBibleHaysAlignmentIdentity, createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysAlignmentBundle, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
 
 const root = new URL('../../', import.meta.url);
 
@@ -169,4 +169,82 @@ test('OpenBible audio chapter identity is a bijection over the exact current Rea
       assert.equal(segment.id, `${segment.book.toUpperCase()}-${segment.chapter}`);
     }
   }
+});
+
+
+test('live Hays timing loader enables only a complete exact-revision corpus and fails closed otherwise', async () => {
+  const bibleDirectory = new URL('data/packs/bible/', root);
+  const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name));
+  const books = await Promise.all(files.map(async name => {
+    const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
+    return { code: name.slice(0, -5), name, chapters: Math.max(...rows.map(row => row.c)) };
+  }));
+  const scriptureContentVersion = 'sha256-current-bsb';
+  const alignmentRevision = 'a'.repeat(40);
+  const alignmentSource = `BSB-publishing/bsb-align@${alignmentRevision}`;
+  const inventorySha256 = 'b'.repeat(64);
+  const audioInventorySha256 = 'c'.repeat(64);
+  const exactAudioContentVersion = `sha256-${audioInventorySha256}`;
+  const hays = createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, books, alignmentSource);
+  assert.equal(hays.alignmentSource, alignmentSource);
+  assert.throws(
+    () => createOpenBibleNarratorStreamingManifest('souer', scriptureContentVersion, books, alignmentSource),
+    /only the Barry Hays catalog/i,
+  );
+  const chapters = hays.segments.map(segment => ({
+    schemaVersion: 1,
+    translationId: 'bsb',
+    contentVersion: exactAudioContentVersion,
+    scriptureContentVersion,
+    book: segment.book,
+    chapter: segment.chapter,
+    durationSeconds: 10,
+    source: hays.source.source,
+    license: hays.source.license,
+    alignmentSource,
+    audioSha256: 'd'.repeat(64),
+    audioByteLength: 1000 + segment.chapter,
+    verses: [{ verse: 1, startSeconds: 0, endSeconds: 9 }],
+  }));
+  const payload = {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    complete: true,
+    audioContentVersion: exactAudioContentVersion,
+    audioInventorySha256,
+    scriptureContentVersion,
+    alignmentSource,
+    alignmentRevision,
+    inventorySha256,
+    alignmentContentVersion: `sha256-${inventorySha256}`,
+    chapterCount: 1189,
+    verseCount: 1189,
+    chapters,
+  };
+  const calls: string[] = [];
+  const loaded = await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async (url: string | URL | Request) => {
+    calls.push(String(url));
+    return { ok: true, async json() { return payload; } } as Response;
+  });
+  assert.equal(loaded?.chapters.length, 1189);
+  assert.equal(loaded?.alignmentSource, alignmentSource);
+  assert.equal(loaded?.audioInventorySha256, audioInventorySha256);
+  assert.equal(loaded?.audioContentVersion, exactAudioContentVersion);
+  assert.deepEqual(calls, ['/data/v6-audio/bsb-hays-alignment.json']);
+  const bound = bindOpenBibleHaysAlignmentIdentity(hays, loaded!);
+  assert.equal(bound.contentVersion, exactAudioContentVersion);
+  assert.equal(bound.segments[0].sha256, 'd'.repeat(64));
+  assert.ok((bound.segments[0].byteLength || 0) > 0);
+  assert.equal(bound.source.permissions?.offlineCopy, 'review-required');
+
+  assert.equal(await loadOpenBibleHaysAlignmentBundle('sha256-other-bsb', books, async () => ({
+    ok: true, async json() { return payload; },
+  } as Response)), null);
+  assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({
+    ok: true, async json() { return { ...payload, complete: false }; },
+  } as Response)), null);
+  assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({
+    ok: true, async json() { return { ...payload, audioContentVersion: 'openbible-hays-stream-v1' }; },
+  } as Response)), null);
+  assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({ ok: false } as Response)), null);
 });
