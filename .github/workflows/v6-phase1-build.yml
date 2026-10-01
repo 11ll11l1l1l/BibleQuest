@@ -27,6 +27,7 @@ on:
       - "v6-field-device.js"
       - "v6-field-device.css"
       - "docs/v6/V6_FIELD_DEVICE_EVIDENCE.md"
+      - "docs/v6/V6_CONTENT_MEDIA_PROVENANCE_POLICY.json"
       - "offline-shell-sw.js"
       - "innovation-suite.js"
       - "tests/v3-accessibility-smoke.mjs"
@@ -39,6 +40,7 @@ on:
       - "scripts/v6-deployment-verify.mjs"
       - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-content-media-provenance.mjs"
       - "scripts/v6-rc-exact-sha-gate.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-rc-exact-sha-gate.yml"
@@ -96,6 +98,12 @@ jobs:
 
       - name: V6 unit tests
         run: npm run unit
+
+      - name: Fetch immutable V5 provenance baseline
+        run: git fetch --no-tags --depth=1 origin bce55ca6ce7fda6ebeba004300caf7a77d56e550
+
+      - name: Audit V6 content/media provenance delta
+        run: npm run check:v6-content-media-provenance
 
       - name: Released V5 push lifecycle parity
         run: |
