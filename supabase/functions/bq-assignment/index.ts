@@ -3,10 +3,43 @@ const leaderRoles=new Set(['facilitator','leader','pastor','admin']);
 const allowedTypes=new Set(['reading','guided-study','mission','quiz','reflection','couples','group','custom']);
 const categoryFor=(type:string)=>({reading:'reading','guided-study':'reading',mission:'consistency',quiz:'knowledge',reflection:'wisdom',couples:'couples',group:'group',custom:'consistency'} as Record<string,string>)[type]||'consistency';
 const text=(v:unknown,max=500)=>String(v??'').trim().slice(0,max);
-const PUSH_NOTIFICATION_LIMIT=100;
+const PUSH_NOTIFICATION_PAGE=100;
 const PUSH_DISPATCH_BATCH=10;
 async function assignmentRecipient(admin:ReturnType<typeof adminClient>,assignment:any,userId:string){if(assignment.target_scope==='all')return true;if(assignment.target_scope==='member')return assignment.target_id===userId;if(assignment.target_scope==='team'){const team=await admin.from('bible_teams').select('id').eq('id',assignment.target_id).eq('congregation_id',assignment.congregation_id).eq('active',true).maybeSingle();if(team.error)throw team.error;if(!team.data)return false;const {data,error}=await admin.from('bible_team_members').select('user_id').eq('team_id',team.data.id).eq('user_id',userId).maybeSingle();if(error)throw error;return Boolean(data)}if(assignment.target_scope==='group'){const group=await admin.from('bible_groups').select('id').eq('id',assignment.target_id).eq('congregation_id',assignment.congregation_id).eq('active',true).maybeSingle();if(group.error)throw group.error;if(!group.data)return false;const {data,error}=await admin.from('bible_group_members').select('user_id').eq('group_id',group.data.id).eq('user_id',userId).eq('active',true).maybeSingle();if(error)throw error;return Boolean(data)}return false}
-async function dispatchAssignmentPush(admin:ReturnType<typeof adminClient>,assignmentId:string,notificationType:'assignment'|'feedback',targetUserId:string|null=null){try{let query=admin.from('bible_notifications').select('id').eq('action_kind','assignment').eq('notification_type',notificationType).contains('action_payload',{assignment_id:assignmentId}).gte('created_at',new Date(Date.now()-2*60*1000).toISOString()).order('created_at',{ascending:true}).limit(PUSH_NOTIFICATION_LIMIT+1);if(targetUserId)query=query.eq('user_id',targetUserId);const {data,error}=await query;if(error)throw error;const rows=data||[];if(rows.length>PUSH_NOTIFICATION_LIMIT){console.error('assignment push dispatch fanout rejected');return}let failed=0;for(let offset=0;offset<rows.length;offset+=PUSH_DISPATCH_BATCH){const batch=rows.slice(offset,offset+PUSH_DISPATCH_BATCH);const results=await Promise.allSettled(batch.map(async row=>{const result=await admin.functions.invoke('bq-push-delivery',{body:{notificationId:row.id}});if(result.error||result.data?.error||result.data?.ok!==true)throw new Error('Push dispatch failed')}));failed+=results.filter(result=>result.status==='rejected').length}if(failed)console.error('assignment push dispatch incomplete',{attempted:rows.length,failed})}catch{console.error('assignment push dispatch unavailable')}}
+async function dispatchAssignmentPush(admin:ReturnType<typeof adminClient>,assignmentId:string,notificationType:'assignment'|'feedback',targetUserId:string|null=null){
+  try{
+    const createdAfter=new Date(Date.now()-2*60*1000).toISOString();
+    let offset=0,attempted=0,failed=0;
+    while(true){
+      let query=admin.from('bible_notifications')
+        .select('id')
+        .eq('action_kind','assignment')
+        .eq('notification_type',notificationType)
+        .contains('action_payload',{assignment_id:assignmentId})
+        .gte('created_at',createdAfter)
+        .order('created_at',{ascending:true})
+        .order('id',{ascending:true})
+        .range(offset,offset+PUSH_NOTIFICATION_PAGE-1);
+      if(targetUserId)query=query.eq('user_id',targetUserId);
+      const {data,error}=await query;
+      if(error)throw error;
+      const rows=data||[];
+      if(!rows.length)break;
+      attempted+=rows.length;
+      for(let batchOffset=0;batchOffset<rows.length;batchOffset+=PUSH_DISPATCH_BATCH){
+        const batch=rows.slice(batchOffset,batchOffset+PUSH_DISPATCH_BATCH);
+        const results=await Promise.allSettled(batch.map(async row=>{
+          const result=await admin.functions.invoke('bq-push-delivery',{body:{notificationId:row.id}});
+          if(result.error||result.data?.error||result.data?.ok!==true)throw new Error('Push dispatch failed');
+        }));
+        failed+=results.filter(result=>result.status==='rejected').length;
+      }
+      if(rows.length<PUSH_NOTIFICATION_PAGE)break;
+      offset+=PUSH_NOTIFICATION_PAGE;
+    }
+    if(failed)console.error('assignment push dispatch incomplete',{attempted,failed});
+  }catch{console.error('assignment push dispatch unavailable')}
+}
 function iso(v:unknown){if(!v)return null;const d=new Date(String(v));return Number.isNaN(d.getTime())?null:d.toISOString()}
 Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('ok',{headers:corsHeaders});if(req.method!=='POST')return json({error:'Method not allowed'},405);try{const admin=adminClient(),user=await requireUser(req,admin),body=await parseJson(req),action=String(body?.action||''),congregationId=String(body?.congregationId||'');if(!congregationId)return json({error:'congregationId required'},400);const member=await activeMembership(admin,congregationId,user.id);if(!member)return json({error:'Active congregation membership required'},403);
   if(action==='targets'){if(!leaderRoles.has(member.role))return json({error:'Ministry role required'},403);const [memberResult,teamResult,groupResult]=await Promise.all([admin.from('bible_congregation_members').select('user_id,display_name,role').eq('congregation_id',congregationId).eq('active',true).order('joined_at',{ascending:true}),admin.from('bible_teams').select('id,name,team_type').eq('congregation_id',congregationId).eq('active',true).order('created_at',{ascending:true}),admin.from('bible_groups').select('id,name').eq('congregation_id',congregationId).eq('active',true).order('created_at',{ascending:true})]);if(memberResult.error)throw memberResult.error;if(teamResult.error)throw teamResult.error;if(groupResult.error)throw groupResult.error;return json({members:(memberResult.data||[]).map(row=>({id:row.user_id,label:text(row.display_name,120)||'Member',role:text(row.role,40)})),teams:(teamResult.data||[]).map(row=>({id:row.id,label:text(row.name,120)||'Team',type:text(row.team_type,40)})),groups:(groupResult.data||[]).map(row=>({id:row.id,label:text(row.name,120)||'Journey Group'}))})}

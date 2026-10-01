@@ -32,6 +32,13 @@ test('assignment assigned push is connected from durable producer to the canonic
   );
 });
 
+test('assignment assigned push pages large recipient sets instead of dropping the fanout', () => {
+  assert.match(assignmentEdge, /const PUSH_NOTIFICATION_PAGE=100/);
+  assert.match(assignmentEdge, /\.order\('created_at',\{ascending:true\}\)[\s\S]*?\.order\('id',\{ascending:true\}\)[\s\S]*?\.range\(offset,offset\+PUSH_NOTIFICATION_PAGE-1\)/);
+  assert.match(assignmentEdge, /if\(rows\.length<PUSH_NOTIFICATION_PAGE\)break;[\s\S]*?offset\+=PUSH_NOTIFICATION_PAGE/);
+  assert.doesNotMatch(assignmentEdge, /fanout rejected/);
+});
+
 test('assignment due push is service-only, recipient-scoped, idempotent and uses the same sender', () => {
   assert.match(reminderMigration, /create or replace function public\.bible_enqueue_assignment_due_notifications_v6\(\)/);
   assert.match(reminderMigration, /notification_type[\s\S]*?'assignment_due'/);
