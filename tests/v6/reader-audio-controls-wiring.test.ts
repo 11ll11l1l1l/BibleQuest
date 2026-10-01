@@ -53,6 +53,12 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerPage, /data-reader-audio-verse/);
   assert.match(readerPage, /hasVerseAlignment\?\.\(reader\.getState\(\)\.book/);
   assert.match(readerPage, /audio\.seekVerse\(verse\)/);
+  assert.match(readerPage, /sameActiveBsbChapter/);
+  assert.match(readerPage, /\['playing', 'paused'\]\.includes\(playback\?\.status\)/);
+  assert.match(readerPage, /suspendAudioFollowForManualNavigation/);
+  assert.match(readerPage, /host\.addEventListener\('wheel', suspendAudioFollowForManualNavigation\)/);
+  assert.match(readerPage, /host\.addEventListener\('touchmove', suspendAudioFollowForManualNavigation\)/);
+  assert.match(readerPage, /audioFollowVerse = false/);
   assert.match(readerPage, /data-reader-audio-download/);
   assert.match(readerPage, /data-reader-audio-cancel/);
   assert.match(readerPage, /data-reader-audio-remove/);
