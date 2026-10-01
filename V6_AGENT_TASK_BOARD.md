@@ -17,6 +17,8 @@ At the start of every run:
 The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
+- PR #941 is integrated at `a18a2479868b8f43168bf02d22bdd65b33d6c43a` from exact head `459e5fccc4632a465dd394ded12481cb515b098b`; Database CI `36816949175` and inherited regression `36816949184` passed. Supabase Security Advisor findings are triaged; leaked-password protection remains a separate open gate. After reconciliation: **181 checked / 30 open / 211 total = 85.8%**.
+
 - PR #939 is integrated at `5dc32d4b7660bd42040cac28b90cbb5bff9b14a9` from exact head `1640496e3a708e823d7c9725cf22276260aa3ae4`; Phase-1 `36792168865` and inherited regression `36792168887` passed. The protected feature-authority boundary is now accepted. After reconciliation: **180 checked / 31 open / 211 total = 85.3%**.
 
 - PR #934 is integrated at `bb0e2251a74049e5309b4fb9ae0d1706de2a9507` from exact head `18a6306d790f6d6219c104ee0221c82c17a8a6e3`; Phase-1 `36790797552` and inherited regression `36790797547` passed, including exact built-artifact report-only and enforcing CSP Chromium gates. CSP is now accepted. After reconciliation: **179 checked / 32 open / 211 total = 84.8%**.
@@ -118,10 +120,11 @@ Targets:
 - relevant least-privilege checks.
 
 ### W2-03 — Security platform closure
-Targets:
-- leaked-password protection/equivalent decision with evidence;
+Open target:
+- leaked-password protection/equivalent decision with evidence.
+Completed:
 - MFA/passkey evaluation with recovery implications;
-- Supabase security-advisor triage.
+- Supabase security-advisor triage (PR #941).
 Do not weaken custom auth or RLS merely to clear an advisor warning.
 
 ### W4-02 — Shared component/design primitives
