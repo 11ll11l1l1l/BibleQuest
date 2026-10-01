@@ -71,7 +71,7 @@ test('BSB regeneration finalizer binds exact Hays inventory to deployable runtim
 
   assert.equal(finalize.metadata.translationId, 'bsb');
   assert.equal(finalize.metadata.source, 'Barry Hays BSB narration (OpenBible direct chapter stream)');
-  assert.match(finalize.metadata.license, /CC0 1\.0 declared by the BSB Audio Bible project/);
+  assert.match(finalize.metadata.license, /CC0 1\.0 public-domain dedication by the BSB Audio Bible project/);
   assert.equal(finalize.metadata.alignmentSource, 'BSB-publishing/bsb-align');
   assert.equal(finalize.metadata.alignmentRevision, BSB_ALIGN_REVISION);
   assert.equal(finalize.metadata.contentVersion, inventory.contentVersion);
