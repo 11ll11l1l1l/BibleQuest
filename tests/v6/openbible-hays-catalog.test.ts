@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../scripts/v6-generate-scripture-manifests.mjs';
 import { createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
 
 const root = new URL('../../', import.meta.url);
@@ -129,4 +131,42 @@ test('both OpenBible narrators bind to one independently loaded current BSB revi
   assert.equal(souer.source.scriptureContentVersion, 'bsb-current-sha256');
   assert.equal(hays.segments.length, 1189);
   assert.equal(souer.segments.length, 1189);
+});
+
+
+test('OpenBible audio chapter identity is a bijection over the exact current Reader BSB corpus', async () => {
+  const bibleDirectory = new URL('data/packs/bible/', root);
+  const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name)).sort();
+  const chapterKeys = new Set<string>();
+  const books = await Promise.all(files.map(async name => {
+    const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
+    const code = name.slice(0, -5);
+    const chapters = [...new Set<number>(rows.map((row: { c: number }) => row.c))].sort((a, b) => a - b);
+    assert.ok(chapters.length > 0, `BSB pack ${code} must contain chapters`);
+    assert.equal(chapters[0], 1, `BSB pack ${code} must begin at chapter 1`);
+    assert.equal(chapters.at(-1), chapters.length, `BSB pack ${code} chapter numbers must be contiguous`);
+    for (const chapter of chapters) {
+      const key = `${code}:${chapter}`;
+      assert.equal(chapterKeys.has(key), false, `duplicate BSB chapter identity ${key}`);
+      chapterKeys.add(key);
+    }
+    return { code, name, chapters: chapters.length };
+  }));
+
+  const bsb = SCRIPTURE_PACKAGE_SOURCES.find(source => source.translationId === 'bsb');
+  assert.ok(bsb);
+  const scripture = buildScripturePackageManifest(fileURLToPath(root), bsb);
+  assert.equal(chapterKeys.size, 1189);
+
+  for (const narrator of ['hays', 'souer'] as const) {
+    const manifest = createOpenBibleNarratorStreamingManifest(narrator, scripture.contentVersion, books);
+    const audioKeys = new Set(manifest.segments.map(segment => `${segment.book.toUpperCase()}:${segment.chapter}`));
+    assert.equal(manifest.source.scriptureContentVersion, scripture.contentVersion);
+    assert.equal(manifest.segments.length, 1189);
+    assert.equal(audioKeys.size, 1189);
+    assert.deepEqual([...audioKeys].sort(), [...chapterKeys].sort());
+    for (const segment of manifest.segments) {
+      assert.equal(segment.id, `${segment.book.toUpperCase()}-${segment.chapter}`);
+    }
+  }
 });
