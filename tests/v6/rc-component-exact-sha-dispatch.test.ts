@@ -27,9 +27,11 @@ test('every manually runnable RC component accepts and checks out one explicit e
       workflow.includes(exactExpression),
       path + ' must derive BQ_EXACT_SHA from PR head, explicit candidate_sha, then event SHA',
     );
+    const workflowName = workflow.match(/^name:\s*(.+)$/m)?.[1]?.trim();
+    assert.ok(workflowName, path + ' must retain a workflow name');
     assert.ok(
-      workflow.includes('run-name: RC ' + exactExpression),
-      path + ' must expose the selected candidate SHA in the immutable workflow-run title',
+      workflow.includes('run-name: ' + workflowName + ' · RC ' + exactExpression),
+      path + ' must expose workflow identity plus selected candidate SHA in the immutable run title',
     );
 
     assert.match(
