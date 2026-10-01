@@ -1,0 +1,69 @@
+name: V6 OpenBible Source Metadata Audit
+
+on:
+  push:
+    branches:
+      - audit/v6-openbible-source-metadata-20261001
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inspect Hays and Souer Genesis 1 source files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/openbible-audit
+          : > /tmp/openbible-audit/summary.txt
+          while IFS='|' read -r narrator url; do
+            echo "=== ${narrator} ===" | tee -a /tmp/openbible-audit/summary.txt
+            curl --fail --silent --show-error --location \
+              -H 'Origin: https://mybiblequest.pages.dev' \
+              -H 'Range: bytes=0-0' \
+              -D "/tmp/openbible-audit/${narrator}-range-headers.txt" \
+              -o "/tmp/openbible-audit/${narrator}-range-byte.bin" \
+              "${url}"
+            curl --fail --silent --show-error --location \
+              -D "/tmp/openbible-audit/${narrator}-headers.txt" \
+              -o "/tmp/openbible-audit/${narrator}-gen1.mp3" \
+              "${url}"
+            sha256sum "/tmp/openbible-audit/${narrator}-gen1.mp3" | tee -a /tmp/openbible-audit/summary.txt
+            stat -c 'bytes=%s' "/tmp/openbible-audit/${narrator}-gen1.mp3" | tee -a /tmp/openbible-audit/summary.txt
+            ffprobe -v error -show_entries format=duration,size,bit_rate:format_tags -of json \
+              "/tmp/openbible-audit/${narrator}-gen1.mp3" > "/tmp/openbible-audit/${narrator}-ffprobe.json"
+            cat "/tmp/openbible-audit/${narrator}-ffprobe.json" | tee -a /tmp/openbible-audit/summary.txt
+            echo "-- response headers --" | tee -a /tmp/openbible-audit/summary.txt
+            grep -iE '^(HTTP/|access-control-allow-origin:|accept-ranges:|content-range:|content-length:|content-type:|etag:|last-modified:|cache-control:)' \
+              "/tmp/openbible-audit/${narrator}-range-headers.txt" | tee -a /tmp/openbible-audit/summary.txt || true
+            echo | tee -a /tmp/openbible-audit/summary.txt
+          done <<'EOF'
+          hays|https://openbible.com/audio/hays/BSB_01_Gen_001_H.mp3
+          souer|https://openbible.com/audio/souer/BSB_01_Gen_001.mp3
+          EOF
+
+      - name: Publish audit summary
+        shell: bash
+        run: |
+          cat /tmp/openbible-audit/summary.txt
+          {
+            echo '## OpenBible live source audit'
+            echo
+            echo '```text'
+            cat /tmp/openbible-audit/summary.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload source audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbible-source-metadata-audit
+          path: /tmp/openbible-audit/
+          if-no-files-found: error
+          retention-days: 7
