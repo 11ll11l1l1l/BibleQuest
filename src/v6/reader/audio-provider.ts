@@ -124,6 +124,11 @@ export function createReaderAudioProvider(input: {
         const next = index >= 0 ? manifest.segments[index + 1] : null;
         return next ? { bookCode: next.book, chapter: next.chapter } : null;
       },
+      resolvePreviousChapter: (bookCode, chapter) => {
+        const index = manifest.segments.findIndex(segment => segment.book.toUpperCase() === bookCode.toUpperCase() && segment.chapter === chapter);
+        const previous = index > 0 ? manifest.segments[index - 1] : null;
+        return previous ? { bookCode: previous.book, chapter: previous.chapter } : null;
+      },
       getResume: key => readResume()[key],
       saveResume: writeResume,
       onState: () => publish(),
