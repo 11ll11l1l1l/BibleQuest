@@ -77,16 +77,16 @@ async function fetchWorkflowRuns({ repository, candidateSha, token, fetchImpl })
   return runs;
 }
 
-function dispatchedCandidateTitle(candidateSha) {
-  return 'RC ' + candidateSha;
+function dispatchedCandidateTitle(workflowName, candidateSha) {
+  return workflowName + ' · RC ' + candidateSha;
 }
 
 function pickSuccessfulRun(runs, workflowName, candidateSha) {
   const exact = runs
     .filter(run =>
-      run?.name === workflowName
+      String(run?.name || '').trim() === dispatchedCandidateTitle(workflowName, candidateSha)
       && run?.event === 'workflow_dispatch'
-      && String(run?.display_title || '').trim() === dispatchedCandidateTitle(candidateSha)
+      && String(run?.display_title || '').trim() === dispatchedCandidateTitle(workflowName, candidateSha)
       && run?.status === 'completed'
       && run?.conclusion === 'success'
     )
