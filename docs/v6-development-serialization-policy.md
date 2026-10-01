@@ -20,6 +20,8 @@ When `v6/architecture-upgrade` advances:
 
 The V6 PR Serialization Guard automatically marks open V6 PR heads stale after integration advances, resolves the live integration ref rather than trusting an event-snapshot base SHA, and writes the same `V6 Serialization` status context on refreshed PR heads after they contain the live integration commit. It also rejects reverse synchronization PRs.
 
+The PR-side guard uses the `pull_request` event because this V6-only workflow is not present on the repository default branch; `pull_request_target` would not execute here. The guard does not check out or execute PR-controlled repository code, and uses only GitHub API metadata for ancestry/status validation.
+
 ## One canonical PR per change surface
 
 - Keep one merge candidate per feature/change surface.
