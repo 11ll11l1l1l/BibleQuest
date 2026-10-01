@@ -94,7 +94,7 @@ Recovery must be designed before privileged MFA/passkey enforcement.
 
 ## Decision 4 — leaked-password protection / supported equivalent
 
-Production review on 2026-10-01 found the BibleQuest Supabase project on the Free plan with the Supabase security advisor reporting `auth_leaked_password_protection` as disabled. Supabase documents its built-in HaveIBeenPwned leaked-password protection as available on Pro and above.
+Live Security Advisor evidence observed at 2026-10-02 00:06 JST still reports `auth_leaked_password_protection` as disabled. The canonical fail-closed evidence record is `docs/v6/V6_LEAKED_PASSWORD_ACCEPTANCE.json`. Supabase documents its built-in HaveIBeenPwned leaked-password protection as available on Pro and above.
 
 The V6 fallback candidate therefore uses the free HaveIBeenPwned Pwned Passwords range API with k-anonymity: BibleQuest hashes the completed password locally, sends only the first five SHA-1 hexadecimal characters, requests padded responses, and compares the returned suffixes locally. The plaintext password and complete hash are never sent to HaveIBeenPwned.
 
@@ -106,7 +106,7 @@ Candidate coverage includes:
 - the signed-in user's normal Account-page password change before `auth.updateUser`;
 - the Owner emergency `set_temp_password` path before audit, session revocation, and Admin Auth mutation.
 
-This is **still not equivalent to project-level Supabase enforcement**. A caller that bypasses BibleQuest's first-party password-setting flows and reaches a permitted Supabase Auth password endpoint directly would not be covered while the hosted project setting remains disabled. Therefore the acceptance row must remain open until either:
+This is **still not equivalent to project-level Supabase enforcement**. A caller that bypasses BibleQuest's first-party password-setting flows and reaches a permitted Supabase Auth password endpoint directly would not be covered while the hosted project setting remains disabled. CI now prevents this acceptance row from being checked without matching canonical evidence. Therefore the acceptance row must remain open until either:
 1. Supabase built-in leaked-password protection is enabled and verified on a plan that supports it; or
 2. the release owner explicitly accepts the now-complete first-party equivalent plus its residual direct-Auth bypass scope.
 
