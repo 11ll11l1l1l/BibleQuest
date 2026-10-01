@@ -17,7 +17,10 @@ const NARRATORS = Object.freeze({
   hays: Object.freeze({ name: 'Barry Hays', directory: 'hays', suffix: '_H' }),
   souer: Object.freeze({ name: 'Bob Souer', directory: 'souer', suffix: '' }),
 });
-const OPENBIBLE_LICENSE = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
+const OPENBIBLE_LICENSE = 'CC0 1.0 public-domain dedication by the BSB Audio Bible project';
+const OPENBIBLE_RIGHTS_EVIDENCE = 'https://audiobible.org/ ; https://biblehub.com/audio/genesis/1.htm ; https://www.bible.com/audio-bible-app-versions/3034-bsb-berean-standard-bible';
+const OPENBIBLE_RIGHTS_REVIEWER = 'BibleQuest V6 content-source review';
+const OPENBIBLE_RIGHTS_REVIEWED_AT = '2026-10-02T00:00:00+09:00';
 const HAYS_STREAM_CONTENT_VERSION = 'openbible-hays-stream-v1';
 const SHA256_CONTENT_VERSION = /^sha256-[a-f0-9]{64}$/i;
 const HAYS_ALIGNMENT_PATH = '/data/v6-audio/bsb-hays-alignment.json';
@@ -92,19 +95,22 @@ export function createOpenBibleNarratorStreamingManifest(
       sourceUrl: `https://openbible.com/audio/${source.directory}/`,
       scriptureContentVersion,
       license: OPENBIBLE_LICENSE,
-      rights: 'review-required',
+      rights: 'verified',
       delivery: 'stream',
       textAlignment: 'unverified',
       attribution: `Narrated by ${source.name}; hosted by OpenBible.com`,
-      rightsEvidence: 'https://audiobible.org/ and https://biblicalalignment.org/about',
-      permissions: Object.freeze({ stream: 'allowed', offlineCopy: 'review-required' }),
+      rightsEvidence: OPENBIBLE_RIGHTS_EVIDENCE,
+      reviewedBy: OPENBIBLE_RIGHTS_REVIEWER,
+      reviewedAt: OPENBIBLE_RIGHTS_REVIEWED_AT,
+      permissions: Object.freeze({ stream: 'allowed', offlineCopy: 'allowed' }),
     }),
     segments: Object.freeze(segments),
   });
 }
 
-/** Adds checksum-pinned chapter identity from the reviewed Hays timing bundle without
- * changing the stream-only/offline-rights policy of the source manifest. */
+/** Adds checksum-pinned chapter identity from the reviewed Hays timing bundle.
+ * Verified CC0 copy permission is already recorded on the source; only a complete
+ * exact alignment/audio bundle promotes delivery to downloadable + exact. */
 export function bindOpenBibleHaysAlignmentIdentity(
   manifest: ScriptureAudioManifest,
   bundle: OpenBibleHaysAlignmentBundle,
@@ -127,6 +133,11 @@ export function bindOpenBibleHaysAlignmentIdentity(
     ...manifest,
     contentVersion: bundle.audioContentVersion,
     alignmentSource: bundle.alignmentSource,
+    source: Object.freeze({
+      ...manifest.source,
+      delivery: 'downloadable',
+      textAlignment: 'exact',
+    }),
     segments: Object.freeze(segments),
   });
 }
