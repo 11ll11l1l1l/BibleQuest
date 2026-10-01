@@ -37,8 +37,8 @@ await recognition.award({targetUserId:'u2',awardCode:'consistency',title:'',note
 assert.equal(awardCalls.length,1);
 assert.equal(awardScopes[0],'c1','Recognition award must carry explicit congregation scope outside the payload.');
 assert.deepEqual(awardCalls[0],{
-  congregation_id:'c1',user_id:'u2',awarded_by:'u1',award_code:'consistency',title:'Consistency Award',note:'Kept showing up.',icon:'🔥'
-},'Award payload must be canonical, scoped and preset-derived.');
+  user_id:'u2',awarded_by:'u1',award_code:'consistency',title:'Consistency Award',note:'Kept showing up.',icon:'🔥'
+},'Award payload must be canonical and tenant identity must be supplied separately.');
 
 memberships=[baseMembership('facilitator')];recognition.clear();state=await recognition.load();assert.equal(state.canAward,false,'Facilitator must remain view-only for persisted recognition.');
 await assert.rejects(()=>recognition.award({targetUserId:'u2',awardCode:'consistency'}),error=>error.code==='BQ_RECOGNITION_PERMISSION');
