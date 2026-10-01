@@ -79,6 +79,7 @@ export function createChapterAudioPlayer(input: {
   /** Resolves an integrity-verified installed chapter to a temporary playable URL. */
   readonly resolveAudioUrl?: (segment: ScriptureAudioSegment) => string | Promise<string>;
   readonly resolveNextChapter?: (bookCode: string, chapter: number) => ChapterAudioIdentity | null;
+  readonly resolvePreviousChapter?: (bookCode: string, chapter: number) => ChapterAudioIdentity | null;
   readonly setTimeout?: (callback: () => void, milliseconds: number) => unknown;
   readonly clearTimeout?: (handle: unknown) => void;
 }) {
@@ -97,6 +98,7 @@ export function createChapterAudioPlayer(input: {
   const saveResume = input.saveResume ?? (() => {});
   const mediaSession = input.mediaSession ?? null;
   const resolveNextChapter = input.resolveNextChapter ?? (() => null);
+  const resolvePreviousChapter = input.resolvePreviousChapter ?? (() => null);
   const schedule = input.setTimeout ?? ((callback, milliseconds) => globalThis.setTimeout(callback, milliseconds));
   const cancel = input.clearTimeout ?? (handle => globalThis.clearTimeout(handle as ReturnType<typeof globalThis.setTimeout>));
   let state: ChapterAudioPlaybackState = Object.freeze({
@@ -170,11 +172,15 @@ export function createChapterAudioPlayer(input: {
     sleepTimer = null;
   };
 
-  const advanceToNext = async (autoplay: boolean) => {
+  const advanceChapter = async (
+    resolver: (bookCode: string, chapter: number) => ChapterAudioIdentity | null,
+    autoplay: boolean,
+    failureMessage: string,
+  ) => {
     if (!segment || disposed) return state;
-    const next = resolveNextChapter(state.bookCode, state.chapter);
-    if (!next) return state;
-    const pending = player.load(next.bookCode, next.chapter);
+    const target = resolver(state.bookCode, state.chapter);
+    if (!target) return state;
+    const pending = player.load(target.bookCode, target.chapter);
     const generation = loadGeneration;
     try {
       await pending;
@@ -183,9 +189,15 @@ export function createChapterAudioPlayer(input: {
       return state;
     } catch (error) {
       if (disposed || generation !== loadGeneration) return state;
-      return commit({ status: 'error', error: error instanceof Error ? error.message : 'Next chapter could not be loaded.' });
+      return commit({ status: 'error', error: error instanceof Error ? error.message : failureMessage });
     }
   };
+  const advanceToNext = (autoplay: boolean) => advanceChapter(
+    resolveNextChapter, autoplay, 'Next chapter could not be loaded.',
+  );
+  const advanceToPrevious = (autoplay: boolean) => advanceChapter(
+    resolvePreviousChapter, autoplay, 'Previous chapter could not be loaded.',
+  );
 
   const player = Object.freeze({
     getState: () => state,
@@ -225,6 +237,11 @@ export function createChapterAudioPlayer(input: {
         setMediaAction('seekbackward', details => player.seek(Math.max(0, state.currentTime - (details.seekOffset || 10))));
         setMediaAction('seekforward', details => player.seek(state.currentTime + (details.seekOffset || 10)));
         setMediaAction('nexttrack', () => { void advanceToNext(true); });
+        setMediaAction('previoustrack', () => { void advanceToPrevious(true); });
+        setMediaAction('stop', () => {
+          player.pause();
+          try { player.seek(0); } catch { /* No loaded seek target means stop safely degrades to pause. */ }
+        });
         if (typeof MediaMetadata === 'function') {
           mediaSession.metadata = new MediaMetadata({ title: `${code} ${next.chapter}`, album: 'BibleQuest Audio Bible' });
         }
@@ -313,6 +330,8 @@ export function createChapterAudioPlayer(input: {
         setMediaAction('seekbackward', null);
         setMediaAction('seekforward', null);
         setMediaAction('nexttrack', null);
+        setMediaAction('previoustrack', null);
+        setMediaAction('stop', null);
         mediaSession.metadata = null;
         syncMediaPlaybackState('idle');
       }
