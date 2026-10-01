@@ -1,4 +1,5 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.112.4';
+import {assertPasswordNotCompromised} from '../_shared/password-security.ts';
 const PRIMARY='https://mybiblequest.pages.dev',HOSTS=['mybiblequest.pages.dev','biblequest-7th.pages.dev'],OPS_VERSION=6;
 function allowed(v:string){try{const u=new URL(v);return u.protocol==='https:'&&(u.origin==='https://11ll11l1l1l.github.io'||HOSTS.some(h=>u.hostname===h||u.hostname.endsWith(`.${h}`)))}catch{return false}}
 function cors(req:Request){const o=req.headers.get('Origin')||'';return {'Access-Control-Allow-Origin':allowed(o)?o:PRIMARY,'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json','Vary':'Origin'}}
@@ -64,6 +65,12 @@ Deno.serve(async(req:Request)=>{if(req.method==='OPTIONS')return new Response('o
       if(!target)return json(req,{error:'targetUserId required'},400);
       if(target===u.id)return json(req,{error:'Use your own account recovery flow, not this emergency tool'},409);
       if(password.length<12)return json(req,{error:'Temporary password must be at least 12 characters'},400);
+      try{await assertPasswordNotCompromised(password)}catch(error){
+        const code=error instanceof Error?(error as Error&{code?:string}).code:'';
+        if(code==='BQ_PASSWORD_COMPROMISED')return json(req,{error:(error as Error).message},400);
+        if(code==='BQ_PASSWORD_BREACH_CHECK_UNAVAILABLE')return json(req,{error:(error as Error).message},503);
+        throw error
+      }
       await auditRequired(a,u.id,target,'set_temp_password');
       await requireSessionRevocation(a,target);
       const upd=await a.auth.admin.updateUserById(target,{password});if(upd.error)throw upd.error;
