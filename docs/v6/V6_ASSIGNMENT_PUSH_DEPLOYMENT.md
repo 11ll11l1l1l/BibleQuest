@@ -41,6 +41,18 @@ Therefore the repository due-reminder implementation is not yet a live due Web P
 
 Do not execute these steps without explicit production authorization.
 
+
+Before any repair or push, use the repository migration-history guard against a reviewed remote migration export. When a logical migration is already applied under a different timestamp, an operator may supply a separately reviewed equivalence file:
+
+```bash
+node scripts/v6-migration-history-guard.mjs \
+  --remote-json /path/to/reviewed-remote-migrations.json \
+  --equivalence-json /path/to/reviewed-equivalences.json \
+  --validate-repair-plan
+```
+
+Each equivalence must identify the exact remote and local version/name pair, set `reviewed: true`, and cite independent schema-equivalence evidence. The guard validates the mapping and prints the exact metadata-only `supabase migration repair` commands, but never executes them. A valid plan is not itself push-safe: after an authorized metadata repair, rerun the guard without `--validate-repair-plan` and require `safeForOrderedPush: true` before `supabase db push --dry-run`.
+
 1. Reconcile the production migration history against the authoritative V6 migration plan. Do not skip or manually fake migration-history entries.
 2. Apply the reviewed V6 database migrations through the normal release path, including `20260928140000_assignment_due_reminders.sql`.
 3. Deploy the exact reviewed `bq-assignment-reminders` Edge Function.
