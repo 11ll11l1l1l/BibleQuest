@@ -56,7 +56,8 @@ test('assigned and due notifications resolve to the assignments push category an
   assert.match(pushDelivery, /type\.includes\('assignment'\).*action === 'assignment'/);
   assert.match(pushDelivery, /category === 'assignment' \|\| category === 'assignments'\) return '\/#\/assignments'/);
 
-  assert.match(workerTest, /assignment push renders the canonical assignments deep link/);
+  assert.match(workerTest, /assignment assigned push renders the canonical assignments deep link/);
+  assert.match(workerTest, /assignment due push renders the same canonical assignments deep link/);
   assert.match(workerTest, /url: '\/#\/assignments'/);
   assert.match(workerTest, /shown\.options\.data\.url, 'https:\/\/biblequest\.example\/#\/assignments'/);
 });
