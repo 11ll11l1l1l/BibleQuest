@@ -127,6 +127,8 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(report.reusableChapters, 1);
     assert.equal(report.regenerateChapters, 1188);
     assert.equal(report.expectedChapters, 1189);
+    assert.equal(report.audioContentVersion, plan.audioContentVersion);
+    assert.equal(report.audioInventorySha256, plan.audioInventorySha256);
     assert.equal(report.rows.find(row => row.book === 'GEN' && row.chapter === 1)?.reusable, true);
 
     const staged = JSON.parse(await readFile(join(plan.outputDirectory, 'GEN', 'GEN_001_words.json'), 'utf8'));
@@ -138,6 +140,38 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(disk.regenerateChapters, 1188);
 
     await assert.rejects(stageReusableBsbAlignments({ plan, gitResolver: reviewedGit }), /requires an empty regeneration output directory/i);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+
+test('reuse staging refuses a tampered exact Hays audio inventory referenced by the regeneration plan', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'bq-v6-bsb-reuse-audio-tamper-'));
+  const aligner = join(temp, 'bsb-align');
+  const audio = join(temp, 'audio');
+  const workspace = join(temp, 'workspace');
+  await mkdir(join(aligner, 'text'), { recursive: true });
+  await mkdir(join(aligner, 'output'), { recursive: true });
+  await mkdir(audio);
+  try {
+    const plan = await prepareBsbAlignmentRegeneration({
+      root,
+      alignerDirectory: aligner,
+      audioDirectory: audio,
+      workspaceDirectory: workspace,
+      gitResolver: reviewedGit,
+      audioInventoryResolver: async () => fakeAudioInventory(),
+    });
+    const inventory = JSON.parse(await readFile(plan.audioInventoryPath, 'utf8'));
+    inventory.inventorySha256 = 'd'.repeat(64);
+    inventory.contentVersion = 'sha256-' + 'd'.repeat(64);
+    await writeFile(plan.audioInventoryPath, JSON.stringify(inventory, null, 2) + '\n');
+
+    await assert.rejects(
+      stageReusableBsbAlignments({ plan, gitResolver: reviewedGit }),
+      /audio inventory does not match|inventory checksum mismatch/i,
+    );
   } finally {
     await rm(temp, { recursive: true, force: true });
   }
