@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(16);
+select plan(17);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_congregation_membership_audit'::regclass),
@@ -40,6 +40,18 @@ select ok(
   'anonymous clients cannot call membership manager'
 );
 
+insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data)
+values('11111111-1111-4111-8111-111111111115','tenant-admin-a-membership@bq-v6.invalid','{}'::jsonb,'{}'::jsonb)
+on conflict(id) do nothing;
+
+insert into public.bible_app_access(user_id,role,active)
+values('11111111-1111-4111-8111-111111111115','member',true)
+on conflict(user_id) do update set role='member',active=true;
+
+insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
+values('10000000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111115','admin','Tenant Admin A',true)
+on conflict(congregation_id,user_id) do update set role='admin',display_name='Tenant Admin A',active=true;
+
 set local role service_role;
 select lives_ok(
   $$select public.bible_manage_congregation_member_v6(
@@ -66,6 +78,25 @@ select throws_ok(
   'Congregation admin permission required',
   'a non-admin actor cannot change membership roles'
 );
+select throws_ok(
+  $$select public.bible_manage_congregation_member_v6(
+    '20000000-0000-4000-8000-000000000002',
+    '11111111-1111-4111-8111-111111111115',
+    '22222222-2222-4222-8222-222222222222',
+    'facilitator',true
+  )$$,
+  '42501',
+  'Congregation admin permission required',
+  'tenant-only Admin A cannot manage congregation B membership'
+);
+
+reset role;
+delete from public.bible_congregation_members
+where congregation_id='10000000-0000-4000-8000-000000000001'
+  and user_id='11111111-1111-4111-8111-111111111115';
+delete from public.bible_app_access where user_id='11111111-1111-4111-8111-111111111115';
+delete from auth.users where id='11111111-1111-4111-8111-111111111115';
+set local role service_role;
 select throws_ok(
   $$select public.bible_manage_congregation_member_v6(
     '20000000-0000-4000-8000-000000000002',
