@@ -259,7 +259,7 @@ Production backend activation evidence (2026-10-02 JST; merged PR #1029): the ad
 
 ## M. Auth/admin/security hardening
 
-- [ ] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
+- [x] Leaked-password protection or supported equivalent is enabled/verified or explicitly accepted with rationale.
 - [x] Privileged Owner/Admin re-auth requirements are reviewed.
 - [x] Real session revocation is tested.
 - [x] Admin operation contracts/audit schema are typed/tested.
