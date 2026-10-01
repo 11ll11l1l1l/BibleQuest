@@ -47,6 +47,7 @@ const compatibilityExtensions = new Set([
   '.xml',
 ]);
 const compatibilityRootFiles = new Set(['_headers', '_redirects']);
+const viteManagedRootFiles = new Set(['index.html', 'v6-push-device-field.html']);
 
 function walkFiles(directory) {
   const files = [];
@@ -75,7 +76,7 @@ function copyLegacyRuntime() {
           continue;
         }
 
-        if (!entry.isFile() || entry.name === 'index.html') {
+        if (!entry.isFile() || viteManagedRootFiles.has(entry.name)) {
           continue;
         }
 
@@ -167,6 +168,10 @@ export default defineConfig({
     sourcemap: 'hidden',
     target: 'es2022',
     rollupOptions: {
+      input: {
+        app: resolve(root, 'index.html'),
+        pushDeviceField: resolve(root, 'v6-push-device-field.html'),
+      },
       output: {
         sourcemapExcludeSources: true,
       },
