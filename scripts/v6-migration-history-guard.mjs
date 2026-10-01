@@ -199,6 +199,51 @@ export function analyzeMigrationHistory(localRows, remoteRows = [], { cutoff = V
   });
 }
 
+export function analyzeReleaseTarget(
+  localRows,
+  remoteRows,
+  targetName,
+  { cutoff = V5_RELEASE_CUTOFF, equivalences = [] } = {},
+) {
+  const name = String(targetName || '').trim();
+  if (!/^[a-z0-9][a-z0-9_]*$/.test(name)) {
+    throw new Error(`Invalid release target migration name: ${name || '<missing>'}`);
+  }
+
+  const history = analyzeMigrationHistory(localRows, remoteRows, { cutoff, equivalences });
+  const localTarget = localRows.find(row => row.version > cutoff && row.name === name);
+  if (!localTarget) {
+    throw new Error(`Release target migration is missing from the V6 forward inventory: ${name}`);
+  }
+
+  const remoteTarget = remoteRows.find(row => row.version > cutoff && row.name === name) || null;
+  const appliedExact = Boolean(remoteTarget && remoteTarget.version === localTarget.version);
+  const pendingExact = history.pending.some(row => row.name === name && row.version === localTarget.version);
+  const repair = history.historyRepairs.find(
+    row => row.localName === name && row.localVersion === localTarget.version,
+  ) || null;
+  const status = appliedExact
+    ? 'applied'
+    : pendingExact
+      ? 'pending'
+      : repair
+        ? 'repair-required'
+        : 'blocked';
+
+  return Object.freeze({
+    ...history,
+    safeForReleaseTarget: history.safeForOrderedPush && (appliedExact || pendingExact),
+    releaseTarget: Object.freeze({
+      name,
+      version: localTarget.version,
+      status,
+      appliedExact,
+      pendingExact,
+      remoteVersion: remoteTarget?.version || repair?.remoteVersion || null,
+    }),
+  });
+}
+
 export async function readLocalMigrations(directory = 'supabase/migrations') {
   const names = (await readdir(directory))
     .filter(name => name.endsWith('.sql'))
@@ -238,6 +283,7 @@ function parseArgs(argv) {
     remoteJson: null,
     equivalenceJson: null,
     validateRepairPlan: false,
+    releaseTarget: null,
     migrationsDir: 'supabase/migrations',
   };
   for (let i = 0; i < argv.length; i += 1) {
@@ -246,6 +292,7 @@ function parseArgs(argv) {
     else if (value === '--remote-json') args.remoteJson = argv[++i];
     else if (value === '--equivalence-json') args.equivalenceJson = argv[++i];
     else if (value === '--validate-repair-plan') args.validateRepairPlan = true;
+    else if (value === '--require-target') args.releaseTarget = argv[++i];
     else if (value === '--migrations-dir') args.migrationsDir = argv[++i];
     else if (value === '--help') args.help = true;
     else throw new Error(`Unknown argument: ${value}`);
@@ -253,14 +300,20 @@ function parseArgs(argv) {
   if (!args.localOnly && !args.remoteJson && !args.help) {
     throw new Error('Use --local-only or provide --remote-json <file>.');
   }
-  if (args.localOnly && (args.remoteJson || args.equivalenceJson || args.validateRepairPlan)) {
-    throw new Error('--local-only cannot be combined with remote/equivalence repair-plan options.');
+  if (args.localOnly && (args.remoteJson || args.equivalenceJson || args.validateRepairPlan || args.releaseTarget)) {
+    throw new Error('--local-only cannot be combined with remote/equivalence/release-target options.');
   }
   if (args.equivalenceJson && !args.remoteJson) {
     throw new Error('--equivalence-json requires --remote-json.');
   }
   if (args.validateRepairPlan && !args.equivalenceJson) {
     throw new Error('--validate-repair-plan requires --equivalence-json.');
+  }
+  if (args.releaseTarget && !args.remoteJson) {
+    throw new Error('--require-target needs --remote-json <file>.');
+  }
+  if (args.releaseTarget && args.validateRepairPlan) {
+    throw new Error('--require-target and --validate-repair-plan are separate gates; run them independently.');
   }
   return args;
 }
@@ -277,6 +330,9 @@ function usage() {
     '',
     'Reviewed metadata-repair plan validation:',
     '  node scripts/v6-migration-history-guard.mjs --remote-json /path/to/remote.json --equivalence-json /path/to/equivalences.json --validate-repair-plan',
+    '',
+    'Named release-target preflight:',
+    '  node scripts/v6-migration-history-guard.mjs --remote-json /path/to/remote.json --require-target assignment_due_reminders',
     '',
     'Remote JSON must contain [{"version":"YYYYMMDDHHMMSS","name":"migration_name"}]',
     'or {"migrations":[...]} from a reviewed migration-history export.',
@@ -301,10 +357,16 @@ if (invokedAsCli) {
     const equivalences = args.equivalenceJson
       ? await loadMigrationEquivalenceEvidence(args.equivalenceJson)
       : [];
-    const report = analyzeMigrationHistory(local, remote, { equivalences });
+    const report = args.releaseTarget
+      ? analyzeReleaseTarget(local, remote, args.releaseTarget, { equivalences })
+      : analyzeMigrationHistory(local, remote, { equivalences });
     printReport(report);
     if (!args.localOnly) {
-      const accepted = args.validateRepairPlan ? report.safeAfterReviewedRepairs : report.safeForOrderedPush;
+      const accepted = args.releaseTarget
+        ? report.safeForReleaseTarget
+        : args.validateRepairPlan
+          ? report.safeAfterReviewedRepairs
+          : report.safeForOrderedPush;
       if (!accepted) process.exitCode = 1;
     }
   }).catch(error => {
