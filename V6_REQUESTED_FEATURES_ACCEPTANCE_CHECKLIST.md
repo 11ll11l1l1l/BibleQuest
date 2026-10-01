@@ -138,6 +138,8 @@ Integrated control evidence (2026-09-30; PR #837, exact PR head `8b5f8a51056bfec
 
 W3 selective-offline evidence (2026-09-30; PR #912 code/browser evidence head `215eeca2689265ffb1844140b607994d2baeab0b`): V6 Phase-1 build job `36721681035` completed successfully on that exact code head. Its unit/source contracts prove audio installation is exposed only through the explicit per-chapter `installChapter(book, chapter)` action and no whole-Audio-Bible installer exists. The same Phase-1 workflow runs `tests/v6/reader-route-acceptance-browser.mjs` against built output; that browser gate proves the current OpenBible source exposes streaming while offline-copy permission is unapproved, with no offline-download button present. Existing package-manager coverage keeps rights, exact checksum/byte-length, Scripture/audio revision and storage ceilings fail-closed. This promotes only the selective-download/no-silent-bulk-cache row; offline-copy permission, exact source-file identity, alignment, highlight/autoscroll and physical-device rows remain open.
 
+Mirror policy candidate evidence (2026-10-01): `scripts/v6-audio-ingest-manifest.mjs` now fails closed unless any future BibleQuest-controlled BSB mirror includes reviewed speech-optimized encoding evidence (speech purpose, supported MP3/AAC/Opus codec, mono output, 24–96 kbps, 16–48 kHz), the declared codec matches staged file containers, and the complete hosted inventory remains strictly below 10,000,000,000 bytes. `tests/v6/audio-ingest-manifest.test.ts` covers invalid purpose/codec/bitrate/channel/sample-rate/evidence/container combinations and the strict at-ceiling rejection. This promotes only the hypothetical-mirror policy gates; actual OpenBible offline-file hashes/version identity remain open until exact source files are reviewed.
+
 Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e6040643947a367a73`, exact build artifact SHA-256 `495b804f9fe74926f5092f2efdb51f4ba0cc460a07799d625cf20681cd6b65e4`): the Reader streams all 1,189 BSB Hays chapters and all 1,189 Bob Souer alternatives directly from OpenBible, defaults to Barry Hays, and exposes a persisted narrator selector. Switching pauses the prior source and prepares the same chapter in the selected source. Audio package policy remains fail-closed for offline copies; verse synchronization remains hidden until exact source-matched timing rows are reviewed. The opt-in browser smoke now checks failed-source retry, decoded playback, seeking, Hays→Souer switching, chapter navigation, and narrator persistence through page reload. Full V6 unit suite (611), lint, formatting, typecheck, and exact-SHA build pass. Browser execution remains pending because Chromium is absent locally and the external-source smoke has not yet run in CI. Real-device acceptance and alignment/source identity review remain open.
 
 - [x] One public-domain/CC0 BSB human narration is selected as the canonical initial English Audio Bible source and provenance is recorded in-repo.
@@ -145,7 +147,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
 - [x] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
 - [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
-- [ ] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
+- [x] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
 - [x] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
 - [ ] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
 - [ ] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
@@ -307,7 +309,7 @@ Integrated acceptance evidence (2026-09-30; PR #649, exact PR head evidence via 
 
 - [ ] No V6 feature weakens server-side authorization, RLS, role checks or tenant isolation.
 - [ ] No content/media asset is hosted or transformed without verified redistribution rights/provenance.
-- [ ] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
+- [x] If BibleQuest-controlled audio hosting is added, its inventory remains below 10 GB and release fails at or above the ceiling.
 - [x] Audio binaries remain outside Git and Supabase Storage; public-source streaming and user-controlled local PWA downloads are used by default.
 - [x] Large offline downloads require explicit user action and provide storage/removal controls.
 - [x] Privileged/destructive/auth/admin actions are never blindly replayed from an offline queue.

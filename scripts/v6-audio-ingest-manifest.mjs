@@ -6,6 +6,15 @@ import { fileURLToPath } from 'node:url';
 import { validateChapterAlignment } from '../src/v6/reader/audio-alignment.ts';
 
 export const AUDIO_STORAGE_CEILING_BYTES = 10_000_000_000;
+export const BSB_MIRROR_SPEECH_ENCODING_POLICY = Object.freeze({
+  purpose: 'speech',
+  codecs: Object.freeze(['mp3', 'aac', 'opus']),
+  minBitrateKbps: 24,
+  maxBitrateKbps: 96,
+  channels: 1,
+  minSampleRateHz: 16_000,
+  maxSampleRateHz: 48_000,
+});
 const BOOK_CODE = /^(?:[1-3])?[A-Z]{2,3}$/;
 const BIBLE_BOOK_CHAPTERS = Object.freeze({
   GEN: 50, EXO: 40, LEV: 27, NUM: 36, DEU: 34, JOS: 24, JDG: 21, RUT: 4, '1SA': 31, '2SA': 24,
@@ -41,6 +50,38 @@ function safeBaseUrl(value) {
 
 function chapterKey(book, chapter) {
   return `${book.toUpperCase()}-${chapter}`;
+}
+
+function speechEncoding(metadata) {
+  const encoding = metadata?.encoding;
+  const evidence = String(metadata?.encodingEvidence ?? '').trim();
+  if (!encoding || typeof encoding !== 'object' || encoding.purpose !== BSB_MIRROR_SPEECH_ENCODING_POLICY.purpose
+    || !BSB_MIRROR_SPEECH_ENCODING_POLICY.codecs.includes(encoding.codec)
+    || !Number.isSafeInteger(encoding.bitrateKbps)
+    || encoding.bitrateKbps < BSB_MIRROR_SPEECH_ENCODING_POLICY.minBitrateKbps
+    || encoding.bitrateKbps > BSB_MIRROR_SPEECH_ENCODING_POLICY.maxBitrateKbps
+    || encoding.channels !== BSB_MIRROR_SPEECH_ENCODING_POLICY.channels
+    || !Number.isSafeInteger(encoding.sampleRateHz)
+    || encoding.sampleRateHz < BSB_MIRROR_SPEECH_ENCODING_POLICY.minSampleRateHz
+    || encoding.sampleRateHz > BSB_MIRROR_SPEECH_ENCODING_POLICY.maxSampleRateHz
+    || !evidence) {
+    fail('BibleQuest-hosted BSB audio requires reviewed speech-optimized encoding metadata/evidence.');
+  }
+  return Object.freeze({
+    purpose: 'speech',
+    codec: encoding.codec,
+    bitrateKbps: encoding.bitrateKbps,
+    channels: 1,
+    sampleRateHz: encoding.sampleRateHz,
+    evidence,
+  });
+}
+
+function encodingMatchesFile(encoding, extension) {
+  if (encoding.codec === 'mp3') return extension === 'mp3';
+  if (encoding.codec === 'aac') return extension === 'aac' || extension === 'm4a';
+  if (encoding.codec === 'opus') return extension === 'ogg';
+  return false;
 }
 
 /** Accept normalized names and OpenBible's published BSB_XX_Book_NNN_H.mp3 names. */
@@ -85,6 +126,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
   if (sourceUrl.protocol !== 'https:' || sourceUrl.username || sourceUrl.password) fail('Audio sourceUrl must use safe HTTPS.');
   if (!Array.isArray(alignments) || alignments.length === 0) fail('alignments.json must contain chapter timing records.');
   if (!Number.isSafeInteger(storageCeilingBytes) || storageCeilingBytes <= 0) fail('Storage ceiling must be a positive integer byte count.');
+  const encoding = speechEncoding(metadata);
 
   const alignmentByChapter = new Map();
   for (const row of alignments) {
@@ -111,6 +153,9 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
   for (const filename of files) {
     const parsed = parseAudioFilename(filename);
     const { book, chapter } = parsed;
+    if (!encodingMatchesFile(encoding, parsed.extension)) {
+      fail(`Hosted BSB audio file ${filename} does not match declared speech codec ${encoding.codec}.`);
+    }
     if (!Number.isSafeInteger(chapter) || chapter < 1) fail(`Invalid chapter filename: ${filename}`);
     const key = chapterKey(book, chapter);
     if (seen.has(key) || !alignmentByChapter.has(key)) fail(`Audio chapter ${key} is duplicated or has no matching alignment.`);
@@ -143,6 +188,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
       textAlignment: 'exact', attribution: metadata.attribution,
       permissions: Object.freeze({ stream: 'allowed', offlineCopy: 'allowed' }),
       rightsEvidence: metadata.rightsEvidence, reviewedBy: metadata.reviewedBy, reviewedAt: metadata.reviewedAt,
+      encoding,
     },
     alignmentSource: metadata.alignmentSource,
     totalBytes,
@@ -211,15 +257,22 @@ export async function inspectAudioIngestStaging({ inputDirectory, storageCeiling
       metadata ??= JSON.parse(await readFile(join(root, 'source.json'), 'utf8'));
       const required = ['source', 'sourceUrl', 'license', 'attribution', 'rightsEvidence', 'alignmentSource', 'reviewedBy', 'reviewedAt', 'contentVersion', 'scriptureContentVersion'];
       const missing = required.filter(key => typeof metadata[key] !== 'string' || !metadata[key].trim());
+      let speechOptimizedEncoding = false;
+      try {
+        speechEncoding(metadata);
+        speechOptimizedEncoding = true;
+      } catch { /* reported as a release-evidence gap */ }
       sourceEvidence = {
         present: true,
         missing,
         rightsVerified: metadata.rights === 'verified' && metadata.delivery === 'downloadable',
         alignmentExact: metadata.translationId === 'bsb' && metadata.textAlignment === 'exact',
+        speechOptimizedEncoding,
       };
     } catch { /* report absent/invalid source evidence below */ }
     const ready = missingFiles.length === 0 && missingAlignments.length === 0 && malformedFiles.length === 0 && invalidAlignments.length === 0
       && sourceEvidence.present && sourceEvidence.missing.length === 0 && sourceEvidence.rightsVerified && sourceEvidence.alignmentExact
+      && sourceEvidence.speechOptimizedEncoding
       && Number.isSafeInteger(totalBytes) && totalBytes < storageCeilingBytes;
     return Object.freeze({
       translationId: 'bsb', expectedChapters: expected.length,

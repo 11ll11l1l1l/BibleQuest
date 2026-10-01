@@ -15,6 +15,8 @@ async function fixture() {
     alignmentSource: 'fixture timing export', reviewedBy: 'content reviewer', reviewedAt: '2026-09-28T00:00:00Z',
     contentVersion: 'bsb-audio-1',
     scriptureContentVersion: 'sha256-fixture-scripture-1',
+    encoding: { purpose: 'speech', codec: 'mp3', bitrateKbps: 64, channels: 1, sampleRateHz: 44_100 },
+    encodingEvidence: 'fixture transcode/probe evidence',
   };
   const alignment = {
     schemaVersion: 1, translationId: 'bsb', contentVersion: source.contentVersion, scriptureContentVersion: source.scriptureContentVersion, book: 'GEN', chapter: 1, durationSeconds: 60,
@@ -38,6 +40,10 @@ test('audio ingest builds deterministic chapter hashes and checked R2 inventory'
     assert.equal(result.segments[0].url, 'https://audio.example/bible/bsb-audio-1/GEN-1.mp3');
     assert.equal(result.alignments[0].chapter, 1);
     assert.equal(result.source.scriptureContentVersion, 'sha256-fixture-scripture-1');
+    assert.deepEqual(result.source.encoding, {
+      purpose: 'speech', codec: 'mp3', bitrateKbps: 64, channels: 1, sampleRateHz: 44_100,
+      evidence: 'fixture transcode/probe evidence',
+    });
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -179,6 +185,62 @@ test('staging inspection refuses complete chapter coverage when timing revision 
     const report = await inspectAudioIngestStaging({ inputDirectory: directory });
     assert.equal(report.stagedAlignmentChapters, 0);
     assert.ok(report.invalidAlignments.some(issue => issue.includes('revision')));
+    assert.equal(report.readyForManifest, false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('hosted audio mirror requires reviewed speech-optimized encoding evidence and matching container', async () => {
+  const { directory } = await fixture();
+  try {
+    const sourcePath = join(directory, 'source.json');
+    const source = JSON.parse(await readFile(sourcePath, 'utf8'));
+
+    for (const encoding of [
+      { ...source.encoding, purpose: 'music' },
+      { ...source.encoding, bitrateKbps: 128 },
+      { ...source.encoding, channels: 2 },
+      { ...source.encoding, sampleRateHz: 96_000 },
+      { ...source.encoding, codec: 'flac' },
+    ]) {
+      await writeFile(sourcePath, JSON.stringify({ ...source, encoding }));
+      await assert.rejects(
+        buildAudioIngestManifest({ inputDirectory: directory, publicBaseUrl: 'https://audio.example' }),
+        /speech-optimized encoding metadata/i,
+      );
+    }
+
+    await writeFile(sourcePath, JSON.stringify({ ...source, encodingEvidence: '' }));
+    await assert.rejects(
+      buildAudioIngestManifest({ inputDirectory: directory, publicBaseUrl: 'https://audio.example' }),
+      /speech-optimized encoding metadata/i,
+    );
+
+    await writeFile(sourcePath, JSON.stringify({
+      ...source,
+      encoding: { ...source.encoding, codec: 'opus' },
+      encodingEvidence: 'reviewed opus probe',
+    }));
+    await assert.rejects(
+      buildAudioIngestManifest({ inputDirectory: directory, publicBaseUrl: 'https://audio.example' }),
+      /does not match declared speech codec opus/i,
+    );
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('staging preflight keeps a mirror non-ready when speech encoding evidence is absent', async () => {
+  const { directory } = await fixture();
+  try {
+    const sourcePath = join(directory, 'source.json');
+    const source = JSON.parse(await readFile(sourcePath, 'utf8'));
+    delete source.encodingEvidence;
+    await writeFile(sourcePath, JSON.stringify(source));
+    const report = await inspectAudioIngestStaging({ inputDirectory: directory });
+    assert.equal(report.sourceEvidence.speechOptimizedEncoding, false);
     assert.equal(report.readyForManifest, false);
   } finally {
     await rm(directory, { recursive: true, force: true });
