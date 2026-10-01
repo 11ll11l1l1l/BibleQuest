@@ -33,3 +33,19 @@ Use the unlinked deployed page `/v6-field-device.html` for the two Phase-N physi
 The harness reads `bq-build.json` from the same deployed origin and refuses evidence export unless it contains an exact 40-character build SHA. Progress is stored under a candidate-SHA-scoped local key so a different build cannot silently inherit observations. A PASS export also requires a device/OS/browser label, environment, durable evidence reference, concrete observation text, and every required physical sub-check for that gate.
 
 The harness does not update this canonical record or the release checklist automatically. Attach its sanitized JSON to a durable PR/issue/artifact record, transcribe the matching observations here against the same Candidate SHA, and only then promote the corresponding checklist row. Browser automation remains non-substitutable for these physical gates.
+
+
+## Push certification binding
+
+Status: PENDING
+
+Use the separate unlinked deployed page '/v6-push-device-field.html' together with 'docs/v6/V6_PUSH_DEVICE_FIELD_RUNBOOK.md'. The existing '/v6-field-device.html' remains the canonical harness for installed-PWA and manual accessibility gates.
+
+The physical push row must remain PENDING until P1 and P2 are observed on a physical device against the exact Candidate SHA. Live assignment assigned/due certification additionally requires P3 after the reviewed due-reminder scheduler path is active.
+
+For the aggregate push row, retain both evidence classes on the same exact candidate:
+
+- BUILT-BROWSER: exact-head V6 Phase 1 Build Gate evidence covering 'tests/v6/assignment-push-service-worker.test.ts', notification click/deep-link behavior, and built-artifact service-worker registration.
+- PHYSICAL-DEVICE: sanitized P1/P2 push field evidence, plus P3 when binding the live assigned/due path.
+
+Do not copy account identifiers, push endpoints, subscription keys, tokens, or server secrets into this record.
