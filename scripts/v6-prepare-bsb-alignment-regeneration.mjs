@@ -107,7 +107,6 @@ export function buildBsbAlignmentCommand(plan, { python = 'python3' } = {}) {
       '--audio-dir', plan.audioDirectory,
       '--text-dir', plan.textDirectory,
       '--output-dir', plan.outputDirectory,
-      '--force',
     ]),
   });
 }
