@@ -37,7 +37,12 @@ async function buildBuiltReaderAlignmentFixture() {
       chapters.get(chapter).push(verse);
     }
     for (const [chapter, verseNumbers] of [...chapters.entries()].sort((a, b) => a[0] - b[0])) {
-      const verses = [...new Set(verseNumbers)].sort((a, b) => a - b).map((verse, index) => ({
+      const normalizedVerseNumbers = [...new Set(verseNumbers)].sort((a, b) => a - b);
+      // Some bundled BSB Psalm chapters omit superscription verse 1 from the text pack.
+      // The synthetic full-corpus timing fixture still needs validator-safe verse-1 timing;
+      // only Genesis 1 timings are exercised as Reader behavior evidence below.
+      if (normalizedVerseNumbers[0] !== 1) normalizedVerseNumbers.unshift(1);
+      const verses = normalizedVerseNumbers.map((verse, index) => ({
         verse,
         startSeconds: index * 2,
         endSeconds: index * 2 + 1.5,
