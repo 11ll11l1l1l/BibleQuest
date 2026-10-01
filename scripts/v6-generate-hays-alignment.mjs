@@ -62,8 +62,9 @@ function canonicalBible(root) {
       const verses = chapters.get(chapter);
       if (!verses?.length) throw new Error(`${code} ${chapter} is missing from the canonical BSB pack.`);
       verses.sort((a, b) => a - b);
-      for (let index = 0; index < verses.length; index += 1) {
-        if (verses[index] !== index + 1) throw new Error(`${code} ${chapter} verse sequence is not contiguous from 1.`);
+      if (verses[0] !== 1) throw new Error(`${code} ${chapter} verse sequence must begin at 1.`);
+      for (let index = 1; index < verses.length; index += 1) {
+        if (verses[index] <= verses[index - 1]) throw new Error(`${code} ${chapter} verse sequence is not strictly increasing.`);
       }
     }
     return Object.freeze({ code, chapters: maxChapter, verses: chapters });
