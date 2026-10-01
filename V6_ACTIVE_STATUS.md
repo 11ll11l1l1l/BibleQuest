@@ -1,6 +1,6 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-10-01 JST
+Updated: 2026-10-02 JST
 Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
 V5.0 production ancestry baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
@@ -15,6 +15,13 @@ This file is the authoritative source for current BibleQuest V6 phase, scope, bl
 
 Autonomous/manual V6 execution is governed by `V6_AGENT_OPERATING_SYSTEM.md`; the live cross-chat/scheduled-worker queue is `V6_AGENT_TASK_BOARD.md`. Every scheduled worker and manual chat instance must read those files plus live GitHub state before selecting work. Repository state replaces stale chat/task-prompt assumptions.
 
+
+## Integrated checkpoint — 2026-10-02
+
+- Current integration is `05b852c392c0c2ecc80cb0e894abe098106908ec` after PR #1057 merged the release owner's explicit temporary leaked-password residual-risk decision from exact head `d460b551991fbb3f3d56262d3c553c06685d0b30`. V6 PR Serialization Guard `36905232021` and inherited regression `36905232026` passed. Supabase native leaked-password protection remains disabled; the accepted path relies on the already-integrated first-party HIBP screening plus the explicit dated rationale and does not weaken Auth, RLS, roles, or tenant isolation. The authoritative checklist is **194 checked / 17 open / 211 total = 91.9%**.
+- PR #1053 merged immediately before #1057 at `c5bbd49ee83b58e03ae9ab15db71a9de76ef842f` from exact head `063ce088034c4f69cf16232790fd6d97049fe240`. Phase-1 `36888732734`, Database CI `36888732525`, inherited regression `36888732653`, serialization `36888732745`, Dependency Security `36888732820`, Client Artifact Security `36888732788`, and V4 rollback `36888732558` passed. The six manually runnable RC component gates now accept, checkout, and prove one explicit 40-character candidate SHA; this is infrastructure only and does not itself certify an RC.
+- Assignment assigned/due push remains OPEN: the live scheduler/function path is active, but there is still no designated eligible live due-recipient plus canonical push-dispatch evidence. Cloudflare exact-SHA/deployed-byte rows remain OPEN while Pages serves HTML instead of the expected `dist-v6` artifact metadata. Physical/device rows remain OPEN without genuine device observations.
+- Worker PRs created from pre-#1057 integration must be replayed/revalidated on this exact integration before merge. Do not merge stale #1056/#1058/#1059 ancestry blindly.
 
 ## Integrated checkpoint — 2026-10-01
 
