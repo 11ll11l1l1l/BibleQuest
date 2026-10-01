@@ -7,7 +7,7 @@ test('deployed-artifact verification exposes the exact candidate in its dispatch
   const exactExpression = "${{ inputs.expected_sha || github.sha }}";
 
   assert.ok(
-    workflow.includes('run-name: RC ' + exactExpression),
+    workflow.includes('run-name: V6 Deployed Artifact Verification · RC ' + exactExpression),
     'deployment verification must bind its workflow run title to the exact expected SHA',
   );
   assert.ok(
