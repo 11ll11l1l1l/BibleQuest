@@ -10,7 +10,7 @@ export const HAYS_AUDIO_SOURCE = 'Barry Hays BSB narration (OpenBible direct cha
 export const HAYS_AUDIO_LICENSE = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
 export const EXPECTED_BSB_BOOKS = 66;
 export const EXPECTED_BSB_CHAPTERS = 1189;
-export const EXPECTED_BSB_VERSES = 31086;
+export const EXPECTED_BSB_VERSES = 30969;
 
 const REVISION = /^[a-f0-9]{40}$/i;
 const BOOK_FILE = /^(?:[1-3])?[A-Z]{2,3}\.json$/;
