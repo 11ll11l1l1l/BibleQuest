@@ -1,6 +1,15 @@
 name: V6 RC Exact-SHA Automated Gate
 
 on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "docs/v6/RC_CANDIDATE.json"
+      - ".github/workflows/v6-rc-exact-sha-gate.yml"
+      - ".github/workflows/v6-deployment-verify.yml"
+      - "scripts/v6-rc-exact-sha-gate.mjs"
+      - "scripts/v6-assemble-rc-certification.mjs"
   workflow_dispatch:
     inputs:
       candidate_sha:
@@ -13,16 +22,16 @@ permissions:
   actions: read
 
 concurrency:
-  group: v6-rc-exact-sha-${{ inputs.candidate_sha }}
+  group: v6-rc-exact-sha-${{ github.event.pull_request.number || inputs.candidate_sha || github.ref }}
   cancel-in-progress: false
 
 env:
-  BQ_RC_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+  BQ_RC_CANDIDATE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha }}
 
 jobs:
   certify-automated-gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 85
     steps:
       - name: Checkout exact candidate
         uses: actions/checkout@v4
@@ -49,6 +58,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           BQ_RC_EVIDENCE_OUTPUT: v6-rc-exact-sha-evidence.json
+          BQ_RC_WAIT_MS: '4500000'
+          BQ_RC_POLL_MS: '15000'
         run: node scripts/v6-rc-exact-sha-gate.mjs
 
       - name: Publish evidence summary
