@@ -4,6 +4,7 @@ import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateChapterAlignment } from '../src/v6/reader/audio-alignment.ts';
+import { probeSpeechAudioFile, validateSpeechAudioProbe, V6_SPEECH_AUDIO_PROFILE } from './v6-audio-mirror-profile.mjs';
 
 export const AUDIO_STORAGE_CEILING_BYTES = 10_000_000_000;
 const BOOK_CODE = /^(?:[1-3])?[A-Z]{2,3}$/;
@@ -68,7 +69,7 @@ async function hashFile(path) {
   return hash.digest('hex');
 }
 
-export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, storageCeilingBytes = AUDIO_STORAGE_CEILING_BYTES }) {
+export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, storageCeilingBytes = AUDIO_STORAGE_CEILING_BYTES, audioProbeResolver = probeSpeechAudioFile }) {
   const root = resolve(inputDirectory);
   const metadata = JSON.parse(await readFile(join(root, 'source.json'), 'utf8'));
   const alignments = JSON.parse(await readFile(join(root, 'alignments.json'), 'utf8'));
@@ -85,6 +86,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
   if (sourceUrl.protocol !== 'https:' || sourceUrl.username || sourceUrl.password) fail('Audio sourceUrl must use safe HTTPS.');
   if (!Array.isArray(alignments) || alignments.length === 0) fail('alignments.json must contain chapter timing records.');
   if (!Number.isSafeInteger(storageCeilingBytes) || storageCeilingBytes <= 0) fail('Storage ceiling must be a positive integer byte count.');
+  if (typeof audioProbeResolver !== 'function') fail('Mirror publication requires an audio encoding probe resolver.');
 
   const alignmentByChapter = new Map();
   for (const row of alignments) {
@@ -119,6 +121,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
     const details = await stat(path);
     if (!details.isFile() || details.size <= 0) fail(`Audio chapter ${key} is empty or invalid.`);
     const sha256 = await hashFile(path);
+    const encoding = validateSpeechAudioProbe(await audioProbeResolver(path, { filename, book, chapter }));
     totalBytes += details.size;
     if (!Number.isSafeInteger(totalBytes) || totalBytes >= storageCeilingBytes) fail(`Hosted BSB audio is at or above the ${storageCeilingBytes}-byte storage ceiling.`);
     segments.push({
@@ -129,6 +132,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
       sha256,
       url: `${baseUrl}/${encodeURIComponent(metadata.contentVersion)}/${encodeURIComponent(filename)}`,
       alignment: key,
+      encoding,
     });
   }
   if (seen.size !== alignmentByChapter.size) fail('One or more alignment rows are missing their staged audio chapter.');
@@ -145,6 +149,7 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
       rightsEvidence: metadata.rightsEvidence, reviewedBy: metadata.reviewedBy, reviewedAt: metadata.reviewedAt,
     },
     alignmentSource: metadata.alignmentSource,
+    mirrorEncodingProfile: V6_SPEECH_AUDIO_PROFILE.id,
     totalBytes,
     segments,
     alignments,
@@ -152,16 +157,19 @@ export async function buildAudioIngestManifest({ inputDirectory, publicBaseUrl, 
 }
 
 /** Reports evidence/package completeness without relaxing the publication gate. */
-export async function inspectAudioIngestStaging({ inputDirectory, storageCeilingBytes = AUDIO_STORAGE_CEILING_BYTES }) {
+export async function inspectAudioIngestStaging({ inputDirectory, storageCeilingBytes = AUDIO_STORAGE_CEILING_BYTES, audioProbeResolver = probeSpeechAudioFile }) {
   const root = resolve(inputDirectory);
   if (!Number.isSafeInteger(storageCeilingBytes) || storageCeilingBytes <= 0) fail('Storage ceiling must be a positive integer byte count.');
+  if (typeof audioProbeResolver !== 'function') fail('Mirror preflight requires an audio encoding probe resolver.');
   const expected = Object.entries(BIBLE_BOOK_CHAPTERS).flatMap(([book, chapters]) =>
     Array.from({ length: chapters }, (_, index) => chapterKey(book, index + 1)));
   const missingFiles = [];
   const missingAlignments = [];
   const invalidAlignments = [];
   const malformedFiles = [];
+  const invalidEncodings = [];
   const seenChapterKeys = new Set();
+  let speechProfileChapters = 0;
   let totalBytes = 0;
   try {
     const entries = await readdir(root, { withFileTypes: true });
@@ -179,6 +187,12 @@ export async function inspectAudioIngestStaging({ inputDirectory, storageCeiling
       }
       seenChapterKeys.add(key);
       if (!details.isFile() || details.size <= 0) { malformedFiles.push(entry.name); continue; }
+      try {
+        validateSpeechAudioProbe(await audioProbeResolver(join(root, entry.name), { filename: entry.name, book: parsed.book, chapter: parsed.chapter }));
+        speechProfileChapters += 1;
+      } catch (error) {
+        invalidEncodings.push(`${entry.name}: ${error instanceof Error ? error.message : String(error)}`);
+      }
       present.set(key, true);
     }
     let alignments = [];
@@ -218,7 +232,8 @@ export async function inspectAudioIngestStaging({ inputDirectory, storageCeiling
         alignmentExact: metadata.translationId === 'bsb' && metadata.textAlignment === 'exact',
       };
     } catch { /* report absent/invalid source evidence below */ }
-    const ready = missingFiles.length === 0 && missingAlignments.length === 0 && malformedFiles.length === 0 && invalidAlignments.length === 0
+    const ready = missingFiles.length === 0 && missingAlignments.length === 0 && malformedFiles.length === 0
+      && invalidAlignments.length === 0 && invalidEncodings.length === 0 && speechProfileChapters === expected.length
       && sourceEvidence.present && sourceEvidence.missing.length === 0 && sourceEvidence.rightsVerified && sourceEvidence.alignmentExact
       && Number.isSafeInteger(totalBytes) && totalBytes < storageCeilingBytes;
     return Object.freeze({
@@ -227,7 +242,8 @@ export async function inspectAudioIngestStaging({ inputDirectory, storageCeiling
       stagedAlignmentChapters: aligned.size,
       totalBytes, storageCeilingBytes, storageRemainingBytes: Math.max(0, storageCeilingBytes - totalBytes),
       belowStorageCeiling: Number.isSafeInteger(totalBytes) && totalBytes < storageCeilingBytes,
-      missingFiles, missingAlignments, invalidAlignments, malformedFiles, sourceEvidence, readyForManifest: ready,
+      speechEncodingProfile: V6_SPEECH_AUDIO_PROFILE.id, speechProfileChapters,
+      missingFiles, missingAlignments, invalidAlignments, invalidEncodings, malformedFiles, sourceEvidence, readyForManifest: ready,
     });
   } catch (error) {
     fail(`Cannot inspect staging directory: ${error instanceof Error ? error.message : String(error)}`);

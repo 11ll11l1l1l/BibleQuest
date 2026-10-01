@@ -4,7 +4,16 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 
-import { buildAudioIngestManifest, inspectAudioIngestStaging } from '../../scripts/v6-audio-ingest-manifest.mjs';
+import { buildAudioIngestManifest as buildAudioIngestManifestRaw, inspectAudioIngestStaging as inspectAudioIngestStagingRaw } from '../../scripts/v6-audio-ingest-manifest.mjs';
+
+
+const speechProbe = async () => ({
+  codec: 'mp3', bitRate: 96_000, sampleRate: 44_100, channels: 1, durationSeconds: 60,
+});
+const buildAudioIngestManifest = (input: Record<string, unknown>) =>
+  buildAudioIngestManifestRaw({ ...input, audioProbeResolver: speechProbe });
+const inspectAudioIngestStaging = (input: Record<string, unknown>) =>
+  inspectAudioIngestStagingRaw({ ...input, audioProbeResolver: speechProbe });
 
 async function fixture() {
   const directory = await mkdtemp(join(tmpdir(), 'bq-v6-audio-'));
@@ -38,6 +47,9 @@ test('audio ingest builds deterministic chapter hashes and checked R2 inventory'
     assert.equal(result.segments[0].url, 'https://audio.example/bible/bsb-audio-1/GEN-1.mp3');
     assert.equal(result.alignments[0].chapter, 1);
     assert.equal(result.source.scriptureContentVersion, 'sha256-fixture-scripture-1');
+    assert.equal(result.mirrorEncodingProfile, 'speech-v1');
+    assert.equal(result.segments[0].encoding.profileId, 'speech-v1');
+    assert.equal(result.segments[0].encoding.bitRate, 96_000);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
@@ -114,6 +126,9 @@ test('staging inspection reports chapter/evidence gaps without permitting a part
     assert.equal(report.stagedAlignmentChapters, 1);
     assert.equal(report.totalBytes, 4);
     assert.equal(report.belowStorageCeiling, true);
+    assert.equal(report.speechEncodingProfile, 'speech-v1');
+    assert.equal(report.speechProfileChapters, 1);
+    assert.equal(report.invalidEncodings.length, 0);
     assert.equal(report.readyForManifest, false);
     assert.ok(report.missingFiles.includes('GEN-2'));
     assert.ok(report.missingAlignments.includes('GEN-2'));
@@ -179,6 +194,34 @@ test('staging inspection refuses complete chapter coverage when timing revision 
     const report = await inspectAudioIngestStaging({ inputDirectory: directory });
     assert.equal(report.stagedAlignmentChapters, 0);
     assert.ok(report.invalidAlignments.some(issue => issue.includes('revision')));
+    assert.equal(report.readyForManifest, false);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+
+test('hosted mirror ingest rejects non-speech encoding before publication', async () => {
+  const { directory } = await fixture();
+  try {
+    await assert.rejects(
+      buildAudioIngestManifestRaw({
+        inputDirectory: directory,
+        publicBaseUrl: 'https://audio.example/bible',
+        audioProbeResolver: async () => ({
+          codec: 'flac', bitRate: 900_000, sampleRate: 96_000, channels: 2, durationSeconds: 60,
+        }),
+      }),
+      /speech profile|codec/i,
+    );
+    const report = await inspectAudioIngestStagingRaw({
+      inputDirectory: directory,
+      audioProbeResolver: async () => ({
+        codec: 'mp3', bitRate: 320_000, sampleRate: 44_100, channels: 2, durationSeconds: 60,
+      }),
+    });
+    assert.equal(report.speechProfileChapters, 0);
+    assert.equal(report.invalidEncodings.length, 1);
     assert.equal(report.readyForManifest, false);
   } finally {
     await rm(directory, { recursive: true, force: true });
