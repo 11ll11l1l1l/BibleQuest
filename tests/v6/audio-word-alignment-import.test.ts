@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { buildBsbAlignmentManifest, validateBsbAlignmentManifest } from '../../scripts/v6-bsb-alignment-manifest.mjs';
 import { convertBsbWordAlignments, remapBsbAlignmentVerseIds } from '../../scripts/v6-import-bsb-word-alignments.mjs';
 
 const metadata = {
@@ -39,6 +40,11 @@ test('BSB word timings convert only against matching current verse text and bind
   assert.deepEqual(result.alignments[0].verses, [{ verse: 1, startSeconds: 0.1, endSeconds: 2 }]);
   assert.equal(result.audit.words, 10);
   assert.equal(result.audit.lowConfidenceWords, 1);
+  assert.equal(result.manifest.audioContentVersion, metadata.contentVersion);
+  assert.equal(result.manifest.scriptureContentVersion, 'sha256-current-bsb-12345678901234567890');
+  assert.equal(result.manifest.alignmentRevision, metadata.alignmentRevision);
+  assert.equal(result.manifest.complete, false);
+  assert.match(result.manifest.alignmentContentVersion, /^sha256-[a-f0-9]{64}$/);
   assert.ok(Math.abs(result.audit.rows[0].averageWordScore - 0.838) < 1e-12);
 });
 
@@ -123,4 +129,36 @@ test('BSB alignment verse remap rejects a stale Scripture export manifest', () =
       files: [{ book: 'GEN', chapter: 1, verseNumbers: [1] }],
     },
   }), /different Scripture content revision/i);
+});
+
+
+test('BSB alignment manifest checksum binds timings to Scripture, audio and immutable alignment revisions', () => {
+  const scriptureContentVersion = 'bsb-current-versioned-fixture';
+  const result = convertBsbWordAlignments({
+    records: words, durations, bookPacks: { GEN: pack }, metadata,
+    scriptureContentVersion, requireComplete: false,
+  });
+  assert.deepEqual(validateBsbAlignmentManifest(result.manifest, {
+    audioContentVersion: metadata.contentVersion,
+    scriptureContentVersion,
+  }), { valid: true, issues: [] });
+  assert.equal(validateBsbAlignmentManifest(result.manifest, { requireComplete: true }).valid, false);
+
+  const tampered = {
+    ...result.manifest,
+    chapters: [{
+      ...result.manifest.chapters[0],
+      verses: [{ ...result.manifest.chapters[0].verses[0], endSeconds: 2.1 }],
+    }],
+  };
+  const validation = validateBsbAlignmentManifest(tampered);
+  assert.equal(validation.valid, false);
+  assert.ok(validation.issues.some(issue => /inventory checksum mismatch/i.test(issue)));
+
+  assert.throws(() => buildBsbAlignmentManifest({
+    alignments: result.alignments,
+    metadata: { ...metadata, alignmentRevision: 'main' },
+    scriptureContentVersion,
+    complete: false,
+  }), /immutable 40-hex/i);
 });
