@@ -4,6 +4,7 @@ import { createMyJourneyService } from './my-journey.js';
 import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
 import { createRouter } from './router.js';
 import { createSessionService } from './session.js';
+import { assertPasswordNotCompromised } from '../security/password-breach.js';
 import { createAccountService } from './account.js';
 import { createAdminAccessService } from './admin-access.js';
 import { createBackupService } from './backup.js';
@@ -254,7 +255,7 @@ function boot(root){
   const lesson=createLessonEngine({storage});
   const transformEngine=createTransformEngine({storage});
   const psychometricsEngine=createPsychometricsEngine();
-  const session=createSessionService({auth:api.auth,store});
+  const session=createSessionService({auth:api.auth,store,passwordSafety:assertPasswordNotCompromised});
   const telemetry=createTelemetryService({api:api.telemetry,session,storage:privateStorage,transientStorage,getRoute:()=>store.getState().route});
   const progressCloudSync=createProgressCloudSyncService({api:api.progressSnapshots,session,progress,ownerStorage:authStorage,cacheStorage:privateStorage});
   const pushPersistence=createPushSubscriptionPersistence({api:api.pushSubscriptions,session});
