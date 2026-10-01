@@ -176,6 +176,11 @@ jobs:
           BQ_V6_DEV_URL: http://127.0.0.1:4174
         run: node tests/v6/reader-audio-sync-browser.mjs
 
+      - name: Reader offline-audio fetch fallback Chromium acceptance
+        env:
+          BQ_V6_DEV_URL: http://127.0.0.1:4174
+        run: node tests/v6/reader-audio-download-fallback-browser.mjs
+
       - name: Start built artifact preview
         shell: bash
         run: |
