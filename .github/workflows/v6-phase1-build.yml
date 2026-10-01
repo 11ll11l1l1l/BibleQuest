@@ -34,7 +34,9 @@ on:
       - "scripts/v6-deployment-verify.mjs"
       - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
+      - "scripts/v6-rc-exact-sha-gate.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
+      - ".github/workflows/v6-rc-exact-sha-gate.yml"
       - ".github/workflows/v6-phase1-build.yml"
   workflow_dispatch:
 
