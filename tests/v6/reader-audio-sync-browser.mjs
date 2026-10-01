@@ -176,49 +176,61 @@ try {
     'Current spoken verse was not exposed through the Reader accessibility state.');
   assert(await page.locator('[data-verse="1"]').getAttribute('aria-pressed') === 'false',
     'Previous verse retained current-spoken accessibility state.');
-  const seekCalls = await page.evaluate(() => window.__bqAudioHarness.seekCalls.slice());
-  assert(JSON.stringify(seekCalls) === JSON.stringify([2]),
-    'Verse Peek did not seek through the verified verse timing boundary: ' + JSON.stringify(seekCalls) + '.');
+  const peekSeekCalls = await page.evaluate(() => window.__bqAudioHarness.seekCalls.slice());
+  assert(JSON.stringify(peekSeekCalls) === JSON.stringify([2]),
+    'Verse Peek did not seek through the verified verse timing boundary: ' + JSON.stringify(peekSeekCalls) + '.');
   await page.waitForFunction(() => window.__bqAudioScrolls.some(row => row.verse === '2'));
   const firstScroll = await page.evaluate(() => window.__bqAudioScrolls.find(row => row.verse === '2'));
   assert(firstScroll?.options?.block === 'nearest' && firstScroll?.options?.behavior === 'smooth',
     'Spoken-verse follow did not use nearest smooth scrolling: ' + JSON.stringify(firstScroll) + '.');
 
+  await page.locator('[data-verse="3"]').click();
+  await page.waitForFunction(() => window.__bqAudioHarness.seekCalls.length === 2);
+  const directSeekCalls = await page.evaluate(() => window.__bqAudioHarness.seekCalls.slice());
+  assert(JSON.stringify(directSeekCalls) === JSON.stringify([2, 3]),
+    'Active verified BSB playback did not seek directly from a verse tap: ' + JSON.stringify(directSeekCalls) + '.');
+  await page.waitForFunction(() => document.querySelector('[data-verse="3"]')?.classList.contains('is-audio-current'));
+  assert(await dialog.evaluate(node => node.open === false),
+    'Direct verse-tap seek reopened Verse Peek while BSB audio was already active.');
+
   const verseOne = page.locator('[data-verse="1"]');
-  await follow.uncheck();
   await verseOne.focus();
+  await page.locator('.bq-verse-list').dispatchEvent('wheel', { deltaY: 120 });
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-follow]')?.checked === false);
   await page.evaluate(() => {
     window.__bqAudioHarness.clearScrolls();
-    window.__bqAudioHarness.setVerse(3);
+    window.__bqAudioHarness.setVerse(1);
   });
-  await page.waitForFunction(() => document.querySelector('[data-verse="3"]')?.classList.contains('is-audio-current'));
-  assert(await page.locator('[data-verse="3"]').getAttribute('aria-pressed') === 'true',
-    'Verse highlighting stopped when follow-scroll was disabled.');
+  await page.waitForFunction(() => document.querySelector('[data-verse="1"]')?.classList.contains('is-audio-current'));
+  assert(await page.locator('[data-verse="1"]').getAttribute('aria-pressed') === 'true',
+    'Verse highlighting stopped after manual navigation suspended follow-scroll.');
   const disabledFollowScrolls = await page.evaluate(() => window.__bqAudioScrolls.slice());
   assert(disabledFollowScrolls.length === 0,
-    'Disabling follow-scroll still moved the Reader viewport: ' + JSON.stringify(disabledFollowScrolls) + '.');
+    'Manual navigation suspended follow but the Reader still moved the viewport: ' + JSON.stringify(disabledFollowScrolls) + '.');
   assert(await verseOne.evaluate(node => document.activeElement === node),
-    'Audio verse updates stole keyboard focus while follow-scroll was disabled.');
+    'Audio verse updates stole keyboard focus after manual navigation suspended follow-scroll.');
 
   await follow.check();
   await page.evaluate(() => {
     window.__bqAudioHarness.clearScrolls();
     window.__bqAudioHarness.setReduceMotion(true);
-    window.__bqAudioHarness.setVerse(1);
+    window.__bqAudioHarness.setVerse(2);
   });
-  await page.waitForFunction(() => window.__bqAudioScrolls.some(row => row.verse === '1'));
-  const reducedMotionScroll = await page.evaluate(() => window.__bqAudioScrolls.find(row => row.verse === '1'));
+  await page.waitForFunction(() => window.__bqAudioScrolls.some(row => row.verse === '2'));
+  const reducedMotionScroll = await page.evaluate(() => window.__bqAudioScrolls.find(row => row.verse === '2'));
   assert(reducedMotionScroll?.options?.behavior === 'auto',
     'Reduced-motion preference did not disable smooth audio-follow scrolling: ' + JSON.stringify(reducedMotionScroll) + '.');
-  assert(await page.locator('[data-verse="1"]').getAttribute('aria-pressed') === 'true',
+  assert(await page.locator('[data-verse="2"]').getAttribute('aria-pressed') === 'true',
     'Reduced-motion mode stopped current-verse accessibility highlighting.');
 
   assert(errors.length === 0, 'Reader audio synchronization browser acceptance produced errors: ' + errors.join(' | '));
   console.log(JSON.stringify({
     pass: true,
-    versePeekSeek: seekCalls,
+    versePeekSeek: peekSeekCalls,
+    directVerseTapSeek: directSeekCalls,
     currentVerseAria: true,
     followScroll: firstScroll.options,
+    manualNavigationSuspendsFollow: true,
     manualFocusPreserved: true,
     reducedMotionScroll: reducedMotionScroll.options,
   }));
