@@ -1,4 +1,5 @@
 name: BibleQuest inherited regression
+run-name: RC ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
 
 on:
   workflow_dispatch:

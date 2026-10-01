@@ -13,7 +13,8 @@ function successRun(name, id) {
   return {
     id,
     name,
-    head_sha: candidateSha,
+    head_sha: 'b'.repeat(40),
+    display_title: 'RC ' + candidateSha,
     status: 'completed',
     conclusion: 'success',
     event: 'workflow_dispatch',
@@ -25,7 +26,8 @@ function successRun(name, id) {
 function fetchFor(runs) {
   return async input => {
     const url = input instanceof URL ? input : new URL(input);
-    assert.equal(url.searchParams.get('head_sha'), candidateSha);
+    assert.equal(url.searchParams.get('head_sha'), null);
+    assert.equal(url.searchParams.get('event'), 'workflow_dispatch');
     return new Response(JSON.stringify({ workflow_runs: runs }), {
       status: 200,
       headers: { 'content-type': 'application/json' },
@@ -46,7 +48,7 @@ test('RC collector passes only when every required automated gate succeeded on t
   const runs = DEFAULT_REQUIRED_WORKFLOWS.map((name, index) => successRun(name, 1000 + index));
   runs.push({
     ...successRun('V6 Phase 1 Build Gate', 900),
-    head_sha: 'b'.repeat(40),
+    display_title: 'RC ' + 'c'.repeat(40),
   });
 
   const evidence = await collectExactShaRcEvidence({
@@ -64,6 +66,22 @@ test('RC collector passes only when every required automated gate succeeded on t
     DEFAULT_REQUIRED_WORKFLOWS,
   );
   assert.ok(evidence.workflows.every(item => item.runId >= 1000));
+});
+
+test('RC collector rejects a successful dispatch bound to a different candidate marker', async () => {
+  const runs = DEFAULT_REQUIRED_WORKFLOWS.map((name, index) => successRun(name, 1500 + index));
+  const database = runs.find(run => run.name === 'V6 Database CI');
+  database.display_title = 'RC ' + 'c'.repeat(40);
+
+  await assert.rejects(
+    collectExactShaRcEvidence({
+      repository: 'example/repo',
+      candidateSha,
+      token: 'test-token',
+      fetchImpl: fetchFor(runs),
+    }),
+    /Missing exact-SHA SUCCESS: V6 Database CI/,
+  );
 });
 
 test('RC collector fails closed when any required exact-SHA workflow is absent or non-success', async () => {

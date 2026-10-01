@@ -51,7 +51,7 @@ async function fetchWorkflowRuns({ repository, candidateSha, token, fetchImpl })
   const runs = [];
   for (let page = 1; page <= MAX_PAGES; page += 1) {
     const url = new URL(`https://api.github.com/repos/${repository}/actions/runs`);
-    url.searchParams.set('head_sha', candidateSha);
+    url.searchParams.set('event', 'workflow_dispatch');
     url.searchParams.set('per_page', String(PER_PAGE));
     url.searchParams.set('page', String(page));
 
@@ -77,11 +77,16 @@ async function fetchWorkflowRuns({ repository, candidateSha, token, fetchImpl })
   return runs;
 }
 
+function dispatchedCandidateTitle(candidateSha) {
+  return 'RC ' + candidateSha;
+}
+
 function pickSuccessfulRun(runs, workflowName, candidateSha) {
   const exact = runs
     .filter(run =>
       run?.name === workflowName
-      && String(run?.head_sha || '').toLowerCase() === candidateSha
+      && run?.event === 'workflow_dispatch'
+      && String(run?.display_title || '').trim() === dispatchedCandidateTitle(candidateSha)
       && run?.status === 'completed'
       && run?.conclusion === 'success'
     )
