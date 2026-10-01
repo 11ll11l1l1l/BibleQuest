@@ -13,6 +13,16 @@ const TRANSLATION_ID = /^[a-z0-9][a-z0-9_-]{0,31}$/;
 const SEGMENT_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,159}$/;
 const SHA256_HEX = /^[a-f0-9]{64}$/i;
 
+
+export class AudioPackageDownloadUnavailableError extends Error {
+  readonly code = 'audio-download-unavailable';
+
+  constructor(message = 'Offline audio download is unavailable from this source in this browser. Direct streaming remains usable.') {
+    super(message);
+    this.name = 'AudioPackageDownloadUnavailableError';
+  }
+}
+
 function validRecord(value: unknown, translationId: string, segmentId: string): value is InstalledScriptureAudioPackage {
   if (!value || typeof value !== 'object') return false;
   const row = value as Partial<InstalledScriptureAudioPackage>;
@@ -184,9 +194,9 @@ export function createFetchScriptureAudioPackageTransport(input: {
         response = await fetcher(url, { signal, cache: 'no-store', credentials: 'omit', redirect: 'error' });
       } catch (error) {
         if (signal.aborted || (error instanceof Error && error.name === 'AbortError')) throw error;
-        throw new Error('Offline audio download is unavailable from this source in this browser. Direct streaming remains usable.');
+        throw new AudioPackageDownloadUnavailableError();
       }
-      if (!response.ok) throw new Error(`Scripture audio request failed with HTTP ${response.status}. Direct streaming remains usable.`);
+      if (!response.ok) throw new AudioPackageDownloadUnavailableError(`Offline audio download is unavailable from this source in this browser (HTTP ${response.status}). Direct streaming remains usable.`);
       const headerBytes = Number(response.headers.get('content-length'));
       const total = Number.isFinite(headerBytes) && headerBytes > 0 ? headerBytes : undefined;
       if (total !== undefined && total > maxBytes) throw new Error('Audio package response exceeds the configured size limit.');
