@@ -184,6 +184,7 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   const alignmentSource = `BSB-publishing/bsb-align@${alignmentRevision}`;
   const inventorySha256 = 'b'.repeat(64);
   const audioInventorySha256 = 'c'.repeat(64);
+  const exactAudioContentVersion = `sha256-${audioInventorySha256}`;
   const hays = createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, books, alignmentSource);
   assert.equal(hays.alignmentSource, alignmentSource);
   assert.throws(
@@ -193,7 +194,7 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   const chapters = hays.segments.map(segment => ({
     schemaVersion: 1,
     translationId: 'bsb',
-    contentVersion: hays.contentVersion,
+    contentVersion: exactAudioContentVersion,
     scriptureContentVersion,
     book: segment.book,
     chapter: segment.chapter,
@@ -209,7 +210,7 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
     schemaVersion: 1,
     translationId: 'bsb',
     complete: true,
-    audioContentVersion: hays.contentVersion,
+    audioContentVersion: exactAudioContentVersion,
     audioInventorySha256,
     scriptureContentVersion,
     alignmentSource,
@@ -228,8 +229,10 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   assert.equal(loaded?.chapters.length, 1189);
   assert.equal(loaded?.alignmentSource, alignmentSource);
   assert.equal(loaded?.audioInventorySha256, audioInventorySha256);
+  assert.equal(loaded?.audioContentVersion, exactAudioContentVersion);
   assert.deepEqual(calls, ['/data/v6-audio/bsb-hays-alignment.json']);
   const bound = bindOpenBibleHaysAlignmentIdentity(hays, loaded!);
+  assert.equal(bound.contentVersion, exactAudioContentVersion);
   assert.equal(bound.segments[0].sha256, 'd'.repeat(64));
   assert.ok((bound.segments[0].byteLength || 0) > 0);
   assert.equal(bound.source.permissions?.offlineCopy, 'review-required');
@@ -239,6 +242,9 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   } as Response)), null);
   assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({
     ok: true, async json() { return { ...payload, complete: false }; },
+  } as Response)), null);
+  assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({
+    ok: true, async json() { return { ...payload, audioContentVersion: 'openbible-hays-stream-v1' }; },
   } as Response)), null);
   assert.equal(await loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, books, async () => ({ ok: false } as Response)), null);
 });
