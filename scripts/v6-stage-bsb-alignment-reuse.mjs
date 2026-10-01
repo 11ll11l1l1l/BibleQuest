@@ -34,9 +34,7 @@ function sameTokens(left, right) {
   return a.length === b.length && a.every((token, index) => token === b[index]);
 }
 
-export function inspectReusableBsbWordTiming({ currentText, upstreamText, wordOutput, book, chapter }) {
-  const code = String(book ?? '').toUpperCase();
-  const number = Number(chapter);
+export function inspectBsbTextCompatibility({ currentText, upstreamText }) {
   const reasons = [];
   const currentLines = lines(currentText);
   const upstreamLines = lines(upstreamText);
@@ -50,6 +48,19 @@ export function inspectReusableBsbWordTiming({ currentText, upstreamText, wordOu
       break;
     }
   }
+  const uniqueReasons = [...new Set(reasons)];
+  return Object.freeze({
+    compatible: uniqueReasons.length === 0,
+    reasons: Object.freeze(uniqueReasons),
+  });
+}
+
+export function inspectReusableBsbWordTiming({ currentText, upstreamText, wordOutput, book, chapter }) {
+  const code = String(book ?? '').toUpperCase();
+  const number = Number(chapter);
+  const currentLines = lines(currentText);
+  const textCompatibility = inspectBsbTextCompatibility({ currentText, upstreamText });
+  const reasons = [...textCompatibility.reasons];
 
   if (!wordOutput || typeof wordOutput !== 'object' || String(wordOutput.book ?? '').toUpperCase() !== code
     || Number(wordOutput.chapter) !== number || !wordOutput.verses || typeof wordOutput.verses !== 'object'
@@ -178,6 +189,18 @@ export async function stageReusableBsbAlignments({
       upstreamText = await readFile(upstreamTextPath, 'utf8');
     } catch {
       rows.push(Object.freeze({ book: parsed.book, chapter: parsed.chapter, reusable: false, reasons: Object.freeze(['upstream-text-missing']) }));
+      continue;
+    }
+    const textCompatibility = inspectBsbTextCompatibility({ currentText, upstreamText });
+    if (!textCompatibility.compatible) {
+      rows.push(Object.freeze({
+        book: parsed.book,
+        chapter: parsed.chapter,
+        reusable: false,
+        reasons: textCompatibility.reasons,
+        lowConfidenceWords: 0,
+        unscoredWords: 0,
+      }));
       continue;
     }
     try {

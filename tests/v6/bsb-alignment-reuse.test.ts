@@ -7,6 +7,7 @@ import test from 'node:test';
 
 import { prepareBsbAlignmentRegeneration } from '../../scripts/v6-prepare-bsb-alignment-regeneration.mjs';
 import {
+  inspectBsbTextCompatibility,
   inspectReusableBsbWordTiming,
   stageReusableBsbAlignments,
 } from '../../scripts/v6-stage-bsb-alignment-reuse.mjs';
@@ -65,6 +66,22 @@ function wordOutputFor(text: string, book = 'GEN', chapter = 1) {
   return { book, chapter: String(chapter).padStart(3, '0'), verses };
 }
 
+test('text compatibility fast path accepts punctuation-only differences and rejects token drift', () => {
+  const punctuationOnly = inspectBsbTextCompatibility({
+    currentText: 'In the beginning, God created.\nThe earth was formless.\n',
+    upstreamText: 'In the beginning God created\nThe earth was formless\n',
+  });
+  assert.equal(punctuationOnly.compatible, true);
+  assert.deepEqual(punctuationOnly.reasons, []);
+
+  const drifted = inspectBsbTextCompatibility({
+    currentText: 'In the beginning God created.\n',
+    upstreamText: 'In a beginning God created.\n',
+  });
+  assert.equal(drifted.compatible, false);
+  assert.ok(drifted.reasons.includes('text-token-mismatch'));
+});
+
 test('reuse inspector accepts token-identical text/timing and rejects drift or invalid timing', () => {
   const currentText = 'In the beginning, God created.\nThe earth was formless.\n';
   const valid = wordOutputFor(currentText);
@@ -119,6 +136,7 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     });
     const currentText = await readFile(join(plan.textDirectory, 'GEN_001_BSB.txt'), 'utf8');
     await writeFile(join(aligner, 'text', 'GEN_001_BSB.txt'), currentText);
+    await writeFile(join(aligner, 'text', 'EXO_001_BSB.txt'), 'Deliberately incompatible Reader text.\n');
     const upstreamWordPath = join(aligner, 'output', 'GEN', 'GEN_001_words.json');
     await mkdir(dirname(upstreamWordPath), { recursive: true });
     await writeFile(upstreamWordPath, JSON.stringify(wordOutputFor(currentText), null, 2));
@@ -130,6 +148,10 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(report.audioContentVersion, plan.audioContentVersion);
     assert.equal(report.audioInventorySha256, plan.audioInventorySha256);
     assert.equal(report.rows.find(row => row.book === 'GEN' && row.chapter === 1)?.reusable, true);
+    const exodusMismatch = report.rows.find(row => row.book === 'EXO' && row.chapter === 1);
+    assert.equal(exodusMismatch?.reusable, false);
+    assert.ok(exodusMismatch?.reasons.includes('text-token-mismatch'));
+    assert.equal(exodusMismatch?.reasons.includes('upstream-word-output-missing-or-invalid'), false);
 
     const staged = JSON.parse(await readFile(join(plan.outputDirectory, 'GEN', 'GEN_001_words.json'), 'utf8'));
     assert.equal(staged.book, 'GEN');
