@@ -116,6 +116,38 @@ export function analyzeMigrationHistory(localRows, remoteRows = [], { cutoff = V
   });
 }
 
+export function analyzeReleaseTarget(localRows, remoteRows, targetName, options = {}) {
+  const name = String(targetName || '').trim();
+  if (!/^[a-z0-9][a-z0-9_]*$/.test(name)) {
+    throw new Error(`Invalid release target migration name: ${name || '<missing>'}`);
+  }
+
+  const cutoff = options.cutoff || V5_RELEASE_CUTOFF;
+  const history = analyzeMigrationHistory(localRows, remoteRows, { cutoff });
+  const localTarget = localRows.find(row => row.version > cutoff && row.name === name);
+  if (!localTarget) {
+    throw new Error(`Release target migration is missing from the V6 forward inventory: ${name}`);
+  }
+
+  const remoteTarget = remoteRows.find(row => row.version > cutoff && row.name === name) || null;
+  const appliedExact = Boolean(remoteTarget && remoteTarget.version === localTarget.version);
+  const pendingExact = history.pending.some(row => row.name === name && row.version === localTarget.version);
+  const safeForReleaseTarget = history.safeForOrderedPush && (appliedExact || pendingExact);
+
+  return Object.freeze({
+    ...history,
+    safeForReleaseTarget,
+    releaseTarget: Object.freeze({
+      name,
+      version: localTarget.version,
+      status: appliedExact ? 'applied' : pendingExact ? 'pending' : 'blocked',
+      appliedExact,
+      pendingExact,
+      remoteVersion: remoteTarget?.version || null,
+    }),
+  });
+}
+
 export async function readLocalMigrations(directory = 'supabase/migrations') {
   const names = (await readdir(directory))
     .filter(name => name.endsWith('.sql'))
@@ -139,12 +171,13 @@ function printReport(report) {
 }
 
 function parseArgs(argv) {
-  const args = { localOnly: false, remoteJson: null, migrationsDir: 'supabase/migrations' };
+  const args = { localOnly: false, remoteJson: null, migrationsDir: 'supabase/migrations', releaseTarget: null };
   for (let i = 0; i < argv.length; i += 1) {
     const value = argv[i];
     if (value === '--local-only') args.localOnly = true;
     else if (value === '--remote-json') args.remoteJson = argv[++i];
     else if (value === '--migrations-dir') args.migrationsDir = argv[++i];
+    else if (value === '--require-target') args.releaseTarget = argv[++i];
     else if (value === '--help') args.help = true;
     else throw new Error(`Unknown argument: ${value}`);
   }
@@ -153,6 +186,12 @@ function parseArgs(argv) {
   }
   if (args.localOnly && args.remoteJson) {
     throw new Error('--local-only and --remote-json are mutually exclusive.');
+  }
+  if (args.releaseTarget && args.localOnly) {
+    throw new Error('--require-target needs --remote-json because release safety depends on remote history.');
+  }
+  if (args.releaseTarget && !args.remoteJson && !args.help) {
+    throw new Error('--require-target needs --remote-json <file>.');
   }
   return args;
 }
@@ -166,6 +205,9 @@ function usage() {
     '',
     'Release/staging comparison:',
     '  node scripts/v6-migration-history-guard.mjs --remote-json /path/to/remote-migrations.json',
+    '',
+    'Named release-target preflight:',
+    '  node scripts/v6-migration-history-guard.mjs --require-target assignment_due_reminders --remote-json /path/to/remote-migrations.json',
     '',
     'Remote JSON must contain [{"version":"YYYYMMDDHHMMSS","name":"migration_name"}]',
     'or {"migrations":[...]} from a reviewed migration-history export.',
@@ -184,9 +226,11 @@ if (invokedAsCli) {
     }
     const local = await readLocalMigrations(args.migrationsDir);
     const remote = args.localOnly ? [] : await loadRemoteMigrationEvidence(args.remoteJson);
-    const report = analyzeMigrationHistory(local, remote);
+    const report = args.releaseTarget
+      ? analyzeReleaseTarget(local, remote, args.releaseTarget)
+      : analyzeMigrationHistory(local, remote);
     printReport(report);
-    if (!args.localOnly && !report.safeForOrderedPush) process.exitCode = 1;
+    if (!args.localOnly && !(args.releaseTarget ? report.safeForReleaseTarget : report.safeForOrderedPush)) process.exitCode = 1;
   }).catch(error => {
     console.error(error?.stack || error);
     process.exitCode = 1;
