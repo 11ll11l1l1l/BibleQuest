@@ -24,26 +24,36 @@ jobs:
           echo "::error::Do not use v6/architecture-upgrade as the PR head to refresh a feature branch. Refresh the feature branch from integration, push that feature branch, and keep one canonical integration PR."
           exit 1
 
-      - name: Require current V6 integration ancestry
+      - name: Require live V6 integration ancestry
         if: github.event.pull_request.base.ref == 'v6/architecture-upgrade'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          status="$(gh api "repos/$REPO/compare/$BASE_SHA...$HEAD_SHA" --jq '.status')"
-          case "$status" in
-            ahead|identical)
-              echo "PR contains current V6 integration head $BASE_SHA."
-              ;;
-            *)
-              echo "::error::PR head $HEAD_SHA is stale or diverged from current V6 integration $BASE_SHA (compare status: $status). Refresh the feature branch once from v6/architecture-upgrade and push it. Do not open a reverse synchronization PR."
-              exit 1
-              ;;
-          esac
+
+          live_base_sha="$(gh api "repos/$REPO/git/ref/heads/$BASE_REF" --jq '.object.sha')"
+          compare_status="$(gh api "repos/$REPO/compare/$live_base_sha...$HEAD_SHA" --jq '.status' 2>/dev/null || echo error)"
+
+          if [ "$compare_status" = "ahead" ] || [ "$compare_status" = "identical" ]; then
+            state=success
+            description="Contains live V6 integration head"
+          else
+            state=failure
+            description="Stale vs live V6 integration; refresh branch"
+          fi
+
+          gh api             --method POST             "repos/$REPO/statuses/$HEAD_SHA"             -f state="$state"             -f context="V6 Serialization"             -f description="$description" >/dev/null
+
+          if [ "$state" != "success" ]; then
+            echo "::error::PR head $HEAD_SHA is stale or diverged from live V6 integration $live_base_sha (compare status: $compare_status). Refresh the feature branch once from v6/architecture-upgrade and push it. Do not open a reverse synchronization PR."
+            exit 1
+          fi
+
+          echo "PR head $HEAD_SHA contains live V6 integration head $live_base_sha."
 
   revalidate-open-v6-prs:
     if: github.event_name == 'push'
@@ -54,20 +64,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          BASE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+
+          live_base_sha="$(gh api "repos/$REPO/git/ref/heads/v6/architecture-upgrade" --jq '.object.sha')"
+          echo "Revalidating open V6 PRs against live integration $live_base_sha"
+
           gh pr list             --repo "$REPO"             --base v6/architecture-upgrade             --state open             --limit 100             --json number,headRefOid             --jq '.[] | [.number, .headRefOid] | @tsv' |
           while IFS=$'\t' read -r number head_sha; do
             [ -n "$head_sha" ] || continue
 
-            compare_status="$(gh api "repos/$REPO/compare/$BASE_SHA...$head_sha" --jq '.status' 2>/dev/null || echo error)"
+            compare_status="$(gh api "repos/$REPO/compare/$live_base_sha...$head_sha" --jq '.status' 2>/dev/null || echo error)"
             if [ "$compare_status" = "ahead" ] || [ "$compare_status" = "identical" ]; then
               state=success
-              description="Contains current V6 integration head"
+              description="Contains live V6 integration head"
             else
               state=failure
-              description="Stale vs V6 integration; refresh feature branch"
+              description="Stale vs live V6 integration; refresh branch"
             fi
 
             gh api               --method POST               "repos/$REPO/statuses/$head_sha"               -f state="$state"               -f context="V6 Serialization"               -f description="$description" >/dev/null
