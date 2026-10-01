@@ -13,14 +13,14 @@ async function installHarness(page,{allowAdd=true}={}){
     const audio=createAudioManager();
     let mediaCalls=0,createCalls=0;
     const media={
-      async listLiveRecordings(){mediaCalls++;return[
-        {id:'rec-1',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Worship replay',featured:true},
-        {id:'rec-2',youtube_id:'ZyxWV987654',title:'Bible Study',description:'Study replay',featured:false}
+      async listLiveRecordings(congregationId){if(congregationId!=='c1')throw new Error('wrong recordings tenant');mediaCalls++;return[
+        {id:'rec-1',congregation_id:'c1',youtube_id:'abcDEF12345',title:'Sunday Worship',description:'Worship replay',featured:true},
+        {id:'rec-2',congregation_id:'c1',youtube_id:'ZyxWV987654',title:'Bible Study',description:'Study replay',featured:false}
       ]},
-      async createVideo(payload){
-        createCalls++;
+      async createVideo(congregationId,payload){
+        if(congregationId!=='c1')throw new Error('wrong recordings tenant');createCalls++;
         if(!allowAdd){throw new Error('new row violates row-level security policy for table "bible_media_library"');}
-        return {id:'rec-3',...payload};
+        return {id:'rec-3',...payload,congregation_id:congregationId};
       },
       async updateVideo(){throw new Error('not used in this harness')}
     };
@@ -323,8 +323,8 @@ async function v6LiveCutoverBrowser(){
       playerReadyTimeoutMs:1000
     });
     const media={
-      async listLiveRecordings(){return[
-        {id:'rec-v6',youtube_id:'abcDEF12345',title:'V6 Sunday Service',description:'Live cutover proof',featured:true}
+      async listLiveRecordings(congregationId){if(congregationId!=='c-v6')throw new Error('wrong V6 recordings tenant');return[
+        {id:'rec-v6',congregation_id:'c-v6',youtube_id:'abcDEF12345',title:'V6 Sunday Service',description:'Live cutover proof',featured:true}
       ]},
       async createVideo(){throw new Error('not used in live cutover harness')},
       async updateVideo(){throw new Error('not used in live cutover harness')}

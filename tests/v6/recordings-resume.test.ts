@@ -15,9 +15,10 @@ test('Recordings resume time is bounded and formats hours without losing minutes
 
 test('Recordings service exposes saved resume only for a currently listed item', async () => {
   const cloud = {
-    async listLiveRecordings() {
+    async listLiveRecordings(congregationId: string) {
+      assert.equal(congregationId, 'c1');
       return [
-        { id: 'rec-1', youtube_id: 'abcDEF12345', title: 'Sunday service' },
+        { id: 'rec-1', congregation_id: 'c1', youtube_id: 'abcDEF12345', title: 'Sunday service' },
       ];
     },
   };
@@ -37,7 +38,8 @@ test('Recordings service exposes saved resume only for a currently listed item',
     stop() {},
     seek() {},
   };
-  const service = createRecordingsService({ media: cloud, audio, session });
+  const congregation = { async load() { return [{ congregationId: 'c1', userId: 'account-a' }]; }, getActive() { return { congregationId: 'c1', userId: 'account-a' }; } };
+  const service = createRecordingsService({ media: cloud, audio, session, congregation });
 
   await service.load();
   assert.equal(service.getResumePosition('rec-1'), 754);

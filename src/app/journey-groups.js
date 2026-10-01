@@ -52,7 +52,7 @@ export function createJourneyGroupsService({api,session,congregation}){
   async function create({congregationId,name,description='',scheduleText='',maxMembers=MAX_MEMBERS}={}){
     const userId=identity(),id=requireLoadedCongregation(userId);if(String(congregationId||'')!==id)throw staleContext();congregation.assert(id,'ministry');const title=cleanText(name,60),max=Number(maxMembers);
     if(title.length<2)throw groupError('Enter a Journey Group name.','BQ_JOURNEY_GROUPS_NAME');if(!Number.isInteger(max)||max<MIN_MEMBERS||max>MAX_MEMBERS)throw groupError('Journey Groups support 2–6 members.','BQ_JOURNEY_GROUPS_SIZE');
-    const result=await api.create({congregation_id:id,name:title,description:cleanText(description,240),schedule_text:cleanText(scheduleText,100),max_members:max}),code=normalizeCode(result?.invite_code);
+    const result=await api.create(id,{name:title,description:cleanText(description,240),schedule_text:cleanText(scheduleText,100),max_members:max}),code=normalizeCode(result?.invite_code);
     if(String(result?.group?.congregation_id||'')!==id||!GROUP_CODE.test(code))throw groupError('Journey Groups returned data outside the active congregation.','BQ_JOURNEY_GROUPS_SCOPE');
     if(!contextCurrent(userId,id))throw staleContext();inviteCode=code;inviteGroupId=String(result?.group?.id||'');await load();return snapshot();
   }

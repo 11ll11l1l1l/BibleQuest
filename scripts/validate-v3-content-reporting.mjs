@@ -19,7 +19,7 @@ if(!failures.length){
   const workflow=read('.github/workflows/v3-regression.yml');
 
   for(const forbidden of ['localStorage','sessionStorage','window.BQ','MutationObserver','document.','fetch(','createClient','@supabase','progress.'])if(service.includes(forbidden))fail(`Content Reporting owner bypasses a verified boundary: ${forbidden}`);
-  for(const token of ["['question','statement','answer','explanation','story','reader','other']","['doctrinal','accuracy','wording','inappropriate','duplicate','source','other']",'session.getState()','congregation.load()','congregation.get(id)','reporter_id:String(user.id)','await api.submit(row)','BQ_CONTENT_REPORT_AUTH_REQUIRED','BQ_CONTENT_REPORT_MEMBERSHIP_REQUIRED','BQ_CONTENT_REPORT_REASON_INVALID'])if(!service.includes(token))fail(`Content Reporting owner missing contract token: ${token}`);
+  for(const token of ["['question','statement','answer','explanation','story','reader','other']","['doctrinal','accuracy','wording','inappropriate','duplicate','source','other']",'session.getState()','congregation.load()','congregation.get(id)','reporter_id:String(user.id)','await api.submit(id,row)','BQ_CONTENT_REPORT_AUTH_REQUIRED','BQ_CONTENT_REPORT_MEMBERSHIP_REQUIRED','BQ_CONTENT_REPORT_REASON_INVALID'])if(!service.includes(token))fail(`Content Reporting owner missing contract token: ${token}`);
   if(service.includes("'technical'"))fail('Content Reporting owner must not expose the database-incompatible legacy technical reason.');
 
   for(const forbidden of ['window.BQ','MutationObserver','localStorage','sessionStorage','createClient','@supabase'])if(runtime.includes(forbidden))fail(`Content Reporting UI bypasses a verified owner: ${forbidden}`);
@@ -29,7 +29,7 @@ if(!failures.length){
     if(routeLine.includes(privateRoute))fail(`Private/excluded route leaked into Content Reporting allowlist: ${privateRoute}`);
   }
 
-  for(const token of ["from('bible_content_reports')",'.insert(row)',"select('id,congregation_id,reporter_id,content_key,reason,status,created_at')",'contentReports'])if(!api.includes(token))fail(`Shared API missing Content Reporting backend contract: ${token}`);
+  for(const token of ["from('bible_content_reports')",'async submit(congregationId,row)',".insert({...row,congregation_id:tenantId})","select('id,congregation_id,reporter_id,content_key,reason,status,created_at')",'contentReports'])if(!api.includes(token))fail(`Shared API missing Content Reporting backend contract: ${token}`);
   for(const token of ["createContentReportingService","createContentReportingService({api:api.contentReports,session,congregation})","mountContentReportingRuntime","reporting:contentReporting","contentReportingRuntime.dispose()"] )if(!bootstrap.includes(token))fail(`Bootstrap missing Content Reporting composition contract: ${token}`);
   if(!index.includes('src/ui/content-reporting.css'))fail('index.html does not load Content Reporting presentation CSS.');
 

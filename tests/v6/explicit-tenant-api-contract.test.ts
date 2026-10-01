@@ -59,6 +59,11 @@ test('Live Rooms repository requires explicit congregation scope for tenant-sens
 });
 
 test('media mutation repository requires explicit congregation scope', () => {
+  const listSource = methodSource('media', 'listLiveRecordings');
+  assert.match(listSource, /^async listLiveRecordings\(congregationId\)/);
+  assert.match(listSource, /\.eq\('congregation_id', tenantId\)/);
+  assert.match(listSource, /if \(!tenantId\) throw Error\(\)/);
+
   const createSource = methodSource('media', 'createVideo');
   assert.match(createSource, /^async createVideo\(congregationId, payload\)/);
   assert.match(createSource, /congregation_id: tenantId/);
@@ -68,5 +73,62 @@ test('media mutation repository requires explicit congregation scope', () => {
   assert.match(updateSource, /^async updateVideo\(congregationId, id, patch\)/);
   assert.match(updateSource, /\.eq\('congregation_id', tenantId\)\.eq\('id', id\)/);
   assert.match(updateSource, /if \(!tenantId\) throw Error\(\)/);
+});
+
+
+test('remaining sensitive creation/write repositories require explicit congregation scope', () => {
+  const journeyCreate = methodSource('journeyGroups', 'create');
+  assert.match(journeyCreate, /^async create\(congregationId,payload\)/);
+  assert.match(journeyCreate, /\.\.\.payload,congregation_id:tenantId/);
+  assert.match(journeyCreate, /if\(!tenantId\)throw Error\(\)/);
+
+  const liveCreate = methodSource('liveRooms', 'create');
+  assert.match(liveCreate, /^async create\(congregationId,row\)/);
+  assert.match(liveCreate, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const award = methodSource('congregationRecognition', 'award');
+  assert.match(award, /^async award\(congregationId,row\)/);
+  assert.match(award, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const report = methodSource('contentReports', 'submit');
+  assert.match(report, /^async submit\(congregationId,row\)/);
+  assert.match(report, /insert\(\{\.\.\.row,congregation_id:tenantId\}\)/);
+
+  const decision = methodSource('contentReview', 'saveDecision');
+  assert.match(decision, /^async saveDecision\(congregationId,row\)/);
+  assert.match(decision, /upsert\(\{\.\.\.row,congregation_id:tenantId\}/);
+});
+
+test('systemic sensitive repository inventory exposes congregation context explicitly', () => {
+  const inventory = {
+    congregation: ['updateSettings','listManagedMembers','manageMember'],
+    presence: ['list','touch','leave','activeCount'],
+    teamCenter: ['list','create','add','remove','rename','archive'],
+    scoreEvents: ['submit'],
+    leaderboards: ['load'],
+    avatarVault: ['save'],
+    congregationRecognition: ['load','award'],
+    assignments: ['load','loadResponsePresence','loadPrivateResponses','targets','lifecycle','create','start','complete','subscribe'],
+    ministryAnnouncements: ['list','publish'],
+    journeyGroups: ['list','create','join','rotateCode','leave'],
+    liveRooms: ['create','findByCode','loadRoom','joinParticipant','participants','endRoom','subscribe'],
+    encouragements: ['list','send'],
+    contentDecisions: ['list'],
+    contentReports: ['submit'],
+    contentReview: ['loadQueue','saveDecision','markReportsReviewed'],
+    media: ['listLiveRecordings','createVideo','updateVideo'],
+    calendar: ['listCongregation','createCongregation','updateCongregation','removeCongregation'],
+  } as const;
+
+  for (const [owner, methods] of Object.entries(inventory)) {
+    for (const method of methods) {
+      const source = methodSource(owner, method);
+      assert.match(
+        source,
+        new RegExp(`^async ${method}\\([^)]*congregationId`),
+        `${owner}.${method}() must receive congregationId explicitly`,
+      );
+    }
+  }
 });
 
