@@ -4,6 +4,7 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { exportCurrentBsbAlignmentText } from './v6-export-current-bsb-alignment-text.mjs';
+import { snapshotStagedHaysSource, validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
 
 export const BSB_ALIGN_REVISION = 'bdb859afc427b215b78e12ee4a7798c32b7b91e0';
 export const BSB_ALIGN_TREE = 'c83b2494c8fc5413863e9617b23660eab9459323';
@@ -38,11 +39,13 @@ export async function prepareBsbAlignmentRegeneration({
   audioDirectory,
   workspaceDirectory,
   gitResolver = defaultGitResolver,
+  audioInventoryResolver = snapshotStagedHaysSource,
 } = {}) {
   if (typeof alignerDirectory !== 'string' || !alignerDirectory.trim()) fail('Pinned bsb-align directory is required.');
   if (typeof audioDirectory !== 'string' || !audioDirectory.trim()) fail('Staged Hays audio directory is required.');
   if (typeof workspaceDirectory !== 'string' || !workspaceDirectory.trim()) fail('Empty regeneration workspace is required.');
   if (typeof gitResolver !== 'function') fail('Git revision resolver is required.');
+  if (typeof audioInventoryResolver !== 'function') fail('Hays audio inventory resolver is required.');
 
   const aligner = resolve(alignerDirectory);
   const audio = resolve(audioDirectory);
@@ -69,9 +72,17 @@ export async function prepareBsbAlignmentRegeneration({
     fail('Current BSB text export is not the expected 1,189-chapter corpus.');
   }
 
+  const audioInventory = await audioInventoryResolver({ audioDirectory: audio });
+  const audioValidation = validateHaysAudioInventory(audioInventory, { requireComplete: true });
+  if (!audioValidation.valid) {
+    fail('Staged Hays audio inventory is incomplete or invalid: ' + audioValidation.issues.join('; ') + '.');
+  }
+  const audioInventoryPath = join(workspace, 'audio-source-inventory.json');
+  await writeFile(audioInventoryPath, JSON.stringify(audioInventory, null, 2) + '\n', { flag: 'wx' });
+
   const expectedOutputFiles = Object.freeze(textManifest.files.map(expectedOutputPath).sort());
   const plan = Object.freeze({
-    schemaVersion: 1,
+    schemaVersion: 2,
     translationId: 'bsb',
     narrator: 'Barry Hays',
     strategy: 'mms-first',
@@ -80,6 +91,11 @@ export async function prepareBsbAlignmentRegeneration({
     alignmentTree: BSB_ALIGN_TREE,
     scriptureContentVersion: textManifest.scriptureContentVersion,
     textInventorySha256: textManifest.inventorySha256,
+    audioContentVersion: audioInventory.contentVersion,
+    audioInventorySha256: audioInventory.inventorySha256,
+    audioTotalBytes: audioInventory.totalBytes,
+    audioTotalDurationSeconds: audioInventory.totalDurationSeconds,
+    audioInventoryPath,
     expectedChapters: EXPECTED_CHAPTERS,
     alignerDirectory: aligner,
     audioDirectory: audio,
@@ -94,7 +110,10 @@ export async function prepareBsbAlignmentRegeneration({
 
 export function buildBsbAlignmentCommand(plan, { python = 'python3' } = {}) {
   if (!plan || plan.translationId !== 'bsb' || plan.alignmentRevision !== BSB_ALIGN_REVISION
-    || plan.alignmentTree !== BSB_ALIGN_TREE || plan.expectedChapters !== EXPECTED_CHAPTERS) {
+    || plan.alignmentTree !== BSB_ALIGN_TREE || plan.expectedChapters !== EXPECTED_CHAPTERS
+    || !/^sha256-[a-f0-9]{64}$/.test(String(plan.audioContentVersion ?? ''))
+    || !/^[a-f0-9]{64}$/.test(String(plan.audioInventorySha256 ?? ''))
+    || plan.audioContentVersion !== 'sha256-' + plan.audioInventorySha256) {
     fail('A reviewed BibleQuest BSB regeneration plan is required.');
   }
   if (typeof python !== 'string' || !python.trim()) fail('Python executable is required.');
@@ -160,6 +179,10 @@ async function main(argv) {
   console.log(JSON.stringify({
     scriptureContentVersion: plan.scriptureContentVersion,
     textInventorySha256: plan.textInventorySha256,
+    audioContentVersion: plan.audioContentVersion,
+    audioInventorySha256: plan.audioInventorySha256,
+    audioTotalBytes: plan.audioTotalBytes,
+    audioTotalDurationSeconds: plan.audioTotalDurationSeconds,
     alignmentRevision: plan.alignmentRevision,
     expectedChapters: plan.expectedChapters,
     command,
