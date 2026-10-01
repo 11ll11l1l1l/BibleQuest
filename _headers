@@ -79,3 +79,7 @@
 
 /psychometrics-polish.js
   Cache-Control: no-cache, must-revalidate
+
+/v6-push-device-field.html
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+  X-Robots-Tag: noindex, nofollow, noarchive
