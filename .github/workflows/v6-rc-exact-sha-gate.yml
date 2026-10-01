@@ -7,10 +7,14 @@ on:
         description: Full 40-character V6 release-candidate SHA to certify
         required: true
         type: string
+      deployment_url:
+        description: Exact Cloudflare Pages preview URL for the candidate
+        required: true
+        type: string
 
 permissions:
   contents: read
-  actions: read
+  actions: write
 
 concurrency:
   group: v6-rc-exact-sha-${{ inputs.candidate_sha }}
@@ -18,11 +22,13 @@ concurrency:
 
 env:
   BQ_RC_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+  BQ_RC_DEPLOYMENT_URL: ${{ inputs.deployment_url }}
+  BQ_RC_WORKFLOW_REF: v6/architecture-upgrade
 
 jobs:
   certify-automated-gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 60
     steps:
       - name: Checkout exact candidate
         uses: actions/checkout@v4
@@ -42,8 +48,78 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Verify RC evidence collector contract
-        run: node --experimental-strip-types --test tests/v6/rc-exact-sha-gate.test.ts
+      - name: Verify RC orchestration and evidence contracts
+        run: node --experimental-strip-types --test tests/v6/rc-exact-sha-gate.test.ts tests/v6/rc-exact-sha-orchestrator-workflow.test.ts
+
+      - name: Prove candidate is still the integration head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/v6/architecture-upgrade" --jq '.object.sha')"
+          test "${current_sha}" = "${BQ_RC_CANDIDATE_SHA}"
+
+      - name: Dispatch exact-SHA component gates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "BQ_RC_DISPATCH_STARTED_AT=${started_at}" >> "${GITHUB_ENV}"
+          gh workflow run v6-phase1-build.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v6-database-ci.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v6-client-artifact-security.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v6-dependency-security.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v6-v4-rollback-reference.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v3-regression.yml --ref "${BQ_RC_WORKFLOW_REF}" -f candidate_sha="${BQ_RC_CANDIDATE_SHA}"
+          gh workflow run v6-deployment-verify.yml --ref "${BQ_RC_WORKFLOW_REF}" -f expected_sha="${BQ_RC_CANDIDATE_SHA}" -f deployment_url="${BQ_RC_DEPLOYMENT_URL}"
+
+      - name: Wait for exact-SHA component gates
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          workflows=(
+            v6-phase1-build.yml
+            v6-database-ci.yml
+            v6-client-artifact-security.yml
+            v6-dependency-security.yml
+            v6-v4-rollback-reference.yml
+            v3-regression.yml
+            v6-deployment-verify.yml
+          )
+          : > v6-rc-exact-sha-dispatch.jsonl
+          deadline=$((SECONDS + 2400))
+          for workflow in "${workflows[@]}"; do
+            while (( SECONDS < deadline )); do
+              runs="$(gh run list --workflow "${workflow}" --branch "${BQ_RC_WORKFLOW_REF}" --event workflow_dispatch --limit 20 --json databaseId,headSha,status,conclusion,createdAt,url)"
+              run="$(jq -c --arg sha "${BQ_RC_CANDIDATE_SHA}" --arg start "${BQ_RC_DISPATCH_STARTED_AT}" '[.[] | select(.headSha == $sha and .createdAt >= $start)] | sort_by(.createdAt) | last // empty' <<<"${runs}")"
+              if [[ -z "${run}" ]]; then
+                sleep 15
+                continue
+              fi
+              status="$(jq -r '.status' <<<"${run}")"
+              if [[ "${status}" != "completed" ]]; then
+                sleep 15
+                continue
+              fi
+              conclusion="$(jq -r '.conclusion' <<<"${run}")"
+              if [[ "${conclusion}" != "success" ]]; then
+                echo "${workflow} failed for ${BQ_RC_CANDIDATE_SHA}: ${conclusion}" >&2
+                exit 1
+              fi
+              jq -c --arg workflow "${workflow}" '. + {workflow: $workflow}' <<<"${run}" >> v6-rc-exact-sha-dispatch.jsonl
+              break
+            done
+            if (( SECONDS >= deadline )); then
+              echo "Timed out waiting for ${workflow} on ${BQ_RC_CANDIDATE_SHA}" >&2
+              exit 1
+            fi
+          done
+          jq -s --arg candidate "${BQ_RC_CANDIDATE_SHA}" --arg ref "${BQ_RC_WORKFLOW_REF}" --arg deployment "${BQ_RC_DEPLOYMENT_URL}" '{schemaVersion: 1, candidateSha: $candidate, workflowRef: $ref, deploymentUrl: $deployment, workflows: .}' v6-rc-exact-sha-dispatch.jsonl > v6-rc-exact-sha-dispatch.json
 
       - name: Collect exact-SHA automated-gate evidence
         env:
@@ -57,15 +133,19 @@ jobs:
           {
             echo '## V6 RC exact-SHA automated-gate evidence'
             echo
-            echo '```json'
+            echo 'Component dispatch:'
+            cat v6-rc-exact-sha-dispatch.json
+            echo
+            echo 'Collected exact-SHA evidence:'
             cat v6-rc-exact-sha-evidence.json
-            echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Upload exact-SHA evidence artifact
+      - name: Upload exact-SHA evidence artifacts
         uses: actions/upload-artifact@v4
         with:
           name: v6-rc-exact-sha-evidence-${{ inputs.candidate_sha }}
-          path: v6-rc-exact-sha-evidence.json
+          path: |
+            v6-rc-exact-sha-dispatch.json
+            v6-rc-exact-sha-evidence.json
           if-no-files-found: error
           retention-days: 90
