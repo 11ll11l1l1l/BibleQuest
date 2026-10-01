@@ -41,6 +41,7 @@ on:
       - "scripts/v6-artifact-integrity.mjs"
       - "scripts/v6-css-build-ownership.mjs"
       - "scripts/v6-content-media-provenance.mjs"
+      - "scripts/v6-run-bsb-alignment-regeneration.mjs"
       - "scripts/v6-rc-exact-sha-gate.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-rc-exact-sha-gate.yml"
