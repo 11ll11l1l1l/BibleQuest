@@ -17,6 +17,7 @@ test('V6 physical PWA/accessibility field harness stays unlinked, exact-SHA-boun
   assert.match(html, /Installed-PWA offline behavior/);
   assert.match(html, /Manual accessibility: screen reader/);
   assert.match(html, /Manual accessibility: reduced motion\/contrast/);
+  assert.match(html, /BSB Audio: background \/ lock-screen media controls/);
 
   assert.equal(index.includes('v6-field-device'), false, 'field harness must remain outside the product navigation');
   assert.equal(bootstrap.includes('v6-field-device'), false, 'field harness must remain outside normal bootstrap');
@@ -38,6 +39,8 @@ test('V6 physical PWA/accessibility field harness stays unlinked, exact-SHA-boun
   assert.match(js, /evidenceClass: 'PHYSICAL-DEVICE'/);
   assert.match(js, /physicalInstalledPwaOffline/);
   assert.match(js, /criticalManualAccessibility/);
+  assert.match(js, /backgroundLockscreenMedia/);
+  assert.match(js, /MANUAL_ACCESSIBILITY_GATE_IDS/);
   assert.match(js, /PASS requires every physical sub-check/);
   assert.match(js, /A durable evidence reference is required/);
 
