@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
 
-export const V4_RELEASE_SHA = '95d45c18aed3dbb9862749d73749b571fceaa66e';
+export const V4_RELEASE_SHA = '3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb';
 export const V4_RELEASE_CUTOFF = '20260913235959';
 export const V5_RELEASE_CUTOFF = '20260918235959';
 

@@ -12,9 +12,12 @@ import {
 const read = (filePath) => fs.readFileSync(new URL(`../../${filePath}`, import.meta.url), 'utf8');
 
 test('V4->V6 upgrade fixture is pinned to the preserved V4 rollback ancestor', () => {
-  assert.equal(V4_RELEASE_SHA, '95d45c18aed3dbb9862749d73749b571fceaa66e');
+  assert.equal(V4_RELEASE_SHA, '3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb');
   assert.equal(V4_RELEASE_CUTOFF, '20260913235959');
   assert.equal(V5_RELEASE_CUTOFF, '20260918235959');
+
+  const v4Status = read('V4_ACTIVE_STATUS.md');
+  assert.match(v4Status, /exact production merge SHA: `3c74d4f3600dbb05070ba57adb7c3c0b539a9aeb`/);
 
   const script = read('scripts/v6-prepare-v4-upgrade-supabase.mjs');
   assert.match(script, /merge-base', '--is-ancestor'/);
