@@ -438,9 +438,10 @@ export function createApi() {
       for(const result of[directoryResult,recognitionResult,badgeResult,catalogResult])if(result.error)throw result.error;
       return {directory:directoryResult.data||[],recognitions:recognitionResult.data||[],badges:badgeResult.data||[],catalog:catalogResult.data||[]};
     },
-    async award(row) {
+    async award(congregationId,row) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();
       const client=await getClient();
-      const {data,error}=await client.from('bible_member_recognitions').insert(row).select(RECOGNITION_FIELDS).single();
+      const {data,error}=await client.from('bible_member_recognitions').insert({...row,congregation_id:tenantId}).select(RECOGNITION_FIELDS).single();
       if(error)throw error;
       return data;
     }
@@ -616,16 +617,17 @@ export function createApi() {
       if(memberError)throw memberError;
       return {groups:groups||[],members:members||[]};
     },
-    async create(payload) { return invoke('bq-journey-group',{action:'create',...payload}); },
+    async create(congregationId,payload) { const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();return invoke('bq-journey-group',{action:'create',...payload,congregation_id:tenantId}); },
     async join(inviteCode,congregationId) { return invoke('bq-journey-group',{action:'join',invite_code:inviteCode,congregation_id:congregationId}); },
     async rotateCode(groupId,congregationId) { return invoke('bq-journey-group',{action:'rotate_code',group_id:groupId,congregation_id:congregationId}); },
     async leave(groupId,congregationId) { return invoke('bq-journey-group',{action:'leave',group_id:groupId,congregation_id:congregationId}); }
   });
 
   const liveRooms = Object.freeze({
-    async create(row) {
+    async create(congregationId,row) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();
       const client=await getClient();
-      const {data,error}=await client.from('bible_shared_sessions').insert(row).select(LIVE_ROOM_FIELDS).single();
+      const {data,error}=await client.from('bible_shared_sessions').insert({...row,congregation_id:tenantId}).select(LIVE_ROOM_FIELDS).single();
       if(error)throw error;
       return data;
     },
@@ -715,9 +717,10 @@ export function createApi() {
   });
 
   const contentReports = Object.freeze({
-    async submit(row) {
+    async submit(congregationId,row) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();
       const client=await getClient();
-      const {data,error}=await client.from('bible_content_reports').insert(row).select('id,congregation_id,reporter_id,content_key,reason,status,created_at').single();
+      const {data,error}=await client.from('bible_content_reports').insert({...row,congregation_id:tenantId}).select('id,congregation_id,reporter_id,content_key,reason,status,created_at').single();
       if(error)throw error;
       return data;
     }
@@ -748,9 +751,10 @@ export function createApi() {
       for(const result of[decisions,reports,members])if(result.error)throw result.error;
       return {decisions:decisions.data||[],reports:reports.data||[],members:members.data||[]};
     },
-    async saveDecision(row) {
+    async saveDecision(congregationId,row) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();
       const client=await getClient();
-      const {data,error}=await client.from('bible_content_decisions').upsert(row,{onConflict:'congregation_id,content_key'}).select(CONTENT_REVIEW_DECISION_FIELDS).single();
+      const {data,error}=await client.from('bible_content_decisions').upsert({...row,congregation_id:tenantId},{onConflict:'congregation_id,content_key'}).select(CONTENT_REVIEW_DECISION_FIELDS).single();
       if(error)throw error;
       return data;
     },
