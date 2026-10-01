@@ -50,10 +50,29 @@ export async function runLiveSmoke({
   }
   const webManifest = JSON.parse(manifest.text);
   if (!String(webManifest?.name || '').trim()) throw new Error('Live smoke web manifest has no application name.');
-  if (serviceWorker.text.length < 100) throw new Error('Live smoke service worker response is unexpectedly empty.');
+  if (webManifest?.display !== 'standalone') throw new Error('Live smoke web manifest is not configured for standalone PWA display.');
+  const shortcutUrls = new Set((Array.isArray(webManifest?.shortcuts) ? webManifest.shortcuts : []).map(item => String(item?.url || '')));
+  for (const requiredRoute of ['./#/reader', './#/assignments']) {
+    if (!shortcutUrls.has(requiredRoute)) throw new Error(`Live smoke manifest is missing required route shortcut ${requiredRoute}.`);
+  }
+
+  const workerSource = serviceWorker.text;
+  if (workerSource.length < 100) throw new Error('Live smoke service worker response is unexpectedly empty.');
+  for (const requiredWorkerContract of [
+    "self.addEventListener('fetch'",
+    'caches.open(',
+    "self.addEventListener('push'",
+    'showNotification(',
+    "self.addEventListener('notificationclick'",
+    'openWindow?.(',
+  ]) {
+    if (!workerSource.includes(requiredWorkerContract)) {
+      throw new Error(`Live smoke service worker is missing deployed contract: ${requiredWorkerContract}`);
+    }
+  }
 
   return Object.freeze({
-    schemaVersion: 1,
+    schemaVersion: 2,
     deploymentOrigin: baseUrl.origin,
     sourceSha,
     verifiedAt: now().toISOString(),
@@ -61,7 +80,9 @@ export async function runLiveSmoke({
       Object.freeze({ path: '/', kind: 'html-shell', ok: true }),
       Object.freeze({ path: '/bq-build.json', kind: 'exact-sha', ok: true }),
       Object.freeze({ path: '/manifest.webmanifest', kind: 'pwa-manifest', ok: true }),
-      Object.freeze({ path: '/offline-shell-sw.js', kind: 'service-worker', ok: true }),
+      Object.freeze({ path: '/manifest.webmanifest', kind: 'route-shortcuts', ok: true }),
+      Object.freeze({ path: '/offline-shell-sw.js', kind: 'offline-cache-contract', ok: true }),
+      Object.freeze({ path: '/offline-shell-sw.js', kind: 'push-worker-contract', ok: true }),
     ]),
   });
 }
