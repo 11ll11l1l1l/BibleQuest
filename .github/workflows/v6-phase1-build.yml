@@ -22,6 +22,7 @@ on:
       - "transform.html"
       - "psychometrics.html"
       - "v5-push-device-field.html"
+      - "v6-push-device-field.html"
       - "offline-shell-sw.js"
       - "innovation-suite.js"
       - "tests/v3-accessibility-smoke.mjs"
