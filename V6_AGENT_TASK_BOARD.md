@@ -18,11 +18,11 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-- Integration is now `05b852c392c0c2ecc80cb0e894abe098106908ec`. PR #1057 closed only the leaked-password/equivalent acceptance row using the release owner's explicit temporary residual-risk rationale; serialization `36905232021` and inherited regression `36905232026` passed. Native Supabase leaked-password protection is still disabled and must not be represented as enabled. Direct acceptance is **194 checked / 17 open / 211 total = 91.9%**.
-- PR #1053 is integrated at `c5bbd49ee83b58e03ae9ab15db71a9de76ef842f` with all seven observed component gates green. Exact-candidate manual dispatch plumbing is complete; the remaining RC rows still require one real exact SHA to pass every applicable gate.
-- Cross-congregation sensitive-domain denial and aggregate server-authority/RLS closure are already complete. Do not reassign those old W2 tasks.
-- Assignment assigned/due push remains evidence-blocked on a real eligible live due notification plus canonical push dispatch; do not create production QA data merely to clear the row. Cloudflare deployment identity remains externally blocked until Pages publishes `dist-v6` unchanged.
-- #1056 (W4 field runbook), #1058 (corrected built-Reader sync proof), and #1059 (BSB timing acceptance guard) were based on the immediately previous integration and must be replayed/revalidated after #1057 before any merge.
+- Integration is now `f88f9265922c82c631003f947d4a78f90ff65f3e` after the BSB speedtrack sequence through PR #1081. Direct acceptance remains **194 checked / 17 open / 211 total = 91.9%**; the new BSB work improves implementation/evidence readiness without upgrading rows that still require stronger external or physical evidence.
+- BSB runtime/tooling already integrated: resumable exact-identity 1,189-chapter regeneration + strict upstream reuse audit (#1066); corrected built-Reader verified-alignment proof + timing acceptance guard (#1068); previous/stop Media Session + exact-candidate physical field gate (#1076); streaming-safe offline/CORS fallback (#1078); deterministic missing-work sharding across 1–16 workers (#1081).
+- BSB evidence state: only **10 / 1,189** chapters are strictly reusable from the pinned upstream timing corpus; **1,179** require regeneration/reconciliation. The five BSB checklist rows remain OPEN for exact offline-file checksum/version + copy-policy review, the complete real timing manifest, highlight/seek on that manifest, autoscroll on that manifest, and physical background/lock-screen observations.
+- Do not reassign seek/highlight/autoscroll runtime implementation, offline-download-unavailable fallback, Media Session previous/stop controls, or generic timing-manifest tooling. W3 should spend cycles on exact staged Hays identity, approved-copy evidence, executing the real regeneration/import, and physical-device evidence.
+- Cross-congregation sensitive-domain denial and aggregate server-authority/RLS closure are complete. Assignment assigned/due push still requires a real eligible live due recipient plus canonical dispatch evidence. Cloudflare deployment identity remains external until Pages publishes `dist-v6` unchanged.
 
 ## Historical serialized checkpoints
 
@@ -71,17 +71,21 @@ Work:
 - keep native leaked-password status truthful even though the temporary first-party-equivalent residual risk is accepted;
 - never weaken Auth, RLS, role, or tenant isolation evidence.
 
-### W3-01 — BSB audio text/chapter identity + alignment foundation
+### W3-01 — Produce the exact real BSB/Hays timing artifact
 Owner bias: W3
 Checklist targets:
-- deterministic audio chapter identity to exact Reader BSB text;
-- versioned timing/alignment manifest.
+- exact-source checksum/version evidence for staged Hays files;
+- complete versioned timing/alignment manifest for the exact Reader BSB text/audio revision.
+Current state:
+- exact chapter/text/audio/alignment identity contracts are integrated;
+- strict reuse audit shows 10 reusable / 1,179 regenerate;
+- resumable regeneration and deterministic 1–16-worker shard planning are integrated.
 Work:
-- define/complete deterministic book/chapter identity;
-- version/checksum relation among text/audio/alignment;
-- implement validation and tests;
-- do not invent alignment data or rights.
-This foundation should precede highlight/seek/autoscroll closure.
+- use only an approved exact Hays staging set; do not fetch/copy audio merely to clear acceptance;
+- run `npm run audit:v6-bsb-reuse -- <pinned-bsb-align-dir> [report.json]`;
+- prepare the exact regeneration workspace, then use `npm run plan:v6-bsb-shards -- <regeneration-plan.json> <1-16>` when approved multi-worker hardware is available;
+- execute disjoint shard commands without `--force`, then finalize with `npm run run:v6-bsb-alignment -- --resume-plan <regeneration-plan.json>`;
+- review scores/provenance and place `data/v6-audio/bsb-hays-alignment.json` only when all 1,189 chapters and exact source identities validate.
 
 ### W1-01 — Exact-SHA deployment identity
 Owner bias: W1
@@ -99,21 +103,28 @@ Work:
 
 ## P1 — take when P0 item is owned/blocked
 
-### W3-02 — BSB playback synchronization UX
+### W3-02 — Certify synchronization against the real manifest
 Targets:
 - current verse highlight during playback;
 - tap verse -> seek;
 - auto-scroll without blocking manual navigation/accessibility.
-Prerequisite: W3-01 identity/alignment foundation.
+Current state:
+- runtime behavior and built-browser verified-alignment proof are integrated through #1068;
+- do not add another synthetic UX implementation tranche.
+Work:
+- after W3-01 produces the real exact manifest, run exact-head built acceptance against it and promote only with that real provenance-bound evidence.
 
-### W3-03 — Offline content/audio safety
+### W3-03 — Close exact-source offline evidence
 Targets:
-- user-initiated removable offline downloads;
 - exact-source checksum/version verification;
-- bounded selective audio download;
-- clear unavailable state for CORS/fetch limitations;
-- safe app/SW/content-pack upgrade path.
-Do not claim offline-copy rights until provenance permits it.
+- approved local-copy policy for the exact selected files.
+Current state:
+- user-initiated/removable bounded downloads, upgrade safety, and explicit CORS/fetch unavailable-state with direct-stream fallback are already integrated;
+- do not rework those completed behaviors.
+Work:
+- bind exact staged Hays bytes to the integrated SHA-256/size/duration inventory;
+- record the approved copy-rights decision for those exact source files;
+- keep offline copy fail-closed until both evidence classes exist.
 
 ### W1-02 — Push assignment assigned/due path
 Targets:
