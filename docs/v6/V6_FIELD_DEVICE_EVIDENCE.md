@@ -35,6 +35,22 @@ The harness reads `bq-build.json` from the same deployed origin and refuses evid
 The harness does not update this canonical record or the release checklist automatically. Attach its sanitized JSON to a durable PR/issue/artifact record, transcribe the matching observations here against the same Candidate SHA, and only then promote the corresponding checklist row. Browser automation remains non-substitutable for these physical gates.
 
 
+## Push backend production readiness
+
+Evidence class: BACKEND — does not satisfy PHYSICAL-DEVICE gates.
+
+Production activation observed 2026-10-02 JST after merged PR #1029:
+
+- the live database contains the additive due-reminder schema, idempotency/indexes, and service-role-only enqueue RPC;
+- `bq-assignment-reminders` version 1 is ACTIVE and requires the dedicated Vault-held scheduler token;
+- `pg_cron` + `pg_net` are enabled and one active `bq-assignment-due-reminders-v6` job runs every five minutes;
+- the first live Cron run at 2026-10-01 15:10:00 UTC succeeded;
+- its HTTP response was 200 with `{"ok":true,"queued":0,"failed":0}`;
+- a tokenless POST was rejected with HTTP 401 `Scheduler authorization required`;
+- zero eligible recipients existed at activation and no due-notification rows were created.
+
+This proves the scheduler/function/authentication path is live and fail-closed without generating a user notification. It does **not** prove P1/P2/P3 on physical hardware and does not close the combined assignment assigned/due row until a designated QA recipient safely exercises an eligible live due reminder and canonical push dispatch.
+
 ## Push certification binding
 
 Status: PENDING
