@@ -23,6 +23,7 @@ on:
       - "psychometrics.html"
       - "v5-push-device-field.html"
       - "v6-field-device.html"
+      - "v6-push-device-field.html"
       - "v6-field-device.js"
       - "v6-field-device.css"
       - "docs/v6/V6_FIELD_DEVICE_EVIDENCE.md"
