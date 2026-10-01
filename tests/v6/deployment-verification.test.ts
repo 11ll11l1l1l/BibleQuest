@@ -112,21 +112,26 @@ test('deployed artifact verifier rejects a self-consistent deployment that is no
   );
 });
 
-test('deployment verification workflow binds a manual Cloudflare URL to an exact full commit SHA', async () => {
+test('deployment verification workflow binds PR previews and manual URLs to exact certified bytes', async () => {
   const workflow = await readFile(new URL('../../.github/workflows/v6-deployment-verify.yml', import.meta.url), 'utf8');
   for (const token of [
+    'pull_request:',
     'workflow_dispatch:',
     'deployment_url:',
     'expected_sha:',
-    "BQ_EXPECTED_SHA: ${{ inputs.expected_sha || github.sha }}",
+    "BQ_EXPECTED_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.expected_sha || github.sha }}",
+    'issues: read',
+    'pull-requests: read',
+    'cloudflare-workers-and-pages[bot]',
+    '<code>\${shortSha}</code>',
+    'mybiblequest\\.pages\\.dev',
     'ref: ${{ env.BQ_EXPECTED_SHA }}',
     'test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"',
-    'BQ_DEPLOYMENT_URL: ${{ inputs.deployment_url }}',
+    'BQ_DEPLOYMENT_URL: ${{ steps.deployment.outputs.url }}',
     "BQ_EXPECTED_ARTIFACT_SHA256='+m.artifactSha256.toLowerCase()",
     'npm run build:v6',
     'node scripts/v6-deployment-verify.mjs',
   ]) {
     assert.ok(workflow.includes(token), `deployment verification workflow missing: ${token}`);
   }
-  assert.doesNotMatch(workflow, /pull_request:/, 'automatic PR deployment verification stays disabled until Cloudflare serves dist-v6');
 });
