@@ -6,7 +6,15 @@ const GATE_LABELS = Object.freeze({
   'text-scaling': 'Manual accessibility: text scaling/readability',
   'touch-overflow': 'Manual accessibility: touch/mobile targets and overflow',
   'motion-contrast': 'Manual accessibility: reduced motion/contrast',
+  'background-media': 'Background/lock-screen media controls where supported',
 });
+const MANUAL_ACCESSIBILITY_GATE_IDS = Object.freeze([
+  'keyboard-focus',
+  'screen-reader',
+  'text-scaling',
+  'touch-overflow',
+  'motion-contrast',
+]);
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -164,8 +172,8 @@ function requireMetadata() {
 function exportRecord() {
   if (!SHA_PATTERN.test(candidateSha)) throw new Error('Exact candidate SHA is unavailable.');
   const metadata = requireMetadata();
-  const gates = $$('[data-gate]').map(gateSnapshot);
-  const manual = gates.filter(gate => gate.id !== 'installed-pwa');
+  const gates = $('[data-gate]').map(gateSnapshot);
+  const manual = gates.filter(gate => MANUAL_ACCESSIBILITY_GATE_IDS.includes(gate.id));
   return Object.freeze({
     schemaVersion: 1,
     evidenceClass: 'PHYSICAL-DEVICE',
@@ -183,6 +191,7 @@ function exportRecord() {
     checklistEligibility: {
       physicalInstalledPwaOffline: gates.find(gate => gate.id === 'installed-pwa')?.status === 'PASS',
       criticalManualAccessibility: manual.every(gate => gate.status === 'PASS'),
+      backgroundLockscreenMedia: gates.find(gate => gate.id === 'background-media')?.status === 'PASS',
     },
   });
 }

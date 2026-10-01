@@ -231,7 +231,8 @@ test('Media Session seek and next actions degrade safely and are removed on tear
   } as unknown as MediaSession;
   const player = createChapterAudioPlayer({
     translationId: 'bsb', manifest, createAudio: () => audio, mediaSession: session,
-    resolveNextChapter: () => ({ bookCode: 'GEN', chapter: 2 }),
+    resolveNextChapter: (book, chapter) => book === 'GEN' && chapter === 1 ? { bookCode: 'GEN', chapter: 2 } : null,
+    resolvePreviousChapter: (book, chapter) => book === 'GEN' && chapter === 2 ? { bookCode: 'GEN', chapter: 1 } : null,
   });
   await player.load('GEN', 1);
   assert.equal(session.playbackState, 'none');
@@ -248,10 +249,20 @@ test('Media Session seek and next actions degrade safely and are removed on tear
     await new Promise(resolve => setTimeout(resolve, 0));
   }
   assert.equal(player.getState().chapter, 2);
+  handlers.get('previoustrack')?.();
+  for (let attempt = 0; attempt < 10 && (player.getState().chapter !== 1 || player.getState().status !== 'playing'); attempt += 1) {
+    await new Promise(resolve => setTimeout(resolve, 0));
+  }
+  assert.equal(player.getState().chapter, 1);
+  handlers.get('stop')?.();
+  assert.equal(player.getState().status, 'paused');
+  assert.equal(player.getState().currentTime, 0);
   player.dispose();
   assert.equal(handlers.get('play'), null);
   assert.equal(handlers.get('seekbackward'), null);
   assert.equal(handlers.get('nexttrack'), null);
+  assert.equal(handlers.get('previoustrack'), null);
+  assert.equal(handlers.get('stop'), null);
   assert.equal(session.playbackState, 'none');
 });
 

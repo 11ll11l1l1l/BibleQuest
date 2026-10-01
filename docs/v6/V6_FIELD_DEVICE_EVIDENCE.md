@@ -25,10 +25,13 @@ The aggregate status may become PASS only when every applicable row is backed by
 
 ## Physical PWA + accessibility field harness
 
-Use the unlinked deployed page `/v6-field-device.html` for the two Phase-N physical rows:
+Use the unlinked deployed page `/v6-field-device.html` for these physical-device rows:
 
 - `Physical installed-PWA offline acceptance passes.`
 - `Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.`
+- `Background/lock-screen media controls work where supported and degrade safely where unsupported.`
+
+For the BSB Audio media row, start Barry Hays playback from the Reader on the exact deployed candidate, then background/lock the physical device. Record which system media controls the OS/browser actually exposes, verify play/pause and any exposed seek/chapter-navigation controls, and foreground the app to confirm chapter/position coherence. An unsupported system control is not grounds to invent a PASS; the observation must state the device behavior and the app must continue to degrade safely.
 
 The harness reads `bq-build.json` from the same deployed origin and refuses evidence export unless it contains an exact 40-character build SHA. Progress is stored under a candidate-SHA-scoped local key so a different build cannot silently inherit observations. A PASS export also requires a device/OS/browser label, environment, durable evidence reference, concrete observation text, and every required physical sub-check for that gate.
 
