@@ -18,10 +18,18 @@ export async function loadReaderPage(args) {
     import('../v6/reader/openbible-hays-catalog.ts'),
   ]);
   const scriptureContentVersion = await catalogModule.loadCurrentBsbScriptureContentVersion();
-  const [haysManifest, souerManifest] = scriptureContentVersion ? [
-    catalogModule.createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, args.books),
-    catalogModule.createOpenBibleNarratorStreamingManifest('souer', scriptureContentVersion, args.books),
-  ] : [null, null];
+  const haysAlignment = scriptureContentVersion
+    ? await catalogModule.loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, args.books)
+    : null;
+  const haysStreamManifest = scriptureContentVersion
+    ? catalogModule.createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, args.books, haysAlignment?.alignmentSource)
+    : null;
+  const haysManifest = haysAlignment && haysStreamManifest
+    ? catalogModule.bindOpenBibleHaysAlignmentIdentity(haysStreamManifest, haysAlignment)
+    : haysStreamManifest;
+  const souerManifest = scriptureContentVersion
+    ? catalogModule.createOpenBibleNarratorStreamingManifest('souer', scriptureContentVersion, args.books)
+    : null;
   if (typeof pageModule?.readerPage !== 'function' || typeof packageModule.createBrowserScripturePackageController !== 'function'
     || typeof audioModule.createReaderAudioProvider !== 'function' || typeof audioModule.createReaderAudioSourceRouter !== 'function'
     || typeof speechModule.createReaderSpeechSynthesis !== 'function'
@@ -36,8 +44,9 @@ export async function loadReaderPage(args) {
   });
   if (!readerAudioProvider) {
     const audioRepository = audioStorageModule.createBrowserScriptureAudioPackageRepository();
-    const createNarratorProvider = manifest => audioModule.createReaderAudioProvider({
+    const createNarratorProvider = (manifest, alignments = []) => audioModule.createReaderAudioProvider({
       manifest,
+      alignments,
       scriptureContentVersion,
       store: args.audioStore,
       createAudio: () => new Audio(),
@@ -51,7 +60,7 @@ export async function loadReaderPage(args) {
     });
     readerAudioProvider = audioModule.createReaderAudioSourceRouter({
       sources: [
-        { id: 'hays', label: 'Barry Hays', provider: createNarratorProvider(haysManifest) },
+        { id: 'hays', label: 'Barry Hays', provider: createNarratorProvider(haysManifest, haysAlignment?.chapters || []) },
         { id: 'souer', label: 'Bob Souer', provider: createNarratorProvider(souerManifest) },
       ],
       store: args.audioStore,
