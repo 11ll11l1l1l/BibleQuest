@@ -16,6 +16,10 @@ const REVISION = /^[a-f0-9]{40}$/i;
 const BOOK_FILE = /^(?:[1-3])?[A-Z]{2,3}\.json$/;
 const ALIGNMENT_FILE = /^((?:[1-3])?[A-Z]{2,3})_(\d{3})_words\.json$/;
 const sha256 = value => createHash('sha256').update(value).digest('hex');
+const normalizeVerseText = value => String(value ?? '')
+  .normalize('NFKD')
+  .toLowerCase()
+  .replace(/[^\\p{L}\\p{N}]+/gu, '');
 
 function parseArgs(argv) {
   const args = { root: process.cwd(), alignmentRoot: '', revision: '', output: '' };
@@ -49,6 +53,7 @@ function canonicalBible(root) {
     const rows = readJson(join(directory, name));
     if (!Array.isArray(rows) || rows.length === 0) throw new Error(`${code} has no Scripture rows.`);
     const chapters = new Map();
+    const verseTexts = new Map();
     for (const row of rows) {
       const chapter = Number(row?.c), verse = Number(row?.v);
       if (!Number.isSafeInteger(chapter) || chapter < 1 || !Number.isSafeInteger(verse) || verse < 1) {
@@ -56,6 +61,9 @@ function canonicalBible(root) {
       }
       if (!chapters.has(chapter)) chapters.set(chapter, []);
       chapters.get(chapter).push(verse);
+      const key = `${chapter}:${verse}`;
+      if (verseTexts.has(key)) throw new Error(`${code} repeats ${chapter}:${verse}.`);
+      verseTexts.set(key, String(row?.t ?? ''));
     }
     const maxChapter = Math.max(...chapters.keys());
     for (let chapter = 1; chapter <= maxChapter; chapter += 1) {
@@ -69,7 +77,7 @@ function canonicalBible(root) {
         }
       }
     }
-    return Object.freeze({ code, chapters: maxChapter, verses: chapters });
+    return Object.freeze({ code, chapters: maxChapter, verses: chapters, verseTexts });
   });
   const chapterCount = books.reduce((sum, book) => sum + book.chapters, 0);
   const verseCount = books.reduce((sum, book) => sum + [...book.verses.values()].reduce((subtotal, rows) => subtotal + rows.length, 0), 0);
@@ -90,26 +98,30 @@ function chapterAlignment(path, expected, context) {
     throw new Error(`${book} ${chapter} has no verse timing map.`);
   }
   const actualVerses = Object.keys(payload.verses).map(Number).sort((a, b) => a - b);
-  const expectedFirst = expected.verses[0];
-  const leadingExtras = actualVerses.filter(verse => verse < expectedFirst);
-  const displayedVerses = actualVerses.filter(verse => verse >= expectedFirst);
-  const leadingPsalmSuperscription = expected.code === 'PSA'
-    && leadingExtras.length > 0
-    && leadingExtras.every((verse, index) => verse === index + 1)
-    && leadingExtras[leadingExtras.length - 1] === expectedFirst - 1;
-  if (leadingExtras.length > 0 && !leadingPsalmSuperscription) {
-    throw new Error(`${book} ${chapter} has unexpected alignment verses before the BibleQuest display sequence.`);
+  if (actualVerses.some((verse, index) => !Number.isSafeInteger(verse) || verse < 1
+    || (index > 0 && verse <= actualVerses[index - 1]))) {
+    throw new Error(`${book} ${chapter} source timing verse identity is invalid.`);
   }
-  if (displayedVerses.length !== expected.verses.length
-    || displayedVerses.some((verse, index) => verse !== expected.verses[index])) {
-    throw new Error(`${book} ${chapter} timing verse identity differs from the BibleQuest BSB pack.`);
+  const actualSet = new Set(actualVerses);
+  const missing = expected.verses.filter(verse => !actualSet.has(verse));
+  if (missing.length) {
+    throw new Error(`${book} ${chapter} is missing displayed BibleQuest verses in the timing source: ${missing.join(',')}.`);
   }
+  const expectedSet = new Set(expected.verses);
+  const sourceOnlyVerses = actualVerses
+    .filter(verse => !expectedSet.has(verse))
+    .map(verse => `${book}:${chapter}:${verse}`);
 
   let previousEnd = 0;
   let wordCount = 0;
   const verses = expected.verses.map(verse => {
     const words = payload.verses[String(verse)];
     if (!Array.isArray(words) || words.length === 0) throw new Error(`${book} ${chapter}:${verse} has no aligned words.`);
+    const localText = expected.verseTexts.get(`${chapter}:${verse}`);
+    const alignedText = words.map(word => String(word?.text ?? '')).join(' ');
+    if (!localText || normalizeVerseText(alignedText) !== normalizeVerseText(localText)) {
+      throw new Error(`${book} ${chapter}:${verse} aligned words do not match the committed BibleQuest BSB text.`);
+    }
     let priorWordEnd = -1;
     for (const word of words) {
       const start = Number(word?.start), end = Number(word?.end);
@@ -146,6 +158,7 @@ function chapterAlignment(path, expected, context) {
       verses: Object.freeze(verses),
     }),
     wordCount,
+    sourceOnlyVerses: Object.freeze(sourceOnlyVerses),
   });
 }
 
@@ -164,6 +177,7 @@ export function generateHaysAlignmentManifest({
     alignmentSource,
   });
   const chapters = [];
+  const sourceOnlyVerseIds = [];
   let wordCount = 0;
 
   for (const book of canonical.books) {
@@ -178,10 +192,11 @@ export function generateHaysAlignmentManifest({
       if (!files.includes(name)) throw new Error(`${book.code} alignment is missing chapter ${chapter}.`);
       const result = chapterAlignment(
         join(directory, name),
-        { code: book.code, chapter, verses: book.verses.get(chapter) },
+        { code: book.code, chapter, verses: book.verses.get(chapter), verseTexts: book.verseTexts },
         context,
       );
       chapters.push(result.row);
+      sourceOnlyVerseIds.push(...result.sourceOnlyVerses);
       wordCount += result.wordCount;
     }
   }
@@ -204,6 +219,8 @@ export function generateHaysAlignmentManifest({
     chapterCount: chapters.length,
     verseCount,
     wordCount,
+    sourceOnlyVerseCount: sourceOnlyVerseIds.length,
+    sourceOnlyVerseIds: Object.freeze(sourceOnlyVerseIds),
     chapters: Object.freeze(chapters),
   });
   if (output) {
