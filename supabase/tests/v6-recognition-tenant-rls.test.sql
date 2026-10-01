@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(15);
 
 insert into public.bible_member_recognitions (
   id, congregation_id, user_id, awarded_by, award_code, title, note, visible
