@@ -1,0 +1,46 @@
+name: V6 V4 Rollback Reference Guard
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - 'scripts/v6-v4-rollback-reference.mjs'
+      - 'tests/v6/v4-rollback-reference.test.ts'
+      - '.github/workflows/v6-v4-rollback-reference.yml'
+  push:
+    branches:
+      - v6/architecture-upgrade
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-rollback-ref:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Prove exact candidate identity
+        shell: bash
+        env:
+          BQ_EXACT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Verify rollback guard contract
+        run: node --experimental-strip-types --test tests/v6/v4-rollback-reference.test.ts
+
+      - name: Verify official V4 rollback reference still exists and is immutable
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/v6-v4-rollback-reference.mjs
