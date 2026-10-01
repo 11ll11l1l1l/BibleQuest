@@ -9,12 +9,13 @@ import {
 
 const candidateSha = 'a'.repeat(40);
 
-function successRun(name, id) {
+function successRun(workflowName, id) {
+  const title = workflowName + ' · RC ' + candidateSha;
   return {
     id,
-    name,
+    name: title,
     head_sha: 'b'.repeat(40),
-    display_title: 'RC ' + candidateSha,
+    display_title: title,
     status: 'completed',
     conclusion: 'success',
     event: 'workflow_dispatch',
@@ -46,9 +47,11 @@ test('RC collector requires an exact full SHA', () => {
 
 test('RC collector passes only when every required automated gate succeeded on the exact candidate', async () => {
   const runs = DEFAULT_REQUIRED_WORKFLOWS.map((name, index) => successRun(name, 1000 + index));
+  const wrongTitle = 'V6 Phase 1 Build Gate · RC ' + 'c'.repeat(40);
   runs.push({
     ...successRun('V6 Phase 1 Build Gate', 900),
-    display_title: 'RC ' + 'c'.repeat(40),
+    name: wrongTitle,
+    display_title: wrongTitle,
   });
 
   const evidence = await collectExactShaRcEvidence({
@@ -70,8 +73,10 @@ test('RC collector passes only when every required automated gate succeeded on t
 
 test('RC collector rejects a successful dispatch bound to a different candidate marker', async () => {
   const runs = DEFAULT_REQUIRED_WORKFLOWS.map((name, index) => successRun(name, 1500 + index));
-  const database = runs.find(run => run.name === 'V6 Database CI');
-  database.display_title = 'RC ' + 'c'.repeat(40);
+  const database = runs.find(run => run.name.startsWith('V6 Database CI · RC '));
+  const wrongTitle = 'V6 Database CI · RC ' + 'c'.repeat(40);
+  database.name = wrongTitle;
+  database.display_title = wrongTitle;
 
   await assert.rejects(
     collectExactShaRcEvidence({
