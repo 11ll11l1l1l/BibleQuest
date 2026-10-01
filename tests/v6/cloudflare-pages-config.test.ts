@@ -12,7 +12,7 @@ test('Cloudflare Pages publishes the generated V6 artifact directory', async () 
   assert.match(wrangler, /^pages_build_output_dir\s*=\s*"\.\/dist-v6"$/m);
   assert.match(wrangler, /^compatibility_date\s*=\s*"\d{4}-\d{2}-\d{2}"$/m);
 
-  const gateIndex = buildScript.indexOf('node scripts/deploy-gate.mjs');
+  assert.match(buildScript, /CF_PAGES:-/);\n\n  const gateIndex = buildScript.indexOf('node scripts/deploy-gate.mjs');
   const buildIndex = buildScript.indexOf('npm run build:v6');
   assert.ok(gateIndex >= 0, 'Pages build hook must retain the deployment gate');
   assert.ok(buildIndex > gateIndex, 'Pages build hook must build dist-v6 after the deployment gate');
