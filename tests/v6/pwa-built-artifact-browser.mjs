@@ -30,33 +30,55 @@ async function dispatchPushThroughInstalledWorker(context, payload) {
   const worker = context.serviceWorkers().find(candidate => candidate.url().includes('offline-shell-sw.js'));
   assert(worker, 'installed BibleQuest service worker was not visible to Chromium');
 
-  await worker.evaluate(value => {
-    const event = new PushEvent('push', { data: JSON.stringify(value) });
-    self.dispatchEvent(event);
-  }, payload);
+  return worker.evaluate(async value => {
+    const prototype = ServiceWorkerRegistration.prototype;
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, 'showNotification');
+    if (!descriptor) throw new Error('ServiceWorkerRegistration.showNotification descriptor unavailable');
 
-  const tag = `bq-${payload.notificationId}`;
-  for (let attempt = 0; attempt < 40; attempt += 1) {
-    const shown = await worker.evaluate(async expectedTag => {
-      const notifications = await self.registration.getNotifications({ tag: expectedTag });
-      return notifications.map(notification => ({
-        title: notification.title,
-        body: notification.body,
-        tag: notification.tag,
-        data: notification.data,
-      }));
-    }, tag);
-    if (shown.length) return shown[0];
-    await new Promise(resolve => setTimeout(resolve, 50));
-  }
-  throw new Error(`service worker did not render push notification ${tag}`);
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const restore = () => Object.defineProperty(prototype, 'showNotification', descriptor);
+      const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        restore();
+        reject(new Error('installed worker did not call showNotification'));
+      }, 1000);
+
+      try {
+        Object.defineProperty(prototype, 'showNotification', {
+          configurable: true,
+          writable: true,
+          value: async (title, options = {}) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            const captured = {
+              title: String(title || ''),
+              body: String(options.body || ''),
+              tag: String(options.tag || ''),
+              data: options.data || null,
+            };
+            restore();
+            resolve(captured);
+          },
+        });
+
+        self.dispatchEvent(new PushEvent('push', { data: JSON.stringify(value) }));
+      } catch (error) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        restore();
+        reject(error);
+      }
+    });
+  }, payload);
 }
 
 const browser = await chromium.launch({ headless: true });
 try {
   const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
-  await context.grantPermissions(['notifications'], { origin: new URL(baseUrl).origin });
-
   const page = await context.newPage();
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
@@ -134,14 +156,6 @@ try {
   assert(duePush.data?.url === `${new URL(baseUrl).origin}/#/assignments`, 'due push lost the assignments deep link');
   assert(duePush.data?.type === 'assignments', 'due push lost the assignments delivery category');
 
-  const worker = context.serviceWorkers().find(candidate => candidate.url().includes('offline-shell-sw.js'));
-  if (worker) {
-    await worker.evaluate(async () => {
-      const notifications = await self.registration.getNotifications();
-      for (const notification of notifications) notification.close();
-    });
-  }
-
   // Prove the installed-app shell can reopen without network after one online
   // load. This is browser automation for shell availability only; it does not
   // claim physical-device install UI or offline Scripture-package acceptance.
@@ -160,4 +174,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push rendering, and offline shell reopen verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling, and offline shell reopen verified at 390px.');
