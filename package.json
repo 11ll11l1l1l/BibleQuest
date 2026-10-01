@@ -21,7 +21,8 @@
     "unit": "npm run unit:v6",
     "check:v6-dependency-security": "node scripts/v6-dependency-security.mjs",
     "check:v6-migration-history": "node scripts/v6-migration-history-guard.mjs --local-only",
-    "check:v6-assignment-push-release": "node scripts/v6-migration-history-guard.mjs --require-target assignment_due_reminders"
+    "check:v6-assignment-push-release": "node scripts/v6-migration-history-guard.mjs --require-target assignment_due_reminders",
+    "postinstall": "node scripts/v6-pages-build-hook.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",
