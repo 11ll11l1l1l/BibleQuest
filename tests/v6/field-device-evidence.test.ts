@@ -99,3 +99,22 @@ test('physical installed-PWA acceptance cannot pass without exact-candidate devi
   assertExactCandidateMetadata(evidence);
   assertGateEvidence(evidence, 'Installed-PWA offline behavior');
 });
+
+const backgroundMediaChecklistRow =
+  'Background/lock-screen media controls work where supported and degrade safely where unsupported.';
+
+test('BSB background/lock-screen media acceptance cannot pass without exact-candidate physical evidence', () => {
+  const checklist = read('V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md');
+  const evidence = read('docs/v6/V6_FIELD_DEVICE_EVIDENCE.md');
+
+  assert.ok(
+    checklist.includes('- [ ] ' + backgroundMediaChecklistRow) ||
+      checklist.includes('- [x] ' + backgroundMediaChecklistRow),
+    'BSB background/lock-screen media acceptance row must remain present',
+  );
+
+  if (!isChecked(checklist, backgroundMediaChecklistRow)) return;
+
+  assertExactCandidateMetadata(evidence);
+  assertGateEvidence(evidence, 'Background/lock-screen media controls where supported');
+});
