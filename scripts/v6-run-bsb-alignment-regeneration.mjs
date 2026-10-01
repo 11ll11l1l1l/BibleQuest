@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFile, writeFile } from 'node:fs/promises';
+import { access, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -11,7 +11,7 @@ import {
   prepareBsbAlignmentRegeneration,
 } from './v6-prepare-bsb-alignment-regeneration.mjs';
 import { validateBsbAlignmentManifest } from './v6-bsb-alignment-manifest.mjs';
-import { validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
+import { snapshotStagedHaysSource, validateHaysAudioInventory } from './v6-hays-source-inventory.mjs';
 import { stageReusableBsbAlignments } from './v6-stage-bsb-alignment-reuse.mjs';
 
 const EXPECTED_CHAPTERS = 1189;
@@ -30,15 +30,115 @@ function defaultCommandRunner(command) {
   });
 }
 
+function defaultGitResolver(directory, args) {
+  return execFileSync('git', ['-C', directory, ...args], { encoding: 'utf8' }).trim();
+}
+
+async function fileExists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function writeExactJson(path, value, label) {
+  const expected = JSON.stringify(value, null, 2) + '\n';
+  if (await fileExists(path)) {
+    const existing = await readFile(path, 'utf8');
+    if (existing !== expected) fail(label + ' already exists with different content; resume refused.');
+    return;
+  }
+  await writeFile(path, expected, { flag: 'wx' });
+}
+
 function assertPlan(plan) {
   if (!plan || plan.schemaVersion !== 2 || plan.translationId !== 'bsb'
     || plan.alignmentRevision !== BSB_ALIGN_REVISION || plan.alignmentTree !== BSB_ALIGN_TREE
     || plan.expectedChapters !== EXPECTED_CHAPTERS
+    || !Array.isArray(plan.expectedOutputFiles) || plan.expectedOutputFiles.length !== EXPECTED_CHAPTERS
+    || typeof plan.alignerDirectory !== 'string' || !plan.alignerDirectory.trim()
+    || typeof plan.audioDirectory !== 'string' || !plan.audioDirectory.trim()
+    || typeof plan.workspaceDirectory !== 'string' || !plan.workspaceDirectory.trim()
+    || typeof plan.textDirectory !== 'string' || !plan.textDirectory.trim()
+    || typeof plan.outputDirectory !== 'string' || !plan.outputDirectory.trim()
+    || typeof plan.audioInventoryPath !== 'string' || !plan.audioInventoryPath.trim()
     || !/^sha256-[a-f0-9]{64}$/.test(String(plan.audioContentVersion ?? ''))
     || !/^[a-f0-9]{64}$/.test(String(plan.audioInventorySha256 ?? ''))
     || plan.audioContentVersion !== 'sha256-' + plan.audioInventorySha256) {
     fail('A reviewed exact-identity BSB regeneration plan is required.');
   }
+}
+
+export async function loadBsbRegenerationResumePlan({
+  planPath,
+  gitResolver = defaultGitResolver,
+  audioInventoryResolver = snapshotStagedHaysSource,
+} = {}) {
+  if (typeof planPath !== 'string' || !planPath.trim()) fail('Resume requires a regeneration-plan.json path.');
+  if (typeof gitResolver !== 'function') fail('Resume requires a Git revision resolver.');
+  if (typeof audioInventoryResolver !== 'function') fail('Resume requires a Hays audio inventory resolver.');
+
+  const resolvedPlanPath = resolve(planPath);
+  let plan;
+  try {
+    plan = JSON.parse(await readFile(resolvedPlanPath, 'utf8'));
+  } catch {
+    fail('Resume regeneration plan is missing or invalid JSON.');
+  }
+  assertPlan(plan);
+  if (resolve(plan.workspaceDirectory, 'regeneration-plan.json') !== resolvedPlanPath) {
+    fail('Resume plan path does not match its immutable workspace identity.');
+  }
+
+  const revision = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD']) ?? '').trim().toLowerCase();
+  const tree = String(gitResolver(plan.alignerDirectory, ['rev-parse', 'HEAD^{tree}']) ?? '').trim().toLowerCase();
+  const trackedChanges = String(gitResolver(plan.alignerDirectory, ['status', '--porcelain', '--untracked-files=no']) ?? '').trim();
+  if (revision !== plan.alignmentRevision || revision !== BSB_ALIGN_REVISION) {
+    fail('Resume refused because the bsb-align checkout revision changed.');
+  }
+  if (tree !== plan.alignmentTree || tree !== BSB_ALIGN_TREE) {
+    fail('Resume refused because the bsb-align checkout tree changed.');
+  }
+  if (trackedChanges) fail('Resume refused because the bsb-align checkout has tracked modifications.');
+
+  let textManifest;
+  try {
+    textManifest = JSON.parse(await readFile(join(plan.textDirectory, '_biblequest-bsb-alignment-export.json'), 'utf8'));
+  } catch {
+    fail('Resume refused because the prepared BibleQuest BSB text manifest is missing.');
+  }
+  if (textManifest.translationId !== 'bsb'
+    || textManifest.scriptureContentVersion !== plan.scriptureContentVersion
+    || textManifest.inventorySha256 !== plan.textInventorySha256
+    || textManifest.chapters !== EXPECTED_CHAPTERS
+    || !Array.isArray(textManifest.files) || textManifest.files.length !== EXPECTED_CHAPTERS) {
+    fail('Resume refused because the prepared BibleQuest BSB text identity changed.');
+  }
+
+  let storedAudioInventory;
+  try {
+    storedAudioInventory = JSON.parse(await readFile(plan.audioInventoryPath, 'utf8'));
+  } catch {
+    fail('Resume refused because the exact Hays audio inventory is missing.');
+  }
+  const storedValidation = validateHaysAudioInventory(storedAudioInventory, { requireComplete: true });
+  if (!storedValidation.valid
+    || storedAudioInventory.inventorySha256 !== plan.audioInventorySha256
+    || storedAudioInventory.contentVersion !== plan.audioContentVersion) {
+    fail('Resume refused because the stored Hays audio inventory no longer matches the plan.');
+  }
+
+  const currentAudioInventory = await audioInventoryResolver({ audioDirectory: plan.audioDirectory });
+  const currentValidation = validateHaysAudioInventory(currentAudioInventory, { requireComplete: true });
+  if (!currentValidation.valid
+    || currentAudioInventory.inventorySha256 !== plan.audioInventorySha256
+    || currentAudioInventory.contentVersion !== plan.audioContentVersion) {
+    fail('Resume refused because the staged Hays audio files changed after the plan was prepared.');
+  }
+
+  return Object.freeze({ plan, audioInventory: currentAudioInventory });
 }
 
 export function buildBsbRegenerationFinalizeInputs(plan, audioInventory) {
@@ -100,6 +200,7 @@ export async function runBsbAlignmentRegenerationWorkflow({
   alignerDirectory,
   audioDirectory,
   workspaceDirectory,
+  resumePlanPath = null,
   python = 'python3',
   commandRunner = defaultCommandRunner,
   gitResolver,
@@ -107,20 +208,43 @@ export async function runBsbAlignmentRegenerationWorkflow({
 } = {}) {
   if (typeof commandRunner !== 'function') fail('A command runner is required.');
 
-  const plan = await prepareBsbAlignmentRegeneration({
-    root,
-    alignerDirectory,
-    audioDirectory,
-    workspaceDirectory,
-    ...(gitResolver ? { gitResolver } : {}),
-    ...(audioInventoryResolver ? { audioInventoryResolver } : {}),
-  });
-  assertPlan(plan);
-
-  const reuse = await stageReusableBsbAlignments({
-    plan,
-    ...(gitResolver ? { gitResolver } : {}),
-  });
+  let plan;
+  let audioInventory = null;
+  let reuse = Object.freeze({ reusableChapters: null, regenerateChapters: null });
+  if (resumePlanPath) {
+    const resumed = await loadBsbRegenerationResumePlan({
+      planPath: resumePlanPath,
+      ...(gitResolver ? { gitResolver } : {}),
+      ...(audioInventoryResolver ? { audioInventoryResolver } : {}),
+    });
+    plan = resumed.plan;
+    audioInventory = resumed.audioInventory;
+    try {
+      const reuseReport = JSON.parse(await readFile(join(plan.workspaceDirectory, 'reuse-plan.json'), 'utf8'));
+      if (reuseReport.audioInventorySha256 === plan.audioInventorySha256
+        && reuseReport.scriptureContentVersion === plan.scriptureContentVersion
+        && reuseReport.expectedChapters === EXPECTED_CHAPTERS) {
+        reuse = Object.freeze({
+          reusableChapters: Number.isSafeInteger(reuseReport.reusableChapters) ? reuseReport.reusableChapters : null,
+          regenerateChapters: Number.isSafeInteger(reuseReport.regenerateChapters) ? reuseReport.regenerateChapters : null,
+        });
+      }
+    } catch { /* Reuse statistics are optional during a valid resume. */ }
+  } else {
+    plan = await prepareBsbAlignmentRegeneration({
+      root,
+      alignerDirectory,
+      audioDirectory,
+      workspaceDirectory,
+      ...(gitResolver ? { gitResolver } : {}),
+      ...(audioInventoryResolver ? { audioInventoryResolver } : {}),
+    });
+    assertPlan(plan);
+    reuse = await stageReusableBsbAlignments({
+      plan,
+      ...(gitResolver ? { gitResolver } : {}),
+    });
+  }
 
   const alignmentCommand = buildBsbAlignmentCommand(plan, { python });
   await commandRunner(alignmentCommand);
@@ -130,13 +254,20 @@ export async function runBsbAlignmentRegenerationWorkflow({
     fail('BSB timing regeneration is incomplete after the aligner run.');
   }
 
-  const audioInventory = JSON.parse(await readFile(plan.audioInventoryPath, 'utf8'));
+  if (!audioInventory) audioInventory = JSON.parse(await readFile(plan.audioInventoryPath, 'utf8'));
   const finalize = buildBsbRegenerationFinalizeInputs(plan, audioInventory);
-  await writeFile(finalize.metadataPath, JSON.stringify(finalize.metadata, null, 2) + '\n', { flag: 'wx' });
-  await writeFile(finalize.durationsPath, JSON.stringify(finalize.durations, null, 2) + '\n', { flag: 'wx' });
+  await writeExactJson(finalize.metadataPath, finalize.metadata, 'Hays source metadata');
+  await writeExactJson(finalize.durationsPath, finalize.durations, 'Hays duration inventory');
 
-  const importCommand = buildBsbAlignmentImportCommand(plan, finalize, { root });
-  await commandRunner(importCommand);
+  const rowsExist = await fileExists(finalize.alignmentRowsPath);
+  const manifestExists = await fileExists(finalize.candidateManifestPath);
+  if (rowsExist !== manifestExists) {
+    fail('Resume refused because final alignment outputs are incomplete; remove the partial finalization files before retrying.');
+  }
+  if (!manifestExists) {
+    const importCommand = buildBsbAlignmentImportCommand(plan, finalize, { root });
+    await commandRunner(importCommand);
+  }
 
   let manifest;
   try {
@@ -166,6 +297,7 @@ export async function runBsbAlignmentRegenerationWorkflow({
     alignmentTree: plan.alignmentTree,
     reusableChapters: reuse.reusableChapters,
     regeneratedChapters: reuse.regenerateChapters,
+    resumed: Boolean(resumePlanPath),
     candidateManifestPath: finalize.candidateManifestPath,
     alignmentRowsPath: finalize.alignmentRowsPath,
     manifest,
@@ -174,6 +306,7 @@ export async function runBsbAlignmentRegenerationWorkflow({
 
 async function main(argv) {
   let python = 'python3';
+  let resumePlanPath = null;
   const args = [];
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--python') {
@@ -182,18 +315,31 @@ async function main(argv) {
       index += 1;
       continue;
     }
+    if (argv[index] === '--resume-plan') {
+      resumePlanPath = argv[index + 1];
+      if (!resumePlanPath) fail('--resume-plan requires regeneration-plan.json.');
+      index += 1;
+      continue;
+    }
     args.push(argv[index]);
   }
-  const [alignerDirectory, audioDirectory, workspaceDirectory] = args;
-  if (!alignerDirectory || !audioDirectory || !workspaceDirectory || args.length !== 3) {
-    fail('Usage: node scripts/v6-run-bsb-alignment-regeneration.mjs <pinned-bsb-align-dir> <staged-hays-audio-dir> <empty-workspace> [--python <python3>]');
+
+  let result;
+  if (resumePlanPath) {
+    if (args.length) fail('Resume mode uses only --resume-plan <regeneration-plan.json> [--python <python3>].');
+    result = await runBsbAlignmentRegenerationWorkflow({ resumePlanPath, python });
+  } else {
+    const [alignerDirectory, audioDirectory, workspaceDirectory] = args;
+    if (!alignerDirectory || !audioDirectory || !workspaceDirectory || args.length !== 3) {
+      fail('Usage: node scripts/v6-run-bsb-alignment-regeneration.mjs <pinned-bsb-align-dir> <staged-hays-audio-dir> <empty-workspace> [--python <python3>] OR --resume-plan <regeneration-plan.json> [--python <python3>]');
+    }
+    result = await runBsbAlignmentRegenerationWorkflow({
+      alignerDirectory,
+      audioDirectory,
+      workspaceDirectory,
+      python,
+    });
   }
-  const result = await runBsbAlignmentRegenerationWorkflow({
-    alignerDirectory,
-    audioDirectory,
-    workspaceDirectory,
-    python,
-  });
   console.log(JSON.stringify({
     scriptureContentVersion: result.scriptureContentVersion,
     audioContentVersion: result.audioContentVersion,
@@ -202,6 +348,7 @@ async function main(argv) {
     alignmentTree: result.alignmentTree,
     reusableChapters: result.reusableChapters,
     regeneratedChapters: result.regeneratedChapters,
+    resumed: result.resumed,
     candidateManifestPath: result.candidateManifestPath,
     alignmentRowsPath: result.alignmentRowsPath,
   }, null, 2));
