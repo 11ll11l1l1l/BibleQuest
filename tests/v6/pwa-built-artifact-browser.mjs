@@ -76,6 +76,24 @@ async function dispatchPushThroughInstalledWorker(context, payload) {
   }, payload);
 }
 
+async function dispatchNotificationClickThroughInstalledWorker(context, notificationData) {
+  const worker = context.serviceWorkers().find(candidate => candidate.url().includes('offline-shell-sw.js'));
+  assert(worker, 'installed BibleQuest service worker was not visible to Chromium for notification click');
+
+  await worker.evaluate(async data => {
+    const event = new ExtendableEvent('notificationclick');
+    Object.defineProperty(event, 'notification', {
+      configurable: true,
+      value: {
+        data,
+        close() {},
+      },
+    });
+    self.dispatchEvent(event);
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }, notificationData);
+}
+
 const browser = await chromium.launch({ headless: true });
 try {
   const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
@@ -156,6 +174,18 @@ try {
   assert(duePush.data?.url === `${new URL(baseUrl).origin}/#/assignments`, 'due push lost the assignments deep link');
   assert(duePush.data?.type === 'assignments', 'due push lost the assignments delivery category');
 
+  await page.goto(`${baseUrl}/#/home`, { waitUntil: 'networkidle' });
+  await dispatchNotificationClickThroughInstalledWorker(context, assignedPush.data);
+  await page.waitForFunction(() => location.hash === '#/assignments');
+  await waitForResolvedLazyRoute(page, 'assigned push notification click');
+  assert(await page.evaluate(() => location.hash) === '#/assignments', 'assigned push notification click did not deep-link to Assignments');
+
+  await page.goto(`${baseUrl}/#/home`, { waitUntil: 'networkidle' });
+  await dispatchNotificationClickThroughInstalledWorker(context, duePush.data);
+  await page.waitForFunction(() => location.hash === '#/assignments');
+  await waitForResolvedLazyRoute(page, 'due push notification click');
+  assert(await page.evaluate(() => location.hash) === '#/assignments', 'due push notification click did not deep-link to Assignments');
+
   // Prove the installed-app shell can reopen without network after one online
   // load. This is browser automation for shell availability only; it does not
   // claim physical-device install UI or offline Scripture-package acceptance.
@@ -174,4 +204,4 @@ try {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling, and offline shell reopen verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling + click deep-links, and offline shell reopen verified at 390px.');
