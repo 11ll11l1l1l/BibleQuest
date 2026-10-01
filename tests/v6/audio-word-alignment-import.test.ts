@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { convertBsbWordAlignments } from '../../scripts/v6-import-bsb-word-alignments.mjs';
+import { convertBsbWordAlignments, remapBsbAlignmentVerseIds } from '../../scripts/v6-import-bsb-word-alignments.mjs';
 
 const metadata = {
   translationId: 'bsb', source: 'Barry Hays / OpenBible candidate', license: 'CC0 claim awaiting review',
@@ -67,4 +67,60 @@ test('BSB word timing import requires an immutable upstream alignment revision',
   assert.throws(() => convertBsbWordAlignments({
     ...args, metadata: { ...metadata, alignmentRevision: 'main' },
   }), /immutable 40-hex Git commit/i);
+});
+
+
+test('BSB alignment import remaps line ordinals to canonical verse ids without shifting omitted verse numbers', () => {
+  const scriptureContentVersion = 'bsb-current-gap-fixture';
+  const raw = [{
+    book: 'ACT', chapter: '008', verses: {
+      '1': [
+        { text: 'Look', start: 0.1, end: 0.2, score: 0.9 },
+        { text: 'here', start: 0.21, end: 0.3, score: 0.9 },
+        { text: 'is', start: 0.31, end: 0.4, score: 0.9 },
+        { text: 'water', start: 0.41, end: 0.6, score: 0.9 },
+      ],
+      '2': [
+        { text: 'He', start: 1.0, end: 1.1, score: 0.9 },
+        { text: 'stopped', start: 1.11, end: 1.3, score: 0.9 },
+        { text: 'the', start: 1.31, end: 1.4, score: 0.9 },
+        { text: 'chariot', start: 1.41, end: 1.7, score: 0.9 },
+      ],
+    },
+  }];
+  const exportManifest = {
+    translationId: 'bsb',
+    scriptureContentVersion,
+    files: [{ book: 'ACT', chapter: 8, verseNumbers: [1, 3] }],
+  };
+  const remapped = remapBsbAlignmentVerseIds({ records: raw, exportManifest, scriptureContentVersion });
+  assert.deepEqual(Object.keys(remapped[0].verses), ['1', '3']);
+
+  const result = convertBsbWordAlignments({
+    records: remapped,
+    durations: [{ book: 'ACT', chapter: 8, durationSeconds: 3 }],
+    bookPacks: { ACT: [
+      { c: 8, v: 1, t: 'Look, here is water.' },
+      { c: 8, v: 3, t: 'He stopped the chariot.' },
+    ] },
+    metadata,
+    scriptureContentVersion,
+    requireComplete: false,
+  });
+  assert.deepEqual(result.alignments[0].verses, [
+    { verse: 1, startSeconds: 0.1, endSeconds: 0.6 },
+    { verse: 3, startSeconds: 1, endSeconds: 1.7 },
+  ]);
+});
+
+test('BSB alignment verse remap rejects a stale Scripture export manifest', () => {
+  assert.throws(() => remapBsbAlignmentVerseIds({
+    records: words,
+    scriptureContentVersion: 'current',
+    exportManifest: {
+      translationId: 'bsb',
+      scriptureContentVersion: 'stale',
+      files: [{ book: 'GEN', chapter: 1, verseNumbers: [1] }],
+    },
+  }), /different Scripture content revision/i);
 });
