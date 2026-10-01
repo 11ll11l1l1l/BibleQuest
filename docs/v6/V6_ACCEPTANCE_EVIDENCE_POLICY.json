@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "coverageStatus": "PARTIAL",
+  "targetRow": "Acceptance PASS requires exact-head evidence of the correct class: automated, browser, backend and/or physical-device as applicable.",
+  "allowedEvidenceClasses": [
+    "STATIC",
+    "UNIT",
+    "BUILT-BROWSER",
+    "DATABASE",
+    "EXTERNAL-LIVE",
+    "DEPLOYED",
+    "PHYSICAL-DEVICE"
+  ],
+  "rows": [
+    {
+      "row": "V4→V6 route/feature parity matrix is complete.",
+      "requiredClasses": [
+        "UNIT",
+        "BUILT-BROWSER"
+      ],
+      "evidence": {
+        "headSha": "5cb9a21fe7c7aa1d355be57fe07275b83248bb9a",
+        "classes": [
+          "UNIT",
+          "BUILT-BROWSER"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "V6 Phase 1 Build Gate",
+            "id": "36818526913"
+          },
+          {
+            "kind": "workflow",
+            "name": "BibleQuest inherited regression",
+            "id": "36818526856"
+          }
+        ]
+      }
+    },
+    {
+      "row": "Physical installed-PWA offline acceptance passes.",
+      "requiredClasses": [
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Background/lock-screen media controls work where supported and degrade safely where unsupported.",
+      "requiredClasses": [
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Physical-device push acceptance passes.",
+      "requiredClasses": [
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.",
+      "requiredClasses": [
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Push tests include browser/service-worker coverage plus physical-device acceptance.",
+      "requiredClasses": [
+        "BUILT-BROWSER",
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    },
+    {
+      "row": "Required field/device evidence is attached to exact candidate.",
+      "requiredClasses": [
+        "PHYSICAL-DEVICE"
+      ],
+      "evidence": null
+    }
+  ]
+}
