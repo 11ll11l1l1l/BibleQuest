@@ -45,6 +45,7 @@ on:
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-rc-exact-sha-gate.yml"
       - ".github/workflows/v6-phase1-build.yml"
+      - "docs/v6/RC_CANDIDATE.json"
   workflow_dispatch:
     inputs:
       candidate_sha:
