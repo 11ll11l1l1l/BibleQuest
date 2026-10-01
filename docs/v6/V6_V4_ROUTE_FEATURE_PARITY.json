@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "baseline": "BibleQuest V4 maintained-route browser inventory",
+  "baselineSource": "tests/v4-whole-app-deep-routes-smoke.mjs",
+  "baselineRouteCount": 42,
+  "v6RouteSource": "src/app/bootstrap.js",
+  "ownerConvention": "src/features/<featureOwner>/index.js",
+  "entries": [
+    {
+      "v4Route": "home",
+      "v6Route": "home",
+      "featureOwner": "home",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "mission",
+      "v6Route": "mission",
+      "featureOwner": "daily-mission",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "learn",
+      "v6Route": "learn",
+      "featureOwner": "learn",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "study",
+      "v6Route": "study",
+      "featureOwner": "study",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "deep-questions",
+      "v6Route": "deep-questions",
+      "featureOwner": "deep-questions",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "story-journey",
+      "v6Route": "story-journey",
+      "featureOwner": "story-journey",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "wisdom-situations",
+      "v6Route": "wisdom-situations",
+      "featureOwner": "wisdom-situations",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "adaptive-learning",
+      "v6Route": "adaptive-learning",
+      "featureOwner": "adaptive-learning",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "bible-world",
+      "v6Route": "bible-world",
+      "featureOwner": "bible-world",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "open-review",
+      "v6Route": "open-review",
+      "featureOwner": "open-review",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "private-notes",
+      "v6Route": "private-notes",
+      "featureOwner": "private-notes",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "cloud-notes",
+      "v6Route": "cloud-notes",
+      "featureOwner": "cloud-notes",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "couples-family",
+      "v6Route": "couples-family",
+      "featureOwner": "couples-family",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "couples-cloud",
+      "v6Route": "couples-cloud",
+      "featureOwner": "couples-cloud",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "journey-groups",
+      "v6Route": "journey-groups",
+      "featureOwner": "journey-groups",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "encouragements",
+      "v6Route": "encouragements",
+      "featureOwner": "encouragements",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "community",
+      "v6Route": "community",
+      "featureOwner": "community",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "live-rooms",
+      "v6Route": "live-rooms",
+      "featureOwner": "live-rooms",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "ministry-hub",
+      "v6Route": "ministry-hub",
+      "featureOwner": "ministry-hub",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "notification-center",
+      "v6Route": "notification-center",
+      "featureOwner": "notification-center",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "workspace",
+      "v6Route": "workspace",
+      "featureOwner": "workspace",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "team-center",
+      "v6Route": "team-center",
+      "featureOwner": "team-center",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "leaderboards",
+      "v6Route": "leaderboards",
+      "featureOwner": "leaderboards",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "recognition",
+      "v6Route": "recognition",
+      "featureOwner": "congregation-recognition",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "assignments",
+      "v6Route": "assignments",
+      "featureOwner": "assignments",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "content-review",
+      "v6Route": "content-review",
+      "featureOwner": "content-review",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "reader",
+      "v6Route": "reader",
+      "featureOwner": "reader",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "play",
+      "v6Route": "play",
+      "featureOwner": "games",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "grow",
+      "v6Route": "grow",
+      "featureOwner": "progress",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "transform",
+      "v6Route": "transform",
+      "featureOwner": "transform",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "personality-profile",
+      "v6Route": "personality-profile",
+      "featureOwner": "personality-profile",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "psychometrics",
+      "v6Route": "psychometrics",
+      "featureOwner": "psychometrics",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "avatar-vault",
+      "v6Route": "avatar-vault",
+      "featureOwner": "avatar-vault",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "my-mission",
+      "v6Route": "my-mission",
+      "featureOwner": "mission",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "calendar",
+      "v6Route": "calendar",
+      "featureOwner": "calendar",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "recordings",
+      "v6Route": "recordings",
+      "featureOwner": "recordings",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "media",
+      "v6Route": "media",
+      "featureOwner": "recordings",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "more",
+      "v6Route": "more",
+      "featureOwner": "more",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "accessibility",
+      "v6Route": "accessibility",
+      "featureOwner": "accessibility",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "backup",
+      "v6Route": "backup",
+      "featureOwner": "backup",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "congregation",
+      "v6Route": "congregation",
+      "featureOwner": "congregation",
+      "status": "preserved"
+    },
+    {
+      "v4Route": "account",
+      "v6Route": "account",
+      "featureOwner": "account",
+      "status": "preserved"
+    }
+  ]
+}
