@@ -14,7 +14,6 @@ on:
       - "scripts/v6-pages-build-hook.mjs"
       - "package.json"
       - "package-lock.json"
-      - "wrangler.toml"
   workflow_dispatch:
     inputs:
       deployment_url:
