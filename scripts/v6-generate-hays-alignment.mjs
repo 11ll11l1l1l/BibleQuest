@@ -62,9 +62,11 @@ function canonicalBible(root) {
       const verses = chapters.get(chapter);
       if (!verses?.length) throw new Error(`${code} ${chapter} is missing from the canonical BSB pack.`);
       verses.sort((a, b) => a - b);
-      if (verses[0] !== 1) throw new Error(`${code} ${chapter} verse sequence must begin at 1.`);
-      for (let index = 1; index < verses.length; index += 1) {
-        if (verses[index] <= verses[index - 1]) throw new Error(`${code} ${chapter} verse sequence is not strictly increasing.`);
+      for (let index = 0; index < verses.length; index += 1) {
+        if (!Number.isSafeInteger(verses[index]) || verses[index] < 1
+          || (index > 0 && verses[index] <= verses[index - 1])) {
+          throw new Error(`${code} ${chapter} verse sequence is invalid.`);
+        }
       }
     }
     return Object.freeze({ code, chapters: maxChapter, verses: chapters });
@@ -88,13 +90,24 @@ function chapterAlignment(path, expected, context) {
     throw new Error(`${book} ${chapter} has no verse timing map.`);
   }
   const actualVerses = Object.keys(payload.verses).map(Number).sort((a, b) => a - b);
-  if (actualVerses.length !== expected.verses.length || actualVerses.some((verse, index) => verse !== expected.verses[index])) {
+  const expectedFirst = expected.verses[0];
+  const leadingExtras = actualVerses.filter(verse => verse < expectedFirst);
+  const displayedVerses = actualVerses.filter(verse => verse >= expectedFirst);
+  const leadingPsalmSuperscription = expected.code === 'PSA'
+    && leadingExtras.length > 0
+    && leadingExtras.every((verse, index) => verse === index + 1)
+    && leadingExtras[leadingExtras.length - 1] === expectedFirst - 1;
+  if (leadingExtras.length > 0 && !leadingPsalmSuperscription) {
+    throw new Error(`${book} ${chapter} has unexpected alignment verses before the BibleQuest display sequence.`);
+  }
+  if (displayedVerses.length !== expected.verses.length
+    || displayedVerses.some((verse, index) => verse !== expected.verses[index])) {
     throw new Error(`${book} ${chapter} timing verse identity differs from the BibleQuest BSB pack.`);
   }
 
   let previousEnd = 0;
   let wordCount = 0;
-  const verses = actualVerses.map(verse => {
+  const verses = expected.verses.map(verse => {
     const words = payload.verses[String(verse)];
     if (!Array.isArray(words) || words.length === 0) throw new Error(`${book} ${chapter}:${verse} has no aligned words.`);
     let priorWordEnd = -1;
