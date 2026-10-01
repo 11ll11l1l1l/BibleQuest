@@ -6,6 +6,7 @@ import test from 'node:test';
 
 import {
   analyzeMigrationHistory,
+  analyzeReleaseTarget,
   loadRemoteMigrationEvidence,
   normalizeRemoteMigrations,
   parseMigrationFilename,
@@ -114,4 +115,62 @@ test('filesystem readers produce a stable local inventory and parse reviewed rem
   const inventory = await readLocalMigrations(dir);
   assert.deepEqual(inventory.map(row => row.name), ['legacy_alpha', 'alpha', 'beta']);
   assert.deepEqual(await loadRemoteMigrationEvidence(remotePath), [{ version: '20260924010000', sourceVersion: '20260924010000', name: 'alpha' }]);
+});
+
+
+test('release target passes when the named migration is safely pending at the ordered tail', () => {
+  const report = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+  ], 'assignment_due_reminders');
+
+  assert.equal(report.safeForReleaseTarget, true);
+  assert.deepEqual(report.releaseTarget, {
+    name: 'assignment_due_reminders',
+    version: '20260928140000',
+    status: 'pending',
+    appliedExact: false,
+    pendingExact: true,
+    remoteVersion: null,
+  });
+});
+
+test('release target passes when the exact migration is already applied', () => {
+  const report = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+    { version: '20260928140000', name: 'assignment_due_reminders' },
+  ], 'assignment_due_reminders');
+
+  assert.equal(report.safeForReleaseTarget, true);
+  assert.equal(report.releaseTarget.status, 'applied');
+  assert.equal(report.releaseTarget.appliedExact, true);
+  assert.equal(report.releaseTarget.pendingExact, false);
+});
+
+test('release target fails closed when a logical predecessor is recorded under another version', () => {
+  const report = analyzeReleaseTarget(local, [
+    { version: '20260923123000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+  ], 'assignment_due_reminders');
+
+  assert.equal(report.safeForReleaseTarget, false);
+  assert.equal(report.releaseTarget.status, 'pending');
+  assert.match(report.blockers.join(' '), /different versions/);
+});
+
+test('release target fails closed when the target itself has a version mismatch or is absent locally', () => {
+  const mismatched = analyzeReleaseTarget(local, [
+    { version: '20260924010000', name: 'alpha' },
+    { version: '20260925010000', name: 'beta' },
+    { version: '20260928135959', name: 'assignment_due_reminders' },
+  ], 'assignment_due_reminders');
+
+  assert.equal(mismatched.safeForReleaseTarget, false);
+  assert.equal(mismatched.releaseTarget.status, 'blocked');
+  assert.equal(mismatched.releaseTarget.remoteVersion, '20260928135959');
+  assert.throws(
+    () => analyzeReleaseTarget(local, [], 'missing_release_target'),
+    /Release target migration is missing/,
+  );
 });
