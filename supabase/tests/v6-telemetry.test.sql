@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(16);
 
 select ok(
   (select relrowsecurity from pg_class where oid='public.bible_telemetry_visitors'::regclass),
@@ -17,12 +17,28 @@ select ok(
 );
 
 select ok(
-  not has_table_privilege('anon','public.bible_telemetry_events','SELECT'),
-  'anonymous clients cannot read telemetry events directly'
+  not has_table_privilege('anon','public.bible_telemetry_visitors','SELECT')
+  and not has_table_privilege('anon','public.bible_telemetry_visitors','INSERT')
+  and not has_table_privilege('anon','public.bible_telemetry_visitors','UPDATE')
+  and not has_table_privilege('anon','public.bible_telemetry_sessions','SELECT')
+  and not has_table_privilege('anon','public.bible_telemetry_sessions','INSERT')
+  and not has_table_privilege('anon','public.bible_telemetry_sessions','UPDATE')
+  and not has_table_privilege('anon','public.bible_telemetry_events','SELECT')
+  and not has_table_privilege('anon','public.bible_telemetry_events','INSERT')
+  and not has_table_privilege('anon','public.bible_telemetry_events','UPDATE'),
+  'anonymous clients have no direct telemetry table read or write privileges'
 );
 select ok(
-  not has_table_privilege('authenticated','public.bible_telemetry_events','SELECT'),
-  'authenticated clients cannot read telemetry events directly'
+  not has_table_privilege('authenticated','public.bible_telemetry_visitors','SELECT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_visitors','INSERT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_visitors','UPDATE')
+  and not has_table_privilege('authenticated','public.bible_telemetry_sessions','SELECT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_sessions','INSERT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_sessions','UPDATE')
+  and not has_table_privilege('authenticated','public.bible_telemetry_events','SELECT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_events','INSERT')
+  and not has_table_privilege('authenticated','public.bible_telemetry_events','UPDATE'),
+  'authenticated clients have no direct telemetry table read or write privileges'
 );
 select ok(
   has_function_privilege('anon','public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb)','EXECUTE'),
@@ -31,6 +47,40 @@ select ok(
 select ok(
   has_function_privilege('authenticated','public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb)','EXECUTE'),
   'authenticated clients can call the bounded telemetry ingestion RPC'
+);
+
+select ok(
+  not has_schema_privilege('anon','public','CREATE')
+  and not has_schema_privilege('authenticated','public','CREATE')
+  and not has_schema_privilege('anon','private','CREATE')
+  and not has_schema_privilege('authenticated','private','CREATE'),
+  'telemetry callers cannot shadow objects in the SECURITY DEFINER search path'
+);
+
+select ok(
+  coalesce(
+    (
+      select p.prosecdef
+        and p.proconfig @> array['search_path=pg_catalog, public, private']::text[]
+        and pg_get_functiondef(p.oid) not like '%bible_congregation_members%'
+        and pg_get_functiondef(p.oid) not like '%bible_app_access%'
+        and pg_get_functiondef(p.oid) not like '%bible_assignments%'
+        and pg_get_functiondef(p.oid) not like '%bible_assignment_progress%'
+        and pg_get_functiondef(p.oid) not like '%bible_notes%'
+        and pg_get_functiondef(p.oid) not like '%bible_password_reset_codes%'
+        and pg_get_functiondef(p.oid) not like '%bible_admin_audit_log%'
+        and pg_get_functiondef(p.oid) not like '%bible_media_library%'
+        and pg_get_functiondef(p.oid) not like '%bible_notifications%'
+        and pg_get_functiondef(p.oid) not like '%bible_member_recognitions%'
+        and pg_get_functiondef(p.oid) not like '%bible_score_events%'
+      from pg_proc p
+      where p.oid=to_regprocedure(
+        'public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb)'
+      )
+    ),
+    false
+  ),
+  'intentional telemetry SECURITY DEFINER endpoint is bounded away from sensitive application domains'
 );
 
 set local role anon;
