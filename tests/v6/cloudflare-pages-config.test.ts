@@ -5,7 +5,7 @@ import test from 'node:test';
 test('Cloudflare Pages root build hook stages the generated V6 artifact', async () => {
   const buildScript = await readFile(new URL('../../build.sh', import.meta.url), 'utf8');
 
-  assert.match(buildScript, /CF_PAGES:-/);
+  assert.match(buildScript, /CF_PAGES_COMMIT_SHA:-/);
 
   const gateIndex = buildScript.indexOf('node scripts/deploy-gate.mjs');
   const installIndex = buildScript.indexOf('npm ci');
