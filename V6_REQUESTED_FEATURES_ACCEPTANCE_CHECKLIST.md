@@ -79,11 +79,13 @@ Sixteenth acceptance reconciliation evidence from exact PR head `52ad9364c8d4359
 - [x] Fixtures include ordinary members, ministry roles and a platform-privileged identity.
 - [x] RLS allow/deny tests execute against the real disposable database as database callers.
 - [x] Anonymous/public privilege exposure is explicitly tested for covered sensitive objects.
-- [ ] Cross-congregation denial is tested for every sensitive migrated domain.
+- [x] Cross-congregation denial is tested for every sensitive migrated domain.
 - [x] `SECURITY DEFINER` / `SECURITY INVOKER` behavior is actually executed: pgTAP/RLS suites invoke covered privileged helpers under realistic authenticated/service-role caller contexts while asserting execute grants, pinned search paths, cross-account denial, and fail-closed behavior.
 - [x] Function/table grants and denials are executable CI assertions for the covered tenant/security surface.
 - [x] Privileged function `search_path`/least-privilege requirements are tested for the covered helper functions.
 - [x] Static SQL checks remain fast guards and are supplemented by executable pgTAP/RLS/privilege tests.
+
+Integrated-candidate evidence (2026-10-01): `docs/v6/V6_SENSITIVE_DOMAIN_TENANT_MATRIX.json` declares COMPLETE aggregate coverage and maps every tenant-focused/sensitive-domain pgTAP suite to one accountable domain. `tests/v6/sensitive-domain-tenant-matrix.test.ts` fails if a tenant suite is unclassified, stale, non-pgTAP, or loses its concrete cross-congregation denial marker. The tranche also adds the previously missing tenant-only Admin A → congregation B denial to the service-only membership-manager suite. Database CI runs this aggregate contract and then executes all mapped SQL via `supabase test db` on disposable V5→V6 and V4→V6 replay databases. This promotion depends on the exact replay head passing Database CI plus standard serialization/regression gates; it does not claim production/live tenant behavior.
 
 ## D. Core V6 client architecture
 
