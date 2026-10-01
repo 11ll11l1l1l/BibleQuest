@@ -27,6 +27,7 @@ on:
       - "v6-field-device.js"
       - "v6-field-device.css"
       - "docs/v6/V6_FIELD_DEVICE_EVIDENCE.md"
+      - "docs/v6/V6_LEAKED_PASSWORD_ACCEPTANCE.json"
       - "docs/v6/V6_CONTENT_MEDIA_PROVENANCE_POLICY.json"
       - "offline-shell-sw.js"
       - "innovation-suite.js"
