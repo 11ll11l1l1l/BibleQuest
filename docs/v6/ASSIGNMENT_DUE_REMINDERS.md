@@ -6,7 +6,7 @@ Database idempotency prevents duplicate due reminders for the same assignment an
 
 ## Canonical deployment contract
 
-The Edge Function is service-only. Supabase gateway JWT verification is disabled because the scheduler is not a user session. The function independently validates a dedicated scheduler secret through a service-role-only database verifier. The scheduler secret is generated inside Vault and its value is never returned, committed, or stored in cron.job.command.
+The Edge Function is service-only. Supabase gateway JWT verification is disabled because the scheduler is not a user session. The function independently validates a dedicated scheduler secret by reading Vault through its server-only database connection. No public RPC is added for this check. The scheduler secret is generated inside Vault and its value is never returned, committed, or stored in cron.job.command.
 
 The canonical scheduler definition is 'supabase/ops/assignment-due-reminder-cron.sql'. Do not create a second hand-written Cron definition from this document.
 
