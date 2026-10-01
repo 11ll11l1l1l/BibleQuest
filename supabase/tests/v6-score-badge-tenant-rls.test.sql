@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(16);
+select plan(21);
 
 insert into public.bible_badge_catalog (
   id,icon,name,category,description,threshold,active
@@ -80,6 +80,28 @@ select ok(
   'browser-authenticated callers cannot forge earned badges'
 );
 
+select ok(
+  coalesce(
+    (
+      select not p.prosecdef
+        and has_function_privilege(
+          'authenticated',
+          'public.bible_leaderboard(uuid,timestamp with time zone)',
+          'EXECUTE'
+        )
+        and not has_function_privilege(
+          'anon',
+          'public.bible_leaderboard(uuid,timestamp with time zone)',
+          'EXECUTE'
+        )
+      from pg_proc p
+      where p.oid=to_regprocedure('public.bible_leaderboard(uuid,timestamp with time zone)')
+    ),
+    false
+  ),
+  'leaderboard RPC remains authenticated-only and SECURITY INVOKER'
+);
+
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
 
@@ -110,12 +132,38 @@ select results_eq(
 );
 
 select results_eq(
-  $$select count(*)::bigint
+  $select count(*)::bigint
     from public.bible_user_badges
     where congregation_id='20000000-0000-4000-8000-000000000002'::uuid
-      and badge_id='v6-tenant-badge'$$,
+      and badge_id='v6-tenant-badge'$,
   array[0::bigint],
   'Member A cannot force-read congregation B earned badges'
+);
+
+select ok(
+  exists(
+    select 1
+    from public.bible_leaderboard(
+      '10000000-0000-4000-8000-000000000001'::uuid,
+      null::timestamptz
+    )
+    where user_id='11111111-1111-4111-8111-111111111112'::uuid
+      and category='knowledge'
+      and points >= 7
+  ),
+  'Member A can read its congregation A leaderboard aggregate'
+);
+
+select is(
+  (
+    select count(*)::bigint
+    from public.bible_leaderboard(
+      '20000000-0000-4000-8000-000000000002'::uuid,
+      null::timestamptz
+    )
+  ),
+  0::bigint,
+  'Member A cannot force-read congregation B leaderboard RPC'
 );
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
@@ -168,22 +216,52 @@ select results_eq(
 );
 
 select results_eq(
-  $$select badge_id
+  $select badge_id
     from public.bible_user_badges
     where congregation_id='20000000-0000-4000-8000-000000000002'::uuid
-      and badge_id='v6-tenant-badge'$$,
-  $$values ('v6-tenant-badge'::text)$$,
+      and badge_id='v6-tenant-badge'$,
+  $values ('v6-tenant-badge'::text)$,
   'Member B reads congregation B earned-badge state'
+);
+
+select is(
+  (
+    select count(*)::bigint
+    from public.bible_leaderboard(
+      '10000000-0000-4000-8000-000000000001'::uuid,
+      null::timestamptz
+    )
+  ),
+  0::bigint,
+  'Member B cannot force-read congregation A leaderboard RPC'
 );
 
 set local "request.jwt.claim.sub"='99999999-9999-4999-8999-999999999999';
 
 select results_eq(
-  $$select
+  $select
       (select count(*)::bigint from public.bible_score_events where source_event_id in ('v6-score-a','v6-score-b')),
-      (select count(*)::bigint from public.bible_user_badges where badge_id='v6-tenant-badge')$$,
-  $$values (0::bigint,0::bigint)$$,
+      (select count(*)::bigint from public.bible_user_badges where badge_id='v6-tenant-badge')$,
+  $values (0::bigint,0::bigint)$,
   'platform Owner gets no implicit tenant bypass for score or badge state'
+);
+
+select is(
+  (
+    select count(*)::bigint
+    from public.bible_leaderboard(
+      '10000000-0000-4000-8000-000000000001'::uuid,
+      null::timestamptz
+    )
+  ) + (
+    select count(*)::bigint
+    from public.bible_leaderboard(
+      '20000000-0000-4000-8000-000000000002'::uuid,
+      null::timestamptz
+    )
+  ),
+  0::bigint,
+  'platform Owner gets no implicit tenant bypass through the leaderboard RPC'
 );
 
 reset role;
