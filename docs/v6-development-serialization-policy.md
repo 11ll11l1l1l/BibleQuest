@@ -18,7 +18,9 @@ When `v6/architecture-upgrade` advances:
 4. Keep the existing canonical PR when practical. Do not create a reverse synchronization PR.
 5. Rerun the required exact-head gates.
 
-The V6 PR Serialization Guard automatically marks open V6 PR heads stale after integration advances and rejects reverse synchronization PRs.
+The V6 PR Serialization Guard automatically marks open V6 PR heads stale after integration advances, resolves the live integration ref rather than trusting an event-snapshot base SHA, and writes the same `V6 Serialization` status context on refreshed PR heads after they contain the live integration commit. It also rejects reverse synchronization PRs.
+
+The PR-side guard uses the `pull_request` event because this V6-only workflow is not present on the repository default branch; `pull_request_target` would not execute here. The guard does not check out or execute PR-controlled repository code, and uses only GitHub API metadata for ancestry/status validation.
 
 ## One canonical PR per change surface
 
@@ -30,7 +32,7 @@ The V6 PR Serialization Guard automatically marks open V6 PR heads stale after i
 ## Merge train
 
 - Integrate one verified candidate at a time.
-- After every integration merge, treat every other open V6 PR as stale until the serialization guard confirms that its head contains the new integration commit.
+- After every integration merge, treat every other open V6 PR as stale until the serialization guard confirms that its head contains the live integration commit. A refreshed head must receive a new green `V6 Serialization` status; a green status attached only to an older head is not reusable evidence.
 - Directors should refresh the next candidate only after the previous integration move is known, rather than preparing several exact-base replays in parallel.
 
 ## Safety rules
@@ -45,6 +47,6 @@ The V6 PR Serialization Guard automatically marks open V6 PR heads stale after i
 A V6 PR is eligible for integration only when:
 
 - its head contains the current `v6/architecture-upgrade` head;
-- V6 PR Serialization Guard is green;
+- `V6 Serialization` is green on the exact current PR head against the live `v6/architecture-upgrade` ref;
 - its required V6 Phase 1 / database / security / inherited regression gates are green for that exact head;
 - it has no unresolved ownership collision with the integration candidate ahead of it.
