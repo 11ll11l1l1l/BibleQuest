@@ -37,7 +37,7 @@ language sql
 security definer
 set search_path = pg_catalog, public
 set row_security = off
-as $
+as $bq_scheduler_verify$
   select exists (
     select 1
     from vault.decrypted_secrets
@@ -45,7 +45,7 @@ as $
       and nullif(trim(decrypted_secret), '') is not null
       and decrypted_secret = provided_secret
   );
-$;
+$bq_scheduler_verify$;
 
 revoke all on function public.bible_verify_assignment_reminder_scheduler_secret(text)
   from public, anon, authenticated;
