@@ -266,7 +266,7 @@ export function createProgressService({ storage, store, clock = () => new Date()
     const snapshot=getState();
     for(const listener of listeners){
       try{listener(Object.freeze({source,state:snapshot}))}
-      catch(error){console.warn('Progress state listener failed',error)}
+      catch{console.warn('Progress state listener failed')}
     }
   };
   publish();

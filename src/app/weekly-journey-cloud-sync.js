@@ -81,7 +81,7 @@ export function createWeeklyJourneyCloudSyncService({api,session,weeklyJourney,o
     if(!userId)return;
     prepareOwner(userId);
     cacheCurrent(userId);
-    void syncNow().catch(error=>console.warn('Weekly Journey account sync unavailable',error));
+    void syncNow().catch(()=>console.warn('Weekly Journey account sync unavailable'));
   });
   const removeBeforeSignOut=session.beforeSignOut(async()=>{await syncNow().catch(()=>{});switchToGuest()});
   function dispose(){disposed=true;unsubscribe?.();removeBeforeSignOut?.()}

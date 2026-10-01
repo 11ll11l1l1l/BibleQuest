@@ -98,7 +98,7 @@ export function createExplorerService({storage,clock=()=>new Date(),random=Math.
     const exported=clone(state);
     for(const listener of listeners){
       try{listener(Object.freeze({source,state:exported}))}
-      catch(error){console.warn('Bible Explorer state listener failed',error)}
+      catch{console.warn('Bible Explorer state listener failed')}
     }
     return state;
   };

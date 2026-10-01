@@ -91,7 +91,7 @@ export function createPersonalChallengesCloudSyncService({api,session,challenges
     if(!userId)return;
     prepareOwner(userId);
     cacheCurrent(userId);
-    void syncNow().catch(error=>console.warn('Personal Challenge account sync unavailable',error));
+    void syncNow().catch(()=>console.warn('Personal Challenge account sync unavailable'));
   });
 
   const removeBeforeSignOut=session.beforeSignOut(async()=>{

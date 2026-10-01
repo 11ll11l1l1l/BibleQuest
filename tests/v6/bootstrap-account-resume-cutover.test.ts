@@ -11,7 +11,8 @@ describe('live bootstrap account-resume cutover', () => {
       assert.ok(source.includes(key + ':') || source.includes("'" + key + "':"), `missing account resume owner ${key}`);
     }
     assert.ok(source.includes('()=>router.navigate(router.current())'));
-    assert.match(source, /console\.warn\('Resume unavailable',owner,error\)/);
+    assert.match(source, /\(\)=>console\.warn\('Resume unavailable'\)/);
+    assert.doesNotMatch(source, /console\.warn\('Resume unavailable',owner,error\)/);
   });
 
   it('removes duplicate legacy orchestration and disposes the V6 runtime on pagehide', () => {

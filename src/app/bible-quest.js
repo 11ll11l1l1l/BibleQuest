@@ -56,7 +56,7 @@ export function createBibleQuestService({storage,books,progress=null,clock=()=>n
   const notify=(source)=>{
     const exported=clone(state);
     for(const listener of listeners){
-      try{listener(Object.freeze({source,state:exported}))}catch(error){console.warn('Bible Quest state listener failed',error)}
+      try{listener(Object.freeze({source,state:exported}))}catch{console.warn('Bible Quest state listener failed')}
     }
   };
   const persist=(next,{source='local',touch=true}={})=>{

@@ -91,7 +91,7 @@ export function createExplorerCloudSyncService({api,session,explorer,ownerStorag
     if(!userId)return;
     prepareOwner(userId);
     cacheCurrent(userId);
-    void syncNow().catch(error=>console.warn('Bible Explorer account sync unavailable',error));
+    void syncNow().catch(()=>console.warn('Bible Explorer account sync unavailable'));
   });
 
   const removeBeforeSignOut=session.beforeSignOut(async()=>{

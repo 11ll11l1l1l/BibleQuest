@@ -67,7 +67,7 @@ export function createPersonalChallengesService({storage,clock=()=>new Date()}={
     const exported=clone(state);
     for(const listener of listeners){
       try{listener(Object.freeze({source,state:exported}))}
-      catch(error){console.warn('Personal Challenge state listener failed',error)}
+      catch{console.warn('Personal Challenge state listener failed')}
     }
   };
   const persist=(next,{source='local'}={})=>{

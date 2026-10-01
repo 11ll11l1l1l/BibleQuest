@@ -405,7 +405,7 @@ function boot(root){
     if(key===moderationSessionKey)return;
     moderationSessionKey=key;
     if(!sessionState.authenticated){contentModeration.clear();return}
-    void contentModeration.refresh().catch(error=>console.warn('Content moderation unavailable',error));
+    void contentModeration.refresh().catch(()=>console.warn('Content moderation unavailable'));
   };
   let pushSessionKey='';
   const syncPushOnboarding=state=>{
@@ -425,7 +425,7 @@ function boot(root){
       'leaderboard-delivery':progressLeaderboardBridge
     }),
     ()=>router.navigate(router.current()),
-    (owner,error)=>console.warn('Resume unavailable',owner,error)
+    ()=>console.warn('Resume unavailable')
   );
   let adminAccessSessionKey='';
   const syncAdminAccess=state=>{
@@ -455,13 +455,13 @@ function boot(root){
     unsubscribeNotificationSettings=store.subscribe(syncNotificationSettings),
     unsubscribeTelemetry=store.subscribe(state=>telemetry.syncSession(state?.session));
   syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
-  offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
+  offlineShell.start().catch(()=>console.warn('Offline shell unavailable'));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
     if(session.isAuthenticated())router.navigate(router.current());
-    presence.start().catch(error=>console.warn('Presence unavailable',error));
-    if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
-  }).catch(error=>console.error('Session boot failed',error));
+    presence.start().catch(()=>console.warn('Presence unavailable'));
+    if(session.isAuthenticated())account.ensureCurrentDevice().catch(()=>console.warn('Device registration failed'));
+  }).catch(()=>console.error('Session boot failed'));
   window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
