@@ -4,6 +4,8 @@ import test from 'node:test';
 
 const edge = readFileSync(new URL('../../supabase/functions/bq-assignment-reminders/index.ts', import.meta.url), 'utf8');
 const migration = readFileSync(new URL('../../supabase/migrations/20260928140000_assignment_due_reminders.sql', import.meta.url), 'utf8');
+const retryMigration = readFileSync(new URL('../../supabase/migrations/20261001113000_assignment_push_retry_redispatch.sql', import.meta.url), 'utf8');
+const retryDatabaseTest = readFileSync(new URL('../../supabase/tests/v6-assignment-push-retry-redispatch.test.sql', import.meta.url), 'utf8');
 const databaseTest = readFileSync(new URL('../../supabase/tests/v6-assignment-due-reminders.test.sql', import.meta.url), 'utf8');
 const config = readFileSync(new URL('../../supabase/config.toml', import.meta.url), 'utf8');
 const assignmentFunction = readFileSync(new URL('../../supabase/functions/bq-assignment/index.ts', import.meta.url), 'utf8');
@@ -33,4 +35,19 @@ test('assignment due reminder SQL scopes current incomplete recipients and dedup
   assert.match(databaseTest, /reminders stay in each congregation/);
   assert.match(assignmentFunction, /An assignment due date is required when setting a reminder/);
   assert.match(assignmentFunction, /Reminder must be scheduled on or before the assignment due date/);
+});
+
+
+test('assignment scheduler redispatches only recent assignment retries after backoff', () => {
+  assert.match(retryMigration, /bible_push_retry_state_due_idx/);
+  assert.match(retryMigration, /join public\.bible_push_retry_state retry/);
+  assert.match(retryMigration, /n\.delivery_category = 'assignments'/);
+  assert.match(retryMigration, /n\.action_kind = 'assignment'/);
+  assert.match(retryMigration, /n\.created_at >= clock_timestamp\(\) - interval '14 minutes'/);
+  assert.match(retryMigration, /retry\.next_retry_at <= clock_timestamp\(\)/);
+  assert.match(retryMigration, /limit 25/);
+  assert.match(retryMigration, /select retry_ready\.notification_id from retry_ready/);
+  assert.match(retryDatabaseTest, /scheduler re-emits a recent assignment notification after retry backoff elapses/);
+  assert.match(retryDatabaseTest, /scheduler does not bypass a future retry backoff/);
+  assert.match(retryDatabaseTest, /scheduler does not redispatch outside the canonical sender freshness window/);
 });
