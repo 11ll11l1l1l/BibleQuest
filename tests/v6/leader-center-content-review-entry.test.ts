@@ -21,6 +21,6 @@ test('Content Review remains server-authorized instead of trusting Leader Center
   assert.match(source, /const memberships=await congregation\.load\(\)/);
   assert.match(source, /access=await api\.platformAccess\(user\.id\)/);
   assert.match(source, /api\.loadQueue\(selected\.id\)/);
-  assert.match(source, /api\.saveDecision\(row\)/);
+  assert.match(source, /api\.saveDecision\(congregationId,row\)/);
   assert.match(source, /api\.markReportsReviewed\(congregationId,target\.contentKey,userId,reviewedAt\)/);
 });
