@@ -92,6 +92,23 @@ Recovery must be designed before privileged MFA/passkey enforcement.
 - Passkey recovery must account for device loss, password-manager/account loss, cross-device availability, and the possibility that an RP-ID change invalidates credentials.
 - Experimental recovery-code APIs must not become a V6 dependency without a separate review.
 
+## Decision 4 — leaked-password protection / supported equivalent
+
+Production review on 2026-10-01 found the BibleQuest Supabase project on the Free plan with the Supabase security advisor reporting `auth_leaked_password_protection` as disabled. Supabase documents its built-in HaveIBeenPwned leaked-password protection as available on Pro and above.
+
+The V6 fallback candidate therefore uses the free HaveIBeenPwned Pwned Passwords range API with k-anonymity: BibleQuest hashes the completed password locally, sends only the first five SHA-1 hexadecimal characters, requests padded responses, and compares the returned suffixes locally. The plaintext password and complete hash are never sent to HaveIBeenPwned.
+
+The fallback is fail closed for first-party password-setting flows: if the breach service cannot be checked, BibleQuest does not silently proceed with that password change. A known-compromised password is rejected with a user-safe message.
+
+Candidate coverage currently includes:
+- ordinary account signup in `bq-signup`;
+- recovery-code password reset in `bq-password-reset`;
+- the signed-in user's normal Account-page password change before `auth.updateUser`.
+
+This is **not yet equivalent to project-level Supabase enforcement**. The Owner emergency `set_temp_password` path is not included in this candidate, and a caller that bypasses BibleQuest UI and calls a permitted Supabase Auth password endpoint directly would not be covered while the hosted project setting remains disabled. Therefore the acceptance row must remain open until either:
+1. Supabase built-in leaked-password protection is enabled and verified on a plan that supports it; or
+2. the release owner explicitly accepts the first-party equivalent plus its residual bypass scope after the emergency Owner credential path is covered.
+
 ## Release impact
 
 The checklist items **Privileged Owner/Admin re-auth requirements are reviewed** and **MFA/passkeys for privileged roles are evaluated with recovery implications documented** may be marked complete by this review.
