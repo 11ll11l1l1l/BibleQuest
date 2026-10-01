@@ -14,8 +14,34 @@ import {
   BSB_ALIGN_REVISION,
   BSB_ALIGN_TREE,
 } from '../../scripts/v6-prepare-bsb-alignment-regeneration.mjs';
+import { computeHaysAudioInventoryDigest, expectedHaysAudioFiles } from '../../scripts/v6-hays-source-inventory.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
+
+
+function fakeAudioInventory() {
+  const files = expectedHaysAudioFiles().map(row => ({
+    ...row,
+    byteLength: 1000,
+    sha256: 'b'.repeat(64),
+    durationSeconds: 100,
+    sourceUrl: 'https://openbible.com/audio/hays/' + row.filename,
+  }));
+  const inventorySha256 = computeHaysAudioInventoryDigest(files);
+  return {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    narrator: 'Barry Hays',
+    source: 'OpenBible Barry Hays',
+    sourceBaseUrl: 'https://openbible.com/audio/hays/',
+    chapters: 1189,
+    totalBytes: 1189000,
+    totalDurationSeconds: 118900,
+    inventorySha256,
+    contentVersion: 'sha256-' + inventorySha256,
+    files,
+  };
+}
 
 function reviewedGit(_directory: string, args: readonly string[]) {
   if (args[0] === 'rev-parse' && args[1] === 'HEAD') return BSB_ALIGN_REVISION;
@@ -89,6 +115,7 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
       audioDirectory: audio,
       workspaceDirectory: workspace,
       gitResolver: reviewedGit,
+      audioInventoryResolver: async () => fakeAudioInventory(),
     });
     const currentText = await readFile(join(plan.textDirectory, 'GEN_001_BSB.txt'), 'utf8');
     await writeFile(join(aligner, 'text', 'GEN_001_BSB.txt'), currentText);
@@ -100,6 +127,8 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(report.reusableChapters, 1);
     assert.equal(report.regenerateChapters, 1188);
     assert.equal(report.expectedChapters, 1189);
+    assert.equal(report.audioContentVersion, plan.audioContentVersion);
+    assert.equal(report.audioInventorySha256, plan.audioInventorySha256);
     assert.equal(report.rows.find(row => row.book === 'GEN' && row.chapter === 1)?.reusable, true);
 
     const staged = JSON.parse(await readFile(join(plan.outputDirectory, 'GEN', 'GEN_001_words.json'), 'utf8'));
@@ -111,6 +140,38 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
     assert.equal(disk.regenerateChapters, 1188);
 
     await assert.rejects(stageReusableBsbAlignments({ plan, gitResolver: reviewedGit }), /requires an empty regeneration output directory/i);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+
+test('reuse staging refuses a tampered exact Hays audio inventory referenced by the regeneration plan', async () => {
+  const temp = await mkdtemp(join(tmpdir(), 'bq-v6-bsb-reuse-audio-tamper-'));
+  const aligner = join(temp, 'bsb-align');
+  const audio = join(temp, 'audio');
+  const workspace = join(temp, 'workspace');
+  await mkdir(join(aligner, 'text'), { recursive: true });
+  await mkdir(join(aligner, 'output'), { recursive: true });
+  await mkdir(audio);
+  try {
+    const plan = await prepareBsbAlignmentRegeneration({
+      root,
+      alignerDirectory: aligner,
+      audioDirectory: audio,
+      workspaceDirectory: workspace,
+      gitResolver: reviewedGit,
+      audioInventoryResolver: async () => fakeAudioInventory(),
+    });
+    const inventory = JSON.parse(await readFile(plan.audioInventoryPath, 'utf8'));
+    inventory.inventorySha256 = 'd'.repeat(64);
+    inventory.contentVersion = 'sha256-' + 'd'.repeat(64);
+    await writeFile(plan.audioInventoryPath, JSON.stringify(inventory, null, 2) + '\n');
+
+    await assert.rejects(
+      stageReusableBsbAlignments({ plan, gitResolver: reviewedGit }),
+      /audio inventory does not match|inventory checksum mismatch/i,
+    );
   } finally {
     await rm(temp, { recursive: true, force: true });
   }
