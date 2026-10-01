@@ -1,5 +1,6 @@
 import type { ReaderBookRef } from './contracts.ts';
 import type { ScriptureAudioManifest } from './audio-policy.ts';
+import { validateChapterAlignment, type ScriptureChapterAlignment } from './audio-alignment.ts';
 
 const OPENBIBLE_BOOK_TOKENS: Readonly<Record<string, string>> = Object.freeze({
   GEN:'Gen',EXO:'Exo',LEV:'Lev',NUM:'Num',DEU:'Deu',JOS:'Jos',JDG:'Jdg',RUT:'Rut','1SA':'1Sa','2SA':'2Sa',
@@ -16,6 +17,27 @@ const NARRATORS = Object.freeze({
   hays: Object.freeze({ name: 'Barry Hays', directory: 'hays', suffix: '_H' }),
   souer: Object.freeze({ name: 'Bob Souer', directory: 'souer', suffix: '' }),
 });
+const OPENBIBLE_LICENSE = 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review';
+const HAYS_AUDIO_CONTENT_VERSION = 'openbible-hays-stream-v1';
+const HAYS_ALIGNMENT_PATH = '/data/v6-audio/bsb-hays-alignment.json';
+const EXPECTED_BSB_CHAPTERS = 1189;
+const SHA256 = /^[a-f0-9]{64}$/i;
+const GIT_REVISION = /^[a-f0-9]{40}$/i;
+
+export interface OpenBibleHaysChapterAlignment extends ScriptureChapterAlignment {
+  readonly audioSha256: string;
+  readonly audioByteLength: number;
+}
+
+export interface OpenBibleHaysAlignmentBundle {
+  readonly audioContentVersion: string;
+  readonly audioInventorySha256: string;
+  readonly scriptureContentVersion: string;
+  readonly alignmentSource: string;
+  readonly alignmentRevision: string;
+  readonly inventorySha256: string;
+  readonly chapters: readonly OpenBibleHaysChapterAlignment[];
+}
 
 /** Build direct chapter URLs without inventing file sizes or checksums. This catalog
  * supports streaming only; offline installation still needs a separately reviewed,
@@ -24,6 +46,7 @@ export function createOpenBibleNarratorStreamingManifest(
   narrator: OpenBibleBsbNarrator,
   scriptureContentVersion: string,
   books: readonly ReaderBookRef[],
+  alignmentSource?: string | null,
 ): ScriptureAudioManifest {
   const source = NARRATORS[narrator];
   if (!source) throw new Error('OpenBible BSB audio narrator is unsupported.');
@@ -31,6 +54,11 @@ export function createOpenBibleNarratorStreamingManifest(
     throw new Error('Current BSB Scripture content version is required for the OpenBible audio catalog.');
   }
   if (!Array.isArray(books) || books.length !== 66) throw new Error('OpenBible BSB audio requires the canonical 66-book inventory.');
+  if (alignmentSource !== undefined && alignmentSource !== null) {
+    if (narrator !== 'hays' || typeof alignmentSource !== 'string' || !alignmentSource.trim() || alignmentSource !== alignmentSource.trim()) {
+      throw new Error('Only the Barry Hays catalog may bind a verified non-blank alignment source.');
+    }
+  }
   const seen = new Set<string>();
   const segments = books.flatMap(book => {
     const code = String(book?.code ?? '').trim().toUpperCase();
@@ -56,12 +84,13 @@ export function createOpenBibleNarratorStreamingManifest(
     schemaVersion: 1,
     translationId: 'bsb',
     contentVersion: `openbible-${narrator}-stream-v1`,
+    ...(alignmentSource ? { alignmentSource } : {}),
     source: Object.freeze({
       translationId: 'bsb',
       source: `${source.name} BSB narration (OpenBible direct chapter stream)`,
       sourceUrl: `https://openbible.com/audio/${source.directory}/`,
       scriptureContentVersion,
-      license: 'CC0 1.0 declared by the BSB Audio Bible project; exact files remain subject to review',
+      license: OPENBIBLE_LICENSE,
       rights: 'review-required',
       delivery: 'stream',
       textAlignment: 'unverified',
@@ -71,6 +100,27 @@ export function createOpenBibleNarratorStreamingManifest(
     }),
     segments: Object.freeze(segments),
   });
+}
+
+/** Adds checksum-pinned chapter identity from the reviewed Hays timing bundle without
+ * changing the stream-only/offline-rights policy of the source manifest. */
+export function bindOpenBibleHaysAlignmentIdentity(
+  manifest: ScriptureAudioManifest,
+  bundle: OpenBibleHaysAlignmentBundle,
+): ScriptureAudioManifest {
+  if (manifest.translationId !== 'bsb' || manifest.contentVersion !== bundle.audioContentVersion
+    || manifest.source.scriptureContentVersion !== bundle.scriptureContentVersion
+    || manifest.segments.length !== EXPECTED_BSB_CHAPTERS) {
+    throw new Error('Hays alignment identity does not match the streaming manifest.');
+  }
+  const byChapter = new Map(bundle.chapters.map(row => [`${row.book.toUpperCase()}:${row.chapter}`, row]));
+  if (byChapter.size !== EXPECTED_BSB_CHAPTERS) throw new Error('Hays alignment identity is incomplete.');
+  const segments = manifest.segments.map(segment => {
+    const row = byChapter.get(`${segment.book.toUpperCase()}:${segment.chapter}`);
+    if (!row) throw new Error('Hays alignment identity is missing an audio chapter.');
+    return Object.freeze({ ...segment, sha256: row.audioSha256, byteLength: row.audioByteLength });
+  });
+  return Object.freeze({ ...manifest, alignmentSource: bundle.alignmentSource, segments: Object.freeze(segments) });
 }
 
 export function createOpenBibleHaysStreamingManifest(
@@ -92,6 +142,69 @@ export async function loadCurrentBsbScriptureContentVersion(
     if (scriptureManifest.translationId !== 'bsb' || typeof scriptureManifest.contentVersion !== 'string') return null;
     const contentVersion = scriptureManifest.contentVersion.trim();
     return contentVersion || null;
+  } catch {
+    return null;
+  }
+}
+
+/** Loads only a complete, version-locked Barry Hays timing corpus. A missing, partial,
+ * malformed, stale, or narrator-mismatched file deliberately leaves verse sync disabled. */
+export async function loadOpenBibleHaysAlignmentBundle(
+  scriptureContentVersion: string,
+  books: readonly ReaderBookRef[],
+  fetcher: typeof fetch = globalThis.fetch,
+): Promise<OpenBibleHaysAlignmentBundle | null> {
+  if (typeof fetcher !== 'function' || typeof scriptureContentVersion !== 'string' || !scriptureContentVersion.trim()
+    || !Array.isArray(books) || books.length !== 66) return null;
+  const expectedChapterKeys = new Set<string>();
+  const seenBooks = new Set<string>();
+  for (const book of books) {
+    const code = String(book?.code ?? '').trim().toUpperCase();
+    if (!OPENBIBLE_BOOK_TOKENS[code] || seenBooks.has(code) || !Number.isSafeInteger(book.chapters) || book.chapters < 1) return null;
+    seenBooks.add(code);
+    for (let chapter = 1; chapter <= book.chapters; chapter += 1) expectedChapterKeys.add(`${code}:${chapter}`);
+  }
+  if (expectedChapterKeys.size !== EXPECTED_BSB_CHAPTERS) return null;
+  try {
+    const response = await fetcher(HAYS_ALIGNMENT_PATH);
+    if (!response.ok) return null;
+    const manifest = await response.json() as Record<string, unknown>;
+    const chapters = manifest.chapters as OpenBibleHaysChapterAlignment[] | undefined;
+    const alignmentSource = typeof manifest.alignmentSource === 'string' ? manifest.alignmentSource : '';
+    const alignmentRevision = typeof manifest.alignmentRevision === 'string' ? manifest.alignmentRevision.toLowerCase() : '';
+    const inventorySha256 = typeof manifest.inventorySha256 === 'string' ? manifest.inventorySha256.toLowerCase() : '';
+    const audioInventorySha256 = typeof manifest.audioInventorySha256 === 'string' ? manifest.audioInventorySha256.toLowerCase() : '';
+    if (manifest.schemaVersion !== 1 || manifest.translationId !== 'bsb' || manifest.complete !== true
+      || manifest.audioContentVersion !== HAYS_AUDIO_CONTENT_VERSION
+      || manifest.scriptureContentVersion !== scriptureContentVersion
+      || !alignmentSource.trim() || !GIT_REVISION.test(alignmentRevision) || !SHA256.test(inventorySha256) || !SHA256.test(audioInventorySha256)
+      || manifest.alignmentContentVersion !== `sha256-${inventorySha256}`
+      || manifest.chapterCount !== EXPECTED_BSB_CHAPTERS
+      || !Array.isArray(chapters) || chapters.length !== EXPECTED_BSB_CHAPTERS) return null;
+    const seen = new Set<string>();
+    let verseCount = 0;
+    for (const row of chapters) {
+      const book = String(row?.book ?? '').toUpperCase(), chapter = Number(row?.chapter), key = `${book}:${chapter}`;
+      if (!expectedChapterKeys.has(key) || seen.has(key) || row?.translationId !== 'bsb' || row?.contentVersion !== HAYS_AUDIO_CONTENT_VERSION
+        || row?.scriptureContentVersion !== scriptureContentVersion || row?.alignmentSource !== alignmentSource
+        || row?.source !== 'Barry Hays BSB narration (OpenBible direct chapter stream)' || row?.license !== OPENBIBLE_LICENSE
+        || !SHA256.test(String(row?.audioSha256 ?? '')) || !Number.isSafeInteger(row?.audioByteLength) || row.audioByteLength < 1) return null;
+      const validation = validateChapterAlignment(row, { translationId: 'bsb', book, chapter });
+      if (!validation.valid) return null;
+      seen.add(key);
+      expectedChapterKeys.delete(key);
+      verseCount += row.verses.length;
+    }
+    if (seen.size !== EXPECTED_BSB_CHAPTERS || manifest.verseCount !== verseCount) return null;
+    return Object.freeze({
+      audioContentVersion: HAYS_AUDIO_CONTENT_VERSION,
+      audioInventorySha256,
+      scriptureContentVersion,
+      alignmentSource,
+      alignmentRevision,
+      inventorySha256,
+      chapters: Object.freeze([...chapters]),
+    });
   } catch {
     return null;
   }
