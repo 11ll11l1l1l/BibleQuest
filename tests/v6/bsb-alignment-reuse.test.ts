@@ -14,8 +14,34 @@ import {
   BSB_ALIGN_REVISION,
   BSB_ALIGN_TREE,
 } from '../../scripts/v6-prepare-bsb-alignment-regeneration.mjs';
+import { computeHaysAudioInventoryDigest, expectedHaysAudioFiles } from '../../scripts/v6-hays-source-inventory.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
+
+
+function fakeAudioInventory() {
+  const files = expectedHaysAudioFiles().map(row => ({
+    ...row,
+    byteLength: 1000,
+    sha256: 'b'.repeat(64),
+    durationSeconds: 100,
+    sourceUrl: 'https://openbible.com/audio/hays/' + row.filename,
+  }));
+  const inventorySha256 = computeHaysAudioInventoryDigest(files);
+  return {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    narrator: 'Barry Hays',
+    source: 'OpenBible Barry Hays',
+    sourceBaseUrl: 'https://openbible.com/audio/hays/',
+    chapters: 1189,
+    totalBytes: 1189000,
+    totalDurationSeconds: 118900,
+    inventorySha256,
+    contentVersion: 'sha256-' + inventorySha256,
+    files,
+  };
+}
 
 function reviewedGit(_directory: string, args: readonly string[]) {
   if (args[0] === 'rev-parse' && args[1] === 'HEAD') return BSB_ALIGN_REVISION;
@@ -89,6 +115,7 @@ test('reuse staging preserves matching upstream chapters and leaves only mismatc
       audioDirectory: audio,
       workspaceDirectory: workspace,
       gitResolver: reviewedGit,
+      audioInventoryResolver: async () => fakeAudioInventory(),
     });
     const currentText = await readFile(join(plan.textDirectory, 'GEN_001_BSB.txt'), 'utf8');
     await writeFile(join(aligner, 'text', 'GEN_001_BSB.txt'), currentText);
