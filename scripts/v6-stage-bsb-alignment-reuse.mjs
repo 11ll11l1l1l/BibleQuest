@@ -1,6 +1,7 @@
 import { constants as fsConstants } from 'node:fs';
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { BSB_ALIGN_REVISION, BSB_ALIGN_TREE } from './v6-prepare-bsb-alignment-regeneration.mjs';
 
@@ -195,4 +196,30 @@ export async function stageReusableBsbAlignments({
     await writeFile(join(plan.workspaceDirectory, 'reuse-plan.json'), JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
   }
   return report;
+}
+
+
+async function main(argv) {
+  const [planPath] = argv;
+  if (!planPath || argv.length !== 1) {
+    fail('Usage: node scripts/v6-stage-bsb-alignment-reuse.mjs <regeneration-plan.json>');
+  }
+  const plan = JSON.parse(await readFile(resolve(planPath), 'utf8'));
+  const report = await stageReusableBsbAlignments({ plan });
+  console.log(JSON.stringify({
+    scriptureContentVersion: report.scriptureContentVersion,
+    alignmentRevision: report.alignmentRevision,
+    expectedChapters: report.expectedChapters,
+    reusableChapters: report.reusableChapters,
+    regenerateChapters: report.regenerateChapters,
+    lowConfidenceWords: report.lowConfidenceWords,
+    unscoredWords: report.unscoredWords,
+  }, null, 2));
+  if (report.regenerateChapters > 0) {
+    console.error('Regenerate the remaining ' + report.regenerateChapters + ' chapters with the prepared align_book.py command.');
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await main(process.argv.slice(2));
 }
