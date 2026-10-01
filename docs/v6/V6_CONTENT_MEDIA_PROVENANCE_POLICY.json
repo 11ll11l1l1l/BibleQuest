@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "label": "V5 production/hotfix parity baseline",
+    "sha": "bce55ca6ce7fda6ebeba004300caf7a77d56e550",
+    "rationale": "V6 inherits the accepted V5 content/media baseline. This policy reviews every V6-added or modified redistributable content/media path relative to that immutable commit."
+  },
+  "trackedDelta": {
+    "pathPrefixes": [
+      "data/packs/",
+      "data/library/",
+      "src/content/"
+    ],
+    "mediaExtensions": [
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".webp",
+      ".svg",
+      ".gif",
+      ".mp3",
+      ".wav",
+      ".ogg",
+      ".m4a",
+      ".mp4",
+      ".webm",
+      ".woff",
+      ".woff2",
+      ".ttf",
+      ".otf"
+    ],
+    "forbiddenUnreviewedAudioVideoExtensions": [
+      ".mp3",
+      ".wav",
+      ".ogg",
+      ".m4a",
+      ".mp4",
+      ".webm"
+    ]
+  },
+  "reviewedChanges": [
+    {
+      "path": "src/content/locales/ceb.js",
+      "provenanceKind": "first-party-interface-copy",
+      "redistribution": "allowed",
+      "evidence": "BibleQuest-maintained Cebuano interface/localization module; no third-party binary/media payload."
+    },
+    {
+      "path": "src/content/locales/en.js",
+      "provenanceKind": "first-party-interface-copy",
+      "redistribution": "allowed",
+      "evidence": "BibleQuest-maintained English interface/localization module; no third-party binary/media payload."
+    },
+    {
+      "path": "src/content/locales/recordings.js",
+      "provenanceKind": "first-party-interface-copy",
+      "redistribution": "allowed",
+      "evidence": "BibleQuest-maintained Recordings interface copy; media bytes remain on the external provider."
+    },
+    {
+      "path": "src/content/locales/tl.js",
+      "provenanceKind": "first-party-interface-copy",
+      "redistribution": "allowed",
+      "evidence": "BibleQuest-maintained Tagalog interface/localization module; no third-party binary/media payload."
+    }
+  ],
+  "runtimeExternalMedia": [
+    {
+      "id": "bsb-audio-openbible",
+      "delivery": "external-direct-stream",
+      "bibleQuestHostsOrTransformsThirdPartyBytes": false,
+      "localCopy": "review-required",
+      "evidence": [
+        "src/v6/reader/audio-policy.ts",
+        "docs/v6/BSB_AUDIO_SOURCE_REVIEW.md"
+      ]
+    },
+    {
+      "id": "congregation-youtube-recordings",
+      "delivery": "external-provider-playback",
+      "bibleQuestHostsOrTransformsThirdPartyBytes": false,
+      "localCopy": "none",
+      "evidence": [
+        "media-library.js",
+        "src/v6/media/recordings-runtime.ts",
+        "src/v6/media/youtube-iframe-adapter.ts"
+      ]
+    }
+  ],
+  "scripturePackagingPolicy": "src/v6/reader/license-policy.ts"
+}
