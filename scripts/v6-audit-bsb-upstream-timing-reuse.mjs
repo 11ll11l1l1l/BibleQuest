@@ -9,7 +9,10 @@ import {
   BSB_ALIGN_TREE,
 } from './v6-prepare-bsb-alignment-regeneration.mjs';
 import { exportCurrentBsbAlignmentText } from './v6-export-current-bsb-alignment-text.mjs';
-import { inspectReusableBsbWordTiming } from './v6-stage-bsb-alignment-reuse.mjs';
+import {
+  inspectBsbTextCompatibility,
+  inspectReusableBsbWordTiming,
+} from './v6-stage-bsb-alignment-reuse.mjs';
 
 const EXPECTED_CHAPTERS = 1189;
 
@@ -79,6 +82,18 @@ export async function auditBsbUpstreamTimingReuse({
           chapter: row.chapter,
           reusable: false,
           reasons: Object.freeze(['upstream-text-missing']),
+          lowConfidenceWords: 0,
+          unscoredWords: 0,
+        }));
+        continue;
+      }
+      const textCompatibility = inspectBsbTextCompatibility({ currentText, upstreamText });
+      if (!textCompatibility.compatible) {
+        rows.push(Object.freeze({
+          book: row.book,
+          chapter: row.chapter,
+          reusable: false,
+          reasons: textCompatibility.reasons,
           lowConfidenceWords: 0,
           unscoredWords: 0,
         }));
