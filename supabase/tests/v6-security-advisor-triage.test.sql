@@ -89,15 +89,14 @@ select ok(
   'telemetry event storage keeps RLS enabled in addition to revoked table grants'
 );
 
-select like(
+select ok(
   coalesce(
     obj_description(
       'public.bible_record_telemetry_batch(uuid,uuid,jsonb,jsonb)'::regprocedure,
       'pg_proc'
     ),
     ''
-  ),
-  '%Write-only V6 telemetry endpoint%',
+  ) like '%Write-only V6 telemetry endpoint%',
   'the intentional public telemetry exception is documented at the database boundary'
 );
 
