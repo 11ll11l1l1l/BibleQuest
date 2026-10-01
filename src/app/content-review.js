@@ -211,11 +211,11 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     const contentSnapshot=isQuarantine
       ?{book_code:selectedBook,id:target.id,question:target.question,answer:target.answer,ref:target.reference,safety:target.safety||{}}
       :{text:target.contentText,ref:target.contentRef,payload:target.contentPayload||{},reason:target.reason};
-    const row={congregation_id:congregationId,content_key:target.contentKey,content_type:contentType,origin,decision:choice,content_ref:contentRef||null,content_snapshot:contentSnapshot,rationale:note||null,reviewed_by:userId,reviewed_at:reviewedAt,updated_at:reviewedAt};
+    const row={content_key:target.contentKey,content_type:contentType,origin,decision:choice,content_ref:contentRef||null,content_snapshot:contentSnapshot,rationale:note||null,reviewed_by:userId,reviewed_at:reviewedAt,updated_at:reviewedAt};
     state={...state,busy:true,error:''};
     let saved;
     try{
-      saved=await api.saveDecision(row);
+      saved=await api.saveDecision(congregationId,row);
       if(!operationCurrent(userId,generation,request)||state.congregationId!==congregationId)throw staleError();
     }catch(error){
       if(!operationCurrent(userId,generation,request))throw staleError();

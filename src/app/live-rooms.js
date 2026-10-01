@@ -101,7 +101,7 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
   }
   async function create({congregationId,title='BibleQuest Live'}={}){
     const userId=identity();await ensureMemberships();const id=String(congregationId||''),tenantId=contextCongregationId;if(!tenantId)throw roomError('Choose an active congregation before creating a Live Room.','BQ_LIVE_ROOMS_CONGREGATION');if(id!==tenantId)throw staleContext();congregation.assert(id,'ministry');const name=cleanText(title,80)||'BibleQuest Live',roomCode=normalizeCode(codeFactory());if(!ROOM_CODE.test(roomCode))throw roomError('Live Rooms could not create a valid room code.','BQ_LIVE_ROOMS_CODE');
-    const created=await api.create({congregation_id:id,created_by:userId,session_type:'live-room',title:name,room_code:roomCode,status:'lobby',state:{round:0,activity:'lobby'},metadata:{version:1}});
+    const created=await api.create(id,{created_by:userId,session_type:'live-room',title:name,room_code:roomCode,status:'lobby',state:{round:0,activity:'lobby'},metadata:{version:1}});
     if(!contextCurrent(userId,tenantId))throw staleContext();
     return activate(created);
   }

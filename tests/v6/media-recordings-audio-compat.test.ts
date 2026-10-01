@@ -160,10 +160,12 @@ test('Recordings service preserves synchronous legacy owners and also awaits a V
     host: host.owner,
   });
   const cloud = {
-    async listLiveRecordings() {
+    async listLiveRecordings(congregationId: string) {
+      assert.equal(congregationId, 'c1');
       return [
         {
           id: 'rec-1',
+          congregation_id: 'c1',
           youtube_id: 'abcDEF12345',
           title: 'Sunday Worship',
           description: 'Replay',
@@ -180,7 +182,7 @@ test('Recordings service preserves synchronous legacy owners and also awaits a V
     media: cloud,
     audio,
     session,
-    congregation: { load: async () => [{ congregationId: 'c1' }] },
+    congregation: { load: async () => [{ congregationId: 'c1', userId: 'u1' }], getActive: () => ({ congregationId: 'c1', userId: 'u1' }) },
   });
 
   await recordings.load();

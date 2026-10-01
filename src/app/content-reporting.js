@@ -68,7 +68,6 @@ export function createContentReportingService({api,session,congregation}={}){
     if(!REASON_SET.has(normalizedReason))throw codedError('Choose a valid report reason.','BQ_CONTENT_REPORT_REASON_INVALID');
     const normalizedNote=bounded(note,1200,'Report note');
     const row={
-      congregation_id:id,
       reporter_id:String(user.id),
       content_key:normalized.contentKey,
       content_type:normalized.contentType,
@@ -80,7 +79,7 @@ export function createContentReportingService({api,session,congregation}={}){
       note:normalizedNote||null
     };
     assertContext(userId);
-    const saved=await api.submit(row);
+    const saved=await api.submit(id,row);
     assertContext(userId);
     if(!saved?.id)throw codedError('Report submission did not return a report ID.','BQ_CONTENT_REPORT_WRITE_FAILED');
     return Object.freeze({id:String(saved.id),congregationId:id,reason:normalizedReason});
