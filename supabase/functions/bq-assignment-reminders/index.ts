@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.112.4';
+import postgres from 'npm:postgres@3.4.7';
 
 const BATCH_SIZE = 10;
 const SCHEDULER_HEADER = 'X-BQ-Assignment-Reminder-Secret';
@@ -25,6 +26,31 @@ function json(body: unknown, status = 200) {
   });
 }
 
+async function schedulerSecretMatches(candidate: string) {
+  if (!candidate) return false;
+  const connectionString = Deno.env.get('SUPABASE_DB_URL') || '';
+  if (!connectionString) return false;
+
+  const sql = postgres(connectionString, { prepare: false, max: 1 });
+  try {
+    const rows = await sql`
+      select exists (
+        select 1
+        from vault.decrypted_secrets
+        where name = 'bq_assignment_reminder_scheduler_secret'
+          and nullif(trim(decrypted_secret), '') is not null
+          and decrypted_secret = ${candidate}
+      ) as matched
+    `;
+    return rows?.[0]?.matched === true;
+  } catch {
+    console.error('assignment reminder scheduler Vault verification failed');
+    return false;
+  } finally {
+    await sql.end({ timeout: 1 }).catch(() => {});
+  }
+}
+
 Deno.serve(async (request: Request) => {
   if (request.method !== 'POST') return json({ error: 'POST required' }, 405);
 
@@ -33,16 +59,11 @@ Deno.serve(async (request: Request) => {
   if (!key || !url) return json({ error: 'Supabase service configuration is incomplete' }, 503);
 
   const schedulerSecret = (request.headers.get(SCHEDULER_HEADER) || '').trim();
-  if (!schedulerSecret) return json({ error: 'Scheduler authorization required' }, 401);
-
-  const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
-  const verified = await admin.rpc('bible_verify_assignment_reminder_scheduler_secret', {
-    provided_secret: schedulerSecret,
-  });
-  if (verified.error || verified.data !== true) {
+  if (!await schedulerSecretMatches(schedulerSecret)) {
     return json({ error: 'Scheduler authorization required' }, 401);
   }
 
+  const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
   const queued = await admin.rpc('bible_enqueue_assignment_due_notifications_v6');
   if (queued.error) {
     console.error('assignment due reminder enqueue failed');
