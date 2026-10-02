@@ -28,6 +28,24 @@ function text(value) {
   return String(value ?? '').trim();
 }
 
+const SENSITIVE_TEXT_PATTERNS = Object.freeze([
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+  /\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/i,
+  /\beyJ[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\.[A-Za-z0-9_-]{12,}\b/,
+  /\bsb_secret_[A-Za-z0-9_-]+\b/i,
+  /\bservice_role\b/i,
+  /\bp256dh\b/i,
+  /\b(?:password|endpoint|auth(?:entication)?\s*token)\s*[:=]/i,
+]);
+
+function sanitizedText(value, label) {
+  const normalized = text(value);
+  if (SENSITIVE_TEXT_PATTERNS.some(pattern => pattern.test(normalized))) {
+    throw new Error(label + ' contains account, credential, endpoint, key, or token material.');
+  }
+  return normalized;
+}
+
 function exactSha(value) {
   const sha = text(value).toLowerCase();
   if (!SHA_PATTERN.test(sha)) throw new Error('Physical push evidence requires an exact 40-character candidate SHA.');
@@ -35,10 +53,10 @@ function exactSha(value) {
 }
 
 function requiredMetadata(metadata) {
-  const tester = text(metadata?.tester);
-  const deviceOsBrowser = text(metadata?.deviceOsBrowser);
-  const environment = text(metadata?.environment);
-  const durableEvidenceReference = text(metadata?.durableEvidenceReference);
+  const tester = sanitizedText(metadata?.tester, 'Tester metadata');
+  const deviceOsBrowser = sanitizedText(metadata?.deviceOsBrowser, 'Device metadata');
+  const environment = sanitizedText(metadata?.environment, 'Environment metadata');
+  const durableEvidenceReference = sanitizedText(metadata?.durableEvidenceReference, 'Evidence reference');
   if (!tester) throw new Error('Physical push evidence requires a tester or QA identifier.');
   if (!deviceOsBrowser) throw new Error('Physical push evidence requires device / OS / browser metadata.');
   if (!environment) throw new Error('Physical push evidence requires an environment label.');
@@ -54,7 +72,7 @@ function normalizeGate(gate) {
   if (!['PENDING', 'PASS', 'FAIL'].includes(status)) {
     throw new Error(id.toUpperCase() + ' has an invalid evidence status.');
   }
-  const notes = text(gate?.notes);
+  const notes = sanitizedText(gate?.notes, id.toUpperCase() + ' observation');
   const steps = Array.isArray(gate?.steps) ? gate.steps : [];
   const seen = new Map();
   for (const step of steps) {
