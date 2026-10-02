@@ -6,6 +6,9 @@ import {
   buildPhysicalPushEvidence,
   validatePhysicalPushEvidence,
 } from '../../src/v6/push-device-field-evidence.js';
+import {
+  evaluatePhysicalPushEvidenceProfile,
+} from '../../scripts/v6-validate-push-field-evidence.mjs';
 
 const sha = 'a'.repeat(40);
 
@@ -140,5 +143,23 @@ test('evidence rejects obvious account identifiers, endpoints and credentials in
   assert.throws(
     () => record({ gates: [gate('p1'), p2, gate('p3')] }),
     /account, credential, endpoint, key, or token material/i,
+  );
+});
+
+
+test('operator profiles distinguish physical push, assignment due and full field evidence', () => {
+  const full = record();
+  assert.equal(evaluatePhysicalPushEvidenceProfile(full, 'physical-push').satisfied, true);
+  assert.equal(evaluatePhysicalPushEvidenceProfile(full, 'assignment-due').satisfied, true);
+  assert.equal(evaluatePhysicalPushEvidenceProfile(full, 'full').satisfied, true);
+
+  const noP3 = record({ gates: [gate('p1'), gate('p2'), gate('p3', 'PENDING')] });
+  assert.equal(evaluatePhysicalPushEvidenceProfile(noP3, 'physical-push').satisfied, true);
+  assert.equal(evaluatePhysicalPushEvidenceProfile(noP3, 'assignment-due').satisfied, false);
+  assert.equal(evaluatePhysicalPushEvidenceProfile(noP3, 'full').satisfied, false);
+
+  assert.throws(
+    () => evaluatePhysicalPushEvidenceProfile(full, 'unknown'),
+    /Unknown physical push evidence profile/,
   );
 });
