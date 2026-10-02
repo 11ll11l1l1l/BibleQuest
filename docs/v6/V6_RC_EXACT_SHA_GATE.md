@@ -18,14 +18,27 @@ The collector fails closed unless all of these workflow names have a completed `
 
 The gate records the exact workflow run IDs/URLs in `v6-rc-exact-sha-evidence.json` and uploads that JSON as a retained Actions artifact.
 
+## Candidate cut contract
+
+Do not mix final feature work into the RC-certification PR. First integrate every intended V6 change. From that exact live `v6/architecture-upgrade` SHA, create a fresh branch and generate the sole candidate delta:
+
+```bash
+node scripts/v6-rc-candidate-marker.mjs --write <exact-integration-base-sha>
+```
+
+Commit only `docs/v6/RC_CANDIDATE.json` and open the RC PR to `v6/architecture-upgrade`. The RC workflow rejects the candidate if the marker's declared base differs from the PR base SHA or if any other file differs from that base. The commit containing the marker is the immutable candidate SHA; the marker deliberately does not self-reference its own SHA.
+
+Creating the marker fans out the candidate-sensitive V6 workflows through their existing PR path filters, while inherited regression runs on every V6 PR. This avoids manually assembling a candidate from nearby or mixed SHAs.
+
 ## Operating sequence
 
-1. Freeze one V6 candidate SHA on the official V6 integration/release line.
-2. Execute every required automated workflow on that exact SHA. Do not substitute a nearby PR or ancestor.
-3. For `V6 Deployed Artifact Verification`, verify the exact candidate against the matching Cloudflare Pages preview/deployment.
-4. Confirm `V6 V4 Rollback Reference Guard` succeeds on the same candidate so the immutable V4 fallback still exists at the recorded SHA.
-5. Run `V6 RC Exact-SHA Automated Gate` for that same SHA.
-6. Attach the resulting JSON artifact to the release evidence before any promotion decision.
+1. Finish integration and re-fetch the exact live `v6/architecture-upgrade` SHA.
+2. Cut the marker-only RC candidate as described above.
+3. Let every required automated workflow execute on that exact marker commit. Do not substitute a nearby PR or ancestor.
+4. For `V6 Deployed Artifact Verification`, verify the exact candidate against the matching Cloudflare Pages preview/deployment.
+5. Confirm `V6 V4 Rollback Reference Guard` succeeds on the same candidate so the immutable V4 fallback still exists at the recorded SHA.
+6. Let `V6 RC Exact-SHA Automated Gate` collect the same-SHA SUCCESS runs and upload the retained evidence JSON.
+7. Attach the resulting evidence/certification artifact to the release record before any promotion decision.
 
 The current Cloudflare Pages publish-root problem remains a legitimate blocker: the RC gate must not pass while the deployed-artifact verifier cannot read the exact `dist-v6` metadata.
 
