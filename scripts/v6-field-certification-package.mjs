@@ -50,7 +50,7 @@ function requireCandidateBoundReference(value, label, expectedSha) {
   }
   const sha = requireExactCandidateSha(value.candidateSha, label);
   if (sha !== expectedSha) throw new Error(label + ' belongs to a different release-candidate SHA.');
-  return requiredSanitizedText(value.reference, label + ' reference');
+  return requiredSanitizedText(value.reference, label);
 }
 
 function requirePhysicalReference(value, label, automatedReferences) {
