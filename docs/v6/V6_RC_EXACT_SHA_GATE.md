@@ -18,7 +18,7 @@ The collector fails closed unless all of these workflow names have a completed `
 - V6 V4 Rollback Reference Guard
 - BibleQuest inherited regression
 
-The gate records the exact workflow run IDs/URLs in `v6-rc-exact-sha-evidence.json` and uploads that JSON as a retained Actions artifact. The deployment-certification assembler independently validates that the pre-deployment evidence uses the canonical `predeploy` profile and contains the complete required workflow set, so a partial same-SHA JSON file cannot be substituted.
+The gate records the exact workflow run IDs/URLs in `v6-rc-exact-sha-evidence.json` and uploads that JSON as a retained Actions artifact. The deployment-certification assembler independently validates that the pre-deployment evidence uses the canonical `predeploy` profile, comes from the same repository, and contains the complete required workflow set, so a partial same-SHA JSON file cannot be substituted. It also requires the deployed source SHA, aggregate artifact SHA-256, integrity-manifest SHA-256, verified file count, and verified byte count before producing durable RC certification.
 
 ## Candidate cut contract
 
