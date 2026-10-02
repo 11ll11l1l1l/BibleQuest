@@ -13,7 +13,7 @@ const EXACT_SHA = /^[0-9a-f]{40}$/i;
 const ALLOWED_HOST_SUFFIXES = Object.freeze(['mybiblequest.pages.dev', 'biblequest-7th.pages.dev']);
 
 const $ = selector => document.querySelector(selector);
-const $ = selector => [...document.querySelectorAll(selector)];
+const all = selector => [...document.querySelectorAll(selector)];
 const fields = Object.freeze({
   harness: $('[data-field-harness]'),
   auth: $('[data-field-auth]'),
