@@ -14,6 +14,7 @@ on:
       - "tests/v6/audio-provider.test.ts"
       - "tests/v6/openbible-hays-catalog.test.ts"
       - "tests/v6/reader-audio-packages.test.ts"
+      - "tests/v6/reader-audio-controls-wiring.test.ts"
       - "tests/v6/bsb-hays-runtime-source-materialize.test.ts"
       - ".github/workflows/v6-bsb-offline-source-acceptance.yml"
   workflow_dispatch:
@@ -96,6 +97,7 @@ jobs:
           tests/v6/audio-provider.test.ts
           tests/v6/openbible-hays-catalog.test.ts
           tests/v6/reader-audio-packages.test.ts
+          tests/v6/reader-audio-controls-wiring.test.ts
           tests/v6/bsb-hays-runtime-source-materialize.test.ts
 
       - name: Verify one live certified Hays chapter still matches exact bytes
