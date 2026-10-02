@@ -169,7 +169,7 @@ test('RC workflow enforces the same one-commit marker contract for PR and manual
   assert.doesNotMatch(workflow, /if:\s*github\.event_name == 'pull_request'/);
   assert.match(workflow, /git rev-list --parents -n 1/);
   assert.match(workflow, /test "\$\{#commit_and_parents\[@\]\}" -eq 2/);
-  assert.match(workflow, /git fetch --no-tags origin v6\/architecture-upgrade/);
+  assert.match(workflow, /git fetch --no-tags origin \+refs\/heads\/v6\/architecture-upgrade:refs\/remotes\/origin\/v6\/architecture-upgrade/);
   assert.match(workflow, /git merge-base --is-ancestor "\$\{parent_sha\}" "origin\/v6\/architecture-upgrade"/);
   assert.match(workflow, /github\.event\.pull_request\.base\.sha/);
   assert.match(workflow, /test "\$\{parent_sha\}" = "\$\{BQ_RC_PR_BASE_SHA,,\}"/);
