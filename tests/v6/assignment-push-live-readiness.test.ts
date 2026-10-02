@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 
 import { evaluateAssignmentPushReadiness } from '../../scripts/v6-assignment-push-live-readiness.mjs';
+
+const pinnedEvidence = JSON.parse(readFileSync(
+  new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json', import.meta.url),
+  'utf8',
+));
 
 function snapshot(overrides = {}) {
   return {
@@ -130,4 +136,26 @@ test('rejects malformed or negative readiness counts instead of manufacturing ev
       duePushDelivered: 0,
     },
   })), /cronSucceeded must be a non-negative integer/i);
+});
+
+
+test('pinned 2026-10-02 live evidence proves backend health while preserving the real QA blocker', () => {
+  assert.equal(pinnedEvidence.evidenceClass, 'LIVE-READ-ONLY');
+  assert.equal(pinnedEvidence.edgeFunction.slug, 'bq-assignment-reminders');
+  assert.equal(pinnedEvidence.edgeFunction.status, 'ACTIVE');
+  const result = evaluateAssignmentPushReadiness(pinnedEvidence.assignment_push_readiness);
+  assert.equal(result.backendReady, true);
+  assert.equal(result.retryHardeningReady, false);
+  assert.equal(result.liveDueDeliveryObserved, false);
+  assert.equal(result.rowReadyForPass, false);
+  assert.equal(result.counts.cronSucceeded24h, 269);
+  assert.equal(result.counts.cronFailed24h, 0);
+  assert.deepEqual(result.blockers, [
+    'retry:retryDueIndex',
+    'retry:retryFunctionPath',
+    'retry:retryMigrationRecorded',
+    'live:dueNotification',
+    'live:duePushDelivered',
+    'qa:noCurrentDueAssignment',
+  ]);
 });
