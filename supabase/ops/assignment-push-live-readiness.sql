@@ -120,6 +120,21 @@ select jsonb_build_object(
       where notification_type in ('assignment', 'assignment_due')
         and created_at >= clock_timestamp() - interval '24 hours'
     ),
+    'assignedNotifications', (
+      select count(*)
+      from public.bible_notifications
+      where notification_type = 'assignment'
+        and created_at >= clock_timestamp() - interval '24 hours'
+    ),
+    'assignedPushDelivered', (
+      select count(*)
+      from public.bible_push_delivery_ledger ledger
+      join public.bible_notifications notification
+        on notification.id = ledger.notification_id
+      where notification.notification_type = 'assignment'
+        and ledger.delivered_at is not null
+        and ledger.delivered_at >= clock_timestamp() - interval '24 hours'
+    ),
     'dueNotifications', (
       select count(*)
       from public.bible_notifications
