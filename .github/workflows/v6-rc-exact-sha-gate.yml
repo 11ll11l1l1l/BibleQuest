@@ -84,6 +84,7 @@ jobs:
           node --experimental-strip-types --test
           tests/v6/rc-exact-sha-gate.test.ts
           tests/v6/rc-candidate-marker.test.ts
+          tests/v6/rc-certification-assembly.test.ts
 
       - name: Collect exact-SHA automated-gate evidence
         env:

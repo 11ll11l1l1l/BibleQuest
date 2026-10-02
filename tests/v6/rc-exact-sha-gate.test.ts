@@ -38,6 +38,11 @@ test('RC collector includes the immutable V4 rollback-reference guard', () => {
   assert.ok(DEFAULT_REQUIRED_WORKFLOWS.includes('V6 V4 Rollback Reference Guard'));
 });
 
+test('RC collector requires serialization and exact-SHA Cloudflare preview evidence', () => {
+  assert.ok(DEFAULT_REQUIRED_WORKFLOWS.includes('V6 PR Serialization Guard'));
+  assert.ok(DEFAULT_REQUIRED_WORKFLOWS.includes('V6 Cloudflare Exact-SHA Preview Verification'));
+});
+
 test('RC collector requires an exact full SHA', () => {
   assert.equal(normalizeCandidateSha(candidateSha.toUpperCase()), candidateSha);
   assert.throws(() => normalizeCandidateSha('abc1234'), /exact 40-character candidate SHA/);

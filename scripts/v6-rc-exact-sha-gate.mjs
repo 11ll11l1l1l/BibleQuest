@@ -12,6 +12,8 @@ export const PREDEPLOY_REQUIRED_WORKFLOWS = Object.freeze([
   'V6 Database CI',
   'V6 Client Artifact Security',
   'V6 Dependency Security',
+  'V6 PR Serialization Guard',
+  'V6 Cloudflare Exact-SHA Preview Verification',
   'V6 V4 Rollback Reference Guard',
   'BibleQuest inherited regression',
 ]);
