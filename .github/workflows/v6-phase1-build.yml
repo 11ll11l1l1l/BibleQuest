@@ -47,6 +47,8 @@ on:
       - "scripts/v6-rc-exact-sha-gate.mjs"
       - "scripts/v6-assemble-rc-certification.mjs"
       - "scripts/v6-live-smoke.mjs"
+      - "scripts/v6-validate-push-field-evidence.mjs"
+      - "scripts/v6-validate-field-device-evidence.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
       - ".github/workflows/v6-rc-exact-sha-gate.yml"
       - ".github/workflows/v6-phase1-build.yml"

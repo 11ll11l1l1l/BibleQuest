@@ -12,8 +12,11 @@
     section{border:1px solid currentColor;border-radius:14px;padding:16px}
     h1,h2,p{margin-top:0}
     label{display:grid;gap:6px;margin:12px 0}
-    input,button{font:inherit;min-height:44px;border-radius:10px;padding:10px 12px}
-    input{border:1px solid #888}
+    input,button,select,textarea{font:inherit;min-height:44px;border-radius:10px;padding:10px 12px}
+    input,select,textarea{border:1px solid #888}
+    textarea{resize:vertical}
+    .check{display:flex;grid-template-columns:auto 1fr;align-items:flex-start;gap:10px}
+    .check input{min-height:auto;margin-top:4px}
     button{cursor:pointer;border:1px solid currentColor}
     .actions{display:flex;flex-wrap:wrap;gap:10px}
     .actions button{flex:1 1 180px}
@@ -61,6 +64,23 @@
   </section>
 
   <section>
+    <h2>Evidence metadata</h2>
+    <p>These fields are included in the sanitized field record. Do not enter account identifiers or secrets.</p>
+    <label>Tester / QA identifier
+      <input data-field-tester autocomplete="off" placeholder="Example: QA operator">
+    </label>
+    <label>Device / OS / browser
+      <input data-field-device autocomplete="off" placeholder="Example: Galaxy S23 / Android 16 / Chrome 141">
+    </label>
+    <label>Environment
+      <input data-field-environment autocomplete="off" placeholder="Immutable Cloudflare preview">
+    </label>
+    <label>Durable evidence reference
+      <input data-field-reference autocomplete="off" placeholder="Issue, PR comment, artifact, or field-record ID">
+    </label>
+  </section>
+
+  <section>
     <h2>Push controls</h2>
     <p>Enable requests notification permission and opts this browser into only the assignment category through the accepted V6 subscription persistence path.</p>
     <div class="actions">
@@ -85,15 +105,61 @@
     <p data-field-message></p>
     <div class="actions">
       <button type="button" data-field-copy>Copy sanitized status</button>
+      <button type="button" data-field-copy-evidence>Copy physical evidence JSON</button>
     </div>
   </section>
 
+  <section data-push-gate="p1">
+    <h2>P1 — enabled delivery</h2>
+    <p>Enable assignment push, then complete the normal leader-to-QA-member assignment flow with the app fully closed.</p>
+    <label class="check"><input type="checkbox" data-push-step="enabled-ready"> Sanitized state shows granted permission, active worker, browser subscription, matching owner marker, and lifecycle persistence.</label>
+    <label class="check"><input type="checkbox" data-push-step="app-closed"> Browser/PWA was fully closed before the server-side assignment action.</label>
+    <label class="check"><input type="checkbox" data-push-step="os-notification-arrived"> A real OS notification arrived while BibleQuest was closed.</label>
+    <label class="check"><input type="checkbox" data-push-step="opened-assignments"> Tapping the OS notification opened this exact candidate at Assignments.</label>
+    <label class="check"><input type="checkbox" data-push-step="durable-notification-center"> The durable in-app Notification Center item was present after opening.</label>
+    <label>Verdict
+      <select data-push-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select>
+    </label>
+    <label>Physical observation
+      <textarea data-push-gate-notes rows="4" placeholder="Record only sanitized observed behavior."></textarea>
+    </label>
+  </section>
+
+  <section data-push-gate="p2">
+    <h2>P2 — disabled behavior</h2>
+    <p>Disable push, fully close the app, then create another disposable assignment through the normal server path.</p>
+    <label class="check"><input type="checkbox" data-push-step="disabled-ready"> Sanitized state shows the browser subscription absent and owner marker not matched.</label>
+    <label class="check"><input type="checkbox" data-push-step="app-closed"> Browser/PWA was fully closed before the second assignment action.</label>
+    <label class="check"><input type="checkbox" data-push-step="no-os-push-90s"> No OS notification arrived during at least 90 seconds of observation.</label>
+    <label class="check"><input type="checkbox" data-push-step="notification-center-fallback"> Reopening BibleQuest showed the durable Notification Center item.</label>
+    <label>Verdict
+      <select data-push-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select>
+    </label>
+    <label>Physical observation
+      <textarea data-push-gate-notes rows="4" placeholder="Record only sanitized observed behavior."></textarea>
+    </label>
+  </section>
+
+  <section data-push-gate="p3">
+    <h2>P3 — live due reminder</h2>
+    <p>Run only after the reviewed due-reminder backend is active. Use the normal five-minute scheduler; do not call privileged functions manually as a substitute.</p>
+    <label class="check"><input type="checkbox" data-push-step="backend-ready"> Reviewed live-readiness evidence confirms the due scheduler/function path is active.</label>
+    <label class="check"><input type="checkbox" data-push-step="app-closed"> Browser/PWA was fully closed while waiting for the scheduler.</label>
+    <label class="check"><input type="checkbox" data-push-step="due-notification-once"> Exactly one durable assignment_due notification was observed for the incomplete QA recipient.</label>
+    <label class="check"><input type="checkbox" data-push-step="os-notification-arrived"> A real OS due notification arrived while BibleQuest was closed.</label>
+    <label class="check"><input type="checkbox" data-push-step="opened-assignments"> Tapping the due notification opened this exact candidate at Assignments.</label>
+    <label class="check"><input type="checkbox" data-push-step="no-duplicate-next-interval"> A later scheduler interval did not create a duplicate due notification.</label>
+    <label>Verdict
+      <select data-push-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select>
+    </label>
+    <label>Physical observation
+      <textarea data-push-gate-notes rows="4" placeholder="Record only sanitized observed behavior."></textarea>
+    </label>
+  </section>
+
   <section>
-    <h2>Field sequence</h2>
-    <p><strong>P1 — enabled delivery:</strong> enable assignment push, confirm the sanitized status is ready, fully close the browser/PWA, create one disposable assignment for this QA member through the normal BibleQuest assignment flow, observe the OS notification, tap it, and confirm the exact same candidate opens Assignments.</p>
-    <p><strong>P2 — disabled behavior:</strong> disable push, confirm the browser subscription is absent, fully close the app again, create a second disposable assignment for the same QA member, confirm no OS push arrives, then reopen BibleQuest and confirm the normal Notification Center item exists.</p>
-    <p><strong>P3 — due reminder:</strong> after the reviewed due-reminder migration/function/Cron deployment is active, re-enable push and use a disposable assignment whose reminder time falls within the test window. Confirm one due notification arrives and opens Assignments. This gate is required for live assigned/due certification, not merely source readiness.</p>
-    <p>Record only sanitized evidence using <code>docs/v6/V6_PUSH_DEVICE_FIELD_RUNBOOK.md</code> and the canonical V6 field/device evidence record.</p>
+    <h2>Evidence handling</h2>
+    <p>Use <code>docs/v6/V6_PUSH_DEVICE_FIELD_RUNBOOK.md</code>. The exported JSON remains PHYSICAL-DEVICE evidence only and does not replace exact-head BUILT-BROWSER evidence.</p>
   </section>
 </main>
 <script type="module" src="/src/v6/push-device-field.js"></script>

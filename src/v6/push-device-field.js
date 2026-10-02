@@ -1,9 +1,10 @@
+import { buildPhysicalPushEvidence } from './push-device-field-evidence.js';
 import { createStore } from '../app/store.js';
 import { createSessionService } from '../app/session.js';
 import { createPushSubscriptionService } from '../app/push-subscription.js';
 import { createPushSubscriptionPersistence } from '../app/push-subscription-persistence.js';
 import { createApi } from '../core/api.js';
-import { authStorage } from '../core/storage.js';
+import { authStorage, privateStorage } from '../core/storage.js';
 
 const VAPID_PUBLIC_KEY = 'BKxJ2WXSqmiA9ZEmx8bItafM4fp_R4NkTC4F45BGZjjDqnfK-C3Goqb25CVgWsSSwMZsvOczx8LNv2vstkdqRmI';
 const OWNER_KEY = 'bq:v5:push-owner';
@@ -12,6 +13,7 @@ const EXACT_SHA = /^[0-9a-f]{40}$/i;
 const ALLOWED_HOST_SUFFIXES = Object.freeze(['mybiblequest.pages.dev', 'biblequest-7th.pages.dev']);
 
 const $ = selector => document.querySelector(selector);
+const all = selector => [...document.querySelectorAll(selector)];
 const fields = Object.freeze({
   harness: $('[data-field-harness]'),
   auth: $('[data-field-auth]'),
@@ -25,10 +27,15 @@ const fields = Object.freeze({
   artifactSha: $('[data-field-artifact-sha]'),
   identity: $('[data-field-identity]'),
   message: $('[data-field-message]'),
+  tester: $('[data-field-tester]'),
+  device: $('[data-field-device]'),
+  environment: $('[data-field-environment]'),
+  reference: $('[data-field-reference]'),
 });
 
 let persistenceVerified = false;
 let artifactBuildSha = '';
+let evidenceStorageKey = '';
 
 function isAllowedFieldOrigin() {
   if (location.protocol !== 'https:') return false;
@@ -75,6 +82,8 @@ if (!isAllowedFieldOrigin()) {
 }
 
 await verifyExactCandidate();
+evidenceStorageKey = 'bq:v6:push-field-evidence:' + artifactBuildSha;
+restoreEvidenceProgress();
 
 const api = createApi();
 const store = createStore({
@@ -111,6 +120,81 @@ const push = createPushSubscriptionService({
 async function currentBrowserSubscription() {
   if (!serviceWorkerRegistration?.pushManager) return null;
   return serviceWorkerRegistration.pushManager.getSubscription().catch(() => null);
+}
+
+function pushGateSnapshot(section) {
+  return Object.freeze({
+    id: String(section.dataset.pushGate || ''),
+    status: String(section.querySelector('[data-push-gate-status]')?.value || 'PENDING'),
+    notes: String(section.querySelector('[data-push-gate-notes]')?.value || '').trim(),
+    steps: Object.freeze($('[data-push-step]', section).map(input => Object.freeze({
+      id: String(input.dataset.pushStep || ''),
+      checked: input.checked === true,
+    }))),
+  });
+}
+
+function evidenceMetadata() {
+  return Object.freeze({
+    tester: fields.tester?.value || '',
+    deviceOsBrowser: fields.device?.value || '',
+    environment: fields.environment?.value || '',
+    durableEvidenceReference: fields.reference?.value || '',
+  });
+}
+
+function evidenceProgress() {
+  return Object.freeze({
+    metadata: evidenceMetadata(),
+    gates: Object.freeze(all('[data-push-gate]').map(pushGateSnapshot)),
+  });
+}
+
+function saveEvidenceProgress() {
+  if (!evidenceStorageKey) return;
+  try {
+    privateStorage.write(evidenceStorageKey, evidenceProgress());
+  } catch {
+    setMessage('Could not persist physical push evidence progress on this device.', 'error');
+  }
+}
+
+function restoreEvidenceProgress() {
+  if (!evidenceStorageKey) return;
+  let saved = null;
+  try {
+    saved = privateStorage.read(evidenceStorageKey, null);
+  } catch {
+    privateStorage.remove(evidenceStorageKey);
+  }
+  if (!saved || typeof saved !== 'object') return;
+  fields.tester.value = String(saved.metadata?.tester || '');
+  fields.device.value = String(saved.metadata?.deviceOsBrowser || '');
+  fields.environment.value = String(saved.metadata?.environment || '');
+  fields.reference.value = String(saved.metadata?.durableEvidenceReference || '');
+  const gates = new Map((Array.isArray(saved.gates) ? saved.gates : []).map(gate => [String(gate?.id || ''), gate]));
+  for (const section of all('[data-push-gate]')) {
+    const gate = gates.get(String(section.dataset.pushGate || ''));
+    if (!gate) continue;
+    const status = section.querySelector('[data-push-gate-status]');
+    const notes = section.querySelector('[data-push-gate-notes]');
+    if (['PENDING', 'PASS', 'FAIL'].includes(String(gate.status || ''))) status.value = gate.status;
+    notes.value = String(gate.notes || '');
+    const steps = new Map((Array.isArray(gate.steps) ? gate.steps : []).map(step => [String(step?.id || ''), step?.checked === true]));
+    for (const input of section.querySelectorAll('[data-push-step]')) {
+      input.checked = steps.get(String(input.dataset.pushStep || '')) === true;
+    }
+  }
+}
+
+async function physicalEvidenceRecord() {
+  await verifyExactCandidate();
+  return buildPhysicalPushEvidence({
+    candidateSha: artifactBuildSha,
+    metadata: evidenceMetadata(),
+    gates: all('[data-push-gate]').map(pushGateSnapshot),
+    sanitizedSnapshot: await sanitizedSnapshot(),
+  });
 }
 
 async function sanitizedSnapshot() {
@@ -265,6 +349,21 @@ $('[data-field-copy]').addEventListener('click', async () => {
     setMessage(safeMessage(error?.message || error), 'error');
   }
 });
+
+$('[data-field-copy-evidence]').addEventListener('click', async () => {
+  try {
+    const evidence = await physicalEvidenceRecord();
+    await navigator.clipboard.writeText(JSON.stringify(evidence, null, 2));
+    setMessage('Exact-SHA physical push evidence copied. It contains no account ID, email, endpoint, key material, credential, or token.', 'ok');
+  } catch (error) {
+    setMessage(safeMessage(error?.message || error), 'error');
+  }
+});
+
+for (const control of all('[data-field-tester],[data-field-device],[data-field-environment],[data-field-reference],[data-push-gate] input,[data-push-gate] select,[data-push-gate] textarea')) {
+  control.addEventListener('change', saveEvidenceProgress);
+  control.addEventListener('input', saveEvidenceProgress);
+}
 
 window.addEventListener('pageshow', () => {
   void verifyExactCandidate().then(refresh).catch(() => {});

@@ -34,6 +34,17 @@ The harness reads `bq-build.json` from the same deployed origin and refuses evid
 
 The harness does not update this canonical record or the release checklist automatically. Attach its sanitized JSON to a durable PR/issue/artifact record, transcribe the matching observations here against the same Candidate SHA, and only then promote the corresponding checklist row. Browser automation remains non-substitutable for these physical gates.
 
+Before transcribing any non-push PASS, validate the exported JSON against the exact candidate:
+
+```bash
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> installed-pwa
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> manual-accessibility
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> background-media
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> full-nonpush
+```
+
+Both physical harnesses share the same exact-SHA, metadata sanitization, sensitive-value rejection, timestamp, and physical sub-step validation contract. The non-push harness refuses an installed-PWA PASS from normal browser-tab display mode. These validators verify evidence structure only; they never manufacture a physical observation or change PENDING to PASS.
+
 
 ## Push backend production readiness
 
@@ -62,6 +73,8 @@ The physical push row must remain PENDING until P1 and P2 are observed on a phys
 For the aggregate push row, retain both evidence classes on the same exact candidate:
 
 - BUILT-BROWSER: exact-head V6 Phase 1 Build Gate evidence covering 'tests/v6/assignment-push-service-worker.test.ts', notification click/deep-link behavior, and built-artifact service-worker registration.
-- PHYSICAL-DEVICE: sanitized P1/P2 push field evidence, plus P3 when binding the live assigned/due path.
+- PHYSICAL-DEVICE: the sanitized JSON exported by '/v6-push-device-field.html' after real P1/P2 observations, plus P3 when binding the live assigned/due path.
+
+Before transcribing a push PASS into this record, validate the exported JSON against this record's exact Candidate SHA with 'scripts/v6-validate-push-field-evidence.mjs'. Retain the sanitized JSON as a durable issue/PR/artifact reference so the Markdown record is not the only evidence copy. A successful physical JSON validation never substitutes for the separate BUILT-BROWSER half of the aggregate push row.
 
 Do not copy account identifiers, push endpoints, subscription keys, tokens, or server secrets into this record.

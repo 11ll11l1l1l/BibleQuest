@@ -6,6 +6,8 @@ const read = relative => readFileSync(new URL('../../' + relative, import.meta.u
 
 const html = read('v6-push-device-field.html');
 const runtime = read('src/v6/push-device-field.js');
+const evidenceRuntime = read('src/v6/push-device-field-evidence.js');
+const sharedEvidenceRuntime = read('src/v6/physical-device-evidence.js');
 const vite = read('vite.config.mjs');
 const headers = read('_headers');
 const index = read('index.html');
@@ -19,6 +21,10 @@ const scheduler = read('supabase/ops/assignment-due-reminder-cron.sql');
 
 test('physical push field harness is an exact-SHA unlinked Vite entrypoint', () => {
   assert.match(html, /QA ONLY — V6 PHYSICAL PUSH FIELD HARNESS/);
+  assert.match(html, /data-push-gate="p1"/);
+  assert.match(html, /data-push-gate="p2"/);
+  assert.match(html, /data-push-gate="p3"/);
+  assert.match(html, /data-field-copy-evidence/);
   assert.match(html, /noindex,nofollow,noarchive/);
   assert.match(html, /src\/v6\/push-device-field\.js/);
 
@@ -103,4 +109,25 @@ test('due-reminder operator documentation cannot drift from the canonical five-m
 
   assert.doesNotMatch(dueRunbook, /job name: 'bq-assignment-due-reminders'\s*$/m);
   assert.doesNotMatch(dueRunbook, /schedule: every one minute|\* \* \* \* \*/);
+});
+
+
+test('physical push evidence export stays candidate-bound, complete and sanitized', () => {
+  const evidenceContract = evidenceRuntime + '\n' + sharedEvidenceRuntime;
+  assert.match(evidenceRuntime, /evidenceClass:\s*'PHYSICAL-DEVICE'/);
+  assert.match(evidenceRuntime, /candidateSha/);
+  assert.match(evidenceRuntime, /physicalDevicePushEvidenceComplete/);
+  assert.match(evidenceRuntime, /assignmentAssignedDuePhysicalEvidenceComplete/);
+  assert.match(evidenceRuntime, /aggregatePushStillRequiresBuiltBrowserEvidence:\s*true/);
+  for (const gate of ['p1', 'p2', 'p3']) {
+    assert.match(evidenceRuntime, new RegExp(gate + ':\\s*Object\\.freeze'));
+  }
+  for (const sensitive of [
+    'service_role',
+    'sb_secret_',
+    'p256dh',
+    'password|endpoint|auth',
+  ]) {
+    assert.match(evidenceContract, new RegExp(sensitive, 'i'));
+  }
 });

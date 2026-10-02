@@ -1,21 +1,9 @@
-const APPROVED_HOST_SUFFIXES = Object.freeze(['mybiblequest.pages.dev', 'biblequest-7th.pages.dev']);
-const GATE_LABELS = Object.freeze({
-  'installed-pwa': 'Installed-PWA offline behavior',
-  'keyboard-focus': 'Manual accessibility: keyboard/focus',
-  'screen-reader': 'Manual accessibility: screen reader',
-  'text-scaling': 'Manual accessibility: text scaling/readability',
-  'touch-overflow': 'Manual accessibility: touch/mobile targets and overflow',
-  'motion-contrast': 'Manual accessibility: reduced motion/contrast',
-  'background-media': 'Background/lock-screen media controls where supported',
-});
-const MANUAL_ACCESSIBILITY_GATE_IDS = Object.freeze([
-  'keyboard-focus',
-  'screen-reader',
-  'text-scaling',
-  'touch-overflow',
-  'motion-contrast',
-]);
-const SHA_PATTERN = /^[0-9a-f]{40}$/i;
+import { buildFieldDeviceEvidence } from './src/v6/field-device-evidence.js';
+import {
+  requireApprovedBibleQuestOrigin,
+  requireExactCandidateSha,
+} from './src/v6/physical-device-evidence.js';
+
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 
@@ -46,9 +34,12 @@ function setMessage(value, kind = '') {
 }
 
 function isApprovedOrigin() {
-  if (location.protocol !== 'https:') return false;
-  const host = location.hostname.toLowerCase();
-  return APPROVED_HOST_SUFFIXES.some(suffix => host === suffix || host.endsWith('.' + suffix));
+  try {
+    requireApprovedBibleQuestOrigin(location.origin);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function installedMode() {
@@ -74,9 +65,7 @@ async function loadCandidateSha() {
     throw new Error('bq-build.json did not return JSON; deployed artifact identity is not trustworthy.');
   }
   const build = await response.json();
-  const sha = String(build?.sha || '').trim();
-  if (!SHA_PATTERN.test(sha)) throw new Error('Deployed candidate is missing an exact 40-character build SHA.');
-  return sha.toLowerCase();
+  return requireExactCandidateSha(build?.sha, 'Deployed candidate');
 }
 
 async function workerState() {
@@ -90,22 +79,24 @@ async function workerState() {
 }
 
 function gateSnapshot(section) {
-  const id = section.dataset.gate;
-  const status = section.querySelector('[data-gate-status]').value;
-  const notes = section.querySelector('[data-gate-notes]').value.trim();
-  const steps = [...section.querySelectorAll('[data-step]')].map(input => ({
-    id: input.dataset.step,
-    checked: input.checked === true,
-  }));
-  if (status === 'PASS') {
-    if (steps.some(step => !step.checked)) {
-      throw new Error(GATE_LABELS[id] + ': PASS requires every physical sub-check.');
-    }
-    if (notes.length < 12) {
-      throw new Error(GATE_LABELS[id] + ': PASS requires a concrete observation.');
-    }
-  }
-  return Object.freeze({ id, label: GATE_LABELS[id], status, notes, steps });
+  return Object.freeze({
+    id: String(section.dataset.gate || ''),
+    status: String(section.querySelector('[data-gate-status]')?.value || 'PENDING'),
+    notes: String(section.querySelector('[data-gate-notes]')?.value || '').trim(),
+    steps: Object.freeze([...section.querySelectorAll('[data-step]')].map(input => Object.freeze({
+      id: String(input.dataset.step || ''),
+      checked: input.checked === true,
+    }))),
+  });
+}
+
+function evidenceMetadata() {
+  return Object.freeze({
+    tester: fields.tester?.value || '',
+    deviceOsBrowser: fields.device?.value || '',
+    environment: fields.environment?.value || '',
+    durableEvidenceReference: fields.reference?.value || '',
+  });
 }
 
 function persistedState() {
@@ -157,42 +148,16 @@ function restore() {
   }
 }
 
-function requireMetadata() {
-  const tester = fields.tester.value.trim();
-  const device = fields.device.value.trim();
-  const environment = fields.environment.value.trim();
-  const reference = fields.reference.value.trim();
-  if (!tester) throw new Error('Tester is required for a physical-device record.');
-  if (!device) throw new Error('Device / OS / browser is required.');
-  if (!environment) throw new Error('Environment is required.');
-  if (!reference) throw new Error('A durable evidence reference is required.');
-  return { tester, device, environment, reference };
-}
-
 function exportRecord() {
-  if (!SHA_PATTERN.test(candidateSha)) throw new Error('Exact candidate SHA is unavailable.');
-  const metadata = requireMetadata();
-  const gates = $$('[data-gate]').map(gateSnapshot);
-  const manual = gates.filter(gate => MANUAL_ACCESSIBILITY_GATE_IDS.includes(gate.id));
-  return Object.freeze({
-    schemaVersion: 1,
-    evidenceClass: 'PHYSICAL-DEVICE',
+  return buildFieldDeviceEvidence({
     candidateSha,
+    metadata: evidenceMetadata(),
+    gates: $$('[data-gate]').map(gateSnapshot),
     evidenceDateJst: jstDate(),
     observedAt: new Date().toISOString(),
-    tester: metadata.tester,
-    deviceOsBrowser: metadata.device,
-    environment: metadata.environment,
-    durableEvidenceReference: metadata.reference,
     origin: location.origin,
     installedDisplayMode: installedMode(),
     networkOnlineAtExport: navigator.onLine,
-    gates,
-    checklistEligibility: {
-      physicalInstalledPwaOffline: gates.find(gate => gate.id === 'installed-pwa')?.status === 'PASS',
-      criticalManualAccessibility: manual.every(gate => gate.status === 'PASS'),
-      backgroundLockscreenMedia: gates.find(gate => gate.id === 'background-media')?.status === 'PASS',
-    },
   });
 }
 
