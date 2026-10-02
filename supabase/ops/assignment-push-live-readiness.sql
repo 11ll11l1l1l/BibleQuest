@@ -75,6 +75,12 @@ select jsonb_build_object(
       from supabase_migrations.schema_migrations
       where version = '20260928140000'
     ),
+    'retryRedispatchCanonicalOrReviewedEquivalent', exists(
+      select 1
+      from supabase_migrations.schema_migrations
+      where version = '20261001113000'
+         or name = 'assignment_push_retry_redispatch_20261001113000'
+    ),
     'retryRedispatchCanonicalVersion', exists(
       select 1
       from supabase_migrations.schema_migrations
