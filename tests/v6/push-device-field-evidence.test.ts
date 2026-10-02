@@ -113,3 +113,32 @@ test('export picks only sanitized push state fields', () => {
   assert.equal(serialized.includes('qa@example.com'), false);
   assert.equal(serialized.includes('"token"'), false);
 });
+
+
+test('evidence rejects obvious account identifiers, endpoints and credentials in human-entered fields', () => {
+  assert.throws(
+    () => record({
+      metadata: {
+        tester: 'qa@example.com',
+        deviceOsBrowser: 'Android / Chrome',
+        environment: 'preview',
+        durableEvidenceReference: 'issue-452',
+      },
+    }),
+    /account, credential, endpoint, key, or token material/i,
+  );
+
+  const p1 = gate('p1');
+  p1.notes = 'Observed notification for user 11111111-1111-4111-8111-111111111111.';
+  assert.throws(
+    () => record({ gates: [p1, gate('p2'), gate('p3')] }),
+    /account, credential, endpoint, key, or token material/i,
+  );
+
+  const p2 = gate('p2');
+  p2.notes = 'endpoint=https://push.example/device-secret';
+  assert.throws(
+    () => record({ gates: [gate('p1'), p2, gate('p3')] }),
+    /account, credential, endpoint, key, or token material/i,
+  );
+});
