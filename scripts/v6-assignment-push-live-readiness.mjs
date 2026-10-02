@@ -75,6 +75,8 @@ export function evaluateAssignmentPushReadiness(input) {
     cronSucceeded: last24Hours.cronSucceeded,
     cronFailed: last24Hours.cronFailed,
     assignmentNotifications: last24Hours.assignmentNotifications,
+    assignedNotifications: last24Hours.assignedNotifications ?? 0,
+    assignedPushDelivered: last24Hours.assignedPushDelivered ?? 0,
     dueNotifications: last24Hours.dueNotifications,
     duePushDelivered: last24Hours.duePushDelivered,
     dueAssignmentsNow: qaGap.dueAssignmentsNow,
@@ -122,10 +124,13 @@ export function evaluateAssignmentPushReadiness(input) {
   const retryHardeningReady = Object.values(retryChecks).every(Boolean);
   const schedulerDispatchReady = Object.values(dispatchChecks).every(Boolean);
   const releaseBackendReady = backendReady && retryHardeningReady && schedulerDispatchReady;
+  const liveAssignedNotificationObserved = (last24Hours.assignedNotifications ?? 0) > 0;
+  const liveAssignedPushDelivered = (last24Hours.assignedPushDelivered ?? 0) > 0;
+  const liveAssignedDeliveryObserved = liveAssignedNotificationObserved && liveAssignedPushDelivered;
   const liveDueNotificationObserved = last24Hours.dueNotifications > 0;
   const liveDuePushDelivered = last24Hours.duePushDelivered > 0;
   const liveDueDeliveryObserved = liveDueNotificationObserved && liveDuePushDelivered;
-  const rowReadyForPass = releaseBackendReady && liveDueDeliveryObserved;
+  const rowReadyForPass = releaseBackendReady && liveAssignedDeliveryObserved && liveDueDeliveryObserved;
 
   const blockers = [];
   for (const [name, passed] of Object.entries(backendChecks)) {
@@ -137,6 +142,8 @@ export function evaluateAssignmentPushReadiness(input) {
   for (const [name, passed] of Object.entries(dispatchChecks)) {
     if (!passed) blockers.push(`dispatch:${name}`);
   }
+  if (!liveAssignedNotificationObserved) blockers.push('live:assignedNotification');
+  if (!liveAssignedPushDelivered) blockers.push('live:assignedPushDelivered');
   if (!liveDueNotificationObserved) blockers.push('live:dueNotification');
   if (!liveDuePushDelivered) blockers.push('live:duePushDelivered');
   if (qaGap.dueAssignmentsNow === 0 && !liveDueDeliveryObserved) blockers.push('qa:noCurrentDueAssignment');
@@ -148,6 +155,9 @@ export function evaluateAssignmentPushReadiness(input) {
     retryHardeningReady,
     schedulerDispatchReady,
     releaseBackendReady,
+    liveAssignedNotificationObserved,
+    liveAssignedPushDelivered,
+    liveAssignedDeliveryObserved,
     liveDueNotificationObserved,
     liveDuePushDelivered,
     liveDueDeliveryObserved,
@@ -156,6 +166,8 @@ export function evaluateAssignmentPushReadiness(input) {
       cronSucceeded24h: last24Hours.cronSucceeded,
       cronFailed24h: last24Hours.cronFailed,
       assignmentNotifications24h: last24Hours.assignmentNotifications,
+      assignedNotifications24h: last24Hours.assignedNotifications ?? 0,
+      assignedPushDelivered24h: last24Hours.assignedPushDelivered ?? 0,
       dueNotifications24h: last24Hours.dueNotifications,
       duePushDelivered24h: last24Hours.duePushDelivered,
       dueAssignmentsNow: qaGap.dueAssignmentsNow,
