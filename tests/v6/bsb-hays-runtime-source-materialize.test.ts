@@ -51,7 +51,16 @@ test('materializes only a complete certified Hays inventory into runtime data', 
     assert.equal(result.chapters, 1189);
     assert.equal(result.inventorySha256, inventory.inventorySha256);
     assert.equal(result.contentVersion, inventory.contentVersion);
-    assert.deepEqual(JSON.parse(await readFile(output, 'utf8')), inventory);
+    assert.deepEqual(JSON.parse(await readFile(output, 'utf8')), {
+      schemaVersion: 1,
+      translationId: 'bsb',
+      narrator: 'Barry Hays',
+      inventorySha256: inventory.inventorySha256,
+      contentVersion: inventory.contentVersion,
+      chapters: 1189,
+      totalBytes: inventory.totalBytes,
+      segments: inventory.files.map(row => [row.byteLength, row.sha256]),
+    });
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
