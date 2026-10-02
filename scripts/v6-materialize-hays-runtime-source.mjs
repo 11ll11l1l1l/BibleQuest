@@ -21,13 +21,23 @@ export async function materializeHaysRuntimeSource({
   if (expectedInventorySha256 && inventory.inventorySha256 !== expectedInventorySha256) {
     fail('Certified Hays source inventory digest mismatch.');
   }
-  await mkdir(dirname(output), { recursive: true });
-  await writeFile(output, JSON.stringify(inventory, null, 2) + '\n', 'utf8');
-  return Object.freeze({
-    chapters: inventory.chapters,
-    totalBytes: inventory.totalBytes,
+  const runtime = Object.freeze({
+    schemaVersion: 1,
+    translationId: 'bsb',
+    narrator: 'Barry Hays',
     inventorySha256: inventory.inventorySha256,
     contentVersion: inventory.contentVersion,
+    chapters: inventory.chapters,
+    totalBytes: inventory.totalBytes,
+    segments: Object.freeze(inventory.files.map(row => Object.freeze([row.byteLength, row.sha256]))),
+  });
+  await mkdir(dirname(output), { recursive: true });
+  await writeFile(output, JSON.stringify(runtime) + '\n', 'utf8');
+  return Object.freeze({
+    chapters: runtime.chapters,
+    totalBytes: runtime.totalBytes,
+    inventorySha256: runtime.inventorySha256,
+    contentVersion: runtime.contentVersion,
     output,
   });
 }
