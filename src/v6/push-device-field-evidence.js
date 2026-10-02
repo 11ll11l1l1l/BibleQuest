@@ -8,8 +8,8 @@ import {
 } from './physical-device-evidence.js';
 
 export const PUSH_FIELD_GATE_STEPS = Object.freeze({
-  p1: Object.freeze(['enabled-ready','app-closed','os-notification-arrived','opened-assignments','durable-notification-center']),
-  p2: Object.freeze(['disabled-ready','app-closed','no-os-push-90s','notification-center-fallback']),
+  p1: Object.freeze(['enabled-ready','real-auth-session','app-closed','durable-assignment-record','canonical-dispatch','os-notification-arrived','opened-assignments','durable-notification-center']),
+  p2: Object.freeze(['disabled-ready','app-closed','no-os-push-90s','notification-center-fallback','cleanup-complete']),
   p3: Object.freeze(['backend-ready','app-closed','due-notification-once','os-notification-arrived','opened-assignments','no-duplicate-next-interval']),
 });
 
