@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "evidenceClass": "LIVE-PRODUCTION-QA",
+  "repositoryBaseSha": "75bfaaf31dd5417e6188968c08d8dd8b2020d152",
+  "observedAt": "2026-10-02T21:10:43.17838+00:00",
+  "edgeFunction": {
+    "slug": "bq-assignment-reminders",
+    "status": "ACTIVE",
+    "version": 1,
+    "verifyJwt": false,
+    "last24Hours": {
+      "windowStart": "2026-10-01T21:11:00Z",
+      "windowEnd": "2026-10-02T21:11:00Z",
+      "http200": 264,
+      "httpNon2xx": 0,
+      "pgNetRequests": 264
+    }
+  },
+  "pushDelivery": {
+    "slug": "bq-push-delivery",
+    "status": "ACTIVE",
+    "version": 4,
+    "verifyJwt": false,
+    "sourceCandidateSha": "75bfaaf31dd5417e6188968c08d8dd8b2020d152",
+    "acceptanceWindow": {
+      "windowStart": "2026-10-02T21:04:30Z",
+      "windowEnd": "2026-10-02T21:10:30Z",
+      "http200": 1,
+      "httpNon2xx": 0
+    }
+  },
+  "qaProbe": {
+    "recipientClass": "controlled-owner-account",
+    "ordinaryMemberTargeted": false,
+    "disposableAssignmentArchived": true,
+    "assignedDurableNotifications": 1,
+    "assignedPushDelivered": 0,
+    "dueDurableNotifications": 1,
+    "duePushDelivered": 1,
+    "pendingDueDeliveryClaims": 0,
+    "dueRetryRows": 0,
+    "schedulerRunsObserved": 2,
+    "schedulerRunsSucceeded": 2,
+    "dueNotificationCountAfterSecondScheduler": 1,
+    "dueDeliveryCountAfterSecondScheduler": 1,
+    "idempotencyObserved": true,
+    "physicalDeviceEvidenceClaimed": false
+  },
+  "assignment_push_readiness": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-02T21:10:43.17838+00:00",
+    "extensions": {
+      "pgCron": true,
+      "pgNet": true
+    },
+    "dueFunction": {
+      "exists": true,
+      "securityDefiner": true,
+      "serviceRoleExecute": true,
+      "authenticatedExecute": false,
+      "anonExecute": false,
+      "hasRetryReady": true
+    },
+    "indexes": {
+      "dueOnce": true,
+      "dueScan": true,
+      "retryDue": true
+    },
+    "scheduler": {
+      "exists": true,
+      "schedule": "*/5 * * * *",
+      "active": true
+    },
+    "vaultNames": {
+      "projectUrl": true,
+      "schedulerSecret": true
+    },
+    "migrationHistory": {
+      "dueReminderCanonicalOrReviewedEquivalent": true,
+      "dueReminderCanonicalVersion": false,
+      "retryRedispatchCanonicalOrReviewedEquivalent": true,
+      "retryRedispatchCanonicalVersion": false
+    },
+    "last24Hours": {
+      "cronSucceeded": 288,
+      "cronFailed": 0,
+      "assignmentNotifications": 2,
+      "assignedNotifications": 1,
+      "assignedPushDelivered": 0,
+      "dueNotifications": 1,
+      "duePushDelivered": 1
+    },
+    "qaGap": {
+      "dueAssignmentsNow": 0
+    }
+  }
+}
