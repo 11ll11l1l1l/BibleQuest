@@ -9,15 +9,16 @@ import {
 } from './physical-device-evidence.js';
 
 export const FIELD_DEVICE_GATE_STEPS = Object.freeze({
-  'installed-pwa':Object.freeze(['installed','warm','offline-launch','offline-home','offline-reader','restart']),
+  'installed-pwa':Object.freeze(['installed','candidate-identity','warm','offline-launch','offline-home','offline-reader','no-false-network-success','restart','reconnect-recovery']),
   'keyboard-focus':Object.freeze(['sequence','activation','return']),
   'screen-reader':Object.freeze(['labels','headings','updates']),
   'text-scaling':Object.freeze(['scale','reflow']),
   'touch-overflow':Object.freeze(['targets','orientation','safe-area']),
   'motion-contrast':Object.freeze(['motion','contrast']),
-  'background-media':Object.freeze(['background-playback','metadata','play-pause','seek','chapter-nav','resume']),
+  'reader-audio-a11y':Object.freeze(['controls','manual-navigation','autoscroll','screen-reader']),
+  'background-media':Object.freeze(['background-playback','lock-screen','metadata','play-pause','stop-safe','seek','chapter-nav','unsupported-safe','resume']),
 });
-export const MANUAL_ACCESSIBILITY_GATE_IDS = Object.freeze(['keyboard-focus','screen-reader','text-scaling','touch-overflow','motion-contrast']);
+export const MANUAL_ACCESSIBILITY_GATE_IDS = Object.freeze(['keyboard-focus','screen-reader','text-scaling','touch-overflow','motion-contrast','reader-audio-a11y']);
 const DISPLAY_MODES=Object.freeze(['standalone','ios-standalone','browser-tab']);
 
 export function buildFieldDeviceEvidence({candidateSha,metadata,gates,evidenceDateJst,observedAt=new Date().toISOString(),origin,installedDisplayMode,networkOnlineAtExport=false}={}) {
@@ -31,13 +32,17 @@ export function buildFieldDeviceEvidence({candidateSha,metadata,gates,evidenceDa
   if(gateStatus['installed-pwa']==='PASS'&&mode==='browser-tab') {
     throw new Error('Installed-PWA PASS requires standalone or iOS standalone display mode.');
   }
+  const networkRestoredAtExport=networkOnlineAtExport===true;
+  if(gateStatus['installed-pwa']==='PASS'&&!networkRestoredAtExport) {
+    throw new Error('Installed-PWA PASS export requires network restored after the offline/relaunch checks.');
+  }
   const physicalInstalledPwaOffline=gateStatus['installed-pwa']==='PASS';
   const criticalManualAccessibility=MANUAL_ACCESSIBILITY_GATE_IDS.every(id=>gateStatus[id]==='PASS');
   const backgroundLockscreenMedia=gateStatus['background-media']==='PASS';
   return Object.freeze({
     schemaVersion:1,evidenceClass:'PHYSICAL-DEVICE',evidenceType:'PWA-A11Y-MEDIA',candidateSha:sha,
     evidenceDateJst:requireJstEvidenceDate(evidenceDateJst),observedAt:requireEvidenceTimestamp(observedAt),
-    ...normalizedMetadata,origin:approvedOrigin,installedDisplayMode:mode,networkOnlineAtExport:networkOnlineAtExport===true,
+    ...normalizedMetadata,origin:approvedOrigin,installedDisplayMode:mode,networkOnlineAtExport:networkRestoredAtExport,
     gates:normalizedGates,
     checklistEligibility:Object.freeze({
       physicalInstalledPwaOffline,criticalManualAccessibility,backgroundLockscreenMedia,
