@@ -104,7 +104,9 @@ export function evaluateAssignmentPushReadiness(input) {
   const retryChecks = Object.freeze({
     retryDueIndex: indexes.retryDue === true,
     retryFunctionPath: dueFunction.hasRetryReady === true,
-    retryMigrationRecorded: migrationHistory.retryRedispatchCanonicalVersion === true,
+    retryMigrationRecorded:
+      migrationHistory.retryRedispatchCanonicalOrReviewedEquivalent === true
+      || migrationHistory.retryRedispatchCanonicalVersion === true,
   });
 
   const dispatchChecks = Object.freeze({
