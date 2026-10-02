@@ -66,6 +66,7 @@ function pushRecord(overrides={}){
       owner_marker_matches_current_account:true,
       lifecycle_persistence_verified_this_session:true,
     },
+    origin:'https://abc.mybiblequest.pages.dev',
     observedAt:'2026-10-02T22:15:00.000Z',
     ...overrides,
   });
@@ -74,12 +75,12 @@ function pushRecord(overrides={}){
 function packageRecord(){
   const record=JSON.parse(JSON.stringify(createFieldCertificationPackage(sha,{now:()=>new Date('2026-10-02T21:45:00.000Z')})));
   record.references={
-    exactRcAutomatedGate:'rc-gate-run-12345',
-    builtBrowserPush:'phase1-run-23456',
+    exactRcAutomatedGate:{candidateSha:sha,reference:'rc-gate-run-12345'},
+    builtBrowserPush:{candidateSha:sha,reference:'phase1-run-23456'},
     assignmentDueBackend:'issue-1029-due-delivery-evidence',
-    assignmentAssignedDurableNotification:'assigned-notification-evidence-34567',
-    assignmentAssignedDispatchLedger:'assigned-dispatch-ledger-evidence-45678',
-    assignmentCleanup:'field-cleanup-record-56789',
+    assignmentAssignedDurableNotification:{candidateSha:sha,reference:'assigned-notification-evidence-34567'},
+    assignmentAssignedDispatchLedger:{candidateSha:sha,reference:'assigned-dispatch-ledger-evidence-45678'},
+    assignmentCleanup:{candidateSha:sha,reference:'field-cleanup-record-56789'},
     screenshotVideo:['sanitized-field-video-reference-1'],
   };
   return record;
@@ -130,7 +131,7 @@ test('field package fails closed on a different candidate SHA or incomplete phys
 
 test('field package rejects missing supporting references and automation-only physical references',()=>{
   const missing=packageRecord();
-  missing.references.assignmentAssignedDispatchLedger='PENDING';
+  missing.references.assignmentAssignedDispatchLedger.reference='PENDING';
   assert.throws(()=>validateFieldCertificationPackageData({
     packageRecord:missing,
     fieldDeviceRecord:fieldRecord(),
@@ -155,6 +156,28 @@ test('field package rejects missing supporting references and automation-only ph
   }),/cannot be represented only by automated\/headless evidence/);
 });
 
+test('candidate-bound support references cannot silently point at another RC',()=>{
+  const wrong=packageRecord();
+  wrong.references.builtBrowserPush.candidateSha='b'.repeat(40);
+  assert.throws(()=>validateFieldCertificationPackageData({
+    packageRecord:wrong,
+    fieldDeviceRecord:fieldRecord(),
+    pushDeviceRecord:pushRecord(),
+    expectedCandidateSha:sha,
+    profile:'field',
+  }),/different release-candidate SHA/);
+});
+
+test('field and push physical evidence must come from the same deployed origin',()=>{
+  assert.throws(()=>validateFieldCertificationPackageData({
+    packageRecord:packageRecord(),
+    fieldDeviceRecord:fieldRecord(),
+    pushDeviceRecord:pushRecord({origin:'https://other.mybiblequest.pages.dev'}),
+    expectedCandidateSha:sha,
+    profile:'field',
+  }),/same deployed origin/);
+});
+
 test('final profile requires the bounded post-production human checklist',()=>{
   const pending=packageRecord();
   assert.throws(()=>validateFieldCertificationPackageData({
@@ -166,6 +189,7 @@ test('final profile requires the bounded post-production human checklist',()=>{
   }),/every post-production observation to PASS/);
 
   const complete=packageRecord();
+  complete.postProduction.productionBuildShaObserved=sha;
   complete.postProduction.productionPromotionReference='production-promotion-record-67890';
   complete.postProduction.evidenceReference='post-production-field-record-78901';
   complete.postProduction.observations=complete.postProduction.observations.map(observation=>({
