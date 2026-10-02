@@ -56,6 +56,7 @@ test('physical push field runtime reuses accepted V6 auth, persistence and servi
   assert.match(runtime, /const EXACT_SHA = \/\^\[0-9a-f\]\{40\}\$\/i/);
   assert.match(runtime, /fetch\('\/bq-build\.json'/);
   assert.match(runtime, /COMPILED_BUILD_SHA === artifactBuildSha/);
+  assert.match(runtime, /origin: location\.origin/);
   assert.match(runtime, /mybiblequest\.pages\.dev/);
 
   for (const forbidden of [
@@ -120,6 +121,7 @@ test('physical push evidence export stays candidate-bound, complete and sanitize
   const evidenceContract = evidenceRuntime + '\n' + sharedEvidenceRuntime;
   assert.match(evidenceRuntime, /evidenceClass:\s*'PHYSICAL-DEVICE'/);
   assert.match(evidenceRuntime, /candidateSha/);
+  assert.match(evidenceRuntime, /requireApprovedBibleQuestOrigin/);
   assert.match(evidenceRuntime, /physicalDevicePushEvidenceComplete/);
   assert.match(evidenceRuntime, /assignmentAssignedDuePhysicalEvidenceComplete/);
   assert.match(evidenceRuntime, /aggregatePushStillRequiresBuiltBrowserEvidence:\s*true/);
