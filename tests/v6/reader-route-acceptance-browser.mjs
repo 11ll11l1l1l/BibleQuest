@@ -248,11 +248,11 @@ async function verifyReaderAudioStateRecovery() {
   await page.getByLabel('Chapter', { exact: true }).selectOption('1');
   const playButton = page.locator('[data-reader-audio-toggle]');
   await playButton.waitFor({ state: 'visible' });
-  await page.waitForFunction(() => document.querySelector('[data-reader-audio-package]')?.textContent?.includes('Offline download is not approved'));
-  assert(await page.locator('[data-reader-audio-download]').count() === 0,
-    'Unapproved OpenBible audio exposed an offline download action.');
-  assert((await page.locator('[data-reader-audio-package]').textContent())?.includes('Streaming requires an internet connection.'),
-    'Reader did not preserve streaming-only guidance while offline-copy permission remains unapproved.');
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-download]')?.textContent?.includes('Download chapter audio'));
+  assert(await page.locator('[data-reader-audio-download]').count() === 1,
+    'Certified OpenBible Hays audio did not expose the explicit chapter download action.');
+  assert((await page.locator('[data-reader-audio-package]').textContent())?.includes('Download GEN 1 audio for offline playback'),
+    'Reader did not surface the checksum-verified Hays chapter as an optional offline package.');
   await playButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
 
