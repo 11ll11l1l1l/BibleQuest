@@ -7,12 +7,15 @@ import { PREDEPLOY_REQUIRED_WORKFLOWS } from './v6-rc-exact-sha-gate.mjs';
 const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
 
-function validatePredeployEvidence(predeploy, candidateSha) {
+function validatePredeployEvidence(predeploy, candidateSha, repository) {
   if (!predeploy || typeof predeploy !== 'object' || Array.isArray(predeploy)) {
     throw new Error('Pre-deployment RC evidence must be an object.');
   }
   if (predeploy.schemaVersion !== 1) {
     throw new Error('Pre-deployment RC evidence schemaVersion must be 1.');
+  }
+  if (String(predeploy.repository || '').trim() !== repository) {
+    throw new Error('Pre-deployment RC evidence repository does not match the certification repository.');
   }
   if (String(predeploy.candidateSha || '').toLowerCase() !== candidateSha) {
     throw new Error('Pre-deployment evidence candidate SHA does not match the RC candidate.');
@@ -72,12 +75,21 @@ export async function assembleRcCertification({
     readFile(String(deploymentEvidencePath || ''), 'utf8').then(JSON.parse),
   ]);
 
-  validatePredeployEvidence(predeploy, normalizedSha);
+  validatePredeployEvidence(predeploy, normalizedSha, normalizedRepository);
   if (String(deployment?.sourceSha || '').toLowerCase() !== normalizedSha) {
     throw new Error('Deployment evidence source SHA does not match the RC candidate.');
   }
   if (!SHA256_PATTERN.test(String(deployment?.artifactSha256 || ''))) {
     throw new Error('Deployment evidence does not contain a valid artifact SHA-256.');
+  }
+  if (!SHA256_PATTERN.test(String(deployment?.integritySha256 || ''))) {
+    throw new Error('Deployment evidence does not contain a valid integrity-manifest SHA-256.');
+  }
+  if (!Number.isInteger(deployment?.fileCount) || deployment.fileCount < 1) {
+    throw new Error('Deployment evidence does not contain a valid verified file count.');
+  }
+  if (!Number.isInteger(deployment?.totalBytes) || deployment.totalBytes < 1) {
+    throw new Error('Deployment evidence does not contain a valid verified byte count.');
   }
   if (!String(deployment?.deploymentOrigin || '').startsWith('https://')) {
     throw new Error('Deployment evidence does not contain a valid HTTPS deployment origin.');
@@ -88,6 +100,7 @@ export async function assembleRcCertification({
     repository: normalizedRepository,
     candidateSha: normalizedSha,
     artifactSha256: String(deployment.artifactSha256).toLowerCase(),
+    integritySha256: String(deployment.integritySha256).toLowerCase(),
     deploymentOrigin: String(deployment.deploymentOrigin),
     certifyingRunId: String(certifyingRunId || ''),
     verifiedAt: now().toISOString(),
