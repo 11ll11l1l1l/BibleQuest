@@ -41,6 +41,7 @@ function snapshot(overrides = {}) {
       migrationHistory: {
         dueReminderCanonicalOrReviewedEquivalent: true,
         dueReminderCanonicalVersion: false,
+        retryRedispatchCanonicalOrReviewedEquivalent: false,
         retryRedispatchCanonicalVersion: false,
       },
       last24Hours: {
@@ -92,6 +93,28 @@ test('accepts a reviewed equivalent due-reminder migration record without preten
   assert.equal(result.backendChecks.dueMigrationRecorded, true);
 });
 
+test('accepts a reviewed equivalent retry-redispatch migration record without pretending it is the canonical version', () => {
+  const result = evaluateAssignmentPushReadiness(snapshot({
+    dueFunction: {
+      exists: true,
+      securityDefiner: true,
+      serviceRoleExecute: true,
+      authenticatedExecute: false,
+      anonExecute: false,
+      hasRetryReady: true,
+    },
+    indexes: { dueOnce: true, dueScan: true, retryDue: true },
+    migrationHistory: {
+      dueReminderCanonicalOrReviewedEquivalent: true,
+      dueReminderCanonicalVersion: false,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
+      retryRedispatchCanonicalVersion: false,
+    },
+  }));
+  assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.retryChecks.retryMigrationRecorded, true);
+});
+
 test('marks the row ready only after real due notification and delivered push evidence exist', () => {
   const result = evaluateAssignmentPushReadiness(snapshot({
     dueFunction: {
@@ -106,6 +129,7 @@ test('marks the row ready only after real due notification and delivered push ev
     migrationHistory: {
       dueReminderCanonicalOrReviewedEquivalent: true,
       dueReminderCanonicalVersion: true,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
       retryRedispatchCanonicalVersion: true,
     },
     last24Hours: {
@@ -157,6 +181,7 @@ test('fails closed when actual Edge Function dispatch evidence is missing even i
     migrationHistory: {
       dueReminderCanonicalOrReviewedEquivalent: true,
       dueReminderCanonicalVersion: true,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
       retryRedispatchCanonicalVersion: true,
     },
     last24Hours: {
