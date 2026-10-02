@@ -52,13 +52,14 @@ These are BUILT-BROWSER/automated evidence. They do not satisfy PHYSICAL-DEVICE 
    - owner marker=matches signed-in account
    - lifecycle persistence=verified by enable path
 7. Fully close the installed PWA/browser so BibleQuest is not foregrounded.
-8. Through the normal BibleQuest leader assignment flow, create one disposable assignment targeted to the QA member. Do not use a client-side or public privileged-send shortcut.
-9. Confirm the backend created the durable assignment notification and the canonical sender attempted exactly the expected eligible subscription.
-10. A real Android OS notification must arrive while the app/browser is closed.
-11. Tap the OS notification.
-12. Confirm the exact same preview origin opens the Assignments destination and the in-app Notification Center retains the durable item.
+8. Through the normal BibleQuest leader assignment flow, using a real authenticated Leader/Owner session, create one disposable assignment targeted to the QA member. Do not use a client-side, test-auth, or public privileged-send shortcut.
+9. Confirm the backend created the durable assignment notification through the real bq-assignment path.
+10. Confirm the canonical sender ledger/dispatch path recorded the expected assignment_assigned delivery attempt for the controlled subscription.
+11. A real Android OS notification must arrive while the app/browser is closed.
+12. Tap the OS notification.
+13. Confirm the exact same preview origin opens the Assignments destination and the in-app Notification Center retains the durable item.
 
-P1 is PHYSICAL-DEVICE PASS only when steps 1–12 are observed and a durable sanitized evidence reference is retained.
+P1 is PHYSICAL-DEVICE PASS only when steps 1–13 are observed and durable sanitized notification + dispatch references are retained.
 
 ## P2 — push disabled preserves Notification Center behavior
 
@@ -71,12 +72,13 @@ P1 is PHYSICAL-DEVICE PASS only when steps 1–12 are observed and a durable san
 7. Confirm the canonical sender has zero eligible current-browser deliveries for the disabled device.
 8. Observe the phone for at least 90 seconds. No Android OS notification may arrive.
 9. Reopen BibleQuest and confirm the second item exists and is usable in Notification Center.
+10. Archive or clean up only the disposable assignments/notifications created for P1/P2 and retain a sanitized cleanup reference.
 
-P2 is PASS only when both no-OS-push and durable in-app fallback are observed.
+P2 is PASS only when no-OS-push, durable in-app fallback, and bounded cleanup are observed.
 
 ## P3 — live due-reminder delivery
 
-Run P3 only after the reviewed assignment due-reminder migration, Edge Function, Vault configuration and Cron job are active on the same release environment.
+Run P3 only when the accepted assignment-due backend/delivery evidence is missing, rejected, stale for the release environment, or the release reviewer explicitly requires a fresh physical due notification. The final consolidated field package may reuse accepted due-path evidence rather than repeating the scheduler wait.
 
 1. Re-enable assignment push on the same QA device and confirm the P1 ready state.
 2. Create a disposable assignment for the QA member with a valid due time and reminder time that will enter the scheduler window.
@@ -88,6 +90,12 @@ Run P3 only after the reviewed assignment due-reminder migration, Edge Function,
 8. Re-run/observe another scheduler interval and confirm no duplicate due notification is created.
 
 P3 supplies live assigned/due evidence. It must remain pending while the production/staging due-reminder scheduler path is not deployed.
+
+## Consolidated final-RC package binding
+
+For the final bounded field session, P1 + P2 are the required push-device observations. The package validator combines those physical observations with a separate accepted assignment-due backend/delivery reference. P3 may therefore remain PENDING when that due reference is accepted; this prevents repeating already-proven scheduler work merely to satisfy the physical push session.
+
+Use `scripts/v6-field-certification-package.mjs` after saving both harness exports. The package also requires the same-SHA built-browser push evidence reference, so physical testing cannot silently replace service-worker/browser coverage.
 
 ## Evidence binding
 
