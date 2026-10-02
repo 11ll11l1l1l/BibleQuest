@@ -44,6 +44,15 @@ function normalizeEvidenceFile(value, label) {
   return path;
 }
 
+function requireCandidateBoundReference(value, label, expectedSha) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(label + ' must be a candidate-bound reference object.');
+  }
+  const sha = requireExactCandidateSha(value.candidateSha, label);
+  if (sha !== expectedSha) throw new Error(label + ' belongs to a different release-candidate SHA.');
+  return requiredSanitizedText(value.reference, label + ' reference');
+}
+
 function requirePhysicalReference(value, label, automatedReferences) {
   const reference = requiredSanitizedText(value, label);
   if (AUTOMATION_ONLY_PATTERN.test(reference)) {
@@ -98,15 +107,16 @@ export function createFieldCertificationPackage(candidateSha, { now = () => new 
       pushDeviceEvidence: 'field-push.json',
     }),
     references: Object.freeze({
-      exactRcAutomatedGate: 'PENDING',
-      builtBrowserPush: 'PENDING',
+      exactRcAutomatedGate: Object.freeze({ candidateSha: sha, reference: 'PENDING' }),
+      builtBrowserPush: Object.freeze({ candidateSha: sha, reference: 'PENDING' }),
       assignmentDueBackend: 'PENDING',
-      assignmentAssignedDurableNotification: 'PENDING',
-      assignmentAssignedDispatchLedger: 'PENDING',
-      assignmentCleanup: 'PENDING',
+      assignmentAssignedDurableNotification: Object.freeze({ candidateSha: sha, reference: 'PENDING' }),
+      assignmentAssignedDispatchLedger: Object.freeze({ candidateSha: sha, reference: 'PENDING' }),
+      assignmentCleanup: Object.freeze({ candidateSha: sha, reference: 'PENDING' }),
       screenshotVideo: Object.freeze([]),
     }),
     postProduction: Object.freeze({
+      productionBuildShaObserved: 'PENDING',
       productionPromotionReference: 'PENDING',
       evidenceReference: 'PENDING',
       observations: Object.freeze(POST_PRODUCTION_OBSERVATION_IDS.map(id => Object.freeze({
@@ -154,19 +164,37 @@ export function validateFieldCertificationPackageData({
     throw new Error('Field package requires PASS for P1/P2 physical push evidence.');
   }
 
+  if (push.origin !== field.origin) {
+    throw new Error('Field-device and push physical evidence must come from the same deployed origin.');
+  }
+
   const references = packageRecord.references || {};
-  const exactRcAutomatedGate = requiredSanitizedText(references.exactRcAutomatedGate, 'Exact RC automated-gate reference');
-  const builtBrowserPush = requiredSanitizedText(references.builtBrowserPush, 'Built-browser push reference');
+  const exactRcAutomatedGate = requireCandidateBoundReference(
+    references.exactRcAutomatedGate,
+    'Exact RC automated-gate reference',
+    expectedSha,
+  );
+  const builtBrowserPush = requireCandidateBoundReference(
+    references.builtBrowserPush,
+    'Built-browser push reference',
+    expectedSha,
+  );
   const assignmentDueBackend = requiredSanitizedText(references.assignmentDueBackend, 'Assignment due backend evidence reference');
-  const assignmentAssignedDurableNotification = requiredSanitizedText(
+  const assignmentAssignedDurableNotification = requireCandidateBoundReference(
     references.assignmentAssignedDurableNotification,
     'Assignment assigned durable-notification reference',
+    expectedSha,
   );
-  const assignmentAssignedDispatchLedger = requiredSanitizedText(
+  const assignmentAssignedDispatchLedger = requireCandidateBoundReference(
     references.assignmentAssignedDispatchLedger,
     'Assignment assigned dispatch/ledger reference',
+    expectedSha,
   );
-  const assignmentCleanup = requiredSanitizedText(references.assignmentCleanup, 'Disposable assignment cleanup reference');
+  const assignmentCleanup = requireCandidateBoundReference(
+    references.assignmentCleanup,
+    'Disposable assignment cleanup reference',
+    expectedSha,
+  );
   const automatedReferences = [exactRcAutomatedGate, builtBrowserPush];
   const fieldPhysicalReference = requirePhysicalReference(
     field.durableEvidenceReference,
@@ -185,9 +213,17 @@ export function validateFieldCertificationPackageData({
     requiredSanitizedText(reference, 'Screenshot/video reference ' + (index + 1)));
 
   const postProduction = normalizePostProduction(packageRecord.postProduction, normalizedProfile);
+  let productionBuildShaObserved = null;
   let productionPromotionReference = null;
   let postProductionEvidenceReference = null;
   if (normalizedProfile === 'final') {
+    productionBuildShaObserved = requireExactCandidateSha(
+      packageRecord.postProduction?.productionBuildShaObserved,
+      'Observed production build SHA',
+    );
+    if (productionBuildShaObserved !== expectedSha) {
+      throw new Error('Observed production build SHA does not match the certified release candidate.');
+    }
     productionPromotionReference = requiredSanitizedText(
       packageRecord.postProduction?.productionPromotionReference,
       'Production promotion reference',
@@ -229,6 +265,7 @@ export function validateFieldCertificationPackageData({
       screenshotVideo: Object.freeze(screenshotVideo),
     }),
     postProductionComplete: normalizedProfile === 'final',
+    productionBuildShaObserved,
     productionPromotionReference,
     postProductionEvidenceReference,
     postProduction,
