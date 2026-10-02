@@ -15,6 +15,7 @@ on:
       - "tests/v6/openbible-hays-catalog.test.ts"
       - "tests/v6/reader-audio-packages.test.ts"
       - "tests/v6/reader-audio-controls-wiring.test.ts"
+      - "tests/v6/reader-route-acceptance-browser.mjs"
       - "tests/v6/bsb-hays-runtime-source-materialize.test.ts"
       - ".github/workflows/v6-bsb-offline-source-acceptance.yml"
   workflow_dispatch:
