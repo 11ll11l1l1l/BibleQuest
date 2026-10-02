@@ -18,10 +18,11 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerBoot, /offlinePackages: audioRepository/);
   assert.match(readerBoot, /createReaderAudioProvider\(\{\s*manifest,/);
   assert.match(readerBoot, /const scriptureContentVersion = await catalogModule\.loadCurrentBsbScriptureContentVersion\(\)/);
-  assert.match(readerBoot, /const haysAlignment = scriptureContentVersion[\s\S]*loadOpenBibleHaysAlignmentBundle\(scriptureContentVersion, args\.books\)/);
+  assert.match(readerBoot, /const \[haysSourceInventory, haysAlignment\] = scriptureContentVersion[\s\S]*loadOpenBibleHaysSourceInventory\(\)[\s\S]*loadOpenBibleHaysAlignmentBundle\(scriptureContentVersion, args\.books\)/);
   assert.match(readerBoot, /const haysStreamManifest = scriptureContentVersion/);
   assert.match(readerBoot, /createOpenBibleNarratorStreamingManifest\('hays', scriptureContentVersion, args\.books, haysAlignment\?\.alignmentSource\)/);
-  assert.match(readerBoot, /bindOpenBibleHaysAlignmentIdentity\(haysStreamManifest, haysAlignment\)/);
+  assert.match(readerBoot, /bindOpenBibleHaysSourceIdentity\(haysManifest, haysSourceInventory\)/);
+  assert.match(readerBoot, /bindOpenBibleHaysAlignmentIdentity\(haysManifest, haysAlignment\)/);
   assert.match(readerBoot, /const souerManifest = scriptureContentVersion/);
   assert.match(readerBoot, /createOpenBibleNarratorStreamingManifest\('souer', scriptureContentVersion, args\.books\)/);
   assert.match(readerBoot, /const createNarratorProvider = \(manifest, alignments = \[\]\)/);
@@ -61,6 +62,7 @@ test('Reader audio controls are injected through the owner boundary and remain m
   assert.match(readerPage, /data-reader-audio-download-unavailable/);
   assert.match(readerPage, /error\?\.code === 'audio-download-unavailable'/);
   assert.match(readerPage, /Direct streaming remains usable/);
+  assert.match(provider, /This chapter does not have an approved exact-source audio package/);
   assert.match(provider, /input\.packageManager\.install\(manifest, segment/);
   assert.match(provider, /cancelChapter\(bookCode: string, chapter: number\)/);
   assert.match(readerPage, /unsubscribeAudio\?\.\(\)/);
@@ -89,6 +91,7 @@ test('Reader exposes selective audio packages only through an explicit chapter a
 
   assert.match(policy, /permissions: Object\.freeze\(\{ stream: 'allowed', offlineCopy: 'review-required' \}\)/);
   assert.match(policy, /if \(manifest\.source\.permissions\?\.offlineCopy !== 'allowed'\) return \{ eligible: false, reason: 'rights-unverified'/);
+  assert.match(policy, /if \(manifest\.source\.audioIdentity !== 'exact'\) return \{ eligible: false, reason: 'audio-identity-unverified'/);
   assert.match(packages, /const eligibility = audioOfflineEligibility\(manifest, this\.#ceilingBytes\)/);
   assert.match(packages, /if \(!eligibility\.eligible\) throw new Error/);
 });

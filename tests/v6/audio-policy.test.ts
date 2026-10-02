@@ -23,6 +23,7 @@ const verified: ScriptureAudioSourceMetadata = {
   rights: 'verified',
   delivery: 'downloadable',
   textAlignment: 'exact',
+  audioIdentity: 'exact',
   permissions: { stream: 'allowed', offlineCopy: 'allowed' },
   rightsEvidence: 'https://fixture.example/license',
   reviewedBy: 'V6 content reviewer',
@@ -57,15 +58,15 @@ describe('V6 Reader audio packaging policy', () => {
     assertMatches(audioOfflineEligibility(streamOnly), { eligible: false, reason: 'rights-unverified' });
   });
 
-  it('keeps the current BSB candidate offline-ineligible until rights and alignment are proven', () => {
+  it('keeps the current BSB candidate offline-ineligible until rights and exact source identity are proven', () => {
     assertMatches(audioOfflineEligibility(manifest(BSB_AUDIO_CANDIDATE_POLICY)), {
       eligible: false,
       reason: 'rights-unverified',
     });
   });
 
-  it('allows only verified downloadable exact-alignment audio below the 10 GB ceiling', () => {
-    assertMatches(audioOfflineEligibility(manifest()), {
+  it('allows verified downloadable exact-source audio below the 10 GB ceiling even before verse timing exists', () => {
+    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'unverified' })), {
       eligible: true,
       reason: 'eligible',
       totalBytes: 1024,
@@ -79,14 +80,15 @@ describe('V6 Reader audio packaging policy', () => {
     });
   });
 
-  it('rejects mismatched or merely unverified text alignment even with verified rights', () => {
-    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'mismatch' })), {
+  it('keeps verse alignment independent but rejects audio packages without exact source identity', () => {
+    assertMatches(audioOfflineEligibility(manifest({ ...verified, audioIdentity: 'unverified', textAlignment: 'exact' })), {
       eligible: false,
-      reason: 'text-mismatch',
+      reason: 'audio-identity-unverified',
     });
-    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'unverified' })), {
-      eligible: false,
-      reason: 'text-alignment-unverified',
+    assertMatches(audioOfflineEligibility(manifest({ ...verified, textAlignment: 'mismatch' })), {
+      eligible: true,
+      reason: 'eligible',
+      totalBytes: 1024,
     });
   });
 

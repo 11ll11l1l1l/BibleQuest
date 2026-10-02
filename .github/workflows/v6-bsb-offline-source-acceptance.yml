@@ -1,0 +1,174 @@
+name: V6 BSB Offline Source Acceptance
+
+on:
+  push:
+    branches:
+      - "agent-v6-**"
+    paths:
+      - "src/v6/reader/audio-policy.ts"
+      - "src/v6/reader/audio-provider.ts"
+      - "src/v6/reader/openbible-hays-catalog.ts"
+      - "src/app/reader-v6-page.js"
+      - "scripts/v6-materialize-hays-runtime-source.mjs"
+      - "docs/v6/BSB_AUDIO_SOURCE_REVIEW.md"
+      - "tests/v6/audio-policy.test.ts"
+      - "tests/v6/audio-provider.test.ts"
+      - "tests/v6/openbible-hays-catalog.test.ts"
+      - "tests/v6/reader-audio-packages.test.ts"
+      - "tests/v6/reader-audio-controls-wiring.test.ts"
+      - "tests/v6/reader-route-acceptance-browser.mjs"
+      - "tests/v6/bsb-hays-runtime-source-materialize.test.ts"
+      - ".github/workflows/v6-bsb-offline-source-acceptance.yml"
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact BibleQuest V6 commit to verify
+        required: false
+        type: string
+      source_run_id:
+        description: Successful V6 BSB Source Certification run ID
+        required: false
+        default: "36962269737"
+        type: string
+      source_inventory_sha256:
+        description: Expected certified Hays inventory SHA-256
+        required: false
+        default: "522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2"
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v6-bsb-offline-source-${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  cancel-in-progress: true
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  BQ_SOURCE_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id || '36962269737' }}
+  BQ_SOURCE_INVENTORY_SHA256: ${{ github.event_name == 'workflow_dispatch' && inputs.source_inventory_sha256 || '522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Download certified Hays source inventory
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-hays-exact-source-inventory-*
+          path: ${{ runner.temp }}/bsb-source
+          merge-multiple: true
+
+      - name: Materialize exact runtime source metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-materialize-hays-runtime-source.mjs             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "data/v6-audio/bsb-hays-source-inventory.json"             "${BQ_SOURCE_INVENTORY_SHA256}"
+
+      - name: Focused offline-source runtime tests
+        run: >
+          node --experimental-strip-types --test
+          tests/v6/audio-policy.test.ts
+          tests/v6/audio-provider.test.ts
+          tests/v6/openbible-hays-catalog.test.ts
+          tests/v6/reader-audio-packages.test.ts
+          tests/v6/reader-audio-controls-wiring.test.ts
+          tests/v6/bsb-hays-runtime-source-materialize.test.ts
+
+      - name: Verify one live certified Hays chapter still matches exact bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFile } from 'node:fs/promises';
+          const inventory = JSON.parse(await readFile(process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json', 'utf8'));
+          const row = inventory.files.find(item => item.book === 'GEN' && item.chapter === 1);
+          if (!row) throw new Error('Certified Genesis 1 Hays row is missing.');
+          const response = await fetch(row.sourceUrl, { cache: 'no-store' });
+          if (!response.ok) throw new Error('Live Hays Genesis 1 request failed: HTTP ' + response.status);
+          const bytes = Buffer.from(await response.arrayBuffer());
+          const digest = createHash('sha256').update(bytes).digest('hex');
+          if (bytes.length !== row.byteLength) throw new Error('Live Hays Genesis 1 byte length changed.');
+          if (digest !== row.sha256) throw new Error('Live Hays Genesis 1 SHA-256 changed.');
+          console.log(JSON.stringify({
+            book: row.book,
+            chapter: row.chapter,
+            byteLength: bytes.length,
+            sha256: digest,
+            inventorySha256: inventory.inventorySha256,
+          }));
+          NODE
+
+      - name: Build exact candidate with certified runtime source metadata
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: npm run build:v6
+
+      - name: Verify built artifact keeps exact source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const source = JSON.parse(await readFile('dist-v6/data/v6-audio/bsb-hays-source-inventory.json', 'utf8'));
+          const certified = JSON.parse(await readFile(process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json', 'utf8'));
+          if (source?.schemaVersion !== 1 || source?.translationId !== 'bsb' || source?.narrator !== 'Barry Hays'
+            || source.chapters !== 1189 || source.inventorySha256 !== process.env.BQ_SOURCE_INVENTORY_SHA256
+            || source.contentVersion !== 'sha256-' + source.inventorySha256
+            || source.totalBytes !== certified.totalBytes || !Array.isArray(source.segments) || source.segments.length !== 1189) {
+            throw new Error('Built compact Hays source metadata is invalid.');
+          }
+          for (let index = 0; index < certified.files.length; index += 1) {
+            const row = source.segments[index], expected = certified.files[index];
+            if (!Array.isArray(row) || row.length !== 2 || row[0] !== expected.byteLength || row[1] !== expected.sha256) {
+              throw new Error('Built compact Hays source metadata diverges at chapter index ' + index + '.');
+            }
+          }
+          const build = JSON.parse(await readFile('dist-v6/bq-build.json', 'utf8'));
+          if (build.sha !== process.env.BQ_EXACT_SHA) throw new Error('Built candidate SHA mismatch.');
+          console.log(JSON.stringify({
+            candidateSha: build.sha,
+            chapters: source.chapters,
+            totalBytes: source.totalBytes,
+            inventorySha256: source.inventorySha256,
+          }));
+          NODE
+
+      - name: Upload exact offline-source evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-hays-offline-source-${{ env.BQ_EXACT_SHA }}
+          path: |
+            data/v6-audio/bsb-hays-source-inventory.json
+            dist-v6/bq-build.json
+            dist-v6/bq-artifact-integrity.json
+          if-no-files-found: error
+          retention-days: 30

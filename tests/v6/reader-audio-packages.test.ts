@@ -24,7 +24,7 @@ function manifest(overrides: Partial<ScriptureAudioManifest> = {}): ScriptureAud
       translationId: 'bsb', source: 'Reviewed BSB audio', sourceUrl: 'https://audio.example.test/',
       scriptureContentVersion: 'bsb-content-v1', license: 'CC0 1.0', rights: 'verified',
       permissions: { stream: 'allowed', offlineCopy: 'allowed' },
-      delivery: 'downloadable', textAlignment: 'exact', attribution: 'Narrator',
+      delivery: 'downloadable', textAlignment: 'exact', audioIdentity: 'exact', attribution: 'Narrator',
       rightsEvidence: 'reviewed file evidence', reviewedBy: 'reviewer', reviewedAt: '2026-09-28T00:00:00.000Z',
     },
     segments: [segment],
@@ -80,7 +80,7 @@ test('audio package manager selectively downloads, verifies and pins chapter aud
   assert.equal(downloads, 1);
 });
 
-test('unreviewed rights, mismatched alignment and stale Scripture revisions fail before transport', async () => {
+test('unreviewed rights, unverified audio identity and stale Scripture revisions fail before transport', async () => {
   const repo = repository();
   let downloads = 0;
   const manager = new ScriptureAudioPackageManager({
@@ -90,7 +90,7 @@ test('unreviewed rights, mismatched alignment and stale Scripture revisions fail
   const segment = manifest().segments[0]!;
   for (const source of [
     { ...manifest().source, rights: 'review-required' as const },
-    { ...manifest().source, textAlignment: 'mismatch' as const },
+    { ...manifest().source, audioIdentity: 'unverified' as const },
     { ...manifest().source, scriptureContentVersion: undefined },
   ]) {
     const candidate = { ...manifest(), source } as ScriptureAudioManifest;

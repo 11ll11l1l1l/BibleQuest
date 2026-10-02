@@ -198,7 +198,7 @@ export function createReaderAudioProvider(input: {
     installChapter(bookCode: string, chapter: number, onProgress?: (progress: ScriptureAudioPackageProgress) => void) {
       if (!offlineAvailable || !manifest || !input.packageManager) throw new Error(reason || `Offline audio downloads are unavailable: ${packageDecision.reason}.`);
       const segment = manifest.segments.find(row => row.book.toUpperCase() === String(bookCode).toUpperCase() && row.chapter === chapter);
-      if (!segment || !alignmentByChapter.has(`${segment.book.toUpperCase()}:${segment.chapter}`)) throw new Error('This chapter does not have an approved audio package and matching verse timing.');
+      if (!segment) throw new Error('This chapter does not have an approved exact-source audio package.');
       return input.packageManager.install(manifest, segment, { onProgress });
     },
     cancelChapter(bookCode: string, chapter: number) {

@@ -9,7 +9,7 @@ const manifest: ScriptureAudioManifest = {
   schemaVersion: 1, translationId: 'bsb', contentVersion: 'bsb-audio-1', alignmentSource: 'timing export 1',
   source: {
     translationId: 'bsb', source: 'approved recording', sourceUrl: 'https://source.example/license',
-    license: 'CC0 with evidence', rights: 'verified', delivery: 'downloadable', textAlignment: 'exact',
+    license: 'CC0 with evidence', rights: 'verified', delivery: 'downloadable', textAlignment: 'exact', audioIdentity: 'exact',
     attribution: 'Narrator attribution', rightsEvidence: 'https://source.example/license',
     permissions: { stream: 'allowed', offlineCopy: 'allowed' },
     reviewedBy: 'V6 content reviewer', reviewedAt: '2026-09-28T00:00:00Z',
@@ -218,7 +218,7 @@ test('Reader audio revokes the prior package URL when switching to a non-install
   provider.dispose();
 });
 
-test('Reader audio exposes selective installs only for approved chapter and matching timing', async () => {
+test('Reader audio exposes selective installs for exact-source chapters without requiring verse timing', async () => {
   const calls: string[] = [];
   const installed = {
     translationId: 'bsb', audioContentVersion: 'bsb-audio-1', scriptureContentVersion: 'bsb-fixture-1',
@@ -233,10 +233,17 @@ test('Reader audio exposes selective installs only for approved chapter and matc
     cancel(translation: string, segment: string) { calls.push(`cancel:${translation}:${segment}`); return true; },
     async remove(translation: string, segment: string) { calls.push(`remove:${translation}:${segment}`); },
   };
+  const sourceOnlyManifest: ScriptureAudioManifest = {
+    ...manifest,
+    alignmentSource: undefined,
+    source: { ...manifest.source, textAlignment: 'unverified', audioIdentity: 'exact' },
+  };
   const provider = createReaderAudioProvider({
-    manifest, alignments: [alignment], scriptureContentVersion: 'bsb-fixture-1', store: storeFixture(),
+    manifest: sourceOnlyManifest, alignments: [], scriptureContentVersion: 'bsb-fixture-1', store: storeFixture(),
     createAudio: fixtureAudio, packageManager: packageManager as never,
   });
+  assert.equal(provider.canDownloadOffline(), true);
+  assert.equal(provider.hasVerseAlignment('JHN', 1), false);
   assert.equal((await provider.getInstalledPackage('JHN', 1))?.segmentId, 'JHN-1');
   assert.equal(await provider.getInstalledPackage('JHN', 2), null);
   await provider.installChapter('JHN', 1);

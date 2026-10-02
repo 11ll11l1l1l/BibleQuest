@@ -2,6 +2,7 @@ import { chromium } from 'playwright';
 import { deepStrictEqual } from 'node:assert';
 import { readFile, readdir } from 'node:fs/promises';
 import { buildBsbAlignmentManifest } from '../../scripts/v6-bsb-alignment-manifest.mjs';
+import { expectedHaysAudioFiles } from '../../scripts/v6-hays-source-inventory.mjs';
 
 const BASE = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
 const WIDTHS = [320, 360, 390, 412, 430];
@@ -16,17 +17,33 @@ async function buildBuiltReaderAlignmentFixture() {
   const scripture = JSON.parse(await readFile(new URL('../../dist-v6/data/v6-scripture-manifests/bsb.json', import.meta.url), 'utf8'));
   assert(scripture?.translationId === 'bsb' && typeof scripture.contentVersion === 'string' && scripture.contentVersion,
     'Built Reader alignment fixture requires the exact built BSB Scripture content version.');
+  const runtimeSource = JSON.parse(await readFile(new URL('../../dist-v6/data/v6-audio/bsb-hays-source-inventory.json', import.meta.url), 'utf8'));
+  assert(runtimeSource?.schemaVersion === 1 && runtimeSource.translationId === 'bsb'
+    && runtimeSource.narrator === 'Barry Hays' && runtimeSource.chapters === 1189
+    && Array.isArray(runtimeSource.segments) && runtimeSource.segments.length === 1189
+    && /^[a-f0-9]{64}$/.test(String(runtimeSource.inventorySha256 || ''))
+    && runtimeSource.contentVersion === 'sha256-' + runtimeSource.inventorySha256,
+  'Built Reader alignment fixture requires the exact certified Hays source inventory.');
+  const expectedSource = expectedHaysAudioFiles();
+  assert(expectedSource.length === runtimeSource.segments.length,
+    'Built Reader source fixture chapter count differs from the canonical Hays inventory.');
+  const sourceByChapter = new Map(expectedSource.map((row, index) => {
+    const identity = runtimeSource.segments[index];
+    assert(Array.isArray(identity) && identity.length === 2 && Number.isSafeInteger(identity[0]) && identity[0] > 0
+      && /^[a-f0-9]{64}$/.test(String(identity[1] || '')),
+    `Built Reader Hays source identity is invalid at canonical index ${index}.`);
+    return [`${row.book}:${row.chapter}`, identity];
+  }));
   const bibleDirectory = new URL('../../data/packs/bible/', import.meta.url);
   const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name)).sort();
   const revision = 'a'.repeat(40);
-  const audioInventorySha256 = 'b'.repeat(64);
-  const audioContentVersion = 'sha256-' + audioInventorySha256;
+  const audioInventorySha256 = runtimeSource.inventorySha256;
+  const audioContentVersion = runtimeSource.contentVersion;
   const source = 'Barry Hays BSB narration (OpenBible direct chapter stream)';
   const license = 'CC0 1.0 public-domain dedication by the BSB Audio Bible project';
   const alignmentRoot = 'BSB-publishing/bsb-align';
   const alignmentSource = alignmentRoot + '@' + revision;
   const alignments = [];
-  let audioIndex = 0;
   for (const name of files) {
     const code = name.slice(0, -5);
     const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
@@ -47,7 +64,8 @@ async function buildBuiltReaderAlignmentFixture() {
         startSeconds: index * 2,
         endSeconds: index * 2 + 1.5,
       }));
-      audioIndex += 1;
+      const sourceIdentity = sourceByChapter.get(`${code}:${chapter}`);
+      assert(sourceIdentity, `Built Reader certified Hays source identity is missing for ${code}:${chapter}.`);
       alignments.push({
         schemaVersion: 1,
         translationId: 'bsb',
@@ -59,8 +77,8 @@ async function buildBuiltReaderAlignmentFixture() {
         source,
         license,
         alignmentSource,
-        audioSha256: audioIndex.toString(16).padStart(64, '0'),
-        audioByteLength: 100000 + audioIndex,
+        audioSha256: sourceIdentity[1],
+        audioByteLength: sourceIdentity[0],
         verses,
       });
     }
@@ -248,11 +266,11 @@ async function verifyReaderAudioStateRecovery() {
   await page.getByLabel('Chapter', { exact: true }).selectOption('1');
   const playButton = page.locator('[data-reader-audio-toggle]');
   await playButton.waitFor({ state: 'visible' });
-  await page.waitForFunction(() => document.querySelector('[data-reader-audio-package]')?.textContent?.includes('Offline download is not approved'));
-  assert(await page.locator('[data-reader-audio-download]').count() === 0,
-    'Unapproved OpenBible audio exposed an offline download action.');
-  assert((await page.locator('[data-reader-audio-package]').textContent())?.includes('Streaming requires an internet connection.'),
-    'Reader did not preserve streaming-only guidance while offline-copy permission remains unapproved.');
+  await page.waitForFunction(() => document.querySelector('[data-reader-audio-download]')?.textContent?.includes('Download chapter audio'));
+  assert(await page.locator('[data-reader-audio-download]').count() === 1,
+    'Certified OpenBible Hays audio did not expose the explicit chapter download action.');
+  assert((await page.locator('[data-reader-audio-package]').textContent())?.includes('Download GEN 1 audio for offline playback'),
+    'Reader did not surface the checksum-verified Hays chapter as an optional offline package.');
   await playButton.click();
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-status]')?.textContent?.startsWith('Playing GEN 1'));
 
