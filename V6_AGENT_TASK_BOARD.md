@@ -18,10 +18,10 @@ The numbers below are a snapshot, not an authority over the checklist.
 
 ## Current serialized checkpoint
 
-- Integration is now `f88f9265922c82c631003f947d4a78f90ff65f3e` after the BSB speedtrack sequence through PR #1081. Direct acceptance remains **194 checked / 17 open / 211 total = 91.9%**; the new BSB work improves implementation/evidence readiness without upgrading rows that still require stronger external or physical evidence.
-- BSB runtime/tooling already integrated: resumable exact-identity 1,189-chapter regeneration + strict upstream reuse audit (#1066); corrected built-Reader verified-alignment proof + timing acceptance guard (#1068); previous/stop Media Session + exact-candidate physical field gate (#1076); streaming-safe offline/CORS fallback (#1078); deterministic missing-work sharding across 1–16 workers (#1081).
-- BSB evidence state: only **10 / 1,189** chapters are strictly reusable from the pinned upstream timing corpus; **1,179** require regeneration/reconciliation. The five BSB checklist rows remain OPEN for exact offline-file checksum/version + copy-policy review, the complete real timing manifest, highlight/seek on that manifest, autoscroll on that manifest, and physical background/lock-screen observations.
-- Do not reassign seek/highlight/autoscroll runtime implementation, offline-download-unavailable fallback, Media Session previous/stop controls, or generic timing-manifest tooling. W3 should spend cycles on exact staged Hays identity, approved-copy evidence, executing the real regeneration/import, and physical-device evidence.
+- Integration is now `d0a09d828a4e28f0ae5c0d9d7537cfc383145d68` after the BSB speedtrack sequence through PR #1090. Direct acceptance remains **194 checked / 17 open / 211 total = 91.9%**; the latest BSB work removes execution/policy blockers without upgrading rows that still require exact source bytes, the real timing corpus, or physical evidence.
+- BSB runtime/tooling already integrated: resumable exact-identity 1,189-chapter regeneration + strict upstream reuse audit (#1066); corrected built-Reader verified-alignment proof + timing acceptance guard (#1068); previous/stop Media Session + exact-candidate physical field gate (#1076); streaming-safe offline/CORS fallback (#1078); deterministic missing-work sharding across 1–16 workers (#1081); fast rejection of substantively incompatible upstream timing reuse (#1086); narrator-specific CC0/public-domain copy-rights decision with fail-closed download eligibility (#1089); and standalone exact staged-Hays SHA-256/size/duration inventory generation (#1090).
+- BSB evidence state: only **10 / 1,189** chapters are strictly reusable from the pinned upstream timing corpus; **1,179** require regeneration/reconciliation. Narrator-level local-copy permission is now reviewed/accepted, but the exact selected 1,189 chapter bytes have not been staged and hashed. The five BSB checklist rows remain OPEN for exact offline-file checksum/version evidence, the complete real timing manifest, highlight/seek on that manifest, autoscroll on that manifest, and physical background/lock-screen observations.
+- Do not reassign rights review, exact-inventory CLI plumbing, seek/highlight/autoscroll runtime implementation, offline-download-unavailable fallback, Media Session previous/stop controls, or generic timing-manifest tooling. W3 should spend cycles only on an approved exact Hays staging set, executing the integrated inventory/regeneration/import pipeline, real-manifest certification, and physical-device evidence.
 - Cross-congregation sensitive-domain denial and aggregate server-authority/RLS closure are complete. Assignment assigned/due push still requires a real eligible live due recipient plus canonical dispatch evidence. Cloudflare deployment identity remains external until Pages publishes `dist-v6` unchanged.
 
 ## Historical serialized checkpoints
@@ -78,10 +78,13 @@ Checklist targets:
 - complete versioned timing/alignment manifest for the exact Reader BSB text/audio revision.
 Current state:
 - exact chapter/text/audio/alignment identity contracts are integrated;
-- strict reuse audit shows 10 reusable / 1,179 regenerate;
+- strict reuse audit shows 10 reusable / 1,179 regenerate, with the substantive-drift fast path integrated;
+- narrator-specific CC0/public-domain copy permission is reviewed and integrated;
+- `npm run inventory:v6-bsb-hays -- <staged-hays-audio-dir> [inventory-output.json]` is integrated for exact SHA-256/size/duration evidence;
 - resumable regeneration and deterministic 1–16-worker shard planning are integrated.
 Work:
 - use only an approved exact Hays staging set; do not fetch/copy audio merely to clear acceptance;
+- run `npm run inventory:v6-bsb-hays -- <staged-hays-audio-dir> <inventory-output.json>` and retain the exact inventory evidence;
 - run `npm run audit:v6-bsb-reuse -- <pinned-bsb-align-dir> [report.json]`;
 - prepare the exact regeneration workspace, then use `npm run plan:v6-bsb-shards -- <regeneration-plan.json> <1-16>` when approved multi-worker hardware is available;
 - execute disjoint shard commands without `--force`, then finalize with `npm run run:v6-bsb-alignment -- --resume-plan <regeneration-plan.json>`;
@@ -120,11 +123,12 @@ Targets:
 - approved local-copy policy for the exact selected files.
 Current state:
 - user-initiated/removable bounded downloads, upgrade safety, and explicit CORS/fetch unavailable-state with direct-stream fallback are already integrated;
+- narrator-specific CC0/public-domain copy permission is reviewed and integrated through #1089;
+- exact staged-file inventory generation is integrated through #1090;
 - do not rework those completed behaviors.
 Work:
-- bind exact staged Hays bytes to the integrated SHA-256/size/duration inventory;
-- record the approved copy-rights decision for those exact source files;
-- keep offline copy fail-closed until both evidence classes exist.
+- on an approved staging set, run the integrated Hays inventory command and bind the resulting exact SHA-256/size/duration identity to the real alignment bundle;
+- keep runtime offline eligibility fail-closed until the exact selected bytes and complete Reader-text alignment both validate.
 
 ### W1-02 — Push assignment assigned/due path
 Targets:
