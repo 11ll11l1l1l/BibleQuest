@@ -45,6 +45,7 @@ on:
       - "scripts/v6-run-bsb-alignment-regeneration.mjs"
       - "scripts/v6-plan-bsb-alignment-shards.mjs"
       - "scripts/v6-rc-exact-sha-gate.mjs"
+      - "scripts/v6-rc-candidate-marker.mjs"
       - "scripts/v6-assemble-rc-certification.mjs"
       - "scripts/v6-live-smoke.mjs"
       - ".github/workflows/v6-deployment-verify.yml"
