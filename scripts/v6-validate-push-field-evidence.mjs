@@ -45,6 +45,7 @@ async function main(argv) {
   const summary = {
     schemaVersion: 1,
     evidenceClass: validated.evidenceClass,
+    evidenceType: validated.evidenceType,
     candidateSha: validated.candidateSha,
     observedAt: validated.observedAt,
     profile: evaluation.profile,
