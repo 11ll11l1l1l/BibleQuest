@@ -199,14 +199,14 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
   assert.equal(pinnedEvidence.evidenceClass, 'LIVE-READ-ONLY');
   assert.equal(pinnedEvidence.edgeFunction.slug, 'bq-assignment-reminders');
   assert.equal(pinnedEvidence.edgeFunction.status, 'ACTIVE');
-  const result = evaluateAssignmentPushReadiness(pinnedEvidence.assignment_push_readiness);
+  const result = evaluateAssignmentPushReadiness(pinnedEvidence);
   assert.equal(result.backendReady, true);
   assert.equal(result.retryHardeningReady, false);
   assert.equal(result.schedulerDispatchReady, true);
   assert.equal(result.releaseBackendReady, false);
   assert.equal(result.liveDueDeliveryObserved, false);
   assert.equal(result.rowReadyForPass, false);
-  assert.equal(result.counts.cronSucceeded24h, 269);
+  assert.equal(result.counts.cronSucceeded24h, 283);
   assert.equal(result.counts.cronFailed24h, 0);
   assert.deepEqual(result.blockers, [
     'retry:retryDueIndex',
