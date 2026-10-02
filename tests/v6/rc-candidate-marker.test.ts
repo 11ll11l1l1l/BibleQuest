@@ -95,6 +95,7 @@ const exactShaWorkflowContracts = [
   ['V6 Database CI', '.github/workflows/v6-database-ci.yml', 'BQ_EXACT_SHA'],
   ['V6 Client Artifact Security', '.github/workflows/v6-client-artifact-security.yml', 'BQ_EXACT_SHA'],
   ['V6 Dependency Security', '.github/workflows/v6-dependency-security.yml', 'BQ_EXACT_SHA'],
+  ['V6 Cloudflare Exact-SHA Preview Verification', '.github/workflows/v6-cloudflare-preview-verify.yml', 'BQ_EXPECTED_SHA'],
   ['V6 V4 Rollback Reference Guard', '.github/workflows/v6-v4-rollback-reference.yml', 'BQ_EXACT_SHA'],
   ['V6 Deployed Artifact Verification', '.github/workflows/v6-deployment-verify.yml', 'BQ_EXPECTED_SHA'],
   ['V6 RC Exact-SHA Automated Gate', '.github/workflows/v6-rc-exact-sha-gate.yml', 'BQ_RC_CANDIDATE_SHA'],
@@ -104,6 +105,7 @@ test('collector requirements and RC fan-out stay aligned on the exact PR head SH
   const collectorFanoutNames = exactShaWorkflowContracts
     .filter(([name]) => name !== 'V6 RC Exact-SHA Automated Gate')
     .map(([name]) => name);
+  collectorFanoutNames.push('V6 PR Serialization Guard');
   assert.deepEqual(
     [...collectorFanoutNames, 'BibleQuest inherited regression'].sort(),
     [...DEFAULT_REQUIRED_WORKFLOWS].sort(),
@@ -122,6 +124,13 @@ test('collector requirements and RC fan-out stay aligned on the exact PR head SH
       path + ' must checkout its exact candidate environment SHA',
     );
   }
+
+  const serialization = readFileSync(
+    new URL('../../.github/workflows/v6-pr-serialization-guard.yml', import.meta.url),
+    'utf8',
+  );
+  assert.match(serialization, /HEAD_SHA:\s*\$\{\{ github\.event\.pull_request\.head\.sha \}\}/);
+  assert.match(serialization, /statuses\/\$HEAD_SHA/);
 });
 
 test('RC marker fans out every candidate-specific automated gate on the same PR head', () => {
