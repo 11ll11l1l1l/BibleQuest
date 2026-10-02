@@ -40,16 +40,50 @@ jobs:
         run: |
           set -euo pipefail
           [[ "${BQ_RC_CANDIDATE_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
-          test "$(git rev-parse HEAD)" = "${BQ_RC_CANDIDATE_SHA}"
+          candidate_sha="${BQ_RC_CANDIDATE_SHA,,}"
+          test "$(git rev-parse HEAD)" = "${candidate_sha}"
           test -z "$(git status --porcelain)"
+          echo "BQ_RC_CANDIDATE_SHA=${candidate_sha}" >> "${GITHUB_ENV}"
 
       - name: Use pinned Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
+      - name: Require one-commit marker-only exact-base RC candidate
+        shell: bash
+        env:
+          BQ_RC_PR_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+        run: |
+          set -euo pipefail
+          test -f docs/v6/RC_CANDIDATE.json
+
+          read -r -a commit_and_parents <<< "$(git rev-list --parents -n 1 "${BQ_RC_CANDIDATE_SHA}")"
+          test "${#commit_and_parents[@]}" -eq 2
+          test "${commit_and_parents[0]}" = "${BQ_RC_CANDIDATE_SHA}"
+          parent_sha="${commit_and_parents[1]}"
+          [[ "${parent_sha}" =~ ^[0-9a-f]{40}$ ]]
+
+          git fetch --no-tags origin +refs/heads/v6/architecture-upgrade:refs/remotes/origin/v6/architecture-upgrade
+          git merge-base --is-ancestor "${parent_sha}" "origin/v6/architecture-upgrade"
+
+          if [[ -n "${BQ_RC_PR_BASE_SHA}" ]]; then
+            [[ "${BQ_RC_PR_BASE_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+            test "${parent_sha}" = "${BQ_RC_PR_BASE_SHA,,}"
+          fi
+
+          node scripts/v6-rc-candidate-marker.mjs --validate docs/v6/RC_CANDIDATE.json "${parent_sha}"
+
+          mapfile -t changed < <(git diff --name-only "${parent_sha}" "${BQ_RC_CANDIDATE_SHA}")
+          printf 'RC candidate changed files:\n%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = "docs/v6/RC_CANDIDATE.json"
+
       - name: Verify RC evidence collector contract
-        run: node --experimental-strip-types --test tests/v6/rc-exact-sha-gate.test.ts
+        run: >
+          node --experimental-strip-types --test
+          tests/v6/rc-exact-sha-gate.test.ts
+          tests/v6/rc-candidate-marker.test.ts
 
       - name: Collect exact-SHA automated-gate evidence
         env:
