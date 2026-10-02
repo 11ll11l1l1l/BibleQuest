@@ -9,6 +9,11 @@ const pinnedEvidence = JSON.parse(readFileSync(
   'utf8',
 ));
 
+const productionQaEvidence = JSON.parse(readFileSync(
+  new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json', import.meta.url),
+  'utf8',
+));
+
 function snapshot(overrides = {}) {
   return {
     schemaVersion: 1,
@@ -291,4 +296,26 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
     'live:duePushDelivered',
     'qa:noCurrentDueAssignment',
   ]);
+});
+
+
+test('pinned production QA evidence proves the due path while keeping assigned transport open', () => {
+  assert.equal(productionQaEvidence.evidenceClass, 'LIVE-PRODUCTION-QA');
+  assert.equal(productionQaEvidence.qaProbe.idempotencyObserved, true);
+  assert.equal(productionQaEvidence.qaProbe.physicalDeviceEvidenceClaimed, false);
+  const result = evaluateAssignmentPushReadiness(productionQaEvidence);
+  assert.equal(result.backendReady, true);
+  assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.schedulerDispatchReady, true);
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedNotificationObserved, true);
+  assert.equal(result.liveAssignedPushDelivered, false);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.equal(result.counts.assignedNotifications24h, 1);
+  assert.equal(result.counts.assignedPushDelivered24h, 0);
+  assert.equal(result.counts.dueNotifications24h, 1);
+  assert.equal(result.counts.duePushDelivered24h, 1);
+  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
 });
