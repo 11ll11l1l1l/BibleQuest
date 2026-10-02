@@ -34,6 +34,17 @@ The harness reads `bq-build.json` from the same deployed origin and refuses evid
 
 The harness does not update this canonical record or the release checklist automatically. Attach its sanitized JSON to a durable PR/issue/artifact record, transcribe the matching observations here against the same Candidate SHA, and only then promote the corresponding checklist row. Browser automation remains non-substitutable for these physical gates.
 
+Before transcribing any non-push PASS, validate the exported JSON against the exact candidate:
+
+```bash
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> installed-pwa
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> manual-accessibility
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> background-media
+node scripts/v6-validate-field-device-evidence.mjs field-device.json <exact-candidate-sha> full-nonpush
+```
+
+Both physical harnesses share the same exact-SHA, metadata sanitization, sensitive-value rejection, timestamp, and physical sub-step validation contract. The non-push harness refuses an installed-PWA PASS from normal browser-tab display mode. These validators verify evidence structure only; they never manufacture a physical observation or change PENDING to PASS.
+
 
 ## Push backend production readiness
 
