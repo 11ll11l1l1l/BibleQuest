@@ -48,6 +48,8 @@ function snapshot(overrides = {}) {
         cronSucceeded: 268,
         cronFailed: 0,
         assignmentNotifications: 0,
+        assignedNotifications: 0,
+        assignedPushDelivered: 0,
         dueNotifications: 0,
         duePushDelivered: 0,
       },
@@ -69,6 +71,8 @@ test('classifies the observed live backend as operational without overclaiming Q
     cronSucceeded24h: 268,
     cronFailed24h: 0,
     assignmentNotifications24h: 0,
+    assignedNotifications24h: 0,
+    assignedPushDelivered24h: 0,
     dueNotifications24h: 0,
     duePushDelivered24h: 0,
     dueAssignmentsNow: 0,
@@ -76,6 +80,8 @@ test('classifies the observed live backend as operational without overclaiming Q
   assert.ok(result.blockers.includes('retry:retryDueIndex'));
   assert.ok(result.blockers.includes('retry:retryFunctionPath'));
   assert.ok(result.blockers.includes('retry:retryMigrationRecorded'));
+  assert.ok(result.blockers.includes('live:assignedNotification'));
+  assert.ok(result.blockers.includes('live:assignedPushDelivered'));
   assert.ok(result.blockers.includes('live:dueNotification'));
   assert.ok(result.blockers.includes('live:duePushDelivered'));
   assert.ok(result.blockers.includes('qa:noCurrentDueAssignment'));
@@ -115,7 +121,7 @@ test('accepts a reviewed equivalent retry-redispatch migration record without pr
   assert.equal(result.retryChecks.retryMigrationRecorded, true);
 });
 
-test('marks the row ready only after real due notification and delivered push evidence exist', () => {
+test('marks the row ready only after real assigned and due delivery evidence both exist', () => {
   const result = evaluateAssignmentPushReadiness(snapshot({
     dueFunction: {
       exists: true,
@@ -136,6 +142,8 @@ test('marks the row ready only after real due notification and delivered push ev
       cronSucceeded: 288,
       cronFailed: 0,
       assignmentNotifications: 3,
+      assignedNotifications: 2,
+      assignedPushDelivered: 1,
       dueNotifications: 1,
       duePushDelivered: 1,
     },
@@ -145,9 +153,47 @@ test('marks the row ready only after real due notification and delivered push ev
   assert.equal(result.retryHardeningReady, true);
   assert.equal(result.schedulerDispatchReady, true);
   assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedDeliveryObserved, true);
   assert.equal(result.liveDueDeliveryObserved, true);
   assert.equal(result.rowReadyForPass, true);
   assert.deepEqual(result.blockers, []);
+});
+
+test('does not pass the combined assigned/due row when only due delivery is proven', () => {
+  const result = evaluateAssignmentPushReadiness(snapshot({
+    dueFunction: {
+      exists: true,
+      securityDefiner: true,
+      serviceRoleExecute: true,
+      authenticatedExecute: false,
+      anonExecute: false,
+      hasRetryReady: true,
+    },
+    indexes: { dueOnce: true, dueScan: true, retryDue: true },
+    migrationHistory: {
+      dueReminderCanonicalOrReviewedEquivalent: true,
+      dueReminderCanonicalVersion: false,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
+      retryRedispatchCanonicalVersion: false,
+    },
+    last24Hours: {
+      cronSucceeded: 288,
+      cronFailed: 0,
+      assignmentNotifications: 2,
+      assignedNotifications: 1,
+      assignedPushDelivered: 0,
+      dueNotifications: 1,
+      duePushDelivered: 1,
+    },
+    qaGap: { dueAssignmentsNow: 1 },
+  }));
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedNotificationObserved, true);
+  assert.equal(result.liveAssignedPushDelivered, false);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.ok(result.blockers.includes('live:assignedPushDelivered'));
 });
 
 test('fails closed for unsafe scheduler authority or cadence drift', () => {
@@ -188,6 +234,8 @@ test('fails closed when actual Edge Function dispatch evidence is missing even i
       cronSucceeded: 288,
       cronFailed: 0,
       assignmentNotifications: 3,
+      assignedNotifications: 2,
+      assignedPushDelivered: 1,
       dueNotifications: 1,
       duePushDelivered: 1,
     },
@@ -237,6 +285,8 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
     'retry:retryDueIndex',
     'retry:retryFunctionPath',
     'retry:retryMigrationRecorded',
+    'live:assignedNotification',
+    'live:assignedPushDelivered',
     'live:dueNotification',
     'live:duePushDelivered',
     'qa:noCurrentDueAssignment',
