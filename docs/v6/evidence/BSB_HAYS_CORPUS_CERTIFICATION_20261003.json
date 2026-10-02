@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "evidenceClass": "REAL-CORPUS-AUTOMATED-READER",
+  "certifiedAt": "2026-10-03 JST",
+  "repository": "11ll11l1l1l/BibleQuest",
+  "integrationBaseSha": "c545ee39098d629f3f1776d9296479845376850c",
+  "candidateSha": "001fecb1297c9c7842e27f0da737b42f46e515cb",
+  "pullRequest": 1096,
+  "manifest": {
+    "schemaVersion": 1,
+    "translationId": "bsb",
+    "alignmentContentVersion": "sha256-20bd19cd78c0985ed4df77c2dd66b936683f13b5a956d978d0fd35e26c7c70f4",
+    "audioContentVersion": "sha256-522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2",
+    "audioInventorySha256": "522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2",
+    "scriptureContentVersion": "sha256-381de303bc2e07dc645d",
+    "alignmentSource": "BSB-publishing/bsb-align@bdb859afc427b215b78e12ee4a7798c32b7b91e0",
+    "alignmentRevision": "bdb859afc427b215b78e12ee4a7798c32b7b91e0",
+    "complete": true,
+    "chapterCount": 1189,
+    "verseCount": 30969,
+    "inventorySha256": "20bd19cd78c0985ed4df77c2dd66b936683f13b5a956d978d0fd35e26c7c70f4",
+    "path": "data/v6-audio/bsb-hays-alignment.json",
+    "fileSha256": "bd8a34a462e0a0d9d05feedc7457bc0cb42bc5c52ec6322723f0f3bbc1c34a93"
+  },
+  "reuse": {
+    "sourceCertificationRunId": 36962269737,
+    "retainedShardRunId": 37004858231,
+    "retainedShardCandidateSha": "b8612ab19b45d9e94a05b4a5f9cddf8c0b405a7e",
+    "successfulShardsReused": 16,
+    "strictUpstreamReusableChapters": 10,
+    "regeneratedChaptersRetained": 1179,
+    "corpusRealignmentRerun": false,
+    "currentIdentityAndChapterMembershipVerified": true
+  },
+  "failureAndFix": {
+    "reference": "1 Chronicles 1:32",
+    "originalJobId": 110922002406,
+    "retainedWordArtifactId": 11235603819,
+    "retainedWordPath": "1CH/1CH_001_words.json",
+    "readerText": "The sons born to Keturah, Abraham’s concubine: Zimran, Jokshan, Medan, Midian, Ishbak, and Shuah. The sons of Jokshan: Sheba and Dedan.",
+    "alignedWords": [
+      "The",
+      "sons",
+      "born",
+      "to",
+      "Keturah",
+      "Abraham",
+      "s",
+      "concubine",
+      "Zimran",
+      "Jokshan",
+      "Medan",
+      "Midian",
+      "Ishbak",
+      "and",
+      "Shuah",
+      "The",
+      "sons",
+      "of",
+      "Jokshan",
+      "Sheba",
+      "and",
+      "Dedan"
+    ],
+    "cause": "Importer removed punctuation and joined Abraham’s into Abrahams. The pinned forced aligner replaces punctuation with whitespace and produced Abraham / s.",
+    "fix": "Importer mirrors the pinned aligner punctuation token boundaries while retaining exact normalized token equality. Canonical ordinal-to-verse mapping and non-one chapter starts are preserved.",
+    "identityChecksWeakened": false,
+    "startSeconds": 170.86,
+    "endSeconds": 183.92
+  },
+  "corpusChecks": {
+    "canonicalChapters": 1189,
+    "canonicalVerses": 30969,
+    "timedWords": 727497,
+    "totalSourceAudioBytes": 4053887180,
+    "allChapterChecksumsAndByteLengthsMatchCertifiedInventory": true,
+    "allCanonicalVerseSequencesMatchReaderPacks": true,
+    "currentReaderScriptureRevisionValidated": true,
+    "souerRejectedByHaysSourceAndAlignmentBinders": true,
+    "noAudioBinariesInTimingArtifacts": true,
+    "builtSourceAndTimingFilesPreserveExactBytes": true
+  },
+  "alignmentQuality": {
+    "averageAvailableWordScoreRounded": 0.966,
+    "wordsBelowScorePoint30": 2068,
+    "manualAudibleTimingCertificationClaimed": false
+  },
+  "readerChecks": {
+    "evidenceType": "Chromium Reader UI with controlled playback state driven by real manifest timing",
+    "target": "1CH-1:32",
+    "currentVerseHighlight": true,
+    "tapSeekSeconds": 170.86,
+    "spokenVerseFollow": true,
+    "manualFocusPreserved": true,
+    "reducedMotionRespected": true,
+    "unavailableDownloadStatePreservesDirectStream": true,
+    "physicalDeviceEvidenceClaimed": false
+  },
+  "workflows": [
+    {
+      "name": "V6 BSB Offline Source Acceptance",
+      "runId": 37073450758,
+      "conclusion": "success"
+    },
+    {
+      "name": "V6 BSB Alignment Finalization Reuse",
+      "runId": 37073450667,
+      "conclusion": "success"
+    },
+    {
+      "name": "V6 Phase 1 Build Gate",
+      "runId": 37073454572,
+      "conclusion": "success"
+    },
+    {
+      "name": "BibleQuest inherited regression",
+      "runId": 37073454316,
+      "conclusion": "success"
+    },
+    {
+      "name": "V6 Client Artifact Security",
+      "runId": 37073454401,
+      "conclusion": "success"
+    },
+    {
+      "name": "V6 PR Serialization Guard",
+      "runId": 37073454325,
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 11255431715,
+      "name": "bsb-real-manifest-reader-acceptance-001fecb1297c9c7842e27f0da737b42f46e515cb",
+      "archiveDigest": "sha256:de7e7964210d38a4b74affc7f6515efe8cb2c95942e7b832f67169b89223c33e"
+    },
+    {
+      "id": 11255181878,
+      "name": "bsb-hays-complete-alignment-001fecb1297c9c7842e27f0da737b42f46e515cb",
+      "archiveDigest": "sha256:4c7c7a2c4a0f3a21df5844fbb1b31019ea45573254800c8202fa3373e75a99b1"
+    },
+    {
+      "id": 11255552622,
+      "name": "bsb-hays-offline-source-001fecb1297c9c7842e27f0da737b42f46e515cb",
+      "archiveDigest": "sha256:9ef3901c8a9f0b994ad8d49dbf136b4b3fb84133ccbc045e76a4c51fa7708a35"
+    }
+  ],
+  "localChecks": {
+    "nodeVersion": "22.23.2",
+    "v6UnitTestsPassed": 863,
+    "lint": true,
+    "format": true,
+    "typecheck": true,
+    "promotedChecklistManifestGuard": true
+  },
+  "checklistRowsPromoted": [
+    "Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.",
+    "Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.",
+    "Current verse highlights during playback and tapping a verse seeks to the correct audio position.",
+    "Auto-scroll follows spoken verses without preventing manual navigation/accessibility use."
+  ],
+  "remainingBoundaries": [
+    {
+      "row": "Background/lock-screen media controls work where supported and degrade safely where unsupported.",
+      "status": "OPEN",
+      "reason": "Genuine physical-device evidence is required."
+    },
+    {
+      "area": "Cloudflare exact-SHA deployment/preview",
+      "status": "OPEN",
+      "runId": 37073454313,
+      "reason": "Hosted bq-build.json returns HTML fallback instead of the V6 artifact. Outside BSB scope."
+    }
+  ],
+  "integrationMergeSha": "7edbfd630057da51d36ae7d3dd253efd52ac195b"
+}

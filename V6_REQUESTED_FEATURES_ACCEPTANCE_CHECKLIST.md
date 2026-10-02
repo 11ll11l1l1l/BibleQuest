@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-10-01 JST
+Updated: 2026-10-03 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -39,6 +39,8 @@ Fourteenth acceptance reconciliation against exact integration base `1d876e68d35
 Fifteenth acceptance reconciliation at integrated head `2730ab752394d8f16ca7d6bcbc325528f4a6e720`: merged PR #990 exact head `39b91b2d401702aa31db49185d50b4b5f5af9c61` passed Phase-1 `36854167238`, inherited regression `36854167168`, and serialization `36854167156`, promoting the two already-checked conditional hosted-audio mirror gates: speech-optimized encoding plus strict below-10-GB release enforcement, and the corresponding cross-cutting hosted-audio ceiling. PR #1009 then correctly failed serialization run `36856769639` after integration advanced through non-overlapping assignment-push retry work. The captain rebuilt the same 31-file completion batch on live integration as PR #1010 exact head `7a5dd3395f7887b870cb5bff2311485f3a249ff1`; serialization `36858421227`, Dependency Security `36858421305`, Client Artifact Security `36858421179`, Phase-1 `36858421168`, Database CI `36858421262`, and inherited regression `36858421145` all passed before merge at `2730ab752394d8f16ca7d6bcbc325528f4a6e720`. This directly proves the integration stream rejects stale work, refreshes it from live integration, revalidates the exact refreshed head, and merges only the current serialized candidate. This promotes only `Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.` Inventory becomes **189 checked / 22 open (211 total, 89.6%)**. Physical-device, deployed Cloudflare, exact RC, aggregate tenant/server-authority, live assignment delivery, leaked-password residual acceptance, BSB timing/highlight/autoscroll, and production gates remain OPEN.
 Sixteenth acceptance reconciliation evidence from exact PR head `52ad9364c8d435991c90d32454761fc078a2f1db`: V6 Phase-1 run `36869444661` passed the executable content/media provenance delta audit, unit/type/lint/build gates, built PWA/accessibility/browser acceptance and the live OpenBible smoke; V6 Dependency Security `36869444565` and Client Artifact Security `36869444626` also passed. The new provenance policy compares V6 against immutable V5 production/hotfix baseline `bce55ca6ce7fda6ebeba004300caf7a77d56e550`, fails on any unreviewed changed content/media path, and forbids newly changed hosted audio/video binaries without dedicated exact-file rights review. The current V6 delta contains only four reviewed BibleQuest-maintained locale/interface modules and no V6 media binary delta. Runtime contracts independently keep YouTube recordings on the external provider, restrict downloadable Scripture packaging to redistribution-allowed translations, and keep BSB offline copying fail-closed while rights remain review-required. This promotes only `No content/media asset is hosted or transformed without verified redistribution rights/provenance.` Inventory becomes **190 checked / 21 open (211 total, 90.0%)**.
 
+
+BSB corpus certification on 2026-10-03: PR #1096 exact candidate `001fecb1297c9c7842e27f0da737b42f46e515cb` replays only BSB changes onto integration base `c545ee39098d629f3f1776d9296479845376850c`. Source acceptance `37073450758` and retained-shard finalization/real-manifest Reader acceptance `37073450667` passed. The 16 successful shards from `37004858231` were reused without corpus realignment, producing 1,189 canonical chapters / 30,969 verses bound to current Reader BSB `sha256-381de303bc2e07dc645d`, Hays inventory `522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2`, and immutable aligner revision `bdb859afc427b215b78e12ee4a7798c32b7b91e0`. Exact-candidate Phase-1 `37073454572`, inherited regression `37073454316`, artifact security `37073454401`, and serialization `37073454325` passed before integration. This promotes exactly the four source/timing/highlight-seek/autoscroll rows below. Details and artifact identities are pinned in `docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json`. Background/lock-screen physical-device acceptance and hosted Cloudflare artifact identity remain OPEN. Inventory becomes **198 checked / 13 open (211 total, 93.8%)**.
 
 ## A. Phase 0 — V6 authority and baseline
 
@@ -152,12 +154,12 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] Play the selected public chapter stream directly on demand; BibleQuest does not need to host a full audio-library mirror.
 - [x] Confirm OpenBible stream availability, seeking/range support, and browser behavior on supported origins; show a clear retry/unavailable state when the source cannot play.
 - [x] Any offline download is explicitly user-initiated, stored only on that user's device, removable, and blocked until offline-copy permission is approved.
-- [ ] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
+- [x] Offline files are exact-source checksum/version verified; CORS or browser fetch restrictions produce an unavailable-download state while direct streaming remains usable.
 - [x] If a later reviewed decision adds a BibleQuest mirror, speech-optimized encoding and the strict **below 10 GB** inventory/release gate apply to that mirror.
 - [x] Audio chapter identity maps deterministically to the exact BSB book/chapter text used by the Reader.
-- [ ] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
-- [ ] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
-- [ ] Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.
+- [x] Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.
+- [x] Current verse highlights during playback and tapping a verse seeks to the correct audio position.
+- [x] Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.
 - [x] Pause/resume, playback speed, auto-next chapter, sleep timer and persisted resume position work.
 - [ ] Background/lock-screen media controls work where supported and degrade safely where unsupported.
 - [x] Selective offline audio download is bounded by explicit user choice; the app does not silently cache the complete Audio Bible.
