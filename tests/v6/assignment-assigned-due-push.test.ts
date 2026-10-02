@@ -12,6 +12,9 @@ const reminderDbTest = readFileSync(new URL('../../supabase/tests/v6-assignment-
 const workerTest = readFileSync(new URL('./assignment-push-service-worker.test.ts', import.meta.url), 'utf8');
 const databaseWorkflow = readFileSync(new URL('../../.github/workflows/v6-database-ci.yml', import.meta.url), 'utf8');
 const schedulerOps = readFileSync(new URL('../../supabase/ops/assignment-due-reminder-cron.sql', import.meta.url), 'utf8');
+const readinessSql = readFileSync(new URL('../../supabase/ops/assignment-push-live-readiness.sql', import.meta.url), 'utf8');
+const readinessScript = readFileSync(new URL('../../scripts/v6-assignment-push-live-readiness.mjs', import.meta.url), 'utf8');
+const pinnedLiveEvidence = readFileSync(new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json', import.meta.url), 'utf8');
 
 test('assignment assigned push is connected from durable producer to the canonical sender', () => {
   assert.match(producerMigration, /create or replace function public\.bq_notify_assignment\(\)/);
@@ -68,6 +71,7 @@ test('assigned and due notifications resolve to the assignments push category an
 
   assert.match(workerTest, /assignment assigned push renders the canonical assignments deep link/);
   assert.match(workerTest, /assignment due push renders the same canonical assignments deep link/);
+  assert.match(workerTest, /deployed legacy assignment category due payload remains compatible with the V6 worker/);
   assert.match(workerTest, /url: '\/#\/assignments'/);
   assert.match(workerTest, /shown\.options\.data\.url, 'https:\/\/biblequest\.example\/#\/assignments'/);
 });
@@ -78,6 +82,10 @@ test('changes to the combined assignment push contract trigger disposable Databa
     /- 'tests\/v6\/assignment-assigned-due-push\.test\.ts'/,
     'Database CI must rerun when this cross-layer acceptance contract changes',
   );
+  assert.match(databaseWorkflow, /scripts\/v6-assignment-push-live-readiness\.mjs/);
+  assert.match(databaseWorkflow, /tests\/v6\/assignment-push-live-readiness\.test\.ts/);
+  assert.match(databaseWorkflow, /docs\/v6\/evidence\/ASSIGNMENT_PUSH_LIVE_READINESS_20261002\.json/);
+  assert.match(databaseWorkflow, /tests\/v6\/assignment-push-service-worker\.test\.ts/);
 });
 
 
@@ -96,4 +104,34 @@ test('due reminder scheduler is explicit, Vault-backed and does not embed server
   assert.match(schedulerOps, /timeout_milliseconds := 5000/);
   assert.doesNotMatch(schedulerOps, /SUPABASE_SERVICE_ROLE_KEY|SUPABASE_SECRET_KEYS/);
   assert.doesNotMatch(schedulerOps, /https:\/\/[a-z0-9]+\.supabase\.co/);
+});
+
+
+test('live readiness proof is read-only, non-secret and fail-closed on missing delivery evidence', () => {
+  assert.match(readinessSql, /^-- Read-only[\s\S]*?select jsonb_build_object\(/);
+  assert.doesNotMatch(readinessSql, /\b(?:insert|update|delete|create|alter|drop|grant|revoke|truncate)\b/i);
+  assert.match(readinessSql, /bq_assignment_reminder_project_url/);
+  assert.match(readinessSql, /bq_assignment_reminder_scheduler_secret/);
+  assert.match(readinessSql, /duePushDelivered/);
+  assert.match(readinessSql, /bible_push_delivery_ledger/);
+  assert.doesNotMatch(readinessSql, /select\s+decrypted_secret/i);
+
+  assert.match(readinessScript, /backendReady/);
+  assert.match(readinessScript, /retryHardeningReady/);
+  assert.match(readinessScript, /schedulerDispatchReady/);
+  assert.match(readinessScript, /releaseBackendReady/);
+  assert.match(readinessScript, /liveDueDeliveryObserved/);
+  assert.match(readinessScript, /rowReadyForPass/);
+  assert.match(readinessScript, /process\.exitCode = 2/);
+  assert.match(readinessScript, /process\.exitCode = 3/);
+  assert.match(readinessScript, /process\.exitCode = 4/);
+  assert.match(readinessScript, /process\.exitCode = 5/);
+
+  const evidence = JSON.parse(pinnedLiveEvidence);
+  assert.equal(evidence.evidenceClass, 'LIVE-READ-ONLY');
+  assert.equal(evidence.assignment_push_readiness.dueFunction.authenticatedExecute, false);
+  assert.equal(evidence.assignment_push_readiness.dueFunction.anonExecute, false);
+  assert.equal(evidence.assignment_push_readiness.last24Hours.duePushDelivered, 0);
+  assert.equal(evidence.assignment_push_readiness.qaGap.dueAssignmentsNow, 0);
+  assert.doesNotMatch(pinnedLiveEvidence, /https:\/\/[^"\s]*push/i);
 });

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "evidenceClass": "LIVE-READ-ONLY",
+  "repositoryBaseSha": "d45f85a10f233411d4f8c7726c570234625e5c14",
+  "observedAt": "2026-10-02T14:44:44.517761+00:00",
+  "edgeFunction": {
+    "slug": "bq-assignment-reminders",
+    "status": "ACTIVE",
+    "version": 1,
+    "verifyJwt": false,
+    "last24Hours": {
+      "windowStart": "2026-10-01T14:39:00Z",
+      "windowEnd": "2026-10-02T14:39:00Z",
+      "http200": 263,
+      "httpNon2xx": 0
+    }
+  },
+  "assignment_push_readiness": {
+    "schemaVersion": 1,
+    "observedAt": "2026-10-02T14:44:44.517761+00:00",
+    "extensions": {
+      "pgCron": true,
+      "pgNet": true
+    },
+    "dueFunction": {
+      "exists": true,
+      "securityDefiner": true,
+      "serviceRoleExecute": true,
+      "authenticatedExecute": false,
+      "anonExecute": false,
+      "hasRetryReady": false
+    },
+    "indexes": {
+      "dueOnce": true,
+      "dueScan": true,
+      "retryDue": false
+    },
+    "scheduler": {
+      "exists": true,
+      "schedule": "*/5 * * * *",
+      "active": true
+    },
+    "vaultNames": {
+      "projectUrl": true,
+      "schedulerSecret": true
+    },
+    "migrationHistory": {
+      "dueReminderCanonicalOrReviewedEquivalent": true,
+      "dueReminderCanonicalVersion": false,
+      "retryRedispatchCanonicalVersion": false
+    },
+    "last24Hours": {
+      "cronSucceeded": 283,
+      "cronFailed": 0,
+      "assignmentNotifications": 0,
+      "dueNotifications": 0,
+      "duePushDelivered": 0
+    },
+    "qaGap": {
+      "dueAssignmentsNow": 0
+    }
+  }
+}
