@@ -61,7 +61,7 @@ jobs:
 
       - name: Run no-Docker database CI contract
         run: >
-          node --experimental-strip-types --test
+          node --test --experimental-strip-types
           tests/v6/database-ci-contract.test.mjs
           tests/v6/v4-v6-upgrade-database.test.mjs
           tests/v6/sensitive-domain-tenant-matrix.test.ts
