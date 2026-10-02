@@ -1,0 +1,340 @@
+name: V6 BSB Alignment Finalization Reuse
+
+on:
+  push:
+    branches:
+      - "agent-v6-manual/bsb-alignment-ci-bridge-20261002"
+    paths:
+      - "scripts/v6-import-bsb-word-alignments.mjs"
+      - "src/v6/reader/audio-alignment.ts"
+      - "scripts/v6-finalize-bsb-alignment-from-shards.mjs"
+      - "scripts/v6-prepare-bsb-alignment-from-inventory.mjs"
+      - ".github/workflows/v6-bsb-alignment-finalize-reuse.yml"
+      - ".github/workflows/v6-bsb-alignment-generate.yml"
+      - "tests/v6/audio-word-alignment-import.test.ts"
+      - "tests/v6/audio-alignment.test.ts"
+      - "tests/v6/bsb-alignment-workflow.test.ts"
+      - "tests/v6/bsb-hays-runtime-source-materialize.test.ts"
+      - "tests/v6/reader-audio-real-manifest-sync-browser.mjs"
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact current V6 candidate to finalize
+        required: false
+        type: string
+      retained_run_id:
+        description: Failed run whose 16 successful alignment shards are retained
+        required: false
+        default: "37004858231"
+        type: string
+      retained_candidate_sha:
+        description: Exact SHA that produced the retained shard artifacts
+        required: false
+        default: "b8612ab19b45d9e94a05b4a5f9cddf8c0b405a7e"
+        type: string
+      source_run_id:
+        description: Successful V6 BSB Source Certification run ID
+        required: false
+        default: "36962269737"
+        type: string
+      source_inventory_sha256:
+        description: Expected exact Hays inventory SHA-256
+        required: false
+        default: "522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2"
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: v6-bsb-finalize-reuse-${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  cancel-in-progress: true
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  BQ_RETAINED_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.retained_run_id || '37004858231' }}
+  BQ_RETAINED_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.retained_candidate_sha || 'b8612ab19b45d9e94a05b4a5f9cddf8c0b405a7e' }}
+  BQ_SOURCE_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id || '36962269737' }}
+  BQ_SOURCE_INVENTORY_SHA256: ${{ github.event_name == 'workflow_dispatch' && inputs.source_inventory_sha256 || '522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2' }}
+  BQ_ALIGN_REVISION: bdb859afc427b215b78e12ee4a7798c32b7b91e0
+
+jobs:
+  finalize-retained-shards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact current candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove current candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Run focused importer and retained-finalizer regression tests
+        run: node --experimental-strip-types --test tests/v6/audio-word-alignment-import.test.ts tests/v6/audio-alignment.test.ts tests/v6/bsb-alignment-workflow.test.ts
+
+      - name: Checkout immutable bsb-align
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "${RUNNER_TEMP}/bsb-align"
+          git -C "${RUNNER_TEMP}/bsb-align" remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C "${RUNNER_TEMP}/bsb-align" fetch --depth=1 origin "${BQ_ALIGN_REVISION}"
+          git -C "${RUNNER_TEMP}/bsb-align" checkout --detach FETCH_HEAD
+          test "$(git -C "${RUNNER_TEMP}/bsb-align" rev-parse HEAD)" = "${BQ_ALIGN_REVISION}"
+
+      - name: Prove retained run and all 16 shard artifacts still exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          const api = path => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8' }));
+          const repo = process.env.GITHUB_REPOSITORY;
+          const runId = process.env.BQ_RETAINED_RUN_ID;
+          const sha = process.env.BQ_RETAINED_SHA.toLowerCase();
+          const run = api(`repos/${repo}/actions/runs/${runId}`);
+          if (String(run.head_sha || '').toLowerCase() !== sha) {
+            throw new Error(`Retained alignment run head SHA mismatch: ${run.head_sha} != ${sha}`);
+          }
+          const artifacts = api(`repos/${repo}/actions/runs/${runId}/artifacts?per_page=100`).artifacts || [];
+          const byName = new Map(artifacts.map(row => [row.name, row]));
+          const expected = [
+            `bsb-alignment-worklists-${sha}`,
+            ...Array.from({ length: 16 }, (_, index) => `bsb-alignment-shard-${index + 1}-${sha}`),
+          ];
+          const missing = expected.filter(name => !byName.has(name));
+          const expired = expected.filter(name => byName.get(name)?.expired);
+          if (missing.length || expired.length) {
+            throw new Error(`Retained alignment artifacts unavailable: missing=${missing.join(',') || 'none'} expired=${expired.join(',') || 'none'}`);
+          }
+          console.log(JSON.stringify({
+            retainedRunId: Number(runId),
+            retainedSha: sha,
+            retainedArtifacts: expected.length,
+            runConclusion: run.conclusion,
+          }));
+          NODE
+
+      - name: Download certified Hays inventory
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-hays-exact-source-inventory-*
+          path: ${{ runner.temp }}/bsb-source
+          merge-multiple: true
+
+      - name: Validate exact source inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          import { validateHaysAudioInventory } from './scripts/v6-hays-source-inventory.mjs';
+          const path = process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json';
+          const inventory = JSON.parse(await readFile(path, 'utf8'));
+          const validation = validateHaysAudioInventory(inventory, { requireComplete: true });
+          if (!validation.valid) throw new Error(validation.issues.join('; '));
+          if (inventory.inventorySha256 !== process.env.BQ_SOURCE_INVENTORY_SHA256) {
+            throw new Error('Certified Hays inventory digest mismatch.');
+          }
+          console.log(JSON.stringify({
+            chapters: inventory.chapters,
+            inventorySha256: inventory.inventorySha256,
+            contentVersion: inventory.contentVersion,
+          }));
+          NODE
+
+      - name: Download retained exact-identity worklists
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_RETAINED_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-alignment-worklists-${{ env.BQ_RETAINED_SHA }}
+          path: ${{ runner.temp }}/retained-worklists
+          merge-multiple: true
+
+      - name: Download all 16 retained successful alignment shards
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_RETAINED_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-alignment-shard-*-${{ env.BQ_RETAINED_SHA }}
+          path: ${{ runner.temp }}/generated
+          merge-multiple: true
+
+      - name: Recreate current exact finalization workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/audio-placeholder"
+          node scripts/v6-prepare-bsb-alignment-from-inventory.mjs             "${RUNNER_TEMP}/bsb-align"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "${RUNNER_TEMP}/audio-placeholder"             "${RUNNER_TEMP}/bsb-final"
+          node scripts/v6-stage-bsb-alignment-reuse.mjs "${RUNNER_TEMP}/bsb-final/regeneration-plan.json"
+
+      - name: Prove retained shards match current text audio and aligner identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const read = path => readFile(path, 'utf8').then(JSON.parse);
+          const root = process.env.RUNNER_TEMP;
+          const [plan, reuse, retained] = await Promise.all([
+            read(root + '/bsb-final/regeneration-plan.json'),
+            read(root + '/bsb-final/reuse-plan.json'),
+            read(root + '/retained-worklists/index.json'),
+          ]);
+          for (const key of ['scriptureContentVersion', 'audioContentVersion', 'audioInventorySha256', 'alignmentRevision']) {
+            if (retained[key] !== plan[key]) throw new Error(`Retained shard ${key} mismatch: ${retained[key]} != ${plan[key]}`);
+          }
+          if (retained.shardCount !== 16) throw new Error('Retained alignment run did not use exactly 16 shards.');
+          if (retained.reusableChapters !== reuse.reusableChapters || retained.regenerateChapters !== reuse.regenerateChapters) {
+            throw new Error('Current reuse/regeneration chapter counts differ from the retained shard run.');
+          }
+          const keyOf = row => String(row.book).toUpperCase() + '-' + Number(row.chapter);
+          const current = new Set(reuse.regenerate.map(keyOf));
+          const retainedKeys = retained.shards.flatMap(row => row.chapters).map(keyOf);
+          if (retainedKeys.length !== current.size || new Set(retainedKeys).size !== retainedKeys.length
+              || retainedKeys.some(key => !current.has(key))) {
+            throw new Error('Retained shard chapter membership differs from the current exact regeneration plan.');
+          }
+          for (let shard = 1; shard <= 16; shard += 1) {
+            const padded = String(shard).padStart(2, '0');
+            const row = await read(root + '/retained-worklists/shard-' + padded + '.json');
+            const indexRow = retained.shards.find(candidate => candidate.shard === shard);
+            if (!indexRow || row.shard !== shard || row.shardCount !== 16) throw new Error('Retained shard worklist identity is malformed: ' + shard);
+            for (const key of ['scriptureContentVersion', 'audioContentVersion', 'audioInventorySha256', 'alignmentRevision']) {
+              if (row[key] !== plan[key]) throw new Error(`Retained worklist ${shard} ${key} mismatch.`);
+            }
+            if (JSON.stringify(row.chapters.map(keyOf)) !== JSON.stringify(indexRow.chapters.map(keyOf))) {
+              throw new Error('Retained worklist chapter order differs from retained index for shard ' + shard + '.');
+            }
+          }
+          console.log(JSON.stringify({
+            scriptureContentVersion: plan.scriptureContentVersion,
+            audioContentVersion: plan.audioContentVersion,
+            audioInventorySha256: plan.audioInventorySha256,
+            alignmentRevision: plan.alignmentRevision,
+            reusableChapters: reuse.reusableChapters,
+            regenerateChapters: reuse.regenerateChapters,
+            retainedGeneratedChapters: retainedKeys.length,
+          }));
+          NODE
+          cp -R "${RUNNER_TEMP}/generated/." "${RUNNER_TEMP}/bsb-final/output/"
+
+      - name: Fail closed and build complete provenance-bound timing manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-finalize-bsb-alignment-from-shards.mjs             "${RUNNER_TEMP}/bsb-final/regeneration-plan.json"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             | tee "${RUNNER_TEMP}/bsb-final-summary.json"
+
+      - name: Prove no audio binaries enter timing artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find "${RUNNER_TEMP}/bsb-final" -type f -iname '*.mp3' | grep -q .; then
+            echo "Unexpected MP3 found in final timing workspace" >&2
+            exit 1
+          fi
+
+      - name: Upload complete exact timing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-hays-complete-alignment-${{ env.BQ_EXACT_SHA }}
+          path: |
+            ${{ runner.temp }}/bsb-final/bsb-hays-alignment.json
+            ${{ runner.temp }}/bsb-final/bsb-hays-alignments.json
+            ${{ runner.temp }}/bsb-final/regeneration-plan.json
+            ${{ runner.temp }}/bsb-final/reuse-plan.json
+            ${{ runner.temp }}/bsb-final/audio-source-inventory.json
+            ${{ runner.temp }}/bsb-final-summary.json
+            ${{ runner.temp }}/retained-worklists/index.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Promote validated timing manifest into the candidate branch
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/v6-audio
+          cp "${RUNNER_TEMP}/bsb-final/bsb-hays-alignment.json" data/v6-audio/bsb-hays-alignment.json
+          node --experimental-strip-types --test tests/v6/bsb-audio-acceptance-evidence.test.ts
+          if [ -z "$(git status --porcelain -- data/v6-audio/bsb-hays-alignment.json)" ]; then
+            echo "Validated BSB timing manifest is already committed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/v6-audio/bsb-hays-alignment.json
+          git commit -m "data(v6): add complete BSB Hays timing manifest"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Install pinned browser harness
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start V6 source browser target
+        shell: bash
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4174 > /tmp/bq-v6-bsb-real-manifest.log 2>&1 &
+          echo $! > /tmp/bq-v6-bsb-real-manifest.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4174/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v6-bsb-real-manifest.log
+          exit 1
+
+      - name: Real-manifest highlight seek and autoscroll Chromium acceptance
+        env:
+          BQ_V6_DEV_URL: http://127.0.0.1:4174
+          BQ_BSB_ALIGNMENT_MANIFEST: ${{ runner.temp }}/bsb-final/bsb-hays-alignment.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/v6/reader-audio-real-manifest-sync-browser.mjs | tee "${RUNNER_TEMP}/bsb-real-manifest-reader-acceptance.log"
+
+      - name: Upload real-manifest Reader acceptance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-real-manifest-reader-acceptance-${{ env.BQ_EXACT_SHA }}
+          path: ${{ runner.temp }}/bsb-real-manifest-reader-acceptance.log
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Finalization summary
+        shell: bash
+        run: |
+          {
+            echo "### Reused BSB timing finalization"
+            echo "- Current candidate SHA: `${BQ_EXACT_SHA}`"
+            echo "- Retained shard run: `${BQ_RETAINED_RUN_ID}`"
+            echo "- Retained shard SHA: `${BQ_RETAINED_SHA}`"
+            echo "- Source inventory: `${BQ_SOURCE_INVENTORY_SHA256}`"
+            echo "- Retained alignment shards reused: **16 / 16**"
+            echo "- Corpus realignment rerun: **no**"
+            echo "- Real-manifest Reader highlight/seek/autoscroll: **PASS**"
+          } >> "${GITHUB_STEP_SUMMARY}"

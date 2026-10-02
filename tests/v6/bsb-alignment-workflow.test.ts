@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -201,4 +201,19 @@ test('BSB regeneration resume accepts only the original exact text/audio/aligner
   } finally {
     await rm(temp, { recursive: true, force: true });
   }
+});
+
+
+test('retained-shard finalization reuses the exact successful 16-shard run without invoking MMS again', async () => {
+  const workflow = await readFile(new URL('../../.github/workflows/v6-bsb-alignment-finalize-reuse.yml', import.meta.url), 'utf8');
+  assert.match(workflow, /BQ_RETAINED_RUN_ID:[\s\S]*37004858231/);
+  assert.match(workflow, /BQ_RETAINED_SHA:[\s\S]*b8612ab19b45d9e94a05b4a5f9cddf8c0b405a7e/);
+  assert.match(workflow, /run-id: \$\{\{ env\.BQ_RETAINED_RUN_ID \}\}/);
+  assert.match(workflow, /pattern: bsb-alignment-shard-\*-\$\{\{ env\.BQ_RETAINED_SHA \}\}/);
+  assert.match(workflow, /bsb-alignment-worklists-\$\{\{ env\.BQ_RETAINED_SHA \}\}/);
+  assert.match(workflow, /scriptureContentVersion/);
+  assert.match(workflow, /audioInventorySha256/);
+  assert.match(workflow, /alignmentRevision/);
+  assert.match(workflow, /v6-finalize-bsb-alignment-from-shards\.mjs/);
+  assert.doesNotMatch(workflow, /torch==|torchaudio==|Run MMS alignment|matrix:\s*\n\s*shard:/);
 });

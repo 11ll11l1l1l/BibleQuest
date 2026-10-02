@@ -1,0 +1,344 @@
+name: V6 BSB Alignment Generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact BibleQuest V6 commit to align
+        required: false
+        type: string
+      source_run_id:
+        description: Successful V6 BSB Source Certification workflow run ID
+        required: false
+        default: "36962269737"
+        type: string
+      source_inventory_sha256:
+        description: Expected exact Hays inventory SHA-256
+        required: false
+        default: "522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2"
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v6-bsb-alignment-${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  cancel-in-progress: false
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  BQ_SOURCE_RUN_ID: ${{ github.event_name == 'workflow_dispatch' && inputs.source_run_id || '36962269737' }}
+  BQ_SOURCE_INVENTORY_SHA256: ${{ github.event_name == 'workflow_dispatch' && inputs.source_inventory_sha256 || '522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2' }}
+  BQ_ALIGN_REVISION: bdb859afc427b215b78e12ee4a7798c32b7b91e0
+  BQ_SHARD_COUNT: "16"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      reusable_chapters: ${{ steps.reuse.outputs.reusable_chapters }}
+      regenerate_chapters: ${{ steps.reuse.outputs.regenerate_chapters }}
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Checkout immutable bsb-align
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "${RUNNER_TEMP}/bsb-align"
+          git -C "${RUNNER_TEMP}/bsb-align" remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C "${RUNNER_TEMP}/bsb-align" fetch --depth=1 origin "${BQ_ALIGN_REVISION}"
+          git -C "${RUNNER_TEMP}/bsb-align" checkout --detach FETCH_HEAD
+          test "$(git -C "${RUNNER_TEMP}/bsb-align" rev-parse HEAD)" = "${BQ_ALIGN_REVISION}"
+
+      - name: Download certified Hays inventory
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-hays-exact-source-inventory-*
+          path: ${{ runner.temp }}/bsb-source
+          merge-multiple: true
+
+      - name: Validate exact source inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          import { validateHaysAudioInventory } from './scripts/v6-hays-source-inventory.mjs';
+          const path = process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json';
+          const inventory = JSON.parse(await readFile(path, 'utf8'));
+          const validation = validateHaysAudioInventory(inventory, { requireComplete: true });
+          if (!validation.valid) throw new Error(validation.issues.join('; '));
+          if (inventory.inventorySha256 !== process.env.BQ_SOURCE_INVENTORY_SHA256) {
+            throw new Error('Certified Hays inventory digest mismatch.');
+          }
+          console.log(JSON.stringify({
+            chapters: inventory.chapters,
+            inventorySha256: inventory.inventorySha256,
+            contentVersion: inventory.contentVersion,
+          }));
+          NODE
+
+      - name: Prepare exact text/audio regeneration identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/audio-placeholder"
+          node scripts/v6-prepare-bsb-alignment-from-inventory.mjs             "${RUNNER_TEMP}/bsb-align"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "${RUNNER_TEMP}/audio-placeholder"             "${RUNNER_TEMP}/bsb-workspace"
+
+      - name: Stage only strictly reusable upstream timings
+        id: reuse
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-stage-bsb-alignment-reuse.mjs "${RUNNER_TEMP}/bsb-workspace/regeneration-plan.json"
+          REUSABLE="$(node -e "const p=require(process.env.RUNNER_TEMP+'/bsb-workspace/reuse-plan.json'); process.stdout.write(String(p.reusableChapters))")"
+          REGENERATE="$(node -e "const p=require(process.env.RUNNER_TEMP+'/bsb-workspace/reuse-plan.json'); process.stdout.write(String(p.regenerateChapters))")"
+          echo "reusable_chapters=${REUSABLE}" >> "$GITHUB_OUTPUT"
+          echo "regenerate_chapters=${REGENERATE}" >> "$GITHUB_OUTPUT"
+
+      - name: Balance regeneration by certified audio duration
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-plan-bsb-alignment-ci-shards.mjs             "${RUNNER_TEMP}/bsb-workspace/regeneration-plan.json"             "${RUNNER_TEMP}/bsb-workspace/reuse-plan.json"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "${BQ_SHARD_COUNT}"             "${RUNNER_TEMP}/bsb-worklists"
+
+      - name: Upload deterministic shard worklists
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-alignment-worklists-${{ env.BQ_EXACT_SHA }}
+          path: ${{ runner.temp }}/bsb-worklists
+          if-no-files-found: error
+          retention-days: 14
+
+  align:
+    name: Align shard ${{ matrix.shard }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Use Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Checkout immutable bsb-align
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "${RUNNER_TEMP}/bsb-align"
+          git -C "${RUNNER_TEMP}/bsb-align" remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C "${RUNNER_TEMP}/bsb-align" fetch --depth=1 origin "${BQ_ALIGN_REVISION}"
+          git -C "${RUNNER_TEMP}/bsb-align" checkout --detach FETCH_HEAD
+          test "$(git -C "${RUNNER_TEMP}/bsb-align" rev-parse HEAD)" = "${BQ_ALIGN_REVISION}"
+
+      - name: Install CPU alignment dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --index-url https://download.pytorch.org/whl/cpu torch==2.8.0 torchaudio==2.8.0
+          python -m pip install --disable-pip-version-check numpy uroman
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends ffmpeg
+          fi
+          ffmpeg -version | head -n 1
+          python - <<'PY'
+          import torch, torchaudio
+          print("torch", torch.__version__)
+          print("torchaudio", torchaudio.__version__)
+          PY
+
+      - name: Download certified Hays inventory
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-hays-exact-source-inventory-*
+          path: ${{ runner.temp }}/bsb-source
+          merge-multiple: true
+
+      - name: Download shard worklists
+        uses: actions/download-artifact@v4
+        with:
+          name: bsb-alignment-worklists-${{ env.BQ_EXACT_SHA }}
+          path: ${{ runner.temp }}/bsb-worklists
+
+      - name: Resolve shard path
+        id: shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          PADDED="$(printf '%02d' "${{ matrix.shard }}")"
+          echo "path=${RUNNER_TEMP}/bsb-worklists/shard-${PADDED}.json" >> "$GITHUB_OUTPUT"
+
+      - name: Export exact current BSB alignment text
+        run: node scripts/v6-export-current-bsb-alignment-text.mjs "${RUNNER_TEMP}/bsb-text"
+
+      - name: Stage only exact audio required by this shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-stage-hays-alignment-shard.mjs             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "${{ steps.shard.outputs.path }}"             "${RUNNER_TEMP}/bsb-audio"
+
+      - name: Run MMS alignment with one model load
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/v6-run-bsb-alignment-shard.py             --aligner-dir "${RUNNER_TEMP}/bsb-align"             --audio-dir "${RUNNER_TEMP}/bsb-audio"             --text-dir "${RUNNER_TEMP}/bsb-text"             --output-dir "${RUNNER_TEMP}/bsb-output"             --worklist "${{ steps.shard.outputs.path }}"
+
+      - name: Delete staged audio
+        if: always()
+        shell: bash
+        run: rm -rf "${RUNNER_TEMP}/bsb-audio"
+
+      - name: Upload timing outputs only
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-alignment-shard-${{ matrix.shard }}-${{ env.BQ_EXACT_SHA }}
+          path: ${{ runner.temp }}/bsb-output
+          if-no-files-found: error
+          retention-days: 14
+
+  finalize:
+    needs: [prepare, align]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Checkout immutable bsb-align
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "${RUNNER_TEMP}/bsb-align"
+          git -C "${RUNNER_TEMP}/bsb-align" remote add origin https://github.com/BSB-publishing/bsb-align.git
+          git -C "${RUNNER_TEMP}/bsb-align" fetch --depth=1 origin "${BQ_ALIGN_REVISION}"
+          git -C "${RUNNER_TEMP}/bsb-align" checkout --detach FETCH_HEAD
+          test "$(git -C "${RUNNER_TEMP}/bsb-align" rev-parse HEAD)" = "${BQ_ALIGN_REVISION}"
+
+      - name: Download certified Hays inventory
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ env.BQ_SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+          pattern: bsb-hays-exact-source-inventory-*
+          path: ${{ runner.temp }}/bsb-source
+          merge-multiple: true
+
+      - name: Download all successful alignment shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bsb-alignment-shard-*-${{ env.BQ_EXACT_SHA }}
+          path: ${{ runner.temp }}/generated
+          merge-multiple: true
+
+      - name: Recreate exact finalization workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/audio-placeholder"
+          node scripts/v6-prepare-bsb-alignment-from-inventory.mjs             "${RUNNER_TEMP}/bsb-align"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             "${RUNNER_TEMP}/audio-placeholder"             "${RUNNER_TEMP}/bsb-final"
+          node scripts/v6-stage-bsb-alignment-reuse.mjs "${RUNNER_TEMP}/bsb-final/regeneration-plan.json"
+          cp -R "${RUNNER_TEMP}/generated/." "${RUNNER_TEMP}/bsb-final/output/"
+
+      - name: Fail closed and build complete timing manifest
+        id: final
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-finalize-bsb-alignment-from-shards.mjs             "${RUNNER_TEMP}/bsb-final/regeneration-plan.json"             "${RUNNER_TEMP}/bsb-source/bsb-hays-inventory.json"             | tee "${RUNNER_TEMP}/bsb-final-summary.json"
+
+      - name: Prove no audio binaries enter timing artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find "${RUNNER_TEMP}/bsb-final" -type f -iname '*.mp3' | grep -q .; then
+            echo "Unexpected MP3 found in final timing workspace" >&2
+            exit 1
+          fi
+
+      - name: Upload complete exact timing evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-hays-complete-alignment-${{ env.BQ_EXACT_SHA }}
+          path: |
+            ${{ runner.temp }}/bsb-final/bsb-hays-alignment.json
+            ${{ runner.temp }}/bsb-final/bsb-hays-alignments.json
+            ${{ runner.temp }}/bsb-final/regeneration-plan.json
+            ${{ runner.temp }}/bsb-final/reuse-plan.json
+            ${{ runner.temp }}/bsb-final/audio-source-inventory.json
+            ${{ runner.temp }}/bsb-final-summary.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Alignment certification summary
+        shell: bash
+        run: |
+          {
+            echo "### Complete BSB timing generation"
+            echo "- Candidate SHA: `${BQ_EXACT_SHA}`"
+            echo "- Source inventory: `${BQ_SOURCE_INVENTORY_SHA256}`"
+            echo "- Reusable upstream chapters: `${{ needs.prepare.outputs.reusable_chapters }}`"
+            echo "- Regenerated chapters: `${{ needs.prepare.outputs.regenerate_chapters }}`"
+            echo "- Alignment shards: `${BQ_SHARD_COUNT}`"
+            echo "- Audio binaries retained: **no**"
+          } >> "$GITHUB_STEP_SUMMARY"

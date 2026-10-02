@@ -244,3 +244,77 @@ test('BSB timing import rejects copied metadata or duration rows that do not mat
     requireComplete: false,
   }), /inventory checksum mismatch/i);
 });
+
+
+test('BSB word timing import mirrors the pinned aligner punctuation boundaries for 1 Chronicles 1:32', () => {
+  const verseText = 'The sons born to Keturah, Abraham’s concubine: Zimran, Jokshan, Medan, Midian, Ishbak, and Shuah. The sons of Jokshan: Sheba and Dedan.';
+  const alignedTokens = 'The sons born to Keturah Abraham s concubine Zimran Jokshan Medan Midian Ishbak and Shuah The sons of Jokshan Sheba and Dedan'.split(' ');
+  const alignedWords = alignedTokens.map((text, index) => ({
+    text,
+    start: Number((index * 0.1).toFixed(2)),
+    end: Number((index * 0.1 + 0.08).toFixed(2)),
+    score: 0.9,
+  }));
+  const shiftedWords = alignedWords.map(word => ({
+    ...word,
+    start: Number((word.start + 0.1).toFixed(2)),
+    end: Number((word.end + 0.1).toFixed(2)),
+  }));
+  const result = convertBsbWordAlignments({
+    records: [{
+      book: '1CH',
+      chapter: '001',
+      verses: {
+        '1': [{ text: 'Adam', start: 0, end: 0.08, score: 0.9 }],
+        '32': shiftedWords,
+      },
+    }],
+    durations: [{ book: '1CH', chapter: 1, durationSeconds: 10 }],
+    bookPacks: { '1CH': [
+      { c: 1, v: 1, t: 'Adam.' },
+      { c: 1, v: 32, t: verseText },
+    ] },
+    metadata,
+    scriptureContentVersion: 'bsb-current-punctuation-boundary',
+    requireComplete: false,
+  });
+
+  assert.deepEqual(result.alignments[0].verses[1], {
+    verse: 32,
+    startSeconds: 0.1,
+    endSeconds: Number(((alignedTokens.length - 1) * 0.1 + 0.18).toFixed(2)),
+  });
+  assert.equal(result.audit.words, alignedTokens.length + 1);
+});
+
+
+test('BSB timing import and manifest support a canonical chapter sequence that begins at verse 2', () => {
+  const result = convertBsbWordAlignments({
+    records: [{
+      book: 'PSA',
+      chapter: '003',
+      verses: {
+        '2': [
+          { text: 'Many', start: 0, end: 0.2, score: 0.9 },
+          { text: 'say', start: 0.21, end: 0.4, score: 0.9 },
+        ],
+        '3': [
+          { text: 'But', start: 0.5, end: 0.7, score: 0.9 },
+          { text: 'You', start: 0.71, end: 0.9, score: 0.9 },
+        ],
+      },
+    }],
+    durations: [{ book: 'PSA', chapter: 3, durationSeconds: 2 }],
+    bookPacks: { PSA: [
+      { c: 3, v: 2, t: 'Many say.' },
+      { c: 3, v: 3, t: 'But You.' },
+    ] },
+    metadata,
+    scriptureContentVersion: 'bsb-current-canonical-non-one-start',
+    requireComplete: false,
+  });
+
+  assert.deepEqual(result.alignments[0].verses.map(row => row.verse), [2, 3]);
+  assert.equal(result.manifest.chapters[0].verses[0].verse, 2);
+  assert.equal(result.manifest.complete, false);
+});
