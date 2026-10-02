@@ -24,7 +24,7 @@ function manifest(overrides: Partial<ScriptureAudioManifest> = {}): ScriptureAud
       translationId: 'bsb', source: 'Reviewed BSB audio', sourceUrl: 'https://audio.example.test/',
       scriptureContentVersion: 'bsb-content-v1', license: 'CC0 1.0', rights: 'verified',
       permissions: { stream: 'allowed', offlineCopy: 'allowed' },
-      delivery: 'downloadable', textAlignment: 'exact', attribution: 'Narrator',
+      delivery: 'downloadable', textAlignment: 'exact', audioIdentity: 'exact', attribution: 'Narrator',
       rightsEvidence: 'reviewed file evidence', reviewedBy: 'reviewer', reviewedAt: '2026-09-28T00:00:00.000Z',
     },
     segments: [segment],
