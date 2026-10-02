@@ -107,7 +107,7 @@ jobs:
           node --input-type=module <<'NODE'
           import { createHash } from 'node:crypto';
           import { readFile } from 'node:fs/promises';
-          const inventory = JSON.parse(await readFile('data/v6-audio/bsb-hays-source-inventory.json', 'utf8'));
+          const inventory = JSON.parse(await readFile(process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json', 'utf8'));
           const row = inventory.files.find(item => item.book === 'GEN' && item.chapter === 1);
           if (!row) throw new Error('Certified Genesis 1 Hays row is missing.');
           const response = await fetch(row.sourceUrl, { cache: 'no-store' });
@@ -136,12 +136,19 @@ jobs:
           set -euo pipefail
           node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises';
-          import { validateHaysAudioInventory } from './scripts/v6-hays-source-inventory.mjs';
           const source = JSON.parse(await readFile('dist-v6/data/v6-audio/bsb-hays-source-inventory.json', 'utf8'));
-          const validation = validateHaysAudioInventory(source, { requireComplete: true });
-          if (!validation.valid) throw new Error(validation.issues.join('; '));
-          if (source.inventorySha256 !== process.env.BQ_SOURCE_INVENTORY_SHA256) {
-            throw new Error('Built Hays source identity changed.');
+          const certified = JSON.parse(await readFile(process.env.RUNNER_TEMP + '/bsb-source/bsb-hays-inventory.json', 'utf8'));
+          if (source?.schemaVersion !== 1 || source?.translationId !== 'bsb' || source?.narrator !== 'Barry Hays'
+            || source.chapters !== 1189 || source.inventorySha256 !== process.env.BQ_SOURCE_INVENTORY_SHA256
+            || source.contentVersion !== 'sha256-' + source.inventorySha256
+            || source.totalBytes !== certified.totalBytes || !Array.isArray(source.segments) || source.segments.length !== 1189) {
+            throw new Error('Built compact Hays source metadata is invalid.');
+          }
+          for (let index = 0; index < certified.files.length; index += 1) {
+            const row = source.segments[index], expected = certified.files[index];
+            if (!Array.isArray(row) || row.length !== 2 || row[0] !== expected.byteLength || row[1] !== expected.sha256) {
+              throw new Error('Built compact Hays source metadata diverges at chapter index ' + index + '.');
+            }
           }
           const build = JSON.parse(await readFile('dist-v6/bq-build.json', 'utf8'));
           if (build.sha !== process.env.BQ_EXACT_SHA) throw new Error('Built candidate SHA mismatch.');
