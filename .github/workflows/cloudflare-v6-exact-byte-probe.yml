@@ -1,4 +1,4 @@
-name: Temporary V6 exact-SHA Cloudflare byte probe
+name: Temporary V6 Cloudflare config repair and exact-byte proof
 
 on:
   pull_request:
@@ -11,13 +11,74 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  repair-deploy-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       BQ_EXPECTED_SHA: 75bfaaf31dd5417e6188968c08d8dd8b2020d152
-      BQ_DEPLOYMENT_URL: https://a475e7de.mybiblequest.pages.dev
+      CF_PROJECT: mybiblequest
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID_SECRET: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_ACCOUNT_ID_VAR: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
     steps:
+      - name: Require configured Cloudflare credentials
+        id: creds
+        shell: bash
+        run: |
+          set -euo pipefail
+          account_id="${CF_ACCOUNT_ID_SECRET:-${CF_ACCOUNT_ID_VAR:-}}"
+          if [ -z "${CF_API_TOKEN:-}" ]; then
+            echo "Cloudflare API token is not configured as repository secret CLOUDFLARE_API_TOKEN." >&2
+            exit 2
+          fi
+          if [ -z "$account_id" ]; then
+            echo "Cloudflare account ID is not configured as secret or variable CLOUDFLARE_ACCOUNT_ID." >&2
+            exit 3
+          fi
+          echo "::add-mask::$account_id"
+          echo "account_id=$account_id" >> "$GITHUB_OUTPUT"
+
+      - name: Read current Pages project configuration
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > before.json
+          jq -e '.success == true and .result.name == env.CF_PROJECT' before.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config}' before.json
+
+      - name: Repair V6 build and output configuration
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n '{build_config:{build_command:"npm run build:v6",destination_dir:"dist-v6"}}' > patch.json
+          curl --fail-with-body --silent --show-error             --request PATCH             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             --data @patch.json             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > after.json
+          jq -e '
+            .success == true
+            and .result.name == env.CF_PROJECT
+            and .result.build_config.build_command == "npm run build:v6"
+            and .result.build_config.destination_dir == "dist-v6"
+          ' after.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config}' after.json
+
+      - name: Confirm configuration persisted
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > persisted.json
+          jq -e '
+            .success == true
+            and .result.source.type == "github"
+            and .result.build_config.build_command == "npm run build:v6"
+            and .result.build_config.destination_dir == "dist-v6"
+          ' persisted.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config}' persisted.json
+
       - name: Checkout exact current V6 integration
         uses: actions/checkout@v4
         with:
@@ -68,5 +129,40 @@ jobs:
           }, null, 2));
           NODE
 
+      - name: Direct-upload exact dist-v6 to non-production Pages preview
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ env.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@latest pages deploy dist-v6             --project-name="${CF_PROJECT}"             --branch="v6-exact-75bfaaf-direct"             --commit-hash="${BQ_EXPECTED_SHA}"             --commit-message="V6 exact-SHA Cloudflare acceptance probe"             --commit-dirty=false | tee wrangler-deploy.log
+          url="$(grep -oE 'https://[A-Za-z0-9.-]+\.mybiblequest\.pages\.dev' wrangler-deploy.log | head -n 1 || true)"
+          if [ -z "$url" ]; then
+            echo "Wrangler did not report an immutable Pages deployment URL." >&2
+            exit 4
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Exact-SHA direct preview: $url"
+
+      - name: Wait for deployed metadata
+        env:
+          BQ_DEPLOYMENT_URL: ${{ steps.deploy.outputs.url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if curl -fsS --max-time 15 "${BQ_DEPLOYMENT_URL}/bq-artifact-integrity.json" | jq -e '.sourceSha == env.BQ_EXPECTED_SHA' >/dev/null 2>&1; then
+              exit 0
+            fi
+            echo "Exact metadata not ready yet (attempt ${attempt}/30)."
+            sleep 5
+          done
+          echo "Exact V6 deployment metadata never became ready." >&2
+          exit 5
+
       - name: Run merged exact-SHA deployed-byte verifier
+        env:
+          BQ_DEPLOYMENT_URL: ${{ steps.deploy.outputs.url }}
         run: node scripts/v6-deployment-verify.mjs
