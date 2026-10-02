@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 import { evaluateAssignmentPushReadiness } from '../../scripts/v6-assignment-push-live-readiness.mjs';
 
@@ -13,6 +15,13 @@ const productionQaEvidence = JSON.parse(readFileSync(
   new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json', import.meta.url),
   'utf8',
 ));
+
+const readinessScriptPath = fileURLToPath(
+  new URL('../../scripts/v6-assignment-push-live-readiness.mjs', import.meta.url),
+);
+const productionQaEvidencePath = fileURLToPath(
+  new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json', import.meta.url),
+);
 
 function snapshot(overrides = {}) {
   return {
@@ -317,5 +326,19 @@ test('pinned production QA evidence proves the due path while keeping assigned t
   assert.equal(result.counts.assignedPushDelivered24h, 0);
   assert.equal(result.counts.dueNotifications24h, 1);
   assert.equal(result.counts.duePushDelivered24h, 1);
+  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
+});
+
+test('CLI exits 5 while the live assigned delivery blocker remains', () => {
+  const run = spawnSync(process.execPath, [readinessScriptPath, productionQaEvidencePath], {
+    encoding: 'utf8',
+  });
+  assert.equal(run.status, 5);
+  assert.equal(run.stderr, '');
+  const result = JSON.parse(run.stdout);
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
   assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
 });
