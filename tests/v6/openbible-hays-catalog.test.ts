@@ -22,6 +22,7 @@ test('OpenBible Hays catalog creates direct source URLs for all 1,189 BSB chapte
   assert.equal(manifest.source.rights, 'verified');
   assert.equal(manifest.source.delivery, 'stream');
   assert.equal(manifest.source.textAlignment, 'unverified');
+  assert.equal(manifest.source.audioIdentity, 'unverified');
   assert.ok(manifest.source.rightsEvidence?.includes('audiobible.org'));
   assert.ok(manifest.source.reviewedBy);
   assert.ok(Number.isFinite(Date.parse(manifest.source.reviewedAt || '')));
@@ -45,28 +46,17 @@ test('certified Hays source identity enables offline chapter packages without cl
   }));
   const manifest = createOpenBibleHaysStreamingManifest('sha256-current-bsb', books);
   const inventorySha256 = 'c'.repeat(64);
-  const inventoryFiles = manifest.segments.map((segment, index) => ({
-    book: segment.book,
-    chapter: segment.chapter,
-    filename: new URL(segment.url).pathname.split('/').at(-1),
-    byteLength: 1000 + index,
-    sha256: 'd'.repeat(64),
-    durationSeconds: 10 + index / 1000,
-    sourceUrl: segment.url,
-  }));
-  const totalBytes = inventoryFiles.reduce((sum, row) => sum + row.byteLength, 0);
+  const segments = manifest.segments.map((_segment, index) => [1000 + index, 'd'.repeat(64)] as const);
+  const totalBytes = segments.reduce((sum, row) => sum + row[0], 0);
   const inventory = {
     schemaVersion: 1,
     translationId: 'bsb',
     narrator: 'Barry Hays',
-    source: 'OpenBible Barry Hays',
-    sourceBaseUrl: 'https://openbible.com/audio/hays/',
     chapters: 1189,
     totalBytes,
-    totalDurationSeconds: inventoryFiles.reduce((sum, row) => sum + row.durationSeconds, 0),
     inventorySha256,
     contentVersion: `sha256-${inventorySha256}`,
-    files: inventoryFiles,
+    segments,
   };
   const calls: string[] = [];
   const loaded = await loadOpenBibleHaysSourceInventory(async (url: string | URL | Request) => {
