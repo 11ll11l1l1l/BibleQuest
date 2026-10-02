@@ -62,6 +62,8 @@ The physical push row must remain PENDING until P1 and P2 are observed on a phys
 For the aggregate push row, retain both evidence classes on the same exact candidate:
 
 - BUILT-BROWSER: exact-head V6 Phase 1 Build Gate evidence covering 'tests/v6/assignment-push-service-worker.test.ts', notification click/deep-link behavior, and built-artifact service-worker registration.
-- PHYSICAL-DEVICE: sanitized P1/P2 push field evidence, plus P3 when binding the live assigned/due path.
+- PHYSICAL-DEVICE: the sanitized JSON exported by '/v6-push-device-field.html' after real P1/P2 observations, plus P3 when binding the live assigned/due path.
+
+Before transcribing a push PASS into this record, validate the exported JSON against this record's exact Candidate SHA with 'scripts/v6-validate-push-field-evidence.mjs'. Retain the sanitized JSON as a durable issue/PR/artifact reference so the Markdown record is not the only evidence copy. A successful physical JSON validation never substitutes for the separate BUILT-BROWSER half of the aggregate push row.
 
 Do not copy account identifiers, push endpoints, subscription keys, tokens, or server secrets into this record.
