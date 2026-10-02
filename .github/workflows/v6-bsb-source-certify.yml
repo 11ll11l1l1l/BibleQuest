@@ -1,6 +1,12 @@
 name: V6 BSB Source Certification
 
 on:
+  push:
+    paths:
+      - "scripts/v6-hays-source-inventory.mjs"
+      - "scripts/v6-fetch-hays-source-shard.mjs"
+      - "scripts/v6-merge-hays-source-shards.mjs"
+      - ".github/workflows/v6-bsb-source-certify.yml"
   pull_request:
     branches:
       - v6/architecture-upgrade
