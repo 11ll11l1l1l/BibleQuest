@@ -26,7 +26,9 @@
     "run:v6-bsb-alignment": "node scripts/v6-run-bsb-alignment-regeneration.mjs",
     "audit:v6-bsb-reuse": "node scripts/v6-audit-bsb-upstream-timing-reuse.mjs",
     "plan:v6-bsb-shards": "node scripts/v6-plan-bsb-alignment-shards.mjs",
-    "inventory:v6-bsb-hays": "node scripts/v6-hays-source-inventory.mjs"
+    "inventory:v6-bsb-hays": "node scripts/v6-hays-source-inventory.mjs",
+    "field:v6-init": "node scripts/v6-field-certification-package.mjs init",
+    "field:v6-validate": "node scripts/v6-field-certification-package.mjs validate"
   },
   "devDependencies": {
     "typescript": "7.0.2",

@@ -22,7 +22,7 @@
   ],
   "rows": [
     {
-      "row": "V4→V6 route/feature parity matrix is complete.",
+      "row": "V4\u2192V6 route/feature parity matrix is complete.",
       "options": [
         {
           "id": "automated-route-parity",
@@ -101,7 +101,35 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "001fecb1297c9c7842e27f0da737b42f46e515cb",
+        "classes": [
+          "UNIT",
+          "BUILT-BROWSER",
+          "EXTERNAL-LIVE"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "Real-manifest Reader acceptance",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073450667"
+          },
+          {
+            "kind": "workflow",
+            "name": "Phase-1 build/browser",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073454572"
+          },
+          {
+            "kind": "artifact",
+            "id": "docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json"
+          },
+          {
+            "kind": "live-record",
+            "name": "Certified Hays source inventory and exact-source verification",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073450758"
+          }
+        ]
+      }
     },
     {
       "row": "Verse timing/alignment manifest exists and is versioned with the matching BSB text/audio revision.",
@@ -118,7 +146,29 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "001fecb1297c9c7842e27f0da737b42f46e515cb",
+        "classes": [
+          "STATIC",
+          "UNIT"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "Real-manifest Reader acceptance",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073450667"
+          },
+          {
+            "kind": "workflow",
+            "name": "Phase-1 build/browser",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073454572"
+          },
+          {
+            "kind": "artifact",
+            "id": "docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json"
+          }
+        ]
+      }
     },
     {
       "row": "Current verse highlights during playback and tapping a verse seeks to the correct audio position.",
@@ -134,7 +184,29 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "001fecb1297c9c7842e27f0da737b42f46e515cb",
+        "classes": [
+          "UNIT",
+          "BUILT-BROWSER"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "Real-manifest Reader acceptance",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073450667"
+          },
+          {
+            "kind": "workflow",
+            "name": "Phase-1 build/browser",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073454572"
+          },
+          {
+            "kind": "artifact",
+            "id": "docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json"
+          }
+        ]
+      }
     },
     {
       "row": "Auto-scroll follows spoken verses without preventing manual navigation/accessibility use.",
@@ -150,7 +222,29 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "001fecb1297c9c7842e27f0da737b42f46e515cb",
+        "classes": [
+          "UNIT",
+          "BUILT-BROWSER"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "Real-manifest Reader acceptance",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073450667"
+          },
+          {
+            "kind": "workflow",
+            "name": "Phase-1 build/browser",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37073454572"
+          },
+          {
+            "kind": "artifact",
+            "id": "docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json"
+          }
+        ]
+      }
     },
     {
       "row": "Background/lock-screen media controls work where supported and degrade safely where unsupported.",

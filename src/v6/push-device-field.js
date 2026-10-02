@@ -194,6 +194,7 @@ async function physicalEvidenceRecord() {
     metadata: evidenceMetadata(),
     gates: all('[data-push-gate]').map(pushGateSnapshot),
     sanitizedSnapshot: await sanitizedSnapshot(),
+    origin: location.origin,
   });
 }
 

@@ -46,6 +46,7 @@ function record(overrides = {}) {
     },
     gates: [gate('p1'), gate('p2'), gate('p3')],
     sanitizedSnapshot: snapshot(),
+    origin: 'https://abc.mybiblequest.pages.dev',
     observedAt: '2026-10-02T13:45:00.000Z',
     ...overrides,
   });
@@ -87,6 +88,13 @@ test('PASS fails closed if any required physical sub-step or observation is miss
   assert.throws(
     () => record({ gates: [gate('p1'), noNotes, gate('p3')] }),
     /P2 PASS requires a concrete physical observation/,
+  );
+});
+
+test('push evidence rejects an unapproved deployed origin', () => {
+  assert.throws(
+    () => record({ origin: 'https://attacker.example' }),
+    /not an approved deployed BibleQuest/,
   );
 });
 

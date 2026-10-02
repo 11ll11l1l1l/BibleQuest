@@ -19,7 +19,13 @@ test('V6 physical PWA/accessibility field harness stays unlinked, exact-SHA-boun
   assert.match(html,/Installed-PWA offline behavior/);
   assert.match(html,/Manual accessibility: screen reader/);
   assert.match(html,/Manual accessibility: reduced motion\/contrast/);
+  assert.match(html,/Manual accessibility: Reader while BSB audio is running/);
+  assert.match(html,/data-step="reconnect-recovery"/);
+  assert.match(html,/data-step="no-false-network-success"/);
   assert.match(html,/BSB Audio: background \/ lock-screen media controls/);
+  assert.match(html,/data-step="lock-screen"/);
+  assert.match(html,/data-step="stop-safe"/);
+  assert.match(html,/data-step="unsupported-safe"/);
 
   assert.equal(index.includes('v6-field-device'),false,'field harness must remain outside the product navigation');
   assert.equal(bootstrap.includes('v6-field-device'),false,'field harness must remain outside normal bootstrap');

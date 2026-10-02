@@ -33,7 +33,7 @@ function record(overrides={}){
     durableEvidenceReference:'issue-452-field-run',
     origin:'https://abc.mybiblequest.pages.dev',
     installedDisplayMode:'standalone',
-    networkOnlineAtExport:false,
+    networkOnlineAtExport:true,
     gates,
     checklistEligibility:{
       physicalInstalledPwaOffline:true,
@@ -57,6 +57,14 @@ test('validates all non-push physical rows against one exact candidate SHA',()=>
   }
 });
 
+test('installed-PWA PASS requires network recovery before export',()=>{
+  const r=record({networkOnlineAtExport:false});
+  assert.throws(
+    ()=>validateFieldDeviceEvidence(r,sha),
+    /network restored after the offline\/relaunch checks/,
+  );
+});
+
 test('installed-PWA PASS cannot validate from a normal browser tab',()=>{
   const r=record({installedDisplayMode:'browser-tab'});
   assert.throws(
@@ -72,6 +80,7 @@ test('manual accessibility requires every physical accessibility gate',()=>{
   const e=validateFieldDeviceEvidence(r,sha);
   assert.equal(evaluateFieldDeviceProfile(e,'manual-accessibility').satisfied,false);
   assert.ok(MANUAL_ACCESSIBILITY_GATE_IDS.includes('screen-reader'));
+  assert.ok(MANUAL_ACCESSIBILITY_GATE_IDS.includes('reader-audio-a11y'));
 });
 
 test('background-media is independent from PWA and manual accessibility',()=>{
