@@ -14,6 +14,7 @@ import {
   validateRcCandidateMarker,
   writeRcCandidateMarker,
 } from '../../scripts/v6-rc-candidate-marker.mjs';
+import { DEFAULT_REQUIRED_WORKFLOWS } from '../../scripts/v6-rc-exact-sha-gate.mjs';
 
 const baseSha = 'a'.repeat(40);
 
@@ -89,6 +90,40 @@ const markerTriggeredWorkflows = [
   '.github/workflows/v6-rc-exact-sha-gate.yml',
 ];
 
+const exactShaWorkflowContracts = [
+  ['V6 Phase 1 Build Gate', '.github/workflows/v6-phase1-build.yml', 'BQ_EXACT_SHA'],
+  ['V6 Database CI', '.github/workflows/v6-database-ci.yml', 'BQ_EXACT_SHA'],
+  ['V6 Client Artifact Security', '.github/workflows/v6-client-artifact-security.yml', 'BQ_EXACT_SHA'],
+  ['V6 Dependency Security', '.github/workflows/v6-dependency-security.yml', 'BQ_EXACT_SHA'],
+  ['V6 V4 Rollback Reference Guard', '.github/workflows/v6-v4-rollback-reference.yml', 'BQ_EXACT_SHA'],
+  ['V6 Deployed Artifact Verification', '.github/workflows/v6-deployment-verify.yml', 'BQ_EXPECTED_SHA'],
+  ['V6 RC Exact-SHA Automated Gate', '.github/workflows/v6-rc-exact-sha-gate.yml', 'BQ_RC_CANDIDATE_SHA'],
+];
+
+test('collector requirements and RC fan-out stay aligned on the exact PR head SHA', () => {
+  const collectorFanoutNames = exactShaWorkflowContracts
+    .filter(([name]) => name !== 'V6 RC Exact-SHA Automated Gate')
+    .map(([name]) => name);
+  assert.deepEqual(
+    [...collectorFanoutNames, 'BibleQuest inherited regression'].sort(),
+    [...DEFAULT_REQUIRED_WORKFLOWS].sort(),
+  );
+
+  for (const [, path, envName] of exactShaWorkflowContracts) {
+    const workflow = readFileSync(new URL('../../' + path, import.meta.url), 'utf8');
+    assert.match(
+      workflow,
+      /github\.event_name == 'pull_request' && github\.event\.pull_request\.head\.sha/,
+      path + ' must derive its PR candidate from the immutable PR head SHA',
+    );
+    assert.match(
+      workflow,
+      new RegExp('ref:\\s*\\$\\{\\{\\s*env\\.' + envName + '\\s*\\}\\}'),
+      path + ' must checkout its exact candidate environment SHA',
+    );
+  }
+});
+
 test('RC marker fans out every candidate-specific automated gate on the same PR head', () => {
   for (const path of markerTriggeredWorkflows) {
     const workflow = readFileSync(new URL('../../' + path, import.meta.url), 'utf8');
@@ -134,6 +169,8 @@ test('RC workflow enforces the same one-commit marker contract for PR and manual
   assert.doesNotMatch(workflow, /if:\s*github\.event_name == 'pull_request'/);
   assert.match(workflow, /git rev-list --parents -n 1/);
   assert.match(workflow, /test "\$\{#commit_and_parents\[@\]\}" -eq 2/);
+  assert.match(workflow, /git fetch --no-tags origin v6\/architecture-upgrade/);
+  assert.match(workflow, /git merge-base --is-ancestor "\$\{parent_sha\}" "origin\/v6\/architecture-upgrade"/);
   assert.match(workflow, /github\.event\.pull_request\.base\.sha/);
   assert.match(workflow, /test "\$\{parent_sha\}" = "\$\{BQ_RC_PR_BASE_SHA,,\}"/);
   assert.match(workflow, /v6-rc-candidate-marker\.mjs --validate docs\/v6\/RC_CANDIDATE\.json "\$\{parent_sha\}"/);
