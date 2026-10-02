@@ -18,6 +18,8 @@ export interface ScriptureAudioSourceMetadata {
   readonly rights: AudioRights;
   readonly delivery: AudioDelivery;
   readonly textAlignment: 'exact' | 'unverified' | 'mismatch';
+  /** Exact source-file identity is independent from verse-level timing alignment. */
+  readonly audioIdentity?: 'exact' | 'unverified';
   readonly attribution?: string;
   readonly permissions?: ScriptureAudioSourcePermissions;
   readonly rightsEvidence?: string;
@@ -45,7 +47,7 @@ export interface ScriptureAudioManifest {
 
 export interface AudioOfflineDecision {
   readonly eligible: boolean;
-  readonly reason: 'eligible' | 'rights-unverified' | 'redistribution-forbidden' | 'text-alignment-unverified' | 'text-mismatch' | 'storage-ceiling-exceeded' | 'invalid-manifest';
+  readonly reason: 'eligible' | 'rights-unverified' | 'redistribution-forbidden' | 'audio-identity-unverified' | 'text-alignment-unverified' | 'text-mismatch' | 'storage-ceiling-exceeded' | 'invalid-manifest';
   readonly totalBytes: number;
 }
 
@@ -97,6 +99,9 @@ function validSourceMetadata(source: ScriptureAudioSourceMetadata | null | undef
   if (source.permissions !== undefined && (!source.permissions || typeof source.permissions !== 'object'
     || (source.permissions.stream !== undefined && !['allowed', 'review-required', 'forbidden'].includes(source.permissions.stream))
     || (source.permissions.offlineCopy !== undefined && !['allowed', 'review-required', 'forbidden'].includes(source.permissions.offlineCopy)))) {
+    return false;
+  }
+  if (source.audioIdentity !== undefined && !['exact', 'unverified'].includes(source.audioIdentity)) {
     return false;
   }
 
@@ -172,9 +177,9 @@ function validSegments(segments: readonly ScriptureAudioSegment[] | null | undef
 
 /**
  * Audio packaging is deliberately fail-closed. A provider being playable online
- * does not imply that BibleQuest may redistribute or cache it offline, and an
- * audio Bible labelled with a translation name does not prove exact alignment
- * with the displayed Scripture text.
+ * does not imply that BibleQuest may redistribute or cache it offline. Offline
+ * chapter caching requires exact source bytes/version identity, but does not
+ * require verse-level timing alignment; verse sync is gated independently.
  */
 export function audioOfflineEligibility(
   manifest: ScriptureAudioManifest | null | undefined,
@@ -205,8 +210,7 @@ export function audioOfflineEligibility(
   if (manifest.source.rights === 'forbidden') return { eligible: false, reason: 'redistribution-forbidden', totalBytes };
   if (manifest.source.permissions?.offlineCopy !== 'allowed') return { eligible: false, reason: 'rights-unverified', totalBytes };
   if (manifest.source.rights !== 'verified' || manifest.source.delivery !== 'downloadable') return { eligible: false, reason: 'rights-unverified', totalBytes };
-  if (manifest.source.textAlignment === 'mismatch') return { eligible: false, reason: 'text-mismatch', totalBytes };
-  if (manifest.source.textAlignment !== 'exact') return { eligible: false, reason: 'text-alignment-unverified', totalBytes };
+  if (manifest.source.audioIdentity !== 'exact') return { eligible: false, reason: 'audio-identity-unverified', totalBytes };
   if (totalBytes >= storageCeilingBytes) return { eligible: false, reason: 'storage-ceiling-exceeded', totalBytes };
   return { eligible: true, reason: 'eligible', totalBytes };
 }
@@ -220,6 +224,7 @@ export const BSB_AUDIO_CANDIDATE_POLICY: ScriptureAudioSourceMetadata = Object.f
   rights: 'review-required',
   delivery: 'downloadable',
   textAlignment: 'unverified',
+  audioIdentity: 'unverified',
   attribution: 'Barry Hays narration; source evidence and limitations recorded in docs/v6/BSB_AUDIO_SOURCE_REVIEW.md',
   permissions: Object.freeze({ stream: 'allowed', offlineCopy: 'review-required' }),
 });
