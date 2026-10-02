@@ -92,7 +92,7 @@ node scripts/v6-field-certification-package.mjs init <exact-rc-sha> field-certif
 
 Keep the two existing harness exports beside that file using the default names `field-device.json` and `field-push.json`, or edit only the relative paths under `artifacts`. The consolidated package deliberately reuses the existing `PWA-A11Y-MEDIA` and `PUSH` evidence formats rather than defining replacement physical evidence.
 
-Before the human run, fill the package `references` only with durable, sanitized references. The required references are the exact-RC automated gate, the same-SHA built-browser push gate, the already accepted assignment-due backend/delivery evidence, the real assignment-assigned durable-notification evidence, the assignment-assigned canonical dispatch/ledger evidence, and the disposable-assignment cleanup record. Screenshot/video references are optional and must not contain private account or credential material.
+Before the human run, fill the package `references` only with durable, sanitized references. Candidate-bound references are stored as `{ candidateSha, reference }` and the validator rejects any candidate SHA other than the package RC. The required references are the exact-RC automated gate, the same-SHA built-browser push gate, the already accepted assignment-due backend/delivery evidence, the real assignment-assigned durable-notification evidence, the assignment-assigned canonical dispatch/ledger evidence, and the disposable-assignment cleanup record. Screenshot/video references are optional and must not contain private account or credential material.
 
 ### One bounded human session
 
@@ -126,7 +126,7 @@ Keep this section unexecuted until the exact candidate has passed automated RC c
 9. BSB audio startup/background-control smoke remains coherent;
 10. post-production exact-SHA evidence is preserved durably.
 
-After those observations genuinely occur, mark only the package observations actually seen as PASS with concrete notes, set the production-promotion and post-production evidence references, then run:
+After those observations genuinely occur, mark only the package observations actually seen as PASS with concrete notes, set `productionBuildShaObserved` to the exact deployed 40-character SHA, set the production-promotion and post-production evidence references, then run:
 
 ```bash
 node scripts/v6-field-certification-package.mjs validate field-certification.json <exact-rc-sha> final
