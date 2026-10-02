@@ -285,8 +285,27 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   assert.equal(loaded?.audioInventorySha256, audioInventorySha256);
   assert.equal(loaded?.audioContentVersion, exactAudioContentVersion);
   assert.deepEqual(calls, ['/data/v6-audio/bsb-hays-alignment.json']);
-  const bound = bindOpenBibleHaysAlignmentIdentity(hays, loaded!);
+  const sourceSegments = hays.segments.map(segment => [1000 + segment.chapter, 'd'.repeat(64)] as const);
+  const sourceInventory = {
+    schemaVersion: 1 as const,
+    translationId: 'bsb' as const,
+    narrator: 'Barry Hays' as const,
+    chapters: 1189,
+    totalBytes: sourceSegments.reduce((sum, row) => sum + row[0], 0),
+    inventorySha256: audioInventorySha256,
+    contentVersion: exactAudioContentVersion,
+    segments: sourceSegments,
+  };
+  const sourceBound = bindOpenBibleHaysSourceIdentity(hays, sourceInventory);
+  const bound = bindOpenBibleHaysAlignmentIdentity(sourceBound, loaded!);
   assert.equal(bound.contentVersion, exactAudioContentVersion);
+  const mismatchedChapters = loaded!.chapters.map((row, index) => index === 0
+    ? { ...row, audioSha256: 'e'.repeat(64) }
+    : row);
+  assert.throws(
+    () => bindOpenBibleHaysAlignmentIdentity(sourceBound, { ...loaded!, chapters: mismatchedChapters }),
+    /alignment\/source identity mismatch/i,
+  );
   assert.equal(bound.segments[0].sha256, 'd'.repeat(64));
   assert.ok((bound.segments[0].byteLength || 0) > 0);
   assert.equal(bound.source.permissions?.offlineCopy, 'allowed');
