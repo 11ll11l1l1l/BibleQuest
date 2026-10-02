@@ -24,6 +24,10 @@ test('physical push field harness is an exact-SHA unlinked Vite entrypoint', () 
   assert.match(html, /data-push-gate="p1"/);
   assert.match(html, /data-push-gate="p2"/);
   assert.match(html, /data-push-gate="p3"/);
+  assert.match(html, /data-push-step="real-auth-session"/);
+  assert.match(html, /data-push-step="durable-assignment-record"/);
+  assert.match(html, /data-push-step="canonical-dispatch"/);
+  assert.match(html, /data-push-step="cleanup-complete"/);
   assert.match(html, /data-field-copy-evidence/);
   assert.match(html, /noindex,nofollow,noarchive/);
   assert.match(html, /src\/v6\/push-device-field\.js/);
