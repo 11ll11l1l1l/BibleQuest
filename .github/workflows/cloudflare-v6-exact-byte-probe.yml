@@ -1,0 +1,72 @@
+name: Temporary V6 exact-SHA Cloudflare byte probe
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/cloudflare-v6-exact-byte-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BQ_EXPECTED_SHA: 75bfaaf31dd5417e6188968c08d8dd8b2020d152
+      BQ_DEPLOYMENT_URL: https://a475e7de.mybiblequest.pages.dev
+    steps:
+      - name: Checkout exact current V6 integration
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXPECTED_SHA }}
+
+      - name: Prove exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Build exact V6 artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        run: npm run build:v6
+
+      - name: Export exact local artifact digests
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, appendFileSync } from 'node:fs';
+          const bytes = readFileSync('dist-v6/bq-artifact-integrity.json');
+          const manifest = JSON.parse(bytes.toString('utf8'));
+          if (manifest.sourceSha !== process.env.BQ_EXPECTED_SHA) throw new Error('local build source SHA mismatch');
+          if (!/^[0-9a-f]{64}$/i.test(String(manifest.artifactSha256 || ''))) throw new Error('invalid local artifact digest');
+          const integritySha256 = createHash('sha256').update(bytes).digest('hex');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_ARTIFACT_SHA256=' + manifest.artifactSha256.toLowerCase() + '\n');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_INTEGRITY_SHA256=' + integritySha256 + '\n');
+          console.log(JSON.stringify({
+            candidateSha: process.env.BQ_EXPECTED_SHA,
+            artifactSha256: manifest.artifactSha256.toLowerCase(),
+            integritySha256,
+            fileCount: manifest.fileCount,
+            totalBytes: manifest.totalBytes,
+          }, null, 2));
+          NODE
+
+      - name: Run merged exact-SHA deployed-byte verifier
+        run: node scripts/v6-deployment-verify.mjs
