@@ -51,11 +51,14 @@
     <h2 id="pwa-heading">Installed-PWA offline behavior</h2>
     <p>These checks must be performed in the installed app, not only in a normal browser tab.</p>
     <label class="check"><input type="checkbox" data-step="installed"> App is launched in standalone/installed mode on this physical device.</label>
+    <label class="check"><input type="checkbox" data-step="candidate-identity"> Candidate SHA shown by the harness matches the exact RC SHA being certified.</label>
     <label class="check"><input type="checkbox" data-step="warm"> Candidate was opened online first and the service worker reached an active/ready state.</label>
     <label class="check"><input type="checkbox" data-step="offline-launch"> With network disabled, the installed app cold-launched without a startup failure.</label>
     <label class="check"><input type="checkbox" data-step="offline-home"> Home rendered and remained navigable while offline.</label>
     <label class="check"><input type="checkbox" data-step="offline-reader"> Reader opened offline and previously installed Scripture remained readable/navigation-safe.</label>
+    <label class="check"><input type="checkbox" data-step="no-false-network-success"> Network-only features did not display a false success state while the device was offline.</label>
     <label class="check"><input type="checkbox" data-step="restart"> After fully closing and reopening while still offline, the accepted offline behavior remained intact.</label>
+    <label class="check"><input type="checkbox" data-step="reconnect-recovery"> Network was restored, the app recovered without stale/error-only state, and normal synchronization/navigation resumed.</label>
     <label>Verdict
       <select data-gate-status>
         <option value="PENDING">PENDING</option>
@@ -111,14 +114,28 @@
     <label>Observation <textarea data-gate-notes rows="3"></textarea></label>
   </section>
 
+  <section data-gate="reader-audio-a11y" aria-labelledby="reader-audio-a11y-heading">
+    <h2 id="reader-audio-a11y-heading">Manual accessibility: Reader while BSB audio is running</h2>
+    <p>Run this with verified Hays BSB audio active so the physical/manual check covers the spoken-verse follow behavior rather than only a silent Reader.</p>
+    <label class="check"><input type="checkbox" data-step="controls"> Reader playback and verse controls remain practically operable with the accessibility method being tested.</label>
+    <label class="check"><input type="checkbox" data-step="manual-navigation"> Manual Reader navigation remains available while spoken-verse following is active.</label>
+    <label class="check"><input type="checkbox" data-step="autoscroll"> Spoken-verse autoscroll does not trap focus, steal control, or prevent the tester from overriding follow behavior.</label>
+    <label class="check"><input type="checkbox" data-step="screen-reader"> With a screen reader where available, verse/control names and reading order remain understandable while audio is active.</label>
+    <label>Verdict <select data-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select></label>
+    <label>Observation <textarea data-gate-notes rows="4" placeholder="Record the physical accessibility interaction observed while BSB audio was active."></textarea></label>
+  </section>
+
   <section data-gate="background-media" aria-labelledby="background-media-heading">
     <h2 id="background-media-heading">BSB Audio: background / lock-screen media controls</h2>
     <p>Use the Reader's Barry Hays BSB audio on a supported physical device. Record unsupported OS/browser controls as unavailable rather than forcing a PASS.</p>
-    <label class="check"><input type="checkbox" data-step="background-playback"> Start BSB chapter playback, background or lock the device, and confirm playback state remains coherent without duplicate or runaway audio.</label>
+    <label class="check"><input type="checkbox" data-step="background-playback"> Start verified Hays BSB chapter playback, background the app, and confirm playback state remains coherent without duplicate or runaway audio.</label>
+    <label class="check"><input type="checkbox" data-step="lock-screen"> Lock the physical device and confirm the available system media surface remains coherent with the active BibleQuest chapter.</label>
     <label class="check"><input type="checkbox" data-step="metadata"> The system media surface shows the BibleQuest Audio Bible chapter metadata where Media Session metadata is supported.</label>
     <label class="check"><input type="checkbox" data-step="play-pause"> Lock-screen/background play and pause controls operate the active BSB chapter where the platform exposes them.</label>
+    <label class="check"><input type="checkbox" data-step="stop-safe"> Stop/dismiss behavior is safe where exposed; if the platform has no stop control, record that explicitly rather than inventing a PASS behavior.</label>
     <label class="check"><input type="checkbox" data-step="seek"> Seek/back/forward controls operate safely where exposed; unsupported controls do not break foreground playback.</label>
     <label class="check"><input type="checkbox" data-step="chapter-nav"> Previous/next chapter controls operate where exposed and return to the correct Reader chapter when the app is foregrounded.</label>
+    <label class="check"><input type="checkbox" data-step="unsupported-safe"> Any unsupported lock-screen/background control is absent or degrades safely without crashing, corrupting state, or breaking foreground playback.</label>
     <label class="check"><input type="checkbox" data-step="resume"> Returning to the app preserves the active chapter, playback position, and normal Reader controls.</label>
     <label>Verdict
       <select data-gate-status>
