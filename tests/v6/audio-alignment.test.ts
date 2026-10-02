@@ -82,3 +82,27 @@ test('alignment supports canonical verse-number gaps without shifting seek ident
   assert.equal(audioTimeForVerse(gap, 3), 20);
   assert.equal(verseAtAudioTime(gap, 25), 3);
 });
+
+
+test('alignment accepts a canonical chapter whose published verse sequence begins after verse 1', () => {
+  const psalmLike: ScriptureChapterAlignment = {
+    ...alignment,
+    book: 'PSA',
+    chapter: 3,
+    verses: [
+      { verse: 2, startSeconds: 0, endSeconds: 20 },
+      { verse: 3, startSeconds: 20, endSeconds: 45 },
+      { verse: 4, startSeconds: 45, endSeconds: 89 },
+    ],
+  };
+  assert.deepEqual(validateChapterAlignment(psalmLike, {
+    translationId: 'bsb', book: 'PSA', chapter: 3, verseCount: 3, verseNumbers: [2, 3, 4],
+  }), { valid: true, issues: [] });
+  assert.equal(audioTimeForVerse(psalmLike, 1), null);
+  assert.equal(audioTimeForVerse(psalmLike, 2), 0);
+  assert.equal(verseAtAudioTime(psalmLike, 0), 2);
+  assert.equal(validateChapterAlignment(psalmLike).valid, true);
+  const wrongCanonicalStart = validateChapterAlignment(psalmLike, { verseNumbers: [1, 2, 3] });
+  assert.equal(wrongCanonicalStart.valid, false);
+  assert.ok(wrongCanonicalStart.issues.some(issue => /expected canonical verse 1/.test(issue)));
+});

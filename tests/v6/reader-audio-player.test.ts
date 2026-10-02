@@ -300,7 +300,7 @@ test('chapter player rejects malformed supplied alignment and requires timing fo
   const alignment: ScriptureChapterAlignment = {
     schemaVersion: 1, translationId: 'bsb', contentVersion: 'fixture-1', scriptureContentVersion: 'bsb-fixture-1', book: 'GEN', chapter: 1, durationSeconds: 120,
     source: 'source', license: 'license', alignmentSource: 'alignment',
-    verses: [{ verse: 2, startSeconds: 0, endSeconds: 10 }],
+    verses: [{ verse: 1, startSeconds: 0, endSeconds: 121 }],
   };
   const withBadTiming = createChapterAudioPlayer({
     translationId: 'bsb', manifest, alignments: [alignment], createAudio: fixtureAudio,

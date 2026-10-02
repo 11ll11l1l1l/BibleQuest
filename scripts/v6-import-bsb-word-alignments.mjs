@@ -19,7 +19,7 @@ const keyOf = (book, chapter) => `${book.toUpperCase()}-${chapter}`;
 
 function alignmentTokens(value) {
   return String(value ?? '').normalize('NFKD').replace(/\p{M}/gu, '')
-    .replace(/[^\p{L}\p{N}_\s]/gu, '').toLowerCase().trim().split(/\s+/u).filter(Boolean);
+    .replace(/[^\p{L}\p{N}_\s]/gu, ' ').toLowerCase().trim().split(/\s+/u).filter(Boolean);
 }
 
 function currentBibleChapters(bookPacks) {

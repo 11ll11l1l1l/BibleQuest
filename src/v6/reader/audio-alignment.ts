@@ -30,7 +30,7 @@ function nonBlank(value: unknown): boolean {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-/** Validates one-based verse timings before they can drive Reader highlighting or seeking. */
+/** Validates canonical positive verse timings before they can drive Reader highlighting or seeking. */
 export function validateChapterAlignment(
   alignment: ScriptureChapterAlignment | null | undefined,
   expected?: { readonly translationId?: string; readonly book?: string; readonly chapter?: number; readonly verseCount?: number; readonly verseNumbers?: readonly number[] },
@@ -53,12 +53,13 @@ export function validateChapterAlignment(
   } else {
     let previousEnd = 0;
     let previousVerse = 0;
+    const expectedFirstVerse = expected?.verseNumbers?.[0];
     alignment.verses.forEach((timing, index) => {
       const verse = Number(timing?.verse);
       if (!Number.isSafeInteger(verse) || verse < 1) {
         issues.push(`verse timing at index ${index} has an invalid verse number`);
-      } else if (index === 0 && verse !== 1) {
-        issues.push('verse timing must begin at verse 1');
+      } else if (index === 0 && expectedFirstVerse !== undefined && verse !== expectedFirstVerse) {
+        issues.push(`verse timing must begin at expected canonical verse ${expectedFirstVerse}`);
       } else if (verse <= previousVerse) {
         issues.push('verse numbers must be strictly increasing');
       }
