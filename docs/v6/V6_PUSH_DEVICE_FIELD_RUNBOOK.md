@@ -91,6 +91,19 @@ P3 supplies live assigned/due evidence. It must remain pending while the product
 
 ## Evidence binding
 
+The physical push harness now records P1/P2/P3 sub-steps, verdicts and sanitized observations. Fill the tester/device/environment/durable-reference metadata on the exact candidate, then use **Copy physical evidence JSON** only after the real physical observations have been performed.
+
+Save that JSON as a durable field artifact and validate it against the exact candidate before updating acceptance:
+
+```bash
+node scripts/v6-validate-push-field-evidence.mjs field-push.json <exact-candidate-sha> physical-push
+node scripts/v6-validate-push-field-evidence.mjs field-push.json <exact-candidate-sha> assignment-due
+# Final combined P1/P2/P3 physical record:
+node scripts/v6-validate-push-field-evidence.mjs field-push.json <exact-candidate-sha> full
+```
+
+The validator fails closed on a different candidate SHA, missing P1/P2/P3 sub-steps, PASS with unchecked sub-steps, missing observation text, missing metadata, or obvious account/credential/endpoint/token material. A successful `physical-push` profile proves only the PHYSICAL-DEVICE half; the aggregate push row still requires the exact-head BUILT-BROWSER evidence described above.
+
 Update 'docs/v6/V6_FIELD_DEVICE_EVIDENCE.md' only after the observations occur. For the push rows record:
 
 - exact candidate SHA
