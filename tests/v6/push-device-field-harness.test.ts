@@ -7,6 +7,7 @@ const read = relative => readFileSync(new URL('../../' + relative, import.meta.u
 const html = read('v6-push-device-field.html');
 const runtime = read('src/v6/push-device-field.js');
 const evidenceRuntime = read('src/v6/push-device-field-evidence.js');
+const sharedEvidenceRuntime = read('src/v6/physical-device-evidence.js');
 const vite = read('vite.config.mjs');
 const headers = read('_headers');
 const index = read('index.html');
@@ -112,13 +113,14 @@ test('due-reminder operator documentation cannot drift from the canonical five-m
 
 
 test('physical push evidence export stays candidate-bound, complete and sanitized', () => {
-  assert.match(evidenceRuntime, /evidenceClass: 'PHYSICAL-DEVICE'/);
+  const evidenceContract = evidenceRuntime + '\n' + sharedEvidenceRuntime;
+  assert.match(evidenceRuntime, /evidenceClass:\s*'PHYSICAL-DEVICE'/);
   assert.match(evidenceRuntime, /candidateSha/);
   assert.match(evidenceRuntime, /physicalDevicePushEvidenceComplete/);
   assert.match(evidenceRuntime, /assignmentAssignedDuePhysicalEvidenceComplete/);
-  assert.match(evidenceRuntime, /aggregatePushStillRequiresBuiltBrowserEvidence: true/);
+  assert.match(evidenceRuntime, /aggregatePushStillRequiresBuiltBrowserEvidence:\s*true/);
   for (const gate of ['p1', 'p2', 'p3']) {
-    assert.match(evidenceRuntime, new RegExp(gate + ': Object\\.freeze'));
+    assert.match(evidenceRuntime, new RegExp(gate + ':\\s*Object\\.freeze'));
   }
   for (const sensitive of [
     'service_role',
@@ -126,6 +128,6 @@ test('physical push evidence export stays candidate-bound, complete and sanitize
     'p256dh',
     'password|endpoint|auth',
   ]) {
-    assert.match(evidenceRuntime, new RegExp(sensitive, 'i'));
+    assert.match(evidenceContract, new RegExp(sensitive, 'i'));
   }
 });
