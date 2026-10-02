@@ -190,3 +190,37 @@ test('push and click reject cross-origin notification targets', async () => {
     'https://biblequest.example/#/notification-center',
   );
 });
+
+
+test('deployed legacy assignment category due payload remains compatible with the V6 worker', async () => {
+  const worker = loadWorker();
+  await dispatchWaitable(worker.listeners.get('push'), {
+    data: {
+      json: () => ({
+        title: 'Assignment due soon',
+        body: 'Finish John 1 before the deadline.',
+        notificationId: '77777777-7777-4777-8777-777777777777',
+        // Deployed bq-push-delivery v2 may still emit the legacy singular
+        // assignment category for assignment_due notifications.
+        type: 'assignment',
+        url: '/#/assignments',
+      }),
+    },
+  });
+
+  assert.equal(worker.notifications.length, 1);
+  const shown = worker.notifications[0];
+  assert.equal(shown.title, 'Assignment due soon');
+  assert.equal(shown.options.data.url, 'https://biblequest.example/#/assignments');
+  assert.equal(shown.options.data.type, 'assignment');
+
+  await dispatchWaitable(worker.listeners.get('notificationclick'), {
+    notification: {
+      data: shown.options.data,
+      close() {},
+    },
+  });
+
+  assert.equal(worker.navigations.at(-1), 'https://biblequest.example/#/assignments');
+  assert.equal(worker.focused, 1);
+});
